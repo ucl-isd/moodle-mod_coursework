@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="mod/coursework/db" VERSION="20150625" COMMENT="XMLDB file for Moodle mod/coursework"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="coursework" COMMENT="Instances of the Coursework module">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="formid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course coursework activity belongs to"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for moodle instances"/>
+        <FIELD NAME="intro" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="General introduction of the coursework activity"/>
+        <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="grade" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="What is the maximum grade possible for this coursework"/>
+        <FIELD NAME="deadline" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="unix timestamp for when the coursework should be submitted"/>
+        <FIELD NAME="srsinclude" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="flag: do we want to prevent markers from knowing the students' name"/>
+        <FIELD NAME="numberofmarkers" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="How many feedback grades should each submission have before it can be published?"/>
+        <FIELD NAME="blindmarking" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="flag: do we want to prevent markers from knowing the students' name"/>
+        <FIELD NAME="maxbytes" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="100000" SEQUENCE="false"/>
+        <FIELD NAME="generalfeedback" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="unix timestamp for when the general assignment feedback should be available"/>
+        <FIELD NAME="individualfeedback" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="unix timestamp for when the general assignment feedback should be available"/>
+        <FIELD NAME="feedbackcomment" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="feedbackcommentformat" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
+        <FIELD NAME="generalfeedbacktimepublished" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="courseworktype" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false" COMMENT="Tells us if this is undergraduate or postgraduate or (in future) something else."/>
+        <FIELD NAME="assessorallocationstrategy" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="equal" SEQUENCE="false" COMMENT="classname of the allocation strategy that will be used to pair students and teachers automatically."/>
+        <FIELD NAME="moderationenabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Is this coursework being moderated?"/>
+        <FIELD NAME="allocationenabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Do we want to have pairings made between teachers and students, either manually or automatically, or shall we just leave it as a free-for-all?"/>
+        <FIELD NAME="moderatorallocationstrategy" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Strategy for matching moderators to students in the moderation set. Matches the end of a coursework_allocation_strategy_xxx class"/>
+        <FIELD NAME="viewothersfeedback" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If set to true, markers will be able to view the feedback of other markers once they have completed their own. This runs counter to the principles of blind marking (might cause unfair bias), but is useful for some situations."/>
+        <FIELD NAME="autoreleasefeedback" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If true, feedback (but not grades) will be released automatically to the student when the deadline passes."/>
+        <FIELD NAME="retrospectivemoderation" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="This flag, which in future will be replaced bu fully configurable marking stages, tells us to ignore the marks that the moderator gives so that they are just indicative of the quality of the first marker. If they are very different, the coursework can be switched to allow a full remark, where the moderator marks become marker2 marks."/>
+        <FIELD NAME="studentviewcomponentfeedbacks" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If true, the students can see feedbacks from the component marks given by teachers before the final grade is agreed. If false, they only see the final feedback. Only relevant to multiple marked courseworks."/>
+        <FIELD NAME="studentviewmoderatorfeedbacks" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Can students view feedback from moderators?"/>
+        <FIELD NAME="strictanonymity" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If we allow publishing when blind marking is enabled and some students have not submitted, or have an extension, then it may be possible for markers to deduce the student's identity. If this setting is off, such publishing is allowed."/>
+        <FIELD NAME="studentviewfinalfeedback" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Can the student view the comments on the final agreed feedback"/>
+        <FIELD NAME="studentviewcomponentgrades" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Can the student view the component grades in multiple graded courseworks"/>
+        <FIELD NAME="studentviewfinalgrade" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Can the student view the final agreed grade in multi marker courseworks"/>
+        <FIELD NAME="studentviewmoderatorgrade" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Can the student view the moderator grades"/>
+        <FIELD NAME="strictanonymitymoderator" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Do we enforce the prevention of publishing when moderation is in use and some work has not been moderated?"/>
+        <FIELD NAME="allowlatesubmissions" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If true, students will be able to submit after the deadline even if they don't have a submission"/>
+        <FIELD NAME="mitigationenabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="enablegeneralfeedback" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="maxfiles" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
+        <FIELD NAME="filetypes" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="use_groups" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="grouping_id" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="allowearlyfinalisation" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="showallfeedbacks" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="startdate" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="samplingenabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="extensionsenabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="assessoranonymity" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="viewinitialgradeenabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="automaticagreement" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="automaticagreementrange" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="automaticagreementstrategy" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="null" SEQUENCE="false"/>
+        <FIELD NAME="feedbackreleaseemail" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="gradeeditingtime" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="markingdeadlineenabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="initialmarkingdeadline" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="agreedgrademarkingdeadline" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="markingreminderenabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="submissionnotification" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="personaldeadlineenabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="relativeinitialmarkingdeadline" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="relativeagreedmarkingdeadline" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="autopopulatefeedbackcomment" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="coursework_feedbacks" COMMENT="Each row represents the feedback given for one submission by one teacher. This can include the aggregated/consolidated feedback given by the publisher">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="submissionid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="assessorid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="grade" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="cappedgrade" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false" COMMENT="If late, the actual grade will be capped at a maximum that is configurable in various ways.Normally, this will be the same as grade."/>
+        <FIELD NAME="feedbackcomment" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The textual feedback given by this marker. For aggregated comments (final), it will be only what is in addition to the comments of the component markers."/>
+        <FIELD NAME="timepublished" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="When did this grade get put into the gradebook? May not apply to component feedbacks, just final ones."/>
+        <FIELD NAME="lasteditedbyuser" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="In case a manager edits a feedback, we want to be able to keep track of this."/>
+        <FIELD NAME="isfinalgrade" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Flag to show whether this record is the result of an agreement between all the markers in multiple marked courseworks."/>
+        <FIELD NAME="ismoderation" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Flag to show whether this is a feedback made by a moderator or not."/>
+        <FIELD NAME="feedbackcommentformat" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
+        <FIELD NAME="entry_id" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="markernumber" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="When we have multiple markers, this is useful for making reports where we show marker1, marker2, etc. Without it, the SQL is awkward for LEFT JOIN"/>
+        <FIELD NAME="stage_identifier" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="submissionid-id" TYPE="foreign" FIELDS="submissionid" REFTABLE="coursework_submissions" REFFIELDS="id" COMMENT="Links the feedback and submissions tables"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="coursework_submissions" COMMENT="Student submissions for the easssessment module. Files are linked via a separate table.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="authorid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="finalised" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If true, then the student can no longer add files."/>
+        <FIELD NAME="manualsrscode" TYPE="char" LENGTH="50" NOTNULL="true" SEQUENCE="false" COMMENT="Temporary solution for KCL requirement for a student to be able to manually enter their SRS number."/>
+        <FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="User id of creator"/>
+        <FIELD NAME="lastupdatedby" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="User id of last person to update this submission."/>
+        <FIELD NAME="allocatableid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the user or group"/>
+        <FIELD NAME="allocatableuser" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the user"/>
+        <FIELD NAME="allocatablegroup" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the group"/>
+        <FIELD NAME="allocatabletype" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="user" SEQUENCE="false" COMMENT="Type of the user or group"/>
+        <FIELD NAME="firstpublished" TYPE="int" LENGTH="12" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="lastpublished" TYPE="int" LENGTH="12" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="timesubmitted" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="courseworkid-id" TYPE="foreign" FIELDS="courseworkid" REFTABLE="coursework" REFFIELDS="id" COMMENT="links the coursework and submission tables"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="coursework_reminder" COMMENT="coursework reminder">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="11" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="11" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="coursework_id" TYPE="int" LENGTH="11" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="remindernumber" TYPE="int" LENGTH="4" NOTNULL="false" SEQUENCE="false" COMMENT="Two reminders get sent at the moment"/>
+        <FIELD NAME="extension" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="id" TYPE="primary" FIELDS="id" COMMENT="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="coursework_allocation_pairs" COMMENT="Holds teacher-student pairings to keep track of who has been allocated to mark what.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="assessorid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="manual" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If set to 1, this is an allocation expressly made by an admin, so we might want the auto-allocations to work around it."/>
+        <FIELD NAME="moderator" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Is this amoderator allocation?"/>
+        <FIELD NAME="timelocked" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="When someone starts to grade a piece of work, we want to lock their allocation so that automatic re-allocations will not remove it. This field holds a timestamp, which will prevent re-allocation if it's recent enough."/>
+        <FIELD NAME="stage_identifier" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="allocatableid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="allocatableuser" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the user"/>
+        <FIELD NAME="allocatablegroup" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the group"/>
+        <FIELD NAME="allocatabletype" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="user" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="coursework_mod_set_rules" COMMENT="Moderation sets for each coursework need to include certain groups e.g. all students with grades less than 40%. This allows us to keep track of which rules have been added. The order matters as some will be top-up rules.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the coursework record this realtes to"/>
+        <FIELD NAME="rulename" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="This forms part of the name of the class which controls this rule"/>
+        <FIELD NAME="ruleorder" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Some rules need to come after others. This allows them to be given weights so that they will be processed in this sequence."/>
+        <FIELD NAME="upperlimit" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="We include all students below this limit"/>
+        <FIELD NAME="lowerlimit" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="We include all students above this boundary"/>
+        <FIELD NAME="minimum" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Minimum number of items to include. Used if we have a range and need to make sure we have a certain number."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="coursework_fk" TYPE="foreign" FIELDS="courseworkid" REFTABLE="coursework" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="coursework_allocation_config" COMMENT="Holds settings that determine (for some allocation strategies) limits to the allocations each teacher will be allocated e.g. 10 percent.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID from coursework table"/>
+        <FIELD NAME="allocationstrategy" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Name of the allocation strategy class when we remove the 'coursework_allocation_strategy_' prefix"/>
+        <FIELD NAME="assessorid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The teacher who will be limited by this setting"/>
+        <FIELD NAME="value" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Varies according to the strategy"/>
+        <FIELD NAME="purpose" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="Currently either for assessor or moderator allocation, but maybe more in future"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="courseworkid_fk" TYPE="foreign" FIELDS="courseworkid" REFTABLE="coursework" REFFIELDS="id"/>
+        <KEY NAME="assessorid_fk" TYPE="foreign" FIELDS="assessorid" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="coursework_mod_set_members" COMMENT="Tracks the students who are in the moderation set for a particular coursework">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="allocatableid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="allocatableuser" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the user"/>
+        <FIELD NAME="allocatablegroup" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the group"/>
+        <FIELD NAME="allocatabletype" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="user" SEQUENCE="false"/>
+        <FIELD NAME="stage_identifier" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="coursework_extensions" COMMENT="Stores new extensions that can be given to a student or group beyond the standard deadline.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="allocatableid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="allocatableuser" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the user"/>
+        <FIELD NAME="allocatablegroup" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the group"/>
+        <FIELD NAME="allocatabletype" TYPE="char" LENGTH="25" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="extended_deadline" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="pre_defined_reason" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="createdbyid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="extra_information_text" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="extra_information_format" TYPE="int" LENGTH="2" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="coursework_sample_set_rules" COMMENT="Automatic sample sets for each coursework stage. This allows us to keep track of which rules have been added. The order matters as some will be top-up rules.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
+        <FIELD NAME="sample_set_plugin_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
+        <FIELD NAME="ruleorder" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
+        <FIELD NAME="upperlimit" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" />
+        <FIELD NAME="lowerlimit" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" />
+        <FIELD NAME="ruletype" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="0" SEQUENCE="false" />
+        <FIELD NAME="stage_identifier" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" />
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="coursework_sample_set_plugin" COMMENT="Sample set plugins">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="rulename" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" />
+        <FIELD NAME="pluginorder" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" />
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="coursework_sample_set_mbrs" COMMENT="Tracks the students who are in the sample set for a particular coursework">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="allocatableid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="allocatableuser" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the user"/>
+        <FIELD NAME="allocatablegroup" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the group"/>
+        <FIELD NAME="allocatabletype" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="stage_identifier" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="selectiontype" TYPE="char" LENGTH="255" NOTNULL="false" DEFAULT="manual" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="coursework_person_deadlines" COMMENT="Stores personal deadlines that can be given to a student or group.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="allocatableid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="allocatableuser" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the user"/>
+        <FIELD NAME="allocatablegroup" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Id of the group"/>
+        <FIELD NAME="allocatabletype" TYPE="char" LENGTH="25" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="personal_deadline" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="createdbyid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true"  SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="lastmodifiedbyid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+
+  </TABLES>
+</XMLDB>
