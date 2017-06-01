@@ -54,7 +54,7 @@ class mailer {
         $html_body = get_string('save_email_html', 'coursework', $email_data);
 
         // New approach.
-        $eventdata = new \stdClass();
+        $eventdata = new \core\message\message();
         $eventdata->component = 'mod_coursework';
         $eventdata->name = 'submission_receipt';
         $eventdata->userfrom = $user->get_raw_record();
@@ -67,6 +67,7 @@ class mailer {
         $eventdata->notification = 1;
         $eventdata->contexturl = $CFG->wwwroot.'/mod/coursework/view.php?id='.$submission->get_coursework()->get_coursemodule_id();
         $eventdata->contexturlname = 'View your submission here';
+        $eventdata->courseid = $this->coursework->id;
 
         message_send($eventdata);
 
@@ -84,7 +85,7 @@ class mailer {
         foreach ($recipients as $recipient) {
 
             // New approach.
-            $eventdata = new \stdClass();
+            $eventdata =  new \core\message\message();
             $eventdata->component = 'mod_coursework';
             $eventdata->name = 'submission_receipt';
             $eventdata->userfrom = \core_user::get_noreply_user();
@@ -100,6 +101,7 @@ class mailer {
             $eventdata->contexturl =
                 $CFG->wwwroot . '/mod/coursework/view.php?id=' . $coursework->get_coursemodule_id();
             $eventdata->contexturlname = 'View the submission here';
+            $eventdata->courseid = $this->coursework->id;
 
             message_send($eventdata);
         }
@@ -130,7 +132,7 @@ class mailer {
             $text_body = get_string('feedback_released_email_text', 'coursework', $email_data);
             $html_body = get_string('feedback_released_email_html', 'coursework', $email_data);
 
-            $eventdata = new \stdClass();
+            $eventdata =  new \core\message\message();
             $eventdata->component = 'mod_coursework';
             $eventdata->name = 'feedback_released';
             $eventdata->userfrom = $student->get_raw_record();
@@ -143,6 +145,7 @@ class mailer {
             $eventdata->notification = 1;
             $eventdata->contexturl = $CFG->wwwroot . '/mod/coursework/view.php?id=' . $submission->get_coursework()->get_coursemodule_id();
             $eventdata->contexturlname = 'View your submission here';
+            $eventdata->courseid = $this->coursework->id;
 
             message_send($eventdata);
         }
@@ -182,7 +185,7 @@ class mailer {
         $text_body = get_string('cron_email_text', 'mod_coursework', $email_data);
         $html_body = get_string('cron_email_html', 'mod_coursework', $email_data);
 
-        $eventdata = new \stdClass();
+        $eventdata =  new \core\message\message();
         $eventdata->component = 'mod_coursework';
         $eventdata->name = 'student_deadline_reminder';
         $eventdata->userfrom = $student->get_raw_record();
@@ -195,6 +198,7 @@ class mailer {
         $eventdata->notification = 1;
         $eventdata->contexturl = $CFG->wwwroot . '/mod/coursework/view.php?id=' . $this->coursework->get_coursemodule_id();
         $eventdata->contexturlname = 'View the coursework here';
+        $eventdata->courseid = $this->coursework->id;
 
         return message_send($eventdata);
     }
@@ -216,7 +220,7 @@ class mailer {
         $text_body = get_string('submission_notification_text', 'coursework', $email_data);
         $html_body = get_string('submission_notification_html', 'coursework', $email_data);
 
-        $eventdata = new \stdClass();
+        $eventdata =  new \core\message\message();
         $eventdata->component = 'mod_coursework';
         $eventdata->name = 'coursework_submission';
         $eventdata->userfrom = $userstonotify->get_raw_record();
@@ -229,6 +233,7 @@ class mailer {
         $eventdata->notification = 1;
         $eventdata->contexturl = $CFG->wwwroot . '/mod/coursework/view.php?id=' . $this->coursework->id();
         $eventdata->contexturlname = 'coursework submission';
+        $eventdata->courseid = $this->coursework->id;
 
         message_send($eventdata);
 

@@ -17,7 +17,7 @@ Feature: Automatic agreement for simple grades
         And the coursework deadline has passed
 
     Scenario: Only one grade in the submissions
-        And the coursework "automaticagreementstrategy" setting is "null" in the database
+        And the coursework "automaticagreementstrategy" setting is "none" in the database
         Given I am logged in as a teacher
         And I visit the coursework page
         And I click on the new feedback button for assessor 1

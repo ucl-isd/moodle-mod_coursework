@@ -195,22 +195,22 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                         //find out how many rule spans exist
                         var gradeSpans = $('div.'+linkid[0] + '_' + linkid[1] +'_grade_rules');
 
-                        if (gradeSpans.size() < 5) {
+                        if (gradeSpans.length < 5) {
                             //put a new line in
 
                             //rename the select box ids
                             spanClone.find('select').each(function (n, ele) {
                                 var elename = $(ele).attr('id').split('_');
-                                $(ele).attr('id', elename[0] + '_' + elename[1] + '_' + elename[2] + '_' + gradeSpans.size());
+                                $(ele).attr('id', elename[0] + '_' + elename[1] + '_' + elename[2] + '_' + gradeSpans.length);
                             });
 
                             //rename the checkbox
                             spanClone.find('input').each(function (n, ele) {
                                 var elename = $(ele).attr('id').split('_');
-                                $(ele).attr('id', elename[0] + '_' + elename[1] + '_' + elename[2] + '_' + gradeSpans.size());
+                                $(ele).attr('id', elename[0] + '_' + elename[1] + '_' + elename[2] + '_' + gradeSpans.length);
                             });
 
-                            spanClone.attr('id', linkid[0] + '_' + linkid[1] + '_grade_rules_' + gradeSpans.size());
+                            spanClone.attr('id', linkid[0] + '_' + linkid[1] + '_grade_rules_' + gradeSpans.length);
 
                             //add the cloned span
                             //spanClone.appendTo($('#'+linkid[0] + '_' + linkid[1]+'_grade_rules_0').parent());
@@ -218,7 +218,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                             //make sure the from and to selects are set to the correct type
 
-                            change_options($('#'+linkid[0] + '_' + linkid[1] + '_sampletype_' + gradeSpans.size()));
+                            change_options($('#'+linkid[0] + '_' + linkid[1] + '_sampletype_' + gradeSpans.length));
 
                         }
                     }
@@ -241,7 +241,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                         //find out how many rule spans exist
                         var gradeSpans = $(spanclass);
-                        if (gradeSpans.size() > 1) {
+                        if (gradeSpans.length > 1) {
                             $(spanclass).last().remove();
                         }
                     }

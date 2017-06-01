@@ -19,7 +19,7 @@ class percentage_distance_test extends \advanced_testcase {
     public function test_nothing_happens_when_there_is_already_an_agreed_feedback() {
         global $DB;
 
-        $user = $this->getMock('\mod_coursework\models\user');
+        $user = $this->createMock('\mod_coursework\models\user');
         $user->expects($this->any())->method('has_agreed_feedback')
             ->with($this->anything())
             ->will($this->returnValue(true));
@@ -35,7 +35,7 @@ class percentage_distance_test extends \advanced_testcase {
     public function test_nothing_happens_when_the_initial_feedbacks_are_not_there() {
         global $DB;
 
-        $user = $this->getMock('\mod_coursework\models\user');
+        $user = $this->createMock('\mod_coursework\models\user');
         $user->expects($this->any())->method('has_agreed_feedback')
             ->with($this->get_coursework())
             ->will($this->returnValue(false));
@@ -54,7 +54,7 @@ class percentage_distance_test extends \advanced_testcase {
     public function test_that_a_new_record_is_created_when_all_initial_feedbacks_are_close_enough() {
         global $DB;
 
-        $user = $this->getMock('\mod_coursework\models\user');
+        $user = $this->createMock('\mod_coursework\models\user');
         $user->expects($this->any())->method('has_agreed_feedback')
             ->with($this->get_coursework())
             ->will($this->returnValue(false));
@@ -63,17 +63,17 @@ class percentage_distance_test extends \advanced_testcase {
             ->with($this->get_coursework())
             ->will($this->returnValue(true));
 
-        $feedback_one = $this->getMock('\mod_coursework\models\feedback');
+        $feedback_one = $this->createMock('\mod_coursework\models\feedback');
         $feedback_one->expects($this->any())->method('get_grade')->will($this->returnValue(50));
 
-        $feedback_two = $this->getMock('\mod_coursework\models\feedback');
+        $feedback_two = $this->createMock('\mod_coursework\models\feedback');
         $feedback_two->expects($this->any())->method('get_grade')->will($this->returnValue(55));
 
         $user->expects($this->any())->method('get_initial_feedbacks')
             ->with($this->get_coursework())
             ->will($this->returnValue(array($feedback_one, $feedback_two)));
 
-        $submission = $this->getMock('\mod_coursework\models\submission');
+        $submission = $this->createMock('\mod_coursework\models\submission');
         $submission->expects($this->any())->method('id')->will($this->returnValue(234234));
 
         $user->expects($this->any())->method('get_submission')->will($this->returnValue($submission));
@@ -87,7 +87,7 @@ class percentage_distance_test extends \advanced_testcase {
     public function test_that_a_new_record_is_not_created_when_all_initial_feedbacks_are_far_apart() {
         global $DB;
 
-        $user = $this->getMock('\mod_coursework\models\user');
+        $user = $this->createMock('\mod_coursework\models\user');
         $user->expects($this->any())->method('has_agreed_feedback')
             ->with($this->get_coursework())
             ->will($this->returnValue(false));
@@ -96,10 +96,10 @@ class percentage_distance_test extends \advanced_testcase {
             ->with($this->get_coursework())
             ->will($this->returnValue(true));
 
-        $feedback_one = $this->getMock('\mod_coursework\models\feedback');
+        $feedback_one = $this->createMock('\mod_coursework\models\feedback');
         $feedback_one->expects($this->any())->method('get_grade')->will($this->returnValue(50));
 
-        $feedback_two = $this->getMock('\mod_coursework\models\feedback');
+        $feedback_two = $this->createMock('\mod_coursework\models\feedback');
         $feedback_two->expects($this->any())->method('get_grade')->will($this->returnValue(55));
 
         $user->expects($this->any())->method('get_initial_feedbacks')
@@ -107,7 +107,7 @@ class percentage_distance_test extends \advanced_testcase {
             ->will($this->returnValue(array($feedback_one,
                                             $feedback_two)));
 
-        $submission = $this->getMock('\mod_coursework\models\submission');
+        $submission = $this->createMock('\mod_coursework\models\submission');
         $submission->expects($this->any())->method('id')->will($this->returnValue(234234));
 
         $user->expects($this->any())->method('get_submission')->will($this->returnValue($submission));

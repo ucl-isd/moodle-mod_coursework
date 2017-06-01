@@ -106,9 +106,10 @@ M.mod_coursework = {
         $($newname).css('display', 'block');
 
         // when page was refreshed, display current selection
-        $(window).unload(function() {
+
+        $(window).on('unload',function()    {
             $menuassessorallocationstrategy.val($selected);
-        });
+        })
 
         // Show the form elements that allow us to configure the allocatons
          $menuassessorallocationstrategy.on('change', function (e) {

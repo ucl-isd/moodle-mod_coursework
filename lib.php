@@ -906,7 +906,7 @@ function coursework_send_deadline_changed_emails($eventdata) {
         // TODO add HTML stuff?
         $messagedata->fullmessagehtml = '';
         $messagedata->smallmessage = '';
-
+        $messagedata->courseid = $coursework->id();
         $messagedata->notification = 1; // This is only set to 0 for personal messages between users.
         message_send($messagedata);
     }

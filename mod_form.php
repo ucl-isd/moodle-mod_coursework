@@ -1252,7 +1252,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     private function add_automatic_agreement_enabled() {
-        $options = array('null' => 'none',
+        $options = array('none' => 'none',
                          'percentage_distance' => 'percentage distance');
         $this->form()->addelement('select',
                                   'automaticagreementstrategy',

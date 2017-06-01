@@ -2297,6 +2297,19 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2017040500, 'coursework');
     }
 
+    if ($oldversion < 2017052301) {
+
+        // update default value of automaticagreementstrategy field from NULL to none
+
+        $allcourseworks = $DB->get_records('coursework', array('automaticagreementstrategy' => 'NULL')); // get all courseworks with automaticagreementstrategy set to NULL
+        foreach ($allcourseworks as $coursework) {
+            $coursework->automaticagreementstrategy = 'none';
+            $DB->update_record('coursework', $coursework);
+        }
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2017052301, 'coursework');
+    }
+
 
     // Always needs to return true.
     return true;

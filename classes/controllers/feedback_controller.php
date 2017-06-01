@@ -79,7 +79,12 @@ class feedback_controller extends controller_base {
 
         $this->check_stage_permissions($this->params['stage_identifier']);
 
-        $urlparams = compact('submissionid', 'assessorid');
+        $urlparams = array();
+        $urlparams['submissionid'] = $teacherfeedback->submissionid;
+        $urlparams['assessorid'] = $teacherfeedback->assessorid;
+        $urlparams['isfinalgrade'] = $teacherfeedback->isfinalgrade;
+        $urlparams['ismoderation'] = $teacherfeedback->ismoderation;
+        $urlparams['stage_identifier'] = $teacherfeedback->stage_identifier;
         $PAGE->set_url('/mod/coursework/actions/feedbacks/new.php', $urlparams);
 
         $renderer = $this->get_page_renderer();

@@ -44,6 +44,7 @@ class general_feedback_form extends moodleform {
         $this->_form->addElement('hidden', 'cmid');
         $this->_form->setType('cmid', PARAM_INT);
         $this->_form->addElement('hidden', 'ajax', $this->_customdata->ajax);
+        $this->_form->setType('ajax', PARAM_RAW);
 
         if (!$this->_customdata->ajax) {
             // Add action buttons.

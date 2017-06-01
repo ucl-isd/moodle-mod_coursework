@@ -45,6 +45,8 @@ if (!has_capability('mod/coursework:addinitialgrade', $PAGE->context)) {
 $url = '/mod/coursework/actions/general_feedback.php';
 $link = new moodle_url($url, array('cmid' => $course_module_id, 'id' => $id));
 $PAGE->set_url($link);
+$title = get_string('generalfeedback', 'mod_coursework');
+$PAGE->set_title($title);
 
 $custom_data = new stdClass();
 $custom_data->ajax = $ajax;

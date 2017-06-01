@@ -15,7 +15,8 @@ use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 use mod_coursework\stages\base as stage_base;
 
-require_once 'PHPUnit/Framework/Assert/Functions.php';
+require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
+require_once(__DIR__ . '/../../../../vendor/phpunit/phpunit/src/Framework/Assert/Functions.php');
 
 $files = glob(dirname(__FILE__) . '/steps/*.php');
 foreach($files as $filename) {

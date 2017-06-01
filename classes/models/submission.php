@@ -1161,6 +1161,9 @@ class submission extends table_base implements \renderable {
 
         $file_path = $file->get_filepath();
         $file_extension = $this->extract_extension_from_file_name($file->get_filename());
+        if (empty($file_extension)) {
+            $file_extension = $this->extract_extension_from_file_name($file->get_source());
+        }
         $file_name = $this->coursework->get_username_hash($userid) . '_' . $counter . '.' . $file_extension;
         if ($file_name !== $file->get_filename()) {
             $file->rename($file_path, $file_name);

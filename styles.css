@@ -78,10 +78,10 @@ Submissions tables
 .paging{
     text-align:center;
 }
-.urlselect div{
+#page-mod-coursework-view .urlselect div{
     float:left;
 }
-.urlselect div label{
+#page-mod-coursework-view .urlselect div label{
     display:inline;
     font-weight: bold;
     padding-right:.5em;

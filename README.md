@@ -41,6 +41,13 @@ Current Coursework plugin includes following features as well as features added 
 
 Releases 
 =================
+**June 2017**
+
+* compatibility with Moodle 3.2
+* general bug fixes
+* PHP7 compatibility
+* new coursework icon
+
 **May 2017**
 
 * compatibility with Moodle 3.1

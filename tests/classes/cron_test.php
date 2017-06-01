@@ -130,74 +130,7 @@ class cron_test extends advanced_testcase {
         $this->assertNotEmpty($submission->reload()->firstpublished);
     }
 
-    public function test_no_admin_emails_when_submissions_are_done() {
-        unset_config('noemailever');
-        $sink = $this->redirectEmails();
 
-        // We have one student with a submission already, so there should be no emails.
-        $this->create_a_course();
-        $this->create_a_coursework();
-        $this->create_a_student();
-        $this->create_a_teacher();
-        $this->create_a_submission_for_the_student();
-
-        \mod_coursework\cron::run();
-
-        $messages = $sink->get_messages();
-        $this->assertEquals(0, count($messages));
-    }
-
-    public function test_we_get_admin_emails_when_submissions_are_missing() {
-        unset_config('noemailever');
-        $sink = $this->redirectEmails();
-
-        // We have one student with a submission already, so there should be no emails.
-        $this->create_a_course();
-        $coursework = $this->create_a_coursework();
-        $coursework->update_attribute('deadline', strtotime('+1 day'));
-        $this->create_a_student();
-        $this->create_a_teacher();
-
-        \mod_coursework\cron::run();
-
-        $messages = $sink->get_messages();
-        $this->assertEquals(1, count($messages));
-    }
-
-    public function test_we_do_not_get_admin_emails_too_early() {
-        unset_config('noemailever');
-        $sink = $this->redirectEmails();
-
-        // We have one student with a submission already, so there should be no emails.
-        $this->create_a_course();
-        $coursework = $this->create_a_coursework();
-        $coursework->update_attribute('deadline', strtotime('+4 weeks'));
-        $this->create_a_student();
-        $this->create_a_teacher();
-
-        \mod_coursework\cron::run();
-
-        $messages = $sink->get_messages();
-        $this->assertEquals(0, count($messages));
-    }
-
-    public function test_we_do_not_get_admin_emails_twice_in_succession() {
-        unset_config('noemailever');
-        $sink = $this->redirectEmails();
-
-        // We have one student with a submission already, so there should be no emails.
-        $this->create_a_course();
-        $coursework = $this->create_a_coursework();
-        $coursework->update_attribute('deadline', strtotime('+1 day'));
-        $this->create_a_student();
-        $this->create_a_teacher();
-
-        \mod_coursework\cron::run();
-        \mod_coursework\cron::run();
-
-        $messages = $sink->get_messages();
-        $this->assertEquals(1, count($messages));
-    }
 
     /**
      * Was throwing an error when the allocatable could not be found.
