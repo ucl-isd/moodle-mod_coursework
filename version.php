@@ -29,5 +29,5 @@ $plugin->version  = 2017052301;  // If version == 0 then module will not be inst
 $plugin->requires = 2010031900;  // Requires this Moodle version
 $plugin->cron     = 300;        // Period for cron to check this module (secs).
 
-$plugin->release   = "3.0";
+$plugin->release   = "3.2";
 $plugin->maturity  = MATURITY_STABLE;
