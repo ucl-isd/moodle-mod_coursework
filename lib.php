@@ -866,7 +866,7 @@ function coursework_send_deadline_changed_emails($eventdata) {
             continue;
         }
 
-        $messagedata = new stdClass();
+        $messagedata = new \core\message\message();
         $messagedata->component = 'mod_coursework';
         $messagedata->name = 'deadlinechanged';
         $messagedata->userfrom = is_object($eventdata->other['userfrom']) ? $eventdata->other['userfrom'] : (int)$eventdata->other['userfrom'];
