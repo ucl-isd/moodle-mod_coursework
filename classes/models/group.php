@@ -60,11 +60,14 @@ class group extends table_base implements allocatable, moderatable {
     /**
      * @return user[]
      */
-    public function get_members() {
+    public function get_members($context) {
         $members = groups_get_members($this->id());
         $member_objects = array();
         foreach ($members as $member) {
-            $member_objects[] = user::find($member);
+            // check is member has capability to submit in this coursework (to get rid of assessors if they are placed in the group)
+            if (has_capability('mod/coursework:submit', $context, $member)) {
+                $member_objects[] = user::find($member);
+            }
         }
         return $member_objects;
     }

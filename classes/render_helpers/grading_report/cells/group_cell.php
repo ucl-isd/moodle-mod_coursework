@@ -35,7 +35,7 @@ class group_cell extends cell_base implements allocatable_cell {
             $content .= '<option class="expand_members" selected="selected">'.get_string('viewmembers','coursework').'</option>';
         }
 
-        foreach ($group->get_members() as $group_member) {
+        foreach ($group->get_members($this->coursework->get_context()) as $group_member) {
             $content .= $this->add_group_member_name($group_member, $row_object);
         }
         $content .= '</select>';

@@ -1075,9 +1075,9 @@ function coursework_is_ulcc_digest_coursework_plugin_installed() {
     global  $DB;
 
     $pluginexists   =   false;
-    $disgesttableexists     =   $DB->get_records_sql("SHOW TABLES LIKE '%block_ulcc_digest_plgs%'");
+    $disgestblockexists     =   $DB->record_exists_sql("SELECT id FROM {block} WHERE name = 'ulcc_digest' AND visible = 1");
 
-    if (!empty($disgesttableexists)) {
+    if (!empty($disgestblockexists)) {
          $pluginexists  =   ($DB->get_records('block_ulcc_digest_plgs',array('module'=>'coursework','status'=>1)))    ?   true    :  false;
     }
 

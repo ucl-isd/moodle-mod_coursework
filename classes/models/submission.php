@@ -992,7 +992,7 @@ class submission extends table_base implements \renderable {
              * @var group $group
              */
             $group = $this->get_allocatable();
-            $allocatables = $group->get_members();
+            $allocatables = $group->get_members($this->coursework->get_context());
         } else if (!$this->get_coursework()->is_configured_to_have_group_submissions() && $this->allocatabletype == 'user') {
             $allocatables = array($this->get_allocatable());
         } // If neither, the settings have been changed when they shouldn't have been.

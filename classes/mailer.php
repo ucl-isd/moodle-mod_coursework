@@ -67,7 +67,7 @@ class mailer {
         $eventdata->notification = 1;
         $eventdata->contexturl = $CFG->wwwroot.'/mod/coursework/view.php?id='.$submission->get_coursework()->get_coursemodule_id();
         $eventdata->contexturlname = 'View your submission here';
-        $eventdata->courseid = $this->coursework->id;
+        $eventdata->courseid = $this->coursework->course;
 
         message_send($eventdata);
 
@@ -101,7 +101,7 @@ class mailer {
             $eventdata->contexturl =
                 $CFG->wwwroot . '/mod/coursework/view.php?id=' . $coursework->get_coursemodule_id();
             $eventdata->contexturlname = 'View the submission here';
-            $eventdata->courseid = $this->coursework->id;
+            $eventdata->courseid = $this->coursework->course;
 
             message_send($eventdata);
         }
@@ -145,7 +145,7 @@ class mailer {
             $eventdata->notification = 1;
             $eventdata->contexturl = $CFG->wwwroot . '/mod/coursework/view.php?id=' . $submission->get_coursework()->get_coursemodule_id();
             $eventdata->contexturlname = 'View your submission here';
-            $eventdata->courseid = $this->coursework->id;
+            $eventdata->courseid = $this->coursework->course;
 
             message_send($eventdata);
         }
@@ -198,7 +198,7 @@ class mailer {
         $eventdata->notification = 1;
         $eventdata->contexturl = $CFG->wwwroot . '/mod/coursework/view.php?id=' . $this->coursework->get_coursemodule_id();
         $eventdata->contexturlname = 'View the coursework here';
-        $eventdata->courseid = $this->coursework->id;
+        $eventdata->courseid = $this->coursework->course;
 
         return message_send($eventdata);
     }
@@ -233,7 +233,7 @@ class mailer {
         $eventdata->notification = 1;
         $eventdata->contexturl = $CFG->wwwroot . '/mod/coursework/view.php?id=' . $this->coursework->id();
         $eventdata->contexturlname = 'coursework submission';
-        $eventdata->courseid = $this->coursework->id;
+        $eventdata->courseid = $this->coursework->course;
 
         message_send($eventdata);
 
