@@ -41,6 +41,18 @@ Current Coursework plugin includes following features as well as features added 
 
 Releases 
 =================
+**August 2017**
+
+* compatibility with Moodle 3.3
+* compatibility with new core Course Overview - only for courseworks with the fixed deadlines using 'Initial marking deadline' and/or 'Agreed grade marking deadline'  (courseworks with individual deadlines or no deadlines will not be displayed in neither student or teacher views as they have relative marking deadlines)
+
+
+New features:
+
+* initial marking deadline (date that initial grading should be completed by)
+* agreed grade marking deadline (date agreed grading should be completed by)
+* deadline defaults in Coursework global settings 
+
 **June 2017**
 
 * compatibility with Moodle 3.2

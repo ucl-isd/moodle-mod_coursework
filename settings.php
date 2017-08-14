@@ -192,56 +192,53 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect('coursework_grade_editing', $grade_editing_name, $grade_editing_description, '0', $options));
 
 
-    if (coursework_is_ulcc_digest_coursework_plugin_installed()) {
-
-        //deadline defaults
-        $deadline_defaults_header = new admin_setting_heading('deadline_defaults_header', get_string('deadline_defaults', 'mod_coursework'), '');
-        $settings->add($deadline_defaults_header);
+    //deadline defaults
+    $deadline_defaults_header = new admin_setting_heading('deadline_defaults_header', get_string('deadline_defaults', 'mod_coursework'), '');
+    $settings->add($deadline_defaults_header);
 
 
-        //marking deadline
-        $options = array('0' => get_string('disabled', 'mod_coursework'));
-        $options['7'] = get_string('oneweekoption', 'mod_coursework');
-        $options['14'] = get_string('twoweeksoption', 'mod_coursework');
-        $options['21'] = get_string('threeweeksoption', 'mod_coursework');
-        $options['28'] = get_string('fourweeksoption', 'mod_coursework');
-        $options['35'] = get_string('fiveweeksoption', 'mod_coursework');
-        $options['42'] = get_string('sixweeksoption', 'mod_coursework');
-        $marking_deadline_name = get_string('marking_deadline_default', 'coursework');
-        $marking_deadline_description = get_string('marking_deadline_enabled_desc', 'coursework');
-        $settings->add(new admin_setting_configselect('coursework_marking_deadline', $marking_deadline_name, $marking_deadline_description, '0', $options));
+    //marking deadline
+    $options = array('0' => get_string('disabled', 'mod_coursework'));
+    $options['7'] = get_string('oneweekoption', 'mod_coursework');
+    $options['14'] = get_string('twoweeksoption', 'mod_coursework');
+    $options['21'] = get_string('threeweeksoption', 'mod_coursework');
+    $options['28'] = get_string('fourweeksoption', 'mod_coursework');
+    $options['35'] = get_string('fiveweeksoption', 'mod_coursework');
+    $options['42'] = get_string('sixweeksoption', 'mod_coursework');
+    $marking_deadline_name = get_string('marking_deadline_default', 'coursework');
+    $marking_deadline_description = get_string('marking_deadline_enabled_desc', 'coursework');
+    $settings->add(new admin_setting_configselect('coursework_marking_deadline', $marking_deadline_name, $marking_deadline_description, '0', $options));
 
-        //marking deadline
-        $options = array('0' => get_string('disabled', 'mod_coursework'));
-        $options['7'] = get_string('oneweekoption', 'mod_coursework');
-        $options['14'] = get_string('twoweeksoption', 'mod_coursework');
-        $options['21'] = get_string('threeweeksoption', 'mod_coursework');
-        $options['28'] = get_string('fourweeksoption', 'mod_coursework');
-        $options['35'] = get_string('fiveweeksoption', 'mod_coursework');
-        $options['42'] = get_string('sixweeksoption', 'mod_coursework');
+    //marking deadline
+    $options = array('0' => get_string('disabled', 'mod_coursework'));
+    $options['7'] = get_string('oneweekoption', 'mod_coursework');
+    $options['14'] = get_string('twoweeksoption', 'mod_coursework');
+    $options['21'] = get_string('threeweeksoption', 'mod_coursework');
+    $options['28'] = get_string('fourweeksoption', 'mod_coursework');
+    $options['35'] = get_string('fiveweeksoption', 'mod_coursework');
+    $options['42'] = get_string('sixweeksoption', 'mod_coursework');
 
-        $agreed_marking_deadline_name = get_string('agreed_marking_deadline_default', 'coursework');
-        $agreed_marking_deadline_description = get_string('agreed_marking_deadline_default_desc', 'coursework');
-        $settings->add(new admin_setting_configselect('coursework_agreed_marking_deadline', $agreed_marking_deadline_name, $agreed_marking_deadline_description, '0', $options));
+    $agreed_marking_deadline_name = get_string('agreed_marking_deadline_default', 'coursework');
+    $agreed_marking_deadline_description = get_string('agreed_marking_deadline_default_desc', 'coursework');
+    $settings->add(new admin_setting_configselect('coursework_agreed_marking_deadline', $agreed_marking_deadline_name, $agreed_marking_deadline_description, '0', $options));
 
 
-        //start date
-        $options = array('0' => get_string('disabled', 'mod_coursework'));
-        $options['1'] = get_string('today', 'mod_coursework');
+    //start date
+    $options = array('0' => get_string('disabled', 'mod_coursework'));
+    $options['1'] = get_string('today', 'mod_coursework');
 
-        $start_date_name = get_string('startdate', 'coursework');
-        $start_date_description = get_string('start_date_enabled_desc', 'coursework');
-        $settings->add(new admin_setting_configselect('coursework_start_date', $start_date_name, $start_date_description, '0', $options));
+    $start_date_name = get_string('startdate', 'coursework');
+    $start_date_description = get_string('start_date_enabled_desc', 'coursework');
+    $settings->add(new admin_setting_configselect('coursework_start_date', $start_date_name, $start_date_description, '0', $options));
 
-        //submission deadline
-        $options = array('0' => get_string('disabled', 'mod_coursework'));
-        $options['1'] = get_string('today', 'mod_coursework');
-        $options['7'] = get_string('sevendays', 'mod_coursework');
-        $options['14'] = get_string('fourteendays', 'mod_coursework');
-        $options['31'] = get_string('onemonth', 'mod_coursework');
+    //submission deadline
+    $options = array('0' => get_string('disabled', 'mod_coursework'));
+    $options['1'] = get_string('today', 'mod_coursework');
+    $options['7'] = get_string('sevendays', 'mod_coursework');
+    $options['14'] = get_string('fourteendays', 'mod_coursework');
+    $options['31'] = get_string('onemonth', 'mod_coursework');
 
-        $submission_deadline_name = get_string('submissiondeadline', 'coursework');
-        $submission_deadline_description = get_string('submission_deadline_enabled_desc', 'coursework');
-        $settings->add(new admin_setting_configselect('coursework_submission_deadline', $submission_deadline_name, $submission_deadline_description, '0', $options));
-    }
+    $submission_deadline_name = get_string('submissiondeadline', 'coursework');
+    $submission_deadline_description = get_string('submission_deadline_enabled_desc', 'coursework');
+    $settings->add(new admin_setting_configselect('coursework_submission_deadline', $submission_deadline_name, $submission_deadline_description, '0', $options));
 }

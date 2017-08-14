@@ -2539,4 +2539,39 @@ class coursework extends table_base {
         return $DB->record_exists('coursework_sample_set_mbrs', array('courseworkid' => $this->id));
     
     }
+
+    /**
+     * Check if the user in this coursework is a student (has capability to submit)
+     *
+     * @return bool
+     */
+    public function can_submit(){
+        if (has_capability('mod/coursework:submit', $this->get_context())) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if the user in this coursework is a marker (has any capability to grade)
+     *
+     * @return bool
+     */
+    public function can_grade(){
+        if (has_capability('mod/coursework:addinitialgrade', $this->get_context()) || has_capability('mod/coursework:addagreedgrade', $this->get_context())
+        || has_capability('mod/coursework:addallocatedagreedgrade', $this->get_context())) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function marking_deadline_enabled(){
+        return (bool)$this->markingdeadlineenabled ;
+    }
+
+
 }

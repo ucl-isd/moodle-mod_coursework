@@ -28,6 +28,8 @@ use mod_coursework\models\coursework;
 use mod_coursework\exceptions\access_denied;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
+use mod_coursework\models\user;
+use mod_coursework\models\outstanding_marking;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -189,27 +191,174 @@ function coursework_add_instance($formdata) {
     // Get all the other data e.g. coursemodule.
     $coursework = coursework::find($returnid);
 
+    //create event for coursework deadline [due]
     if ($coursework && $coursework->deadline) {
-        $event = new stdClass();
-        $event->name = $coursework->name;
-        $event->description = format_module_intro('coursework', $coursework,
-                                                  $coursemodule->id);
-        $event->courseid = $coursework->get_course_id();
-        $event->groupid = 0;
-        $event->userid = 0;
-        $event->modulename = 'coursework';
-        $event->instance = $returnid;
-        $event->eventtype = 'due';
-        $event->timestart = $coursework->deadline;
-        $event->timeduration = 0;
+        $event = coursework_event($coursework, format_module_intro('coursework', $coursework,
+            $coursemodule->id), $returnid, 'due', $coursework->deadline);
 
         calendar_event::create($event);
     }
 
+    //create event for coursework initialmarking deadline [initialgradingdue]
+    if ($coursework && $coursework->marking_deadline_enabled() && $coursework->initialmarkingdeadline) {
+        $event = coursework_event($coursework, format_module_intro('coursework', $coursework,
+            $coursemodule->id), $returnid, 'initialgradingdue', $coursework->initialmarkingdeadline);
+
+        calendar_event::create($event);
+    }
+
+    //create event for coursework agreedgrademarking deadline [agreedgradingdue]
+    if ($coursework && $coursework->marking_deadline_enabled() && $coursework->agreedgrademarkingdeadline && $coursework->has_multiple_markers()) {
+        $event = coursework_event($coursework, format_module_intro('coursework', $coursework,
+            $coursemodule->id), $returnid, 'agreedgradingdue', $coursework->agreedgrademarkingdeadline);
+        calendar_event::create($event);
+    }
 
     coursework_grade_item_update($coursework);
 
     return $returnid;
+}
+
+
+
+/**
+ * Is the event visible?
+ *
+ * This is used to determine global visibility of an event in all places throughout Moodle. For example,
+ * the ASSIGN_EVENT_TYPE_GRADINGDUE event will not be shown to students on their calendar, and
+ * ASSIGN_EVENT_TYPE_DUE events will not be shown to teachers.
+ *
+ * @param calendar_event $event
+ * @return bool Returns true if the event is visible to the current user, false otherwise.
+ */
+function mod_coursework_core_calendar_is_event_visible(calendar_event $event) {
+    global $DB, $USER;
+
+    $cm = get_fast_modinfo($event->courseid)->instances['coursework'][$event->instance];
+
+    $dbcoursework = $DB->get_record('coursework', array('id' => $cm->instance));
+    $coursework = coursework::find($dbcoursework);
+
+    $user = user::find($USER->id);
+    $student = $coursework->can_submit();
+    $marker = $coursework->is_assessor($user);
+
+    if (($event->eventtype == 'due' && $student) || (($event->eventtype == 'initialgradingdue' || $event->eventtype == 'agreedgradingdue') && $marker)) {
+        return true;
+    }
+
+    return false;
+}
+
+
+/**
+ * This function receives a calendar event and returns the action associated with it, or null if there is none.
+ *
+ * This is used by block_myoverview in order to display the event appropriately. If null is returned then the event
+ * is not displayed on the block.
+ *
+ *
+ * @param calendar_event $event
+ * @param \core_calendar\action_factory $factory
+ * @return \core_calendar\local\event\entities\action_interface|\core_calendar\local\event\value_objects\action|null
+ */
+function mod_coursework_core_calendar_provide_event_action(calendar_event $event,
+                                                      \core_calendar\action_factory $factory) {
+    global $DB, $USER;
+
+    $cm = get_fast_modinfo($event->courseid)->instances['coursework'][$event->instance];
+    $submission_url = new \moodle_url('/mod/coursework/view.php', array('id' => $cm->id));
+    $name = '';
+    $itemcount = 0;
+
+    $dbcoursework = $DB->get_record('coursework', array('id' => $cm->instance));
+    $coursework = coursework::find($dbcoursework);
+    $user = user::find($USER->id);
+
+    $student = $coursework->can_submit();
+    $marker = $coursework->is_assessor($user);
+
+    if ($marker){ // for markers
+
+        // check how many submissions to mark
+       $outstandingmarking =   new outstanding_marking();
+
+       if($event->eventtype == 'initialgradingdue') {
+           //initial grades
+           $togradeinitialcount = $outstandingmarking->get_to_grade_initial_count($dbcoursework, $user->id());
+           $name = ($coursework->has_multiple_markers())? get_string('initialgrade', 'coursework') : get_string('grade');
+           $itemcount = $togradeinitialcount ;
+
+       } else if($event->eventtype == 'agreedgradingdue') {
+           //agreed grades
+           $togradeagreedcount = $outstandingmarking->get_to_grade_agreed_count($dbcoursework, $user->id());
+           $name = get_string('agreedgrade', 'coursework');
+           $itemcount =  $togradeagreedcount;
+
+       }
+
+        $submission_url = new \moodle_url('/mod/coursework/view.php', array('id' => $cm->id));
+
+    } elseif ($student) { // for students
+
+        // if group cw check if student is in group, if not then don't display 'Add submission' link
+        if ($coursework->is_configured_to_have_group_submissions() && !$coursework->get_student_group($user)) {
+            // return null;
+            $submission_url = new \moodle_url('/mod/coursework/view.php', array('id' => $cm->id));
+            $itemcount = 1;
+
+        } else {
+
+            $submission = $coursework->get_user_submission($user);
+            $new_submission = $coursework->build_own_submission($user);
+            if (!$submission) {
+                $submission = $new_submission;
+            }
+            // check if user can still submit
+            $ability = new ability($user, $coursework);
+            if (!$submission || $ability->can('new', $submission)) {
+                $name = get_string('addsubmission', 'coursework');
+                $itemcount = 1;
+                $allocatableid = $submission->get_allocatable()->id();
+                $allocatabletype = $submission->get_allocatable()->type();
+
+                $submission_url = new \moodle_url('/mod/coursework/actions/submissions/new.php', array('allocatableid' => $allocatableid,
+                                                                                                          'allocatabletype' => $allocatabletype,
+                                                                                                          'courseworkid' => $coursework->id));
+
+            } else {
+                return null;
+            }
+        }
+    }
+
+    return $factory->create_instance($name,
+                                     $submission_url,
+                                     $itemcount,
+                            true);
+}
+
+/**
+ * Callback function that determines whether an action event should be showing its item count
+ * based on the event type and the item count.
+ *
+ * @param calendar_event $event The calendar event.
+ * @param int $itemcount The item count associated with the action event.
+ * @return bool
+ */
+function mod_coursework_core_calendar_event_action_shows_item_count(calendar_event $event, $itemcount = 0) {
+    global $DB;
+    // List of event types where the action event's item count should be shown.
+    $initialgradingdueeventtype = ['initialgradingdue'];
+    $agreedgradingdueeventtype = ['agreedgradingdue'];
+    $cm = get_fast_modinfo($event->courseid)->instances['coursework'][$event->instance];
+
+    $dbcoursework = $DB->get_record('coursework', array('id' => $cm->instance));
+    $coursework = coursework::find($dbcoursework);
+    $student = $coursework->can_submit();
+
+    // For mod_coursework we use 'initialgrading' and 'agreedgrading' event type; item count should be shown if there is one or more item count and user is not a student.
+    return (in_array($event->eventtype, $initialgradingdueeventtype) || in_array($event->eventtype, $agreedgradingdueeventtype)) && $itemcount > 0 && !$student;
 }
 
 /**
@@ -325,9 +474,91 @@ function coursework_update_instance($coursework) {
 
     }
 
-
+    // update event for calendar(cw name/deadline) if a coursework has a deadline
+    if ($coursework->deadline) {
+        coursework_update_events($coursework, 'due'); //cw deadline
+        if ($coursework->initialmarkingdeadline){
+            //update
+            coursework_update_events($coursework, 'initialgradingdue'); //cw initial grading deadine
+        } else {
+            //remove it
+            remove_event($coursework, 'initialgradingdue');
+        }
+        if ($coursework->agreedgrademarkingdeadline && $coursework->numberofmarkers > 1){
+            //update
+            coursework_update_events($coursework, 'agreedgradingdue'); //cw agreed grade deadine
+        } else {
+            //remove it
+            remove_event($coursework,'agreedgradingdue' );
+        }
+    } else {
+        // remove all deadline events for this coursework regardless the type
+        remove_event($coursework);
+    }
 
     return $DB->update_record('coursework', $coursework);
+}
+
+/**
+ * Update coursework deadline and name in the event table
+ *
+ * @param $coursework
+ */
+ function coursework_update_events($coursework, $eventtype){
+     global $DB;
+
+     $event = "";
+     $eventid = $DB->get_record('event', array('modulename'=>'coursework', 'instance'=>$coursework->id, 'eventtype'=>$eventtype));
+
+     if ($eventid){
+         $event = calendar_event::load($eventid->id);
+     }
+
+     // update/create event for coursework deadline [due]
+     if ($eventtype == 'due') {
+         $data = coursework_event($coursework, $coursework->intro, $coursework->id, $eventtype, $coursework->deadline);
+         if ($event) {
+             $event->update($data); //update if event exists
+         } else {
+             calendar_event::create($data); //create new event as it doesn't exist
+         }
+     }
+
+     // update/create event for coursework initialmarking deadline [initialgradingdue]
+     if ($eventtype == 'initialgradingdue'){
+         $data = coursework_event($coursework, $coursework->intro, $coursework->id,$eventtype, $coursework->initialmarkingdeadline);
+         if ($event) {
+             $event->update($data); //update if event exists
+         } else {
+             calendar_event::create($data); //create new event as it doesn't exist
+         }
+     }
+
+     // update/create event for coursework agreedgrademarking deadline [agreedgradingdue]
+     if ($eventtype == 'agreedgradingdue'){
+         $data = coursework_event($coursework, $coursework->intro, $coursework->id, $eventtype, $coursework->agreedgrademarkingdeadline);
+         if ($event) {
+             $event->update($data); //update if event exists
+         } else {
+             calendar_event::create($data); //create new event as it doesn't exist
+         }
+     }
+}
+
+function remove_event($coursework, $eventtype = false){
+     global $DB;
+
+     $params = array('modulename'=>'coursework', 'instance'=>$coursework->id);
+
+     if ($eventtype){
+         $params['eventtype'] = $eventtype;
+     }
+
+     $events = $DB->get_records('event', $params);
+     foreach($events as $eventid) {
+         $event = calendar_event::load($eventid->id);
+         $event->delete(); // delete events from mdl_event table
+     }
 }
 
 
@@ -1098,4 +1329,39 @@ function coursework_personal_deadline_passed($courseworkid){
 
    return $DB->record_exists_sql($sql, array('courseworkid' =>$courseworkid , 'now' => time()));
 
+}
+
+/**
+ * @param coursework $coursework
+ * @param $description
+ * @param $instance
+ * @param $eventtype
+ * @param $deadline
+ * @return stdClass
+ */
+function coursework_event($coursework, $description, $instance, $eventtype, $deadline){
+
+    $event = new stdClass();
+    $event->type = CALENDAR_EVENT_TYPE_ACTION;
+
+    $event->description = $description;
+    $event->courseid = $coursework->course;
+    $event->name = $coursework->name;
+    $event->groupid = 0;
+    $event->userid = 0;
+    $event->modulename = 'coursework';
+    $event->instance = $instance;
+    $event->eventtype = $eventtype;
+    $event->timestart = $deadline;
+    $event->timeduration = 0;
+    $event->timesort = $deadline;
+    $event->visible = instance_is_visible('coursework', $coursework);
+
+  /*  if ($eventtype == 'initialgradingdue'){
+        $event->name .= " (Initial stage)";
+    } else if ($eventtype == 'agreedgradingdue') {
+        $event->name .= " (Agreed Grade stage)";
+    }*/
+
+    return $event;
 }

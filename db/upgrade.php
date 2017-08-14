@@ -35,6 +35,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
 require_once($CFG->dirroot . '/mod/coursework/lib.php');
+use mod_coursework\models\coursework;
 
 /**
  * xmldb_eassessment_upgrade
@@ -2308,6 +2309,29 @@ function xmldb_coursework_upgrade($oldversion) {
         }
         // Coursework savepoint reached.
         upgrade_mod_savepoint(true, 2017052301, 'coursework');
+    }
+
+    if ($oldversion < 2017081102) {
+
+        // create events for initialmarkingdeadline and agreedgrademarkingdeadline
+        $allcourseworks = $DB->get_records('coursework');
+        foreach ($allcourseworks as $coursework) {
+
+            // coursework obejct
+            $coursework = coursework::find($coursework);
+
+            if($coursework->marking_deadline_enabled() && $coursework->initialmarkingdeadline){
+                //create initialgradingdue event
+                coursework_update_events($coursework, 'initialgradingdue');
+            }
+
+            if($coursework->marking_deadline_enabled() && $coursework->agreedgrademarkingdeadline){
+                //create agreedgradegradingdue event
+                coursework_update_events($coursework, 'agreedgradingdue');
+            }
+        }
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2017081102, 'coursework');
     }
 
 

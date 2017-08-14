@@ -70,14 +70,12 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->add_start_date_field();
         $this->add_submission_deadline_field();
         $this->add_personal_deadline_field();
-        
-        if (coursework_is_ulcc_digest_coursework_plugin_installed()) {
-            $this->add_marking_deadline_field();
-            $this->add_initial_marking_deadline_field();
-            $this->add_agreed_grade_marking_deadline_field();
-            $this->add_relative_initial_marking_deadline_field();
-            $this->add_relative_agreed_grade_marking_deadline_field();
-        }
+
+        $this->add_marking_deadline_field();
+        $this->add_initial_marking_deadline_field();
+        $this->add_agreed_grade_marking_deadline_field();
+        $this->add_relative_initial_marking_deadline_field();
+        $this->add_relative_agreed_grade_marking_deadline_field();
 
         $this->add_allow_early_finalisation_field();
         $this->add_allow_late_submissions_field();
