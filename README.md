@@ -44,6 +44,7 @@ Releases
 **July 2018**
 
 * general bug fixes
+* compatibility with Moodle 3.4
 
 **March 2018**
 

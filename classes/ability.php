@@ -920,7 +920,9 @@ class ability extends \mod_coursework\framework\ability {
             'mod_coursework\models\feedback',
             function (feedback $feedback) {
                 $is_creator = $feedback->assessorid == $this->get_user()->id;
-                return  $is_creator && ($feedback->get_submission()->editable_feedbacks_exist() || $feedback->get_submission()->editable_final_feedback_exist());
+                $stage = $feedback->get_stage();
+                return  $is_creator && ($feedback->get_submission()->editable_feedbacks_exist() || $feedback->get_submission()->editable_final_feedback_exist()
+                        && ((!$feedback->get_coursework()->has_multiple_markers() && $stage->is_initial_assesor_stage() ) || !$stage->is_initial_assesor_stage()));
             });
     }
 
