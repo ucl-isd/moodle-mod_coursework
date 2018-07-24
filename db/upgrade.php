@@ -2336,7 +2336,7 @@ function xmldb_coursework_upgrade($oldversion) {
 
 
 
-    if ($oldversion < 2017052304) {
+    if ($oldversion < 2017081103) {
 
         // Changing the default of field automaticagreementstrategy on table coursework
         $table = new xmldb_table('coursework');
@@ -2355,7 +2355,7 @@ function xmldb_coursework_upgrade($oldversion) {
         }
 
         // Coursework savepoint reached.
-        upgrade_mod_savepoint(true, 2017052304, 'coursework');
+        upgrade_mod_savepoint(true, 2017081103, 'coursework');
     }
 
 
@@ -2448,6 +2448,20 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2018021501, 'coursework');
 
     }
+
+    if ($oldversion < 2018042401){
+
+        $table = new xmldb_table('coursework_mod_agreements');
+        $upgradefield = new xmldb_field('lasteditedbyid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+        if ($dbman->field_exists($table, $upgradefield)) {
+
+            $dbman->rename_field($table, $upgradefield, 'lasteditedby', $continue = true, $feedback = true);
+        }
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2018042401, 'coursework');
+    }
+
 
 
     // Always needs to return true.
