@@ -948,28 +948,32 @@ abstract class base {
 
     }
 
-    public function get_assessor_from_moodle_course_group($allocatable){
+	public function get_assessor_from_moodle_course_group($allocatable){
 
-        // get allocatables group
-        if ($this->coursework->is_configured_to_have_group_submissions()){
-            $groupid = $allocatable->id;
-        } else {
-            $user = user::find($allocatable->id);
-            $group = $this->coursework->get_student_group($user);
-            $groupid = $group->id;
-        }
+		$assessor = '';
+		// get allocatables group
+		if ($this->coursework->is_configured_to_have_group_submissions()){
+			$groupid = $allocatable->id;
+		} else {
+			$user = user::find($allocatable->id);
+			$group = $this->coursework->get_student_group($user);
+			$groupid = ($group)? $group->id: 0;
+		}
 
-        // find 1st assessor in the group
-        $first_group_assessor = get_enrolled_users($this->coursework->get_context(), $this->assessor_capability(),
-                                                   $groupid, 'u.*', 'id ASC', 0, 1);
+		if($groupid) {
+			// find 1st assessor in the group
+			$first_group_assessor = get_enrolled_users($this->coursework->get_context(), $this->assessor_capability(),
+				$groupid, 'u.*', 'id ASC', 0, 1);
 
-        $assessor = array_column($first_group_assessor, 'id');
+			$assessor = array_column($first_group_assessor, 'id');
 
-        if ($assessor) {
-            $assessorid = $assessor[0];
-            $assessor = user::find($assessorid);
-        }
+			if ($assessor) {
+				$assessorid = $assessor[0];
+				$assessor = user::find($assessorid);
+			}
+		}
 
-        return $assessor;
-    }
+		return $assessor;
+	}
+
 }
