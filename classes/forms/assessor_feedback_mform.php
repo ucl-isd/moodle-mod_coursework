@@ -164,6 +164,7 @@ class assessor_feedback_mform extends moodleform {
         $feedback->feedbackcomment = $formdata->feedbackcomment['text'];
         $feedback->feedbackcommentformat = $formdata->feedbackcomment['format'];
 
+
         return $feedback;
     }
 

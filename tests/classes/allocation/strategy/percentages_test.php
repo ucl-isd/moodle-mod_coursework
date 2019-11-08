@@ -7,6 +7,7 @@ global $CFG;
  * Class mod_coursework_allocation_strategy_percentages_test
  * @property mixed other_teacher
  * @property mixed teacher
+ * @group mod_coursework
  */
 class mod_coursework_allocation_strategy_percentages_test extends advanced_testcase {
 

@@ -44,11 +44,32 @@ class mod_coursework_behat_coursework_page extends mod_coursework_behat_page_bas
     }
 
 
-    public function show_hide_non_allocated_students()  {
+    public function show_hide_non_allocated_students() {
         if ($this->getPage()->hasLink('Show submissions for other students')) {
             $this->getPage()->clickLink('Show submissions for other students');
         }
     }
 
+    public function get_coursework_name($courseworkName) {
+        $coursework_heading = $this->getPage()->find('css', 'h2');
+        $coursework_heading_present = strpos($coursework_heading->getText(), $courseworkName);
 
+        return $coursework_heading_present !== false;
+    }
+
+    public function get_coursework_student_name($studentName) {
+        $table_users = $this->getPage()->findAll('css', 'table.submissions');
+
+        if (!empty($table_users)) {
+            foreach ($table_users as $table_user) {
+                $coursework_student_name = strpos($table_user->getText(), $studentName);
+
+                if ($coursework_student_name !== false) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

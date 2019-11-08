@@ -17,18 +17,15 @@ Feature: Automatic percentage assessor allocations
         And I am logged in as a manager
         And there are no allocations in the db
 
+    @javascript
     Scenario: Automatic percentage allocations should allocate to the right teacher
         Given there is another teacher
         And there are no allocations in the db
         When I visit the allocations page
         And I set the allocation strategy to 100 percent for the other teacher
-        And I save everything
+        And I press "Apply"
         When I visit the allocations page
         Then I should see the student allocated to the other teacher for the first assessor
-        And I log out
-        And I log in as the other teacher
-        And I visit the coursework page
-        Then I should see the student's name on the page
 
     Scenario: percentage allocations should not allocate to the wrong teacher
         Given there is another teacher

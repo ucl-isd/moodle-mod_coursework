@@ -48,6 +48,14 @@ $observers = array(
         'eventname'   => '\core\event\course_module_created',
         'callback'    => 'mod_coursework_observer::process_allocation_after_creation',
     ),
+    array(
+        'eventname' => '\core\event\group_member_added',
+        'callback' => 'mod_coursework_observer::process_allocations_when_group_member_added',
+    ),
+    array(
+        'eventname' => '\core\event\group_member_removed',
+        'callback' => 'mod_coursework_observer::process_allocations_when_group_member_removed',
+    ),
 );
 
 

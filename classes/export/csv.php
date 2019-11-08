@@ -106,7 +106,7 @@ class csv {
      * @return array
      */
     public function add_cells_to_array($submission,$student,$csv_cells){
-
+        $row = array();
         foreach($csv_cells as $csv_cell) {
             if(substr($csv_cell,0,8) == 'assessor'){
                 $stage_dentifier = 'assessor_'.(substr($csv_cell,-1));
@@ -115,9 +115,19 @@ class csv {
             $class = "mod_coursework\\export\\csv\\cells\\".$csv_cell."_cell";
             $cell = new $class($this->coursework);
             if(substr($csv_cell,0,8) == 'assessor'){
-                $row[] = $cell->get_cell($submission, $student, $stage_dentifier);
+                $cell = $cell->get_cell($submission, $student, $stage_dentifier);
+                if(is_array($cell)){
+                    $row =  array_merge($row,$cell);
+                } else {
+                    $row[] = $cell;
+                }
             } else if ($csv_cell != 'stages' && $csv_cell != 'moderationagreement' && $csv_cell != 'otherassessors'){
-                $row[] = $cell->get_cell($submission, $student, false);
+                $cell = $cell->get_cell($submission, $student, false);
+               if(is_array($cell)){
+                   $row =  array_merge($row,$cell);
+               } else{
+                   $row[] = $cell;
+               }
             } else {
 
                 $stages = $cell->get_cell($submission, $student, false);
@@ -134,7 +144,7 @@ class csv {
      * @param $csv_headers
      */
         public function add_headers($csv_headers){
-
+            $headers = array();
             foreach($csv_headers as $header) {
                 if(substr($header,0,8) == 'assessor'){
                     $stage = (substr($header,-1));
@@ -143,9 +153,20 @@ class csv {
                 $class = "mod_coursework\\export\\csv\\cells\\".$header."_cell";
                 $cell = new $class($this->coursework);
                 if(substr($header,0,8) == 'assessor'){
-                    $headers[$header.$stage] = $cell->get_header($stage);
+                    $head =  $cell->get_header($stage);
+                    if(is_array($head)){
+                        $headers =  array_merge($headers,$head);
+                    } else{
+                        $headers[$header.$stage] = $head;
+                    }
+
                 } else if ($header != 'stages' && $header != 'moderationagreement' && $header != 'otherassessors' ) {
-                    $headers[$header] = $cell->get_header(false);
+                     $head =  $cell->get_header(false);
+                    if(is_array($head)){
+                        $headers =  array_merge($headers,$head);
+                    } else{
+                        $headers[$header] = $head;
+                    }
                 } else {
                     $array_headers = $cell->get_header(false);
                     $headers =  array_merge($headers,$array_headers);

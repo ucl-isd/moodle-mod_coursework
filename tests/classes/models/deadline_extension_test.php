@@ -4,7 +4,7 @@ use mod_coursework\models\deadline_extension;
 /**
  * Class mod_coursework_models_deadline_extension_test is responsible for testin
  * the deadline_extension model class.
- *
+ * @group mod_coursework
  */
 class mod_coursework_models_deadline_extension_test extends advanced_testcase {
 

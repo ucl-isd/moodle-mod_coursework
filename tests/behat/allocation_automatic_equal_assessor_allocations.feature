@@ -14,6 +14,7 @@ Feature: Automatic equal assessor allocations
         And the coursework "numberofmarkers" setting is "1" in the database
         And there is a student
         And there is a teacher
+        And teachers hava a capability to administer grades
         And I am logged in as a manager
         And there are no allocations in the db
 

@@ -4,7 +4,7 @@ use mod_coursework\ability\rule;
 
 /**
  * Class abiity_rule_test is responsible for testing the rule class that is part of the ability system
- *
+ * @group mod_coursework
  */
 class abiity_rule_test extends basic_testcase {
 

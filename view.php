@@ -69,6 +69,7 @@ $submissionid = optional_param('submissionid', 0, PARAM_INT); // Which thing to 
 $confirm = optional_param('confirm', 0, PARAM_INT);
 $export_grades = optional_param('export', false, PARAM_BOOL);
 $download_grading_sheet = optional_param('export_grading_sheet', false, PARAM_BOOL);
+$group = optional_param('group', -1, PARAM_INT);
 
 
 if (!isset($SESSION->displayallstudents[$course_module_id])) {
@@ -204,6 +205,12 @@ if ($course_module_id) {
 
 $coursework = mod_coursework\models\coursework::find($coursework_record);
 
+// check if group is in session and use it no group available in url
+if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $group == -1){
+    // check if a group is in SESSION
+    $group = groups_get_activity_group($coursework->get_course_module());
+}
+
 // commented out the redirection for Release1 #108535552, this will be revisited for Release2
 /*if (has_capability('mod/coursework:allocate', $coursework->get_context()))   {
     $warnings = new \mod_coursework\warnings($coursework);
@@ -250,7 +257,7 @@ if ($export_grades){
 
     // headers and data for csv
     $csv_cells = array('name','username');
-    
+
     if ($coursework->personal_deadlines_enabled()){
         $csv_cells[] = 'personaldeadline';
     }
@@ -259,11 +266,17 @@ if ($export_grades){
     $csv_cells[] = 'submissiontime';
     $csv_cells[] = 'submissionfileid';
 
-    if ($coursework->extensions_enabled()){
+    if ($coursework->extensions_enabled() && ($coursework->has_deadline()) || $coursework->personal_deadlines_enabled()){
         $csv_cells[] = 'extensiondeadline';
         $csv_cells[] = 'extensionreason';
         $csv_cells[] = 'extensionextrainfo';
     }
+
+    if ($coursework->plagiarism_flagging_enbled()){
+        $csv_cells[] = 'plagiarismflagstatus';
+        $csv_cells[] = 'plagiarismflagcomment';
+    }
+
     $csv_cells[] = 'stages';
 
     if ($coursework->moderation_agreement_enabled()){
@@ -344,9 +357,10 @@ if ($coursework->is_configured_to_have_group_submissions()){
 
 }
 $params = array('id' => $course_module->id,
-    'sortby' => $sortby,
+                'sortby' => $sortby,
                 'sorthow' => $sorthow,
-                'per_page' => $perpage);
+                'per_page' => $perpage,
+                'group' => $group);
 
 if (!empty($SESSION->displayallstudents[$course_module_id]))   {
     $params['viewallstudents_sorthow']  =   $viewallstudents_sorthow;
@@ -469,8 +483,8 @@ if ($can_view_students) {
         }
     } else {
 
-        $html .= $page_renderer->teacher_grading_page($coursework, $page, $perpage, $sortby, $sorthow);
-        $html .= $page_renderer->non_teacher_allocated_grading_page($coursework,$viewallstudents_page,$viewallstudents_perpage,$viewallstudents_sortby,$viewallstudents_sorthow,$displayallstudents);
+        $html .= $page_renderer->teacher_grading_page($coursework, $page, $perpage, $sortby, $sorthow, $group);
+        $html .= $page_renderer->non_teacher_allocated_grading_page($coursework,$viewallstudents_page,$viewallstudents_perpage,$viewallstudents_sortby,$viewallstudents_sorthow,$group,$displayallstudents);
 
     }
 }

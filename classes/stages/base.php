@@ -70,7 +70,14 @@ abstract class base {
             return;
         }
 
-        $teacher = $this->get_next_teacher($allocatable);
+        if ($this->get_coursework()->assessorallocationstrategy == 'group_assessor' &&  $this->identifier() == 'assessor_1' ){
+            // get teacher form the group
+            $teacher = $this->get_assessor_from_moodle_course_group($allocatable);
+            //$teacher = user::find(12);
+        } else {
+            $teacher = $this->get_next_teacher($allocatable);
+        }
+
 
         if ($teacher) {
             $this->make_auto_allocation($allocatable, $teacher);
@@ -683,6 +690,13 @@ abstract class base {
     public function auto_allocation_enabled() {
         return $this->strategy_name() !== 'none';
     }
+    /**
+     * @return bool
+     * @throws \coding_exception
+     */
+    public function group_assessor_enabled() {
+        return $this->strategy_name() == 'group_assessor';
+    }
 
     /**
      * @param submission $submission
@@ -934,4 +948,28 @@ abstract class base {
 
     }
 
+    public function get_assessor_from_moodle_course_group($allocatable){
+
+        // get allocatables group
+        if ($this->coursework->is_configured_to_have_group_submissions()){
+            $groupid = $allocatable->id;
+        } else {
+            $user = user::find($allocatable->id);
+            $group = $this->coursework->get_student_group($user);
+            $groupid = $group->id;
+        }
+
+        // find 1st assessor in the group
+        $first_group_assessor = get_enrolled_users($this->coursework->get_context(), $this->assessor_capability(),
+                                                   $groupid, 'u.*', 'id ASC', 0, 1);
+
+        $assessor = array_column($first_group_assessor, 'id');
+
+        if ($assessor) {
+            $assessorid = $assessor[0];
+            $assessor = user::find($assessorid);
+        }
+
+        return $assessor;
+    }
 }

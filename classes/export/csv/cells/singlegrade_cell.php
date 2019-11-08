@@ -14,37 +14,57 @@ class singlegrade_cell extends cell_base{
 
 
     /**
-     * @param submission $submission
+     * @param $submission
      * @param $student
      * @param $stage_identifier
-     * @return null|string
+     * @return array|mixed|null|string
      */
     public function get_cell($submission, $student, $stage_identifier){
 
         $stage_identifier = ($this->coursework->get_max_markers() == 1) ? "assessor_1" : $this->get_stage_identifier_for_assessor($submission, $student);
 
         $grade = $submission->get_assessor_feedback_by_stage($stage_identifier);
-        return   (!$grade)? '' : $this->get_actual_grade($grade->grade);
+        if($this->coursework->is_using_rubric()){
+            $gradedata = array();
+            $this->get_rubric_scores_gradedata($grade, $gradedata); // multiple parts are handled here
+        } else {
+            $gradedata = (!$grade)? '': $this->get_actual_grade($grade->grade);
+        }
+
+        return   $gradedata;
     }
 
     /**
      * @param $stage
-     * @return string
+     * @return array|mixed|string
      * @throws \coding_exception
      */
     public function get_header($stage){
-        return  get_string('grade', 'coursework');
+
+        if ($this->coursework->is_using_rubric()) {
+            $strings = array();
+            $criterias = $this->coursework->get_rubric_criteria();
+            foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
+                $strings['singlegrade'.$criteria['id']] = $criteria['description'];
+                $strings['singlegrade'.$criteria['id'].'comment'] = 'Comment for: '.$criteria['description'] ;
+            }
+        } else {
+            $strings = get_string('grade', 'coursework');
+        }
+            return $strings;
     }
 
 
-    public function validate_cell($value,$submissionid,$stage_identifier='') {
+    public function validate_cell($value,$submissionid,$stage_identifier='',$uploadedgradecells = array()) {
 
         global $PAGE, $DB, $USER;
 
         if (has_capability('mod/coursework:addinitialgrade', $PAGE->context) || has_capability('mod/coursework:editinitialgrade', $PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context))   {
 
-            if (!empty($value)) {
+            $errormsg   =   '';
+
+            if (!empty($value) && !$this->coursework->is_using_rubric()) {
                 $gradejudge = new grade_judge($this->coursework);
                 if (!$gradejudge->grade_in_scale($value)){
                     $errormsg = get_string('valuenotincourseworkscale', 'coursework');
@@ -52,9 +72,53 @@ class singlegrade_cell extends cell_base{
                         // if scale is numeric get max allowed scale
                         $errormsg .= ' '. get_string('max_cw_mark', 'coursework').' '. $this->coursework->grade;
                     }
-                    return $errormsg;
                 }
+            } else {
+
+
+                //we won't be processing this line if it has no values, empty wont tell us this as it thinks that an array with
+                //keys isnt. We will use array_filter whhich will return all values from the array if this is empty then we have
+                //nothing to do
+
+                $arrayvalues    =   array_filter($value);
+
+                //if there are no values we don't need to do anything
+                if (!empty($arrayvalues)) {
+
+                    $i = 0;
+                    $s = 0;
+
+                    $criterias = $this->coursework->get_rubric_criteria();
+
+                    foreach ($value as $data) {
+
+                        //check if the value is empty however it can be 0
+                        if (empty($data) && $data != 0) {
+                            $errormsg .= ' ' . get_string('rubric_grade_cannot_be_empty', 'coursework');
+                        }
+
+                        //only check grades fields that will be even numbered
+                        if ($i % 2 == 0) {
+
+                            //get the current criteria
+                            $criteria = array_shift($criterias);
+
+                            //lets check if the value given is valid for the current rubric criteria
+                            if (!$this->value_in_rubric($criteria, $data)) {
+                                // if scale is numeric get max allowed scale
+                                $errormsg .= ' ' . get_string('rubric_invalid_value', 'coursework') . ' ' . $data;
+                            }
+                            $s++;
+                        }
+                        $i++;
+                    }
+                }
+
             }
+
+
+            if (!empty($errormsg))  return $errormsg;
+
 
             $dbrecord = $DB->get_record('coursework_submissions', array('id'=>$submissionid));
 
@@ -123,6 +187,80 @@ class singlegrade_cell extends cell_base{
         }
 
         return true;
+    }
+
+    /***
+     * Check that the given value is within the values that can be excepted by the given rubric criteria
+     *
+     * @param $criteria the criteria array, this must contain the levels element
+     * @param $value the value that should be checked to see if it is valid
+     * @return bool
+     */
+    function    value_in_rubric($criteria,    $value)         {
+
+        global  $DB;
+
+        $valuefound =   false;
+
+        $levels     =   $criteria['levels'];
+
+        if (is_numeric($value) ) {
+            foreach ($levels as $level) {
+
+                if ((int)$level['score'] == (int)$value) {
+
+                    $valuefound = true;
+                    break;
+                }
+
+            }
+        }
+
+
+        return $valuefound;
+    }
+
+    /**
+     * Takes the given cells and returns the cells with the singlegrade cell replaced by the rubric headers if the coursework instance
+     * makes use of rubrics
+     *
+     * @param $csv_cells
+     *
+     */
+    function    get_rubrics($coursework,$csv_cells)        {
+
+
+        if ($coursework->is_using_rubric()) {
+
+            $rubricheaders      =       array();
+
+            $criterias = $coursework->get_rubric_criteria();
+
+            foreach ($criterias as  $criteria)   {
+                $rubricheaders[]    =   $criteria['description'];
+                $rubricheaders[]    =   $criteria['description']." comment";
+            }
+
+
+            //find out the position of singlegrade
+            $position = array_search('singlegrade',$csv_cells);
+            //get all data from the position of the singlegrade to the length of rubricheaders
+           // $csv_cells     =   array_splice($csv_cells,5, 1, $rubricheaders);
+
+
+            $start_cells        =   array_slice($csv_cells,0,$position,true);
+            $end_cells          =   array_slice($csv_cells,$position+1,count($csv_cells),true);
+
+            $cells              =   array_merge($start_cells,$rubricheaders);
+
+            $cells              =   array_merge($cells,$end_cells);
+
+
+
+        }
+
+
+        return $cells;
     }
 
 }

@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @group mod_coursework
  */
 class assessor_test extends advanced_testcase {
 

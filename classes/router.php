@@ -182,6 +182,29 @@ class router {
                                         'feedbackid' =>$items['moderation']->feedbackid));
 
                 break;
+
+            case 'new plagiarism flag':
+                $url = new moodle_url('/mod/coursework/actions/plagiarism_flagging/new.php',
+                                        array('submissionid' =>$items['submission']->id ));
+
+                break;
+
+            case 'create plagiarism flag':
+                $url = new moodle_url('/mod/coursework/actions/plagiarism_flagging/create.php');
+
+                break;
+
+            case 'edit plagiarism flag':
+                $url = new moodle_url('/mod/coursework/actions/plagiarism_flagging/edit.php',
+                                        array('flagid' => $items['flag']->id ));
+
+                break;
+
+            case 'update plagiarism flag':
+                $url = new moodle_url('/mod/coursework/actions/plagiarism_flagging/update.php',
+                                        array('flagid' => $items['flag']->id));
+                break;
+
         }
 
         if (!$url) {

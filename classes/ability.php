@@ -11,6 +11,7 @@ use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
 use mod_coursework\models\moderation;
+use mod_coursework\models\plagiarism_flag;
 
 /**
  * This class provides a central point where all of the can/cannot decisions are stored.
@@ -211,6 +212,17 @@ class ability extends \mod_coursework\framework\ability {
 
         // Update
         $this->allow_update_deadline_extension_if_can_edit();
+
+
+        // Plagiarism flagging rules for Plagiarism Alert
+
+        // New
+       // $this->prevent_new_plagiarism_flag_if_already_exists();
+        $this->allow_new_plagiarism_flag_with_capability();
+
+        // Edit
+        $this->prevent_edit_plagiarism_flag_if_not_persisted();
+        $this->allow_edit_plagiarism_flag_with_capability();
 
 
         // Personal deadlines rules
@@ -1317,6 +1329,35 @@ class ability extends \mod_coursework\framework\ability {
             function (personal_deadline $personal_deadline) {
                 // check if extension for this PD exists
                 return $personal_deadline->extension_exists();
+            });
+    }
+
+
+    private function allow_new_plagiarism_flag_with_capability() {
+        $this->allow('new',
+            'mod_coursework\models\plagiarism_flag',
+            function (plagiarism_flag $plagiarism_flag) {
+                return  has_capability('mod/coursework:addplagiarismflag', $plagiarism_flag->get_coursework()->get_context());
+            });
+    }
+
+
+    private function allow_edit_plagiarism_flag_with_capability() {
+        $this->allow('edit',
+            'mod_coursework\models\plagiarism_flag',
+            function (plagiarism_flag $plagiarism_flag) {
+                return has_capability('mod/coursework:updateplagiarismflag',
+                    $plagiarism_flag->get_coursework()
+                        ->get_context());
+            });
+    }
+
+
+    private function prevent_edit_plagiarism_flag_if_not_persisted() {
+        $this->prevent('edit',
+            'mod_coursework\models\plagiarism_flag',
+            function (plagiarism_flag $plagiarism_flag) {
+                return !$plagiarism_flag->persisted();
             });
     }
 

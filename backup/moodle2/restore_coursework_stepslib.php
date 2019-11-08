@@ -47,7 +47,8 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                         'sample_set_mbr'=>'coursework_sample_set_mbrs',
                         'extension'=>'coursework_extensions',
                         'person_deadline'=>'coursework_person_deadlines',
-                        'mod_agreement' => 'coursework_submissions/coursework_submission/coursework_feedbacks/coursework_feedback/coursework_mod_agreements');
+                        'mod_agreement' => 'coursework_submissions/coursework_submission/coursework_feedbacks/coursework_feedback/coursework_mod_agreements',
+                        'plagiarism_flag' => 'coursework_submissions/coursework_submission/coursework_plagiarism_flags');
 
 
             foreach($bits as $bit=>$bitpath)
@@ -349,6 +350,31 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $newitemid = $DB->insert_record('coursework_mod_agreements', $data);
     }
 
+
+    protected function process_coursework_plagiarism_flag($data)
+    {
+        $data=(object)$data;
+
+        $data->submissionid=$this->get_new_parentid('coursework_submission');
+        $data->createdby = $this->get_mappingid('user', $data->createdby);
+        $data->lastmodifiedby=$this->get_mappingid('user',$data->lastmodifiedby);
+
+        $this->fixallocatable($data);
+
+        $this->updatedate(array('timecreated',
+                                'timemodified'),$data);
+
+        $now=time();
+        $this->set_defaults(array('timecreated'=>$now,
+                                  'timemodified'=>$now,
+                                  'lastmodifieddby'=>0,
+                                  'comment'=>'',
+                                  'comment_format'=>1),$data);
+
+        global $DB;
+        $newitemid = $DB->insert_record('coursework_plagiarism_flags', $data);
+    }
+
     /**
      * Process a courswork restore.
      *
@@ -436,6 +462,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'moderationagreementenabled'=>0,
                                   'draftfeedbackenabled'=>0,
                                     'processenrol'=>0,
+                                  'plagiarismflagenabled'=>0,
                                     'processunenrol'=>0), $data);
 
         $this->check_grade('grade',$data);

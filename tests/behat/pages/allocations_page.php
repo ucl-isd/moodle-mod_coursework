@@ -18,7 +18,7 @@ require_once($CFG->dirroot . '/mod/coursework/tests/behat/pages/page_base.php');
 class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_base {
 
     public function save_everything() {
-        $this->getPage()->pressButton('save_manual_allocations_2');
+        $this->getPage()->pressButton('save_manual_allocations_1');
 
         if ($this->getPage()->hasLink('Continue')) {
             $this->getPage()->clickLink('Continue');

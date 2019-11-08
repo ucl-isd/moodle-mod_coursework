@@ -176,7 +176,7 @@ class grading_sheet extends csv{
             $csv_cells[] = 'agreedgrade';
             $csv_cells[] = 'agreedfeedback';
 
-        } else if (has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context)){
+        } else if (has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && $coursework->get_max_markers() >1){
             $csv_cells[] = 'singlegrade';
             $csv_cells[] = 'feedbackcomments';
 
@@ -188,7 +188,21 @@ class grading_sheet extends csv{
 
         } else if (has_capability('mod/coursework:addinitialgrade', $PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context)){
-            $csv_cells[] = 'singlegrade';
+
+         //   if (!$coursework->is_using_rubric()) {
+                $csv_cells[] = 'singlegrade';
+        /*    }   else   {
+
+                $criterias = $coursework->get_rubric_criteria();
+
+                foreach ($criterias as  $criteria)   {
+                    $csv_cells[]    =   $criteria['description'];
+                    $csv_cells[]    =   $criteria['description']." comment";
+                }
+
+
+            }
+        */
             $csv_cells[] = 'feedbackcomments';
         }
 

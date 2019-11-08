@@ -206,28 +206,22 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Then /^I should( not)? see( the)? (.*)'s name on the page$/
      * @param bool $negate
-     * @return \Behat\Behat\Context\Step\Given
      */
     public function iShouldSeeTheStudentSNameOnThePage($negate = false,$negate2=false,$studentrole) {
-
+        $page = $this->get_page('coursework page');
 
         $student    =   ($studentrole == "another student") ? $this->other_student : $this->student;
 
         $studentname = fullname($student);
 
+        $student_found = $page->get_coursework_student_name($studentname);
+
         if ($negate) {
-            return new Given("I should not see \"{$studentname}\"");
+            assertFalse($student_found);
         } else {
-            return new Given("I should see \"{$studentname}\"");
+            assertTrue($student_found);
         }
     }
-
-
-
-
-
-    /* Private methods follow */
-
 
     /**
      * Returns the last created coursework.
@@ -1361,26 +1355,6 @@ class behat_mod_coursework extends behat_base {
         $DB->set_field('course', 'enablecompletion', 1, array('id' => $this->course->id));
     }
 
-
-
-
-    // Coursework steps
-
-    /**
-     * Assumes we are on the course page and are adding via the normal UI process.
-     *
-     * Probably needs to be altered to work differently if we have javascript enabled.
-     *
-     * @Given /^I add a new coursework$/
-     */
-    public function I_add_a_new_coursework() {
-        return array(
-            new Given('I turn editing mode on'),
-            new When('I select "Coursework" from "Add an activity..."'),
-            new Then('I click')
-        );
-    }
-
     /**
      * @Given /^there is a coursework$/
      */
@@ -1400,8 +1374,9 @@ class behat_mod_coursework extends behat_base {
      * @Then /^I should see the title of the coursework on the page$/
      */
     public function iShouldSeeTheTitleOfTheCourseworkOnThePage() {
+        $page = $this->get_page('coursework page');
 
-        return new Given("I should see \"{$this->coursework->name}\"");
+        assertTrue($page->get_coursework_name($this->coursework->name));
     }
 
     /**
@@ -1544,7 +1519,7 @@ class behat_mod_coursework extends behat_base {
         $field = behat_field_manager::get_form_field($node, $this->getSession());
         $field->set_value($this->other_teacher->id);
 
-        $this->find_button('save_manual_allocations_2')->click();
+        $this->find_button('save_manual_allocations_1')->click();
     }
 
     /**
@@ -1657,7 +1632,7 @@ class behat_mod_coursework extends behat_base {
         }
         $this->find('css', '#menuassessorallocationstrategy')->selectOption('percentages');
         $this->getSession()->getPage()->fillField("assessorstrategypercentages[{$this->teacher->id}]", $percent);
-        $this->find('css', '#save_manual_allocations_2')->press();
+        $this->find('css', '#save_manual_allocations_1')->press();
     }
 
     /**
@@ -1681,16 +1656,6 @@ class behat_mod_coursework extends behat_base {
             $allocation->manual = 1;
         }
         $generator->create_allocation($allocation);
-    }
-
-    /**
-     * @Given /^the student is auto allocated to the teacher$/
-     */
-    public function there_is_a_student_auto_allocated_to_the_teacher() {
-        return array(
-            new Given("I visit the allocations page"),
-            new Given("I auto-allocate all students to assessors")
-        );
     }
 
     /**
@@ -1743,7 +1708,10 @@ class behat_mod_coursework extends behat_base {
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
         );
-        assertNotEmpty($DB->get_record('coursework_allocation_pairs', $params));
+
+        $result = $DB->get_record('coursework_allocation_pairs', $params);
+
+        assertNotEmpty($result);
     }
 
 
@@ -2186,7 +2154,7 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * @Then /^I should see the final grade for the group in the grading interface$/
-     * 
+     *
      */
     public function iShouldSeeTheFinalGradeForTheGroupInTheGradingInterface() {
         /**
@@ -2931,6 +2899,19 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('allocations page');
         $page->save_sampling_strategy();
+    }
+
+    /**
+     * @Given /^teachers hava a capability to administer grades$/
+     */
+    public function teachersHavaACapabilityToAdministerGrades() {
+        global $DB;
+
+        $teacher_role = $DB->get_record('role', array('shortname' => 'teacher'));
+        role_change_permission($teacher_role->id,
+                               $this->get_coursework()->get_context(),
+                               'mod/coursework:administergrades',
+                               CAP_ALLOW);
     }
 
     /**

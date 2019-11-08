@@ -21,6 +21,7 @@ use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
+use mod_coursework\models\plagiarism_flag;
 use moodle_url;
 
 defined('MOODLE_INTERNAL') || die();
@@ -212,6 +213,20 @@ abstract class grading_table_row_base implements user_row {
 
         return $this->submission;
     }
+
+    /**
+     * @return models\plagiarism_flag
+     */
+    public function get_plagiarism_flag() {
+
+       $submission = $this->get_submission();
+        $params = array(
+            'submissionid' => $submission->id
+        );
+
+        return plagiarism_flag::find($params);
+    }
+
 
     /**
      * Chained getter to prevent tight coupling.

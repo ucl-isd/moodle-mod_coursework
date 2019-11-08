@@ -3,6 +3,10 @@
 
 use mod_coursework\grade_judge;
 
+/**
+ * Class grade_judge_test
+ * @group mod_coursework
+ */
 class grade_judge_test extends advanced_testcase {
 
 

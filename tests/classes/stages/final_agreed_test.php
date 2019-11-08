@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @group mod_coursework
  */
 class final_agreed_test extends advanced_testcase {
 

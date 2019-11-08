@@ -36,7 +36,7 @@ class feedbackcomments_cell extends cell_base {
     }
 
 
-    public function validate_cell($value, $submissionid, $stage_identifier='') {
+    public function validate_cell($value, $submissionid, $stage_identifier='',$uploadedgradecells = array()) {
 
         global $PAGE, $DB, $USER;
 

@@ -99,6 +99,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->add_max_file_size_field();
         $this->add_number_of_files_field();
         $this->add_submission_notification_field();
+        $this->add_enable_plagiarism_flag_field();
 
         $this->add_marking_workflow_header();
 
@@ -106,7 +107,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->add_enable_moderation_agreement_field();
 
         $this->add_enable_allocation_field();
-        $this->add_assessor_allocation_strategy_field_checkboxes();
+        $this->add_assessor_allocation_strategy_field();
         $this->add_enable_sampling_checkbox();
         $this->add_automatic_agreement_enabled();
         $this->add_view_initial_assessors_grade();
@@ -893,7 +894,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodle_form->disabledIf('radioarray', 'allocationenabled', 'eq', 0);
     }
 
-    protected function add_assessor_allocation_strategy_field_checkboxes() {
+    protected function add_assessor_allocation_strategy_field() {
         $moodle_form =& $this->_form;
 
         $options = mod_coursework\allocation\manager::get_allocation_classnames();
@@ -1316,4 +1317,15 @@ class mod_coursework_mod_form extends moodleform_mod {
 
 
     }
+
+    private function add_enable_plagiarism_flag_field(){
+        global $CFG;
+        $moodle_form =& $this->_form;
+
+        $options = array( 0 => get_string('no'), 1 => get_string('yes'));
+        $moodle_form->addElement('select', 'plagiarismflagenabled', get_string('plagiarism_flag_enable', 'mod_coursework'), $options);
+        $moodle_form->addHelpButton('plagiarismflagenabled', 'plagiarism_flag_enable', 'mod_coursework');
+        $moodle_form->setDefault('plagiarismflagenabled', $CFG->coursework_plagiarismflag);
+    }
+
 }

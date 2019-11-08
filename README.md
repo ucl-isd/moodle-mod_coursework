@@ -5,7 +5,7 @@ Copyright University of London.
 Any queries, please email coursework@london.ac.uk
 
 The Coursework Activity has been written to provide a way to receive coursework and have it marked without teachers knowing which student the work belongs to. Multiple markers are also supported where a final grade can be agreed based on several options. It does not replace the standard assignment activity and is intended to work alongside it.
-Special thanks to Royal Veterinary College and @aspark21, Plymouth University and London School of Tropical Medicine for funding parts of the development and documentation. 
+Special thanks to Royal Veterinary College and @aspark21, Plymouth University, London School of Tropical Medicine and University of London International Programmes for funding parts of the development and documentation. 
 
 Current Coursework plugin includes following features as well as features added in Releases below:
 
@@ -41,10 +41,28 @@ Current Coursework plugin includes following features as well as features added 
 
 Releases 
 =================
-**July 2018**
 
-* general bug fixes
-* compatibility with Moodle 3.4
+**November 2019** - Features funded by UoLIA
+
+* Moodle 3.5 & Moodle 3.6 compatibility
+* small bug fixes
+* GDPR added
+
+New features:
+
+* Moodle groups access restrictions- the markers will have access to submissions belonging to Moodle groups they are allocated to. If 'Assessor from Moodle course group assigned to Stage 1' option from 'Marking workflow->Assessor allocation strategy' is chosen, the first marking stage will be automatically allocated to a tutor who is the part of the group 
+
+* Moodle Groups can be filtered on the grading page when enabled in 'Common module settings', 'Group mode'  NOTE: When group filtering on the coursework marking page is applied, ALL available marks will be released (as if the filter wasn't applied), not only those visible on the page.
+
+* Rubric support - Coursework now supports offline Rubic grading ('Export grading sheet', 'Upload grading worksheet'). Rubric marks will also appear in 'Export final grades' download. 
+
+* Plagiarism Identification - Markers will be able to set a flag (mark) for students identified for plagiarism. This can be enabled in Coursework settings 'Submissions->Enable Plagiarism flagging'.  The plagiarism marking has 4 flags: 
+    - Under Investigation - this will prevent release of grades and feedbacks
+    - Release (no action taken)
+    - Cleared: Release Results
+    - Not Cleared: Withhold Results -  this will prevent release of grades and feedbacks
+
+
 
 **March 2018**
 
@@ -161,7 +179,7 @@ Please report bugs using the GitHub issues tab. When reporting a bug please outl
 Defining roles
 ===============
 
-Coursework allows institutions to define their permissions unique to their institution. If you wish for help setting these up please contact moodle-coursework@jiscmail.ac.uk 
+Coursework allows institutions to define their permissions unique to their institution. If you wish for help setting these up please contact moodle@rvc.ac.uk 
 
 Configuration
 =============

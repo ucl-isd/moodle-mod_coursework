@@ -85,7 +85,11 @@ M.mod_coursework.elementEnable      =   function()      {
 
 }
 
-M.mod_coursework.initialGradeDisable  =   function(disabled=true)    {
+M.mod_coursework.initialGradeDisable  =   function(disabled) {
+
+    if(disabled === undefined) {
+        disabled = true;
+    }
 
     $('#id_initialmarkingdeadline_day').prop('disabled',disabled);
     $('#id_initialmarkingdeadline_month').prop('disabled',disabled);
@@ -97,7 +101,11 @@ M.mod_coursework.initialGradeDisable  =   function(disabled=true)    {
 
 
 
-M.mod_coursework.agreedGradeDisable  =   function(disabled=true)    {
+M.mod_coursework.agreedGradeDisable  =   function(disabled) {
+
+    if(disabled === undefined) {
+        disabled = true;
+    }
 
     $('#id_agreedgrademarkingdeadline_day').prop('disabled',disabled);
     $('#id_agreedgrademarkingdeadline_month').prop('disabled',disabled);
@@ -107,7 +115,11 @@ M.mod_coursework.agreedGradeDisable  =   function(disabled=true)    {
     $('#id_agreedgrademarkingdeadline_enabled').prop('disabled',disabled);
 }
 
-M.mod_coursework.personalDeadlineDisable  =   function(disabled=true)    {
+M.mod_coursework.personalDeadlineDisable  =   function(disabled) {
+
+    if(disabled === undefined) {
+        disabled = true;
+    }
 
     $('#id_personaldeadlineenabled').prop('disabled',disabled);
 
@@ -115,13 +127,21 @@ M.mod_coursework.personalDeadlineDisable  =   function(disabled=true)    {
 
 
 
-M.mod_coursework.relativeInitalGradeDisable  =   function(disabled=true)    {
+M.mod_coursework.relativeInitalGradeDisable  =   function(disabled) {
+
+    if(disabled === undefined) {
+        disabled = true;
+    }
 
     $('#id_relativeinitialmarkingdeadline').prop('disabled',disabled);
 
 }
 
-M.mod_coursework.relativeAgreedGradeDisable  =   function(disabled=true)    {
+M.mod_coursework.relativeAgreedGradeDisable  =   function(disabled) {
+
+    if(disabled === undefined) {
+        disabled = true;
+    }
 
     $('#id_relativeagreedmarkingdeadline').prop('disabled',disabled);
 

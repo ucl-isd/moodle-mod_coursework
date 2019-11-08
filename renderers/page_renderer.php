@@ -3,11 +3,13 @@ use mod_coursework\ability;
 use mod_coursework\forms\assessor_feedback_mform;
 use mod_coursework\forms\student_submission_form;
 use mod_coursework\forms\moderator_agreement_mform;
+use mod_coursework\forms\plagiarism_flagging_mform;
 use mod_coursework\models\coursework;
 use mod_coursework\models\user;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 use mod_coursework\models\moderation;
+use mod_coursework\models\plagiarism_flag;
 use mod_coursework\router;
 use mod_coursework\warnings;
 
@@ -386,6 +388,99 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
 
+
+    /**
+     * @param plagiarism_flag $new_plagiarism_flag
+     * @throws coding_exception
+     */
+    public function new_plagiarism_flag_page($new_plagiarism_flag){
+
+        global $PAGE, $OUTPUT, $SITE, $DB;
+
+        $submission = $new_plagiarism_flag->get_submission();
+        $grading_title = get_string('plagiarismflaggingfor', 'coursework', $submission->get_allocatable_name());
+
+        $PAGE->set_pagelayout('standard');
+        $PAGE->navbar->add($grading_title);
+        $PAGE->set_title($SITE->fullname);
+        $PAGE->set_heading($SITE->fullname);
+
+        $html = '';
+
+        $html .= $OUTPUT->heading($grading_title);
+
+        $submit_url = $this->get_router()->get_path('create plagiarism flag', array('plagiarism_flag' => $new_plagiarism_flag));
+        $simple_form = new plagiarism_flagging_mform($submit_url, array('plagiarism_flag' => $new_plagiarism_flag));
+        echo $OUTPUT->header();
+        echo $html;
+        $simple_form->display();
+        echo $OUTPUT->footer();
+
+
+    }
+
+
+
+
+    /**
+     * @param plagiarism_flag $plagiarism_flag
+     * @throws coding_exception
+     */
+    public function edit_plagiarism_flag_page(plagiarism_flag $plagiarism_flag, $creator, $editor){
+
+        global $PAGE, $OUTPUT, $SITE, $DB;
+
+        $submission = $plagiarism_flag->get_submission();
+        $grading_title = get_string('plagiarismflaggingfor', 'coursework', $submission->get_allocatable_name());
+
+        $PAGE->set_pagelayout('standard');
+        $PAGE->navbar->add($grading_title);
+        $PAGE->set_title($SITE->fullname);
+        $PAGE->set_heading($SITE->fullname);
+
+        $html = '';
+
+        $createddby = fullname($creator);
+        $lasteditedby = fullname($editor);
+
+        $html .= $OUTPUT->heading($grading_title);
+
+        $html .= '<table class = "plagiarism-flag-details">';
+        $html .= '<tr><th>' . get_string('createdby', 'coursework') . '</th><td>' . $createddby . '</td></tr>';
+        $html .= '<tr><th>' . get_string('lasteditedby', 'coursework') . '</th><td>' . $lasteditedby . ' on ' .
+            userdate($plagiarism_flag->timemodified, '%a, %d %b %Y, %H:%M') . '</td></tr>';
+        $html .= '</table>';
+
+
+        if($submission->is_published()) {
+            $html .= '<div class ="alert">' . get_string('gradereleasedtostudent', 'coursework') . '</div>';
+        }
+
+        $submit_url = $this->get_router()->get_path('update plagiarism flag', array('flag' => $plagiarism_flag, 'submission' => $submission));
+        $simple_form = new plagiarism_flagging_mform($submit_url, array('plagiarism_flag' => $plagiarism_flag));
+
+        $plagiarism_flag->plagiarismcomment = array('text' => $plagiarism_flag->comment,
+                                                    'format' => $plagiarism_flag->comment_format);
+
+
+        $simple_form->set_data($plagiarism_flag);
+        echo $OUTPUT->header();
+        echo $html;
+        $simple_form->display();
+        echo $OUTPUT->footer();
+
+
+
+    }
+
+
+
+
+
+
+
+
+
     /**
      * @param coursework $coursework
      * @param int $page
@@ -396,19 +491,16 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws coding_exception
      * @throws moodle_exception
      */
-    public function teacher_grading_page($coursework, $page, $perpage, $sortby, $sorthow) {
+    public function teacher_grading_page($coursework, $page, $perpage, $sortby, $sorthow, $group) {
 
         global $PAGE, $OUTPUT;
 
         $html = '';
 
-        // Show the grading report.
-        $groups = ''; // TODO let the user choose the group.
-
         // Grading report display options.
         $report_options = array();
         $report_options['page'] = $page;
-        $report_options['groups'] = $groups;
+        $report_options['group'] = $group;
         $report_options['perpage'] = $perpage;
         $report_options['sortby'] = $sortby;
         $report_options['sorthow'] = $sorthow;
@@ -478,6 +570,12 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $html .= $this->render($gradingactions);;
         }
 
+        // display 'Group mode' with the relevant groups
+        $currenturl = new moodle_url('/mod/coursework/view.php', array('id' => $coursework->get_course_module()->id));
+        $html .= groups_print_activity_menu($coursework->get_course_module(), $currenturl->out(), true);
+        if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $group != 0) {
+            $html .= '<div class="alert">'.get_string('groupmodechosenalert','mod_coursework').'</div>';
+        }
 
 
 
@@ -524,7 +622,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         return $html;
     }
 
-    public function non_teacher_allocated_grading_page($coursework,$viewallstudents_page,$viewallstudents_perpage,$viewallstudents_sortby,$viewallstudents_sorthow,$displayallstudents=0) {
+    public function non_teacher_allocated_grading_page($coursework,$viewallstudents_page,$viewallstudents_perpage,$viewallstudents_sortby,$viewallstudents_sorthow,$group,$displayallstudents=0) {
 
         global $PAGE, $OUTPUT;
 
@@ -534,12 +632,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         if (has_capability('mod/coursework:viewallstudents', $PAGE->context)) {
 
-            // Show the grading report.
-            $groups = ''; // TODO let the user choose the group.
 
             $report_options = array();
             $report_options['page'] = $viewallstudents_page;
-            $report_options['groups'] = $groups;
+            $report_options['group'] = $group;
             $report_options['perpage'] = $viewallstudents_perpage;
             $report_options['sortby'] = $viewallstudents_sortby;
             $report_options['sorthow'] = $viewallstudents_sorthow;
@@ -784,7 +880,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             } else { // if not, use coursework default deadline
                 $deadline = $coursework->deadline;
             }
-            
+
             $deadline = ($submission->has_extension()) ? $submission->extension_deadline() : $deadline;
 
             $lateseconds =  $submission->time_submitted() - $deadline;

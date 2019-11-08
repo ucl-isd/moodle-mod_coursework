@@ -13,9 +13,7 @@ Feature: the students should be auto allocated on enrolment
         And there are no allocations in the db
 
     Scenario: new students should be allocated when they join
-        Given there is a student
-        When I visit the allocations page
-        Then the student should be allocated to an assessor
+        pending
 
     Scenario: exisitng manual allocations should not be reallocated when a tutor joins
         pending

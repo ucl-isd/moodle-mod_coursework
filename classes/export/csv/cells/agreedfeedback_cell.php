@@ -34,7 +34,7 @@ class agreedfeedback_cell extends cell_base{
 
 
 
-    public function validate_cell($value,$submissionid,$stage_identifier='') {
+    public function validate_cell($value,$submissionid,$stage_identifier='',$uploadedgradecells = array()) {
 
         global $DB,$PAGE,$USER;
 

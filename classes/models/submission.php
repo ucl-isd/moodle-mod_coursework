@@ -1011,6 +1011,14 @@ class submission extends table_base implements \renderable {
      */
     public function ready_to_publish() {
 
+        if ($this->get_coursework()->plagiarism_flagging_enbled()) {
+            // check if not stopped by plagiarism flag
+            $plagiarism = plagiarism_flag::find(array('submissionid' => $this->id));
+            if ($plagiarism && !$plagiarism->can_release_grades()) {
+                return false;
+            }
+        }
+
         $grade_judge = new grade_judge($this->get_coursework());
         if($grade_judge->has_feedback_that_is_promoted_to_gradebook($this) && $this->final_grade_agreed() && !$this->editable_final_feedback_exist()) {
             return true;

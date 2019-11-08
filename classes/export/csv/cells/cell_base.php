@@ -5,6 +5,8 @@ use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
 use mod_coursework\grade_judge;
 use mod_coursework\models\submission;
+use mod_coursework\models\plagiarism_flag;
+use gradingform_rubric_instance;
 
 /**
  * Class cell_base
@@ -18,6 +20,7 @@ abstract class cell_base implements cell_interface {
     protected $dateformat;
     protected $stages;
     protected $extension;
+    protected $plagiarismflag;
 
     /**
      * @param $coursework
@@ -28,6 +31,7 @@ abstract class cell_base implements cell_interface {
         $this->dateformat = '%a, %d %b %Y, %H:%M';
         $this->stages = $this->coursework->get_max_markers();
         $this->extension = new deadline_extension;
+        $this->plagiarismflag = new plagiarism_flag;
 
     }
 
@@ -106,6 +110,44 @@ abstract class cell_base implements cell_interface {
      */
     public function get_extension_predefined_reasons(){
         return $this->coursework->extension_reasons();
+    }
+
+
+
+    /**
+     * Function to check if the plagiarism has been flagged for the given submission
+     * @param $submission
+     * @return bool
+     */
+    public function plagiarism_flagged($submission){
+
+        $flag = $this->plagiarismflag->get_plagiarism_flag($submission);
+
+        return ($this->coursework->plagiarism_flagging_enbled() && !empty($flag));
+    }
+
+    /**
+     * Function to get student's plagiarism status
+     * @param $submission
+     * @return string
+     */
+    public function get_plagiarism_flag_status_for_csv($submission){
+
+        $flag = $this->plagiarismflag->get_plagiarism_flag($submission);
+
+        return get_string('plagiarism_'.$flag->status, 'mod_coursework');
+    }
+
+    /**
+     * Function to get comment about student's plagiarism status
+     * @param $submission
+     * @return string
+     */
+    public function get_plagiarism_flag_comment_for_csv($submission){
+
+        $flag = $this->plagiarismflag->get_plagiarism_flag($submission);
+
+        return strip_tags($flag->comment);
     }
 
 
@@ -200,8 +242,39 @@ abstract class cell_base implements cell_interface {
      * Function to validate cell for the file upload
      * @return mixed
      */
-    public function validate_cell($value,$submissions,$stage_dentifier=''){
+    public function validate_cell($value,$submissions,$stage_dentifier='', $uploadedgradecells = array()){
         return true;
     }
+
+
+    /**
+     * @param $grade
+     * @param $gradedata
+     */
+    public function get_rubric_scores_gradedata($grade, &$gradedata){
+
+        if($grade) {
+
+            $controller = $this->coursework->get_advanced_grading_active_controller();
+            $gradinginstance = $controller->get_or_create_instance(0, $grade->assessorid, $grade->id);
+            /**
+             * @var gradingform_rubric_instance $grade
+             */
+            $rubric_marks = $gradinginstance->get_rubric_filling();
+
+            foreach ($rubric_marks['criteria'] as $id => $record) {
+                $gradedata[] = $controller->get_definition()->rubric_criteria[$id]['levels'][$record['levelid']]['score'];
+                $gradedata[] = $record['remark'];
+
+            }
+        } else {
+            $criterias = $this->coursework->get_rubric_criteria();
+            foreach ($criterias as $criteria) { // if no marks we need same amount of empty holders
+                $gradedata[] = '';
+                $gradedata[] = '';
+            }
+        }
+    }
+
 
 }

@@ -86,7 +86,8 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                     'moderationagreementenabled',
                                                     'draftfeedbackenabled',
                                                     'processenrol',
-                                                    'processunenrol'
+                                                    'processunenrol',
+                                                    'plagiarismflagenabled'
                                                   ));
 
 
@@ -110,6 +111,24 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
 
         if($userinfo)
         {
+
+
+            $plagiarism_flags  =   new backup_nested_element('coursework_plagiarism_flags');
+
+            $plagiarism_flag =   new backup_nested_element('coursework_plagiarism_flag', array('id'),
+                                                            array(
+                                                                    "courseworkid",
+                                                                    "submissiond",
+                                                                    "status",
+                                                                    "comment",
+                                                                    "comment_format",
+                                                                    "createdby",
+                                                                    "timecreated",
+                                                                    "lastmodifiedby",
+                                                                    "timemodified"
+                                                            ));
+
+
 
             $moderation_agreements  =   new backup_nested_element('coursework_mod_agreements');
 
@@ -309,6 +328,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
             $feedback->add_child($moderation_agreements);
             $moderation_agreements->add_child($moderation_agreement);
 
+            $submission->add_child($plagiarism_flags);
+            $plagiarism_flags->add_child($plagiarism_flag);
+
             //as are reminders, pairs, extensions, modsets and modsetrules,
             // and allocation configs
             $reminders->add_child($reminder);
@@ -325,6 +347,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
 
             $feedback->set_source_table('coursework_feedbacks',
                                         array('submissionid'=>backup::VAR_PARENTID));
+
+            $plagiarism_flag->set_source_table('coursework_plagiarism_flags',
+                                         array('submissionid'=>backup::VAR_PARENTID));
 
             $moderation_agreement->set_source_table('coursework_mod_agreements',
                                         array('feedbackid'=>backup::VAR_PARENTID));
@@ -387,6 +412,8 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
             $moderation_agreement->annotate_ids('user','moderatorid');
             $moderation_agreement->annotate_ids('user','lasteditedby');
 
+            $plagiarism_flag->annotate_ids('user','createdby');
+            $plagiarism_flag->annotate_ids('user','lastmodifiedby');
 
             $coursework->annotate_files('mod_coursework','feedback',null);
             $coursework->annotate_files('mod_coursework','submission',null);

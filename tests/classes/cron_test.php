@@ -3,6 +3,8 @@ use mod_coursework\models\submission;
 use mod_coursework\cron;
 
 /**
+ * Class cron_test
+ * @group mod_coursework
  */
 class cron_test extends advanced_testcase {
 

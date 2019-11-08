@@ -3,6 +3,7 @@ use mod_coursework\models\group;
 
 /**
  * Class coursework_user_test
+ * @group mod_coursework
  */
 class coursework_group_test extends advanced_testcase {
 

@@ -23,7 +23,7 @@ class otherassessors_cell extends cell_base{
         global $DB, $USER;
         // find out current user stage identifier
 
-        $stage_identifier =
+      //  $stage_identifier =
     // retrieve all feedbacks without currents user feedback
 
 
@@ -46,18 +46,38 @@ class otherassessors_cell extends cell_base{
 
             $grade = $submission->get_assessor_feedback_by_stage($feedback->stage_identifier);
             if ($grade){
+                // skip if you are allocated but someone else graded it
+                $allocation = $submission->get_assessor_allocation_by_stage($feedback->stage_identifier);
+                if ($allocation->assessorid == $USER->id) continue;
                 $ability = new ability(user::find($USER), $this->coursework);
-                if (($ability->can('show', $feedback) && !$submission->any_editable_feedback_exists()) || is_siteadmin($USER->id)) {
-                    $gradedata[] = $this->get_actual_grade($grade->grade);
+                if ((($ability->can('show', $feedback)  || has_capability('mod/coursework:addallocatedagreedgrade', $submission->get_coursework()->get_context())) &&
+                        !$submission->any_editable_feedback_exists()) || is_siteadmin($USER->id)) {
+
+                    if($this->coursework->is_using_rubric()){
+                        $this->get_rubric_scores_gradedata($grade, $gradedata); // multiple parts are handled here
+                    } else {
+                        $gradedata[] = $this->get_actual_grade($grade->grade);
+                    }
                     $gradedata[] = strip_tags($grade->feedbackcomment);
+
                 } else {
+
                     $gradedata[] = get_string('grade_hidden_manager', 'mod_coursework');
                     $gradedata[] = '';
                 }
 
 
             } else {
-                $gradedata[] = '';
+
+                if($this->coursework->is_using_rubric()){
+                    $criterias = $this->coursework->get_rubric_criteria();
+                    foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
+                        $gradedata['assessor' . $stage_identifier . '_' . $criteria['id']] = get_string('grade_hidden_manager', 'mod_coursework');
+                        $gradedata['assessor' . $stage_identifier . '_' . $criteria['id'] . 'comment'] = '';
+                    }
+                }else {
+                    $gradedata[] = '';
+                }
                 $gradedata[] = '';
             }
 
@@ -76,8 +96,16 @@ class otherassessors_cell extends cell_base{
         $fields = array();
 
         for ($i = 1; $i < $this->stages ; $i++) {
-            $fields['otherassessorgrade'.$i] = get_string('otherassessorgrade', 'coursework', $i);
-            $fields['otherassessorfeedback'.$i] = get_string('otherassessorfeedback', 'coursework', $i);
+            if ($this->coursework->is_using_rubric()) {
+                $criterias = $this->coursework->get_rubric_criteria();
+                foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
+                    $fields['otherassessorgrade'.$stage.'_'.$criteria['id']] = 'Other assessor ('.$i.') - '.$criteria['description'];
+                    $fields['otherassessorgrade'.$stage.'_'.$criteria['id'] . 'comment'] = 'Comment for: Other assessor ('.$i.') - '.$criteria['description'];
+                }
+            } else {
+                $fields['otherassessorgrade' . $i] = get_string('otherassessorgrade', 'coursework', $i);
+            }
+                $fields['otherassessorfeedback' . $i] = get_string('otherassessorfeedback', 'coursework', $i);
         }
        return $fields;
     }

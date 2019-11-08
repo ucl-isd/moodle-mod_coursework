@@ -29,6 +29,7 @@ use mod_coursework\exceptions\access_denied;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
+use mod_coursework\models\group;
 use mod_coursework\models\outstanding_marking;
 
 defined('MOODLE_INTERNAL') || die();
@@ -1248,6 +1249,204 @@ function coursework_mod_updated($event_data) {
     return true;
 }
 
+/**
+ *
+ *  * Function to process allocation of new group members (student/group - assign to a group assessor or assessor - assign to students/group) - when a user is added to a group
+
+ * @param $event_data
+ * @return bool
+ * @throws coding_exception
+ * @throws dml_exception
+ */
+
+function course_group_member_added($event_data) {
+    global $DB;
+
+    $groupid = $event_data->objectid;
+    $courseid = $event_data->courseid;
+    $addeduserid = $event_data->relateduserid;
+
+    // get all courseworks with group_assessor allocation strategy
+    $courseworks = $DB->get_records('coursework', array('course'=>$courseid, 'assessorallocationstrategy' => 'group_assessor'));
+
+    foreach($courseworks as $coursework){
+
+        $coursework = coursework::find($coursework);
+        $stage = $coursework->marking_stages();
+        $stage_1 = $stage['assessor_1']; // this allocation is only for 1st stage, we don't touch other stages
+        
+        $student = $coursework->can_submit(); // check if user is student in this course
+        $initial_stage_assessor = has_capability('mod/coursework:addinitialgrade', $coursework->get_context(), $addeduserid); // check if user is initial stage assessor in this course
+
+        if($initial_stage_assessor){
+            // check if any assessor already exists in the group except currently added one
+            $assessors_in_group = get_enrolled_users($coursework->get_context(), 'mod/coursework:addinitialgrade', $groupid);
+            unset($assessors_in_group[$addeduserid]); //remove added assessor as at this point they will be already in the group
+
+            if ($assessors_in_group){//yes - do nothing as other assessor is already assigned to group members, return true
+                break;
+            } else{ //no - check if CW is a group coursework
+                if($coursework->is_configured_to_have_group_submissions()){// yes - assign the tutor to a allocatable group
+                    $stage_1->make_auto_allocation_if_necessary(group::find($groupid));
+                } else {  // no, check if group has any student members
+                    $allocatables = $coursework->get_allocatables();
+                    if ($allocatables){
+                        // yes - assign this assessor to every allocatable student in the appropriate course group - at this point assessor should already be a member
+                        foreach($allocatables as $allocatable) {
+                            // process students allocations
+                            if ($coursework->student_is_in_any_group($allocatable)) { // student must belong to a group
+                                $stage_1->make_auto_allocation_if_necessary($allocatable);
+                            }
+                        }
+                    } else {// no - do nothing, return true
+                        continue;
+                    }
+                }
+            }
+        } else if($student) {
+            if($coursework->is_configured_to_have_group_submissions()) {
+                $allocatable = group::find($groupid);
+            } else {
+                $allocatable = user::find($addeduserid);
+            }
+            // process allocatables (group or student) allocation
+            $stage_1->make_auto_allocation_if_necessary($allocatable);
+        }
+    }
+    return true;
+}
+
+
+/**
+ * * Function to process allocation of new group members (student/group - assign to a group assessor or assessor - assign to students/group) when a group member is deleted
+ *
+ * @param $event_data
+ * @return bool
+ * @throws coding_exception
+ * @throws dml_exception
+ */
+function course_group_member_removed($event_data) {
+    global $DB;
+
+    $groupid = $event_data->objectid;
+    $courseid = $event_data->courseid;
+    $removeduserid = $event_data->relateduserid;
+
+    // get all courseworks with group_assessor allocation strategy
+    $courseworks = $DB->get_records('coursework', array('course'=>$courseid, 'assessorallocationstrategy' => 'group_assessor'));
+
+    foreach($courseworks as $coursework){
+
+        $coursework = coursework::find($coursework);
+        $stage = $coursework->marking_stages();
+        $stage_1 = $stage['assessor_1']; // this allocation is only for 1st stage, we don't touch other stages
+
+        $student = $coursework->can_submit(); // check if user is student in this course
+        $initial_stage_assessor = has_capability('mod/coursework:addinitialgrade', $coursework->get_context(), $removeduserid); // check if user was initial stage assessor in this course
+
+        if($initial_stage_assessor){
+            // remove all assessor allocations for this group
+            if($coursework->is_configured_to_have_group_submissions()) {
+                if (can_delete_allocation($coursework->id(), $groupid)) {
+                    $DB->delete_records('coursework_allocation_pairs', array('courseworkid' => $coursework->id(), 'assessorid' => $removeduserid, 'allocatableid' => $groupid, 'stage_identifier' => 'assessor_1'));
+                }
+            } else {
+                // find all individual students in the group
+               $students =  get_enrolled_users($coursework->get_context(), 'mod/coursework:submit', $groupid);
+               if ($students){
+                   foreach($students as $student){
+                       if (can_delete_allocation($coursework->id(), $student->id)) {
+                           $DB->delete_records('coursework_allocation_pairs', array('courseworkid' => $coursework->id(), 'assessorid' => $removeduserid, 'allocatableid' => $student->id, 'stage_identifier' => 'assessor_1'));
+                       }
+                   }
+               } else {
+                   continue;
+               }
+            }
+
+            // check if there are any other assessor in the group, at this point the removed member should no longer be in the group
+            $assessors_in_group = get_enrolled_users($coursework->get_context(), 'mod/coursework:addinitialgrade', $groupid);
+
+             if($assessors_in_group) { // if another assessor found, assign all allocatables in this group to the other assessor
+                 if($coursework->is_configured_to_have_group_submissions()){// yes - assign the assessor to a allocatable group
+                     $stage_1->make_auto_allocation_if_necessary(group::find($groupid));
+                 } else {
+                     $allocatables = $coursework->get_allocatables();
+                     if ($allocatables) {
+                         // yes - assign this assessor to every allocatable student in the appropriate course group
+                         foreach ($allocatables as $allocatable) {
+                             // process students allocations
+                             $stage_1->make_auto_allocation_if_necessary($allocatable);
+                         }
+                     } else {// no - do nothing, return true
+                         continue;
+                     }
+                 }
+             } else{
+                 continue;
+             }
+        } else if($student) {
+            if ($coursework->is_configured_to_have_group_submissions()) {
+                // check if student was the only student member in the group
+                $students = get_enrolled_users($coursework->get_context(), 'mod/coursework:submit', $groupid); // at this point student should be already removed from the group
+
+                if (!$students) { // if no students in group, then remove group allocation
+                    $allocatableid = $groupid;
+                } else {
+                    continue; // continue as we store group allocatableid, so removing student from the group with many students doesn't affect allocations
+                }
+
+            } else {
+                //if individual coursework
+                $allocatableid = $removeduserid;
+            }
+
+            if (can_delete_allocation($coursework->id(), $allocatableid)) {
+                $DB->delete_records('coursework_allocation_pairs', array('courseworkid' => $coursework->id(), 'allocatableid' => $allocatableid, 'stage_identifier' => 'assessor_1'));
+            }
+
+            // check if the student was in a different group and allocate them to the first found group
+            if (!$coursework->is_configured_to_have_group_submissions()) {
+                $allocatable = user::find($allocatableid);
+                if ($coursework->student_is_in_any_group($allocatable)) {
+                    $stage_1->make_auto_allocation_if_necessary($allocatable);
+                }
+            }
+        }
+    }
+    return true;
+}
+
+
+/**
+ * Function to check the allocation if it is not pinned or its submission has not been marked yet
+ *
+ * @param $courseworkid
+ * @param $allocatableid
+ * @return mixed
+ * @throws dml_exception
+ */
+function can_delete_allocation($courseworkid, $allocatableid) {
+    global $DB;
+
+    // check if allocation is pinned or already graded by an assessor / 1st stage only!
+    $ungraded_allocations = $DB->get_record_sql("SELECT *
+                                                    FROM {coursework_allocation_pairs} p
+                                                    WHERE courseworkid = :courseworkid
+                                                    AND p.manual = 0  
+                                                    AND stage_identifier = 'assessor_1'
+                                                    AND allocatableid = :allocatableid
+                                                    AND NOT EXISTS (SELECT 1
+                                                                    FROM {coursework_submissions} s
+                                                                    INNER JOIN {coursework_feedbacks} f ON f.submissionid = s.id
+                                                                    WHERE s.allocatableid = p.allocatableid
+                                                                    AND s.allocatabletype = p.allocatabletype
+                                                                    AND s.courseworkid = p.courseworkid
+                                                                    AND f.stage_identifier = p.stage_identifier)",
+                            array('courseworkid' => $courseworkid, 'allocatableid' => $allocatableid));
+
+    return $ungraded_allocations;
+}
 
 /**
  * @param $course_module_id
@@ -1275,9 +1474,16 @@ function has_user_seen_tii_EULA_agreement(){
         $plagiarismsettings = (array)get_config('plagiarism');
         if (!empty($plagiarismsettings['turnitin_use'])) {
 
-            $sql = "SELECT * FROM {turnitintooltwo_users}
-                 WHERE userid = :userid
-                 and user_agreement_accepted <> 0";
+            if ($DB->get_manager()->table_exists('plagiarism_turnitin_users')){
+                $sql = "SELECT * FROM {plagiarism_turnitin_users}
+                        WHERE userid = :userid
+                        AND user_agreement_accepted <> 0";
+
+            } else {
+                $sql = "SELECT * FROM {turnitintooltwo_users}
+                        WHERE userid = :userid
+                        AND user_agreement_accepted <> 0";
+            }
 
             $shouldseeEULA = $DB->record_exists_sql($sql, array('userid'=>$USER->id));
         }

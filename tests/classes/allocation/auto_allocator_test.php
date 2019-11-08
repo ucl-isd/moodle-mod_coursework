@@ -8,6 +8,7 @@ use mod_coursework\models\coursework;
  * @property stdClass teacher_one
  * @property stdClass teacher_two
  * @property stdClass course
+ * @group mod_coursework
  */
 class auto_allocator_test extends advanced_testcase {
 

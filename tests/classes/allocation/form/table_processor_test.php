@@ -17,6 +17,7 @@ global $CFG;
  * @property stdClass course
  * @property stdClass teacher
  * @property stdClass other_teacher
+ * @group mod_coursework
  */
 class table_processor_test extends advanced_testcase {
 

@@ -29,7 +29,16 @@ class auto_allocator {
         $this->delete_all_ungraded_auto_allocations();
 
         foreach ($this->marking_stages() as $stage) {
-            if ($stage->auto_allocation_enabled()) {
+            if ($stage->group_assessor_enabled() && $stage->identifier() == 'assessor_1'){
+                // if allocation strategy 'group_assessor' then assign assessor from that group to stage1 and continue
+                // for the rest of stages with manual allocation
+                $allocatables = $this->get_allocatables();
+
+                foreach ($allocatables as $allocatable) {
+                    $stage->make_auto_allocation_if_necessary($allocatable);
+                }
+
+            } else if ($stage->auto_allocation_enabled()) {
                 $this->process_marking_stage($stage);
             }
         }

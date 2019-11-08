@@ -2462,6 +2462,50 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2018042401, 'coursework');
     }
 
+    if ($oldversion < 2018060400) {
+
+        // Define field plagiarismflagenabled to be added to coursework.
+        $table = new xmldb_table('coursework');
+        $field = new xmldb_field('plagiarismflagenabled', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'processenrol');
+
+        // Conditionally launch add field plagiarismflagenabled.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2018060400, 'coursework');
+    }
+
+    if ($oldversion < 2018060404) {
+
+        // Define table coursework_plagiarism_flag to be created.
+        $table = new xmldb_table('coursework_plagiarism_flags');
+
+        // Adding fields to table coursework_plagiarism_flag.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('courseworkid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('submissionid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null);
+        $table->add_field('status', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('comment', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('comment_format',XMLDB_TYPE_INTEGER,'2',null,null,null,null);
+        $table->add_field('createdby', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('lastmodifiedby', XMLDB_TYPE_INTEGER, '10', null, false, null, null);
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+
+
+        // Adding keys to table coursework_plagiarism_flag.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Conditionally launch create table for coursework_plagiarism_flag.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2018060404, 'coursework');
+    }
 
 
     // Always needs to return true.

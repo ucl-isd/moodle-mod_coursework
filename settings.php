@@ -55,6 +55,14 @@ if ($ADMIN->fulltree) {
         $settings->add($maxbytessetting);
     }
 
+
+    // Submissions
+    $submissions_header = new admin_setting_heading('submissions_header', get_string('submissions', 'mod_coursework'),'');
+    $settings->add($submissions_header);
+    $options =  array( 0 => get_string('no'), 1 => get_string('yes'));
+    $settings->add(new admin_setting_configselect('coursework_plagiarismflag', get_string('plagiarism_flag_enable', 'mod_coursework'), get_string('plagiarism_flag_enable_desc', 'mod_coursework'), 0, $options));
+
+
     // Submission receipt
     $submissionreceipt_header = new admin_setting_heading('submissionreceipt_header', get_string('submissionreceipt', 'mod_coursework'),'');
     $settings->add($submissionreceipt_header);

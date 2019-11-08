@@ -21,6 +21,7 @@ global $CFG;
 
 /**
  * Unit tests for the base allocation strategy class.
+ * @group mod_coursework
  */
 class coursework_allocation_strategy_test extends advanced_testcase {
 

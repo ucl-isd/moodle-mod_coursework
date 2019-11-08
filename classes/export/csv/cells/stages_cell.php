@@ -47,6 +47,11 @@ class stages_cell extends cell_base {
                     $gradedata[] = get_string('assessornotallocated', 'mod_coursework');
                 }
             }
+
+            if($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()){
+                $this->get_rubric_scores_gradedata($grade, $gradedata);
+            }
+
             if ($grade){
                 $gradedata[] = $this->get_actual_grade($grade->grade);
                 $gradedata[] = $this->get_assessor_name($grade->assessorid);
@@ -61,6 +66,13 @@ class stages_cell extends cell_base {
         }
 
         if ($this->stages >= 2) { // if there are two or more stages for a submission, we will have agreed grade
+            $grade = $submission->get_assessor_feedback_by_stage('final_agreed_1');
+            if($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()){
+                if($this->coursework->is_using_advanced_grading()){
+                    $this->get_rubric_scores_gradedata($grade, $gradedata);
+                }
+            }
+
             $gradedata[] = $submission->get_agreed_grade() == false ? '' : $this->get_actual_grade($submission->get_agreed_grade()->grade);
 
             if ((!$this->coursework->sampling_enabled() || $submission->sampled_feedback_exists()) && $feedback && (($feedback->assessorid == 0 && $timecreated == $timemodified) || $feedback->lasteditedbyuser == 0 )) {
@@ -92,12 +104,30 @@ class stages_cell extends cell_base {
                 $fields['allocatedassessor' . $i . 'name'] = 'Allocated assessor ' . $i . ' name';
                 $fields['allocated' . $i . 'userame'] = 'Allocated assessor ' . $i . ' username';
             }
+
+            if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()){
+                $criteria = $this->coursework->get_rubric_criteria();
+                foreach ($criteria as $id => $record){
+                    $fields['assessor' .$i. 'description' . $id] = 'Assessor '. $i . ' - '.$record['description'];
+                    $fields['assessor' .$i. 'description' . $id . 'comment'] = 'Comment for: Assessor '. $i . ' - '.$record['description'];
+                }
+            }
+
             $fields['assessor' . $i] = 'Assessor ' . $i . ' grade';
             $fields['assessor' . $i . 'name'] = 'Assessor ' . $i . ' name';
             $fields['assessor' . $i . 'username'] = 'Assessor ' . $i . ' username';
             $fields['assessor' . $i . 'markingtime'] = 'Assessor ' . $i . ' marked on';
         }
         if ($this->stages >= 2) { // if there are two or more stages for a submission, we will have agreed grade
+
+            if($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()){
+                $criteria = $this->coursework->get_rubric_criteria();
+                foreach ($criteria as $id => $record){
+                    $fields['agreedgrade_description_' . $id] = 'Agreed grade - '.$record['description'];
+                    $fields['agreedgrade_description_' . $id. 'comment'] = 'Comment for: Agreed grade - '.$record['description'];
+                }
+            }
+
             $fields['agreedgrade'] = get_string('agreedgrade', 'coursework');
             $fields['agreedgradeby'] = get_string('agreedgradeby', 'coursework');
             $fields['agreedgradebyusername'] = get_string('agreedgradebyusername', 'coursework');
@@ -106,6 +136,7 @@ class stages_cell extends cell_base {
 
         return $fields;
     }
+
 
 
 

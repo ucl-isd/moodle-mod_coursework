@@ -49,6 +49,7 @@ use mod_coursework\render_helpers\grading_report\cells\group_cell;
 use mod_coursework\render_helpers\grading_report\cells\moderation_cell;
 use mod_coursework\render_helpers\grading_report\cells\multiple_agreed_grade_cell;
 use mod_coursework\render_helpers\grading_report\cells\plagiarism_cell;
+use mod_coursework\render_helpers\grading_report\cells\plagiarism_flag_cell;
 use mod_coursework\render_helpers\grading_report\cells\status_cell;
 use mod_coursework\render_helpers\grading_report\cells\submission_cell;
 use mod_coursework\render_helpers\grading_report\cells\time_submitted_cell;
@@ -64,6 +65,7 @@ use mod_coursework\render_helpers\grading_report\sub_rows\no_sub_rows;
 use stored_file;
 use mod_coursework\plagiarism_helpers\base as plagiarism_base;
 use mod_coursework\export;
+use gradingform_rubric_instance;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -850,6 +852,14 @@ class coursework extends table_base {
         return false;
     }
 
+
+    /**
+     * @return bool
+     */
+    public function plagiarism_flagging_enbled() {
+        return (bool)$this->plagiarismflagenabled;
+    }
+
     /**
      * @return bool
      */
@@ -1269,7 +1279,7 @@ class coursework extends table_base {
      * TODO: Fix all calls to prefix "aa" or something to keep Excel happy
      * @param int $userid
      * @return string
-     */      
+     */
     static function get_name_hash($id,$userid,$time=1440000609)
     {
         if ($id < 1) {
@@ -1286,7 +1296,7 @@ class coursework extends table_base {
 
         return $uhash;
     }
-    
+
     public function get_username_hash($userid)
     {
         return static::get_name_hash($this->id,$userid,$this->timecreated);
@@ -1596,7 +1606,7 @@ class coursework extends table_base {
     public function get_student_group($student) {
         global $DB;
 
-        if (!$this->is_configured_to_have_group_submissions()) {
+        if (!$this->is_configured_to_have_group_submissions() && $this->assessorallocationstrategy != 'group_assessor') {
             throw new coding_exception('Asking for a student group when groups are disabled.');
         }
 
@@ -1731,6 +1741,10 @@ class coursework extends table_base {
         $report->add_cell(new status_cell($cell_items));
         $report->add_cell(new submission_cell($cell_items));
         $report->add_cell(new time_submitted_cell($cell_items));
+        if ($this->plagiarism_flagging_enbled()) {
+            $report->add_cell(new plagiarism_flag_cell($cell_items));
+        }
+
         if ($this->plagiarism_enbled()) {
             $report->add_cell(new plagiarism_cell($cell_items));
         }
@@ -2027,6 +2041,31 @@ class coursework extends table_base {
      */
     protected function get_advanced_grading_manager() {
         return get_grading_manager($this->get_context(), 'mod_coursework', 'submissions');
+    }
+
+    /**
+     * Function to check if rubric is used in the current coursework
+     *
+     * @return bool
+     */
+    public function is_using_rubric(){
+        $grading_manager = $this->get_advanced_grading_manager();
+        $method = $grading_manager->get_active_method();
+
+        if ($method == 'rubric'){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Function to get all coursework's rubric criteria
+     *
+     * @return mixed
+     */
+    public function get_rubric_criteria(){
+        $controller = $this->get_advanced_grading_active_controller();
+        return $controller->get_definition()->rubric_criteria;
     }
 
     /**
@@ -2392,9 +2431,9 @@ class coursework extends table_base {
     public function get_coursework_submission_personal_deadlines(){
         global $DB;
 
-        $sql = "SELECT cs.id as submissionid, personal_deadline 
-                FROM {coursework_submissions} cs 
-                LEFT JOIN {coursework_person_deadlines} pd ON cs.courseworkid = pd.courseworkid 
+        $sql = "SELECT cs.id as submissionid, personal_deadline
+                FROM {coursework_submissions} cs
+                LEFT JOIN {coursework_person_deadlines} pd ON cs.courseworkid = pd.courseworkid
                 AND pd.allocatableid = cs.allocatableid
                 AND pd.allocatabletype = cs.allocatabletype
                 WHERE cs.courseworkid = :courseworkid";
@@ -2594,14 +2633,14 @@ class coursework extends table_base {
     }
 
     /** Check is courseowrk kas any users added to sample
-     * 
+     *
      * @return bool
      */
     public function has_samples(){
         global $DB;
-        
+
         return $DB->record_exists('coursework_sample_set_mbrs', array('courseworkid' => $this->id));
-    
+
     }
 
     /**
@@ -2638,4 +2677,178 @@ class coursework extends table_base {
     }
 
 
+    /**
+     * Function to check if a given individual is in the given group
+     *
+     * @param $studentid
+     * @param $groupid
+     * @return bool
+     * @throws \dml_exception
+     */
+    public function student_in_group($studentid, $groupid){
+
+        global $DB;
+
+        $sql = "SELECT groups.*
+                  FROM {groups} groups
+            INNER JOIN {groups_members} gm
+                    ON gm.groupid = groups.id
+                 WHERE gm.userid = :userid
+                   AND groups.courseid = :courseid
+                   AND groups.id = :groupid";
+
+        $params = array('userid' => $studentid,
+                        'courseid' => $this->get_course()->id,
+                        'groupid' => $groupid);
+
+        return $DB->record_exists_sql($sql, $params);
+    }
+
+    /**
+     * Function to retrieve all submissions by coursework
+     *
+     * @return submissions
+     */
+    function retrieve_submissions_by_coursework() {
+        global $DB;
+
+        return $DB->get_records('coursework_submissions', ['courseworkid' => $this->id, 'allocatabletype' => 'user']);
+    }
+
+    /**
+     * Function to retrieve all submissions submitted by a user
+     *
+     * @param $user_id
+     * @return submissions
+     */
+    public function retrieve_submissions_by_user($user_id) {
+        global $DB;
+
+        return $DB->get_records('coursework_submissions', ['courseworkid' => $this->id, 'authorid' => $user_id, 'allocatabletype' => 'user']);
+    }
+
+    /**
+     * Function to retrieve all feedbacks by a submission
+     *
+     * @param $submission_id
+     * @return feedbacks
+     */
+    public function retrieve_feedbacks_by_submission($submission_id) {
+        global $DB;
+
+        return $DB->get_records('coursework_feedbacks', ['submissionid' => $submission_id]);
+    }
+
+    /**
+     * Function to remove all submissions submitted by a user
+     *
+     * @param $user_id
+     */
+    public function remove_submissions_by_user($user_id) {
+        global $DB;
+
+        $DB->delete_records('coursework_submissions', ['courseworkid' => $this->id, 'authorid' => $user_id, 'allocatabletype' => 'user']);
+    }
+
+    /**
+     * Function to remove all submissions by this coursework
+     *
+     * @return submissions
+     */
+    public function remove_submissions_by_coursework() {
+        global $DB;
+
+        $DB->delete_records('coursework_submissions', ['courseworkid' => $this->id, 'allocatabletype' => 'user']);
+    }
+
+    /**
+     * Function to Remove all plagiarisms by a submission
+     *
+     * @param $submission_id
+     */
+    public function remove_plagiarisms_by_submission($submission_id) {
+        global $DB;
+
+        $DB->delete_records('coursework_plagiarism_flags', ['submissionid' => $submission_id]);
+    }
+
+    /**
+     * Function to Remove the corresponding file by context, item-id and fielarea
+     *
+     * @param $context_id
+     * @param $item_id
+     * @param $filearea
+     */
+    public function remove_corresponding_file($context_id, $item_id, $filearea) {
+        global $DB;
+
+        $component  = 'mod_coursework';
+
+        $fs = get_file_storage();
+        $fs->delete_area_files($context_id, $component, $filearea, $item_id);
+    }
+
+    /**
+     * Function to Remove all feedbacks by a submission
+     *
+     * @param $submission_id
+     */
+    public function remove_feedbacks_by_submission($submission_id) {
+        global $DB;
+
+        $DB->delete_records('coursework_feedbacks', ['submissionid' => $submission_id]);
+    }
+
+    /**
+     * Function to Remove all agreements by a feedback
+     *
+     * @param $feedback_id
+     */
+    public function remove_agreements_by_feedback($feedback_id) {
+        global $DB;
+
+        $DB->delete_records('coursework_mod_agreements', ['feedbackid' => $feedback_id]);
+    }
+
+    /**
+     * Function to Remove all deadline extensions by user
+     *
+     * @param $user_id
+     */
+    public function remove_deadline_extensions_by_user($user_id) {
+        global $DB;
+
+        $DB->execute('DELETE FROM {coursework_extensions} WHERE allocatabletype = ? AND (allocatableid = ? OR allocatableuser = ? ) ', array('user', $user_id, $user_id));
+    }
+
+    /**
+     * Function to Remove all personal deadlines by user
+     *
+     * @param $user_id
+     */
+    public function remove_personal_deadlines_by_user($user_id) {
+        global $DB;
+
+        $DB->execute('DELETE FROM {coursework_person_deadlines} WHERE allocatabletype = ? AND (allocatableid = ? OR allocatableuser = ? ) ', array('user', $user_id, $user_id));
+    }
+
+    /**
+     * Function to Remove all deadline extensions by coursework
+     *
+     */
+    public function remove_deadline_extensions_by_coursework() {
+        global $DB;
+
+        $DB->execute('DELETE FROM {coursework_extensions} WHERE allocatabletype = ? AND courseworkid = ? ', array('user', $this->id));
+    }
+
+    /**
+     * Function to Remove all personal deadlines by coursework
+     *
+     */
+    public function remove_personal_deadlines_by_coursework() {
+        global $DB;
+
+        $DB->execute('DELETE FROM {coursework_person_deadlines} WHERE allocatabletype = ? AND courseworkid = ? ', array('user', $this->id));
+    }
 }

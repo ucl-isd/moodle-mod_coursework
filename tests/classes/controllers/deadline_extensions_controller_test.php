@@ -3,7 +3,7 @@
 /**
  * Class deadline_extensions_controller_test is responsible for testing the deadline_extensions controller
  * class.
- *
+ * @group mod_coursework
  */
 class deadline_extensions_controller_test extends basic_testcase {
 

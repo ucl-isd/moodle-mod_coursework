@@ -31,7 +31,7 @@ Feature: Automatically allocations interacting with manually allocated students
         And there is another teacher
         When I visit the allocations page
         And I set the allocation strategy to 100 percent for the other teacher
-        And I save everything
+        And I press "Apply"
         When I visit the allocations page
         Then I should see the student allocated to the other teacher for the first assessor
 

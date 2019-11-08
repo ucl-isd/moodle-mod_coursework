@@ -103,17 +103,16 @@ class warnings {
         $studentsinmultigroups = $DB->get_records_sql($sql, $params);
 
         if ($studentsinmultigroups) {
-            $message = '<div class = "multiple_groups_warning">';
-            $message .= '<p>' . get_string('studentsinmultiplegroups', 'mod_coursework') . '</p>';
-            $message .= '<ul>';
-
+            $studentmessage = '';
             foreach ($studentsinmultigroups as $student) {
-                $message .= '<li>' . $student->firstname . ' ' . $student->lastname;
 
-                //get group ids of these students
-                if ($this->coursework->grouping_id) {
+                if (!has_capability('mod/coursework:addinitialgrade', $this->coursework->get_context(), $student->userid)) {
+                    $studentmessage .= '<li>' . $student->firstname . ' ' . $student->lastname;
 
-                    $sql = "SELECT groups.id,groups.name
+                    //get group ids of these students
+                    if ($this->coursework->grouping_id) {
+
+                        $sql = "SELECT groups.id,groups.name
                                FROM {groups} groups
                          INNER JOIN {groupings_groups} groupings
                                  ON groups.id = groupings.groupid
@@ -123,34 +122,42 @@ class warnings {
                                 AND gm.userid = :userid
                                 AND groupings.groupingid =:grouping_id";
 
-                    $params = array(
-                        'grouping_id' => $this->coursework->grouping_id,
-                        'courseid' => $this->coursework->get_course()->id,
-                        'userid' => $student->userid);
-                } else {
+                        $params = array(
+                            'grouping_id' => $this->coursework->grouping_id,
+                            'courseid' => $this->coursework->get_course()->id,
+                            'userid' => $student->userid);
+                    } else {
 
-                    $sql = "SELECT groups.id,groups.name
+                        $sql = "SELECT groups.id,groups.name
                                 FROM mdl_groups groups
                           INNER JOIN mdl_groups_members gm
                                   ON gm.groupid = groups.id
                                WHERE groups.courseid = :courseid
 		                         AND gm.userid = :userid";
 
-                    $params = array(
-                        'courseid' => $this->coursework->get_course()->id,
-                        'userid' => $student->userid);
-                }
-                $message .= '<ul>';
-                $groups = $DB->get_records_sql($sql, $params);
+                        $params = array(
+                            'courseid' => $this->coursework->get_course()->id,
+                            'userid' => $student->userid);
+                    }
+                    $studentmessage .= '<ul>';
+                    $groups = $DB->get_records_sql($sql, $params);
 
-                foreach ($groups as $group) {
-                    $message .= '<li>';
-                    $message .= $group->name;
-                    $message .= '</li>';
+                    foreach ($groups as $group) {
+                        $studentmessage .= '<li>';
+                        $studentmessage .= $group->name;
+                        $studentmessage .= '</li>';
+                    }
+                    $studentmessage .= '</ul></li>';
                 }
-                $message .= '</ul></li>';
             }
-            $message .= '</ul></div>';
+
+            if(!empty($studentmessage)) {
+                $message  = '<div class = "multiple_groups_warning">';
+                $message .= '<p>' . get_string('studentsinmultiplegroups', 'mod_coursework') . '</p>';
+                $message .= '<ul>';
+                $message .= $studentmessage;
+                $message .= '</ul></div>';
+            }
         }
 
         if (!empty($message)) {
@@ -266,6 +273,11 @@ class warnings {
         }
 
         $student_ids = array_keys(get_enrolled_users($this->coursework->get_context(), 'mod/coursework:submit'));
+
+        if (empty($student_ids)) {
+            return '';
+        }
+
         list($student_sql, $student_params) = $DB->get_in_or_equal($student_ids, SQL_PARAMS_NAMED);
 
         if ($this->coursework->grouping_id != 0) {

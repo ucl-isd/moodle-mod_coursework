@@ -31,6 +31,7 @@ global $CFG;
 /**
  * @property mixed feedback_data
  * @property mixed csv
+ * @group mod_coursework
  */
 class grading_sheet_download_test extends advanced_testcase {
 

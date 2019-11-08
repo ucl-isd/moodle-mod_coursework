@@ -39,6 +39,7 @@ global $CFG;
  * @property mixed grouping
  * @property mixed student
  * @property mixed other_student
+ * @group mod_coursework
  */
 class coursework_test extends advanced_testcase {
 
@@ -246,7 +247,9 @@ class coursework_test extends advanced_testcase {
 
         $this->create_a_course();
 
+        $this->create_a_student();
         $group = $this->create_a_group();
+        $this->add_student_to_the_group();
 
         $grouping = $this->create_a_grouping();
 
@@ -257,6 +260,7 @@ class coursework_test extends advanced_testcase {
         $coursework->update_attribute('use_groups', 1);
 
         $allocatables = $coursework->get_allocatables();
+        // print_r($allocatables);die;
         $allocatable_ids = array_keys($allocatables);
         $this->assertContains($group->id, $allocatable_ids, "Actual array keys: ".implode(', ', $allocatable_ids));
 

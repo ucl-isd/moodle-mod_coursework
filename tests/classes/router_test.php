@@ -4,6 +4,7 @@ use mod_coursework\router;
 
 /**
  * Class router_test
+ * @group mod_coursework
  */
 class router_test extends advanced_testcase {
 
@@ -20,7 +21,7 @@ class router_test extends advanced_testcase {
     /**
      * @var string
      */
-    protected $moodle_location = 'http://www.example.com/moodle';
+    protected $moodle_location = 'https://www.example.com/moodle';
 
     public function setUp() {
         $this->router = router::instance();
@@ -31,6 +32,7 @@ class router_test extends advanced_testcase {
     public function test_new_submission_path() {
 
         $submission = submission::build(array('allocatableid' => 4, 'allocatabletype' => 'user', 'courseworkid' => 5));
+
         $path = $this->router->get_path('new submission', array('submission' => $submission));
         $this->assertEquals($this->moodle_location.'/mod/coursework/actions/submissions/new.php?allocatableid=4&amp;allocatabletype=user&amp;courseworkid=5', $path);
     }

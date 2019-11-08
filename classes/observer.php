@@ -64,12 +64,17 @@ class mod_coursework_observer {
 
     }
 
+    /**
+     * @param \core\event\group_member_added $event
+     */
+    public static function process_allocations_when_group_member_added(\core\event\group_member_added $event){
+        course_group_member_added($event);
+    }
 
-
-
-
-
-
-
-
+    /**
+     * @param \core\event\group_member_removed $event
+     */
+    public static function process_allocations_when_group_member_removed(\core\event\group_member_removed $event){
+        course_group_member_removed($event);
+    }
 }

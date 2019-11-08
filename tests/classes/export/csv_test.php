@@ -35,6 +35,7 @@ global $CFG;
 /**
  * @property mixed feedback_data
  * @property mixed csv
+ * @group mod_coursework
  */
 class csv_test extends advanced_testcase {
 

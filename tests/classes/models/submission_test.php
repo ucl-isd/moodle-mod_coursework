@@ -33,6 +33,7 @@ global $CFG;
 
 /**
  * Class that will make sure the allocation_manager works.
+ * @group mod_coursework
  */
 class coursework_submission_test extends advanced_testcase {
 

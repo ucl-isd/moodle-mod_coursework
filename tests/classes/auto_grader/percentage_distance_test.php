@@ -6,6 +6,7 @@ namespace mod_coursework\auto_grader;
  * Class percentage_distance_test is responsible for testing the behaviour of the percentage_distance class.
  *
  * @package mod_coursework\auto_grader
+ * @group mod_coursework
  */
 class percentage_distance_test extends \advanced_testcase {
 

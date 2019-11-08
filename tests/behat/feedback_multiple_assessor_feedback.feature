@@ -40,7 +40,7 @@ Feature: Multiple assessors simple grading form
         And I visit the coursework page
         And I click on the new feedback button for assessor 1
         When I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
-        And I press "Save changes"
+        And I press "Save and finalise"
         And I click on the edit feedback icon
         Then I should be on the edit feedback page
         Then I should see "1" elements in "Upload a file" filemanager
@@ -71,13 +71,13 @@ Feature: Multiple assessors simple grading form
         And I click on the new feedback button for assessor 1
         And I wait "1" seconds
         When I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
-        And I press "Save changes"
+        And I press "Save and finalise"
         And I click on the edit feedback icon
         And I wait "2" seconds
         And I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
         Then I should see "2" elements in "Upload a file" filemanager
 
-        When I press "Save changes"
+        When I press "Save and finalise"
         And I click on the edit feedback icon
         And I wait "1" seconds
         Then I should see "2" elements in "Upload a file" filemanager

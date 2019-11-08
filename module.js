@@ -27,18 +27,18 @@ M.mod_coursework = {
     /**
      * This is to set up the listeners etc for the page elements on the allocations page.
      */
-    init_allocate_page : function (e,wwwroot,coursemoduleid) {
+    init_allocate_page: function (e, wwwroot, coursemoduleid) {
         "use strict";
 
 
         // Make the changes to the moderations set dropdowns set the 'in moderations set'
         // checkboxes automatically.
-        $('.assessor_id_dropdown').change(function() {
+        $('.assessor_id_dropdown').change(function () {
 
             var $dropdown = $(this);
             var $checkbox = $dropdown.prevAll('.sampling_set_checkbox');
 
-           var $currentselection = $dropdown.attr('id');
+            var $currentselection = $dropdown.attr('id');
 
             if ($checkbox.length) {
                 if ($dropdown.val() === '') {
@@ -53,7 +53,7 @@ M.mod_coursework = {
             var $selected_val = $dropdown.val();
 
             //compare each element in the row
-            $row.find('td').each(function() {
+            $row.find('td').each(function () {
 
                 // dropdown
                 var $celldropdown = $(this).find('.assessor_id_dropdown');
@@ -63,20 +63,20 @@ M.mod_coursework = {
                 var $atag = $(this).find('a');
                 var $id_from_label = $atag.data('assessorid');
 
-               if ($currentselection != $celldropdown_id && ($celldropdown_val == $selected_val || $id_from_label == $selected_val)){
-                  // alert('Assessor already allocated. \n Choose different assessor.');
-                  $( '<div id="same_assessor" class="alert">'+M.util.get_string('sameassessorerror', 'coursework')+'</div>' ).insertAfter($('#'+$currentselection));
-                   $dropdown.val('');
-               } else if($dropdown.val() != ''){
-                   $( "#same_assessor" ).remove();
-               }
+                if ($currentselection != $celldropdown_id && ($celldropdown_val == $selected_val || $id_from_label == $selected_val)) {
+                    // alert('Assessor already allocated. \n Choose different assessor.');
+                    $('<div id="same_assessor" class="alert">' + M.util.get_string('sameassessorerror', 'coursework') + '</div>').insertAfter($('#' + $currentselection));
+                    $dropdown.val('');
+                } else if ($dropdown.val() != '') {
+                    $("#same_assessor").remove();
+                }
             });
         });
 
 
         // Unchecked 'Include in sample' checkbox disables
         // dropdown automatically.
-        $('.sampling_set_checkbox').click(function() {
+        $('.sampling_set_checkbox').click(function () {
 
             var $checkbox = $(this);
             var $dropdown = $checkbox.nextAll('.assessor_id_dropdown');
@@ -92,19 +92,19 @@ M.mod_coursework = {
                     $dropdown.val('');
                     $dropdown.prop("disabled", true);
                     $child.prop("disabled", true);
-                    $("#same_assessor" ).remove();
+                    $("#same_assessor").remove();
                 }
             }
         });
 
 
-        $('.sampling_set_checkbox').each(function() {
+        $('.sampling_set_checkbox').each(function () {
 
             var $checkbox = $(this);
 
-            var $assessddname  =   $checkbox.attr('id').replace('_samplecheckbox','');
+            var $assessddname = $checkbox.attr('id').replace('_samplecheckbox', '');
 
-            var $assessdd    =   $('#'+$assessddname);
+            var $assessdd = $('#' + $assessddname);
 
             if ($checkbox.is(":checked")) {
                 $assessdd.prop("disabled", false)
@@ -118,18 +118,18 @@ M.mod_coursework = {
         var $menuassessorallocationstrategy = $('#menuassessorallocationstrategy');
         var $selected = $menuassessorallocationstrategy.val();
 
-       /// var $newname = '.assessor-strategy-options #assessor-strategy-' + $selected;
+        /// var $newname = '.assessor-strategy-options #assessor-strategy-' + $selected;
         var $newname = '#assessor-strategy-' + $selected;
         $($newname).css('display', 'block');
 
         // when page was refreshed, display current selection
 
-        $(window).on('unload',function()    {
+        $(window).on('unload', function () {
             $menuassessorallocationstrategy.val($selected);
         })
 
         // Show the form elements that allow us to configure the allocatons
-         $menuassessorallocationstrategy.on('change', function (e) {
+        $menuassessorallocationstrategy.on('change', function (e) {
 
             var newname = 'assessor-strategy-' + $(this).val();
             $('.assessor-strategy-options').each(function () {
@@ -187,7 +187,7 @@ M.mod_coursework = {
         });
 
 
-        var AUTOMATIC_SAMPLING  =   1;
+        var AUTOMATIC_SAMPLING = 1;
 
 
 
@@ -196,15 +196,15 @@ M.mod_coursework = {
 
 
         //assessor sampling strategy drop down
-        $('.assessor_sampling_strategy').each(function(e,element) {
+        $('.assessor_sampling_strategy').each(function (e, element) {
             var ele_id = $(this).attr('id').split('_');
             if ($(this).val() != AUTOMATIC_SAMPLING) {
 
 
 
-                $('.'+ele_id[0]+'_'+ele_id[1]).each(function(n,ele)  {
+                $('.' + ele_id[0] + '_' + ele_id[1]).each(function (n, ele) {
 
-                    $(ele).attr('disabled',true);
+                    $(ele).attr('disabled', true);
                 });
 
             }
@@ -216,17 +216,17 @@ M.mod_coursework = {
             }
 
 
-            $(element).on('change',function()   {
+            $(element).on('change', function () {
 
                 var ele_id = $(this).attr('id').split('_');
 
-                var disabled =  $(this).val() != AUTOMATIC_SAMPLING;
+                var disabled = $(this).val() != AUTOMATIC_SAMPLING;
 
-                var eleid = '.'+ele_id[0]+'_'+ele_id[1];
+                var eleid = '.' + ele_id[0] + '_' + ele_id[1];
 
-                $('.'+ele_id[0]+'_'+ele_id[1]).each(function(n,ele)  {
+                $('.' + ele_id[0] + '_' + ele_id[1]).each(function (n, ele) {
 
-                    $(ele).attr('disabled',disabled);
+                    $(ele).attr('disabled', disabled);
                 });
 
                 if ($(this).val() == AUTOMATIC_SAMPLING) {
@@ -242,95 +242,95 @@ M.mod_coursework = {
 
 
 
-        if (!$('.pin_1')){
+        if (!$('.pin_1')) {
             $(this).hide();
         }
 
-        $('#selectall_1').change(function() {
+        $('#selectall_1').change(function () {
 
-            if($(this).is(":checked")) {
-                $('.pin_1').prop('checked',true);
+            if ($(this).is(":checked")) {
+                $('.pin_1').prop('checked', true);
 
             } else {
-                $('.pin_1').prop('checked',false);
+                $('.pin_1').prop('checked', false);
 
             }
         })
 
-        $('#selectall_2').change(function() {
+        $('#selectall_2').change(function () {
 
-            if($(this).is(":checked")) {
-                $('.pin_2').prop('checked',true);
+            if ($(this).is(":checked")) {
+                $('.pin_2').prop('checked', true);
 
             } else {
-                $('.pin_2').prop('checked',false);
+                $('.pin_2').prop('checked', false);
 
             }
         })
 
-        $('#selectall_3').change(function() {
+        $('#selectall_3').change(function () {
 
-            if($(this).is(":checked")) {
-                $('.pin_3').prop('checked',true);
+            if ($(this).is(":checked")) {
+                $('.pin_3').prop('checked', true);
 
             } else {
-                $('.pin_3').prop('checked',false);
+                $('.pin_3').prop('checked', false);
 
             }
         })
 
-        $('#selectall_mod').change(function() {
+        $('#selectall_mod').change(function () {
 
-            if($(this).is(":checked")) {
-                $('.pin_r').prop('checked',true);
+            if ($(this).is(":checked")) {
+                $('.pin_r').prop('checked', true);
 
             } else {
-                $('.pin_r').prop('checked',false);
+                $('.pin_r').prop('checked', false);
             }
         })
 
-        $('.page-link').each(function (obj,e) {
+        $('.page-link').each(function (obj, e) {
 
-            $(this).click(function(e,element)  {
+            $(this).click(function (e, element) {
 
-               e.preventDefault();
+                e.preventDefault();
 
-               var linkHref =    $(this).attr("href");
+                var linkHref = $(this).attr("href");
 
 
-               //split the url only look at the query params
-               var params   =   linkHref.split("?");
+                //split the url only look at the query params
+                var params = linkHref.split("?");
 
-               //split the params into individual params
-               var i    =   params[1].split("&");
+                //split the params into individual params
+                var i = params[1].split("&");
 
-               //get the course module id
-               var b    =   i[0].split("=");
+                //get the course module id
+                var b = i[0].split("=");
 
-               var coursemoduleid   =   b[1];
+                var coursemoduleid = b[1];
 
-               var assesorDropNames =   [];
-                var assesorDropValues =   [];
+                var assesorDropNames = [];
+                var assesorDropValues = [];
 
-                var pinnedNames =   [];
-                var pinnedValues =   [];
+                var pinnedNames = [];
+                var pinnedValues = [];
 
-                var modDropNames =   [];
-                var modDropValues =   [];
+                var modDropNames = [];
+                var modDropValues = [];
 
-                var sampleNames =   [];
-                var sampleValues =   [];
+                var sampleNames = [];
+                var sampleValues = [];
 
-                $('.assessor_id_dropdown').each(function(ae,dropele)  {
+                $('.assessor_id_dropdown').each(function (ae, dropele) {
                     assesorDropNames.push($(dropele).attr('name'));
                     assesorDropValues.push($(dropele).val());
 
                 })
 
-                $('.pinned').each(function(ae,chkele)  {
+                $('.pinned').each(function (ae, chkele) {
 
                     pinnedNames.push($(chkele).attr('name'));
-                    if($(chkele).is(':checked')) {
+                    if ($(chkele).is(':checked')) {
                         pinnedValues.push(1);
                     } else {
                         pinnedValues.push(0);
@@ -338,14 +338,14 @@ M.mod_coursework = {
 
                 })
 
-                $('.moderator_id_dropdown').each(function(ae,dropele)  {
+                $('.moderator_id_dropdown').each(function (ae, dropele) {
                     modDropNames.push($(dropele).attr('name'));
                     modDropValues.push($(dropele).val());
                 })
 
-                $('.sampling_set_checkbox').each(function(ae,chkele)  {
+                $('.sampling_set_checkbox').each(function (ae, chkele) {
                     sampleNames.push($(chkele).attr('name'));
-                    if($(chkele).is(':checked')) {
+                    if ($(chkele).is(':checked')) {
                         sampleValues.push(1);
                     } else {
                         sampleValues.push(0);
@@ -353,19 +353,21 @@ M.mod_coursework = {
                 })
 
 
-                $.post( wwwroot+"/mod/coursework/actions/allocationsession.php",
-                    {   'assesorselect[]': assesorDropNames,
+                $.post(wwwroot + "/mod/coursework/actions/allocationsession.php",
+                    {
+                        'assesorselect[]': assesorDropNames,
                         'assesorselectvalue[]': assesorDropValues,
                         'moderatorselect[]': modDropNames,
                         'moderatorselectvalue[]': modDropValues,
-                        'pinned[]' : pinnedNames,
-                        'pinnedvalue[]' : pinnedValues,
-                        'sample[]' : sampleNames,
-                        'samplevalue[]' : sampleValues,
+                        'pinned[]': pinnedNames,
+                        'pinnedvalue[]': pinnedValues,
+                        'sample[]': sampleNames,
+                        'samplevalue[]': sampleValues,
 
-                        'coursemoduleid' : coursemoduleid } )
-                    .done(function() {
-                        window.location =   linkHref;
+                        'coursemoduleid': coursemoduleid
+                    })
+                    .done(function () {
+                        window.location = linkHref;
                     });
 
 
@@ -375,37 +377,39 @@ M.mod_coursework = {
         });
 
 
-        $('#save_assessor_allocation_strategy').click( function (e)  {
-
+        $('#save_assessor_allocation_strategy').click(function (e) {
             e.preventDefault();
             console.log('reallocating allocatables');
 
-            var customElement   = $("<div>", {
-                id      : "countdown",
-                css     : {
-                    "font-size" : "15px",
-                    "display" : "block",
+            var customElement = $("<div>", {
+                id: "countdown",
+                css: {
+                    "font-size": "15px",
+                    "display": "block",
                     "padding-top": "90px"
                 },
-                text    : 'The allocation strategy is being applied this may take some time please wait'
+                text: 'The allocation strategy is being applied this may take some time please wait'
             });
+            // $("#coursework_input_buttons").first().LoadingOverlay("show", {
+            //     custom: customElement
+            // });
+            $("#coursework_input_buttons").append(customElement);
+            $("#coursework_input_buttons").toggleClass('my_overlay');
 
-            $("#coursework_input_buttons").first().LoadingOverlay("show",{
-                custom  :   customElement
-            });
-            var allocationformdata  =   $('#allocation_form').serialize();
-            allocationformdata      =   allocationformdata+"&coursemoduleid="+coursemoduleid;
+            var allocationformdata = $('#allocation_form').serialize();
+            allocationformdata = allocationformdata + "&coursemoduleid=" + coursemoduleid;
             $.ajax({
-                url: wwwroot+"/mod/coursework/actions/processallocation.php",
-                data:allocationformdata,
+                url: wwwroot + "/mod/coursework/actions/processallocation.php",
+                data: allocationformdata,
                 method: 'POST',
                 xhrFields: {
-                    onprogress: function(e) {
+                    onprogress: function (e) {
 
                     }
                 },
-                success: function(text) {
-                    $(".allocation-strategy").first().LoadingOverlay("hide");
+                success: function (text) {
+                    // $(".allocation-strategy").first().LoadingOverlay("hide");
+                    $("#coursework_input_buttons").toggleClass('my_overlay');
 
                     location.reload(true);
                 }
@@ -417,37 +421,39 @@ M.mod_coursework = {
 
         });
 
-        $('#save_and_exit_assessor_allocation_strategy').click( function (e)  {
+        $('#save_and_exit_assessor_allocation_strategy').click(function (e) {
 
             e.preventDefault();
 
-            var customElement   = $("<div>", {
-                id      : "countdown",
-                css     : {
-                    "font-size" : "15px",
-                    "display" : "block",
+            var customElement = $("<div>", {
+                id: "countdown",
+                css: {
+                    "font-size": "15px",
+                    "display": "block",
                     "padding-top": "90px"
                 },
-                text    : 'The allocation strategy is being saved the page will exit shortly. Depending on the number of participants on this course you may not see the results of the allocations straight away in this event refresh the page'
+                text: 'The allocation strategy is being saved the page will exit shortly. Depending on the number of participants on this course you may not see the results of the allocations straight away in this event refresh the page'
             });
 
-            $("#coursework_input_buttons").first().LoadingOverlay("show",{
-                custom  :   customElement
-            });
+            // $("#coursework_input_buttons").first().LoadingOverlay("show", {
+            //     custom: customElement
+            // });
+            $("#coursework_input_buttons").append(customElement);
+            $("#coursework_input_buttons").toggleClass('my_overlay');
 
-            var allocationformdata  =   $('#allocation_form').serialize();
-            allocationformdata      =   allocationformdata+"&coursemoduleid="+coursemoduleid;
+            var allocationformdata = $('#allocation_form').serialize();
+            allocationformdata = allocationformdata + "&coursemoduleid=" + coursemoduleid;
             $.ajax({
-                url: wwwroot+"/mod/coursework/actions/processallocation.php",
-                data:allocationformdata,
+                url: wwwroot + "/mod/coursework/actions/processallocation.php",
+                data: allocationformdata,
                 method: 'POST',
                 xhrFields: {
-                    onprogress: function(e) {
+                    onprogress: function (e) {
 
 
                     }
                 },
-                success: function(text) {
+                success: function (text) {
 
                 }
             });
@@ -456,8 +462,8 @@ M.mod_coursework = {
             *  can sometime lead to the call to the page being aborted. 5 seconds should be enought to allow the page call to occur*/
 
             setTimeout(function () {
-                window.location     =   wwwroot+"/mod/coursework/view.php?id="+coursemoduleid;
-                },5000);
+                window.location = wwwroot + "/mod/coursework/view.php?id=" + coursemoduleid;
+            }, 5000);
 
 
 
@@ -477,17 +483,17 @@ M.mod_coursework = {
     /**
      * This is to set up the listeners etc for the page elements on the allocations page.
      */
-    init_personal_deadlines_page : function () {
+    init_personal_deadlines_page: function () {
 
-        $('#selectall').change(function() {
+        $('#selectall').change(function () {
 
-            if($(this).is(":checked")) {
+            if ($(this).is(":checked")) {
 
-                $('.date_select').prop('checked',true);
+                $('.date_select').prop('checked', true);
 
             } else {
 
-                $('.date_select').prop('checked',false);
+                $('.date_select').prop('checked', false);
 
             }
 
@@ -496,7 +502,7 @@ M.mod_coursework = {
 
 
 
-        $('#selected_dates').click( function () {
+        $('#selected_dates').click(function () {
 
             var dateselected = false;
 
@@ -524,7 +530,4 @@ M.mod_coursework = {
 
     }
 };
-
-
-
 
