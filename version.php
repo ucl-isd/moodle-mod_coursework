@@ -31,5 +31,5 @@ $plugin->requires = 2017111300;  // Requires this Moodle version 3.4
 
 $plugin->cron     = 300;        // Period for cron to check this module (secs).
 
-$plugin->release   = "3.4";
+$plugin->release   = "3.6";
 $plugin->maturity  = MATURITY_STABLE;
