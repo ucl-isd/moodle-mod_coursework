@@ -375,7 +375,8 @@ function coursework_grade_item_update($coursework, $grades = null) {
     $course_id = $coursework->get_course_id();
 
     $params = array('itemname' => $coursework->name,
-                    'idnumber' => $coursework->get_coursemodule_id());
+
+        'idnumber' => $coursework->get_coursemodule_idnumber());
 
     if ($coursework->grade > 0) {
         $params['gradetype'] = GRADE_TYPE_VALUE;

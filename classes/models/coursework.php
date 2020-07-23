@@ -469,6 +469,16 @@ class coursework extends table_base {
     }
 
     /**
+     * Returns the idnumber of the associated coursemodule, if there is one. Otherwise false.
+     *
+     * @return int
+     */
+    public function get_coursemodule_idnumber() {
+        $coursemodule = $this->get_course_module();
+        return (int)$coursemodule->idnumber;
+    }
+
+    /**
      * Getter function for the coursework's course object.
      *
      * @global \moodle_database $DB
