@@ -389,4 +389,22 @@ class warnings {
         $students = $DB->get_records_sql($sql, $params);
         return $students;
     }
+
+    /**
+     * Alert markers that filter A to Z filter is on
+     * @return string
+     * @throws \coding_exception
+     */
+    public function a_to_z_filter_on() {
+        return $this->alert_div(get_string('namefilternon', 'mod_coursework'));
+    }
+
+    /**
+     * Alert markers that there may be more submissions to grade
+     * @return string
+     * @throws \coding_exception
+     */
+    public function filters_warning() {
+        return $this->alert_div(get_string('filteronwarning', 'mod_coursework'));
+    }
 }

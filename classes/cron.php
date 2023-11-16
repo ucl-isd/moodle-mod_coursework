@@ -62,7 +62,10 @@ class cron {
              * @var coursework $coursework
              */
             $coursework = coursework::find($raw_coursework);
-           
+            if (!$coursework || !$coursework->is_coursework_visible()) {// check if coursework exists and is not hidden
+                continue;
+            }
+
             // if cw doesn't have personal deadlines and deadline passed and cw doesnt have any individual extensions
             if (!$coursework->personal_deadlines_enabled() && (!$coursework->has_deadline()
                 || $coursework->deadline_has_passed() && !$coursework->extension_exists())) {
