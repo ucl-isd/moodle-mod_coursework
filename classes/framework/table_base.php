@@ -516,7 +516,7 @@ abstract class table_base {
         if (is_number($conditions)) {
             $conditions = array('id' => $conditions);
         }
-        if (method_exists($conditions, 'to_array')) {
+        if (is_object($conditions) && method_exists($conditions, 'to_array')) {
             $conditions = $conditions->to_array();
         }
 

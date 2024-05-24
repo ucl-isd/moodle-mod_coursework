@@ -41,7 +41,7 @@ class user extends table_base implements allocatable, moderatable {
      * @return string
      */
     public function name() {
-        return fullname($this);
+        return fullname($this->get_raw_record());
     }
 
     /**
