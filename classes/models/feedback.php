@@ -212,7 +212,7 @@ class feedback extends table_base {
             $this->assessor = user::get_object($this->lasteditedbyuser);
         }
 
-        return fullname($this->assessor);
+        return $this->assessor->name();
     }
 
     public function get_assessor_id(){
