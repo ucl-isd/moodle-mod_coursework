@@ -103,7 +103,7 @@ class assessor_feedback_mform extends moodleform {
 
         // Useful to keep the overall comments even if we have a rubric or something. There may be a place
         // in the rubric for comments, but not necessarily an overall comment.
-        $mform->addElement('editor', 'feedbackcomment', get_string('comment', 'mod_coursework'), array('id' => 'feedback_comment'));
+        $mform->addElement('editor', 'feedbackcomment', get_string('comment', 'mod_coursework'));
         $mform->setType('editor', PARAM_RAW);
 
         $file_manager_options =  array(
@@ -255,7 +255,7 @@ class assessor_feedback_mform extends moodleform {
      */
     public function get_editor_options() {
         $editor = new cs_editor();
-        $options = $editor->get_options('feedback_comment');
+        $options = $editor->get_options();
         return $options;
     }
 }

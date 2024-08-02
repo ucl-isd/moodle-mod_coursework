@@ -40,7 +40,6 @@ require_once($CFG->dirroot . '/mod/coursework/lib.php');
 require_once($CFG->dirroot . '/mod/coursework/renderer.php');
 require_once($CFG->dirroot . '/lib/completionlib.php');
 require_once($CFG->dirroot . '/lib/plagiarismlib.php');
-require_once($CFG->dirroot . '/lib/editor/tinymce/lib.php');
 require_once($CFG->dirroot . '/mod/coursework/classes/export/csv.php');
 
 // TODO move all js to renderer.
@@ -52,8 +51,6 @@ $jsmodule = array(
     'strings' => array()
 );
 
-$tiny_mce = new tinymce_texteditor();
-$PAGE->requires->js('/lib/editor/tinymce/tiny_mce/' . $tiny_mce->version . '/tiny_mce.js');
 $PAGE->requires->yui_module('moodle-core-notification', 'notification_init');
 
 

@@ -738,8 +738,12 @@ $(document).ready(function () {
                     }
                 }
                 if (response.editoroptions) {
-                    console.log(response.editoroptions);
-                    Y.M.editor_atto.Editor.init(response.editoroptions);
+                    require(['editor_tiny/editor'], (Tiny) => {
+                        Tiny.setupForElementId({
+                            elementId: 'id_feedbackcomment',
+                            options: JSON.parse(response.editoroptions),
+                        });
+                    });
                 }
 
                 if (response.commentoptions) {
