@@ -712,7 +712,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws coding_exception
      * @throws moodle_exception
      */
-    public function non_teacher_allocated_grading_page($coursework,$viewallstudents_page,$viewallstudents_perpage,$viewallstudents_sortby,$viewallstudents_sorthow,$group,$displayallstudents=0,$firstnamealpha,$lastnamealpha,$groupnamealpha) {
+    public function non_teacher_allocated_grading_page($coursework,$viewallstudents_page,$viewallstudents_perpage,$viewallstudents_sortby,$viewallstudents_sorthow,$group,$displayallstudents,$firstnamealpha,$lastnamealpha,$groupnamealpha) {
 
         global $PAGE, $OUTPUT;
 
