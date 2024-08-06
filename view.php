@@ -462,17 +462,6 @@ $object_renderer = $PAGE->get_renderer('mod_coursework', 'object');
  */
 $page_renderer = $PAGE->get_renderer('mod_coursework', 'page');
 
-// Hook to allow plagiarism plugins to update status/print links.
-$loginlink = plagiarism_update_status($course, $course_module);
-
-// Only show the 'login to Turnitin as teacher' link to actual teachers.
-// TODO probably more capabilities need this
-if (has_any_capability(array('mod/coursework:addinitialgrade',
-                             'mod/coursework:addagreedgrade'),
-                       $coursework->get_context())) {
-    $html .= $loginlink;
-}
-
 $html .= $object_renderer->render(new mod_coursework_coursework($coursework));
 
 // Allow tutors to upload files as part of the coursework task? Easily done via the main
