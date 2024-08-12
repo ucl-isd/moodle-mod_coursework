@@ -76,12 +76,12 @@ class grading_sheet extends csv{
                        }
                    }
                    // check if any of the submissions still requires marking
-                   for ($i = 0; $i < sizeof($stage_identifiers); $i++) {
+                   for ($i = 0; $i < count($stage_identifiers); $i++) {
                        $feedback = $submission->get_assessor_feedback_by_stage($stage_identifiers[$i]);
                        // if no feedback or feedback belongs to current user don't remove submission
                        if (!$feedback || $feedback->assessorid == $USER->id) {
                            break;
-                       }  else if ($i + 1 < sizeof($stage_identifiers)) {
+                       }  else if ($i + 1 < count($stage_identifiers)) {
                            continue;
                        }
                        // if the last submission was already marked remove it from the array

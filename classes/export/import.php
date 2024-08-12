@@ -90,7 +90,7 @@ class import extends grading_sheet{
             $submissionid = false;
 
             // if the csv headers count is different than expected return error
-            if ((!$this->coursework->is_using_rubric() && sizeof($line) != sizeof($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($cells, $line))) {$errors = get_string('incorrectfileformat', 'coursework'); break;}
+            if ((!$this->coursework->is_using_rubric() && count($line) != count($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($cells, $line))) {$errors = get_string('incorrectfileformat', 'coursework'); break;}
 
             $offset = 0;
 
@@ -208,8 +208,8 @@ class import extends grading_sheet{
                             array_splice($linefromimportedcsv, $position + $offset, 0, array(''));
 // }
                             $offset = $offset + count($headers) - 1;
-                            $expectedsize = (int)sizeof($csvheader);
-                            $actualsize = (int)sizeof($linefromimportedcsv);
+                            $expectedsize = (int)count($csvheader);
+                            $actualsize = (int)count($linefromimportedcsv);
 
                     }
 
@@ -303,9 +303,9 @@ class import extends grading_sheet{
 
             $csvline = [];
 
-            //if ((!$this->coursework->is_using_rubric() && sizeof($line) != sizeof($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($csv, $line))) {
-            //if (sizeof($line) != sizeof($cells)) {
-            if ((!$this->coursework->is_using_rubric() && sizeof($line) != sizeof($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($csv, $line))) {
+            //if ((!$this->coursework->is_using_rubric() && count($line) != count($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($csv, $line))) {
+            //if (count($line) != count($cells)) {
+            if ((!$this->coursework->is_using_rubric() && count($line) != count($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($csv, $line))) {
 
                 $errors = get_string('incorrectfileformat', 'coursework');
                 break;
@@ -737,7 +737,7 @@ class import extends grading_sheet{
                     $stage_identifier = 'assessor_' . $stage;
                 }
             } else if ($this->coursework->sampling_enabled()) { // samplings enabled
-                $in_sample = ($subs = $submission->get_submissions_in_sample()) ? sizeof($subs) : 0;
+                $in_sample = ($subs = $submission->get_submissions_in_sample()) ? count($subs) : 0;
                 $feedback = $DB->record_exists('coursework_feedbacks', array('submissionid' => $submissionid,
                                                                              'stage_identifier' => 'assessor_1'));
                 // no sample or no feedback for sample yet

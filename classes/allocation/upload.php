@@ -92,7 +92,7 @@ class upload {
             $cells = $csv_cells;
             $assessorsinfile = [];
 
-            if (sizeof($line) != sizeof($csv_cells)) {$errors = get_string('incorrectfileformat', 'coursework'); break;}
+            if (count($line) != count($csv_cells)) {$errors = get_string('incorrectfileformat', 'coursework'); break;}
             foreach ($line as $keynum => $value) {
 
                 // validate allocatable (user or group)
@@ -200,7 +200,7 @@ class upload {
 
             $cells = $csv_cells;
 
-            if (sizeof($line) != sizeof($csv_cells)) {$errors = get_string('incorrectfileformat', 'coursework'); break;}
+            if (count($line) != count($csv_cells)) {$errors = get_string('incorrectfileformat', 'coursework'); break;}
 
             foreach ($line as $keynum => $value) {
 
