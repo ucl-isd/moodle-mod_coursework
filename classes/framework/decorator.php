@@ -25,7 +25,7 @@ namespace mod_coursework\framework;
 /**
  * Class decorator
  *
- * Acts as a decorator around a class. Remember to add the '@mixin' property so that PHPStorm will
+ * Acts as a decorator around a class. Remember to add the @ mixin property so that PHPStorm will
  * provide autocompletion of methods and properties.
  */
 class decorator {

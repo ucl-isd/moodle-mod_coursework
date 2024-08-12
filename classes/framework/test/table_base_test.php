@@ -31,7 +31,7 @@ require_once($CFG->dirroot.'/mod/coursework/framework/test/classes/user_table.ph
  */
 class framework_table_base_test extends advanced_testcase {
 
-    public function SetUp() {
+    public function setUp(): void {
         $this->resetAfterTest();
     }
 
