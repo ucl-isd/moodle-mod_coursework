@@ -90,7 +90,7 @@ class personal_deadlines_controller extends controller_base{
 
                     $allocatables = unserialize($data->allocatableid);
 
-                    foreach($allocatables   as  $allocatableid) {
+                    foreach ($allocatables   as  $allocatableid) {
                         $data->allocatableid = $allocatableid;
                         $data->id = '';
                         //$data->id = '';

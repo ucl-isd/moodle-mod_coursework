@@ -574,7 +574,7 @@ function remove_event($coursework, $eventtype = false) {
      }
 
      $events = $DB->get_records('event', $params);
-     foreach($events as $eventid) {
+     foreach ($events as $eventid) {
          $event = calendar_event::load($eventid->id);
          $event->delete(); // delete events from mdl_event table
      }
@@ -1276,7 +1276,7 @@ function course_group_member_added($event_data) {
     // get all courseworks with group_assessor allocation strategy
     $courseworks = $DB->get_records('coursework', array('course' => $courseid, 'assessorallocationstrategy' => 'group_assessor'));
 
-    foreach($courseworks as $coursework) {
+    foreach ($courseworks as $coursework) {
 
         $coursework = coursework::find($coursework);
         $stage = $coursework->marking_stages();
@@ -1299,7 +1299,7 @@ function course_group_member_added($event_data) {
                     $allocatables = $coursework->get_allocatables();
                     if ($allocatables) {
                         // yes - assign this assessor to every allocatable student in the appropriate course group - at this point assessor should already be a member
-                        foreach($allocatables as $allocatable) {
+                        foreach ($allocatables as $allocatable) {
                             // process students allocations
                             if ($coursework->student_is_in_any_group($allocatable)) { // student must belong to a group
                                 $stage_1->make_auto_allocation_if_necessary($allocatable);
@@ -1341,7 +1341,7 @@ function course_group_member_removed($event_data) {
     // get all courseworks with group_assessor allocation strategy
     $courseworks = $DB->get_records('coursework', array('course' => $courseid, 'assessorallocationstrategy' => 'group_assessor'));
 
-    foreach($courseworks as $coursework) {
+    foreach ($courseworks as $coursework) {
 
         $coursework = coursework::find($coursework);
         $stage = $coursework->marking_stages();
@@ -1360,7 +1360,7 @@ function course_group_member_removed($event_data) {
                 // find all individual students in the group
                $students = get_enrolled_users($coursework->get_context(), 'mod/coursework:submit', $groupid);
                if ($students) {
-                   foreach($students as $student) {
+                   foreach ($students as $student) {
                        if (can_delete_allocation($coursework->id(), $student->id)) {
                            $DB->delete_records('coursework_allocation_pairs', array('courseworkid' => $coursework->id(), 'assessorid' => $removeduserid, 'allocatableid' => $student->id, 'stage_identifier' => 'assessor_1'));
                        }
@@ -1597,12 +1597,12 @@ function teacher_removed_allocated_not_graded($event_data) {
     $courseid = $event_data->courseid;
 
     $courseworks = coursework_get_courseworks_by_courseid($courseid);
-    foreach($courseworks as $cw) {
+    foreach ($courseworks as $cw) {
         $coursework = coursework::find($cw->id);
         if ($coursework->allocation_enabled()) {
             $assessor_allocations = $DB->get_records('coursework_allocation_pairs', array('courseworkid' => $coursework->id,
                                                                                                 'assessorid' => $userid));
-            foreach($assessor_allocations as $allocation) {
+            foreach ($assessor_allocations as $allocation) {
                 if ($allocation->allocatabletype == 'user') {
                     $allocatable = user::find($allocation->allocatableid);
                 } else {

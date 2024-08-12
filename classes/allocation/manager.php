@@ -296,7 +296,7 @@ class manager {
         $final_agreed_allocatables = $this->get_allocatables_with_final_agreed();
 
         //remove any allocatables that have a status of final agreed as these can not be sampled
-        foreach($final_agreed_allocatables as $faa) {
+        foreach ($final_agreed_allocatables as $faa) {
             if (isset($allocatables[$faa->allocatableid]))  unset($allocatables[$faa->allocatableid]);
         }
 
@@ -327,7 +327,7 @@ class manager {
                 //I am also not using add the two arrays as using the overloaded + can produce dubious results when a key exists
                 //in both arrays
 
-                foreach($auto_with_feedback as $k => $v) {
+                foreach ($auto_with_feedback as $k => $v) {
                     if (!isset($manual_sample_set[$k])) $manual_sample_set[$k] = $v;
                 }
 
@@ -344,7 +344,7 @@ class manager {
 
                 //save sample set
                 if (!empty($auto_sample_set)) {
-                        foreach($auto_sample_set    as  $allocatable) {
+                        foreach ($auto_sample_set    as  $allocatable) {
                             $sample = new \stdClass();
                             $sample->courseworkid = $this->coursework->id;
                             $sample->allocatableid = $allocatable->id;

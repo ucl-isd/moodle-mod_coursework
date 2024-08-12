@@ -517,7 +517,7 @@ abstract class table_base {
             $conditions = $conditions->to_array();
         }
 
-        foreach($conditions as $colname => $value) {
+        foreach ($conditions as $colname => $value) {
             static::ensure_column_exists($colname);
         }
         return $DB->record_exists(static::get_table_name(), $conditions);

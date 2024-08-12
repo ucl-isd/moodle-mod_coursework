@@ -1020,7 +1020,7 @@ class submission extends table_base implements \renderable {
         // Only updating, not actually creating?
         $grades = grade_get_grades($this->get_course_id(), 'mod', 'coursework', $this->get_coursework()->id, $student_ids);
         $grades = $grades->items[0]->grades;
-        foreach($student_ids as $userid) {
+        foreach ($student_ids as $userid) {
             if (!array_key_exists($userid, $grades)) {
                 $grades[$userid] = new stdClass();
             }

@@ -173,7 +173,7 @@ class submissions_controller extends controller_base {
                 $userids = explode(',', $submission->get_coursework()->get_submission_notification_users());
 
                 if (!empty($userids)) {
-                    foreach($userids as $u) {
+                    foreach ($userids as $u) {
                         $notifyuser = $DB->get_record('user',array('id' => trim($u)));
 
                         if (!empty($notifyuser))   $mailer->send_submission_notification($notifyuser);
@@ -335,7 +335,7 @@ class submissions_controller extends controller_base {
 
         $changedeadlines = false;
 
-        foreach($allocatableids as $aid) {
+        foreach ($allocatableids as $aid) {
 
             $submission_db = $DB->get_record('coursework_submissions',
                 array('courseworkid' => $this->params['courseworkid'], 'allocatableid' => $aid, 'allocatabletype' => $this->params['allocatabletype']));

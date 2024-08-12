@@ -39,7 +39,7 @@ require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
 require_once(__DIR__ . '/../../../../vendor/phpunit/phpunit/src/Framework/Assert/Functions.php');
 
 $files = glob(dirname(__FILE__) . '/steps/*.php');
-foreach($files as $filename) {
+foreach ($files as $filename) {
     require_once($filename);
 }
 

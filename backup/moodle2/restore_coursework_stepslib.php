@@ -66,7 +66,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                         'mod_agreement' => 'coursework_submissions/coursework_submission/coursework_feedbacks/coursework_feedback/coursework_mod_agreements',
                         'plagiarism_flag' => 'coursework_submissions/coursework_submission/coursework_plagiarism_flags');
 
-            foreach($bits as $bit=> $bitpath) {
+            foreach ($bits as $bit=> $bitpath) {
                 $p=new restore_path_element("coursework_$bit","/activity/coursework/{$bitpath}/coursework_$bit");
                 $paths[]=$p;
             }
@@ -475,7 +475,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
     }
 
     protected function set_defaults($fields,&$data) {
-        foreach($fields as $name=> $default) {
+        foreach ($fields as $name=> $default) {
             if (!isset($data->$name)) {
                 $data->$name=$default;
             }
@@ -483,7 +483,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
     }
 
     protected function updatedate($fields,&$data) {
-        foreach($fields as $field) {
+        foreach ($fields as $field) {
             $data->$field=$this->apply_date_offset($data->$field);
         }
     }
@@ -499,7 +499,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $files=$fs->get_area_files($ctx->id, 'mod_coursework', 'submission'); //Array of stored_file
 
-        foreach($files as $file) {
+        foreach ($files as $file) {
             if (!$file->is_directory()) {
                 $itemid=$file->get_itemid();
 

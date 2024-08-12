@@ -60,7 +60,7 @@ class otherassessors_cell extends cell_base{
         $gradedata = array();
 
        // $stage_identifier = ($this->coursework->get_max_markers() == 1) ? "assessor_1" : $this->get_stage_identifier_for_assessor($submission, $student);
-        foreach($feedbacks as $feedback) {
+        foreach ($feedbacks as $feedback) {
 
             $grade = $submission->get_assessor_feedback_by_stage($feedback->stage_identifier);
             if ($grade) {

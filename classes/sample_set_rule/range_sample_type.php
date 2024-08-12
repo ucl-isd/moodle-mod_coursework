@@ -69,7 +69,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         if (!empty($samplerecords)) {
             $seq = 0;
-            foreach($samplerecords  as $record) {
+            foreach ($samplerecords  as $record) {
                 $html   .=  $this->range_elements($assessor_number, $seq, $record);
                 $seq++;
             }
@@ -374,7 +374,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         $ruleinstance = $DB->get_records_sql($sql,array('courseworkid' => $this->coursework->id, 'stage' => $stage));
 
-        foreach($ruleinstance as $ri) {
+        foreach ($ruleinstance as $ri) {
 
             $limit = $this->rationalise($ri->ruletype, $ri->lowerlimit, $ri->upperlimit);
 
@@ -385,7 +385,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $finalised = $this->finalised_submissions();
             $published = $this->released_submissions();
 
-            foreach($allocatables_in_range as $awf) {
+            foreach ($allocatables_in_range as $awf) {
                 if (!isset($published[$awf->allocatableid]) && !isset($finalised[$awf->allocatableid])
                     && !isset($auto_sample_set[$awf->allocatableid]) && !isset($manual_sample_set[$awf->allocatableid])
                     && isset($allocatables[$awf->allocatableid]))

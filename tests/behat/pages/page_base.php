@@ -128,7 +128,7 @@ class mod_coursework_behat_page_base {
          * @var $things NodeElement[]
          */
         $things = $this->getPage()->findAll('css', $thing_css);
-        foreach($things as $thing) {
+        foreach ($things as $thing) {
             if (empty($text) || $thing->getText() == $text || $thing->getValue() == $text) {
                 $thing->click();
                 $ok = true;

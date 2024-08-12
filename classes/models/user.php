@@ -51,7 +51,7 @@ class user extends table_base implements allocatable, moderatable {
      */
     public function __construct($data = false) {
         $allnames = \core_user\fields::get_name_fields();
-        foreach($allnames as $namefield) {
+        foreach ($allnames as $namefield) {
             $this->$namefield = '';
         }
         parent::__construct($data);

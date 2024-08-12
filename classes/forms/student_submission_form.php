@@ -178,7 +178,7 @@ class student_submission_form extends moodleform {
                         $userids = explode(',', $submission->get_coursework()->get_submission_notification_users());
 
                         if (!empty($userids)) {
-                            foreach($userids as $u) {
+                            foreach ($userids as $u) {
                                 $notifyuser = $DB->get_record('user',array('id' => trim($u)));
                                 $mailer = new mailer($coursework);
 

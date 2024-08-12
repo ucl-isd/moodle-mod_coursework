@@ -196,7 +196,7 @@ class builder {
 
         if  (isset($SESSION->coursework_allocationsessions[$cm->id])) {
 
-            foreach($SESSION->coursework_allocationsessions[$cm->id] as $name =>  $val) {
+            foreach ($SESSION->coursework_allocationsessions[$cm->id] as $name =>  $val) {
 
                 if (!is_array($val)) {
 

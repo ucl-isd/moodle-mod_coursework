@@ -106,7 +106,7 @@ class csv {
      */
     public function add_cells_to_array($submission, $student, $csv_cells) {
         $row = array();
-        foreach($csv_cells as $csv_cell) {
+        foreach ($csv_cells as $csv_cell) {
             if (substr($csv_cell,0,8) == 'assessor') {
                 $stage_dentifier = 'assessor_'.(substr($csv_cell,-1));
                 $csv_cell = substr($csv_cell, 0, -1);
@@ -143,7 +143,7 @@ class csv {
      */
         public function add_headers($csv_headers) {
             $headers = array();
-            foreach($csv_headers as $header) {
+            foreach ($csv_headers as $header) {
                 if (substr($header,0,8) == 'assessor') {
                     $stage = (substr($header,-1));
                     $header = substr($header, 0, -1);

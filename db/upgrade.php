@@ -1184,7 +1184,7 @@ function xmldb_coursework_upgrade($oldversion) {
         // Add stage identifier to all allocations.
 
         $courseworks = $DB->get_records('coursework', null, '', 'id');
-        foreach($courseworks as $coursework) {
+        foreach ($courseworks as $coursework) {
             $coursework = \mod_coursework\models\coursework::find($coursework->id);
             $students_with_assessor_allocations = $DB->get_records_sql('
                 SELECT DISTINCT studentid
@@ -1994,7 +1994,7 @@ function xmldb_coursework_upgrade($oldversion) {
 
             $i = 1;
 
-            foreach($plugins as $p) {
+            foreach ($plugins as $p) {
                 $dbrecord = new \stdClass();
                 $dbrecord->rulename = $p;
                 $dbrecord->pluginorder = $i;
@@ -2491,7 +2491,7 @@ function xmldb_coursework_upgrade($oldversion) {
 
         $courseworkinstances = $DB->get_records('coursework');
 
-        foreach($courseworkinstances   as  $cwk) {
+        foreach ($courseworkinstances   as  $cwk) {
             $courseworkhassubmissions = ($DB->get_records('coursework_submissions', array('courseworkid' => $cwk->id)))
                 ? true : false;
 

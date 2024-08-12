@@ -1608,7 +1608,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $submissions = $coursework->get_all_submissions();
 
-            foreach($submissions as $sub) {
+            foreach ($submissions as $sub) {
                 $submission = submission::find($sub);
                 if ( $submission->final_grade_agreed()) {
 
@@ -1645,7 +1645,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      */
     public  function remove_unfinalised_submissions($submissions) {
 
-        foreach($submissions as $sub) {
+        foreach ($submissions as $sub) {
 
             $submission = submission::find($sub);
 
@@ -1665,7 +1665,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      */
     public  function removed_final_graded_submissions($submissions) {
 
-        foreach($submissions as $sub) {
+        foreach ($submissions as $sub) {
 
             $submission = submission::find($sub);
 
@@ -1686,7 +1686,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      */
     public function remove_ungradable_submissions($submissions) {
 
-        foreach($submissions as $sub) {
+        foreach ($submissions as $sub) {
 
             $submission = submission::find($sub);
 
@@ -1706,7 +1706,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      */
     public  function remove_final_gradable_submissions($submissions) {
 
-        foreach($submissions as $sub) {
+        foreach ($submissions as $sub) {
 
             $submission = submission::find($sub);
             if (!empty($submission->all_inital_graded()) ) {
@@ -1728,7 +1728,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     public function get_assessor_initial_graded_submissions($submissions) {
         global $USER;
 
-        foreach($submissions as $sub) {
+        foreach ($submissions as $sub) {
 
             $submission = submission::find($sub);
 
@@ -1752,7 +1752,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      */
     public function get_submissions_with_final_grade($submissions) {
 
-        foreach($submissions as $sub) {
+        foreach ($submissions as $sub) {
 
             $submission = submission::find($sub);
 
@@ -1781,7 +1781,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         if (!$coursework->has_multiple_markers() && has_capability('mod/coursework:addagreedgrade', $coursework->get_context()) &&
             !has_capability('mod/coursework:addinitialgrade', $coursework->get_context()) ) {
 
-            foreach($submissions as $sub) {
+            foreach ($submissions as $sub) {
                 $submission = submission::find($sub);
                 if ( $submission->final_grade_agreed()) {
                     continue;
@@ -1794,7 +1794,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         } else if (is_siteadmin($USER) || !$coursework->allocation_enabled() || has_any_capability(array('mod/coursework:administergrades'), $coursework->get_context())) {
 
-                foreach($submissions as $sub) {
+                foreach ($submissions as $sub) {
                     $submission = submission::find($sub);
                     $gradeblesub[$submission->id] = $submission;
                 }

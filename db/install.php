@@ -37,7 +37,7 @@ function xmldb_coursework_install() {
 
     $i = 1;
 
-    foreach($plugins as $p) {
+    foreach ($plugins as $p) {
         $dbrecord = new \stdClass();
 
         $dbrecord->rulename = $p;

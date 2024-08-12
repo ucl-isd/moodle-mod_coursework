@@ -166,7 +166,7 @@ class import extends grading_sheet{
 
             if ($this->coursework->finalstagegrading == 0 ) $types[] = "agreedgrade";
 
-            foreach($types  as $type) {
+            foreach ($types  as $type) {
 
                 $typefound = false;
 
@@ -175,7 +175,7 @@ class import extends grading_sheet{
                 $typepositions = false;
                 $i = 0;
 
-                foreach($csvheader  as  $ch) {
+                foreach ($csvheader  as  $ch) {
 
                     if (strpos($ch, $type) !== false) {
 
@@ -194,7 +194,7 @@ class import extends grading_sheet{
                     //are correct even after a splice and add is carried out
                     $offset = 0;
 
-                    foreach($typepositions as $position) {
+                    foreach ($typepositions as $position) {
                         //if  ($position = array_search($type, $csvheader)) {
                             $class = "mod_coursework\\export\\csv\\cells\\{$type}_cell";
                         $cell = new $class($this->coursework);
@@ -228,7 +228,7 @@ class import extends grading_sheet{
 
             $types = array("singlegrade","assessorgrade");
 
-            foreach($types  as $type) {
+            foreach ($types  as $type) {
 
                 if ($position = array_search($type, $csvheader)) {
 
@@ -342,7 +342,7 @@ class import extends grading_sheet{
                 }
             } else {
 
-                foreach($csvline as $k => $v) {
+                foreach ($csvline as $k => $v) {
                     if (substr($k,0,13) == 'assessorgrade' || substr($k,0,11) == 'singlegrade') {
                        $stages[$k] = $this->get_stage_identifier($csvline['submissionid'], $k);
                     } else if (substr($k,0,11) == 'agreedgrade') {
@@ -360,7 +360,7 @@ class import extends grading_sheet{
 
             $numberofstages = count($stages);
 
-            foreach($stages as $k => $stage) {
+            foreach ($stages as $k => $stage) {
 
                 //when allocation is enabled
                 if (has_capability('mod/coursework:administergrades', $PAGE->context) && $coursework->allocation_enabled() && $stage != 'final_agreed_1' && $coursework->has_multiple_markers() == true) {

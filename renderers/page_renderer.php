@@ -387,7 +387,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $teacher_feedback = new feedback();
             $feedbackcomment = '';
             $count = 1;
-            foreach($initial_feedbacks as $initial_feedback) {
+            foreach ($initial_feedbacks as $initial_feedback) {
                // put all initial feedbacks together for the comment field
                 $feedbackcomment .= get_string('assessorcomments', 'mod_coursework', $count);
                 $feedbackcomment .= $initial_feedback->feedbackcomment;

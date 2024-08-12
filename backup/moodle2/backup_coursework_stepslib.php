@@ -25,7 +25,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
     protected function define_structure() {
         global $DB;
 
-        foreach(array('coursework_submissions',
+        foreach (array('coursework_submissions',
                       'coursework_allocation_pairs',
                       'coursework_mod_set_members',
                       'coursework_sample_set_mbrs',
