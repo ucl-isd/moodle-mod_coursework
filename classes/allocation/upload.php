@@ -83,7 +83,7 @@ class upload {
 
         $csv_cells = array('allocatable');
         $stages = $this->coursework->get_max_markers();
-        for ($i = 1; $i<=$stages; $i++) {
+        for ($i = 1; $i <= $stages; $i++) {
             $csv_cells[] = 'assessor_'.$i;
         }
 
@@ -186,7 +186,7 @@ class upload {
         $s = 0;
         $csv_cells = array('allocatable');
         $stages = $this->coursework->get_max_markers();
-        for ($i = 1; $i<=$stages; $i++) {
+        for ($i = 1; $i <= $stages; $i++) {
             $csv_cells[] = 'assessor_'.$i;
         }
 
