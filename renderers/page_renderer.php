@@ -1206,11 +1206,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      */
     function process_csv_upload($processingresults, $csvcontent, $csvtype) {
 
-        global $OUTPUT;
-
         $html = '';
 
-        $html .= $OUTPUT->header();
+        $html .= $this->output->header();
 
         $title = get_string('process'.$csvtype, 'mod_coursework');
         $html .= html_writer::start_tag('h3');
