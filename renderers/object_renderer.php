@@ -260,7 +260,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
          * NOT USED!!!!!!
          */
 
-        global $USER, $OUTPUT, $COURSE;
+        global $USER, $COURSE;
 
         $row = new html_table_row();
 
@@ -317,7 +317,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $icon = new pix_icon('edit', $linktitle, 'coursework', array('width' => '20px'));
             $link_id = "edit_feedback_" . $feedbackrow->get_feedback()->id;
             $link = $this->get_router()->get_path('edit feedback', array('feedback' => $feedbackrow->get_feedback()));
-            $iconlink = $OUTPUT->action_icon($link, $icon, null, array('id' => $link_id));
+            $iconlink = $this->output->action_icon($link, $icon, null, array('id' => $link_id));
             $cell->text .= $iconlink;
         } else if ($new_feedback && $ability->can('new', $new_feedback)) {
 
@@ -331,7 +331,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 'stage' => $feedbackrow->get_stage()
             );
             $link = $this->get_router()->get_path('new feedback', $new_feedback_params);
-            $iconlink = $OUTPUT->action_icon($link, $icon, null, array('class' => "new_feedback"));
+            $iconlink = $this->output->action_icon($link, $icon, null, array('class' => "new_feedback"));
             $cell->text .= $iconlink;
         } else if ($existing_feedback && $ability->can('show', $existing_feedback)) {
             // Show - for managers and others who are reviewing the grades but who should
@@ -341,7 +341,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $icon = new pix_icon('show', $linktitle, 'coursework', array('width' => '20px'));
             $link_id = "show_feedback_" . $feedbackrow->get_feedback()->id;
             $link = $this->get_router()->get_path('show feedback', array('feedback' => $feedbackrow->get_feedback()));
-            $iconlink = $OUTPUT->action_icon($link, $icon, null, array('id' => $link_id));
+            $iconlink = $this->output->action_icon($link, $icon, null, array('id' => $link_id));
             $cell->text .= $iconlink;
 
         }
@@ -557,7 +557,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      */
     protected function render_mod_coursework_allocation_table(mod_coursework_allocation_table $allocation_table) {
 
-        global $PAGE, $OUTPUT, $SESSION;
+        global $PAGE, $SESSION;
 
         $table_html = $allocation_table->get_hidden_elements();
 
@@ -591,7 +591,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $select->label = get_string('records_per_page', 'coursework');
         $select->class = 'jumpmenu';
         $select->formid = 'sectionmenu';
-        $table_html .= $OUTPUT->render($select);
+        $table_html .= $this->output->render($select);
 
         // Get the hidden elements used for assessors and moderators selected on other pages;
 
@@ -649,7 +649,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             'value' => get_string('save', 'mod_coursework'));
         $table_html .= html_writer::empty_tag('input', $attributes);
 
-        $table_html .= $OUTPUT->render($select);
+        $table_html .= $this->output->render($select);
 
         $table_html .= $PAGE->get_renderer('mod_coursework', 'object')->render($paging_bar);
 
@@ -691,9 +691,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string
      */
     public function render_mod_coursework_allocation_widget(mod_coursework_allocation_widget $allocationwidget) {
-
-        global $OUTPUT;
-
         $lang_str = ($allocationwidget->get_coursework()->moderation_agreement_enabled()) ? 'allocateassessorsandmoderators' : 'allocateassessors';
         $html = html_writer::tag('h2', get_string($lang_str, 'mod_coursework'));
 
@@ -701,7 +698,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $html .= html_writer::start_tag('h3', array('id' => 'assessor_allocation_settings_header'));
         $html .= get_string('assessorallocationstrategy', 'mod_coursework');
-        //$html .= $OUTPUT->help_icon('allocationstrategy', 'mod_coursework');
+        //$html .= $this->output->help_icon('allocationstrategy', 'mod_coursework');
         $html .= html_writer::end_tag('h3');
 
         $html .= '<div class="allocation-strategy"';
@@ -756,7 +753,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
     public function render_mod_coursework_sampling_set_widget(mod_coursework_sampling_set_widget $samplingwidget) {
 
-        global $OUTPUT, $DB;
+        global $DB;
 
         $html = html_writer::tag('h2', get_string('sampling', 'mod_coursework'));
 
@@ -1184,13 +1181,13 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string
      */
     protected function make_file_link($files, $file, $class_name = 'submissionfile') {
-        global $CFG, $OUTPUT;
+        global $CFG;
 
         $url = "{$CFG->wwwroot}/pluginfile.php/{$file->get_contextid()}" .
             "/mod_coursework/{$files->get_file_area_name()}";
         $filename = $file->get_filename();
 
-        $image = $OUTPUT->pix_icon(file_file_icon($file),
+        $image = $this->output->pix_icon(file_file_icon($file),
                                    $filename,
                         'moodle',
                                array('class' => 'submissionfileicon'));
@@ -1446,7 +1443,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      */
     private function render_personal_deadline_table_row($personal_deadline_row) {
 
-        global $OUTPUT, $USER;
+        global $USER;
 
         $coursework = $personal_deadline_row->get_coursework();
 

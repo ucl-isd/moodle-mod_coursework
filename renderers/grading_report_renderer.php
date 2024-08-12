@@ -238,7 +238,6 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @return string
      */
     private function make_upper_headers($cell_helpers, $is_multiple_markers) {
-        global $OUTPUT;
         $html = '';
         $headers = $this->upper_header_names_and_colspans($cell_helpers);
 
@@ -252,7 +251,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
             $html .= '<th colspan="'.$colspan_value.'">';
             $html .= get_string($header_name.'_table_header', 'mod_coursework');
             $html .= get_string($header_name.'_table_header', 'mod_coursework')
-                ? ($OUTPUT->help_icon($header_name.'_table_header', 'mod_coursework')) : '';
+                ? ($this->output->help_icon($header_name.'_table_header', 'mod_coursework')) : '';
             $html .= '</th>';
         }
 
