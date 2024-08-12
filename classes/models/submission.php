@@ -461,7 +461,7 @@ class submission extends table_base implements \renderable {
     public function get_assessor_feedbacks() {
         if (!$this->id) {
             // No submission - empty placeholder.
-            return = [];
+            return [];
         }
 
         if (!isset(feedback::$pool[$this->courseworkid]['submissionid-stage_identifier_index'])) {
@@ -519,7 +519,7 @@ class submission extends table_base implements \renderable {
 
         if (!$this->id) {
             // No submission - empty placeholder.
-            return = [];
+            return [];
         }
 
         $params = [

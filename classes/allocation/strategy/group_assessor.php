@@ -66,6 +66,6 @@ class group_assessor extends base {
      * @return mixed
      */
     protected function list_of_allocatable_teachers_and_their_current_number_of_allocations($teachers, $student) {
-        return = [];
+        return [];
     }
 }

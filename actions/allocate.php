@@ -76,7 +76,7 @@ $sorthow = optional_param('sorthow', '', PARAM_ALPHA);
 $options = compact('sortby', 'sorthow', 'perpage', 'page');
 
 // $_POST['allocatables'] comes as array of arrays which is not supported by optional_param_array, however we clean this later in process_data() function
-$formdataarray = isset($_POST['allocatables']) ? $_POST['allocatables'] : = [];
+$formdataarray = isset($_POST['allocatables']) ? $_POST['allocatables'] : [];
 
 require_login($course, true, $coursemodule);
 

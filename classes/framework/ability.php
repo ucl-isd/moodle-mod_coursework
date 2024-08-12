@@ -158,7 +158,7 @@ abstract class ability {
      * @return array
      */
     protected function classname_mappings() {
-        return = [];
+        return [];
     }
 
     /**
