@@ -327,7 +327,7 @@ class cron {
                     $usercounter[$user->id]++;
                 }
 
-                $extension = isset($user->extension)? $user->extension : 0;
+                $extension = isset($user->extension) ? $user->extension : 0;
                 $email_reminder = new stdClass();
                 $email_reminder->userid = $user->id;
                 $email_reminder->coursework_id = $user->coursework_id;

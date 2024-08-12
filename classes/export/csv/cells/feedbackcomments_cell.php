@@ -42,7 +42,7 @@ class feedbackcomments_cell extends cell_base {
 
         $stage_identifier = ($this->coursework->get_max_markers() == 1) ? "assessor_1" : $this->get_stage_identifier_for_assessor($submission, $student);
         $grade = $submission->get_assessor_feedback_by_stage($stage_identifier);
-        return   (!$grade)? '' : strip_tags($grade->feedbackcomment);
+        return   (!$grade) ? '' : strip_tags($grade->feedbackcomment);
     }
 
     /**

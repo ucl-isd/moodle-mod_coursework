@@ -94,10 +94,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $html = '';
 
-        $gradedby = ($teacher_feedback->assessorid == 0)?  get_string('automaticagreement', 'mod_coursework') : fullname($assessor);
+        $gradedby = ($teacher_feedback->assessorid == 0) ?  get_string('automaticagreement', 'mod_coursework') : fullname($assessor);
         $lasteditedby = ((!$teacher_feedback->get_coursework()->sampling_enabled() || $teacher_feedback->get_submission()->sampled_feedback_exists())
-            && $teacher_feedback->assessorid == 0 && $teacher_feedback->timecreated == $teacher_feedback->timemodified )?
-            get_string('automaticagreement', 'mod_coursework') : fullname($editor);
+            && $teacher_feedback->assessorid == 0 && $teacher_feedback->timecreated == $teacher_feedback->timemodified )
+            ? get_string('automaticagreement', 'mod_coursework') : fullname($editor);
 
         $html .= $OUTPUT->heading($grading_title);
         $html .= '<table class = "grading-details">';
@@ -1388,7 +1388,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             }
 
             $submitted = '';
-            $timedue = ($coursework->deadline)? date('l, d F Y, h:i A', $coursework->deadline) : "No deadline";
+            $timedue = ($coursework->deadline) ? date('l, d F Y, h:i A', $coursework->deadline) : "No deadline";
             if ($coursework->can_grade()) { // teachers
                 $submitted = count($coursework->get_all_submissions());
             } else if ($coursework->can_submit()) { // Students
@@ -1400,7 +1400,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 }
                 if ($allocatable) {
                     $timedue = $coursework->get_allocatable_deadline($allocatable->id); // get deadline based on user taking into considerations personal deadline and extension
-                    $timedue = ($timedue)? date('l, d F Y, h:i A', $timedue) : "No deadline";
+                    $timedue = ($timedue) ? date('l, d F Y, h:i A', $timedue) : "No deadline";
                     $usersubmission = $coursework->get_user_submission($allocatable);
                     if ($usersubmission) {
                         $submitted = $usersubmission->get_status_text();

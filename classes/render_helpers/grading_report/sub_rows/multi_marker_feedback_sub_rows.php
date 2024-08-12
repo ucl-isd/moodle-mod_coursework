@@ -82,9 +82,9 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         if (empty($ability)) {
             $ability = new ability(user::find($USER), $coursework);
         }
-        $gradedby = ($coursework->allocation_enabled() && $feedback_row->has_feedback() && $feedback_row->get_graded_by() != $feedback_row->get_assessor())?
+        $gradedby = ($coursework->allocation_enabled() && $feedback_row->has_feedback() && $feedback_row->get_graded_by() != $feedback_row->get_assessor()) ?
             ' (Graded by: '. $feedback_row->get_graders_name().')' : '';
-        $editable = (!$feedback_row->has_feedback() || $feedback_row->get_feedback()->finalised)? '' : '</br>'.get_string('notfinalised', 'coursework');
+        $editable = (!$feedback_row->has_feedback() || $feedback_row->get_feedback()->finalised) ? '' : '</br>'.get_string('notfinalised', 'coursework');
         $result = $this->comment_for_row($feedback_row, $ability) . $gradedby . $editable;
         return $result;
     }
@@ -146,9 +146,9 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
 
         if (!empty($output_rows)) {
 
-            $allocation_string = ($coursework->allocation_enabled())?
-                                   get_string('allocatedtoassessor', 'mod_coursework'):
-                                   get_string('assessor', 'mod_coursework');
+            $allocation_string = ($coursework->allocation_enabled())
+                ? get_string('allocatedtoassessor', 'mod_coursework')
+                : get_string('assessor', 'mod_coursework');
 /*
             $table_html = '
                 <tr class = "submissionrowmultisub">

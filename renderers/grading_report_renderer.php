@@ -123,7 +123,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      */
     protected function make_row_for_allocatable($row_object, $cell_helpers, $sub_row_helper) {
 
-        //$class = (!$row_object->get_coursework()->has_multiple_markers())? "submissionrowsingle": "submissionrowmulti";
+        //$class = (!$row_object->get_coursework()->has_multiple_markers()) ? "submissionrowsingle": "submissionrowmulti";
         $class = $this->row_class;
 
         $submission = $row_object->get_submission();
@@ -251,8 +251,8 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
 
             $html .= '<th colspan="'.$colspan_value.'">';
             $html .= get_string($header_name.'_table_header', 'mod_coursework');
-            $html .= get_string($header_name.'_table_header', 'mod_coursework')?
-                    ($OUTPUT->help_icon($header_name.'_table_header', 'mod_coursework')) : '';
+            $html .= get_string($header_name.'_table_header', 'mod_coursework')
+                ? ($OUTPUT->help_icon($header_name.'_table_header', 'mod_coursework')) : '';
             $html .= '</th>';
         }
 

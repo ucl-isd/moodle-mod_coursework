@@ -831,7 +831,7 @@ class submission extends table_base implements \renderable {
 
             case submission::SUBMITTED:
                 $allowearlyfinalisation = $this->get_coursework()->allowearlyfinalisation;
-                $statustext = ($allowearlyfinalisation)?get_string('statusnotfinalised', 'coursework') : get_string('submitted', 'coursework');
+                $statustext = ($allowearlyfinalisation) ?get_string('statusnotfinalised', 'coursework') : get_string('submitted', 'coursework');
 
                 break;
 

@@ -206,7 +206,7 @@ class mod_coursework_behat_page_base {
         $inputtype = $this->getPage()->find('xpath', $locator ."//input[@type='submit']");
         $buttontype = $this->getPage()->find('xpath',  $locator ."//button[@type='submit']");
 
-        $button = ($inputtype !== null)? $inputtype : $buttontype;// check how element was created and use it to find the button
+        $button = ($inputtype !== null) ? $inputtype : $buttontype;// check how element was created and use it to find the button
 
         if (null === $button) {
             throw new ElementNotFoundException(

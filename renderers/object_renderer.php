@@ -532,8 +532,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             // General feedback Add edit link.
             if ($canaddgeneralfeedback) {
-                $title = ($coursework->feedbackcomment)? get_string('editgeneralfeedback', 'coursework') : get_string('addgeneralfeedback', 'coursework');
-                $class = ($coursework->feedbackcomment)? 'edit-btn' : 'add-general_feedback-btn';
+                $title = ($coursework->feedbackcomment) ? get_string('editgeneralfeedback', 'coursework') : get_string('addgeneralfeedback', 'coursework');
+                $class = ($coursework->feedbackcomment) ? 'edit-btn' : 'add-general_feedback-btn';
                 $out .= html_writer::tag('p', '', array('id' => 'feedback_text'));
                 $link = new moodle_url('/mod/coursework/actions/general_feedback.php',
                                        array('cmid' => $coursework->get_coursemodule_id(),
@@ -694,7 +694,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         global $OUTPUT;
 
-        $lang_str = ($allocationwidget->get_coursework()->moderation_agreement_enabled())? 'allocateassessorsandmoderators':'allocateassessors';
+        $lang_str = ($allocationwidget->get_coursework()->moderation_agreement_enabled()) ? 'allocateassessorsandmoderators':'allocateassessors';
         $html = html_writer::tag('h2', get_string($lang_str, 'mod_coursework'));
 
         $html .= '<div class="assessor-allocation-wrapper accordion">';
@@ -1277,8 +1277,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         if ($coursework->has_deadline()) {
             $deadline_message .= html_writer::start_tag('div', array('class' => 'autofinalise_info'));
-            $deadline_message .= ($coursework->personal_deadlines_enabled() && (!has_capability('mod/coursework:submit', $PAGE->context) || is_siteadmin($USER)))?
-                get_string('personal_deadline_warning', 'mod_coursework') : get_string('deadline_warning', 'mod_coursework');
+            $deadline_message .= ($coursework->personal_deadlines_enabled() && (!has_capability('mod/coursework:submit', $PAGE->context) || is_siteadmin($USER)))
+                ? get_string('personal_deadline_warning', 'mod_coursework') : get_string('deadline_warning', 'mod_coursework');
             $deadline_message .= html_writer::end_tag('div');
         }
 
@@ -1503,7 +1503,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $gradedHeader = "";
 
         $warning_message = "";
-        $stagename = $coursework->has_multiple_markers()? ' (Agreed grade)' : '';
+        $stagename = $coursework->has_multiple_markers() ? ' (Agreed grade)' : '';
 
         $participants = 0;
         $submitted = 0;

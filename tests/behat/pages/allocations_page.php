@@ -246,7 +246,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
     public function automatically_included_in_sample($coursework, $user, $other_user, $stage_number, $negate) {
         global $DB;
 
-        $other_sql = (!empty($other_user))?  "OR allocatableid = $other_user->id" : '';
+        $other_sql = (!empty($other_user)) ?  "OR allocatableid = $other_user->id" : '';
 
         $sql = "SELECT     *
                      FROM       {coursework_sample_set_mbrs}

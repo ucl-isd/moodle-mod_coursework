@@ -137,7 +137,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
     static function compare_key($a, $b) {
         if ($a === $b) return 0;
-        return ($a > $b)? 1:-1;
+        return ($a > $b) ? 1:-1;
     }
 
     public function adjust_sample_set($stage_number, &$allocatables, &$manual_sample_set, &$auto_sample_set) {

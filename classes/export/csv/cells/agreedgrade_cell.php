@@ -45,7 +45,7 @@ class agreedgrade_cell extends cell_base{
             $gradedata = [];
             $this->get_rubric_scores_gradedata($agreedgrade, $gradedata); // multiple parts are handled here
         } else {
-            $gradedata = (!$agreedgrade)? '': $this->get_actual_grade($agreedgrade->grade);
+            $gradedata = (!$agreedgrade) ? '': $this->get_actual_grade($agreedgrade->grade);
         }
 
         return   $gradedata;

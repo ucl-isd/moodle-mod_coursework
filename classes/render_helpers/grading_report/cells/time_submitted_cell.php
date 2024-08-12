@@ -145,7 +145,7 @@ class time_submitted_cell extends cell_base {
         $content_time = [
             'time' => date('d-m-Y H:i', $deadline),
             'time_content' => userdate($deadline),
-            'is_have_deadline' => ($coursework->deadline > 0)? 1 : 0,
+            'is_have_deadline' => ($coursework->deadline > 0) ? 1 : 0,
         ];
 
         if ($ability->can('new', $extension) && $coursework->extensions_enabled()) {

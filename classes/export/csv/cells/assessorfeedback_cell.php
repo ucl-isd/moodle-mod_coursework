@@ -145,7 +145,7 @@ class assessorfeedback_cell extends cell_base{
                 if ($this->coursework->sampling_enabled()) {
                     // check how many sample assessors + add 1 that is always in sample
                     $in_sample = $submission->get_submissions_in_sample();
-                    $assessors = ($in_sample)? sizeof($in_sample) + 1 : 1;
+                    $assessors = ($in_sample) ? sizeof($in_sample) + 1 : 1;
                 } else {
                     // Check how many assessors for this coursework
                     $assessors = $this->coursework->get_max_markers();

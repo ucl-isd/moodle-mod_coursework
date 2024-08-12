@@ -47,7 +47,7 @@ class singlegrade_cell extends cell_base{
             $gradedata = [];
             $this->get_rubric_scores_gradedata($grade, $gradedata); // multiple parts are handled here
         } else {
-            $gradedata = (!$grade)? '': $this->get_actual_grade($grade->grade);
+            $gradedata = (!$grade) ? '': $this->get_actual_grade($grade->grade);
         }
 
         return   $gradedata;

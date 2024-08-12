@@ -55,7 +55,7 @@ class publish_form extends moodleform {
 
         } else if ($coursework->blindmarking_enabled() && $coursework->has_stuff_to_publish()) {
 
-            $allocatable = ($coursework->is_configured_to_have_group_submissions())? 'group' : 'user';
+            $allocatable = ($coursework->is_configured_to_have_group_submissions()) ? 'group' : 'user';
             $explaintext = '<div class ="anonymity_warning">'.get_string('anonymity_warning_'. $allocatable, 'mod_coursework').'</div>';
 
         } else if ($coursework->blindmarking_enabled() &&

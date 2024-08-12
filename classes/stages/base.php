@@ -949,7 +949,7 @@ abstract class base {
         } else {
             $user = user::get_object($allocatable->id);
             $group = $this->coursework->get_student_group($user);
-            $groupid = ($group)? $group->id: 0;
+            $groupid = ($group) ? $group->id: 0;
         }
 
         if ($groupid) {

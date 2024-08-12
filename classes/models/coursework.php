@@ -1292,7 +1292,7 @@ class coursework extends table_base {
 
         foreach ($submissions as $submission) {
 
-            $stage_identifier = ($this->has_multiple_markers())? 'final_agreed_1': 'assessor_1';
+            $stage_identifier = ($this->has_multiple_markers()) ? 'final_agreed_1': 'assessor_1';
             $submission = submission::find($submission);
             if (!$feedback = $submission->get_assessor_feedback_by_stage($stage_identifier)) {
                 $needsgrading[] = $submission;

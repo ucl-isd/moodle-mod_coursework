@@ -2493,7 +2493,7 @@ class behat_mod_coursework extends behat_base {
             ->findAll('xpath', "//div[@class='{$action}submissionbutton']//input[@type='submit']");
         $button = $this->getSession()->getPage()
             ->findAll('xpath', "//div[@class='{$action}submissionbutton']//button[@type='submit']");
-        $buttons = ($input)? $input : $button;// check how element was created and use it to find the button
+        $buttons = ($input) ? $input : $button;// check how element was created and use it to find the button
 
         assertCount(($negate ? 0 : 1), $buttons);
     }
@@ -2858,7 +2858,7 @@ class behat_mod_coursework extends behat_base {
      */
     public function StudentAutomaticallyIncludedInSampleForStage($other, $another, $negate, $stage) {
         $page = $this->get_page('allocations page');
-        $another = (!empty($another))? $this->other_student: '';
+        $another = (!empty($another)) ? $this->other_student: '';
         $other = ($other == 'another');
         $student = $other ? 'other_student' : 'student';
 
