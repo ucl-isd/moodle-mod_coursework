@@ -32,7 +32,6 @@ use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * Defines a rule that will include all students between an upper and lower percentage of the total
  * number. Only really makes sense with lowerlimit as 0.

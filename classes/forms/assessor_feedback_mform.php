@@ -118,7 +118,6 @@ class assessor_feedback_mform extends moodleform {
                                  null,
                                  $file_manager_options);
 
-
         $this->add_submit_buttons($coursework->draft_feedback_enabled(), $feedback->id);
 
     }
@@ -129,7 +128,6 @@ class assessor_feedback_mform extends moodleform {
     public function get_grading_controller() {
         return $this->_grading_controller;
     }
-
 
     /**
      * @param $draftenabled
@@ -142,12 +140,10 @@ class assessor_feedback_mform extends moodleform {
             $button_array[] = $this->_form->createElement('submit', 'submitfeedbackbutton', get_string('saveasdraft', 'coursework'));
         }
 
-
             $button_array[] =
                 $this->_form->createElement('submit', 'submitbutton', get_string('saveandfinalise', 'coursework'));
 
         $feedback = $this->_customdata['feedback'];
-
 
         $is_published = $feedback->get_submission()->is_published();
 
@@ -197,7 +193,6 @@ class assessor_feedback_mform extends moodleform {
 
         $feedback->feedbackcomment = $formdata->feedbackcomment['text'];
         $feedback->feedbackcommentformat = $formdata->feedbackcomment['format'];
-
 
         return $feedback;
     }

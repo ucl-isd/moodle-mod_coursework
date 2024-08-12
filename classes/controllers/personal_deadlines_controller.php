@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\controllers;
 use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
@@ -40,17 +39,11 @@ use mod_coursework\models\user;
  */
 class personal_deadlines_controller extends controller_base{
 
-
-
-
     protected function new_personal_deadline() {
         global $USER, $PAGE;
 
-
-
         $coursework_page_url = (empty($this->params['setpersonaldeadlinespage'])) ? $this->get_path('coursework', array('coursework' => $this->coursework)) :
             $this->get_path('set personal deadlines', array('coursework' => $this->coursework));
-
 
         $params = $this->set_default_current_deadline();
         
@@ -95,7 +88,6 @@ class personal_deadlines_controller extends controller_base{
                 }
             } else {
 
-
                     $allocatables = unserialize($data->allocatableid);
 
                     foreach($allocatables   as  $allocatableid) {
@@ -115,7 +107,6 @@ class personal_deadlines_controller extends controller_base{
                             $this->personal_deadline = personal_deadline::build($data);
                             $this->personal_deadline->save();
 
-
                         } else {
                             // update
                             $data->id = $this->personal_deadline->id;
@@ -126,8 +117,6 @@ class personal_deadlines_controller extends controller_base{
 
                     }
 
-
-
             }
             redirect($coursework_page_url);
         }
@@ -135,7 +124,6 @@ class personal_deadlines_controller extends controller_base{
         $this->render_page('new');
 
     }
-
 
     /**
      * Set the deadline to default coursework deadline if the personal deadline was never given before

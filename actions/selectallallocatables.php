@@ -20,14 +20,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-
 use mod_coursework\models\coursework;
 use mod_coursework\allocation\widget;
 
 require_once(dirname(__FILE__).'/../../../config.php');
-
-
 
 global $CFG, $OUTPUT, $DB, $PAGE;
 
@@ -40,9 +36,6 @@ $course = $DB->get_record('course', array('id' => $coursemodule->course), '*', M
 $coursework = $DB->get_record('coursework', array('id' => $coursemodule->instance), '*', MUST_EXIST);
 $coursework = coursework::find($coursework);
 $assessorallocationstrategy = optional_param('assessorallocationstrategy', false, PARAM_TEXT);
-
-
-
 
 if ($stagenumber > 0) {
 
@@ -61,5 +54,4 @@ if ($stagenumber > 0) {
 
     $SESSION->allocate_page_selectentirestage[$coursework->id()]['moderator'] = !$SESSION->allocate_page_selectentirestage[$coursework->id()]['moderator'];
 }
-
 

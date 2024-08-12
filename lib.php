@@ -222,8 +222,6 @@ function coursework_add_instance($formdata) {
     return $returnid;
 }
 
-
-
 /**
  * Is the event visible?
  *
@@ -252,7 +250,6 @@ function mod_coursework_core_calendar_is_event_visible(calendar_event $event) {
 
     return false;
 }
-
 
 /**
  * This function receives a calendar event and returns the action associated with it, or null if there is none.
@@ -463,9 +460,6 @@ function coursework_update_instance($coursework) {
 
     }
 
-
-
-
     $oldsubmissiondeadline = $DB->get_field('coursework', 'deadline', array('id' => $coursework->id));
     $oldgeneraldeadline = $DB->get_field('coursework', 'generalfeedback', array('id' => $coursework->id));
     $oldindividualdeadline = $DB->get_field('coursework', 'individualfeedback', array('id' => $coursework->id));
@@ -477,7 +471,6 @@ function coursework_update_instance($coursework) {
         // Fire an event to send emails to students affected by any deadline change.
 
         $courseworkobj = coursework::find($coursework->id);
-
 
         $params = array(
             'context' => context_module::instance($courseworkobj->get_course_module()->id),
@@ -494,7 +487,6 @@ function coursework_update_instance($coursework) {
                 'userfrom' => $USER->id,
             )
         );
-
 
         $event = \mod_coursework\event\coursework_deadline_changed::create($params);
         $event->trigger();
@@ -587,7 +579,6 @@ function remove_event($coursework, $eventtype = false){
          $event->delete(); // delete events from mdl_event table
      }
 }
-
 
 /**
  * Given an ID of an instance of this module,
@@ -776,7 +767,6 @@ function coursework_supports($feature) {
     }
 }
 
-
 /**
  * Checks whether the student with the given username has been flagged
  * as having a disability
@@ -907,7 +897,6 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
     }
 
 }
-
 
 /**
  * Auto-allocates after a new student or teacher is added to a coursework.
@@ -1194,7 +1183,6 @@ function coursework_records_to_menu($records, $field1, $field2) {
 
 }
 
-
 /**
  * Custom error handler for ADODB used by the sits class. Came with no docs so not sure what it's for.
  * Set as error handler at top of sits class file. Suspect it suppresses errors.
@@ -1247,7 +1235,6 @@ function mod_coursework_supports($feature) {
             return null;
     }
 }
-
 
 /**
  * @param $event_data
@@ -1335,7 +1322,6 @@ function course_group_member_added($event_data) {
     }
     return true;
 }
-
 
 /**
  * * Function to process allocation of new group members (student/group - assign to a group assessor or assessor - assign to students/group) when a group member is deleted
@@ -1436,7 +1422,6 @@ function course_group_member_removed($event_data) {
     }
     return true;
 }
-
 
 /**
  * Function to check the allocation if it is not pinned or its submission has not been marked yet
@@ -1597,7 +1582,6 @@ function teacher_allocation_cache_purge($event_data){
     }
     return true;
 }
-
 
 /**
  * Function to remove teacher allocation (also if pinned), don't remove if teacher already graded

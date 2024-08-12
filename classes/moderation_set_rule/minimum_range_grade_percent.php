@@ -31,7 +31,6 @@ use mod_coursework\models\moderation_set_rule;
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * Defines a rule that will include all students above or below a particular percentage of
  * the total grade.
@@ -56,7 +55,6 @@ class minimum_range_grade_percent extends moderation_set_rule {
 
         // Convert percentages to raw grades for comparison.
         global $DB;
-
 
         $params = array('id' => $this->courseworkid);
         $maxgrade = $DB->get_field('coursework', 'grade', $params);
@@ -172,6 +170,5 @@ class minimum_range_grade_percent extends moderation_set_rule {
     protected function grade_is_above_lower_limit($grade, $lowerlimit) {
         return $grade >= $lowerlimit;
     }
-
 
 }

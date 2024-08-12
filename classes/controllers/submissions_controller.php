@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\controllers;
 
 use mod_coursework\ability;
@@ -117,7 +116,6 @@ class submissions_controller extends controller_base {
         $submission->authorid = $submission->get_author_id(); //create new function to get the author id depending on whether the current user is submitting on behalf
         $submission->timesubmitted = time();
 
-
        // Automatically finalise any submissions that's past the deadline/personal deadline and doesn't have valid extension
         if ($this->coursework->personal_deadlines_enabled()){
             // Check is submission has a valid personal deadline or a valid extension
@@ -182,8 +180,6 @@ class submissions_controller extends controller_base {
                     }
                 }
 
-
-
             }
 
         }
@@ -230,7 +226,6 @@ class submissions_controller extends controller_base {
             return true;
          }
   }
-
 
     /**
      *
@@ -284,7 +279,6 @@ class submissions_controller extends controller_base {
         $event = assessable_submitted::create($params);
         $event->trigger();
 
-
         $submission->submit_plagiarism();
 
         if ($CFG->coursework_allsubmissionreceipt || $notify_about_finalisation) {
@@ -329,12 +323,9 @@ class submissions_controller extends controller_base {
         redirect($coursework_page_url);
     }
 
-
     protected function unfinalise_submission() {
 
         global  $USER, $DB;
-
-
 
         $allocatableids = (!is_array($this->params['allocatableid']))  ?  array($this->params['allocatableid']) : $this->params['allocatableid']  ;
 
@@ -360,8 +351,6 @@ class submissions_controller extends controller_base {
             }
 
         }
-
-
 
         if (!empty($changedeadlines)) {
             redirect($personaldeadline_page_url, get_string('unfinalisedchangesubmissiondate', 'mod_coursework'));
@@ -435,7 +424,6 @@ class submissions_controller extends controller_base {
 
         return $sub_exists;
     }
-
 
     /**
      * @param $submission

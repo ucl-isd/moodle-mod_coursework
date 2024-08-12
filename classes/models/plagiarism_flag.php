@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\models;
 
 use  mod_coursework\framework\table_base;
@@ -91,7 +90,6 @@ class plagiarism_flag extends table_base {
         $result = self::get_object($submission->courseworkid, 'submissionid', [$submission->id]);
         return $result;
     }
-
 
     /**
      * @return bool
@@ -167,6 +165,5 @@ class plagiarism_flag extends table_base {
     protected function after_destroy() {
         self::remove_cache($this->courseworkid);
     }
-
 
 }

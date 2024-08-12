@@ -34,7 +34,6 @@ use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * Allocates all students equally between teachers.
  */

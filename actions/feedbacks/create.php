@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 /**
  * Creates a feedback instance and redirects to the coursework page.
  */
@@ -28,7 +27,6 @@
 require_once(dirname(__FILE__) . '/../../../../config.php');
 
 global $CFG, $USER;
-
 
 $submissionid = required_param('submissionid', PARAM_INT);
 $isfinalgrade = optional_param('isfinalgrade', 0, PARAM_INT);

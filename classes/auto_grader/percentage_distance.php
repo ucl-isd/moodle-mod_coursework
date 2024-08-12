@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\auto_grader;
 
 use mod_coursework\allocation\allocatable;
@@ -75,7 +74,6 @@ class percentage_distance implements auto_grader {
         if ($this->get_coursework()->numberofmarkers == 1) {
             return;
         }
-
 
         if ($this->grades_are_close_enough()  ) {
             if (!$this->get_allocatable()->has_agreed_feedback($this->get_coursework())) {
@@ -140,7 +138,6 @@ class percentage_distance implements auto_grader {
                          ));
     }
 
-
     /**
      *
      */
@@ -155,8 +152,6 @@ class percentage_distance implements auto_grader {
         $DB->update_record('coursework_feedbacks', $updated_feedback);
 
     }
-
-
 
     /**
      * @return array

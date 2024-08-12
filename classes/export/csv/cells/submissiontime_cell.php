@@ -20,14 +20,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\export\csv\cells;
 
 /**
  * Class submissiontime_cell
  */
 class submissiontime_cell extends cell_base {
-
 
     /**
      * @param $submission
@@ -48,6 +46,5 @@ class submissiontime_cell extends cell_base {
         return  get_string('submissiontime', 'coursework');
 
     }
-
 
 }

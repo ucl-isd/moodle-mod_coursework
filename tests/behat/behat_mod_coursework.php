@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 /**
  * Step definitions for the Coursework module Behat tests.
  */
@@ -265,7 +264,6 @@ class behat_mod_coursework extends behat_base {
         $stages = $this->coursework->get_assessor_marking_stages();
         return reset($stages);
     }
-
 
     /**
      *
@@ -736,8 +734,6 @@ class behat_mod_coursework extends behat_base {
         $DB->set_field('role_capabilities', 'permission', $permission_setting, $params);
     }
 
-
-
     /**
      * IMPORTANT: CI server borks if this is not done *before* the manager
      * logs in!
@@ -818,7 +814,6 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
 
-
         if ($negate) {
             $page->should_not_have_add_button_for_final_feedback($this->student->id());
         } else {
@@ -826,9 +821,6 @@ class behat_mod_coursework extends behat_base {
         }
 
     }
-
-
-
 
     /**
      * @Then /^I should not see the edit final feedback button on the multiple marker page$/
@@ -1067,7 +1059,6 @@ class behat_mod_coursework extends behat_base {
          */
         $multigrader_page = $this->get_page('multiple grading interface');
         $multigrader_page->click_new_extension_button_for($this->student);
-
 
         /**
          * @var mod_coursework_behat_new_extension_page $new_extension_page
@@ -1329,8 +1320,6 @@ class behat_mod_coursework extends behat_base {
         return parent::running_javascript();
     }
 
-
-
     // Course steps
 
     /**
@@ -1510,9 +1499,6 @@ class behat_mod_coursework extends behat_base {
     public function theSitewideSettingIs($setting_name, $setting_value) {
         set_config($setting_name, $setting_value);
     }
-
-
-
 
     // Allocation steps
 
@@ -1724,7 +1710,6 @@ class behat_mod_coursework extends behat_base {
 
         assertNotEmpty($result);
     }
-
 
     // Feedback steps
 
@@ -2150,7 +2135,6 @@ class behat_mod_coursework extends behat_base {
             $nodeElement->selectOption($grade);
         }
 
-
         if (empty($withoutcomments)) {
             $nodeElement1 = $this->find('css', '#feedback_comment');
             if ($nodeElement1) {
@@ -2305,7 +2289,6 @@ class behat_mod_coursework extends behat_base {
         $grading_interface->there_should_not_be_a_feedback_icon($this->student);
     }
 
-
     // General web steps
 
     /**
@@ -2390,10 +2373,6 @@ class behat_mod_coursework extends behat_base {
         $this->find('css', ".moodle-dialogue-focused.filepicker .yui3-button.closebutton")->click();
     }
 
-
-
-
-
     // Submission steps
 
     /**
@@ -2425,7 +2404,6 @@ class behat_mod_coursework extends behat_base {
         $submission->allocatabletype = $this->other_student->type();
         $this->other_submission = $generator->create_submission($submission, $this->coursework);
     }
-
 
     /**
      * @Given /^the group has a submission$/
@@ -2546,9 +2524,6 @@ class behat_mod_coursework extends behat_base {
         $student_page->should_show_the_submitter_as($role_name);
     }
 
-
-
-
     // User steps
 
     /**
@@ -2653,7 +2628,6 @@ class behat_mod_coursework extends behat_base {
         $group = $generator->create_group($group);
         $this->group = group::find($group);
 
-
         $membership = new stdClass();
         $membership->groupid = $this->group->id;
         $membership->userid = $this->student->id;
@@ -2741,8 +2715,6 @@ class behat_mod_coursework extends behat_base {
         $page->should_have_grade('67');
     }
 
-
-
     /**
      * @return mixed
      */
@@ -2789,9 +2761,7 @@ class behat_mod_coursework extends behat_base {
 
         $page->show_hide_non_allocated_students();
 
-
     }
-
 
     /**
      *
@@ -2804,7 +2774,6 @@ class behat_mod_coursework extends behat_base {
         $page->enable_atomatic_sampling_for($stage);
     }
 
-
     /**
      * @Given /^I enable total rule for stage (\d+)$/
      *
@@ -2815,7 +2784,6 @@ class behat_mod_coursework extends behat_base {
         $page = $this->get_page('allocations page');
         $page->enable_total_rule_for_stage($stage);
     }
-
 
     /**
      * @Given /^I add grade range rule for stage (\d+)$/
@@ -2841,7 +2809,6 @@ class behat_mod_coursework extends behat_base {
         $page->enable_grade_range_rule_for_stage($stage, $ruleno);
     }
 
-
     /**
      * @Then  /^I select limit type for grade range rule (\d+) in stage (\d+) as "([\w]*)"$/
      *
@@ -2855,7 +2822,6 @@ class behat_mod_coursework extends behat_base {
         $page = $this->get_page('allocations page');
         $page->select_type_of_grade_range_rule_for_stage($stage, $ruleno, $type);
     }
-
 
     /**
      * @Then  /^I select "([\w]*)" grade limit for grade range rule (\d+) in stage (\d+) as "(\d+)"$/
@@ -2871,7 +2837,6 @@ class behat_mod_coursework extends behat_base {
         $page = $this->get_page('allocations page');
         $page->select_range_for_grade_range_rule_for_stage($range, $stage, $ruleno, $value);
     }
-
 
     /**
      * @Given /^I select (\d+)% of total students in stage (\d+)$/
@@ -2899,7 +2864,6 @@ class behat_mod_coursework extends behat_base {
 
         $page->automatically_included_in_sample($this->coursework, $this->$student, $another, $stage, $negate);
     }
-
 
     /**
      * @Given /^I save sampling strategy$/

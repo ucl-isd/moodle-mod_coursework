@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\framework;
 use mod_coursework\ability\rule;
 
@@ -212,6 +211,5 @@ abstract class ability {
 
         $this->rules[] = $rule;
     }
-
 
 }

@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-
 $observers = array(
 
     array(
@@ -64,5 +62,4 @@ $observers = array(
         'callback' => 'mod_coursework_observer::remove_teacher_from_dropdown_when_unenrolled',
     ),
 );
-
 

@@ -30,7 +30,6 @@ require_once(dirname(__FILE__).'/../../../config.php');
 
 global $CFG, $DB, $PAGE, $OUTPUT;
 
-
 $coursemoduleid = required_param('cmid', PARAM_INT);
 $coursemodule = $DB->get_record('course_modules', array('id' => $coursemoduleid));
 $coursework = coursework::find($coursemodule->instance);
@@ -90,7 +89,6 @@ if (!$submission->persisted()) {
     $submission->submission_manager = $draftitemid;
     $submitform->set_data($submission);
 }
-
 
 /**
  * @var mod_coursework_page_renderer $page_renderer

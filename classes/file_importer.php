@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework;
 
 use mod_coursework\models\coursework;
@@ -30,8 +29,6 @@ use mod_coursework\export;
 defined('MOODLE_INTERNAL') || die();
 
 class coursework_file_zip_importer    {
-
-
 
     public function extract_zip_file($filename, $contextid) {
 
@@ -92,7 +89,6 @@ class coursework_file_zip_importer    {
             $USER->id);
     }
 
-
     /**
      * Process an uploaded zip file
      *
@@ -115,7 +111,6 @@ class coursework_file_zip_importer    {
         $feedbackfiles = $this->get_import_files($contextid);
 
         $participants = $coursework->get_allocatables();
-
 
         foreach ($feedbackfiles as $file) {
 
@@ -141,7 +136,6 @@ class coursework_file_zip_importer    {
                             $results[$filename] = get_string('assessorfeedbacknotfound', 'mod_coursework');
                         }
                     }
-
 
                     if ($feedback = $this->feedback_exists($coursework, $submission, $feedbackstage)) {
 
@@ -176,7 +170,6 @@ class coursework_file_zip_importer    {
                             $results[$filename] = get_string('feedbackfilecreated', 'mod_coursework');
                         }
 
-
                     } else {
                         $results[$filename] = get_string('assessorfeedbacknotfound', 'mod_coursework');
                     }
@@ -194,12 +187,9 @@ class coursework_file_zip_importer    {
 
         return $results;
 
-
     }
 
-
     public function is_valid_feedback_file_filename($coursework, $feedbackfile, $participants) {
-
 
         $result = false;
 
@@ -226,11 +216,9 @@ class coursework_file_zip_importer    {
             }
         }
 
-
         return $result;
 
     }
-
 
     public function feedback_exists($coursework, $submission, $stageidentifier) {
 
@@ -254,6 +242,5 @@ class coursework_file_zip_importer    {
         return   $DB->get_record_sql($sql, $params);
 
     }
-
 
 }

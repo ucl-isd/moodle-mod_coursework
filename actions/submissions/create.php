@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 /**
  * Creates a submission instance and redirects to the coursework page.
  */
@@ -34,7 +33,6 @@ $allocatableid = required_param('allocatableid', PARAM_INT);
 $allocatabletype = required_param('allocatabletype', PARAM_ALPHANUMEXT);
 $submissionid = optional_param('submissionid', 0, PARAM_INT);
 $finalised = !!optional_param('finalisebutton', 0, PARAM_TEXT);
-
 
 if (!in_array($allocatabletype, array('user', 'group'))) {
     throw new \mod_coursework\exceptions\access_denied(\mod_coursework\models\coursework::find($courseworkid),

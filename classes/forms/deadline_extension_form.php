@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\forms;
 use mod_coursework\models\coursework;
 
@@ -45,15 +44,12 @@ class deadline_extension_form extends \moodleform {
         $this->_form->addElement('hidden', 'id');
         $this->_form->settype('id', PARAM_INT);
 
-
         if ($this->get_coursework()->personaldeadlineenabled &&  $personal_deadline = $this->personal_deadline()){
             $this->_form->addElement('html', '<div class="alert">Personal deadline: '. userdate($personal_deadline->personal_deadline).'</div>');
         } else {
             // Current deadline for comparison
             $this->_form->addElement('html', '<div class="alert">Default deadline: ' . userdate($this->get_coursework()->deadline) . '</div>');
         }
-
-
 
         // Date and time picker
         $this->_form->addElement('date_time_selector', 'extended_deadline', get_string('extended_deadline',
@@ -88,13 +84,11 @@ class deadline_extension_form extends \moodleform {
         global $CFG;
         $max_deadline = $CFG->coursework_max_extension_deadline;
 
-
         if ($this->get_coursework()->personaldeadlineenabled && $personal_deadline = $this->personal_deadline()){
             $deadline = $personal_deadline->personal_deadline;
         } else {
             $deadline = $this->get_coursework()->deadline;
         }
-
 
         $errors = array();
         if ($data['extended_deadline'] <= $deadline) {
@@ -132,6 +126,5 @@ class deadline_extension_form extends \moodleform {
 
       return  $personal_deadline = $DB->get_record('coursework_person_deadlines', $params);
     }
-
 
 }

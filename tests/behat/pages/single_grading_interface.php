@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
 

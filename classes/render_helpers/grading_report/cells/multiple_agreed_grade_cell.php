@@ -20,9 +20,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\render_helpers\grading_report\cells;
-
 
 use html_writer;
 use mod_coursework\ability;
@@ -66,7 +64,6 @@ class multiple_agreed_grade_cell extends cell_base {
     public function get_content($rowobject) {
 
         global $USER, $OUTPUT;
-
 
         //if coursework uses sampling check if any enabled for this submission, otherwise there is no agreed grade
         if ($rowobject->get_coursework()->sampling_enabled() && $rowobject->get_submission() && !$rowobject->get_submission()->sampled_feedback_exists()){
@@ -115,7 +112,6 @@ class multiple_agreed_grade_cell extends cell_base {
                 'stage_identifier' => $this->stage->identifier(),
             );
             $new_feedback = feedback::build($feedback_params);
-
 
             //if the user is a site admin then they can add final feedback
             if ($ability->can('new', $new_feedback) || is_siteadmin()) {
@@ -186,7 +182,6 @@ class multiple_agreed_grade_cell extends cell_base {
     public function get_table_header_class(){
         return 'agreedgrade';
     }
-
 
     /**
      * @return string

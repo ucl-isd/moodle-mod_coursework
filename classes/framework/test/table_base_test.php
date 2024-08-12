@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -92,7 +91,6 @@ class framework_table_base_test extends advanced_testcase {
     public function test_find_when_false_and_zero_supplied() {
         $this->assertFalse(framework_user_table::find(0));
     }
-
 
     public function test_exists_when_true() {
         $generator = testing_util::get_data_generator();

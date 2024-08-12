@@ -22,14 +22,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/mod/coursework/lib.php');
 
 class mod_coursework_observer {
-
-
 
     public static function autoallocate_when_user_added(core\event\role_assigned $event){
 
@@ -54,8 +50,6 @@ class mod_coursework_observer {
         coursework_mod_updated($event);
 
     }
-
-
 
     public static function process_allocation_after_creation(core\event\course_module_created $event){
 
@@ -93,6 +87,5 @@ class mod_coursework_observer {
         teacher_allocation_cache_purge($event);
 
     }
-
 
 }

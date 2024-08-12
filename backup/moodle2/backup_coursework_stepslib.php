@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 class backup_coursework_activity_structure_step extends backup_activity_structure_step
 {
     protected function define_structure() {
@@ -110,7 +109,6 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                     'plagiarismflagenabled'
                                                   ));
 
-
             $sample_strategies =new backup_nested_element('coursework_sample_set_rules');
 
             $sample_strategy = new backup_nested_element('coursework_sample_set_rule',array('id'),
@@ -131,7 +129,6 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
 
         if ($userinfo) {
 
-
             $plagiarism_flags = new backup_nested_element('coursework_plagiarism_flags');
 
             $plagiarism_flag = new backup_nested_element('coursework_plagiarism_flag', array('id'),
@@ -147,8 +144,6 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                                     "timemodified"
                                                             ));
 
-
-
             $moderation_agreements = new backup_nested_element('coursework_mod_agreements');
 
             $moderation_agreement = new backup_nested_element('coursework_mod_agreement', array('id'),
@@ -162,8 +157,6 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                         "modcomment",
                                                         "modecommentformat"
                                                     ));
-
-
 
             $feedbacks=new backup_nested_element('coursework_feedbacks');
 
@@ -285,7 +278,6 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                      "extra_information_format"
                                                  ));
 
-
             $personal_deadlines=new backup_nested_element('coursework_person_deadlines');
 
             $personal_deadline=new backup_nested_element('coursework_person_deadline', array('id'),
@@ -302,7 +294,6 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                     "lastmodifiedbyid"
                                                 ));
 
-
             $sample_members = new backup_nested_element('coursework_sample_set_mbrs');
 
             $sample_member = new backup_nested_element('coursework_sample_set_mbr', array('id'),
@@ -315,7 +306,6 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                         "stage_identifier",
                                                         "selectiontype"
                                                 ));
-
 
             //A coursework instance has submissions.
             $coursework->add_child($submissions);

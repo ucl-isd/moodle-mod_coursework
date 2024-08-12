@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\export\csv\cells;
 use mod_coursework\models\submission;
 use mod_coursework\ability;
@@ -30,7 +29,6 @@ use mod_coursework\models\feedback;
  * Class assessorfeedback_cell
  */
 class assessorfeedback_cell extends cell_base{
-
 
     /**
      * @param submission$submission
@@ -87,7 +85,6 @@ class assessorfeedback_cell extends cell_base{
         if (has_any_capability($agreedgradecap, $PAGE->context) && has_any_capability($initialgradecap, $PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context)) {
 
-
             //is the submission in question ready to grade?
             if (!$submission->ready_to_grade()) return get_string('submissionnotreadytograde','coursework');
 
@@ -118,7 +115,6 @@ class assessorfeedback_cell extends cell_base{
 
             }
 
-
             if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
                 //was this user the one who last graded this submission if not then user cannot grade
                 if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $PAGE->context) )
@@ -138,7 +134,6 @@ class assessorfeedback_cell extends cell_base{
                 if (!has_capability('mod/coursework:administergrades', $PAGE->context)
                     && !$DB->get_record('coursework_allocation_pairs', $allocation_params)) return get_string('nopermissiontogradesubmission','coursework');
             }
-
 
             //check for coursework without allocations - with/without samplings
             if (has_capability('mod/coursework:addinitialgrade', $PAGE->context) && !has_capability('mod/coursework:editinitialgrade', $PAGE->context)

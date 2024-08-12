@@ -63,7 +63,6 @@ class builder {
         $this->options = $options;
     }
 
-
     /**
      * Takes the raw data, instantiates each row as a new renderable object and returns the whole lot.
      *
@@ -85,7 +84,6 @@ class builder {
                 array($sorting,
                     $method_name));
         }
-
 
         return $rows;
 
@@ -122,7 +120,6 @@ class builder {
         }
         return new user_cell($items);
     }
-
 
     /**
      * @return personal_deadline_cell

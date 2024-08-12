@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\allocation;
 
 /**
@@ -29,7 +28,5 @@ namespace mod_coursework\allocation;
  * @package mod_coursework\allocation
  */
 interface moderatable {
-
-
 
 }

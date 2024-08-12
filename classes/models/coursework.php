@@ -25,7 +25,6 @@
 
 namespace mod_coursework\models;
 
-
 use coding_exception;
 use context_course;
 
@@ -380,7 +379,6 @@ class coursework extends table_base {
      */
     public $extensionsenabled;
 
-
     public $gradeeditingtime;
 
     /**
@@ -388,12 +386,10 @@ class coursework extends table_base {
      */
     public $markingdeadlineenabled;
 
-
     /**
      * @var int
      */
     public $initialmarkingdeadline;
-
 
     /**
      * @var int
@@ -461,7 +457,6 @@ class coursework extends table_base {
 
     public function cm_object($coursemodule){
 
-
         $modinfo = get_fast_modinfo($this->get_course_id());
         return $this->coursemodule = $modinfo->get_cm($coursemodule->id);
 
@@ -493,7 +488,6 @@ class coursework extends table_base {
         $coursemodule = $this->get_course_module();
         return (int)$coursemodule->idnumber;
     }
-
 
     /**
      * Getter function for the coursework's course object.
@@ -658,7 +652,6 @@ class coursework extends table_base {
         return $this->get_context()->id;
     }
 
-
     function get_grade_editing_time() {
         return $this->gradeeditingtime;
     }
@@ -671,7 +664,6 @@ class coursework extends table_base {
     function get_initial_marking_deadline() {
         return  (!empty($this->initialmarkingdeadline))     ?   $this->initialmarkingdeadline : 0;
     }
-
 
     /**
      * Returns the initial marking deadline timestamp
@@ -869,7 +861,6 @@ class coursework extends table_base {
         return false;
     }
 
-
     /**
      * @return bool
      */
@@ -883,7 +874,6 @@ class coursework extends table_base {
     public function early_finalisation_allowed() {
         return !!$this->allowearlyfinalisation;
     }
-
 
     /**
      * Pushes all grades form the coursework into the gradebook. Will overwrite any older grades.
@@ -972,7 +962,6 @@ class coursework extends table_base {
             // If allocations are in use, then we don't supply files that are not allocated.
             $submission = submission::find($submission);
 
-
             $files = $fs->get_area_files($context->id, 'mod_coursework', 'submission',
                                          $submission->id, "id", false);
             foreach ($files as $f) {
@@ -999,8 +988,6 @@ class coursework extends table_base {
             }
         }
 
-
-
         // Create path for new zip file.
         $temp_zip = tempnam($CFG->dataroot.'/temp/', 'ocm_');
         // Zip files.
@@ -1010,10 +997,6 @@ class coursework extends table_base {
         }
         return false;
     }
-
-
-
-
 
     /**
      * Makes code cleaner than writing MATHS all over the place!!
@@ -1235,7 +1218,6 @@ class coursework extends table_base {
         return $DB->record_exists('coursework_allocation_pairs', $params);
     }
 
-
     /**
      * Check if current assessor is not already allocated for this submission in different stage
      *
@@ -1260,7 +1242,6 @@ class coursework extends table_base {
 
         return false;
     }
-
 
     /**
      * Checks whether the current user is an assessor allocated to mark this submission.
@@ -1319,7 +1300,6 @@ class coursework extends table_base {
 
          }
 
-
         return $needsgrading;
 
     }
@@ -1374,7 +1354,6 @@ class coursework extends table_base {
         return $graded;
     }
 
-
     /**
      * Get all published submissions in the coursework
      *
@@ -1395,7 +1374,6 @@ class coursework extends table_base {
         }
         return $submissions;
     }
-
 
     /**
      * Returns a hash of this user's id. Not username as this would be non-unique across
@@ -1418,7 +1396,6 @@ class coursework extends table_base {
         //so we generate a hash without a leading zero
         $uhash = substr(md5($uhash), 0, 8);
         $uhash = 'X' . $uhash;
-
 
         return $uhash;
     }
@@ -1480,7 +1457,6 @@ class coursework extends table_base {
         return $allocation;
     }
 
-
     public function get_assessors_stage_identifier($allocatable_id, $assessor_id){
         global $DB;
 
@@ -1494,7 +1470,6 @@ class coursework extends table_base {
 
         return $stage_identifier->stage_identifier;
     }
-
 
     /**
      * Checks settings to see whether the current user (who we assume is a student) can
@@ -1824,7 +1799,6 @@ class coursework extends table_base {
         return submission::build($own_submission_params);
     }
 
-
     /**
      * Uses the knowledge of the Coursework settings to compose the object which the renderer can deal with.
      * This is the messy wiring for the nice, reusable components in the grading report :)
@@ -1841,7 +1815,6 @@ class coursework extends table_base {
         $cell_items = array(
             'coursework' => $this,
         );
-
 
         // Add the cell objects. These are used to generate the table headers and to render each row.
         if ($this->is_configured_to_have_group_submissions()) {
@@ -2261,7 +2234,6 @@ class coursework extends table_base {
         return $this->submissionnotification;
     }
 
-
     /**
      * Utility method that returns an image icon.
      *
@@ -2491,8 +2463,6 @@ class coursework extends table_base {
             $excludesql .= ')';
         }
 
-
-
         $DB->execute("UPDATE {coursework_submissions}
                          SET finalised = 1
                        WHERE courseworkid = ? $excludesql", array($this->id));
@@ -2574,12 +2544,6 @@ class coursework extends table_base {
         return $submissions;
     }
 
-
-
-
-
-
-
     /**
      * Has the given stage got a an automatic sampling rule
      *
@@ -2591,8 +2555,6 @@ class coursework extends table_base {
 
         return $DB->record_exists('coursework_sample_set_rules',array('courseworkid' => $this->id, 'stage_identifier' => $stage));
     }
-
-
 
     /**
      * Returns all allocatables in the current coursework that have feedback
@@ -2609,8 +2571,6 @@ class coursework extends table_base {
                          AND        cwrsub.courseworkid = :coursework_id
                          AND        stage_identifier = :stage";
 
-
-
         if ($random) {
             $sql .= ($CFG->dbtype == 'pgsql') ? " ORDER BY RANDOM() " :  " ORDER BY RAND() ";
         }
@@ -2619,7 +2579,6 @@ class coursework extends table_base {
             array('coursework_id' => $this->id, "stage" => $stage));
 
     }
-
 
     /*
      * Creates automatic feedback
@@ -2672,9 +2631,7 @@ class coursework extends table_base {
         unset($SESSION->keep_cache_data);
         feedback::remove_cache($this->id);
 
-
     }
-
 
     /** Function to check it Turnitin is enabled for the particular coursework
      * @return bool
@@ -2703,11 +2660,6 @@ class coursework extends table_base {
         return self::$pool[$this->id]['tii_enabled'][$this->id];
     }
 
-
-
-
-
-
     /**
      * Lets us know if personal deadlines are enabled in the coursework.
      * @return bool
@@ -2716,7 +2668,6 @@ class coursework extends table_base {
         return (bool)$this->personaldeadlineenabled;
     }
 
-
     /**
      * Lets us know if draft feedback is enabled in the coursework.
      * @return bool
@@ -2724,7 +2675,6 @@ class coursework extends table_base {
     public function draft_feedback_enabled(){
         return (bool)$this->draftfeedbackenabled;
     }
-
 
     /**
      * Return all allocatables and the allocatables deadline
@@ -2805,7 +2755,6 @@ class coursework extends table_base {
         }
         return false;
     }
-
 
     /**
      * @return bool
@@ -2944,7 +2893,6 @@ class coursework extends table_base {
         $DB->execute('DELETE FROM {coursework_extensions} WHERE allocatabletype = ? AND courseworkid = ? ', array('user', $this->id));
     }
 
-
     /**
      * Function to check if Coursework has any final feedback
      *
@@ -2978,7 +2926,6 @@ class coursework extends table_base {
             $allocatable = user::find($allocatableid);
         }
 
-
         if ($this->personal_deadlines_enabled()){
             // find personal deadline for a user if this option enabled
             $personal = $this->get_allocatable_personal_deadline($allocatable);
@@ -3008,7 +2955,6 @@ class coursework extends table_base {
         global  $DB;
         $extension = false;
 
-
         if ($this->extensions_enabled() ) {
             $extensionrecord = $DB->get_record('coursework_extensions', array('courseworkid' => $this->id, 'allocatableid' => $allocatable->id));
 
@@ -3020,7 +2966,6 @@ class coursework extends table_base {
         return $extension;
     }
 
-
     /**
      * Function to Remove all plagiarisms by a submission
      *
@@ -3031,7 +2976,6 @@ class coursework extends table_base {
 
         $DB->delete_records('coursework_plagiarism_flags', ['submissionid' => $submission_id]);
     }
-
 
     /**
      * Function to check if Coursework has any submission
@@ -3048,7 +2992,6 @@ class coursework extends table_base {
 
         return $DB->record_exists_sql($sql, array('courseworkid' => $this->id));
     }
-
 
     /**
      * Function to check if coursework or course that a coursework belongs to is hidden
@@ -3078,7 +3021,6 @@ class coursework extends table_base {
             $this->stages = [];
         }
     }
-
 
     /**
      * cache array

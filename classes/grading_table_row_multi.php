@@ -18,12 +18,10 @@ namespace mod_coursework;
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * Single row of the grading table for when there are multiple markers.
  */
 class grading_table_row_multi extends grading_table_row_base {
-
 
     /**
      * Returns a new table object using the attached submission as a constructor.
@@ -34,6 +32,5 @@ class grading_table_row_multi extends grading_table_row_base {
         $table = new assessor_feedback_table($this->coursework, $this->get_allocatable(), $this->get_submission());
         return $table;
     }
-
 
 }

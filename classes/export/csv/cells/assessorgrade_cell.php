@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\export\csv\cells;
 use mod_coursework\models\submission;
 use mod_coursework\ability;
@@ -32,7 +31,6 @@ use mod_coursework\export;
  * Class assessorgrade_cell
  */
 class assessorgrade_cell extends cell_base{
-
 
     /**
      * @param submission$submission
@@ -119,7 +117,6 @@ class assessorgrade_cell extends cell_base{
             || has_capability('mod/coursework:administergrades', $PAGE->context)
         ) {
 
-
             $errormsg = '';
 
             if (!$this->coursework->is_using_rubric()) {
@@ -177,10 +174,8 @@ class assessorgrade_cell extends cell_base{
 
             if (!empty($errormsg))  return $errormsg;
 
-
             //is the submission in question ready to grade?
             if (!$submission->ready_to_grade()) return get_string('submissionnotreadytograde', 'coursework');
-
 
             //has the submission been published if yes then no further grades are allowed
             if ($submission->get_state() >= submission::PUBLISHED) return $submission->get_status_text();
@@ -209,7 +204,6 @@ class assessorgrade_cell extends cell_base{
 
             }
 
-
             if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
                 //was this user the one who last graded this submission if not then user cannot grade
                 if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $PAGE->context))
@@ -231,7 +225,6 @@ class assessorgrade_cell extends cell_base{
                 ) return get_string('nopermissiontogradesubmission', 'coursework');
             }
 
-
             //check for coursework without allocations - with/without samplings
             if (has_capability('mod/coursework:addinitialgrade', $PAGE->context) && !has_capability('mod/coursework:editinitialgrade', $PAGE->context)
                 && $this->coursework->get_max_markers() > 1 && !$this->coursework->allocation_enabled()
@@ -250,7 +243,6 @@ class assessorgrade_cell extends cell_base{
                 }
                 if ($assessors == $feedbacks) return get_string('gradealreadyexists', 'coursework');
             }
-
 
         } else if (has_any_capability($agreedgradecap, $PAGE->context)) {
 
@@ -290,7 +282,6 @@ class assessorgrade_cell extends cell_base{
             }
         }
 
-
         return $valuefound;
     }
 
@@ -303,7 +294,6 @@ class assessorgrade_cell extends cell_base{
      */
     function    get_rubrics($coursework, $csv_cells) {
 
-
         if ($coursework->is_using_rubric()) {
 
             $rubricheaders = array();
@@ -315,12 +305,10 @@ class assessorgrade_cell extends cell_base{
                 $rubricheaders[] = $criteria['description']." comment";
             }
 
-
             //find out the position of singlegrade
             $position = array_search('singlegrade', $csv_cells);
             //get all data from the position of the singlegrade to the length of rubricheaders
             // $csv_cells = array_splice($csv_cells,5, 1, $rubricheaders);
-
 
             $start_cells = array_slice($csv_cells,0, $position,true);
             $end_cells = array_slice($csv_cells, $position+1,count($csv_cells),true);
@@ -329,13 +317,9 @@ class assessorgrade_cell extends cell_base{
 
             $cells = array_merge($cells, $end_cells);
 
-
-
         }
-
 
         return $cells;
     }
-
 
 }

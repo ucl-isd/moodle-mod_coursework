@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\models;
 
 /**
@@ -88,7 +87,6 @@ class null_user implements \mod_coursework\allocation\allocatable {
         return array();
     }
 
-
     /**
      * @param coursework $coursework
      * @return bool
@@ -97,7 +95,6 @@ class null_user implements \mod_coursework\allocation\allocatable {
         return false;
     }
 
-
     /**
      * @param coursework $coursework
      * @return bool
@@ -105,7 +102,6 @@ class null_user implements \mod_coursework\allocation\allocatable {
     public function get_agreed_feedback($coursework){
         return false;
     }
-
 
     /**
      * @param coursework $coursework

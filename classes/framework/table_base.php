@@ -16,7 +16,6 @@
 
 namespace mod_coursework\framework;;
 
-
 use moodle_database;
 use stdClass;
 
@@ -119,7 +118,6 @@ abstract class table_base {
         return self::instantiate_objects($params);
     }
 
-
     /**
      * Makes a new object ready to save
      *
@@ -148,7 +146,6 @@ abstract class table_base {
         $item->save();
         return $item;
     }
-
 
     /**
      * Takes the supplied DB record (one row of the table) and applies it to this object. If it's a

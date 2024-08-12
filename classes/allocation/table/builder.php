@@ -61,7 +61,6 @@ class builder {
         $this->options = $options;
     }
 
-
     /**
      * Takes the raw data, instantiates each row as a new renderable object and returns the whole lot.
      *
@@ -85,11 +84,9 @@ class builder {
                     $method_name));
         }
 
-
         return $rows;
 
     }
-
 
     /**
      * Counts the total number of students that the current user can see.
@@ -115,7 +112,6 @@ class builder {
         foreach ($allocatables as $allocatable) {
             $rows[] = new row_builder($this, $allocatable);
         }
-
 
         // Sort the rows.
         $sorting = new mod_coursework\grading_report($this->options, $this->coursework);
@@ -148,11 +144,9 @@ class builder {
         $this->totalrows = $rows;
         $this->totalcount = $counter;
 
-
         return $this->totalrows;
 
     }
-
 
     /**
      * Getter for the coursework instance
@@ -215,7 +209,6 @@ class builder {
         }
 
         return  $elements;
-
 
     }
 }

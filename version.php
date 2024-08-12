@@ -22,7 +22,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-
 $plugin->component = 'mod_coursework';
 
 $plugin->version = 2024080600;  // If version == 0 then module will not be installed

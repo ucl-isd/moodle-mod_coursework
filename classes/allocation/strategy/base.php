@@ -22,9 +22,7 @@ use mod_coursework\models\coursework;
 use mod_coursework\models\user;
 use mod_coursework\stages\base as stage_base;
 
-
 defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * This base class is extended to make specific allocation strategies, which when run, will

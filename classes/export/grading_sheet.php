@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 namespace mod_coursework\export;
 use mod_coursework\export\csv;
 use mod_coursework\models\submission;
@@ -23,8 +22,6 @@ use mod_coursework\ability;
 use mod_coursework\models\coursework;
 
 class grading_sheet extends csv{
-
-
 
     public function get_submissions($groupid = null, $selected_submission_ids = ''){
         global $PAGE, $USER;
@@ -46,7 +43,6 @@ class grading_sheet extends csv{
         }
 
         $ability = new ability(user::find($USER), $this->coursework);
-
 
         if (!has_capability('mod/coursework:administergrades', $PAGE->context)) {
 
@@ -139,7 +135,6 @@ class grading_sheet extends csv{
         return $csv_data;
     }
 
-
     /**
      * Put together cells that will be used in the csv file
      * @param coursework $coursework
@@ -201,7 +196,6 @@ class grading_sheet extends csv{
                     $csv_cells[] = $criteria['description'];
                     $csv_cells[] = $criteria['description']." comment";
                 }
-
 
             }
         */

@@ -347,7 +347,6 @@ class submission extends table_base implements \renderable {
         $files = $fs->get_area_files($this->get_context_id(), 'mod_coursework', 'submission',
             $this->id, "id", false);
 
-
         $params = array(
             'context' => \context_module::instance($this->get_coursework()->get_course_module()->id),
             'courseid' => $this->get_course_id(),
@@ -359,7 +358,6 @@ class submission extends table_base implements \renderable {
                 'pathnamehashes' => array_keys($files)
             )
         );
-
 
         $event = \mod_coursework\event\assessable_uploaded::create($params);
         //$event->set_legacy_files($files);
@@ -505,7 +503,6 @@ class submission extends table_base implements \renderable {
 
     }
 
-
     /**
      * @return mixed|feedback|string
      * @throws \dml_missing_record_exception
@@ -607,8 +604,6 @@ class submission extends table_base implements \renderable {
         // Final grade is done.
         $hasfinalfeedback = (bool)$this->get_final_feedback();
         $maxfeedbacksreached = count($assessor_feedbacks) >= $this->max_number_of_feedbacks();
-
-
 
         if ($hasfinalfeedback) {
             return self::FINAL_GRADED;
@@ -759,7 +754,6 @@ class submission extends table_base implements \renderable {
         return false;
     }
 
-
     /*
      * As with the author id field this function was created to verify that coursework will work correctly with Turnitin
      * Plagiarism plugin that requires the author of a submission to
@@ -905,8 +899,6 @@ class submission extends table_base implements \renderable {
         return $this->get_state() >= submission::PUBLISHED;
     }
 
-
-
     /**
      * @return bool
      */
@@ -917,7 +909,6 @@ class submission extends table_base implements \renderable {
     public function is_finalised() {
         return $this->get_state() == submission::FINALISED;
     }
-
 
     /**
      * @return bool
@@ -1230,7 +1221,6 @@ class submission extends table_base implements \renderable {
         return $records;
     }
 
-
     /**
      *  Function to get samplings for the submission
      * @return array
@@ -1246,7 +1236,6 @@ class submission extends table_base implements \renderable {
         );
         return $record;
     }
-
 
     /**
      * Check if submission has an extension
@@ -1293,8 +1282,6 @@ class submission extends table_base implements \renderable {
 
     }
 
-
-
     /**
      * Check if submission was submitted within the extension time
      *
@@ -1329,9 +1316,6 @@ class submission extends table_base implements \renderable {
         return false;
     }
 
-
-
-
     /**
      * Tells us whether any initial feedbacks for this submission are editable
      * This is only for double marked courseworks
@@ -1361,7 +1345,6 @@ class submission extends table_base implements \renderable {
 
         return (empty($editablefeedbacks))  ?   false : $editablefeedbacks;
     }
-
 
     /**
      * Tells us whether any final feedback for this submission is editable
@@ -1460,7 +1443,6 @@ class submission extends table_base implements \renderable {
         }
         return $valid_extension;
     }
-
 
     function can_be_unfinalised() {
         return  ($this->get_state() == submission::FINALISED);

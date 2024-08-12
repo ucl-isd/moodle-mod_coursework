@@ -31,7 +31,6 @@ use mod_coursework\models\moderation_set_rule;
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * Defines a rule that will include all students between to raw grade marks.
  */
@@ -126,6 +125,5 @@ class range_grade_raw extends moderation_set_rule {
         $html .= html_writer::end_tag('p');
         return $html;
     }
-
 
 }

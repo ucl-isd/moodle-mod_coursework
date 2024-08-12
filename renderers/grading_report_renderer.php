@@ -45,7 +45,6 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      */
     protected $is_multiple_markers;
 
-
     /**
      * @param grading_report $grading_report
      * param $is_multiple_markers
@@ -78,7 +77,6 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         return  $langelement . $table_html;
     }
 
-
     /**
      *
      * @return mixed
@@ -100,7 +98,6 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
 
         return $result;
     }
-
 
     /**
      * @param cell_interface $cell_helper
@@ -138,7 +135,6 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         if ($is_multiple_markers) {
             $table_html .= '<td class="details-control"></td>';
         }
-
 
         foreach ($cell_helpers as $cell_helper) {
             $html_td = trim($cell_helper->get_table_cell($row_object));
@@ -288,6 +284,5 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     public function grading_table_row_id(allocatable $allocatable, coursework $coursework) {
         return 'allocatable_' . $coursework->get_allocatable_identifier_hash($allocatable);
     }
-
 
 }

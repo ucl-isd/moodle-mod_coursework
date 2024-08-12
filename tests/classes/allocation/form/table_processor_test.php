@@ -25,7 +25,6 @@ use mod_coursework\models\coursework;
 
 global $CFG;
 
-
 /**
  * This class takes the manual data about the teachers who should be allocated to various
  * students and saves it. We want to keep this separate from the processing of the auto allocations
@@ -65,7 +64,6 @@ class table_processor_test extends advanced_testcase {
         $this->create_another_teacher();
         $this->delete_all_auto_allocations_caused_by_enrol_hooks();
     }
-
 
     public function test_process_rows_makes_a_new_assessor_allocation() {
 

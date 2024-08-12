@@ -181,10 +181,6 @@ class auto_allocator_test extends advanced_testcase {
         $this->assertTrue(\mod_coursework\models\allocation::exists($allocation_params));
     }
 
-
-
-
-
     private function set_coursework_to_single_marker() {
         $this->coursework->update_attribute('numberofmarkers', 1);
     }

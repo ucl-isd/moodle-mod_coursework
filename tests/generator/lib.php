@@ -200,8 +200,6 @@ class mod_coursework_generator extends testing_module_generator {
         return $feedback;
     }
 
-
-
     /**
      * Makes a submission for testing.
      *
@@ -259,6 +257,5 @@ class mod_coursework_generator extends testing_module_generator {
 
         return $submission;
     }
-
 
 }

@@ -26,7 +26,6 @@ namespace mod_coursework\event;
 
 defined('MOODLE_INTERNAL') || die();
 
-
 class coursework_plagiarism_flag_updated extends \core\event\base {
 
     /**

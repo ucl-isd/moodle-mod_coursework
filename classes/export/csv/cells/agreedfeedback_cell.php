@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\export\csv\cells;
 use mod_coursework\models\submission;
 use mod_coursework\ability;
@@ -31,7 +30,6 @@ use mod_coursework\grade_judge;
  * Class agreedfeedback_cell
  */
 class agreedfeedback_cell extends cell_base{
-
 
     /**
      * @param submission$submission
@@ -52,8 +50,6 @@ class agreedfeedback_cell extends cell_base{
     public function get_header($stage){
         return  get_string('agreedgradefeedback', 'coursework');
     }
-
-
 
     public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells = array()) {
 

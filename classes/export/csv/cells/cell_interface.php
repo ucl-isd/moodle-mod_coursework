@@ -20,10 +20,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\export\csv\cells;
-
-
 
 /**
  * Interface cell_interface makes sure that all of the grading report cells are the same.
@@ -51,6 +48,5 @@ interface cell_interface {
      * @return mixed
      */
     public function validate_cell($value, $submissions, $stage_dentifier='');
-
 
 }

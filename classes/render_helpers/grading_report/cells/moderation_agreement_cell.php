@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\render_helpers\grading_report\cells;
 use coding_exception;
 use html_table_cell;
@@ -38,7 +37,6 @@ use pix_icon;
  */
 class moderation_agreement_cell extends cell_base {
 
-
     /**
      * @var allocatable
      */
@@ -49,16 +47,12 @@ class moderation_agreement_cell extends cell_base {
      */
     private $stage;
 
-
-
     /**
      * @param array $items
      */
     protected function after_initialisation($items) {
         $this->stage = $items['stage'];
     }
-
-
 
     /**
      * @param grading_table_row_base $rowobject
@@ -79,7 +73,6 @@ class moderation_agreement_cell extends cell_base {
             if (!$moderation &&
                 $rowobject->get_submission()->final_grade_agreed() &&
                 ($this->stage->user_is_moderator($USER))) {
-
 
                 $moderation_params = array(
                     'submissionid' => $rowobject->get_submission()->id,
@@ -158,7 +151,6 @@ class moderation_agreement_cell extends cell_base {
         return ($OUTPUT->help_icon('moderationagreement', 'coursework'));
     }
 
-
     /**
      * @param grading_table_row_base $rowobject
      * @param user $assessor
@@ -189,7 +181,6 @@ class moderation_agreement_cell extends cell_base {
                                 array('class' => 'new_moderation','id' => $link_id));
     }
 
-
     /**
      * @param $rowobject
      * @return array
@@ -209,7 +200,6 @@ class moderation_agreement_cell extends cell_base {
 
         $title = get_string('editmoderation', 'coursework');
         $icon = new pix_icon('edit', $title, 'coursework');
-
 
         return  $OUTPUT->action_icon($link,
             $icon,

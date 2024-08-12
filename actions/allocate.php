@@ -107,8 +107,6 @@ $PAGE->requires->js_init_call('M.mod_coursework.init_allocate_page',
 
 $PAGE->requires->string_for_js('sameassessorerror', 'coursework');
 
-
-
 $allocationsmanager = $coursework->get_allocation_manager();
 $allocationtable = new mod_coursework\allocation\table\builder($coursework, $options);
 $allocationtable = new mod_coursework_allocation_table($allocationtable);
@@ -128,7 +126,6 @@ if ($formsavebutton) {
     $coursework->save();
 }
 
-
 if ($samplingformsavebutton) {
     if ($coursework->sampling_enabled()) {
         $allocationsmanager->save_sample();
@@ -146,8 +143,6 @@ if ($deletemodsetrule) {
     }
 }
 
-
-
 // 2. Process the manual allocations
 
 // Did we just get the form submitted to us?
@@ -158,12 +153,7 @@ if ($formsavebutton) {
     $allocationsmanager->auto_generate_sample_set();
 }
 
-
 // 3. Process the auto allocations to fill in the gaps.
-
-
-
-
 
 // Get the data to render as a moderation set widget.
 $allocationwidget = new widget($coursework);
@@ -177,7 +167,6 @@ $object_renderer = $PAGE->get_renderer('mod_coursework', 'object');
  * @var mod_coursework_page_renderer $page_renderer
  */
 $page_renderer = $PAGE->get_renderer('mod_coursework', 'page');
-
 
 $warnings = new \mod_coursework\warnings($coursework);
 
@@ -207,8 +196,6 @@ if ($coursework->allocation_enabled()) {
 // Add coursework id etc.
 echo \html_writer::input_hidden_params($PAGE->url);
 
-
-
 if ($coursework->sampling_enabled()) { //  Do not delete yet - refactoring...
     echo \html_writer::start_tag('form', array('id' => 'sampling_form',
         'method' => 'post'));
@@ -217,15 +204,10 @@ if ($coursework->sampling_enabled()) { //  Do not delete yet - refactoring...
     echo html_writer::end_tag('form');
 }
 
-
-
-
-
 // Start form. The page has now been broken into two forms sampling section and allocation section
 // Open form tag.
 echo \html_writer::start_tag('form', array('id' => 'allocation_form',
     'method' => 'post'));
-
 
 if ($coursework->allocation_enabled()) {
     echo $object_renderer->render($allocationwidget);
@@ -237,7 +219,6 @@ $attributes = array(
 );
 echo html_writer::start_tag('div', $attributes);
 echo html_writer::end_tag('div');
-
 
 echo html_writer::tag('h3', get_string('assessormoderatorgrades', 'mod_coursework'));
 echo html_writer::tag('div', get_string('pininfo', 'mod_coursework'), array('class' => 'pininfo'));
@@ -254,7 +235,5 @@ echo $OUTPUT->help_icon('savemanualallocations', 'mod_coursework');
 echo $object_renderer->render($allocationtable);
 
 echo html_writer::end_tag('form');
-
-
 
 echo $OUTPUT->footer();

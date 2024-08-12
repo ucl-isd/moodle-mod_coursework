@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\render_helpers\grading_report\cells;
 use coding_exception;
 use core_user;
@@ -135,7 +134,6 @@ class time_submitted_cell extends cell_base {
             $displayeddeadline = $extension->extended_deadline;
         }
 
-
         if ($extension->id) {
             $new_extension_params['id'] = $extension->id;
         }
@@ -167,7 +165,6 @@ class time_submitted_cell extends cell_base {
                 null,
                 array('class' => 'edit_deadline_extension', 'data-name' => $row_object->get_allocatable()->name(), 'data-params' => json_encode($new_extension_params), 'data-time' => json_encode($content_time)));
         }
-
 
         $content .= '</div>';
 

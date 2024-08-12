@@ -21,7 +21,6 @@ use mod_coursework\models\coursework;
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * Renderable class to represent a table containing assessor feedbacks for a single student submission.
  * Used in the grading report for multiple assessor courseworks.

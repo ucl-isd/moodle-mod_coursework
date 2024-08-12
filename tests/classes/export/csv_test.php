@@ -23,7 +23,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 use mod_coursework\export\csv;
 use mod_coursework\models\submission;
 use mod_coursework\models\deadline_extension;
@@ -39,11 +38,7 @@ global $CFG;
  */
 class csv_test extends advanced_testcase {
 
-
     use mod_coursework\test_helpers\factory_mixin;
-
-
-
 
     public function setUp() {
 
@@ -80,7 +75,6 @@ class csv_test extends advanced_testcase {
         $this->submission->allocatableid = $this->student->id;
         $this->submission = $generator->create_submission($this->submission, $this->coursework);
 
-
         $student = $this->student;
         $assessor = $this->teacher;
         $submission = $this->submission;
@@ -112,7 +106,6 @@ class csv_test extends advanced_testcase {
 
         }
 
-
         // headers and data for csv
         $csv_cells = array('name', 'username', 'submissiondate', 'submissiontime',
             'submissionfileid');
@@ -125,7 +118,6 @@ class csv_test extends advanced_testcase {
         $csv_cells[] = 'stages';
         $csv_cells[] = 'finalgrade';
 
-
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('finalgradesfor', 'coursework'). $this->coursework->name .' '.$timestamp;
         $csv = new \mod_coursework\export\csv($this->coursework, $csv_cells, $filename);
@@ -135,7 +127,6 @@ class csv_test extends advanced_testcase {
         $studentname = $student->lastname .' '.$student->firstname;
         $assessorname = $assessor->lastname .' '. $assessor->firstname;
         $assessorusername = $assessor->username;
-
 
         $one_assessor_grades = array('0' => $studentname,
                                      '1' => $student->username,
@@ -154,7 +145,6 @@ class csv_test extends advanced_testcase {
         $this->assertEquals($one_assessor_grades, $csv_grades);
     }
 
-
     /**
      * Two stages with final agreed grade, extension not enabled
      */
@@ -171,7 +161,6 @@ class csv_test extends advanced_testcase {
         $this->submission = new stdClass();
         $this->submission->userid = $this->student->id;
         $this->submission = $generator->create_submission($this->submission, $this->coursework);
-
 
         $student = $this->student;
         $assessor1 = $this->teacher;
@@ -215,7 +204,6 @@ class csv_test extends advanced_testcase {
         $csv_cells[] = 'stages';
         $csv_cells[] = 'finalgrade';
 
-
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('finalgradesfor', 'coursework'). $this->coursework->name .' '.$timestamp;
         $csv = new \mod_coursework\export\csv($this->coursework, $csv_cells, $filename);
@@ -250,7 +238,6 @@ class csv_test extends advanced_testcase {
 
         $this->assertEquals($two_assessors_grades, $csv_grades);
     }
-
 
     /**
      * Sampling enabled, student not in sample, extension not enabled
@@ -294,7 +281,6 @@ class csv_test extends advanced_testcase {
         $csv_cells[] = 'stages';
         $csv_cells[] = 'finalgrade';
 
-
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('finalgradesfor', 'coursework'). $this->coursework->name .' '.$timestamp;
         $csv = new \mod_coursework\export\csv($this->coursework, $csv_cells, $filename);
@@ -305,7 +291,6 @@ class csv_test extends advanced_testcase {
         $assessorname1 = $assessor1->lastname .' '. $assessor1->firstname;
 
         $assessorusername1 = $assessor1->username;
-
 
         $grades = array('0' => $studentname,
                         '1' => $student->username,
@@ -351,13 +336,11 @@ class csv_test extends advanced_testcase {
         $submission1->allocatableid = $student1->id;
         $submission1 = $generator->create_submission($submission1, $this->coursework);
 
-
         $student2 = $this->create_a_student();
         $submission2 = new stdClass();
         $submission2->userid = $student2->id;
         $submission2->allocatableid = $student2->id;
         $submission2 = $generator->create_submission($submission2, $this->coursework);
-
 
         // student 2 manual sampling enabled
         $set_members_data = new stdClass();
@@ -367,8 +350,6 @@ class csv_test extends advanced_testcase {
         $set_members_data->stage_identifier = 'assessor_2';
 
         $DB->insert_record('coursework_sample_set_mbrs', $set_members_data);
-
-
 
         // Assessor one feedback for student 1
         $feedback_data1 = new stdClass();
@@ -414,7 +395,6 @@ class csv_test extends advanced_testcase {
         }
         $csv_cells[] = 'stages';
         $csv_cells[] = 'finalgrade';
-
 
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('finalgradesfor', 'coursework'). $this->coursework->name .' '.$timestamp;
@@ -473,5 +453,4 @@ class csv_test extends advanced_testcase {
         $this->assertEquals($assessors_grades, $csv_grades);
     }
 }
-
 

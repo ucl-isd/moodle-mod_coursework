@@ -30,7 +30,6 @@ require_once(dirname(__FILE__).'/../../../config.php');
 
 global $DB, $PAGE, $CFG;
 
-
 $cmid = required_param('cmid', PARAM_INT);
 $submission_id = required_param('submissionid', PARAM_INT);
 

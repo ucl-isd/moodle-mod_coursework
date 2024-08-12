@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\renderers;
 
 use mod_coursework\allocation\allocatable;
@@ -51,7 +50,6 @@ class deadline_extension_renderer {
         $PAGE->navbar->add($heading);
         $PAGE->set_title($SITE->fullname);
         $PAGE->set_heading($heading);
-
 
         $html = '';
 

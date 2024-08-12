@@ -43,7 +43,6 @@ class plagiarism_flagging_mform extends moodleform {
      */
     public $submission_id;
 
-
     /**
      * Makes the form elements.
      */

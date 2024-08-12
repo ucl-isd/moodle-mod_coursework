@@ -26,7 +26,6 @@ use mod_coursework\models;
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * Class to manage assessor allocations upload
  */
@@ -119,7 +118,6 @@ class upload {
                     $allocatablesinfile[] = $allocatable->id;
                 }
 
-
                 // validate assessor if exists in the coursework and has one of the capabilities allowing them to grade
                 // in initial stage
                 if (substr($cells[$keynum],0,8) == 'assessor'){
@@ -145,7 +143,6 @@ class upload {
 
         return (!empty($errors)) ?  $errors : false  ;
     }
-
 
     /**
      * Process csv and add records to the DB
@@ -260,7 +257,6 @@ class upload {
 
     }
 
-
     /**
      * Add allocation pair
      *
@@ -287,7 +283,6 @@ class upload {
         return $allocationid;
 
     }
-
 
     /**
      * Update allocation pair

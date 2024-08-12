@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\export\csv\cells;
 use mod_coursework\models\submission;
 
@@ -46,8 +45,6 @@ class stages_cell extends cell_base {
             $timecreated = $feedback->timecreated;
             $timemodified = $feedback->timemodified;
         }
-
-
 
         $gradedata = array();
         // go through each stage and get a grade, if grade not present then put  a placeholder
@@ -104,7 +101,6 @@ class stages_cell extends cell_base {
                 $gradedata[] = $submission->get_agreed_grade() == false ? '' : $this->get_assessor_username($submission->get_agreed_grade()->lasteditedbyuser);
             }
 
-
             $gradedata[] = $submission->get_agreed_grade() == false ? '' : userdate($submission->get_agreed_grade()->timemodified, $this->dateformat);
         }
 
@@ -157,11 +153,5 @@ class stages_cell extends cell_base {
 
         return $fields;
     }
-
-
-
-
-
-
 
 }

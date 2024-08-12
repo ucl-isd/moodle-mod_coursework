@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\export\csv\cells;
 use mod_coursework\models\submission;
 use mod_coursework\grade_judge;
@@ -32,7 +31,6 @@ use mod_coursework\models\feedback;
  * Class otherassessors_cell
  */
 class otherassessors_cell extends cell_base{
-
 
     /**
      * @param submission $submission
@@ -46,7 +44,6 @@ class otherassessors_cell extends cell_base{
 
       //  $stage_identifier =
     // retrieve all feedbacks without currents user feedback
-
 
         $params = array(
             'submissionid' => $submission->id,
@@ -86,7 +83,6 @@ class otherassessors_cell extends cell_base{
                     $gradedata[] = get_string('grade_hidden_manager', 'mod_coursework');
                     $gradedata[] = '';
                 }
-
 
             } else {
 
@@ -152,7 +148,5 @@ class otherassessors_cell extends cell_base{
         }
        return $fields;
     }
-
-
 
 }

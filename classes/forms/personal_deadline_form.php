@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\forms;
 use mod_coursework\models\coursework;
 
@@ -49,13 +48,11 @@ class personal_deadline_form extends \moodleform {
         $this->_form->addElement('hidden', 'multipleuserdeadlines');
         $this->_form->settype('multipleuserdeadlines', PARAM_INT);
 
-
         // Current deadline for comparison
         $this->_form->addElement('html', '<div class="alert">Default deadline: '. userdate($this->get_coursework()->deadline).'</div>');
 
         // Date and time picker
         $this->_form->addElement('date_time_selector', 'personal_deadline', get_string('personal_deadline', 'mod_coursework'));
-
 
         // Submit button
         $this->add_action_buttons();
@@ -64,7 +61,6 @@ class personal_deadline_form extends \moodleform {
     private function get_coursework() {
         return $this->_customdata['coursework'];
     }
-
 
     /**
      * @param array $data

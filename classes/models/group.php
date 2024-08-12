@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 /**
  * This class allows us to add functionality to the users, despite the fact that Moodle has no
  * core user class. Initially, it is using the active record approach, but this may need to change to

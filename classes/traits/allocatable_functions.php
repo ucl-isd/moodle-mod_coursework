@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\traits;
 use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\coursework;
@@ -84,7 +83,6 @@ trait allocatable_functions {
         return !empty($result);
     }
 
-
     /**
      * @param coursework $coursework
      * @return bool
@@ -102,7 +100,6 @@ trait allocatable_functions {
 
         return $DB->get_record_sql($sql, array('id' => $this->id(), 'courseworkid' => $coursework->id()));
     }
-
 
     /**
      * @param coursework $coursework

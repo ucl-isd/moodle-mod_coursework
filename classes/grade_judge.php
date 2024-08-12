@@ -20,8 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-
 namespace mod_coursework;
 
 use mod_coursework\allocation\allocatable;
@@ -162,7 +160,6 @@ class grade_judge {
         return $gradebook_feedback && $gradebook_feedback->id == $feedback->id;
     }
 
-
     /**
      * @param allocatable $allocatable
      * @return bool
@@ -176,7 +173,6 @@ class grade_judge {
         } else {
             return $this->coursework->has_multiple_markers();
         }
-
 
     }
 
@@ -214,10 +210,6 @@ class grade_judge {
             return $value;
         }
 
-
     }
-
-
-
 
 }

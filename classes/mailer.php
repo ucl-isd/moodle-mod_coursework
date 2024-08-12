@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
@@ -131,7 +130,6 @@ class mailer {
         }
     }
 
-
     /**
      * Send feedback notifications to users whose feedback was released
      *
@@ -234,8 +232,6 @@ class mailer {
         return message_send($eventdata);
     }
 
-
-
     public function send_submission_notification($userstonotify) {
 
         global $CFG;
@@ -270,7 +266,6 @@ class mailer {
 
             message_send($eventdata);
         }
-
 
     }
 }

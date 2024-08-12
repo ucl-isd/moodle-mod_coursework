@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 defined('MOODLE_INTERNAL') || die();
 
 class restore_coursework_activity_structure_step extends restore_activity_structure_step
@@ -66,7 +65,6 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                         'person_deadline' => 'coursework_person_deadlines',
                         'mod_agreement' => 'coursework_submissions/coursework_submission/coursework_feedbacks/coursework_feedback/coursework_mod_agreements',
                         'plagiarism_flag' => 'coursework_submissions/coursework_submission/coursework_plagiarism_flags');
-
 
             foreach($bits as $bit=> $bitpath) {
                 $p=new restore_path_element("coursework_$bit","/activity/coursework/{$bitpath}/coursework_$bit");
@@ -325,10 +323,6 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $newitemid = $DB->insert_record('coursework_person_deadlines', $data);
     }
 
-
-
-
-
     protected function process_coursework_mod_agreement($data) {
         $data=(object)$data;
 
@@ -351,7 +345,6 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         global $DB;
         $newitemid = $DB->insert_record('coursework_mod_agreements', $data);
     }
-
 
     protected function process_coursework_plagiarism_flag($data) {
         $data=(object)$data;

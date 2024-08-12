@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\models;
 
 use  mod_coursework\framework\table_base;
@@ -96,7 +95,6 @@ class personal_deadline extends table_base {
             ));
         }
     }
-
 
     /**
      * cache array

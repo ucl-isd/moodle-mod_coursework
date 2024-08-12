@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\controllers;
 use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
@@ -177,8 +176,6 @@ class deadline_extensions_controller extends controller_base {
         return $params;
     }
 
-
-
     /**
      * Begin Ajax functions
      */
@@ -227,13 +224,11 @@ class deadline_extensions_controller extends controller_base {
         global $CFG;
         $max_deadline = $CFG->coursework_max_extension_deadline;
 
-
         if ($this->coursework->personaldeadlineenabled && $personal_deadline = $this->personal_deadline()) {
             $deadline = $personal_deadline->personal_deadline;
         } else {
             $deadline = $this->coursework->deadline;
         }
-
 
         if ( $data['extended_deadline'] <= $deadline) {
             return $errors = 'The new deadline must be later than the current deadline';
@@ -375,7 +370,6 @@ class deadline_extensions_controller extends controller_base {
         echo json_encode($response);
     }
 
-
     /**
      * function table_cell_response
      * @param array $data_params
@@ -400,6 +394,5 @@ class deadline_extensions_controller extends controller_base {
 
         return $content;
     }
-
 
 }

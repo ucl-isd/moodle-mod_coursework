@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\export\csv\cells;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
@@ -56,7 +55,6 @@ abstract class cell_base implements cell_interface {
 
     }
 
-
     /**
      * Function to check if a user can see real names/usernames even if blind marking is enabled
      * @return bool
@@ -70,7 +68,6 @@ abstract class cell_base implements cell_interface {
         return (!$this->coursework->blindmarking || $viewanonymous || $exportgrade);
     }
 
-
     /**
      * Function to check if the student was given an extension
      * @param $student
@@ -82,7 +79,6 @@ abstract class cell_base implements cell_interface {
 
         return ($this->coursework->extensions_enabled() && !empty($extension));
     }
-
 
     /**
      * Function to get student's extension date
@@ -96,7 +92,6 @@ abstract class cell_base implements cell_interface {
         return userdate($extension->extended_deadline, $this->dateformat);
     }
 
-
     /**
      * Function to get extra information about student's extension
      * @param $student
@@ -108,7 +103,6 @@ abstract class cell_base implements cell_interface {
 
         return strip_tags($extension->extra_information_text);
     }
-
 
     /**
      * Function to get student's extension pre-defined reason
@@ -124,7 +118,6 @@ abstract class cell_base implements cell_interface {
             strip_tags($extension_reasons[$extension->pre_defined_reason]) : "";
     }
 
-
     /**
      * Function to get all pre-defined extension reasons
      * @return array
@@ -132,8 +125,6 @@ abstract class cell_base implements cell_interface {
     public function get_extension_predefined_reasons(){
         return $this->coursework->extension_reasons();
     }
-
-
 
     /**
      * Function to check if the plagiarism has been flagged for the given submission
@@ -171,7 +162,6 @@ abstract class cell_base implements cell_interface {
         return strip_tags($flag->comment);
     }
 
-
     /**
      * Function to get a grade that should be displayed
      * @param $grade
@@ -183,7 +173,6 @@ abstract class cell_base implements cell_interface {
 
         return $judge->grade_to_display($grade);
     }
-
 
     /**
      * Function to get assessor's full name
@@ -198,7 +187,6 @@ abstract class cell_base implements cell_interface {
         return $assessor->lastname .' '. $assessor->firstname;
     }
 
-
     /**
      * Function to get assessor's username
      * @param $assessorid
@@ -211,7 +199,6 @@ abstract class cell_base implements cell_interface {
 
         return $assessor->username;
     }
-
 
     /**
      * Function to get a message if submission was made withihn the deadline
@@ -267,7 +254,6 @@ abstract class cell_base implements cell_interface {
         return true;
     }
 
-
     /**
      * @param $grade
      * @param $gradedata
@@ -296,6 +282,5 @@ abstract class cell_base implements cell_interface {
             }
         }
     }
-
 
 }

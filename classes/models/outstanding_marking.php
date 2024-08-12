@@ -26,12 +26,10 @@ class outstanding_marking   {
 
     private     $day_in_secs;
 
-
     public function __construct() {
 
         $this->day_in_secs = 86400;
     }
-
 
     /**
      * @param $cwkrecord
@@ -62,7 +60,6 @@ class outstanding_marking   {
         return  (!empty($initialsubmissions))   ?  count($initialsubmissions) : 0  ;
     }
 
-
     /**
      * @param $cwkrecord
      * @param $userid
@@ -86,7 +83,6 @@ class outstanding_marking   {
 
         return  (!empty($agreedsubmissions))    ?   count($agreedsubmissions)   :   0;
     }
-
 
     /**
      * @param $courseworkid
@@ -131,7 +127,6 @@ class outstanding_marking   {
         return  $DB->get_records_sql($sql, $sqlparams);
     }
 
-
     /**
      * @param $courseworkid
      * @param $userid
@@ -167,10 +162,8 @@ class outstanding_marking   {
         $sqlparams['subcourseworkid'] = $courseworkid;
         $sqlparams['courseworkid'] = $courseworkid;
 
-
         return  $DB->get_records_sql($sql, $sqlparams);
     }
-
 
     /**
      * @param $courseworkid
@@ -200,7 +193,6 @@ class outstanding_marking   {
             $sqlparams['assessorid2'] = $userid;
         }
 
-
         $sql = "SELECT cs.id AS submissionid, COUNT(f.id) AS count_feedback
                                       FROM 	{coursework_submissions}	cs LEFT JOIN
                                             {coursework_feedbacks} f ON   cs.id = f.submissionid
@@ -216,17 +208,14 @@ class outstanding_marking   {
                                           GROUP BY cs.id, f.id
                                           HAVING (COUNT(f.id) < :numofmarkers)";
 
-
         $sqlparams['subassessorid'] = $userid;
         $sqlparams['subcourseworkid'] = $courseworkid;
         $sqlparams['courseworkid'] = $courseworkid;
         $sqlparams['numofmarkers'] = $numberofmarkers;
         $sqlparams['assessorid'] = $userid;
 
-
         return  $DB->get_records_sql($sql, $sqlparams);
     }
-
 
     /**
      * @param $courseworkid
@@ -246,14 +235,11 @@ class outstanding_marking   {
                                         GROUP BY cs.id
                                         HAVING (COUNT(cs.id) = :numofmarkers)";
 
-
         $sqlparams['numofmarkers'] = $numberofmarkers;
         $sqlparams['courseworkid'] = $courseworkid;
 
-
         return $DB->get_records_sql($sql, $sqlparams);
     }
-
 
     /**
      * @param $courseworkid
@@ -284,7 +270,6 @@ class outstanding_marking   {
         return $DB->get_records_sql($sql, $sqlparams);
     }
 
-
     /**
      * @param $course_id
      * @param $user_id
@@ -297,7 +282,6 @@ class outstanding_marking   {
         return  has_capability('mod/coursework:addagreedgrade', $coursecontext, $user_id) || has_capability('mod/coursework:addallocatedagreedgrade', $coursecontext, $user_id);
     }
 
-
     /**
      * @param $course_id
      * @param $user_id
@@ -309,7 +293,6 @@ class outstanding_marking   {
 
         return  has_capability('mod/coursework:addinitialgrade', $coursecontext, $user_id);
     }
-
 
     /**
      * @param $courseworkid

@@ -27,11 +27,8 @@
  * Time: 11:32
  */
 
-
 use mod_coursework\models\coursework;
 use mod_coursework\export;
-
-
 
 require_once(dirname(__FILE__).'/../../../config.php');
 
@@ -40,7 +37,6 @@ global $CFG, $DB, $PAGE, $OUTPUT;
 require_once($CFG->dirroot.'/mod/coursework/classes/forms/upload_grading_sheet_form.php');
 
 require_once($CFG->libdir.'/csvlib.class.php');
-
 
 $coursemoduleid = required_param('cmid', PARAM_INT);
 
@@ -58,22 +54,17 @@ $PAGE->set_title($title);
 $PAGE->set_heading($title);
 $grading_sheet_capabilities = array('mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade', 'mod/coursework:administergrades');
 
-
 // Bounce anyone who shouldn't be here.
 if (!has_any_capability($grading_sheet_capabilities, $PAGE->context)) {
     $message = 'You do not have permission to upload grading sheets';
     redirect(new moodle_url('mod/coursework/view.php'), $message);
 }
 
-
-
 $gradinguploadform = new upload_grading_sheet_form($coursemoduleid);
 
 if ($gradinguploadform->is_cancelled()) {
     redirect("$CFG->wwwroot/mod/coursework/view.php?id=$coursemoduleid");
 }
-
-
 
 if ($data = $gradinguploadform->get_data()) {
 
@@ -98,14 +89,6 @@ if ($data = $gradinguploadform->get_data()) {
     //} else {
         //
     //}
-
-
-
-
-
-
-
-
 
 } else {
     $page_renderer = $PAGE->get_renderer('mod_coursework', 'page');

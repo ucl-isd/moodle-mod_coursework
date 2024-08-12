@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\user;
 
@@ -29,7 +28,6 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
 require_once($CFG->dirroot . '/mod/coursework/tests/behat/pages/page_base.php');
-
 
 /**
  * Holds the functions that know about the HTML structure of the student page.
@@ -63,7 +61,6 @@ class mod_coursework_behat_coursework_page extends mod_coursework_behat_page_bas
             $this->click_that_thing('button', 'Yes');
         }
     }
-
 
     public function show_hide_non_allocated_students() {
         if ($this->getPage()->hasLink('Show submissions for other students')) {

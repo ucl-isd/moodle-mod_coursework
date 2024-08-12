@@ -40,7 +40,6 @@ use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * Forms a base for the moderation set rules, which determine various sets of students which
  * need to be included in the set e.g. lowest 40%.
@@ -99,7 +98,6 @@ abstract class moderation_set_rule extends table_base implements renderable {
         'lowerlimit',
         'minimum'
     );
-
 
     /**
      * @param bool|int|stdClass $dbrecord

@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 /**
  * Class mod_coursework_behat_new_extension_page is responsible for representing the new
  * extension page and its operation for the steps in Behat tests. Any reference to the page

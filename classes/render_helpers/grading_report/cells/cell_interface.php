@@ -20,9 +20,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\render_helpers\grading_report\cells;
-
 
 use html_table_cell;
 use mod_coursework\grading_table_row_base;
@@ -44,7 +42,6 @@ interface cell_interface {
      * @return string
      */
     public function get_table_header($options = array());
-
 
     /**
      * @return string

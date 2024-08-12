@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\allocation\table\cell;
 use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
@@ -79,7 +78,6 @@ class processor {
         }
     }
 
-
     /**
      * @param data $data
      */
@@ -115,8 +113,6 @@ class processor {
     private function get_allocation() {
         return $this->get_stage()->get_allocation($this->get_allocatable());
     }
-
-
 
     /**
      * @param data $data
@@ -166,7 +162,6 @@ class processor {
             $allocation->unpin();
         }
     }
-
 
     /**
      * returns whether the current record was automatically included in the sample set at the current stage

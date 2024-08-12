@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 /**
  * Class deadline_extensions_controller_test is responsible for testing the deadline_extensions controller
  * class.
@@ -32,6 +31,5 @@ class deadline_extensions_controller_test extends basic_testcase {
         $controller = new \mod_coursework\controllers\deadline_extensions_controller(array());
         $this->assertEquals('deadline_extension', $controller->model_name());
     }
-
 
 }

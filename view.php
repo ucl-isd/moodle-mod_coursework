@@ -52,7 +52,6 @@ $jsmodule = array(
 
 $PAGE->requires->yui_module('moodle-core-notification', 'notification_init');
 
-
 // Course_module ID, or coursework instance ID - it should be named as the first character of the module.
 $course_module_id = optional_param('id', 0, PARAM_INT);
 $coursework_id = optional_param('e', 0, PARAM_INT);
@@ -72,8 +71,6 @@ $group = optional_param('group', -1, PARAM_INT);
 $resettable = optional_param('treset', 0, PARAM_INT);
 $allresettable = optional_param('alltreset', 0, PARAM_INT);
 
-
-
 if (!isset($SESSION->displayallstudents[$course_module_id])) {
     $SESSION->displayallstudents[$course_module_id] = optional_param('displayallstudents', false, PARAM_BOOL);
 
@@ -82,7 +79,6 @@ if (!isset($SESSION->displayallstudents[$course_module_id])) {
     $displayallstudents = optional_param('displayallstudents', $SESSION->displayallstudents[$course_module_id], PARAM_INT);
     $SESSION->displayallstudents[$course_module_id] = $displayallstudents;
 }
-
 
 // If a session variable holding page preference for the specific coursework is not set, set default value (0).
 if (isset($SESSION->perpage[$course_module_id]) && optional_param('per_page', 0, PARAM_INT) != $SESSION->perpage[$course_module_id]
@@ -105,7 +101,6 @@ if (!(isset($SESSION->perpage[$course_module_id]))) {
     $perpage = optional_param('per_page', $SESSION->perpage[$course_module_id], PARAM_INT);
     $SESSION->perpage[$course_module_id] = $perpage;
 }
-
 
 // If a session variable holding sortby preference for the specific coursework is not set, set default value ('lastname').
 if (!(isset($SESSION->sortby[$course_module_id]))) {
@@ -151,8 +146,6 @@ if (!(isset($SESSION->coursework_groupname_alpha[$course_module_id]))) {
     $coursework_groupname_alpha= optional_param('coursework_groupname_alpha', $SESSION->coursework_groupname_alpha[$course_module_id],PARAM_ALPHA);
     $SESSION->coursework_groupname_alpha[$course_module_id] = $coursework_groupname_alpha;
 }
-
-
 
 //we will use the same defaults as page (above) defaulting to page setting if no specific viewallstudents_page has been set
 if (isset($SESSION->viewallstudents_perpage[$course_module_id]) && optional_param('viewallstudents_per_page', 0, PARAM_INT) != $SESSION->viewallstudents_perpage[$course_module_id]
@@ -221,8 +214,6 @@ if (!(isset($SESSION->viewallstudents_groupname_alpha[$course_module_id]))) {
     $SESSION->viewallstudents_groupname_alpha[$course_module_id] = $viewallstudents_groupname_alpha;
 }
 
-
-
 if (!($sorthow === 'ASC' || $sorthow === 'DESC')) {
     $sorthow = 'ASC';
 }
@@ -278,7 +269,6 @@ if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $gro
         $manual_allocation_not_complete = $warnings->manual_allocation_not_completed();
     }
 
-
     if (!empty($percentage_allocation_not_complete) || !empty($manual_allocation_not_complete)) {
 
         $redirectdetail = new \stdClass();
@@ -308,7 +298,6 @@ $filename = str_replace(' ', '_', clean_filename($COURSE->shortname . '-' . $cou
 if ($download && $zip_file = $coursework->pack_files()) {
     send_temp_file($zip_file, $filename); // Send file and delete after sending.
 }
-
 
 if ($export_grades){
 
@@ -341,12 +330,10 @@ if ($export_grades){
     }
     $csv_cells[] = 'finalgrade';
 
-
     $timestamp = date('d_m_y @ H-i');
     $filename = get_string('finalgradesfor', 'coursework'). $coursework->name .' '.$timestamp;
     $csv = new \mod_coursework\export\csv($coursework, $csv_cells, $filename);
     $csv->export();
-
 
 }
 
@@ -425,7 +412,6 @@ if (!empty($SESSION->displayallstudents[$course_module_id])) {
     $params['viewallstudents_per_page'] = $viewallstudents_perpage;
 }
 
-
 $PAGE->set_url('/mod/coursework/view.php', $params);
 $PAGE->set_title($coursework->name);
 $PAGE->set_heading($course->shortname);
@@ -440,8 +426,6 @@ if ($coursework->has_individual_autorelease_feedback_enabled() &&
 
     $coursework->publish_grades();
 }
-
-
 
 //Create automatic feedback
 if ($coursework->automaticagreement_enabled()) {

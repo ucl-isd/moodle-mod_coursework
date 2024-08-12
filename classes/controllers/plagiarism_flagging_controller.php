@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\controllers;
 
 use mod_coursework\ability;
@@ -54,7 +53,6 @@ class plagiarism_flagging_controller extends controller_base {
      */
     protected $plagiarism_flag;
 
-
     /**
      * This deals with the page that the assessors see when they want to add component feedbacks.
      *
@@ -68,10 +66,8 @@ class plagiarism_flagging_controller extends controller_base {
         $plagiarismflag->submissionid = $this->params['submissionid'];
         $plagiarismflag->courseworkid = $this->coursework->id;
 
-
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('new', $plagiarismflag);
-
 
         $urlparams = array();
         $urlparams['submissionid'] = $plagiarismflag->submissionid;
@@ -110,7 +106,6 @@ class plagiarism_flagging_controller extends controller_base {
         $renderer = $this->get_page_renderer();
         $renderer->edit_plagiarism_flag_page($plagiarism_flag, $creator, $editor);
     }
-
 
     /**
      * Saves the new plagiarism flag for the first time.
@@ -151,7 +146,6 @@ class plagiarism_flagging_controller extends controller_base {
             $renderer->new_plagiarism_flag_page($plagiarismflag);
         }
     }
-
 
     /**
      * Updates plagiarism flag
@@ -198,8 +192,6 @@ class plagiarism_flagging_controller extends controller_base {
 
         redirect($coursework_page_url);
     }
-
-
 
     /**
      * Get any plagiarism flag-specific stuff.

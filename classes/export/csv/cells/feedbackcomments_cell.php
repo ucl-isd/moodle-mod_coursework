@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\export\csv\cells;
 use mod_coursework\models\submission;
 use mod_coursework\ability;
@@ -32,7 +31,6 @@ use mod_coursework\grade_judge;
  * Class feedbackcomments_cell
  */
 class feedbackcomments_cell extends cell_base {
-
 
     /**
      * @param submission $submission
@@ -55,7 +53,6 @@ class feedbackcomments_cell extends cell_base {
     public function get_header($stage){
         return  get_string('feedbackcomment', 'coursework');
     }
-
 
     public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells = array()) {
 
@@ -95,7 +92,6 @@ class feedbackcomments_cell extends cell_base {
                     'stage_identifier' => $stage_identifier,
                 );
                 $new_feedback = feedback::build($feedback_params);
-
 
                 //this is a new feedback check it against the new ability checks
                 if (!$ability->can('new', $new_feedback))   return get_string('nopermissiontogradesubmission','coursework');

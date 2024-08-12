@@ -30,7 +30,6 @@ use stored_file;
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * Represents the files a student has submitted.
  */

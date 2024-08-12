@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 /**
  * This class is here to take the data from the table on the allocation page and process each
  * of the rows. It's job is to know which other classes need to be called to process each rom

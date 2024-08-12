@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\render_helpers\grading_report;
 
 /**
@@ -31,7 +30,6 @@ namespace mod_coursework\render_helpers\grading_report;
  * @package mod_coursework\render_helpers\grading_report
  */
 interface component_factory_interface {
-
 
     public function get_cells();
 

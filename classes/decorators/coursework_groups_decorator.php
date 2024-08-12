@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\decorators;
 use mod_coursework\framework\decorator;
 use mod_coursework\models\coursework;
@@ -33,7 +32,5 @@ use mod_coursework\models\coursework;
  * @package mod_coursework\decorators
  */
 class coursework_groups_decorator extends decorator {
-
-
 
 }

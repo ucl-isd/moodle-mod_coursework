@@ -20,12 +20,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 require_once(dirname(__FILE__) . '/../../../config.php');
 
 global $CFG, $USER, $PAGE, $DB;
-
-
 
 $courseworkid = required_param('courseworkid', PARAM_INT);
 $allocatableid_arr = optional_param_array('allocatableid_arr', false, PARAM_RAW);
@@ -37,7 +34,6 @@ $selectedtype = optional_param('selectedtype', 'date', PARAM_RAW);
 $personal_deadline_time = optional_param('personal_deadline_time',null,PARAM_RAW);
 
 $allocatableid = (!empty($allocatableid_arr))    ?   $allocatableid_arr  : $allocatableid  ;
-
 
 $coursework_db = $DB->get_record('coursework',array('id' => $courseworkid));
 

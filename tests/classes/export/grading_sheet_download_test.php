@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -34,7 +32,6 @@ global $CFG;
  * @group mod_coursework
  */
 class grading_sheet_download_test extends advanced_testcase {
-
 
     use mod_coursework\test_helpers\factory_mixin;
 
@@ -104,7 +101,6 @@ class grading_sheet_download_test extends advanced_testcase {
     public function test_two_stages_with_allocations(){
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
 
-
         /* @var mod_coursework_generator $generator */
         $this->coursework = $generator->create_instance(array('course' => $this->course->id,
                                                               'grade' => 100,
@@ -129,8 +125,6 @@ class grading_sheet_download_test extends advanced_testcase {
         $submission2->userid = $student2->id;
         $submission2->allocatableid = $student2->id;
         $submission2 = $generator->create_submission($submission2, $this->coursework);
-
-
 
         // Assessor2 feedback for student1
         $feedback_data1 = new stdClass();
@@ -159,7 +153,6 @@ class grading_sheet_download_test extends advanced_testcase {
         $feedback_data3->stage_identifier = 'assessor_2';
         $feedback3 = $generator->create_feedback($feedback_data3);
 
-
         // Agreed grade feedback
         $feedback_data4 = new stdClass();
         $feedback_data4->submissionid = $submission2->id;
@@ -168,7 +161,6 @@ class grading_sheet_download_test extends advanced_testcase {
         $feedback_data4->assessorid = $assessor2->id;
         $feedback_data4->stage_identifier = 'final_agreed_1';
         $feedback4 = $generator->create_feedback($feedback_data4);
-
 
         // headers and data for csv
         $csv_cells = array('submissionid', 'submissionfileid', 'name', 'username', 'submissiontime',
@@ -220,5 +212,4 @@ class grading_sheet_download_test extends advanced_testcase {
 
     }
 }
-
 

@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 /**
  * This file contains all of the renderable class definitions. They are separate from the main
  * autoloaded class definitions in /classes because the renderer cannot deal with namespaces.
@@ -78,7 +77,6 @@ class mod_coursework_assessor_feedback_table extends mod_coursework_renderable {
  * @mixin \mod_coursework\models\coursework
  */
 class mod_coursework_coursework extends mod_coursework_renderable  { }
-
 
 /**
  * @mixin \mod_coursework\grading_table_row_multi

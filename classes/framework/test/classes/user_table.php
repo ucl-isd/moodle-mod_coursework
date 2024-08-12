@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 /**
  * Class framework_user_table allows us to test the table_base class on a reasonably stable table
  * with known columns.

@@ -409,9 +409,6 @@ $string['gradeeditingtime'] = 'Grade editing time';
 $string['grade_editing'] = 'Grade editing time';
 $string['grading_page'] = 'Grading page';
 
-
-
-
 $string['group'] = 'Group';
 $string['grouping_id'] = 'Grouping';
 $string['grouping_id_help'] = 'Grouping containing the groups wich are allowed to submit.';
@@ -543,7 +540,6 @@ $string['nodata'] = 'None specified';
 $string['nocourseworkdeadline'] = 'No deadline ';
 $string['noerrorsfound'] = 'No errors were found in the grading sheet uploaded';
 $string['noallocationerrorsfound'] = 'No errors were found in the allocation sheet uploaded';
-
 
 $string['nofeedbackforms'] = 'At present no feedback forms have been created. At least one feedback form is required so that it may be selected when creating a OCM. Click <a href=\'{$a->url}\'>here</a> to create a form';
 $string['nofeedbacksyet'] = 'No feedbacks yet (Max: {$a})';

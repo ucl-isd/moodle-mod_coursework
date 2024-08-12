@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\export\csv\cells;
 use mod_coursework\models\submission;
 
@@ -28,7 +27,6 @@ use mod_coursework\models\submission;
  * Class submissiondate_cell
  */
 class submissiondate_cell extends cell_base {
-
 
     /**
      * @param submission $submission

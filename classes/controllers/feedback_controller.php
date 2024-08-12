@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\controllers;
 
 use mod_coursework\ability;
@@ -81,8 +80,6 @@ class feedback_controller extends controller_base {
         $renderer = $this->get_page_renderer();
         $html = $renderer->show_feedback_page($teacherfeedback, $ajax);
 
-
-
         if (empty($ajax)) {
             echo $html;
         } else {
@@ -141,7 +138,6 @@ class feedback_controller extends controller_base {
     protected function edit_feedback() {
 
         global $DB, $PAGE, $USER;
-
 
         $teacherfeedback = new feedback($this->params['feedbackid']);
         $this->check_stage_permissions($teacherfeedback->stage_identifier);
@@ -226,12 +222,10 @@ class feedback_controller extends controller_base {
 
             $form->save_feedback_files($teacherfeedback);
 
-
             if ($submission->is_published()) { // Keep the gradebook updated
                 $this->coursework->grade_changed_event();
                 $submission->publish();
             }
-
 
             //only implement auto feedback (automatic agreement) if the settings is set to disabled otherwise
             //we will do this in the cron
@@ -281,7 +275,6 @@ class feedback_controller extends controller_base {
                         $finalfeedback = $feedback_row->get_submission()->get_final_feedback();
                         $finalsubmission = $feedback_row->get_submission();
 
-
                         if ($coursework->automaticagreementrange != 'none' && !empty($finalfeedback) && $finalsubmission->all_inital_graded()) {
                             $finalstage = new assessor($coursework, "final_agreed_1");
                             $finalfeedback_row = new assessor_feedback_row($finalstage, $participant, $coursework);
@@ -304,10 +297,6 @@ class feedback_controller extends controller_base {
                     $html = $cell_object->get_content($row_object);
                     $jsonarray['extrahtml'] = $provisional->get_table_cell($row_object);
 
-
-
-
-
                 }
 
                 $jsonarray['html'] = $html;
@@ -324,7 +313,6 @@ class feedback_controller extends controller_base {
                 $renderer->new_feedback_page($teacherfeedback);
             }
         }
-
 
     }
 
@@ -373,7 +361,6 @@ class feedback_controller extends controller_base {
                 //remove associated files
                 $fs = get_file_storage();
                 $fs->delete_area_files($teacherfeedback->get_coursework()->get_context()->id, 'mod_coursework', 'feedback', $teacherfeedback->id());
-
 
                 $ajax = !empty($this->params['ajax']);
                 if ($ajax) {
@@ -424,8 +411,6 @@ class feedback_controller extends controller_base {
 
         $teacherfeedback->save();
         $form->save_feedback_files($teacherfeedback);
-
-
 
         if (empty($gradeeditingtime) || time() > $teacherfeedback->timecreated + $gradeeditingtime) {
             $this->try_auto_feedback_creation($teacherfeedback->get_submission());

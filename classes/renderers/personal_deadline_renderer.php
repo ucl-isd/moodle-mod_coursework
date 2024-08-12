@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\renderers;
 
 /**
@@ -30,7 +29,6 @@ namespace mod_coursework\renderers;
  * @package mod_coursework\renderers
  */
 class personal_deadline_renderer {
-
 
     /**
      * @param array $vars
@@ -67,7 +65,6 @@ class personal_deadline_renderer {
         } else {
             $html = '<h1> Edit personal deadline for ' . get_string('multipleusers', 'mod_coursework') . '</h1>';
         }
-
 
         echo $OUTPUT->header();
         echo $html;

@@ -34,7 +34,6 @@ defined('MOODLE_INTERNAL') || die();
  */
 class moderation extends table_base{
 
-
     /**
      * @var int
      */
@@ -44,7 +43,6 @@ class moderation extends table_base{
      * @var int
      */
    public $feedbackid;
-
 
     /**
  * @var int
@@ -76,7 +74,6 @@ class moderation extends table_base{
      */
     public $modcommentformat;
 
-
     /**
      * Chained getter for loose coupling.
      *
@@ -85,7 +82,6 @@ class moderation extends table_base{
     public function get_coursework() {
         return $this->get_submission()->get_coursework();
     }
-
 
     /**
      *
@@ -103,9 +99,7 @@ class moderation extends table_base{
     public function get_agreement(){
         return $this->agreement;
 
-
     }
-
 
     /**
      * Memoized getter
@@ -118,8 +112,6 @@ class moderation extends table_base{
 
         return $this->submission;
     }
-
-
 
     /**
      * @return user
@@ -144,7 +136,6 @@ class moderation extends table_base{
     public function get_moderator_id(){
         return $this->moderator->id;
     }
-
 
     /**
      * Check if assessor is allocated to the user in this stage

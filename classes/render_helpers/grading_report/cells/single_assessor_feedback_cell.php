@@ -20,9 +20,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\render_helpers\grading_report\cells;
-
 
 use coding_exception;
 use html_table_cell;
@@ -180,7 +178,6 @@ class single_assessor_feedback_cell extends cell_base {
         $title = get_string('editfinalgrade', 'coursework');
         $icon = new pix_icon('edit', $title, 'coursework');
 
-
         return  $OUTPUT->action_icon($link,
                                      $icon,
                                      null,
@@ -206,10 +203,8 @@ class single_assessor_feedback_cell extends cell_base {
                                          null,
                                          array('class' => 'show_feedback','id' => $link_id));
 
-
         return $iconlink;
     }
-
 
     /**
      * @param grading_table_row_base $rowobject

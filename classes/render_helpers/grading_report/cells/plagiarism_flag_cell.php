@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\render_helpers\grading_report\cells;
 use coding_exception;
 use html_writer;
@@ -101,7 +100,6 @@ class plagiarism_flag_cell extends cell_base {
         return 'submission';
     }
 
-
     /**
      * @param grading_table_row_base $rowobject
      * @param $row_object
@@ -125,7 +123,6 @@ class plagiarism_flag_cell extends cell_base {
 
         return $OUTPUT->action_link($link, $title, null, $html_attributes);
     }
-
 
     /**
      * @param grading_table_row_base $rowobject

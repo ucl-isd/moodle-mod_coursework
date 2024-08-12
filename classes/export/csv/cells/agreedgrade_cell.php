@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\export\csv\cells;
 use mod_coursework\models\submission;
 use mod_coursework\ability;
@@ -31,7 +30,6 @@ use mod_coursework\grade_judge;
  * Class agreedgrade_cell
  */
 class agreedgrade_cell extends cell_base{
-
 
     /**
      * @param $submission
@@ -153,7 +151,6 @@ class agreedgrade_cell extends cell_base{
             $subdbrecord = $DB->get_record('coursework_submissions',array('id' => $submissionid));
             $submission = \mod_coursework\models\submission::find($subdbrecord);
 
-
             //is the submission in question ready to grade?
             if (!$submission->all_inital_graded() && !empty($value) && count($uploadedgradecells) < $submission->max_number_of_feedbacks()) return get_string('submissionnotreadyforagreedgrade','coursework');
 
@@ -183,17 +180,12 @@ class agreedgrade_cell extends cell_base{
                 );
                 $new_feedback = feedback::build($feedback_params);
 
-
                 //this is a new feedback check it against the new ability checks
                 if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && !$ability->can('new', $new_feedback))   return get_string('nopermissiontogradesubmission','coursework');
             } else {
                 //this is a new feedback check it against the edit ability checks
                 if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade','coursework');
             }
-
-
-
-
 
         } else {
             return get_string('nopermissiontoimportgrade', 'coursework');
@@ -202,7 +194,6 @@ class agreedgrade_cell extends cell_base{
         return true;
 
     }
-
 
     /***
      * Check that the given value is within the values that can be excepted by the given rubric criteria
@@ -231,7 +222,6 @@ class agreedgrade_cell extends cell_base{
             }
         }
 
-
         return $valuefound;
     }
 
@@ -244,7 +234,6 @@ class agreedgrade_cell extends cell_base{
      */
     function    get_rubrics($coursework, $csv_cells) {
 
-
         if ($coursework->is_using_rubric()  && $this->coursework->finalstagegrading != 1) {
 
             $rubricheaders = array();
@@ -256,12 +245,10 @@ class agreedgrade_cell extends cell_base{
                 $rubricheaders[] = $criteria['description']." comment";
             }
 
-
             //find out the position of singlegrade
             $position = array_search('singlegrade', $csv_cells);
             //get all data from the position of the singlegrade to the length of rubricheaders
             // $csv_cells = array_splice($csv_cells,5, 1, $rubricheaders);
-
 
             $start_cells = array_slice($csv_cells,0, $position,true);
             $end_cells = array_slice($csv_cells, $position+1,count($csv_cells),true);
@@ -270,13 +257,9 @@ class agreedgrade_cell extends cell_base{
 
             $cells = array_merge($cells, $end_cells);
 
-
-
         }
-
 
         return $cells;
     }
-
 
 }

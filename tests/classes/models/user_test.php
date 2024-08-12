@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 /**
  * Class coursework_user_test
  * @group mod_coursework
@@ -103,5 +102,4 @@ class coursework_user_test extends advanced_testcase {
     // get_initial_feedbacks()
 
 
-    
 }

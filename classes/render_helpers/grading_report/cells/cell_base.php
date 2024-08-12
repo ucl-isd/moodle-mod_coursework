@@ -20,9 +20,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\render_helpers\grading_report\cells;
-
 
 use html_writer;
 use mod_coursework\models\coursework;
@@ -73,8 +71,6 @@ abstract class cell_base implements cell_interface {
             // Default for columns not currently being sorted.
             $params[$tablename.'sorthow'] = 'ASC';
         }
-
-
 
         // $url = clone($PAGE->url);
         // $url->params($params);
@@ -149,6 +145,5 @@ abstract class cell_base implements cell_interface {
     public function get_table_header_help_icon(){
 
     }
-
 
 }

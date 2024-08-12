@@ -29,9 +29,7 @@ use html_writer;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
 
-
 defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Defines a rule that will include all students above or below a particular percentage of
@@ -42,7 +40,6 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
     public function adjust_set(array &$moderation_set, array &$potential_allocatables, $stage) {
 
     }
-
 
     public function get_numeric_boundaries() {
 
@@ -80,20 +77,14 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $html   .=  $this->range_elements($assessor_number,0,false);
         }
 
-
-
         $html      .=  html_writer::link('#',get_string('addgraderule', 'mod_coursework'),array('id' => "assessor_{$assessor_number}_addgradderule", 'class' => 'addgradderule sample_set_rule'));
         $html      .=  "  ";
         $html      .=  html_writer::link('#',get_string('removegraderule', 'mod_coursework'),array('id' => "assessor_{$assessor_number}_removegradderule", 'class' => 'removegradderule sample_set_rule'));
-
-
-
 
         return $html;
     }
 
     public function range_elements($assessor_number, $sequence, $dbrecord=false) {
-
 
         $percentage_options = array();
 
@@ -127,12 +118,10 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $rules_checked = false;
         }
 
-
         $html = html_writer::start_tag('div', array('class' => "assessor_{$assessor_number}_grade_rules", 'id' => "assessor_{$assessor_number}_grade_rules_{$sequence}"));
 
         $html .= html_writer::checkbox("assessor_{$assessor_number}_samplerules[]", 1, $rules_checked, '',
             array('id' => "assessor_{$assessor_number}_samplerules_{$sequence}", 'class' => "assessor_{$assessor_number} range_grade_checkbox sample_set_rule"));
-
 
         $grade_scale_text = ($this->coursework->grade < 0) ? get_string('scale', 'mod_coursework')  : get_string('grade', 'mod_coursework')  ;
         $grade_scale_val = ($this->coursework->grade < 0) ? 'scale'  : 'grade';
@@ -164,14 +153,11 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $selected_to,
             array('id' => "assessor_{$assessor_number}_sampleto_{$sequence}", 'class' => " sample_set_rule range_drop_down"));
 
-
         $html .= html_writer::end_tag('div', '');
 
         return $html;
 
     }
-
-
 
     public function add_form_elements_js($assessor_number=0) {
 
@@ -224,7 +210,6 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                 });
             })
 
-
             //remove grade rule buttons
             $('.removegradderule').each(function(e,element) {
 
@@ -232,7 +217,6 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                     e.preventDefault();
 
                     var linkid = $(this).attr('id').split('_');
-
 
                     var spanclass = 'div.'+linkid[0] + '_' + linkid[1] +'_grade_rules';
 
@@ -249,8 +233,6 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
             });
 
-
-
             $('.range_grade_checkbox').each(function(e,element) {
 
             var ele_id = $(this).attr('id').split('_');
@@ -263,7 +245,6 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                        $(sampletypeid).attr('disabled',disabled);
                        $(samplefromid).attr('disabled',disabled);
                        $(sampletoid).attr('disabled',disabled);
-
 
                     $(element).on('change',function() {
 
@@ -291,7 +272,6 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
             });
 
-
             function change_options(element) {
                     var PERCENT = 'percentage';
 
@@ -299,7 +279,6 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                     var samplefromid = '#'+ele_id[0]+'_'+ele_id[1]+'_samplefrom_'+ele_id[3];
                     var sampletoid = '#'+ele_id[0]+'_'+ele_id[1]+'_sampleto_'+ele_id[3];
-
 
                     //remove the contents from the grade rule from and to drop downs
                     $(samplefromid).find('option').remove();
@@ -336,20 +315,16 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                         });
 
-
                      $(sampletoid).append($(sampletoid).children().toArray().reverse());
                      $(sampletoid).children().first().prop('selected',true);
                      $(samplefromid).children().first().prop('selected',true);
 
             }
 
-
-
             ";
 
         return  html_writer::script($js_script,null);
     }
-
 
     public function save_form_data($assessor_number=0,&$order=0) {
 
@@ -380,17 +355,13 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                 }
             }
 
-
-
     }
-
 
     public function adjust_sample_set($stage_number,&$allocatables,&$manual_sample_set,&$auto_sample_set) {
 
         global  $DB;
 
         $stage = "assessor_".$stage_number;
-
 
         $sql = "SELECT         r.*,p.rulename
                          FROM           {coursework_sample_set_plugin} p,
@@ -430,7 +401,6 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         $limits = array();
 
-
             $limits[0] = ($limit1>$limit2) ? $limit2 : $limit1;
             $limits[1] = ($limit1>$limit2) ? $limit1 : $limit2;
 
@@ -454,7 +424,6 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                         $weighting = 100 / $number_of_items; // shall we round it????
 
-
                         $limits[0] = ceil($limits[0]/$weighting); // element of array
                         $limits[1] = ceil($limits[1]/$weighting); // element of array
 
@@ -464,8 +433,6 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                 }
             }
-
-
 
         return $limits;
     }
@@ -485,7 +452,6 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         //note as things stand limit1 and limit2 can not be params as the type of the grade field (varchar)
         //means the values are cast as strings
-
 
        return $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id,
                                                'stage' => $stage));

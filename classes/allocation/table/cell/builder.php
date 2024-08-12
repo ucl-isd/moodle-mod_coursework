@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\allocation\table\cell;
 use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
@@ -65,7 +64,6 @@ class builder {
         $this->stage = $stage;
     }
 
-
     /**
      * @return \html_table_cell
      */
@@ -95,7 +93,6 @@ class builder {
         }
 
         return $this->get_stage()->potential_marker_dropdown($this->get_allocatable());
-
 
     }
 
@@ -138,7 +135,6 @@ class builder {
     private function get_feedback() {
         return $this->get_stage()->get_feedback_for_allocatable($this->get_allocatable());
     }
-
 
     /**
      * @return bool|\mod_coursework\models\moderation
@@ -213,7 +209,6 @@ class builder {
             $assessor_name .= $this->get_stage()->get_allocated_assessor_name($this->get_allocatable());
         }
 
-
         if ($assessor_name) {
            if ($this->get_stage()->uses_sampling() && !$this->get_feedback() && !$this->has_automatic_sampling()) {
                 $contents .= '<br>';
@@ -260,12 +255,10 @@ class builder {
             $moderator_name .= $this->get_stage()->get_allocated_assessor_name($this->get_allocatable());
         }
 
-
         if ($moderator_name) {
             $contents .= '<br>';
             $contents .= "<span class='existing-moderator'>{$moderator_name}</span>";
         }
-
 
         if ($moderator_dropdown) {
             $contents .= '<br>';
@@ -277,7 +270,6 @@ class builder {
             </td>
         ';
     }
-
 
     /**
      * @return allocatable
@@ -357,8 +349,6 @@ class builder {
                           'stage_identifier' => $this->get_stage()->identifier(),
                           'selectiontype' => 'automatic');
 
-
-
         return $DB->record_exists('coursework_sample_set_mbrs', $params);
     }
 
@@ -366,8 +356,6 @@ class builder {
      * @return string
      */
     private function pinned_checkbox() {
-
-
 
         $checkbox_name =
             'allocatables[' . $this->get_allocatable()->id . '][' . $this->get_stage()->identifier() . '][pinned]';
@@ -390,8 +378,6 @@ class builder {
                                                            'title' => $checkbox_title));
     }
 
-
-
     private function checkbox_checked_in_session($checkboxname, $checkboxstate) {
 
         global  $SESSION;
@@ -402,8 +388,6 @@ class builder {
             if (isset($SESSION->coursework_allocationsessions[$cm->id][$checkboxname])) {
                 return  $SESSION->coursework_allocationsessions[$cm->id][$checkboxname];
             }
-
-
 
         }
 

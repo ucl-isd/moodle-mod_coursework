@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\export\csv\cells;
 use mod_coursework\models\submission;
 use mod_coursework\grade_judge;
@@ -32,7 +31,6 @@ use mod_coursework\models\feedback;
  * Class singlegrade_cell
  */
 class singlegrade_cell extends cell_base{
-
 
     /**
      * @param $submission
@@ -75,7 +73,6 @@ class singlegrade_cell extends cell_base{
             return $strings;
     }
 
-
     public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells = array()) {
 
         global $PAGE, $DB, $USER;
@@ -95,7 +92,6 @@ class singlegrade_cell extends cell_base{
                     }
                 }
             } else {
-
 
                 //we won't be processing this line if it has no values, empty wont tell us this as it thinks that an array with
                 //keys isnt. We will use array_filter whhich will return all values from the array if this is empty then we have
@@ -137,9 +133,7 @@ class singlegrade_cell extends cell_base{
 
             }
 
-
             if (!empty($errormsg))  return $errormsg;
-
 
             $dbrecord = $DB->get_record('coursework_submissions', array('id' => $submissionid));
 
@@ -172,9 +166,6 @@ class singlegrade_cell extends cell_base{
 
             }
 
-
-
-
             $ability = new ability(user::find($USER), $this->coursework);
 
             $feedback_params = array(
@@ -194,7 +185,6 @@ class singlegrade_cell extends cell_base{
                     'stage_identifier' => $stage_identifier,
                 );
                 $new_feedback = feedback::build($feedback_params);
-
 
                 //this is a new feedback check it against the new ability checks
                 if (!$ability->can('new', $new_feedback))   return get_string('nopermissiontogradesubmission','coursework');
@@ -237,7 +227,6 @@ class singlegrade_cell extends cell_base{
             }
         }
 
-
         return $valuefound;
     }
 
@@ -250,7 +239,6 @@ class singlegrade_cell extends cell_base{
      */
     function    get_rubrics($coursework, $csv_cells) {
 
-
         if ($coursework->is_using_rubric()) {
 
             $rubricheaders = array();
@@ -262,12 +250,10 @@ class singlegrade_cell extends cell_base{
                 $rubricheaders[] = $criteria['description']." comment";
             }
 
-
             //find out the position of singlegrade
             $position = array_search('singlegrade', $csv_cells);
             //get all data from the position of the singlegrade to the length of rubricheaders
            // $csv_cells = array_splice($csv_cells,5, 1, $rubricheaders);
-
 
             $start_cells = array_slice($csv_cells,0, $position,true);
             $end_cells = array_slice($csv_cells, $position+1,count($csv_cells),true);
@@ -276,10 +262,7 @@ class singlegrade_cell extends cell_base{
 
             $cells = array_merge($cells, $end_cells);
 
-
-
         }
-
 
         return $cells;
     }

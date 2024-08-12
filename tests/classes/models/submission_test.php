@@ -29,7 +29,6 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-
 /**
  * Class that will make sure the allocation_manager works.
  * @group mod_coursework
@@ -179,7 +178,6 @@ class coursework_submission_test extends advanced_testcase {
         $grade_item = $DB->get_record('grade_items', array('itemtype' => 'mod', 'itemmodule' => 'coursework', 'iteminstance' => $this->coursework->id));
         $grade = $DB->get_record('grade_grades', array('itemid' => $grade_item->id, 'userid' => $student->id));
         $grade_time_modified = $grade->timemodified;
-
 
         $this->assertNotEquals($initial_time, $grade_time_modified);
 

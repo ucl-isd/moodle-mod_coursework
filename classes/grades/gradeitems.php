@@ -58,4 +58,3 @@ class gradeitems implements itemnumber_mapping, advancedgrading_mapping {
     }
 }
 
-

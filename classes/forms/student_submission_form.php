@@ -186,8 +186,6 @@ class student_submission_form extends moodleform {
                           }
                         }
 
-
-
                     }
 
                     // Must happen AFTER file attributes have been fiddled with, otherwise we get
@@ -229,7 +227,6 @@ class student_submission_form extends moodleform {
         }
     }
 
-
     /**
      * Sets the data, tweaking the submission to conform to the form's field names
      *
@@ -262,7 +259,6 @@ class student_submission_form extends moodleform {
         parent::set_data($data);
 
     }
-
 
     /**
      * @return coursework

@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 /**
  * Class mod_coursework_behat_new_extension_page is responsible for representing the new
  * extension page and its operation for the steps in Behat tests. Any reference to the page
@@ -49,7 +48,6 @@ class mod_coursework_behat_new_extension_page extends mod_coursework_behat_page_
         $field = behat_field_manager::get_form_field($fieldnode, $this->getSession());
         // Delegates to the field class.
         $field->set_value('Extra info here');
-
 
         $this->submit_form();
     }

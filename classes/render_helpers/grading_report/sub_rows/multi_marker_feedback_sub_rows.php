@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\render_helpers\grading_report\sub_rows;
 
 use html_table_row;
@@ -105,7 +104,6 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         $ability = new ability(user::find($USER, false), $coursework);
         $feedbackrows = $assessor_feedback_table->get_renderable_feedback_rows();
 
-
         $allocatable = $assessor_feedback_table->get_allocatable();
 
         $output_rows = '';
@@ -125,7 +123,6 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
                                                           $this->already_shown_a_new_buton)) {
                 continue;
             }*/
-
 
             $output_rows .= ' <tr class="' . $this->row_class($feedback_row) . '">';
 
@@ -352,7 +349,6 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
             }
 
             $grade_editing = get_config('mod_coursework','coursework_grade_editing');
-
 
             if ($ability->can('edit', $feedback_row->get_feedback()) && !$submission->already_published()) {
                 $html .= $this->edit_existing_feedback_link($feedback_row);

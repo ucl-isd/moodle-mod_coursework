@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 require_once($CFG->dirroot . '/mod/coursework/backup/moodle2/backup_coursework_stepslib.php');
 
 class backup_coursework_activity_task extends backup_activity_task

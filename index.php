@@ -64,7 +64,6 @@ if (! $courseworks = get_all_instances_in_course('coursework', $course)) {
     die();
 }
 
-
 echo $OUTPUT->heading(get_string('modulenameplural', 'coursework'), 2);
 $page_renderer = $PAGE->get_renderer('mod_coursework', 'page');
 echo $page_renderer->view_course_index($course->id);

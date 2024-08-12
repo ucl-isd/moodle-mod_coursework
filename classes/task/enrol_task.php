@@ -17,7 +17,6 @@
 namespace mod_coursework;
 namespace mod_coursework\task;
 
-
 /**
  * A scheduled task for the coursework module cron.
  *

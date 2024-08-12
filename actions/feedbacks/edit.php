@@ -24,7 +24,6 @@ require_once(dirname(__FILE__) . '/../../../../config.php');
 
 global $CFG, $USER;
 
-
 $feedbackid = optional_param('feedbackid', 0, PARAM_INT);
 $ajax = optional_param('ajax', 0, PARAM_INT);
 

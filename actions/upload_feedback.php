@@ -27,11 +27,8 @@
  * Time: 11:32
  */
 
-
 use mod_coursework\models\coursework;
 use mod_coursework\export;
-
-
 
 require_once(dirname(__FILE__).'/../../../config.php');
 
@@ -56,22 +53,17 @@ $PAGE->set_heading($title);
 
 $grading_sheet_capabilities = array('mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade', 'mod/coursework:administergrades');
 
-
 // Bounce anyone who shouldn't be here.
 if (!has_any_capability($grading_sheet_capabilities, $PAGE->context)) {
     $message = 'You do not have permission to upload feedback sheets';
     redirect(new moodle_url('mod/coursework/view.php'), $message);
 }
 
-
-
 $feedbackform = new upload_feedback_form($coursework, $coursemoduleid);
 
 if ($feedbackform->is_cancelled()) {
     redirect(new moodle_url("$CFG->wwwroot/mod/coursework/view.php", array('id' => $coursemoduleid)));
 }
-
-
 
 if ($data = $feedbackform->get_data()) {
 
@@ -90,8 +82,6 @@ if ($data = $feedbackform->get_data()) {
     $stageidentifier = $data->feedbackstage;
 
     $fileimporter = new  mod_coursework\coursework_file_zip_importer();
-
-
 
     $fileimporter->extract_zip_file($filepath, $coursework->get_context_id());
 

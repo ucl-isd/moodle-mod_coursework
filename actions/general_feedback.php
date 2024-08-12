@@ -24,7 +24,6 @@ use mod_coursework\forms\general_feedback_form;
 
 require_once(dirname(__FILE__) . '/../../../config.php');
 
-
 global $CFG, $PAGE, $DB, $OUTPUT;
 
 $course_module_id = required_param('cmid', PARAM_INT);

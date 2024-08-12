@@ -59,7 +59,6 @@ class builder implements user_row {
         $this->allocatable = $allocatable;
     }
 
-
     /**
      * @return allocatable
      */
@@ -156,7 +155,6 @@ class builder implements user_row {
         return $this->get_allocatable()->idnumber;
     }
 
-
     /**
      * @return string
      */
@@ -198,7 +196,6 @@ class builder implements user_row {
 
         return  $personal_deadline;
     }
-
 
     public  function get_submission_status() {
         global  $DB;

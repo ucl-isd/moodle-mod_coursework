@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 //this stops the page from aborting when an ajax call disconnects
 ignore_user_abort(true);
 
@@ -32,8 +31,6 @@ use mod_coursework\allocation\widget;
 
 require_once(dirname(__FILE__).'/../../../config.php');
 
-
-
 global $CFG, $OUTPUT, $DB, $PAGE;
 
 require_once($CFG->dirroot.'/mod/coursework/lib.php');
@@ -44,7 +41,6 @@ $course = $DB->get_record('course', array('id' => $coursemodule->course), '*', M
 $coursework = $DB->get_record('coursework', array('id' => $coursemodule->instance), '*', MUST_EXIST);
 $coursework = coursework::find($coursework);
 $assessorallocationstrategy = optional_param('assessorallocationstrategy', false, PARAM_TEXT);
-
 
 require_login($course, true, $coursemodule);
 
@@ -61,6 +57,5 @@ $coursework->save();
 
 $allocator = new \mod_coursework\allocation\auto_allocator($coursework);
 $allocator->process_allocations();
-
 
  echo $coursework->name. "re-allocated";

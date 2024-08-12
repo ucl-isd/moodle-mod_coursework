@@ -23,8 +23,6 @@
 
 require_once($CFG->libdir.'/formslib.php');
 
-
-
 class upload_allocations_form extends moodleform {
 
     private $cmid;
@@ -59,7 +57,6 @@ class upload_allocations_form extends moodleform {
         $choices = core_text::get_encodings();
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
         $mform->setDefault('encoding', 'UTF-8');
-
 
         $this->add_action_buttons(true,get_string('uploadallocations', 'coursework'));
     }

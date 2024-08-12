@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\controllers;
 
 use coding_exception;
@@ -161,7 +160,6 @@ class controller_base {
         require_login($this->course, false, $this->coursemodule);
 
     }
-
 
     /**
      * Single accessible method that look for a private method and uses it if its there, after preparing the environment.

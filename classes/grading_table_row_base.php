@@ -26,7 +26,6 @@ use moodle_url;
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * Refactoring the grading table to clarify the logic. There will be two subclasses of this -
  * one for single row tables and one for multi-row tables. These classes contain all the business
@@ -205,8 +204,6 @@ abstract class grading_table_row_base implements user_row {
         return  $personal_deadline;
     }
 
-
-
     /**
      * Returns the hash used to name files anonymously for this user/coursework combination
      */
@@ -259,7 +256,6 @@ abstract class grading_table_row_base implements user_row {
 
         return plagiarism_flag::find($params);
     }
-
 
     /**
      * Chained getter to prevent tight coupling.
@@ -394,7 +390,6 @@ abstract class grading_table_row_base implements user_row {
         return $this->get_submission()->get_assessor_feedback_by_stage('assessor_1');
     }
 
-
     /**
      * Check if the extension is given to this row
      *
@@ -409,7 +404,6 @@ abstract class grading_table_row_base implements user_row {
                                                                       'allocatabletype' =>  $this->get_allocatable()->type()));
 
     }
-
 
     /**
      * Getter for row extension

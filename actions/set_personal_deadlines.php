@@ -42,7 +42,6 @@ $sortby = optional_param('sortby', '', PARAM_ALPHA);
 $sorthow = optional_param('sorthow', '', PARAM_ALPHA);
 $options = compact('sortby', 'sorthow');
 
-
 require_login($course, true, $coursemodule);
 require_capability('mod/coursework:editpersonaldeadline', $PAGE->context, null, true, "Can't change personal deadlines here - permission denied.");
 
@@ -76,6 +75,5 @@ $personal_deadlines_table = new mod_coursework_personal_deadlines_table($persona
 echo $OUTPUT->header();
 
 echo $object_renderer->render($personal_deadlines_table);
-
 
 echo $OUTPUT->footer();

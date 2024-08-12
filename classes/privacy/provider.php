@@ -167,7 +167,6 @@ class provider implements
                 WHERE ctx.id = :contextid AND ctx.contextlevel = :contextlevel";
         $userlist->add_from_sql('createdby', $sql, $params);
 
-
     }
     /**
      * Returns all of the contexts that has information relating to the userid.

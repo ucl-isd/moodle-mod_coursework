@@ -186,5 +186,4 @@ class mod_coursework_generator_testcase extends advanced_testcase {
         $this->assertEquals($user->id, $submission->userid);
     }
 
-
 }

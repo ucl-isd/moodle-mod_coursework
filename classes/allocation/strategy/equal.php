@@ -28,7 +28,6 @@ use mod_coursework\allocation\allocatable;
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * Allocates all students equally between teachers.
  */

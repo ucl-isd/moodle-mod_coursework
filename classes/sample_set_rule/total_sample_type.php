@@ -31,7 +31,6 @@ use mod_coursework\sample_set_rule\sample_base;
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * Defines a rule that will include all students above or below a particular percentage of
  * the total grade.
@@ -41,7 +40,6 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
     public function adjust_set(array &$moderation_set, array &$potential_allocatables, $stage) {
 
     }
-
 
     public function get_numeric_boundaries() {
 
@@ -66,8 +64,6 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         $selected = ($record = $DB->get_record_sql($sql))  ?   array($record->upperlimit=> $record->upperlimit) : false;
         $checked = ($selected) ?   true : false;
 
-
-
         $percentage_options = array();
 
         for($i = 5;$i <= 100; $i = $i + 5) {
@@ -79,8 +75,6 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         $html    .=  html_writer::checkbox("assessor_{$assessor_number}_sampletotal_checkbox",1, $checked,get_string('topupto', 'mod_coursework'),
             array('id' => "assessor_{$assessor_number}_sampletotal_checkbox", 'class' => "assessor_{$assessor_number} total_checkbox sample_set_rule"));
 
-
-
         $html   .= html_writer::select($percentage_options,
             "assessor_{$assessor_number}_sampletotal",
             "",
@@ -90,11 +84,8 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         $html   .=  html_writer::end_div();
 
-
-
         return $html;
     }
-
 
     public function add_form_elements_js($assessor_number=0) {
 
@@ -106,7 +97,6 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                     var sampletotal = '#'+ele_id[0]+'_'+ele_id[1]+'_sampletotal';
                     var disabled = !$(this).prop('checked');
                    $(sampletotal).attr('disabled',disabled);
-
 
                     $(element).on('change',function() {
                         var ele_id = $(this).attr('id').split('_');
@@ -131,7 +121,6 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         if ($total_checkbox) {
 
-
             $dbrecord = new \stdClass();
             $dbrecord->ruletype = "";
             $dbrecord->lowerlimit = 0;
@@ -144,9 +133,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $DB->insert_record('coursework_sample_set_rules', $dbrecord);
         }
 
-
     }
-
 
     static function compare_key($a, $b) {
         if ($a === $b) return 0;
@@ -188,13 +175,10 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                 //use array chunk to split auto sample set into chunks we will only use the first chunk
                 if ($chunked_array = array_chunk($auto_sample_set, $total_to_return, true)) $auto_sample_set = $chunked_array[0];
 
-
-
                 //if the number in the sample set is less than the total to return
                 if (count($auto_sample_set) < $total_to_return) {
 
                     //we need to top up the sample set with other allocatables
-
 
                     //graded at the previous stage take precedence
 
@@ -214,7 +198,6 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                     }
                 }
-
 
                 //if this is not enough select anyone (which should == the ungraded as all graded should have been added)
                 if (count($auto_sample_set) < $total_to_return) {
@@ -252,14 +235,8 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                 $auto_sample_set = array();
             }
 
-
         }
 
     }
-
-
-
-
-
 
 }

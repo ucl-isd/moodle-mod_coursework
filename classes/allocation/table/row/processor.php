@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\allocation\table\row;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
@@ -67,6 +66,5 @@ class processor {
             }
         }
     }
-
 
 }

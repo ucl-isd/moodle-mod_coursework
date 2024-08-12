@@ -154,7 +154,6 @@ class builder implements user_row {
         return $this->get_allocatable()->idnumber;
     }
 
-
     /**
      * @return string
      */
@@ -169,6 +168,5 @@ class builder implements user_row {
 
         return $this->get_allocatable()->email;
     }
-
 
 }

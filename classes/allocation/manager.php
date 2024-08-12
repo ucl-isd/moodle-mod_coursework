@@ -36,7 +36,6 @@ use mod_coursework\grade_judge;
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * This takes responsibility for managing the allocations of markers to students, both manually and
  * automatically. Specifically, it processes user input from the allocation screen and performs the allocation
@@ -83,7 +82,6 @@ class manager {
 
             $classname = !empty($coursework->$propertyname) ?
                 '\\mod_coursework\allocation\strategy\\'.$coursework->$propertyname : '';
-
 
             if (class_exists($classname)) {
                 $this->$propertyname = new $classname($coursework);
@@ -186,7 +184,6 @@ class manager {
 
     }
 
-
     /**
      * Returns array of sampling options. This function should be looked upon as a placeholder
      * in case more complex functionality is defined
@@ -232,18 +229,12 @@ class manager {
      */
     public function get_sampling_set_widget($requestedrule = false) {
 
-
-
         $rules = $this->get_sampling_set_rules();
-
-
 
         $widget = new sampling_set_widget($rules, $this->coursework, $requestedrule);
 
         return new \mod_coursework_sampling_set_widget($widget);
     }
-
-
 
     /**
      * We know a rule came in, so we save it by delegating to the class, which will know what the form submitted.
@@ -281,7 +272,6 @@ class manager {
                 $this->save_sample_set_rule($i);
             }
 
-
         }
         $this->auto_generate_sample_set();
     }
@@ -293,13 +283,11 @@ class manager {
         return $this->coursework;
     }
 
-
     public function auto_generate_sample_set() {
         global $DB;
 
         $sampleplugins = $DB->get_records('coursework_sample_set_plugin',null, 'pluginorder');
         $order = 0;
-
 
         $sample_set = array();
 
@@ -314,7 +302,6 @@ class manager {
 
         for($stage_number = 2; $stage_number <= $this->get_coursework()->get_max_markers(); $stage_number++) {
 
-
             $stage = "assessor_{$stage_number}";
 
             $this->remove_unmarked_automatic_allocatables($stage);
@@ -328,7 +315,6 @@ class manager {
                                AND            stage_identifier = :stage
                                ORDER BY       ruleorder)a";
 
-
             if ($sampleplugins = $DB->get_records_sql($sql,array('courseworkid' => $this->coursework->id, 'stage' => $stage))) {
 
                 //$allocatables = $this->get_coursework()->get_allocatables_with_feedback();
@@ -337,9 +323,6 @@ class manager {
 
                 $auto_with_feedback = $this->get_automatic_with_feedback($stage);
 
-
-
-
                 //ok this array merge is being carried out using an foreach rather than array_merge as we want to preserve keys
                 //I am also not using add the two arrays as using the overloaded + can produce dubious results when a key exists
                 //in both arrays
@@ -347,7 +330,6 @@ class manager {
                 foreach($auto_with_feedback as $k => $v) {
                     if (!isset($manual_sample_set[$k])) $manual_sample_set[$k] = $v;
                 }
-
 
                 $auto_sample_set = array();
 
@@ -395,7 +377,6 @@ class manager {
                      AND        stage_identifier = :stage_identifier
                      AND        selectiontype = 'manual'";
 
-
         //get all users in manually selected for stage in coursework
         return $DB->get_records_sql($sql,
             array('courseworkid' => $this->coursework->id, 'stage_identifier' => $stage));
@@ -422,7 +403,6 @@ class manager {
         return $DB->get_records_sql($sql,array('courseworkid' => $this->coursework->id, 'stage' => $stage));
     }
 
-
     public function remove_unmarked_automatic_allocatables($stage) {
         global $DB;
 
@@ -443,8 +423,6 @@ class manager {
 
         return $DB->execute($sql);
 
-
-
     }
 
     public function get_allocatables_with_final_agreed() {
@@ -461,8 +439,5 @@ class manager {
         return $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id));
 
     }
-
-
-
 
 }

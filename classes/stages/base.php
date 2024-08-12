@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\stages;
 
 use mod_coursework\allocation\allocatable;
@@ -70,7 +69,6 @@ abstract class base {
         'user_is_assessor' => []
     ];
 
-
     /**
      * @param coursework $coursework
      * @param int $stage_identifier
@@ -79,7 +77,6 @@ abstract class base {
         $this->coursework = $coursework;
         $this->stage_identifier = $stage_identifier;
     }
-
 
     /**
      * @return strategy_base
@@ -106,7 +103,6 @@ abstract class base {
         } else {
             $teacher = $this->get_next_teacher($allocatable);
         }
-
 
         if ($teacher) {
             $this->make_auto_allocation($allocatable, $teacher);
@@ -202,7 +198,6 @@ abstract class base {
 
         return $cell_helper->get_renderable_allocation_table_cell();
     }
-
 
     /**
      * @param $allocatable
@@ -361,7 +356,6 @@ abstract class base {
         }
     }
 
-
     /**
      * @param $moderation
      * @return bool|moderation
@@ -417,7 +411,6 @@ abstract class base {
         return in_array($allocatable->id, $this->allocatables_with_allocations);
     }
 
-
     /**
      * Check if current marking stage has any allocation
      *
@@ -430,7 +423,6 @@ abstract class base {
 
         return !empty($record);
     }
-
 
     /**
      * @param $allocatable
@@ -587,7 +579,6 @@ abstract class base {
         return $enrolled || is_primary_admin($moderator->id);
     }
 
-
     /**
      * Check if a user has any allocation in this stage
      * @param allocatable $allocatable
@@ -731,7 +722,6 @@ abstract class base {
         return moderation::find($moderation_params);
     }
 
-
     /**
      * return bool
      */
@@ -769,7 +759,6 @@ abstract class base {
      */
     public function potential_marker_dropdown($allocatable) {
 
-
         // This gets called a lot on the allocations page, but does not change.
 
         if (!isset($this->assessor_dropdown_options)) {
@@ -801,11 +790,9 @@ abstract class base {
 
         $option_for_nothing_chosen_yet = array('' => get_string($identifier, 'mod_coursework'));
 
-
         $dropdown_name = $this->assessor_dropdown_name($allocatable);
 
         $selected = $this->selected_allocation_in_session($dropdown_name);
-
 
         $assessor_dropdown = \html_writer::select($this->assessor_dropdown_options,
                                                  $dropdown_name,
@@ -813,7 +800,6 @@ abstract class base {
                                                   $option_for_nothing_chosen_yet,
                                                   $html_attributes
         );
-
 
         return $assessor_dropdown;
     }
@@ -914,7 +900,6 @@ abstract class base {
         return false;
     }
 
-
     /**
      * @param $allocatable
      */
@@ -934,11 +919,9 @@ abstract class base {
             $result += $feedback->timecreated;
         }
 
-
         return $result > time();
 
     }
-
 
     private function selected_allocation_in_session($dropdownname) {
         global  $SESSION;
@@ -950,8 +933,6 @@ abstract class base {
             if (!empty($SESSION->coursework_allocationsessions[$cm->id][$dropdownname])) {
                 return  $SESSION->coursework_allocationsessions[$cm->id][$dropdownname];
             }
-
-
 
         }
 

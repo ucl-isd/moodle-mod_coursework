@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework;
 use context;
 use mod_coursework\models\coursework;
@@ -93,7 +92,6 @@ class cron {
                 continue;
             }
 
-
             $students = $coursework->get_students_who_have_not_yet_submitted();
 
             foreach ($students as $student) {
@@ -108,7 +106,6 @@ class cron {
                 }
 
                 $deadline = $personal_deadline ? $personal_deadline->personal_deadline : $coursework->deadline;
-
 
                 if ($individual_extension){
                     // check if 1st reminder is due to be sent but has not been sent yet
@@ -129,8 +126,6 @@ class cron {
                            $student->nextremindernumber= 2;
                            $userswhoneedreminding[$student->id().'_'.$coursework->id] = $student;
                    }
-
-
 
                 } else if ($deadline > time()) { // coursework or personal deadline hasn't passed
                     // check if 1st reminder is due to be sent but has not been sent yet
@@ -391,7 +386,6 @@ class cron {
         global $DB;
         echo 'Auto releasing feedbacks for courseworks where the release date have passed...';
 
-
        $sql = "SELECT *
                  FROM {coursework} c
                  JOIN {coursework_submissions} cs
@@ -425,7 +419,6 @@ class cron {
      */
     public static function get_admins_and_teachers($context){
 
-
         $graders = get_enrolled_users($context, 'mod/coursework:addinitialgrade');
         $managers = get_enrolled_users($context, 'mod/coursework:addagreedgrade');
 
@@ -439,9 +432,6 @@ class cron {
         return $users;
 
     }
-
-
-
 
 }
 

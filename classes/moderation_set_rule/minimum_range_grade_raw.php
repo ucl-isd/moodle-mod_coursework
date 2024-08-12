@@ -30,8 +30,6 @@ use mod_coursework\models\moderation_set_rule;
 
 defined('MOODLE_INTERNAL') || die();
 
-
-
 /**
  * Defines a rule that will include all students above or below a particular percentage of
  * the total grade.

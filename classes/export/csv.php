@@ -21,7 +21,6 @@ use mod_coursework\ability;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
 
-
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -137,7 +136,6 @@ class csv {
         }
         return $row;
     }
-
 
     /**
      * create headers for CSV
@@ -260,18 +258,11 @@ class csv {
             $increment = 2;
         }
 
-
             for ($i = 1; $i < $this->coursework->get_max_markers(); $i++) {
                 $cells = $cells + $increment; // one for grade, one for feedback
             }
 
-
-
-
-
-
         return $cells;
-
 
     }
 

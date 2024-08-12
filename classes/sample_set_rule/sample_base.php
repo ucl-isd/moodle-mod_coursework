@@ -28,15 +28,12 @@ use html_writer;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
 
-
 defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * This base class is extended to make specific sampling rules strategies
  */
 abstract class sample_base {
-
 
     /**
      * @var string DB table this class relates to.
@@ -52,7 +49,6 @@ abstract class sample_base {
      * @var int
      */
     public $courseworkid;
-
 
     protected $coursework;
 
@@ -94,12 +90,9 @@ abstract class sample_base {
         'minimum'
     );
 
-
-
     function __construct($coursework) {
         $this->coursework = $coursework;
     }
-
 
     /**
      * Returns the name of the class without the 'coursework_moderation_set_rule_' prefix.
@@ -144,7 +137,6 @@ abstract class sample_base {
         return true;
     }
 
-
     /**
      * Each rule may have different form elements that we need to add in order for a new one to be
      * @abstract
@@ -175,7 +167,6 @@ abstract class sample_base {
         return $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id));
     }
 
-
     /**
      *
      * @return array
@@ -190,6 +181,5 @@ abstract class sample_base {
 
         return $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id));
     }
-
 
 }

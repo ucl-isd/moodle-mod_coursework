@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\render_helpers\grading_report\cells;
 use coding_exception;
 use html_table_cell;
@@ -48,7 +47,6 @@ class group_cell extends cell_base implements allocatable_cell {
         $content .= '<br>';
         $content .= '<div class="group_style">';
         $content .= '<select>';
-
 
         if ($this->coursework->blindmarking_enabled() && !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context()) && !$row_object->is_published()){
             $content .= '<option class="expand_members" selected="selected">'.get_string('membershidden','coursework').'</option>';

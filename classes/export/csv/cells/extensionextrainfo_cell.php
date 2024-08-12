@@ -20,14 +20,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\export\csv\cells;
 
 /**
  * Class extensionextrainfo_cell
  */
 class extensionextrainfo_cell extends cell_base {
-
 
     /**
      * @param $submission

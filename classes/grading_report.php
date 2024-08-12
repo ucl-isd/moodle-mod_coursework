@@ -114,7 +114,6 @@ class grading_report {
         return $this->coursework;
     }
 
-
     /**
      * @param $options
      * @return string
@@ -199,7 +198,6 @@ class grading_report {
         return $sort;
     }
 
-
     /**
      * For use with usort.
      * Method called dynamically, so don't delete if unused. See construct_sort_function_name().
@@ -251,7 +249,6 @@ class grading_report {
         return $this->sort_by_stringfield($a->get_student_lastname(), $b->get_student_lastname());
     }
 
-
     /**
      * For use with usort.
      * Method called dynamically, so don't delete if unused. See construct_sort_function_name().
@@ -263,8 +260,6 @@ class grading_report {
     public function sort_by_groupname($a, $b) {
         return $this->sort_by_stringfield($a->get_allocatable()->name, $b->get_allocatable()->name);
     }
-
-
 
     /**
      * For use with usort.
@@ -425,6 +420,5 @@ class grading_report {
     public function get_options() {
         return $this->options;
     }
-
 
 }

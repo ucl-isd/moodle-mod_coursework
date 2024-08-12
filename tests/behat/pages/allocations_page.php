@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\user;
 
@@ -29,7 +28,6 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
 require_once($CFG->dirroot . '/mod/coursework/tests/behat/pages/page_base.php');
-
 
 /**
  * Holds the functions that know about the HTML structure of the student page.
@@ -256,7 +254,6 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
                      AND        stage_identifier = :stage
                      AND        (allocatableid = :user $other_sql)";
 
-
         $stage = "assessor_".$stage_number;
 
         $params = array('courseworkid' => $coursework->id,
@@ -286,13 +283,10 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
         $this->$role_name_to_save = $this->create_user($role_name, $role_name_to_save);
     }
 
-
     public function save_sampling_strategy() {
 
         $this->getPage()->pressButton('save_manual_sampling');
 
     }
-
-
 
 }

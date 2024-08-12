@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\allocation\table\cell;
 use mod_coursework\models\user;
 use mod_coursework\stages\base as stage_base;

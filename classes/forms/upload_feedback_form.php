@@ -27,11 +27,7 @@
  * Time: 18:27
  */
 
-
-
 require_once($CFG->libdir.'/formslib.php');
-
-
 
 class upload_feedback_form extends moodleform {
 
@@ -87,7 +83,6 @@ class upload_feedback_form extends moodleform {
         if (!has_capability('mod/coursework:editagreedgrade', $this->coursework->get_context()) && !has_capability('mod/coursework:administergrades', $this->coursework->get_context()) ) {
             $mform->disabledIf('overwrite', 'feedbackstage', 'eq', 'final_agreed_1');
         }
-
 
         $this->add_action_buttons(true,get_string('uploadfeedbackzip', 'coursework'));
     }

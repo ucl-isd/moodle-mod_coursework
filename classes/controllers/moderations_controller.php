@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\controllers;
 
 use mod_coursework\ability;
@@ -54,7 +53,6 @@ class moderations_controller extends controller_base {
      */
     protected $moderation;
 
-
     /**
      * This deals with the page that the assessors see when they want to add component feedbacks.
      *
@@ -70,7 +68,6 @@ class moderations_controller extends controller_base {
         $moderator_agreement->stage_identifier = $this->params['stage_identifier'];
         $moderator_agreement->courseworkid = $this->params['courseworkid'];
         $moderator_agreement->feedbackid = $this->params['feedbackid'];
-
 
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('new', $moderator_agreement);
@@ -97,7 +94,6 @@ class moderations_controller extends controller_base {
     protected function edit_moderation() {
 
         global $DB, $PAGE, $USER;
-
 
         $moderation = new moderation($this->params['moderationid']);
         $this->check_stage_permissions($moderation->stage_identifier);
@@ -143,7 +139,6 @@ class moderations_controller extends controller_base {
         );
         $url = $this->get_router()->get_path('new moderation', $path_params, true);
         $PAGE->set_url($url);
-
 
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('new', $moderatoragreement);
@@ -216,7 +211,6 @@ class moderations_controller extends controller_base {
         $renderer = $this->get_page_renderer();
         $renderer->show_moderation_page($moderation);
     }
-
 
     /**
      * Get any feedback-specific stuff.

@@ -42,7 +42,6 @@ require_once($CFG->dirroot . '/lib/plagiarismlib.php');
  */
 class mod_coursework_object_renderer extends plugin_renderer_base {
 
-
     /**
      * Renders a coursework feedback as a row in a table. This is for the grading report when we have
      * multiple markers and we want an AJAX pop up with details of the feedback. Also for the student view.
@@ -172,9 +171,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         return $out;
     }
 
-
-
-
     /**
      * Renders a coursework moderation as a row in a table.
      *
@@ -182,7 +178,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string
      */
     public function render_moderation(moderation $moderation){
-
 
         $title =
             get_string('moderationfor', 'coursework', $moderation->get_submission()->get_allocatable_name());
@@ -411,7 +406,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         return $out;
     }
 
-
     /**
      * Outputs the files as a HTML list.
      *
@@ -529,7 +523,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $out .= html_writer::tag('h3', get_string('gradingsummary', 'coursework'));
         $out .= $this->coursework_grading_summary_table($coursework);
 
-
         // Show general feedback if it's there and the deadline has passed or general feedback's date is not enabled which means it should be displayed automatically
         if (($coursework->is_general_feedback_enabled() && $allowed_to_add_general_feedback && (time() > $coursework->generalfeedback || $cangrade || $canpublish || $is_published)) || !$coursework->is_general_feedback_enabled()) {
             $out .= html_writer::tag('h3', get_string('generalfeedback', 'coursework'));
@@ -575,7 +568,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         ';
 
-
         $options = $allocation_table->get_options();
 
         $paging_bar = new paging_bar($allocation_table->get_participant_count(), $options['page'], $options['perpage'],
@@ -599,8 +591,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $select->class = 'jumpmenu';
         $select->formid = 'sectionmenu';
         $table_html     .=  $OUTPUT->render($select);
-
-
 
         //get the hidden elements used for assessors and moderators selected on other pages;
 
@@ -660,8 +650,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $table_html     .=  $OUTPUT->render($select);
 
-
-
         $table_html .=  $PAGE->get_renderer('mod_coursework', 'object')->render($paging_bar);
 
         return $table_html;
@@ -694,7 +682,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         return $row;
     }
 
-
     /**
      * Outputs the buttons etc to choose and trigger the auto allocation mechanism. Do this as part of the main form so we
      * can choose some allocations, then click a button to auto-allocate the rest.
@@ -720,7 +707,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // Allow allocation method to be changed.
         $html .= html_writer::label(get_string('allocationstrategy', 'mod_coursework'), 'assessorallocationstrategy');
 
-
         $options = manager::get_allocation_classnames();
         $html .= html_writer::select($options,
                                      'assessorallocationstrategy',
@@ -738,9 +724,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $attributes = array('class' => 'coursework_spacer');
         $html .= html_writer::start_tag('div', $attributes);
         $html .= html_writer::end_tag('div');
-
-
-
 
         // Save button.
         $attributes = array('name' => 'save',
@@ -770,13 +753,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         return router::instance();
     }
 
-
     public function render_mod_coursework_sampling_set_widget(mod_coursework_sampling_set_widget $samplingwidget) {
 
         global $OUTPUT, $DB;
 
         $html = html_writer::tag('h2',get_string('sampling', 'mod_coursework'));
-
 
         $html .= html_writer::start_tag('div', array('class' => 'assessor-sampling-wrapper accordion'));
 
@@ -786,9 +767,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $html .= html_writer::start_tag('div', array('class' => 'sampling-rules'));
 
-
         // We want to allow the allocation strategy to add configuration options.
-
 
         $html .= html_writer::start_tag('div',array('class' => 'sampling-select'));
 
@@ -797,7 +776,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         ";
 
         $html  .= html_writer::script($script);
-
 
         $table = new html_table();
         $table->attributes['class'] = 'sampling';
@@ -825,7 +803,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
 
         $html  .= "<input id='scale_values' type='hidden' value='".$scale."' />";
-
 
         $table->head = $assessorheaders;
 
@@ -872,9 +849,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $graderules .= get_string('graderules', 'mod_coursework');
             $graderules .= html_writer::end_tag('h4');
 
-
             $graderules .= $this->get_sampling_strategy_form_elements($samplingwidget->get_coursework(), $i, $javascript);
-
 
             $sampling_cell   .=     html_writer::div($graderules, '', array('id' => "assessor_{$i}_automatic_rules"));
 
@@ -886,7 +861,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
           //= array($asessoronecell, $asessortwocell);
 
         $html  .=   html_writer::table($table);
-
 
         // End the form with save button.
         $attributes = array('name' => 'save_sampling',
@@ -918,8 +892,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         ";
 
-
-
         $html  .= html_writer::script($script);
 
         $html .= html_writer::end_tag('div');
@@ -930,7 +902,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         return $html;
     }
-
 
     private function sampling_strategy_column($samplingwidget, $suffix = '') {
 
@@ -983,21 +954,16 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 false,
                 array('id' => "assessor_{$suffix}_sampleto_{$i}", 'class' => "assessor_{$suffix} sampling_strategy_detail"));
 
-
             $sampling_column .= html_writer::end_tag('span', '');
         }
 
         $sampling_column  .= html_writer::end_tag('div');
 
-
         $sampling_column      .=  html_writer::link('#',get_string('addgraderule', 'mod_coursework'),array('id' => "assessor_{$suffix}_addgradderule", 'class' => 'addgradderule sampling_strategy_detail'));
         $sampling_column      .=  html_writer::link('#',get_string('removegraderule', 'mod_coursework'),array('id' => "assessor_{$suffix}_removegradderule", 'class' => 'removegradderule sampling_strategy_detail'));
 
-
         $sampling_column    .=  html_writer::checkbox("assessor_{$suffix}_samplertopup",1,false,get_string('topupto', 'mod_coursework'),
             array('id' => "assessor_{$suffix}_samplerules[]", 'class' => "assessor_{$suffix} sampling_strategy_detail"));
-
-
 
         $sampling_column   .= html_writer::select($percentage_options,
             "assessor_{$suffix}_sampletopup",
@@ -1124,7 +1090,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         return $html;
     }
 
-
     protected function get_sampling_strategy_form_elements($coursework, $assessor_number, $load_javascript=false) {
 
         global $CFG, $DB;
@@ -1134,8 +1099,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $classdir = $CFG->dirroot . '/mod/coursework/classes/sample_set_rule/';
 
         $sampleplugins = $DB->get_records('coursework_sample_set_plugin',null, 'pluginorder');
-
-
 
         //$fullclasspaths = glob($classdir . '/*.php');
         foreach ($sampleplugins as $plugin) {
@@ -1152,13 +1115,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             if ($load_javascript)   $javascript   .=  $sampling_rule->add_form_elements_js($assessor_number);
 
-
         }
 
         return $html." ".$javascript;
 
     }
-
 
     /**
      * @param coursework $coursework
@@ -1320,7 +1281,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $deadline_message .= html_writer::end_tag('div');
         }
 
-
         $table_html = '
         <table class="deadlines display">
           <tbody>
@@ -1414,12 +1374,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $table_html .=   '<div class="alert">'.get_string('nopersonaldeadlineforextensionwarning', 'mod_coursework').'</div>';
 
-
-
         $usergroups = $personal_deadlines_table->get_coursework()->get_allocatable_type();
 
         $table_html .=   '<div class="largelink">'.html_writer::link('#', get_string('setdateforselected', 'mod_coursework', $personal_deadlines_table->get_coursework()->get_allocatable_type()), array('id' => 'selected_dates')).'</div>';
-
 
         if (has_capability('mod/coursework:revertfinalised', $PAGE->context)) {
             $table_html .= '<div class="largelink">' . html_writer::link('#', get_string('unfinaliseselected', 'mod_coursework', $personal_deadlines_table->get_coursework()->get_allocatable_type()), array('id' => 'selected_unfinalise')) . '</div>';
@@ -1435,7 +1392,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $table_html .=  '<input type="hidden" name="multipleuserdeadlines" value="1" />';
         $table_html .=  '<input type="hidden" name="selectedtype" id="selectedtype" value="date" />';
 
-
         $table_html .= '
 
             <table class="personal_deadline display">
@@ -1443,7 +1399,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 <tr>
 
         ';
-
 
         $allocatable_cell_helper = $personal_deadlines_table->get_allocatable_cell();
         $personaldeadlines_cell_helper = $personal_deadlines_table->get_personal_deadline_cell();
@@ -1459,8 +1414,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $table_html .= '<th>';
         $table_html .= get_string('tableheadstatus', 'mod_coursework');
         $table_html .= '</th>';
-
-
 
         $table_html .= '
                 </tr>
@@ -1481,7 +1434,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $table_html .=   '</form>';
 
         return $table_html;
-
 
     }
 
@@ -1506,16 +1458,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $personal_deadline =
             \mod_coursework\models\personal_deadline::get_personal_deadline_for_student(user::find($personal_deadline_row->get_allocatable()->id()), $coursework);
 
-
-
         if (!$personal_deadline) {
             $personal_deadline = \mod_coursework\models\personal_deadline::build($new_personal_deadline_params);
         }
 
-
         $ability = new ability(user::find($USER), $coursework);
         $disabledelement = (!$personal_deadline ||($personal_deadline && $ability->can('edit', $personal_deadline)) )   ?   ""    :  " disabled='disabled' ";
-
 
         $row_html = '<tr id="'. $personal_deadline_row->get_allocatable()->type() . '_' . $personal_deadline_row->get_allocatable()->id().'">';
         $row_html .= '<td>';
@@ -1530,7 +1478,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             'setpersonaldeadlinespage' => '1'
         );
 
-
         $allocatable_cell_helper = $personal_deadline_row->get_allocatable_cell();
         $personaldeadlines_cell_helper = $personal_deadline_row->get_personal_deadline_cell();
         $row_html .= $allocatable_cell_helper->get_table_cell($personal_deadline_row);
@@ -1541,7 +1488,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         return $row_html;
     }
-
 
     /**
      * @param mod_coursework_coursework $coursework
@@ -1556,14 +1502,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $warning_message = "";
         $stagename = $coursework->has_multiple_markers()? ' (Agreed grade)' : '';
 
-
         $participants = 0;
         $submitted = 0;
         $needsgrading = 0;
         $graded = 0;
         $finalgrade = 0;
         $published = 0;
-
 
         if (!$coursework->has_multiple_markers() && !$coursework->allocation_enabled() && !has_capability('mod/coursework:addinitialgrade', $coursework->get_context())
             && has_capability('mod/coursework:addagreedgrade', $coursework->get_context())){
@@ -1584,7 +1528,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             //remove all submission with final grade
             $assessable_submitted_submissions = $this->removed_final_graded_submissions($assessable_submitted_submissions);
-
 
             //if has addagreedgrade or administergrade or addallocatedagreedgrade+initialgrade
             if (has_any_capability(array('mod/coursework:addagreedgrade', 'mod/coursework:administergrades'), $coursework->get_context())
@@ -1608,7 +1551,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $graded_submissions = $this->get_submissions_with_final_grade($this->get_submissions_for_assessor($coursework, $allsubmissions));
             $graded = count($graded_submissions);
 
-
             $finalgrade = $graded;
             // display breakdown of marks for initial stages
             if ($coursework->has_multiple_markers() && has_capability('mod/coursework:administergrades', $coursework->get_context())) {
@@ -1629,7 +1571,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         }
 
-
         // BUILD table
         $table_html = '<table class="gradingsummary display"><tbody>';
         $table_html .= $warning_message;
@@ -1648,7 +1589,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // submissions graded and published
         $table_html .= '<tr><th >'.get_string('gradedandpublished', 'mod_coursework').'</th><td>'.$published.'</td></tr>';
 
-
         $table_html .= '</tbody></table>';
 
         return $table_html;
@@ -1665,7 +1605,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         if (!$coursework->has_multiple_markers() && has_capability('mod/coursework:addagreedgrade', $coursework->get_context()) &&
             !has_capability('mod/coursework:addinitialgrade', $coursework->get_context()) ) {
-
 
             $submissions = $coursework->get_all_submissions();
 
@@ -1697,7 +1636,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         return $participant;
     }
-
 
     /**
      * Remove submissions that have not been finalised
@@ -1738,7 +1676,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         return $submissions;
     }
-
 
     /**
      * Remove submissions that can't be graded
@@ -1806,7 +1743,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         return $submissions;
     }
 
-
     /**
      * Get submissions that have final feedback
      *
@@ -1829,8 +1765,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         return $submissions;
     }
 
-
-
     /**
      * Get submissions an assessor can see on the grading page or will be able to mark
      *
@@ -1846,7 +1780,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         if (!$coursework->has_multiple_markers() && has_capability('mod/coursework:addagreedgrade', $coursework->get_context()) &&
             !has_capability('mod/coursework:addinitialgrade', $coursework->get_context()) ) {
-
 
             foreach($submissions as $sub) {
                 $submission = submission::find($sub);
@@ -1880,7 +1813,5 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         return $gradeblesub;
     }
-
-
 
 }

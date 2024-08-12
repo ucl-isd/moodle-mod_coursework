@@ -20,7 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_coursework\render_helpers\grading_report\cells;
 use coding_exception;
 use html_writer;
@@ -79,7 +78,6 @@ class submission_cell extends cell_base {
                                                                      'courseworkid' => $rowobject->get_coursework()->id,
                                                                      'createdby' => $USER->id,
                                                                  ));
-
 
         if (($rowobject->get_submission()&& !$rowobject->get_submission()->finalised)
             || !$rowobject->get_submission()) {
