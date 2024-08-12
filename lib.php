@@ -299,7 +299,7 @@ function mod_coursework_core_calendar_provide_event_action(calendar_event $event
 
         $submission_url = new \moodle_url('/mod/coursework/view.php', array('id' => $cm->id));
 
-    }  else if ($student) { // for students
+    } else if ($student) { // for students
 
         // if group cw check if student is in group, if not then don't display 'Add submission' link
         if ($coursework->is_configured_to_have_group_submissions() && !$coursework->get_student_group($user)) {
@@ -1487,7 +1487,7 @@ function has_user_seen_tii_EULA_agreement() {
 
             $shouldseeEULA = $DB->record_exists_sql($sql, array('userid' => $USER->id));
         }
-    }   else {
+    } else {
         $shouldseeEULA = true;
     }
     return $shouldseeEULA;

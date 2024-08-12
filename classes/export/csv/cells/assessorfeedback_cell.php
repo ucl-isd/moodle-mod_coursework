@@ -153,7 +153,7 @@ class assessorfeedback_cell extends cell_base{
                 if ($assessors == $feedbacks) return get_string('gradealreadyexists', 'coursework');
             }
 
-        }  else if (has_any_capability($agreedgradecap, $PAGE->context)) {
+        } else if (has_any_capability($agreedgradecap, $PAGE->context)) {
 
             // If you have the add agreed or edit agreed grades capabilities then you may have the grades on your export sheet
             // We will return true as we will ignore them

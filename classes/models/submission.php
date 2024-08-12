@@ -1369,7 +1369,7 @@ class submission extends table_base implements \renderable {
                         if ($final_feedback->timecreated + $grade_editing_time > time()) {
                             $this->editable_final_feedback = true;
                         }
-                    }  else if ($final_feedback->finalised == 0 && $final_feedback->assessorid <> 0) {
+                    } else if ($final_feedback->finalised == 0 && $final_feedback->assessorid <> 0) {
                         $this->editable_final_feedback = true;
                     }
                 }

@@ -787,7 +787,7 @@ class mod_coursework_mod_form extends moodleform_mod {
                 });
             ");
 
-        } else  {
+        } else {
 
             $sql = "SELECT     *
                          FROM       {coursework}

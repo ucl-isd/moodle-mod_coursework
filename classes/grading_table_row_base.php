@@ -433,8 +433,7 @@ abstract class grading_table_row_base implements user_row {
         $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context());
         if (!$this->get_coursework()->blindmarking || $viewanonymous || $this->is_published() ) {
             return $user->firstname;
-        }
-        else {
+        } else {
             return get_string('hidden', 'mod_coursework');
         }
     }
@@ -448,8 +447,7 @@ abstract class grading_table_row_base implements user_row {
         $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context());
         if (!$this->get_coursework()->blindmarking || $viewanonymous || $this->is_published()) {
             return $user->lastname;
-        }
-        else {
+        } else {
             return get_string('hidden', 'mod_coursework');
         }
     }

@@ -137,7 +137,7 @@ class import extends grading_sheet{
                     $z = $z    +   count($rubricheaders)-1;
                     $offset = $offset + count($rubricheaders)-1;
 
-                }   else    {
+                } else {
                     $result = $cell->validate_cell($value, $submissionid, $stage_identifier, $uploadedgradecells);
                 }
 
@@ -469,7 +469,7 @@ class import extends grading_sheet{
 
                         // In case there is another rubric to be extracted from the csv set the new value of the rubric offset
 
-                    } else  if ($coursework->is_using_rubric() && ($stage == 'final_agreed_1' && $this->coursework->finalstagegrading == 1)) {
+                    } else if ($coursework->is_using_rubric() && ($stage == 'final_agreed_1' && $this->coursework->finalstagegrading == 1)) {
 
                         if (!isset($numberofrubrics)) {
 
@@ -644,7 +644,7 @@ class import extends grading_sheet{
         if (!$uses_rubric) {
             $gradejudge = new grade_judge($this->coursework);
             $grade = $gradejudge->get_grade($grade);
-        }   else    {
+        } else {
             $controller = $this->coursework->get_advanced_grading_active_controller();
             // Find out how many criteria there are
             $gradinginstance = $controller->get_or_create_instance(0, $USER->id, $cwfeedbackid);

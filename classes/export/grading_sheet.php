@@ -81,7 +81,7 @@ class grading_sheet extends csv{
                        // if no feedback or feedback belongs to current user don't remove submission
                        if (!$feedback || $feedback->assessorid == $USER->id) {
                            break;
-                       }  else if ($i + 1 < count($stage_identifiers)) {
+                       } else if ($i + 1 < count($stage_identifiers)) {
                            continue;
                        }
                        // if the last submission was already marked remove it from the array
@@ -194,7 +194,7 @@ class grading_sheet extends csv{
 
          // if (!$coursework->is_using_rubric()) {
                 $csv_cells[] = 'singlegrade';
-        /*    }   else   {
+        /*    } else {
 
                 $criterias = $coursework->get_rubric_criteria();
 

@@ -122,7 +122,7 @@ class submissions_controller extends controller_base {
               if (!$this->has_valid_personal_deadline($submission) && !$this->has_valid_extension($submission)) {
                   $submission->finalised = 1;
               }
-        }  else if ($this->coursework->deadline_has_passed() && !$this->has_valid_extension($submission)) {
+        } else if ($this->coursework->deadline_has_passed() && !$this->has_valid_extension($submission)) {
                   $submission->finalised = 1;
         }
 

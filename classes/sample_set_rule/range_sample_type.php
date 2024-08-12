@@ -73,7 +73,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                 $html .= $this->range_elements($assessor_number, $seq, $record);
                 $seq++;
             }
-        }   else {
+        } else {
             $html .= $this->range_elements($assessor_number, 0, false);
         }
 
@@ -413,7 +413,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                 if ($this->coursework->grade > 0) {
                     $limits[0] = $this->coursework->grade * $limits[0] / 100;
                     $limits[1] = $this->coursework->grade * $limits[1] / 100;
-                } else  {
+                } else {
                     $scale = $DB->get_record("scale", array('id' => abs($this->coursework->grade)));
 
                     if ($scale) {

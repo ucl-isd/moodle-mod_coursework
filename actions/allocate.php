@@ -182,7 +182,7 @@ if ($coursework->allocation_enabled()) {
 
 if ($formsavebutton && $percentage_allocation_not_complete == '' && $manual_allocation_not_complete == '') {
     redirect($CFG->wwwroot.'/mod/coursework/view.php?id='.$coursemoduleid, get_string('changessaved', 'mod_coursework'));
-}  else if ($formsavebutton) {
+} else if ($formsavebutton) {
     redirect($PAGE->url);
 }
 

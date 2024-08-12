@@ -974,7 +974,7 @@ class coursework extends table_base {
                     $submissionuser = $submission->get_allocatable();
                     if ($this->is_configured_to_have_group_submissions() && $submissionuser->name) {
                         $foldername = $submissionuser->name . '_';
-                    }  else if (!$this->is_configured_to_have_group_submissions()) {
+                    } else if (!$this->is_configured_to_have_group_submissions()) {
                         $foldername = $submissionuser->firstname . ' ' . $submissionuser->lastname . '_';
                     }
                 }

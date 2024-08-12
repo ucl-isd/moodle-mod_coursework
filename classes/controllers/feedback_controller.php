@@ -283,7 +283,7 @@ class feedback_controller extends controller_base {
                             $jsonarray['allocatableid'] = $submission->get_allocatable()->id();
                         }
 
-                    }   else    {
+                    } else {
 
                         $jsonarray['extrahtml'] = $provisional->get_table_cell($feedback_row);
 
@@ -469,7 +469,7 @@ class feedback_controller extends controller_base {
                         $jsonarray['allocatableid'] = $submission->get_allocatable()->id();
                     }
 
-                }   else    {
+                } else {
                     $jsonarray['extrahtml'] = strip_tags($provisional->get_table_cell($feedback_row));
                 }
 
