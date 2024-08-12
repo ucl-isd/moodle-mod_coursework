@@ -54,7 +54,7 @@ abstract class ability {
     /**
      * @var rule[]
      */
-    protected $rules = array();
+    protected $rules = [];
 
     /**
      * We use a different instance of the class for each user. This makes it a bit cleaner.
@@ -158,7 +158,7 @@ abstract class ability {
      * @return array
      */
     protected function classname_mappings() {
-        return array();
+        return = [];
     }
 
     /**

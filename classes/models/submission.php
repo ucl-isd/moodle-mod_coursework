@@ -384,7 +384,7 @@ class submission extends table_base implements \renderable {
         }
 
         if ($this->id < 1 || $this->get_context_id() < 1) {
-            return new submission_files(array(), $this);
+            return new submission_files([], $this);
         }
 
         $submission_files = $this->get_files();
@@ -395,7 +395,7 @@ class submission extends table_base implements \renderable {
             return $this->submission_files;
         }
 
-        $files = new submission_files(array(), $this);
+        $files = new submission_files([], $this);
         return $files;
     }
 
@@ -461,7 +461,7 @@ class submission extends table_base implements \renderable {
     public function get_assessor_feedbacks() {
         if (!$this->id) {
             // No submission - empty placeholder.
-            return array();
+            return = [];
         }
 
         if (!isset(feedback::$pool[$this->courseworkid]['submissionid-stage_identifier_index'])) {
@@ -519,7 +519,7 @@ class submission extends table_base implements \renderable {
 
         if (!$this->id) {
             // No submission - empty placeholder.
-            return array();
+            return = [];
         }
 
         $params = [
@@ -938,7 +938,7 @@ class submission extends table_base implements \renderable {
      * @return user[]
      */
     public function get_students() {
-        $allocatables = array();
+        $allocatables = [];
         if ($this->get_coursework()->is_configured_to_have_group_submissions() && $this->allocatabletype == 'group') {
             /**
              * @var group $group

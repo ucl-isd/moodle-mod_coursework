@@ -375,7 +375,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     public function render_submission_files(mod_coursework_submission_files $files) {
 
         $submission_files = $files->get_files();
-        $files_array = array();
+        $files_array = [];
 
         foreach ($submission_files as $file) {
             $files_array[] = $this->make_file_link($files, $file);
@@ -394,7 +394,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
     public function render_feedback_files(mod_coursework_feedback_files $files) {
 
-        $files_array = array();
+        $files_array = [];
         $submission_files = $files->get_files();
         foreach ($submission_files as $file) {
             $files_array[] = $this->make_file_link($files, $file, 'feedbackfile');
@@ -422,7 +422,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $coursework = $files->get_coursework();
         $submission_files = $files->get_files();
         $submission = $files->get_submission();
-        $files_array = array();
+        $files_array = [];
 
         foreach ($submission_files as $file) {
 
@@ -461,7 +461,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $coursework = $files->get_coursework();
         $submission_files = $files->get_files();
         $submission = $files->get_submission();
-        $files_array = array();
+        $files_array = [];
 
         foreach ($submission_files as $file) {
 
@@ -772,7 +772,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $html .= html_writer::start_tag('div', array('class' => 'sampling-select'));
 
         $script = "
-            var samplingValidateHdl = Array();
+            var samplingValidateHdl = [];
         ";
 
         $html  .= html_writer::script($script);
@@ -781,7 +781,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $table->attributes['class'] = 'sampling';
         $table->head = array('');
 
-        $assessorheaders = array();
+        $assessorheaders = [];
 
         for ($i = 0; $i < $samplingwidget->get_coursework()->get_max_markers(); $i++) {
             $assessorheaders[] = get_string('assessorheading', 'mod_coursework', $i+1);
@@ -812,7 +812,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $columndata = array(new html_table_cell($assessor1cell));
 
-        $percentage_options = array();
+        $percentage_options = [];
 
         for ($i = 0;$i < 110; $i = $i + 10) {
             $percentage_options[$i] = "{$i}%";
@@ -881,7 +881,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $('#save_manual_sampling').on('click', function (e) {
 
-                validationresults = Array();
+                validationresults = [];
 
                 $.each(samplingValidateHdl, function(i,functionname) {
                      validationresults.push(eval(functionname+'()'));
@@ -905,14 +905,14 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
     private function sampling_strategy_column($samplingwidget, $suffix = '') {
 
-        $percentage_options = array();
+        $percentage_options = [];
 
         for ($i = 0;$i < 110; $i = $i + 10) {
             $percentage_options[$i] = "{$i}%";
         }
 
         // Hidden input containing scale values
-        $scale = array();
+        $scale = [];
         $sampling_column = "<input id='scale_values' type='hidden' value='".implode(',', $scale)."' />";
 
         $sampling_column    .=  html_writer::tag('br', '');
@@ -1141,7 +1141,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                                                   array('type' => 'hidden',
                                                         'name' => 'id',
                                                         'value' => $coursework->get_coursemodule_id()));
-        $plagiarism_plugin_names = array();
+        $plagiarism_plugin_names = [];
         foreach ($coursework->get_plagiarism_helpers() as $helper) {
             $plagiarism_plugin_names[] = $helper->human_readable_name();
         }
@@ -1382,7 +1382,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $table_html .= '<div class="largelink">' . html_writer::link('#', get_string('unfinaliseselected', 'mod_coursework', $personal_deadlines_table->get_coursework()->get_allocatable_type()), array('id' => 'selected_unfinalise')) . '</div>';
         }
         $table_html .=  '<br />';
-        $url = $this->get_router()->get_path('edit personal deadline', array());
+        $url = $this->get_router()->get_path('edit personal deadline', []);
 
         $table_html .=   '<form  action="'.$url.'" id="coursework_personal_deadline_form" method="post">';
 
@@ -1776,7 +1776,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     public function get_submissions_for_assessor($coursework, $submissions) {
         global $USER;
 
-        $gradeblesub = array();
+        $gradeblesub = [];
 
         if (!$coursework->has_multiple_markers() && has_capability('mod/coursework:addagreedgrade', $coursework->get_context()) &&
             !has_capability('mod/coursework:addinitialgrade', $coursework->get_context()) ) {

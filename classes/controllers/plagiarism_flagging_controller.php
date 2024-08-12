@@ -69,7 +69,7 @@ class plagiarism_flagging_controller extends controller_base {
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('new', $plagiarismflag);
 
-        $urlparams = array();
+        $urlparams = [];
         $urlparams['submissionid'] = $plagiarismflag->submissionid;
 
         $PAGE->set_url('/mod/coursework/actions/moderations/new.php', $urlparams);

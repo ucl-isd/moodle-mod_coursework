@@ -74,7 +74,7 @@ class moderations_controller extends controller_base {
 
         $this->check_stage_permissions($this->params['stage_identifier']);
 
-        $urlparams = array();
+        $urlparams = [];
         $urlparams['submissionid'] = $moderator_agreement->submissionid;
         $urlparams['moderatorid'] = $moderator_agreement->moderatorid;
         $urlparams['stage_identifier'] = $moderator_agreement->stage_identifier;

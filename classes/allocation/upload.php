@@ -69,7 +69,7 @@ class upload {
 
         $csvreader->init();
 
-        $errors = array();
+        $errors = [];
         $s = 0;
         // find out if this is a group or individual coursework
         $allocatabletype = $this->coursework->get_allocatable_type();
@@ -79,7 +79,7 @@ class upload {
         // find all assessors for this coursework
         $assessors = get_enrolled_users($this->coursework->get_context(), 'mod/coursework:addinitialgrade');
         $assessors = array_keys($assessors); // keep only assessors' ids
-        $allocatablesinfile = array();
+        $allocatablesinfile = [];
 
         $csv_cells = array('allocatable');
         $stages = $this->coursework->get_max_markers();
@@ -90,7 +90,7 @@ class upload {
         while ($line = $csvreader->next()) {
 
             $cells = $csv_cells;
-            $assessorsinfile = array();
+            $assessorsinfile = [];
 
             if (sizeof($line) != sizeof($csv_cells)) {$errors = get_string('incorrectfileformat', 'coursework'); break;}
             foreach ($line as $keynum => $value) {

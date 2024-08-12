@@ -64,7 +64,7 @@ abstract class base {
      *
      * @var array
      */
-    private $settings = array();
+    private $settings = [];
 
     /**
      * @var stage_base

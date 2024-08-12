@@ -69,7 +69,7 @@ class manager {
         $this->coursework = $coursework;
 
         // Instantiate the allocation strategies so we can use them.
-        $strategytypes = array();
+        $strategytypes = [];
         if (!empty($this->coursework->assessorallocationstrategy)) {
             $strategytypes[] = coursework::ASSESSOR;
         }
@@ -110,7 +110,7 @@ class manager {
 
         $classdir = $CFG->dirroot . '/mod/coursework/classes/allocation/strategy';
         $fullclassnames = glob($classdir . '/*.php');
-        $options = array();
+        $options = [];
         foreach ($fullclassnames as $fullclassname) {
             if (strpos($fullclassname, 'base') !== false) {
                 continue;
@@ -169,7 +169,7 @@ class manager {
         }
 
         // These are the ones we will actually moderate (or which have already been moderated).
-        $moderation_set = array();
+        $moderation_set = [];
 
         // Move all the already marked ones into the set. These have to stay in it and ought to
         // be taken into account so that the other rules just add to them.
@@ -289,7 +289,7 @@ class manager {
         $sampleplugins = $DB->get_records('coursework_sample_set_plugin', null, 'pluginorder');
         $order = 0;
 
-        $sample_set = array();
+        $sample_set = [];
 
         $allocatables = $this->get_coursework()->get_allocatables();
 
@@ -331,7 +331,7 @@ class manager {
                     if (!isset($manual_sample_set[$k])) $manual_sample_set[$k] = $v;
                 }
 
-                $auto_sample_set = array();
+                $auto_sample_set = [];
 
                 foreach ($sampleplugins as $plugin) {
                     $classname = '\mod_coursework\sample_set_rule\\' . $plugin->rulename;

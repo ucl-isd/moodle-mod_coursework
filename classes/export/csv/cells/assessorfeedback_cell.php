@@ -74,7 +74,7 @@ class assessorfeedback_cell extends cell_base{
         return  get_string('assessorfeedbackcsv', 'coursework', $stage);
     }
 
-    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells = array()) {
+    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells  = []) {
         global $DB, $PAGE, $USER;
 
         $agreedgradecap = array('mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade');

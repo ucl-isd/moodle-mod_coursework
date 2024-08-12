@@ -44,7 +44,7 @@ class singlegrade_cell extends cell_base{
 
         $grade = $submission->get_assessor_feedback_by_stage($stage_identifier);
         if ($this->coursework->is_using_rubric()) {
-            $gradedata = array();
+            $gradedata = [];
             $this->get_rubric_scores_gradedata($grade, $gradedata); // multiple parts are handled here
         } else {
             $gradedata = (!$grade)? '': $this->get_actual_grade($grade->grade);
@@ -61,7 +61,7 @@ class singlegrade_cell extends cell_base{
     public function get_header($stage) {
 
         if ($this->coursework->is_using_rubric()) {
-            $strings = array();
+            $strings = [];
             $criterias = $this->coursework->get_rubric_criteria();
             foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
                 $strings['singlegrade'.$criteria['id']] = $criteria['description'];
@@ -73,7 +73,7 @@ class singlegrade_cell extends cell_base{
             return $strings;
     }
 
-    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells = array()) {
+    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells  = []) {
 
         global $PAGE, $DB, $USER;
 
@@ -241,7 +241,7 @@ class singlegrade_cell extends cell_base{
 
         if ($coursework->is_using_rubric()) {
 
-            $rubricheaders = array();
+            $rubricheaders = [];
 
             $criterias = $coursework->get_rubric_criteria();
 

@@ -83,7 +83,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect('coursework_assessoranonymity', $assessor_anonymity_name, $assessor_anonymity_description, 0, $options));
 
     // Set site-wide options for when feedback is due.
-    $weeks = array();
+    $weeks = [];
     for ($i = 1; $i <= 10; $i++) {
         $weeks[$i] = $i;
     }
@@ -118,7 +118,7 @@ if ($ADMIN->fulltree) {
     $options = array( 0 => get_string('no'), 1 => get_string('yes'));
     $settings->add(new admin_setting_configselect('coursework_feedbackreleaseemail', $feedbackreleaseemail_name, $feedbackreleaseemail_description, 1, $options));
 
-    $day_reminder = array();
+    $day_reminder = [];
     for ($i = 2; $i <= 7; $i++) {
         $day_reminder[$i] = $i;
     }

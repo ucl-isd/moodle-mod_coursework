@@ -237,7 +237,7 @@ class coursework extends table_base {
     /**
      * @var array
      */
-    protected $stages = array();
+    protected $stages = [];
 
     /**
      * @var \context Instance of a moodle context, i.e. that of the coursemodule for this coursework.
@@ -611,7 +611,7 @@ class coursework extends table_base {
 
         // Fetch the list of ids of all participants - this may get really long so fetch just id.
         $groups = (array)$groups;
-        $allusers = array();
+        $allusers = [];
         foreach ($groups as $groupdid) {
             $allusers = array_merge($allusers, get_enrolled_users($this->get_context(), 'mod/coursework:submit', $groupdid, 'u.id'));
         }
@@ -819,7 +819,7 @@ class coursework extends table_base {
      */
     public function get_plagiarism_helpers() {
         $enabled_plagiarism_plugins = array_keys(\core_component::get_plugin_list('plagiarism'));
-        $objects = array();
+        $objects = [];
         foreach ($enabled_plagiarism_plugins as $plugin_name) {
             $class_name = "\\mod_coursework\\plagiarism_helpers\\{$plugin_name}";
             if (class_exists($class_name)) {
@@ -950,7 +950,7 @@ class coursework extends table_base {
         if (!$submissions) {
             return false;
         }
-        $files_for_zipping = array();
+        $files_for_zipping = [];
         $fs = get_file_storage();
 
         $grading_sheet = new \mod_coursework\export\grading_sheet($this, null, null);
@@ -1287,7 +1287,7 @@ class coursework extends table_base {
      */
     public function get_submissions_needing_grading() {
 
-        $needsgrading = array();
+        $needsgrading = [];
         $submissions = $this->get_finalised_submissions();
 
         foreach ($submissions as $submission) {
@@ -1314,7 +1314,7 @@ class coursework extends table_base {
      */
     public function get_graded_submissions_by_stage($stage_identifier) {
 
-        $graded = array();
+        $graded = [];
         $submissions = $this->get_finalised_submissions();
 
         foreach ($submissions as $submission) {
@@ -1336,7 +1336,7 @@ class coursework extends table_base {
     public function get_assessor_graded_submissions($assessorid) {
         global $DB;
 
-        $graded = array();
+        $graded = [];
         $params = array('courseworkid' => $this->id, 'assessorid' => $assessorid);
         $sql = "SELECT cs.id
                 FROM {coursework_feedbacks} cf
@@ -1925,7 +1925,7 @@ class coursework extends table_base {
      * @return user[]
      */
     public function get_students() {
-        $users = array();
+        $users = [];
         $raw_users = get_enrolled_users($this->get_context(), 'mod/coursework:submit');
 
        // filter students who are restricted from the coursework
@@ -1967,7 +1967,7 @@ class coursework extends table_base {
      * @return user[]
      */
     public function initial_assessors($student) {
-        $assessors = array();
+        $assessors = [];
         $stages = $this->get_assessor_marking_stages();
         // If allocations, send the allocated teachers.
         // Otherwise send everyone.
@@ -2194,7 +2194,7 @@ class coursework extends table_base {
      * @return stage_base[]
      */
     public function get_assessor_marking_stages() {
-        $stages = array();
+        $stages = [];
 
         for ($i = 1; $i <= $this->get_max_markers(); $i++) {
             $stages[] = new assessor($this, 'assessor_' . $i);
@@ -2258,7 +2258,7 @@ class coursework extends table_base {
     public function get_allocatables() {
         global $DB;
 
-        $allocatables = array();
+        $allocatables = [];
 
         if ($this->is_configured_to_have_group_submissions()) {
             if ($this->grouping_id) {
@@ -2474,7 +2474,7 @@ class coursework extends table_base {
     public static function extension_reasons() {
         global $CFG;
 
-        $extension_reasons = array();
+        $extension_reasons = [];
         if (!empty($CFG->coursework_extension_reasons_list)) {
             $extension_reasons = $CFG->coursework_extension_reasons_list;
             $extension_reasons = explode("\n", $extension_reasons);

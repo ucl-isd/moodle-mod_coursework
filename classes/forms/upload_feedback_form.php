@@ -45,7 +45,7 @@ class upload_feedback_form extends moodleform {
         $mform->addElement('hidden', 'cmid', $this->cmid);
         $mform->setType('cmid', PARAM_RAW);
 
-        $options = array();
+        $options = [];
 
         if ($this->coursework->get_max_markers() > 1) {
 

@@ -64,7 +64,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         $selected = ($record = $DB->get_record_sql($sql))  ?   array($record->upperlimit => $record->upperlimit) : false;
         $checked = ($selected) ?   true : false;
 
-        $percentage_options = array();
+        $percentage_options = [];
 
         for ($i = 5;$i <= 100; $i = $i + 5) {
             $percentage_options[$i] = "{$i}";
@@ -232,7 +232,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                 }
 
             } else {
-                $auto_sample_set = array();
+                $auto_sample_set = [];
             }
 
         }

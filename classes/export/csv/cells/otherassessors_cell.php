@@ -57,7 +57,7 @@ class otherassessors_cell extends cell_base{
                 AND stage_identifier <> 'final_agreed_1'";
 
         $feedbacks = $DB->get_records_sql($sql, $params);
-        $gradedata = array();
+        $gradedata = [];
 
        // $stage_identifier = ($this->coursework->get_max_markers() == 1) ? "assessor_1" : $this->get_stage_identifier_for_assessor($submission, $student);
         foreach ($feedbacks as $feedback) {
@@ -132,7 +132,7 @@ class otherassessors_cell extends cell_base{
      */
     public function get_header($stage) {
 
-        $fields = array();
+        $fields = [];
 
         for ($i = 1; $i < $this->stages ; $i++) {
             if ($this->coursework->is_using_rubric()) {

@@ -62,7 +62,7 @@ $jsmodule = array(
         'node-base')
 );
 $PAGE->requires->js_init_call('M.mod_coursework.init_personal_deadlines_page',
-    array(),
+    [],
     false,
     $jsmodule);
 

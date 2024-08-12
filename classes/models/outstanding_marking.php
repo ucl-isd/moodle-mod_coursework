@@ -40,7 +40,7 @@ class outstanding_marking   {
 
         $coursework = new \mod_coursework\models\coursework($cwkrecord);
 
-        $initialsubmissions = array();
+        $initialsubmissions = [];
 
         if ($this->should_get_to_mark_initial_grade_info($coursework->id, $userid)) {
 
@@ -69,7 +69,7 @@ class outstanding_marking   {
 
         $coursework = new \mod_coursework\models\coursework($cwkrecord);
 
-        $agreedsubmissions = array();
+        $agreedsubmissions = [];
 
             //AGREED GRADE INFORMATION
 
@@ -94,7 +94,7 @@ class outstanding_marking   {
 
         global  $DB;
 
-        $sqlparams = array();
+        $sqlparams = [];
         $sqltable = "";
         $sqlextra = "";
 
@@ -156,7 +156,7 @@ class outstanding_marking   {
                                    GROUP BY a.allocatableid, a.csid, a.fid, a.id, a.count_feedback, a.courseworkid
                                    HAVING (count_feedback < $countsamples  )";
 
-        $sqlparams = array();
+        $sqlparams = [];
         $sqlparams['subassessorid'] = $userid;
         $sqlparams['subcourseworkid'] = $courseworkid;
         $sqlparams['courseworkid'] = $courseworkid;
@@ -175,7 +175,7 @@ class outstanding_marking   {
 
         global      $DB;
 
-        $sqlparams = array();
+        $sqlparams = [];
         $sqltable = '';
         $sqlextra = '';
 

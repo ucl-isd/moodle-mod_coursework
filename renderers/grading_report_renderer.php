@@ -193,7 +193,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     /**
      * @return string
      */
-    protected function start_table($options = array()) {
+    protected function start_table($options  = []) {
         $options['width'] = '100%';
         $options['class'] = (!empty($options['class'])) ? $options['class'] : '';
         $options['class'] .= ' submissions datatabletest display compact';
@@ -264,7 +264,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @return mixed
      */
     private function upper_header_names_and_colspans($cell_helpers) {
-        $headers = array();
+        $headers = [];
 
         foreach ($cell_helpers as $helper) {
             if (!array_key_exists($helper->header_group(), $headers)) {

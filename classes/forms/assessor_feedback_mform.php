@@ -134,7 +134,7 @@ class assessor_feedback_mform extends moodleform {
      */
     public function add_submit_buttons($draftenabled,  $feedbackid) {
 
-        $button_array = array();
+        $button_array = [];
 
         if ($draftenabled) {
             $button_array[] = $this->_form->createElement('submit', 'submitfeedbackbutton', get_string('saveasdraft', 'coursework'));

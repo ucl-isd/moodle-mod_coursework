@@ -52,7 +52,7 @@ class processor {
     /**
      * @param array $table_data
      */
-    public function process_data($table_data = array()) {
+    public function process_data($table_data  = []) {
         $clean_data = $this->clean_data($table_data);
         $allocatables = $this->coursework->get_allocatables();
 
@@ -60,7 +60,7 @@ class processor {
             if (array_key_exists($allocatable->id(), $clean_data)) {
                 $row_data = $clean_data[$allocatable->id()];
             } else {
-                $row_data = array();
+                $row_data = [];
             }
 
             $allocatable = $this->get_allocatable_from_id($allocatable->id());
@@ -101,14 +101,14 @@ class processor {
 // )
 // );
 
-        $clean_data = array();
+        $clean_data = [];
         foreach ($raw_data as $allocatable_id => $datarrays) {
 
             if (!$this->allocatable_id_is_valid($allocatable_id)) { // Should be the id of a student.
                 continue;
             }
 
-            $clean_data[$allocatable_id] = array();
+            $clean_data[$allocatable_id] = [];
 
             foreach ($this->coursework->marking_stages() as $stage) {
 

@@ -57,7 +57,7 @@ class assessorgrade_cell extends cell_base{
         if (($submission->get_agreed_grade() || ($feedback && $ability->can('show', $feedback))) || !$submission->any_editable_feedback_exists() || is_siteadmin($USER->id)) {
 
             if ($this->coursework->is_using_rubric()) {
-                $gradedata = array();
+                $gradedata = [];
                 $this->get_rubric_scores_gradedata($grade, $gradedata); // multiple parts are handled here
             } else{
                 $gradedata = (!$grade)? '': $this->get_actual_grade($grade->grade);
@@ -89,7 +89,7 @@ class assessorgrade_cell extends cell_base{
     public function get_header($stage) {
 
         if ($this->coursework->is_using_rubric() ) {
-            $strings = array();
+            $strings = [];
             $criterias = $this->coursework->get_rubric_criteria();
             foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
                 $strings['assessorgrade'.$stage.'_'.$criteria['id']] = 'Assessor '.$stage.' - '.$criteria['description'];
@@ -103,7 +103,7 @@ class assessorgrade_cell extends cell_base{
 
     }
 
-    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells = array()) {
+    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells  = []) {
         global $DB, $PAGE, $USER;
 
         if (empty($value)) return true;
@@ -296,7 +296,7 @@ class assessorgrade_cell extends cell_base{
 
         if ($coursework->is_using_rubric()) {
 
-            $rubricheaders = array();
+            $rubricheaders = [];
 
             $criterias = $coursework->get_rubric_criteria();
 

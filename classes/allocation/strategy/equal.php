@@ -86,7 +86,7 @@ class equal extends base {
      * @return mixed
      */
     protected function list_of_allocatable_teachers_and_their_current_number_of_allocations($teachers, $student) {
-        $teacherids = array();
+        $teacherids = [];
 
         foreach ($teachers as $id => $teacher) {
             if ($this->teacher_already_has_an_allocation_for_this_allocatable($student, $teacher)) {

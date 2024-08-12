@@ -91,7 +91,7 @@ class sampling_set_widget {
 
         $classes = $this->get_potential_rule_class_names();
 
-        $suffixes = array();
+        $suffixes = [];
         foreach ($classes as $shortname => $classname) {
 
             $label = get_string($shortname, 'mod_coursework');
@@ -114,10 +114,10 @@ class sampling_set_widget {
         $dirname = $CFG->dirroot.'/mod/coursework/classes/sample_set_rule/*.php';
         $files = glob($dirname);
 
-        $classes = array();
+        $classes = [];
         foreach ($files as $file) {
 
-            $matches = array(); // In case we have stuff left over.
+            $matches = []; // In case we have stuff left over.
             preg_match('/([^\/]+)\.php/', $file, $matches);
             /* @var models\moderation_set_rule $fullclassname */
             $rulename = $matches[1];

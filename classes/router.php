@@ -68,7 +68,7 @@ class router {
      * @throws \coding_exception
      * @return moodle_url|string url
      */
-    public function get_path($path_name, $items = array(), $as_url_object = false, $escaped = true) {
+    public function get_path($path_name, $items = [], $as_url_object = false, $escaped = true) {
 
         global $CFG;
 
@@ -263,7 +263,7 @@ class router {
             $auto_path = '/mod/coursework/actions/' . $this->pluralise($type) . '/' . $action . '.php';
             if (file_exists($CFG->dirroot . $auto_path)) {
 
-                $params = array();
+                $params = [];
                 if (array_key_exists($type, $items)) {
                     $params[$type.'id'] = $items[$type]->id;
                 } else if (array_key_exists('coursework', $items)) {

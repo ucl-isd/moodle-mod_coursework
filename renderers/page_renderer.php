@@ -576,7 +576,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html = '';
 
         // Grading report display options.
-        $report_options = array();
+        $report_options = [];
         $report_options['page'] = $page;
         $report_options['group'] = $group;
         $report_options['perpage'] = $perpage;
@@ -609,7 +609,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $pageurl = $PAGE->url;
         $params = $PAGE->url->params();
-        $links = array();
+        $links = [];
 
         // display 'Group mode' with the relevant groups
         $currenturl = new moodle_url('/mod/coursework/view.php', array('id' => $coursework->get_course_module()->id));
@@ -716,7 +716,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         if (has_capability('mod/coursework:viewallstudents', $PAGE->context)) {
 
-            $report_options = array();
+            $report_options = [];
             $report_options['page'] = $viewallstudents_page;
             $report_options['group'] = $group;
             $report_options['perpage'] = $viewallstudents_perpage;

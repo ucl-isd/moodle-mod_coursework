@@ -68,7 +68,7 @@ class personal_deadline_form extends \moodleform {
      * @return array
      */
     public function validation($data, $files) {
-        $errors = array();
+        $errors = [];
         if ($data['personal_deadline'] <= time()) {
             $errors['personal_deadline'] = 'The new deadline you chose has already passed. Please select appropriate deadline';
         }

@@ -299,7 +299,7 @@ class student_submission_form extends moodleform {
 
         $ability = new ability(user::find($USER), $this->get_coursework());
 
-        $button_array = array();
+        $button_array = [];
         // If submitting on behalf of someone else, we want to make sure that we don't have people leaving it in a draft
         // state because the reason for doing submit on behalf of in the first place is that the student cannot use the
         // interface themselves, so they are unable to come back later to finalise it themselves.
@@ -403,7 +403,7 @@ class student_submission_form extends moodleform {
      */
     protected function make_plagiarism_instructions() {
         $plagiarism_helpers = $this->get_coursework()->get_plagiarism_helpers();
-        $plagiarism_instructions = array();
+        $plagiarism_instructions = [];
         foreach ($plagiarism_helpers as $helper) {
             if ($helper->file_submission_instructions()) {
                 $plagiarism_instructions[] = $helper->file_submission_instructions();

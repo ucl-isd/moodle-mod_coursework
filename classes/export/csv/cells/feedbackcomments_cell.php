@@ -54,7 +54,7 @@ class feedbackcomments_cell extends cell_base {
         return  get_string('feedbackcomment', 'coursework');
     }
 
-    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells = array()) {
+    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells  = []) {
 
         global $PAGE, $DB, $USER;
 

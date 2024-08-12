@@ -86,13 +86,13 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
     public function range_elements($assessor_number, $sequence, $dbrecord=false) {
 
-        $percentage_options = array();
+        $percentage_options = [];
 
         for ($i = 0;$i < 110; $i = $i + 10) {
             $percentage_options[$i] = "{$i}";
         }
 
-        $scale = array();
+        $scale = [];
 
         if     ($this->coursework->grade > 0) {
             for ($i = 0;$i <=  $this->coursework->grade; $i++) {
@@ -284,7 +284,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                     $(samplefromid).find('option').remove();
                     $(sampletoid).find('option').remove();
 
-                    var selectValues = Array();
+                    var selectValues = [];
 
                     var type = PERCENT;
 
@@ -399,7 +399,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         global  $DB;
 
-        $limits = array();
+        $limits = [];
 
             $limits[0] = ($limit1>$limit2) ? $limit2 : $limit1;
             $limits[1] = ($limit1>$limit2) ? $limit1 : $limit2;

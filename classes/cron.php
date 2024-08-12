@@ -74,7 +74,7 @@ class cron {
             'users' => 0
         );
 
-        $userswhoneedreminding = array();
+        $userswhoneedreminding = [];
 
         $raw_courseworks = $DB->get_records('coursework');
         foreach ($raw_courseworks as $raw_coursework) {
@@ -278,7 +278,7 @@ class cron {
      * @global  $CFG
      * @return string
      */
-    public static function coursework_debuggable_query($query, $params = array()) {
+    public static function coursework_debuggable_query($query, $params  = []) {
 
         global $CFG;
 
@@ -310,7 +310,7 @@ class cron {
         global $DB;
 
         $emailcounter = 0;
-        $usercounter = array();
+        $usercounter = [];
 
         foreach ($users as $user) {
 

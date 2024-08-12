@@ -41,7 +41,7 @@ interface cell_interface {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options = array());
+    public function get_table_header($options  = []);
 
     /**
      * @return string

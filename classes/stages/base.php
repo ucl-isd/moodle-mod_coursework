@@ -300,7 +300,7 @@ abstract class base {
         // So check again
         if (empty($serialised_teachers) || empty(unserialize($serialised_teachers))) {
             $teachers = get_enrolled_users($this->coursework->get_context(), $this->assessor_capability());
-            $teacher_users = array();
+            $teacher_users = [];
             foreach ($teachers as $teacher) {
                 $teacher_users[] = user::build($teacher);
             }
@@ -832,7 +832,7 @@ abstract class base {
      */
     private function potential_markers_as_options_array() {
         $potentialmarkers = $this->get_teachers();
-        $options = array();
+        $options = [];
         foreach ($potentialmarkers as $marker) {
             $options[$marker->id] = $marker->name();
         }
@@ -845,7 +845,7 @@ abstract class base {
      */
     private function potential_moderators_as_options_array() {
         $potentialmoderators = get_enrolled_users($this->coursework->get_course_context(), 'mod/coursework:moderate');
-        $options = array();
+        $options = [];
         foreach ($potentialmoderators as $moderator) {
             $options[$moderator->id] = fullname($moderator);
         }

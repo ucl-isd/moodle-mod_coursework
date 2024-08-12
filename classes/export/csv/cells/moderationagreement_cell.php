@@ -38,7 +38,7 @@ class moderationagreement_cell extends cell_base {
     public function get_cell($submission, $student, $stage_identifier) {
         global $DB;
 
-        $data = array();
+        $data = [];
         $moderation_agreement = '';
         $moderation = '';
 
@@ -78,7 +78,7 @@ class moderationagreement_cell extends cell_base {
      */
     public function get_header($stage) {
 
-        $fields = array();
+        $fields = [];
         if ($this->coursework->allocation_enabled()) {
             $fields['allocatedmoderatorname'] = 'Allocated moderator name';
             $fields['allocatedmoderatorusername'] = 'Allocated moderator username';

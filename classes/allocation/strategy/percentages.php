@@ -139,7 +139,7 @@ class percentages extends base {
 
         // Get the data from the form.
         $name = $this->get_name();
-        $data = optional_param_array('assessorstrategy'.$name, array(), PARAM_RAW); // Array[teacherid] => value.
+        $data = optional_param_array('assessorstrategy'.$name, [], PARAM_RAW); // Array[teacherid] => value.
 
         if (!is_array($data)) {
             return true;
@@ -244,7 +244,7 @@ class percentages extends base {
      * @return array
      */
     protected function list_of_allocatable_teachers_and_their_current_number_of_allocations($teachers, $student) {
-        $teacherids = array();
+        $teacherids = [];
         foreach ($teachers as $teacher) {
 
             if ($this->teacher_already_has_an_allocation_for_this_allocatable($student, $teacher)) {

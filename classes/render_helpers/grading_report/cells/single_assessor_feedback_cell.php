@@ -140,7 +140,7 @@ class single_assessor_feedback_cell extends cell_base {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options = array()) {
+    public function get_table_header($options  = []) {
         return get_string('feedbackandgrading', 'coursework');
     }
 

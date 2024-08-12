@@ -47,7 +47,7 @@ class advance_plugins_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('editor', 'text_element', get_string('comment', 'mod_coursework'), array());
+        $mform->addElement('editor', 'text_element', get_string('comment', 'mod_coursework'), []);
         $mform->setType('editor', PARAM_RAW);
 
         $file_manager_options = array(

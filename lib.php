@@ -49,7 +49,7 @@ require_once($CFG->dirroot.'/mod/coursework/renderable.php');
  * @return array
  */
 function coursework_get_file_areas($course, $cm, $context) {
-    $areas = array();
+    $areas = [];
 
     if (has_capability('mod/coursework:submit', $context)) {
         $areas['submission'] = get_string('submissionfiles', 'coursework');
@@ -949,7 +949,7 @@ function coursework_get_coursework_ids_from_context_id($contextid) {
 
     global $DB;
 
-    $courseworkids = array();
+    $courseworkids = [];
 
     // Is this a coursework?
     $context = context::instance_by_id($contextid);
@@ -999,7 +999,7 @@ function coursework_seconds_to_string($seconds) {
                    get_string('seconds', 'mod_coursework'))
     );
 
-    $result = array();
+    $result = [];
     foreach ($units as $divisor => $unitame) {
         $units = intval($seconds / $divisor);
         if ($units) {
@@ -1112,7 +1112,7 @@ function coursework_send_deadline_changed_emails($eventdata) {
         // - Link to get to the view.php page.
         // - Change since last time.
 
-        $deadlinechangedmessage = array();
+        $deadlinechangedmessage = [];
 
         $strings = new stdClass();
         $strings->courseworkname = $coursework->name;
@@ -1170,7 +1170,7 @@ function coursework_plugin_exists($plugintype, $pluginname) {
  */
 function coursework_records_to_menu($records, $field1, $field2) {
 
-    $menu = array();
+    $menu = [];
 
     if (!empty($records)) {
         foreach ($records as $record) {

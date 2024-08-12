@@ -113,7 +113,7 @@ abstract class table_base {
      * @return array
      * @throws \coding_exception
      */
-    public static function find_all($params = array()) {
+    public static function find_all($params  = []) {
 
         if (!is_array($params)) {
             throw new \coding_exception('::all() require an array of parameters');
@@ -182,7 +182,7 @@ abstract class table_base {
         global $DB;
 
         $raw_records = $DB->get_records(static::get_table_name(), $params);
-        $objects = array();
+        $objects = [];
         $klass = get_called_class();
         foreach ($raw_records as $raw_record) {
             $objects[$raw_record->id] = new $klass($raw_record);
@@ -513,7 +513,7 @@ abstract class table_base {
      * @param array|table_base $conditions key value pairs of DB columns
      * @return bool
      */
-    public static function exists($conditions = array()) {
+    public static function exists($conditions  = []) {
         global $DB;
 
         if (is_number($conditions)) {
@@ -533,7 +533,7 @@ abstract class table_base {
      * @param array $conditions
      * @return int
      */
-    public static function count($conditions = array()) {
+    public static function count($conditions  = []) {
         global $DB;
 
         foreach ($conditions as $colname => $value) {
@@ -597,7 +597,7 @@ abstract class table_base {
      * @return array
      */
     public function to_array() {
-        $data = array();
+        $data = [];
 
         // Only save the non-null fields.
         foreach (static::get_column_names() as $column_name) {

@@ -69,7 +69,7 @@ class builder {
     public function get_rows() {
         $allocatables = $this->get_coursework()->get_allocatables();
 
-        $rows = array();
+        $rows = [];
         foreach ($allocatables as $allocatable) {
             $rows[] = new row_builder($this, $allocatable);
         }
@@ -106,7 +106,7 @@ class builder {
 
         $allocatables = $this->get_coursework()->get_allocatables();
 
-        $rows = array();
+        $rows = [];
         foreach ($allocatables as $allocatable) {
             $rows[] = new row_builder($this, $allocatable);
         }

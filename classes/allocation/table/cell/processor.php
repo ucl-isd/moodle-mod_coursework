@@ -56,7 +56,7 @@ class processor {
      * @param stage_base $stage
      * @param array $data_array incoming data from the allocation form
      */
-    public function __construct($coursework, $allocatable, $stage, $data_array = array()) {
+    public function __construct($coursework, $allocatable, $stage, $data_array  = []) {
         $this->coursework = $coursework;
         $this->allocatable = $allocatable;
         $this->stage = $stage;

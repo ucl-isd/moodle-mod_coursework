@@ -73,7 +73,7 @@ class import extends grading_sheet{
 
         $csvreader->init();
 
-        $errors = array();
+        $errors = [];
         $s = 0;
 
         $submissions = $this->get_submissions();
@@ -95,7 +95,7 @@ class import extends grading_sheet{
             $offset = 0;
 
             // Holds details on grades that have been successfully uploaded for the current line
-            $uploadedgradecells = array();
+            $uploadedgradecells = [];
 
             for ($z = 0; $z < count($line); $z++) {
 
@@ -179,7 +179,7 @@ class import extends grading_sheet{
 
                     if (strpos($ch, $type) !== false) {
 
-                        if (empty($typepositions))   $typepositions = array();
+                        if (empty($typepositions))   $typepositions = [];
 
                         $typefound = true;
                         $typepositions[] = $i;
@@ -301,7 +301,7 @@ class import extends grading_sheet{
             $cells = $csv;
             $i = 0;
 
-            $csvline = array();
+            $csvline = [];
 
             //if ((!$this->coursework->is_using_rubric() && sizeof($line) != sizeof($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($csv, $line))) {
             //if (sizeof($line) != sizeof($cells)) {
@@ -333,7 +333,7 @@ class import extends grading_sheet{
 
             $coursework = $submission->get_coursework();
 
-            $stages = array();
+            $stages = [];
 
             if (!$coursework->has_multiple_markers()) {
                 $stages['singlegrade'] = $this->get_stage_identifier($csvline['submissionid'], 'singlegrade');
@@ -400,8 +400,8 @@ class import extends grading_sheet{
                 if ($coursework->is_using_rubric() && !($stage == 'final_agreed_1' && $this->coursework->finalstagegrading == 1)) {
 
                         //array that will hold the advanced grade data
-                        $criteriagradedata = array();
-                        $criteriagradedata['criteria'] = array();
+                        $criteriagradedata = [];
+                        $criteriagradedata['criteria'] = [];
 
                         $criterias = $this->coursework->get_rubric_criteria();
 
@@ -444,7 +444,7 @@ class import extends grading_sheet{
                             $critidx = 0;
                             // This assumes that the data in the csv is in the correct criteria order.....it should be
                             foreach ($criterias as $c) {
-                                $criteriagrade = array();
+                                $criteriagrade = [];
 
                                 // We need to get the levelid for the value that the criteria has been given
 

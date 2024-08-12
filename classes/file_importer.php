@@ -100,11 +100,11 @@ class coursework_file_zip_importer    {
 
         @set_time_limit(ASSIGNFEEDBACK_FILE_MAXFILEUNZIPTIME);
 
-        $results = array();
+        $results = [];
 
         $feedbackfilesupdated = 0;
         $feedbackfilesadded = 0;
-        $userswithnewfeedback = array();
+        $userswithnewfeedback = [];
         $contextid = $coursework->get_context_id();
 
         $fs = get_file_storage();

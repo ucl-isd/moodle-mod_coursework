@@ -39,7 +39,7 @@ abstract class cell_base implements cell_interface {
     /**
      * @param array $items
      */
-    public function __construct($items = array()) {
+    public function __construct($items  = []) {
         $this->coursework = $items['coursework'];
         $this->after_initialisation($items);
     }

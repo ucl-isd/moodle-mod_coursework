@@ -46,7 +46,7 @@ class submissionfileid_cell extends cell_base {
         return  get_string('submissionfileid', 'coursework');
     }
 
-    public function validate_cell($value, $submissionid, $stage_dentifier='', $uploadedgradecells = array()) {
+    public function validate_cell($value, $submissionid, $stage_dentifier='', $uploadedgradecells  = []) {
         global $DB;
 
         if (empty($value)) {

@@ -86,7 +86,7 @@ class group extends table_base implements allocatable, moderatable {
         $info = new \core_availability\info_module(\cm_info::create($cm));
         $members = $info->filter_user_list($members);
 
-        $member_objects = array();
+        $member_objects = [];
         foreach ($members as $member) {
             // check is member has capability to submit in this coursework (to get rid of assessors if they are placed in the group)
             if (has_capability('mod/coursework:submit', $context, $member)) {

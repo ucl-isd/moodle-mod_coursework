@@ -45,7 +45,7 @@ $allocatenonallocatedbutton = optional_param('auto-allocate-non-allocated', 0, P
 $assessorallocationstrategy = optional_param('assessorallocationstrategy', false, PARAM_TEXT);
 
 $moderationruletype = optional_param('addmodsetruletype', 0, PARAM_ALPHAEXT);
-$deletemodsetrule = optional_param('delete-mod-set-rule', array(), PARAM_RAW) ;
+$deletemodsetrule = optional_param('delete-mod-set-rule', [], PARAM_RAW) ;
 
 // options used for pagination
 // If a session variable holding page preference for the specific coursework is not set, set default value (0).
@@ -76,7 +76,7 @@ $sorthow = optional_param('sorthow', '', PARAM_ALPHA);
 $options = compact('sortby', 'sorthow', 'perpage', 'page');
 
 // $_POST['allocatables'] comes as array of arrays which is not supported by optional_param_array, however we clean this later in process_data() function
-$formdataarray = isset($_POST['allocatables']) ? $_POST['allocatables'] : array();
+$formdataarray = isset($_POST['allocatables']) ? $_POST['allocatables'] : = [];
 
 require_login($course, true, $coursemodule);
 

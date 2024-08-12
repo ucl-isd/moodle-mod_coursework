@@ -54,7 +54,7 @@ class mod_coursework_mod_form extends moodleform_mod {
                 'ajax'
             ));
 
-        $PAGE->requires->js_init_call('M.mod_coursework.init', array(), true, $module);
+        $PAGE->requires->js_init_call('M.mod_coursework.init', [], true, $module);
 
         $this->set_form_attributes();
 
@@ -189,7 +189,7 @@ class mod_coursework_mod_form extends moodleform_mod {
      */
     public function validation($data, $files) {
 
-        $errors = array();
+        $errors = [];
 
        if ($data['startdate'] != 0 && !empty($data['deadline']) && $data['startdate'] > $data['deadline']) {
            $errors['startdate'] = get_string('must_be_before_dealdine', 'mod_coursework');
@@ -368,7 +368,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $options = array(0 => get_string('no'), 1 => get_string('yes'));
 
         $courseworkid = $this->get_coursework_id();
-        $disabled = array();
+        $disabled = [];
         if (coursework_personal_deadline_passed($courseworkid)) {
             $moodle_form->disabledif('personaldeadlineenabled', 'deadline[enabled]', 'notchecked');
             $disabled = array('disabled' => true);
@@ -656,7 +656,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodle_form =& $this->_form;
 
         $groups_options_result = $DB->get_records('groupings', array('courseid' => $COURSE->id), 'name', 'id, name');
-        $groups_options = array();
+        $groups_options = [];
         if ($groups_options_result !== false) {
             foreach ($groups_options_result as $result) {
                 $groups_options[$result->id] = $result->name;
@@ -892,7 +892,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $options = mod_coursework\allocation\manager::get_allocation_classnames();
 
-        $radioarray = array();
+        $radioarray = [];
         $keys = array_keys($options);
 
         foreach ($keys as $key) {
@@ -1277,7 +1277,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodle_form =& $this->_form;
 
-        $selectableusers = array();
+        $selectableusers = [];
 
         // capability for user allowed to receive submission notifications
         $enrolledusers = get_enrolled_users(context_course::instance($COURSE->id), 'mod/coursework:receivesubmissionnotifications');

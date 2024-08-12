@@ -163,7 +163,7 @@ class table_processor_test extends advanced_testcase {
 
     public function test_that_missing_columns_dont_mess_it_up() {
         $processor = new processor($this->coursework);
-        $processor->process_data(array($this->student->id => array()));
+        $processor->process_data(array($this->student->id => []));
     }
 
     public function test_that_missing_rows_dont_mess_it_up() {

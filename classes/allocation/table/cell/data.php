@@ -50,7 +50,7 @@ class data {
      * @param stage_base $stage
      * @param array $data
      */
-    public function __construct($stage, $data = array()) {
+    public function __construct($stage, $data  = []) {
         $this->data = $data;
         $this->stage = $stage;
         $this->preprocess_data();

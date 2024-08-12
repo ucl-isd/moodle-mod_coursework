@@ -351,7 +351,7 @@ class grading_report {
             $participants = $this->coursework->get_allocatables();
 
             // Make tablerow objects so we can use the methods to check permissions and set things.
-            $rows = array();
+            $rows = [];
             $row_class = $this->coursework->has_multiple_markers() ? 'mod_coursework\grading_table_row_multi' : 'mod_coursework\grading_table_row_single';
             $ability = new ability(user::find($USER, false), $this->get_coursework());
 

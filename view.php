@@ -47,7 +47,7 @@ $jsmodule = array(
     'fullpath' => '/mod/coursework/module.js',
     'requires' => array('base',
                         'node-base'),
-    'strings' => array()
+    'strings' => []
 );
 
 $PAGE->requires->yui_module('moodle-core-notification', 'notification_init');

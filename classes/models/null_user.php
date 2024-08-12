@@ -84,7 +84,7 @@ class null_user implements \mod_coursework\allocation\allocatable {
      * @return feedback[]
      */
     public function get_initial_feedbacks($coursework) {
-        return array();
+        return = [];
     }
 
     /**

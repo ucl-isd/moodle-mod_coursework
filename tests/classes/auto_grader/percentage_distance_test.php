@@ -137,7 +137,7 @@ class percentage_distance_test extends \advanced_testcase {
 
         $object->create_auto_grade_if_rules_match($user);
 
-        $created_feedback = $DB->get_record('coursework_feedbacks', array());
+        $created_feedback = $DB->get_record('coursework_feedbacks', []);
 
         $this->assertEquals($created_feedback->grade, 55); // Right grade
         $this->assertEquals($created_feedback->submissionid, 234234); // Right submission

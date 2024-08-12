@@ -55,7 +55,7 @@ class grade_for_gradebook_cell extends cell_base {
      * @throws coding_exception
      * @return string
      */
-    public function get_table_header($options = array()) {
+    public function get_table_header($options  = []) {
         return get_string('provisionalgrade', 'mod_coursework');
     }
 

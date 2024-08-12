@@ -26,20 +26,20 @@ global $SESSION;
 
 $assesorselect = required_param_array('assesorselect', PARAM_RAW);
 $assesorselectvalue = required_param_array('assesorselectvalue', PARAM_RAW);
-$pinnedchk = optional_param_array('pinned', array(), PARAM_RAW);
-$pinnedchkval = optional_param_array('pinnedvalue', array(), PARAM_RAW);
-$moderatorselect = optional_param_array('moderatorselect', array(), PARAM_RAW);
-$moderatorselectvalue = optional_param_array('moderatorselectvalue', array(), PARAM_RAW);
-$samplechk = optional_param_array('sample', array(), PARAM_RAW);
-$samplechkvalue = optional_param_array('samplevalue', array(), PARAM_RAW);
+$pinnedchk = optional_param_array('pinned', [], PARAM_RAW);
+$pinnedchkval = optional_param_array('pinnedvalue', [], PARAM_RAW);
+$moderatorselect = optional_param_array('moderatorselect', [], PARAM_RAW);
+$moderatorselectvalue = optional_param_array('moderatorselectvalue', [], PARAM_RAW);
+$samplechk = optional_param_array('sample', [], PARAM_RAW);
+$samplechkvalue = optional_param_array('samplevalue', [], PARAM_RAW);
 $coursemoduleid = required_param('coursemoduleid', PARAM_INT);
 
 if (!isset($SESSION->coursework_allocationsessions)) {
-    $SESSION->coursework_allocationsessions = array();
+    $SESSION->coursework_allocationsessions = [];
 }
 
 if (!isset($SESSION->coursework_allocationsessions[$coursemoduleid])) {
-    $SESSION->coursework_allocationsessions[$coursemoduleid] = array();
+    $SESSION->coursework_allocationsessions[$coursemoduleid] = [];
 }
 
 for ($i = 0; $i < count($assesorselect); $i++) {

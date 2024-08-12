@@ -117,7 +117,7 @@ class feedback_controller extends controller_base {
 
         $this->check_stage_permissions($this->params['stage_identifier']);
 
-        $urlparams = array();
+        $urlparams = [];
         $urlparams['submissionid'] = $teacherfeedback->submissionid;
         $urlparams['assessorid'] = $teacherfeedback->assessorid;
         $urlparams['isfinalgrade'] = $teacherfeedback->isfinalgrade;

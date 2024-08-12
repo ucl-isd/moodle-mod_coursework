@@ -74,7 +74,7 @@ class user_cell extends cell_base implements allocatable_cell {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options = array()) {
+    public function get_table_header($options  = []) {
 
        $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->coursework->get_context());
 

@@ -90,7 +90,7 @@ class deadline_extension_form extends \moodleform {
             $deadline = $this->get_coursework()->deadline;
         }
 
-        $errors = array();
+        $errors = [];
         if ($data['extended_deadline'] <= $deadline) {
             $errors['extended_deadline'] = 'The new deadline must be later than the current deadline';
         }

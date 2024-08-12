@@ -30,7 +30,7 @@ class assessable_uploaded extends \core\event\assessable_uploaded {
      *
      * @var array
      */
-    protected $legacyfiles = array();
+    protected $legacyfiles = [];
 
     /**
      * Returns description of what happened.

@@ -56,7 +56,7 @@ class grading_sheet extends csv{
              * @var submission[] $submissions
              */
            foreach ($submissions as $submission) {
-               $stage_identifiers = array();
+               $stage_identifiers = [];
                // remove all submissions that a user is not supposed to see
 
                // double marking not allocated
@@ -122,7 +122,7 @@ class grading_sheet extends csv{
      */
     public function add_csv_data($submission) {
 
-        $csv_data = array();
+        $csv_data = [];
         // groups
         if ($this->coursework->is_configured_to_have_group_submissions()) {
             $group = \mod_coursework\models\group::find($submission->allocatableid);

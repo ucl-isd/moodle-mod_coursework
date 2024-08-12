@@ -35,7 +35,7 @@ $courseworkid = required_param('courseworkid', PARAM_INT);
 $unallocated = optional_param('unallocated', false, PARAM_BOOL);
 
 // Grading report display options.
-$report_options = array();
+$report_options = [];
 if ($unallocated) {
     $report_options['unallocated'] = true;
 }

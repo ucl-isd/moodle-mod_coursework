@@ -33,7 +33,7 @@ class restore_coursework_activity_task extends restore_activity_task
      * @return array of restore_decode_rule
      */
     static public function define_decode_rules() {
-        $rules = array();
+        $rules = [];
 
         $rules[] = new restore_decode_rule('COURSEWORKBYID',
                                            '/mod/coursework/view.php?id=$1',
@@ -53,7 +53,7 @@ class restore_coursework_activity_task extends restore_activity_task
      * @return array
      */
     static public function define_decode_contents() {
-        $contents = array();
+        $contents = [];
 
         $contents[] = new restore_decode_content('coursework', array('intro'), 'assign');
 

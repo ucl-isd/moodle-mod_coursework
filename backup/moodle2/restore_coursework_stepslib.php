@@ -39,7 +39,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
      * @return restore_path_element $structure
      */
     protected function define_structure() {
-        $paths = array();
+        $paths = [];
 
         $paths[] = new restore_path_element('coursework', '/activity/coursework');
         $paths[] = new restore_path_element('coursework_sample_set_rule', '/activity/coursework/coursework_sample_set_rules/coursework_sample_set_rule');

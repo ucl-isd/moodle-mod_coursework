@@ -78,7 +78,7 @@ class csv {
         $this->csvexport = new csv_export_writer();
         $this->add_filename($this->filename);
 
-        $csv_data = array();
+        $csv_data = [];
         // headers
         $this->add_headers($this->csv_cells);
 
@@ -111,7 +111,7 @@ class csv {
      * @return array
      */
     public function add_cells_to_array($submission, $student, $csv_cells) {
-        $row = array();
+        $row = [];
         foreach ($csv_cells as $csv_cell) {
             if (substr($csv_cell, 0, 8) == 'assessor') {
                 $stage_dentifier = 'assessor_'.(substr($csv_cell, -1));
@@ -148,7 +148,7 @@ class csv {
      * @param $csv_headers
      */
         public function add_headers($csv_headers) {
-            $headers = array();
+            $headers = [];
             foreach ($csv_headers as $header) {
                 if (substr($header, 0, 8) == 'assessor') {
                     $stage = (substr($header, -1));
@@ -241,7 +241,7 @@ class csv {
      */
     public function add_csv_data($submission) {
 
-        $csv_data = array();
+        $csv_data = [];
         // retrieve all students (even if group coursework)
         $students = $submission->get_students();
 

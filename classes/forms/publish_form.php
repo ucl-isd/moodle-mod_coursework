@@ -44,7 +44,7 @@ class publish_form extends moodleform {
         $this->_form->addElement('hidden', 'id', $this->_customdata['cmid']);
         $this->_form->setType('id', PARAM_INT);
 
-        $attributes = array();
+        $attributes = [];
         $explaintext = false;
         $should_release = true;
 

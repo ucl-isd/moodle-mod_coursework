@@ -103,7 +103,7 @@ function xmldb_coursework_upgrade($oldversion) {
         // Alter the comments and write them to the DB.
         foreach ($olddata as $datarow) {
             $oldcomment = unserialize($datarow->feedbackcomment);
-            $newcomment = array();
+            $newcomment = [];
             if ($oldcomment) { // Some were blank - probably an earlier experiment.
                 foreach ($oldcomment as $componentarray) {
                     $newcomment[] = $componentarray['id'];
@@ -126,7 +126,7 @@ function xmldb_coursework_upgrade($oldversion) {
         // Will have to subtract component values from the string one at a time, recording their
         // ids if we find the value.
         foreach ($olddata as $datarow) {
-            $newcomment = array();
+            $newcomment = [];
             $oldcomment = $datarow->feedbackcomment; // Comma separated, with lots of extra commas.
             $components = $DB->get_records('coursework_form_component',
                                            array('fieldid' => $datarow->fieldid));
@@ -2043,7 +2043,7 @@ function xmldb_coursework_upgrade($oldversion) {
                              'coursework_sample_set_mbrs');
 
     if ($oldversion < 2015110303) {
-        $fields = array();
+        $fields = [];
         //Add fields to assist backup annotation
         $fielduser = new xmldb_field('allocatableuser', XMLDB_TYPE_INTEGER, '10', true, XMLDB_NOTNULL, null, '0', 'allocatabletype');
         $fieldgroup = new xmldb_field('allocatablegroup', XMLDB_TYPE_INTEGER, '10', true, XMLDB_NOTNULL, null, '0', 'allocatableuser');
@@ -2066,7 +2066,7 @@ function xmldb_coursework_upgrade($oldversion) {
     }
 
     if ($oldversion < 2015121401) {
-        $fields = array();
+        $fields = [];
         //Add fields to assist backup annotation
         $fieldeditingtime = new xmldb_field('gradeeditingtime', XMLDB_TYPE_INTEGER, '10', true, XMLDB_NOTNULL, null, '0', null);
 
@@ -2096,7 +2096,7 @@ function xmldb_coursework_upgrade($oldversion) {
     }
 
     if ($oldversion < 2016110100) {
-        $fields = array();
+        $fields = [];
         //Add fields to hold marking deadline enabled
         $upgradefield = new xmldb_field('markingdeadlineenabled', XMLDB_TYPE_INTEGER, '1', true, XMLDB_NOTNULL, null, '0', null);
 
@@ -2112,7 +2112,7 @@ function xmldb_coursework_upgrade($oldversion) {
     }
 
     if ($oldversion < 2016110101) {
-        $fields = array();
+        $fields = [];
         //Add fields to hold intial marking deadline
         $upgradefield = new xmldb_field('initialmarkingdeadline', XMLDB_TYPE_INTEGER, '10', true, XMLDB_NOTNULL, null, '0', null);
 
@@ -2139,7 +2139,7 @@ function xmldb_coursework_upgrade($oldversion) {
     }
 
     if ($oldversion < 2016110102) {
-        $fields = array();
+        $fields = [];
         //Add fields to hold intial marking deadline
         $upgradefield = new xmldb_field('markingreminderenabled', XMLDB_TYPE_INTEGER, '1', true, XMLDB_NOTNULL, null, '0', null);
 

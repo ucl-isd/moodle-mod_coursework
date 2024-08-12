@@ -44,7 +44,7 @@ abstract class files implements countable {
     /**
      * @param array $files
      */
-    public function __construct($files = array()) {
+    public function __construct($files  = []) {
         $this->files = $files;
     }
 
