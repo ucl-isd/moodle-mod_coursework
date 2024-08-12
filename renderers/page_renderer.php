@@ -94,7 +94,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $html = '';
 
-        $gradedby = ($teacher_feedback->assessorid == 0) ?  get_string('automaticagreement', 'mod_coursework') : fullname($assessor);
+        $gradedby = ($teacher_feedback->assessorid == 0) ? get_string('automaticagreement', 'mod_coursework') : fullname($assessor);
         $lasteditedby = ((!$teacher_feedback->get_coursework()->sampling_enabled() || $teacher_feedback->get_submission()->sampled_feedback_exists())
             && $teacher_feedback->assessorid == 0 && $teacher_feedback->timecreated == $teacher_feedback->timemodified )
             ? get_string('automaticagreement', 'mod_coursework') : fullname($editor);

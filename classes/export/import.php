@@ -154,7 +154,7 @@ class import extends grading_sheet {
             $s++;
         }
 
-        return (!empty($errors)) ?  $errors : false;
+        return (!empty($errors)) ? $errors : false;
     }
 
     function rubric_count_correct($csvheader, $linefromimportedcsv) {
@@ -518,7 +518,7 @@ class import extends grading_sheet {
             $s++;
         }
 
-        return (!empty($errors)) ?  $errors : false;
+        return (!empty($errors)) ? $errors : false;
 
     }
 
@@ -806,7 +806,7 @@ class import extends grading_sheet {
 
                 $criterias = $this->coursework->get_rubric_criteria();
 
-                $startposition = $singlegradeposition+ ((count($criterias) *2) + 1);
+                $startposition = $singlegradeposition+ ((count($criterias) * 2) + 1);
 
             } else {
                 $startposition = array_search('otherassessors', $csv_cells);

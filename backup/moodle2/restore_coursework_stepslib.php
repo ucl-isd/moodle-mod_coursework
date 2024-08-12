@@ -466,8 +466,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
     }
 
     protected function check_grade($field, &$data) {
-        if ($data->$field < 0) // Scale found, get mapping.
-        {
+        if ($data->$field < 0) { // Scale found, get mapping.
             $data->$field = -($this->get_mappingid('scale', abs($data->$field)));
         }
     }

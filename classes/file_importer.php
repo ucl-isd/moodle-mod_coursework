@@ -28,7 +28,7 @@ use mod_coursework\export;
 
 defined('MOODLE_INTERNAL') || die();
 
-class coursework_file_zip_importer    {
+class coursework_file_zip_importer {
 
     public function extract_zip_file($filename, $contextid) {
 

@@ -31,7 +31,7 @@ global $CFG;
 
 require_once($CFG->dirroot.'/lib/formslib.php');
 
-class view_all_students_mform extends moodleform    {
+class view_all_students_mform extends moodleform {
 
     function definition() {
 

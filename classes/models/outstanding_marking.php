@@ -22,7 +22,7 @@
 
 namespace mod_coursework\models;
 
-class outstanding_marking   {
+class outstanding_marking {
 
     private $day_in_secs;
 
@@ -57,7 +57,7 @@ class outstanding_marking   {
             }
         }
 
-        return  (!empty($initialsubmissions)) ?  count($initialsubmissions) : 0;
+        return  (!empty($initialsubmissions)) ? count($initialsubmissions) : 0;
     }
 
     /**
