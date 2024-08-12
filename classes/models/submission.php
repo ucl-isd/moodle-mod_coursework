@@ -773,7 +773,7 @@ class submission extends table_base implements \renderable {
         // the author is the first member of the group
 
             if ($this->is_submission_on_behalf()) {
-                if ( $this->get_coursework()->is_configured_to_have_group_submissions())   {
+                if ( $this->get_coursework()->is_configured_to_have_group_submissions()) {
                     $members = groups_get_members($this->allocatableid, 'u.id', 'id');
                     if ($members) {
                         $id = reset($members)->id;
@@ -797,7 +797,7 @@ class submission extends table_base implements \renderable {
      * @param $groupid
      * @return array
      */
-        public function get_tii_group_member_with_eula($groupid)   {
+        public function get_tii_group_member_with_eula($groupid) {
 
         global  $DB;
 
@@ -914,7 +914,7 @@ class submission extends table_base implements \renderable {
         return $this->get_state() >= submission::FULLY_GRADED;
     }
 
-    public function is_finalised()  {
+    public function is_finalised() {
         return $this->get_state() == submission::FINALISED;
     }
 
@@ -1422,7 +1422,7 @@ class submission extends table_base implements \renderable {
 /*
  * Determines whether the current user is able to add a turnitin grademark to this submission
  */
-    function can_add_tii_grademark()    {
+    function can_add_tii_grademark() {
         $canadd = false;
 
         if ($this->get_coursework()->get_max_markers() == 1) {
@@ -1462,7 +1462,7 @@ class submission extends table_base implements \renderable {
     }
 
 
-    function can_be_unfinalised()   {
+    function can_be_unfinalised() {
         return  ($this->get_state() == submission::FINALISED);
     }
 

@@ -43,11 +43,11 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
     }
 
 
-    public function get_numeric_boundaries()    {
+    public function get_numeric_boundaries() {
 
     }
 
-    public function get_default_rule_order()    {
+    public function get_default_rule_order() {
 
     }
 
@@ -70,7 +70,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         $percentage_options = array();
 
-        for($i = 5;$i <= 100; $i = $i + 5)   {
+        for($i = 5;$i <= 100; $i = $i + 5) {
             $percentage_options[$i] = "{$i}";
         }
 
@@ -108,7 +108,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                    $(sampletotal).attr('disabled',disabled);
 
 
-                    $(element).on('change',function()   {
+                    $(element).on('change',function() {
                         var ele_id = $(this).attr('id').split('_');
                         var sampletotal = '#'+ele_id[0]+'_'+ele_id[1]+'_sampletotal';
                         var disabled = !$(this).prop('checked');
@@ -170,7 +170,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         $rule = $DB->get_record_sql($sql,array('courseworkid' => $this->coursework->id,'stage' => $stage));
 
-        if ($rule)  {
+        if ($rule) {
 
             $finalised = $this->finalised_submissions();
             $published = $this->released_submissions();

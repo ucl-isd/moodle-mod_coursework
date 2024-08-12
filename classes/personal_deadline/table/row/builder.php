@@ -200,7 +200,7 @@ class builder implements user_row {
     }
 
 
-    public  function get_submission_status()    {
+    public  function get_submission_status() {
         global  $DB;
 
         $submission_db = $DB->get_record('coursework_submissions',
@@ -212,7 +212,7 @@ class builder implements user_row {
 
         $statustext = get_string('statusnotsubmitted','mod_coursework');
 
-        if (!empty($submission) && $submission->is_finalised())   {
+        if (!empty($submission) && $submission->is_finalised()) {
             $statustext = get_string('finalisedsubmission','mod_coursework');
         } else if (!empty($submission)) {
             $statustext = $submission->get_status_text();

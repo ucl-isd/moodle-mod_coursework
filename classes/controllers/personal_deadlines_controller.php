@@ -80,7 +80,7 @@ class personal_deadlines_controller extends controller_base{
 
             $data = $this->form->get_data();
 
-            if  (empty($data->multipleuserdeadlines)  )  {
+            if  (empty($data->multipleuserdeadlines)  ) {
                 if (!$this->get_personal_deadline()) { // personal deadline doesnt exist
                     // add new
                     $data->createdbyid = $USER->id;
@@ -98,7 +98,7 @@ class personal_deadlines_controller extends controller_base{
 
                     $allocatables = unserialize($data->allocatableid);
 
-                    foreach($allocatables   as  $allocatableid)   {
+                    foreach($allocatables   as  $allocatableid) {
                         $data->allocatableid = $allocatableid;
                         $data->id = '';
                         //$data->id = '';
@@ -141,7 +141,7 @@ class personal_deadlines_controller extends controller_base{
      * Set the deadline to default coursework deadline if the personal deadline was never given before
      * @return array
      */
-    protected function set_default_current_deadline()    {
+    protected function set_default_current_deadline() {
         $params = array(
             'allocatableid' => $this->params['allocatableid'],
             'allocatabletype' => $this->params['allocatabletype'],

@@ -65,7 +65,7 @@ if ($allocationsuploadform->is_cancelled()) {
 
 
 
-if ($data = $allocationsuploadform->get_data())   {
+if ($data = $allocationsuploadform->get_data()) {
 
     //perform checks on data
 

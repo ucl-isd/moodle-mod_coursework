@@ -97,7 +97,7 @@ class upload {
             foreach ($line as $keynum => $value) {
 
                 // validate allocatable (user or group)
-                if ($cells[$keynum] == 'allocatable')   {
+                if ($cells[$keynum] == 'allocatable') {
                     // check if allocatable exists in the file
                     if (empty($value)){$errors[$s] = get_string($allocatabletype .'namemissing', 'coursework'); break;}
 
@@ -211,7 +211,7 @@ class upload {
                 // or update it
 
                 // get allocatable
-                if ($cells[$keynum] == 'allocatable')   {
+                if ($cells[$keynum] == 'allocatable') {
                     if ($allocatabletype == 'user'){
                         // get user id
                         $suballocatable = $DB->get_record('user', array($assessor_identifier=> $value));

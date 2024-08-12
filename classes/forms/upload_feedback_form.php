@@ -38,14 +38,14 @@ class upload_feedback_form extends moodleform {
     private     $cmid;
     private     $coursework;
 
-    function __construct($coursework, $cmid)  {
+    function __construct($coursework, $cmid) {
         $this->cmid = $cmid;
         $this->coursework = $coursework;
 
         parent::__construct();
     }
 
-    function definition()   {
+    function definition() {
         $mform =& $this->_form;
 
         $mform->addElement('filepicker', 'feedbackzip', get_string('feedbackzipfile','coursework'), null, array( 'accepted_types' => '*.zip'));
@@ -92,7 +92,7 @@ class upload_feedback_form extends moodleform {
         $this->add_action_buttons(true,get_string('uploadfeedbackzip','coursework'));
     }
 
-    function display()  {
+    function display() {
         return $this->_form->toHtml();
     }
 

@@ -44,7 +44,7 @@ $assessorallocationstrategy = optional_param('assessorallocationstrategy', false
 
 
 
-if ($stagenumber > 0)   {
+if ($stagenumber > 0) {
 
     if (!isset($SESSION->allocate_page_selectentirestage[$coursework->id()]['assessor_'.$stagenumber])) {
         $SESSION->allocate_page_selectentirestage[$coursework->id()]['assessor_'.$stagenumber] = 0;

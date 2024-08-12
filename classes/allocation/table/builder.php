@@ -193,18 +193,18 @@ class builder {
         return new user_cell($items);
     }
 
-    public function get_hidden_elements()   {
+    public function get_hidden_elements() {
         global $SESSION;
 
         $elements = '';
 
         $cm = $this->coursework->get_course_module();
 
-        if  (isset($SESSION->coursework_allocationsessions[$cm->id]))  {
+        if  (isset($SESSION->coursework_allocationsessions[$cm->id])) {
 
-            foreach($SESSION->coursework_allocationsessions[$cm->id] as $name =>  $val)   {
+            foreach($SESSION->coursework_allocationsessions[$cm->id] as $name =>  $val) {
 
-                if(!is_array($val))   {
+                if(!is_array($val)) {
 
                     $elements   .=  "<input type='hidden' name='$name'   value='$val'> ";
 

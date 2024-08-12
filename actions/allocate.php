@@ -129,7 +129,7 @@ if ($formsavebutton) {
 }
 
 
-if ($samplingformsavebutton)    {
+if ($samplingformsavebutton) {
     if ($coursework->sampling_enabled()) {
         $allocationsmanager->save_sample();
     }

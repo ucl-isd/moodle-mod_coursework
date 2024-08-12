@@ -57,7 +57,7 @@ class import extends grading_sheet{
      * @throws \coding_exception
      * @throws \moodle_exception
      */
-    public function validate_csv($content,$encoding,$delimeter,$csv_cells)    {
+    public function validate_csv($content,$encoding,$delimeter,$csv_cells) {
 
         global $DB, $USER;
 
@@ -112,7 +112,7 @@ class import extends grading_sheet{
             $uploadedgradecells = array();
 
 
-            for($z = 0; $z < count($line); $z++)   {
+            for($z = 0; $z < count($line); $z++) {
 
                 $value = $line[$z];
                 $stage_identifier = $this->get_stage_identifier($submissionid,$cells[$i]);
@@ -126,7 +126,7 @@ class import extends grading_sheet{
                 $cell = new $class($this->coursework);
                 //submission id field should always be first in the csv_cells array
                 //
-                if ($cells[$i] == 'submissionid')   {
+                if ($cells[$i] == 'submissionid') {
                     $submissionid = $value;
                 }
 
@@ -159,7 +159,7 @@ class import extends grading_sheet{
                 }
 
 
-               if ($result !== true)   {
+               if ($result !== true) {
                    $errors[$s] = $result;
                    break; //go to next line on error
                } else if ($cells[$i] == "singlegrade" || $cells[$i] == "assessorgrade" || $cells[$i] == "agreedgrade" && !empty($value)) {
@@ -176,7 +176,7 @@ class import extends grading_sheet{
     }
 
 
-    function rubric_count_correct($csvheader,$linefromimportedcsv)         {
+    function rubric_count_correct($csvheader,$linefromimportedcsv) {
 
         // get criteria of rubrics and match it to grade cells
         if ($this->coursework->is_using_rubric()) {
@@ -194,9 +194,9 @@ class import extends grading_sheet{
                 $typepositions = false;
                 $i = 0;
 
-                foreach($csvheader  as  $ch)   {
+                foreach($csvheader  as  $ch) {
 
-                    if (strpos($ch,$type) !== false)  {
+                    if (strpos($ch,$type) !== false) {
 
                         if (empty($typepositions))   $typepositions = array();
 
@@ -242,7 +242,7 @@ class import extends grading_sheet{
         }
     }
 
-    function get_rubric_headers($csvheader)         {
+    function get_rubric_headers($csvheader) {
 
         // get criteria of rubrics and match it to grade cells
         if ($this->coursework->is_using_rubric()) {
@@ -344,7 +344,7 @@ class import extends grading_sheet{
 
             foreach ($line as $keynum => $value) {
 
-                if (empty($idfound) && $cells[$i] == 'submissionid')   {
+                if (empty($idfound) && $cells[$i] == 'submissionid') {
                     $submissionid = $value;
                     $idfound = true;
                 }
@@ -373,7 +373,7 @@ class import extends grading_sheet{
                 }
             } else {
 
-                foreach($csvline as $k => $v)   {
+                foreach($csvline as $k => $v) {
                     if (substr($k,0,13) == 'assessorgrade' || substr($k,0,11) == 'singlegrade') {
                        $stages[$k] = $this->get_stage_identifier($csvline['submissionid'], $k);
                     } else if (substr($k,0,11) == 'agreedgrade') {
@@ -397,7 +397,7 @@ class import extends grading_sheet{
             foreach($stages as $k => $stage) {
 
                 //when allocation is enabled
-                if (has_capability('mod/coursework:administergrades', $PAGE->context) && $coursework->allocation_enabled() && $stage != 'final_agreed_1' && $coursework->has_multiple_markers() == true)  {
+                if (has_capability('mod/coursework:administergrades', $PAGE->context) && $coursework->allocation_enabled() && $stage != 'final_agreed_1' && $coursework->has_multiple_markers() == true) {
                     $rubricoffset   +=   1;
                     if ($a == 1) $rubricoffsetstart  += 1;
                 }
@@ -520,7 +520,7 @@ class import extends grading_sheet{
                     } else  if ($coursework->is_using_rubric() && ($stage == 'final_agreed_1' && $this->coursework->finalstagegrading == 1)) {
 
 
-                        if (!isset($numberofrubrics))   {
+                        if (!isset($numberofrubrics)) {
 
                             $criterias = $this->coursework->get_rubric_criteria();
 
@@ -585,7 +585,7 @@ class import extends grading_sheet{
      * @param $value the value that we will retrieve the levelid for
      * @return bool
      */
-    function    get_value_rubric_levelid($criteria,    $value)         {
+    function    get_value_rubric_levelid($criteria,    $value) {
 
         global  $DB;
 
@@ -654,7 +654,7 @@ class import extends grading_sheet{
 
         $feedbackid = $DB->insert_record('coursework_feedbacks', $add_grade, true);
 
-        if  ($uses_rubric)   {
+        if  ($uses_rubric) {
             $controller = $this->coursework->get_advanced_grading_active_controller();
             //find out how many criteria there are
             $gradinginstance = $controller->get_or_create_instance(0, $USER->id,$feedbackid);
@@ -827,7 +827,7 @@ class import extends grading_sheet{
             if (substr($cell_identifier, 0, 8) == 'assessor') {
                 $stage_identifier = 'assessor_' . (substr($cell_identifier, -1));
                 //$cells[$i] = substr($cells[$i], 0, -1);
-            } else if(substr($cell_identifier, 0, 6) == 'agreed')  {
+            } else if(substr($cell_identifier, 0, 6) == 'agreed') {
                 $stage_identifier = 'final_agreed_1';
             }
         }
@@ -867,7 +867,7 @@ class import extends grading_sheet{
             $key = array_search('otherassessors', $csv_cells);
             unset($csv_cells[$key]);
             $othercells = $this->other_assessors_cells();
-            if ($this->coursework->is_using_rubric())    {
+            if ($this->coursework->is_using_rubric()) {
 
                 $singlegradeposition = array_search('singlegrade', $csv_cells);
 

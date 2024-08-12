@@ -592,7 +592,7 @@ class coursework extends table_base {
         return ($this->has_deadline() && $this->deadline < time());
     }
 
-    public function has_deadline()  {
+    public function has_deadline() {
         return !empty($this->deadline);
     }
 
@@ -659,7 +659,7 @@ class coursework extends table_base {
     }
 
 
-    function get_grade_editing_time()   {
+    function get_grade_editing_time() {
         return $this->gradeeditingtime;
     }
 
@@ -1407,8 +1407,7 @@ class coursework extends table_base {
      * @param int $userid
      * @return string
      */
-    static function get_name_hash($id,$userid,$time=1440000609)
-    {
+    static function get_name_hash($id,$userid,$time=1440000609) {
         if ($id < 1) {
             return '';
         }
@@ -1424,8 +1423,7 @@ class coursework extends table_base {
         return $uhash;
     }
 
-    public function get_username_hash($userid)
-    {
+    public function get_username_hash($userid) {
         return static::get_name_hash($this->id,$userid,$this->timecreated);
     }
 
@@ -2094,8 +2092,7 @@ class coursework extends table_base {
     /**
      * @return bool
      */
-    public function sampling_enabled()
-    {
+    public function sampling_enabled() {
       return  (bool)$this->samplingenabled;
     }
 
@@ -2260,7 +2257,7 @@ class coursework extends table_base {
         }
     }
 
-    public  function get_submission_notification_users()    {
+    public  function get_submission_notification_users() {
         return $this->submissionnotification;
     }
 
@@ -2589,7 +2586,7 @@ class coursework extends table_base {
      * @param $stage
      * @return bool
      */
-    public function has_automatic_sampling_at_stage($stage)   {
+    public function has_automatic_sampling_at_stage($stage) {
         global  $DB;
 
         return $DB->record_exists('coursework_sample_set_rules',array('courseworkid' => $this->id,'stage_identifier' => $stage));
@@ -2602,7 +2599,7 @@ class coursework extends table_base {
      *
      * @return allocatable[]
      */
-    public function get_allocatables_with_feedback($stage, $random = false)    {
+    public function get_allocatables_with_feedback($stage, $random = false) {
         global $DB, $CFG;
 
         $sql = "SELECT   cwrsub.allocatableid, cwrfb.*
@@ -2735,7 +2732,7 @@ class coursework extends table_base {
      *
      * @return array
      */
-    public function get_allocatables_and_deadline()    {
+    public function get_allocatables_and_deadline() {
 
         $allocatables = $this->get_allocatables();
 
@@ -2753,7 +2750,7 @@ class coursework extends table_base {
      *
      * @return array
      */
-    private function  get_allocatable_personal_deadline($allocatable)   {
+    private function  get_allocatable_personal_deadline($allocatable) {
 
         global  $DB;
 
@@ -3006,7 +3003,7 @@ class coursework extends table_base {
      * @param $allocatable
      * @return bool/int
      */
-    private function  get_allocatable_extension($allocatable)   {
+    private function  get_allocatable_extension($allocatable) {
 
         global  $DB;
         $extension = false;

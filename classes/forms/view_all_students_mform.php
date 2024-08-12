@@ -31,7 +31,7 @@ require_once($CFG->dirroot.'/lib/formslib.php');
 
 class view_all_students_mform extends moodleform    {
 
-    function definition()   {
+    function definition() {
 
         $this->_form->addElement('hidden', 'id', $this->_customdata['cmid']);
         $this->_form->setType('id', PARAM_INT);

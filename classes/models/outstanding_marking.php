@@ -27,7 +27,7 @@ class outstanding_marking   {
     private     $day_in_secs;
 
 
-    public function __construct()   {
+    public function __construct() {
 
         $this->day_in_secs = 86400;
     }
@@ -76,7 +76,7 @@ class outstanding_marking   {
 
             //AGREED GRADE INFORMATION
 
-            if ($this->should_get_to_mark_agreed_grade_info($coursework->id,$userid) && $coursework->has_multiple_markers())  {
+            if ($this->should_get_to_mark_agreed_grade_info($coursework->id,$userid) && $coursework->has_multiple_markers()) {
                 if (!$coursework->sampling_enabled()) {
                     $agreedsubmissions = $this->get_to_grade_agreed_grade_submissions($coursework->id,$coursework->get_max_markers());
                 } else {
@@ -94,7 +94,7 @@ class outstanding_marking   {
      * @param bool $allocationenabled
      * @return array
      */
-    private function get_single_marker_initial_grade_submissions_to_mark($courseworkid, $userid=false, $allocationenabled=false)    {
+    private function get_single_marker_initial_grade_submissions_to_mark($courseworkid, $userid=false, $allocationenabled=false) {
 
         global  $DB;
 
@@ -102,7 +102,7 @@ class outstanding_marking   {
         $sqltable = "";
         $sqlextra = "";
 
-        if ($allocationenabled)  {
+        if ($allocationenabled) {
             //we only have to check for submissions allocated to this user
             $sqltable = ", {coursework_allocation_pairs}  cap ";
 
@@ -137,7 +137,7 @@ class outstanding_marking   {
      * @param $userid
      * @return array
      */
-    private function get_multiple_to_mark_sampled_initial_grade_submissions($courseworkid,$userid)    {
+    private function get_multiple_to_mark_sampled_initial_grade_submissions($courseworkid,$userid) {
 
         global  $DB;
 
@@ -179,7 +179,7 @@ class outstanding_marking   {
      * @param $allocationenabled
      * @return array
      */
-    private function get_multiple_to_mark_initial_grade_submissions($courseworkid,$userid,$numberofmarkers,$allocationenabled)    {
+    private function get_multiple_to_mark_initial_grade_submissions($courseworkid,$userid,$numberofmarkers,$allocationenabled) {
 
         global      $DB;
 
@@ -187,7 +187,7 @@ class outstanding_marking   {
         $sqltable = '';
         $sqlextra = '';
 
-        if ($allocationenabled)  {
+        if ($allocationenabled) {
             //we only have to check for submissions allocated to this user
             $sqltable = ", {coursework_allocation_pairs}  cap ";
 
@@ -290,7 +290,7 @@ class outstanding_marking   {
      * @param $user_id
      * @return bool
      */
-    private function has_agreed_grade($course_id,$user_id)     {
+    private function has_agreed_grade($course_id,$user_id) {
 
         $coursecontext = \context_course::instance($course_id);
 
@@ -303,7 +303,7 @@ class outstanding_marking   {
      * @param $user_id
      * @return bool
      */
-    private function has_initial_grade($course_id,$user_id)     {
+    private function has_initial_grade($course_id,$user_id) {
 
         $coursecontext = \context_course::instance($course_id);
 
@@ -316,7 +316,7 @@ class outstanding_marking   {
      * @param $userid
      * @return bool
      */
-    private function should_get_to_mark_initial_grade_info($courseworkid,$userid)    {
+    private function should_get_to_mark_initial_grade_info($courseworkid,$userid) {
 
         $coursework = new \mod_coursework\models\coursework($courseworkid);
 
@@ -331,7 +331,7 @@ class outstanding_marking   {
      * @param $userid
      * @return bool
      */
-    private function should_get_to_mark_agreed_grade_info($courseworkid,$userid)    {
+    private function should_get_to_mark_agreed_grade_info($courseworkid,$userid) {
 
         $coursework = new \mod_coursework\models\coursework($courseworkid);
 

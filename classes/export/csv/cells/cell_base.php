@@ -62,7 +62,7 @@ abstract class cell_base implements cell_interface {
      * @return bool
      * @throws \coding_exception
      */
-    public function can_view_hidden()    {
+    public function can_view_hidden() {
 
         $viewanonymous = has_capability('mod/coursework:viewanonymous',$this->coursework->get_context());
         $exportgrade = has_capability('mod/coursework:canexportfinalgrades',$this->coursework->get_context());
@@ -204,7 +204,7 @@ abstract class cell_base implements cell_interface {
      * @param $assessorid
      * @return string
      */
-    public function get_assessor_username($assessorid)   {
+    public function get_assessor_username($assessorid) {
         global $DB;
 
         $assessor = $DB->get_record('user',array('id' => $assessorid),'username');

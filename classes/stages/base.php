@@ -940,14 +940,14 @@ abstract class base {
     }
 
 
-    private function selected_allocation_in_session($dropdownname)     {
+    private function selected_allocation_in_session($dropdownname) {
         global  $SESSION;
 
         $cm = $this->coursework->get_course_module();
 
-        if (!empty($SESSION->coursework_allocationsessions[$cm->id]))   {
+        if (!empty($SESSION->coursework_allocationsessions[$cm->id])) {
 
-            if (!empty($SESSION->coursework_allocationsessions[$cm->id][$dropdownname]))    {
+            if (!empty($SESSION->coursework_allocationsessions[$cm->id][$dropdownname])) {
                 return  $SESSION->coursework_allocationsessions[$cm->id][$dropdownname];
             }
 

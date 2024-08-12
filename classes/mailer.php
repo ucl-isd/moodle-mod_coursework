@@ -185,7 +185,7 @@ class mailer {
      * @return mixed
      * @throws \coding_exception
      */
-    public function send_student_deadline_reminder($user)   {
+    public function send_student_deadline_reminder($user) {
 
         global $CFG;
 
@@ -236,7 +236,7 @@ class mailer {
 
 
 
-    public function send_submission_notification($userstonotify)  {
+    public function send_submission_notification($userstonotify) {
 
         global $CFG;
 

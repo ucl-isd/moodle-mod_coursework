@@ -153,7 +153,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
     }
 
-    public function confirm_feedback_removal_page(feedback $teacher_feedback, $confirmurl)     {
+    public function confirm_feedback_removal_page(feedback $teacher_feedback, $confirmurl) {
         global $PAGE, $SITE, $OUTPUT;
 
         $grading_title =
@@ -1663,8 +1663,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     /**
      * @return string
      */
-    public function modal_grading_render()
-    {
+    public function modal_grading_render() {
         $this->page->requires->string_for_js('insertcomment', 'gradingform_guide');
         $html = '<div class="modal fade" tabindex="-1" role="dialog" id="modal-grading">
                   <div class="modal-dialog modal-lg modal-grading" role="document">

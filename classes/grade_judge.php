@@ -180,7 +180,7 @@ class grade_judge {
 
     }
 
-    public function grade_in_scale($value)    {
+    public function grade_in_scale($value) {
         if (is_null($value)) {
             return true;
         } else if ($this->coursework->grade >= 1) {
@@ -203,7 +203,7 @@ class grade_judge {
      * @param $value
      * @return mixed
      */
-    public function get_grade($value)   {
+    public function get_grade($value) {
 
         if ($this->coursework->grade <= -1) {
             // Scale

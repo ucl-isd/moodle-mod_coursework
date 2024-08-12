@@ -33,8 +33,7 @@ class restore_coursework_activity_task extends restore_activity_task
      *
      * @return array of restore_decode_rule
      */
-    static public function define_decode_rules()
-    {
+    static public function define_decode_rules() {
         $rules = array();
 
         $rules[] = new restore_decode_rule('COURSEWORKBYID',
@@ -65,16 +64,14 @@ class restore_coursework_activity_task extends restore_activity_task
     /**
      * Define (add) particular settings this activity can have.
      */
-    protected function define_my_settings()
-    {
+    protected function define_my_settings() {
         // No particular settings for this activity.
     }
     
     /**
      * Define (add) particular steps this activity can have.
      */
-    protected function define_my_steps()
-    {
+    protected function define_my_steps() {
         // Only has one structure step.
         $this->add_step(new restore_coursework_activity_structure_step('coursework_structure', 'coursework.xml'));
     }

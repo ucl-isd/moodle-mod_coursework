@@ -157,8 +157,7 @@ class deadline_extensions_controller extends controller_base {
      * Set the deadline to default current deadline if the extension was never given before
      * @return array
      */
-    protected function set_default_current_deadline()
-    {
+    protected function set_default_current_deadline() {
         global $DB;
         $params = array(
             'allocatableid' => $this->params['allocatableid'],
@@ -183,8 +182,7 @@ class deadline_extensions_controller extends controller_base {
     /**
      * Begin Ajax functions
      */
-    public function ajax_submit_mitigation($data_params)
-    {
+    public function ajax_submit_mitigation($data_params) {
         global $USER, $OUTPUT;
         $extended_deadline = false;
         $response = [];

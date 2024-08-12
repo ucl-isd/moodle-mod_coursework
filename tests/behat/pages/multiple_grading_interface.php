@@ -297,8 +297,7 @@ echo "failed";
     /**
      * @param submission $submission
      */
-    public function should_not_have_new_feedback_button($submission)
-    {
+    public function should_not_have_new_feedback_button($submission) {
         $elementid = $this->new_feedback_button_css($submission);
         $this->should_not_have_css($elementid);
     }

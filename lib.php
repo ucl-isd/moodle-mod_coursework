@@ -174,7 +174,7 @@ function coursework_add_instance($formdata) {
     $formdata->submissionnotification = $subnotify;
 
     //if blindmarking is set we will rename files
-    if ($formdata->blindmarking == 1)  {
+    if ($formdata->blindmarking == 1) {
 
         $formdata->renamefiles = 1;
 
@@ -457,7 +457,7 @@ function coursework_update_instance($coursework) {
 
         $coursework->renamefiles = $currentcoursework->renamefiles;
 
-    } else if ($coursework->blindmarking == 1)  {
+    } else if ($coursework->blindmarking == 1) {
 
         $coursework->renamefiles = 1;
 

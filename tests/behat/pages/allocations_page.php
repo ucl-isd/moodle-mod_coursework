@@ -132,8 +132,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param $stage_identifier
      * @throws \Behat\Mink\Exception\ElementException
      */
-    public function deselect_for_sample($student, $stage_identifier)
-    {
+    public function deselect_for_sample($student, $stage_identifier) {
         $elementid = $this->sampling_checkbox_id($student, $stage_identifier);
         $node = $this->getPage()->find('css', $elementid);
         $node->uncheck();
@@ -144,8 +143,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param $stage_identifier
      * @return string
      */
-    public function sampling_checkbox_id($student, $stage_identifier)
-    {
+    public function sampling_checkbox_id($student, $stage_identifier) {
         $elementid = '#' . $student->type() . '_' . $student->id . '_' . $stage_identifier . '_samplecheckbox';
         return $elementid;
     }
@@ -158,7 +156,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param $stage
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
-    public function enable_atomatic_sampling_for($stage)  {
+    public function enable_atomatic_sampling_for($stage) {
         $elementid = '#assessor_'.$stage.'_samplingstrategy';
         $node = $this->getPage()->find('css', $elementid);
 
@@ -231,7 +229,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param $stage
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
-    public function select_total_percentage_for_stage($percentage,$stage)   {
+    public function select_total_percentage_for_stage($percentage,$stage) {
 
         //increment stage as the this will match the id of the element;
         $stage++;
@@ -247,7 +245,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param $user
      * @param $stage_number
      */
-    public function automatically_included_in_sample($coursework,$user,$other_user,$stage_number,$negate)  {
+    public function automatically_included_in_sample($coursework,$user,$other_user,$stage_number,$negate) {
         global $DB;
 
         $other_sql = (!empty($other_user))?  "OR allocatableid = $other_user->id" : '';
@@ -289,7 +287,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
     }
 
 
-    public function save_sampling_strategy()     {
+    public function save_sampling_strategy() {
 
         $this->getPage()->pressButton('save_manual_sampling');
 

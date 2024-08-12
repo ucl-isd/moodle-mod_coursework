@@ -81,7 +81,7 @@ class singlegrade_cell extends cell_base{
         global $PAGE, $DB, $USER;
 
         if (has_capability('mod/coursework:addinitialgrade', $PAGE->context) || has_capability('mod/coursework:editinitialgrade', $PAGE->context)
-            || has_capability('mod/coursework:administergrades', $PAGE->context))   {
+            || has_capability('mod/coursework:administergrades', $PAGE->context)) {
 
             $errormsg = '';
 
@@ -165,7 +165,7 @@ class singlegrade_cell extends cell_base{
             );
             $feedback = feedback::find($feedback_params);
 
-            if (!$this->coursework->allocation_enabled() && !empty($feedback))   {
+            if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
                 //was this user the one who last graded this submission if not then user cannot grade
                 if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $PAGE->context) && !has_capability('mod/coursework:administergrades', $PAGE->context))
                     return get_string('nopermissiontoeditgrade','coursework');
@@ -217,7 +217,7 @@ class singlegrade_cell extends cell_base{
      * @param $value the value that should be checked to see if it is valid
      * @return bool
      */
-    function    value_in_rubric($criteria,    $value)         {
+    function    value_in_rubric($criteria,    $value) {
 
         global  $DB;
 
@@ -248,7 +248,7 @@ class singlegrade_cell extends cell_base{
      * @param $csv_cells
      *
      */
-    function    get_rubrics($coursework,$csv_cells)        {
+    function    get_rubrics($coursework,$csv_cells) {
 
 
         if ($coursework->is_using_rubric()) {
@@ -257,7 +257,7 @@ class singlegrade_cell extends cell_base{
 
             $criterias = $coursework->get_rubric_criteria();
 
-            foreach ($criterias as  $criteria)   {
+            foreach ($criterias as  $criteria) {
                 $rubricheaders[] = $criteria['description'];
                 $rubricheaders[] = $criteria['description']." comment";
             }

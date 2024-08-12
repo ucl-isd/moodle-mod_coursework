@@ -83,7 +83,7 @@ class feedback_controller extends controller_base {
 
 
 
-        if (empty($ajax))   {
+        if (empty($ajax)) {
             echo $html;
         } else {
             echo json_encode(['success' => true, 'formhtml' => $html]);
@@ -261,13 +261,13 @@ class feedback_controller extends controller_base {
                     $cell_object = new $cell_class($coursework, $participant);
                     $html = $cell_object->get_grade_cell_content($feedback_row, $this->coursework);
 
-                    if ($teacherfeedback->stage_identifier == 'assessor_1' || $teacherfeedback->stage_identifier == 'assessor_2')   {
+                    if ($teacherfeedback->stage_identifier == 'assessor_1' || $teacherfeedback->stage_identifier == 'assessor_2') {
 
                         $jsonarray['assessorname'] = (empty($feedback_row->get_assessor()->id()) && $coursework->allocation_enabled()) ?
                             get_string('assessornotallocated','mod_coursework') : $cell_object->profile_link($feedback_row);
                         $jsonarray['assessdate'] = $cell_object->date_for_column($feedback_row);
 
-                        if ($teacherfeedback->stage_identifier == 'assessor_1')   {
+                        if ($teacherfeedback->stage_identifier == 'assessor_1') {
                             $ability = new ability(user::find($USER, false), $coursework);
                             $stage = new assessor($coursework, 'assessor_2');
                             $assessor_feedback_row = new assessor_feedback_row($stage, $feedback_row->get_allocatable(), $coursework);
@@ -282,7 +282,7 @@ class feedback_controller extends controller_base {
                         $finalsubmission = $feedback_row->get_submission();
 
 
-                        if ($coursework->automaticagreementrange != 'none' && !empty($finalfeedback) && $finalsubmission->all_inital_graded())    {
+                        if ($coursework->automaticagreementrange != 'none' && !empty($finalfeedback) && $finalsubmission->all_inital_graded()) {
                             $finalstage = new assessor($coursework, "final_agreed_1");
                             $finalfeedback_row = new assessor_feedback_row($finalstage, $participant, $coursework);
                             $agreed_grade_object = new multiple_agreed_grade_cell(array('coursework' => $coursework,'stage' => $finalstage));
@@ -456,12 +456,12 @@ class feedback_controller extends controller_base {
                 $cell_object = new $cell_class($coursework, $participant);
                 $html = $cell_object->get_grade_cell_content($feedback_row, $coursework);
 
-                if ($teacherfeedback->stage_identifier == 'assessor_1' || $teacherfeedback->stage_identifier == 'assessor_2')   {
+                if ($teacherfeedback->stage_identifier == 'assessor_1' || $teacherfeedback->stage_identifier == 'assessor_2') {
                     $jsonarray['assessorname'] = (empty($feedback_row->get_assessor()->id()) && $coursework->allocation_enabled()) ?
                         get_string('assessornotallocated','mod_coursework') : $cell_object->profile_link($feedback_row);
                     $jsonarray['assessdate'] = $cell_object->date_for_column($feedback_row);
 
-                    if ($teacherfeedback->stage_identifier == 'assessor_1')   {
+                    if ($teacherfeedback->stage_identifier == 'assessor_1') {
                         $ability = new ability(user::find($USER, false), $coursework);
                         $stage = new assessor($coursework, 'assessor_2');
                         $assessor_feedback_row = new assessor_feedback_row($stage, $feedback_row->get_allocatable(), $coursework);
@@ -474,7 +474,7 @@ class feedback_controller extends controller_base {
 
                     $finalfeedback = $submission->get_final_feedback();
 
-                    if ($coursework->automaticagreementrange != 'none' && !empty($finalfeedback))    {
+                    if ($coursework->automaticagreementrange != 'none' && !empty($finalfeedback)) {
                         $finalstage = new assessor($coursework, "final_agreed_1");
 
                         $finalfeedbackrow_object = new \mod_coursework\grading_table_row_multi($coursework, $participant);

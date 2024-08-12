@@ -461,7 +461,7 @@ class ability extends \mod_coursework\framework\ability {
             });
     }
 
-    protected function allow_show_submission_if_user_can_administer_grades()    {
+    protected function allow_show_submission_if_user_can_administer_grades() {
         $this->allow('show',
             'mod_coursework\models\submission',
             function (submission $submission) {
@@ -470,7 +470,7 @@ class ability extends \mod_coursework\framework\ability {
             });
     }
 
-    protected function allow_show_submission_if_user_can_view_all_grades_at_all_times()    {
+    protected function allow_show_submission_if_user_can_view_all_grades_at_all_times() {
         $this->allow('show',
             'mod_coursework\models\submission',
             function (submission $submission) {
@@ -861,7 +861,7 @@ class ability extends \mod_coursework\framework\ability {
                 $has_editable_feedbacks = false;
 
                 // find out if the previous grades are editable
-                if ($feedback->is_agreed_grade())   {
+                if ($feedback->is_agreed_grade()) {
                     $has_editable_feedbacks = $feedback->get_submission()->editable_feedbacks_exist();
                 }
 
@@ -1185,7 +1185,7 @@ class ability extends \mod_coursework\framework\ability {
                 $has_editable_feedbacks = false;
 
                 // find out if the previous grades are editable
-                if ($feedback->is_agreed_grade())   {
+                if ($feedback->is_agreed_grade()) {
 
                     $has_editable_feedbacks = $feedback->get_submission()->editable_feedbacks_exist();
 

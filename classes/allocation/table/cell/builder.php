@@ -348,7 +348,7 @@ class builder {
      * @return bool
      * @throws \coding_exception
      */
-    private function has_automatic_sampling()   {
+    private function has_automatic_sampling() {
 
         global $DB;
 
@@ -392,14 +392,14 @@ class builder {
 
 
 
-    private function checkbox_checked_in_session($checkboxname,$checkboxstate)  {
+    private function checkbox_checked_in_session($checkboxname,$checkboxstate) {
 
         global  $SESSION;
 
         $cm = $this->coursework->get_course_module();
 
-        if (!empty($SESSION->coursework_allocationsessions[$cm->id]))   {
-            if (isset($SESSION->coursework_allocationsessions[$cm->id][$checkboxname]))    {
+        if (!empty($SESSION->coursework_allocationsessions[$cm->id])) {
+            if (isset($SESSION->coursework_allocationsessions[$cm->id][$checkboxname])) {
                 return  $SESSION->coursework_allocationsessions[$cm->id][$checkboxname];
             }
 

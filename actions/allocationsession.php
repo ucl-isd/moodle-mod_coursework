@@ -35,11 +35,11 @@ $samplechk = optional_param_array('sample',array(),PARAM_RAW);
 $samplechkvalue = optional_param_array('samplevalue',array(),PARAM_RAW);
 $coursemoduleid = required_param('coursemoduleid', PARAM_INT);
 
-if (!isset($SESSION->coursework_allocationsessions))    {
+if (!isset($SESSION->coursework_allocationsessions)) {
     $SESSION->coursework_allocationsessions = array();
 }
 
-if (!isset($SESSION->coursework_allocationsessions[$coursemoduleid]))   {
+if (!isset($SESSION->coursework_allocationsessions[$coursemoduleid])) {
     $SESSION->coursework_allocationsessions[$coursemoduleid] = array();
 }
 

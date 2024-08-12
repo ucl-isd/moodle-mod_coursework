@@ -33,7 +33,7 @@ class coursework_file_zip_importer    {
 
 
 
-    public function extract_zip_file($filename,$contextid)  {
+    public function extract_zip_file($filename,$contextid) {
 
         global $USER;
 
@@ -99,7 +99,7 @@ class coursework_file_zip_importer    {
      * @param coursework $coursework
      * @return string - The html response
      */
-    public function import_zip_files($coursework,$feedbackstage,$overwritecurrent)   {
+    public function import_zip_files($coursework,$feedbackstage,$overwritecurrent) {
         global $CFG, $PAGE, $DB, $USER;
 
         @set_time_limit(ASSIGNFEEDBACK_FILE_MAXFILEUNZIPTIME);
@@ -219,8 +219,8 @@ class coursework_file_zip_importer    {
             return $result;
         }
 
-        foreach ($participants as $user)    {
-            if ($filename ==  $coursework->get_username_hash($user->id))   {
+        foreach ($participants as $user) {
+            if ($filename ==  $coursework->get_username_hash($user->id)) {
                 $result = $user->id;
                 break;
             }
@@ -232,7 +232,7 @@ class coursework_file_zip_importer    {
     }
 
 
-    public function feedback_exists($coursework,$submission,$stageidentifier)   {
+    public function feedback_exists($coursework,$submission,$stageidentifier) {
 
         global $DB, $USER;
 

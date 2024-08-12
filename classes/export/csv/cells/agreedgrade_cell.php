@@ -85,7 +85,7 @@ class agreedgrade_cell extends cell_base{
         if (empty($value)) return true;
 
         if (has_any_capability($agreedgradecap,$PAGE->context)
-            || has_capability('mod/coursework:administergrades', $PAGE->context))   {
+            || has_capability('mod/coursework:administergrades', $PAGE->context)) {
 
             $errormsg = '';
 
@@ -211,7 +211,7 @@ class agreedgrade_cell extends cell_base{
      * @param $value the value that should be checked to see if it is valid
      * @return bool
      */
-    function    value_in_rubric($criteria,    $value)         {
+    function    value_in_rubric($criteria,    $value) {
 
         global  $DB;
 
@@ -242,7 +242,7 @@ class agreedgrade_cell extends cell_base{
      * @param $csv_cells
      *
      */
-    function    get_rubrics($coursework,$csv_cells)        {
+    function    get_rubrics($coursework,$csv_cells) {
 
 
         if ($coursework->is_using_rubric()  && $this->coursework->finalstagegrading != 1) {
@@ -251,7 +251,7 @@ class agreedgrade_cell extends cell_base{
 
             $criterias = $coursework->get_rubric_criteria();
 
-            foreach ($criterias as  $criteria)   {
+            foreach ($criterias as  $criteria) {
                 $rubricheaders[] = $criteria['description'];
                 $rubricheaders[] = $criteria['description']." comment";
             }

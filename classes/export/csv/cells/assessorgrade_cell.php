@@ -105,8 +105,7 @@ class assessorgrade_cell extends cell_base{
 
     }
 
-    public function validate_cell($value,$submissionid,$stage_identifier='', $uploadedgradecells = array())
-    {
+    public function validate_cell($value,$submissionid,$stage_identifier='', $uploadedgradecells = array()) {
         global $DB, $PAGE, $USER;
 
         if (empty($value)) return true;
@@ -271,7 +270,7 @@ class assessorgrade_cell extends cell_base{
      * @param $value the value that should be checked to see if it is valid
      * @return bool
      */
-    function    value_in_rubric($criteria,    $value)         {
+    function    value_in_rubric($criteria,    $value) {
 
         global  $DB;
 
@@ -302,7 +301,7 @@ class assessorgrade_cell extends cell_base{
      * @param $csv_cells
      *
      */
-    function    get_rubrics($coursework,$csv_cells)        {
+    function    get_rubrics($coursework,$csv_cells) {
 
 
         if ($coursework->is_using_rubric()) {
@@ -311,7 +310,7 @@ class assessorgrade_cell extends cell_base{
 
             $criterias = $coursework->get_rubric_criteria();
 
-            foreach ($criterias as  $criteria)   {
+            foreach ($criterias as  $criteria) {
                 $rubricheaders[] = $criteria['description'];
                 $rubricheaders[] = $criteria['description']." comment";
             }

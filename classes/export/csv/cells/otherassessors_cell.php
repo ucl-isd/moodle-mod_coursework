@@ -106,7 +106,7 @@ class otherassessors_cell extends cell_base{
 
         $numothereassessorfeedbacks = $submission->max_number_of_feedbacks() -1;
 
-        if ($numothereassessorfeedbacks - count($feedbacks) != 0 )  {
+        if ($numothereassessorfeedbacks - count($feedbacks) != 0 ) {
 
             $blankcolumns = $numothereassessorfeedbacks - count($feedbacks);
 

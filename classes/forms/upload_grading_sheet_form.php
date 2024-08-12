@@ -37,13 +37,13 @@ class upload_grading_sheet_form extends moodleform {
 
     private $cmid;
 
-    function __construct($cmid)  {
+    function __construct($cmid) {
         $this->cmid = $cmid;
 
         parent::__construct();
     }
 
-    function definition()   {
+    function definition() {
         $mform =& $this->_form;
 
         $mform->addElement('filepicker', 'gradingdata', get_string('gradingsheetfile','coursework'), null, array( 'accepted_types' => '*.csv'));
@@ -72,7 +72,7 @@ class upload_grading_sheet_form extends moodleform {
         $this->add_action_buttons(true,get_string('uploadgradingworksheet','coursework'));
     }
 
-    function display()  {
+    function display() {
         return $this->_form->toHtml();
     }
 

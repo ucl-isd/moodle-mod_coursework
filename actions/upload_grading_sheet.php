@@ -75,7 +75,7 @@ if ($gradinguploadform->is_cancelled()) {
 
 
 
-if ($data = $gradinguploadform->get_data())   {
+if ($data = $gradinguploadform->get_data()) {
 
     //perform checks on data
 

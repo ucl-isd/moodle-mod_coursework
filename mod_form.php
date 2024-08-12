@@ -338,7 +338,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $default_timestamp = strtotime('+2 weeks');
         $disabled = true;
 
-        if (!empty($CFG->coursework_submission_deadline))   {
+        if (!empty($CFG->coursework_submission_deadline)) {
             $disabled = false;
 
             $default_timestamp =strtotime('today');
@@ -417,7 +417,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $default_timestamp = strtotime('+2 weeks');
         $disabled = true;
 
-        if (!empty($CFG->coursework_start_date))   {
+        if (!empty($CFG->coursework_start_date)) {
             $disabled = false;
             $default_timestamp =strtotime('today');
         }
@@ -436,7 +436,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
 
 
-    private function add_marking_deadline_field()   {
+    private function add_marking_deadline_field() {
         global $CFG;
         $moodle_form =& $this->_form;
         $options = array(0 => get_string('no'), 1 => get_string('yes'));
@@ -462,7 +462,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $submission_deadline_timestamp =strtotime('today');
 
-        if (!empty($CFG->coursework_submission_deadline))   {
+        if (!empty($CFG->coursework_submission_deadline)) {
             if ($CFG->coursework_submission_deadline == 7 ) {
                 $submission_deadline_timestamp = strtotime('+1 weeks');
             } else if ($CFG->coursework_submission_deadline == 14 ) {
@@ -472,7 +472,7 @@ class mod_coursework_mod_form extends moodleform_mod {
             }
         }
 
-        if (!empty($CFG->coursework_marking_deadline))   {
+        if (!empty($CFG->coursework_marking_deadline)) {
 
             $disabled = false;
 
@@ -517,7 +517,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $submission_deadline_timestamp =strtotime('today');
 
-        if (!empty($CFG->coursework_submission_deadline))   {
+        if (!empty($CFG->coursework_submission_deadline)) {
             if ($CFG->coursework_submission_deadline == 7 ) {
                 $submission_deadline_timestamp = strtotime('+1 weeks');
             } else if ($CFG->coursework_submission_deadline == 14 ) {
@@ -527,7 +527,7 @@ class mod_coursework_mod_form extends moodleform_mod {
             }
         }
 
-        if (!empty($CFG->coursework_agreed_marking_deadline))   {
+        if (!empty($CFG->coursework_agreed_marking_deadline)) {
             $disabled = false;
             if ($CFG->coursework_agreed_marking_deadline == 7 ) {
                 $default_timestamp = strtotime('+1 weeks',$submission_deadline_timestamp);
@@ -559,7 +559,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     /********
      *  Adds the relative initial marking deadline fields to the settings
      */
-    protected function add_relative_initial_marking_deadline_field()    {
+    protected function add_relative_initial_marking_deadline_field() {
         global $CFG;
 
         $moodle_form =&  $this->_form;
@@ -587,7 +587,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     /********
      *  Adds the relative agreed grade marking deadline fields to the settings
      */
-    protected function add_relative_agreed_grade_marking_deadline_field()    {
+    protected function add_relative_agreed_grade_marking_deadline_field() {
         global $CFG;
 
         $moodle_form =&  $this->_form;
@@ -790,7 +790,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
 
-    protected function add_rename_file_field()  {
+    protected function add_rename_file_field() {
 
         global  $DB, $PAGE;
 
@@ -813,10 +813,10 @@ class mod_coursework_mod_form extends moodleform_mod {
 
             $PAGE->requires->js_amd_inline("
             require(['jquery'], function() {
-                       $('#id_blindmarking').change(function()  {
+                       $('#id_blindmarking').change(function() {
                             console.log($(this).val());
                             
-                            if ($(this).val()== 1)  {
+                            if ($(this).val()== 1) {
                                 $('#id_renamefiles').val(1);
                             } 
                             
@@ -1246,7 +1246,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
 
-    private function add_enable_agreed_grade_delay()    {
+    private function add_enable_agreed_grade_delay() {
 
         global  $CFG;
 
@@ -1273,7 +1273,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     /**
      *
      */
-    private function add_save_feedback_as_draft()    {
+    private function add_save_feedback_as_draft() {
 
         $moodle_form =& $this->_form;
 
@@ -1329,7 +1329,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
 
-    private function add_submission_notification_field()    {
+    private function add_submission_notification_field() {
 
         global  $COURSE;
 

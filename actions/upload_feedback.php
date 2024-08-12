@@ -73,12 +73,12 @@ if ($feedbackform->is_cancelled()) {
 
 
 
-if ($data = $feedbackform->get_data())   {
+if ($data = $feedbackform->get_data()) {
 
     //perform checks on data
     $courseworktempdir = $CFG->dataroot."/temp/coursework/";
 
-    if (!is_dir($courseworktempdir)) 	{
+    if (!is_dir($courseworktempdir)) {
         mkdir($courseworktempdir);
     }
 

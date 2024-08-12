@@ -85,7 +85,7 @@ class assessorfeedback_cell extends cell_base{
         $subdbrecord = $DB->get_record('coursework_submissions',array('id' => $submissionid));
         $submission = \mod_coursework\models\submission::find($subdbrecord);
         if (has_any_capability($agreedgradecap,$PAGE->context) && has_any_capability($initialgradecap,$PAGE->context)
-            || has_capability('mod/coursework:administergrades', $PAGE->context))   {
+            || has_capability('mod/coursework:administergrades', $PAGE->context)) {
 
 
             //is the submission in question ready to grade?
@@ -119,14 +119,14 @@ class assessorfeedback_cell extends cell_base{
             }
 
 
-            if (!$this->coursework->allocation_enabled() && !empty($feedback))   {
+            if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
                 //was this user the one who last graded this submission if not then user cannot grade
                 if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $PAGE->context) )
                     return get_string('nopermissiontogradesubmission','coursework');
 
             }
 
-            if ($this->coursework->allocation_enabled())    {
+            if ($this->coursework->allocation_enabled()) {
                 //check that the user is allocated to the author of the submission
                 $allocation_params = array(
                     'courseworkid' => $this->coursework->id,

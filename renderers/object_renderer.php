@@ -771,7 +771,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
 
-    public function render_mod_coursework_sampling_set_widget(mod_coursework_sampling_set_widget $samplingwidget)   {
+    public function render_mod_coursework_sampling_set_widget(mod_coursework_sampling_set_widget $samplingwidget) {
 
         global $OUTPUT, $DB;
 
@@ -805,7 +805,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $assessorheaders = array();
 
-        for($i = 0; $i < $samplingwidget->get_coursework()->get_max_markers(); $i++)   {
+        for($i = 0; $i < $samplingwidget->get_coursework()->get_max_markers(); $i++) {
             $assessorheaders[] = get_string('assessorheading','mod_coursework',$i+1);
         }
 
@@ -815,7 +815,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $comma = "";
 
-                for($i=0;$i <=  $samplingwidget->get_coursework()->grade; $i++)   {
+                for($i=0;$i <=  $samplingwidget->get_coursework()->grade; $i++) {
                     $scale .=   $comma.$i;
                     $comma = ",";
                 }
@@ -837,13 +837,13 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $percentage_options = array();
 
-        for($i = 0;$i < 110; $i = $i + 10)   {
+        for($i = 0;$i < 110; $i = $i + 10) {
             $percentage_options[$i] = "{$i}%";
         }
 
         $javascript = false;
 
-        for ($i = 2; $i <= $samplingwidget->get_coursework()->get_max_markers(); $i++)   {
+        for ($i = 2; $i <= $samplingwidget->get_coursework()->get_max_markers(); $i++) {
 
             //create the secon
 
@@ -905,7 +905,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $script = "
 
-            $('#save_manual_sampling').on('click', function (e)   {
+            $('#save_manual_sampling').on('click', function (e) {
 
                 validationresults = Array();
 
@@ -932,11 +932,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
 
-    private function sampling_strategy_column($samplingwidget,$suffix = '')     {
+    private function sampling_strategy_column($samplingwidget,$suffix = '') {
 
         $percentage_options = array();
 
-        for($i = 0;$i < 110; $i = $i + 10)   {
+        for($i = 0;$i < 110; $i = $i + 10) {
             $percentage_options[$i] = "{$i}%";
         }
 
@@ -1664,7 +1664,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $allocatables = $coursework->get_allocatables();
 
         if (!$coursework->has_multiple_markers() && has_capability('mod/coursework:addagreedgrade', $coursework->get_context()) &&
-            !has_capability('mod/coursework:addinitialgrade', $coursework->get_context()) )   {
+            !has_capability('mod/coursework:addinitialgrade', $coursework->get_context()) ) {
 
 
             $submissions = $coursework->get_all_submissions();
@@ -1705,13 +1705,13 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param $submissions
      * @return mixed
      */
-    public  function remove_unfinalised_submissions($submissions)   {
+    public  function remove_unfinalised_submissions($submissions) {
 
-        foreach($submissions as $sub)   {
+        foreach($submissions as $sub) {
 
             $submission = submission::find($sub);
 
-            if (empty($submission->finalised))     {
+            if (empty($submission->finalised)) {
                 unset($submissions[$sub->id]);
             }
         }
@@ -1727,11 +1727,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      */
     public  function removed_final_graded_submissions($submissions) {
 
-        foreach($submissions as $sub)   {
+        foreach($submissions as $sub) {
 
             $submission = submission::find($sub);
 
-            if (!empty($submission->get_final_grade() ))     {
+            if (!empty($submission->get_final_grade() )) {
                 unset($submissions[$sub->id]);
             }
         }
@@ -1747,13 +1747,13 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return mixed
      * @throws coding_exception
      */
-    public function remove_ungradable_submissions($submissions)     {
+    public function remove_ungradable_submissions($submissions) {
 
-        foreach($submissions as $sub)   {
+        foreach($submissions as $sub) {
 
             $submission = submission::find($sub);
 
-            if (has_capability('mod/coursework:addallocatedagreedgrade',$submission->get_coursework()->get_context()) && !$submission->is_assessor_initial_grader() && $submission->all_inital_graded())     {
+            if (has_capability('mod/coursework:addallocatedagreedgrade',$submission->get_coursework()->get_context()) && !$submission->is_assessor_initial_grader() && $submission->all_inital_graded()) {
                 unset($submissions[$sub->id]);
             }
         }
@@ -1769,10 +1769,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      */
     public  function remove_final_gradable_submissions($submissions) {
 
-        foreach($submissions as $sub)   {
+        foreach($submissions as $sub) {
 
             $submission = submission::find($sub);
-            if (!empty($submission->all_inital_graded()) )     {
+            if (!empty($submission->all_inital_graded()) ) {
                 unset($submissions[$sub->id]);
             }
         }
@@ -1788,15 +1788,15 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return mixed
      * @throws coding_exception
      */
-    public function get_assessor_initial_graded_submissions($submissions)   {
+    public function get_assessor_initial_graded_submissions($submissions) {
         global $USER;
 
-        foreach($submissions as $sub)   {
+        foreach($submissions as $sub) {
 
             $submission = submission::find($sub);
 
             if (count($submission->get_assessor_feedbacks()) >= $submission->max_number_of_feedbacks() || $submission->is_assessor_initial_grader()
-                && (!has_capability('mod/coursework:administergrades',$submission->get_coursework()->get_context()) && !is_siteadmin($USER->id)))   {
+                && (!has_capability('mod/coursework:administergrades',$submission->get_coursework()->get_context()) && !is_siteadmin($USER->id))) {
 
                 //is this submission assessable by this user at an inital gradig stage
                 unset($submissions[$sub->id]);
@@ -1845,7 +1845,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $gradeblesub = array();
 
         if (!$coursework->has_multiple_markers() && has_capability('mod/coursework:addagreedgrade', $coursework->get_context()) &&
-            !has_capability('mod/coursework:addinitialgrade', $coursework->get_context()) )   {
+            !has_capability('mod/coursework:addinitialgrade', $coursework->get_context()) ) {
 
 
             foreach($submissions as $sub) {

@@ -193,7 +193,7 @@ class manager {
      *
      * @return array
      */
-    public function get_sampling_options()  {
+    public function get_sampling_options() {
         return array('0' => get_string('manual','mod_coursework'),
                      '1' => get_string('automatic','mod_coursework'));
 
@@ -269,15 +269,15 @@ class manager {
 
     }
 
-    public function save_sample()   {
+    public function save_sample() {
 
         global  $DB;
         $DB->delete_records('coursework_sample_set_rules',array('courseworkid' => $this->coursework->id));
-        for ($i = 2; $i <= $this->coursework->get_max_markers(); $i++)   {
+        for ($i = 2; $i <= $this->coursework->get_max_markers(); $i++) {
 
             $sample_strategy = required_param("assessor_{$i}_samplingstrategy",PARAM_INT);
 
-            if ($sample_strategy)   {
+            if ($sample_strategy) {
                 $this->save_sample_set_rule($i);
             }
 
@@ -294,7 +294,7 @@ class manager {
     }
 
 
-    public function auto_generate_sample_set()  {
+    public function auto_generate_sample_set() {
         global $DB;
 
         $sampleplugins = $DB->get_records('coursework_sample_set_plugin',null,'pluginorder');
@@ -308,7 +308,7 @@ class manager {
         $final_agreed_allocatables = $this->get_allocatables_with_final_agreed();
 
         //remove any allocatables that have a status of final agreed as these can not be sampled
-        foreach($final_agreed_allocatables as $faa)   {
+        foreach($final_agreed_allocatables as $faa) {
             if (isset($allocatables[$faa->allocatableid]))  unset($allocatables[$faa->allocatableid]);
         }
 
@@ -344,7 +344,7 @@ class manager {
                 //I am also not using add the two arrays as using the overloaded + can produce dubious results when a key exists
                 //in both arrays
 
-                foreach($auto_with_feedback as $k => $v)   {
+                foreach($auto_with_feedback as $k => $v) {
                     if (!isset($manual_sample_set[$k])) $manual_sample_set[$k] = $v;
                 }
 
@@ -361,8 +361,8 @@ class manager {
                 }
 
                 //save sample set
-                if (!empty($auto_sample_set))    {
-                        foreach($auto_sample_set    as  $allocatable)   {
+                if (!empty($auto_sample_set)) {
+                        foreach($auto_sample_set    as  $allocatable) {
                             $sample = new \stdClass();
                             $sample->courseworkid = $this->coursework->id;
                             $sample->allocatableid = $allocatable->id;
@@ -402,7 +402,7 @@ class manager {
 
     }
 
-    public function get_automatic_with_feedback($stage)  {
+    public function get_automatic_with_feedback($stage) {
 
         global $DB;
 
@@ -423,7 +423,7 @@ class manager {
     }
 
 
-    public function remove_unmarked_automatic_allocatables($stage)    {
+    public function remove_unmarked_automatic_allocatables($stage) {
         global $DB;
 
         $sql = "DELETE
@@ -447,7 +447,7 @@ class manager {
 
     }
 
-    public function get_allocatables_with_final_agreed()    {
+    public function get_allocatables_with_final_agreed() {
 
         global $DB;
 

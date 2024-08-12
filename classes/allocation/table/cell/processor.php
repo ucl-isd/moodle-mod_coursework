@@ -174,7 +174,7 @@ class processor {
      * @return bool
      * @throws \coding_exception
      */
-    private function has_automatic_sampling()   {
+    private function has_automatic_sampling() {
 
         global $DB;
 

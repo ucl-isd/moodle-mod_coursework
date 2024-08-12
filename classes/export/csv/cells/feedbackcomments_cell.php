@@ -62,7 +62,7 @@ class feedbackcomments_cell extends cell_base {
         global $PAGE, $DB, $USER;
 
         if (has_capability('mod/coursework:addinitialgrade', $PAGE->context) || has_capability('mod/coursework:editinitialgrade', $PAGE->context)
-            || has_capability('mod/coursework:administergrades', $PAGE->context))   {
+            || has_capability('mod/coursework:administergrades', $PAGE->context)) {
 
             $dbrecord = $DB->get_record('coursework_submissions', array('id' => $submissionid));
 

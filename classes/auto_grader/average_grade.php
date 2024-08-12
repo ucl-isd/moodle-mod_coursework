@@ -97,8 +97,7 @@ class average_grade implements auto_grader {
     /**
      * @return coursework
      */
-    private function get_coursework()
-    {
+    private function get_coursework() {
         return $this->coursework;
     }
 

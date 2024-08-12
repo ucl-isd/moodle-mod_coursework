@@ -23,8 +23,7 @@
 
 class backup_coursework_activity_structure_step extends backup_activity_structure_step
 {
-    protected function define_structure()
-    {
+    protected function define_structure() {
         global $DB;
 
         foreach(array('coursework_submissions',
@@ -32,8 +31,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                       'coursework_mod_set_members',
                       'coursework_sample_set_mbrs',
                       'coursework_extensions',
-                      'coursework_person_deadlines') as $tablename)
-        {
+                      'coursework_person_deadlines') as $tablename) {
             $DB->execute("update {{$tablename}} set allocatableuser=0, allocatablegroup=0");
             $DB->execute("update {{$tablename}} set allocatableuser=allocatableid where allocatabletype='user'");
             $DB->execute("update {{$tablename}} set allocatablegroup=allocatableid where allocatabletype='group'");
@@ -131,8 +129,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
             $sample_strategy->set_source_table('coursework_sample_set_rules',
                                         array('courseworkid' => backup::VAR_PARENTID));
 
-        if($userinfo)
-        {
+        if($userinfo) {
 
 
             $plagiarism_flags = new backup_nested_element('coursework_plagiarism_flags');

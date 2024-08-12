@@ -269,7 +269,7 @@ if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $gro
 }
 
 // commented out the redirection for Release1 #108535552, this will be revisited for Release2
-/*if (has_capability('mod/coursework:allocate', $coursework->get_context()))   {
+/*if (has_capability('mod/coursework:allocate', $coursework->get_context())) {
     $warnings = new \mod_coursework\warnings($coursework);
 
     $percentage_allocation_not_complete = $warnings->percentage_allocations_not_complete();
@@ -279,7 +279,7 @@ if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $gro
     }
 
 
-    if (!empty($percentage_allocation_not_complete) || !empty($manual_allocation_not_complete))     {
+    if (!empty($percentage_allocation_not_complete) || !empty($manual_allocation_not_complete)) {
 
         $redirectdetail = new \stdClass();
         $redirectdetail->percentage = $percentage_allocation_not_complete;
@@ -419,7 +419,7 @@ $params = array('id' => $course_module->id,
                 'per_page' => $perpage,
                 'group' => $group);
 
-if (!empty($SESSION->displayallstudents[$course_module_id]))   {
+if (!empty($SESSION->displayallstudents[$course_module_id])) {
     $params['viewallstudents_sorthow'] = $viewallstudents_sorthow;
     $params['viewallstudents_sortby'] = $viewallstudents_sortby;
     $params['viewallstudents_per_page'] = $viewallstudents_perpage;
@@ -444,7 +444,7 @@ if ($coursework->has_individual_autorelease_feedback_enabled() &&
 
 
 //Create automatic feedback
-if ($coursework->automaticagreement_enabled())  {
+if ($coursework->automaticagreement_enabled()) {
     $coursework->create_automatic_feedback();
 
 }
