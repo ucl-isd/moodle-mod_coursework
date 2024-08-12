@@ -69,7 +69,7 @@ class stages_cell extends cell_base {
                 }
             }
 
-            if($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()){
+            if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()){
                 $this->get_rubric_scores_gradedata($grade, $gradedata);
             }
 
@@ -88,8 +88,8 @@ class stages_cell extends cell_base {
 
         if ($this->stages >= 2) { // if there are two or more stages for a submission, we will have agreed grade
             $grade = $submission->get_assessor_feedback_by_stage('final_agreed_1');
-            if($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()){
-                if($this->coursework->is_using_advanced_grading()){
+            if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()){
+                if ($this->coursework->is_using_advanced_grading()){
                     $this->get_rubric_scores_gradedata($grade, $gradedata);
                 }
             }
@@ -141,7 +141,7 @@ class stages_cell extends cell_base {
         }
         if ($this->stages >= 2) { // if there are two or more stages for a submission, we will have agreed grade
 
-            if($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()){
+            if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()){
                 $criteria = $this->coursework->get_rubric_criteria();
                 foreach ($criteria as $id => $record){
                     $fields['agreedgrade_description_' . $id] = 'Agreed grade - '.$record['description'];

@@ -529,13 +529,13 @@ if ($can_view_students) {
         }
     } else {
 
-        if($resettable){
+        if ($resettable){
             $coursework_firstname_alpha = $SESSION->coursework_firstname_alpha[$course_module_id] = "";
             $coursework_lastname_alpha = $SESSION->coursework_lastname_alpha[$course_module_id] = "";
             $coursework_groupname_alpha = $SESSION->coursework_groupname_alpha[$course_module_id] = "";
         }
 
-        if($allresettable){
+        if ($allresettable){
             $viewallstudents_firstname_alpha = $SESSION->viewallstudents_firstname_alpha[$course_module_id] = "";
             $viewallstudents_lastname_alpha = $SESSION->viewallstudents_lastname_alpha[$course_module_id] = "";
             $viewallstudents_groupname_alpha = $SESSION->viewallstudents_groupname_alpha[$course_module_id] = "";

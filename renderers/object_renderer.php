@@ -88,7 +88,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $table_row->cells['right'] = $feedback->get_assesor_username();
         } else {
 
-            if((!$submission->get_coursework()->sampling_enabled() || $submission->sampled_feedback_exists()) &&  $feedback->assessorid == 0 && $feedback->timecreated == $feedback->timemodified) {
+            if ((!$submission->get_coursework()->sampling_enabled() || $submission->sampled_feedback_exists()) &&  $feedback->assessorid == 0 && $feedback->timecreated == $feedback->timemodified) {
                 $table_row->cells['right'] = get_string('automaticagreement', 'mod_coursework');
             } else {
                 $table_row->cells['right'] = $feedback->display_assessor_name();
@@ -1274,7 +1274,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $normaldeadline = $personal_deadline->personal_deadline;
         }
         $deadline_header_text = get_string('deadline', 'coursework');
-        if($coursework->personal_deadlines_enabled() && (!has_capability('mod/coursework:submit', $PAGE->context) || is_siteadmin($USER))){
+        if ($coursework->personal_deadlines_enabled() && (!has_capability('mod/coursework:submit', $PAGE->context) || is_siteadmin($USER))){
             $deadline_header_text .= "<br>". get_string('default_deadline', 'coursework');
         }
         $deadline_date = '';
@@ -1391,7 +1391,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
 
         // moderator
-        if($allocation_row->get_coursework()->moderation_agreement_enabled()) {
+        if ($allocation_row->get_coursework()->moderation_agreement_enabled()) {
             $row_html .= $stage->get_moderation_table_cell($allocation_row->get_allocatable());
         }
 
@@ -1687,7 +1687,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             foreach ($allocatables as $allocatable) {
                 $submission = $allocatable->get_submission($coursework);
 
-                if($coursework->assessor_has_any_allocation_for_student($allocatable) || has_capability('mod/coursework:addagreedgrade', $coursework->get_context())
+                if ($coursework->assessor_has_any_allocation_for_student($allocatable) || has_capability('mod/coursework:addagreedgrade', $coursework->get_context())
                     && !empty($submission) && (($submission->all_inital_graded()  && !$coursework->sampling_enabled())
                         || ($coursework->sampling_enabled() && $submission->all_inital_graded() && $submission->max_number_of_feedbacks() >1 ))){
                     $participant  ++;
@@ -1820,7 +1820,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $submission = submission::find($sub);
 
-            if(!$submission->get_final_feedback()){
+            if (!$submission->get_final_feedback()){
                 unset($submissions[$sub->id]);
 
             }
@@ -1869,7 +1869,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             } else {
                 foreach ($submissions as $sub) {
                     $submission = submission::find($sub);
-                    if($coursework->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable()) || (has_capability('mod/coursework:addagreedgrade', $coursework->get_context()))
+                    if ($coursework->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable()) || (has_capability('mod/coursework:addagreedgrade', $coursework->get_context()))
                         && !empty($submission) && (($submission->all_inital_graded()  && !$submission->get_coursework()->sampling_enabled())
                             || ($submission->get_coursework()->sampling_enabled() && $submission->all_inital_graded() && $submission->max_number_of_feedbacks() >1))){
 

@@ -136,10 +136,10 @@ class time_submitted_cell extends cell_base {
         }
 
 
-        if($extension->id) {
+        if ($extension->id) {
             $new_extension_params['id'] = $extension->id;
         }
-        if($submission) {
+        if ($submission) {
             $new_extension_params['submissionid'] = $submission->id;
         }
 

@@ -204,7 +204,7 @@ class builder {
 
             foreach($SESSION->coursework_allocationsessions[$cm->id] as $name =>  $val) {
 
-                if(!is_array($val)) {
+                if (!is_array($val)) {
 
                     $elements   .=  "<input type='hidden' name='$name'   value='$val'> ";
 

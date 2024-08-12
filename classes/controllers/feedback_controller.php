@@ -344,7 +344,7 @@ class feedback_controller extends controller_base {
         $coursework_page_url = $this->get_path('coursework', array('coursework' => $teacherfeedback->get_coursework()));
 
         // remove feedback comments and associated feedback files if 'Remove feedback' button pressed
-        if($this->params['remove']){
+        if ($this->params['remove']){
             if (!$this->params['confirm']) {
 
                 $urlparams = array('confirm' => $this->params['confirm'],

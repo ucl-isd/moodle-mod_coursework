@@ -257,7 +257,7 @@ class submission extends table_base implements \renderable {
                 if ($submission->has_extension()){
                     //check if extension is valid
                     $extension = $submission->submission_extension();
-                    if($extension->extended_deadline > time()){
+                    if ($extension->extended_deadline > time()){
                         //unset as it doesn't need to be autofinalise yet
                         unset($submissions[$submission->id]);
                     }
@@ -842,7 +842,7 @@ class submission extends table_base implements \renderable {
 
             case submission::PARTIALLY_GRADED:
                 $statustext = get_string('statuspartiallygraded', 'coursework');
-                if($this->any_editable_feedback_exists()){
+                if ($this->any_editable_feedback_exists()){
                     $statustext = get_string('statusfullygraded', 'coursework'). "<br>";
                     $statustext .=  get_string('stilleditable', 'coursework');
                 }
@@ -861,7 +861,7 @@ class submission extends table_base implements \renderable {
                                      get_string('statusfinalgradedsingle', 'coursework'),
                                      array('class' => 'highlight'));
                 $statustext = $this->has_multiple_markers() && $this->sampled_feedback_exists() ? $spanfinalgraded : $spanfinalgradedsingle;
-                if($this->editable_final_feedback_exist()){
+                if ($this->editable_final_feedback_exist()){
                     $statustext .= "<br>". get_string('finalgradestilleditable', 'coursework');
                 }
                 break;
@@ -972,7 +972,7 @@ class submission extends table_base implements \renderable {
         }
 
         $grade_judge = new grade_judge($this->get_coursework());
-        if($grade_judge->has_feedback_that_is_promoted_to_gradebook($this) && $this->final_grade_agreed() && !$this->editable_final_feedback_exist()) {
+        if ($grade_judge->has_feedback_that_is_promoted_to_gradebook($this) && $this->final_grade_agreed() && !$this->editable_final_feedback_exist()) {
             return true;
         }
 

@@ -118,7 +118,7 @@ class import extends grading_sheet{
                 $stage_identifier = $this->get_stage_identifier($submissionid,$cells[$i]);
 
                 // remove numbers from cell names so they can be dynamically validated
-                if(substr($cells[$i],0,8) == 'assessor'){
+                if (substr($cells[$i],0,8) == 'assessor'){
                     $cells[$i] = substr($cells[$i], 0, -1);
                 }
 
@@ -207,7 +207,7 @@ class import extends grading_sheet{
                     $i++;
                 }
 
-                if(!empty($typefound)) {
+                if (!empty($typefound)) {
 
                     //this var is needed to provide an offset so the positions in the array we are looking for
                     //are correct even after a splice and add is carried out
@@ -761,7 +761,7 @@ class import extends grading_sheet{
 
 
         //double marked - singlegrade - allocated
-        if($this->coursework->get_max_markers()>1 && ($cell_identifier == 'singlegrade' || $cell_identifier == 'feedbackcomments')
+        if ($this->coursework->get_max_markers()>1 && ($cell_identifier == 'singlegrade' || $cell_identifier == 'feedbackcomments')
             && $this->coursework->allocation_enabled()){
 
             $dbrecord = $DB->get_record('coursework_allocation_pairs',
@@ -775,7 +775,7 @@ class import extends grading_sheet{
 
 
         //double marked - singlegrade - notallocated
-        if($this->coursework->get_max_markers()>1 && ($cell_identifier == 'singlegrade' || $cell_identifier == 'feedbackcomments')
+        if ($this->coursework->get_max_markers()>1 && ($cell_identifier == 'singlegrade' || $cell_identifier == 'feedbackcomments')
             && !$this->coursework->allocation_enabled()){
 
             // if any part of initial submission graded by the user then get stage_identifier from feedback
@@ -823,11 +823,11 @@ class import extends grading_sheet{
 
 
         // double marked - multiplegrade - allocated/notallocated
-        if($this->coursework->get_max_markers()>1 && ($cell_identifier != 'singlegrade' && $cell_identifier != 'feedbackcomments')) {
+        if ($this->coursework->get_max_markers()>1 && ($cell_identifier != 'singlegrade' && $cell_identifier != 'feedbackcomments')) {
             if (substr($cell_identifier, 0, 8) == 'assessor') {
                 $stage_identifier = 'assessor_' . (substr($cell_identifier, -1));
                 //$cells[$i] = substr($cells[$i], 0, -1);
-            } else if(substr($cell_identifier, 0, 6) == 'agreed') {
+            } else if (substr($cell_identifier, 0, 6) == 'agreed') {
                 $stage_identifier = 'final_agreed_1';
             }
         }
@@ -862,7 +862,7 @@ class import extends grading_sheet{
 
        $otherassessors = false;
 
-        if(in_array('otherassessors', $csv_cells)){
+        if (in_array('otherassessors', $csv_cells)){
             // find position of otherassesors so we know from which key to unset
             $key = array_search('otherassessors', $csv_cells);
             unset($csv_cells[$key]);

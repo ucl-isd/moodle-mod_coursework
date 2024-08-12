@@ -142,7 +142,7 @@ abstract class base {
      */
     public function assessor_already_allocated_for_this_submission($allocatable, $assessor) {
 
-        if(!empty($assessor)) {
+        if (!empty($assessor)) {
             $coursework_id = $this->get_coursework_id();
             allocation::fill_pool_coursework($coursework_id);
             $record = allocation::get_object(
@@ -971,7 +971,7 @@ abstract class base {
             $groupid = ($group)? $group->id: 0;
         }
 
-        if($groupid) {
+        if ($groupid) {
             // find 1st assessor in the group
             $first_group_assessor = get_enrolled_users($this->coursework->get_context(), $this->assessor_capability(),
                 $groupid, 'u.*', 'id ASC', 0, 1);

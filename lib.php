@@ -286,13 +286,13 @@ function mod_coursework_core_calendar_provide_event_action(calendar_event $event
         // check how many submissions to mark
        $outstandingmarking = new outstanding_marking();
 
-       if($event->eventtype == 'initialgradingdue') {
+       if ($event->eventtype == 'initialgradingdue') {
            //initial grades
            $togradeinitialcount = $outstandingmarking->get_to_grade_initial_count($dbcoursework, $user->id());
            $name = ($coursework->has_multiple_markers())? get_string('initialgrade', 'coursework') : get_string('grade', 'mod_coursework');
            $itemcount = $togradeinitialcount ;
 
-       } else if($event->eventtype == 'agreedgradingdue') {
+       } else if ($event->eventtype == 'agreedgradingdue') {
            //agreed grades
            $togradeagreedcount = $outstandingmarking->get_to_grade_agreed_count($dbcoursework, $user->id());
            $name = get_string('agreedgrade', 'coursework');
@@ -1298,7 +1298,7 @@ function course_group_member_added($event_data) {
         $student = $coursework->can_submit(); // check if user is student in this course
         $initial_stage_assessor = has_capability('mod/coursework:addinitialgrade', $coursework->get_context(), $addeduserid); // check if user is initial stage assessor in this course
 
-        if($initial_stage_assessor){
+        if ($initial_stage_assessor){
             // check if any assessor already exists in the group except currently added one
             $assessors_in_group = get_enrolled_users($coursework->get_context(), 'mod/coursework:addinitialgrade', $groupid);
             unset($assessors_in_group[$addeduserid]); //remove added assessor as at this point they will be already in the group
@@ -1306,7 +1306,7 @@ function course_group_member_added($event_data) {
             if ($assessors_in_group){//yes - do nothing as other assessor is already assigned to group members, return true
                 break;
             } else{ //no - check if CW is a group coursework
-                if($coursework->is_configured_to_have_group_submissions()){// yes - assign the tutor to a allocatable group
+                if ($coursework->is_configured_to_have_group_submissions()){// yes - assign the tutor to a allocatable group
                     $stage_1->make_auto_allocation_if_necessary(group::find($groupid));
                 } else {  // no, check if group has any student members
                     $allocatables = $coursework->get_allocatables();
@@ -1323,8 +1323,8 @@ function course_group_member_added($event_data) {
                     }
                 }
             }
-        } else if($student) {
-            if($coursework->is_configured_to_have_group_submissions()) {
+        } else if ($student) {
+            if ($coursework->is_configured_to_have_group_submissions()) {
                 $allocatable = group::find($groupid);
             } else {
                 $allocatable = user::find($addeduserid);
@@ -1364,9 +1364,9 @@ function course_group_member_removed($event_data) {
         $student = $coursework->can_submit(); // check if user is student in this course
         $initial_stage_assessor = has_capability('mod/coursework:addinitialgrade', $coursework->get_context(), $removeduserid); // check if user was initial stage assessor in this course
 
-        if($initial_stage_assessor){
+        if ($initial_stage_assessor){
             // remove all assessor allocations for this group
-            if($coursework->is_configured_to_have_group_submissions()) {
+            if ($coursework->is_configured_to_have_group_submissions()) {
                 if (can_delete_allocation($coursework->id(), $groupid)) {
                     $DB->delete_records('coursework_allocation_pairs', array('courseworkid' => $coursework->id(), 'assessorid' => $removeduserid, 'allocatableid' => $groupid, 'stage_identifier' => 'assessor_1'));
                 }
@@ -1387,8 +1387,8 @@ function course_group_member_removed($event_data) {
             // check if there are any other assessor in the group, at this point the removed member should no longer be in the group
             $assessors_in_group = get_enrolled_users($coursework->get_context(), 'mod/coursework:addinitialgrade', $groupid);
 
-             if($assessors_in_group) { // if another assessor found, assign all allocatables in this group to the other assessor
-                 if($coursework->is_configured_to_have_group_submissions()){// yes - assign the assessor to a allocatable group
+             if ($assessors_in_group) { // if another assessor found, assign all allocatables in this group to the other assessor
+                 if ($coursework->is_configured_to_have_group_submissions()){// yes - assign the assessor to a allocatable group
                      $stage_1->make_auto_allocation_if_necessary(group::find($groupid));
                  } else {
                      $allocatables = $coursework->get_allocatables();
@@ -1405,7 +1405,7 @@ function course_group_member_removed($event_data) {
              } else{
                  continue;
              }
-        } else if($student) {
+        } else if ($student) {
             if ($coursework->is_configured_to_have_group_submissions()) {
                 // check if student was the only student member in the group
                 $students = get_enrolled_users($coursework->get_context(), 'mod/coursework:submit', $groupid); // at this point student should be already removed from the group
@@ -1615,11 +1615,11 @@ function teacher_removed_allocated_not_graded($event_data){
     $courseworks = coursework_get_courseworks_by_courseid($courseid);
     foreach($courseworks as $cw){
         $coursework = coursework::find($cw->id);
-        if($coursework->allocation_enabled()){
+        if ($coursework->allocation_enabled()){
             $assessor_allocations = $DB->get_records('coursework_allocation_pairs', array('courseworkid' => $coursework->id,
                                                                                                 'assessorid' => $userid));
             foreach($assessor_allocations as $allocation){
-                if($allocation->allocatabletype == 'user'){
+                if ($allocation->allocatabletype == 'user'){
                     $allocatable = user::find($allocation->allocatableid);
                 } else {
                     $allocatable = group::find($allocation->allocatableid);
@@ -1627,7 +1627,7 @@ function teacher_removed_allocated_not_graded($event_data){
 
                 $submission = $coursework->get_allocatable_submission($allocatable);
                 // if assessor grade the submission already, skip it
-                if($submission && $submission->has_specific_assessor_feedback($userid)){
+                if ($submission && $submission->has_specific_assessor_feedback($userid)){
                     continue;
                 }
 

@@ -555,7 +555,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= '</table>';
 
 
-        if($submission->is_published()) {
+        if ($submission->is_published()) {
             $html .= '<div class ="alert">' . get_string('gradereleasedtostudent', 'coursework') . '</div>';
         }
 
@@ -641,7 +641,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         // reset table preferences
-        if($firstnamealpha || $lastnamealpha || $groupnamealpha) {
+        if ($firstnamealpha || $lastnamealpha || $groupnamealpha) {
             $url = new moodle_url('/mod/coursework/view.php', array('id' => $coursework->get_course_module()->id, 'treset' => 1));
 
             $html .= html_writer::start_div('mdl-right');
@@ -692,7 +692,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $html .= $this->render($gradingactions);;
         }
 
-        if($firstnamealpha || $lastnamealpha || $groupnamealpha || $group != -1) {
+        if ($firstnamealpha || $lastnamealpha || $groupnamealpha || $group != -1) {
             $html .= $warnings->filters_warning();
         }
 
@@ -1439,7 +1439,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             if ($coursework->can_grade()) { // teachers
                 $submitted = count($coursework->get_all_submissions());
             } else if ($coursework->can_submit()) { //students
-                if($coursework->use_groups){
+                if ($coursework->use_groups){
                     $allocatable = $coursework->get_student_group($USER);
                 } else {
                     $allocatable = $USER;

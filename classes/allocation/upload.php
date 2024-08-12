@@ -113,9 +113,9 @@ class upload {
                     }
 
                     // check if allocatable exists in this coursework
-                    if(!$allocatable || !in_array($allocatable->id, $allocatables)){$errors[$s] = get_string($allocatabletype .'notincoursework', 'coursework'); break;}
+                    if (!$allocatable || !in_array($allocatable->id, $allocatables)){$errors[$s] = get_string($allocatabletype .'notincoursework', 'coursework'); break;}
                     // duplicate user or group
-                    if($allocatable && in_array($allocatable->id, $allocatablesinfile)){$errors[$s] = get_string('duplicate'. $allocatabletype , 'coursework') ; break;}
+                    if ($allocatable && in_array($allocatable->id, $allocatablesinfile)){$errors[$s] = get_string('duplicate'. $allocatabletype , 'coursework') ; break;}
                     $allocatablesinfile[] = $allocatable->id;
                 }
 
@@ -124,15 +124,15 @@ class upload {
                 // in initial stage
                 if (substr($cells[$keynum],0,8) == 'assessor'){
                     // skip empty assessors fields
-                    if(empty($value)){ continue;}
+                    if (empty($value)){ continue;}
 
                     $assessor = $DB->get_record('user', array($assessor_identifier=> $value));
 
-                    if(!$assessor ||!in_array($assessor->id, $assessors)){$errors[$s] = get_string('assessornotincoursework', 'coursework', $keynum ); continue;}
+                    if (!$assessor ||!in_array($assessor->id, $assessors)){$errors[$s] = get_string('assessornotincoursework', 'coursework', $keynum ); continue;}
 
                     // check if current assessor is not already allocated for this allocatable in different stage
                     // or is not already in the file in previous stage
-                    if($assessor && ($this->coursework->assessor_has_allocation_for_student_not_in_current_stage($allocatable, $assessor->id, $cells[$keynum])
+                    if ($assessor && ($this->coursework->assessor_has_allocation_for_student_not_in_current_stage($allocatable, $assessor->id, $cells[$keynum])
                         || in_array($assessor->id, $assessorsinfile))){
                         $errors[$s] = get_string('assessoralreadyallocated', 'coursework', $keynum); continue;
                     }
@@ -234,7 +234,7 @@ class upload {
 
                     $allocation = $DB->get_record('coursework_allocation_pairs', $params);
 
-                    if(!$allocation){
+                    if (!$allocation){
                         // create allocation
                         $this->add_allocation($assessor->id, $cells[$keynum], $allocatable);
 

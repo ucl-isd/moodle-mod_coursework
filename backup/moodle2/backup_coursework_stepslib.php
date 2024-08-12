@@ -129,7 +129,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
             $sample_strategy->set_source_table('coursework_sample_set_rules',
                                         array('courseworkid' => backup::VAR_PARENTID));
 
-        if($userinfo) {
+        if ($userinfo) {
 
 
             $plagiarism_flags = new backup_nested_element('coursework_plagiarism_flags');

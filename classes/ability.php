@@ -657,7 +657,7 @@ class ability extends \mod_coursework\framework\ability {
             'mod_coursework\models\moderation',
             function (moderation $moderation) {
                 $is_allocated = false;
-                if($moderation->get_coursework()->allocation_enabled()) {
+                if ($moderation->get_coursework()->allocation_enabled()) {
                     $is_allocated = $moderation->is_moderator_allocated();
                 }
                 return  $is_allocated;
@@ -670,7 +670,7 @@ class ability extends \mod_coursework\framework\ability {
             'mod_coursework\models\moderation',
             function (moderation $moderation) {
                 $is_allocated = false;
-                if($moderation->get_coursework()->allocation_enabled() && !is_siteadmin()) {
+                if ($moderation->get_coursework()->allocation_enabled() && !is_siteadmin()) {
                     $is_allocated = !$moderation->is_moderator_allocated();
                 }
                 return  $is_allocated;

@@ -57,7 +57,7 @@ class student_submission_form extends moodleform {
         $this->add_hidden_elements_to_form();
 
         // if TII plagiarism enabled check if user agreed/disagreed EULA
-        if(!$this->get_coursework()->plagiarism_enbled() || has_user_seen_tii_EULA_agreement()) {
+        if (!$this->get_coursework()->plagiarism_enbled() || has_user_seen_tii_EULA_agreement()) {
 
             $this->add_header_to_form();
 

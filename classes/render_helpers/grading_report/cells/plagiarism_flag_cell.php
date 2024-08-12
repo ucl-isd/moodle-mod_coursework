@@ -50,13 +50,13 @@ class plagiarism_flag_cell extends cell_base {
         $content = '';
         $ability = new ability(user::find($USER), $rowobject->get_coursework());
 
-        if($rowobject->has_submission() && $rowobject->get_submission()->finalised){
+        if ($rowobject->has_submission() && $rowobject->get_submission()->finalised){
             $plagiarism_flag_params = array(
                 'submissionid' => $rowobject->get_submission()->id
             );
             $plagiarism_flag = plagiarism_flag::find($plagiarism_flag_params);
 
-            if(!$plagiarism_flag){  // if plagiarism flag for this submission doesn't exist, we can create one
+            if (!$plagiarism_flag){  // if plagiarism flag for this submission doesn't exist, we can create one
                 $plagiarism_flag_params = array('courseworkid' => $rowobject->get_coursework()->id,
                                                 'submissionid' => $rowobject->get_submission()->id);
                 $new_plagiarism_flag = plagiarism_flag::build($plagiarism_flag_params);

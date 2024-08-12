@@ -43,7 +43,7 @@ class agreedgrade_cell extends cell_base{
     public function get_cell($submission, $student, $stage_identifier){
 
         $agreedgrade = $submission->get_agreed_grade();
-        if($this->coursework->is_using_rubric() && $this->coursework->finalstagegrading != 1){
+        if ($this->coursework->is_using_rubric() && $this->coursework->finalstagegrading != 1){
             $gradedata = array();
             $this->get_rubric_scores_gradedata($agreedgrade, $gradedata); // multiple parts are handled here
         } else {

@@ -45,7 +45,7 @@ class singlegrade_cell extends cell_base{
         $stage_identifier = ($this->coursework->get_max_markers() == 1) ? "assessor_1" : $this->get_stage_identifier_for_assessor($submission, $student);
 
         $grade = $submission->get_assessor_feedback_by_stage($stage_identifier);
-        if($this->coursework->is_using_rubric()){
+        if ($this->coursework->is_using_rubric()){
             $gradedata = array();
             $this->get_rubric_scores_gradedata($grade, $gradedata); // multiple parts are handled here
         } else {

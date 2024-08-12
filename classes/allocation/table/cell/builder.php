@@ -452,7 +452,7 @@ class builder {
             'allocatableid-allocatabletype',
             [$this->allocatable->id(), $this->allocatable->type()]
         );
-        if($submission){
+        if ($submission){
         $feedbacks = isset(feedback::$pool[$this->coursework->id]['submissionid'][$submission->id]) ?
             feedback::$pool[$this->coursework->id]['submissionid'][$submission->id] : [];
 

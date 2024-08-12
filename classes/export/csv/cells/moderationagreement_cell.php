@@ -43,7 +43,7 @@ class moderationagreement_cell extends cell_base {
         $moderation_agreement = '';
         $moderation = '';
 
-        if($this->coursework->allocation_enabled()) {
+        if ($this->coursework->allocation_enabled()) {
             $allocation = $submission->get_assessor_allocation_by_stage('moderator');
             if ($allocation) {
                 $data[] = $this->get_assessor_name($allocation->assessorid);
@@ -80,7 +80,7 @@ class moderationagreement_cell extends cell_base {
     public function get_header($stage){
 
         $fields = array();
-        if($this->coursework->allocation_enabled()){
+        if ($this->coursework->allocation_enabled()){
             $fields['allocatedmoderatorname'] = 'Allocated moderator name';
             $fields['allocatedmoderatorusername'] = 'Allocated moderator username';
         }

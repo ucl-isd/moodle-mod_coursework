@@ -27,7 +27,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 {
     // Just a handy way to spit out debugging info while in the bowels of restore
     static function cheaplog($thing,$append=true) {
-        if($append) {
+        if ($append) {
             $append=FILE_APPEND;
         }
 
@@ -48,7 +48,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         // To know if we are including userinfo.
         $userinfo = $this->get_setting_value('userinfo');
 
-        if($userinfo) {
+        if ($userinfo) {
             // Define each element separated.
             // Note: when I started the code I didn't realise that the names were arbitrary
             //       and that the coursework_ prefix is not needed.
@@ -78,7 +78,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
     }
 
     protected function fixallocatable(&$data) {
-        if(!empty($data->allocatableuser)) {
+        if (!empty($data->allocatableuser)) {
             $data->allocatableid=$this->get_mappingid('user',$data->allocatableuser);
             $data->allocatabletype='user';
         }
@@ -483,7 +483,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
     protected function set_defaults($fields,&$data) {
         foreach($fields as $name=> $default) {
-            if(!isset($data->$name)) {
+            if (!isset($data->$name)) {
                 $data->$name=$default;
             }
         }
@@ -507,7 +507,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $files=$fs->get_area_files($ctx->id,'mod_coursework','submission'); //Array of stored_file
 
         foreach($files as $file) {
-            if(!$file->is_directory()) {
+            if (!$file->is_directory()) {
                 $itemid=$file->get_itemid();
 
                 $entry=$DB->get_record('coursework_submissions',

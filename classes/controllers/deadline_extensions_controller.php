@@ -305,7 +305,7 @@ class deadline_extensions_controller extends controller_base {
                     $time = date('d-m-Y H:i', $this->coursework->deadline);
                 }
 
-                if(!empty($deadline_extension->extended_deadline) && $deadline_extension->extended_deadline > 0) {
+                if (!empty($deadline_extension->extended_deadline) && $deadline_extension->extended_deadline > 0) {
                     $time = date('d-m-Y H:i', $deadline_extension->extended_deadline);
                 }
 

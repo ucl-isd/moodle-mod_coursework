@@ -981,11 +981,11 @@ class coursework extends table_base {
 
                 $foldername = '';
 
-                if($this->blindmarking == 0 || has_capability('mod/coursework:viewanonymous',$this->get_context())) {
+                if ($this->blindmarking == 0 || has_capability('mod/coursework:viewanonymous',$this->get_context())) {
                     $submissionuser = $submission->get_allocatable();
                     if ($this->is_configured_to_have_group_submissions() && $submissionuser->name) {
                         $foldername = $submissionuser->name . '_';
-                    } elseif(!$this->is_configured_to_have_group_submissions()) {
+                    } elseif (!$this->is_configured_to_have_group_submissions()) {
                         $foldername = $submissionuser->firstname . ' ' . $submissionuser->lastname . '_';
                     }
                 }
@@ -1883,7 +1883,7 @@ class coursework extends table_base {
             );
             $report->add_cell(new single_assessor_feedback_cell($items_with_stage));
         }
-        if($this->moderation_agreement_enabled()){
+        if ($this->moderation_agreement_enabled()){
             $items_with_stage = array(
                 'stage' => $this->get_moderator_grade_stage(),
                 'coursework' => $this,
@@ -2564,7 +2564,7 @@ class coursework extends table_base {
         $submissions = $DB->get_records_sql($sql,array('courseworkid' => $this->id));
 
         // for submissions that don't have a set personal deadline give coursework's default deadline
-        if($submissions) {
+        if ($submissions) {
             foreach ($submissions as $submission) {
                 if (is_null($submission->personal_deadline)) {
                     $submission->personal_deadline = $this->deadline;
@@ -2972,7 +2972,7 @@ class coursework extends table_base {
     public function get_allocatable_deadline($allocatableid) {
         $deadline = $this->deadline;
 
-        if($this->use_groups){
+        if ($this->use_groups){
             $allocatable = group::find($allocatableid);
         } else {
             $allocatable = user::find($allocatableid);
@@ -2987,7 +2987,7 @@ class coursework extends table_base {
             }
         }
 
-        if($this->extensions_enabled()){ // check if coursework allows extensions
+        if ($this->extensions_enabled()){ // check if coursework allows extensions
             // check if extension for this user exists
             $extension = $this->get_allocatable_extension($allocatable);
             if (!empty($extension)) {

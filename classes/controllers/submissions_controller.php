@@ -119,12 +119,12 @@ class submissions_controller extends controller_base {
 
 
        // Automatically finalise any submissions that's past the deadline/personal deadline and doesn't have valid extension
-        if($this->coursework->personal_deadlines_enabled()){
+        if ($this->coursework->personal_deadlines_enabled()){
             // Check is submission has a valid personal deadline or a valid extension
               if (!$this->has_valid_personal_deadline($submission) && !$this->has_valid_extension($submission)) {
                   $submission->finalised = 1;
               }
-        } elseif($this->coursework->deadline_has_passed() && !$this->has_valid_extension($submission)){
+        } elseif ($this->coursework->deadline_has_passed() && !$this->has_valid_extension($submission)){
                   $submission->finalised = 1;
         }
 

@@ -263,7 +263,7 @@ class personal_deadlines_controller extends controller_base{
      * @return bool
      */
     protected function validated($time) {
-        if(strtotime($time) <= time()) {
+        if (strtotime($time) <= time()) {
             return false;
         }
         return true;

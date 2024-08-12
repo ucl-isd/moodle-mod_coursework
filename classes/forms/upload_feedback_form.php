@@ -80,11 +80,11 @@ class upload_feedback_form extends moodleform {
         }
 
         // Disable overwrite current feedback files checkbox if user doesn't have edit capability
-        if(!has_capability('mod/coursework:editinitialgrade',$this->coursework->get_context())) {
+        if (!has_capability('mod/coursework:editinitialgrade',$this->coursework->get_context())) {
             $mform->disabledIf('overwrite', 'feedbackstage', 'eq', 'initialassessor');
         }
 
-        if(!has_capability('mod/coursework:editagreedgrade',$this->coursework->get_context()) && !has_capability('mod/coursework:administergrades',$this->coursework->get_context()) ) {
+        if (!has_capability('mod/coursework:editagreedgrade',$this->coursework->get_context()) && !has_capability('mod/coursework:administergrades',$this->coursework->get_context()) ) {
             $mform->disabledIf('overwrite', 'feedbackstage', 'eq', 'final_agreed_1');
         }
 

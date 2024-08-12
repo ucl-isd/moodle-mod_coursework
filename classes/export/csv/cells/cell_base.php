@@ -240,7 +240,7 @@ abstract class cell_base implements cell_interface {
         $stageidentifier = '';
         if ($this->coursework->allocation_enabled()){
             $stageidentifier = $this->coursework->get_assessors_stage_identifier($student->id, $USER->id);
-        } else if($this->coursework->get_max_markers()>1) {
+        } else if ($this->coursework->get_max_markers()>1) {
             // get existing feedback
 
           $sql = "SELECT * FROM {coursework_feedbacks}
@@ -274,7 +274,7 @@ abstract class cell_base implements cell_interface {
      */
     public function get_rubric_scores_gradedata($grade, &$gradedata){
 
-        if($grade) {
+        if ($grade) {
 
             $controller = $this->coursework->get_advanced_grading_active_controller();
             $gradinginstance = $controller->get_or_create_instance(0, $grade->assessorid, $grade->id);

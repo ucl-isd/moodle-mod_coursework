@@ -74,7 +74,7 @@ class otherassessors_cell extends cell_base{
                 if ((($ability->can('show', $feedback)  || has_capability('mod/coursework:addallocatedagreedgrade', $submission->get_coursework()->get_context())) &&
                     (!$submission->any_editable_feedback_exists() && count($submission->get_assessor_feedbacks()) <= $submission->max_number_of_feedbacks())) || is_siteadmin($USER->id)) {
 
-                    if($this->coursework->is_using_rubric()){
+                    if ($this->coursework->is_using_rubric()){
                         $this->get_rubric_scores_gradedata($grade, $gradedata); // multiple parts are handled here
                     } else {
                         $gradedata[] = $this->get_actual_grade($grade->grade);
@@ -90,7 +90,7 @@ class otherassessors_cell extends cell_base{
 
             } else {
 
-                if($this->coursework->is_using_rubric()){
+                if ($this->coursework->is_using_rubric()){
                     $criterias = $this->coursework->get_rubric_criteria();
                     foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
                         $gradedata['assessor' . $stage_identifier . '_' . $criteria['id']] = get_string('grade_hidden_manager', 'mod_coursework');

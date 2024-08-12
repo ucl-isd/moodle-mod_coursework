@@ -60,7 +60,7 @@ class personal_deadline_cell extends cell_base {
         $content .= '<div class="content_personal_deadline">'.$date.'</div>';
         $ability = new ability(user::find($USER, false), $row_object->get_coursework());
         $class = 'edit_personal_deadline';
-        if(!$ability->can('edit', $personal_deadline)) {
+        if (!$ability->can('edit', $personal_deadline)) {
             $class .= ' display-none';
         }
 

@@ -279,7 +279,7 @@ class mod_coursework_mod_form extends moodleform_mod {
            $data->blindmarking = $CFG->coursework_blindmarking;
         }
 
-        if($data->numberofmarkers >1){
+        if ($data->numberofmarkers >1){
             $data->moderationagreementenabled = 0;
         }
 
@@ -355,7 +355,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $courseworkid = $this->get_coursework_id();
         if ($courseworkid){
             $coursework = mod_coursework\models\coursework::find($courseworkid);
-            if($coursework->extension_exists()){
+            if ($coursework->extension_exists()){
                 $optional = false;
             }
         }
@@ -391,7 +391,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $courseworkid = $this->get_coursework_id();
         $disabled = array();
         if (coursework_personal_deadline_passed($courseworkid)){
-            $moodle_form->disabledIf('personaldeadlineenabled', 'deadline[enabled]', 'notchecked');
+            $moodle_form->disabledif('personaldeadlineenabled', 'deadline[enabled]', 'notchecked');
             $disabled = array('disabled' => true);
         }
         $moodle_form->addElement('select',
@@ -1340,7 +1340,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         // capability for user allowed to receive submission notifications
         $enrolledusers = get_enrolled_users(context_course::instance($COURSE->id), 'mod/coursework:receivesubmissionnotifications');
-        if($enrolledusers) {
+        if ($enrolledusers) {
             foreach ($enrolledusers as $u) {
                 $selectableusers[$u->id] = fullname($u);
             }

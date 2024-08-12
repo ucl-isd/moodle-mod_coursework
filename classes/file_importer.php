@@ -134,7 +134,7 @@ class coursework_file_zip_importer    {
 
                         $feedback = $DB->get_record('coursework_feedbacks', array('submissionid' => $submission->id, 'assessorid' => $USER->id ));
 
-                        if($feedback){
+                        if ($feedback){
                             $feedbackstage = $feedback->stage_identifier;
 
                         } else {

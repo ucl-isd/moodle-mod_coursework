@@ -56,7 +56,7 @@ $params = array(
 if ($selectedtype != 'unfinalise') {
     $controller = new mod_coursework\controllers\personal_deadlines_controller($params);
 
-    if(!empty($personal_deadline_time)) {
+    if (!empty($personal_deadline_time)) {
         $result = $controller->insert_update($personal_deadline_time);
         echo json_encode($result);
     } else {
