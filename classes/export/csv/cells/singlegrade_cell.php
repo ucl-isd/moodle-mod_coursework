@@ -256,7 +256,7 @@ class singlegrade_cell extends cell_base {
            // $csv_cells = array_splice($csv_cells,5, 1, $rubricheaders);
 
             $start_cells = array_slice($csv_cells, 0, $position, true);
-            $end_cells = array_slice($csv_cells, $position+1, count($csv_cells), true);
+            $end_cells = array_slice($csv_cells, $position + 1, count($csv_cells), true);
 
             $cells = array_merge($start_cells, $rubricheaders);
 

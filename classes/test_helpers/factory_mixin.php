@@ -266,7 +266,7 @@ trait factory_mixin {
         $feedback = new stdClass();
         $feedback->submissionid = $this->get_submission()->id;
         $feedback->assessorid = $assessor->id;
-        $feedback->stage_identifier = 'assessor_'.($count+1);
+        $feedback->stage_identifier = 'assessor_'.($count + 1);
         $feedback->grade = 45;
         return $generator->create_feedback($feedback);
     }

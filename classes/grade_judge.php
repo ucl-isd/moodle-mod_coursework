@@ -181,7 +181,7 @@ class grade_judge {
             return true;
         } else if ($this->coursework->grade >= 1) {
             // Numeric grade
-            return is_numeric($value) && $value < $this->coursework->grade +1 && $value > 0;
+            return is_numeric($value) && $value < $this->coursework->grade + 1 && $value > 0;
         } else if ($this->coursework->grade == 0) {
             // No grade
             return true;
@@ -205,7 +205,7 @@ class grade_judge {
             // Scale
             $scale = \grade_scale::fetch(array('id' => abs($this->coursework->grade)));
             $scale->load_items();
-            return array_search($value, $scale->scale_items)+1;
+            return array_search($value, $scale->scale_items) + 1;
         } else {
             return $value;
         }

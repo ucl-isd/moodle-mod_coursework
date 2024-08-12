@@ -785,7 +785,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $assessorheaders = [];
 
         for ($i = 0; $i < $samplingwidget->get_coursework()->get_max_markers(); $i++) {
-            $assessorheaders[] = get_string('assessorheading', 'mod_coursework', $i+1);
+            $assessorheaders[] = get_string('assessorheading', 'mod_coursework', $i + 1);
         }
 
         $scale = "";

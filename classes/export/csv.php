@@ -258,7 +258,7 @@ class csv {
         if ($this->coursework->is_using_rubric()) {
             $criterias = $this->coursework->get_rubric_criteria();
             // We will increment by the number of criterias plus 1 for feedback
-            $increment = (count($criterias) * 2) +1;
+            $increment = (count($criterias) * 2) + 1;
 
         } else {
             $increment = 2;
