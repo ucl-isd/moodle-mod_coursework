@@ -44,7 +44,7 @@ class upload {
      * @return array|bool
      * @throws \moodle_exception
      */
-    public function validate_csv($content, $encoding, $delimeter){
+    public function validate_csv($content, $encoding, $delimeter) {
         global $CFG, $DB;
 
         $assessor_identifier = $CFG->coursework_allocation_identifier;
@@ -83,7 +83,7 @@ class upload {
 
         $csv_cells = array('allocatable');
         $stages = $this->coursework->get_max_markers();
-        for ($i=1; $i<=$stages; $i++){
+        for ($i=1; $i<=$stages; $i++) {
             $csv_cells[] = 'assessor_'.$i;
         }
 
@@ -98,9 +98,9 @@ class upload {
                 // validate allocatable (user or group)
                 if ($cells[$keynum] == 'allocatable') {
                     // check if allocatable exists in the file
-                    if (empty($value)){$errors[$s] = get_string($allocatabletype .'namemissing', 'coursework'); break;}
+                    if (empty($value)) {$errors[$s] = get_string($allocatabletype .'namemissing', 'coursework'); break;}
 
-                    if ($allocatabletype == 'user'){
+                    if ($allocatabletype == 'user') {
                         // get user id
                         $suballocatable = $DB->get_record('user', array($assessor_identifier=> $value));
                         $allocatable = ($suballocatable)? \mod_coursework\models\user::find($suballocatable->id): '';
@@ -112,26 +112,26 @@ class upload {
                     }
 
                     // check if allocatable exists in this coursework
-                    if (!$allocatable || !in_array($allocatable->id, $allocatables)){$errors[$s] = get_string($allocatabletype .'notincoursework', 'coursework'); break;}
+                    if (!$allocatable || !in_array($allocatable->id, $allocatables)) {$errors[$s] = get_string($allocatabletype .'notincoursework', 'coursework'); break;}
                     // duplicate user or group
-                    if ($allocatable && in_array($allocatable->id, $allocatablesinfile)){$errors[$s] = get_string('duplicate'. $allocatabletype , 'coursework') ; break;}
+                    if ($allocatable && in_array($allocatable->id, $allocatablesinfile)) {$errors[$s] = get_string('duplicate'. $allocatabletype , 'coursework') ; break;}
                     $allocatablesinfile[] = $allocatable->id;
                 }
 
                 // validate assessor if exists in the coursework and has one of the capabilities allowing them to grade
                 // in initial stage
-                if (substr($cells[$keynum],0,8) == 'assessor'){
+                if (substr($cells[$keynum],0,8) == 'assessor') {
                     // skip empty assessors fields
-                    if (empty($value)){ continue;}
+                    if (empty($value)) { continue;}
 
                     $assessor = $DB->get_record('user', array($assessor_identifier=> $value));
 
-                    if (!$assessor ||!in_array($assessor->id, $assessors)){$errors[$s] = get_string('assessornotincoursework', 'coursework', $keynum ); continue;}
+                    if (!$assessor ||!in_array($assessor->id, $assessors)) {$errors[$s] = get_string('assessornotincoursework', 'coursework', $keynum ); continue;}
 
                     // check if current assessor is not already allocated for this allocatable in different stage
                     // or is not already in the file in previous stage
                     if ($assessor && ($this->coursework->assessor_has_allocation_for_student_not_in_current_stage($allocatable, $assessor->id, $cells[$keynum])
-                        || in_array($assessor->id, $assessorsinfile))){
+                        || in_array($assessor->id, $assessorsinfile))) {
                         $errors[$s] = get_string('assessoralreadyallocated', 'coursework', $keynum); continue;
                     }
                     $assessorsinfile[] = $assessor->id;
@@ -155,7 +155,7 @@ class upload {
      * @return array|bool
      * @throws \moodle_exception
      */
-    public function process_csv($content, $encoding, $delimiter, $processingresults){
+    public function process_csv($content, $encoding, $delimiter, $processingresults) {
 
         global $CFG, $DB, $PAGE;
 
@@ -186,7 +186,7 @@ class upload {
         $s = 0;
         $csv_cells = array('allocatable');
         $stages = $this->coursework->get_max_markers();
-        for ($i=1; $i<=$stages; $i++){
+        for ($i=1; $i<=$stages; $i++) {
             $csv_cells[] = 'assessor_'.$i;
         }
 
@@ -209,7 +209,7 @@ class upload {
 
                 // get allocatable
                 if ($cells[$keynum] == 'allocatable') {
-                    if ($allocatabletype == 'user'){
+                    if ($allocatabletype == 'user') {
                         // get user id
                         $suballocatable = $DB->get_record('user', array($assessor_identifier=> $value));
                         $allocatable = ($suballocatable)? \mod_coursework\models\user::find($suballocatable->id): '';
@@ -220,7 +220,7 @@ class upload {
                         $allocatable = ($suballocatable)? \mod_coursework\models\group::find($suballocatable->id): '';
                     }
                 }
-                if (substr($cells[$keynum],0,8) == 'assessor' && !(empty($value))){
+                if (substr($cells[$keynum],0,8) == 'assessor' && !(empty($value))) {
 
                     $assessor = $DB->get_record('user', array($assessor_identifier=> $value));
 
@@ -231,7 +231,7 @@ class upload {
 
                     $allocation = $DB->get_record('coursework_allocation_pairs', $params);
 
-                    if (!$allocation){
+                    if (!$allocation) {
                         // create allocation
                         $this->add_allocation($assessor->id, $cells[$keynum], $allocatable);
 
@@ -266,7 +266,7 @@ class upload {
      * @param $allocatabletype
      * @return bool|int
      */
-    public function add_allocation($assessorid, $stage_identifier, $allocatable){
+    public function add_allocation($assessorid, $stage_identifier, $allocatable) {
         global $DB;
 
         $add_allocation = new \stdClass();
@@ -291,7 +291,7 @@ class upload {
      * @param $assessorid
      * @return bool
      */
-    public function update_allocation($allocationid, $assessorid){
+    public function update_allocation($allocationid, $assessorid) {
         global $DB;
 
         $update_allocation = new \stdClass();

@@ -332,7 +332,7 @@ class feedback_controller extends controller_base {
         $coursework_page_url = $this->get_path('coursework', array('coursework' => $teacherfeedback->get_coursework()));
 
         // remove feedback comments and associated feedback files if 'Remove feedback' button pressed
-        if ($this->params['remove']){
+        if ($this->params['remove']) {
             if (!$this->params['confirm']) {
 
                 $urlparams = array('confirm' => $this->params['confirm'],
@@ -535,7 +535,7 @@ class feedback_controller extends controller_base {
         $stage = $this->coursework->get_stage($identifier);
         if (!$stage->user_is_assessor($USER)) {
             if (!(has_capability('mod/coursework:administergrades', $this->coursework->get_context()) ||
-                  has_capability('mod/coursework:addallocatedagreedgrade', $this->coursework->get_context())) ){
+                  has_capability('mod/coursework:addallocatedagreedgrade', $this->coursework->get_context())) ) {
                 throw new access_denied($this->coursework, 'You are not authorised to add feedback at this stage');
             }
         }

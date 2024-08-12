@@ -99,7 +99,7 @@ class moderation_cell extends cell_base {
     /**
      * @return string
      */
-    public function get_table_header_class(){
+    public function get_table_header_class() {
         return 'moderator';
     }
 

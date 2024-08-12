@@ -99,7 +99,7 @@ class builder {
     /**
      * @return string
      */
-    private function get_potential_moderators_dropdown(){
+    private function get_potential_moderators_dropdown() {
 
         if ($this->stage_does_not_use_allocation()) {
             return '';
@@ -114,8 +114,8 @@ class builder {
     /**
      * @return bool
      */
-    private function has_moderation(){
-        if ($this->get_submission()){
+    private function has_moderation() {
+        if ($this->get_submission()) {
             return $this->get_stage()->has_moderation($this->get_submission());
         } else {
             return false;
@@ -140,7 +140,7 @@ class builder {
      * @return bool|\mod_coursework\models\moderation
      */
     private function get_moderation() {
-        if ($this->get_submission()){
+        if ($this->get_submission()) {
             return $this->get_stage()->get_moderation($this->get_submission());
         }
         return false;
@@ -168,12 +168,12 @@ class builder {
         $contents = '';
         $assessor_dropdown = '';
 
-        if ($this->coursework->sampling_enabled()){
-            if ($class == 'final_agreed_1'){
+        if ($this->coursework->sampling_enabled()) {
+            if ($class == 'final_agreed_1') {
 
             } else if ($this->get_stage()->uses_sampling()) {
 
-                if ($this->has_automatic_sampling()){
+                if ($this->has_automatic_sampling()) {
                     $contents .= $this->get_automatically_in_sample_label();
                     $contents .= $this->sampling_hidden_checkbox();
                 } else {
@@ -230,7 +230,7 @@ class builder {
     /**
      * @return string
      */
-    private function prepare_moderation_table_cell(){
+    private function prepare_moderation_table_cell() {
 
         $contents = '';
         $class = 'moderators';
@@ -436,7 +436,7 @@ class builder {
             'allocatableid-allocatabletype',
             [$this->allocatable->id(), $this->allocatable->type()]
         );
-        if ($submission){
+        if ($submission) {
         $feedbacks = isset(feedback::$pool[$this->coursework->id]['submissionid'][$submission->id]) ?
             feedback::$pool[$this->coursework->id]['submissionid'][$submission->id] : [];
 

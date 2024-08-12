@@ -132,7 +132,7 @@ class assessor_feedback_mform extends moodleform {
     /**
      * @param $draftenabled
      */
-    public function add_submit_buttons($draftenabled,  $feedbackid){
+    public function add_submit_buttons($draftenabled,  $feedbackid) {
 
         $button_array = array();
 
@@ -161,7 +161,7 @@ class assessor_feedback_mform extends moodleform {
      * @param $data
      * @return bool
      */
-    public function validate_grade($data){
+    public function validate_grade($data) {
         $result = true;
         if (!empty($this->_grading_instance) && property_exists($data, 'advancedgrading')) {
             $result = $this->_grading_instance->validate_grading_element($data->advancedgrading);

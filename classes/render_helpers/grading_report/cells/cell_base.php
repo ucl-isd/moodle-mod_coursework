@@ -142,7 +142,7 @@ abstract class cell_base implements cell_interface {
     /**
      * Override for the header help message
      */
-    public function get_table_header_help_icon(){
+    public function get_table_header_help_icon() {
 
     }
 

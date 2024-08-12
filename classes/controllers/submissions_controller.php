@@ -102,7 +102,7 @@ class submissions_controller extends controller_base {
 
         $validated = $this->new_submission();
 
-        if ($validated == true){
+        if ($validated == true) {
             return;
         }
 
@@ -117,12 +117,12 @@ class submissions_controller extends controller_base {
         $submission->timesubmitted = time();
 
        // Automatically finalise any submissions that's past the deadline/personal deadline and doesn't have valid extension
-        if ($this->coursework->personal_deadlines_enabled()){
+        if ($this->coursework->personal_deadlines_enabled()) {
             // Check is submission has a valid personal deadline or a valid extension
               if (!$this->has_valid_personal_deadline($submission) && !$this->has_valid_extension($submission)) {
                   $submission->finalised = 1;
               }
-        } elseif ($this->coursework->deadline_has_passed() && !$this->has_valid_extension($submission)){
+        } elseif ($this->coursework->deadline_has_passed() && !$this->has_valid_extension($submission)) {
                   $submission->finalised = 1;
         }
 
@@ -132,7 +132,7 @@ class submissions_controller extends controller_base {
 
         if (!$ability->can('create', $submission)) {
             // if submission already exists, redirect user to cw instead of throwing an error
-            if ($this->submissions_exists($submission)){
+            if ($this->submissions_exists($submission)) {
                 redirect($CFG->wwwroot.'/mod/coursework/view.php?id='.$this->coursemodule->id, $ability->get_last_message());
             } else {
                 throw new access_denied($this->coursework, $ability->get_last_message());
@@ -241,7 +241,7 @@ class submissions_controller extends controller_base {
 
          $validated = $this->edit_submission();
 
-        if ($validated == true){
+        if ($validated == true) {
             return;
         }
 
@@ -399,7 +399,7 @@ class submissions_controller extends controller_base {
      */
     private function exception_if_late($submission) {
         $could_have_submitted = has_capability('mod/coursework:submit', $this->coursework->get_context());
-       if ($this->coursework->personal_deadlines_enabled()){
+       if ($this->coursework->personal_deadlines_enabled()) {
            $deadline_has_passed = !$this->has_valid_personal_deadline($submission);
        } else {
            $deadline_has_passed = $this->coursework->deadline_has_passed();
@@ -414,7 +414,7 @@ class submissions_controller extends controller_base {
      * param submission $submission
      * return bool true if a matching record exists, else false
      */
-    protected function submissions_exists($submission){
+    protected function submissions_exists($submission) {
         global $DB;
 
         $sub_exists = $DB->record_exists('coursework_submissions',
@@ -429,7 +429,7 @@ class submissions_controller extends controller_base {
      * @param $submission
      * @return bool
      */
-    protected function has_valid_extension($submission){
+    protected function has_valid_extension($submission) {
         global $DB;
 
         $valid_extension = false;
@@ -451,7 +451,7 @@ class submissions_controller extends controller_base {
      * @param $submission
      * @return bool
      */
-    protected function has_valid_personal_deadline($submission){
+    protected function has_valid_personal_deadline($submission) {
         global $DB;
 
         $valid_personal_deadline = false;

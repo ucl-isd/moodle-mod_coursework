@@ -34,7 +34,7 @@ class stages_cell extends cell_base {
      * @param $stage_identifier
      * @return array
      */
-    public function get_cell($submission, $student, $stage_identifier){
+    public function get_cell($submission, $student, $stage_identifier) {
         global $DB;
 
         $timecreated = 0;
@@ -48,7 +48,7 @@ class stages_cell extends cell_base {
 
         $gradedata = array();
         // go through each stage and get a grade, if grade not present then put  a placeholder
-        for ($i = 1; $i <= $this->stages; $i++){
+        for ($i = 1; $i <= $this->stages; $i++) {
             $stage_identifier = 'assessor_'.$i;
             $grade = $submission->get_assessor_feedback_by_stage($stage_identifier);
 
@@ -57,7 +57,7 @@ class stages_cell extends cell_base {
                 if ($allocation) {
                     $gradedata[] = $this->get_assessor_name($allocation->assessorid);
                     $gradedata[] = $this->get_assessor_username($allocation->assessorid);
-                } else if ($i != 1 && $this->coursework->sampling_enabled() && !$submission->sampled_feedback_exists()){
+                } else if ($i != 1 && $this->coursework->sampling_enabled() && !$submission->sampled_feedback_exists()) {
                     $gradedata[] = get_string('notincludedinsample', 'mod_coursework');
                     $gradedata[] = get_string('notincludedinsample', 'mod_coursework');
                 } else {
@@ -66,11 +66,11 @@ class stages_cell extends cell_base {
                 }
             }
 
-            if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()){
+            if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()) {
                 $this->get_rubric_scores_gradedata($grade, $gradedata);
             }
 
-            if ($grade){
+            if ($grade) {
                 $gradedata[] = $this->get_actual_grade($grade->grade);
                 $gradedata[] = $this->get_assessor_name($grade->assessorid);
                 $gradedata[] = $this->get_assessor_username($grade->assessorid);
@@ -85,8 +85,8 @@ class stages_cell extends cell_base {
 
         if ($this->stages >= 2) { // if there are two or more stages for a submission, we will have agreed grade
             $grade = $submission->get_assessor_feedback_by_stage('final_agreed_1');
-            if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()){
-                if ($this->coursework->is_using_advanced_grading()){
+            if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()) {
+                if ($this->coursework->is_using_advanced_grading()) {
                     $this->get_rubric_scores_gradedata($grade, $gradedata);
                 }
             }
@@ -112,7 +112,7 @@ class stages_cell extends cell_base {
      * @return array
      * @throws \coding_exception
      */
-    public function get_header($stage){
+    public function get_header($stage) {
 
         $fields = array();
 
@@ -122,9 +122,9 @@ class stages_cell extends cell_base {
                 $fields['allocated' . $i . 'userame'] = 'Allocated assessor ' . $i . ' username';
             }
 
-            if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()){
+            if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()) {
                 $criteria = $this->coursework->get_rubric_criteria();
-                foreach ($criteria as $id => $record){
+                foreach ($criteria as $id => $record) {
                     $fields['assessor' .$i. 'description' . $id] = 'Assessor '. $i . ' - '.$record['description'];
                     $fields['assessor' .$i. 'description' . $id . 'comment'] = 'Comment for: Assessor '. $i . ' - '.$record['description'];
                 }
@@ -137,9 +137,9 @@ class stages_cell extends cell_base {
         }
         if ($this->stages >= 2) { // if there are two or more stages for a submission, we will have agreed grade
 
-            if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()){
+            if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()) {
                 $criteria = $this->coursework->get_rubric_criteria();
-                foreach ($criteria as $id => $record){
+                foreach ($criteria as $id => $record) {
                     $fields['agreedgrade_description_' . $id] = 'Agreed grade - '.$record['description'];
                     $fields['agreedgrade_description_' . $id. 'comment'] = 'Comment for: Agreed grade - '.$record['description'];
                 }

@@ -37,12 +37,12 @@ class assessorfeedback_cell extends cell_base{
      * @return string
      */
 
-    public function get_cell($submission, $student, $stage_identifier){
+    public function get_cell($submission, $student, $stage_identifier) {
 
         global $USER;
 
         $grade = $submission->get_assessor_feedback_by_stage($stage_identifier);
-        if ($grade){
+        if ($grade) {
             // check if user can see initial grades before all of them are completed
             $ability = new ability(user::find($USER), $this->coursework);
 
@@ -70,7 +70,7 @@ class assessorfeedback_cell extends cell_base{
      * @return string
      * @throws \coding_exception
      */
-    public function get_header($stage){
+    public function get_header($stage) {
         return  get_string('assessorfeedbackcsv', 'coursework', $stage);
     }
 
@@ -137,12 +137,12 @@ class assessorfeedback_cell extends cell_base{
 
             //check for coursework without allocations - with/without samplings
             if (has_capability('mod/coursework:addinitialgrade', $PAGE->context) && !has_capability('mod/coursework:editinitialgrade', $PAGE->context)
-                && $this->coursework->get_max_markers() > 1 && !$this->coursework->allocation_enabled()){
+                && $this->coursework->get_max_markers() > 1 && !$this->coursework->allocation_enabled()) {
 
                 // check how many feedbacks for this submission
                 $feedbacks = $DB->count_records('coursework_feedbacks',array('submissionid' => $submissionid));
 
-                if ($this->coursework->sampling_enabled()){
+                if ($this->coursework->sampling_enabled()) {
                     // check how many sample assessors + add 1 that is always in sample
                     $in_sample = $submission->get_submissions_in_sample();
                     $assessors = ($in_sample)? sizeof($in_sample) + 1 : 1;

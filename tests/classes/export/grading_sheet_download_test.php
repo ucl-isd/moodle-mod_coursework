@@ -54,7 +54,7 @@ class grading_sheet_download_test extends advanced_testcase {
      * One stage only, no allocation, one student, coursework submitted but not graded
      * @throws coding_exception
      */
-    public function test_one_stage_no_allocations(){
+    public function test_one_stage_no_allocations() {
 
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
 
@@ -98,7 +98,7 @@ class grading_sheet_download_test extends advanced_testcase {
      * student1 graded by assessor2, student2 graded by assessor1 and assessor2
      * @throws coding_exception
      */
-    public function test_two_stages_with_allocations(){
+    public function test_two_stages_with_allocations() {
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
 
         /* @var mod_coursework_generator $generator */

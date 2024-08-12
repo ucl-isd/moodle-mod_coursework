@@ -36,13 +36,13 @@ class outstanding_marking   {
      * @param $userid
      * @return int
      */
-    public function get_to_grade_initial_count($cwkrecord, $userid){
+    public function get_to_grade_initial_count($cwkrecord, $userid) {
 
         $coursework = new \mod_coursework\models\coursework($cwkrecord);
 
         $initialsubmissions = array();
 
-        if ($this->should_get_to_mark_initial_grade_info($coursework->id, $userid)){
+        if ($this->should_get_to_mark_initial_grade_info($coursework->id, $userid)) {
 
             if (!$coursework->has_multiple_markers()) {
                 $initialsubmissions = $this->get_single_marker_initial_grade_submissions_to_mark($coursework->id, $userid, $coursework->allocation_enabled());
@@ -222,7 +222,7 @@ class outstanding_marking   {
      * @param $numberofmarkers
      * @return array
      */
-    private function get_to_grade_agreed_grade_submissions($courseworkid, $numberofmarkers){
+    private function get_to_grade_agreed_grade_submissions($courseworkid, $numberofmarkers) {
 
         global $DB;
 

@@ -122,7 +122,7 @@ class manager {
         }
 
         // move 'none' to be the first option
-        if (array_key_exists('none', $options)){
+        if (array_key_exists('none', $options)) {
             $new_value = array('none' => $options['none']);
             unset($options['none']);
             $options = $new_value + $options;

@@ -125,11 +125,11 @@ class coursework_file_zip_importer    {
                 if ($submission->get_state() < \mod_coursework\models\submission::PUBLISHED) {
 
                     //if only add/edit initial capability then workout stage identifier
-                    if ($feedbackstage == 'initialassessor'){
+                    if ($feedbackstage == 'initialassessor') {
 
                         $feedback = $DB->get_record('coursework_feedbacks', array('submissionid' => $submission->id, 'assessorid' => $USER->id ));
 
-                        if ($feedback){
+                        if ($feedback) {
                             $feedbackstage = $feedback->stage_identifier;
 
                         } else {

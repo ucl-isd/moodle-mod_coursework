@@ -50,7 +50,7 @@ $deletemodsetrule = optional_param('delete-mod-set-rule', array(), PARAM_RAW) ;
 // options used for pagination
 // If a session variable holding page preference for the specific coursework is not set, set default value (0).
 if (isset($SESSION->allocate_perpage[$coursemoduleid]) && (isset($SESSION->perpage[$coursemoduleid]) && optional_param('per_page', 0, PARAM_INT) != $SESSION->perpage[$coursemoduleid])
-    && optional_param('per_page', 0, PARAM_INT) != 0){ // prevent blank pages if not in correct page
+    && optional_param('per_page', 0, PARAM_INT) != 0) { // prevent blank pages if not in correct page
     $page = 0;
     $SESSION->allocate_page[$coursemoduleid] = $page;
 } else if (!(isset($SESSION->allocate_page[$coursemoduleid]))) {
@@ -173,14 +173,14 @@ $warnings = new \mod_coursework\warnings($coursework);
 $percentage_allocation_not_complete = $warnings->percentage_allocations_not_complete();
 $manual_allocation_not_complete = '';
 $students_in_multiple_groups = '';
-if ($coursework->allocation_enabled()){
+if ($coursework->allocation_enabled()) {
     $manual_allocation_not_complete = $warnings->manual_allocation_not_completed();
     if ($coursework->use_groups == 1 || $coursework->assessorallocationstrategy == 'group_assessor') {
         $students_in_multiple_groups = $warnings->students_in_mutiple_grouos();
     }
 }
 
-if ($formsavebutton && $percentage_allocation_not_complete == '' && $manual_allocation_not_complete == ''){
+if ($formsavebutton && $percentage_allocation_not_complete == '' && $manual_allocation_not_complete == '') {
     redirect($CFG->wwwroot.'/mod/coursework/view.php?id='.$coursemoduleid, get_string('changessaved', 'mod_coursework'));
 } elseif ($formsavebutton) {
     redirect($PAGE->url);

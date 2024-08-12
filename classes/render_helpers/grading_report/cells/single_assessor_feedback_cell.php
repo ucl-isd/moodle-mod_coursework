@@ -148,7 +148,7 @@ class single_assessor_feedback_cell extends cell_base {
     /**
      * @return string
      */
-    public function get_table_header_class(){
+    public function get_table_header_class() {
         return 'feedbackandgrading';
     }
 

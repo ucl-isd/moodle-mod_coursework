@@ -67,7 +67,7 @@ class personal_deadline extends table_base {
      * Function to check if extension for this personal deadline (alloctable) exists
      * @return static
      */
-    public function extension_exists(){
+    public function extension_exists() {
         $coursework = $this->get_coursework();
 
         $params = array('courseworkid' => $coursework->id,

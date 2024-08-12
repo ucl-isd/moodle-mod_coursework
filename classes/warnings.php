@@ -215,13 +215,13 @@ class warnings {
      * @return string
      * @throws \coding_exception
      */
-    public function manual_allocation_not_completed(){
+    public function manual_allocation_not_completed() {
         global $DB;
 
         $coursework = $this->coursework;
 
         $coursework_stages = $coursework->numberofmarkers;
-        for ($i = 1; $i <= $coursework_stages; $i++){
+        for ($i = 1; $i <= $coursework_stages; $i++) {
              $assessor = 'assessor_'.$i;
 
              if ($coursework->samplingenabled == 0 || $assessor == 'assessor_1') {
@@ -267,7 +267,7 @@ class warnings {
      * @param $params
      * @return array
      */
-    public function check_existing_allocations($params){
+    public function check_existing_allocations($params) {
         global $DB;
         $sql = "SELECT 1
                 FROM {coursework_allocation_pairs}

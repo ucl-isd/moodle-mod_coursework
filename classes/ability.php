@@ -483,7 +483,7 @@ class ability extends \mod_coursework\framework\ability {
             'mod_coursework\models\submission',
             function (submission $submission) {
                 // take into account courseworks with personal deadlines
-                if ($submission->get_coursework()->personal_deadlines_enabled()){
+                if ($submission->get_coursework()->personal_deadlines_enabled()) {
                     $deadline_passed = ($submission->submission_personal_deadline() < time())? true : false;
                  } else {
                      $deadline_passed = $submission->get_coursework()->deadline_has_passed();
@@ -683,7 +683,7 @@ class ability extends \mod_coursework\framework\ability {
             });
     }
 
-    protected function allow_edit_moderation_if_user_can_administer_grades(){
+    protected function allow_edit_moderation_if_user_can_administer_grades() {
         $this->allow('edit',
             'mod_coursework\models\moderation',
             function (moderation $moderation) {

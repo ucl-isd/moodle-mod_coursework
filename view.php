@@ -82,7 +82,7 @@ if (!isset($SESSION->displayallstudents[$course_module_id])) {
 
 // If a session variable holding page preference for the specific coursework is not set, set default value (0).
 if (isset($SESSION->perpage[$course_module_id]) && optional_param('per_page', 0, PARAM_INT) != $SESSION->perpage[$course_module_id]
-    && optional_param('per_page', 0, PARAM_INT) != 0){ // prevent blank pages if not in correct page
+    && optional_param('per_page', 0, PARAM_INT) != 0) { // prevent blank pages if not in correct page
     $page = 0;
     $SESSION->page[$course_module_id] = $page;
 } else if (!(isset($SESSION->page[$course_module_id]))) {
@@ -149,7 +149,7 @@ if (!(isset($SESSION->coursework_groupname_alpha[$course_module_id]))) {
 
 //we will use the same defaults as page (above) defaulting to page setting if no specific viewallstudents_page has been set
 if (isset($SESSION->viewallstudents_perpage[$course_module_id]) && optional_param('viewallstudents_per_page', 0, PARAM_INT) != $SESSION->viewallstudents_perpage[$course_module_id]
-    && optional_param('viewallstudents_per_page', 0, PARAM_INT) != 0){ // prevent blank pages if not in correct page
+    && optional_param('viewallstudents_per_page', 0, PARAM_INT) != 0) { // prevent blank pages if not in correct page
     $viewallstudents_page = 0;
     $SESSION->viewallstudents_page[$course_module_id] = $viewallstudents_page;
 } else if (!(isset($SESSION->viewallstudents_page[$course_module_id]))) {
@@ -254,7 +254,7 @@ if ($course_module_id) {
 $coursework = mod_coursework\models\coursework::find($coursework_record);
 
 // check if group is in session and use it no group available in url
-if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $group == -1){
+if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $group == -1) {
     // check if a group is in SESSION
     $group = groups_get_activity_group($coursework->get_course_module());
 }
@@ -265,7 +265,7 @@ if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $gro
 
     $percentage_allocation_not_complete = $warnings->percentage_allocations_not_complete();
     $manual_allocation_not_complete = '';
-    if ($coursework->allocation_enabled()){
+    if ($coursework->allocation_enabled()) {
         $manual_allocation_not_complete = $warnings->manual_allocation_not_completed();
     }
 
@@ -299,12 +299,12 @@ if ($download && $zip_file = $coursework->pack_files()) {
     send_temp_file($zip_file, $filename); // Send file and delete after sending.
 }
 
-if ($export_grades){
+if ($export_grades) {
 
     // headers and data for csv
     $csv_cells = array('name', 'username', 'idnumber', 'email');
 
-    if ($coursework->personal_deadlines_enabled()){
+    if ($coursework->personal_deadlines_enabled()) {
         $csv_cells[] = 'personaldeadline';
     }
 
@@ -312,20 +312,20 @@ if ($export_grades){
     $csv_cells[] = 'submissiontime';
     $csv_cells[] = 'submissionfileid';
 
-    if ($coursework->extensions_enabled() && ($coursework->has_deadline()) || $coursework->personal_deadlines_enabled()){
+    if ($coursework->extensions_enabled() && ($coursework->has_deadline()) || $coursework->personal_deadlines_enabled()) {
         $csv_cells[] = 'extensiondeadline';
         $csv_cells[] = 'extensionreason';
         $csv_cells[] = 'extensionextrainfo';
     }
 
-    if ($coursework->plagiarism_flagging_enbled()){
+    if ($coursework->plagiarism_flagging_enbled()) {
         $csv_cells[] = 'plagiarismflagstatus';
         $csv_cells[] = 'plagiarismflagcomment';
     }
 
     $csv_cells[] = 'stages';
 
-    if ($coursework->moderation_agreement_enabled()){
+    if ($coursework->moderation_agreement_enabled()) {
         $csv_cells[] = 'moderationagreement';
     }
     $csv_cells[] = 'finalgrade';
@@ -337,7 +337,7 @@ if ($export_grades){
 
 }
 
-if ($download_grading_sheet){
+if ($download_grading_sheet) {
 
    $csv_cells = \mod_coursework\export\grading_sheet::cells_array($coursework);
 
@@ -395,7 +395,7 @@ if ((float)substr($CFG->release, 0, 5) > 2.6) { // 2.8 > 2.6
 // Print the page header.
 
 // sort group by groupname (default)
-if ($coursework->is_configured_to_have_group_submissions()){
+if ($coursework->is_configured_to_have_group_submissions()) {
     $sortby = optional_param('sortby', 'groupname', PARAM_ALPHA);
     $viewallstudents_sortby = optional_param('viewallstudents_sortby', 'groupname', PARAM_ALPHA);
 
@@ -513,13 +513,13 @@ if ($can_view_students) {
         }
     } else {
 
-        if ($resettable){
+        if ($resettable) {
             $coursework_firstname_alpha = $SESSION->coursework_firstname_alpha[$course_module_id] = "";
             $coursework_lastname_alpha = $SESSION->coursework_lastname_alpha[$course_module_id] = "";
             $coursework_groupname_alpha = $SESSION->coursework_groupname_alpha[$course_module_id] = "";
         }
 
-        if ($allresettable){
+        if ($allresettable) {
             $viewallstudents_firstname_alpha = $SESSION->viewallstudents_firstname_alpha[$course_module_id] = "";
             $viewallstudents_lastname_alpha = $SESSION->viewallstudents_lastname_alpha[$course_module_id] = "";
             $viewallstudents_groupname_alpha = $SESSION->viewallstudents_groupname_alpha[$course_module_id] = "";

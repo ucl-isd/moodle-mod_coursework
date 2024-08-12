@@ -33,7 +33,7 @@ class group_cell extends cell_base {
      * @param $stage_identifier
      * @return mixed
      */
-    public function get_cell($submission, $group, $stage_identifier){
+    public function get_cell($submission, $group, $stage_identifier) {
         return  $group->name;
     }
 
@@ -42,7 +42,7 @@ class group_cell extends cell_base {
      * @return string
      * @throws \coding_exception
      */
-    public function get_header($stage){
+    public function get_header($stage) {
         return  get_string('group', 'coursework');
     }
 }

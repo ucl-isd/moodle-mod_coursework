@@ -94,9 +94,9 @@ class plagiarism_flag extends table_base {
     /**
      * @return bool
      */
-    public function can_release_grades(){
+    public function can_release_grades() {
 
-        switch ($this->status){
+        switch ($this->status) {
 
             case self::INVESTIGATION:
             case self::NOTCLEARED:

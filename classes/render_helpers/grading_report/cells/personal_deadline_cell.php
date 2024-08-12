@@ -52,7 +52,7 @@ class personal_deadline_cell extends cell_base {
         );
 
         $personal_deadline = personal_deadline::find_or_build($new_personal_deadline_params);
-        if ($personal_deadline->personal_deadline){
+        if ($personal_deadline->personal_deadline) {
             $deadline = $personal_deadline->personal_deadline;
         }
         $date = userdate($deadline, '%a, %d %b %Y, %H:%M');
@@ -95,7 +95,7 @@ class personal_deadline_cell extends cell_base {
     /**
      * @return string
      */
-    public function get_table_header_class(){
+    public function get_table_header_class() {
         return 'tableheadpersonaldeadline';
     }
 

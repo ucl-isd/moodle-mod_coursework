@@ -154,7 +154,7 @@ abstract class sample_base {
      *
      * @return array
      */
-    protected function finalised_submissions(){
+    protected function finalised_submissions() {
         global $DB;
 
         $sql = "SELECT  allocatableid
@@ -171,7 +171,7 @@ abstract class sample_base {
      *
      * @return array
      */
-    protected function released_submissions(){
+    protected function released_submissions() {
         global $DB;
 
         $sql = "SELECT  allocatableid

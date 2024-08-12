@@ -926,7 +926,7 @@ class behat_mod_coursework extends behat_base {
         $student = $other ? 'other_student' : 'student';
 
         $page = $this->get_page('allocations page');
-        if ($negate){
+        if ($negate) {
             $page->deselect_for_sample($this->$student, 'assessor_2');
         } else {
             $page->select_for_sample($this->$student, 'assessor_2');

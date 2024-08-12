@@ -23,7 +23,7 @@ use mod_coursework\models\coursework;
 
 class grading_sheet extends csv{
 
-    public function get_submissions($groupid = null, $selected_submission_ids = ''){
+    public function get_submissions($groupid = null, $selected_submission_ids = '') {
         global $PAGE, $USER;
         $params = array(
             'courseworkid' => $this->coursework->id
@@ -33,12 +33,12 @@ class grading_sheet extends csv{
 
         // remove unfinalised submissions
         foreach ($submissions as $submission) {
-            if ($submission->get_state() < $submission::FINALISED){
+            if ($submission->get_state() < $submission::FINALISED) {
                 unset($submissions[$submission->id]);
             }
         }
 
-        if (is_siteadmin($USER->id)){
+        if (is_siteadmin($USER->id)) {
             return $submissions;
         }
 
@@ -114,11 +114,11 @@ class grading_sheet extends csv{
      * @param submission $submission
      * @return array
      */
-    public function add_csv_data($submission){
+    public function add_csv_data($submission) {
 
         $csv_data = array();
         // groups
-        if ($this->coursework->is_configured_to_have_group_submissions()){
+        if ($this->coursework->is_configured_to_have_group_submissions()) {
             $group = \mod_coursework\models\group::find($submission->allocatableid);
             $csv_data[] = $this->add_cells_to_array($submission, $group, $this->csv_cells);
 
@@ -141,13 +141,13 @@ class grading_sheet extends csv{
      * @return array
      * @throws \coding_exception
      */
-    public static function cells_array($coursework){
+    public static function cells_array($coursework) {
         global $PAGE;
 
         // headers and data for csv
         $csv_cells = array('submissionid', 'submissionfileid');
 
-        if ($coursework->is_configured_to_have_group_submissions()){
+        if ($coursework->is_configured_to_have_group_submissions()) {
             $csv_cells[] = 'group';
         } else {
             $csv_cells[] = 'name';
@@ -159,7 +159,7 @@ class grading_sheet extends csv{
 
         // based on capabilities decide what view display - singlegrade or multiplegrade
         if ((has_capability('mod/coursework:addagreedgrade', $PAGE->context) || has_capability('mod/coursework:administergrades', $PAGE->context))
-           && $coursework->get_max_markers()>1 ){
+           && $coursework->get_max_markers()>1 ) {
            for($i = 1; $i <= $coursework->get_max_markers(); $i++) {
                // extra column with allocated assessor name
               if ($coursework->allocation_enabled() && $coursework->get_max_markers() > 1
@@ -173,7 +173,7 @@ class grading_sheet extends csv{
             $csv_cells[] = 'agreedgrade';
             $csv_cells[] = 'agreedfeedback';
 
-        } else if (has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && $coursework->get_max_markers() >1){
+        } else if (has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && $coursework->get_max_markers() >1) {
             $csv_cells[] = 'singlegrade';
             $csv_cells[] = 'feedbackcomments';
 
@@ -184,7 +184,7 @@ class grading_sheet extends csv{
             $csv_cells[] = 'agreedfeedback';
 
         } else if (has_capability('mod/coursework:addinitialgrade', $PAGE->context)
-            || has_capability('mod/coursework:administergrades', $PAGE->context)){
+            || has_capability('mod/coursework:administergrades', $PAGE->context)) {
 
          //   if (!$coursework->is_using_rubric()) {
                 $csv_cells[] = 'singlegrade';

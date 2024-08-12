@@ -59,7 +59,7 @@ class csv_test extends advanced_testcase {
      * One stage only, extension enabled
      * @throws coding_exception
      */
-    public function test_one_stage(){
+    public function test_one_stage() {
 
         $dateformat = '%a, %d %b %Y, %H:%M';
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
@@ -110,7 +110,7 @@ class csv_test extends advanced_testcase {
         $csv_cells = array('name', 'username', 'submissiondate', 'submissiontime',
             'submissionfileid');
 
-        if ($this->coursework->extensions_enabled()){
+        if ($this->coursework->extensions_enabled()) {
             $csv_cells[] = 'extensiondeadline';
             $csv_cells[] = 'extensionreason';
             $csv_cells[] = 'extensionextrainfo';
@@ -148,7 +148,7 @@ class csv_test extends advanced_testcase {
     /**
      * Two stages with final agreed grade, extension not enabled
      */
-    public function test_two_stages(){
+    public function test_two_stages() {
 
         $dateformat = '%a, %d %b %Y, %H:%M';
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
@@ -196,7 +196,7 @@ class csv_test extends advanced_testcase {
         $csv_cells = array('name', 'username', 'submissiondate', 'submissiontime',
             'submissionfileid');
 
-        if ($this->coursework->extensions_enabled()){
+        if ($this->coursework->extensions_enabled()) {
             $csv_cells[] = 'extensiondeadline';
             $csv_cells[] = 'extensionreason';
             $csv_cells[] = 'extensionextrainfo';
@@ -242,7 +242,7 @@ class csv_test extends advanced_testcase {
     /**
      * Sampling enabled, student not in sample, extension not enabled
      */
-    public function test_student_not_in_sample(){
+    public function test_student_not_in_sample() {
 
         $dateformat = '%a, %d %b %Y, %H:%M';
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
@@ -273,7 +273,7 @@ class csv_test extends advanced_testcase {
         $csv_cells = array('name', 'username', 'submissiondate', 'submissiontime',
             'submissionfileid');
 
-        if ($this->coursework->extensions_enabled()){
+        if ($this->coursework->extensions_enabled()) {
             $csv_cells[] = 'extensiondeadline';
             $csv_cells[] = 'extensionreason';
             $csv_cells[] = 'extensionextrainfo';
@@ -317,7 +317,7 @@ class csv_test extends advanced_testcase {
     /**
      * Two students but only one is double marked and should have agreed grade, extension not enabled
      */
-    public function test_two_students_one_in_sample(){
+    public function test_two_students_one_in_sample() {
         global $DB;
         $dateformat = '%a, %d %b %Y, %H:%M';
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
@@ -388,7 +388,7 @@ class csv_test extends advanced_testcase {
         $csv_cells = array('name', 'username', 'submissiondate', 'submissiontime',
             'submissionfileid');
 
-        if ($this->coursework->extensions_enabled()){
+        if ($this->coursework->extensions_enabled()) {
             $csv_cells[] = 'extensiondeadline';
             $csv_cells[] = 'extensionreason';
             $csv_cells[] = 'extensionextrainfo';

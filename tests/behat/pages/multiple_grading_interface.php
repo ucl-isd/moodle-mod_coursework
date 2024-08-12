@@ -326,7 +326,7 @@ echo "failed";
      * @param submission $submission
      * @return string
      */
-    public function get_grade_field($submission){
+    public function get_grade_field($submission) {
         $elementid = '#assessorfeedbacktable_' . $submission->get_coursework()
                  ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .grade_for_gradebook_cell';
         $grade_field = $this->getPage()->find('css', $elementid);

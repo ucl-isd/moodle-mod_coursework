@@ -39,7 +39,7 @@ class assessorgrade_cell extends cell_base{
      * @return string
      */
 
-    public function get_cell($submission, $student, $stage_identifier){
+    public function get_cell($submission, $student, $stage_identifier) {
 
         global $USER;
 
@@ -56,7 +56,7 @@ class assessorgrade_cell extends cell_base{
 
         if (($submission->get_agreed_grade() || ($feedback && $ability->can('show', $feedback))) || !$submission->any_editable_feedback_exists() || is_siteadmin($USER->id)) {
 
-            if ($this->coursework->is_using_rubric()){
+            if ($this->coursework->is_using_rubric()) {
                 $gradedata = array();
                 $this->get_rubric_scores_gradedata($grade, $gradedata); // multiple parts are handled here
             } else{
@@ -66,7 +66,7 @@ class assessorgrade_cell extends cell_base{
 
         } else {
 
-            if ($this->coursework->is_using_rubric()){
+            if ($this->coursework->is_using_rubric()) {
                 $criterias = $this->coursework->get_rubric_criteria();
                 foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
                     $gradedata['assessor'.$stage_identifier.'_'.$criteria['id']] = get_string('grade_hidden_manager', 'mod_coursework');
@@ -86,7 +86,7 @@ class assessorgrade_cell extends cell_base{
      * @return string
      * @throws \coding_exception
      */
-    public function get_header($stage){
+    public function get_header($stage) {
 
         if ($this->coursework->is_using_rubric() ) {
             $strings = array();
@@ -121,7 +121,7 @@ class assessorgrade_cell extends cell_base{
 
             if (!$this->coursework->is_using_rubric()) {
                 $gradejudge = new grade_judge($this->coursework);
-                if (!$gradejudge->grade_in_scale($value)){
+                if (!$gradejudge->grade_in_scale($value)) {
                     $errormsg = get_string('valuenotincourseworkscale', 'coursework');
                     if (is_numeric($value)) {
                         // if scale is numeric get max allowed scale

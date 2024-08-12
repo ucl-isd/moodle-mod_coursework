@@ -44,7 +44,7 @@ class deadline_extension_form extends \moodleform {
         $this->_form->addElement('hidden', 'id');
         $this->_form->settype('id', PARAM_INT);
 
-        if ($this->get_coursework()->personaldeadlineenabled &&  $personal_deadline = $this->personal_deadline()){
+        if ($this->get_coursework()->personaldeadlineenabled &&  $personal_deadline = $this->personal_deadline()) {
             $this->_form->addElement('html', '<div class="alert">Personal deadline: '. userdate($personal_deadline->personal_deadline).'</div>');
         } else {
             // Current deadline for comparison
@@ -84,7 +84,7 @@ class deadline_extension_form extends \moodleform {
         global $CFG;
         $max_deadline = $CFG->coursework_max_extension_deadline;
 
-        if ($this->get_coursework()->personaldeadlineenabled && $personal_deadline = $this->personal_deadline()){
+        if ($this->get_coursework()->personaldeadlineenabled && $personal_deadline = $this->personal_deadline()) {
             $deadline = $personal_deadline->personal_deadline;
         } else {
             $deadline = $this->get_coursework()->deadline;
@@ -100,12 +100,12 @@ class deadline_extension_form extends \moodleform {
         return $errors;
     }
 
-    public function personal_deadline(){
+    public function personal_deadline() {
         global $DB;
 
         $extensionid = optional_param('id',0,  PARAM_INT);
 
-        if ($extensionid != 0){
+        if ($extensionid != 0) {
             $ext = $DB->get_record('coursework_extensions', array('id' => $extensionid));
             $allocatableid = $ext->allocatableid;
             $allocatabletype = $ext->allocatabletype;

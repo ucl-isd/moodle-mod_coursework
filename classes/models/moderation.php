@@ -86,7 +86,7 @@ class moderation extends table_base{
     /**
      *
      */
-    public function get_feedback(){
+    public function get_feedback() {
         global $DB;
 
         //Moderation done only for single courseworks so submission id to retrieve feedback is enough
@@ -96,7 +96,7 @@ class moderation extends table_base{
 
     }
 
-    public function get_agreement(){
+    public function get_agreement() {
         return $this->agreement;
 
     }
@@ -133,7 +133,7 @@ class moderation extends table_base{
         return fullname($this->moderator);
     }
 
-    public function get_moderator_id(){
+    public function get_moderator_id() {
         return $this->moderator->id;
     }
 
@@ -141,7 +141,7 @@ class moderation extends table_base{
      * Check if assessor is allocated to the user in this stage
      * @return bool
      */
-    public function is_moderator_allocated(){
+    public function is_moderator_allocated() {
 
         return $this->get_stage()->assessor_has_allocation($this->get_allocatable());
     }

@@ -198,7 +198,7 @@ class percentages extends base {
      * @param $teacher
      * @return int|mixed
      */
-    private function percentage_for_teacher($teacher){
+    private function percentage_for_teacher($teacher) {
 
         global $DB;
 

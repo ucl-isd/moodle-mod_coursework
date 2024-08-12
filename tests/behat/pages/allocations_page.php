@@ -81,7 +81,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param allocatable $student
      * @param string $stage_identifier
      */
-    public function select_for_sample($student, $stage_identifier){
+    public function select_for_sample($student, $stage_identifier) {
         $elementid = $this->sampling_checkbox_id($student, $stage_identifier);
         $node = $this->getPage()->find('css', $elementid);
         $node->check();
@@ -260,7 +260,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
             'user' => $user->id,
             'stage' => $stage);
 
-        if (empty($negate)){
+        if (empty($negate)) {
              assertTrue($DB->record_exists_sql($sql, $params));
         } else {
             assertFalse($DB->record_exists_sql($sql, $params));

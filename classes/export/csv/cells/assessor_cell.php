@@ -35,13 +35,13 @@ class assessor_cell extends cell_base{
      * @return string
      */
 
-    public function get_cell($submission, $student, $stage_identifier){
+    public function get_cell($submission, $student, $stage_identifier) {
 
         $assessor = '';
         $allocation = $this->coursework->get_assessor_allocation($submission, $stage_identifier );
         if ($allocation) {
             $assessor = $this->get_assessor_name($allocation->assessorid);
-        } else if ($this->coursework->sampling_enabled()){
+        } else if ($this->coursework->sampling_enabled()) {
             $assessor = 'Not in sample';
         }
         return $assessor;
@@ -52,7 +52,7 @@ class assessor_cell extends cell_base{
      * @return string
      * @throws \coding_exception
      */
-    public function get_header($stage){
+    public function get_header($stage) {
         return  get_string('assessorcsv', 'coursework', $stage);
     }
 

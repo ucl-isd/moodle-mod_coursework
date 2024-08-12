@@ -35,9 +35,9 @@ class name_cell extends cell_base {
      * @return string
      * @throws \coding_exception
      */
-    public function get_cell($submission, $student, $stage_identifier){
+    public function get_cell($submission, $student, $stage_identifier) {
 
-        if ($this->can_view_hidden() || $submission->is_published()){
+        if ($this->can_view_hidden() || $submission->is_published()) {
             $name = $student->lastname . ' ' . $student->firstname;
         } else {
             $name = get_string('hidden', 'coursework');
@@ -51,7 +51,7 @@ class name_cell extends cell_base {
      * @return string
      * @throws \coding_exception
      */
-    public function get_header($stage){
+    public function get_header($stage) {
         return  get_string('studentname', 'coursework');
     }
 }

@@ -98,16 +98,16 @@ class cron {
                 $individual_extension = false;
                 $personal_deadline = false;
 
-                if ($coursework->extensions_enabled()){
+                if ($coursework->extensions_enabled()) {
                     $individual_extension = \mod_coursework\models\deadline_extension::get_extension_for_student($student, $coursework);
                 }
-                if ($coursework->personal_deadlines_enabled()){
+                if ($coursework->personal_deadlines_enabled()) {
                     $personal_deadline = \mod_coursework\models\personal_deadline::get_personal_deadline_for_student($student, $coursework);
                 }
 
                 $deadline = $personal_deadline ? $personal_deadline->personal_deadline : $coursework->deadline;
 
-                if ($individual_extension){
+                if ($individual_extension) {
                     // check if 1st reminder is due to be sent but has not been sent yet
                    if ($coursework->due_to_send_first_reminders($individual_extension->extended_deadline) &&
                        $student->has_not_been_sent_reminder($coursework, 1, $individual_extension->extended_deadline)) {
@@ -417,7 +417,7 @@ class cron {
      * @param $context
      * @return array
      */
-    public static function get_admins_and_teachers($context){
+    public static function get_admins_and_teachers($context) {
 
         $graders = get_enrolled_users($context, 'mod/coursework:addinitialgrade');
         $managers = get_enrolled_users($context, 'mod/coursework:addagreedgrade');

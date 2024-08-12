@@ -66,7 +66,7 @@ class moderation_agreement_cell extends cell_base {
         $content = '';
         $moderation = '';
         if ($rowobject->has_submission()) {
-            if ($rowobject->get_single_feedback()){
+            if ($rowobject->get_single_feedback()) {
                 $moderation = $this->stage->get_moderation_for_feedback($rowobject->get_single_feedback());
             }
             // Add new moderations agreement
@@ -132,7 +132,7 @@ class moderation_agreement_cell extends cell_base {
     /**
      * @return string
      */
-    public function get_table_header_class(){
+    public function get_table_header_class() {
         return 'tableheadmoderationagreement';
     }
 
@@ -146,7 +146,7 @@ class moderation_agreement_cell extends cell_base {
     /**
      * @return string
      */
-    public function get_table_header_help_icon(){
+    public function get_table_header_help_icon() {
         global $OUTPUT;
         return ($OUTPUT->help_icon('moderationagreement', 'coursework'));
     }

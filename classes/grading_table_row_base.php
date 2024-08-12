@@ -195,7 +195,7 @@ abstract class grading_table_row_base implements user_row {
                                             array('courseworkid' => $this->get_coursework()->id,
                                                   'allocatableid' => $allocatable->id(),
                                                   'allocatabletype' =>  $allocatable->type()));
-        if ($personal_deadline){
+        if ($personal_deadline) {
             $personal_deadline = $personal_deadline->personal_deadline;
         } else {
             $personal_deadline = $this->get_coursework()->deadline;
@@ -386,7 +386,7 @@ abstract class grading_table_row_base implements user_row {
     /**
      * @return models\feedback
      */
-    public function get_single_feedback(){
+    public function get_single_feedback() {
         return $this->get_submission()->get_assessor_feedback_by_stage('assessor_1');
     }
 

@@ -73,7 +73,7 @@ abstract class cell_base implements cell_interface {
      * @param $student
      * @return bool
      */
-    public function extension_exists($student){
+    public function extension_exists($student) {
 
         $extension = $this->extension->get_extension_for_student($student, $this->coursework);
 
@@ -85,7 +85,7 @@ abstract class cell_base implements cell_interface {
      * @param $student
      * @return string
      */
-    public function get_extension_date_for_csv($student){
+    public function get_extension_date_for_csv($student) {
 
         $extension = $this->extension->get_extension_for_student($student, $this->coursework);
 
@@ -97,7 +97,7 @@ abstract class cell_base implements cell_interface {
      * @param $student
      * @return string
      */
-    public function get_extension_extra_info_for_csv($student){
+    public function get_extension_extra_info_for_csv($student) {
 
         $extension = $this->extension->get_extension_for_student($student, $this->coursework);
 
@@ -109,7 +109,7 @@ abstract class cell_base implements cell_interface {
      * @param $student
      * @return string
      */
-    public function get_extension_reason_for_csv($student){
+    public function get_extension_reason_for_csv($student) {
 
         $extension = $this->extension->get_extension_for_student($student, $this->coursework);
         $extension_reasons = $this->get_extension_predefined_reasons();
@@ -122,7 +122,7 @@ abstract class cell_base implements cell_interface {
      * Function to get all pre-defined extension reasons
      * @return array
      */
-    public function get_extension_predefined_reasons(){
+    public function get_extension_predefined_reasons() {
         return $this->coursework->extension_reasons();
     }
 
@@ -131,7 +131,7 @@ abstract class cell_base implements cell_interface {
      * @param $submission
      * @return bool
      */
-    public function plagiarism_flagged($submission){
+    public function plagiarism_flagged($submission) {
 
         $flag = $this->plagiarismflag->get_plagiarism_flag($submission);
 
@@ -143,7 +143,7 @@ abstract class cell_base implements cell_interface {
      * @param $submission
      * @return string
      */
-    public function get_plagiarism_flag_status_for_csv($submission){
+    public function get_plagiarism_flag_status_for_csv($submission) {
 
         $flag = $this->plagiarismflag->get_plagiarism_flag($submission);
 
@@ -155,7 +155,7 @@ abstract class cell_base implements cell_interface {
      * @param $submission
      * @return string
      */
-    public function get_plagiarism_flag_comment_for_csv($submission){
+    public function get_plagiarism_flag_comment_for_csv($submission) {
 
         $flag = $this->plagiarismflag->get_plagiarism_flag($submission);
 
@@ -167,7 +167,7 @@ abstract class cell_base implements cell_interface {
      * @param $grade
      * @return null
      */
-    public function get_actual_grade($grade){
+    public function get_actual_grade($grade) {
 
         $judge = new grade_judge($this->coursework);
 
@@ -179,7 +179,7 @@ abstract class cell_base implements cell_interface {
      * @param $assessorid
      * @return string
      */
-    public function get_assessor_name($assessorid){
+    public function get_assessor_name($assessorid) {
         global $DB;
 
         $assessor = $DB->get_record('user',array('id' => $assessorid), 'firstname, lastname');
@@ -204,9 +204,9 @@ abstract class cell_base implements cell_interface {
      * Function to get a message if submission was made withihn the deadline
      * @param submission $submission
      */
-    protected function submission_time($submission){
+    protected function submission_time($submission) {
 
-        if ($submission->is_late() && (!$submission->has_extension() || !$submission->submitted_within_extension())){
+        if ($submission->is_late() && (!$submission->has_extension() || !$submission->submitted_within_extension())) {
             $time = get_string('late', 'coursework');
         } else {
             $time = get_string('ontime', 'mod_coursework');
@@ -221,11 +221,11 @@ abstract class cell_base implements cell_interface {
      * @param $student
      * @return string
      */
-    public function get_stage_identifier_for_assessor($submission, $student){
+    public function get_stage_identifier_for_assessor($submission, $student) {
         global $DB, $USER;
 
         $stageidentifier = '';
-        if ($this->coursework->allocation_enabled()){
+        if ($this->coursework->allocation_enabled()) {
             $stageidentifier = $this->coursework->get_assessors_stage_identifier($student->id, $USER->id);
         } else if ($this->coursework->get_max_markers()>1) {
             // get existing feedback
@@ -250,7 +250,7 @@ abstract class cell_base implements cell_interface {
      * Function to validate cell for the file upload
      * @return mixed
      */
-    public function validate_cell($value, $submissions, $stage_dentifier='', $uploadedgradecells = array()){
+    public function validate_cell($value, $submissions, $stage_dentifier='', $uploadedgradecells = array()) {
         return true;
     }
 
@@ -258,7 +258,7 @@ abstract class cell_base implements cell_interface {
      * @param $grade
      * @param $gradedata
      */
-    public function get_rubric_scores_gradedata($grade, &$gradedata){
+    public function get_rubric_scores_gradedata($grade, &$gradedata) {
 
         if ($grade) {
 

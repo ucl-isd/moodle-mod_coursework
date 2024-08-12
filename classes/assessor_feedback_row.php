@@ -113,7 +113,7 @@ class assessor_feedback_row {
      *
      * @return user
      */
-    public function get_graded_by(){
+    public function get_graded_by() {
         return $this->get_feedback()->assessor();
     }
 
@@ -121,7 +121,7 @@ class assessor_feedback_row {
      * Gets the grader's name and link to the profile
      * @return string
      */
-    public function get_graders_name(){
+    public function get_graders_name() {
       return  $this->get_graded_by()->profile_link();
     }
 

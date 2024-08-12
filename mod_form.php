@@ -192,7 +192,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $errors = array();
 
-       if ($data['startdate'] != 0 && !empty($data['deadline']) && $data['startdate'] > $data['deadline']){
+       if ($data['startdate'] != 0 && !empty($data['deadline']) && $data['startdate'] > $data['deadline']) {
            $errors['startdate'] = get_string('must_be_before_dealdine', 'mod_coursework');
        }
 
@@ -204,27 +204,27 @@ class mod_coursework_mod_form extends moodleform_mod {
             $errors['generalfeedback'] = get_string('must_be_after_dealdine', 'mod_coursework');
         }
 
-        if (isset($data['initialmarkingdeadline']) && $data['initialmarkingdeadline'] != 0 && !empty($data['deadline']) && $data['initialmarkingdeadline'] < $data['deadline']){
+        if (isset($data['initialmarkingdeadline']) && $data['initialmarkingdeadline'] != 0 && !empty($data['deadline']) && $data['initialmarkingdeadline'] < $data['deadline']) {
             $errors['initialmarkingdeadline'] = get_string('must_be_after_dealdine', 'mod_coursework');
         }
 
-        if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0 && !empty($data['deadline']) && $data['agreedgrademarkingdeadline'] < $data['deadline']){
+        if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0 && !empty($data['deadline']) && $data['agreedgrademarkingdeadline'] < $data['deadline']) {
             $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_dealdine', 'mod_coursework');
         }
 
-        if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0 &&  $data['agreedgrademarkingdeadline'] < $data['initialmarkingdeadline'] ){
+        if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0 &&  $data['agreedgrademarkingdeadline'] < $data['initialmarkingdeadline'] ) {
             $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_initial_grade_dealdine', 'mod_coursework');
         }
 
-        if (isset($data['initialmarkingdeadline']) && $data['initialmarkingdeadline'] != 0 && !empty($data['deadline']) && $data['deadline'] && $data['initialmarkingdeadline'] < $data['deadline']){
+        if (isset($data['initialmarkingdeadline']) && $data['initialmarkingdeadline'] != 0 && !empty($data['deadline']) && $data['deadline'] && $data['initialmarkingdeadline'] < $data['deadline']) {
             $errors['initialmarkingdeadline'] = get_string('must_be_after_dealdine', 'mod_coursework');
         }
 
-        if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0 && !empty($data['deadline']) && $data['agreedgrademarkingdeadline'] < $data['deadline']){
+        if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0 && !empty($data['deadline']) && $data['agreedgrademarkingdeadline'] < $data['deadline']) {
             $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_dealdine', 'mod_coursework');
         }
 
-        if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0 &&  $data['agreedgrademarkingdeadline'] < $data['initialmarkingdeadline'] ){
+        if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0 &&  $data['agreedgrademarkingdeadline'] < $data['initialmarkingdeadline'] ) {
             $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_initial_grade_dealdine', 'mod_coursework');
         }
 
@@ -236,12 +236,12 @@ class mod_coursework_mod_form extends moodleform_mod {
         $courseworkid = $this->get_coursework_id();
         if ($courseworkid) {
             $coursework = mod_coursework\models\coursework::find($courseworkid);
-            if ($coursework->has_samples() && isset($data['samplingenabled']) && $data['samplingenabled'] == 0){
+            if ($coursework->has_samples() && isset($data['samplingenabled']) && $data['samplingenabled'] == 0) {
                 $errors['samplingenabled'] = get_string('sampling_cant_be_disabled', 'mod_coursework');
             }
         }
 
-        if ( isset($data['numberofmarkers']) && $data['numberofmarkers'] == 1 && isset($data['samplingenabled']) && $data['samplingenabled'] == 1){
+        if ( isset($data['numberofmarkers']) && $data['numberofmarkers'] == 1 && isset($data['samplingenabled']) && $data['samplingenabled'] == 1) {
             $errors['numberofmarkers'] = get_string('not_enough_assessors_for_sampling', 'mod_coursework');
         }
 
@@ -258,15 +258,15 @@ class mod_coursework_mod_form extends moodleform_mod {
         global $CFG;
         $data = parent::get_data();
 
-        if (!$data){
+        if (!$data) {
             return false;
         }
 
-        if ($this->forceblindmarking() == 1){
+        if ($this->forceblindmarking() == 1) {
            $data->blindmarking = $CFG->coursework_blindmarking;
         }
 
-        if ($data->numberofmarkers >1){
+        if ($data->numberofmarkers >1) {
             $data->moderationagreementenabled = 0;
         }
 
@@ -340,9 +340,9 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $optional = true;
         $courseworkid = $this->get_coursework_id();
-        if ($courseworkid){
+        if ($courseworkid) {
             $coursework = mod_coursework\models\coursework::find($courseworkid);
-            if ($coursework->extension_exists()){
+            if ($coursework->extension_exists()) {
                 $optional = false;
             }
         }
@@ -363,14 +363,14 @@ class mod_coursework_mod_form extends moodleform_mod {
     /**
      * @throws coding_exception
      */
-    protected function add_personal_deadline_field(){
+    protected function add_personal_deadline_field() {
 
         $moodle_form =& $this->_form;
         $options = array(0 => get_string('no'), 1 => get_string('yes'));
 
         $courseworkid = $this->get_coursework_id();
         $disabled = array();
-        if (coursework_personal_deadline_passed($courseworkid)){
+        if (coursework_personal_deadline_passed($courseworkid)) {
             $moodle_form->disabledif('personaldeadlineenabled', 'deadline[enabled]', 'notchecked');
             $disabled = array('disabled' => true);
         }
@@ -627,7 +627,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     /**
      * @throws coding_exception
      */
-    protected function add_group_submission_header(){
+    protected function add_group_submission_header() {
 
         $moodle_form =& $this->_form;
 
@@ -849,7 +849,7 @@ class mod_coursework_mod_form extends moodleform_mod {
      * @param $moodle_form
      * @throws coding_exception
      */
-    protected function add_enable_moderation_agreement_field(){
+    protected function add_enable_moderation_agreement_field() {
         $moodle_form =& $this->_form;
 
         $options = array(0 => get_string('no'), 1 => get_string('yes'));
@@ -932,7 +932,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     /**
      * @throws coding_exception
      */
-    protected function add_assessor_anonymity_header(){
+    protected function add_assessor_anonymity_header() {
         $moodle_form =& $this->_form;
 
         $moodle_form->addElement('header', 'assessoranonymityheader', get_string('assessoranonymity', 'mod_coursework'));
@@ -978,7 +978,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     /**
      * @throws coding_exception
      */
-    protected function add_enable_assessor_anonymity_field(){
+    protected function add_enable_assessor_anonymity_field() {
         global $CFG;
 
         $moodle_form =& $this->_form;
@@ -1017,14 +1017,14 @@ class mod_coursework_mod_form extends moodleform_mod {
             'minute' => date('i', $timestamp),
         );
         $options = array('optional' => true);
-        if ($CFG->coursework_auto_release_individual_feedback == 0){
+        if ($CFG->coursework_auto_release_individual_feedback == 0) {
             $options['disabled'] = true;
 
         } else{
             $default['enabled'] = 1;
         }
 
-        if ($CFG->coursework_forceauto_release_individual_feedback == 1){
+        if ($CFG->coursework_forceauto_release_individual_feedback == 1) {
             $options['optional'] = false;
         }
 
@@ -1047,7 +1047,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     /**
      * @throws coding_exception
      */
-    protected function add_email_individual_feedback_notification_field(){
+    protected function add_email_individual_feedback_notification_field() {
         global $CFG;
 
         $moodle_form =& $this->_form;
@@ -1155,7 +1155,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
     }
 
-    protected function add_all_feedbacks_field(){
+    protected function add_all_feedbacks_field() {
 
         $moodle_form =& $this->_form;
 
@@ -1189,7 +1189,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     /**
      * @throws coding_exception
      */
-    private function add_view_initial_assessors_grade(){
+    private function add_view_initial_assessors_grade() {
 
         $moodle_form =& $this->_form;
 
@@ -1239,7 +1239,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     /**
      * @throws coding_exception
      */
-    private function add_auto_populate_agreed_feedback_comments(){
+    private function add_auto_populate_agreed_feedback_comments() {
        
         $moodle_form =& $this->_form;
         $moodle_form->addElement('selectyesno', 'autopopulatefeedbackcomment', get_string('autopopulatefeedbackcomment', 'mod_coursework'));
@@ -1250,25 +1250,25 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
     
 
-    private function forceblindmarking(){
+    private function forceblindmarking() {
         global $CFG;
         return $CFG->coursework_forceblindmarking;
 
     }
 
-    private function forceautorelease(){
+    private function forceautorelease() {
         global $CFG;
         return $CFG->coursework_forceauto_release_individual_feedback;
 
     }
 
-    private function add_extensions_header(){
+    private function add_extensions_header() {
         $moodle_form =& $this->_form;
 
         $moodle_form->addElement('header', 'extensions', get_string('extensions', 'mod_coursework'));
     }
 
-    private function add_enable_extensions_field(){
+    private function add_enable_extensions_field() {
         global $CFG;
         $moodle_form =& $this->_form;
 
@@ -1338,7 +1338,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
     }
 
-    private function add_enable_plagiarism_flag_field(){
+    private function add_enable_plagiarism_flag_field() {
         global $CFG;
         $moodle_form =& $this->_form;
 

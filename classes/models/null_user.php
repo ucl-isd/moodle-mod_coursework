@@ -99,7 +99,7 @@ class null_user implements \mod_coursework\allocation\allocatable {
      * @param coursework $coursework
      * @return bool
      */
-    public function get_agreed_feedback($coursework){
+    public function get_agreed_feedback($coursework) {
         return false;
     }
 

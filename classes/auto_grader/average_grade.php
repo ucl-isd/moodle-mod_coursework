@@ -53,7 +53,7 @@ class average_grade implements auto_grader {
      * @param coursework $coursework
      * @param allocatable $allocatable
      */
-    public function __construct($coursework, $allocatable){
+    public function __construct($coursework, $allocatable) {
         $this->coursework = $coursework;
         $this->roundingrule = $this->coursework->roundingrule;
         $this->allocatable = $allocatable;
@@ -64,7 +64,7 @@ class average_grade implements auto_grader {
      * state of the initial assessor grades and make an automatic grade if they do.
      *
      */
-    public function create_auto_grade_if_rules_match(){
+    public function create_auto_grade_if_rules_match() {
 
         // bounce out if conditions are not right/
         if (!$this->get_allocatable()->has_all_initial_feedbacks($this->get_coursework())) {
@@ -98,7 +98,7 @@ class average_grade implements auto_grader {
     /**
      * @return int
      */
-    private function automatic_grade(){
+    private function automatic_grade() {
 
         $grades = $this->grades_as_percentages();
 
@@ -124,7 +124,7 @@ class average_grade implements auto_grader {
     /**
      * @return allocatable
      */
-    private function get_allocatable(){
+    private function get_allocatable() {
         return $this->allocatable;
     }
 
@@ -143,7 +143,7 @@ class average_grade implements auto_grader {
     /**
      *
      */
-    private function update_final_feedback($feedback){
+    private function update_final_feedback($feedback) {
         global $DB;
 
         $updated_feedback = new \stdClass();

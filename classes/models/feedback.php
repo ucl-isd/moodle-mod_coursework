@@ -188,10 +188,10 @@ class feedback extends table_base {
      * @return string assessor's name
      * @throws \coding_exception
      */
-    public function display_assessor_name(){
+    public function display_assessor_name() {
 
         // check if assessor's name in this CW is set to hidden
-        if ($this->is_assessor_anonymity_enabled()){
+        if ($this->is_assessor_anonymity_enabled()) {
             $assessor_name = get_string('hidden', 'mod_coursework');
         } else {
             $assessor_name = $this->get_assesor_username();
@@ -214,22 +214,22 @@ class feedback extends table_base {
         return $this->assessor->name();
     }
 
-    public function get_assessor_id(){
+    public function get_assessor_id() {
         return $this->assessor->id;
     }
 
     /**
      * @return string
      */
-    public function get_assessor_stage_no(){
+    public function get_assessor_stage_no() {
         $no = '';
-        if (substr($this->stage_identifier,0,9 ) =='assessor_'){
+        if (substr($this->stage_identifier,0,9 ) =='assessor_') {
             $no = substr($this->stage_identifier, -1);
         }
         return $no;
     }
 
-    public function get_feedbacks_assessorid(){
+    public function get_feedbacks_assessorid() {
         return $this->assessorid;
     }
     /**
@@ -305,7 +305,7 @@ class feedback extends table_base {
      * Check if assessor is allocated to the user in this stage
      * @return bool
      */
-    public function is_assessor_allocated(){
+    public function is_assessor_allocated() {
        return $this->get_stage()->assessor_has_allocation($this->get_allocatable());
     }
 
@@ -336,7 +336,7 @@ class feedback extends table_base {
     public function get_feedback_files() {
 
         $this->set_feedback_files($this->get_context_id());
-        if ($this->feedbackfiles !=null){
+        if ($this->feedbackfiles !=null) {
             $this->feedback_files = new feedback_files($this->feedbackfiles, $this);
             return $this->feedback_files;
         }
@@ -564,7 +564,7 @@ class feedback extends table_base {
         return $this->get_submission()->get_allocatable();
     }
 
-    public function is_assessor_anonymity_enabled(){
+    public function is_assessor_anonymity_enabled() {
         return $this->get_coursework()->assessoranonymity;
     }
 

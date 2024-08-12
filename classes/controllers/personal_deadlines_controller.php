@@ -158,7 +158,7 @@ class personal_deadlines_controller extends controller_base{
      * Get the personal deadline 
      * @return mixed
      */
-    protected function get_personal_deadline(){
+    protected function get_personal_deadline() {
         global $DB;
         $params = array(
             'allocatableid' => $this->params['allocatableid'],
@@ -177,7 +177,7 @@ class personal_deadlines_controller extends controller_base{
      * @throws \moodle_exception
      * @throws \require_login_exception
      */
-    public function insert_update($time){
+    public function insert_update($time) {
         global $USER;
         if (!$this->validated($time)) {
             return [

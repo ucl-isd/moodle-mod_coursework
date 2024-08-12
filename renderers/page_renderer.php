@@ -387,7 +387,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $teacher_feedback = new feedback();
             $feedbackcomment = '';
             $count = 1;
-            foreach($initial_feedbacks as $initial_feedback){
+            foreach($initial_feedbacks as $initial_feedback) {
                // put all initial feedbacks together for the comment field
                 $feedbackcomment .= get_string('assessorcomments', 'mod_coursework', $count);
                 $feedbackcomment .= $initial_feedback->feedbackcomment;
@@ -451,7 +451,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param moderation $new_moderation
      * @throws coding_exception
      */
-    public function new_moderation_page($new_moderation){
+    public function new_moderation_page($new_moderation) {
 
         global $PAGE, $OUTPUT, $SITE, $DB;
 
@@ -483,7 +483,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param plagiarism_flag $new_plagiarism_flag
      * @throws coding_exception
      */
-    public function new_plagiarism_flag_page($new_plagiarism_flag){
+    public function new_plagiarism_flag_page($new_plagiarism_flag) {
 
         global $PAGE, $OUTPUT, $SITE, $DB;
 
@@ -512,7 +512,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param plagiarism_flag $plagiarism_flag
      * @throws coding_exception
      */
-    public function edit_plagiarism_flag_page(plagiarism_flag $plagiarism_flag, $creator, $editor){
+    public function edit_plagiarism_flag_page(plagiarism_flag $plagiarism_flag, $creator, $editor) {
 
         global $PAGE, $OUTPUT, $SITE, $DB;
 
@@ -648,7 +648,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             || has_capability('mod/coursework:addagreedgrade', $PAGE->context)
             || has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context))
-            && $coursework->get_finalised_submissions()){
+            && $coursework->get_finalised_submissions()) {
             //export grading sheet
             $url = $pageurl.'&export_grading_sheet=1';
             $links[$url] = get_string('exportgradingsheets', 'mod_coursework');
@@ -937,7 +937,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         if ($submission->is_late() && (!$submission->has_extension() || !$submission->submitted_within_extension())) { // It was late.
 
             // check if submission has personal deadline
-            if ($coursework->personaldeadlineenabled ){
+            if ($coursework->personaldeadlineenabled ) {
                 $deadline = $submission->submission_personal_deadline();
             } else { // if not, use coursework default deadline
                 $deadline = $coursework->deadline;
@@ -1259,7 +1259,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         if (!empty($processingresults)) {
 
             $html .= get_string('followingerrors', 'mod_coursework')."<br />";
-            if (!is_array($processingresults)){
+            if (!is_array($processingresults)) {
                 $html .=  $processingresults . "<br />";
             } else {
                  foreach ($processingresults as $line => $error) {
@@ -1392,7 +1392,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             if ($coursework->can_grade()) { // teachers
                 $submitted = count($coursework->get_all_submissions());
             } else if ($coursework->can_submit()) { //students
-                if ($coursework->use_groups){
+                if ($coursework->use_groups) {
                     $allocatable = $coursework->get_student_group($USER);
                 } else {
                     $allocatable = $USER;
@@ -1431,7 +1431,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         return $o;
     }
 
-    public function datatables_render($coursework){
+    public function datatables_render($coursework) {
         global $CFG;
 
         $lang_messages = [

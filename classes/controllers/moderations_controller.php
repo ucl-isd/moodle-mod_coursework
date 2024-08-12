@@ -257,7 +257,7 @@ class moderations_controller extends controller_base {
 
         $stage = $this->coursework->get_stage($identifier);
         if (!$stage->user_is_moderator($USER)) {
-            if (!(has_capability('mod/coursework:moderate', $this->coursework->get_context()) ) ){
+            if (!(has_capability('mod/coursework:moderate', $this->coursework->get_context()) ) ) {
                 throw new access_denied($this->coursework, 'You are not authorised to moderte this feedback');
             }
         }

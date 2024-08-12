@@ -62,7 +62,7 @@ class grade_for_gradebook_cell extends cell_base {
     /**
      * @return string
      */
-    public function get_table_header_class(){
+    public function get_table_header_class() {
         return 'provisionalgrade';
     }
 
@@ -76,7 +76,7 @@ class grade_for_gradebook_cell extends cell_base {
     /**
      * @return string
      */
-    public function get_table_header_help_icon(){
+    public function get_table_header_help_icon() {
         global $OUTPUT;
         return ($OUTPUT->help_icon('provisionalgrade', 'mod_coursework'));
     }

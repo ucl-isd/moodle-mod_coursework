@@ -248,16 +248,16 @@ class submission extends table_base implements \renderable {
             $deadline = $submission->deadline;
             $submission = static::find($submission);
 
-            if ($submission->get_coursework()->personal_deadlines_enabled()){
+            if ($submission->get_coursework()->personal_deadlines_enabled()) {
                 $deadline = $submission->submission_personal_deadline();
             }
             
-            if ($deadline < time()){
+            if ($deadline < time()) {
                 // if deadline passed check if extension exists
-                if ($submission->has_extension()){
+                if ($submission->has_extension()) {
                     //check if extension is valid
                     $extension = $submission->submission_extension();
-                    if ($extension->extended_deadline > time()){
+                    if ($extension->extended_deadline > time()) {
                         //unset as it doesn't need to be autofinalise yet
                         unset($submissions[$submission->id]);
                     }
@@ -508,7 +508,7 @@ class submission extends table_base implements \renderable {
      * @throws \dml_missing_record_exception
      * @throws \dml_multiple_records_exception
      */
-    public function get_agreed_grade(){
+    public function get_agreed_grade() {
         global $DB;
 
         if (!$this->id) {
@@ -836,7 +836,7 @@ class submission extends table_base implements \renderable {
 
             case submission::PARTIALLY_GRADED:
                 $statustext = get_string('statuspartiallygraded', 'coursework');
-                if ($this->any_editable_feedback_exists()){
+                if ($this->any_editable_feedback_exists()) {
                     $statustext = get_string('statusfullygraded', 'coursework'). "<br>";
                     $statustext .=  get_string('stilleditable', 'coursework');
                 }
@@ -855,7 +855,7 @@ class submission extends table_base implements \renderable {
                                      get_string('statusfinalgradedsingle', 'coursework'),
                                      array('class' => 'highlight'));
                 $statustext = $this->has_multiple_markers() && $this->sampled_feedback_exists() ? $spanfinalgraded : $spanfinalgradedsingle;
-                if ($this->editable_final_feedback_exist()){
+                if ($this->editable_final_feedback_exist()) {
                     $statustext .= "<br>". get_string('finalgradestilleditable', 'coursework');
                 }
                 break;
@@ -1043,7 +1043,7 @@ class submission extends table_base implements \renderable {
      */
     public function is_late() {
         // check if submission has personal deadline
-        if ($this->get_coursework()->personaldeadlineenabled){
+        if ($this->get_coursework()->personaldeadlineenabled) {
             $deadline = $this->submission_personal_deadline();
         } else { // if not, use coursework default deadline
             $deadline = $this->get_coursework()->get_deadline();
@@ -1112,7 +1112,7 @@ class submission extends table_base implements \renderable {
     private function rename_file($file, $counter) {
 
         // if a submission was made of behalf of student/group, we need to use owner's id, not the person who submitted it
-        if ($this->is_submission_on_behalf()){
+        if ($this->is_submission_on_behalf()) {
             $userid = $this->allocatableid;
         } else {
             $userid = $this->userid;
@@ -1136,7 +1136,7 @@ class submission extends table_base implements \renderable {
         return $this->timesubmitted;
     }
 
-    public function sampled_feedback_exists(){
+    public function sampled_feedback_exists() {
         global $DB;
         return $DB->record_exists('coursework_sample_set_mbrs', array('courseworkid' => $this->courseworkid,
                                                                      'allocatableid' => $this->get_allocatable()->id(),
@@ -1144,10 +1144,10 @@ class submission extends table_base implements \renderable {
 
     }
 
-    public function max_number_of_feedbacks(){
+    public function max_number_of_feedbacks() {
         global $DB;
 
-        if ($this->get_coursework()->sampling_enabled()){
+        if ($this->get_coursework()->sampling_enabled()) {
            // calculate how many stages(markers) are enabled for this submission
             $parameters = array('courseworkid' => $this->coursework->id,
                                  'allocatableid' => $this->get_allocatable()->id(),
@@ -1171,7 +1171,7 @@ class submission extends table_base implements \renderable {
      * @return array|bool
      * @throws \coding_exception
      */
-    public function students_for_gradebook(){
+    public function students_for_gradebook() {
         if ($this->get_coursework()->is_configured_to_have_group_submissions()) {
             $students = groups_get_members($this->allocatableid);
             return $students;
@@ -1198,10 +1198,10 @@ class submission extends table_base implements \renderable {
     /**
      * @return bool
      */
-    private function is_submission_on_behalf(){
+    private function is_submission_on_behalf() {
         global $USER;
 
-        if (($this->allocatableid == $USER->id && $this->allocatabletype != 'group') || groups_is_member($this->allocatableid)){
+        if (($this->allocatableid == $USER->id && $this->allocatabletype != 'group') || groups_is_member($this->allocatableid)) {
             return false;
         } else {
             return true;
@@ -1267,12 +1267,12 @@ class submission extends table_base implements \renderable {
      * @return mixed
      * @throws \coding_exception
      */
-    public function submission_personal_deadline(){
+    public function submission_personal_deadline() {
         $allocatableid = $this->get_allocatable()->id();
         $allocatabletype = $this->get_allocatable()->type();
         $personal_deadline = personal_deadline::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$allocatableid, $allocatabletype]);
 
-        if ($personal_deadline){
+        if ($personal_deadline) {
             $personal_deadline = $personal_deadline->personal_deadline;
         } else {
             $personal_deadline = $this->get_coursework()->deadline;
@@ -1287,7 +1287,7 @@ class submission extends table_base implements \renderable {
      *
      * @return bool
      */
-    public function submitted_within_extension(){
+    public function submitted_within_extension() {
         return $this->time_submitted() < $this->extension_deadline();
     }
 
@@ -1295,7 +1295,7 @@ class submission extends table_base implements \renderable {
      * Retrieve submission's extended deadline
      * @return mixed
      */
-    public function extension_deadline(){
+    public function extension_deadline() {
         return $this->submission_extension()->extended_deadline;
     }
 
@@ -1422,7 +1422,7 @@ class submission extends table_base implements \renderable {
      *
      * @return bool
      */
-    function any_editable_feedback_exists(){
+    function any_editable_feedback_exists() {
 
         return count($this->get_assessor_feedbacks()) >= $this->max_number_of_feedbacks() && $this->editable_feedbacks_exist();
     }
@@ -1432,7 +1432,7 @@ class submission extends table_base implements \renderable {
      *
      * @return bool
      */
-    function has_valid_extension(){
+    function has_valid_extension() {
         deadline_extension::fill_pool_coursework($this->courseworkid);
         $extension = deadline_extension::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$this->allocatableid, $this->allocatabletype]);
 
@@ -1455,7 +1455,7 @@ class submission extends table_base implements \renderable {
      * @return bool|false|mixed|stdClass
      * @throws \dml_exception
      */
-    function has_specific_assessor_feedback($assessorid){
+    function has_specific_assessor_feedback($assessorid) {
         global $DB;
 
         $feedback = $DB->get_record('coursework_feedbacks', array('submissionid' => $this->id,

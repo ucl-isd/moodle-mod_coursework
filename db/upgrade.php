@@ -2285,12 +2285,12 @@ function xmldb_coursework_upgrade($oldversion) {
             // coursework obejct
             $coursework = coursework::find($coursework);
 
-            if ($coursework->marking_deadline_enabled() && $coursework->initialmarkingdeadline){
+            if ($coursework->marking_deadline_enabled() && $coursework->initialmarkingdeadline) {
                 //create initialgradingdue event
                 coursework_update_events($coursework, 'initialgradingdue');
             }
 
-            if ($coursework->marking_deadline_enabled() && $coursework->agreedgrademarkingdeadline){
+            if ($coursework->marking_deadline_enabled() && $coursework->agreedgrademarkingdeadline) {
                 //create agreedgradegradingdue event
                 coursework_update_events($coursework, 'agreedgradingdue');
             }
@@ -2406,7 +2406,7 @@ function xmldb_coursework_upgrade($oldversion) {
 
     }
 
-    if ($oldversion < 2018042401){
+    if ($oldversion < 2018042401) {
 
         $table = new xmldb_table('coursework_mod_agreements');
         $upgradefield = new xmldb_field('lasteditedbyid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);

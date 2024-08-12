@@ -188,7 +188,7 @@ class builder implements user_row {
             array('courseworkid' => $this->get_coursework()->id,
                   'allocatableid' => $this->allocatable->id(),
                   'allocatabletype' =>  $this->allocatable->type()));
-        if ($personal_deadline){
+        if ($personal_deadline) {
             $personal_deadline = $personal_deadline->personal_deadline;
         } else {
             $personal_deadline = $this->get_coursework()->deadline;
