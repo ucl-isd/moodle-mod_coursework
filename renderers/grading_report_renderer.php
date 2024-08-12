@@ -161,7 +161,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @return string
      */
     public function submissions_header($header_text = '') {
-        $submisions = (!empty($header_text))  ? $header_text : get_string('submissions', 'mod_coursework');
+        $submisions = (!empty($header_text)) ? $header_text : get_string('submissions', 'mod_coursework');
 
         return html_writer::tag('h3', $submisions);
     }

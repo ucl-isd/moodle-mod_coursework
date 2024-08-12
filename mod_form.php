@@ -419,7 +419,7 @@ class mod_coursework_mod_form extends moodleform_mod {
             get_string('usemarkingdeadline', 'mod_coursework'), $options);
         $moodle_form->setType('markingdeadlineenabled', PARAM_INT);
 
-        $settingdefault = (empty($CFG->coursework_marking_deadline) && empty($CFG->coursework_agreed_marking_deadline))  ? 0 : 1;
+        $settingdefault = (empty($CFG->coursework_marking_deadline) && empty($CFG->coursework_agreed_marking_deadline)) ? 0 : 1;
         $moodle_form->setDefault('markingdeadlineenabled', $settingdefault);
     }
 
@@ -598,7 +598,7 @@ class mod_coursework_mod_form extends moodleform_mod {
             get_string('sendmarkingreminder', 'mod_coursework'), $options);
         $moodle_form->setType('markingreminderenabled', PARAM_INT);
 
-        $settingdefault = (empty($CFG->coursework_marking_deadline))  ? 0 : 1;
+        $settingdefault = (empty($CFG->coursework_marking_deadline)) ? 0 : 1;
         $moodle_form->setDefault('markingreminderenabled', $settingdefault);
 
     }

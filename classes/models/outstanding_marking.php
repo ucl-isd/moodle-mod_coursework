@@ -81,7 +81,7 @@ class outstanding_marking   {
                 }
             }
 
-        return  (!empty($agreedsubmissions))  ? count($agreedsubmissions) : 0;
+        return  (!empty($agreedsubmissions)) ? count($agreedsubmissions) : 0;
     }
 
     /**

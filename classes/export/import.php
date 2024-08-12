@@ -588,7 +588,7 @@ class import extends grading_sheet{
         // We cant save the grade if this coursework uses rubrics as the grade has not been generated and the grade var contains
         // Criteria that will be used to genenrate the grade. We need the feedback id to do this so we need to make the feedback
         // First
-        $add_grade->grade = (!$uses_rubric)  ? $grade : null;
+        $add_grade->grade = (!$uses_rubric) ? $grade : null;
         $add_grade->feedbackcomment = $feedback;
         $add_grade->lasteditedbyuser = $USER->id;
         $add_grade->markernumber = $markernumber;
