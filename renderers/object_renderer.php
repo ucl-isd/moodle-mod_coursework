@@ -769,7 +769,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         // We want to allow the allocation strategy to add configuration options.
 
-        $html .= html_writer::start_tag('div',array('class' => 'sampling-select'));
+        $html .= html_writer::start_tag('div', array('class' => 'sampling-select'));
 
         $script = "
             var samplingValidateHdl = Array();
@@ -806,7 +806,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $table->head = $assessorheaders;
 
-        $assessor1cell = html_writer::start_tag('div',array('class' => 'samples_strategy'));
+        $assessor1cell = html_writer::start_tag('div', array('class' => 'samples_strategy'));
         $assessor1cell  .=  get_string('assessoronedefault', 'mod_coursework');
         $assessor1cell  .=  html_writer::end_tag('div');
 
@@ -830,7 +830,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             //check whether any rules have been saved for this stage
             $selected = ($samplingwidget->get_coursework()->has_automatic_sampling_at_stage('assessor_'.$i)) ? '1' : false;
 
-            $sampling_cell = html_writer::start_tag('div',array('class' => 'samples_strategy'));
+            $sampling_cell = html_writer::start_tag('div', array('class' => 'samples_strategy'));
             $sampling_cell   .= html_writer::label(get_string('sampletype', 'mod_coursework'), "assessor_{$i}_samplingstrategy");
 
             $sampling_cell   .=    html_writer::select($sampling_strategies,
@@ -959,8 +959,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $sampling_column  .= html_writer::end_tag('div');
 
-        $sampling_column      .=  html_writer::link('#',get_string('addgraderule', 'mod_coursework'),array('id' => "assessor_{$suffix}_addgradderule", 'class' => 'addgradderule sampling_strategy_detail'));
-        $sampling_column      .=  html_writer::link('#',get_string('removegraderule', 'mod_coursework'),array('id' => "assessor_{$suffix}_removegradderule", 'class' => 'removegradderule sampling_strategy_detail'));
+        $sampling_column      .=  html_writer::link('#',get_string('addgraderule', 'mod_coursework'), array('id' => "assessor_{$suffix}_addgradderule", 'class' => 'addgradderule sampling_strategy_detail'));
+        $sampling_column      .=  html_writer::link('#',get_string('removegraderule', 'mod_coursework'), array('id' => "assessor_{$suffix}_removegradderule", 'class' => 'removegradderule sampling_strategy_detail'));
 
         $sampling_column    .=  html_writer::checkbox("assessor_{$suffix}_samplertopup",1,false,get_string('topupto', 'mod_coursework'),
             array('id' => "assessor_{$suffix}_samplerules[]", 'class' => "assessor_{$suffix} sampling_strategy_detail"));

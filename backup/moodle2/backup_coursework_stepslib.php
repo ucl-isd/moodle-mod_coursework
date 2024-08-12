@@ -38,7 +38,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
 
         $userinfo = $this->get_setting_value('userinfo');
 
-        $coursework=new backup_nested_element('coursework',array('id'),
+        $coursework=new backup_nested_element('coursework', array('id'),
                                               array('formid',
                                                     'course',
                                                     'name',
@@ -111,7 +111,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
 
             $sample_strategies =new backup_nested_element('coursework_sample_set_rules');
 
-            $sample_strategy = new backup_nested_element('coursework_sample_set_rule',array('id'),
+            $sample_strategy = new backup_nested_element('coursework_sample_set_rule', array('id'),
                                                                 array('courseworkid',
                                                                      'sample_set_plugin_id',
                                                                      'ruleorder',
@@ -160,7 +160,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
 
             $feedbacks=new backup_nested_element('coursework_feedbacks');
 
-            $feedback= new backup_nested_element('coursework_feedback',array('id'),
+            $feedback= new backup_nested_element('coursework_feedback', array('id'),
                                                  array(
                                                      "submissionid",
                                                      "assessorid",
@@ -182,7 +182,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
 
             $submissions=new backup_nested_element('coursework_submissions');
 
-            $submission=new backup_nested_element('coursework_submission',array('id'),
+            $submission=new backup_nested_element('coursework_submission', array('id'),
                                                   array(
                                                       "courseworkid",
                                                       "userid",
@@ -203,7 +203,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                   ));
             $reminders=new backup_nested_element('coursework_reminders');
 
-            $reminder=new backup_nested_element('coursework_reminder',array('id'),
+            $reminder=new backup_nested_element('coursework_reminder', array('id'),
                                                 array(
                                                     "userid",
                                                     "coursework_id",
@@ -213,7 +213,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
 
             $pairs=new backup_nested_element('coursework_allocation_pairs');
 
-            $pair=new backup_nested_element('coursework_allocation_pair',array('id'),
+            $pair=new backup_nested_element('coursework_allocation_pair', array('id'),
                                             array(
                                                 "courseworkid",
                                                 "assessorid",
@@ -229,7 +229,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
 
             $modsetrules=new backup_nested_element('coursework_mod_set_rules');
 
-            $modsetrule=new backup_nested_element('coursework_mod_set_rule',array('id'),
+            $modsetrule=new backup_nested_element('coursework_mod_set_rule', array('id'),
                                                   array(
                                                       "courseworkid",
                                                       "rulename",
@@ -241,7 +241,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
 
             $allocation_configs=new backup_nested_element('coursework_allocation_configs');
 
-            $allocation_config=new backup_nested_element('coursework_allocation_config',array('id'),
+            $allocation_config=new backup_nested_element('coursework_allocation_config', array('id'),
                                                          array(
                                                              "courseworkid",
                                                              "allocationstrategy",
@@ -252,7 +252,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
 
             $modsetmembers= new backup_nested_element('coursework_mod_set_members');
 
-            $modsetmember=new backup_nested_element('coursework_mod_set_member',array('id'),
+            $modsetmember=new backup_nested_element('coursework_mod_set_member', array('id'),
                                                     array(
                                                         "courseworkid",
                                                         "allocatableid",
@@ -431,7 +431,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
 
         $coursework->annotate_ids('grouping', 'grouping_id');
 
-        $coursework->set_source_table('coursework',array('id' => backup::VAR_ACTIVITYID));
+        $coursework->set_source_table('coursework', array('id' => backup::VAR_ACTIVITYID));
 
         return $this->prepare_activity_structure($coursework);
 

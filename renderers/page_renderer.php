@@ -1328,7 +1328,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
             $html .= get_string('fileuploadresults', 'mod_coursework')."<br />";
             foreach ($processingresults as $file => $result) {
-                $html .= get_string('fileuploadresult', 'mod_coursework',array('filename' => $file, 'result' => $result)). "<br />";
+                $html .= get_string('fileuploadresult', 'mod_coursework', array('filename' => $file, 'result' => $result)). "<br />";
             }
             $html .= html_writer::end_tag('p');
         } else {
@@ -1462,47 +1462,47 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             'aria-label' => 'Close',
             'data-dismiss' => 'modal'
         ));
-        $modal_header .= html_writer::span('&times;', '',array('aria-hidden' => 'true'));
+        $modal_header .= html_writer::span('&times;', '', array('aria-hidden' => 'true'));
         $modal_header .= html_writer::end_tag('button');
 
         $modal_body = html_writer::start_tag('form', array('id' => 'form-extension'));
-        $content = html_writer::empty_tag('input',array(
+        $content = html_writer::empty_tag('input', array(
             'name' => 'allocatabletype',
             'type' => 'hidden',
             'value' => '',
             'id' => 'extension-allocatabletype'
         ));
-        $content .= html_writer::empty_tag('input',array(
+        $content .= html_writer::empty_tag('input', array(
             'name' => 'allocatableid',
             'type' => 'hidden',
             'value' => '',
             'id' => 'extension-allocatableid'
         ));
-        $content .= html_writer::empty_tag('input',array(
+        $content .= html_writer::empty_tag('input', array(
             'name' => 'courseworkid',
             'type' => 'hidden',
             'value' => '',
             'id' => 'extension-courseworkid'
         ));
-        $content .= html_writer::empty_tag('input',array(
+        $content .= html_writer::empty_tag('input', array(
             'name' => 'id',
             'type' => 'hidden',
             'value' => '',
             'id' => 'extension-id'
         ));
-        $content .= html_writer::empty_tag('input',array(
+        $content .= html_writer::empty_tag('input', array(
             'name' => 'submissionid',
             'type' => 'hidden',
             'value' => '',
             'id' => 'extension-submissionid'
         ));
-        $content .= html_writer::empty_tag('input',array(
+        $content .= html_writer::empty_tag('input', array(
             'name' => 'name',
             'type' => 'hidden',
             'id' => 'extension-name',
             'value' => '',
         ));
-        $content .= html_writer::empty_tag('input',array(
+        $content .= html_writer::empty_tag('input', array(
             'name' => 'aid',
             'type' => 'hidden',
             'value' => '',
@@ -1590,7 +1590,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             'aria-labelledby' => 'modelTitleId',
             'aria-hidden' => 'true'
         ));
-        $html .= html_writer::empty_tag('input',array(
+        $html .= html_writer::empty_tag('input', array(
             'name' => '',
             'type' => 'hidden',
             'data-lang' => json_encode($lang_messages),

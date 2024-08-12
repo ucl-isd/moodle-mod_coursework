@@ -444,13 +444,13 @@ function coursework_update_instance($coursework) {
 
     $coursework->submissionnotification = $subnotify;
 
-    $courseworkhassubmissions = ($DB->get_records('coursework_submissions',array('courseworkid' => $coursework->id)))
+    $courseworkhassubmissions = ($DB->get_records('coursework_submissions', array('courseworkid' => $coursework->id)))
         ?   true : false;
 
     //if the coursework has submissions then we the renamefiles setting can't be changes
     if ($courseworkhassubmissions) {
 
-        $currentcoursework = $DB->get_record('coursework',array('id' => $coursework->id));
+        $currentcoursework = $DB->get_record('coursework', array('id' => $coursework->id));
 
         $coursework->renamefiles = $currentcoursework->renamefiles;
 
@@ -912,7 +912,7 @@ function coursework_role_assigned_event_handler($roleassignment) {
     $courseworkids = coursework_get_coursework_ids_from_context_id($roleassignment->contextid);
 
     foreach ($courseworkids as $courseworkid) {
-        $DB->set_field('coursework', 'processenrol',1,array('id' => $courseworkid));
+        $DB->set_field('coursework', 'processenrol',1, array('id' => $courseworkid));
     }
 
     return true;
@@ -933,7 +933,7 @@ function coursework_role_unassigned_event_handler($roleassignment) {
     $courseworkids = coursework_get_coursework_ids_from_context_id($roleassignment->contextid);
 
     foreach ($courseworkids as $courseworkid) {
-        $DB->set_field('coursework', 'processunenrol',1,array('id' => $courseworkid));
+        $DB->set_field('coursework', 'processunenrol',1, array('id' => $courseworkid));
     }
 
     return true;
@@ -1505,7 +1505,7 @@ function coursework_is_ulcc_digest_coursework_plugin_installed() {
     $disgestblockexists = $DB->record_exists_sql("SELECT id FROM {block} WHERE name = 'ulcc_digest' AND visible = 1");
 
     if (!empty($disgestblockexists)) {
-         $pluginexists = ($DB->get_records('block_ulcc_digest_plgs',array('module' => 'coursework', 'status' => 1)))    ?   true    :  false;
+         $pluginexists = ($DB->get_records('block_ulcc_digest_plgs', array('module' => 'coursework', 'status' => 1)))    ?   true    :  false;
     }
 
     return $pluginexists;

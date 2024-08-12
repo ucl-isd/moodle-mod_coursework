@@ -2501,7 +2501,7 @@ class coursework extends table_base {
     public function extension_exists() {
 
         global $DB;
-        return $DB->record_exists('coursework_extensions',array('courseworkid' => $this->id));
+        return $DB->record_exists('coursework_extensions', array('courseworkid' => $this->id));
     }
 
     public function get_submissions_with_extensions() {
@@ -2515,7 +2515,7 @@ class coursework extends table_base {
                 AND ce.allocatabletype = cs.allocatabletype
                 AND cs.courseworkid = :courseworkid";
 
-        return $DB->get_records_sql($sql,array('courseworkid' => $this->id));
+        return $DB->get_records_sql($sql, array('courseworkid' => $this->id));
     }
 
     /**
@@ -2531,7 +2531,7 @@ class coursework extends table_base {
                 AND pd.allocatabletype = cs.allocatabletype
                 WHERE cs.courseworkid = :courseworkid";
 
-        $submissions = $DB->get_records_sql($sql,array('courseworkid' => $this->id));
+        $submissions = $DB->get_records_sql($sql, array('courseworkid' => $this->id));
 
         // for submissions that don't have a set personal deadline give coursework's default deadline
         if ($submissions) {
@@ -2553,7 +2553,7 @@ class coursework extends table_base {
     public function has_automatic_sampling_at_stage($stage) {
         global  $DB;
 
-        return $DB->record_exists('coursework_sample_set_rules',array('courseworkid' => $this->id, 'stage_identifier' => $stage));
+        return $DB->record_exists('coursework_sample_set_rules', array('courseworkid' => $this->id, 'stage_identifier' => $stage));
     }
 
     /**

@@ -118,7 +118,7 @@ class coursework_file_zip_importer    {
 
             if ($allocatableid = $this->is_valid_feedback_file_filename($coursework, $file, $participants) ) {
 
-                $subdbrecord = $DB->get_record('coursework_submissions',array('courseworkid' => $coursework->id(), 'allocatableid' => $allocatableid, 'allocatabletype' => $coursework->get_allocatable_type()));
+                $subdbrecord = $DB->get_record('coursework_submissions', array('courseworkid' => $coursework->id(), 'allocatableid' => $allocatableid, 'allocatabletype' => $coursework->get_allocatable_type()));
 
                 $submission = \mod_coursework\models\submission::find($subdbrecord);
 

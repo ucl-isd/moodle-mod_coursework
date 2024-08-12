@@ -80,7 +80,7 @@ class assessorfeedback_cell extends cell_base{
         $agreedgradecap = array('mod/coursework:addagreedgrade','mod/coursework:editagreedgrade');
         $initialgradecap = array('mod/coursework:addinitialgrade','mod/coursework:editinitialgrade');
 
-        $subdbrecord = $DB->get_record('coursework_submissions',array('id' => $submissionid));
+        $subdbrecord = $DB->get_record('coursework_submissions', array('id' => $submissionid));
         $submission = \mod_coursework\models\submission::find($subdbrecord);
         if (has_any_capability($agreedgradecap, $PAGE->context) && has_any_capability($initialgradecap, $PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context)) {
@@ -140,7 +140,7 @@ class assessorfeedback_cell extends cell_base{
                 && $this->coursework->get_max_markers() > 1 && !$this->coursework->allocation_enabled()) {
 
                 // check how many feedbacks for this submission
-                $feedbacks = $DB->count_records('coursework_feedbacks',array('submissionid' => $submissionid));
+                $feedbacks = $DB->count_records('coursework_feedbacks', array('submissionid' => $submissionid));
 
                 if ($this->coursework->sampling_enabled()) {
                     // check how many sample assessors + add 1 that is always in sample

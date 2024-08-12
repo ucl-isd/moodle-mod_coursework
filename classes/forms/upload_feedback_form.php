@@ -48,9 +48,9 @@ class upload_feedback_form extends moodleform {
         $mform->addRule('feedbackzip', null, 'required');
         $mform->addHelpButton('feedbackzip', 'feedbackzipfile', 'coursework');
 
-        $mform->addElement('advcheckbox', 'overwrite', '',get_string('overwritefeedback', 'coursework'),null,array(0,1));
+        $mform->addElement('advcheckbox', 'overwrite', '',get_string('overwritefeedback', 'coursework'),null, array(0,1));
         $mform->addElement('hidden', 'cmid', $this->cmid);
-        $mform->setType('cmid',PARAM_RAW);
+        $mform->setType('cmid', PARAM_RAW);
 
         $options = array();
 
@@ -72,7 +72,7 @@ class upload_feedback_form extends moodleform {
             $mform->addElement('select', 'feedbackstage', get_string('feedbackstage', 'coursework'), $options);
         } else {
             $mform->addElement('hidden', 'feedbackstage', 'assessor_1');
-            $mform->setType('feedbackstage',PARAM_RAW);
+            $mform->setType('feedbackstage', PARAM_RAW);
         }
 
         // Disable overwrite current feedback files checkbox if user doesn't have edit capability

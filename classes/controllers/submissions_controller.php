@@ -174,7 +174,7 @@ class submissions_controller extends controller_base {
 
                 if (!empty($userids)) {
                     foreach ($userids as $u) {
-                        $notifyuser = $DB->get_record('user',array('id' => trim($u)));
+                        $notifyuser = $DB->get_record('user', array('id' => trim($u)));
 
                         if (!empty($notifyuser))   $mailer->send_submission_notification($notifyuser);
                     }

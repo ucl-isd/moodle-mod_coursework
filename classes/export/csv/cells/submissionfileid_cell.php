@@ -53,7 +53,7 @@ class submissionfileid_cell extends cell_base {
             return 'No submission hash value entered';
         }
 
-        $subdbrecord = $DB->get_record('coursework_submissions',array('id' => $submissionid));
+        $subdbrecord = $DB->get_record('coursework_submissions', array('id' => $submissionid));
 
         $submission = \mod_coursework\models\submission::find($subdbrecord);
 

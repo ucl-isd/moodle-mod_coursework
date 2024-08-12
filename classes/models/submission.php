@@ -805,7 +805,7 @@ class submission extends table_base implements \renderable {
                 ORDER   BY  gm.userid
                 LIMIT   1";
 
-        return $DB->get_record_sql($sql,array($groupid));
+        return $DB->get_record_sql($sql, array($groupid));
     }
 
     /**
@@ -1397,7 +1397,7 @@ class submission extends table_base implements \renderable {
 			         AND    cf.timecreated + c.gradeeditingtime > :time
         ";
 
-        $editablefeedbacks = $DB->get_records_sql($sql,array('submissionid' => $this->id, 'time' => time()));
+        $editablefeedbacks = $DB->get_records_sql($sql, array('submissionid' => $this->id, 'time' => time()));
 
         return (empty($editablefeedbacks))  ?   false : $editablefeedbacks;
     }

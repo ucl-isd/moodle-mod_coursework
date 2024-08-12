@@ -42,7 +42,7 @@ class upload_allocations_form extends moodleform {
       //  $mform->addElement('checkbox', 'overwrite', '',get_string('overwritegrades', 'coursework'));
         $mform->addElement('hidden', 'cmid', $this->cmid);
 
-        $mform->setType('cmid',PARAM_RAW);
+        $mform->setType('cmid', PARAM_RAW);
 
         $choices = csv_import_reader::get_delimiter_list();
         $mform->addElement('select', 'delimiter_name', get_string('csvdelimiter', 'tool_uploaduser'), $choices);

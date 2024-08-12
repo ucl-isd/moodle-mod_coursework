@@ -122,10 +122,10 @@ if (!(isset($SESSION->sorthow[$course_module_id]))) {
 
 // first name alpha
 if (!(isset($SESSION->coursework_firstname_alpha[$course_module_id]))) {
-    $SESSION->coursework_firstname_alpha[$course_module_id] = optional_param('coursework_firstname_alpha', '',PARAM_ALPHA);
+    $SESSION->coursework_firstname_alpha[$course_module_id] = optional_param('coursework_firstname_alpha', '', PARAM_ALPHA);
     $coursework_firstname_alpha = $SESSION->coursework_firstname_alpha[$course_module_id];
 } else {
-    $coursework_firstname_alpha = optional_param('coursework_firstname_alpha', $SESSION->coursework_firstname_alpha[$course_module_id],PARAM_ALPHA);
+    $coursework_firstname_alpha = optional_param('coursework_firstname_alpha', $SESSION->coursework_firstname_alpha[$course_module_id], PARAM_ALPHA);
     $SESSION->coursework_firstname_alpha[$course_module_id] = $coursework_firstname_alpha;
 }
 
@@ -134,7 +134,7 @@ if (!(isset($SESSION->coursework_lastname_alpha[$course_module_id]))) {
     $SESSION->coursework_lastname_alpha[$course_module_id] = optional_param('coursework_lastname_alpha', '', PARAM_ALPHA);
     $coursework_lastname_alpha= $SESSION->coursework_lastname_alpha[$course_module_id];
 } else {
-    $coursework_lastname_alpha = optional_param('coursework_lastname_alpha', $SESSION->coursework_lastname_alpha[$course_module_id],PARAM_ALPHA);
+    $coursework_lastname_alpha = optional_param('coursework_lastname_alpha', $SESSION->coursework_lastname_alpha[$course_module_id], PARAM_ALPHA);
     $SESSION->coursework_lastname_alpha[$course_module_id] = $coursework_lastname_alpha;
 }
 
@@ -143,7 +143,7 @@ if (!(isset($SESSION->coursework_groupname_alpha[$course_module_id]))) {
     $SESSION->coursework_groupname_alpha[$course_module_id] = optional_param('coursework_groupname_alpha', '', PARAM_ALPHA);
     $coursework_groupname_alpha = $SESSION->coursework_groupname_alpha[$course_module_id];
 } else {
-    $coursework_groupname_alpha= optional_param('coursework_groupname_alpha', $SESSION->coursework_groupname_alpha[$course_module_id],PARAM_ALPHA);
+    $coursework_groupname_alpha= optional_param('coursework_groupname_alpha', $SESSION->coursework_groupname_alpha[$course_module_id], PARAM_ALPHA);
     $SESSION->coursework_groupname_alpha[$course_module_id] = $coursework_groupname_alpha;
 }
 
@@ -189,10 +189,10 @@ if (!(isset($SESSION->viewallstudents_sorthow[$course_module_id]))) {
 
 // first name alpha
 if (!(isset($SESSION->viewallstudents_firstname_alpha[$course_module_id]))) {
-    $SESSION->viewallstudents_firstname_alpha[$course_module_id] = optional_param('viewallstudents_firstname_alpha', '',PARAM_ALPHA);
+    $SESSION->viewallstudents_firstname_alpha[$course_module_id] = optional_param('viewallstudents_firstname_alpha', '', PARAM_ALPHA);
     $viewallstudents_firstname_alpha = $SESSION->coursework_firstname_alpha[$course_module_id];
 } else {
-    $viewallstudents_firstname_alpha = optional_param('viewallstudents_firstname_alpha', $SESSION->viewallstudents_firstname_alpha[$course_module_id],PARAM_ALPHA);
+    $viewallstudents_firstname_alpha = optional_param('viewallstudents_firstname_alpha', $SESSION->viewallstudents_firstname_alpha[$course_module_id], PARAM_ALPHA);
     $SESSION->viewallstudents_firstname_alpha[$course_module_id] = $viewallstudents_firstname_alpha;
 }
 
@@ -201,7 +201,7 @@ if (!(isset($SESSION->viewallstudents_lastname_alpha[$course_module_id]))) {
     $SESSION->viewallstudents_lastname_alpha[$course_module_id] = optional_param('viewallstudents_lastname_alpha', '', PARAM_ALPHA);
     $viewallstudents_lastname_alpha = $SESSION->viewallstudents_lastname_alpha[$course_module_id];
 } else {
-    $viewallstudents_lastname_alpha = optional_param('viewallstudents_lastname_alpha', $SESSION->viewallstudents_lastname_alpha[$course_module_id],PARAM_ALPHA);
+    $viewallstudents_lastname_alpha = optional_param('viewallstudents_lastname_alpha', $SESSION->viewallstudents_lastname_alpha[$course_module_id], PARAM_ALPHA);
     $SESSION->viewallstudents_lastname_alpha[$course_module_id] = $viewallstudents_lastname_alpha;
 }
 
@@ -210,7 +210,7 @@ if (!(isset($SESSION->viewallstudents_groupname_alpha[$course_module_id]))) {
     $SESSION->viewallstudents_groupname_alpha[$course_module_id] = optional_param('viewallstudents_groupname_alpha', '', PARAM_ALPHA);
     $viewallstudents_groupname_alpha = $SESSION->viewallstudents_groupname_alpha[$course_module_id];
 } else {
-    $viewallstudents_groupname_alpha= optional_param('viewallstudents_groupname_alpha', $SESSION->viewallstudents_groupname_alpha[$course_module_id],PARAM_ALPHA);
+    $viewallstudents_groupname_alpha= optional_param('viewallstudents_groupname_alpha', $SESSION->viewallstudents_groupname_alpha[$course_module_id], PARAM_ALPHA);
     $SESSION->viewallstudents_groupname_alpha[$course_module_id] = $viewallstudents_groupname_alpha;
 }
 

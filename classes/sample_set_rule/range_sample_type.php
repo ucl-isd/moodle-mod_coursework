@@ -77,9 +77,9 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $html   .=  $this->range_elements($assessor_number,0,false);
         }
 
-        $html      .=  html_writer::link('#',get_string('addgraderule', 'mod_coursework'),array('id' => "assessor_{$assessor_number}_addgradderule", 'class' => 'addgradderule sample_set_rule'));
+        $html      .=  html_writer::link('#',get_string('addgraderule', 'mod_coursework'), array('id' => "assessor_{$assessor_number}_addgradderule", 'class' => 'addgradderule sample_set_rule'));
         $html      .=  "  ";
-        $html      .=  html_writer::link('#',get_string('removegraderule', 'mod_coursework'),array('id' => "assessor_{$assessor_number}_removegradderule", 'class' => 'removegradderule sample_set_rule'));
+        $html      .=  html_writer::link('#',get_string('removegraderule', 'mod_coursework'), array('id' => "assessor_{$assessor_number}_removegradderule", 'class' => 'removegradderule sample_set_rule'));
 
         return $html;
     }
@@ -330,12 +330,12 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
             global $DB;
 
-            $sample_rules = optional_param_array("assessor_{$assessor_number}_samplerules",false,PARAM_RAW);
-            $sample_type = optional_param_array("assessor_{$assessor_number}_sampletype",false,PARAM_RAW);
-            $sample_from = optional_param_array("assessor_{$assessor_number}_samplefrom",false,PARAM_RAW);
-            $sample_to = optional_param_array("assessor_{$assessor_number}_sampleto",false,PARAM_RAW);
+            $sample_rules = optional_param_array("assessor_{$assessor_number}_samplerules",false, PARAM_RAW);
+            $sample_type = optional_param_array("assessor_{$assessor_number}_sampletype",false, PARAM_RAW);
+            $sample_from = optional_param_array("assessor_{$assessor_number}_samplefrom",false, PARAM_RAW);
+            $sample_to = optional_param_array("assessor_{$assessor_number}_sampleto",false, PARAM_RAW);
 
-            $sample_plugin = $DB->get_record('coursework_sample_set_plugin',array('rulename' => 'range_sample_type'));
+            $sample_plugin = $DB->get_record('coursework_sample_set_plugin', array('rulename' => 'range_sample_type'));
 
             if ($sample_rules) {
                 foreach ($sample_rules as $i => $val) {
@@ -372,7 +372,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                          AND            stage_identifier = :stage
                          ORDER BY       ruleorder";
 
-        $ruleinstance = $DB->get_records_sql($sql,array('courseworkid' => $this->coursework->id, 'stage' => $stage));
+        $ruleinstance = $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id, 'stage' => $stage));
 
         foreach ($ruleinstance as $ri) {
 
@@ -414,7 +414,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                     $limits[0] = $this->coursework->grade * $limits[0] / 100;
                     $limits[1] = $this->coursework->grade * $limits[1] / 100;
                 } else  {
-                    $scale = $DB->get_record("scale",array('id' => abs($this->coursework->grade)));
+                    $scale = $DB->get_record("scale", array('id' => abs($this->coursework->grade)));
 
                     if ($scale) {
 

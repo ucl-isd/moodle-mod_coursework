@@ -572,7 +572,7 @@ class import extends grading_sheet{
             $markernumber = 1;
         } else {
             //  get all feedbacks and add 1
-            $feedbacks = $DB->count_records('coursework_feedbacks',array('submissionid' => $submissionid));
+            $feedbacks = $DB->count_records('coursework_feedbacks', array('submissionid' => $submissionid));
             $markernumber = $feedbacks +1;
         }
 

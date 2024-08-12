@@ -796,7 +796,7 @@ class mod_coursework_mod_form extends moodleform_mod {
                          WHERE      id = :courseworkid
                          AND        renamefiles = 1";
 
-            $settingvalue = ($DB->get_records_sql($sql,array('courseworkid' => $courseworkid))) ? get_string('yesrenamefile', 'mod_coursework')  : get_string('norenamefile', 'mod_coursework')  ;
+            $settingvalue = ($DB->get_records_sql($sql, array('courseworkid' => $courseworkid))) ? get_string('yesrenamefile', 'mod_coursework')  : get_string('norenamefile', 'mod_coursework')  ;
 
             $moodle_form->addElement('static', 'renamefilesdescription', get_string('renamefiles', 'mod_coursework'),
                 $settingvalue);
@@ -1120,7 +1120,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 //        $moodle_form->setDefault('automaticagreement',0);
 //        $moodle_form->disabledIf('automaticagreement', 'numberofmarkers', 'eq', '1');
 //
-//        $moodle_form->addElement('text', 'automaticagreementrange', get_string('automaticagreementrange', 'mod_coursework'),array('size' => 3));
+//        $moodle_form->addElement('text', 'automaticagreementrange', get_string('automaticagreementrange', 'mod_coursework'), array('size' => 3));
 //        $moodle_form->addHelpButton('automaticagreementrange', 'automaticagreementrange', 'mod_coursework');
 //        $moodle_form->setDefault('automaticagreementrange',0);
 //        $moodle_form->disabledIf('automaticagreementrange', 'automaticagreement', 'eq', '0');
