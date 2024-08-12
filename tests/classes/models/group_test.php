@@ -44,5 +44,4 @@ class coursework_group_test extends advanced_testcase {
         $this->assertNotEmpty($group->name);
         $this->assertEquals($group->name, group::find($group->id)->name);
     }
-    
 }

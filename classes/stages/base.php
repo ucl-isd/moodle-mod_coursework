@@ -348,7 +348,7 @@ abstract class base {
         if ($feedback) {
 
             $sql = "SELECT *
-                    FROM {coursework_mod_agreements} 
+                    FROM {coursework_mod_agreements}
                     WHERE feedbackid = ?";
             return $DB->record_exists_sql($sql, array($feedback->id));
         } else {

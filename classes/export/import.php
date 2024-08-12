@@ -442,7 +442,6 @@ class import extends grading_sheet{
 
                             //for ( $critidx < $numberofrubrics; ) {
                             $critidx = 0;
-                            
                             //this assumes that the data in the csv is in the correct criteria order.....it should be
                             foreach ($criterias as $c) {
                                 $criteriagrade = array();

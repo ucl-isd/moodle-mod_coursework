@@ -1631,7 +1631,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                       <div class="modal-body">
                         <i class="fa fa-spin fa-spinner"></i> loading
                       </div>
-                      
                        </div><!-- /.modal-content -->
                   </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->

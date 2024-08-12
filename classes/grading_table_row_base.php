@@ -179,7 +179,7 @@ abstract class grading_table_row_base implements user_row {
 
     /**
      * Getter for personal deadline time
-     * 
+     *
      * @return int|mixed|string
      */
     public function get_personal_deadlines() {
@@ -200,7 +200,7 @@ abstract class grading_table_row_base implements user_row {
         } else {
             $personal_deadline = $this->get_coursework()->deadline;
         }
-        
+
         return  $personal_deadline;
     }
 

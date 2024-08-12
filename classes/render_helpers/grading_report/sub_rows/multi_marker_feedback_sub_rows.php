@@ -135,7 +135,6 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
 
                 $assessor_details = (empty($feedback_row->get_assessor()->id()) && $coursework->allocation_enabled()) ?
                      get_string('assessornotallocated','mod_coursework') : $this->profile_link($feedback_row);
-                
                  $output_rows .=
                      '<td>' . $assessor_details. ' </td>
                      <td class="assessor_feedback_grade" data-class-name="' . get_class($this) . '">' .

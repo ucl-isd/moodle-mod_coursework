@@ -118,8 +118,8 @@ class outstanding_marking   {
                                  {$sqltable}
                                  WHERE     f.id IS NULL
                                  AND cs.finalised = 1
-                                 AND cs.courseworkid = :courseworkid              
-                                  {$sqlextra}                                  
+                                 AND cs.courseworkid = :courseworkid
+                                  {$sqlextra}
                                  ";
 
         $sqlparams['courseworkid'] = $courseworkid;
@@ -198,12 +198,12 @@ class outstanding_marking   {
                                             {coursework_feedbacks} f ON   cs.id = f.submissionid
                                             {$sqltable}
                                      WHERE cs.finalised = 1
-                                       AND cs.courseworkid = :courseworkid                
+                                       AND cs.courseworkid = :courseworkid
                                           AND (f.assessorid != :assessorid OR f.assessorid IS NULL)
                                           {$sqlextra}
-                                          AND cs.id NOT IN (SELECT      sub.id  FROM 
-                                                                        {coursework_feedbacks} feed JOIN 
-                                                                        {coursework_submissions} sub ON sub.id = feed.submissionid 
+                                          AND cs.id NOT IN (SELECT      sub.id  FROM
+                                                                        {coursework_feedbacks} feed
+                                                                        JOIN {coursework_submissions} sub ON sub.id = feed.submissionid
                                                                         WHERE assessorid = :subassessorid AND sub.courseworkid= :subcourseworkid)
                                           GROUP BY cs.id, f.id
                                           HAVING (COUNT(f.id) < :numofmarkers)";
@@ -228,7 +228,7 @@ class outstanding_marking   {
 
         $sql = "SELECT cs.id as submissionid, COUNT(cs.id) AS count_feedback
                                       FROM 	{coursework_submissions}	cs ,
-                                            {coursework_feedbacks} f 
+                                            {coursework_feedbacks} f
                                      WHERE  f.submissionid= cs.id
                                         AND cs.finalised = 1
                                         AND cs.courseworkid = :courseworkid
@@ -263,7 +263,7 @@ class outstanding_marking   {
                                                   GROUP BY cs.allocatableid, ssm.stage_identifier, f.id, cs.id, ssm.id
                                                 ) a
                                    GROUP BY a.allocatableid, a.csid, a.fid, a.id, a.count_feedback, a.courseworkid
-                                   HAVING (count_feedback = $countsamples AND $countsamples > 1 );";    
+                                   HAVING (count_feedback = $countsamples AND $countsamples > 1 );";
 
         $sqlparams['courseworkid'] = $courseworkid;
 

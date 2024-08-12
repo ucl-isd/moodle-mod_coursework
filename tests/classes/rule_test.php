@@ -103,6 +103,4 @@ class abiity_rule_test extends basic_testcase {
         $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rule_function, false);
         $this->assertFalse($rule->prevents($coursework));
     }
-
-    
-} 
+}

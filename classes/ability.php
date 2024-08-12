@@ -468,7 +468,7 @@ class ability extends \mod_coursework\framework\ability {
                     $submission->get_coursework()->get_context());
             });
     }
-    
+
 
     protected function prevent_edit_submission_for_unsaved_records() {
         $this->prevent('edit',
@@ -1307,7 +1307,7 @@ class ability extends \mod_coursework\framework\ability {
         $this->allow('edit',
             'mod_coursework\models\personal_deadline',
             function (personal_deadline $personal_deadline) {
-                return $personal_deadline->get_coursework()->personal_deadlines_enabled() 
+                return $personal_deadline->get_coursework()->personal_deadlines_enabled()
                         && has_capability('mod/coursework:editpersonaldeadline',
                     $personal_deadline->get_coursework()
                         ->get_context());

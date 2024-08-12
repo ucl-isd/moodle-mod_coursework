@@ -69,7 +69,6 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->add_submission_deadline_field();
         $this->add_personal_deadline_field();
 
-        
        // if (coursework_is_ulcc_digest_coursework_plugin_installed()) {
             $this->add_marking_deadline_field();
             $this->add_initial_marking_deadline_field();
@@ -780,11 +779,11 @@ class mod_coursework_mod_form extends moodleform_mod {
             require(['jquery'], function() {
                        $('#id_blindmarking').change(function() {
                             console.log($(this).val());
-                            
+
                             if ($(this).val()== 1) {
                                 $('#id_renamefiles').val(1);
-                            } 
-                            
+                            }
+
                         });
                 });
             ");
@@ -792,7 +791,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         } else  {
 
             $sql = "SELECT     *
-                         FROM       {coursework}     
+                         FROM       {coursework}
                          WHERE      id = :courseworkid
                          AND        renamefiles = 1";
 
@@ -1182,8 +1181,6 @@ class mod_coursework_mod_form extends moodleform_mod {
             $moodle_form->disabledIf('samplingenabled', 'numberofmarkers', 'eq', 1);
 
         }
-        
-
     }
 
     /**
@@ -1240,15 +1237,11 @@ class mod_coursework_mod_form extends moodleform_mod {
      * @throws coding_exception
      */
     private function add_auto_populate_agreed_feedback_comments() {
-       
         $moodle_form =& $this->_form;
         $moodle_form->addElement('selectyesno', 'autopopulatefeedbackcomment', get_string('autopopulatefeedbackcomment', 'mod_coursework'));
         $moodle_form->addHelpButton('autopopulatefeedbackcomment', 'autopopulatefeedbackcomment', 'mod_coursework');
-   
         $moodle_form->disabledIf('autopopulatefeedbackcomment', 'numberofmarkers', 'eq', 1);
-        
     }
-    
 
     private function forceblindmarking() {
         global $CFG;

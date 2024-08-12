@@ -59,14 +59,14 @@ class restore_coursework_activity_task extends restore_activity_task
 
         return $contents;
     }
-    
+
     /**
      * Define (add) particular settings this activity can have.
      */
     protected function define_my_settings() {
         // No particular settings for this activity.
     }
-    
+
     /**
      * Define (add) particular steps this activity can have.
      */
@@ -74,5 +74,5 @@ class restore_coursework_activity_task extends restore_activity_task
         // Only has one structure step.
         $this->add_step(new restore_coursework_activity_structure_step('coursework_structure', 'coursework.xml'));
     }
-    
+
 }

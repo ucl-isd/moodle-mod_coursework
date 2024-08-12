@@ -251,7 +251,7 @@ class submission extends table_base implements \renderable {
             if ($submission->get_coursework()->personal_deadlines_enabled()) {
                 $deadline = $submission->submission_personal_deadline();
             }
-            
+
             if ($deadline < time()) {
                 // if deadline passed check if extension exists
                 if ($submission->has_extension()) {

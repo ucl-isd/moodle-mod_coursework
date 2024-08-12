@@ -73,8 +73,6 @@ class builder {
         foreach ($allocatables as $allocatable) {
             $rows[] = new row_builder($this, $allocatable);
         }
-
-        
         // Sort the rows.
         $sorting = new mod_coursework\grading_report($this->options, $this->coursework);
         $method_name = 'sort_by_' . $this->options['sortby'];

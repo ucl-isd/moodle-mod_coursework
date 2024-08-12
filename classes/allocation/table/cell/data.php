@@ -64,7 +64,6 @@ class data {
         $key = $this->assessor_id_key_name();
         if (array_key_exists($key, $this->data) && !empty($this->data[$key])) {
             $assessor = user::find($this->data[$key]);
-            
             if ($assessor && $this->stage->user_is_assessor($assessor)) {
                 $this->assessor = $assessor;
             }

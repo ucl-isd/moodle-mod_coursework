@@ -52,7 +52,7 @@ class multiple_agreed_grade_cell extends cell_base {
      * @param grading_table_row_base $rowobject
      * @return string
      */
-    public function get_table_cell($rowobject) {        
+    public function get_table_cell($rowobject) {
         $content = $this->get_content($rowobject);
         return $this->get_new_cell_with_class($content);
     }
@@ -158,7 +158,6 @@ class multiple_agreed_grade_cell extends cell_base {
                  $content .= ' by: ' . $finalfeedback->get_assesor_username();
              }
         }
-        
         return $content;
     }
 

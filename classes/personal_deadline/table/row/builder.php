@@ -217,6 +217,4 @@ class builder implements user_row {
 
         return  $statustext;
     }
-   
-
 }

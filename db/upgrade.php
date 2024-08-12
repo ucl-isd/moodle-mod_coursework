@@ -2198,8 +2198,6 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2016121501, 'coursework');
     }
 
-    
-
     if ($oldversion < 2016121600) {
 
         // Define table coursework_person_deadlines to be created.

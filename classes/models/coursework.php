@@ -1339,10 +1339,10 @@ class coursework extends table_base {
         $graded = array();
         $params = array('courseworkid' => $this->id, 'assessorid' => $assessorid);
         $sql = "SELECT cs.id
-                FROM {coursework_feedbacks} cf 
-                JOIN {coursework_submissions} cs 
+                FROM {coursework_feedbacks} cf
+                JOIN {coursework_submissions} cs
                 ON cs.id = cf.submissionid
-                WHERE cs.courseworkid = :courseworkid 
+                WHERE cs.courseworkid = :courseworkid
                 AND assessorid = :assessorid";
         $submissions = $DB->get_records_sql($sql, $params);
 
@@ -2902,8 +2902,8 @@ class coursework extends table_base {
     public function has_any_final_feedback() {
         global $DB;
 
-        $sql = "SELECT * 
-                FROM {coursework_feedbacks} cf 
+        $sql = "SELECT *
+                FROM {coursework_feedbacks} cf
                 JOIN {coursework_submissions} cs ON cs.id = cf.submissionid
                 WHERE cs.courseworkid = :courseworkid
                 AND cf.stage_identifier = 'final_agreed_1'";
@@ -2986,8 +2986,8 @@ class coursework extends table_base {
     public function has_any_submission() {
         global $DB;
 
-        $sql = "SELECT * 
-                FROM {coursework_submissions} cs 
+        $sql = "SELECT *
+                FROM {coursework_submissions} cs
                 WHERE cs.courseworkid = :courseworkid";
 
         return $DB->record_exists_sql($sql, array('courseworkid' => $this->id));

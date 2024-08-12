@@ -281,7 +281,7 @@ class coursework_test extends advanced_testcase {
         $coursework->update_attribute('individualfeedback', 0);
         $this->assertTrue($coursework->individual_feedback_deadline_has_passed());
     }
-    
+
     public function test_finalise_all_leaves_other_submissions_alone() {
         $coursework = $this->get_coursework();
         $submission = $this->create_a_submission_for_the_student();

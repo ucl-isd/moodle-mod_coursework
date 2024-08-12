@@ -68,7 +68,6 @@ class single_assessor_feedback_cell extends cell_base {
         $content = $this->get_content($rowobject);
         return $this->get_new_cell_with_class($content);
     }
-    
     public function get_content($rowobject) {
 
         global $USER;

@@ -46,7 +46,6 @@ class personal_deadlines_controller extends controller_base{
             $this->get_path('set personal deadlines', array('coursework' => $this->coursework));
 
         $params = $this->set_default_current_deadline();
-        
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('edit', $this->personal_deadline);
 
@@ -62,10 +61,7 @@ class personal_deadlines_controller extends controller_base{
         $this->personal_deadline->multipleuserdeadlines = $this->params['multipleuserdeadlines'];
 
         $this->personal_deadline->allocatableid = $params['allocatableid'];
-
         $this->form->set_data($this->personal_deadline);
-
-        
         if ($this->cancel_button_was_pressed()) {
             redirect($coursework_page_url);
         }
@@ -155,7 +151,7 @@ class personal_deadlines_controller extends controller_base{
     }
 
     /**
-     * Get the personal deadline 
+     * Get the personal deadline
      * @return mixed
      */
     protected function get_personal_deadline() {
@@ -257,4 +253,3 @@ class personal_deadlines_controller extends controller_base{
         return true;
     }
 }
-    

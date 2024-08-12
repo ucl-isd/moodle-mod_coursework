@@ -889,7 +889,6 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
         $navref->add(get_string($lang_str, 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
 
     }
-    
     // Link to personal deadlines screen
     if (has_capability('mod/coursework:editpersonaldeadline', $context) && ($coursework->personal_deadlines_enabled())) {
         $link = new moodle_url('/mod/coursework/actions/set_personal_deadlines.php', array('id' => $cm->id));
@@ -1281,7 +1280,6 @@ function course_group_member_added($event_data) {
         $coursework = coursework::find($coursework);
         $stage = $coursework->marking_stages();
         $stage_1 = $stage['assessor_1']; // this allocation is only for 1st stage, we don't touch other stages
-        
         $student = $coursework->can_submit(); // check if user is student in this course
         $initial_stage_assessor = has_capability('mod/coursework:addinitialgrade', $coursework->get_context(), $addeduserid); // check if user is initial stage assessor in this course
 
@@ -1438,7 +1436,7 @@ function can_delete_allocation($courseworkid, $allocatableid) {
     $ungraded_allocations = $DB->get_record_sql("SELECT *
                                                     FROM {coursework_allocation_pairs} p
                                                     WHERE courseworkid = :courseworkid
-                                                    AND p.manual = 0  
+                                                    AND p.manual = 0
                                                     AND stage_identifier = 'assessor_1'
                                                     AND allocatableid = :allocatableid
                                                     AND NOT EXISTS (SELECT 1
@@ -1518,7 +1516,7 @@ function coursework_is_ulcc_digest_coursework_plugin_installed() {
 function coursework_personal_deadline_passed($courseworkid) {
     global $DB;
 
-    $sql = "SELECT * 
+    $sql = "SELECT *
             FROM {coursework_person_deadlines}
             WHERE courseworkid = :courseworkid
             AND personal_deadline < :now";

@@ -161,7 +161,7 @@ class submissions_controller extends controller_base {
         $submission->submit_plagiarism();
 
         $mailer = new mailer($this->coursework);
-        if ($CFG->coursework_allsubmissionreceipt || $submission->finalised) { 
+        if ($CFG->coursework_allsubmissionreceipt || $submission->finalised) {
             foreach ($submission->get_students() as $student) {
                 $mailer->send_submission_receipt($student, $submission->finalised);
             }
@@ -341,7 +341,7 @@ class submissions_controller extends controller_base {
                 array('courseworkid' => $this->params['courseworkid'], 'allocatableid' => $aid, 'allocatabletype' => $this->params['allocatabletype']));
             if (!empty($submission_db)) {
                 $submission = \mod_coursework\models\submission::find($submission_db);
-                       
+
                 if ($submission->can_be_unfinalised()) {
                     $submission->finalised = 0;
                     $submission->save();

@@ -38,7 +38,7 @@ class backup_coursework_activity_task extends backup_activity_task
 
       return $content;
   }
-  
+
   protected function define_my_settings() {
   }
 
