@@ -82,7 +82,7 @@ class time_submitted_cell extends cell_base {
 
                 // check if submission has personal deadline
                 if ($coursework->personaldeadlineenabled ){
-                    $deadline =  $submission->submission_personal_deadline();
+                    $deadline = $submission->submission_personal_deadline();
                 } else { // if not, use coursework default deadline
                     $deadline = $coursework->deadline;
                 }
@@ -202,7 +202,7 @@ class time_submitted_cell extends cell_base {
 
         //adding this line so that the sortable heading function will make a sortable link unique to the table
         //if tablename is set
-        $tablename  =   (!empty($options['tablename']))  ? $options['tablename']  : ''  ;
+        $tablename = (!empty($options['tablename']))  ? $options['tablename']  : ''  ;
 
         return $this->helper_sortable_heading(get_string('tableheadsubmissiondate', 'coursework'),
             'timesubmitted',

@@ -696,7 +696,7 @@ class coursework extends table_base {
         $turnitinenabled = $this->tii_enabled();
 
         // Turn it in only allows one file.
-        $max_files =  $this->maxfiles;
+        $max_files = $this->maxfiles;
 
         // Turn it in only likes some file types.
         /* DOC, DOCX, Corel
@@ -992,7 +992,7 @@ class coursework extends table_base {
 
                 $foldername     .=   $this->get_username_hash($submission->get_allocatable()->id());
 
-                $filename           =   $foldername.'/'.$filename;
+                $filename = $foldername.'/'.$filename;
 
                 /* @var $f stored_file */
                 $files_for_zipping[$filename] = $f;
@@ -1364,7 +1364,7 @@ class coursework extends table_base {
                 ON cs.id = cf.submissionid
                 WHERE cs.courseworkid = :courseworkid 
                 AND assessorid = :assessorid";
-        $submissions =  $DB->get_records_sql($sql, $params);
+        $submissions = $DB->get_records_sql($sql, $params);
 
         foreach ($submissions as $submission) {
             $submission = submission::find($submission);
@@ -1389,7 +1389,7 @@ class coursework extends table_base {
                 WHERE courseworkid = :courseworkid
                 AND firstpublished IS NOT NULL";
 
-      $submissions =  $DB->get_records_sql($sql, array('courseworkid' => $this->id));
+      $submissions = $DB->get_records_sql($sql, array('courseworkid' => $this->id));
         foreach ($submissions as &$submission) {
             $submission = submission::find($submission);
         }
@@ -1413,7 +1413,7 @@ class coursework extends table_base {
             return '';
         }
 
-        $uhash  =   $id . $userid;
+        $uhash = $id . $userid;
 
         //hash with zero have the potential to become changed in outside programs
         //so we generate a hash without a leading zero
@@ -2325,7 +2325,7 @@ class coursework extends table_base {
                 /**
                  * @var group $group
                  */
-                $members =  $group->get_members($this->get_context(), $cmobject);
+                $members = $group->get_members($this->get_context(), $cmobject);
                 if (empty($members)){
                     continue;
                 }
@@ -2608,7 +2608,7 @@ class coursework extends table_base {
         $sql = "SELECT   cwrsub.allocatableid, cwrfb.*
                          FROM       {coursework_submissions}  cwrsub,
                                     {coursework_feedbacks}    cwrfb
-                         WHERE      cwrsub.id   = cwrfb.submissionid
+                         WHERE      cwrsub.id = cwrfb.submissionid
                          AND        cwrsub.courseworkid = :coursework_id
                          AND        stage_identifier = :stage";
 
@@ -2737,10 +2737,10 @@ class coursework extends table_base {
      */
     public function get_allocatables_and_deadline()    {
 
-        $allocatables   =   $this->get_allocatables();
+        $allocatables = $this->get_allocatables();
 
         if (!empty($allocatables)) {
-            $allocatables   =   array_map(array($this,"get_allocatable_personal_deadline"), $allocatables);
+            $allocatables = array_map(array($this,"get_allocatable_personal_deadline"), $allocatables);
         }
 
         return $allocatables;
@@ -2757,8 +2757,8 @@ class coursework extends table_base {
 
         global  $DB;
 
-        $allocatable->deadline      =   $this->deadline;
-        $allocatable->coursework_id =   $this->id;
+        $allocatable->deadline = $this->deadline;
+        $allocatable->coursework_id = $this->id;
 
         if ($this->personal_deadlines_enabled()) {
             personal_deadline::fill_pool_coursework($this->id);

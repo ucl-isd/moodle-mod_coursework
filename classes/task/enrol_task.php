@@ -44,7 +44,7 @@ class enrol_task extends \core\task\scheduled_task {
 
         global $DB;
 
-        $courseworkids     =   $DB->get_records('coursework',array('processenrol'=>1));
+        $courseworkids = $DB->get_records('coursework',array('processenrol'=>1));
 
         if (!empty($courseworkids))   {
             foreach ($courseworkids as $courseworkid) {

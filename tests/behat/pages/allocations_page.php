@@ -159,7 +159,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
     public function enable_atomatic_sampling_for($stage)  {
-        $elementid  =   '#assessor_'.$stage.'_samplingstrategy';
+        $elementid = '#assessor_'.$stage.'_samplingstrategy';
         $node = $this->getPage()->find('css', $elementid);
 
         $node->selectOption('Automatic');
@@ -236,7 +236,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
         //increment stage as the this will match the id of the element;
         $stage++;
 
-        $elementid  =   '#assessor_'.$stage.'_sampletotal';
+        $elementid = '#assessor_'.$stage.'_sampletotal';
         $node = $this->getPage()->find('css', $elementid);
 
         $node->selectOption($percentage);
@@ -252,16 +252,16 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
 
         $other_sql = (!empty($other_user))?  "OR allocatableid = $other_user->id" : '';
 
-        $sql    =   "SELECT     *
+        $sql = "SELECT     *
                      FROM       {coursework_sample_set_mbrs}
                      WHERE      courseworkid = :courseworkid
                      AND        stage_identifier = :stage
                      AND        (allocatableid = :user $other_sql)";
 
 
-        $stage  =   "assessor_".$stage_number;
+        $stage = "assessor_".$stage_number;
 
-        $params     =   array('courseworkid'=>$coursework->id,
+        $params = array('courseworkid'=>$coursework->id,
             'user'=>$user->id,
             'stage' => $stage);
 

@@ -304,7 +304,7 @@ class builder {
             $checkbox_checked = 1;
         }
 
-        $checkbox_checked   =   $this->checkbox_checked_in_session($checkbox_name,$checkbox_checked);
+        $checkbox_checked = $this->checkbox_checked_in_session($checkbox_name,$checkbox_checked);
 
         $checkbox_title = 'Included in sample';
 
@@ -352,7 +352,7 @@ class builder {
 
         global $DB;
 
-        $params =   array('courseworkid'=>$this->coursework->id(),
+        $params = array('courseworkid'=>$this->coursework->id(),
                           'allocatableid'=>$this->get_allocatable()->id(),
                           'stage_identifier'=>$this->get_stage()->identifier(),
                           'selectiontype' => 'automatic');
@@ -378,7 +378,7 @@ class builder {
             }
         }
 
-        $checkbox_checked   =   $this->checkbox_checked_in_session($checkbox_name,$checkbox_checked);
+        $checkbox_checked = $this->checkbox_checked_in_session($checkbox_name,$checkbox_checked);
 
         $stage = substr($this->get_stage()->identifier(), -1);
         $checkbox_title = 'Pinned (auto allocations will not alter this)';
@@ -396,7 +396,7 @@ class builder {
 
         global  $SESSION;
 
-        $cm =   $this->coursework->get_course_module();
+        $cm = $this->coursework->get_course_module();
 
         if (!empty($SESSION->coursework_allocationsessions[$cm->id]))   {
             if (isset($SESSION->coursework_allocationsessions[$cm->id][$checkboxname]))    {

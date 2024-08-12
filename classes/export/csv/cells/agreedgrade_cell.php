@@ -79,7 +79,7 @@ class agreedgrade_cell extends cell_base{
         global $DB,$PAGE,$USER;
 
         $stage_identifier = 'final_agreed_1';
-        $agreedgradecap    =   array('mod/coursework:addagreedgrade','mod/coursework:editagreedgrade',
+        $agreedgradecap = array('mod/coursework:addagreedgrade','mod/coursework:editagreedgrade',
                                      'mod/coursework:addallocatedagreedgrade','mod/coursework:editallocatedagreedgrade');
 
         if (empty($value)) return true;
@@ -87,7 +87,7 @@ class agreedgrade_cell extends cell_base{
         if (has_any_capability($agreedgradecap,$PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context))   {
 
-            $errormsg   =   '';
+            $errormsg = '';
 
             if (!$this->coursework->is_using_rubric() || ($this->coursework->is_using_rubric() && $this->coursework->finalstagegrading == 1)) {
                 $gradejudge = new grade_judge($this->coursework);
@@ -105,7 +105,7 @@ class agreedgrade_cell extends cell_base{
                 //keys isnt. We will use array_filter whhich will return all values from the array if this is empty then we have
                 //nothing to do
 
-                $arrayvalues    =   array_filter($value);
+                $arrayvalues = array_filter($value);
 
                 //if there are no values we don't need to do anything
                 if (!empty($arrayvalues)) {
@@ -142,7 +142,7 @@ class agreedgrade_cell extends cell_base{
                 } else {
 
                     //set value to false so that a submission not ready to grade message isn't returned
-                    $value  =   false;
+                    $value = false;
 
                 }
 
@@ -150,7 +150,7 @@ class agreedgrade_cell extends cell_base{
 
             if (!empty($errormsg))  return $errormsg;
 
-            $subdbrecord =   $DB->get_record('coursework_submissions',array('id'=>$submissionid));
+            $subdbrecord = $DB->get_record('coursework_submissions',array('id'=>$submissionid));
             $submission = \mod_coursework\models\submission::find($subdbrecord);
 
 
@@ -215,9 +215,9 @@ class agreedgrade_cell extends cell_base{
 
         global  $DB;
 
-        $valuefound =   false;
+        $valuefound = false;
 
-        $levels     =   $criteria['levels'];
+        $levels = $criteria['levels'];
 
         if (is_numeric($value) ) {
             foreach ($levels as $level) {
@@ -247,28 +247,28 @@ class agreedgrade_cell extends cell_base{
 
         if ($coursework->is_using_rubric()  && $this->coursework->finalstagegrading != 1) {
 
-            $rubricheaders      =       array();
+            $rubricheaders = array();
 
             $criterias = $coursework->get_rubric_criteria();
 
             foreach ($criterias as  $criteria)   {
-                $rubricheaders[]    =   $criteria['description'];
-                $rubricheaders[]    =   $criteria['description']." comment";
+                $rubricheaders[] = $criteria['description'];
+                $rubricheaders[] = $criteria['description']." comment";
             }
 
 
             //find out the position of singlegrade
             $position = array_search('singlegrade',$csv_cells);
             //get all data from the position of the singlegrade to the length of rubricheaders
-            // $csv_cells     =   array_splice($csv_cells,5, 1, $rubricheaders);
+            // $csv_cells = array_splice($csv_cells,5, 1, $rubricheaders);
 
 
-            $start_cells        =   array_slice($csv_cells,0,$position,true);
-            $end_cells          =   array_slice($csv_cells,$position+1,count($csv_cells),true);
+            $start_cells = array_slice($csv_cells,0,$position,true);
+            $end_cells = array_slice($csv_cells,$position+1,count($csv_cells),true);
 
-            $cells              =   array_merge($start_cells,$rubricheaders);
+            $cells = array_merge($start_cells,$rubricheaders);
 
-            $cells              =   array_merge($cells,$end_cells);
+            $cells = array_merge($cells,$end_cells);
 
 
 

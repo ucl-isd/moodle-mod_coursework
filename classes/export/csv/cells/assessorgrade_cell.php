@@ -98,7 +98,7 @@ class assessorgrade_cell extends cell_base{
                 $strings['assessorgrade'.$stage.'_'.$criteria['id'] . 'comment'] = 'Comment for:  Assessor '.$stage.' - '.$criteria['description'];
             }
         } else {
-            $strings =  get_string('assessorgradecsv', 'coursework', $stage);
+            $strings = get_string('assessorgradecsv', 'coursework', $stage);
         }
 
         return  $strings;
@@ -121,7 +121,7 @@ class assessorgrade_cell extends cell_base{
         ) {
 
 
-            $errormsg   =   '';
+            $errormsg = '';
 
             if (!$this->coursework->is_using_rubric()) {
                 $gradejudge = new grade_judge($this->coursework);
@@ -138,7 +138,7 @@ class assessorgrade_cell extends cell_base{
                 //keys isnt. We will use array_filter whhich will return all values from the array if this is empty then we have
                 //nothing to do
 
-                $arrayvalues    =   array_filter($value);
+                $arrayvalues = array_filter($value);
 
                 //if there are no values we don't need to do anything
                 if (!empty($arrayvalues)) {
@@ -275,9 +275,9 @@ class assessorgrade_cell extends cell_base{
 
         global  $DB;
 
-        $valuefound =   false;
+        $valuefound = false;
 
-        $levels     =   $criteria['levels'];
+        $levels = $criteria['levels'];
 
         if (is_numeric($value) ) {
             foreach ($levels as $level) {
@@ -307,28 +307,28 @@ class assessorgrade_cell extends cell_base{
 
         if ($coursework->is_using_rubric()) {
 
-            $rubricheaders      =       array();
+            $rubricheaders = array();
 
             $criterias = $coursework->get_rubric_criteria();
 
             foreach ($criterias as  $criteria)   {
-                $rubricheaders[]    =   $criteria['description'];
-                $rubricheaders[]    =   $criteria['description']." comment";
+                $rubricheaders[] = $criteria['description'];
+                $rubricheaders[] = $criteria['description']." comment";
             }
 
 
             //find out the position of singlegrade
             $position = array_search('singlegrade',$csv_cells);
             //get all data from the position of the singlegrade to the length of rubricheaders
-            // $csv_cells     =   array_splice($csv_cells,5, 1, $rubricheaders);
+            // $csv_cells = array_splice($csv_cells,5, 1, $rubricheaders);
 
 
-            $start_cells        =   array_slice($csv_cells,0,$position,true);
-            $end_cells          =   array_slice($csv_cells,$position+1,count($csv_cells),true);
+            $start_cells = array_slice($csv_cells,0,$position,true);
+            $end_cells = array_slice($csv_cells,$position+1,count($csv_cells),true);
 
-            $cells              =   array_merge($start_cells,$rubricheaders);
+            $cells = array_merge($start_cells,$rubricheaders);
 
-            $cells              =   array_merge($cells,$end_cells);
+            $cells = array_merge($cells,$end_cells);
 
 
 

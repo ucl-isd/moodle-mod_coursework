@@ -120,7 +120,7 @@ class builder implements user_row {
 
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->firstname)) {
-            $this->allocatable =  user::find($allocatable);
+            $this->allocatable = user::find($allocatable);
         }
 
         return $this->get_allocatable()->firstname;
@@ -135,7 +135,7 @@ class builder implements user_row {
 
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->lastname)) {
-            $this->allocatable =  user::find($allocatable);
+            $this->allocatable = user::find($allocatable);
         }
 
         return $this->get_allocatable()->lastname;
@@ -150,7 +150,7 @@ class builder implements user_row {
 
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->idnumber)) {
-            $this->allocatable =  user::find($allocatable);
+            $this->allocatable = user::find($allocatable);
         }
 
         return $this->get_allocatable()->idnumber;
@@ -166,7 +166,7 @@ class builder implements user_row {
 
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->email)) {
-            $this->allocatable =  user::find($allocatable);
+            $this->allocatable = user::find($allocatable);
         }
 
         return $this->get_allocatable()->email;
@@ -203,19 +203,19 @@ class builder implements user_row {
     public  function get_submission_status()    {
         global  $DB;
 
-        $submission_db =   $DB->get_record('coursework_submissions',
+        $submission_db = $DB->get_record('coursework_submissions',
             array('courseworkid' => $this->get_coursework()->id,
                 'allocatableid' => $this->allocatable->id(),
                 'allocatabletype'=>  $this->allocatable->type()));
 
-        $submission     =   \mod_coursework\models\submission::find($submission_db);
+        $submission = \mod_coursework\models\submission::find($submission_db);
 
-        $statustext     =   get_string('statusnotsubmitted','mod_coursework');
+        $statustext = get_string('statusnotsubmitted','mod_coursework');
 
         if (!empty($submission) && $submission->is_finalised())   {
-            $statustext     =   get_string('finalisedsubmission','mod_coursework');
+            $statustext = get_string('finalisedsubmission','mod_coursework');
         } else if (!empty($submission)) {
-            $statustext     =    $submission->get_status_text();
+            $statustext = $submission->get_status_text();
         }
 
         return  $statustext;

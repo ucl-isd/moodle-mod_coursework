@@ -97,7 +97,7 @@ abstract class sample_base {
 
 
     function __construct($coursework)   {
-        $this->coursework   =   $coursework;
+        $this->coursework = $coursework;
     }
 
 

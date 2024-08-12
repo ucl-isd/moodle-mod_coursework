@@ -57,7 +57,7 @@ class personal_deadlines_controller extends controller_base{
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('edit', $this->personal_deadline);
 
-        $params['allocatableid']       =        (!is_array($params['allocatableid']))      ?    $params['allocatableid']
+        $params['allocatableid'] = (!is_array($params['allocatableid']))      ?    $params['allocatableid']
             :    serialize($params['allocatableid'])   ;
 
         $PAGE->set_url('/mod/coursework/actions/personal_deadline/new.php', $params);
@@ -65,10 +65,10 @@ class personal_deadlines_controller extends controller_base{
 
         $this->form = new personal_deadline_form($create_url, array('coursework' => $this->coursework));
 
-        $this->personal_deadline->setpersonaldeadlinespage      =   $this->params['setpersonaldeadlinespage'];
-        $this->personal_deadline->multipleuserdeadlines         =   $this->params['multipleuserdeadlines'];
+        $this->personal_deadline->setpersonaldeadlinespage = $this->params['setpersonaldeadlinespage'];
+        $this->personal_deadline->multipleuserdeadlines = $this->params['multipleuserdeadlines'];
 
-        $this->personal_deadline->allocatableid     =       $params['allocatableid'];
+        $this->personal_deadline->allocatableid = $params['allocatableid'];
 
         $this->form->set_data($this->personal_deadline);
 
@@ -96,12 +96,12 @@ class personal_deadlines_controller extends controller_base{
             } else {
 
 
-                    $allocatables       =       unserialize($data->allocatableid);
+                    $allocatables = unserialize($data->allocatableid);
 
                     foreach($allocatables   as  $allocatableid)   {
-                        $data->allocatableid    =   $allocatableid;
-                        $data->id   =   '';
-                        //$data->id               =   '';
+                        $data->allocatableid = $allocatableid;
+                        $data->id = '';
+                        //$data->id = '';
                         $findparams = array(
                             'allocatableid' => $allocatableid,
                             'allocatabletype' => $data->allocatabletype,
@@ -118,7 +118,7 @@ class personal_deadlines_controller extends controller_base{
 
                         } else {
                             // update
-                            $data->id   =   $this->personal_deadline->id;
+                            $data->id = $this->personal_deadline->id;
                             $data->lastmodifiedbyid = $USER->id;
                             $data->timemodified = time();
                             $this->personal_deadline->update_attributes($data);
@@ -150,11 +150,11 @@ class personal_deadlines_controller extends controller_base{
 
         //if the allocatableid is an array then the current page will probably be setting multiple the personal deadlines
         //we use the first element in the array to setup the personal deadline object
-        $params['allocatableid']    =   (is_array($this->params['allocatableid']))  ? current($this->params['allocatableid'])  : $this->params['allocatableid']  ;
+        $params['allocatableid'] = (is_array($this->params['allocatableid']))  ? current($this->params['allocatableid'])  : $this->params['allocatableid']  ;
 
          $this->personal_deadline = personal_deadline::find_or_build($params);
 
-        $params['allocatableid']    =   $this->params['allocatableid'];
+        $params['allocatableid'] = $this->params['allocatableid'];
 
             //if the allocatableid is an array then the current page will probably be setting multiple the personal deadlines
             // of multiple allocatable ids in which case set the personal deadline to the coursework default
@@ -203,7 +203,7 @@ class personal_deadlines_controller extends controller_base{
 
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('edit', $this->personal_deadline);
-        $params['allocatableid']       =        (!is_array($params['allocatableid']))      ?    $params['allocatableid']
+        $params['allocatableid'] = (!is_array($params['allocatableid']))      ?    $params['allocatableid']
             :    serialize($params['allocatableid'])   ;
 
         $data = (object) $this->params;
@@ -222,12 +222,12 @@ class personal_deadlines_controller extends controller_base{
                 $this->personal_deadline->update_attributes($data);
             }
         } else {
-            $allocatables       =       unserialize($data->allocatableid);
+            $allocatables = unserialize($data->allocatableid);
 
             foreach ($allocatables   as  $allocatableid) {
-                $data->allocatableid    =   $allocatableid;
-                $data->id   =   '';
-                //$data->id               =   '';
+                $data->allocatableid = $allocatableid;
+                $data->id = '';
+                //$data->id = '';
                 $findparams = array(
                     'allocatableid' => $allocatableid,
                     'allocatabletype' => $data->allocatabletype,
@@ -242,7 +242,7 @@ class personal_deadlines_controller extends controller_base{
                     $this->personal_deadline->save();
                 } else {
                     // update
-                    $data->id   =   $this->personal_deadline->id;
+                    $data->id = $this->personal_deadline->id;
                     $data->lastmodifiedbyid = $USER->id;
                     $data->timemodified = time();
                     $this->personal_deadline->update_attributes($data);

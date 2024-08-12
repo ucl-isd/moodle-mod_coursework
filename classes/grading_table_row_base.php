@@ -347,7 +347,7 @@ abstract class grading_table_row_base implements user_row {
 
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->firstname)) {
-            $this->allocatable =  user::find($allocatable);
+            $this->allocatable = user::find($allocatable);
         }
 
         return $this->get_allocatable()->firstname;
@@ -362,7 +362,7 @@ abstract class grading_table_row_base implements user_row {
 
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->lastname)) {
-            $this->allocatable =  user::find($allocatable);
+            $this->allocatable = user::find($allocatable);
         }
 
         return $this->get_allocatable()->lastname;

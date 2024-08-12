@@ -115,13 +115,13 @@ class average_grade implements auto_grader {
         // round it according to the chosen rule
         switch ($this->roundingrule) {
             case 'mid':
-                $avggrade =  round($avggrade);
+                $avggrade = round($avggrade);
                 break;
             case 'up':
-                $avggrade =  ceil($avggrade);
+                $avggrade = ceil($avggrade);
                 break;
             case 'down':
-                $avggrade =  floor($avggrade);
+                $avggrade = floor($avggrade);
                 break;
         }
 

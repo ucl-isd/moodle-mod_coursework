@@ -104,11 +104,11 @@ class otherassessors_cell extends cell_base{
 
         }
 
-        $numothereassessorfeedbacks    =   $submission->max_number_of_feedbacks() -1;
+        $numothereassessorfeedbacks = $submission->max_number_of_feedbacks() -1;
 
         if ($numothereassessorfeedbacks - count($feedbacks) != 0 )  {
 
-            $blankcolumns   =   $numothereassessorfeedbacks - count($feedbacks);
+            $blankcolumns = $numothereassessorfeedbacks - count($feedbacks);
 
             for($i = 0; $i < $blankcolumns; $i++) {
                 if ($this->coursework->is_using_rubric()) {

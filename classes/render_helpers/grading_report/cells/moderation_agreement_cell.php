@@ -70,7 +70,7 @@ class moderation_agreement_cell extends cell_base {
         $ability = new ability(user::find($USER), $rowobject->get_coursework());
 
         $content = '';
-        $moderation  = '';
+        $moderation = '';
         if ($rowobject->has_submission()) {
             if ($rowobject->get_single_feedback()){
                 $moderation = $this->stage->get_moderation_for_feedback($rowobject->get_single_feedback());

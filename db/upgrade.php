@@ -2005,9 +2005,9 @@ function xmldb_coursework_upgrade($oldversion) {
 
 
             //now create plugin records for sample set plugins
-            $plugins =   array('range_sample_type','total_sample_type');
+            $plugins = array('range_sample_type','total_sample_type');
 
-            $i  =   1;
+            $i = 1;
 
             foreach($plugins as $p) {
                 $dbrecord = new \stdClass();
@@ -2221,7 +2221,7 @@ function xmldb_coursework_upgrade($oldversion) {
         // Define table coursework_sample_set_mbrs to be created.
         $table = new xmldb_table('coursework');
 
-        $upgradefield   =   new xmldb_field('submissionnotification', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $upgradefield = new xmldb_field('submissionnotification', XMLDB_TYPE_TEXT, null, null, null, null, null);
 
         if (!$dbman->field_exists($table, $upgradefield)) {
             $dbman->add_field($table, $upgradefield);
@@ -2527,7 +2527,7 @@ function xmldb_coursework_upgrade($oldversion) {
         // Define table coursework_plagiarism_flag to be created.
         $table = new xmldb_table('coursework');
 
-        $field     =   $table->add_field('renamefiles',XMLDB_TYPE_INTEGER,'1',null,null,null,null);
+        $field = $table->add_field('renamefiles',XMLDB_TYPE_INTEGER,'1',null,null,null,null);
 
         // Conditionally launch add field.
         if (!$dbman->field_exists($table, $field)) {
@@ -2535,13 +2535,13 @@ function xmldb_coursework_upgrade($oldversion) {
         }
 
 
-        $courseworkinstances       =       $DB->get_records('coursework');
+        $courseworkinstances = $DB->get_records('coursework');
 
         foreach($courseworkinstances   as  $cwk) {
             $courseworkhassubmissions = ($DB->get_records('coursework_submissions', array('courseworkid' => $cwk->id)))
                 ? true : false;
 
-            $cwk->renamefiles   = ($cwk->blindmarking == 1 || $courseworkhassubmissions)   ?   1 :  0 ;
+            $cwk->renamefiles = ($cwk->blindmarking == 1 || $courseworkhassubmissions)   ?   1 :  0 ;
 
             $DB->update_record('coursework',$cwk);
          }

@@ -81,7 +81,7 @@ class submissions_controller extends controller_base {
                                                       'submission' => $submission
                                                     ));
         if ($submit_form->is_submitted()) {
-            $validation =  $submit_form->validate_defined_fields();
+            $validation = $submit_form->validate_defined_fields();
         }
         if ($validation != true) {
             $this->get_page_renderer()->new_submission_page($submit_form, $submission);
@@ -114,7 +114,7 @@ class submissions_controller extends controller_base {
         $submission->createdby = $USER->id;
         $submission->lastupdatedby = $USER->id;
         $submission->allocatabletype = $this->params['allocatabletype'];
-        $submission->authorid   = $submission->get_author_id(); //create new function to get the author id depending on whether the current user is submitting on behalf
+        $submission->authorid = $submission->get_author_id(); //create new function to get the author id depending on whether the current user is submitting on behalf
         $submission->timesubmitted = time();
 
 
@@ -172,11 +172,11 @@ class submissions_controller extends controller_base {
          if ($submission->finalised) {
             if (!$submission->get_coursework()->has_deadline()) {
 
-                $userids  =   explode(',',$submission->get_coursework()->get_submission_notification_users());
+                $userids = explode(',',$submission->get_coursework()->get_submission_notification_users());
 
                 if (!empty($userids)) {
                     foreach($userids as $u)   {
-                        $notifyuser   = $DB->get_record('user',array('id'=>trim($u)));
+                        $notifyuser = $DB->get_record('user',array('id'=>trim($u)));
 
                         if (!empty($notifyuser))   $mailer->send_submission_notification($notifyuser);
                     }
@@ -220,7 +220,7 @@ class submissions_controller extends controller_base {
                                                        'submission' => $submission
                                                    ));
         if ($submit_form->is_submitted()) {
-            $validation =   $submit_form->validate_defined_fields();
+            $validation = $submit_form->validate_defined_fields();
         }
 
         $submit_form->set_data($submission);
@@ -244,7 +244,7 @@ class submissions_controller extends controller_base {
             redirect($coursework_page_url);
         }
 
-         $validated =    $this->edit_submission();
+         $validated = $this->edit_submission();
 
         if ($validated == true){
             return;
@@ -336,13 +336,13 @@ class submissions_controller extends controller_base {
 
 
 
-        $allocatableids     =   (!is_array($this->params['allocatableid']))  ?  array($this->params['allocatableid']) : $this->params['allocatableid']  ;
+        $allocatableids = (!is_array($this->params['allocatableid']))  ?  array($this->params['allocatableid']) : $this->params['allocatableid']  ;
 
         $personaldeadline_page_url = new \moodle_url('/mod/coursework/actions/personal_deadline.php',
             array('id'=>$this->coursework->get_coursemodule_id(),'multipleuserdeadlines'=>1,'setpersonaldeadlinespage'=>1,
                 'courseworkid'=>$this->params['courseworkid'],'allocatabletype'=>$this->params['allocatabletype']));
 
-        $changedeadlines    =   false;
+        $changedeadlines = false;
 
         foreach($allocatableids as $aid) {
 
@@ -355,7 +355,7 @@ class submissions_controller extends controller_base {
                     $submission->finalised = 0;
                     $submission->save();
                     $personaldeadline_page_url->param("allocatableid_arr[$aid]",$aid);
-                    $changedeadlines    =   true;
+                    $changedeadlines = true;
                 }
             }
 

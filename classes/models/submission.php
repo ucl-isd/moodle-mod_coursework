@@ -801,13 +801,13 @@ class submission extends table_base implements \renderable {
 
         global  $DB;
 
-        $sql    =   "
+        $sql = "
                 SELECT  gm.userid as id
                 FROM 	{groups_members} gm,
 	                    {turnitintooltwo_users} tu
                 WHERE 	tu.userid = gm.userid
                 AND  	user_agreement_accepted != 0
-                AND 	gm.groupid =  ?
+                AND 	gm.groupid = ?
                 ORDER   BY  gm.userid
                 LIMIT   1";
 
@@ -1053,7 +1053,7 @@ class submission extends table_base implements \renderable {
     public function is_late() {
         // check if submission has personal deadline
         if ($this->get_coursework()->personaldeadlineenabled){
-            $deadline =  $this->submission_personal_deadline();
+            $deadline = $this->submission_personal_deadline();
         } else { // if not, use coursework default deadline
             $deadline = $this->get_coursework()->get_deadline();
         }
@@ -1399,7 +1399,7 @@ class submission extends table_base implements \renderable {
 
         $this->get_coursework()->get_grade_editing_time();
 
-        $sql    =   "
+        $sql = "
                     SELECT  *
                     FROM 	{coursework} c,
 					        {coursework_submissions} cs,
@@ -1414,7 +1414,7 @@ class submission extends table_base implements \renderable {
 			         AND    cf.timecreated + c.gradeeditingtime > :time
         ";
 
-        $editablefeedbacks  =   $DB->get_records_sql($sql,array('submissionid'=>$this->id,'time'=>time()));
+        $editablefeedbacks = $DB->get_records_sql($sql,array('submissionid'=>$this->id,'time'=>time()));
 
         return (empty($editablefeedbacks))  ?   false : $editablefeedbacks;
     }
@@ -1423,12 +1423,12 @@ class submission extends table_base implements \renderable {
  * Determines whether the current user is able to add a turnitin grademark to this submission
  */
     function can_add_tii_grademark()    {
-        $canadd =   false;
+        $canadd = false;
 
         if ($this->get_coursework()->get_max_markers() == 1) {
-            $canadd     =     (has_any_capability(array('mod/coursework:addinitialgrade','mod/coursework:addministergrades'),$this->get_context()) && $this->ready_to_grade()) ;
+            $canadd = (has_any_capability(array('mod/coursework:addinitialgrade','mod/coursework:addministergrades'),$this->get_context()) && $this->ready_to_grade()) ;
         } else {
-            $canadd     =     (has_any_capability(array('mod/coursework:addagreedgrade','mod/coursework:addallocatedagreedgrade','mod/coursework:addministergrades'),$this->get_context()) && $this->all_inital_graded()) ;
+            $canadd = (has_any_capability(array('mod/coursework:addagreedgrade','mod/coursework:addallocatedagreedgrade','mod/coursework:addministergrades'),$this->get_context()) && $this->all_inital_graded()) ;
         }
 
         return  $canadd;
@@ -1463,7 +1463,7 @@ class submission extends table_base implements \renderable {
 
 
     function can_be_unfinalised()   {
-        return  ($this->get_state()  == submission::FINALISED);
+        return  ($this->get_state() == submission::FINALISED);
     }
 
     /**

@@ -329,7 +329,7 @@ echo "failed";
     public function get_provisional_grade_field($submission) {
        $elementid = '#allocatable_' . $submission->get_coursework()
                 ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .assessor_feedback_grade';
-       $grade_field =  $this->getPage()->find('css', $elementid);
+       $grade_field = $this->getPage()->find('css', $elementid);
        return $grade_field ? $grade_field->getValue() : false;
     }
 
@@ -340,7 +340,7 @@ echo "failed";
     public function get_grade_field($submission){
         $elementid = '#assessorfeedbacktable_' . $submission->get_coursework()
                  ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .grade_for_gradebook_cell';
-        $grade_field =  $this->getPage()->find('css', $elementid);
+        $grade_field = $this->getPage()->find('css', $elementid);
         return $grade_field ? $grade_field->getValue() : false;
     }
 

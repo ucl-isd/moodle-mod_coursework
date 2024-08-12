@@ -106,7 +106,7 @@ abstract class sample_set_rule extends table_base implements renderable {
      */
     public function __construct($coursework) {
 
-        $this->coursework   =   $coursework;
+        $this->coursework = $coursework;
 
         //parent::__construct($dbrecord);
 

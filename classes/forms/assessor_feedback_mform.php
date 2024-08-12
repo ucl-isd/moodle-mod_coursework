@@ -105,7 +105,7 @@ class assessor_feedback_mform extends moodleform {
         $mform->addElement('editor', 'feedbackcomment', get_string('comment', 'mod_coursework'));
         $mform->setType('editor', PARAM_RAW);
 
-        $file_manager_options =  array(
+        $file_manager_options = array(
             'subdirs' => false,
             'accepted_types' => '*',
             'return_types' => FILE_INTERNAL
@@ -149,7 +149,7 @@ class assessor_feedback_mform extends moodleform {
         $feedback = $this->_customdata['feedback'];
 
 
-        $is_published   =   $feedback->get_submission()->is_published();
+        $is_published = $feedback->get_submission()->is_published();
 
         if ($feedbackid &&  !$is_published) {
             $button_array[] = $this->_form->createElement('submit', 'removefeedbackbutton', get_string('removefeedback', 'coursework'));
@@ -235,12 +235,12 @@ class assessor_feedback_mform extends moodleform {
         $filemanager = $this->_form->getElement('feedback_manager');
         if ($filemanager) {
             $params = (object) [
-                'maxfiles'  => $filemanager->getMaxfiles(),
-                'subdirs'   => $filemanager->getSubdirs(),
+                'maxfiles' => $filemanager->getMaxfiles(),
+                'subdirs' => $filemanager->getSubdirs(),
                 'areamaxbytes' => $filemanager->getAreamaxbytes(),
-                'target'    => 'id_' . $filemanager->getName(),
+                'target' => 'id_' . $filemanager->getName(),
                 'context' => $PAGE->context,
-                'itemid'    => $filemanager->getValue()
+                'itemid' => $filemanager->getValue()
             ];
             $fm = new \form_filemanager($params);
             $options = $fm->options;

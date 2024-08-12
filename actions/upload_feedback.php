@@ -65,7 +65,7 @@ if (!has_any_capability($grading_sheet_capabilities, $PAGE->context)) {
 
 
 
-$feedbackform    =   new upload_feedback_form($coursework,$coursemoduleid);
+$feedbackform = new upload_feedback_form($coursework,$coursemoduleid);
 
 if ($feedbackform->is_cancelled()) {
     redirect(new moodle_url("$CFG->wwwroot/mod/coursework/view.php", array('id' => $coursemoduleid)));
@@ -73,7 +73,7 @@ if ($feedbackform->is_cancelled()) {
 
 
 
-if ($data   =   $feedbackform->get_data())   {
+if ($data = $feedbackform->get_data())   {
 
     //perform checks on data
     $courseworktempdir = $CFG->dataroot."/temp/coursework/";
@@ -87,15 +87,15 @@ if ($data   =   $feedbackform->get_data())   {
     $filepath = $courseworktempdir.'/'.$filename.".zip";
     $feedbackform->save_file('feedbackzip', $filepath);
 
-    $stageidentifier  =   $data->feedbackstage;
+    $stageidentifier = $data->feedbackstage;
 
-    $fileimporter   =  new  mod_coursework\coursework_file_zip_importer();
+    $fileimporter = new  mod_coursework\coursework_file_zip_importer();
 
 
 
     $fileimporter->extract_zip_file($filepath,$coursework->get_context_id());
 
-    $updateresults  =   $fileimporter->import_zip_files($coursework,$stageidentifier,$data->overwrite);
+    $updateresults = $fileimporter->import_zip_files($coursework,$stageidentifier,$data->overwrite);
 
     $page_renderer = $PAGE->get_renderer('mod_coursework', 'page');
     echo $page_renderer->process_feedback_upload($updateresults);

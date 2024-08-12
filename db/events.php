@@ -27,25 +27,25 @@
 $observers = array(
 
     array(
-        'eventname'   => '\core\event\role_assigned',
-        'callback'    => 'mod_coursework_observer::autoallocate_when_user_added',
+        'eventname' => '\core\event\role_assigned',
+        'callback' => 'mod_coursework_observer::autoallocate_when_user_added',
     ),
     array(
-        'eventname'   => '\core\event\role_unassigned',
-        'callback'    => 'mod_coursework_observer::autoallocate_when_user_removed',
+        'eventname' => '\core\event\role_unassigned',
+        'callback' => 'mod_coursework_observer::autoallocate_when_user_removed',
     ),
     array(
-        'eventname'   => '\mod_coursework\event\coursework_deadline_changed',
-        'callback'    => 'mod_coursework_observer::coursework_deadline_changed',
+        'eventname' => '\mod_coursework\event\coursework_deadline_changed',
+        'callback' => 'mod_coursework_observer::coursework_deadline_changed',
         'schedule' => 'cron'
     ),
     array(
-        'eventname'   => '\core\event\course_module_updated',
-        'callback'    => 'mod_coursework_observer::process_allocation_after_update',
+        'eventname' => '\core\event\course_module_updated',
+        'callback' => 'mod_coursework_observer::process_allocation_after_update',
     ),
     array(
-        'eventname'   => '\core\event\course_module_created',
-        'callback'    => 'mod_coursework_observer::process_allocation_after_creation',
+        'eventname' => '\core\event\course_module_created',
+        'callback' => 'mod_coursework_observer::process_allocation_after_creation',
     ),
     array(
         'eventname' => '\core\event\group_member_added',

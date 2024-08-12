@@ -30,7 +30,7 @@ class upload_allocations_form extends moodleform {
     private $cmid;
 
     function __construct($cmid)  {
-        $this->cmid =   $cmid;
+        $this->cmid = $cmid;
 
         parent::__construct();
     }

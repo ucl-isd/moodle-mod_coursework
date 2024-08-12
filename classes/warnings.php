@@ -173,7 +173,7 @@ class warnings {
             }
 
             if(!empty($studentmessage)) {
-                $message  = '<div class = "multiple_groups_warning">';
+                $message = '<div class = "multiple_groups_warning">';
                 $message .= '<p>' . get_string('studentsinmultiplegroups', 'mod_coursework') . '</p>';
                 $message .= '<ul>';
                 $message .= $studentmessage;

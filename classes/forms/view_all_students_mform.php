@@ -38,7 +38,7 @@ class view_all_students_mform extends moodleform    {
 
 
         $buttontext = (empty($this->_customdata['displayallstudents']))    ? get_string('viewallstudents', 'coursework') : get_string('hideallstudents','coursework');
-        $hiddenvalue    =  (empty($this->_customdata['displayallstudents']))    ? 1 : 0;
+        $hiddenvalue = (empty($this->_customdata['displayallstudents']))    ? 1 : 0;
         $this->_form->addElement('submit', 'displayallstudentbutton', $buttontext);
         $this->_form->addElement('hidden', 'displayallstudents', $hiddenvalue);
         $this->_form->setType('displayallstudents', PARAM_INT);

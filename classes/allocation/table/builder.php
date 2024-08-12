@@ -134,7 +134,7 @@ class builder {
         $start = ($this->options['page']) * $this->options['perpage']; // Will start at 0.
         $end = ($this->options['page'] + 1) * $this->options['perpage']; // Take care of overlap: 0-10, 10-20, 20-30.
 
-        $end    =   (empty($end))  ?  count($rows) :   $end;
+        $end = (empty($end))  ?  count($rows) :   $end;
         $counter = 0; // Begin from the first one that the user could see.
         foreach ($rows as $allocatable_id => $row) {
 
@@ -145,8 +145,8 @@ class builder {
             }
         }
 
-        $this->totalrows    =   $rows;
-        $this->totalcount   =   $counter;
+        $this->totalrows = $rows;
+        $this->totalcount = $counter;
 
 
         return $this->totalrows;
@@ -196,13 +196,13 @@ class builder {
     public function get_hidden_elements()   {
         global $SESSION;
 
-        $elements   =   '';
+        $elements = '';
 
-        $cm     =   $this->coursework->get_course_module();
+        $cm = $this->coursework->get_course_module();
 
         if  (isset($SESSION->coursework_allocationsessions[$cm->id]))  {
 
-            foreach($SESSION->coursework_allocationsessions[$cm->id] as $name   =>  $val)   {
+            foreach($SESSION->coursework_allocationsessions[$cm->id] as $name =>  $val)   {
 
                 if(!is_array($val))   {
 

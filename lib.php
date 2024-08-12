@@ -162,7 +162,7 @@ function coursework_add_instance($formdata) {
     //we have to check to see if this coursework has a deadline ifm it doesn't we need to set the
     //deadline to zero
 
-    $formdata->deadline     =   empty($formdata->deadline)  ?   0   :   $formdata->deadline;
+    $formdata->deadline = empty($formdata->deadline)  ?   0   :   $formdata->deadline;
     $subnotify = '';
     $comma = '';
     if (!empty($formdata->submissionnotification)) {
@@ -284,7 +284,7 @@ function mod_coursework_core_calendar_provide_event_action(calendar_event $event
     if ($marker){ // for markers
 
         // check how many submissions to mark
-       $outstandingmarking =   new outstanding_marking();
+       $outstandingmarking = new outstanding_marking();
 
        if($event->eventtype == 'initialgradingdue') {
            //initial grades
@@ -296,7 +296,7 @@ function mod_coursework_core_calendar_provide_event_action(calendar_event $event
            //agreed grades
            $togradeagreedcount = $outstandingmarking->get_to_grade_agreed_count($dbcoursework, $user->id());
            $name = get_string('agreedgrade', 'coursework');
-           $itemcount =  $togradeagreedcount;
+           $itemcount = $togradeagreedcount;
 
        }
 
@@ -447,13 +447,13 @@ function coursework_update_instance($coursework) {
 
     $coursework->submissionnotification = $subnotify;
 
-    $courseworkhassubmissions   =   ($DB->get_records('coursework_submissions',array('courseworkid'=>$coursework->id)))
+    $courseworkhassubmissions = ($DB->get_records('coursework_submissions',array('courseworkid'=>$coursework->id)))
         ?   true : false;
 
     //if the coursework has submissions then we the renamefiles setting can't be changes
     if ($courseworkhassubmissions) {
 
-        $currentcoursework          =   $DB->get_record('coursework',array('id'=>$coursework->id));
+        $currentcoursework = $DB->get_record('coursework',array('id'=>$coursework->id));
 
         $coursework->renamefiles = $currentcoursework->renamefiles;
 
@@ -1372,7 +1372,7 @@ function course_group_member_removed($event_data) {
                 }
             } else {
                 // find all individual students in the group
-               $students =  get_enrolled_users($coursework->get_context(), 'mod/coursework:submit', $groupid);
+               $students = get_enrolled_users($coursework->get_context(), 'mod/coursework:submit', $groupid);
                if ($students){
                    foreach($students as $student){
                        if (can_delete_allocation($coursework->id(), $student->id)) {
@@ -1516,11 +1516,11 @@ function coursework_is_ulcc_digest_coursework_plugin_installed() {
 
     global  $DB;
 
-    $pluginexists   =   false;
-    $disgestblockexists     =   $DB->record_exists_sql("SELECT id FROM {block} WHERE name = 'ulcc_digest' AND visible = 1");
+    $pluginexists = false;
+    $disgestblockexists = $DB->record_exists_sql("SELECT id FROM {block} WHERE name = 'ulcc_digest' AND visible = 1");
 
     if (!empty($disgestblockexists)) {
-         $pluginexists  =   ($DB->get_records('block_ulcc_digest_plgs',array('module'=>'coursework','status'=>1)))    ?   true    :  false;
+         $pluginexists = ($DB->get_records('block_ulcc_digest_plgs',array('module'=>'coursework','status'=>1)))    ?   true    :  false;
     }
 
     return $pluginexists;

@@ -44,12 +44,12 @@ class personal_deadline_renderer {
         $PAGE->set_title($SITE->fullname);
         $PAGE->set_heading($SITE->fullname);
 
-        $html   =   '';
+        $html = '';
 
         //if page has been accessed via the set personal deadline page then we dont want to say who set the last personal
         //deadline
         if (empty($vars['params']['multipleuserdeadlines'])) {
-            $allocatable  = $vars['personal_deadline']->get_allocatable();
+            $allocatable = $vars['personal_deadline']->get_allocatable();
             $createdby = $DB->get_record('user', array('id' => $vars['personal_deadline']->createdbyid));
             $lasteditedby = $DB->get_record('user', array('id' => $vars['personal_deadline']->lastmodifiedbyid));
 

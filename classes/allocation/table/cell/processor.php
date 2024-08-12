@@ -178,7 +178,7 @@ class processor {
 
         global $DB;
 
-        $params =   array('courseworkid'=>$this->coursework->id(),
+        $params = array('courseworkid'=>$this->coursework->id(),
             'allocatableid'=>$this->get_allocatable()->id(),
             'stage_identifier'=>$this->get_stage()->identifier(),
             'selectiontype' => 'automatic');

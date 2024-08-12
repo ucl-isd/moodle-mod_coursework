@@ -113,9 +113,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                   ));
 
 
-            $sample_strategies  =new backup_nested_element('coursework_sample_set_rules');
+            $sample_strategies =new backup_nested_element('coursework_sample_set_rules');
 
-            $sample_strategy    =   new backup_nested_element('coursework_sample_set_rule',array('id'),
+            $sample_strategy = new backup_nested_element('coursework_sample_set_rule',array('id'),
                                                                 array('courseworkid',
                                                                      'sample_set_plugin_id',
                                                                      'ruleorder',
@@ -135,9 +135,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
         {
 
 
-            $plagiarism_flags  =   new backup_nested_element('coursework_plagiarism_flags');
+            $plagiarism_flags = new backup_nested_element('coursework_plagiarism_flags');
 
-            $plagiarism_flag =   new backup_nested_element('coursework_plagiarism_flag', array('id'),
+            $plagiarism_flag = new backup_nested_element('coursework_plagiarism_flag', array('id'),
                                                             array(
                                                                     "courseworkid",
                                                                     "submissiond",
@@ -152,9 +152,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
 
 
 
-            $moderation_agreements  =   new backup_nested_element('coursework_mod_agreements');
+            $moderation_agreements = new backup_nested_element('coursework_mod_agreements');
 
-            $moderation_agreement =   new backup_nested_element('coursework_mod_agreement', array('id'),
+            $moderation_agreement = new backup_nested_element('coursework_mod_agreement', array('id'),
                                                     array(
                                                         "feedbackid",
                                                         "moderatorid",
@@ -306,9 +306,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                 ));
 
 
-            $sample_members  =   new backup_nested_element('coursework_sample_set_mbrs');
+            $sample_members = new backup_nested_element('coursework_sample_set_mbrs');
 
-            $sample_member  =   new backup_nested_element('coursework_sample_set_mbr', array('id'),
+            $sample_member = new backup_nested_element('coursework_sample_set_mbr', array('id'),
                                                 array(
                                                         "courseworkid",
                                                         "allocatableid",

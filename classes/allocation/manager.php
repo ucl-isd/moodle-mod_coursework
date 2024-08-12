@@ -255,8 +255,8 @@ class manager {
 
         global $CFG, $DB;
 
-        $sampleplugins  =   $DB->get_records('coursework_sample_set_plugin',null,'pluginorder');
-        $order  =   0;
+        $sampleplugins = $DB->get_records('coursework_sample_set_plugin',null,'pluginorder');
+        $order = 0;
         foreach ($sampleplugins as $plugin) {
 
             $classname = '\mod_coursework\sample_set_rule\\' . $plugin->rulename;
@@ -275,7 +275,7 @@ class manager {
         $DB->delete_records('coursework_sample_set_rules',array('courseworkid'=>$this->coursework->id));
         for ($i = 2; $i <= $this->coursework->get_max_markers(); $i++)   {
 
-            $sample_strategy    =   required_param("assessor_{$i}_samplingstrategy",PARAM_INT);
+            $sample_strategy = required_param("assessor_{$i}_samplingstrategy",PARAM_INT);
 
             if ($sample_strategy)   {
                 $this->save_sample_set_rule($i);
@@ -297,15 +297,15 @@ class manager {
     public function auto_generate_sample_set()  {
         global $DB;
 
-        $sampleplugins  =   $DB->get_records('coursework_sample_set_plugin',null,'pluginorder');
-        $order  =   0;
+        $sampleplugins = $DB->get_records('coursework_sample_set_plugin',null,'pluginorder');
+        $order = 0;
 
 
-        $sample_set  =   array();
+        $sample_set = array();
 
         $allocatables = $this->get_coursework()->get_allocatables();
 
-        $final_agreed_allocatables  =   $this->get_allocatables_with_final_agreed();
+        $final_agreed_allocatables = $this->get_allocatables_with_final_agreed();
 
         //remove any allocatables that have a status of final agreed as these can not be sampled
         foreach($final_agreed_allocatables as $faa)   {
@@ -315,27 +315,27 @@ class manager {
         for($stage_number = 2; $stage_number <= $this->get_coursework()->get_max_markers(); $stage_number++) {
 
 
-            $stage  =   "assessor_{$stage_number}";
+            $stage = "assessor_{$stage_number}";
 
             $this->remove_unmarked_automatic_allocatables($stage);
 
-            $sql    =   "SELECT DISTINCT rulename
+            $sql = "SELECT DISTINCT rulename
                          FROM (SELECT         rulename,ruleorder
                                FROM           {coursework_sample_set_plugin} p,
                                               {coursework_sample_set_rules} r
-                               WHERE          p.id  = r.sample_set_plugin_id
+                               WHERE          p.id = r.sample_set_plugin_id
                                AND            r.courseworkid = :courseworkid
                                AND            stage_identifier = :stage
                                ORDER BY       ruleorder)a";
 
 
-            if ($sampleplugins  = $DB->get_records_sql($sql,array('courseworkid'=>$this->coursework->id,'stage'=>$stage))) {
+            if ($sampleplugins = $DB->get_records_sql($sql,array('courseworkid'=>$this->coursework->id,'stage'=>$stage))) {
 
                 //$allocatables = $this->get_coursework()->get_allocatables_with_feedback();
                 $allocatables = $this->get_coursework()->get_allocatables();
                 $manual_sample_set = $this->get_include_in_sample_set($stage_number);
 
-                $auto_with_feedback =   $this->get_automatic_with_feedback($stage);
+                $auto_with_feedback = $this->get_automatic_with_feedback($stage);
 
 
 
@@ -345,11 +345,11 @@ class manager {
                 //in both arrays
 
                 foreach($auto_with_feedback as $k => $v)   {
-                    if (!isset($manual_sample_set[$k])) $manual_sample_set[$k]  =   $v;
+                    if (!isset($manual_sample_set[$k])) $manual_sample_set[$k] = $v;
                 }
 
 
-                $auto_sample_set    =   array();
+                $auto_sample_set = array();
 
                 foreach ($sampleplugins as $plugin) {
                     $classname = '\mod_coursework\sample_set_rule\\' . $plugin->rulename;
@@ -363,12 +363,12 @@ class manager {
                 //save sample set
                 if (!empty($auto_sample_set))    {
                         foreach($auto_sample_set    as  $allocatable)   {
-                            $sample     =   new \stdClass();
-                            $sample->courseworkid       =   $this->coursework->id;
-                            $sample->allocatableid      =   $allocatable->id;
-                            $sample->allocatabletype    =   ($this->coursework->is_configured_to_have_group_submissions()) ? "group" : "user";
-                            $sample->stage_identifier   =   "assessor_{$stage_number}";
-                            $sample->selectiontype      =   "automatic";
+                            $sample = new \stdClass();
+                            $sample->courseworkid = $this->coursework->id;
+                            $sample->allocatableid = $allocatable->id;
+                            $sample->allocatabletype = ($this->coursework->is_configured_to_have_group_submissions()) ? "group" : "user";
+                            $sample->stage_identifier = "assessor_{$stage_number}";
+                            $sample->selectiontype = "automatic";
 
                             //if this a manually selected allocatable check to see if the allocatable is already in the table
                             $DB->insert_record("coursework_sample_set_mbrs", $sample);
@@ -383,16 +383,16 @@ class manager {
 
         global  $DB;
 
-        $stage  =   "assessor_{$stage_number}";
+        $stage = "assessor_{$stage_number}";
 
-        $sql    =   "SELECT     allocatableid,
+        $sql = "SELECT     allocatableid,
                                 courseworkid,
                                 allocatabletype,
                                 stage_identifier,
                                 selectiontype
                      FROM       {coursework_sample_set_mbrs}
-                     WHERE      courseworkid  = :courseworkid
-                     AND        stage_identifier  = :stage_identifier
+                     WHERE      courseworkid = :courseworkid
+                     AND        stage_identifier = :stage_identifier
                      AND        selectiontype = 'manual'";
 
 
@@ -406,16 +406,16 @@ class manager {
 
         global $DB;
 
-        $sql    =   "SELECT         s.allocatableid, f.*
+        $sql = "SELECT         s.allocatableid, f.*
                          FROM       {coursework_submissions}  s,
                                     {coursework_feedbacks}    f,
                                     {coursework_sample_set_mbrs} m
-                         WHERE      s.id   = f.submissionid
+                         WHERE      s.id = f.submissionid
                          AND        s.courseworkid = :courseworkid
                          AND        f.stage_identifier = :stage
                          AND        s.courseworkid = m.courseworkid
-                         AND        s.allocatableid =  m.allocatableid
-                         AND        s.allocatabletype =  m.allocatabletype
+                         AND        s.allocatableid = m.allocatableid
+                         AND        s.allocatabletype = m.allocatabletype
                          AND        f.stage_identifier = m.stage_identifier
                          ";
 
@@ -426,16 +426,16 @@ class manager {
     public function remove_unmarked_automatic_allocatables($stage)    {
         global $DB;
 
-        $sql    =   "DELETE
+        $sql = "DELETE
                      FROM     {coursework_sample_set_mbrs}
                      WHERE    selectiontype = 'automatic'
                      AND      stage_identifier = '{$stage}'
-                     AND      courseworkid  = {$this->coursework->id}
+                     AND      courseworkid = {$this->coursework->id}
                      AND      allocatableid NOT IN (
                         SELECT    s.allocatableid
                         FROM      {coursework_submissions} s,
                                   {coursework_feedbacks}    f
-                        WHERE     s.id   = f.submissionid
+                        WHERE     s.id = f.submissionid
                          AND      s.courseworkid = {$this->coursework->id}
                          AND      f.stage_identifier = '{$stage}'
 

@@ -79,10 +79,10 @@ class assessorfeedback_cell extends cell_base{
     public function validate_cell($value,$submissionid,$stage_identifier='',$uploadedgradecells = array()) {
         global $DB,$PAGE,$USER;
 
-        $agreedgradecap    =   array('mod/coursework:addagreedgrade','mod/coursework:editagreedgrade');
-        $initialgradecap      =   array('mod/coursework:addinitialgrade','mod/coursework:editinitialgrade');
+        $agreedgradecap = array('mod/coursework:addagreedgrade','mod/coursework:editagreedgrade');
+        $initialgradecap = array('mod/coursework:addinitialgrade','mod/coursework:editinitialgrade');
 
-        $subdbrecord =   $DB->get_record('coursework_submissions',array('id'=>$submissionid));
+        $subdbrecord = $DB->get_record('coursework_submissions',array('id'=>$submissionid));
         $submission = \mod_coursework\models\submission::find($subdbrecord);
         if (has_any_capability($agreedgradecap,$PAGE->context) && has_any_capability($initialgradecap,$PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context))   {
@@ -128,7 +128,7 @@ class assessorfeedback_cell extends cell_base{
 
             if ($this->coursework->allocation_enabled())    {
                 //check that the user is allocated to the author of the submission
-                $allocation_params  =   array(
+                $allocation_params = array(
                     'courseworkid' => $this->coursework->id,
                     'allocatableid' => $submission->allocatableid,
                     'allocatabletype' => $submission->allocatabletype,
@@ -150,7 +150,7 @@ class assessorfeedback_cell extends cell_base{
                 if ($this->coursework->sampling_enabled()){
                     // check how many sample assessors + add 1 that is always in sample
                     $in_sample = $submission->get_submissions_in_sample();
-                    $assessors =  ($in_sample)? sizeof($in_sample) + 1 : 1;
+                    $assessors = ($in_sample)? sizeof($in_sample) + 1 : 1;
                 } else {
                     //check how many assessors for this coursework
                     $assessors = $this->coursework->get_max_markers();

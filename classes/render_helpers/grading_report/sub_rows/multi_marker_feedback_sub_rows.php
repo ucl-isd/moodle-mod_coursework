@@ -136,7 +136,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
                         </tr >';
             } else {
 
-                $assessor_details  =   (empty($feedback_row->get_assessor()->id()) && $coursework->allocation_enabled()) ?
+                $assessor_details = (empty($feedback_row->get_assessor()->id()) && $coursework->allocation_enabled()) ?
                      get_string('assessornotallocated','mod_coursework') : $this->profile_link($feedback_row);
                 
                  $output_rows .=
@@ -150,7 +150,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
 
         if (!empty($output_rows)) {
 
-            $allocation_string =  ($coursework->allocation_enabled())?
+            $allocation_string = ($coursework->allocation_enabled())?
                                    get_string('allocatedtoassessor', 'mod_coursework'):
                                    get_string('assessor', 'mod_coursework');
 /*
@@ -351,7 +351,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
                 }
             }
 
-            $grade_editing    =    get_config('mod_coursework','coursework_grade_editing');
+            $grade_editing = get_config('mod_coursework','coursework_grade_editing');
 
 
             if ($ability->can('edit', $feedback_row->get_feedback()) && !$submission->already_published()) {

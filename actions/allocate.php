@@ -112,7 +112,7 @@ $PAGE->requires->string_for_js('sameassessorerror', 'coursework');
 $allocationsmanager = $coursework->get_allocation_manager();
 $allocationtable = new mod_coursework\allocation\table\builder($coursework, $options);
 $allocationtable = new mod_coursework_allocation_table($allocationtable);
-$pageurl    =   $PAGE->url;
+$pageurl = $PAGE->url;
 
 // 1. Save the rules and settings from the config bits.
 

@@ -33,8 +33,8 @@ global $CFG, $OUTPUT, $DB, $PAGE;
 
 require_once($CFG->dirroot.'/mod/coursework/lib.php');
 
-$coursemoduleid =   required_param('coursemoduleid', PARAM_INT);
-$stagenumber    =   required_param('stage', PARAM_INT);
+$coursemoduleid = required_param('coursemoduleid', PARAM_INT);
+$stagenumber = required_param('stage', PARAM_INT);
 $coursemodule = get_coursemodule_from_id('coursework', $coursemoduleid, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $coursemodule->course), '*', MUST_EXIST);
 $coursework = $DB->get_record('coursework', array('id' => $coursemodule->instance), '*', MUST_EXIST);
@@ -47,19 +47,19 @@ $assessorallocationstrategy = optional_param('assessorallocationstrategy', false
 if ($stagenumber > 0)   {
 
     if (!isset($SESSION->allocate_page_selectentirestage[$coursework->id()]['assessor_'.$stagenumber])) {
-        $SESSION->allocate_page_selectentirestage[$coursework->id()]['assessor_'.$stagenumber]  =   0;
+        $SESSION->allocate_page_selectentirestage[$coursework->id()]['assessor_'.$stagenumber] = 0;
 
     }
 
-    $SESSION->allocate_page_selectentirestage[$coursework->id()]['assessor_'.$stagenumber]   =   !$SESSION->allocate_page_selectentirestage[$coursework->id()]['assessor_'.$stagenumber];
+    $SESSION->allocate_page_selectentirestage[$coursework->id()]['assessor_'.$stagenumber] = !$SESSION->allocate_page_selectentirestage[$coursework->id()]['assessor_'.$stagenumber];
 
 } else {
     if (!isset($SESSION->allocate_page_selectentirestage[$coursework->id()]['moderator'])) {
-        $SESSION->allocate_page_selectentirestage[$coursework->id()]['moderator']  =   0;
+        $SESSION->allocate_page_selectentirestage[$coursework->id()]['moderator'] = 0;
 
     }
 
-    $SESSION->allocate_page_selectentirestage[$coursework->id()]['moderator']   =   !$SESSION->allocate_page_selectentirestage[$coursework->id()]['moderator'];
+    $SESSION->allocate_page_selectentirestage[$coursework->id()]['moderator'] = !$SESSION->allocate_page_selectentirestage[$coursework->id()]['moderator'];
 }
 
 

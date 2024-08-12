@@ -39,8 +39,8 @@ class upload_feedback_form extends moodleform {
     private     $coursework;
 
     function __construct($coursework, $cmid)  {
-        $this->cmid         =   $cmid;
-        $this->coursework   =   $coursework;
+        $this->cmid = $cmid;
+        $this->coursework = $coursework;
 
         parent::__construct();
     }

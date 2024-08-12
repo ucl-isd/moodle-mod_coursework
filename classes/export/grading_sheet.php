@@ -198,8 +198,8 @@ class grading_sheet extends csv{
                 $criterias = $coursework->get_rubric_criteria();
 
                 foreach ($criterias as  $criteria)   {
-                    $csv_cells[]    =   $criteria['description'];
-                    $csv_cells[]    =   $criteria['description']." comment";
+                    $csv_cells[] = $criteria['description'];
+                    $csv_cells[] = $criteria['description']." comment";
                 }
 
 

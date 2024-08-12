@@ -169,7 +169,7 @@ class deadline_extensions_controller extends controller_base {
         // Default to current deadline
         // check for personal deadline first o
         if ($this->coursework->personaldeadlineenabled){
-            $personal_deadline =  $DB->get_record('coursework_person_deadlines', $params);
+            $personal_deadline = $DB->get_record('coursework_person_deadlines', $params);
             if ($personal_deadline) {
                 $this->coursework->deadline = $personal_deadline->personal_deadline;
             }
@@ -260,7 +260,7 @@ class deadline_extensions_controller extends controller_base {
         $extensionid = optional_param('id', 0,  PARAM_INT);
 
         if ($extensionid != 0) {
-            $ext =  $DB->get_record('coursework_extensions', array('id' => $extensionid));
+            $ext = $DB->get_record('coursework_extensions', array('id' => $extensionid));
             $allocatableid = $ext->allocatableid;
             $allocatabletype = $ext->allocatabletype;
             $courseworkid = $ext->courseworkid;
@@ -268,7 +268,7 @@ class deadline_extensions_controller extends controller_base {
 
             $allocatableid = required_param('allocatableid', PARAM_INT);
             $allocatabletype = required_param('allocatabletype', PARAM_ALPHANUMEXT);
-            $courseworkid =  required_param('courseworkid', PARAM_INT);
+            $courseworkid = required_param('courseworkid', PARAM_INT);
         }
 
         $params = array(
@@ -313,12 +313,12 @@ class deadline_extensions_controller extends controller_base {
 
                 $deadline_extension_transform = [
                     'time_content' => $time_content,
-                    'time'  => $time,
+                    'time' => $time,
                     'text' => $deadline_extension->extra_information_text,
                     'allocatableid' => $deadline_extension->allocatableid,
                     'allocatabletype' => $deadline_extension->allocatabletype,
                     'courseworkid' => $deadline_extension->courseworkid,
-                    'id'    => $deadline_extension->id,
+                    'id' => $deadline_extension->id,
                     'pre_defined_reason' => $deadline_extension->pre_defined_reason,
                 ];
                 $response = [
@@ -353,7 +353,7 @@ class deadline_extensions_controller extends controller_base {
         $time_content = '';
         $time = '';
         if ($this->coursework->deadline){
-            $personal_deadline =  $DB->get_record('coursework_person_deadlines', $params);
+            $personal_deadline = $DB->get_record('coursework_person_deadlines', $params);
             if ($personal_deadline) {
                 $time_content = 'Personal deadline: ' . userdate($personal_deadline->personal_deadline);
                 // $this->coursework->deadline = $personal_deadline->personal_deadline;
@@ -366,7 +366,7 @@ class deadline_extensions_controller extends controller_base {
 
         $deadline_extension_transform = [
             'time_content' => $time_content,
-            'time'  => $time,
+            'time' => $time,
         ];
 
         $response = [

@@ -83,7 +83,7 @@ class singlegrade_cell extends cell_base{
         if (has_capability('mod/coursework:addinitialgrade', $PAGE->context) || has_capability('mod/coursework:editinitialgrade', $PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context))   {
 
-            $errormsg   =   '';
+            $errormsg = '';
 
             if (!empty($value) && !$this->coursework->is_using_rubric()) {
                 $gradejudge = new grade_judge($this->coursework);
@@ -101,7 +101,7 @@ class singlegrade_cell extends cell_base{
                 //keys isnt. We will use array_filter whhich will return all values from the array if this is empty then we have
                 //nothing to do
 
-                $arrayvalues    =   array_filter($value);
+                $arrayvalues = array_filter($value);
 
                 //if there are no values we don't need to do anything
                 if (!empty($arrayvalues)) {
@@ -143,7 +143,7 @@ class singlegrade_cell extends cell_base{
 
             $dbrecord = $DB->get_record('coursework_submissions', array('id'=>$submissionid));
 
-            $submission    =  \mod_coursework\models\submission::find($dbrecord);
+            $submission = \mod_coursework\models\submission::find($dbrecord);
 
             //is this submission ready to be graded
             if (!$submission->ready_to_grade() && $submission->get_state() < \mod_coursework\models\submission::FULLY_GRADED) return get_string('submissionnotreadytograde','coursework');
@@ -221,9 +221,9 @@ class singlegrade_cell extends cell_base{
 
         global  $DB;
 
-        $valuefound =   false;
+        $valuefound = false;
 
-        $levels     =   $criteria['levels'];
+        $levels = $criteria['levels'];
 
         if (is_numeric($value) ) {
             foreach ($levels as $level) {
@@ -253,28 +253,28 @@ class singlegrade_cell extends cell_base{
 
         if ($coursework->is_using_rubric()) {
 
-            $rubricheaders      =       array();
+            $rubricheaders = array();
 
             $criterias = $coursework->get_rubric_criteria();
 
             foreach ($criterias as  $criteria)   {
-                $rubricheaders[]    =   $criteria['description'];
-                $rubricheaders[]    =   $criteria['description']." comment";
+                $rubricheaders[] = $criteria['description'];
+                $rubricheaders[] = $criteria['description']." comment";
             }
 
 
             //find out the position of singlegrade
             $position = array_search('singlegrade',$csv_cells);
             //get all data from the position of the singlegrade to the length of rubricheaders
-           // $csv_cells     =   array_splice($csv_cells,5, 1, $rubricheaders);
+           // $csv_cells = array_splice($csv_cells,5, 1, $rubricheaders);
 
 
-            $start_cells        =   array_slice($csv_cells,0,$position,true);
-            $end_cells          =   array_slice($csv_cells,$position+1,count($csv_cells),true);
+            $start_cells = array_slice($csv_cells,0,$position,true);
+            $end_cells = array_slice($csv_cells,$position+1,count($csv_cells),true);
 
-            $cells              =   array_merge($start_cells,$rubricheaders);
+            $cells = array_merge($start_cells,$rubricheaders);
 
-            $cells              =   array_merge($cells,$end_cells);
+            $cells = array_merge($cells,$end_cells);
 
 
 

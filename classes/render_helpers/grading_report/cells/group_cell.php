@@ -76,7 +76,7 @@ class group_cell extends cell_base implements allocatable_cell {
 
         //adding this line so that the sortable heading function will make a sortable link unique to the table
         //if tablename is set
-        $tablename  =   (isset($options['tablename']))  ? $options['tablename']  : ''  ;
+        $tablename = (isset($options['tablename']))  ? $options['tablename']  : ''  ;
 
         return $this->helper_sortable_heading(get_string('tableheadgroups', 'coursework'),
                                               'groupname',

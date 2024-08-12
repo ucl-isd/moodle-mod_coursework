@@ -50,10 +50,10 @@ class plagiarism_flag extends table_base {
     /**
      * Constants with Statuses for Plagiarism flagging
      */
-    const INVESTIGATION =   0;
-    const RELEASED      =   1;
-    const CLEARED       =   2;
-    const NOTCLEARED    =   3;
+    const INVESTIGATION = 0;
+    const RELEASED = 1;
+    const CLEARED = 2;
+    const NOTCLEARED = 3;
 
     /**
      * @return mixed|\mod_coursework_coursework

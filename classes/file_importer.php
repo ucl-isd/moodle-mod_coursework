@@ -104,7 +104,7 @@ class coursework_file_zip_importer    {
 
         @set_time_limit(ASSIGNFEEDBACK_FILE_MAXFILEUNZIPTIME);
 
-        $results        =   array();
+        $results = array();
 
         $feedbackfilesupdated = 0;
         $feedbackfilesadded = 0;
@@ -119,13 +119,13 @@ class coursework_file_zip_importer    {
 
         foreach ($feedbackfiles as $file) {
 
-            $filename   =   $file->get_filename();
+            $filename = $file->get_filename();
 
             if ($allocatableid = $this->is_valid_feedback_file_filename($coursework, $file, $participants) ) {
 
-                $subdbrecord =   $DB->get_record('coursework_submissions',array('courseworkid'=>$coursework->id(),'allocatableid'=>$allocatableid,'allocatabletype'=>$coursework->get_allocatable_type()));
+                $subdbrecord = $DB->get_record('coursework_submissions',array('courseworkid'=>$coursework->id(),'allocatableid'=>$allocatableid,'allocatabletype'=>$coursework->get_allocatable_type()));
 
-                $submission =   \mod_coursework\models\submission::find($subdbrecord);
+                $submission = \mod_coursework\models\submission::find($subdbrecord);
 
                 if ($submission->get_state() < \mod_coursework\models\submission::PUBLISHED) {
 
@@ -201,10 +201,10 @@ class coursework_file_zip_importer    {
     public function is_valid_feedback_file_filename($coursework,$feedbackfile,$participants) {
 
 
-        $result     =   false;
+        $result = false;
 
-        $filename   =   explode('.',$feedbackfile->get_filename());
-        $filename   =   $filename[0];
+        $filename = explode('.',$feedbackfile->get_filename());
+        $filename = $filename[0];
 
         if ($feedbackfile->is_directory()) {
             return $result;
@@ -220,7 +220,7 @@ class coursework_file_zip_importer    {
         }
 
         foreach ($participants as $user)    {
-            if ($filename   ==  $coursework->get_username_hash($user->id))   {
+            if ($filename ==  $coursework->get_username_hash($user->id))   {
                 $result = $user->id;
                 break;
             }
@@ -236,13 +236,13 @@ class coursework_file_zip_importer    {
 
         global $DB, $USER;
 
-        $sql    =   "SELECT     *
+        $sql = "SELECT     *
                      FROM       {coursework_feedbacks}
-                     WHERE      submissionid  = :submissionid
+                     WHERE      submissionid = :submissionid
                      AND        stage_identifier = :stage
                      ";
 
-        $params     =   array('submissionid'=>$submission->id,
+        $params = array('submissionid'=>$submission->id,
                               'stage'=>$stageidentifier);
 
         if (!has_capability('mod/coursework:administergrades',$coursework->get_context())) {

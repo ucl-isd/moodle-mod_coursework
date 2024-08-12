@@ -112,7 +112,7 @@ class deadline_extension_form extends \moodleform {
         $extensionid = optional_param('id',0,  PARAM_INT);
 
         if($extensionid != 0){
-            $ext =  $DB->get_record('coursework_extensions', array('id'=>$extensionid));
+            $ext = $DB->get_record('coursework_extensions', array('id'=>$extensionid));
             $allocatableid = $ext->allocatableid;
             $allocatabletype = $ext->allocatabletype;
             $courseworkid = $ext->courseworkid;
@@ -121,7 +121,7 @@ class deadline_extension_form extends \moodleform {
 
             $allocatableid = required_param('allocatableid', PARAM_INT);
             $allocatabletype = required_param('allocatabletype', PARAM_ALPHANUMEXT);
-            $courseworkid =  required_param('courseworkid', PARAM_INT);
+            $courseworkid = required_param('courseworkid', PARAM_INT);
         }
 
         $params = array(

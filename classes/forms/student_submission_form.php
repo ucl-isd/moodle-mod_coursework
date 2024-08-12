@@ -175,11 +175,11 @@ class student_submission_form extends moodleform {
 
                     if (!$submission->get_coursework()->has_deadline()) {
 
-                        $userids  =   explode(',',$submission->get_coursework()->get_submission_notification_users());
+                        $userids = explode(',',$submission->get_coursework()->get_submission_notification_users());
 
                         if (!empty($userids)) {
                             foreach($userids as $u)   {
-                                $notifyuser   = $DB->get_record('user',array('id'=>trim($u)));
+                                $notifyuser = $DB->get_record('user',array('id'=>trim($u)));
                                 $mailer = new mailer($coursework);
 
                                 if (!empty($notifyuser))   $mailer->send_submission_notification($notifyuser);
@@ -369,7 +369,7 @@ class student_submission_form extends moodleform {
         $file_manager_options = $this->get_file_manager_options();
 
         $usernamehash = $this->get_coursework()->get_username_hash($this->get_submission()->userid);
-        $filerenamestring =  ($this->get_coursework()->renamefiles == 1)? get_string('file_rename', 'coursework', $usernamehash) : "";
+        $filerenamestring = ($this->get_coursework()->renamefiles == 1)? get_string('file_rename', 'coursework', $usernamehash) : "";
         $filerenamestring .= $this->make_plagiarism_instructions();
         $filerenamestring .= html_writer::empty_tag('br');
         if ($file_manager_options['accepted_types'] != '*') {

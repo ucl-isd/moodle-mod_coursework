@@ -89,7 +89,7 @@ class moderation_cell extends cell_base {
 
         //adding this line so that the sortable heading function will make a sortable link unique to the table
         //if tablename is set
-        $tablename  =   (!empty($options['tablename']))  ? $options['tablename']  : ''  ;
+        $tablename = (!empty($options['tablename']))  ? $options['tablename']  : ''  ;
 
         return $this->helper_sortable_heading(get_string('moderator', 'coursework'),
                                               'modgrade',

@@ -67,7 +67,7 @@ if (!has_any_capability($grading_sheet_capabilities, $PAGE->context)) {
 
 
 
-$gradinguploadform    =   new upload_grading_sheet_form($coursemoduleid);
+$gradinguploadform = new upload_grading_sheet_form($coursemoduleid);
 
 if ($gradinguploadform->is_cancelled()) {
     redirect("$CFG->wwwroot/mod/coursework/view.php?id=$coursemoduleid");
@@ -75,19 +75,19 @@ if ($gradinguploadform->is_cancelled()) {
 
 
 
-if ($data   =   $gradinguploadform->get_data())   {
+if ($data = $gradinguploadform->get_data())   {
 
     //perform checks on data
 
     $content = $gradinguploadform->get_file_content('gradingdata');
 
-    $csv_cells =  \mod_coursework\export\grading_sheet::cells_array($coursework);
+    $csv_cells = \mod_coursework\export\grading_sheet::cells_array($coursework);
 
-    $csvimport   =  new \mod_coursework\export\import($coursework,false,false);
+    $csvimport = new \mod_coursework\export\import($coursework,false,false);
 
    // $csv_cells = $csvimport->csv_columns(); //all columns from spreadsheet
 
-    $procsessingresults =  $csvimport->validate_csv($content, $data->encoding, $data->delimiter_name, $csv_cells);
+    $procsessingresults = $csvimport->validate_csv($content, $data->encoding, $data->delimiter_name, $csv_cells);
 
     //process
 

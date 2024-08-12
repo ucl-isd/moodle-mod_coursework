@@ -66,7 +66,7 @@ class feedbackcomments_cell extends cell_base {
 
             $dbrecord = $DB->get_record('coursework_submissions', array('id'=>$submissionid));
 
-            $submission    =  \mod_coursework\models\submission::find($dbrecord);
+            $submission = \mod_coursework\models\submission::find($dbrecord);
 
             //is this submission ready to be graded
             if (!$submission->ready_to_grade()) return get_string('submissionnotreadytograde','coursework');

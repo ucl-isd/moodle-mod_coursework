@@ -42,48 +42,48 @@ class provider implements
      */
     public static function get_metadata(collection $collection) : collection {
         $feedbacks = [
-            'assessorid'        => 'privacy:metadata:assessorid',
-            'timecreated'       => 'privacy:metadata:timecreated',
-            'timemodified'      => 'timemodified',
-            'grade'             => 'privacy:metadata:grade',
-            'submissionid'      => 'privacy:metadata:submissionid',
-            'feedbackcomment'   => 'privacy:metadata:feedbackcomment'
+            'assessorid' => 'privacy:metadata:assessorid',
+            'timecreated' => 'privacy:metadata:timecreated',
+            'timemodified' => 'timemodified',
+            'grade' => 'privacy:metadata:grade',
+            'submissionid' => 'privacy:metadata:submissionid',
+            'feedbackcomment' => 'privacy:metadata:feedbackcomment'
         ];
         $submissions = [
-            'authorid'          => 'privacy:metadata:authorid',
-            'userid'            => 'privacy:metadata:userid',
-            'timecreated'       => 'privacy:metadata:timecreated',
-            'timemodified'      => 'timemodified',
-            'createdby'         => 'createdby',
-            'timesubmitted'     => 'timesubmitted'
+            'authorid' => 'privacy:metadata:authorid',
+            'userid' => 'privacy:metadata:userid',
+            'timecreated' => 'privacy:metadata:timecreated',
+            'timemodified' => 'timemodified',
+            'createdby' => 'createdby',
+            'timesubmitted' => 'timesubmitted'
         ];
         $extensions = [
             'allocatableid' => 'privacy:metadata:allocatableid',
-            'createdbyid'   => 'privacy:metadata:createdbyid',
+            'createdbyid' => 'privacy:metadata:createdbyid',
             'extra_information_text' => 'privacy:metadata:extra_information_text',
             'extended_deadline' => 'privacy:metadata:extended_deadline',
-            'allocatableuser'   => 'privacy:metadata:userid',
-            'allocatablegroup'  => 'privacy:metadata:groupid'
+            'allocatableuser' => 'privacy:metadata:userid',
+            'allocatablegroup' => 'privacy:metadata:groupid'
         ];
         $persondeadlines = [
-            'allocatableid'     => 'privacy:metadata:allocatableid',
-            'createdbyid'       => 'privacy:metadata:createdbyid',
+            'allocatableid' => 'privacy:metadata:allocatableid',
+            'createdbyid' => 'privacy:metadata:createdbyid',
             'personal_deadline' => 'privacy:metadata:personal_deadline',
-            'allocatableuser'   => 'privacy:metadata:userid',
-            'allocatablegroup'  => 'privacy:metadata:groupid'
+            'allocatableuser' => 'privacy:metadata:userid',
+            'allocatablegroup' => 'privacy:metadata:groupid'
         ];
         $modagreements = [
-            'moderatorid'   => 'privacy:metadata:moderatorid',
-            'agreement'     => 'privacy:metadata:agreement',
-            'modcomment'    => 'privacy:metadata:modcomment',
-            'timecreated'   => 'privacy:metadata:timecreated',
-            'timemodified'  => 'timemodified'
+            'moderatorid' => 'privacy:metadata:moderatorid',
+            'agreement' => 'privacy:metadata:agreement',
+            'modcomment' => 'privacy:metadata:modcomment',
+            'timecreated' => 'privacy:metadata:timecreated',
+            'timemodified' => 'timemodified'
         ];
         $plagiarismflags = [
-            'createdby'     => 'privacy:metadata:createdby',
-            'comment'       => 'privacy:metadata:comment',
-            'timecreated'   => 'privacy:metadata:timecreated',
-            'timemodified'  => 'timemodified'
+            'createdby' => 'privacy:metadata:createdby',
+            'comment' => 'privacy:metadata:comment',
+            'timecreated' => 'privacy:metadata:timecreated',
+            'timemodified' => 'timemodified'
         ];
         $collection->add_database_table('coursework_feedbacks', $feedbacks, 'privacy:metadata:feedbacks');
         $collection->add_database_table('coursework_submissions', $submissions, 'privacy:metadata:submissions');

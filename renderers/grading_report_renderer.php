@@ -201,7 +201,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         $options['width'] = '100%';
         $options['class'] = (!empty($options['class'])) ? $options['class'] : '';
         $options['class'] .= ' submissions datatabletest display compact';
-        $options['id']  = 'dt_table';
+        $options['id'] = 'dt_table';
         $table_html = \html_writer::start_tag('table', $options);
         $table_html .= \html_writer::start_tag('thead');
         return $table_html;

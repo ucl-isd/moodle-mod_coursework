@@ -299,7 +299,7 @@ abstract class base {
     public function get_teachers() {
         $cache = \cache::make('mod_coursework', 'courseworkdata');
 
-        $serialised_teachers  =   $cache->get($this->coursework->id()."_teachers");
+        $serialised_teachers = $cache->get($this->coursework->id()."_teachers");
 
         //there is a chance that when the teachers were initially cached the dataset was empty
         //so check again
@@ -312,7 +312,7 @@ abstract class base {
 
             $cache->set($this->coursework->id()."_teachers", serialize($teacher_users));
         } else {
-            $teacher_users  =   unserialize($serialised_teachers);
+            $teacher_users = unserialize($serialised_teachers);
         }
 
         return $teacher_users;
@@ -572,7 +572,7 @@ abstract class base {
     public function user_is_assessor($assessor) {
         if (!isset(self::$self_cache['user_is_assessor'][$this->coursework->id][$assessor->id])) {
             $enrolled = is_enrolled($this->coursework->get_course_context(), $assessor, $this->assessor_capability());
-            $res =  $enrolled || is_primary_admin($assessor->id);
+            $res = $enrolled || is_primary_admin($assessor->id);
             self::$self_cache['user_is_assessor'][$this->coursework->id][$assessor->id] = $res;
         }
         return self::$self_cache['user_is_assessor'][$this->coursework->id][$assessor->id];
@@ -802,9 +802,9 @@ abstract class base {
         $option_for_nothing_chosen_yet = array('' => get_string($identifier, 'mod_coursework'));
 
 
-        $dropdown_name  =   $this->assessor_dropdown_name($allocatable);
+        $dropdown_name = $this->assessor_dropdown_name($allocatable);
 
-        $selected   =   $this->selected_allocation_in_session($dropdown_name);
+        $selected = $this->selected_allocation_in_session($dropdown_name);
 
 
         $assessor_dropdown = \html_writer::select($this->assessor_dropdown_options,
@@ -830,9 +830,9 @@ abstract class base {
             'class' => 'moderator_id_dropdown',
         );
 
-        $dropdown_name  =   $this->assessor_dropdown_name($allocatable);
+        $dropdown_name = $this->assessor_dropdown_name($allocatable);
 
-        $selected   =   $this->selected_allocation_in_session($dropdown_name);
+        $selected = $this->selected_allocation_in_session($dropdown_name);
 
         return  $moderator_dropdown = \html_writer::select($this->potential_moderators_as_options_array(),
             'allocatables[' . $allocatable->id . '][moderator][assessor_id]',
@@ -929,7 +929,7 @@ abstract class base {
         submission::fill_pool_coursework($coursework_id);
         $submission = submission::get_object($coursework_id, 'allocatableid-allocatabletype', [$allocatable->id(), $allocatable->type()]);
 
-        $feedback   =   $this->get_feedback_for_submission($submission);
+        $feedback = $this->get_feedback_for_submission($submission);
         if ($feedback) {
             $result += $feedback->timecreated;
         }
@@ -943,7 +943,7 @@ abstract class base {
     private function selected_allocation_in_session($dropdownname)     {
         global  $SESSION;
 
-        $cm =   $this->coursework->get_course_module();
+        $cm = $this->coursework->get_course_module();
 
         if (!empty($SESSION->coursework_allocationsessions[$cm->id]))   {
 

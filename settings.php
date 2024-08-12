@@ -33,7 +33,7 @@ if ($ADMIN->fulltree) {
     // Set site-wide option for late submission
     $availability_header = new admin_setting_heading('availability_header', get_string('availability', 'mod_coursework'),'');
     $settings->add($availability_header);
-    $allow_late_submission_name =  get_string('allowlatesubmissions', 'coursework');
+    $allow_late_submission_name = get_string('allowlatesubmissions', 'coursework');
     $allow_late_submission_description = get_string('allowlatesubmissions_desc', 'coursework');
     $options = array( 0 => get_string('no'), 1 => get_string('yes'));
     $settings->add(new admin_setting_configselect('coursework_allowlatesubmissions',
@@ -58,14 +58,14 @@ if ($ADMIN->fulltree) {
     // Submissions
     $submissions_header = new admin_setting_heading('submissions_header', get_string('submissions', 'mod_coursework'),'');
     $settings->add($submissions_header);
-    $options =  array( 0 => get_string('no'), 1 => get_string('yes'));
+    $options = array( 0 => get_string('no'), 1 => get_string('yes'));
     $settings->add(new admin_setting_configselect('coursework_plagiarismflag', get_string('plagiarism_flag_enable', 'mod_coursework'), get_string('plagiarism_flag_enable_desc', 'mod_coursework'), 0, $options));
 
 
     // Submission receipt
     $submissionreceipt_header = new admin_setting_heading('submissionreceipt_header', get_string('submissionreceipt', 'mod_coursework'),'');
     $settings->add($submissionreceipt_header);
-    $options =  array( 0 => get_string('no'), 1 => get_string('yes'));
+    $options = array( 0 => get_string('no'), 1 => get_string('yes'));
     $settings->add(new admin_setting_configselect('coursework_allsubmissionreceipt', get_string('allsubmission', 'mod_coursework'), get_string('allsubmission_desc', 'mod_coursework'), 0, $options));
 
 
@@ -73,18 +73,18 @@ if ($ADMIN->fulltree) {
     // Blind marking
     $blindmarking_header = new admin_setting_heading('blindmarking_header', get_string('blindmarking', 'mod_coursework'),'');
     $settings->add($blindmarking_header);
-    $blind_marking_name =  get_string('blindmarking', 'coursework');
+    $blind_marking_name = get_string('blindmarking', 'coursework');
     $blind_marking_description = get_string('blindmarking_desc', 'coursework');
-    $options =  array( 0 => get_string('no'), 1 => get_string('yes'));
+    $options = array( 0 => get_string('no'), 1 => get_string('yes'));
     $settings->add(new admin_setting_configselect('coursework_blindmarking', $blind_marking_name, $blind_marking_description, 0, $options));
     $settings->add(new admin_setting_configcheckbox('coursework_forceblindmarking', get_string('forceblindmarking', 'mod_coursework'), get_string('forceblindmarking_desc', 'mod_coursework'), 0));
 
     // Assessor anonymity
     $assessoranonymity_header = new admin_setting_heading('assessoranonymity_header', get_string('assessoranonymity', 'mod_coursework'),'');
     $settings->add($assessoranonymity_header);
-    $assessor_anonymity_name =  get_string('assessoranonymity', 'coursework');
+    $assessor_anonymity_name = get_string('assessoranonymity', 'coursework');
     $assessor_anonymity_description = get_string('assessoranonymity_desc', 'coursework');
-    $options =  array( 0 => get_string('no'), 1 => get_string('yes'));
+    $options = array( 0 => get_string('no'), 1 => get_string('yes'));
     $settings->add(new admin_setting_configselect('coursework_assessoranonymity', $assessor_anonymity_name, $assessor_anonymity_description, 0, $options));
 
     // Set site-wide options for when feedback is due.
@@ -103,9 +103,9 @@ if ($ADMIN->fulltree) {
     $settings->add($generalfeedbacksetting);
 
     // enable auto-release of individual feedback
-    $individual_feedback_auto_release_name =  get_string('individual_feedback_auto_release', 'coursework');
+    $individual_feedback_auto_release_name = get_string('individual_feedback_auto_release', 'coursework');
     $individual_feedback_auto_release_name_description = get_string('individual_feedback_auto_release_desc', 'coursework');
-    $options =  array( 0 => get_string('no'), 1 => get_string('yes'));
+    $options = array( 0 => get_string('no'), 1 => get_string('yes'));
     $settings->add(new admin_setting_configselect('coursework_auto_release_individual_feedback', $individual_feedback_auto_release_name, $individual_feedback_auto_release_name_description, 0, $options));
     $settings->add(new admin_setting_configcheckbox('coursework_forceauto_release_individual_feedback', get_string('forceautoauto_release_individual_feedback', 'mod_coursework'), get_string('forceautoauto_release_individual_feedback_desc', 'mod_coursework'), 0));
 
@@ -119,9 +119,9 @@ if ($ADMIN->fulltree) {
     $settings->add($individualfeedbacksetting);
 
     // Feedback release email
-    $feedbackreleaseemail_name =  get_string('feedbackreleaseemail', 'coursework');
+    $feedbackreleaseemail_name = get_string('feedbackreleaseemail', 'coursework');
     $feedbackreleaseemail_description = get_string('feedbackreleaseemail_help', 'coursework');
-    $options =  array( 0 => get_string('no'), 1 => get_string('yes'));
+    $options = array( 0 => get_string('no'), 1 => get_string('yes'));
     $settings->add(new admin_setting_configselect('coursework_feedbackreleaseemail', $feedbackreleaseemail_name, $feedbackreleaseemail_description, 1, $options));
 
 
@@ -163,9 +163,9 @@ if ($ADMIN->fulltree) {
     $settings->add($extensions_header);
 
     // Enable coursework individual extensions
-    $individual_extension_name =  get_string('individual_extension', 'coursework');
+    $individual_extension_name = get_string('individual_extension', 'coursework');
     $individual_extension_description = get_string('individual_extension_desc', 'coursework');
-    $options =  array( 0 => get_string('no'), 1 => get_string('yes'));
+    $options = array( 0 => get_string('no'), 1 => get_string('yes'));
     $settings->add(new admin_setting_configselect('coursework_individual_extension', $individual_extension_name, $individual_extension_description, 1, $options));
 
 
@@ -182,31 +182,31 @@ if ($ADMIN->fulltree) {
 
    // Default per page
 
-    $options    =   array('3'=>'3', '10'=>'10', '20'=>'20', '30'=>'30', '40'=>'40', '50'=>'50', '100'=>'100');
+    $options = array('3'=>'3', '10'=>'10', '20'=>'20', '30'=>'30', '40'=>'40', '50'=>'50', '100'=>'100');
 
 
     $grading_page_header = new admin_setting_heading('grading_page_header', get_string('grading_page', 'mod_coursework'),'');
     $settings->add($grading_page_header);
 
-    $per_page =  get_string('per_page', 'coursework');
+    $per_page = get_string('per_page', 'coursework');
     $per_page_description = get_string('per_page_desc', 'coursework');
     $settings->add(new admin_setting_configselect('coursework_per_page', $per_page, $per_page_description, '10', $options));
 
     //automatic agreement delay
 
-    $options    =   array('0'=>get_string('disabled', 'mod_coursework'));
-    $options['1800']  =   get_string('timedminutes', 'mod_coursework','30');
-    $options['3600']  = get_string('timedhour', 'mod_coursework','1');
-    $options['7200']  = get_string('timedhours', 'mod_coursework','2');
-    $options['18000']  = get_string('timedhours', 'mod_coursework','5');
-    $options['43200']  = get_string('timedhours', 'mod_coursework','12');
-    $options['86400']  = get_string('aday', 'mod_coursework');
+    $options = array('0'=>get_string('disabled', 'mod_coursework'));
+    $options['1800'] = get_string('timedminutes', 'mod_coursework','30');
+    $options['3600'] = get_string('timedhour', 'mod_coursework','1');
+    $options['7200'] = get_string('timedhours', 'mod_coursework','2');
+    $options['18000'] = get_string('timedhours', 'mod_coursework','5');
+    $options['43200'] = get_string('timedhours', 'mod_coursework','12');
+    $options['86400'] = get_string('aday', 'mod_coursework');
 
 
     $grade_editing_header = new admin_setting_heading('grade_editing_header', get_string('grade_editing', 'mod_coursework'),'');
     $settings->add($grade_editing_header);
 
-    $grade_editing_name =  get_string('grade_editing_enabled', 'coursework');
+    $grade_editing_name = get_string('grade_editing_enabled', 'coursework');
     $grade_editing_description = get_string('grade_editing_enabled_desc', 'coursework');
     $settings->add(new admin_setting_configselect('coursework_grade_editing', $grade_editing_name, $grade_editing_description, '0', $options));
 
@@ -265,7 +265,7 @@ if ($ADMIN->fulltree) {
     $assessor_allocations_header = new admin_setting_heading('assessor_allocations_header_header', get_string('assessorallocations', 'mod_coursework'), '');
     $settings->add($assessor_allocations_header);
 
-    $options =  array( 'username' => get_string('username'), 'email' => get_string('email'));
+    $options = array( 'username' => get_string('username'), 'email' => get_string('email'));
     $settings->add(new admin_setting_configselect('coursework_allocation_identifier',  get_string('allocationidentifier', 'coursework'), get_string('allocationidentifier_desc', 'coursework'), 'username', $options));
 
 }

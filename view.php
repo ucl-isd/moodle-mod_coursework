@@ -136,7 +136,7 @@ if (!(isset($SESSION->coursework_firstname_alpha[$course_module_id]))) {
 
 // last name alpha
 if (!(isset($SESSION->coursework_lastname_alpha[$course_module_id]))) {
-    $SESSION->coursework_lastname_alpha[$course_module_id] =  optional_param('coursework_lastname_alpha','', PARAM_ALPHA);
+    $SESSION->coursework_lastname_alpha[$course_module_id] = optional_param('coursework_lastname_alpha','', PARAM_ALPHA);
     $coursework_lastname_alpha= $SESSION->coursework_lastname_alpha[$course_module_id];
 } else {
     $coursework_lastname_alpha = optional_param('coursework_lastname_alpha', $SESSION->coursework_lastname_alpha[$course_module_id],PARAM_ALPHA);
@@ -145,7 +145,7 @@ if (!(isset($SESSION->coursework_lastname_alpha[$course_module_id]))) {
 
 // group name alpha
 if (!(isset($SESSION->coursework_groupname_alpha[$course_module_id]))) {
-    $SESSION->coursework_groupname_alpha[$course_module_id] =  optional_param('coursework_groupname_alpha','', PARAM_ALPHA);
+    $SESSION->coursework_groupname_alpha[$course_module_id] = optional_param('coursework_groupname_alpha','', PARAM_ALPHA);
     $coursework_groupname_alpha = $SESSION->coursework_groupname_alpha[$course_module_id];
 } else {
     $coursework_groupname_alpha= optional_param('coursework_groupname_alpha', $SESSION->coursework_groupname_alpha[$course_module_id],PARAM_ALPHA);
@@ -160,7 +160,7 @@ if (isset($SESSION->viewallstudents_perpage[$course_module_id]) && optional_para
     $viewallstudents_page = 0;
     $SESSION->viewallstudents_page[$course_module_id] = $viewallstudents_page;
 } else if (!(isset($SESSION->viewallstudents_page[$course_module_id]))) {
-    $SESSION->viewallstudents_page[$course_module_id] =  optional_param('viewallstudents_page', 0, PARAM_INT);
+    $SESSION->viewallstudents_page[$course_module_id] = optional_param('viewallstudents_page', 0, PARAM_INT);
     $viewallstudents_page = $SESSION->viewallstudents_page[$course_module_id];
 } else {
     $viewallstudents_page = optional_param('viewallstudents_page', $SESSION->viewallstudents_page[$course_module_id], PARAM_INT);
@@ -205,7 +205,7 @@ if (!(isset($SESSION->viewallstudents_firstname_alpha[$course_module_id]))) {
 
 // last name alpha
 if (!(isset($SESSION->viewallstudents_lastname_alpha[$course_module_id]))) {
-    $SESSION->viewallstudents_lastname_alpha[$course_module_id] =  optional_param('viewallstudents_lastname_alpha','', PARAM_ALPHA);
+    $SESSION->viewallstudents_lastname_alpha[$course_module_id] = optional_param('viewallstudents_lastname_alpha','', PARAM_ALPHA);
     $viewallstudents_lastname_alpha = $SESSION->viewallstudents_lastname_alpha[$course_module_id];
 } else {
     $viewallstudents_lastname_alpha = optional_param('viewallstudents_lastname_alpha', $SESSION->viewallstudents_lastname_alpha[$course_module_id],PARAM_ALPHA);
@@ -214,7 +214,7 @@ if (!(isset($SESSION->viewallstudents_lastname_alpha[$course_module_id]))) {
 
 // group name alpha
 if (!(isset($SESSION->viewallstudents_groupname_alpha[$course_module_id]))) {
-    $SESSION->viewallstudents_groupname_alpha[$course_module_id] =  optional_param('viewallstudents_groupname_alpha','', PARAM_ALPHA);
+    $SESSION->viewallstudents_groupname_alpha[$course_module_id] = optional_param('viewallstudents_groupname_alpha','', PARAM_ALPHA);
     $viewallstudents_groupname_alpha = $SESSION->viewallstudents_groupname_alpha[$course_module_id];
 } else {
     $viewallstudents_groupname_alpha= optional_param('viewallstudents_groupname_alpha', $SESSION->viewallstudents_groupname_alpha[$course_module_id],PARAM_ALPHA);
@@ -281,9 +281,9 @@ if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $gro
 
     if (!empty($percentage_allocation_not_complete) || !empty($manual_allocation_not_complete))     {
 
-        $redirectdetail =   new \stdClass();
-        $redirectdetail->percentage     =   $percentage_allocation_not_complete;
-        $redirectdetail->manual         =   $manual_allocation_not_complete;
+        $redirectdetail = new \stdClass();
+        $redirectdetail->percentage = $percentage_allocation_not_complete;
+        $redirectdetail->manual = $manual_allocation_not_complete;
 
         redirect($CFG->wwwroot.'/mod/coursework/actions/allocate.php?id='.$course_module_id,get_string('configuration_needed','coursework',$redirectdetail));
     }
@@ -352,7 +352,7 @@ if ($export_grades){
 
 if ($download_grading_sheet){
 
-   $csv_cells =  \mod_coursework\export\grading_sheet::cells_array($coursework);
+   $csv_cells = \mod_coursework\export\grading_sheet::cells_array($coursework);
 
     $timestamp = date('d_m_y @ H-i');
     $filename = get_string('gradingsheetfor', 'coursework'). $coursework->name .' '.$timestamp;
@@ -420,9 +420,9 @@ $params = array('id' => $course_module->id,
                 'group' => $group);
 
 if (!empty($SESSION->displayallstudents[$course_module_id]))   {
-    $params['viewallstudents_sorthow']  =   $viewallstudents_sorthow;
-    $params['viewallstudents_sortby']  =   $viewallstudents_sortby;
-    $params['viewallstudents_per_page']  =   $viewallstudents_perpage;
+    $params['viewallstudents_sorthow'] = $viewallstudents_sorthow;
+    $params['viewallstudents_sortby'] = $viewallstudents_sortby;
+    $params['viewallstudents_per_page'] = $viewallstudents_perpage;
 }
 
 

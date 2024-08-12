@@ -231,7 +231,7 @@ class behat_mod_coursework extends behat_base {
     public function iShouldSeeTheStudentSNameOnThePage($negate = false,$negate2=false,$studentrole) {
         $page = $this->get_page('coursework page');
 
-        $student    =   ($studentrole == "another student") ? $this->other_student : $this->student;
+        $student = ($studentrole == "another student") ? $this->other_student : $this->student;
 
         $studentname = fullname($student);
 
@@ -637,7 +637,7 @@ class behat_mod_coursework extends behat_base {
         $generator = testing_util::get_data_generator();
         $grouping = new stdClass();
         $grouping->courseid = $this->course->id;
-        $grouping =  $generator->create_grouping($grouping);
+        $grouping = $generator->create_grouping($grouping);
         groups_assign_grouping($grouping->id, $this->group->id);
         $this->get_coursework()->update_attribute('grouping_id', $grouping->id);
     }
@@ -729,10 +729,10 @@ class behat_mod_coursework extends behat_base {
     public function iAmAllowedToViewAllStudents()   {
         global $DB;
 
-        $teacher_role   =   $DB->get_record('role', array('shortname' => 'teacher'));
-        $params =   array('roleid'      => $teacher_role->id,
-                          'capability'  => 'mod/coursework:viewallstudents');
-        $permission_setting =   CAP_ALLOW;
+        $teacher_role = $DB->get_record('role', array('shortname' => 'teacher'));
+        $params = array('roleid' => $teacher_role->id,
+                          'capability' => 'mod/coursework:viewallstudents');
+        $permission_setting = CAP_ALLOW;
         $DB->set_field('role_capabilities', 'permission', $permission_setting, $params);
     }
 

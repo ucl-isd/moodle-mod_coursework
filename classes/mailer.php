@@ -109,7 +109,7 @@ class mailer {
         foreach ($recipients as $recipient) {
 
             // New approach.
-            $eventdata =  new \core\message\message();
+            $eventdata = new \core\message\message();
             $eventdata->component = 'mod_coursework';
             $eventdata->name = 'submission_receipt';
             $eventdata->userfrom = \core_user::get_noreply_user();
@@ -216,7 +216,7 @@ class mailer {
         $text_body = get_string('cron_email_text', 'mod_coursework', $email_data);
         $html_body = get_string('cron_email_html', 'mod_coursework', $email_data);
 
-        $eventdata =  new \core\message\message();
+        $eventdata = new \core\message\message();
         $eventdata->component = 'mod_coursework';
         $eventdata->name = 'student_deadline_reminder';
         $eventdata->userfrom = \core_user::get_noreply_user();

@@ -57,7 +57,7 @@ if (!has_any_capability($grading_sheet_capabilities, $PAGE->context)) {
 
 
 
-$allocationsuploadform    =   new upload_allocations_form($coursemoduleid);
+$allocationsuploadform = new upload_allocations_form($coursemoduleid);
 
 if ($allocationsuploadform->is_cancelled()) {
     redirect("$CFG->wwwroot/mod/coursework/view.php?id=$coursemoduleid");
@@ -65,15 +65,15 @@ if ($allocationsuploadform->is_cancelled()) {
 
 
 
-if ($data   =   $allocationsuploadform->get_data())   {
+if ($data = $allocationsuploadform->get_data())   {
 
     //perform checks on data
 
     $content = $allocationsuploadform->get_file_content('allocationsdata');
 
-    $csvimport   =  new \mod_coursework\allocation\upload($coursework);
+    $csvimport = new \mod_coursework\allocation\upload($coursework);
 
-    $procsessingresults =  $csvimport->validate_csv($content, $data->encoding, $data->delimiter_name);
+    $procsessingresults = $csvimport->validate_csv($content, $data->encoding, $data->delimiter_name);
 
     //process
     $csvimport->process_csv($content, $data->encoding, $data->delimiter_name, $procsessingresults);

@@ -83,7 +83,7 @@ class grading_report {
      */
     public function __construct(array $options, $coursework) {
 
-        $options['courseworkid']    =   $coursework->id;
+        $options['courseworkid'] = $coursework->id;
 
         $this->options = $options;
         $this->coursework = $coursework;
@@ -354,7 +354,7 @@ class grading_report {
             $row_class = $this->coursework->has_multiple_markers() ? 'mod_coursework\grading_table_row_multi' : 'mod_coursework\grading_table_row_single';
             $ability = new ability(user::find($USER, false), $this->get_coursework());
 
-            $participantsfound  =   0;
+            $participantsfound = 0;
 
             foreach ($participants as $key => $participant) {
 

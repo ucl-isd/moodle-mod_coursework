@@ -80,7 +80,7 @@ class router_test extends advanced_testcase {
      * @return stdClass
      */
     private function get_course() {
-        $this->course =  $this->getDataGenerator()->create_course();
+        $this->course = $this->getDataGenerator()->create_course();
         return $this->course;
     }
 }

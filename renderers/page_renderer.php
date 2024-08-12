@@ -390,7 +390,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             // get all initial stages feedbacks for this submission
             $initial_feedbacks = $DB->get_records('coursework_feedbacks', array('submissionid' => $new_feedback->submissionid));
 
-            $teacher_feedback =  new feedback();
+            $teacher_feedback = new feedback();
             $feedbackcomment = '';
             $count = 1;
             foreach($initial_feedbacks as $initial_feedback){
@@ -602,7 +602,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $report_options['page'] = $page;
         $report_options['group'] = $group;
         $report_options['perpage'] = $perpage;
-        $report_options['mode'] =   2; //load first number of records specified by perpage first
+        $report_options['mode'] = 2; //load first number of records specified by perpage first
         $report_options['sortby'] = $sortby;
         $report_options['sorthow'] = $sorthow;
         $report_options['showsubmissiongrade'] = false;
@@ -655,7 +655,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             && !empty($submissions)) {
 
             $url = $pageurl.'&download=1';
-            $links[$url] =  get_string('download_submitted_files', 'coursework');
+            $links[$url] = get_string('download_submitted_files', 'coursework');
         }
         // export final grades button
         if (has_capability('mod/coursework:viewallgradesatalltimes',
@@ -675,13 +675,13 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             && $coursework->get_finalised_submissions()){
             //export grading sheet
             $url = $pageurl.'&export_grading_sheet=1';
-            $links[$url] =  get_string('exportgradingsheets','mod_coursework');
+            $links[$url] = get_string('exportgradingsheets','mod_coursework');
             //import grading sheet
             $url = '/mod/coursework/actions/upload_grading_sheet.php?cmid='.$PAGE->cm->id;
-            $links[$url] =  get_string('uploadgradingworksheet','mod_coursework');
+            $links[$url] = get_string('uploadgradingworksheet','mod_coursework');
             //import annotated submissions
             $url = '/mod/coursework/actions/upload_feedback.php?cmid='.$PAGE->cm->id;
-            $links[$url] =  get_string('uploadfeedbackfiles','mod_coursework');
+            $links[$url] = get_string('uploadfeedbackfiles','mod_coursework');
         }
 
 
@@ -984,7 +984,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
             $deadline = ($submission->has_extension()) ? $submission->extension_deadline() : $deadline;
 
-            $lateseconds =  $submission->time_submitted() - $deadline;
+            $lateseconds = $submission->time_submitted() - $deadline;
 
             $days = floor($lateseconds / 86400);
             $hours = floor($lateseconds / 3600) % 24;
@@ -1412,7 +1412,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $table = new html_table();
         // table headers
         $format_name = course_get_format($course)->get_format();
-        $table->head  = array (ucfirst($format_name), 'Courseworks', 'Deadline', 'Submission', 'Grade');
+        $table->head = array (ucfirst($format_name), 'Courseworks', 'Deadline', 'Submission', 'Grade');
 
         $currentsection = '';
         $printsection = '';
@@ -1467,14 +1467,14 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             }
             $url = $CFG->wwwroot.'/mod/coursework/view.php';
             $link = "<a href=\"{$url}?id={$coursework->coursemodule->id}\">{$coursework->name}</a>";
-            $table->data[]  =  array(//'cmid'=>$cm->id,
+            $table->data[] = array(//'cmid'=>$cm->id,
                 'sectionname'=>$printsection,
                 'cmname'=>$link,
                 'timedue'=>$timedue,
                 'submissioninfo'=>$submitted,
                 'gradeinfo'=>$grade);
         }
-        $o =  html_writer::table($table);
+        $o = html_writer::table($table);
         return $o;
     }
 
@@ -1501,7 +1501,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $modal_header = html_writer::tag('h5','new Extension', array(
             'class' => 'modal-title',
-            'id'    =>  'extension-modal-title',
+            'id' =>  'extension-modal-title',
         ));
         $modal_header .= html_writer::start_tag('button', array(
             'type' => 'button',

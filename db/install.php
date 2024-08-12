@@ -34,9 +34,9 @@ function xmldb_coursework_install() {
 
 
     //install the plugins used by sampling in the correct order
-    $plugins =   array('range_sample_type','total_sample_type');
+    $plugins = array('range_sample_type','total_sample_type');
 
-    $i  =   1;
+    $i = 1;
 
     foreach($plugins as $p) {
         $dbrecord = new \stdClass();

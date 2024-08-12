@@ -55,16 +55,16 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         global $DB;
 
-        $sql    =   "SELECT     sr.*
+        $sql = "SELECT     sr.*
                      FROM       {coursework_sample_set_rules}   sr,
                                 {coursework_sample_set_plugin}  sp
-                     WHERE      sr.sample_set_plugin_id  =  sp.id
+                     WHERE      sr.sample_set_plugin_id = sp.id
                      AND        sr.courseworkid = {$this->coursework->id}
                      AND        sr.stage_identifier = 'assessor_{$assessor_number}'
                      AND        sp.rulename = 'total_sample_type'";
 
-        $selected   =   ($record = $DB->get_record_sql($sql))  ?   array($record->upperlimit=>$record->upperlimit) : false;
-        $checked    =   ($selected) ?   true : false;
+        $selected = ($record = $DB->get_record_sql($sql))  ?   array($record->upperlimit=>$record->upperlimit) : false;
+        $checked = ($selected) ?   true : false;
 
 
 
@@ -74,7 +74,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $percentage_options[$i] = "{$i}";
         }
 
-        $html   =   html_writer::start_div('sampletotal');
+        $html = html_writer::start_div('sampletotal');
 
         $html    .=  html_writer::checkbox("assessor_{$assessor_number}_sampletotal_checkbox",1,$checked,get_string('topupto','mod_coursework'),
             array('id'=>"assessor_{$assessor_number}_sampletotal_checkbox",'class'=>"assessor_{$assessor_number} total_checkbox sample_set_rule"));
@@ -98,20 +98,20 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
     public function add_form_elements_js($assessor_number=0) {
 
-        $js_script   =  "
+        $js_script = "
 
             $('.total_checkbox').each(function(e,element) {
 
-                    var ele_id =   $(this).attr('id').split('_');
-                    var sampletotal    =   '#'+ele_id[0]+'_'+ele_id[1]+'_sampletotal';
-                    var disabled   =   !$(this).prop('checked');
+                    var ele_id = $(this).attr('id').split('_');
+                    var sampletotal = '#'+ele_id[0]+'_'+ele_id[1]+'_sampletotal';
+                    var disabled = !$(this).prop('checked');
                    $(sampletotal).attr('disabled',disabled);
 
 
                     $(element).on('change',function()   {
-                        var ele_id =   $(this).attr('id').split('_');
-                        var sampletotal    =   '#'+ele_id[0]+'_'+ele_id[1]+'_sampletotal';
-                        var disabled   =   !$(this).prop('checked');
+                        var ele_id = $(this).attr('id').split('_');
+                        var sampletotal = '#'+ele_id[0]+'_'+ele_id[1]+'_sampletotal';
+                        var disabled = !$(this).prop('checked');
                        $(sampletotal).attr('disabled',disabled);
                     })
 
@@ -126,8 +126,8 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
     function save_form_data($assessor_number=0,&$order=0) {
         global $DB;
 
-        $total_checkbox     =    optional_param("assessor_{$assessor_number}_sampletotal_checkbox",false,PARAM_INT);
-        $sample_total       =    optional_param("assessor_{$assessor_number}_sampletotal",false,PARAM_INT);
+        $total_checkbox = optional_param("assessor_{$assessor_number}_sampletotal_checkbox",false,PARAM_INT);
+        $sample_total = optional_param("assessor_{$assessor_number}_sampletotal",false,PARAM_INT);
 
         if ($total_checkbox) {
 
@@ -157,26 +157,26 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         global $DB;
 
-        $stage  =   "assessor_".$stage_number;
+        $stage = "assessor_".$stage_number;
 
-        $sql    =   "SELECT         r.*,p.rulename
+        $sql = "SELECT         r.*,p.rulename
                          FROM           {coursework_sample_set_plugin} p,
                                         {coursework_sample_set_rules} r
-                         WHERE          p.id  = r.sample_set_plugin_id
+                         WHERE          p.id = r.sample_set_plugin_id
                          AND            r.courseworkid = :courseworkid
                          AND            p.rulename = 'total_sample_type'
                          AND            stage_identifier = :stage
                          ORDER BY       ruleorder";
 
-        $rule     =   $DB->get_record_sql($sql,array('courseworkid'=>$this->coursework->id,'stage'=>$stage));
+        $rule = $DB->get_record_sql($sql,array('courseworkid'=>$this->coursework->id,'stage'=>$stage));
 
         if ($rule)  {
 
             $finalised = $this->finalised_submissions();
             $published = $this->released_submissions();
-            $number_of_alloctables      =  count($allocatables);
+            $number_of_alloctables = count($allocatables);
 
-            $total_to_return            =   ceil(($rule->upperlimit/100) * $number_of_alloctables);
+            $total_to_return = ceil(($rule->upperlimit/100) * $number_of_alloctables);
 
             //we include the manual sample set in the count
             // TODO: should we do this?
@@ -233,7 +233,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                         $array_keys = array_rand($allocatable_sample_set, $total_to_return - count($auto_sample_set));
 
-                        if (!is_array($array_keys)) $array_keys =   array($array_keys);
+                        if (!is_array($array_keys)) $array_keys = array($array_keys);
 
                         //use the allocatables array to get other ungraded allocatables
                         foreach ($array_keys as $id) {

@@ -29,7 +29,7 @@ class outstanding_marking   {
 
     public function __construct()   {
 
-        $this->day_in_secs             =   86400;
+        $this->day_in_secs = 86400;
     }
 
 
@@ -40,9 +40,9 @@ class outstanding_marking   {
      */
     public function get_to_grade_initial_count($cwkrecord,$userid){
 
-        $coursework     =   new \mod_coursework\models\coursework($cwkrecord);
+        $coursework = new \mod_coursework\models\coursework($cwkrecord);
 
-        $initialsubmissions =   array();
+        $initialsubmissions = array();
 
         if($this->should_get_to_mark_initial_grade_info($coursework->id,$userid)){
 
@@ -54,7 +54,7 @@ class outstanding_marking   {
                 $initialsubmissions = $this->get_multiple_to_mark_sampled_initial_grade_submissions($coursework->id,$userid);
 
             } else {
-                $initialsubmissions =   $this->get_multiple_to_mark_initial_grade_submissions($coursework->id,$userid,$coursework->get_max_markers(),$coursework->allocation_enabled());
+                $initialsubmissions = $this->get_multiple_to_mark_initial_grade_submissions($coursework->id,$userid,$coursework->get_max_markers(),$coursework->allocation_enabled());
 
             }
         }
@@ -70,9 +70,9 @@ class outstanding_marking   {
      */
     public function get_to_grade_agreed_count($cwkrecord,$userid) {
 
-        $coursework     =   new \mod_coursework\models\coursework($cwkrecord);
+        $coursework = new \mod_coursework\models\coursework($cwkrecord);
 
-        $agreedsubmissions  =   array();
+        $agreedsubmissions = array();
 
             //AGREED GRADE INFORMATION
 
@@ -98,24 +98,24 @@ class outstanding_marking   {
 
         global  $DB;
 
-        $sqlparams  =   array();
-        $sqltable  =    "";
-        $sqlextra   =   "";
+        $sqlparams = array();
+        $sqltable = "";
+        $sqlextra = "";
 
         if ($allocationenabled)  {
             //we only have to check for submissions allocated to this user
-            $sqltable  =   ", {coursework_allocation_pairs}  cap ";
+            $sqltable = ", {coursework_allocation_pairs}  cap ";
 
-            $sqlextra   =   "	
+            $sqlextra = "	
 	                                    AND cap.courseworkid = cs.courseworkid
 		                                AND cap.allocatableid = cs.allocatableid
 	                                    AND cap.allocatabletype = cs.allocatabletype
 	                                    AND cap.assessorid = :assessorid ";
 
-            $sqlparams['assessorid']    =   $userid;
+            $sqlparams['assessorid'] = $userid;
         }
 
-        $sql =      "SELECT     cs.id as submissionid
+        $sql = "SELECT     cs.id as submissionid
                                  FROM       {coursework_submissions}    cs
                                  LEFT JOIN  {coursework_feedbacks}   f
                                  ON          cs.id = f.submissionid
@@ -126,7 +126,7 @@ class outstanding_marking   {
                                   {$sqlextra}                                  
                                  ";
 
-        $sqlparams['courseworkid']      =   $courseworkid;
+        $sqlparams['courseworkid'] = $courseworkid;
 
         return  $DB->get_records_sql($sql, $sqlparams);
     }
@@ -142,7 +142,7 @@ class outstanding_marking   {
         global  $DB;
 
         $countsamples = 'CASE WHEN a.id = NULL THEN 0 ELSE COUNT(a.id)+1 END';
-        $sql    =   "     SELECT  *,
+        $sql = "     SELECT  *,
                                   $countsamples AS count_samples,
                                   COUNT(a.id) AS ssmID  FROM(
                                                   SELECT  cs.id AS csid, f.id AS fid, cs.allocatableid ,ssm.id, COUNT(f.id) AS count_feedback,
@@ -162,10 +162,10 @@ class outstanding_marking   {
                                    GROUP BY a.allocatableid, a.csid, a.fid, a.id, a.count_feedback, a.courseworkid
                                    HAVING (count_feedback < $countsamples  )";
 
-        $sqlparams  =   array();
-        $sqlparams['subassessorid']             =   $userid;
-        $sqlparams['subcourseworkid']           =   $courseworkid;
-        $sqlparams['courseworkid']              =   $courseworkid;
+        $sqlparams = array();
+        $sqlparams['subassessorid'] = $userid;
+        $sqlparams['subcourseworkid'] = $courseworkid;
+        $sqlparams['courseworkid'] = $courseworkid;
 
 
         return  $DB->get_records_sql($sql, $sqlparams);
@@ -183,25 +183,25 @@ class outstanding_marking   {
 
         global      $DB;
 
-        $sqlparams  =   array();
-        $sqltable   =   '';
-        $sqlextra   =   '';
+        $sqlparams = array();
+        $sqltable = '';
+        $sqlextra = '';
 
         if ($allocationenabled)  {
             //we only have to check for submissions allocated to this user
-            $sqltable  =   ", {coursework_allocation_pairs}  cap ";
+            $sqltable = ", {coursework_allocation_pairs}  cap ";
 
-            $sqlextra   =   "	
+            $sqlextra = "	
 	                                    AND cap.courseworkid = cs.courseworkid
 		                                AND cap.allocatableid = cs.allocatableid
 	                                    AND cap.allocatabletype = cs.allocatabletype
 	                                    AND cap.assessorid = :assessorid2 ";
 
-            $sqlparams['assessorid2']    =   $userid;
+            $sqlparams['assessorid2'] = $userid;
         }
 
 
-        $sql    =   "SELECT cs.id AS submissionid, COUNT(f.id) AS count_feedback
+        $sql = "SELECT cs.id AS submissionid, COUNT(f.id) AS count_feedback
                                       FROM 	{coursework_submissions}	cs LEFT JOIN
                                             {coursework_feedbacks} f ON   cs.id = f.submissionid
                                             {$sqltable}
@@ -217,11 +217,11 @@ class outstanding_marking   {
                                           HAVING (COUNT(f.id) < :numofmarkers)";
 
 
-        $sqlparams['subassessorid']     =   $userid;
-        $sqlparams['subcourseworkid']   =   $courseworkid;
-        $sqlparams['courseworkid']      =   $courseworkid;
-        $sqlparams['numofmarkers']      =   $numberofmarkers;
-        $sqlparams['assessorid']        =   $userid;
+        $sqlparams['subassessorid'] = $userid;
+        $sqlparams['subcourseworkid'] = $courseworkid;
+        $sqlparams['courseworkid'] = $courseworkid;
+        $sqlparams['numofmarkers'] = $numberofmarkers;
+        $sqlparams['assessorid'] = $userid;
 
 
         return  $DB->get_records_sql($sql, $sqlparams);
@@ -264,7 +264,7 @@ class outstanding_marking   {
         global  $DB;
 
         $countsamples = 'CASE WHEN a.id = NULL THEN 0 ELSE COUNT(a.id)+1 END';
-        $sql        =   "SELECT  *,
+        $sql = "SELECT  *,
                                   $countsamples AS count_samples,
                                    COUNT(a.id) AS ssmID  FROM(
                                                   SELECT f.id AS fid, cs.id AS csid, cs.allocatableid ,ssm.id, COUNT(f.id) AS count_feedback,
@@ -292,7 +292,7 @@ class outstanding_marking   {
      */
     private function has_agreed_grade($course_id,$user_id)     {
 
-        $coursecontext  =   \context_course::instance($course_id);
+        $coursecontext = \context_course::instance($course_id);
 
         return  has_capability('mod/coursework:addagreedgrade',$coursecontext,$user_id) || has_capability('mod/coursework:addallocatedagreedgrade',$coursecontext,$user_id);
     }
@@ -305,7 +305,7 @@ class outstanding_marking   {
      */
     private function has_initial_grade($course_id,$user_id)     {
 
-        $coursecontext  =   \context_course::instance($course_id);
+        $coursecontext = \context_course::instance($course_id);
 
         return  has_capability('mod/coursework:addinitialgrade',$coursecontext,$user_id);
     }
@@ -318,10 +318,10 @@ class outstanding_marking   {
      */
     private function should_get_to_mark_initial_grade_info($courseworkid,$userid)    {
 
-        $coursework     =   new \mod_coursework\models\coursework($courseworkid);
+        $coursework = new \mod_coursework\models\coursework($courseworkid);
 
         //findout if the user can create an initial grade
-        $user_has_initial_grade_capability =   $this->has_initial_grade($coursework->get_course()->id, $userid);
+        $user_has_initial_grade_capability = $this->has_initial_grade($coursework->get_course()->id, $userid);
 
         return  $user_has_initial_grade_capability;
     }
@@ -333,10 +333,10 @@ class outstanding_marking   {
      */
     private function should_get_to_mark_agreed_grade_info($courseworkid,$userid)    {
 
-        $coursework     =   new \mod_coursework\models\coursework($courseworkid);
+        $coursework = new \mod_coursework\models\coursework($courseworkid);
 
         //findout if the user can create an initial grade
-        $user_has_agreed_grade_capability   =   $this->has_agreed_grade($coursework->get_course()->id, $userid);
+        $user_has_agreed_grade_capability = $this->has_agreed_grade($coursework->get_course()->id, $userid);
 
         return  $user_has_agreed_grade_capability;
 

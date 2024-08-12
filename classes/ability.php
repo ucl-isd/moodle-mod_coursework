@@ -454,7 +454,7 @@ class ability extends \mod_coursework\framework\ability {
         $this->allow('show',
                      'mod_coursework\models\submission',
             function (submission $submission) {
-                $state =  $submission->get_state();
+                $state = $submission->get_state();
                 $allowed_to_agree_grades = has_capability('mod/coursework:addagreedgrade', $submission->get_coursework()->get_context());
                 $allowed_to_edit_agree_grades = has_capability('mod/coursework:editagreedgrade', $submission->get_coursework()->get_context());
                 return (($allowed_to_agree_grades && $state == submission::FULLY_GRADED) || ($allowed_to_edit_agree_grades && $state >= submission::FULLY_GRADED));
@@ -583,7 +583,7 @@ class ability extends \mod_coursework\framework\ability {
                  */
                 $not_already_finalised = !$submission->ready_to_grade();
                 $early_finalisation_allowed = $submission->get_coursework()->early_finalisation_allowed();
-                $coursework_has_no_deadline    =  !$submission->get_coursework()->has_deadline();
+                $coursework_has_no_deadline = !$submission->get_coursework()->has_deadline();
                 $allowed_to = $this->can('new', $submission) || $this->can('edit', $submission);
 
 
@@ -858,11 +858,11 @@ class ability extends \mod_coursework\framework\ability {
                      'mod_coursework\models\feedback',
             function (feedback $feedback) {
 
-                $has_editable_feedbacks =   false;
+                $has_editable_feedbacks = false;
 
                 // find out if the previous grades are editable
                 if ($feedback->is_agreed_grade())   {
-                    $has_editable_feedbacks  =   $feedback->get_submission()->editable_feedbacks_exist();
+                    $has_editable_feedbacks = $feedback->get_submission()->editable_feedbacks_exist();
                 }
 
                 if ((!$feedback->get_coursework()->allocation_enabled() || !$feedback->get_stage()->uses_allocation()) && !$has_editable_feedbacks ) {
@@ -920,9 +920,9 @@ class ability extends \mod_coursework\framework\ability {
                 $is_creator = $feedback->assessorid == $this->get_user()->id;
                 $is_allocated = $feedback->is_assessor_allocated();
 
-                $submission =   $feedback->get_submission();
+                $submission = $feedback->get_submission();
 
-                $in_editable_period     =   (!empty($feedback->get_coursework()->get_grade_editing_time()) && $feedback->timecreated + $feedback->get_coursework()->get_grade_editing_time() > time());
+                $in_editable_period = (!empty($feedback->get_coursework()->get_grade_editing_time()) && $feedback->timecreated + $feedback->get_coursework()->get_grade_editing_time() > time());
 
                 return $is_initial_grade && ($has_capability || $in_editable_period) && ($is_creator || $is_allocated);
             });
@@ -1182,12 +1182,12 @@ class ability extends \mod_coursework\framework\ability {
             function (feedback $feedback) {
                 $this->set_message('User can not add new agreed feedback.');
 
-                $has_editable_feedbacks =   false;
+                $has_editable_feedbacks = false;
 
                 // find out if the previous grades are editable
                 if ($feedback->is_agreed_grade())   {
 
-                    $has_editable_feedbacks  =   $feedback->get_submission()->editable_feedbacks_exist();
+                    $has_editable_feedbacks = $feedback->get_submission()->editable_feedbacks_exist();
 
                 }
 

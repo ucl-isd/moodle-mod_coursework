@@ -65,7 +65,7 @@ abstract class cell_base implements cell_interface {
     public function can_view_hidden()    {
 
         $viewanonymous = has_capability('mod/coursework:viewanonymous',$this->coursework->get_context());
-        $exportgrade   = has_capability('mod/coursework:canexportfinalgrades',$this->coursework->get_context());
+        $exportgrade = has_capability('mod/coursework:canexportfinalgrades',$this->coursework->get_context());
 
         return (!$this->coursework->blindmarking || $viewanonymous || $exportgrade);
     }
@@ -179,7 +179,7 @@ abstract class cell_base implements cell_interface {
      */
     public function get_actual_grade($grade){
 
-        $judge =  new grade_judge($this->coursework);
+        $judge = new grade_judge($this->coursework);
 
         return $judge->grade_to_display($grade);
     }
@@ -220,9 +220,9 @@ abstract class cell_base implements cell_interface {
     protected function submission_time($submission){
 
         if ($submission->is_late() && (!$submission->has_extension() || !$submission->submitted_within_extension())){
-            $time =  get_string('late', 'coursework');
+            $time = get_string('late', 'coursework');
         } else {
-            $time =  get_string('ontime', 'mod_coursework');
+            $time = get_string('ontime', 'mod_coursework');
         }
 
         return $time;

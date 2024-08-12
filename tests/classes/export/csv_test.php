@@ -91,7 +91,7 @@ class csv_test extends advanced_testcase {
         $feedback_data->stage_identifier = 'assessor_1';
         $feedback = $generator->create_feedback($feedback_data);
 
-        $extendion_deadline  =   time();
+        $extendion_deadline = time();
         $params = array('allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
             'courseworkid' => $this->coursework->id,
@@ -103,12 +103,12 @@ class csv_test extends advanced_testcase {
 
         $extension = deadline_extension::create($params);
 
-        $extension_reasons  =   $this->coursework->extension_reasons();
+        $extension_reasons = $this->coursework->extension_reasons();
 
         if (empty($extension_reasons)) {
 
             set_config('coursework_extension_reasons_list',"coursework extension \n sick leave");
-            $extension_reasons  =   $this->coursework->extension_reasons();
+            $extension_reasons = $this->coursework->extension_reasons();
 
         }
 
@@ -134,7 +134,7 @@ class csv_test extends advanced_testcase {
        // build an array
         $studentname = $student->lastname .' '.$student->firstname;
         $assessorname = $assessor->lastname .' '. $assessor->firstname;
-        $assessorusername =  $assessor->username;
+        $assessorusername = $assessor->username;
 
 
         $one_assessor_grades = array('0' => $studentname,
@@ -430,8 +430,8 @@ class csv_test extends advanced_testcase {
         $assessorname1 = $assessor1->lastname .' '. $assessor1->firstname;
         $assessorname2 = $assessor2->lastname .' '. $assessor2->firstname;
 
-        $assessorusername1    =   $assessor1->username;
-        $assessorusername2    =   $assessor2->username;
+        $assessorusername1 = $assessor1->username;
+        $assessorusername2 = $assessor2->username;
 
         $assessors_grades = array('0' => $studentname1,
                                   '1' => $student1->username,

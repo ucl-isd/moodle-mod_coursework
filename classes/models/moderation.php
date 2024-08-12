@@ -113,7 +113,7 @@ class moderation extends table_base{
      * @return bool|submission
      */
     public function get_submission() {
-       $feedback =  $this->get_feedback();
+       $feedback = $this->get_feedback();
        $this->submission = submission::find($feedback->submissionid);
 
         return $this->submission;
