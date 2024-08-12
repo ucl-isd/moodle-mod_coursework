@@ -51,7 +51,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      */
     public function render_feedback(feedback $feedback) {
 
-        global $PAGE, $USER;
+        global $USER;
 
         $out = '';
 
@@ -152,7 +152,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $controller = $coursework->get_advanced_grading_active_controller();
             $left_cell->text = 'Advanced grading';
-            $right_cell->text = $controller->render_grade($PAGE, $feedback->id, null, '', false);
+            $right_cell->text = $controller->render_grade($this->page, $feedback->id, null, '', false);
 
             $table_row->cells['left'] = $left_cell;
             $table_row->cells['right'] = $right_cell;
@@ -489,7 +489,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      */
     protected function render_mod_coursework_coursework(mod_coursework_coursework $coursework) {
 
-        global $CFG, $PAGE, $USER;
+        global $CFG, $USER;
 
         $out = '';
 
@@ -514,11 +514,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $out .= html_writer::tag('h3', get_string('deadlines', 'coursework'));
         $out .= $this->coursework_deadlines_table($coursework);
 
-        $cangrade = has_capability('mod/coursework:addinitialgrade', $PAGE->context);
-        $canpublish = has_capability('mod/coursework:publish', $PAGE->context);
+        $cangrade = has_capability('mod/coursework:addinitialgrade', $this->page->context);
+        $canpublish = has_capability('mod/coursework:publish', $this->page->context);
         $is_published = $coursework->user_grade_is_published($USER->id);
         $allowed_to_add_general_feedback = has_capability('mod/coursework:addgeneralfeedback', $coursework->get_context());
-        $canaddgeneralfeedback = has_capability('mod/coursework:addgeneralfeedback', $PAGE->context);
+        $canaddgeneralfeedback = has_capability('mod/coursework:addgeneralfeedback', $this->page->context);
 
         $out .= html_writer::tag('h3', get_string('gradingsummary', 'coursework'));
         $out .= $this->coursework_grading_summary_table($coursework);
@@ -557,7 +557,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      */
     protected function render_mod_coursework_allocation_table(mod_coursework_allocation_table $allocation_table) {
 
-        global $PAGE, $SESSION;
+        global $SESSION;
 
         $table_html = $allocation_table->get_hidden_elements();
 
@@ -572,7 +572,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $options = $allocation_table->get_options();
 
         $paging_bar = new paging_bar($allocation_table->get_participant_count(), $options['page'], $options['perpage'],
-            $PAGE->url, 'page');
+            $this->page->url, 'page');
 
         $all = count($allocation_table->get_coursework()->get_allocatables());
 
@@ -587,7 +587,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $single_select_params = compact('sortby', 'sorthow', 'page');
         $single_select_params['page'] = '0';
-        $select = new single_select($PAGE->url, 'per_page', $records_per_page, $options['perpage'], null);
+        $select = new single_select($this->page->url, 'per_page', $records_per_page, $options['perpage'], null);
         $select->label = get_string('records_per_page', 'coursework');
         $select->class = 'jumpmenu';
         $select->formid = 'sectionmenu';
@@ -651,7 +651,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $table_html .= $this->output->render($select);
 
-        $table_html .= $PAGE->get_renderer('mod_coursework', 'object')->render($paging_bar);
+        $table_html .= $this->page->get_renderer('mod_coursework', 'object')->render($paging_bar);
 
         return $table_html;
     }
@@ -1126,10 +1126,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string
      */
     protected function resubmit_to_plagiarism_button($coursework, $submission) {
-        global $PAGE;
         $html = '';
         $html .= html_writer::start_tag('form',
-                                                  array('action' => $PAGE->url,
+                                                  array('action' => $this->page->url,
                                                         'method' => 'POST'));
         $html .= html_writer::empty_tag('input',
                                                   array('type' => 'hidden',
@@ -1219,7 +1218,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @throws coding_exception
      */
     protected function coursework_deadlines_table(mod_coursework_coursework $coursework) {
-        global $PAGE, $USER;
+        global $USER;
 
         $dealine_extension =
             \mod_coursework\models\deadline_extension::get_extension_for_student(user::find($USER), $coursework);
@@ -1233,7 +1232,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $normaldeadline = $personal_deadline->personal_deadline;
         }
         $deadline_header_text = get_string('deadline', 'coursework');
-        if ($coursework->personal_deadlines_enabled() && (!has_capability('mod/coursework:submit', $PAGE->context) || is_siteadmin($USER))) {
+        if ($coursework->personal_deadlines_enabled() && (!has_capability('mod/coursework:submit', $this->page->context) || is_siteadmin($USER))) {
             $deadline_header_text .= "<br>". get_string('default_deadline', 'coursework');
         }
         $deadline_date = '';
@@ -1274,7 +1273,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         if ($coursework->has_deadline()) {
             $deadline_message .= html_writer::start_tag('div', array('class' => 'autofinalise_info'));
-            $deadline_message .= ($coursework->personal_deadlines_enabled() && (!has_capability('mod/coursework:submit', $PAGE->context) || is_siteadmin($USER)))
+            $deadline_message .= ($coursework->personal_deadlines_enabled() && (!has_capability('mod/coursework:submit', $this->page->context) || is_siteadmin($USER)))
                 ? get_string('personal_deadline_warning', 'mod_coursework') : get_string('deadline_warning', 'mod_coursework');
             $deadline_message .= html_writer::end_tag('div');
         }
@@ -1367,8 +1366,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string
      */
     protected function render_mod_coursework_personal_deadlines_table(mod_coursework_personal_deadlines_table $personal_deadlines_table) {
-        global  $PAGE;
-
         $coursework_page_url = $this->get_router()->get_path('coursework', array('coursework' => $personal_deadlines_table->get_coursework()));
         $table_html = '<div class="return_to_page">'.html_writer::link($coursework_page_url, get_string('returntocourseworkpage', 'mod_coursework')).'</div>';
 
@@ -1378,7 +1375,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $table_html .= '<div class="largelink">'.html_writer::link('#', get_string('setdateforselected', 'mod_coursework', $personal_deadlines_table->get_coursework()->get_allocatable_type()), array('id' => 'selected_dates')).'</div>';
 
-        if (has_capability('mod/coursework:revertfinalised', $PAGE->context)) {
+        if (has_capability('mod/coursework:revertfinalised', $this->page->context)) {
             $table_html .= '<div class="largelink">' . html_writer::link('#', get_string('unfinaliseselected', 'mod_coursework', $personal_deadlines_table->get_coursework()->get_allocatable_type()), array('id' => 'selected_unfinalise')) . '</div>';
         }
         $table_html .= '<br />';
@@ -1495,7 +1492,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @throws coding_exception
      */
     protected function coursework_grading_summary_table(mod_coursework_coursework $coursework) {
-        global $PAGE, $USER;
+        global $USER;
 
         $gradedHeader = "";
 

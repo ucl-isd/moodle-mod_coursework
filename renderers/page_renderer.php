@@ -78,15 +78,15 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      */
     public function edit_feedback_page(feedback $teacher_feedback, $assessor, $editor, $ajax = false) {
 
-        global $PAGE, $SITE;
+        global $SITE;
 
         $grading_title =
             get_string('gradingfor', 'coursework', $teacher_feedback->get_submission()->get_allocatable_name());
 
-        $PAGE->set_pagelayout('standard');
-        $PAGE->navbar->add($grading_title);
-        $PAGE->set_title($SITE->fullname);
-        $PAGE->set_heading($SITE->fullname);
+        $this->page->set_pagelayout('standard');
+        $this->page->navbar->add($grading_title);
+        $this->page->set_title($SITE->fullname);
+        $this->page->set_heading($SITE->fullname);
 
         $html = '';
 
@@ -135,10 +135,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             echo json_encode(['formhtml' => $html . $formhtml, 'filemanageroptions' => $filemanageroptions, 'editoroptions' => $editoroptions, 'commentoptions' => $commentoptions]);
 
         } else {
-            $PAGE->set_pagelayout('standard');
-            $PAGE->navbar->add($grading_title);
-            $PAGE->set_title($SITE->fullname);
-            $PAGE->set_heading($SITE->fullname);
+            $this->page->set_pagelayout('standard');
+            $this->page->navbar->add($grading_title);
+            $this->page->set_title($SITE->fullname);
+            $this->page->set_heading($SITE->fullname);
             echo $this->output->header();
             echo $html;
             $simple_form->display();
@@ -147,18 +147,18 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     public function confirm_feedback_removal_page(feedback $teacher_feedback, $confirmurl) {
-        global $PAGE, $SITE;
+        global $SITE;
 
         $grading_title =
             get_string('gradingfor', 'coursework', $teacher_feedback->get_submission()->get_allocatable_name());
 
-        $PAGE->set_pagelayout('standard');
-        $PAGE->navbar->add($grading_title);
-        $PAGE->set_title($SITE->fullname);
-        $PAGE->set_heading($SITE->fullname);
+        $this->page->set_pagelayout('standard');
+        $this->page->navbar->add($grading_title);
+        $this->page->set_title($SITE->fullname);
+        $this->page->set_heading($SITE->fullname);
 
         echo $this->output->header();
-        echo $this->output->confirm(get_string('confirmremovefeedback', 'mod_coursework'), $confirmurl, $PAGE->url);
+        echo $this->output->confirm(get_string('confirmremovefeedback', 'mod_coursework'), $confirmurl, $this->page->url);
         echo $this->output->footer();
     }
 
@@ -171,15 +171,15 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      */
     public function edit_moderation_page(moderation $moderator_agreement, $assessor, $editor) {
 
-        global $PAGE, $SITE;
+        global $SITE;
 
         $title =
             get_string('moderationfor', 'coursework', $moderator_agreement->get_submission()->get_allocatable_name());
 
-        $PAGE->set_pagelayout('standard');
-        $PAGE->navbar->add($title);
-        $PAGE->set_title($SITE->fullname);
-        $PAGE->set_heading($SITE->fullname);
+        $this->page->set_pagelayout('standard');
+        $this->page->navbar->add($title);
+        $this->page->set_title($SITE->fullname);
+        $this->page->set_heading($SITE->fullname);
 
         $html = '';
 
@@ -335,15 +335,15 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws coding_exception
      */
     public function new_feedback_page($new_feedback, $ajax = false) {
-        global $PAGE, $SITE, $DB;
+        global $SITE, $DB;
 
         $submission = $new_feedback->get_submission();
         $grading_title = get_string('gradingfor', 'coursework', $submission->get_allocatable_name());
 
-        $PAGE->set_pagelayout('standard');
-        $PAGE->navbar->add($grading_title);
-        $PAGE->set_title($SITE->fullname);
-        $PAGE->set_heading($SITE->fullname);
+        $this->page->set_pagelayout('standard');
+        $this->page->navbar->add($grading_title);
+        $this->page->set_title($SITE->fullname);
+        $this->page->set_heading($SITE->fullname);
 
         $html = '';
 
@@ -402,10 +402,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             echo json_encode(['formhtml' => $html . $formhtml, 'filemanageroptions' => $filemanageroptions, 'editoroptions' => $editoroptions, 'commentoptions' => $commentoptions]);
 
         } else {
-            $PAGE->set_pagelayout('standard');
-            $PAGE->navbar->add($grading_title);
-            $PAGE->set_title($SITE->fullname);
-            $PAGE->set_heading($SITE->fullname);
+            $this->page->set_pagelayout('standard');
+            $this->page->navbar->add($grading_title);
+            $this->page->set_title($SITE->fullname);
+            $this->page->set_heading($SITE->fullname);
             echo $this->output->header();
             echo $html;
             $simple_form->display();
@@ -446,15 +446,15 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      */
     public function new_moderation_page($new_moderation) {
 
-        global $PAGE, $SITE, $DB;
+        global $SITE, $DB;
 
         $submission = $new_moderation->get_submission();
         $grading_title = get_string('moderationfor', 'coursework', $submission->get_allocatable_name());
 
-        $PAGE->set_pagelayout('standard');
-        $PAGE->navbar->add($grading_title);
-        $PAGE->set_title($SITE->fullname);
-        $PAGE->set_heading($SITE->fullname);
+        $this->page->set_pagelayout('standard');
+        $this->page->navbar->add($grading_title);
+        $this->page->set_title($SITE->fullname);
+        $this->page->set_heading($SITE->fullname);
 
         $html = '';
 
@@ -478,15 +478,15 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      */
     public function new_plagiarism_flag_page($new_plagiarism_flag) {
 
-        global $PAGE, $SITE, $DB;
+        global $SITE, $DB;
 
         $submission = $new_plagiarism_flag->get_submission();
         $grading_title = get_string('plagiarismflaggingfor', 'coursework', $submission->get_allocatable_name());
 
-        $PAGE->set_pagelayout('standard');
-        $PAGE->navbar->add($grading_title);
-        $PAGE->set_title($SITE->fullname);
-        $PAGE->set_heading($SITE->fullname);
+        $this->page->set_pagelayout('standard');
+        $this->page->navbar->add($grading_title);
+        $this->page->set_title($SITE->fullname);
+        $this->page->set_heading($SITE->fullname);
 
         $html = '';
 
@@ -507,15 +507,15 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      */
     public function edit_plagiarism_flag_page(plagiarism_flag $plagiarism_flag, $creator, $editor) {
 
-        global $PAGE, $SITE, $DB;
+        global $SITE, $DB;
 
         $submission = $plagiarism_flag->get_submission();
         $grading_title = get_string('plagiarismflaggingfor', 'coursework', $submission->get_allocatable_name());
 
-        $PAGE->set_pagelayout('standard');
-        $PAGE->navbar->add($grading_title);
-        $PAGE->set_title($SITE->fullname);
-        $PAGE->set_heading($SITE->fullname);
+        $this->page->set_pagelayout('standard');
+        $this->page->navbar->add($grading_title);
+        $this->page->set_title($SITE->fullname);
+        $this->page->set_heading($SITE->fullname);
 
         $html = '';
 
@@ -563,9 +563,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws moodle_exception
      */
     public function teacher_grading_page($coursework, $page, $perpage, $sortby, $sorthow, $group, $firstnamealpha, $lastnamealpha, $groupnamealpha) {
-
-        global $PAGE;
-
         $html = '';
 
         // Grading report display options.
@@ -589,7 +586,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         /**
          * @var mod_coursework_grading_report_renderer $grading_report_renderer
          */
-        $grading_report_renderer = $PAGE->get_renderer('mod_coursework', 'grading_report');
+        $grading_report_renderer = $this->page->get_renderer('mod_coursework', 'grading_report');
         $html .= $grading_report_renderer->submissions_header();
 
         $warnings = new warnings($coursework);
@@ -600,8 +597,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= $warnings->percentage_allocations_not_complete();
         $html .= $warnings->student_in_no_group();
 
-        $pageurl = $PAGE->url;
-        $params = $PAGE->url->params();
+        $pageurl = $this->page->url;
+        $params = $this->page->url->params();
         $links = [];
 
         // display 'Group mode' with the relevant groups
@@ -629,7 +626,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
         // export final grades button
         if (has_capability('mod/coursework:viewallgradesatalltimes',
-                           $PAGE->context) && has_capability('mod/coursework:canexportfinalgrades', $PAGE->context)
+                           $this->page->context) && has_capability('mod/coursework:canexportfinalgrades', $this->page->context)
             && $coursework->get_finalised_submissions()
         ) {
             $url = $pageurl.'&export=1';
@@ -637,19 +634,19 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         if (!empty($grading_report->get_table_rows_for_page()) && !empty($submissions)
-            &&(has_capability('mod/coursework:addinitialgrade', $PAGE->context)
-            || has_capability('mod/coursework:addagreedgrade', $PAGE->context)
-            || has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context)
-            || has_capability('mod/coursework:administergrades', $PAGE->context))
+            &&(has_capability('mod/coursework:addinitialgrade', $this->page->context)
+            || has_capability('mod/coursework:addagreedgrade', $this->page->context)
+            || has_capability('mod/coursework:addallocatedagreedgrade', $this->page->context)
+            || has_capability('mod/coursework:administergrades', $this->page->context))
             && $coursework->get_finalised_submissions()) {
             // Export grading sheet
             $url = $pageurl.'&export_grading_sheet=1';
             $links[$url] = get_string('exportgradingsheets', 'mod_coursework');
             // Import grading sheet
-            $url = '/mod/coursework/actions/upload_grading_sheet.php?cmid='.$PAGE->cm->id;
+            $url = '/mod/coursework/actions/upload_grading_sheet.php?cmid='.$this->page->cm->id;
             $links[$url] = get_string('uploadgradingworksheet', 'mod_coursework');
             // Import annotated submissions
-            $url = '/mod/coursework/actions/upload_feedback.php?cmid='.$PAGE->cm->id;
+            $url = '/mod/coursework/actions/upload_feedback.php?cmid='.$this->page->cm->id;
             $links[$url] = get_string('uploadfeedbackfiles', 'mod_coursework');
         }
 
@@ -673,7 +670,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= html_writer::end_tag('div');
 
         // Publish button if appropriate.
-        if ($coursework->has_stuff_to_publish() && has_capability('mod/coursework:publish', $PAGE->context)) {
+        if ($coursework->has_stuff_to_publish() && has_capability('mod/coursework:publish', $this->page->context)) {
             $customdata = array('cmid' => $coursework->get_course_module()->id,
                                 'gradingreport' => $grading_report,
                                 'coursework' => $coursework);
@@ -700,14 +697,11 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws moodle_exception
      */
     public function non_teacher_allocated_grading_page($coursework, $viewallstudents_page, $viewallstudents_perpage, $viewallstudents_sortby, $viewallstudents_sorthow, $group, $displayallstudents, $firstnamealpha, $lastnamealpha, $groupnamealpha) {
-
-        global $PAGE;
-
-        $pageurl = $PAGE->url;
+        $pageurl = $this->page->url;
 
         $html = '';
 
-        if (has_capability('mod/coursework:viewallstudents', $PAGE->context)) {
+        if (has_capability('mod/coursework:viewallstudents', $this->page->context)) {
 
             $report_options = [];
             $report_options['page'] = $viewallstudents_page;
@@ -742,7 +736,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 /**
                  * @var mod_coursework_grading_report_renderer $grading_report_renderer
                  */
-                $grading_report_renderer = $PAGE->get_renderer('mod_coursework', 'grading_report');
+                $grading_report_renderer = $this->page->get_renderer('mod_coursework', 'grading_report');
                 $html .= $grading_report_renderer->submissions_header(get_string('submissionnotallocatedtoassessor', 'coursework'));
 
                 /**
@@ -769,8 +763,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws coding_exception
      */
     protected function file_submission_form($submission, $submit_form) {
-        global $PAGE;
-
         $files = $submission->get_submission_files();
         $coursework = $submission->get_coursework();
 
@@ -807,7 +799,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $draft_item_id = file_get_submitted_draft_itemid('submission');
         // Put them into a draft area.
         file_prepare_draft_area($draft_item_id,
-                                $PAGE->context->id,
+                                $this->page->context->id,
                                 'mod_coursework',
                                 'submission',
                                 $submission->id,
@@ -1084,8 +1076,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @return mod_coursework_object_renderer
      */
     private function get_object_renderer() {
-        global $PAGE;
-        return $PAGE->get_renderer('mod_coursework', 'object');
+        return $this->page->get_renderer('mod_coursework', 'object');
     }
 
     /**
@@ -1160,13 +1151,11 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws coding_exception
      */
     protected function marking_preview_html($own_submission) {
-        global $PAGE;
-
         $html = '';
 
         if ($own_submission->get_coursework()->is_using_advanced_grading()) {
             $controller = $own_submission->get_coursework()->get_advanced_grading_active_controller();
-            $preview_html = $controller->render_preview($PAGE);
+            $preview_html = $controller->render_preview($this->page);
             if (!empty($preview_html)) {
                 $html .= '<h4>';
                 $html .= get_string('marking_guide_preview', 'mod_coursework');
@@ -1217,7 +1206,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      */
     function process_csv_upload($processingresults, $csvcontent, $csvtype) {
 
-        global $OUTPUT, $PAGE;
+        global $OUTPUT;
 
         $html = '';
 
@@ -1249,7 +1238,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $html .= get_string('noallocationerrorsfound', 'mod_coursework');
         }
 
-        $html .= html_writer::tag('p',html_writer::link('/mod/coursework/view.php?id='.$PAGE->cm->id, get_string('continuetocoursework', 'coursework')));
+        $html .= html_writer::tag('p',html_writer::link('/mod/coursework/view.php?id='.$this->page->cm->id, get_string('continuetocoursework', 'coursework')));
 
         $html .= $this->output->footer();
 
@@ -1277,13 +1266,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     function process_feedback_upload($processingresults) {
-
-        global $PAGE;
-
         $title = get_string('feedbackuploadresults', 'mod_coursework');
 
-        $PAGE->set_pagelayout('standard');
-        $PAGE->navbar->add($title);
+        $this->page->set_pagelayout('standard');
+        $this->page->navbar->add($title);
 
         $html = '';
 
@@ -1310,7 +1296,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $html .= get_string('nofilesfound', 'mod_coursework');
         }
 
-        $html .= html_writer::tag('p',html_writer::link('/mod/coursework/view.php?id='.$PAGE->cm->id, get_string('continuetocoursework', 'coursework')));
+        $html .= html_writer::tag('p',html_writer::link('/mod/coursework/view.php?id='.$this->page->cm->id, get_string('continuetocoursework', 'coursework')));
 
         $html .= $this->output->footer();
 
