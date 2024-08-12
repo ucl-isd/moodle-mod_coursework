@@ -265,7 +265,7 @@ class mod_coursework_mod_form extends moodleform_mod {
            $data->blindmarking = $CFG->coursework_blindmarking;
         }
 
-        if ($data->numberofmarkers >1) {
+        if ($data->numberofmarkers > 1) {
             $data->moderationagreementenabled = 0;
         }
 
@@ -327,7 +327,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         if (!empty($CFG->coursework_submission_deadline)) {
             $disabled = false;
 
-            $default_timestamp =strtotime('today');
+            $default_timestamp = strtotime('today');
             if ($CFG->coursework_submission_deadline == 7 ) {
                 $default_timestamp = strtotime('+1 weeks');
             } else if ($CFG->coursework_submission_deadline == 14 ) {
@@ -397,7 +397,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         if (!empty($CFG->coursework_start_date)) {
             $disabled = false;
-            $default_timestamp =strtotime('today');
+            $default_timestamp = strtotime('today');
         }
 
         $moodle_form->addElement('date_time_selector',
@@ -431,10 +431,10 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodle_form =& $this->_form;
 
-        $default_timestamp =strtotime('today');
+        $default_timestamp = strtotime('today');
         $disabled = true;
 
-        $submission_deadline_timestamp =strtotime('today');
+        $submission_deadline_timestamp = strtotime('today');
 
         if (!empty($CFG->coursework_submission_deadline)) {
             if ($CFG->coursework_submission_deadline == 7 ) {
@@ -487,7 +487,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $default_timestamp =strtotime('today');
         $disabled = true;
 
-        $submission_deadline_timestamp =strtotime('today');
+        $submission_deadline_timestamp = strtotime('today');
 
         if (!empty($CFG->coursework_submission_deadline)) {
             if ($CFG->coursework_submission_deadline == 7 ) {

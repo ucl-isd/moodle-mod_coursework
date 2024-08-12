@@ -179,7 +179,7 @@ class grading_sheet extends csv {
             $csv_cells[] = 'agreedgrade';
             $csv_cells[] = 'agreedfeedback';
 
-        } else if (has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && $coursework->get_max_markers() >1) {
+        } else if (has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && $coursework->get_max_markers() > 1) {
             $csv_cells[] = 'singlegrade';
             $csv_cells[] = 'feedbackcomments';
 

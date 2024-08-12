@@ -1807,7 +1807,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                     $submission = submission::find($sub);
                     if ($coursework->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable()) || (has_capability('mod/coursework:addagreedgrade', $coursework->get_context()))
                         && !empty($submission) && (($submission->all_inital_graded()  && !$submission->get_coursework()->sampling_enabled())
-                            || ($submission->get_coursework()->sampling_enabled() && $submission->all_inital_graded() && $submission->max_number_of_feedbacks() >1))) {
+                            || ($submission->get_coursework()->sampling_enabled() && $submission->all_inital_graded() && $submission->max_number_of_feedbacks() > 1))) {
 
                         $gradeblesub[$submission->id] = $submission;
                     }
