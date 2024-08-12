@@ -106,7 +106,7 @@ class otherassessors_cell extends cell_base{
 
             $blankcolumns = $numothereassessorfeedbacks - count($feedbacks);
 
-            for($i = 0; $i < $blankcolumns; $i++) {
+            for ($i = 0; $i < $blankcolumns; $i++) {
                 if ($this->coursework->is_using_rubric()) {
                     $criterias = $this->coursework->get_rubric_criteria();
                     foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it

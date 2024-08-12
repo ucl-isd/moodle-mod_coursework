@@ -783,7 +783,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $assessorheaders = array();
 
-        for($i = 0; $i < $samplingwidget->get_coursework()->get_max_markers(); $i++) {
+        for ($i = 0; $i < $samplingwidget->get_coursework()->get_max_markers(); $i++) {
             $assessorheaders[] = get_string('assessorheading', 'mod_coursework', $i+1);
         }
 
@@ -793,7 +793,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $comma = "";
 
-                for($i=0;$i <=  $samplingwidget->get_coursework()->grade; $i++) {
+                for ($i=0;$i <=  $samplingwidget->get_coursework()->grade; $i++) {
                     $scale .=   $comma.$i;
                     $comma = ",";
                 }
@@ -814,7 +814,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $percentage_options = array();
 
-        for($i = 0;$i < 110; $i = $i + 10) {
+        for ($i = 0;$i < 110; $i = $i + 10) {
             $percentage_options[$i] = "{$i}%";
         }
 
@@ -907,7 +907,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $percentage_options = array();
 
-        for($i = 0;$i < 110; $i = $i + 10) {
+        for ($i = 0;$i < 110; $i = $i + 10) {
             $percentage_options[$i] = "{$i}%";
         }
 
@@ -921,7 +921,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $sampling_column  .= html_writer::start_tag('div');
 
-        for($i = 0; $i < 1; $i++) {
+        for ($i = 0; $i < 1; $i++) {
             $sampling_column .= html_writer::start_tag('span', array('class' => "assessor_{$suffix}_grade_rules", 'id' => "assessor_{$suffix}_grade_rules"));
 
             $sampling_column .= html_writer::checkbox("assessor_{$suffix}_samplerules[]", 1, false, get_string('grade', 'mod_coursework'),

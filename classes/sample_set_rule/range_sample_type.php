@@ -88,14 +88,14 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         $percentage_options = array();
 
-        for($i = 0;$i < 110; $i = $i + 10) {
+        for ($i = 0;$i < 110; $i = $i + 10) {
             $percentage_options[$i] = "{$i}";
         }
 
         $scale = array();
 
         if     ($this->coursework->grade > 0) {
-            for($i=0;$i <=  $this->coursework->grade; $i++) {
+            for ($i=0;$i <=  $this->coursework->grade; $i++) {
                 $scale[] = $i;
             }
         } else {
@@ -289,7 +289,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                     var type = PERCENT;
 
                     if ($(element).val() == PERCENT ) {
-                        for(var i = 0;i < 11; i++) {
+                        for (var i = 0;i < 11; i++) {
                             selectValues[i] = (i*10);
                         }
                     } else {

@@ -42,19 +42,19 @@ if (!isset($SESSION->coursework_allocationsessions[$coursemoduleid])) {
     $SESSION->coursework_allocationsessions[$coursemoduleid] = array();
 }
 
-for($i = 0; $i < count($assesorselect); $i++) {
+for ($i = 0; $i < count($assesorselect); $i++) {
     $SESSION->coursework_allocationsessions[$coursemoduleid][$assesorselect[$i]] = $assesorselectvalue[$i];
 }
 
-for($i = 0; $i < count($pinnedchk); $i++) {
+for ($i = 0; $i < count($pinnedchk); $i++) {
     $SESSION->coursework_allocationsessions[$coursemoduleid][$pinnedchk[$i]] = $pinnedchkval[$i];
 }
 
-for($i = 0; $i < count($moderatorselect); $i++) {
+for ($i = 0; $i < count($moderatorselect); $i++) {
     $SESSION->coursework_allocationsessions[$coursemoduleid][$moderatorselect[$i]] = $moderatorselectvalue[$i];
 }
 
-for($i = 0; $i < count($samplechk); $i++) {
+for ($i = 0; $i < count($samplechk); $i++) {
     $SESSION->coursework_allocationsessions[$coursemoduleid][$samplechk[$i]] = $samplechkvalue[$i];
 }
 

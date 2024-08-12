@@ -300,7 +300,7 @@ class manager {
             if (isset($allocatables[$faa->allocatableid]))  unset($allocatables[$faa->allocatableid]);
         }
 
-        for($stage_number = 2; $stage_number <= $this->get_coursework()->get_max_markers(); $stage_number++) {
+        for ($stage_number = 2; $stage_number <= $this->get_coursework()->get_max_markers(); $stage_number++) {
 
             $stage = "assessor_{$stage_number}";
 

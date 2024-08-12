@@ -97,7 +97,7 @@ class import extends grading_sheet{
             //holds details on grades that have been successfully uploaded for the current line
             $uploadedgradecells = array();
 
-            for($z = 0; $z < count($line); $z++) {
+            for ($z = 0; $z < count($line); $z++) {
 
                 $value = $line[$z];
                 $stage_identifier = $this->get_stage_identifier($submissionid, $cells[$i]);
