@@ -239,7 +239,7 @@ class warnings {
                          return $this->alert_div(get_string('assessors_no_allocated_warning', 'mod_coursework'));
                      }
                  }
-             }else{
+             } else {
 
                  $params = array('courseworkid' => $coursework->id);
                  $sql = "SELECT id, stage_identifier, allocatableid

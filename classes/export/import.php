@@ -154,7 +154,7 @@ class import extends grading_sheet{
             $s++;
         }
 
-        return (!empty($errors)) ?  $errors : false  ;
+        return (!empty($errors)) ?  $errors : false;
     }
 
     function rubric_count_correct($csvheader, $linefromimportedcsv) {
@@ -356,7 +356,7 @@ class import extends grading_sheet{
             //defines the start offest to be used when searching for a rubric in a uploaded csv, if the format of upload
             // Csv is changed this will require changing
 
-            $rubricoffset = $rubricoffsetstart = ($coursework->is_configured_to_have_group_submissions()) ?   4   :   5;
+            $rubricoffset = $rubricoffsetstart = ($coursework->is_configured_to_have_group_submissions()) ? 4 : 5;
 
             $numberofstages = count($stages);
 
@@ -519,7 +519,7 @@ class import extends grading_sheet{
             $s++;
         }
 
-        return (!empty($errors)) ?  $errors : false  ;
+        return (!empty($errors)) ?  $errors : false;
 
     }
 
@@ -588,7 +588,7 @@ class import extends grading_sheet{
         // We cant save the grade if this coursework uses rubrics as the grade has not been generated and the grade var contains
         // Criteria that will be used to genenrate the grade. We need the feedback id to do this so we need to make the feedback
         // First
-        $add_grade->grade = (!$uses_rubric)    ?   $grade  :   null;
+        $add_grade->grade = (!$uses_rubric)  ? $grade : null;
         $add_grade->feedbackcomment = $feedback;
         $add_grade->lasteditedbyuser = $USER->id;
         $add_grade->markernumber = $markernumber;
@@ -725,7 +725,7 @@ class import extends grading_sheet{
             $record = $DB->get_record_sql($sql);
             if (!empty($record)) {
                 $stage_identifier = $record->stage_identifier;
-            }else if (!$this->coursework->sampling_enabled()) { // Samplings disabled
+            } else if (!$this->coursework->sampling_enabled()) { // Samplings disabled
                 // workout if any stage is still available
                 $sql = "SELECT count(*) as graded FROM {coursework_feedbacks}
                         WHERE submissionid = $submissionid
@@ -813,7 +813,7 @@ class import extends grading_sheet{
                 $startposition = array_search('otherassessors', $csv_cells);
             }
 
-            for ($i = $startposition; $i < $startposition+$othercells ; $i++) {
+            for ($i = $startposition; $i < $startposition+$othercells; $i++) {
                 unset($line[$i]);
             }
             $csv_cells =array_values($csv_cells);

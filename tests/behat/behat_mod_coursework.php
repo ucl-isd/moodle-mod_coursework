@@ -84,7 +84,7 @@ class behat_mod_coursework extends behat_base {
 
         if (file_exists($file_path)) {
             require_once($file_path);
-            $class_name = 'mod_coursework_behat_' . $page_name ;
+            $class_name = 'mod_coursework_behat_' . $page_name;
             return new $class_name($this);
         }
 

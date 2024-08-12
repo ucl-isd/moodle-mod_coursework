@@ -134,7 +134,7 @@ class submission_cell extends cell_base {
      */
     public function get_table_header($options  = []) {
 
-        $tablename = (isset($options['tablename']))  ? $options['tablename']  : ''  ;
+        $tablename = (isset($options['tablename']))  ? $options['tablename'] : '';
 
         $fileid = $this->helper_sortable_heading(get_string('tableheadid', 'coursework'),
                                                  'hash',
@@ -142,7 +142,7 @@ class submission_cell extends cell_base {
                                                   $options['sortby'],
                                                   $tablename);
 
-        return get_string('tableheadfilename', 'coursework') .' /<br>' . $fileid ;
+        return get_string('tableheadfilename', 'coursework') .' /<br>' . $fileid;
     }
 
     /**

@@ -92,7 +92,7 @@ class otherassessors_cell extends cell_base{
                         $gradedata['assessor' . $stage_identifier . '_' . $criteria['id']] = get_string('grade_hidden_manager', 'mod_coursework');
                         $gradedata['assessor' . $stage_identifier . '_' . $criteria['id'] . 'comment'] = '';
                     }
-                }else {
+                } else {
                     $gradedata[] = '';
                 }
                 $gradedata[] = '';
@@ -134,7 +134,7 @@ class otherassessors_cell extends cell_base{
 
         $fields = [];
 
-        for ($i = 1; $i < $this->stages ; $i++) {
+        for ($i = 1; $i < $this->stages; $i++) {
             if ($this->coursework->is_using_rubric()) {
                 $criterias = $this->coursework->get_rubric_criteria();
                 foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it

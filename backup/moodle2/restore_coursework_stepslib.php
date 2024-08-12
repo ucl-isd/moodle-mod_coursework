@@ -22,8 +22,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-class restore_coursework_activity_structure_step extends restore_activity_structure_step
-{
+class restore_coursework_activity_structure_step extends restore_activity_structure_step {
+
     // Just a handy way to spit out debugging info while in the bowels of restore
     static function cheaplog($thing, $append = true) {
         if ($append) {
@@ -79,9 +79,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         if (!empty($data->allocatableuser)) {
             $data->allocatableid = $this->get_mappingid('user', $data->allocatableuser);
             $data->allocatabletype = 'user';
-        }
-        else
-        {
+        } else {
             $data->allocatableid = $this->get_mappingid('group', $data->allocatablegroup);
             $data->allocatabletype = 'group';
         }

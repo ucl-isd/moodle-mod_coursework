@@ -662,7 +662,7 @@ class coursework extends table_base {
      * @return int
      */
     function get_initial_marking_deadline() {
-        return  (!empty($this->initialmarkingdeadline))     ?   $this->initialmarkingdeadline : 0;
+        return  (!empty($this->initialmarkingdeadline)) ? $this->initialmarkingdeadline : 0;
     }
 
     /**
@@ -671,7 +671,7 @@ class coursework extends table_base {
      * @return int
      */
     function get_agreed_grade_marking_deadline() {
-          return  (!empty($this->agreedgrademarkingdeadline))     ?   $this->agreedgrademarkingdeadline : 0;
+          return  (!empty($this->agreedgrademarkingdeadline)) ? $this->agreedgrademarkingdeadline : 0;
     }
 
     /**
@@ -974,7 +974,7 @@ class coursework extends table_base {
                     $submissionuser = $submission->get_allocatable();
                     if ($this->is_configured_to_have_group_submissions() && $submissionuser->name) {
                         $foldername = $submissionuser->name . '_';
-                    } elseif (!$this->is_configured_to_have_group_submissions()) {
+                    }  else if (!$this->is_configured_to_have_group_submissions()) {
                         $foldername = $submissionuser->firstname . ' ' . $submissionuser->lastname . '_';
                     }
                 }
@@ -2760,7 +2760,7 @@ class coursework extends table_base {
      * @return bool
      */
     public function marking_deadline_enabled() {
-        return (bool)$this->markingdeadlineenabled ;
+        return (bool)$this->markingdeadlineenabled;
     }
 
     /**

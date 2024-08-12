@@ -22,8 +22,8 @@
 
 require_once($CFG->dirroot . '/mod/coursework/backup/moodle2/backup_coursework_stepslib.php');
 
-class backup_coursework_activity_task extends backup_activity_task
-{
+class backup_coursework_activity_task extends backup_activity_task {
+
   static public function encode_content_links($content) {
       global $CFG;
 

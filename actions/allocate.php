@@ -45,7 +45,7 @@ $allocatenonallocatedbutton = optional_param('auto-allocate-non-allocated', 0, P
 $assessorallocationstrategy = optional_param('assessorallocationstrategy', false, PARAM_TEXT);
 
 $moderationruletype = optional_param('addmodsetruletype', 0, PARAM_ALPHAEXT);
-$deletemodsetrule = optional_param('delete-mod-set-rule', [], PARAM_RAW) ;
+$deletemodsetrule = optional_param('delete-mod-set-rule', [], PARAM_RAW);
 
 // options used for pagination
 // If a session variable holding page preference for the specific coursework is not set, set default value (0).
@@ -182,7 +182,7 @@ if ($coursework->allocation_enabled()) {
 
 if ($formsavebutton && $percentage_allocation_not_complete == '' && $manual_allocation_not_complete == '') {
     redirect($CFG->wwwroot.'/mod/coursework/view.php?id='.$coursemoduleid, get_string('changessaved', 'mod_coursework'));
-} elseif ($formsavebutton) {
+}  else if ($formsavebutton) {
     redirect($PAGE->url);
 }
 

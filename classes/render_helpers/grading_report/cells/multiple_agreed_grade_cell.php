@@ -169,7 +169,7 @@ class multiple_agreed_grade_cell extends cell_base {
 
         //adding this line so that the sortable heading function will make a sortable link unique to the table
         // If tablename is set
-        $tablename = (isset($options['tablename']))  ? $options['tablename']  : ''  ;
+        $tablename = (isset($options['tablename']))  ? $options['tablename'] : '';
 
         $column_name = get_string('agreedgrade', 'coursework');
         return $this->helper_sortable_heading($column_name, 'finalgrade', $options['sorthow'], $options['sortby'], $tablename);

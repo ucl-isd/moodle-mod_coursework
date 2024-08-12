@@ -33,7 +33,7 @@ $multipleuserdeadlines = optional_param('multipleuserdeadlines', 0, PARAM_INT);
 $selectedtype = optional_param('selectedtype', 'date', PARAM_RAW);
 $personal_deadline_time = optional_param('personal_deadline_time', null, PARAM_RAW);
 
-$allocatableid = (!empty($allocatableid_arr))    ?   $allocatableid_arr  : $allocatableid  ;
+$allocatableid = (!empty($allocatableid_arr))  ? $allocatableid_arr : $allocatableid;
 
 $coursework_db = $DB->get_record('coursework', array('id' => $courseworkid));
 

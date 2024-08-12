@@ -83,7 +83,7 @@ class personal_deadline_cell extends cell_base {
      */
     public function get_table_header($options  = []) {
 
-        $tablename = (!empty($options['tablename']))  ? $options['tablename']  : ''  ;
+        $tablename = (!empty($options['tablename']))  ? $options['tablename'] : '';
 
         return $this->helper_sortable_heading(get_string('tableheadpersonaldeadline', 'coursework'),
             'personaldeadline',

@@ -81,7 +81,7 @@ class grading_sheet extends csv{
                        // if no feedback or feedback belongs to current user don't remove submission
                        if (!$feedback || $feedback->assessorid == $USER->id) {
                            break;
-                       } elseif ($i + 1 < sizeof($stage_identifiers)) {
+                       }  else if ($i + 1 < sizeof($stage_identifiers)) {
                            continue;
                        }
                        // if the last submission was already marked remove it from the array

@@ -24,8 +24,8 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/coursework/backup/moodle2/restore_coursework_stepslib.php');
 
-class restore_coursework_activity_task extends restore_activity_task
-{
+class restore_coursework_activity_task extends restore_activity_task {
+
     /**
      * Define the decoding rules for links belonging
      * to the activity to be executed by the link decoder.

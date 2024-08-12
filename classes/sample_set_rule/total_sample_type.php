@@ -61,8 +61,8 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                      AND        sr.stage_identifier = 'assessor_{$assessor_number}'
                      AND        sp.rulename = 'total_sample_type'";
 
-        $selected = ($record = $DB->get_record_sql($sql))  ?   array($record->upperlimit => $record->upperlimit) : false;
-        $checked = ($selected) ?   true : false;
+        $selected = ($record = $DB->get_record_sql($sql))  ? array($record->upperlimit => $record->upperlimit) : false;
+        $checked = ($selected) ? true : false;
 
         $percentage_options = [];
 

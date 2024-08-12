@@ -382,8 +382,7 @@ class student_submission_form extends moodleform {
      */
     protected function add_header_to_form() {
         $file_manager_options = $this->get_file_manager_options();
-        $files_string = ($file_manager_options['maxfiles'] == 1) ? 'yoursubmissionfile'
-            : 'yoursubmissionfiles';
+        $files_string = ($file_manager_options['maxfiles'] == 1) ? 'yoursubmissionfile' : 'yoursubmissionfiles';
         $renamed = ($this->get_coursework()->renamefiles == 1)?get_string('yoursubmissionfile_renamed', 'coursework') : "";
 
         $this->_form->addElement('header', 'submitform', get_string($files_string, 'coursework'). $renamed);

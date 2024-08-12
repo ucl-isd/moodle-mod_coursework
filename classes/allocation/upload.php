@@ -114,7 +114,7 @@ class upload {
                     // check if allocatable exists in this coursework
                     if (!$allocatable || !in_array($allocatable->id, $allocatables)) {$errors[$s] = get_string($allocatabletype .'notincoursework', 'coursework'); break;}
                     // duplicate user or group
-                    if ($allocatable && in_array($allocatable->id, $allocatablesinfile)) {$errors[$s] = get_string('duplicate'. $allocatabletype, 'coursework') ; break;}
+                    if ($allocatable && in_array($allocatable->id, $allocatablesinfile)) {$errors[$s] = get_string('duplicate'. $allocatabletype, 'coursework'); break;}
                     $allocatablesinfile[] = $allocatable->id;
                 }
 
@@ -141,7 +141,7 @@ class upload {
             $s++;
         }
 
-        return (!empty($errors)) ?  $errors : false  ;
+        return (!empty($errors)) ?  $errors : false;
     }
 
     /**

@@ -162,7 +162,7 @@ function coursework_add_instance($formdata) {
     // We have to check to see if this coursework has a deadline ifm it doesn't we need to set the
     // Deadline to zero
 
-    $formdata->deadline = empty($formdata->deadline)  ?   0   :   $formdata->deadline;
+    $formdata->deadline = empty($formdata->deadline)  ? 0 : $formdata->deadline;
     $subnotify = '';
     $comma = '';
     if (!empty($formdata->submissionnotification)) {
@@ -287,7 +287,7 @@ function mod_coursework_core_calendar_provide_event_action(calendar_event $event
            // Initial grades
            $togradeinitialcount = $outstandingmarking->get_to_grade_initial_count($dbcoursework, $user->id());
            $name = ($coursework->has_multiple_markers())? get_string('initialgrade', 'coursework') : get_string('grade', 'mod_coursework');
-           $itemcount = $togradeinitialcount ;
+           $itemcount = $togradeinitialcount;
 
        } else if ($event->eventtype == 'agreedgradingdue') {
            // Agreed grades
@@ -299,7 +299,7 @@ function mod_coursework_core_calendar_provide_event_action(calendar_event $event
 
         $submission_url = new \moodle_url('/mod/coursework/view.php', array('id' => $cm->id));
 
-    } elseif ($student) { // for students
+    }  else if ($student) { // for students
 
         // if group cw check if student is in group, if not then don't display 'Add submission' link
         if ($coursework->is_configured_to_have_group_submissions() && !$coursework->get_student_group($user)) {
@@ -444,8 +444,7 @@ function coursework_update_instance($coursework) {
 
     $coursework->submissionnotification = $subnotify;
 
-    $courseworkhassubmissions = ($DB->get_records('coursework_submissions', array('courseworkid' => $coursework->id)))
-        ?   true : false;
+    $courseworkhassubmissions = $DB->record_exists('coursework_submissions', array('courseworkid' => $coursework->id));
 
     // If the coursework has submissions then we the renamefiles setting can't be changes
     if ($courseworkhassubmissions) {
@@ -1289,7 +1288,7 @@ function course_group_member_added($event_data) {
 
             if ($assessors_in_group) {//yes - do nothing as other assessor is already assigned to group members, return true
                 break;
-            } else{ // No - check if CW is a group coursework
+            } else { // No - check if CW is a group coursework
                 if ($coursework->is_configured_to_have_group_submissions()) {// yes - assign the tutor to a allocatable group
                     $stage_1->make_auto_allocation_if_necessary(group::find($groupid));
                 } else {  // no, check if group has any student members
@@ -1385,7 +1384,7 @@ function course_group_member_removed($event_data) {
                          continue;
                      }
                  }
-             } else{
+             } else {
                  continue;
              }
         } else if ($student) {
@@ -1502,7 +1501,7 @@ function coursework_is_ulcc_digest_coursework_plugin_installed() {
     $disgestblockexists = $DB->record_exists_sql("SELECT id FROM {block} WHERE name = 'ulcc_digest' AND visible = 1");
 
     if (!empty($disgestblockexists)) {
-         $pluginexists = ($DB->get_records('block_ulcc_digest_plgs', array('module' => 'coursework', 'status' => 1)))    ?   true    :  false;
+         $pluginexists = $DB->record_exists('block_ulcc_digest_plgs', array('module' => 'coursework', 'status' => 1));
     }
 
     return $pluginexists;

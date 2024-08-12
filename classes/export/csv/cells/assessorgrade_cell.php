@@ -59,7 +59,7 @@ class assessorgrade_cell extends cell_base{
             if ($this->coursework->is_using_rubric()) {
                 $gradedata = [];
                 $this->get_rubric_scores_gradedata($grade, $gradedata); // multiple parts are handled here
-            } else{
+            } else {
                 $gradedata = (!$grade)? '': $this->get_actual_grade($grade->grade);
 
             }

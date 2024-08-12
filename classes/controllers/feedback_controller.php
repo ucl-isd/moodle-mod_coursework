@@ -70,7 +70,7 @@ class feedback_controller extends controller_base {
 
         $urlparams = array('feedbackid' => $this->params['feedbackid']);
         $PAGE->set_url('/mod/coursework/actions/feedbacks/show.php', $urlparams);
-        $ajax = (isset($this->params['ajax']))  ?   $this->params['ajax'] : 0;
+        $ajax = (isset($this->params['ajax']))  ? $this->params['ajax'] : 0;
 
         $teacherfeedback = new feedback($this->params['feedbackid']);
 

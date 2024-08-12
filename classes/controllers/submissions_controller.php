@@ -122,7 +122,7 @@ class submissions_controller extends controller_base {
               if (!$this->has_valid_personal_deadline($submission) && !$this->has_valid_extension($submission)) {
                   $submission->finalised = 1;
               }
-        } elseif ($this->coursework->deadline_has_passed() && !$this->has_valid_extension($submission)) {
+        }  else if ($this->coursework->deadline_has_passed() && !$this->has_valid_extension($submission)) {
                   $submission->finalised = 1;
         }
 
@@ -327,7 +327,7 @@ class submissions_controller extends controller_base {
 
         global  $USER, $DB;
 
-        $allocatableids = (!is_array($this->params['allocatableid']))  ?  array($this->params['allocatableid']) : $this->params['allocatableid']  ;
+        $allocatableids = (!is_array($this->params['allocatableid']))  ?  array($this->params['allocatableid']) : $this->params['allocatableid'];
 
         $personaldeadline_page_url = new \moodle_url('/mod/coursework/actions/personal_deadline.php',
             array('id' => $this->coursework->get_coursemodule_id(), 'multipleuserdeadlines' => 1, 'setpersonaldeadlinespage' => 1,

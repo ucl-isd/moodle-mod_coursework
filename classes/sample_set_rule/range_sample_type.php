@@ -123,8 +123,8 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         $html .= html_writer::checkbox("assessor_{$assessor_number}_samplerules[]", 1, $rules_checked, '',
             array('id' => "assessor_{$assessor_number}_samplerules_{$sequence}", 'class' => "assessor_{$assessor_number} range_grade_checkbox sample_set_rule"));
 
-        $grade_scale_text = ($this->coursework->grade < 0) ? get_string('scale', 'mod_coursework')  : get_string('grade', 'mod_coursework')  ;
-        $grade_scale_val = ($this->coursework->grade < 0) ? 'scale'  : 'grade';
+        $grade_scale_text = ($this->coursework->grade < 0) ? get_string('scale', 'mod_coursework') : get_string('grade', 'mod_coursework');
+        $grade_scale_val = ($this->coursework->grade < 0) ? 'scale' : 'grade';
 
         $options = array('percentage' => get_string('percentage', 'mod_coursework'),
             $grade_scale_val => $grade_scale_text);

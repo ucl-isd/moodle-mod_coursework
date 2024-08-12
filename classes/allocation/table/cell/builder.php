@@ -180,7 +180,7 @@ class builder {
                     if ($this->has_feedback()) {
                         $contents .= $this->get_included_in_sample_label();
                         $contents .= $this->sampling_hidden_checkbox();
-                    } else{
+                    } else {
                         $contents .= $this->sampling_set_checkbox();
                     }
                 }
@@ -205,7 +205,7 @@ class builder {
             $assessor_name .= 'Grade: ';
             $assessor_name .= $this->get_feedback()->get_grade();
         } else if ($this->has_allocation()) {
-            $assessor_name .=  ' '.$this->pinned_checkbox($assessor_dropdown) ;
+            $assessor_name .=  ' '.$this->pinned_checkbox($assessor_dropdown);
             $assessor_name .= $this->get_stage()->get_allocated_assessor_name($this->get_allocatable());
         }
 

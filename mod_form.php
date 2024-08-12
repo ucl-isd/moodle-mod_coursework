@@ -419,7 +419,7 @@ class mod_coursework_mod_form extends moodleform_mod {
             get_string('usemarkingdeadline', 'mod_coursework'), $options);
         $moodle_form->setType('markingdeadlineenabled', PARAM_INT);
 
-        $settingdefault = (empty($CFG->coursework_marking_deadline) && empty($CFG->coursework_agreed_marking_deadline))  ?   0   :   1;
+        $settingdefault = (empty($CFG->coursework_marking_deadline) && empty($CFG->coursework_agreed_marking_deadline))  ? 0 : 1;
         $moodle_form->setDefault('markingdeadlineenabled', $settingdefault);
     }
 
@@ -456,7 +456,7 @@ class mod_coursework_mod_form extends moodleform_mod {
                 $default_timestamp = strtotime('+2 weeks', $submission_deadline_timestamp);
             } else if ($CFG->coursework_marking_deadline == 21 ) {
                 $default_timestamp = strtotime('+3 weeks', $submission_deadline_timestamp);
-            }else if ($CFG->coursework_marking_deadline == 28 ) {
+            } else if ($CFG->coursework_marking_deadline == 28 ) {
                 $default_timestamp = strtotime('+4 weeks', $submission_deadline_timestamp);
             } else if ($CFG->coursework_marking_deadline == 35 ) {
                 $default_timestamp = strtotime('+5 weeks', $submission_deadline_timestamp);
@@ -598,7 +598,7 @@ class mod_coursework_mod_form extends moodleform_mod {
             get_string('sendmarkingreminder', 'mod_coursework'), $options);
         $moodle_form->setType('markingreminderenabled', PARAM_INT);
 
-        $settingdefault = (empty($CFG->coursework_marking_deadline))  ?   0   :   1;
+        $settingdefault = (empty($CFG->coursework_marking_deadline))  ? 0 : 1;
         $moodle_form->setDefault('markingreminderenabled', $settingdefault);
 
     }
@@ -762,9 +762,8 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $choices = array('0' => get_string('no'), '1' => get_string('yes'));
         $courseworkid = $this->get_coursework_id();
-        $courseworkhassubmissions = (!empty($courseworkid)) ?
-            $courseworkhassubmissions = $DB->get_records('coursework_submissions', array('courseworkid' => $courseworkid))
-            : false;
+        $courseworkhassubmissions = !empty($courseworkid)
+            && $DB->record_exists('coursework_submissions', array('courseworkid' => $courseworkid));
 
         if (empty($courseworkid) || empty($courseworkhassubmissions)) {
 
@@ -795,7 +794,7 @@ class mod_coursework_mod_form extends moodleform_mod {
                          WHERE      id = :courseworkid
                          AND        renamefiles = 1";
 
-            $settingvalue = ($DB->get_records_sql($sql, array('courseworkid' => $courseworkid))) ? get_string('yesrenamefile', 'mod_coursework')  : get_string('norenamefile', 'mod_coursework')  ;
+            $settingvalue = ($DB->get_records_sql($sql, array('courseworkid' => $courseworkid))) ? get_string('yesrenamefile', 'mod_coursework') : get_string('norenamefile', 'mod_coursework');
 
             $moodle_form->addElement('static', 'renamefilesdescription', get_string('renamefiles', 'mod_coursework'),
                 $settingvalue);
@@ -1019,7 +1018,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         if ($CFG->coursework_auto_release_individual_feedback == 0) {
             $options['disabled'] = true;
 
-        } else{
+        } else {
             $default['enabled'] = 1;
         }
 

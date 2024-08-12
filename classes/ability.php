@@ -576,7 +576,7 @@ class ability extends \mod_coursework\framework\ability {
                 $coursework_has_no_deadline = !$submission->get_coursework()->has_deadline();
                 $allowed_to = $this->can('new', $submission) || $this->can('edit', $submission);
 
-                return $allowed_to && $not_already_finalised && ($early_finalisation_allowed or $coursework_has_no_deadline) ;
+                return $allowed_to && $not_already_finalised && ($early_finalisation_allowed or $coursework_has_no_deadline);
             });
     }
 
@@ -670,7 +670,7 @@ class ability extends \mod_coursework\framework\ability {
                    $has_capability = has_capability('mod/coursework:moderate',  $moderation->get_coursework()
                     ->get_context());
                 $is_creator = $moderation->moderatorid == $this->get_user()->id;
-                return $has_capability && ($is_creator || is_siteadmin()) ;
+                return $has_capability && ($is_creator || is_siteadmin());
             });
     }
 

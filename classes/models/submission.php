@@ -1349,7 +1349,7 @@ class submission extends table_base implements \renderable {
             }
         }
 
-        return (empty($editablefeedbacks))  ?   false : $editablefeedbacks;
+        return (empty($editablefeedbacks))  ? false : $editablefeedbacks;
     }
 
     /**
@@ -1369,7 +1369,7 @@ class submission extends table_base implements \renderable {
                         if ($final_feedback->timecreated + $grade_editing_time > time()) {
                             $this->editable_final_feedback = true;
                         }
-                    } elseif ($final_feedback->finalised == 0 && $final_feedback->assessorid <> 0) {
+                    }  else if ($final_feedback->finalised == 0 && $final_feedback->assessorid <> 0) {
                         $this->editable_final_feedback = true;
                     }
                 }
@@ -1405,7 +1405,7 @@ class submission extends table_base implements \renderable {
 
         $editablefeedbacks = $DB->get_records_sql($sql, array('submissionid' => $this->id, 'time' => time()));
 
-        return (empty($editablefeedbacks))  ?   false : $editablefeedbacks;
+        return (empty($editablefeedbacks))  ? false : $editablefeedbacks;
     }
 
 /*
@@ -1415,9 +1415,9 @@ class submission extends table_base implements \renderable {
         $canadd = false;
 
         if ($this->get_coursework()->get_max_markers() == 1) {
-            $canadd = (has_any_capability(array('mod/coursework:addinitialgrade', 'mod/coursework:addministergrades'), $this->get_context()) && $this->ready_to_grade()) ;
+            $canadd = (has_any_capability(array('mod/coursework:addinitialgrade', 'mod/coursework:addministergrades'), $this->get_context()) && $this->ready_to_grade());
         } else {
-            $canadd = (has_any_capability(array('mod/coursework:addagreedgrade', 'mod/coursework:addallocatedagreedgrade', 'mod/coursework:addministergrades'), $this->get_context()) && $this->all_inital_graded()) ;
+            $canadd = (has_any_capability(array('mod/coursework:addagreedgrade', 'mod/coursework:addallocatedagreedgrade', 'mod/coursework:addministergrades'), $this->get_context()) && $this->all_inital_graded());
         }
 
         return  $canadd;
@@ -1467,7 +1467,7 @@ class submission extends table_base implements \renderable {
         $feedback = $DB->get_record('coursework_feedbacks', array('submissionid' => $this->id,
                                                                         'assessorid' => $assessorid));
 
-        return (empty($feedback))  ?   false : $feedback;
+        return (empty($feedback))  ? false : $feedback;
     }
 
     // Caching
