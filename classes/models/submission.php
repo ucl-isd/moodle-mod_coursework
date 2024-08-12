@@ -1414,7 +1414,7 @@ class submission extends table_base implements \renderable {
 			         AND    cf.timecreated + c.gradeeditingtime > :time
         ";
 
-        $editablefeedbacks = $DB->get_records_sql($sql,array('submissionid' => $this->id,'time' => time()));
+        $editablefeedbacks = $DB->get_records_sql($sql,array('submissionid' => $this->id, 'time' => time()));
 
         return (empty($editablefeedbacks))  ?   false : $editablefeedbacks;
     }
@@ -1426,9 +1426,9 @@ class submission extends table_base implements \renderable {
         $canadd = false;
 
         if ($this->get_coursework()->get_max_markers() == 1) {
-            $canadd = (has_any_capability(array('mod/coursework:addinitialgrade','mod/coursework:addministergrades'),$this->get_context()) && $this->ready_to_grade()) ;
+            $canadd = (has_any_capability(array('mod/coursework:addinitialgrade', 'mod/coursework:addministergrades'), $this->get_context()) && $this->ready_to_grade()) ;
         } else {
-            $canadd = (has_any_capability(array('mod/coursework:addagreedgrade','mod/coursework:addallocatedagreedgrade','mod/coursework:addministergrades'),$this->get_context()) && $this->all_inital_graded()) ;
+            $canadd = (has_any_capability(array('mod/coursework:addagreedgrade', 'mod/coursework:addallocatedagreedgrade', 'mod/coursework:addministergrades'), $this->get_context()) && $this->all_inital_graded()) ;
         }
 
         return  $canadd;

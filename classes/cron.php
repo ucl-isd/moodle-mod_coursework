@@ -240,7 +240,7 @@ class cron {
                 }
 
                 $user->coursework_name = $coursework_instance->name;
-                $user->deadline = userdate($coursework_instance->get_deadline(),'%a, %d %b %Y, %H:%M');
+                $user->deadline = userdate($coursework_instance->get_deadline(), '%a, %d %b %Y, %H:%M');
                 $user->day_hour = coursework_seconds_to_string($coursework_instance->get_deadline() - time());
 
                 $subject = get_string('cron_email_subject_admin', 'mod_coursework', $user);

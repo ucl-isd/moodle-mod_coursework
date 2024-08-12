@@ -47,7 +47,7 @@ class submissionid_cell extends cell_base {
         return  get_string('submissionid', 'coursework');
     }
 
-    public function validate_cell($value,$submissionid,$stage_dentifier='',$uploadedgradecells = array()) {
+    public function validate_cell($value, $submissionid, $stage_dentifier='', $uploadedgradecells = array()) {
         global $DB;
         return ($DB->record_exists('coursework_submissions',array('id' => $submissionid,'courseworkid' => $this->coursework->id()))) ? true: get_string('submissionnotfoundincoursework','coursework');
     }

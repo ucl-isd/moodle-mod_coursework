@@ -27,22 +27,22 @@ global $CFG, $DB, $PAGE;
 if ($ADMIN->fulltree) {
     require_once($CFG->dirroot.'/mod/coursework/lib.php');
 
-    $settings_header = new admin_setting_heading('settings_header','' ,get_string('settings_header', 'mod_coursework'));
+    $settings_header = new admin_setting_heading('settings_header', '' ,get_string('settings_header', 'mod_coursework'));
     $settings->add($settings_header);
 
     // Set site-wide option for late submission
-    $availability_header = new admin_setting_heading('availability_header', get_string('availability', 'mod_coursework'),'');
+    $availability_header = new admin_setting_heading('availability_header', get_string('availability', 'mod_coursework'), '');
     $settings->add($availability_header);
     $allow_late_submission_name = get_string('allowlatesubmissions', 'coursework');
     $allow_late_submission_description = get_string('allowlatesubmissions_desc', 'coursework');
     $options = array( 0 => get_string('no'), 1 => get_string('yes'));
     $settings->add(new admin_setting_configselect('coursework_allowlatesubmissions',
-                   $allow_late_submission_name, $allow_late_submission_description, 0,$options));
+                   $allow_late_submission_name, $allow_late_submission_description, 0, $options));
 
 
     // Set site-wide limit on submissions sizes.
     if (isset($CFG->maxbytes)) {
-        $submissions_header = new admin_setting_heading('submissions_header', get_string('submissions', 'mod_coursework'),'');
+        $submissions_header = new admin_setting_heading('submissions_header', get_string('submissions', 'mod_coursework'), '');
         $settings->add($submissions_header);
         $configmaxbytesstring = get_string('configmaxbytes', 'coursework');
         $maximumsizestring = get_string('maximumsize', 'coursework');
@@ -56,14 +56,14 @@ if ($ADMIN->fulltree) {
 
 
     // Submissions
-    $submissions_header = new admin_setting_heading('submissions_header', get_string('submissions', 'mod_coursework'),'');
+    $submissions_header = new admin_setting_heading('submissions_header', get_string('submissions', 'mod_coursework'), '');
     $settings->add($submissions_header);
     $options = array( 0 => get_string('no'), 1 => get_string('yes'));
     $settings->add(new admin_setting_configselect('coursework_plagiarismflag', get_string('plagiarism_flag_enable', 'mod_coursework'), get_string('plagiarism_flag_enable_desc', 'mod_coursework'), 0, $options));
 
 
     // Submission receipt
-    $submissionreceipt_header = new admin_setting_heading('submissionreceipt_header', get_string('submissionreceipt', 'mod_coursework'),'');
+    $submissionreceipt_header = new admin_setting_heading('submissionreceipt_header', get_string('submissionreceipt', 'mod_coursework'), '');
     $settings->add($submissionreceipt_header);
     $options = array( 0 => get_string('no'), 1 => get_string('yes'));
     $settings->add(new admin_setting_configselect('coursework_allsubmissionreceipt', get_string('allsubmission', 'mod_coursework'), get_string('allsubmission_desc', 'mod_coursework'), 0, $options));
@@ -71,7 +71,7 @@ if ($ADMIN->fulltree) {
 
 
     // Blind marking
-    $blindmarking_header = new admin_setting_heading('blindmarking_header', get_string('blindmarking', 'mod_coursework'),'');
+    $blindmarking_header = new admin_setting_heading('blindmarking_header', get_string('blindmarking', 'mod_coursework'), '');
     $settings->add($blindmarking_header);
     $blind_marking_name = get_string('blindmarking', 'coursework');
     $blind_marking_description = get_string('blindmarking_desc', 'coursework');
@@ -80,7 +80,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('coursework_forceblindmarking', get_string('forceblindmarking', 'mod_coursework'), get_string('forceblindmarking_desc', 'mod_coursework'), 0));
 
     // Assessor anonymity
-    $assessoranonymity_header = new admin_setting_heading('assessoranonymity_header', get_string('assessoranonymity', 'mod_coursework'),'');
+    $assessoranonymity_header = new admin_setting_heading('assessoranonymity_header', get_string('assessoranonymity', 'mod_coursework'), '');
     $settings->add($assessoranonymity_header);
     $assessor_anonymity_name = get_string('assessoranonymity', 'coursework');
     $assessor_anonymity_description = get_string('assessoranonymity_desc', 'coursework');
@@ -92,7 +92,7 @@ if ($ADMIN->fulltree) {
     for ($i = 1; $i <= 10; $i++) {
         $weeks[$i] = $i;
     }
-    $feedbacktypes_header = new admin_setting_heading('feedbacktypes_header', get_string('feedbacktypes', 'mod_coursework'),'');
+    $feedbacktypes_header = new admin_setting_heading('feedbacktypes_header', get_string('feedbacktypes', 'mod_coursework'), '');
     $settings->add($feedbacktypes_header);
     $generalfeedbackstring = get_string('generalfeedback', 'coursework');
     $configgeneralfeedbackstring = get_string('configgeneralfeedback', 'coursework');
@@ -130,7 +130,7 @@ if ($ADMIN->fulltree) {
     for ($i = 2; $i <= 7; $i++) {
         $day_reminder[$i] = $i;
     }
-    $studentreminder_header = new admin_setting_heading('studentreminder_header', get_string('studentreminder', 'mod_coursework'),'');
+    $studentreminder_header = new admin_setting_heading('studentreminder_header', get_string('studentreminder', 'mod_coursework'), '');
     $settings->add($studentreminder_header);
     $reminderstring = get_string('coursework_reminder', 'coursework');
     $confreminderstring = get_string('config_coursework_reminder', 'coursework');
@@ -144,13 +144,13 @@ if ($ADMIN->fulltree) {
 
 
     // Sitewide message that students will see and agree to before submitting or editing.
-    $termsagreement_header = new admin_setting_heading('termsagreement_header', get_string('termsagreement', 'mod_coursework'),'');
+    $termsagreement_header = new admin_setting_heading('termsagreement_header', get_string('termsagreement', 'mod_coursework'), '');
     $settings->add($termsagreement_header);
     $agree_terms_name = get_string('agreeterms', 'coursework');
     $agree_terms_description = get_string('agreetermsdescription', 'coursework');
     $options = array( 0 => get_string('no'), 1 => get_string('yes'));
     $settings->add(new admin_setting_configselect('coursework_agree_terms',
-                                                    $agree_terms_name, $agree_terms_description, 0,$options));
+                                                    $agree_terms_name, $agree_terms_description, 0, $options));
 
     $agree_terms_text = get_string('agreetermstext', 'coursework');
     $settings->add(new admin_setting_confightmleditor('coursework_agree_terms_text',
@@ -185,7 +185,7 @@ if ($ADMIN->fulltree) {
     $options = array('3' => '3', '10' => '10', '20' => '20', '30' => '30', '40' => '40', '50' => '50', '100' => '100');
 
 
-    $grading_page_header = new admin_setting_heading('grading_page_header', get_string('grading_page', 'mod_coursework'),'');
+    $grading_page_header = new admin_setting_heading('grading_page_header', get_string('grading_page', 'mod_coursework'), '');
     $settings->add($grading_page_header);
 
     $per_page = get_string('per_page', 'coursework');
@@ -195,15 +195,15 @@ if ($ADMIN->fulltree) {
     //automatic agreement delay
 
     $options = array('0' => get_string('disabled', 'mod_coursework'));
-    $options['1800'] = get_string('timedminutes', 'mod_coursework','30');
-    $options['3600'] = get_string('timedhour', 'mod_coursework','1');
-    $options['7200'] = get_string('timedhours', 'mod_coursework','2');
-    $options['18000'] = get_string('timedhours', 'mod_coursework','5');
-    $options['43200'] = get_string('timedhours', 'mod_coursework','12');
+    $options['1800'] = get_string('timedminutes', 'mod_coursework', '30');
+    $options['3600'] = get_string('timedhour', 'mod_coursework', '1');
+    $options['7200'] = get_string('timedhours', 'mod_coursework', '2');
+    $options['18000'] = get_string('timedhours', 'mod_coursework', '5');
+    $options['43200'] = get_string('timedhours', 'mod_coursework', '12');
     $options['86400'] = get_string('aday', 'mod_coursework');
 
 
-    $grade_editing_header = new admin_setting_heading('grade_editing_header', get_string('grade_editing', 'mod_coursework'),'');
+    $grade_editing_header = new admin_setting_heading('grade_editing_header', get_string('grade_editing', 'mod_coursework'), '');
     $settings->add($grade_editing_header);
 
     $grade_editing_name = get_string('grade_editing_enabled', 'coursework');

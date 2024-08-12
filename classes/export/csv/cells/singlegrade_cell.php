@@ -76,7 +76,7 @@ class singlegrade_cell extends cell_base{
     }
 
 
-    public function validate_cell($value,$submissionid,$stage_identifier='',$uploadedgradecells = array()) {
+    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells = array()) {
 
         global $PAGE, $DB, $USER;
 
@@ -146,13 +146,13 @@ class singlegrade_cell extends cell_base{
             $submission = \mod_coursework\models\submission::find($dbrecord);
 
             //is this submission ready to be graded
-            if (!$submission->ready_to_grade() && $submission->get_state() < \mod_coursework\models\submission::FULLY_GRADED) return get_string('submissionnotreadytograde','coursework');
+            if (!$submission->ready_to_grade() && $submission->get_state() < \mod_coursework\models\submission::FULLY_GRADED) return get_string('submissionnotreadytograde', 'coursework');
 
             //if you have administer grades you can grade anything
             if (has_capability('mod/coursework:administergrades', $PAGE->context)) return true;
 
             //is the current user an assessor at any of this submissions grading stages or do they have administer grades
-            if ($this->coursework->allocation_enabled() && !$this->coursework->is_assessor($USER) && !has_capability('mod/coursework:administergrades',$PAGE->context))
+            if ($this->coursework->allocation_enabled() && !$this->coursework->is_assessor($USER) && !has_capability('mod/coursework:administergrades', $PAGE->context))
                 return get_string('nopermissiontogradesubmission','coursework');
 
                         //has the submission been published if yes then no further grades are allowed
@@ -183,7 +183,7 @@ class singlegrade_cell extends cell_base{
             );
             $feedback = feedback::find($feedback_params);
 
-            //if (!$ability->can('edit',$feedback))   return get_string('nopermissiontoeditgrade','coursework');
+            //if (!$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade','coursework');
 
             //does a feedback exist for this stage
             if (empty($feedback)) {
@@ -197,10 +197,10 @@ class singlegrade_cell extends cell_base{
 
 
                 //this is a new feedback check it against the new ability checks
-                if (!$ability->can('new',$new_feedback))   return get_string('nopermissiontogradesubmission','coursework');
+                if (!$ability->can('new', $new_feedback))   return get_string('nopermissiontogradesubmission','coursework');
             } else {
                 //this is a new feedback check it against the edit ability checks
-                if (!$ability->can('edit',$feedback))   return get_string('nopermissiontoeditgrade','coursework');
+                if (!$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade','coursework');
             }
 
         } else {
@@ -248,7 +248,7 @@ class singlegrade_cell extends cell_base{
      * @param $csv_cells
      *
      */
-    function    get_rubrics($coursework,$csv_cells) {
+    function    get_rubrics($coursework, $csv_cells) {
 
 
         if ($coursework->is_using_rubric()) {
@@ -264,17 +264,17 @@ class singlegrade_cell extends cell_base{
 
 
             //find out the position of singlegrade
-            $position = array_search('singlegrade',$csv_cells);
+            $position = array_search('singlegrade', $csv_cells);
             //get all data from the position of the singlegrade to the length of rubricheaders
            // $csv_cells = array_splice($csv_cells,5, 1, $rubricheaders);
 
 
-            $start_cells = array_slice($csv_cells,0,$position,true);
-            $end_cells = array_slice($csv_cells,$position+1,count($csv_cells),true);
+            $start_cells = array_slice($csv_cells,0, $position,true);
+            $end_cells = array_slice($csv_cells, $position+1,count($csv_cells),true);
 
-            $cells = array_merge($start_cells,$rubricheaders);
+            $cells = array_merge($start_cells, $rubricheaders);
 
-            $cells = array_merge($cells,$end_cells);
+            $cells = array_merge($cells, $end_cells);
 
 
 

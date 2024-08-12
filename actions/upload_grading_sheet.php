@@ -56,7 +56,7 @@ $title = get_string($csvtype, 'mod_coursework');
 $PAGE->set_url(new moodle_url('/mod/coursework/actions/upload_grading_sheet.php'));
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
-$grading_sheet_capabilities = array('mod/coursework:addinitialgrade','mod/coursework:addagreedgrade','mod/coursework:administergrades');
+$grading_sheet_capabilities = array('mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade', 'mod/coursework:administergrades');
 
 
 // Bounce anyone who shouldn't be here.

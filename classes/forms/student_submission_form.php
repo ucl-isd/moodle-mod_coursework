@@ -175,7 +175,7 @@ class student_submission_form extends moodleform {
 
                     if (!$submission->get_coursework()->has_deadline()) {
 
-                        $userids = explode(',',$submission->get_coursework()->get_submission_notification_users());
+                        $userids = explode(',', $submission->get_coursework()->get_submission_notification_users());
 
                         if (!empty($userids)) {
                             foreach($userids as $u) {
@@ -358,7 +358,7 @@ class student_submission_form extends moodleform {
                                  $uploadfilestring,
                                  null,
                                  $this->get_file_manager_options());
-        $this->_form->addRule('submission_manager', 'You must upload file(s) into the box below before you can save', 'required', null,'server',false,true);
+        $this->_form->addRule('submission_manager', 'You must upload file(s) into the box below before you can save', 'required', null, 'server',false,true);
 
     }
 

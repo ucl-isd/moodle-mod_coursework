@@ -105,7 +105,7 @@ class assessorgrade_cell extends cell_base{
 
     }
 
-    public function validate_cell($value,$submissionid,$stage_identifier='', $uploadedgradecells = array()) {
+    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells = array()) {
         global $DB, $PAGE, $USER;
 
         if (empty($value)) return true;
@@ -301,7 +301,7 @@ class assessorgrade_cell extends cell_base{
      * @param $csv_cells
      *
      */
-    function    get_rubrics($coursework,$csv_cells) {
+    function    get_rubrics($coursework, $csv_cells) {
 
 
         if ($coursework->is_using_rubric()) {
@@ -317,17 +317,17 @@ class assessorgrade_cell extends cell_base{
 
 
             //find out the position of singlegrade
-            $position = array_search('singlegrade',$csv_cells);
+            $position = array_search('singlegrade', $csv_cells);
             //get all data from the position of the singlegrade to the length of rubricheaders
             // $csv_cells = array_splice($csv_cells,5, 1, $rubricheaders);
 
 
-            $start_cells = array_slice($csv_cells,0,$position,true);
-            $end_cells = array_slice($csv_cells,$position+1,count($csv_cells),true);
+            $start_cells = array_slice($csv_cells,0, $position,true);
+            $end_cells = array_slice($csv_cells, $position+1,count($csv_cells),true);
 
-            $cells = array_merge($start_cells,$rubricheaders);
+            $cells = array_merge($start_cells, $rubricheaders);
 
-            $cells = array_merge($cells,$end_cells);
+            $cells = array_merge($cells, $end_cells);
 
 
 

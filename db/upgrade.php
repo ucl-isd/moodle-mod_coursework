@@ -2005,7 +2005,7 @@ function xmldb_coursework_upgrade($oldversion) {
 
 
             //now create plugin records for sample set plugins
-            $plugins = array('range_sample_type','total_sample_type');
+            $plugins = array('range_sample_type', 'total_sample_type');
 
             $i = 1;
 
@@ -2014,7 +2014,7 @@ function xmldb_coursework_upgrade($oldversion) {
                 $dbrecord->rulename = $p;
                 $dbrecord->pluginorder = $i;
 
-                $DB->insert_record('coursework_sample_set_plugin',$dbrecord);
+                $DB->insert_record('coursework_sample_set_plugin', $dbrecord);
                 $i++;
             }
 
@@ -2503,7 +2503,7 @@ function xmldb_coursework_upgrade($oldversion) {
         $table->add_field('submissionid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null);
         $table->add_field('status', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
         $table->add_field('comment', XMLDB_TYPE_TEXT, null, null, null, null, null);
-        $table->add_field('comment_format',XMLDB_TYPE_INTEGER,'2',null,null,null,null);
+        $table->add_field('comment_format',XMLDB_TYPE_INTEGER, '2',null,null,null,null);
         $table->add_field('createdby', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
         $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
         $table->add_field('lastmodifiedby', XMLDB_TYPE_INTEGER, '10', null, false, null, null);
@@ -2527,7 +2527,7 @@ function xmldb_coursework_upgrade($oldversion) {
         // Define table coursework_plagiarism_flag to be created.
         $table = new xmldb_table('coursework');
 
-        $field = $table->add_field('renamefiles',XMLDB_TYPE_INTEGER,'1',null,null,null,null);
+        $field = $table->add_field('renamefiles',XMLDB_TYPE_INTEGER, '1',null,null,null,null);
 
         // Conditionally launch add field.
         if (!$dbman->field_exists($table, $field)) {
@@ -2543,7 +2543,7 @@ function xmldb_coursework_upgrade($oldversion) {
 
             $cwk->renamefiles = ($cwk->blindmarking == 1 || $courseworkhassubmissions)   ?   1 :  0 ;
 
-            $DB->update_record('coursework',$cwk);
+            $DB->update_record('coursework', $cwk);
          }
 
         // Coursework savepoint reached.

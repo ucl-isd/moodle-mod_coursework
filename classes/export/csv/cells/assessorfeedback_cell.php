@@ -76,15 +76,15 @@ class assessorfeedback_cell extends cell_base{
         return  get_string('assessorfeedbackcsv', 'coursework', $stage);
     }
 
-    public function validate_cell($value,$submissionid,$stage_identifier='',$uploadedgradecells = array()) {
-        global $DB,$PAGE,$USER;
+    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells = array()) {
+        global $DB, $PAGE, $USER;
 
         $agreedgradecap = array('mod/coursework:addagreedgrade','mod/coursework:editagreedgrade');
         $initialgradecap = array('mod/coursework:addinitialgrade','mod/coursework:editinitialgrade');
 
         $subdbrecord = $DB->get_record('coursework_submissions',array('id' => $submissionid));
         $submission = \mod_coursework\models\submission::find($subdbrecord);
-        if (has_any_capability($agreedgradecap,$PAGE->context) && has_any_capability($initialgradecap,$PAGE->context)
+        if (has_any_capability($agreedgradecap, $PAGE->context) && has_any_capability($initialgradecap, $PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context)) {
 
 
@@ -109,12 +109,12 @@ class assessorfeedback_cell extends cell_base{
             //does a feedback exist for this stage
             if (!empty($feedback)) {
                 //this is a new feedback check it against the new ability checks
-                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('new',$feedback))   return get_string('nopermissiontoeditgrade','coursework');
+                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('new', $feedback))   return get_string('nopermissiontoeditgrade','coursework');
 
             } else {
 
                 //this is a new feedback check it against the edit ability checks
-                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit',$feedback))   return get_string('nopermissiontoeditgrade','coursework');
+                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade','coursework');
 
             }
 
@@ -136,7 +136,7 @@ class assessorfeedback_cell extends cell_base{
                 );
 
                 if (!has_capability('mod/coursework:administergrades', $PAGE->context)
-                    && !$DB->get_record('coursework_allocation_pairs',$allocation_params)) return get_string('nopermissiontogradesubmission','coursework');
+                    && !$DB->get_record('coursework_allocation_pairs', $allocation_params)) return get_string('nopermissiontogradesubmission','coursework');
             }
 
 

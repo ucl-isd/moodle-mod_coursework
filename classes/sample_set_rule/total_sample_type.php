@@ -76,8 +76,8 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         $html = html_writer::start_div('sampletotal');
 
-        $html    .=  html_writer::checkbox("assessor_{$assessor_number}_sampletotal_checkbox",1,$checked,get_string('topupto','mod_coursework'),
-            array('id' => "assessor_{$assessor_number}_sampletotal_checkbox",'class' => "assessor_{$assessor_number} total_checkbox sample_set_rule"));
+        $html    .=  html_writer::checkbox("assessor_{$assessor_number}_sampletotal_checkbox",1, $checked,get_string('topupto', 'mod_coursework'),
+            array('id' => "assessor_{$assessor_number}_sampletotal_checkbox", 'class' => "assessor_{$assessor_number} total_checkbox sample_set_rule"));
 
 
 
@@ -86,7 +86,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             "",
             $selected,
             array('id' => "assessor_{$assessor_number}_sampletotal", 'class' => " sample_set_rule"));
-        $html    .= html_writer::label(get_string('ofallstudents', 'mod_coursework'),'assessortwo_sampletotal[]');
+        $html    .= html_writer::label(get_string('ofallstudents', 'mod_coursework'), 'assessortwo_sampletotal[]');
 
         $html   .=  html_writer::end_div();
 
@@ -141,7 +141,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $dbrecord->ruleorder = $order;
             $dbrecord->stage_identifier = "assessor_{$assessor_number}";
 
-            $DB->insert_record('coursework_sample_set_rules',$dbrecord);
+            $DB->insert_record('coursework_sample_set_rules', $dbrecord);
         }
 
 
@@ -168,7 +168,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                          AND            stage_identifier = :stage
                          ORDER BY       ruleorder";
 
-        $rule = $DB->get_record_sql($sql,array('courseworkid' => $this->coursework->id,'stage' => $stage));
+        $rule = $DB->get_record_sql($sql,array('courseworkid' => $this->coursework->id, 'stage' => $stage));
 
         if ($rule) {
 
@@ -220,16 +220,16 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                 if (count($auto_sample_set) < $total_to_return) {
 
                         //remove allocatables with published submissions
-                        $allocatable_sample_set = array_diff_ukey($allocatables,$published,array("mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"));
+                        $allocatable_sample_set = array_diff_ukey($allocatables, $published,array("mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"));
 
                     //remove allocatables with finalised submissions
-                    $allocatable_sample_set = array_diff_ukey($allocatable_sample_set,$finalised,array("mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"));
+                    $allocatable_sample_set = array_diff_ukey($allocatable_sample_set, $finalised,array("mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"));
 
                     //remove allocatables who have been manually selected
-                    $allocatable_sample_set = array_diff_ukey($allocatable_sample_set,$manual_sample_set,array("mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"));
+                    $allocatable_sample_set = array_diff_ukey($allocatable_sample_set, $manual_sample_set,array("mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"));
 
                     //remove allocatables already in the sample set
-                    $allocatable_sample_set = array_diff_ukey($allocatable_sample_set,$auto_sample_set,array("mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"));
+                    $allocatable_sample_set = array_diff_ukey($allocatable_sample_set, $auto_sample_set,array("mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"));
 
                         $array_keys = array_rand($allocatable_sample_set, $total_to_return - count($auto_sample_set));
 

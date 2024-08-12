@@ -43,7 +43,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     /**
      * @param feedback $feedback
      */
-    public function show_feedback_page($feedback,$ajax) {
+    public function show_feedback_page($feedback, $ajax) {
         global $OUTPUT;
 
         $html = '';
@@ -637,7 +637,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $currenturl = new moodle_url('/mod/coursework/view.php', array('id' => $coursework->get_course_module()->id));
         $html .= groups_print_activity_menu($coursework->get_course_module(), $currenturl->out(), true);
         if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $group != 0) {
-            $html .= '<div class="alert">'.get_string('groupmodechosenalert','mod_coursework').'</div>';
+            $html .= '<div class="alert">'.get_string('groupmodechosenalert', 'mod_coursework').'</div>';
         }
 
         // reset table preferences
@@ -675,13 +675,13 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             && $coursework->get_finalised_submissions()){
             //export grading sheet
             $url = $pageurl.'&export_grading_sheet=1';
-            $links[$url] = get_string('exportgradingsheets','mod_coursework');
+            $links[$url] = get_string('exportgradingsheets', 'mod_coursework');
             //import grading sheet
             $url = '/mod/coursework/actions/upload_grading_sheet.php?cmid='.$PAGE->cm->id;
-            $links[$url] = get_string('uploadgradingworksheet','mod_coursework');
+            $links[$url] = get_string('uploadgradingworksheet', 'mod_coursework');
             //import annotated submissions
             $url = '/mod/coursework/actions/upload_feedback.php?cmid='.$PAGE->cm->id;
-            $links[$url] = get_string('uploadfeedbackfiles','mod_coursework');
+            $links[$url] = get_string('uploadfeedbackfiles', 'mod_coursework');
         }
 
 
@@ -733,7 +733,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws coding_exception
      * @throws moodle_exception
      */
-    public function non_teacher_allocated_grading_page($coursework,$viewallstudents_page,$viewallstudents_perpage,$viewallstudents_sortby,$viewallstudents_sorthow,$group,$displayallstudents,$firstnamealpha,$lastnamealpha,$groupnamealpha) {
+    public function non_teacher_allocated_grading_page($coursework, $viewallstudents_page, $viewallstudents_perpage, $viewallstudents_sortby, $viewallstudents_sorthow, $group, $displayallstudents, $firstnamealpha, $lastnamealpha, $groupnamealpha) {
 
         global $PAGE, $OUTPUT;
 
@@ -787,7 +787,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                  */
 
                 $html .= html_writer::start_tag('div', array('class' => 'wrapper_table_submissions'));
-                $html .= $grading_report_renderer->render_grading_report($grading_report,$coursework->has_multiple_markers(),true);
+                $html .= $grading_report_renderer->render_grading_report($grading_report, $coursework->has_multiple_markers(),true);
                 $html .= html_writer::end_tag('div');
 
 
@@ -1281,7 +1281,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @return string
      * @throws coding_exception
      */
-    function process_csv_upload($processingresults,$csvcontent, $csvtype) {
+    function process_csv_upload($processingresults, $csvcontent, $csvtype) {
 
         global $OUTPUT, $PAGE;
 
@@ -1348,7 +1348,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
     function process_feedback_upload($processingresults) {
 
-        global $OUTPUT, $PAGE,$OUTPUT;
+        global $OUTPUT, $PAGE, $OUTPUT;
 
         $title = get_string('feedbackuploadresults', 'mod_coursework');
 
@@ -1375,7 +1375,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
             $html .= get_string('fileuploadresults', 'mod_coursework')."<br />";
             foreach ($processingresults as $file => $result) {
-                $html .= get_string('fileuploadresult', 'mod_coursework',array('filename' => $file,'result' => $result)). "<br />";
+                $html .= get_string('fileuploadresult', 'mod_coursework',array('filename' => $file, 'result' => $result)). "<br />";
             }
             $html .= html_writer::end_tag('p');
         } else {
@@ -1499,7 +1499,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             'alert_feedback_draft_save_successful' => str_replace(' ', '_', get_string('alert_feedback_draft_save_successful', 'mod_coursework'))
         ];
 
-        $modal_header = html_writer::tag('h5','new Extension', array(
+        $modal_header = html_writer::tag('h5', 'new Extension', array(
             'class' => 'modal-title',
             'id' =>  'extension-modal-title',
         ));
@@ -1509,7 +1509,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             'aria-label' => 'Close',
             'data-dismiss' => 'modal'
         ));
-        $modal_header .= html_writer::span('&times;','',array('aria-hidden' => 'true'));
+        $modal_header .= html_writer::span('&times;', '',array('aria-hidden' => 'true'));
         $modal_header .= html_writer::end_tag('button');
 
         $modal_body = html_writer::start_tag('form', array('id' => 'form-extension'));
@@ -1555,43 +1555,43 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             'value' => '',
             'id' => 'button-id'
         ));
-        $modal_body .= html_writer::div($content,'display-none');
+        $modal_body .= html_writer::div($content, 'display-none');
 
         if ($coursework->deadline) {
             $content_default_deadline = 'Default deadline: ' . userdate($coursework->deadline);
-            $content_default_deadline = html_writer::div($content_default_deadline,'col-md-12', array('id' => 'extension-time-content'));
-            $modal_body .= html_writer::div($content_default_deadline,'form-group row fitem');
+            $content_default_deadline = html_writer::div($content_default_deadline, 'col-md-12', array('id' => 'extension-time-content'));
+            $modal_body .= html_writer::div($content_default_deadline, 'form-group row fitem');
 
             $content_extended_deadline = html_writer::tag('label',get_string('extended_deadline', 'mod_coursework'));
-            $content_extended_deadline_div = html_writer::div($content_extended_deadline,'col-md-3');
+            $content_extended_deadline_div = html_writer::div($content_extended_deadline, 'col-md-3');
             $input = '<input type="text" class="form-control" id="extension-extend-deadline" placeholder="" disabled readonly>';
-            $content_extended_deadline_div .= html_writer::div($input,'col-md-6');
-            $modal_body .= html_writer::div($content_extended_deadline_div,'form-group row fitem');
+            $content_extended_deadline_div .= html_writer::div($input, 'col-md-6');
+            $modal_body .= html_writer::div($content_extended_deadline_div, 'form-group row fitem');
 
             $extension_reasons = coursework::extension_reasons();
             if (!empty($extension_reasons)) {
                 $select_extension_reasons = html_writer::tag('label',get_string('extension_reason', 'mod_coursework'));
-                $select_extension_reasons_div = html_writer::div($select_extension_reasons,'col-md-3');
-                $select_extension_reasons = html_writer::select($extension_reasons,'','',false, array(
+                $select_extension_reasons_div = html_writer::div($select_extension_reasons, 'col-md-3');
+                $select_extension_reasons = html_writer::select($extension_reasons, '', '',false, array(
                     'id' => 'extension-reason-select',
                     'class' => 'form-control'
                 ));
-                $select_extension_reasons_div .= html_writer::div($select_extension_reasons,'col-md-9 form-inline felement', array('data-fieldtype' => 'select'));
-                $modal_body .= html_writer::div($select_extension_reasons_div,'form-group row fitem');
+                $select_extension_reasons_div .= html_writer::div($select_extension_reasons, 'col-md-9 form-inline felement', array('data-fieldtype' => 'select'));
+                $modal_body .= html_writer::div($select_extension_reasons_div, 'form-group row fitem');
             }
 
             $content_extra_information = html_writer::tag('label',get_string('extra_information', 'mod_coursework'), array(
                 'class' => 'col-form-label d-inline', 'for' => 'id_extra_information'
             ));
-            $content_extra_information_div = html_writer::div($content_extra_information,'col-md-3');
+            $content_extra_information_div = html_writer::div($content_extra_information, 'col-md-3');
             $content_extra_information = html_writer::tag('textarea', '', array(
                 'class' => 'form-control',
                 'rows' => '8',
                 'spellcheck' => 'true',
                 'id' => 'id_extra_information'
             ));
-            $content_extra_information_div .= html_writer::div($content_extra_information,'col-md-9 form-inline felement', array('data-fieldtype' => 'editor'));
-            $modal_body .= html_writer::div($content_extra_information_div,'form-group row fitem', array('id' => 'fitem_id_extra_information'));
+            $content_extra_information_div .= html_writer::div($content_extra_information, 'col-md-9 form-inline felement', array('data-fieldtype' => 'editor'));
+            $modal_body .= html_writer::div($content_extra_information_div, 'form-group row fitem', array('id' => 'fitem_id_extra_information'));
         }
 
         $modal_body .= html_writer::end_tag('form');

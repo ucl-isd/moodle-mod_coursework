@@ -57,7 +57,7 @@ class import extends grading_sheet{
      * @throws \coding_exception
      * @throws \moodle_exception
      */
-    public function validate_csv($content,$encoding,$delimeter,$csv_cells) {
+    public function validate_csv($content, $encoding, $delimeter, $csv_cells) {
 
         global $DB, $USER;
 
@@ -104,7 +104,7 @@ class import extends grading_sheet{
 
 
             // if the csv headers count is different than expected return error
-            if ((!$this->coursework->is_using_rubric() && sizeof($line) != sizeof($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($cells,$line))) {$errors = get_string('incorrectfileformat', 'coursework'); break;}
+            if ((!$this->coursework->is_using_rubric() && sizeof($line) != sizeof($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($cells, $line))) {$errors = get_string('incorrectfileformat', 'coursework'); break;}
 
             $offset = 0;
 
@@ -115,7 +115,7 @@ class import extends grading_sheet{
             for($z = 0; $z < count($line); $z++) {
 
                 $value = $line[$z];
-                $stage_identifier = $this->get_stage_identifier($submissionid,$cells[$i]);
+                $stage_identifier = $this->get_stage_identifier($submissionid, $cells[$i]);
 
                 // remove numbers from cell names so they can be dynamically validated
                 if (substr($cells[$i],0,8) == 'assessor'){
@@ -130,7 +130,7 @@ class import extends grading_sheet{
                     $submissionid = $value;
                 }
 
-                if (empty($submissionid)) $errors[$s][] = get_string('emptysubmissionid','coursework');
+                if (empty($submissionid)) $errors[$s][] = get_string('emptysubmissionid', 'coursework');
 
 
                 //offsets the position of that we extract the data from $line based on data that has been extracted before
@@ -146,7 +146,7 @@ class import extends grading_sheet{
                     $position = $i;
 
                     //get all data from the position of the grade to the length of rubricheaders
-                    $rubriclinedata = array_slice($line,$position + $offset, count($rubricheaders), true);
+                    $rubriclinedata = array_slice($line, $position + $offset, count($rubricheaders), true);
 
                     //pass the rubric data in
                     $result = $cell->validate_cell($rubriclinedata, $submissionid, $stage_identifier, $uploadedgradecells);
@@ -176,7 +176,7 @@ class import extends grading_sheet{
     }
 
 
-    function rubric_count_correct($csvheader,$linefromimportedcsv) {
+    function rubric_count_correct($csvheader, $linefromimportedcsv) {
 
         // get criteria of rubrics and match it to grade cells
         if ($this->coursework->is_using_rubric()) {
@@ -196,7 +196,7 @@ class import extends grading_sheet{
 
                 foreach($csvheader  as  $ch) {
 
-                    if (strpos($ch,$type) !== false) {
+                    if (strpos($ch, $type) !== false) {
 
                         if (empty($typepositions))   $typepositions = array();
 
@@ -214,7 +214,7 @@ class import extends grading_sheet{
                     $offset = 0;
 
                     foreach($typepositions as $position) {
-                        //if  ($position = array_search($type,$csvheader)) {
+                        //if  ($position = array_search($type, $csvheader)) {
                             $class = "mod_coursework\\export\\csv\\cells\\{$type}_cell";
                         $cell = new $class($this->coursework);
 
@@ -315,7 +315,7 @@ class import extends grading_sheet{
         while ($line = $csvreader->next()) {
 
             //we will not process the content of any line that has been flagged up with an error
-            if ( is_array($processingresults) && array_key_exists($s,$processingresults) ) {
+            if ( is_array($processingresults) && array_key_exists($s, $processingresults) ) {
                 $s++;
                 continue;
             }
@@ -332,9 +332,9 @@ class import extends grading_sheet{
             $csvline = array();
 
 
-            //if ((!$this->coursework->is_using_rubric() && sizeof($line) != sizeof($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($csv,$line))) {
+            //if ((!$this->coursework->is_using_rubric() && sizeof($line) != sizeof($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($csv, $line))) {
             //if (sizeof($line) != sizeof($cells)) {
-            if ((!$this->coursework->is_using_rubric() && sizeof($line) != sizeof($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($csv,$line))) {
+            if ((!$this->coursework->is_using_rubric() && sizeof($line) != sizeof($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($csv, $line))) {
 
                 $errors = get_string('incorrectfileformat', 'coursework');
                 break;
@@ -368,7 +368,7 @@ class import extends grading_sheet{
 
             if (!$coursework->has_multiple_markers()) {
                 $stages['singlegrade'] = $this->get_stage_identifier($csvline['submissionid'], 'singlegrade');
-                if (array_key_exists('agreedgrade',$csvline)) {
+                if (array_key_exists('agreedgrade', $csvline)) {
                     $stages['agreedgrade'] = 'final_agreed_1';
                 }
             } else {
@@ -553,7 +553,7 @@ class import extends grading_sheet{
                         && !($stage == 'final_agreed_1' && $this->coursework->finalstagegrading)) ? true : false;
 
                     if (empty($grade)) {
-                        $cwfeedbackid = $this->add_grade($csvline['submissionid'], $csvline[$k], $csvline[$feedbackpointer], $stage,$stageusesrubric);
+                        $cwfeedbackid = $this->add_grade($csvline['submissionid'], $csvline[$k], $csvline[$feedbackpointer], $stage, $stageusesrubric);
 
                     } else {
                         $cwfeedbackid = $this->get_coursework_feedback_id($csvline['submissionid'], $stage);
@@ -619,7 +619,7 @@ class import extends grading_sheet{
      * @param $stage_identifier
      * @return bool|int
      */
-    public function add_grade($submissionid, $grade, $feedback, $stage_identifier,$uses_rubric=false){
+    public function add_grade($submissionid, $grade, $feedback, $stage_identifier, $uses_rubric=false){
         global $DB, $USER;
 
         // workout markernumber
@@ -657,7 +657,7 @@ class import extends grading_sheet{
         if  ($uses_rubric) {
             $controller = $this->coursework->get_advanced_grading_active_controller();
             //find out how many criteria there are
-            $gradinginstance = $controller->get_or_create_instance(0, $USER->id,$feedbackid);
+            $gradinginstance = $controller->get_or_create_instance(0, $USER->id, $feedbackid);
             $rubricgrade = $gradinginstance->submit_and_get_grade($grade, $feedbackid);
 
             $add_grade->id = $feedbackid;
@@ -697,7 +697,7 @@ class import extends grading_sheet{
      * @param $feedback
      * @return bool]
      */
-    public function edit_grade($cwfeedbackid, $grade, $feedback,$uses_rubric=false){
+    public function edit_grade($cwfeedbackid, $grade, $feedback, $uses_rubric=false){
         global $DB, $USER;
 
         if (!$uses_rubric) {
@@ -706,7 +706,7 @@ class import extends grading_sheet{
         }   else    {
             $controller = $this->coursework->get_advanced_grading_active_controller();
             //find out how many criteria there are
-            $gradinginstance = $controller->get_or_create_instance(0, $USER->id,$cwfeedbackid);
+            $gradinginstance = $controller->get_or_create_instance(0, $USER->id, $cwfeedbackid);
             $rubricgrade = $gradinginstance->submit_and_get_grade($grade, $cwfeedbackid);
             $grade = $rubricgrade;
 
@@ -748,7 +748,7 @@ class import extends grading_sheet{
      * @throws \dml_missing_record_exception
      * @throws \dml_multiple_records_exception
      */
-    public function get_stage_identifier($submissionid,$cell_identifier) {
+    public function get_stage_identifier($submissionid, $cell_identifier) {
 
         global $DB, $USER;
         $submission = $DB->get_record('coursework_submissions', array('id' => $submissionid));

@@ -73,7 +73,7 @@ if (!(isset($SESSION->allocate_perpage[$coursemoduleid]))) {
 // SQL sort for allocation table.
 $sortby = optional_param('sortby', '', PARAM_ALPHA);
 $sorthow = optional_param('sorthow', '', PARAM_ALPHA);
-$options = compact('sortby', 'sorthow','perpage','page');
+$options = compact('sortby', 'sorthow', 'perpage', 'page');
 
 // $_POST['allocatables'] comes as array of arrays which is not supported by optional_param_array, however we clean this later in process_data() function
 $formdataarray = isset($_POST['allocatables']) ? $_POST['allocatables'] : array();
@@ -101,7 +101,7 @@ $jsmodule = array(
                         'node-base')
 );
 $PAGE->requires->js_init_call('M.mod_coursework.init_allocate_page',
-                              array('wwwroot' => $CFG->wwwroot,'coursemoduleid' => $coursemoduleid),
+                              array('wwwroot' => $CFG->wwwroot, 'coursemoduleid' => $coursemoduleid),
                               false,
                               $jsmodule);
 
@@ -192,7 +192,7 @@ if ($coursework->allocation_enabled()){
 }
 
 if ($formsavebutton && $percentage_allocation_not_complete == '' && $manual_allocation_not_complete == ''){
-    redirect($CFG->wwwroot.'/mod/coursework/view.php?id='.$coursemoduleid, get_string('changessaved','mod_coursework'));
+    redirect($CFG->wwwroot.'/mod/coursework/view.php?id='.$coursemoduleid, get_string('changessaved', 'mod_coursework'));
 } elseif ($formsavebutton) {
     redirect($PAGE->url);
 }

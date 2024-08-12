@@ -364,7 +364,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $cell = new html_table_cell();
         if ($feedbackrow->has_feedback()) {
-            $cell->text = $feedbackrow ? userdate($feedbackrow->get_time_modified(),'%a, %d %b %Y, %H:%M') : '';
+            $cell->text = $feedbackrow ? userdate($feedbackrow->get_time_modified(), '%a, %d %b %Y, %H:%M') : '';
         }
         $row->cells['timemodified'] = $cell;
 
@@ -533,7 +533,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // Show general feedback if it's there and the deadline has passed or general feedback's date is not enabled which means it should be displayed automatically
         if (($coursework->is_general_feedback_enabled() && $allowed_to_add_general_feedback && (time() > $coursework->generalfeedback || $cangrade || $canpublish || $is_published)) || !$coursework->is_general_feedback_enabled()) {
             $out .= html_writer::tag('h3', get_string('generalfeedback', 'coursework'));
-            $out .= $coursework->feedbackcomment ? html_writer::tag('p',$coursework->feedbackcomment)
+            $out .= $coursework->feedbackcomment ? html_writer::tag('p', $coursework->feedbackcomment)
                 :  html_writer::tag('p',get_string('nofeedbackyet', 'coursework'));
 
             // General feedback Add edit link.
@@ -718,7 +718,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $html .= '<div class="allocation-strategy"';
         // Allow allocation method to be changed.
-        $html .= html_writer::label(get_string('allocationstrategy', 'mod_coursework'),'assessorallocationstrategy');
+        $html .= html_writer::label(get_string('allocationstrategy', 'mod_coursework'), 'assessorallocationstrategy');
 
 
         $options = manager::get_allocation_classnames();
@@ -806,7 +806,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $assessorheaders = array();
 
         for($i = 0; $i < $samplingwidget->get_coursework()->get_max_markers(); $i++) {
-            $assessorheaders[] = get_string('assessorheading','mod_coursework',$i+1);
+            $assessorheaders[] = get_string('assessorheading', 'mod_coursework', $i+1);
         }
 
         $scale = "";
@@ -830,7 +830,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $table->head = $assessorheaders;
 
         $assessor1cell = html_writer::start_tag('div',array('class' => 'samples_strategy'));
-        $assessor1cell  .=  get_string('assessoronedefault','mod_coursework');
+        $assessor1cell  .=  get_string('assessoronedefault', 'mod_coursework');
         $assessor1cell  .=  html_writer::end_tag('div');
 
         $columndata = array(new html_table_cell($assessor1cell));
@@ -847,8 +847,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             //create the secon
 
-            $sampling_strategies = array('0' => get_string('sampling_manual','mod_coursework'),
-                                              '1' => get_string('sampling_automatic','mod_coursework'));
+            $sampling_strategies = array('0' => get_string('sampling_manual', 'mod_coursework'),
+                                              '1' => get_string('sampling_automatic', 'mod_coursework'));
 
             //check whether any rules have been saved for this stage
             $selected = ($samplingwidget->get_coursework()->has_automatic_sampling_at_stage('assessor_'.$i)) ? '1' : false;
@@ -860,7 +860,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 "assessor_{$i}_samplingstrategy",
                 $selected,
                 false,
-                array('id' => "assessor_{$i}_samplingstrategy",'class' => "assessor_sampling_strategy sampling_strategy_detail"));
+                array('id' => "assessor_{$i}_samplingstrategy", 'class' => "assessor_sampling_strategy sampling_strategy_detail"));
 
             $sampling_cell   .= html_writer::end_tag('div');
 
@@ -873,17 +873,17 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $graderules .= html_writer::end_tag('h4');
 
 
-            $graderules .= $this->get_sampling_strategy_form_elements($samplingwidget->get_coursework(),$i,$javascript);
+            $graderules .= $this->get_sampling_strategy_form_elements($samplingwidget->get_coursework(), $i, $javascript);
 
 
-            $sampling_cell   .=     html_writer::div($graderules,'', array('id' => "assessor_{$i}_automatic_rules"));
+            $sampling_cell   .=     html_writer::div($graderules, '', array('id' => "assessor_{$i}_automatic_rules"));
 
             $columndata[] = new html_table_cell($sampling_cell);
         }
 
         $table->data[] = $columndata;
 
-          //= array($asessoronecell,$asessortwocell);
+          //= array($asessoronecell, $asessortwocell);
 
         $html  .=   html_writer::table($table);
 
@@ -932,7 +932,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
 
-    private function sampling_strategy_column($samplingwidget,$suffix = '') {
+    private function sampling_strategy_column($samplingwidget, $suffix = '') {
 
         $percentage_options = array();
 
@@ -942,11 +942,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         //hidden input containing scale values
         $scale = array();
-        $sampling_column = "<input id='scale_values' type='hidden' value='".implode(',',$scale)."' />";
+        $sampling_column = "<input id='scale_values' type='hidden' value='".implode(',', $scale)."' />";
 
-        $sampling_column    .=  html_writer::tag('br','');
-        $sampling_column    .=  html_writer::tag('strong',get_string('selectrules','mod_coursework'));
-        $sampling_column    .=  html_writer::tag('br','');
+        $sampling_column    .=  html_writer::tag('br', '');
+        $sampling_column    .=  html_writer::tag('strong',get_string('selectrules', 'mod_coursework'));
+        $sampling_column    .=  html_writer::tag('br', '');
 
         $sampling_column  .= html_writer::start_tag('div');
 
@@ -990,12 +990,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $sampling_column  .= html_writer::end_tag('div');
 
 
-        $sampling_column      .=  html_writer::link('#',get_string('addgraderule','mod_coursework'),array('id' => "assessor_{$suffix}_addgradderule", 'class' => 'addgradderule sampling_strategy_detail'));
-        $sampling_column      .=  html_writer::link('#',get_string('removegraderule','mod_coursework'),array('id' => "assessor_{$suffix}_removegradderule", 'class' => 'removegradderule sampling_strategy_detail'));
+        $sampling_column      .=  html_writer::link('#',get_string('addgraderule', 'mod_coursework'),array('id' => "assessor_{$suffix}_addgradderule", 'class' => 'addgradderule sampling_strategy_detail'));
+        $sampling_column      .=  html_writer::link('#',get_string('removegraderule', 'mod_coursework'),array('id' => "assessor_{$suffix}_removegradderule", 'class' => 'removegradderule sampling_strategy_detail'));
 
 
-        $sampling_column    .=  html_writer::checkbox("assessor_{$suffix}_samplertopup",1,false,get_string('topupto','mod_coursework'),
-            array('id' => "assessor_{$suffix}_samplerules[]",'class' => "assessor_{$suffix} sampling_strategy_detail"));
+        $sampling_column    .=  html_writer::checkbox("assessor_{$suffix}_samplertopup",1,false,get_string('topupto', 'mod_coursework'),
+            array('id' => "assessor_{$suffix}_samplerules[]", 'class' => "assessor_{$suffix} sampling_strategy_detail"));
 
 
 
@@ -1004,7 +1004,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $samplingwidget->get_sampling_strategy(),
             false,
             array('id' => "assessor_{$suffix}_sampletopup", 'class' => "assessor_{$suffix} sampling_strategy_detail"));
-        $sampling_column    .= html_writer::label(get_string('ofallstudents', 'mod_coursework'),'assessortwo_sampleto[]');
+        $sampling_column    .= html_writer::label(get_string('ofallstudents', 'mod_coursework'), 'assessortwo_sampleto[]');
 
         return $sampling_column ;
 
@@ -1125,7 +1125,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
 
-    protected function get_sampling_strategy_form_elements($coursework,$assessor_number,$load_javascript=false) {
+    protected function get_sampling_strategy_form_elements($coursework, $assessor_number, $load_javascript=false) {
 
         global $CFG, $DB;
 
@@ -1133,7 +1133,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $javascript = '';
         $classdir = $CFG->dirroot . '/mod/coursework/classes/sample_set_rule/';
 
-        $sampleplugins = $DB->get_records('coursework_sample_set_plugin',null,'pluginorder');
+        $sampleplugins = $DB->get_records('coursework_sample_set_plugin',null, 'pluginorder');
 
 
 
@@ -1284,7 +1284,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $deadline_date .= userdate($normaldeadline, '%a, %d %b %Y, %H:%M');
             $deadline_date .= '</span>';
         } else if ($coursework->has_deadline()) {
-            $deadline_date .= userdate($normaldeadline,'%a, %d %b %Y, %H:%M');
+            $deadline_date .= userdate($normaldeadline, '%a, %d %b %Y, %H:%M');
         } else {
             $deadline_date .= get_string('nocourseworkdeadline', 'mod_coursework');
         }
@@ -1335,7 +1335,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         if ($coursework->is_general_feedback_enabled() && $coursework->generalfeedback) {
             $general_feedback_header = get_string('generalfeedbackdeadline', 'coursework') . ': ';
             $general_feedback_deadline = $coursework->get_general_feedback_deadline();
-            $general_feedback_deadline_message = $general_feedback_deadline ? userdate($general_feedback_deadline,'%a, %d %b %Y, %H:%M')
+            $general_feedback_deadline_message = $general_feedback_deadline ? userdate($general_feedback_deadline, '%a, %d %b %Y, %H:%M')
                 : get_string('notset', 'coursework');
 
             $table_html .= '
@@ -1351,7 +1351,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $individual_feedback_header = get_string('individualfeedback', 'coursework');
             $individual_feedback_deadline = $coursework->get_individual_feedback_deadline();
-            $indivisual_feedback_message = $individual_feedback_deadline ? userdate($individual_feedback_deadline,'%a, %d %b %Y, %H:%M')
+            $indivisual_feedback_message = $individual_feedback_deadline ? userdate($individual_feedback_deadline, '%a, %d %b %Y, %H:%M')
                 : get_string('notset', 'coursework');
 
             $table_html .= '
@@ -1410,15 +1410,15 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         global  $PAGE;
 
         $coursework_page_url = $this->get_router()->get_path('coursework', array('coursework' => $personal_deadlines_table->get_coursework())) ;
-        $table_html = '<div class="return_to_page">'.html_writer::link($coursework_page_url,get_string('returntocourseworkpage','mod_coursework')).'</div>';
+        $table_html = '<div class="return_to_page">'.html_writer::link($coursework_page_url,get_string('returntocourseworkpage', 'mod_coursework')).'</div>';
 
-        $table_html .=   '<div class="alert">'.get_string('nopersonaldeadlineforextensionwarning','mod_coursework').'</div>';
+        $table_html .=   '<div class="alert">'.get_string('nopersonaldeadlineforextensionwarning', 'mod_coursework').'</div>';
 
 
 
         $usergroups = $personal_deadlines_table->get_coursework()->get_allocatable_type();
 
-        $table_html .=   '<div class="largelink">'.html_writer::link('#', get_string('setdateforselected','mod_coursework',$personal_deadlines_table->get_coursework()->get_allocatable_type()), array('id' => 'selected_dates')).'</div>';
+        $table_html .=   '<div class="largelink">'.html_writer::link('#', get_string('setdateforselected', 'mod_coursework', $personal_deadlines_table->get_coursework()->get_allocatable_type()), array('id' => 'selected_dates')).'</div>';
 
 
         if (has_capability('mod/coursework:revertfinalised', $PAGE->context)) {
@@ -1457,7 +1457,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $table_html .= $personaldeadlines_cell_helper->get_table_header($personal_deadlines_table->get_options());
         $table_html .= '</th>';
         $table_html .= '<th>';
-        $table_html .= get_string('tableheadstatus','mod_coursework');
+        $table_html .= get_string('tableheadstatus', 'mod_coursework');
         $table_html .= '</th>';
 
 
@@ -1565,8 +1565,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $published = 0;
 
 
-        if (!$coursework->has_multiple_markers() && !$coursework->allocation_enabled() && !has_capability('mod/coursework:addinitialgrade',$coursework->get_context())
-            && has_capability('mod/coursework:addagreedgrade',$coursework->get_context())){
+        if (!$coursework->has_multiple_markers() && !$coursework->allocation_enabled() && !has_capability('mod/coursework:addinitialgrade', $coursework->get_context())
+            && has_capability('mod/coursework:addagreedgrade', $coursework->get_context())){
 
             $warning_message = "<tr><td colspan='2'>You don't have a capability to grade anyone in this Coursework</td></tr>";
 
@@ -1634,11 +1634,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $table_html = '<table class="gradingsummary display"><tbody>';
         $table_html .= $warning_message;
         // participants row
-        $table_html .= '<tr><th >'.get_string('participants','mod_coursework').'</th><td>'.$participants.'</td></tr>';
+        $table_html .= '<tr><th >'.get_string('participants', 'mod_coursework').'</th><td>'.$participants.'</td></tr>';
         // number of submission row
-        $table_html .= '<tr><th >'.get_string('submitted','mod_coursework').'</th><td>'.$submitted.'</td></tr>';
+        $table_html .= '<tr><th >'.get_string('submitted', 'mod_coursework').'</th><td>'.$submitted.'</td></tr>';
         // submissions needs grading row
-        $table_html .= '<tr><th >'.get_string('needsgrading','mod_coursework').'</th><td>'.$needsgrading.'</td></tr>';
+        $table_html .= '<tr><th >'.get_string('needsgrading', 'mod_coursework').'</th><td>'.$needsgrading.'</td></tr>';
         // submissions graded
         if (has_capability('mod/coursework:addinitialgrade', $coursework->get_context()) && !is_siteadmin($USER)){
             $table_html .= '<tr><th >' . get_string('graded', 'mod_coursework') . $stagename . $gradedHeader . '</th><td>' . $graded . '</td></tr>';
@@ -1646,7 +1646,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $table_html .= '<tr><th >' . get_string('graded', 'mod_coursework') . $stagename . $gradedHeader . '</th><td>' . $finalgrade . '</td></tr>';
         }
         // submissions graded and published
-        $table_html .= '<tr><th >'.get_string('gradedandpublished','mod_coursework').'</th><td>'.$published.'</td></tr>';
+        $table_html .= '<tr><th >'.get_string('gradedandpublished', 'mod_coursework').'</th><td>'.$published.'</td></tr>';
 
 
         $table_html .= '</tbody></table>';
@@ -1753,7 +1753,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $submission = submission::find($sub);
 
-            if (has_capability('mod/coursework:addallocatedagreedgrade',$submission->get_coursework()->get_context()) && !$submission->is_assessor_initial_grader() && $submission->all_inital_graded()) {
+            if (has_capability('mod/coursework:addallocatedagreedgrade', $submission->get_coursework()->get_context()) && !$submission->is_assessor_initial_grader() && $submission->all_inital_graded()) {
                 unset($submissions[$sub->id]);
             }
         }
@@ -1796,7 +1796,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $submission = submission::find($sub);
 
             if (count($submission->get_assessor_feedbacks()) >= $submission->max_number_of_feedbacks() || $submission->is_assessor_initial_grader()
-                && (!has_capability('mod/coursework:administergrades',$submission->get_coursework()->get_context()) && !is_siteadmin($USER->id))) {
+                && (!has_capability('mod/coursework:administergrades', $submission->get_coursework()->get_context()) && !is_siteadmin($USER->id))) {
 
                 //is this submission assessable by this user at an inital gradig stage
                 unset($submissions[$sub->id]);

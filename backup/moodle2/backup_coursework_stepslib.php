@@ -398,48 +398,48 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                  array('courseworkid' => backup::VAR_PARENTID));
 
             //Mark important foreign keys
-            $feedback->annotate_ids('user','assessorid');
-            $feedback->annotate_ids('user','lasteditedbyuser');
-            $feedback->annotate_ids('user','markernumber');
+            $feedback->annotate_ids('user', 'assessorid');
+            $feedback->annotate_ids('user', 'lasteditedbyuser');
+            $feedback->annotate_ids('user', 'markernumber');
 
-            $submission->annotate_ids('user','userid');
-            $submission->annotate_ids('user','createdby');
-            $submission->annotate_ids('user','lastupdatedby');
-            $submission->annotate_ids('user','allocatableuser');
-            $submission->annotate_ids('group','allocatablegroup');
+            $submission->annotate_ids('user', 'userid');
+            $submission->annotate_ids('user', 'createdby');
+            $submission->annotate_ids('user', 'lastupdatedby');
+            $submission->annotate_ids('user', 'allocatableuser');
+            $submission->annotate_ids('group', 'allocatablegroup');
 
-            $reminder->annotate_ids('user','userid');
+            $reminder->annotate_ids('user', 'userid');
 
-            $pair->annotate_ids('user','assessorid');
-            $pair->annotate_ids('user','allocatableuser');
-            $pair->annotate_ids('group','allocatablegroup');
+            $pair->annotate_ids('user', 'assessorid');
+            $pair->annotate_ids('user', 'allocatableuser');
+            $pair->annotate_ids('group', 'allocatablegroup');
 
-            $allocation_config->annotate_ids('user','assessorid');
+            $allocation_config->annotate_ids('user', 'assessorid');
 
-            $modsetmember->annotate_ids('user','allocatableuser');
-            $modsetmember->annotate_ids('group','allocatablegroup');
+            $modsetmember->annotate_ids('user', 'allocatableuser');
+            $modsetmember->annotate_ids('group', 'allocatablegroup');
 
-            $extension->annotate_ids('user','allocatableuser');
-            $extension->annotate_ids('group','allocatablegroup');
+            $extension->annotate_ids('user', 'allocatableuser');
+            $extension->annotate_ids('group', 'allocatablegroup');
 
-            $personal_deadline->annotate_ids('user','allocatableuser');
-            $personal_deadline->annotate_ids('group','allocatablegroup');
+            $personal_deadline->annotate_ids('user', 'allocatableuser');
+            $personal_deadline->annotate_ids('group', 'allocatablegroup');
 
-            $sample_member->annotate_ids('user','allocatableuser');
-            $sample_member->annotate_ids('group','allocatablegroup');
+            $sample_member->annotate_ids('user', 'allocatableuser');
+            $sample_member->annotate_ids('group', 'allocatablegroup');
 
-            $moderation_agreement->annotate_ids('user','moderatorid');
-            $moderation_agreement->annotate_ids('user','lasteditedby');
+            $moderation_agreement->annotate_ids('user', 'moderatorid');
+            $moderation_agreement->annotate_ids('user', 'lasteditedby');
 
-            $plagiarism_flag->annotate_ids('user','createdby');
-            $plagiarism_flag->annotate_ids('user','lastmodifiedby');
+            $plagiarism_flag->annotate_ids('user', 'createdby');
+            $plagiarism_flag->annotate_ids('user', 'lastmodifiedby');
 
-            $coursework->annotate_files('mod_coursework','feedback',null);
-            $coursework->annotate_files('mod_coursework','submission',null);
+            $coursework->annotate_files('mod_coursework', 'feedback',null);
+            $coursework->annotate_files('mod_coursework', 'submission',null);
 
         }
 
-        $coursework->annotate_ids('grouping','grouping_id');
+        $coursework->annotate_ids('grouping', 'grouping_id');
 
         $coursework->set_source_table('coursework',array('id' => backup::VAR_ACTIVITYID));
 

@@ -74,17 +74,17 @@ class agreedgrade_cell extends cell_base{
         return $strings;
     }
 
-    public function validate_cell($value,$submissionid,$stage_identifier='', $uploadedgradecells = array()) {
+    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells = array()) {
 
-        global $DB,$PAGE,$USER;
+        global $DB, $PAGE, $USER;
 
         $stage_identifier = 'final_agreed_1';
-        $agreedgradecap = array('mod/coursework:addagreedgrade','mod/coursework:editagreedgrade',
+        $agreedgradecap = array('mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade',
                                      'mod/coursework:addallocatedagreedgrade','mod/coursework:editallocatedagreedgrade');
 
         if (empty($value)) return true;
 
-        if (has_any_capability($agreedgradecap,$PAGE->context)
+        if (has_any_capability($agreedgradecap, $PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context)) {
 
             $errormsg = '';
@@ -185,10 +185,10 @@ class agreedgrade_cell extends cell_base{
 
 
                 //this is a new feedback check it against the new ability checks
-                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && !$ability->can('new',$new_feedback))   return get_string('nopermissiontogradesubmission','coursework');
+                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && !$ability->can('new', $new_feedback))   return get_string('nopermissiontogradesubmission','coursework');
             } else {
                 //this is a new feedback check it against the edit ability checks
-                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit',$feedback))   return get_string('nopermissiontoeditgrade','coursework');
+                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade','coursework');
             }
 
 
@@ -242,7 +242,7 @@ class agreedgrade_cell extends cell_base{
      * @param $csv_cells
      *
      */
-    function    get_rubrics($coursework,$csv_cells) {
+    function    get_rubrics($coursework, $csv_cells) {
 
 
         if ($coursework->is_using_rubric()  && $this->coursework->finalstagegrading != 1) {
@@ -258,17 +258,17 @@ class agreedgrade_cell extends cell_base{
 
 
             //find out the position of singlegrade
-            $position = array_search('singlegrade',$csv_cells);
+            $position = array_search('singlegrade', $csv_cells);
             //get all data from the position of the singlegrade to the length of rubricheaders
             // $csv_cells = array_splice($csv_cells,5, 1, $rubricheaders);
 
 
-            $start_cells = array_slice($csv_cells,0,$position,true);
-            $end_cells = array_slice($csv_cells,$position+1,count($csv_cells),true);
+            $start_cells = array_slice($csv_cells,0, $position,true);
+            $end_cells = array_slice($csv_cells, $position+1,count($csv_cells),true);
 
-            $cells = array_merge($start_cells,$rubricheaders);
+            $cells = array_merge($start_cells, $rubricheaders);
 
-            $cells = array_merge($cells,$end_cells);
+            $cells = array_merge($cells, $end_cells);
 
 
 

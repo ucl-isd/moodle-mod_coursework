@@ -228,7 +228,7 @@ class behat_mod_coursework extends behat_base {
      * @Then /^I should( not)? see( the)? (.*)'s name on the page$/
      * @param bool $negate
      */
-    public function iShouldSeeTheStudentSNameOnThePage($negate = false,$negate2=false,$studentrole) {
+    public function iShouldSeeTheStudentSNameOnThePage($negate = false, $negate2=false, $studentrole) {
         $page = $this->get_page('coursework page');
 
         $student = ($studentrole == "another student") ? $this->other_student : $this->student;
@@ -926,7 +926,7 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Given /^I (de)?select (a|another) student as a part of the sample for the second stage$/
      */
-    public function iSelectTheStudentAsAPartOfTheSample($negate = false,$other) {
+    public function iSelectTheStudentAsAPartOfTheSample($negate = false, $other) {
         /**
          * @var mod_coursework_behat_allocations_page $page
          */
@@ -2880,9 +2880,9 @@ class behat_mod_coursework extends behat_base {
      * @param $stage
      * @throws coding_exception
      */
-    public function ISelectTotalSubmissionsInStage($percentage,$stage) {
+    public function ISelectTotalSubmissionsInStage($percentage, $stage) {
         $page = $this->get_page('allocations page');
-        $page->select_total_percentage_for_stage($percentage,$stage);
+        $page->select_total_percentage_for_stage($percentage, $stage);
     }
 
     /**
@@ -2891,13 +2891,13 @@ class behat_mod_coursework extends behat_base {
      * @param $stage
      * @throws coding_exception
      */
-    public function StudentAutomaticallyIncludedInSampleForStage($other,$another,$negate,$stage) {
+    public function StudentAutomaticallyIncludedInSampleForStage($other, $another, $negate, $stage) {
         $page = $this->get_page('allocations page');
         $another = (!empty($another))? $this->other_student: '';
         $other = ($other == 'another');
         $student = $other ? 'other_student' : 'student';
 
-        $page->automatically_included_in_sample($this->coursework,$this->$student,$another,$stage,$negate);
+        $page->automatically_included_in_sample($this->coursework, $this->$student, $another, $stage, $negate);
     }
 
 

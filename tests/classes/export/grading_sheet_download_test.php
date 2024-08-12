@@ -75,12 +75,12 @@ class grading_sheet_download_test extends advanced_testcase {
         $submission = $this->submission;
 
         // headers and data for csv
-        $csv_cells = array('submissionid','submissionfileid','name','username','submissiontime','singlegrade','feedbackcomments');
+        $csv_cells = array('submissionid', 'submissionfileid', 'name', 'username', 'submissiontime', 'singlegrade', 'feedbackcomments');
 
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('gradingsheetfor', 'coursework'). $this->coursework->name .' '.$timestamp;
         $grading_sheet = new \mod_coursework\export\grading_sheet($this->coursework, $csv_cells, $filename);
-        $actual_submission = $grading_sheet->add_cells_to_array($submission,$student,$csv_cells);
+        $actual_submission = $grading_sheet->add_cells_to_array($submission, $student, $csv_cells);
 
         $studentname = $student->lastname .' '.$student->firstname;
 
@@ -171,15 +171,15 @@ class grading_sheet_download_test extends advanced_testcase {
 
 
         // headers and data for csv
-        $csv_cells = array('submissionid','submissionfileid','name','username','submissiontime',
-                           'assessor1','assessorgrade1','assessorfeedback1','assessor2','assessorgrade2','assessorfeedback2',
-                           'agreedgrade','agreedfeedback');
+        $csv_cells = array('submissionid', 'submissionfileid', 'name', 'username', 'submissiontime',
+                           'assessor1', 'assessorgrade1', 'assessorfeedback1', 'assessor2', 'assessorgrade2', 'assessorfeedback2',
+                           'agreedgrade', 'agreedfeedback');
 
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('gradingsheetfor', 'coursework'). $this->coursework->name .' '.$timestamp;
         $grading_sheet = new \mod_coursework\export\grading_sheet($this->coursework, $csv_cells, $filename);
-        $actual_submission1 = $grading_sheet->add_cells_to_array($submission1,$student1,$csv_cells);
-        $actual_submission2 = $grading_sheet->add_cells_to_array($submission2,$student2,$csv_cells);
+        $actual_submission1 = $grading_sheet->add_cells_to_array($submission1, $student1, $csv_cells);
+        $actual_submission2 = $grading_sheet->add_cells_to_array($submission2, $student2, $csv_cells);
         $actual_submission = array_merge($actual_submission1, $actual_submission2);
 
         $studentname1 = $student1->lastname .' '.$student1->firstname;

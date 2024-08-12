@@ -194,8 +194,8 @@ class manager {
      * @return array
      */
     public function get_sampling_options() {
-        return array('0' => get_string('manual','mod_coursework'),
-                     '1' => get_string('automatic','mod_coursework'));
+        return array('0' => get_string('manual', 'mod_coursework'),
+                     '1' => get_string('automatic', 'mod_coursework'));
 
     }
 
@@ -255,7 +255,7 @@ class manager {
 
         global $CFG, $DB;
 
-        $sampleplugins = $DB->get_records('coursework_sample_set_plugin',null,'pluginorder');
+        $sampleplugins = $DB->get_records('coursework_sample_set_plugin',null, 'pluginorder');
         $order = 0;
         foreach ($sampleplugins as $plugin) {
 
@@ -263,7 +263,7 @@ class manager {
 
             $rule = new $classname($this->coursework);
 
-            $rule->save_form_data($assessor_number,$order);
+            $rule->save_form_data($assessor_number, $order);
 
         }
 
@@ -297,7 +297,7 @@ class manager {
     public function auto_generate_sample_set() {
         global $DB;
 
-        $sampleplugins = $DB->get_records('coursework_sample_set_plugin',null,'pluginorder');
+        $sampleplugins = $DB->get_records('coursework_sample_set_plugin',null, 'pluginorder');
         $order = 0;
 
 
@@ -329,7 +329,7 @@ class manager {
                                ORDER BY       ruleorder)a";
 
 
-            if ($sampleplugins = $DB->get_records_sql($sql,array('courseworkid' => $this->coursework->id,'stage' => $stage))) {
+            if ($sampleplugins = $DB->get_records_sql($sql,array('courseworkid' => $this->coursework->id, 'stage' => $stage))) {
 
                 //$allocatables = $this->get_coursework()->get_allocatables_with_feedback();
                 $allocatables = $this->get_coursework()->get_allocatables();
@@ -356,7 +356,7 @@ class manager {
 
                     $rule = new $classname($this->coursework);
 
-                       $rule->adjust_sample_set($stage_number,$allocatables,$manual_sample_set,$auto_sample_set);
+                       $rule->adjust_sample_set($stage_number, $allocatables, $manual_sample_set, $auto_sample_set);
 
                 }
 
@@ -398,7 +398,7 @@ class manager {
 
         //get all users in manually selected for stage in coursework
         return $DB->get_records_sql($sql,
-            array('courseworkid' => $this->coursework->id,'stage_identifier' => $stage));
+            array('courseworkid' => $this->coursework->id, 'stage_identifier' => $stage));
 
     }
 
@@ -419,7 +419,7 @@ class manager {
                          AND        f.stage_identifier = m.stage_identifier
                          ";
 
-        return $DB->get_records_sql($sql,array('courseworkid' => $this->coursework->id,'stage' => $stage));
+        return $DB->get_records_sql($sql,array('courseworkid' => $this->coursework->id, 'stage' => $stage));
     }
 
 

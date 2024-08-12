@@ -45,7 +45,7 @@ class upload {
      * @return array|bool
      * @throws \moodle_exception
      */
-    public function validate_csv($content,$encoding,$delimeter){
+    public function validate_csv($content, $encoding, $delimeter){
         global $CFG, $DB;
 
         $assessor_identifier = $CFG->coursework_allocation_identifier;
@@ -196,7 +196,7 @@ class upload {
         while ($line = $csvreader->next()) {
 
             //we will not process the content of any line that has been flagged up with an error
-            if ( is_array($processingresults) && array_key_exists($s,$processingresults) ) {
+            if ( is_array($processingresults) && array_key_exists($s, $processingresults) ) {
                 $s++;
                 continue;
             }

@@ -73,7 +73,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         if (!empty($samplerecords)) {
             $seq = 0;
             foreach($samplerecords  as $record) {
-                $html   .=  $this->range_elements($assessor_number,$seq,$record);
+                $html   .=  $this->range_elements($assessor_number, $seq, $record);
                 $seq++;
             }
         }   else {
@@ -82,9 +82,9 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
 
 
-        $html      .=  html_writer::link('#',get_string('addgraderule','mod_coursework'),array('id' => "assessor_{$assessor_number}_addgradderule", 'class' => 'addgradderule sample_set_rule'));
+        $html      .=  html_writer::link('#',get_string('addgraderule', 'mod_coursework'),array('id' => "assessor_{$assessor_number}_addgradderule", 'class' => 'addgradderule sample_set_rule'));
         $html      .=  "  ";
-        $html      .=  html_writer::link('#',get_string('removegraderule','mod_coursework'),array('id' => "assessor_{$assessor_number}_removegradderule", 'class' => 'removegradderule sample_set_rule'));
+        $html      .=  html_writer::link('#',get_string('removegraderule', 'mod_coursework'),array('id' => "assessor_{$assessor_number}_removegradderule", 'class' => 'removegradderule sample_set_rule'));
 
 
 
@@ -92,7 +92,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         return $html;
     }
 
-    public function range_elements($assessor_number,$sequence,$dbrecord=false) {
+    public function range_elements($assessor_number, $sequence, $dbrecord=false) {
 
 
         $percentage_options = array();
@@ -109,7 +109,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             }
         } else {
             $grade_scale = \grade_scale::fetch(array('id' => abs($this->coursework->grade)));
-            $scale = explode(",",$grade_scale->scale);
+            $scale = explode(",", $grade_scale->scale);
         }
 
         if ($dbrecord) {
@@ -148,7 +148,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         $html .= html_writer::label(get_string('from', 'mod_coursework'), 'assessortwo_samplefrom[0]');
 
-        $rule_options = (!empty($selected_type) && array_key_exists('percentage',$selected_type)) ? $percentage_options : $scale; //change this into a ternary statement that
+        $rule_options = (!empty($selected_type) && array_key_exists('percentage', $selected_type)) ? $percentage_options : $scale; //change this into a ternary statement that
 
         $html .= html_writer::select($rule_options,
             "assessor_{$assessor_number}_samplefrom[]",
@@ -401,15 +401,15 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                          AND            stage_identifier = :stage
                          ORDER BY       ruleorder";
 
-        $ruleinstance = $DB->get_records_sql($sql,array('courseworkid' => $this->coursework->id,'stage' => $stage));
+        $ruleinstance = $DB->get_records_sql($sql,array('courseworkid' => $this->coursework->id, 'stage' => $stage));
 
         foreach($ruleinstance as $ri) {
 
-            $limit = $this->rationalise($ri->ruletype,$ri->lowerlimit,$ri->upperlimit);
+            $limit = $this->rationalise($ri->ruletype, $ri->lowerlimit, $ri->upperlimit);
 
             // all allocatables that are within specified range based on previous stage
             $previous_stage = $stage_number-1;
-            $allocatables_in_range = $this->get_allocatables_in_range("assessor_".$previous_stage,$limit[0],$limit[1]);
+            $allocatables_in_range = $this->get_allocatables_in_range("assessor_".$previous_stage, $limit[0], $limit[1]);
 
             $finalised = $this->finalised_submissions();
             $published = $this->released_submissions();
@@ -424,7 +424,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         }
     }
 
-    private function rationalise($ruletype,$limit1,$limit2) {
+    private function rationalise($ruletype, $limit1, $limit2) {
 
         global  $DB;
 
@@ -448,7 +448,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                     if ($scale) {
 
-                        $coursework_scale = explode(",",$scale->scale);
+                        $coursework_scale = explode(",", $scale->scale);
 
                         $number_of_items = count($coursework_scale);
 
@@ -470,7 +470,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         return $limits;
     }
 
-    private function get_allocatables_in_range($stage,$limit1,$limit2) {
+    private function get_allocatables_in_range($stage, $limit1, $limit2) {
         global $CFG, $DB;
 
         $gradesql = ($CFG->dbtype == 'pgsql') ? " CAST(grade AS integer) " :  " grade ";

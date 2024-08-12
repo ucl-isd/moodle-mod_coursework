@@ -54,7 +54,7 @@ $title = get_string('feedbackupload', 'mod_coursework');
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
-$grading_sheet_capabilities = array('mod/coursework:addinitialgrade','mod/coursework:addagreedgrade','mod/coursework:administergrades');
+$grading_sheet_capabilities = array('mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade', 'mod/coursework:administergrades');
 
 
 // Bounce anyone who shouldn't be here.
@@ -65,7 +65,7 @@ if (!has_any_capability($grading_sheet_capabilities, $PAGE->context)) {
 
 
 
-$feedbackform = new upload_feedback_form($coursework,$coursemoduleid);
+$feedbackform = new upload_feedback_form($coursework, $coursemoduleid);
 
 if ($feedbackform->is_cancelled()) {
     redirect(new moodle_url("$CFG->wwwroot/mod/coursework/view.php", array('id' => $coursemoduleid)));
@@ -93,9 +93,9 @@ if ($data = $feedbackform->get_data()) {
 
 
 
-    $fileimporter->extract_zip_file($filepath,$coursework->get_context_id());
+    $fileimporter->extract_zip_file($filepath, $coursework->get_context_id());
 
-    $updateresults = $fileimporter->import_zip_files($coursework,$stageidentifier,$data->overwrite);
+    $updateresults = $fileimporter->import_zip_files($coursework, $stageidentifier, $data->overwrite);
 
     $page_renderer = $PAGE->get_renderer('mod_coursework', 'page');
     echo $page_renderer->process_feedback_upload($updateresults);

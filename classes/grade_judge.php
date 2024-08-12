@@ -193,7 +193,7 @@ class grade_judge {
             // Scale
             $scale = \grade_scale::fetch(array('id' => abs($this->coursework->grade)));
             $scale->load_items();
-            return in_array($value,$scale->scale_items);
+            return in_array($value, $scale->scale_items);
         }
     }
 
@@ -209,7 +209,7 @@ class grade_judge {
             // Scale
             $scale = \grade_scale::fetch(array('id' => abs($this->coursework->grade)));
             $scale->load_items();
-            return array_search($value,$scale->scale_items)+1;
+            return array_search($value, $scale->scale_items)+1;
         } else {
             return $value;
         }

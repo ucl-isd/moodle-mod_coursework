@@ -65,7 +65,7 @@ class personal_deadline_renderer {
                 $html .= '</table>';
             }
         } else {
-            $html = '<h1> Edit personal deadline for ' . get_string('multipleusers','mod_coursework') . '</h1>';
+            $html = '<h1> Edit personal deadline for ' . get_string('multipleusers', 'mod_coursework') . '</h1>';
         }
 
 

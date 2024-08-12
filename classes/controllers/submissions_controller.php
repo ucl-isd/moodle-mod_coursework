@@ -172,7 +172,7 @@ class submissions_controller extends controller_base {
          if ($submission->finalised) {
             if (!$submission->get_coursework()->has_deadline()) {
 
-                $userids = explode(',',$submission->get_coursework()->get_submission_notification_users());
+                $userids = explode(',', $submission->get_coursework()->get_submission_notification_users());
 
                 if (!empty($userids)) {
                     foreach($userids as $u) {
@@ -339,8 +339,8 @@ class submissions_controller extends controller_base {
         $allocatableids = (!is_array($this->params['allocatableid']))  ?  array($this->params['allocatableid']) : $this->params['allocatableid']  ;
 
         $personaldeadline_page_url = new \moodle_url('/mod/coursework/actions/personal_deadline.php',
-            array('id' => $this->coursework->get_coursemodule_id(),'multipleuserdeadlines' => 1,'setpersonaldeadlinespage' => 1,
-                'courseworkid' => $this->params['courseworkid'],'allocatabletype' => $this->params['allocatabletype']));
+            array('id' => $this->coursework->get_coursemodule_id(), 'multipleuserdeadlines' => 1, 'setpersonaldeadlinespage' => 1,
+                'courseworkid' => $this->params['courseworkid'], 'allocatabletype' => $this->params['allocatabletype']));
 
         $changedeadlines = false;
 
@@ -354,7 +354,7 @@ class submissions_controller extends controller_base {
                 if ($submission->can_be_unfinalised()) {
                     $submission->finalised = 0;
                     $submission->save();
-                    $personaldeadline_page_url->param("allocatableid_arr[$aid]",$aid);
+                    $personaldeadline_page_url->param("allocatableid_arr[$aid]", $aid);
                     $changedeadlines = true;
                 }
             }

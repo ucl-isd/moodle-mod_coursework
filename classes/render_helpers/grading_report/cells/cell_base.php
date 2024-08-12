@@ -55,7 +55,7 @@ abstract class cell_base implements cell_interface {
      * @param string $sortby The current sort from the URL.
      * @return string
      */
-    protected function helper_sortable_heading($display_name, $field, $sort_how, $sortby = '',$tablename='') {
+    protected function helper_sortable_heading($display_name, $field, $sort_how, $sortby = '', $tablename='') {
 
         global $PAGE;
 

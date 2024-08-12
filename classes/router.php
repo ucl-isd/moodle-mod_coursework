@@ -206,7 +206,7 @@ class router {
                 $params = array('submissionid' => $items['submission']->id,
                                 'stage_identifier' => $items['stage']->identifier(),
                                 'feedbackid' => $items['feedbackid']);
-                $url = new moodle_url('/mod/coursework/actions/moderations/new.php',$params);
+                $url = new moodle_url('/mod/coursework/actions/moderations/new.php', $params);
                 break;
 
             case 'create moderation agreement':

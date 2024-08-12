@@ -150,7 +150,7 @@ class grading_sheet extends csv{
         global $PAGE;
 
         // headers and data for csv
-        $csv_cells = array('submissionid','submissionfileid');
+        $csv_cells = array('submissionid', 'submissionfileid');
 
         if ($coursework->is_configured_to_have_group_submissions()){
             $csv_cells[] = 'group';

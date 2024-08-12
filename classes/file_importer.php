@@ -33,7 +33,7 @@ class coursework_file_zip_importer    {
 
 
 
-    public function extract_zip_file($filename,$contextid) {
+    public function extract_zip_file($filename, $contextid) {
 
         global $USER;
 
@@ -99,7 +99,7 @@ class coursework_file_zip_importer    {
      * @param coursework $coursework
      * @return string - The html response
      */
-    public function import_zip_files($coursework,$feedbackstage,$overwritecurrent) {
+    public function import_zip_files($coursework, $feedbackstage, $overwritecurrent) {
         global $CFG, $PAGE, $DB, $USER;
 
         @set_time_limit(ASSIGNFEEDBACK_FILE_MAXFILEUNZIPTIME);
@@ -123,7 +123,7 @@ class coursework_file_zip_importer    {
 
             if ($allocatableid = $this->is_valid_feedback_file_filename($coursework, $file, $participants) ) {
 
-                $subdbrecord = $DB->get_record('coursework_submissions',array('courseworkid' => $coursework->id(),'allocatableid' => $allocatableid,'allocatabletype' => $coursework->get_allocatable_type()));
+                $subdbrecord = $DB->get_record('coursework_submissions',array('courseworkid' => $coursework->id(), 'allocatableid' => $allocatableid, 'allocatabletype' => $coursework->get_allocatable_type()));
 
                 $submission = \mod_coursework\models\submission::find($subdbrecord);
 
@@ -185,7 +185,7 @@ class coursework_file_zip_importer    {
                 }
 
              } else {
-                $results[$filename] = get_string('feedbacknotfound','mod_coursework');
+                $results[$filename] = get_string('feedbacknotfound', 'mod_coursework');
             }
         }
 
@@ -198,12 +198,12 @@ class coursework_file_zip_importer    {
     }
 
 
-    public function is_valid_feedback_file_filename($coursework,$feedbackfile,$participants) {
+    public function is_valid_feedback_file_filename($coursework, $feedbackfile, $participants) {
 
 
         $result = false;
 
-        $filename = explode('.',$feedbackfile->get_filename());
+        $filename = explode('.', $feedbackfile->get_filename());
         $filename = $filename[0];
 
         if ($feedbackfile->is_directory()) {
@@ -232,7 +232,7 @@ class coursework_file_zip_importer    {
     }
 
 
-    public function feedback_exists($coursework,$submission,$stageidentifier) {
+    public function feedback_exists($coursework, $submission, $stageidentifier) {
 
         global $DB, $USER;
 
@@ -245,13 +245,13 @@ class coursework_file_zip_importer    {
         $params = array('submissionid' => $submission->id,
                               'stage' => $stageidentifier);
 
-        if (!has_capability('mod/coursework:administergrades',$coursework->get_context())) {
+        if (!has_capability('mod/coursework:administergrades', $coursework->get_context())) {
             $sql .= "AND        (assessorid = :assessorid || lasteditedbyuser = :lasteditedbyuser)";
             $params['assessorid'] = $USER->id;
             $params['lasteditedbyuser'] = $USER->id;
         }
 
-        return   $DB->get_record_sql($sql,$params);
+        return   $DB->get_record_sql($sql, $params);
 
     }
 

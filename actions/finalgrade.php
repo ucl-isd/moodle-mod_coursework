@@ -145,7 +145,7 @@ if (!empty($teacherfeedback)) { // May not have been marked yet.
     }
     $details = new stdClass();
     $details->name = fullname($editor);
-    $details->time = userdate($teacherfeedback->timemodified,'%a, %d %b %Y, %H:%M');
+    $details->time = userdate($teacherfeedback->timemodified, '%a, %d %b %Y, %H:%M');
     echo html_writer::tag('p', get_string('lastedited', 'coursework', $details));
 }
 

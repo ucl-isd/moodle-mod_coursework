@@ -38,23 +38,23 @@ class outstanding_marking   {
      * @param $userid
      * @return int
      */
-    public function get_to_grade_initial_count($cwkrecord,$userid){
+    public function get_to_grade_initial_count($cwkrecord, $userid){
 
         $coursework = new \mod_coursework\models\coursework($cwkrecord);
 
         $initialsubmissions = array();
 
-        if ($this->should_get_to_mark_initial_grade_info($coursework->id,$userid)){
+        if ($this->should_get_to_mark_initial_grade_info($coursework->id, $userid)){
 
             if (!$coursework->has_multiple_markers()) {
-                $initialsubmissions = $this->get_single_marker_initial_grade_submissions_to_mark($coursework->id, $userid,$coursework->allocation_enabled());
+                $initialsubmissions = $this->get_single_marker_initial_grade_submissions_to_mark($coursework->id, $userid, $coursework->allocation_enabled());
 
             } else if ($coursework->sampling_enabled() && !$coursework->allocation_enabled()) { //
 
-                $initialsubmissions = $this->get_multiple_to_mark_sampled_initial_grade_submissions($coursework->id,$userid);
+                $initialsubmissions = $this->get_multiple_to_mark_sampled_initial_grade_submissions($coursework->id, $userid);
 
             } else {
-                $initialsubmissions = $this->get_multiple_to_mark_initial_grade_submissions($coursework->id,$userid,$coursework->get_max_markers(),$coursework->allocation_enabled());
+                $initialsubmissions = $this->get_multiple_to_mark_initial_grade_submissions($coursework->id, $userid, $coursework->get_max_markers(), $coursework->allocation_enabled());
 
             }
         }
@@ -68,7 +68,7 @@ class outstanding_marking   {
      * @param $userid
      * @return int
      */
-    public function get_to_grade_agreed_count($cwkrecord,$userid) {
+    public function get_to_grade_agreed_count($cwkrecord, $userid) {
 
         $coursework = new \mod_coursework\models\coursework($cwkrecord);
 
@@ -76,9 +76,9 @@ class outstanding_marking   {
 
             //AGREED GRADE INFORMATION
 
-            if ($this->should_get_to_mark_agreed_grade_info($coursework->id,$userid) && $coursework->has_multiple_markers()) {
+            if ($this->should_get_to_mark_agreed_grade_info($coursework->id, $userid) && $coursework->has_multiple_markers()) {
                 if (!$coursework->sampling_enabled()) {
-                    $agreedsubmissions = $this->get_to_grade_agreed_grade_submissions($coursework->id,$coursework->get_max_markers());
+                    $agreedsubmissions = $this->get_to_grade_agreed_grade_submissions($coursework->id, $coursework->get_max_markers());
                 } else {
                     $agreedsubmissions = $this->get_to_grade_agreed_grade_sampled_submissions($coursework->id);
                 }
@@ -137,7 +137,7 @@ class outstanding_marking   {
      * @param $userid
      * @return array
      */
-    private function get_multiple_to_mark_sampled_initial_grade_submissions($courseworkid,$userid) {
+    private function get_multiple_to_mark_sampled_initial_grade_submissions($courseworkid, $userid) {
 
         global  $DB;
 
@@ -179,7 +179,7 @@ class outstanding_marking   {
      * @param $allocationenabled
      * @return array
      */
-    private function get_multiple_to_mark_initial_grade_submissions($courseworkid,$userid,$numberofmarkers,$allocationenabled) {
+    private function get_multiple_to_mark_initial_grade_submissions($courseworkid, $userid, $numberofmarkers, $allocationenabled) {
 
         global      $DB;
 
@@ -233,7 +233,7 @@ class outstanding_marking   {
      * @param $numberofmarkers
      * @return array
      */
-    private function get_to_grade_agreed_grade_submissions($courseworkid,$numberofmarkers){
+    private function get_to_grade_agreed_grade_submissions($courseworkid, $numberofmarkers){
 
         global $DB;
 
@@ -290,11 +290,11 @@ class outstanding_marking   {
      * @param $user_id
      * @return bool
      */
-    private function has_agreed_grade($course_id,$user_id) {
+    private function has_agreed_grade($course_id, $user_id) {
 
         $coursecontext = \context_course::instance($course_id);
 
-        return  has_capability('mod/coursework:addagreedgrade',$coursecontext,$user_id) || has_capability('mod/coursework:addallocatedagreedgrade',$coursecontext,$user_id);
+        return  has_capability('mod/coursework:addagreedgrade', $coursecontext, $user_id) || has_capability('mod/coursework:addallocatedagreedgrade', $coursecontext, $user_id);
     }
 
 
@@ -303,11 +303,11 @@ class outstanding_marking   {
      * @param $user_id
      * @return bool
      */
-    private function has_initial_grade($course_id,$user_id) {
+    private function has_initial_grade($course_id, $user_id) {
 
         $coursecontext = \context_course::instance($course_id);
 
-        return  has_capability('mod/coursework:addinitialgrade',$coursecontext,$user_id);
+        return  has_capability('mod/coursework:addinitialgrade', $coursecontext, $user_id);
     }
 
 
@@ -316,7 +316,7 @@ class outstanding_marking   {
      * @param $userid
      * @return bool
      */
-    private function should_get_to_mark_initial_grade_info($courseworkid,$userid) {
+    private function should_get_to_mark_initial_grade_info($courseworkid, $userid) {
 
         $coursework = new \mod_coursework\models\coursework($courseworkid);
 
@@ -331,7 +331,7 @@ class outstanding_marking   {
      * @param $userid
      * @return bool
      */
-    private function should_get_to_mark_agreed_grade_info($courseworkid,$userid) {
+    private function should_get_to_mark_agreed_grade_info($courseworkid, $userid) {
 
         $coursework = new \mod_coursework\models\coursework($courseworkid);
 

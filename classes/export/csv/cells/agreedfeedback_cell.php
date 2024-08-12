@@ -55,15 +55,15 @@ class agreedfeedback_cell extends cell_base{
 
 
 
-    public function validate_cell($value,$submissionid,$stage_identifier='',$uploadedgradecells = array()) {
+    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells = array()) {
 
-        global $DB,$PAGE,$USER;
+        global $DB, $PAGE, $USER;
 
         $stage_identifier = 'final_agreed_1';
         $agreedgradecap = array('mod/coursework:addagreedgrade','mod/coursework:editagreedgrade',
             'mod/coursework:addallocatedagreedgrade','mod/coursework:editallocatedagreedgrade');
 
-        if (has_any_capability($agreedgradecap,$PAGE->context)
+        if (has_any_capability($agreedgradecap, $PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context)) {
 
             $subdbrecord = $DB->get_record('coursework_submissions',array('id' => $submissionid));
@@ -98,10 +98,10 @@ class agreedfeedback_cell extends cell_base{
                 $new_feedback = feedback::build($feedback_params);
 
                 //this is a new feedback check it against the new ability checks
-                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && !$ability->can('new',$new_feedback))   return get_string('nopermissiontogradesubmission','coursework');
+                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && !$ability->can('new', $new_feedback))   return get_string('nopermissiontogradesubmission','coursework');
             } else {
                 //this is a new feedback check it against the edit ability checks
-                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit',$feedback))   return get_string('nopermissiontoeditgrade','coursework');
+                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade','coursework');
             }
 
         } else {

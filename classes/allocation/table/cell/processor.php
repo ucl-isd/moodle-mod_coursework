@@ -183,7 +183,7 @@ class processor {
             'stage_identifier' => $this->get_stage()->identifier(),
             'selectiontype' => 'automatic');
 
-        return $DB->record_exists('coursework_sample_set_mbrs',$params);
+        return $DB->record_exists('coursework_sample_set_mbrs', $params);
     }
 
 }

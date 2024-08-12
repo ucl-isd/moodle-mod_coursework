@@ -255,7 +255,7 @@ abstract class base {
     private function get_percentage_allocated_teachers(){
         global $DB;
 
-        return $DB->get_records('coursework_allocation_config', array('courseworkid' => $this->get_coursework_id()),'','assessorid as id');
+        return $DB->get_records('coursework_allocation_config', array('courseworkid' => $this->get_coursework_id()), '', 'assessorid as id');
     }
 
     /**

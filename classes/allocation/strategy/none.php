@@ -48,7 +48,7 @@ class none extends base {
      * @return string
      */
     public function add_form_elements($strategypurpose = 'assessor') {
-        global $PAGE,$CFG;
+        global $PAGE, $CFG;
 
         $url = "$CFG->wwwroot/mod/coursework/actions/upload_allocations.php?cmid={$PAGE->cm->id}";
         $html = html_writer::link($url,get_string('uploadallocations', 'mod_coursework'));

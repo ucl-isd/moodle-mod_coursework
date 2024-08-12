@@ -304,7 +304,7 @@ class builder {
             $checkbox_checked = 1;
         }
 
-        $checkbox_checked = $this->checkbox_checked_in_session($checkbox_name,$checkbox_checked);
+        $checkbox_checked = $this->checkbox_checked_in_session($checkbox_name, $checkbox_checked);
 
         $checkbox_title = 'Included in sample';
 
@@ -359,7 +359,7 @@ class builder {
 
 
 
-        return $DB->record_exists('coursework_sample_set_mbrs',$params);
+        return $DB->record_exists('coursework_sample_set_mbrs', $params);
     }
 
     /**
@@ -378,7 +378,7 @@ class builder {
             }
         }
 
-        $checkbox_checked = $this->checkbox_checked_in_session($checkbox_name,$checkbox_checked);
+        $checkbox_checked = $this->checkbox_checked_in_session($checkbox_name, $checkbox_checked);
 
         $stage = substr($this->get_stage()->identifier(), -1);
         $checkbox_title = 'Pinned (auto allocations will not alter this)';
@@ -392,7 +392,7 @@ class builder {
 
 
 
-    private function checkbox_checked_in_session($checkboxname,$checkboxstate) {
+    private function checkbox_checked_in_session($checkboxname, $checkboxstate) {
 
         global  $SESSION;
 

@@ -229,7 +229,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param $stage
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
-    public function select_total_percentage_for_stage($percentage,$stage) {
+    public function select_total_percentage_for_stage($percentage, $stage) {
 
         //increment stage as the this will match the id of the element;
         $stage++;
@@ -245,7 +245,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param $user
      * @param $stage_number
      */
-    public function automatically_included_in_sample($coursework,$user,$other_user,$stage_number,$negate) {
+    public function automatically_included_in_sample($coursework, $user, $other_user, $stage_number, $negate) {
         global $DB;
 
         $other_sql = (!empty($other_user))?  "OR allocatableid = $other_user->id" : '';
@@ -264,7 +264,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
             'stage' => $stage);
 
         if (empty($negate)){
-             assertTrue($DB->record_exists_sql($sql,$params));
+             assertTrue($DB->record_exists_sql($sql, $params));
         } else {
             assertFalse($DB->record_exists_sql($sql, $params));
         }

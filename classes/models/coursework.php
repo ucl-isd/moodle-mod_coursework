@@ -981,7 +981,7 @@ class coursework extends table_base {
 
                 $foldername = '';
 
-                if ($this->blindmarking == 0 || has_capability('mod/coursework:viewanonymous',$this->get_context())) {
+                if ($this->blindmarking == 0 || has_capability('mod/coursework:viewanonymous', $this->get_context())) {
                     $submissionuser = $submission->get_allocatable();
                     if ($this->is_configured_to_have_group_submissions() && $submissionuser->name) {
                         $foldername = $submissionuser->name . '_';
@@ -1407,7 +1407,7 @@ class coursework extends table_base {
      * @param int $userid
      * @return string
      */
-    static function get_name_hash($id,$userid,$time=1440000609) {
+    static function get_name_hash($id, $userid, $time=1440000609) {
         if ($id < 1) {
             return '';
         }
@@ -1424,7 +1424,7 @@ class coursework extends table_base {
     }
 
     public function get_username_hash($userid) {
-        return static::get_name_hash($this->id,$userid,$this->timecreated);
+        return static::get_name_hash($this->id, $userid, $this->timecreated);
     }
 
     /**
@@ -2468,7 +2468,7 @@ class coursework extends table_base {
             // build exclude sql
             if (!empty($excludesubmissions)){
                 $excludesql = ' AND id NOT IN(';
-                $excludesql .= implode(',',$excludesubmissions);
+                $excludesql .= implode(',', $excludesubmissions);
                 $excludesql .= ')';
             }
         }
@@ -2589,7 +2589,7 @@ class coursework extends table_base {
     public function has_automatic_sampling_at_stage($stage) {
         global  $DB;
 
-        return $DB->record_exists('coursework_sample_set_rules',array('courseworkid' => $this->id,'stage_identifier' => $stage));
+        return $DB->record_exists('coursework_sample_set_rules',array('courseworkid' => $this->id, 'stage_identifier' => $stage));
     }
 
 
@@ -3010,7 +3010,7 @@ class coursework extends table_base {
 
 
         if ($this->extensions_enabled() ) {
-            $extensionrecord = $DB->get_record('coursework_extensions', array('courseworkid' => $this->id,'allocatableid' => $allocatable->id));
+            $extensionrecord = $DB->get_record('coursework_extensions', array('courseworkid' => $this->id, 'allocatableid' => $allocatable->id));
 
             if (!empty($extensionrecord)) {
                 $extension = $extensionrecord->extended_deadline;

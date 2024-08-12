@@ -516,7 +516,7 @@ function coursework_update_instance($coursework) {
             coursework_update_events($coursework, 'agreedgradingdue'); //cw agreed grade deadine
         } else {
             //remove it
-            remove_event($coursework,'agreedgradingdue' );
+            remove_event($coursework, 'agreedgradingdue' );
         }
     } else {
         // remove all deadline events for this coursework regardless the type
@@ -553,7 +553,7 @@ function coursework_update_instance($coursework) {
 
      // update/create event for coursework initialmarking deadline [initialgradingdue]
      if ($eventtype == 'initialgradingdue'){
-         $data = coursework_event($coursework, $coursework->intro, $coursework->id,$eventtype, $coursework->initialmarkingdeadline);
+         $data = coursework_event($coursework, $coursework->intro, $coursework->id, $eventtype, $coursework->initialmarkingdeadline);
          if ($event) {
              $event->update($data); //update if event exists
          } else {
@@ -923,7 +923,7 @@ function coursework_role_assigned_event_handler($roleassignment) {
     $courseworkids = coursework_get_coursework_ids_from_context_id($roleassignment->contextid);
 
     foreach ($courseworkids as $courseworkid) {
-        $DB->set_field('coursework','processenrol',1,array('id' => $courseworkid));
+        $DB->set_field('coursework', 'processenrol',1,array('id' => $courseworkid));
     }
 
     return true;
@@ -944,7 +944,7 @@ function coursework_role_unassigned_event_handler($roleassignment) {
     $courseworkids = coursework_get_coursework_ids_from_context_id($roleassignment->contextid);
 
     foreach ($courseworkids as $courseworkid) {
-        $DB->set_field('coursework','processunenrol',1,array('id' => $courseworkid));
+        $DB->set_field('coursework', 'processunenrol',1,array('id' => $courseworkid));
     }
 
     return true;
@@ -1132,17 +1132,17 @@ function coursework_send_deadline_changed_emails($eventdata) {
 
         if ($submissionsdeadlinechanged) {
             $strings->typeofdeadline = strtolower(get_string('submission', 'mod_coursework'));
-            $strings->deadline = userdate($coursework->deadline,'%a, %d %b %Y, %H:%M');
+            $strings->deadline = userdate($coursework->deadline, '%a, %d %b %Y, %H:%M');
             $deadlinechangedmessage[] = get_string('deadlinechanged', 'mod_coursework', $strings);
         }
         if ($generaldeadlinechanged) {
             $strings->typeofdeadline = strtolower(get_string('generalfeedback', 'mod_coursework'));
-            $strings->deadline = userdate($coursework->generalfeedback,'%a, %d %b %Y, %H:%M');
+            $strings->deadline = userdate($coursework->generalfeedback, '%a, %d %b %Y, %H:%M');
             $deadlinechangedmessage[] = get_string('deadlinechanged', 'mod_coursework', $strings);
         }
         if ($individualdeadlinechanged) {
             $strings->typeofdeadline = strtolower(get_string('individualfeedback', 'mod_coursework'));
-            $strings->deadline = userdate($userreleasedate,'%a, %d %b %Y, %H:%M');
+            $strings->deadline = userdate($userreleasedate, '%a, %d %b %Y, %H:%M');
             $deadlinechangedmessage[] = get_string('deadlinechanged', 'mod_coursework', $strings);
         }
 
@@ -1520,7 +1520,7 @@ function coursework_is_ulcc_digest_coursework_plugin_installed() {
     $disgestblockexists = $DB->record_exists_sql("SELECT id FROM {block} WHERE name = 'ulcc_digest' AND visible = 1");
 
     if (!empty($disgestblockexists)) {
-         $pluginexists = ($DB->get_records('block_ulcc_digest_plgs',array('module' => 'coursework','status' => 1)))    ?   true    :  false;
+         $pluginexists = ($DB->get_records('block_ulcc_digest_plgs',array('module' => 'coursework', 'status' => 1)))    ?   true    :  false;
     }
 
     return $pluginexists;

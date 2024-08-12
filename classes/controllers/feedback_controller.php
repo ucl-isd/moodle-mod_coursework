@@ -79,7 +79,7 @@ class feedback_controller extends controller_base {
         $ability->require_can('show', $teacherfeedback);
 
         $renderer = $this->get_page_renderer();
-        $html = $renderer->show_feedback_page($teacherfeedback,$ajax);
+        $html = $renderer->show_feedback_page($teacherfeedback, $ajax);
 
 
 
@@ -264,7 +264,7 @@ class feedback_controller extends controller_base {
                     if ($teacherfeedback->stage_identifier == 'assessor_1' || $teacherfeedback->stage_identifier == 'assessor_2') {
 
                         $jsonarray['assessorname'] = (empty($feedback_row->get_assessor()->id()) && $coursework->allocation_enabled()) ?
-                            get_string('assessornotallocated','mod_coursework') : $cell_object->profile_link($feedback_row);
+                            get_string('assessornotallocated', 'mod_coursework') : $cell_object->profile_link($feedback_row);
                         $jsonarray['assessdate'] = $cell_object->date_for_column($feedback_row);
 
                         if ($teacherfeedback->stage_identifier == 'assessor_1') {
@@ -272,7 +272,7 @@ class feedback_controller extends controller_base {
                             $stage = new assessor($coursework, 'assessor_2');
                             $assessor_feedback_row = new assessor_feedback_row($stage, $feedback_row->get_allocatable(), $coursework);
 
-                            $assessortwocell = $cell_object->get_grade_cell_content($assessor_feedback_row,$coursework,$ability);
+                            $assessortwocell = $cell_object->get_grade_cell_content($assessor_feedback_row, $coursework, $ability);
                             //$jsonarray['assessortwo'] =$assessortwocell;
                             if (strpos($assessortwocell, 'new_feedback') !== false)   $jsonarray['assessortwo'] = $assessortwocell;
 
@@ -285,7 +285,7 @@ class feedback_controller extends controller_base {
                         if ($coursework->automaticagreementrange != 'none' && !empty($finalfeedback) && $finalsubmission->all_inital_graded()) {
                             $finalstage = new assessor($coursework, "final_agreed_1");
                             $finalfeedback_row = new assessor_feedback_row($finalstage, $participant, $coursework);
-                            $agreed_grade_object = new multiple_agreed_grade_cell(array('coursework' => $coursework,'stage' => $finalstage));
+                            $agreed_grade_object = new multiple_agreed_grade_cell(array('coursework' => $coursework, 'stage' => $finalstage));
                             $jsonarray['finalhtml'] = $agreed_grade_object->get_table_cell($finalfeedback_row);
                             $jsonarray['allocatableid'] = $submission->get_allocatable()->id();
                         }
@@ -348,7 +348,7 @@ class feedback_controller extends controller_base {
             if (!$this->params['confirm']) {
 
                 $urlparams = array('confirm' => $this->params['confirm'],
-                    'remove' => $this->params['remove'],'feedbackid' => $this->params['feedbackid'],'finalised' => $this->params['finalised']);
+                    'remove' => $this->params['remove'], 'feedbackid' => $this->params['feedbackid'], 'finalised' => $this->params['finalised']);
 
                 $PAGE->set_url('/mod/coursework/actions/feedbacks/edit.php', $urlparams);
 
@@ -356,15 +356,15 @@ class feedback_controller extends controller_base {
                 $confirmurl = new \moodle_url('/mod/coursework/actions/feedbacks/update.php');
                 $confirmurl->param('confirm', 1);
                 $confirmurl->param('removefeedbackbutton', 1);
-                $confirmurl->param('feedbackid',$this->params['feedbackid']);
-                $confirmurl->param('finalised',$this->params['finalised']);
+                $confirmurl->param('feedbackid', $this->params['feedbackid']);
+                $confirmurl->param('finalised', $this->params['finalised']);
 
                 $cancelurl = clone $PAGE->url;
                 $cancelurl->param('removefeedbackbutton', 0);
-                $cancelurl->param('feedbackid',$this->params['feedbackid']);
-                $cancelurl->param('finalised',$this->params['finalised']);
+                $cancelurl->param('feedbackid', $this->params['feedbackid']);
+                $cancelurl->param('finalised', $this->params['finalised']);
                 $renderer = $this->get_page_renderer();
-                return  $renderer->confirm_feedback_removal_page($teacherfeedback,$confirmurl,$cancelurl);
+                return  $renderer->confirm_feedback_removal_page($teacherfeedback, $confirmurl, $cancelurl);
 
                  //$OUTPUT->confirm(get_string('confirmremovefeedback', 'mod_coursework'), $confirmurl, $PAGE->url);
 
@@ -458,7 +458,7 @@ class feedback_controller extends controller_base {
 
                 if ($teacherfeedback->stage_identifier == 'assessor_1' || $teacherfeedback->stage_identifier == 'assessor_2') {
                     $jsonarray['assessorname'] = (empty($feedback_row->get_assessor()->id()) && $coursework->allocation_enabled()) ?
-                        get_string('assessornotallocated','mod_coursework') : $cell_object->profile_link($feedback_row);
+                        get_string('assessornotallocated', 'mod_coursework') : $cell_object->profile_link($feedback_row);
                     $jsonarray['assessdate'] = $cell_object->date_for_column($feedback_row);
 
                     if ($teacherfeedback->stage_identifier == 'assessor_1') {
@@ -466,7 +466,7 @@ class feedback_controller extends controller_base {
                         $stage = new assessor($coursework, 'assessor_2');
                         $assessor_feedback_row = new assessor_feedback_row($stage, $feedback_row->get_allocatable(), $coursework);
 
-                        $assessortwocell = $cell_object->get_grade_cell_content($assessor_feedback_row,$coursework,$ability);
+                        $assessortwocell = $cell_object->get_grade_cell_content($assessor_feedback_row, $coursework, $ability);
                         //$jsonarray['assessortwo'] =$assessortwocell;
                         if (strpos($assessortwocell, 'new_feedback') !== false)   $jsonarray['assessortwo'] = $assessortwocell;
 

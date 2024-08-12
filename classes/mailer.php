@@ -196,7 +196,7 @@ class mailer {
         $email_data->coursework_name = $this->coursework->name;
         $email_data->coursework_name_with_link = \html_writer::link($CFG->wwwroot . '/mod/coursework/view.php?id=' . $this->coursework->get_coursemodule_id(), $this->coursework->name);
         $email_data->deadline = $user->deadline;
-        $email_data->human_deadline = userdate($user->deadline,'%a, %d %b %Y, %H:%M');
+        $email_data->human_deadline = userdate($user->deadline, '%a, %d %b %Y, %H:%M');
 
         $secondstodeadline = $user->deadline - time();
         $days = floor($secondstodeadline / 86400);

@@ -33,7 +33,7 @@ $allocatableid = optional_param('allocatableid', $USER->id, PARAM_RAW);
 $allocatabletype = optional_param('allocatabletype', $USER->id, PARAM_ALPHANUMEXT);
 $setpersonaldeadlinespage = optional_param('setpersonaldeadlinespage', 0, PARAM_INT);
 $multipleuserdeadlines = optional_param('multipleuserdeadlines', 0, PARAM_INT);
-$selectedtype = optional_param('selectedtype','date', PARAM_RAW);
+$selectedtype = optional_param('selectedtype', 'date', PARAM_RAW);
 $personal_deadline_time = optional_param('personal_deadline_time',null,PARAM_RAW);
 
 $allocatableid = (!empty($allocatableid_arr))    ?   $allocatableid_arr  : $allocatableid  ;
@@ -43,7 +43,7 @@ $coursework_db = $DB->get_record('coursework',array('id' => $courseworkid));
 
 $coursework = \mod_coursework\models\coursework::find($coursework_db);
 
-require_login($coursework->get_course(),false,$coursework->get_course_module());
+require_login($coursework->get_course(),false, $coursework->get_course_module());
 
 $params = array(
     'courseworkid' => $courseworkid,
