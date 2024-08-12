@@ -240,7 +240,7 @@ class agreedgrade_cell extends cell_base{
 
             $criterias = $coursework->get_rubric_criteria();
 
-            foreach ($criterias as  $criteria) {
+            foreach ($criterias as $criteria) {
                 $rubricheaders[] = $criteria['description'];
                 $rubricheaders[] = $criteria['description']." comment";
             }

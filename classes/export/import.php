@@ -166,7 +166,7 @@ class import extends grading_sheet{
 
             if ($this->coursework->finalstagegrading == 0 ) $types[] = "agreedgrade";
 
-            foreach ($types  as $type) {
+            foreach ($types as $type) {
 
                 $typefound = false;
 
@@ -175,7 +175,7 @@ class import extends grading_sheet{
                 $typepositions = false;
                 $i = 0;
 
-                foreach ($csvheader  as  $ch) {
+                foreach ($csvheader as $ch) {
 
                     if (strpos($ch, $type) !== false) {
 
@@ -228,7 +228,7 @@ class import extends grading_sheet{
 
             $types = array("singlegrade", "assessorgrade");
 
-            foreach ($types  as $type) {
+            foreach ($types as $type) {
 
                 if ($position = array_search($type, $csvheader)) {
 

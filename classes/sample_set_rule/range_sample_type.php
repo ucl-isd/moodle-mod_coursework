@@ -69,7 +69,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         if (!empty($samplerecords)) {
             $seq = 0;
-            foreach ($samplerecords  as $record) {
+            foreach ($samplerecords as $record) {
                 $html   .=  $this->range_elements($assessor_number, $seq, $record);
                 $seq++;
             }

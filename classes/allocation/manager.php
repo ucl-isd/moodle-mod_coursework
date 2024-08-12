@@ -344,7 +344,7 @@ class manager {
 
                 // Save sample set
                 if (!empty($auto_sample_set)) {
-                        foreach ($auto_sample_set    as  $allocatable) {
+                        foreach ($auto_sample_set as $allocatable) {
                             $sample = new \stdClass();
                             $sample->courseworkid = $this->coursework->id;
                             $sample->allocatableid = $allocatable->id;
