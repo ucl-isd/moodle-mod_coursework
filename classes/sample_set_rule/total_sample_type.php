@@ -61,7 +61,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                      AND        sr.stage_identifier = 'assessor_{$assessor_number}'
                      AND        sp.rulename = 'total_sample_type'";
 
-        $selected = ($record = $DB->get_record_sql($sql))  ? array($record->upperlimit => $record->upperlimit) : false;
+        $selected = ($record = $DB->get_record_sql($sql)) ? array($record->upperlimit => $record->upperlimit) : false;
         $checked = ($selected) ? true : false;
 
         $percentage_options = [];
@@ -137,7 +137,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
     static function compare_key($a, $b) {
         if ($a === $b) return 0;
-        return ($a > $b) ? 1:-1;
+        return ($a > $b) ? 1 : -1;
     }
 
     public function adjust_sample_set($stage_number, &$allocatables, &$manual_sample_set, &$auto_sample_set) {
@@ -163,11 +163,11 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $published = $this->released_submissions();
             $number_of_alloctables = count($allocatables);
 
-            $total_to_return = ceil(($rule->upperlimit/100) * $number_of_alloctables);
+            $total_to_return = ceil(($rule->upperlimit / 100) * $number_of_alloctables);
 
             // We include the manual sample set in the count
             // TODO: should we do this?
-            $total_to_return -=  count($manual_sample_set);
+            $total_to_return -= count($manual_sample_set);
 
             // If the resultant number isnt greater than 0 then no automatic sample allocatables will be used
             if ($total_to_return > 0) {

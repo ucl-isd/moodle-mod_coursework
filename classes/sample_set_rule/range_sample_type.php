@@ -95,7 +95,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         $scale = [];
 
         if     ($this->coursework->grade > 0) {
-            for ($i = 0;$i <=  $this->coursework->grade; $i++) {
+            for ($i = 0;$i <= $this->coursework->grade; $i++) {
                 $scale[] = $i;
             }
         } else {
@@ -105,9 +105,9 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         if ($dbrecord) {
             $selected_type = array($dbrecord->ruletype => get_string($dbrecord->ruletype, 'mod_coursework'));
-           $selected_to = ($dbrecord->ruletype == 'scale') ? array($dbrecord->upperlimit => $scale[$dbrecord->upperlimit]) :  array($dbrecord->upperlimit => $dbrecord->upperlimit);
+           $selected_to = ($dbrecord->ruletype == 'scale') ? array($dbrecord->upperlimit => $scale[$dbrecord->upperlimit]) : array($dbrecord->upperlimit => $dbrecord->upperlimit);
 
-            $selected_from = ($dbrecord->ruletype == 'scale') ? array($dbrecord->lowerlimit => $scale[$dbrecord->lowerlimit]) :  array($dbrecord->lowerlimit => $dbrecord->lowerlimit);
+            $selected_from = ($dbrecord->ruletype == 'scale') ? array($dbrecord->lowerlimit => $scale[$dbrecord->lowerlimit]) : array($dbrecord->lowerlimit => $dbrecord->lowerlimit);
 
             $rules_checked = ($dbrecord) ? true : false;
 
@@ -440,7 +440,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
     private function get_allocatables_in_range($stage, $limit1, $limit2) {
         global $CFG, $DB;
 
-        $gradesql = ($CFG->dbtype == 'pgsql') ? " CAST(grade AS integer) " :  " grade ";
+        $gradesql = ($CFG->dbtype == 'pgsql') ? " CAST(grade AS integer) " : " grade ";
 
             $sql = "SELECT *
                     FROM {coursework_submissions} cs,

@@ -2572,7 +2572,7 @@ class coursework extends table_base {
                          AND        stage_identifier = :stage";
 
         if ($random) {
-            $sql .= ($CFG->dbtype == 'pgsql') ? " ORDER BY RANDOM() " :  " ORDER BY RAND() ";
+            $sql .= ($CFG->dbtype == 'pgsql') ? " ORDER BY RANDOM() " : " ORDER BY RAND() ";
         }
 
         return $DB->get_records_sql($sql,

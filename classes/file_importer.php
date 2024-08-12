@@ -210,7 +210,7 @@ class coursework_file_zip_importer {
         }
 
         foreach ($participants as $user) {
-            if ($filename ==  $coursework->get_username_hash($user->id)) {
+            if ($filename == $coursework->get_username_hash($user->id)) {
                 $result = $user->id;
                 break;
             }

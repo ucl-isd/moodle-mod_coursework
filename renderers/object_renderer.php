@@ -839,7 +839,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $sampling_cell .= html_writer::end_tag('div');
 
-            if ($i ==  $samplingwidget->get_coursework()->get_max_markers()) $javascript = true;
+            if ($i == $samplingwidget->get_coursework()->get_max_markers()) $javascript = true;
 
             $graderules =
 

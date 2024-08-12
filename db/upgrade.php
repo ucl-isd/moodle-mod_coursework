@@ -2492,7 +2492,7 @@ function xmldb_coursework_upgrade($oldversion) {
         foreach ($courseworkinstances as $cwk) {
             $courseworkhassubmissions = $DB->record_exists('coursework_submissions', array('courseworkid' => $cwk->id));
 
-            $cwk->renamefiles = ($cwk->blindmarking == 1 || $courseworkhassubmissions) ? 1 :  0;
+            $cwk->renamefiles = ($cwk->blindmarking == 1 || $courseworkhassubmissions) ? 1 : 0;
 
             $DB->update_record('coursework', $cwk);
          }
