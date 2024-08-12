@@ -1454,7 +1454,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $modal_header = html_writer::tag('h5', 'new Extension', array(
             'class' => 'modal-title',
-            'id' =>  'extension-modal-title',
+            'id' => 'extension-modal-title',
         ));
         $modal_header .= html_writer::start_tag('button', array(
             'type' => 'button',
@@ -1550,7 +1550,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $modal_body .= html_writer::end_tag('form');
 
         $modal_footer = html_writer::empty_tag('img', array(
-            'src' =>  $CFG->wwwroot . '/mod/coursework/pix/loadding.gif',
+            'src' => $CFG->wwwroot . '/mod/coursework/pix/loadding.gif',
             'alt' => 'Load...',
             'width' => '25',
             'class' => 'loading_moderation icon',

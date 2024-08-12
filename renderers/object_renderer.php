@@ -1075,7 +1075,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $strategy = new $full_class_name($coursework);
 
             $attributes = array(
-                'class' =>  'assessor-strategy-options',
+                'class' => 'assessor-strategy-options',
                 'id' => 'assessor-strategy-' . $classname
             );
             // Hide this if it's not currently selected.

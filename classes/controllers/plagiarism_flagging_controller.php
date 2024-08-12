@@ -177,9 +177,9 @@ class plagiarism_flagging_controller extends controller_base {
             'courseid' => $this->coursework->get_course()->id,
             'objectid' => $this->coursework->id,
             'other' => array(
-                'courseworkid' =>  $this->coursework->id,
-                'submissionid' =>  $plagiarismflag->submissionid,
-                'flagid' =>  $flagid,
+                'courseworkid' => $this->coursework->id,
+                'submissionid' => $plagiarismflag->submissionid,
+                'flagid' => $flagid,
                 'oldstatus' => $oldstatus,
                 'newstatus' => $plagiarismflag->status
             )

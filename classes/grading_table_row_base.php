@@ -200,7 +200,7 @@ abstract class grading_table_row_base implements user_row {
         $personal_deadline = $DB->get_record('coursework_person_deadlines',
                                             array('courseworkid' => $this->get_coursework()->id,
                                                   'allocatableid' => $allocatable->id(),
-                                                  'allocatabletype' =>  $allocatable->type()));
+                                                  'allocatabletype' => $allocatable->type()));
         if ($personal_deadline) {
             $personal_deadline = $personal_deadline->personal_deadline;
         } else {
@@ -407,7 +407,7 @@ abstract class grading_table_row_base implements user_row {
         global $DB;
         return $DB->record_exists('coursework_extensions', array('courseworkid' => $this->get_coursework()->id,
                                                                       'allocatableid' => $this->get_allocatable()->id(),
-                                                                      'allocatabletype' =>  $this->get_allocatable()->type()));
+                                                                      'allocatabletype' => $this->get_allocatable()->type()));
 
     }
 
@@ -421,7 +421,7 @@ abstract class grading_table_row_base implements user_row {
         global $DB;
         return $DB->get_record('coursework_extensions', array('courseworkid' => $this->get_coursework()->id,
                                                                    'allocatableid' => $this->get_allocatable()->id(),
-                                                                   'allocatabletype' =>  $this->get_allocatable()->type()));
+                                                                   'allocatabletype' => $this->get_allocatable()->type()));
     }
 
     public function get_user_firstname() {

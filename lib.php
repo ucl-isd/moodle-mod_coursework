@@ -476,7 +476,7 @@ function coursework_update_instance($coursework) {
             'courseid' => $courseworkobj->get_course()->id,
             'objectid' => $coursework->id,
             'other' => array(
-                'courseworkid' =>  $coursework->id,
+                'courseworkid' => $coursework->id,
                 'oldsubmissiondeadline' => $oldsubmissiondeadline,
                 'newsubmissionsdeadline' => $coursework->deadline,
                 'oldgeneraldeadline' => $oldgeneraldeadline,
