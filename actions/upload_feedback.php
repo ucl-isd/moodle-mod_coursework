@@ -68,7 +68,7 @@ if ($data = $feedbackform->get_data()) {
     }
 
     $filename = clean_param($feedbackform->get_new_filename('feedbackzip'), PARAM_FILE);
-    $filename = md5(rand(0,1000000).$filename);
+    $filename = md5(rand(0, 1000000).$filename);
     $filepath = $courseworktempdir.'/'.$filename.".zip";
     $feedbackform->save_file('feedbackzip', $filepath);
 

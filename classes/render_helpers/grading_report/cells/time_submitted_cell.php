@@ -104,7 +104,7 @@ class time_submitted_cell extends cell_base {
                 $content .= html_writer::end_span();
 
             } else {
-                $content .= html_writer::span('(' . get_string('ontime', 'mod_coursework') . ')','ontime_submission');
+                $content .= html_writer::span('(' . get_string('ontime', 'mod_coursework') . ')', 'ontime_submission');
             }
 
             if ($submission->get_allocatable()->type() == 'group') {

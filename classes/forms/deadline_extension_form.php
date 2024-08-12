@@ -103,7 +103,7 @@ class deadline_extension_form extends \moodleform {
     public function personal_deadline() {
         global $DB;
 
-        $extensionid = optional_param('id',0,  PARAM_INT);
+        $extensionid = optional_param('id', 0,  PARAM_INT);
 
         if ($extensionid != 0) {
             $ext = $DB->get_record('coursework_extensions', array('id' => $extensionid));

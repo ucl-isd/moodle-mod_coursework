@@ -424,8 +424,8 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
             $plagiarism_flag->annotate_ids('user', 'createdby');
             $plagiarism_flag->annotate_ids('user', 'lastmodifiedby');
 
-            $coursework->annotate_files('mod_coursework', 'feedback',null);
-            $coursework->annotate_files('mod_coursework', 'submission',null);
+            $coursework->annotate_files('mod_coursework', 'feedback', null);
+            $coursework->annotate_files('mod_coursework', 'submission', null);
 
         }
 

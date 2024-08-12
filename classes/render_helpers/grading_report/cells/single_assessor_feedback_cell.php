@@ -200,7 +200,7 @@ class single_assessor_feedback_cell extends cell_base {
         $iconlink = $OUTPUT->action_link($link,
                                          $linktitle,
                                          null,
-                                         array('class' => 'show_feedback','id' => $link_id));
+                                         array('class' => 'show_feedback', 'id' => $link_id));
 
         return $iconlink;
     }
@@ -229,7 +229,7 @@ class single_assessor_feedback_cell extends cell_base {
         return  $OUTPUT->action_link($link,
                                      $title,
                                      null,
-                                     array('class' => 'new_final_feedback','id' => $link_id));
+                                     array('class' => 'new_final_feedback', 'id' => $link_id));
     }
 
 }

@@ -143,7 +143,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
                 ($cell_helper instanceof \mod_coursework\render_helpers\grading_report\cells\user_cell ||
                     $cell_helper instanceof \mod_coursework\render_helpers\grading_report\cells\group_cell)
             ) {
-                $html_td = str_replace('</td>' , $tbl_assessor_feedbacks.'</td>', $html_td);
+                $html_td = str_replace('</td>', $tbl_assessor_feedbacks.'</td>', $html_td);
             }
 
             $table_html .= $html_td;
@@ -160,7 +160,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     /**
      * @return string
      */
-    public function submissions_header($header_text='') {
+    public function submissions_header($header_text = '') {
         $submisions = (!empty($header_text))    ? $header_text  :   get_string('submissions', 'mod_coursework');
 
         return html_writer::tag('h3', $submisions);
@@ -193,7 +193,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     /**
      * @return string
      */
-    protected function start_table($options=array()) {
+    protected function start_table($options = array()) {
         $options['width'] = '100%';
         $options['class'] = (!empty($options['class'])) ? $options['class'] : '';
         $options['class'] .= ' submissions datatabletest display compact';

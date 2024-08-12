@@ -2687,7 +2687,7 @@ class coursework extends table_base {
         $allocatables = $this->get_allocatables();
 
         if (!empty($allocatables)) {
-            $allocatables = array_map(array($this,"get_allocatable_personal_deadline"), $allocatables);
+            $allocatables = array_map(array($this, "get_allocatable_personal_deadline"), $allocatables);
         }
 
         return $allocatables;

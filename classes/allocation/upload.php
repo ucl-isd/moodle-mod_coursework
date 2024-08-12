@@ -83,7 +83,7 @@ class upload {
 
         $csv_cells = array('allocatable');
         $stages = $this->coursework->get_max_markers();
-        for ($i=1; $i<=$stages; $i++) {
+        for ($i = 1; $i<=$stages; $i++) {
             $csv_cells[] = 'assessor_'.$i;
         }
 
@@ -102,7 +102,7 @@ class upload {
 
                     if ($allocatabletype == 'user') {
                         // get user id
-                        $suballocatable = $DB->get_record('user', array($assessor_identifier=> $value));
+                        $suballocatable = $DB->get_record('user', array($assessor_identifier => $value));
                         $allocatable = ($suballocatable)? \mod_coursework\models\user::find($suballocatable->id): '';
                     } else {
                         // get group id
@@ -114,17 +114,17 @@ class upload {
                     // check if allocatable exists in this coursework
                     if (!$allocatable || !in_array($allocatable->id, $allocatables)) {$errors[$s] = get_string($allocatabletype .'notincoursework', 'coursework'); break;}
                     // duplicate user or group
-                    if ($allocatable && in_array($allocatable->id, $allocatablesinfile)) {$errors[$s] = get_string('duplicate'. $allocatabletype , 'coursework') ; break;}
+                    if ($allocatable && in_array($allocatable->id, $allocatablesinfile)) {$errors[$s] = get_string('duplicate'. $allocatabletype, 'coursework') ; break;}
                     $allocatablesinfile[] = $allocatable->id;
                 }
 
                 // validate assessor if exists in the coursework and has one of the capabilities allowing them to grade
                 // in initial stage
-                if (substr($cells[$keynum],0,8) == 'assessor') {
+                if (substr($cells[$keynum], 0, 8) == 'assessor') {
                     // skip empty assessors fields
                     if (empty($value)) { continue;}
 
-                    $assessor = $DB->get_record('user', array($assessor_identifier=> $value));
+                    $assessor = $DB->get_record('user', array($assessor_identifier => $value));
 
                     if (!$assessor ||!in_array($assessor->id, $assessors)) {$errors[$s] = get_string('assessornotincoursework', 'coursework', $keynum ); continue;}
 
@@ -186,7 +186,7 @@ class upload {
         $s = 0;
         $csv_cells = array('allocatable');
         $stages = $this->coursework->get_max_markers();
-        for ($i=1; $i<=$stages; $i++) {
+        for ($i = 1; $i<=$stages; $i++) {
             $csv_cells[] = 'assessor_'.$i;
         }
 
@@ -211,7 +211,7 @@ class upload {
                 if ($cells[$keynum] == 'allocatable') {
                     if ($allocatabletype == 'user') {
                         // get user id
-                        $suballocatable = $DB->get_record('user', array($assessor_identifier=> $value));
+                        $suballocatable = $DB->get_record('user', array($assessor_identifier => $value));
                         $allocatable = ($suballocatable)? \mod_coursework\models\user::find($suballocatable->id): '';
                     } else {
                         // get group id
@@ -220,9 +220,9 @@ class upload {
                         $allocatable = ($suballocatable)? \mod_coursework\models\group::find($suballocatable->id): '';
                     }
                 }
-                if (substr($cells[$keynum],0,8) == 'assessor' && !(empty($value))) {
+                if (substr($cells[$keynum], 0, 8) == 'assessor' && !(empty($value))) {
 
-                    $assessor = $DB->get_record('user', array($assessor_identifier=> $value));
+                    $assessor = $DB->get_record('user', array($assessor_identifier => $value));
 
                     $params = array('courseworkid' => $this->coursework->id,
                                     'allocatableid' => $allocatable->id,

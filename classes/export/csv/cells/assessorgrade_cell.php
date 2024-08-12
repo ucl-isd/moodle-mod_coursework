@@ -310,8 +310,8 @@ class assessorgrade_cell extends cell_base{
             //get all data from the position of the singlegrade to the length of rubricheaders
             // $csv_cells = array_splice($csv_cells,5, 1, $rubricheaders);
 
-            $start_cells = array_slice($csv_cells,0, $position,true);
-            $end_cells = array_slice($csv_cells, $position+1,count($csv_cells),true);
+            $start_cells = array_slice($csv_cells, 0, $position, true);
+            $end_cells = array_slice($csv_cells, $position + 1, count($csv_cells), true);
 
             $cells = array_merge($start_cells, $rubricheaders);
 

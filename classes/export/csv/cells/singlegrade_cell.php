@@ -147,7 +147,7 @@ class singlegrade_cell extends cell_base{
 
             //is the current user an assessor at any of this submissions grading stages or do they have administer grades
             if ($this->coursework->allocation_enabled() && !$this->coursework->is_assessor($USER) && !has_capability('mod/coursework:administergrades', $PAGE->context))
-                return get_string('nopermissiontogradesubmission','coursework');
+                return get_string('nopermissiontogradesubmission', 'coursework');
 
                         //has the submission been published if yes then no further grades are allowed
             if ($submission->get_state() >= submission::PUBLISHED)  return $submission->get_status_text();
@@ -162,7 +162,7 @@ class singlegrade_cell extends cell_base{
             if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
                 //was this user the one who last graded this submission if not then user cannot grade
                 if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $PAGE->context) && !has_capability('mod/coursework:administergrades', $PAGE->context))
-                    return get_string('nopermissiontoeditgrade','coursework');
+                    return get_string('nopermissiontoeditgrade', 'coursework');
 
             }
 
@@ -174,7 +174,7 @@ class singlegrade_cell extends cell_base{
             );
             $feedback = feedback::find($feedback_params);
 
-            //if (!$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade','coursework');
+            //if (!$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade', 'coursework');
 
             //does a feedback exist for this stage
             if (empty($feedback)) {
@@ -187,10 +187,10 @@ class singlegrade_cell extends cell_base{
                 $new_feedback = feedback::build($feedback_params);
 
                 //this is a new feedback check it against the new ability checks
-                if (!$ability->can('new', $new_feedback))   return get_string('nopermissiontogradesubmission','coursework');
+                if (!$ability->can('new', $new_feedback))   return get_string('nopermissiontogradesubmission', 'coursework');
             } else {
                 //this is a new feedback check it against the edit ability checks
-                if (!$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade','coursework');
+                if (!$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade', 'coursework');
             }
 
         } else {
@@ -255,8 +255,8 @@ class singlegrade_cell extends cell_base{
             //get all data from the position of the singlegrade to the length of rubricheaders
            // $csv_cells = array_splice($csv_cells,5, 1, $rubricheaders);
 
-            $start_cells = array_slice($csv_cells,0, $position,true);
-            $end_cells = array_slice($csv_cells, $position+1,count($csv_cells),true);
+            $start_cells = array_slice($csv_cells, 0, $position, true);
+            $end_cells = array_slice($csv_cells, $position+1, count($csv_cells), true);
 
             $cells = array_merge($start_cells, $rubricheaders);
 

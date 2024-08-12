@@ -56,8 +56,8 @@ class agreedfeedback_cell extends cell_base{
         global $DB, $PAGE, $USER;
 
         $stage_identifier = 'final_agreed_1';
-        $agreedgradecap = array('mod/coursework:addagreedgrade','mod/coursework:editagreedgrade',
-            'mod/coursework:addallocatedagreedgrade','mod/coursework:editallocatedagreedgrade');
+        $agreedgradecap = array('mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade',
+            'mod/coursework:addallocatedagreedgrade', 'mod/coursework:editallocatedagreedgrade');
 
         if (has_any_capability($agreedgradecap, $PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context)) {
@@ -66,7 +66,7 @@ class agreedfeedback_cell extends cell_base{
             $submission = \mod_coursework\models\submission::find($subdbrecord);
 
             //is the submission in question ready to grade?
-            if (!$submission->all_inital_graded()  && !empty($value)) return get_string('submissionnotreadyforagreedgrade','coursework');
+            if (!$submission->all_inital_graded()  && !empty($value)) return get_string('submissionnotreadyforagreedgrade', 'coursework');
 
             //has the submission been published if yes then no further grades are allowed
             if ($submission->get_state() >= submission::PUBLISHED)  return $submission->get_status_text();
@@ -94,10 +94,10 @@ class agreedfeedback_cell extends cell_base{
                 $new_feedback = feedback::build($feedback_params);
 
                 //this is a new feedback check it against the new ability checks
-                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && !$ability->can('new', $new_feedback))   return get_string('nopermissiontogradesubmission','coursework');
+                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && !$ability->can('new', $new_feedback))   return get_string('nopermissiontogradesubmission', 'coursework');
             } else {
                 //this is a new feedback check it against the edit ability checks
-                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade','coursework');
+                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade', 'coursework');
             }
 
         } else {

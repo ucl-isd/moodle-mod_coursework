@@ -246,7 +246,7 @@ class manager {
 
         global $CFG, $DB;
 
-        $sampleplugins = $DB->get_records('coursework_sample_set_plugin',null, 'pluginorder');
+        $sampleplugins = $DB->get_records('coursework_sample_set_plugin', null, 'pluginorder');
         $order = 0;
         foreach ($sampleplugins as $plugin) {
 
@@ -286,7 +286,7 @@ class manager {
     public function auto_generate_sample_set() {
         global $DB;
 
-        $sampleplugins = $DB->get_records('coursework_sample_set_plugin',null, 'pluginorder');
+        $sampleplugins = $DB->get_records('coursework_sample_set_plugin', null, 'pluginorder');
         $order = 0;
 
         $sample_set = array();

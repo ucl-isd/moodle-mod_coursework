@@ -59,7 +59,7 @@ class submissionfileid_cell extends cell_base {
 
         $hash = $this->coursework->get_username_hash($submission->allocatableid);
 
-        return ($value == $hash) ? true : get_string('submissionnotfound','coursework');
+        return ($value == $hash) ? true : get_string('submissionnotfound', 'coursework');
     }
 
 }

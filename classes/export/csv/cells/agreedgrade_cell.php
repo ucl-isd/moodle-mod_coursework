@@ -78,7 +78,7 @@ class agreedgrade_cell extends cell_base{
 
         $stage_identifier = 'final_agreed_1';
         $agreedgradecap = array('mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade',
-                                     'mod/coursework:addallocatedagreedgrade','mod/coursework:editallocatedagreedgrade');
+                                     'mod/coursework:addallocatedagreedgrade', 'mod/coursework:editallocatedagreedgrade');
 
         if (empty($value)) return true;
 
@@ -152,7 +152,7 @@ class agreedgrade_cell extends cell_base{
             $submission = \mod_coursework\models\submission::find($subdbrecord);
 
             //is the submission in question ready to grade?
-            if (!$submission->all_inital_graded() && !empty($value) && count($uploadedgradecells) < $submission->max_number_of_feedbacks()) return get_string('submissionnotreadyforagreedgrade','coursework');
+            if (!$submission->all_inital_graded() && !empty($value) && count($uploadedgradecells) < $submission->max_number_of_feedbacks()) return get_string('submissionnotreadyforagreedgrade', 'coursework');
 
             //has the submission been published if yes then no further grades are allowed
             if ($submission->get_state() >= submission::PUBLISHED)  return $submission->get_status_text();
@@ -181,10 +181,10 @@ class agreedgrade_cell extends cell_base{
                 $new_feedback = feedback::build($feedback_params);
 
                 //this is a new feedback check it against the new ability checks
-                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && !$ability->can('new', $new_feedback))   return get_string('nopermissiontogradesubmission','coursework');
+                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && !$ability->can('new', $new_feedback))   return get_string('nopermissiontogradesubmission', 'coursework');
             } else {
                 //this is a new feedback check it against the edit ability checks
-                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade','coursework');
+                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade', 'coursework');
             }
 
         } else {
@@ -250,8 +250,8 @@ class agreedgrade_cell extends cell_base{
             //get all data from the position of the singlegrade to the length of rubricheaders
             // $csv_cells = array_splice($csv_cells,5, 1, $rubricheaders);
 
-            $start_cells = array_slice($csv_cells,0, $position,true);
-            $end_cells = array_slice($csv_cells, $position+1,count($csv_cells),true);
+            $start_cells = array_slice($csv_cells, 0, $position, true);
+            $end_cells = array_slice($csv_cells, $position+1, count($csv_cells), true);
 
             $cells = array_merge($start_cells, $rubricheaders);
 

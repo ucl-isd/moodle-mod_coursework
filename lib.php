@@ -911,7 +911,7 @@ function coursework_role_assigned_event_handler($roleassignment) {
     $courseworkids = coursework_get_coursework_ids_from_context_id($roleassignment->contextid);
 
     foreach ($courseworkids as $courseworkid) {
-        $DB->set_field('coursework', 'processenrol',1, array('id' => $courseworkid));
+        $DB->set_field('coursework', 'processenrol', 1, array('id' => $courseworkid));
     }
 
     return true;
@@ -932,7 +932,7 @@ function coursework_role_unassigned_event_handler($roleassignment) {
     $courseworkids = coursework_get_coursework_ids_from_context_id($roleassignment->contextid);
 
     foreach ($courseworkids as $courseworkid) {
-        $DB->set_field('coursework', 'processunenrol',1, array('id' => $courseworkid));
+        $DB->set_field('coursework', 'processunenrol', 1, array('id' => $courseworkid));
     }
 
     return true;
@@ -1521,7 +1521,7 @@ function coursework_personal_deadline_passed($courseworkid) {
             WHERE courseworkid = :courseworkid
             AND personal_deadline < :now";
 
-   return $DB->record_exists_sql($sql, array('courseworkid' => $courseworkid , 'now' => time()));
+   return $DB->record_exists_sql($sql, array('courseworkid' => $courseworkid, 'now' => time()));
 
 }
 

@@ -341,7 +341,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param bool $ajax
      * @throws coding_exception
      */
-    public function new_feedback_page($new_feedback , $ajax = false) {
+    public function new_feedback_page($new_feedback, $ajax = false) {
         global $PAGE, $OUTPUT, $SITE, $DB;
 
         $submission = $new_feedback->get_submission();
@@ -757,7 +757,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                  */
 
                 $html .= html_writer::start_tag('div', array('class' => 'wrapper_table_submissions'));
-                $html .= $grading_report_renderer->render_grading_report($grading_report, $coursework->has_multiple_markers(),true);
+                $html .= $grading_report_renderer->render_grading_report($grading_report, $coursework->has_multiple_markers(), true);
                 $html .= html_writer::end_tag('div');
 
                 /**
@@ -1515,7 +1515,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $content_default_deadline = html_writer::div($content_default_deadline, 'col-md-12', array('id' => 'extension-time-content'));
             $modal_body .= html_writer::div($content_default_deadline, 'form-group row fitem');
 
-            $content_extended_deadline = html_writer::tag('label',get_string('extended_deadline', 'mod_coursework'));
+            $content_extended_deadline = html_writer::tag('label', get_string('extended_deadline', 'mod_coursework'));
             $content_extended_deadline_div = html_writer::div($content_extended_deadline, 'col-md-3');
             $input = '<input type="text" class="form-control" id="extension-extend-deadline" placeholder="" disabled readonly>';
             $content_extended_deadline_div .= html_writer::div($input, 'col-md-6');
@@ -1523,9 +1523,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
             $extension_reasons = coursework::extension_reasons();
             if (!empty($extension_reasons)) {
-                $select_extension_reasons = html_writer::tag('label',get_string('extension_reason', 'mod_coursework'));
+                $select_extension_reasons = html_writer::tag('label', get_string('extension_reason', 'mod_coursework'));
                 $select_extension_reasons_div = html_writer::div($select_extension_reasons, 'col-md-3');
-                $select_extension_reasons = html_writer::select($extension_reasons, '', '',false, array(
+                $select_extension_reasons = html_writer::select($extension_reasons, '', '', false, array(
                     'id' => 'extension-reason-select',
                     'class' => 'form-control'
                 ));
@@ -1533,7 +1533,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $modal_body .= html_writer::div($select_extension_reasons_div, 'form-group row fitem');
             }
 
-            $content_extra_information = html_writer::tag('label',get_string('extra_information', 'mod_coursework'), array(
+            $content_extra_information = html_writer::tag('label', get_string('extra_information', 'mod_coursework'), array(
                 'class' => 'col-form-label d-inline', 'for' => 'id_extra_information'
             ));
             $content_extra_information_div = html_writer::div($content_extra_information, 'col-md-3');

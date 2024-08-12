@@ -57,7 +57,7 @@ class enrol_task extends \core\task\scheduled_task {
                 $allocator = new \mod_coursework\allocation\auto_allocator($coursework);
                 $allocator->process_allocations();
 
-                $DB->set_field('coursework', 'processenrol',0, array('id' => $coursework->id()));
+                $DB->set_field('coursework', 'processenrol', 0, array('id' => $coursework->id()));
             }
         }
 

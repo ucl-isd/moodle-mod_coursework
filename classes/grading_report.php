@@ -82,7 +82,7 @@ class grading_report {
 
     /**
      * Grades in $data must be already rounded to the set number of decimals or must be null
-     * (in which later case, the [mod_workshop,nullgrade] string shall be displayed)
+     * (in which later case, the [mod_workshop, nullgrade] string shall be displayed)
      *
      * @param array $options
      * @param coursework $coursework

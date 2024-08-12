@@ -129,12 +129,12 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
             if ($coursework->sampling_enabled() && $stage->uses_sampling() && !$stage->allocatable_is_in_sample($allocatable)) {
 
                 $output_rows .= '
-                        <td class = "not_included_in_sample" colspan =3>'.get_string('notincludedinsample','mod_coursework').'</td>
+                        <td class = "not_included_in_sample" colspan =3>'.get_string('notincludedinsample', 'mod_coursework').'</td>
                         </tr >';
             } else {
 
                 $assessor_details = (empty($feedback_row->get_assessor()->id()) && $coursework->allocation_enabled()) ?
-                     get_string('assessornotallocated','mod_coursework') : $this->profile_link($feedback_row);
+                     get_string('assessornotallocated', 'mod_coursework') : $this->profile_link($feedback_row);
                  $output_rows .=
                      '<td>' . $assessor_details. ' </td>
                      <td class="assessor_feedback_grade" data-class-name="' . get_class($this) . '">' .
@@ -255,7 +255,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         $iconlink = $OUTPUT->action_link($link,
                                          $linktitle,
                                          null,
-                                         array('class' => 'show_feedback','id' => $link_id));
+                                         array('class' => 'show_feedback', 'id' => $link_id));
         return $iconlink;
     }
 
@@ -347,7 +347,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
                 }
             }
 
-            $grade_editing = get_config('mod_coursework','coursework_grade_editing');
+            $grade_editing = get_config('mod_coursework', 'coursework_grade_editing');
 
             if ($ability->can('edit', $feedback_row->get_feedback()) && !$submission->already_published()) {
                 $html .= $this->edit_existing_feedback_link($feedback_row);

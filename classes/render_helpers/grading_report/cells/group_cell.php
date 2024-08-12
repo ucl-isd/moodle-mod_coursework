@@ -49,9 +49,9 @@ class group_cell extends cell_base implements allocatable_cell {
         $content .= '<select>';
 
         if ($this->coursework->blindmarking_enabled() && !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context()) && !$row_object->is_published()) {
-            $content .= '<option class="expand_members" selected="selected">'.get_string('membershidden','coursework').'</option>';
+            $content .= '<option class="expand_members" selected="selected">'.get_string('membershidden', 'coursework').'</option>';
         } else{
-            $content .= '<option class="expand_members" selected="selected">'.get_string('viewmembers','coursework').'</option>';
+            $content .= '<option class="expand_members" selected="selected">'.get_string('viewmembers', 'coursework').'</option>';
         }
 
         $cm = $this->coursework->get_course_module();

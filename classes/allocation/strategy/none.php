@@ -51,7 +51,7 @@ class none extends base {
         global $PAGE, $CFG;
 
         $url = "$CFG->wwwroot/mod/coursework/actions/upload_allocations.php?cmid={$PAGE->cm->id}";
-        $html = html_writer::link($url,get_string('uploadallocations', 'mod_coursework'));
+        $html = html_writer::link($url, get_string('uploadallocations', 'mod_coursework'));
 
         return $html;
     }

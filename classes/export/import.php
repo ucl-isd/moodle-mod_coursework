@@ -103,7 +103,7 @@ class import extends grading_sheet{
                 $stage_identifier = $this->get_stage_identifier($submissionid, $cells[$i]);
 
                 // remove numbers from cell names so they can be dynamically validated
-                if (substr($cells[$i],0,8) == 'assessor') {
+                if (substr($cells[$i], 0, 8) == 'assessor') {
                     $cells[$i] = substr($cells[$i], 0, -1);
                 }
 
@@ -162,7 +162,7 @@ class import extends grading_sheet{
         // get criteria of rubrics and match it to grade cells
         if ($this->coursework->is_using_rubric()) {
 
-            $types = array("singlegrade","assessorgrade");
+            $types = array("singlegrade", "assessorgrade");
 
             if ($this->coursework->finalstagegrading == 0 ) $types[] = "agreedgrade";
 
@@ -226,7 +226,7 @@ class import extends grading_sheet{
         // get criteria of rubrics and match it to grade cells
         if ($this->coursework->is_using_rubric()) {
 
-            $types = array("singlegrade","assessorgrade");
+            $types = array("singlegrade", "assessorgrade");
 
             foreach ($types  as $type) {
 
@@ -343,9 +343,9 @@ class import extends grading_sheet{
             } else {
 
                 foreach ($csvline as $k => $v) {
-                    if (substr($k,0,13) == 'assessorgrade' || substr($k,0,11) == 'singlegrade') {
+                    if (substr($k, 0, 13) == 'assessorgrade' || substr($k, 0, 11) == 'singlegrade') {
                        $stages[$k] = $this->get_stage_identifier($csvline['submissionid'], $k);
-                    } else if (substr($k,0,11) == 'agreedgrade') {
+                    } else if (substr($k, 0, 11) == 'agreedgrade') {
                        $stages[$k] = 'final_agreed_1';
                     }
                 }

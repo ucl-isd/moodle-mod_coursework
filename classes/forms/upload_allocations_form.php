@@ -39,7 +39,7 @@ class upload_allocations_form extends moodleform {
         $mform->addElement('filepicker', 'allocationsdata', get_string('allocationsfile', 'coursework'), null, array( 'accepted_types' => '*.csv'));
         $mform->addRule('allocationsdata', null, 'required');
 
-      //  $mform->addElement('checkbox', 'overwrite', '',get_string('overwritegrades', 'coursework'));
+      //  $mform->addElement('checkbox', 'overwrite', '', get_string('overwritegrades', 'coursework'));
         $mform->addElement('hidden', 'cmid', $this->cmid);
 
         $mform->setType('cmid', PARAM_RAW);
@@ -58,7 +58,7 @@ class upload_allocations_form extends moodleform {
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
         $mform->setDefault('encoding', 'UTF-8');
 
-        $this->add_action_buttons(true,get_string('uploadallocations', 'coursework'));
+        $this->add_action_buttons(true, get_string('uploadallocations', 'coursework'));
     }
 
     function display() {

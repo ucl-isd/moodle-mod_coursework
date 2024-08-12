@@ -1097,7 +1097,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodle_form->addElement('select', 'finalstagegrading', get_string('finalstagegrading', 'mod_coursework'), $options);
         $moodle_form->addHelpButton('finalstagegrading', 'finalstagegrading', 'mod_coursework');
-        $moodle_form->setDefault('finalstagegrading',0);
+        $moodle_form->setDefault('finalstagegrading', 0);
         $moodle_form->disabledIf('finalstagegrading', 'numberofmarkers', 'eq', 1);
         $moodle_form->disabledIf('finalstagegrading', 'advancedgradingmethod_submissions', 'eq', "");
 

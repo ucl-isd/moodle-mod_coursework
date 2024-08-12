@@ -67,7 +67,7 @@ if ($data = $gradinguploadform->get_data()) {
 
     $csv_cells = \mod_coursework\export\grading_sheet::cells_array($coursework);
 
-    $csvimport = new \mod_coursework\export\import($coursework,false,false);
+    $csvimport = new \mod_coursework\export\import($coursework, false, false);
 
    // $csv_cells = $csvimport->csv_columns(); //all columns from spreadsheet
 

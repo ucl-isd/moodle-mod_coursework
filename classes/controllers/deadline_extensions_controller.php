@@ -341,7 +341,7 @@ class deadline_extensions_controller extends controller_base {
         );
 
         $ability = new ability(user::find($USER), $this->coursework);
-        $deadline_extension= deadline_extension::build($params);
+        $deadline_extension = deadline_extension::build($params);
         $ability->require_can('new', $deadline_extension);
         $time_content = '';
         $time = '';

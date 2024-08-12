@@ -41,7 +41,7 @@ class upload_feedback_form extends moodleform {
         $mform->addRule('feedbackzip', null, 'required');
         $mform->addHelpButton('feedbackzip', 'feedbackzipfile', 'coursework');
 
-        $mform->addElement('advcheckbox', 'overwrite', '',get_string('overwritefeedback', 'coursework'),null, array(0,1));
+        $mform->addElement('advcheckbox', 'overwrite', '', get_string('overwritefeedback', 'coursework'), null, array(0, 1));
         $mform->addElement('hidden', 'cmid', $this->cmid);
         $mform->setType('cmid', PARAM_RAW);
 
@@ -77,7 +77,7 @@ class upload_feedback_form extends moodleform {
             $mform->disabledIf('overwrite', 'feedbackstage', 'eq', 'final_agreed_1');
         }
 
-        $this->add_action_buttons(true,get_string('uploadfeedbackzip', 'coursework'));
+        $this->add_action_buttons(true, get_string('uploadfeedbackzip', 'coursework'));
     }
 
     function display() {

@@ -27,7 +27,7 @@ global $CFG, $DB, $PAGE;
 if ($ADMIN->fulltree) {
     require_once($CFG->dirroot.'/mod/coursework/lib.php');
 
-    $settings_header = new admin_setting_heading('settings_header', '' ,get_string('settings_header', 'mod_coursework'));
+    $settings_header = new admin_setting_heading('settings_header', '', get_string('settings_header', 'mod_coursework'));
     $settings->add($settings_header);
 
     // Set site-wide option for late submission
@@ -165,7 +165,7 @@ if ($ADMIN->fulltree) {
                                                     $extension_list_label, $extension_list_description, ''));
 
     // maximum extension deadline
-    $settings->add(new admin_setting_configtext('coursework_max_extension_deadline',get_string('maximum_extension_deadline', 'coursework'),
+    $settings->add(new admin_setting_configtext('coursework_max_extension_deadline', get_string('maximum_extension_deadline', 'coursework'),
                                                                                     get_string('maximum_extension_deadline_desc', 'coursework'),
                                                                                     18, PARAM_INT, 2));
 

@@ -139,7 +139,7 @@ class outstanding_marking   {
         $sql = "     SELECT  *,
                                   $countsamples AS count_samples,
                                   COUNT(a.id) AS ssmID  FROM(
-                                                  SELECT  cs.id AS csid, f.id AS fid, cs.allocatableid ,ssm.id, COUNT(f.id) AS count_feedback,
+                                                  SELECT  cs.id AS csid, f.id AS fid, cs.allocatableid, ssm.id, COUNT(f.id) AS count_feedback,
                                                       cs.courseworkid
                                                   FROM {coursework_submissions} cs  LEFT JOIN
                                                        {coursework_feedbacks} f ON f.submissionid= cs.id
@@ -226,7 +226,7 @@ class outstanding_marking   {
         global $DB;
 
         $sql = "SELECT cs.id as submissionid, COUNT(cs.id) AS count_feedback
-                                      FROM 	{coursework_submissions}	cs ,
+                                      FROM 	{coursework_submissions} cs ,
                                             {coursework_feedbacks} f
                                      WHERE  f.submissionid= cs.id
                                         AND cs.finalised = 1
@@ -252,7 +252,7 @@ class outstanding_marking   {
         $sql = "SELECT  *,
                                   $countsamples AS count_samples,
                                    COUNT(a.id) AS ssmID  FROM(
-                                                  SELECT f.id AS fid, cs.id AS csid, cs.allocatableid ,ssm.id, COUNT(f.id) AS count_feedback,
+                                                  SELECT f.id AS fid, cs.id AS csid, cs.allocatableid, ssm.id, COUNT(f.id) AS count_feedback,
                                                       cs.courseworkid
                                                   FROM {coursework_submissions} cs  LEFT JOIN
                                                        {coursework_feedbacks} f ON f.submissionid= cs.id

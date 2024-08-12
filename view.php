@@ -275,7 +275,7 @@ if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $gro
         $redirectdetail->percentage = $percentage_allocation_not_complete;
         $redirectdetail->manual = $manual_allocation_not_complete;
 
-        redirect($CFG->wwwroot.'/mod/coursework/actions/allocate.php?id='.$course_module_id,get_string('configuration_needed', 'coursework', $redirectdetail));
+        redirect($CFG->wwwroot.'/mod/coursework/actions/allocate.php?id='.$course_module_id, get_string('configuration_needed', 'coursework', $redirectdetail));
     }
 }*/
 

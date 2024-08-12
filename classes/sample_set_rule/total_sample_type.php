@@ -61,7 +61,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                      AND        sr.stage_identifier = 'assessor_{$assessor_number}'
                      AND        sp.rulename = 'total_sample_type'";
 
-        $selected = ($record = $DB->get_record_sql($sql))  ?   array($record->upperlimit=> $record->upperlimit) : false;
+        $selected = ($record = $DB->get_record_sql($sql))  ?   array($record->upperlimit => $record->upperlimit) : false;
         $checked = ($selected) ?   true : false;
 
         $percentage_options = array();
@@ -72,7 +72,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         $html = html_writer::start_div('sampletotal');
 
-        $html    .=  html_writer::checkbox("assessor_{$assessor_number}_sampletotal_checkbox",1, $checked,get_string('topupto', 'mod_coursework'),
+        $html    .=  html_writer::checkbox("assessor_{$assessor_number}_sampletotal_checkbox", 1, $checked, get_string('topupto', 'mod_coursework'),
             array('id' => "assessor_{$assessor_number}_sampletotal_checkbox", 'class' => "assessor_{$assessor_number} total_checkbox sample_set_rule"));
 
         $html   .= html_writer::select($percentage_options,
@@ -109,15 +109,15 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         ";
 
-        return  html_writer::script($js_script,null);
+        return  html_writer::script($js_script, null);
 
     }
 
-    function save_form_data($assessor_number=0,&$order=0) {
+    function save_form_data($assessor_number=0, &$order=0) {
         global $DB;
 
-        $total_checkbox = optional_param("assessor_{$assessor_number}_sampletotal_checkbox",false, PARAM_INT);
-        $sample_total = optional_param("assessor_{$assessor_number}_sampletotal",false, PARAM_INT);
+        $total_checkbox = optional_param("assessor_{$assessor_number}_sampletotal_checkbox", false, PARAM_INT);
+        $sample_total = optional_param("assessor_{$assessor_number}_sampletotal", false, PARAM_INT);
 
         if ($total_checkbox) {
 
@@ -140,7 +140,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         return ($a > $b)? 1:-1;
     }
 
-    public function adjust_sample_set($stage_number,&$allocatables,&$manual_sample_set,&$auto_sample_set) {
+    public function adjust_sample_set($stage_number, &$allocatables, &$manual_sample_set, &$auto_sample_set) {
 
         global $DB;
 

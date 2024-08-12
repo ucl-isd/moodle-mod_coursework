@@ -354,7 +354,7 @@ class student_submission_form extends moodleform {
                                  $uploadfilestring,
                                  null,
                                  $this->get_file_manager_options());
-        $this->_form->addRule('submission_manager', 'You must upload file(s) into the box below before you can save', 'required', null, 'server',false,true);
+        $this->_form->addRule('submission_manager', 'You must upload file(s) into the box below before you can save', 'required', null, 'server', false, true);
 
     }
 

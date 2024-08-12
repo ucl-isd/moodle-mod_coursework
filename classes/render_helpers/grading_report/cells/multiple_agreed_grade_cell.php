@@ -140,7 +140,7 @@ class multiple_agreed_grade_cell extends cell_base {
                 $iconlink = $OUTPUT->action_link($link,
                                                  $linktitle,
                                                  null,
-                                                 array('class' => 'show_feedback','id' => $link_id));
+                                                 array('class' => 'show_feedback', 'id' => $link_id));
             }
         }
 
