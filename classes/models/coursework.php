@@ -2230,7 +2230,7 @@ class coursework extends table_base {
         }
     }
 
-    public  function get_submission_notification_users() {
+    public function get_submission_notification_users() {
         return $this->submissionnotification;
     }
 

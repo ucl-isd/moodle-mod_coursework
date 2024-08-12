@@ -1646,7 +1646,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param $submissions
      * @return mixed
      */
-    public  function remove_unfinalised_submissions($submissions) {
+    public function remove_unfinalised_submissions($submissions) {
 
         foreach ($submissions as $sub) {
 
@@ -1666,7 +1666,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param $submissions
      * @return mixed
      */
-    public  function removed_final_graded_submissions($submissions) {
+    public function removed_final_graded_submissions($submissions) {
 
         foreach ($submissions as $sub) {
 
@@ -1707,7 +1707,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param $submissions
      * @return mixed
      */
-    public  function remove_final_gradable_submissions($submissions) {
+    public function remove_final_gradable_submissions($submissions) {
 
         foreach ($submissions as $sub) {
 

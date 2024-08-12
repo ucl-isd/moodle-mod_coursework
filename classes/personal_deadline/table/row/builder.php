@@ -197,7 +197,7 @@ class builder implements user_row {
         return  $personal_deadline;
     }
 
-    public  function get_submission_status() {
+    public function get_submission_status() {
         global  $DB;
 
         $submission_db = $DB->get_record('coursework_submissions',
