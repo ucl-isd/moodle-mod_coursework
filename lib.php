@@ -702,7 +702,7 @@ function coursework_scale_used($courseworkid, $scaleid) {
 
     $params = array('grade' => $scaleid,
                     'id' => $courseworkid);
-    if ($scaleid and $DB->record_exists('coursework', $params)) {
+    if ($scaleid && $DB->record_exists('coursework', $params)) {
         return true;
     } else {
         return false;
@@ -720,7 +720,7 @@ function coursework_scale_used($courseworkid, $scaleid) {
 function coursework_scale_used_anywhere($scaleid) {
     global $DB;
 
-    if ($scaleid and $DB->record_exists('coursework', array('grade' => $scaleid))) {
+    if ($scaleid && $DB->record_exists('coursework', array('grade' => $scaleid))) {
         return true;
     } else {
         return false;
