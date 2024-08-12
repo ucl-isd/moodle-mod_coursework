@@ -694,7 +694,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         global $OUTPUT;
 
-        $lang_str = ($allocationwidget->get_coursework()->moderation_agreement_enabled()) ? 'allocateassessorsandmoderators':'allocateassessors';
+        $lang_str = ($allocationwidget->get_coursework()->moderation_agreement_enabled()) ? 'allocateassessorsandmoderators' : 'allocateassessors';
         $html = html_writer::tag('h2', get_string($lang_str, 'mod_coursework'));
 
         $html .= '<div class="assessor-allocation-wrapper accordion">';
