@@ -29,7 +29,7 @@ use mod_coursework\models\deadline_extension;
  */
 class mod_coursework_models_deadline_extension_test extends advanced_testcase {
 
-    use \mod_coursework\test_helpers\factory_mixin;
+    use mod_coursework\test_helpers\factory_mixin;
 
     public function setUp() {
         $this->resetAfterTest();

@@ -21,7 +21,7 @@ use html_writer;
 use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\grade_judge;
-use \mod_coursework\submission_files;
+use mod_coursework\submission_files;
 use mod_coursework\framework\table_base;
 use moodle_database;
 use moodle_url;

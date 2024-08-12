@@ -22,8 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use \mod_coursework\models\coursework;
-use \mod_coursework\models\personal_deadline;
+use mod_coursework\models\coursework;
+use mod_coursework\models\personal_deadline;
 
 require_once(dirname(__FILE__).'/../../../config.php');
 

@@ -30,7 +30,7 @@ use mod_coursework\models\coursework;
 use mod_coursework\models\moderation_set_rule;
 use mod_coursework\moderation_set_widget;
 use mod_coursework\sampling_set_widget;
-use \mod_coursework\stages\base as stage_base;
+use mod_coursework\stages\base as stage_base;
 use moodle_exception;
 use mod_coursework\grade_judge;
 

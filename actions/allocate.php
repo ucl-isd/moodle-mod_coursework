@@ -23,8 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use \mod_coursework\models\coursework;
-use \mod_coursework\allocation\widget;
+use mod_coursework\models\coursework;
+use mod_coursework\allocation\widget;
 
 require_once(dirname(__FILE__).'/../../../config.php');
 

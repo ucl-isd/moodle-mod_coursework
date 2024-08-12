@@ -27,8 +27,8 @@ ignore_user_abort(true);
 //we have to set the time limit to 0 as depending on
 set_time_limit ( 0 );
 
-use \mod_coursework\models\coursework;
-use \mod_coursework\allocation\widget;
+use mod_coursework\models\coursework;
+use mod_coursework\allocation\widget;
 
 require_once(dirname(__FILE__).'/../../../config.php');
 

@@ -30,8 +30,8 @@
 namespace mod_coursework\models;
 
 use mod_coursework\framework\table_base;
-use \mod_coursework\allocation\allocatable;
-use \mod_coursework\allocation\moderatable;
+use mod_coursework\allocation\allocatable;
+use mod_coursework\allocation\moderatable;
 
 /**
  * @property int courseworkid

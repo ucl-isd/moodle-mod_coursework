@@ -26,7 +26,7 @@
  */
 class assessor_test extends advanced_testcase {
 
-    use \mod_coursework\test_helpers\factory_mixin;
+    use mod_coursework\test_helpers\factory_mixin;
 
     public function setUp() {
         $this->resetAfterTest();

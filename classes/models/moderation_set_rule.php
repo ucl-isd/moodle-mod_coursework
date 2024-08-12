@@ -17,7 +17,7 @@
 namespace mod_coursework\models;
 
 use mod_coursework\allocation\allocatable;
-use \mod_coursework\stages\base as stage_base;
+use mod_coursework\stages\base as stage_base;
 
 /**
  * This file keeps track of upgrades to the eassessment module
