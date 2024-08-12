@@ -38,7 +38,7 @@ defined('MOODLE_INTERNAL') || die();
  * @property mixed stage_identifier
  * @property int feedback_manager
  */
-class moderation extends table_base{
+class moderation extends table_base {
 
     /**
      * @var int

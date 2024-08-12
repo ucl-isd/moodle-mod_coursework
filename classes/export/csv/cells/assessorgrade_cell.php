@@ -30,7 +30,7 @@ use mod_coursework\export;
 /**
  * Class assessorgrade_cell
  */
-class assessorgrade_cell extends cell_base{
+class assessorgrade_cell extends cell_base {
 
     /**
      * @param submission$submission

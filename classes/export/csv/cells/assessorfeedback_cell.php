@@ -28,7 +28,7 @@ use mod_coursework\models\feedback;
 /**
  * Class assessorfeedback_cell
  */
-class assessorfeedback_cell extends cell_base{
+class assessorfeedback_cell extends cell_base {
 
     /**
      * @param submission$submission

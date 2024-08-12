@@ -30,7 +30,7 @@ use mod_coursework\auto_grader\auto_grader;
 global $CFG;
 require_once($CFG->libdir . '/csvlib.class.php');
 
-class import extends grading_sheet{
+class import extends grading_sheet {
 
     public function validate_submissionfileid() {
 

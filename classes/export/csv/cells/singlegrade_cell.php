@@ -30,7 +30,7 @@ use mod_coursework\models\feedback;
 /**
  * Class singlegrade_cell
  */
-class singlegrade_cell extends cell_base{
+class singlegrade_cell extends cell_base {
 
     /**
      * @param $submission

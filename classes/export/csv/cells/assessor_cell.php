@@ -26,7 +26,7 @@ use mod_coursework\models\submission;
 /**
  * Class assessor_cell
  */
-class assessor_cell extends cell_base{
+class assessor_cell extends cell_base {
 
     /**
      * @param $submission

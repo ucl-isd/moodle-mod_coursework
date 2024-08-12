@@ -29,7 +29,7 @@ use mod_coursework\grade_judge;
 /**
  * Class agreedfeedback_cell
  */
-class agreedfeedback_cell extends cell_base{
+class agreedfeedback_cell extends cell_base {
 
     /**
      * @param submission$submission

@@ -27,7 +27,7 @@ use mod_coursework\models\user;
 use mod_coursework\ability;
 use mod_coursework\models\coursework;
 
-class grading_sheet extends csv{
+class grading_sheet extends csv {
 
     public function get_submissions($groupid = null, $selected_submission_ids = '') {
         global $PAGE, $USER;

@@ -30,7 +30,7 @@ use mod_coursework\models\feedback;
 /**
  * Class otherassessors_cell
  */
-class otherassessors_cell extends cell_base{
+class otherassessors_cell extends cell_base {
 
     /**
      * @param submission $submission

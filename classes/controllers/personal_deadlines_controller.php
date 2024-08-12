@@ -37,7 +37,7 @@ use mod_coursework\models\user;
  * @property personal_deadline_form form
  * @package mod_coursework\controllers
  */
-class personal_deadlines_controller extends controller_base{
+class personal_deadlines_controller extends controller_base {
 
     protected function new_personal_deadline() {
         global $USER, $PAGE;
