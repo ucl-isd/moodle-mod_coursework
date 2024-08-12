@@ -825,22 +825,22 @@ class submission extends table_base implements \renderable {
 
         switch ($this->get_state()) {
 
-            case submission::NOT_SUBMITTED:
+            case self::NOT_SUBMITTED:
                 $statustext = get_string('statusnotsubmitted', 'coursework');
                 break;
 
-            case submission::SUBMITTED:
+            case self::SUBMITTED:
                 $allowearlyfinalisation = $this->get_coursework()->allowearlyfinalisation;
                 $statustext = ($allowearlyfinalisation) ?get_string('statusnotfinalised', 'coursework') : get_string('submitted', 'coursework');
 
                 break;
 
-            case submission::FINALISED:
+            case self::FINALISED:
                 $statustext = get_string('statussubmittedfinalised', 'coursework');
 
                 break;
 
-            case submission::PARTIALLY_GRADED:
+            case self::PARTIALLY_GRADED:
                 $statustext = get_string('statuspartiallygraded', 'coursework');
                 if ($this->any_editable_feedback_exists()) {
                     $statustext = get_string('statusfullygraded', 'coursework'). "<br>";
@@ -848,11 +848,11 @@ class submission extends table_base implements \renderable {
                 }
                 break;
 
-            case submission::FULLY_GRADED:
+            case self::FULLY_GRADED:
                 $statustext = get_string('statusfullygraded', 'coursework');
                 break;
 
-            case submission::FINAL_GRADED:
+            case self::FINAL_GRADED:
                 $spanfinalgraded = html_writer::tag('span',
                                                     get_string('statusfinalgraded', 'coursework'),
                                                     array('class' => 'highlight'));
@@ -866,7 +866,7 @@ class submission extends table_base implements \renderable {
                 }
                 break;
 
-            case submission::PUBLISHED:
+            case self::PUBLISHED:
                 $statustext = get_string('statuspublished', 'coursework');
                 if (!$this->coursework->deadline_has_passed()) {
                     $statustext .= ' '.get_string('released_early', 'mod_coursework');
@@ -895,32 +895,32 @@ class submission extends table_base implements \renderable {
      * @return bool
      */
     public function ready_to_grade() {
-        return $this->get_state() >= submission::FINALISED;
+        return $this->get_state() >= self::FINALISED;
     }
 
     /**
      * @return bool
      */
     public function already_published() {
-        return $this->get_state() >= submission::PUBLISHED;
+        return $this->get_state() >= self::PUBLISHED;
     }
 
     /**
      * @return bool
      */
     public function all_inital_graded() {
-        return $this->get_state() >= submission::FULLY_GRADED;
+        return $this->get_state() >= self::FULLY_GRADED;
     }
 
     public function is_finalised() {
-        return $this->get_state() == submission::FINALISED;
+        return $this->get_state() == self::FINALISED;
     }
 
     /**
      * @return bool
      */
     public function final_grade_agreed() {
-        return $this->get_state() >= submission::FINAL_GRADED;
+        return $this->get_state() >= self::FINAL_GRADED;
     }
 
     /**
@@ -1451,7 +1451,7 @@ class submission extends table_base implements \renderable {
     }
 
     function can_be_unfinalised() {
-        return  ($this->get_state() == submission::FINALISED);
+        return  ($this->get_state() == self::FINALISED);
     }
 
     /**

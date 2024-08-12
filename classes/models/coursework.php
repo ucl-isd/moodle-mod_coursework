@@ -3077,7 +3077,7 @@ class coursework extends table_base {
         global $DB;
         $coursework_id = $this->id;
         submission::fill_pool_coursework($coursework_id);
-        coursework::fill_pool([$this]);
+        self::fill_pool([$this]);
         course_module::fill_pool([$this->get_course_module()]);
         module::fill_pool($DB->get_records('modules', ['name' => 'coursework']));
         feedback::fill_pool_submissions($coursework_id, array_keys(submission::$pool[$coursework_id]['id']));
