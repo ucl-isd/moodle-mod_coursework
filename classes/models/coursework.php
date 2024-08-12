@@ -2700,7 +2700,7 @@ class coursework extends table_base {
      *
      * @return array
      */
-    private function  get_allocatable_personal_deadline($allocatable) {
+    private function get_allocatable_personal_deadline($allocatable) {
 
         global  $DB;
 
@@ -2950,7 +2950,7 @@ class coursework extends table_base {
      * @param $allocatable
      * @return bool/int
      */
-    private function  get_allocatable_extension($allocatable) {
+    private function get_allocatable_extension($allocatable) {
 
         global  $DB;
         $extension = false;

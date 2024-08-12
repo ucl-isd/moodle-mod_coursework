@@ -530,7 +530,7 @@ class import extends grading_sheet {
      * @param $value the value that we will retrieve the levelid for
      * @return bool
      */
-    function    get_value_rubric_levelid($criteria,    $value) {
+    function get_value_rubric_levelid($criteria,    $value) {
 
         global  $DB;
 
