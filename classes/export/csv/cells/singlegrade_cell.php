@@ -237,7 +237,7 @@ class singlegrade_cell extends cell_base{
      * @param $csv_cells
      *
      */
-    function    get_rubrics($coursework, $csv_cells) {
+    function get_rubrics($coursework, $csv_cells) {
 
         if ($coursework->is_using_rubric()) {
 

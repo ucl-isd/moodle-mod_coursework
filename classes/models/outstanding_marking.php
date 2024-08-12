@@ -102,8 +102,7 @@ class outstanding_marking   {
             //we only have to check for submissions allocated to this user
             $sqltable = ", {coursework_allocation_pairs}  cap ";
 
-            $sqlextra = "	
-	                                    AND cap.courseworkid = cs.courseworkid
+            $sqlextra = " AND cap.courseworkid = cs.courseworkid
 		                                AND cap.allocatableid = cs.allocatableid
 	                                    AND cap.allocatabletype = cs.allocatabletype
 	                                    AND cap.assessorid = :assessorid ";
@@ -111,7 +110,7 @@ class outstanding_marking   {
             $sqlparams['assessorid'] = $userid;
         }
 
-        $sql = "SELECT     cs.id as submissionid
+        $sql = "SELECT cs.id as submissionid
                                  FROM       {coursework_submissions}    cs
                                  LEFT JOIN  {coursework_feedbacks}   f
                                  ON          cs.id = f.submissionid
