@@ -70,16 +70,16 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         if (!empty($samplerecords)) {
             $seq = 0;
             foreach ($samplerecords as $record) {
-                $html   .=  $this->range_elements($assessor_number, $seq, $record);
+                $html .= $this->range_elements($assessor_number, $seq, $record);
                 $seq++;
             }
         }   else {
-            $html   .=  $this->range_elements($assessor_number, 0, false);
+            $html .= $this->range_elements($assessor_number, 0, false);
         }
 
-        $html      .=  html_writer::link('#', get_string('addgraderule', 'mod_coursework'), array('id' => "assessor_{$assessor_number}_addgradderule", 'class' => 'addgradderule sample_set_rule'));
-        $html      .=  "  ";
-        $html      .=  html_writer::link('#', get_string('removegraderule', 'mod_coursework'), array('id' => "assessor_{$assessor_number}_removegradderule", 'class' => 'removegradderule sample_set_rule'));
+        $html  .= html_writer::link('#', get_string('addgraderule', 'mod_coursework'), array('id' => "assessor_{$assessor_number}_addgradderule", 'class' => 'addgradderule sample_set_rule'));
+        $html  .= "  ";
+        $html  .= html_writer::link('#', get_string('removegraderule', 'mod_coursework'), array('id' => "assessor_{$assessor_number}_removegradderule", 'class' => 'removegradderule sample_set_rule'));
 
         return $html;
     }

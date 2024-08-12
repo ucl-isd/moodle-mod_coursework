@@ -844,7 +844,7 @@ class submission extends table_base implements \renderable {
                 $statustext = get_string('statuspartiallygraded', 'coursework');
                 if ($this->any_editable_feedback_exists()) {
                     $statustext = get_string('statusfullygraded', 'coursework'). "<br>";
-                    $statustext .=  get_string('stilleditable', 'coursework');
+                    $statustext .= get_string('stilleditable', 'coursework');
                 }
                 break;
 

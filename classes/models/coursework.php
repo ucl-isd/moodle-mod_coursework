@@ -979,7 +979,7 @@ class coursework extends table_base {
                     }
                 }
 
-                $foldername     .=   $this->get_username_hash($submission->get_allocatable()->id());
+                $foldername .= $this->get_username_hash($submission->get_allocatable()->id());
 
                 $filename = $foldername.'/'.$filename;
 

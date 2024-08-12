@@ -198,7 +198,7 @@ class builder {
 
                 if (!is_array($val)) {
 
-                    $elements   .=  "<input type='hidden' name='$name'   value='$val'> ";
+                    $elements .= "<input type='hidden' name='$name'   value='$val'> ";
 
                 }
 

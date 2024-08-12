@@ -72,17 +72,17 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         $html = html_writer::start_div('sampletotal');
 
-        $html    .=  html_writer::checkbox("assessor_{$assessor_number}_sampletotal_checkbox", 1, $checked, get_string('topupto', 'mod_coursework'),
+        $html  .= html_writer::checkbox("assessor_{$assessor_number}_sampletotal_checkbox", 1, $checked, get_string('topupto', 'mod_coursework'),
             array('id' => "assessor_{$assessor_number}_sampletotal_checkbox", 'class' => "assessor_{$assessor_number} total_checkbox sample_set_rule"));
 
-        $html   .= html_writer::select($percentage_options,
+        $html .= html_writer::select($percentage_options,
             "assessor_{$assessor_number}_sampletotal",
             "",
             $selected,
             array('id' => "assessor_{$assessor_number}_sampletotal", 'class' => " sample_set_rule"));
-        $html    .= html_writer::label(get_string('ofallstudents', 'mod_coursework'), 'assessortwo_sampletotal[]');
+        $html  .= html_writer::label(get_string('ofallstudents', 'mod_coursework'), 'assessortwo_sampletotal[]');
 
-        $html   .=  html_writer::end_div();
+        $html .= html_writer::end_div();
 
         return $html;
     }

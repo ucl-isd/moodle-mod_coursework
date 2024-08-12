@@ -61,7 +61,7 @@ class user_cell extends cell_base implements allocatable_cell {
 
         if (!empty($candidatenumber)) {
 
-            $content    .=  '<br /> ('.$candidatenumber.')';
+            $content  .= '<br /> ('.$candidatenumber.')';
 
         }
 

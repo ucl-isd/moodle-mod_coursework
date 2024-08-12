@@ -591,7 +591,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $select->label = get_string('records_per_page', 'coursework');
         $select->class = 'jumpmenu';
         $select->formid = 'sectionmenu';
-        $table_html     .=  $OUTPUT->render($select);
+        $table_html .= $OUTPUT->render($select);
 
         // Get the hidden elements used for assessors and moderators selected on other pages;
 
@@ -649,9 +649,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             'value' => get_string('save', 'mod_coursework'));
         $table_html .= html_writer::empty_tag('input', $attributes);
 
-        $table_html     .=  $OUTPUT->render($select);
+        $table_html .= $OUTPUT->render($select);
 
-        $table_html .=  $PAGE->get_renderer('mod_coursework', 'object')->render($paging_bar);
+        $table_html .= $PAGE->get_renderer('mod_coursework', 'object')->render($paging_bar);
 
         return $table_html;
     }
@@ -795,7 +795,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $comma = "";
 
                 for ($i = 0; $i <= $samplingwidget->get_coursework()->grade; $i++) {
-                    $scale .=   $comma.$i;
+                    $scale .= $comma.$i;
                     $comma = ",";
                 }
         } else {
@@ -808,8 +808,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $table->head = $assessorheaders;
 
         $assessor1cell = html_writer::start_tag('div', array('class' => 'samples_strategy'));
-        $assessor1cell  .=  get_string('assessoronedefault', 'mod_coursework');
-        $assessor1cell  .=  html_writer::end_tag('div');
+        $assessor1cell  .= get_string('assessoronedefault', 'mod_coursework');
+        $assessor1cell  .= html_writer::end_tag('div');
 
         $columndata = array(new html_table_cell($assessor1cell));
 
@@ -832,15 +832,15 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $selected = ($samplingwidget->get_coursework()->has_automatic_sampling_at_stage('assessor_'.$i)) ? '1' : false;
 
             $sampling_cell = html_writer::start_tag('div', array('class' => 'samples_strategy'));
-            $sampling_cell   .= html_writer::label(get_string('sampletype', 'mod_coursework'), "assessor_{$i}_samplingstrategy");
+            $sampling_cell .= html_writer::label(get_string('sampletype', 'mod_coursework'), "assessor_{$i}_samplingstrategy");
 
-            $sampling_cell   .=    html_writer::select($sampling_strategies,
+            $sampling_cell .= html_writer::select($sampling_strategies,
                 "assessor_{$i}_samplingstrategy",
                 $selected,
                 false,
                 array('id' => "assessor_{$i}_samplingstrategy", 'class' => "assessor_sampling_strategy sampling_strategy_detail"));
 
-            $sampling_cell   .= html_writer::end_tag('div');
+            $sampling_cell .= html_writer::end_tag('div');
 
             if ($i ==  $samplingwidget->get_coursework()->get_max_markers()) $javascript = true;
 
@@ -852,7 +852,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $graderules .= $this->get_sampling_strategy_form_elements($samplingwidget->get_coursework(), $i, $javascript);
 
-            $sampling_cell   .=     html_writer::div($graderules, '', array('id' => "assessor_{$i}_automatic_rules"));
+            $sampling_cell .= html_writer::div($graderules, '', array('id' => "assessor_{$i}_automatic_rules"));
 
             $columndata[] = new html_table_cell($sampling_cell);
         }
@@ -861,7 +861,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
           //= array($asessoronecell, $asessortwocell);
 
-        $html  .=   html_writer::table($table);
+        $html  .= html_writer::table($table);
 
         // End the form with save button.
         $attributes = array('name' => 'save_sampling',
@@ -916,9 +916,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $scale = [];
         $sampling_column = "<input id='scale_values' type='hidden' value='".implode(',', $scale)."' />";
 
-        $sampling_column    .=  html_writer::tag('br', '');
-        $sampling_column    .=  html_writer::tag('strong', get_string('selectrules', 'mod_coursework'));
-        $sampling_column    .=  html_writer::tag('br', '');
+        $sampling_column  .= html_writer::tag('br', '');
+        $sampling_column  .= html_writer::tag('strong', get_string('selectrules', 'mod_coursework'));
+        $sampling_column  .= html_writer::tag('br', '');
 
         $sampling_column  .= html_writer::start_tag('div');
 
@@ -960,18 +960,18 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $sampling_column  .= html_writer::end_tag('div');
 
-        $sampling_column      .=  html_writer::link('#', get_string('addgraderule', 'mod_coursework'), array('id' => "assessor_{$suffix}_addgradderule", 'class' => 'addgradderule sampling_strategy_detail'));
-        $sampling_column      .=  html_writer::link('#', get_string('removegraderule', 'mod_coursework'), array('id' => "assessor_{$suffix}_removegradderule", 'class' => 'removegradderule sampling_strategy_detail'));
+        $sampling_column  .= html_writer::link('#', get_string('addgraderule', 'mod_coursework'), array('id' => "assessor_{$suffix}_addgradderule", 'class' => 'addgradderule sampling_strategy_detail'));
+        $sampling_column  .= html_writer::link('#', get_string('removegraderule', 'mod_coursework'), array('id' => "assessor_{$suffix}_removegradderule", 'class' => 'removegradderule sampling_strategy_detail'));
 
-        $sampling_column    .=  html_writer::checkbox("assessor_{$suffix}_samplertopup", 1, false, get_string('topupto', 'mod_coursework'),
+        $sampling_column  .= html_writer::checkbox("assessor_{$suffix}_samplertopup", 1, false, get_string('topupto', 'mod_coursework'),
             array('id' => "assessor_{$suffix}_samplerules[]", 'class' => "assessor_{$suffix} sampling_strategy_detail"));
 
-        $sampling_column   .= html_writer::select($percentage_options,
+        $sampling_column .= html_writer::select($percentage_options,
             "assessor_{$suffix}_sampletopup",
             $samplingwidget->get_sampling_strategy(),
             false,
             array('id' => "assessor_{$suffix}_sampletopup", 'class' => "assessor_{$suffix} sampling_strategy_detail"));
-        $sampling_column    .= html_writer::label(get_string('ofallstudents', 'mod_coursework'), 'assessortwo_sampleto[]');
+        $sampling_column  .= html_writer::label(get_string('ofallstudents', 'mod_coursework'), 'assessortwo_sampleto[]');
 
         return $sampling_column;
 
@@ -1114,7 +1114,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $html .= $sampling_rule->add_form_elements($assessor_number);
 
-            if ($load_javascript)   $javascript   .=  $sampling_rule->add_form_elements_js($assessor_number);
+            if ($load_javascript)   $javascript .= $sampling_rule->add_form_elements_js($assessor_number);
 
         }
 
@@ -1375,25 +1375,25 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $coursework_page_url = $this->get_router()->get_path('coursework', array('coursework' => $personal_deadlines_table->get_coursework()));
         $table_html = '<div class="return_to_page">'.html_writer::link($coursework_page_url, get_string('returntocourseworkpage', 'mod_coursework')).'</div>';
 
-        $table_html .=   '<div class="alert">'.get_string('nopersonaldeadlineforextensionwarning', 'mod_coursework').'</div>';
+        $table_html .= '<div class="alert">'.get_string('nopersonaldeadlineforextensionwarning', 'mod_coursework').'</div>';
 
         $usergroups = $personal_deadlines_table->get_coursework()->get_allocatable_type();
 
-        $table_html .=   '<div class="largelink">'.html_writer::link('#', get_string('setdateforselected', 'mod_coursework', $personal_deadlines_table->get_coursework()->get_allocatable_type()), array('id' => 'selected_dates')).'</div>';
+        $table_html .= '<div class="largelink">'.html_writer::link('#', get_string('setdateforselected', 'mod_coursework', $personal_deadlines_table->get_coursework()->get_allocatable_type()), array('id' => 'selected_dates')).'</div>';
 
         if (has_capability('mod/coursework:revertfinalised', $PAGE->context)) {
             $table_html .= '<div class="largelink">' . html_writer::link('#', get_string('unfinaliseselected', 'mod_coursework', $personal_deadlines_table->get_coursework()->get_allocatable_type()), array('id' => 'selected_unfinalise')) . '</div>';
         }
-        $table_html .=  '<br />';
+        $table_html .= '<br />';
         $url = $this->get_router()->get_path('edit personal deadline', []);
 
-        $table_html .=   '<form  action="'.$url.'" id="coursework_personal_deadline_form" method="post">';
+        $table_html .= '<form  action="'.$url.'" id="coursework_personal_deadline_form" method="post">';
 
-        $table_html .=  '<input type="hidden" name="courseworkid" value="'.$personal_deadlines_table->get_coursework()->id().'" />';
-        $table_html .=  '<input type="hidden" name="allocatabletype" value="'.$personal_deadlines_table->get_coursework()->get_allocatable_type().'" />';
-        $table_html .=  '<input type="hidden" name="setpersonaldeadlinespage" value="1" />';
-        $table_html .=  '<input type="hidden" name="multipleuserdeadlines" value="1" />';
-        $table_html .=  '<input type="hidden" name="selectedtype" id="selectedtype" value="date" />';
+        $table_html .= '<input type="hidden" name="courseworkid" value="'.$personal_deadlines_table->get_coursework()->id().'" />';
+        $table_html .= '<input type="hidden" name="allocatabletype" value="'.$personal_deadlines_table->get_coursework()->get_allocatable_type().'" />';
+        $table_html .= '<input type="hidden" name="setpersonaldeadlinespage" value="1" />';
+        $table_html .= '<input type="hidden" name="multipleuserdeadlines" value="1" />';
+        $table_html .= '<input type="hidden" name="selectedtype" id="selectedtype" value="date" />';
 
         $table_html .= '
 
@@ -1434,7 +1434,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             </table>
         ';
 
-        $table_html .=   '</form>';
+        $table_html .= '</form>';
 
         return $table_html;
 
@@ -1471,7 +1471,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $row_html = '<tr id="'. $personal_deadline_row->get_allocatable()->type() . '_' . $personal_deadline_row->get_allocatable()->id().'">';
         $row_html .= '<td>';
         $row_html .= '<input type="checkbox" name="allocatableid_arr['.$personal_deadline_row->get_allocatable()->id().']" id="date_'. $personal_deadline_row->get_allocatable()->type() . '_' . $personal_deadline_row->get_allocatable()->id().'" class="date_select" value="'.$personal_deadline_row->get_allocatable()->id().'" '.$disabledelement.' >';
-        $row_html .=  '<input type="hidden" name="allocatabletype_'.$personal_deadline_row->get_allocatable()->id().'" value="'.$personal_deadline_row->get_allocatable()->type().'" />';
+        $row_html .= '<input type="hidden" name="allocatabletype_'.$personal_deadline_row->get_allocatable()->id().'" value="'.$personal_deadline_row->get_allocatable()->type().'" />';
         $row_html .= '</td>';
 
         $new_personal_deadline_params = array(
@@ -1484,9 +1484,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $allocatable_cell_helper = $personal_deadline_row->get_allocatable_cell();
         $personaldeadlines_cell_helper = $personal_deadline_row->get_personal_deadline_cell();
         $row_html .= $allocatable_cell_helper->get_table_cell($personal_deadline_row);
-        $row_html   .= $personaldeadlines_cell_helper->get_table_cell($personal_deadline_row);
-        $row_html   .= '';
-        $row_html   .=  "<td>".$personal_deadline_row->get_submission_status()."</td>";
+        $row_html .= $personaldeadlines_cell_helper->get_table_cell($personal_deadline_row);
+        $row_html .= '';
+        $row_html .= "<td>".$personal_deadline_row->get_submission_status()."</td>";
         $row_html .= '</tr>';
 
         return $row_html;

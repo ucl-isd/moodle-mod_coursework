@@ -50,9 +50,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $object_renderer = $this->get_object_renderer();
 
-        if (empty($ajax))  $html .=  $OUTPUT->header();
+        if (empty($ajax))  $html .= $OUTPUT->header();
         $html .= $object_renderer->render_feedback($feedback);
-        if (empty($ajax)) $html .=  $OUTPUT->header();
+        if (empty($ajax)) $html .= $OUTPUT->header();
 
         return $html;
     }
@@ -280,7 +280,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $ability = new ability($student, $coursework);
 
         $plagdisclosure = plagiarism_similarity_information($course_module);
-        $html   .= $plagdisclosure;
+        $html .= $plagdisclosure;
 
         // if TII plagiarism enabled check if user agreed/disagreed EULA
         $shouldseeEULA = has_user_seen_tii_EULA_agreement();
@@ -1260,7 +1260,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
             $html .= get_string('followingerrors', 'mod_coursework')."<br />";
             if (!is_array($processingresults)) {
-                $html .=  $processingresults . "<br />";
+                $html .= $processingresults . "<br />";
             } else {
                  foreach ($processingresults as $line => $error) {
                      $line = $line + 1;
