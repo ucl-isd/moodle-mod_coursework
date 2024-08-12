@@ -123,7 +123,7 @@ class cron {
                            $student->deadline = $individual_extension->extended_deadline;
                            $student->extension = $individual_extension->extended_deadline;
                            $student->coursework_id = $coursework->id;
-                           $student->nextremindernumber= 2;
+                           $student->nextremindernumber = 2;
                            $userswhoneedreminding[$student->id().'_'.$coursework->id] = $student;
                    }
 

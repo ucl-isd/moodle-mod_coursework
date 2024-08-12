@@ -1093,8 +1093,8 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodle_form->addHelpButton('grade', 'grade', 'mod_coursework');
         $moodle_form->setExpanded('modstandardgrade');
 
-        $options = array(0=> get_string('sameforallstages', 'mod_coursework'),
-                         1=> get_string('simpledirectgrading', 'mod_coursework'));
+        $options = array(0 => get_string('sameforallstages', 'mod_coursework'),
+                         1 => get_string('simpledirectgrading', 'mod_coursework'));
 
         $moodle_form->addElement('select', 'finalstagegrading', get_string('finalstagegrading', 'mod_coursework'), $options);
         $moodle_form->addHelpButton('finalstagegrading', 'finalstagegrading', 'mod_coursework');

@@ -38,7 +38,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
 
         $userinfo = $this->get_setting_value('userinfo');
 
-        $coursework=new backup_nested_element('coursework', array('id'),
+        $coursework = new backup_nested_element('coursework', array('id'),
                                               array('formid',
                                                     'course',
                                                     'name',
@@ -109,7 +109,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                     'plagiarismflagenabled'
                                                   ));
 
-            $sample_strategies =new backup_nested_element('coursework_sample_set_rules');
+            $sample_strategies = new backup_nested_element('coursework_sample_set_rules');
 
             $sample_strategy = new backup_nested_element('coursework_sample_set_rule', array('id'),
                                                                 array('courseworkid',
@@ -158,9 +158,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                         "modecommentformat"
                                                     ));
 
-            $feedbacks=new backup_nested_element('coursework_feedbacks');
+            $feedbacks = new backup_nested_element('coursework_feedbacks');
 
-            $feedback= new backup_nested_element('coursework_feedback', array('id'),
+            $feedback = new backup_nested_element('coursework_feedback', array('id'),
                                                  array(
                                                      "submissionid",
                                                      "assessorid",
@@ -180,9 +180,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                      "finalised"
                                                  ));
 
-            $submissions=new backup_nested_element('coursework_submissions');
+            $submissions = new backup_nested_element('coursework_submissions');
 
-            $submission=new backup_nested_element('coursework_submission', array('id'),
+            $submission = new backup_nested_element('coursework_submission', array('id'),
                                                   array(
                                                       "courseworkid",
                                                       "userid",
@@ -201,9 +201,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                       "lastpublished",
                                                       "timesubmitted"
                                                   ));
-            $reminders=new backup_nested_element('coursework_reminders');
+            $reminders = new backup_nested_element('coursework_reminders');
 
-            $reminder=new backup_nested_element('coursework_reminder', array('id'),
+            $reminder = new backup_nested_element('coursework_reminder', array('id'),
                                                 array(
                                                     "userid",
                                                     "coursework_id",
@@ -211,9 +211,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                     "extension"
                                                 ));
 
-            $pairs=new backup_nested_element('coursework_allocation_pairs');
+            $pairs = new backup_nested_element('coursework_allocation_pairs');
 
-            $pair=new backup_nested_element('coursework_allocation_pair', array('id'),
+            $pair = new backup_nested_element('coursework_allocation_pair', array('id'),
                                             array(
                                                 "courseworkid",
                                                 "assessorid",
@@ -227,9 +227,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                 'allocatablegroup'
                                             ));
 
-            $modsetrules=new backup_nested_element('coursework_mod_set_rules');
+            $modsetrules = new backup_nested_element('coursework_mod_set_rules');
 
-            $modsetrule=new backup_nested_element('coursework_mod_set_rule', array('id'),
+            $modsetrule = new backup_nested_element('coursework_mod_set_rule', array('id'),
                                                   array(
                                                       "courseworkid",
                                                       "rulename",
@@ -239,9 +239,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                       "minimum"
                                                   ));
 
-            $allocation_configs=new backup_nested_element('coursework_allocation_configs');
+            $allocation_configs = new backup_nested_element('coursework_allocation_configs');
 
-            $allocation_config=new backup_nested_element('coursework_allocation_config', array('id'),
+            $allocation_config = new backup_nested_element('coursework_allocation_config', array('id'),
                                                          array(
                                                              "courseworkid",
                                                              "allocationstrategy",
@@ -250,9 +250,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                              "purpose"
                                                          ));
 
-            $modsetmembers= new backup_nested_element('coursework_mod_set_members');
+            $modsetmembers = new backup_nested_element('coursework_mod_set_members');
 
-            $modsetmember=new backup_nested_element('coursework_mod_set_member', array('id'),
+            $modsetmember = new backup_nested_element('coursework_mod_set_member', array('id'),
                                                     array(
                                                         "courseworkid",
                                                         "allocatableid",
@@ -262,9 +262,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                         "stage_identifier"
                                                     ));
 
-            $extensions=new backup_nested_element('coursework_extensions');
+            $extensions = new backup_nested_element('coursework_extensions');
 
-            $extension=new backup_nested_element('coursework_extension', array('id'),
+            $extension = new backup_nested_element('coursework_extension', array('id'),
                                                  array(
                                                      "allocatableid",
                                                      "allocatabletype",
@@ -278,9 +278,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                      "extra_information_format"
                                                  ));
 
-            $personal_deadlines=new backup_nested_element('coursework_person_deadlines');
+            $personal_deadlines = new backup_nested_element('coursework_person_deadlines');
 
-            $personal_deadline=new backup_nested_element('coursework_person_deadline', array('id'),
+            $personal_deadline = new backup_nested_element('coursework_person_deadline', array('id'),
                                                 array(
                                                     "allocatableid",
                                                     'allocatableuser',

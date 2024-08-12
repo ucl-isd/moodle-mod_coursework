@@ -793,7 +793,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $comma = "";
 
-                for ($i=0;$i <=  $samplingwidget->get_coursework()->grade; $i++) {
+                for ($i = 0; $i <= $samplingwidget->get_coursework()->grade; $i++) {
                     $scale .=   $comma.$i;
                     $comma = ",";
                 }

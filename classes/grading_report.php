@@ -335,7 +335,7 @@ class grading_report {
      *
      * @return grading_table_row_base[] row objects
      */
-    public function get_table_rows_for_page($rowcount=false) {
+    public function get_table_rows_for_page($rowcount = false) {
 
         global $USER;
 

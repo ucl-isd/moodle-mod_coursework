@@ -67,7 +67,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                         'plagiarism_flag' => 'coursework_submissions/coursework_submission/coursework_plagiarism_flags');
 
             foreach ($bits as $bit=> $bitpath) {
-                $p=new restore_path_element("coursework_$bit","/activity/coursework/{$bitpath}/coursework_$bit");
+                $p = new restore_path_element("coursework_$bit","/activity/coursework/{$bitpath}/coursework_$bit");
                 $paths[]=$p;
             }
         }

@@ -2036,7 +2036,7 @@ function xmldb_coursework_upgrade($oldversion) {
 
     }
 
-    $allocatabletables=array('coursework_submissions',
+    $allocatabletables = array('coursework_submissions',
                              'coursework_allocation_pairs',
                              'coursework_mod_set_members',
                              'coursework_extensions',
