@@ -20,8 +20,7 @@ namespace mod_coursework;
  * Page that prints a table of all students and all markers so that first marker, second marker, moderators
  * etc can be allocated manually or automatically.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2012 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

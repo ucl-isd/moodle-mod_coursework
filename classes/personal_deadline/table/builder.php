@@ -19,8 +19,7 @@ namespace mod_coursework\personal_deadline\table;
 /**
  * Class file for the renderable object that makes the table for assigning personal deadlines to students.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

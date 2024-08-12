@@ -18,8 +18,7 @@
  * This file will revert the finalised state for one student's submission so that they can alter
  * files again. Not allowed if they already have feedbacks
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

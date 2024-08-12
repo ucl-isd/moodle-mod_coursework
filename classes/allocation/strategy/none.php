@@ -19,8 +19,7 @@ namespace mod_coursework\allocation\strategy;
     /**
  * lass file for the default allocation strategy.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2012 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

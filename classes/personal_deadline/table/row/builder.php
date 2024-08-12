@@ -19,8 +19,7 @@ namespace mod_coursework\personal_deadline\table\row;
 /**
  * Class file for the renderable object that makes a single row in the marker personal deadline table.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

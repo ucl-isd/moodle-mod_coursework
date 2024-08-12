@@ -19,8 +19,7 @@ namespace mod_coursework\allocation\strategy;
 /**
  * Allocation strategy for giving all teachers equal numbers of students to mark
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

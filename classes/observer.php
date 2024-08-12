@@ -17,8 +17,7 @@
 /**
  * Observers
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2016 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
