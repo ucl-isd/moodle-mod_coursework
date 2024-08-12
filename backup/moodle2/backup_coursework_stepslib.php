@@ -129,7 +129,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
             $sample_strategies->add_child($sample_strategy);
 
             $sample_strategy->set_source_table('coursework_sample_set_rules',
-                                        array('courseworkid'=>backup::VAR_PARENTID));
+                                        array('courseworkid' => backup::VAR_PARENTID));
 
         if($userinfo)
         {
@@ -365,40 +365,40 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
             $allocation_configs->add_child($allocation_config);
 
             $submission->set_source_table('coursework_submissions',
-                                          array('courseworkid'=>backup::VAR_PARENTID));
+                                          array('courseworkid' => backup::VAR_PARENTID));
 
             $feedback->set_source_table('coursework_feedbacks',
-                                        array('submissionid'=>backup::VAR_PARENTID));
+                                        array('submissionid' => backup::VAR_PARENTID));
 
             $plagiarism_flag->set_source_table('coursework_plagiarism_flags',
-                                         array('submissionid'=>backup::VAR_PARENTID));
+                                         array('submissionid' => backup::VAR_PARENTID));
 
             $moderation_agreement->set_source_table('coursework_mod_agreements',
-                                        array('feedbackid'=>backup::VAR_PARENTID));
+                                        array('feedbackid' => backup::VAR_PARENTID));
 
             $reminder->set_source_table('coursework_reminder',
-                                        array('coursework_id'=>backup::VAR_PARENTID));
+                                        array('coursework_id' => backup::VAR_PARENTID));
 
             $pair->set_source_table('coursework_allocation_pairs',
-                                    array('courseworkid'=>backup::VAR_PARENTID));
+                                    array('courseworkid' => backup::VAR_PARENTID));
 
             $modsetrule->set_source_table('coursework_mod_set_rules',
-                                          array('courseworkid'=>backup::VAR_PARENTID));
+                                          array('courseworkid' => backup::VAR_PARENTID));
 
             $extension->set_source_table('coursework_extensions',
-                                         array('courseworkid'=>backup::VAR_PARENTID));
+                                         array('courseworkid' => backup::VAR_PARENTID));
 
             $personal_deadline->set_source_table('coursework_person_deadlines',
-                                        array('courseworkid'=>backup::VAR_PARENTID));
+                                        array('courseworkid' => backup::VAR_PARENTID));
 
             $modsetmember->set_source_table('coursework_mod_set_members',
-                array('courseworkid'=>backup::VAR_PARENTID));
+                array('courseworkid' => backup::VAR_PARENTID));
 
             $sample_member->set_source_table('coursework_sample_set_mbrs',
-                                array('courseworkid'=>backup::VAR_PARENTID));
+                                array('courseworkid' => backup::VAR_PARENTID));
 
             $allocation_config->set_source_table('coursework_allocation_config',
-                                                 array('courseworkid'=>backup::VAR_PARENTID));
+                                                 array('courseworkid' => backup::VAR_PARENTID));
 
             //Mark important foreign keys
             $feedback->annotate_ids('user','assessorid');
@@ -444,7 +444,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
 
         $coursework->annotate_ids('grouping','grouping_id');
 
-        $coursework->set_source_table('coursework',array('id'=>backup::VAR_ACTIVITYID));
+        $coursework->set_source_table('coursework',array('id' => backup::VAR_ACTIVITYID));
 
         return $this->prepare_activity_structure($coursework);
 

@@ -66,7 +66,7 @@ class agreedfeedback_cell extends cell_base{
         if (has_any_capability($agreedgradecap,$PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context))   {
 
-            $subdbrecord = $DB->get_record('coursework_submissions',array('id'=>$submissionid));
+            $subdbrecord = $DB->get_record('coursework_submissions',array('id' => $submissionid));
             $submission = \mod_coursework\models\submission::find($subdbrecord);
 
             //is the submission in question ready to grade?

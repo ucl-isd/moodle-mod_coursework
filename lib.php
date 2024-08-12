@@ -447,13 +447,13 @@ function coursework_update_instance($coursework) {
 
     $coursework->submissionnotification = $subnotify;
 
-    $courseworkhassubmissions = ($DB->get_records('coursework_submissions',array('courseworkid'=>$coursework->id)))
+    $courseworkhassubmissions = ($DB->get_records('coursework_submissions',array('courseworkid' => $coursework->id)))
         ?   true : false;
 
     //if the coursework has submissions then we the renamefiles setting can't be changes
     if ($courseworkhassubmissions) {
 
-        $currentcoursework = $DB->get_record('coursework',array('id'=>$coursework->id));
+        $currentcoursework = $DB->get_record('coursework',array('id' => $coursework->id));
 
         $coursework->renamefiles = $currentcoursework->renamefiles;
 
@@ -535,7 +535,7 @@ function coursework_update_instance($coursework) {
      global $DB;
 
      $event = "";
-     $eventid = $DB->get_record('event', array('modulename'=>'coursework', 'instance'=>$coursework->id, 'eventtype'=>$eventtype));
+     $eventid = $DB->get_record('event', array('modulename' => 'coursework', 'instance' => $coursework->id, 'eventtype' => $eventtype));
 
      if ($eventid){
          $event = calendar_event::load($eventid->id);
@@ -575,7 +575,7 @@ function coursework_update_instance($coursework) {
 function remove_event($coursework, $eventtype = false){
      global $DB;
 
-     $params = array('modulename'=>'coursework', 'instance'=>$coursework->id);
+     $params = array('modulename' => 'coursework', 'instance' => $coursework->id);
 
      if ($eventtype){
          $params['eventtype'] = $eventtype;
@@ -923,7 +923,7 @@ function coursework_role_assigned_event_handler($roleassignment) {
     $courseworkids = coursework_get_coursework_ids_from_context_id($roleassignment->contextid);
 
     foreach ($courseworkids as $courseworkid) {
-        $DB->set_field('coursework','processenrol',1,array('id'=>$courseworkid));
+        $DB->set_field('coursework','processenrol',1,array('id' => $courseworkid));
     }
 
     return true;
@@ -944,7 +944,7 @@ function coursework_role_unassigned_event_handler($roleassignment) {
     $courseworkids = coursework_get_coursework_ids_from_context_id($roleassignment->contextid);
 
     foreach ($courseworkids as $courseworkid) {
-        $DB->set_field('coursework','processunenrol',1,array('id'=>$courseworkid));
+        $DB->set_field('coursework','processunenrol',1,array('id' => $courseworkid));
     }
 
     return true;
@@ -1287,7 +1287,7 @@ function course_group_member_added($event_data) {
     $addeduserid = $event_data->relateduserid;
 
     // get all courseworks with group_assessor allocation strategy
-    $courseworks = $DB->get_records('coursework', array('course'=>$courseid, 'assessorallocationstrategy' => 'group_assessor'));
+    $courseworks = $DB->get_records('coursework', array('course' => $courseid, 'assessorallocationstrategy' => 'group_assessor'));
 
     foreach($courseworks as $coursework){
 
@@ -1353,7 +1353,7 @@ function course_group_member_removed($event_data) {
     $removeduserid = $event_data->relateduserid;
 
     // get all courseworks with group_assessor allocation strategy
-    $courseworks = $DB->get_records('coursework', array('course'=>$courseid, 'assessorallocationstrategy' => 'group_assessor'));
+    $courseworks = $DB->get_records('coursework', array('course' => $courseid, 'assessorallocationstrategy' => 'group_assessor'));
 
     foreach($courseworks as $coursework){
 
@@ -1504,7 +1504,7 @@ function has_user_seen_tii_EULA_agreement(){
                         AND user_agreement_accepted <> 0";
             }
 
-            $shouldseeEULA = $DB->record_exists_sql($sql, array('userid'=>$USER->id));
+            $shouldseeEULA = $DB->record_exists_sql($sql, array('userid' => $USER->id));
         }
     }   else {
         $shouldseeEULA = true;
@@ -1520,7 +1520,7 @@ function coursework_is_ulcc_digest_coursework_plugin_installed() {
     $disgestblockexists = $DB->record_exists_sql("SELECT id FROM {block} WHERE name = 'ulcc_digest' AND visible = 1");
 
     if (!empty($disgestblockexists)) {
-         $pluginexists = ($DB->get_records('block_ulcc_digest_plgs',array('module'=>'coursework','status'=>1)))    ?   true    :  false;
+         $pluginexists = ($DB->get_records('block_ulcc_digest_plgs',array('module' => 'coursework','status' => 1)))    ?   true    :  false;
     }
 
     return $pluginexists;
@@ -1538,7 +1538,7 @@ function coursework_personal_deadline_passed($courseworkid){
             WHERE courseworkid = :courseworkid
             AND personal_deadline < :now";
 
-   return $DB->record_exists_sql($sql, array('courseworkid' =>$courseworkid , 'now' => time()));
+   return $DB->record_exists_sql($sql, array('courseworkid' => $courseworkid , 'now' => time()));
 
 }
 
@@ -1616,8 +1616,8 @@ function teacher_removed_allocated_not_graded($event_data){
     foreach($courseworks as $cw){
         $coursework = coursework::find($cw->id);
         if($coursework->allocation_enabled()){
-            $assessor_allocations = $DB->get_records('coursework_allocation_pairs', array('courseworkid'=>$coursework->id,
-                                                                                                'assessorid'=>$userid));
+            $assessor_allocations = $DB->get_records('coursework_allocation_pairs', array('courseworkid' => $coursework->id,
+                                                                                                'assessorid' => $userid));
             foreach($assessor_allocations as $allocation){
                 if($allocation->allocatabletype == 'user'){
                     $allocatable = user::find($allocation->allocatableid);
@@ -1631,9 +1631,9 @@ function teacher_removed_allocated_not_graded($event_data){
                     continue;
                 }
 
-                $DB->delete_records('coursework_allocation_pairs', array('courseworkid'=>$coursework->id,
-                                                                              'assessorid'=>$userid,
-                                                                              'allocatableid'=>$allocatable->id));
+                $DB->delete_records('coursework_allocation_pairs', array('courseworkid' => $coursework->id,
+                                                                              'assessorid' => $userid,
+                                                                              'allocatableid' => $allocatable->id));
             }
         }
     }
@@ -1651,6 +1651,6 @@ function teacher_removed_allocated_not_graded($event_data){
 function coursework_get_courseworks_by_courseid($courseid){
     global $DB;
 
-    return $DB->get_records('coursework', array('course'=>$courseid));
+    return $DB->get_records('coursework', array('course' => $courseid));
 
 }

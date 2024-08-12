@@ -355,7 +355,7 @@ class import extends grading_sheet{
                 $i++;
             }
 
-            $subdbrecord = $DB->get_record('coursework_submissions', array('id'=>$submissionid));
+            $subdbrecord = $DB->get_record('coursework_submissions', array('id' => $submissionid));
             $submission = \mod_coursework\models\submission::find($subdbrecord);
 
 
@@ -628,7 +628,7 @@ class import extends grading_sheet{
             $markernumber = 1;
         } else {
             //  get all feedbacks and add 1
-            $feedbacks = $DB->count_records('coursework_feedbacks',array('submissionid'=>$submissionid));
+            $feedbacks = $DB->count_records('coursework_feedbacks',array('submissionid' => $submissionid));
             $markernumber = $feedbacks +1;
         }
 
@@ -751,7 +751,7 @@ class import extends grading_sheet{
     public function get_stage_identifier($submissionid,$cell_identifier) {
 
         global $DB, $USER;
-        $submission = $DB->get_record('coursework_submissions', array('id'=>$submissionid));
+        $submission = $DB->get_record('coursework_submissions', array('id' => $submissionid));
 
 
         $submission = \mod_coursework\models\submission::find($submission);
@@ -765,9 +765,9 @@ class import extends grading_sheet{
             && $this->coursework->allocation_enabled()){
 
             $dbrecord = $DB->get_record('coursework_allocation_pairs',
-                                               array('courseworkid'=>$this->coursework->id,
-                                                     'allocatableid'=>$submission->allocatableid,
-                                                     'allocatabletype'=>$submission->allocatabletype,
+                                               array('courseworkid' => $this->coursework->id,
+                                                     'allocatableid' => $submission->allocatableid,
+                                                     'allocatabletype' => $submission->allocatabletype,
                                                      'assessorid' => $USER->id
                                                      ));
             $stage_identifier = $dbrecord->stage_identifier;
@@ -800,16 +800,16 @@ class import extends grading_sheet{
                 }
             } else if ($this->coursework->sampling_enabled()){ // samplings enabled
                 $in_sample = ($subs = $submission->get_submissions_in_sample()) ? sizeof($subs) : 0;
-                $feedback = $DB->record_exists('coursework_feedbacks', array('submissionid'=>$submissionid,
-                                                                             'stage_identifier'=>'assessor_1'));
+                $feedback = $DB->record_exists('coursework_feedbacks', array('submissionid' => $submissionid,
+                                                                             'stage_identifier' => 'assessor_1'));
                 // no sample or no feedback for sample yet
                 if (!$in_sample || ($in_sample && !$feedback)){
                    $stage_identifier = 'assessor_1';
                 } else { // find out which sample wasn't graded yet
                    $samples = $submission->get_submissions_in_sample();
                    foreach ($samples as $sample){
-                      $feedback = $DB->record_exists('coursework_feedbacks', array('submissionid'=>$submissionid,
-                                                                                    'stage_identifier'=>$sample->stage_identifier));
+                      $feedback = $DB->record_exists('coursework_feedbacks', array('submissionid' => $submissionid,
+                                                                                    'stage_identifier' => $sample->stage_identifier));
                         // if feedback doesn't exist, we'll use this stage identifier for a new feedback
                        if (!$feedback){
                            $stage_identifier = $sample->stage_identifier;

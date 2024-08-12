@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_coursework';
 
-$plugin->version = 2022061000;  // If version == 0 then module will not be installed
+$plugin->version = 2024080600;  // If version == 0 then module will not be installed
 $plugin->requires = 2021051700;  // Requires this Moodle version 3.11
 
 $plugin->cron = 300;        // Period for cron to check this module (secs).

@@ -205,7 +205,7 @@ class router {
             case 'new moderations':
                 $params = array('submissionid' => $items['submission']->id,
                                 'stage_identifier' => $items['stage']->identifier(),
-                                'feedbackid' =>$items['feedbackid']);
+                                'feedbackid' => $items['feedbackid']);
                 $url = new moodle_url('/mod/coursework/actions/moderations/new.php',$params);
                 break;
 
@@ -216,7 +216,7 @@ class router {
             case 'edit moderation':
                 $url = new moodle_url('/mod/coursework/actions/moderations/edit.php',
                                       array('moderationid' => $items['moderation']->id,
-                                           'feedbackid' =>$items['moderation']->feedbackid));
+                                           'feedbackid' => $items['moderation']->feedbackid));
                 break;
 
             case 'update moderation':
@@ -226,13 +226,13 @@ class router {
             case 'show moderation':
                 $url = new moodle_url('/mod/coursework/actions/moderations/show.php',
                                         array('moderationid' => $items['moderation']->id,
-                                        'feedbackid' =>$items['moderation']->feedbackid));
+                                        'feedbackid' => $items['moderation']->feedbackid));
 
                 break;
 
             case 'new plagiarism flag':
                 $url = new moodle_url('/mod/coursework/actions/plagiarism_flagging/new.php',
-                                        array('submissionid' =>$items['submission']->id ));
+                                        array('submissionid' => $items['submission']->id ));
 
                 break;
 

@@ -83,7 +83,7 @@ class moderator_agreement_mform extends moodleform {
 
 
         // moderator agreement
-        $options = array('agreed'=>get_string('agreed', 'coursework'), 'disagreed'=>get_string('disagreed', 'coursework'));
+        $options = array('agreed' => get_string('agreed', 'coursework'), 'disagreed' => get_string('disagreed', 'coursework'));
         $mform->addElement('select', 'agreement',
                             get_string('moderationagreement', 'coursework'),
                             $options,

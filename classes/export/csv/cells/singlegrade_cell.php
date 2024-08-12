@@ -141,7 +141,7 @@ class singlegrade_cell extends cell_base{
             if (!empty($errormsg))  return $errormsg;
 
 
-            $dbrecord = $DB->get_record('coursework_submissions', array('id'=>$submissionid));
+            $dbrecord = $DB->get_record('coursework_submissions', array('id' => $submissionid));
 
             $submission = \mod_coursework\models\submission::find($dbrecord);
 

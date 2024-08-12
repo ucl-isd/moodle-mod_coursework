@@ -396,7 +396,7 @@ class deadline_extensions_controller extends controller_base {
             $row_object = new \mod_coursework\grading_table_row_single($coursework, $participant);
         }
 
-        $time_submitted_cell = new  \mod_coursework\render_helpers\grading_report\cells\time_submitted_cell(array('coursework'=>$this->coursework));
+        $time_submitted_cell = new  \mod_coursework\render_helpers\grading_report\cells\time_submitted_cell(array('coursework' => $this->coursework));
 
         $content = $time_submitted_cell->prepare_content_cell($row_object);
 

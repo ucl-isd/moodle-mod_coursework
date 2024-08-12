@@ -1000,11 +1000,11 @@ class behat_mod_coursework extends behat_base {
     public function thereIsFeedbackForTheSubmissionFromTheOtherTeacher()
     {
         $this->feedback = feedback::create(array(
-            'submissionid'=>$this->submission->id,
+            'submissionid' => $this->submission->id,
             'assessorid' => $this->other_teacher->id,
-            'grade'=> '78',
-            'feedbackcomment'=>'Blah',
-            'stage_identifier'=>'assessor_1'
+            'grade' => '78',
+            'feedbackcomment' => 'Blah',
+            'stage_identifier' => 'assessor_1'
         ));
     }
 

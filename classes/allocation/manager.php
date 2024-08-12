@@ -125,7 +125,7 @@ class manager {
 
         // move 'none' to be the first option
         if (array_key_exists('none', $options)){
-            $new_value = array('none'=> $options['none']);
+            $new_value = array('none' => $options['none']);
             unset($options['none']);
             $options = $new_value + $options;
         }
@@ -194,8 +194,8 @@ class manager {
      * @return array
      */
     public function get_sampling_options()  {
-        return array('0'=>get_string('manual','mod_coursework'),
-                     '1'=>get_string('automatic','mod_coursework'));
+        return array('0' => get_string('manual','mod_coursework'),
+                     '1' => get_string('automatic','mod_coursework'));
 
     }
 
@@ -272,7 +272,7 @@ class manager {
     public function save_sample()   {
 
         global  $DB;
-        $DB->delete_records('coursework_sample_set_rules',array('courseworkid'=>$this->coursework->id));
+        $DB->delete_records('coursework_sample_set_rules',array('courseworkid' => $this->coursework->id));
         for ($i = 2; $i <= $this->coursework->get_max_markers(); $i++)   {
 
             $sample_strategy = required_param("assessor_{$i}_samplingstrategy",PARAM_INT);
@@ -329,7 +329,7 @@ class manager {
                                ORDER BY       ruleorder)a";
 
 
-            if ($sampleplugins = $DB->get_records_sql($sql,array('courseworkid'=>$this->coursework->id,'stage'=>$stage))) {
+            if ($sampleplugins = $DB->get_records_sql($sql,array('courseworkid' => $this->coursework->id,'stage' => $stage))) {
 
                 //$allocatables = $this->get_coursework()->get_allocatables_with_feedback();
                 $allocatables = $this->get_coursework()->get_allocatables();
@@ -398,7 +398,7 @@ class manager {
 
         //get all users in manually selected for stage in coursework
         return $DB->get_records_sql($sql,
-            array('courseworkid'=>$this->coursework->id,'stage_identifier'=>$stage));
+            array('courseworkid' => $this->coursework->id,'stage_identifier' => $stage));
 
     }
 
@@ -419,7 +419,7 @@ class manager {
                          AND        f.stage_identifier = m.stage_identifier
                          ";
 
-        return $DB->get_records_sql($sql,array('courseworkid'=>$this->coursework->id,'stage'=>$stage));
+        return $DB->get_records_sql($sql,array('courseworkid' => $this->coursework->id,'stage' => $stage));
     }
 
 
@@ -458,7 +458,7 @@ class manager {
                  WHERE s.courseworkid = {$this->coursework->id}
                    AND f.stage_identifier = 'final_agreed_1'";
 
-        return $DB->get_records_sql($sql, array('courseworkid'=>$this->coursework->id));
+        return $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id));
 
     }
 

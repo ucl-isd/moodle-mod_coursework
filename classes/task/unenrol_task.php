@@ -44,7 +44,7 @@ class unenrol_task extends \core\task\scheduled_task {
 
         global $DB;
 
-        $courseworkids = $DB->get_records('coursework',array('processunenrol'=>1));
+        $courseworkids = $DB->get_records('coursework',array('processunenrol' => 1));
 
         if (!empty($courseworkids))   {
             foreach ($courseworkids as $courseworkid) {
@@ -56,7 +56,7 @@ class unenrol_task extends \core\task\scheduled_task {
                 $allocator = new \mod_coursework\allocation\auto_allocator($coursework);
                 $allocator->process_allocations();
 
-                $DB->set_field('coursework','processunenrol',0,array('id'=>$coursework->id()));
+                $DB->set_field('coursework','processunenrol',0,array('id' => $coursework->id()));
             }
         }
 

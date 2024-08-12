@@ -193,7 +193,7 @@ abstract class cell_base implements cell_interface {
     public function get_assessor_name($assessorid){
         global $DB;
 
-        $assessor = $DB->get_record('user',array('id'=>$assessorid),'firstname, lastname');
+        $assessor = $DB->get_record('user',array('id' => $assessorid),'firstname, lastname');
 
         return $assessor->lastname .' '. $assessor->firstname;
     }
@@ -207,7 +207,7 @@ abstract class cell_base implements cell_interface {
     public function get_assessor_username($assessorid)   {
         global $DB;
 
-        $assessor = $DB->get_record('user',array('id'=>$assessorid),'username');
+        $assessor = $DB->get_record('user',array('id' => $assessorid),'username');
 
         return $assessor->username;
     }

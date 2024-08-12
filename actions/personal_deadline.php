@@ -39,7 +39,7 @@ $personal_deadline_time = optional_param('personal_deadline_time',null,PARAM_RAW
 $allocatableid = (!empty($allocatableid_arr))    ?   $allocatableid_arr  : $allocatableid  ;
 
 
-$coursework_db = $DB->get_record('coursework',array('id'=>$courseworkid));
+$coursework_db = $DB->get_record('coursework',array('id' => $courseworkid));
 
 $coursework = \mod_coursework\models\coursework::find($coursework_db);
 

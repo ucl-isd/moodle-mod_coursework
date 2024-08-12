@@ -63,7 +63,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                      AND        sr.stage_identifier = 'assessor_{$assessor_number}'
                      AND        sp.rulename = 'total_sample_type'";
 
-        $selected = ($record = $DB->get_record_sql($sql))  ?   array($record->upperlimit=>$record->upperlimit) : false;
+        $selected = ($record = $DB->get_record_sql($sql))  ?   array($record->upperlimit=> $record->upperlimit) : false;
         $checked = ($selected) ?   true : false;
 
 
@@ -77,7 +77,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         $html = html_writer::start_div('sampletotal');
 
         $html    .=  html_writer::checkbox("assessor_{$assessor_number}_sampletotal_checkbox",1,$checked,get_string('topupto','mod_coursework'),
-            array('id'=>"assessor_{$assessor_number}_sampletotal_checkbox",'class'=>"assessor_{$assessor_number} total_checkbox sample_set_rule"));
+            array('id' => "assessor_{$assessor_number}_sampletotal_checkbox",'class' => "assessor_{$assessor_number} total_checkbox sample_set_rule"));
 
 
 
@@ -85,7 +85,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             "assessor_{$assessor_number}_sampletotal",
             "",
             $selected,
-            array('id'=>"assessor_{$assessor_number}_sampletotal", 'class' => " sample_set_rule"));
+            array('id' => "assessor_{$assessor_number}_sampletotal", 'class' => " sample_set_rule"));
         $html    .= html_writer::label(get_string('ofallstudents', 'mod_coursework'),'assessortwo_sampletotal[]');
 
         $html   .=  html_writer::end_div();
@@ -168,7 +168,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                          AND            stage_identifier = :stage
                          ORDER BY       ruleorder";
 
-        $rule = $DB->get_record_sql($sql,array('courseworkid'=>$this->coursework->id,'stage'=>$stage));
+        $rule = $DB->get_record_sql($sql,array('courseworkid' => $this->coursework->id,'stage' => $stage));
 
         if ($rule)  {
 

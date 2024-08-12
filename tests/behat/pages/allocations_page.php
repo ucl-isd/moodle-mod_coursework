@@ -261,8 +261,8 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
 
         $stage = "assessor_".$stage_number;
 
-        $params = array('courseworkid'=>$coursework->id,
-            'user'=>$user->id,
+        $params = array('courseworkid' => $coursework->id,
+            'user' => $user->id,
             'stage' => $stage);
 
         if (empty($negate)){

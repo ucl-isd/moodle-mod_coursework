@@ -101,7 +101,7 @@ $jsmodule = array(
                         'node-base')
 );
 $PAGE->requires->js_init_call('M.mod_coursework.init_allocate_page',
-                              array('wwwroot'=>$CFG->wwwroot,'coursemoduleid'=>$coursemoduleid),
+                              array('wwwroot' => $CFG->wwwroot,'coursemoduleid' => $coursemoduleid),
                               false,
                               $jsmodule);
 
@@ -240,7 +240,7 @@ echo html_writer::end_tag('div');
 
 
 echo html_writer::tag('h3', get_string('assessormoderatorgrades', 'mod_coursework'));
-echo html_writer::tag('div', get_string('pininfo', 'mod_coursework'), array('class'=>'pininfo'));
+echo html_writer::tag('div', get_string('pininfo', 'mod_coursework'), array('class' => 'pininfo'));
 
 // Start the form with save button.
 /*

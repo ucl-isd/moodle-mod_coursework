@@ -252,7 +252,7 @@ class feedback_controller extends controller_base {
                 $participant = $submission->get_allocatable();
                 $cell_class = $this->params['cell_type'];
                 $stage = new assessor($coursework, $teacherfeedback->stage_identifier);
-                $provisional = new grade_for_gradebook_cell(array('coursework'=>$coursework));
+                $provisional = new grade_for_gradebook_cell(array('coursework' => $coursework));
 
                 $jsonarray = array('success' => true);
 
@@ -285,7 +285,7 @@ class feedback_controller extends controller_base {
                         if ($coursework->automaticagreementrange != 'none' && !empty($finalfeedback) && $finalsubmission->all_inital_graded())    {
                             $finalstage = new assessor($coursework, "final_agreed_1");
                             $finalfeedback_row = new assessor_feedback_row($finalstage, $participant, $coursework);
-                            $agreed_grade_object = new multiple_agreed_grade_cell(array('coursework'=>$coursework,'stage'=>$finalstage));
+                            $agreed_grade_object = new multiple_agreed_grade_cell(array('coursework' => $coursework,'stage' => $finalstage));
                             $jsonarray['finalhtml'] = $agreed_grade_object->get_table_cell($finalfeedback_row);
                             $jsonarray['allocatableid'] = $submission->get_allocatable()->id();
                         }
@@ -347,8 +347,8 @@ class feedback_controller extends controller_base {
         if($this->params['remove']){
             if (!$this->params['confirm']) {
 
-                $urlparams = array('confirm'=>$this->params['confirm'],
-                    'remove'=>$this->params['remove'],'feedbackid'=>$this->params['feedbackid'],'finalised'=>$this->params['finalised']);
+                $urlparams = array('confirm' => $this->params['confirm'],
+                    'remove' => $this->params['remove'],'feedbackid' => $this->params['feedbackid'],'finalised' => $this->params['finalised']);
 
                 $PAGE->set_url('/mod/coursework/actions/feedbacks/edit.php', $urlparams);
 
@@ -448,7 +448,7 @@ class feedback_controller extends controller_base {
             $participant = $submission->get_allocatable();
             $cell_class = $this->params['cell_type'];
             $stage = new assessor($coursework, $teacherfeedback->stage_identifier);
-            $provisional = new grade_for_gradebook_cell(array('coursework'=>$coursework));
+            $provisional = new grade_for_gradebook_cell(array('coursework' => $coursework));
             $jsonarray = array('success' => true);
 
             if (strpos($cell_class, 'multi_marker_feedback_sub_rows') !== false) {

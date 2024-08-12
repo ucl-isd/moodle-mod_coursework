@@ -197,7 +197,7 @@ class personal_deadlines_controller extends controller_base{
                 'message' => 'The new deadline you chose has already passed. Please select appropriate deadline'
             ];
         }
-        $this->coursework = coursework::find(['id'=>$this->params['courseworkid']]);
+        $this->coursework = coursework::find(['id' => $this->params['courseworkid']]);
         require_login($this->coursework->course);
         $params = $this->set_default_current_deadline();
 

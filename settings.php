@@ -182,7 +182,7 @@ if ($ADMIN->fulltree) {
 
    // Default per page
 
-    $options = array('3'=>'3', '10'=>'10', '20'=>'20', '30'=>'30', '40'=>'40', '50'=>'50', '100'=>'100');
+    $options = array('3' => '3', '10' => '10', '20' => '20', '30' => '30', '40' => '40', '50' => '50', '100' => '100');
 
 
     $grading_page_header = new admin_setting_heading('grading_page_header', get_string('grading_page', 'mod_coursework'),'');
@@ -194,7 +194,7 @@ if ($ADMIN->fulltree) {
 
     //automatic agreement delay
 
-    $options = array('0'=>get_string('disabled', 'mod_coursework'));
+    $options = array('0' => get_string('disabled', 'mod_coursework'));
     $options['1800'] = get_string('timedminutes', 'mod_coursework','30');
     $options['3600'] = get_string('timedhour', 'mod_coursework','1');
     $options['7200'] = get_string('timedhours', 'mod_coursework','2');

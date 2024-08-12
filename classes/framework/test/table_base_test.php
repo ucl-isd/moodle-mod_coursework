@@ -98,7 +98,7 @@ class framework_table_base_test extends advanced_testcase {
         $generator = testing_util::get_data_generator();
 
         $params = array(
-            'username' =>'freddo'
+            'username' => 'freddo'
         );
         $generator->create_user($params);
 

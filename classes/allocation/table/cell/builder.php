@@ -309,7 +309,7 @@ class builder {
         $checkbox_title = 'Included in sample';
 
         $attributes = array('class' => 'sampling_set_checkbox',
-                            'id'=>$this->get_allocatable()->type().'_' . $this->get_allocatable()->id() . '_'.$this->get_stage()->identifier() .'_samplecheckbox',
+                            'id' => $this->get_allocatable()->type().'_' . $this->get_allocatable()->id() . '_'.$this->get_stage()->identifier() .'_samplecheckbox',
                             'title' => $checkbox_title);
 
         // if agreed grade given or grade published to students disable remaining sampling checkbox
@@ -338,8 +338,8 @@ class builder {
             1,
            '',
             array('class' => 'sampling_set_checkbox',
-                'id'=>$this->get_allocatable()->type().'_' . $this->get_allocatable()->id() . '_'.$this->get_stage()->identifier() .'_samplecheckbox',
-                'title' => $checkbox_title, 'hidden'=>true));
+                'id' => $this->get_allocatable()->type().'_' . $this->get_allocatable()->id() . '_'.$this->get_stage()->identifier() .'_samplecheckbox',
+                'title' => $checkbox_title, 'hidden' => true));
     }
 
     /**
@@ -352,9 +352,9 @@ class builder {
 
         global $DB;
 
-        $params = array('courseworkid'=>$this->coursework->id(),
-                          'allocatableid'=>$this->get_allocatable()->id(),
-                          'stage_identifier'=>$this->get_stage()->identifier(),
+        $params = array('courseworkid' => $this->coursework->id(),
+                          'allocatableid' => $this->get_allocatable()->id(),
+                          'stage_identifier' => $this->get_stage()->identifier(),
                           'selectiontype' => 'automatic');
 
 
@@ -430,7 +430,7 @@ class builder {
      * @throws \coding_exception
      */
     private function get_included_in_sample_label() {
-        return \html_writer::label(get_string('includedinsample', 'mod_coursework'), null, true, array('class'=>'included_in_sample'));
+        return \html_writer::label(get_string('includedinsample', 'mod_coursework'), null, true, array('class' => 'included_in_sample'));
     }
 
     /**
@@ -438,7 +438,7 @@ class builder {
      * @throws \coding_exception
      */
     private function get_automatically_in_sample_label() {
-        return \html_writer::label(get_string('automaticallyinsample', 'mod_coursework'), null, true, array('class'=>'included_in_sample'));
+        return \html_writer::label(get_string('automaticallyinsample', 'mod_coursework'), null, true, array('class' => 'included_in_sample'));
     }
 
     /**

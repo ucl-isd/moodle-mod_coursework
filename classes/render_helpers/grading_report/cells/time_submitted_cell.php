@@ -156,7 +156,7 @@ class time_submitted_cell extends cell_base {
             $content .= $OUTPUT->action_link($link,
                 $title,
                 null,
-                array('class' => 'new_deadline_extension', 'data-name' => $row_object->get_allocatable()->name(), 'data-params' => json_encode($new_extension_params), 'data-time' =>json_encode($content_time) ));
+                array('class' => 'new_deadline_extension', 'data-name' => $row_object->get_allocatable()->name(), 'data-params' => json_encode($new_extension_params), 'data-time' => json_encode($content_time) ));
 
         } else if ($ability->can('edit', $extension) && $coursework->extensions_enabled()) {
             $link = $this->get_router()->get_path('edit deadline extension', array('id' => $extension->id));
@@ -165,7 +165,7 @@ class time_submitted_cell extends cell_base {
             $content .= $OUTPUT->action_icon($link,
                 $icon,
                 null,
-                array('class' => 'edit_deadline_extension', 'data-name' => $row_object->get_allocatable()->name(), 'data-params' => json_encode($new_extension_params), 'data-time' =>json_encode($content_time)));
+                array('class' => 'edit_deadline_extension', 'data-name' => $row_object->get_allocatable()->name(), 'data-params' => json_encode($new_extension_params), 'data-time' => json_encode($content_time)));
         }
 
 

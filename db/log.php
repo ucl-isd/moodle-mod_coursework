@@ -36,8 +36,8 @@ defined('MOODLE_INTERNAL') || die();
 global $DB;
 
 $logs = array(
-    array('module'=>'coursework', 'action'=>'add', 'mtable'=>'coursework', 'field'=>'name'),
-    array('module'=>'coursework', 'action'=>'update', 'mtable'=>'coursework', 'field'=>'name'),
-    array('module'=>'coursework', 'action'=>'view', 'mtable'=>'coursework', 'field'=>'name'),
-    array('module'=>'coursework', 'action'=>'view all', 'mtable'=>'coursework', 'field'=>'name')
+    array('module' => 'coursework', 'action' => 'add', 'mtable' => 'coursework', 'field' => 'name'),
+    array('module' => 'coursework', 'action' => 'update', 'mtable' => 'coursework', 'field' => 'name'),
+    array('module' => 'coursework', 'action' => 'view', 'mtable' => 'coursework', 'field' => 'name'),
+    array('module' => 'coursework', 'action' => 'view all', 'mtable' => 'coursework', 'field' => 'name')
 );

@@ -65,7 +65,7 @@ class grading_sheet_download_test extends advanced_testcase {
         $this->coursework = $generator->create_instance(array('course' => $this->course->id,
                                                              'grade' => 100,
                                                              'numberofmarkers' => 1,
-                                                             'deadline'=>time()+86400));
+                                                             'deadline' => time()+86400));
         $this->submission = new stdClass();
         $this->submission->userid = $this->student->id;
         $this->submission->allocatableid = $this->student->id;
@@ -110,7 +110,7 @@ class grading_sheet_download_test extends advanced_testcase {
                                                               'grade' => 100,
                                                               'numberofmarkers' => 2,
                                                               'allocationenabled' => 1,
-                                                              'deadline'=>time()+86400));
+                                                              'deadline' => time()+86400));
 
         // 2 assessors
         $assessor1 = $this->teacher;

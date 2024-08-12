@@ -72,7 +72,7 @@ class personal_deadline_cell extends cell_base {
         $content .= $OUTPUT->action_icon($link,
             $icon,
             null,
-            array('class' => $class,'data-get' =>json_encode($new_personal_deadline_params), 'data-time' => date('d-m-Y H:i', $deadline) ));
+            array('class' => $class,'data-get' => json_encode($new_personal_deadline_params), 'data-time' => date('d-m-Y H:i', $deadline) ));
         $content .= '</div><div class="show_edit_personal_dealine display-none"> </div>';
 
         return $this->get_new_cell_with_order_data(['display' => $content, '@data-order' => $deadline]);

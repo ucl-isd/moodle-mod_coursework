@@ -364,7 +364,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodle_form->addElement('date_time_selector',
                                  'deadline',
                                  get_string('deadline', 'coursework'),
-                                 array('optional' => $optional, 'disabled'=> $disabled));
+                                 array('optional' => $optional, 'disabled' => $disabled));
 
 
 
@@ -564,7 +564,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodle_form =&  $this->_form;
 
-        $options = array('0'=>get_string('disabled', 'mod_coursework'));
+        $options = array('0' => get_string('disabled', 'mod_coursework'));
         $options['7'] = get_string('oneweekoption', 'mod_coursework');
         $options['14'] = get_string('twoweeksoption', 'mod_coursework');
         $options['21'] = get_string('threeweeksoption', 'mod_coursework');
@@ -592,7 +592,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodle_form =&  $this->_form;
 
-        $options = array('0'=>get_string('disabled', 'mod_coursework'));
+        $options = array('0' => get_string('disabled', 'mod_coursework'));
         $options['7'] = get_string('oneweekoption', 'mod_coursework');
         $options['14'] = get_string('twoweeksoption', 'mod_coursework');
         $options['21'] = get_string('threeweeksoption', 'mod_coursework');
@@ -690,7 +690,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodle_form =& $this->_form;
 
-        $groups_options_result = $DB->get_records('groupings', array('courseid'=>$COURSE->id), 'name', 'id, name');
+        $groups_options_result = $DB->get_records('groupings', array('courseid' => $COURSE->id), 'name', 'id, name');
         $groups_options = array();
         if ($groups_options_result !== false) {
             foreach ($groups_options_result as $result) {
@@ -796,7 +796,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodle_form =& $this->_form;
 
-        $choices = array('0'=>get_string('no'),'1'=>get_string('yes'));
+        $choices = array('0' => get_string('no'),'1' => get_string('yes'));
         $courseworkid = $this->get_coursework_id();
         $courseworkhassubmissions = (!empty($courseworkid)) ?
             $courseworkhassubmissions = $DB->get_records('coursework_submissions', array('courseworkid' => $courseworkid))
@@ -833,7 +833,7 @@ class mod_coursework_mod_form extends moodleform_mod {
                          AND        renamefiles = 1";
 
 
-            $settingvalue = ($DB->get_records_sql($sql,array('courseworkid'=>$courseworkid))) ? get_string('yesrenamefile','mod_coursework')  : get_string('norenamefile','mod_coursework')  ;
+            $settingvalue = ($DB->get_records_sql($sql,array('courseworkid' => $courseworkid))) ? get_string('yesrenamefile','mod_coursework')  : get_string('norenamefile','mod_coursework')  ;
 
             $moodle_form->addElement('static', 'renamefilesdescription', get_string('renamefiles', 'mod_coursework'),
                 $settingvalue);
@@ -1164,7 +1164,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 //        $moodle_form->setDefault('automaticagreement',0);
 //        $moodle_form->disabledIf('automaticagreement', 'numberofmarkers', 'eq', '1');
 //
-//        $moodle_form->addElement('text', 'automaticagreementrange', get_string('automaticagreementrange', 'mod_coursework'),array('size'=>3));
+//        $moodle_form->addElement('text', 'automaticagreementrange', get_string('automaticagreementrange', 'mod_coursework'),array('size' => 3));
 //        $moodle_form->addHelpButton('automaticagreementrange', 'automaticagreementrange', 'mod_coursework');
 //        $moodle_form->setDefault('automaticagreementrange',0);
 //        $moodle_form->disabledIf('automaticagreementrange', 'automaticagreement', 'eq', '0');
@@ -1252,7 +1252,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodle_form =& $this->_form;
 
-        $options = array('0'=>get_string('disabled', 'mod_coursework'));
+        $options = array('0' => get_string('disabled', 'mod_coursework'));
         $options['1800'] = get_string('timedminutes', 'mod_coursework','30');
         $options['3600'] = get_string('timedhour', 'mod_coursework','1');
         $options['7200'] = get_string('timedhours', 'mod_coursework','2');
@@ -1355,7 +1355,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     private function add_automatic_agreement_enabled() {
         $options = array('none' => 'none',
                          'percentage_distance' => 'percentage distance',
-                         'average_grade' =>'average grade');
+                         'average_grade' => 'average grade');
         $this->form()->addelement('select',
                                   'automaticagreementstrategy',
                                   get_string('automaticagreementofgrades', 'mod_coursework'),

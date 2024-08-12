@@ -1414,7 +1414,7 @@ class submission extends table_base implements \renderable {
 			         AND    cf.timecreated + c.gradeeditingtime > :time
         ";
 
-        $editablefeedbacks = $DB->get_records_sql($sql,array('submissionid'=>$this->id,'time'=>time()));
+        $editablefeedbacks = $DB->get_records_sql($sql,array('submissionid' => $this->id,'time' => time()));
 
         return (empty($editablefeedbacks))  ?   false : $editablefeedbacks;
     }
@@ -1476,8 +1476,8 @@ class submission extends table_base implements \renderable {
     function has_specific_assessor_feedback($assessorid){
         global $DB;
 
-        $feedback = $DB->get_record('coursework_feedbacks', array('submissionid'=>$this->id,
-                                                                        'assessorid'=>$assessorid));
+        $feedback = $DB->get_record('coursework_feedbacks', array('submissionid' => $this->id,
+                                                                        'assessorid' => $assessorid));
 
         return (empty($feedback))  ?   false : $feedback;
     }

@@ -172,7 +172,7 @@ abstract class sample_base {
                  WHERE  s.courseworkid = :courseworkid
                    AND  f.stage_identifier = 'final_agreed_1'";
 
-        return $DB->get_records_sql($sql, array('courseworkid'=>$this->coursework->id));
+        return $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id));
     }
 
 
@@ -188,7 +188,7 @@ abstract class sample_base {
                  WHERE  courseworkid = :courseworkid
                    AND  firstpublished IS NOT NULL";
 
-        return $DB->get_records_sql($sql, array('courseworkid'=>$this->coursework->id));
+        return $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id));
     }
 
 

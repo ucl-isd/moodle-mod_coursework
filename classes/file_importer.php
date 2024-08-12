@@ -123,7 +123,7 @@ class coursework_file_zip_importer    {
 
             if ($allocatableid = $this->is_valid_feedback_file_filename($coursework, $file, $participants) ) {
 
-                $subdbrecord = $DB->get_record('coursework_submissions',array('courseworkid'=>$coursework->id(),'allocatableid'=>$allocatableid,'allocatabletype'=>$coursework->get_allocatable_type()));
+                $subdbrecord = $DB->get_record('coursework_submissions',array('courseworkid' => $coursework->id(),'allocatableid' => $allocatableid,'allocatabletype' => $coursework->get_allocatable_type()));
 
                 $submission = \mod_coursework\models\submission::find($subdbrecord);
 
@@ -132,7 +132,7 @@ class coursework_file_zip_importer    {
                     //if only add/edit initial capability then workout stage identifier
                     if ($feedbackstage == 'initialassessor'){
 
-                        $feedback = $DB->get_record('coursework_feedbacks', array('submissionid'=>$submission->id, 'assessorid'=>$USER->id ));
+                        $feedback = $DB->get_record('coursework_feedbacks', array('submissionid' => $submission->id, 'assessorid' => $USER->id ));
 
                         if($feedback){
                             $feedbackstage = $feedback->stage_identifier;
@@ -242,8 +242,8 @@ class coursework_file_zip_importer    {
                      AND        stage_identifier = :stage
                      ";
 
-        $params = array('submissionid'=>$submission->id,
-                              'stage'=>$stageidentifier);
+        $params = array('submissionid' => $submission->id,
+                              'stage' => $stageidentifier);
 
         if (!has_capability('mod/coursework:administergrades',$coursework->get_context())) {
             $sql .= "AND        (assessorid = :assessorid || lasteditedbyuser = :lasteditedbyuser)";

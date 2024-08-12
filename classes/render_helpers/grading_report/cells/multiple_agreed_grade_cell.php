@@ -130,7 +130,7 @@ class multiple_agreed_grade_cell extends cell_base {
                 $iconlink = $OUTPUT->action_link($link,
                                                  $title,
                                                  null,
-                                                 array('class'=>'new_final_feedback',
+                                                 array('class' => 'new_final_feedback',
                                                        'id' => 'new_final_feedback_' . $rowobject->get_coursework()
                                                         ->get_allocatable_identifier_hash($rowobject->get_allocatable())));
 
@@ -144,7 +144,7 @@ class multiple_agreed_grade_cell extends cell_base {
                 $iconlink = $OUTPUT->action_link($link,
                                                  $linktitle,
                                                  null,
-                                                 array('class'=>'show_feedback','id' => $link_id));
+                                                 array('class' => 'show_feedback','id' => $link_id));
             }
         }
 

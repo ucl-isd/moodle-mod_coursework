@@ -255,7 +255,7 @@ abstract class base {
     private function get_percentage_allocated_teachers(){
         global $DB;
 
-        return $DB->get_records('coursework_allocation_config', array('courseworkid'=>$this->get_coursework_id()),'','assessorid as id');
+        return $DB->get_records('coursework_allocation_config', array('courseworkid' => $this->get_coursework_id()),'','assessorid as id');
     }
 
     /**
@@ -560,7 +560,7 @@ abstract class base {
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $allocatable->id(),
             'allocatabletype' => $allocatable->type(),
-            'stage_identifier'=> $this->stage_identifier
+            'stage_identifier' => $this->stage_identifier
         );
         $DB->delete_records('coursework_sample_set_mbrs', $params);
     }
@@ -824,7 +824,7 @@ abstract class base {
      */
     public function potential_moderator_dropdown($allocatable) {
 
-        $option_for_nothing_chosen_yet = array('' =>'Choose Moderator');
+        $option_for_nothing_chosen_yet = array('' => 'Choose Moderator');
         $html_attributes = array(
             'id' => $this->moderator_dropdown_id($allocatable),
             'class' => 'moderator_id_dropdown',

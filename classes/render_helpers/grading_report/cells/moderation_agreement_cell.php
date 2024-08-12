@@ -186,7 +186,7 @@ class moderation_agreement_cell extends cell_base {
         return  $OUTPUT->action_link($link,
                                      $title,
                                 null,
-                                array('class'=>'new_moderation','id' => $link_id));
+                                array('class' => 'new_moderation','id' => $link_id));
     }
 
 
@@ -239,6 +239,6 @@ class moderation_agreement_cell extends cell_base {
         return $OUTPUT->action_link($link,
                                     $linktitle,
                                 null,
-                                      array('class'=>'show_moderation','id' => $link_id));
+                                      array('class' => 'show_moderation','id' => $link_id));
     }
 }

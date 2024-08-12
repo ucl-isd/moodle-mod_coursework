@@ -259,7 +259,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         $iconlink = $OUTPUT->action_link($link,
                                          $linktitle,
                                          null,
-                                         array('class'=>'show_feedback','id' => $link_id));
+                                         array('class' => 'show_feedback','id' => $link_id));
         return $iconlink;
     }
 
@@ -285,7 +285,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         $iconlink = $OUTPUT->action_link($link,
                                          $linktitle,
                                          null,
-                                         array('class'=>'new_feedback'));
+                                         array('class' => 'new_feedback'));
         return $iconlink;
     }
 

@@ -73,8 +73,8 @@ class csv_test extends advanced_testcase {
         $this->coursework = $generator->create_instance(array('course' => $this->course->id,
                                                               'grade' => 100,
                                                               'numberofmarkers' => 1,
-                                                              'deadline'=>time()+86400,
-                                                                'extensionsenabled'=>1));
+                                                              'deadline' => time()+86400,
+                                                                'extensionsenabled' => 1));
         $this->submission = new stdClass();
         $this->submission->userid = $this->student->id;
         $this->submission->allocatableid = $this->student->id;
@@ -167,7 +167,7 @@ class csv_test extends advanced_testcase {
         $this->coursework = $generator->create_instance(array('course' => $this->course->id,
                                                               'grade' => 100,
                                                               'numberofmarkers' => 2,
-                                                              'deadline'=>time()-86400));
+                                                              'deadline' => time()-86400));
         $this->submission = new stdClass();
         $this->submission->userid = $this->student->id;
         $this->submission = $generator->create_submission($this->submission, $this->coursework);
@@ -265,7 +265,7 @@ class csv_test extends advanced_testcase {
                                                               'grade' => 100,
                                                               'numberofmarkers' => 2,
                                                               'samplingenabled' => 1,
-                                                              'deadline'=>time()+86400));
+                                                              'deadline' => time()+86400));
         $this->submission = new stdClass();
         $this->submission->userid = $this->student->id;
         $this->submission = $generator->create_submission($this->submission, $this->coursework);
@@ -342,7 +342,7 @@ class csv_test extends advanced_testcase {
                                                               'grade' => 100,
                                                               'numberofmarkers' => 2,
                                                               'samplingenabled' => 1,
-                                                              'deadline'=>time()+86400));
+                                                              'deadline' => time()+86400));
         $student1 = $this->student;
         $assessor1 = $this->teacher;
         $assessor2 = $this->other_teacher;
@@ -468,7 +468,7 @@ class csv_test extends advanced_testcase {
                                   '32' => $assessorname2,
                                  '33' => $assessorusername2,
                                   '34' => userdate(time(),$dateformat),
-                                  '35'=> $feedback4->grade);
+                                  '35' => $feedback4->grade);
 
         $this->assertEquals($assessors_grades, $csv_grades);
     }

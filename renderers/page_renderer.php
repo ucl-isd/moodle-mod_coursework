@@ -1375,7 +1375,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
             $html .= get_string('fileuploadresults', 'mod_coursework')."<br />";
             foreach ($processingresults as $file => $result) {
-                $html .= get_string('fileuploadresult', 'mod_coursework',array('filename'=>$file,'result'=>$result)). "<br />";
+                $html .= get_string('fileuploadresult', 'mod_coursework',array('filename' => $file,'result' => $result)). "<br />";
             }
             $html .= html_writer::end_tag('p');
         } else {
@@ -1397,7 +1397,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     function view_course_index($courseid) {
         global $CFG, $DB, $USER;
         $o = '';
-        $course = $DB->get_record('course', array('id'=>$courseid));
+        $course = $DB->get_record('course', array('id' => $courseid));
         $strplural = get_string('modulenameplural', 'assign');
         if (!$cms = get_coursemodules_in_course('coursework', $course->id, 'm.deadline')) {
             $o .= $this->get_renderer()->notification(get_string('thereareno', 'moodle', $strplural));
@@ -1467,12 +1467,12 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             }
             $url = $CFG->wwwroot.'/mod/coursework/view.php';
             $link = "<a href=\"{$url}?id={$coursework->coursemodule->id}\">{$coursework->name}</a>";
-            $table->data[] = array(//'cmid'=>$cm->id,
-                'sectionname'=>$printsection,
-                'cmname'=>$link,
-                'timedue'=>$timedue,
-                'submissioninfo'=>$submitted,
-                'gradeinfo'=>$grade);
+            $table->data[] = array(//'cmid' => $cm->id,
+                'sectionname' => $printsection,
+                'cmname' => $link,
+                'timedue' => $timedue,
+                'submissioninfo' => $submitted,
+                'gradeinfo' => $grade);
         }
         $o = html_writer::table($table);
         return $o;
@@ -1493,9 +1493,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             'alert_personaldeadline_save_successful' => str_replace(' ', '_', get_string('alert_personaldeadline_save_successful', 'mod_coursework')),
             'alert_validate_deadline' => str_replace(' ', '_', get_string('alert_validate_deadline', 'mod_coursework')),
             'url_root' => $CFG->wwwroot,
-            'alert_feedback_save_successful'=>str_replace(' ', '_', get_string('alert_feedback_save_successful', 'mod_coursework')),
-            'alert_feedback_remove_successful'=>str_replace(' ', '_', get_string('alert_feedback_remove_successful', 'mod_coursework')),
-            'alert_request_error'=>str_replace(' ', '_', get_string('alert_request_error', 'mod_coursework')),
+            'alert_feedback_save_successful' => str_replace(' ', '_', get_string('alert_feedback_save_successful', 'mod_coursework')),
+            'alert_feedback_remove_successful' => str_replace(' ', '_', get_string('alert_feedback_remove_successful', 'mod_coursework')),
+            'alert_request_error' => str_replace(' ', '_', get_string('alert_request_error', 'mod_coursework')),
             'alert_feedback_draft_save_successful' => str_replace(' ', '_', get_string('alert_feedback_draft_save_successful', 'mod_coursework'))
         ];
 
@@ -1509,57 +1509,57 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             'aria-label' => 'Close',
             'data-dismiss' => 'modal'
         ));
-        $modal_header .= html_writer::span('&times;','',array('aria-hidden'=>'true'));
+        $modal_header .= html_writer::span('&times;','',array('aria-hidden' => 'true'));
         $modal_header .= html_writer::end_tag('button');
 
-        $modal_body = html_writer::start_tag('form', array('id'=>'form-extension'));
+        $modal_body = html_writer::start_tag('form', array('id' => 'form-extension'));
         $content = html_writer::empty_tag('input',array(
-            'name'=>'allocatabletype',
-            'type'=>'hidden',
-            'value'=>'',
-            'id'=>'extension-allocatabletype'
+            'name' => 'allocatabletype',
+            'type' => 'hidden',
+            'value' => '',
+            'id' => 'extension-allocatabletype'
         ));
         $content .= html_writer::empty_tag('input',array(
-            'name'=>'allocatableid',
-            'type'=>'hidden',
-            'value'=>'',
-            'id'=>'extension-allocatableid'
+            'name' => 'allocatableid',
+            'type' => 'hidden',
+            'value' => '',
+            'id' => 'extension-allocatableid'
         ));
         $content .= html_writer::empty_tag('input',array(
-            'name'=>'courseworkid',
-            'type'=>'hidden',
-            'value'=>'',
-            'id'=>'extension-courseworkid'
+            'name' => 'courseworkid',
+            'type' => 'hidden',
+            'value' => '',
+            'id' => 'extension-courseworkid'
         ));
         $content .= html_writer::empty_tag('input',array(
-            'name'=>'id',
-            'type'=>'hidden',
-            'value'=>'',
-            'id'=>'extension-id'
+            'name' => 'id',
+            'type' => 'hidden',
+            'value' => '',
+            'id' => 'extension-id'
         ));
         $content .= html_writer::empty_tag('input',array(
-            'name'=>'submissionid',
-            'type'=>'hidden',
-            'value'=>'',
-            'id'=>'extension-submissionid'
+            'name' => 'submissionid',
+            'type' => 'hidden',
+            'value' => '',
+            'id' => 'extension-submissionid'
         ));
         $content .= html_writer::empty_tag('input',array(
-            'name'=>'name',
-            'type'=>'hidden',
-            'id'=>'extension-name',
-            'value'=>'',
+            'name' => 'name',
+            'type' => 'hidden',
+            'id' => 'extension-name',
+            'value' => '',
         ));
         $content .= html_writer::empty_tag('input',array(
-            'name'=>'aid',
-            'type'=>'hidden',
-            'value'=>'',
-            'id'=>'button-id'
+            'name' => 'aid',
+            'type' => 'hidden',
+            'value' => '',
+            'id' => 'button-id'
         ));
         $modal_body .= html_writer::div($content,'display-none');
 
         if ($coursework->deadline) {
             $content_default_deadline = 'Default deadline: ' . userdate($coursework->deadline);
-            $content_default_deadline = html_writer::div($content_default_deadline,'col-md-12', array('id'=>'extension-time-content'));
+            $content_default_deadline = html_writer::div($content_default_deadline,'col-md-12', array('id' => 'extension-time-content'));
             $modal_body .= html_writer::div($content_default_deadline,'form-group row fitem');
 
             $content_extended_deadline = html_writer::tag('label',get_string('extended_deadline', 'mod_coursework'));
@@ -1576,12 +1576,12 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                     'id' => 'extension-reason-select',
                     'class' => 'form-control'
                 ));
-                $select_extension_reasons_div .= html_writer::div($select_extension_reasons,'col-md-9 form-inline felement', array('data-fieldtype'=>'select'));
+                $select_extension_reasons_div .= html_writer::div($select_extension_reasons,'col-md-9 form-inline felement', array('data-fieldtype' => 'select'));
                 $modal_body .= html_writer::div($select_extension_reasons_div,'form-group row fitem');
             }
 
             $content_extra_information = html_writer::tag('label',get_string('extra_information', 'mod_coursework'), array(
-                'class'=>'col-form-label d-inline', 'for'=>'id_extra_information'
+                'class' => 'col-form-label d-inline', 'for' => 'id_extra_information'
             ));
             $content_extra_information_div = html_writer::div($content_extra_information,'col-md-3');
             $content_extra_information = html_writer::tag('textarea', '', array(
@@ -1590,38 +1590,38 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 'spellcheck' => 'true',
                 'id' => 'id_extra_information'
             ));
-            $content_extra_information_div .= html_writer::div($content_extra_information,'col-md-9 form-inline felement', array('data-fieldtype'=>'editor'));
+            $content_extra_information_div .= html_writer::div($content_extra_information,'col-md-9 form-inline felement', array('data-fieldtype' => 'editor'));
             $modal_body .= html_writer::div($content_extra_information_div,'form-group row fitem', array('id' => 'fitem_id_extra_information'));
         }
 
         $modal_body .= html_writer::end_tag('form');
 
         $modal_footer = html_writer::empty_tag('img', array(
-            'src'=>  $CFG->wwwroot . '/mod/coursework/pix/loadding.gif',
-            'alt'=>'Load...',
-            'width'=>'25',
-            'class'=>'loading_moderation icon',
-            'style'=>'visibility: hidden;'
+            'src' =>  $CFG->wwwroot . '/mod/coursework/pix/loadding.gif',
+            'alt' => 'Load...',
+            'width' => '25',
+            'class' => 'loading_moderation icon',
+            'style' => 'visibility: hidden;'
         ));
         $modal_footer .= html_writer::tag('button', 'Save', array(
-            'type'=>'button',
-            'class'=>'btn btn-primary',
-            'id'=>'extension-submit'
+            'type' => 'button',
+            'class' => 'btn btn-primary',
+            'id' => 'extension-submit'
         ));
         $modal_footer .= html_writer::tag('button', 'Close', array(
-            'type'=>'button',
-            'class'=>'btn btn-secondary btn-extension-close',
-            'data-dismiss'=>'modal'
+            'type' => 'button',
+            'class' => 'btn btn-secondary btn-extension-close',
+            'data-dismiss' => 'modal'
         ));
         $modal_footer .= html_writer::tag('button', 'Back', array(
-            'type'=>'button',
-            'class'=>'btn btn-secondary',
-            'id'=>'extension-back'
+            'type' => 'button',
+            'class' => 'btn btn-secondary',
+            'id' => 'extension-back'
         ));
         $modal_footer .= html_writer::tag('button', 'Next', array(
-            'type'=>'button',
-            'class'=>'btn btn-secondary',
-            'id'=>'extension-next'
+            'type' => 'button',
+            'class' => 'btn btn-secondary',
+            'id' => 'extension-next'
         ));
 
         $html = html_writer::div($modal_header, 'modal-header');
@@ -1638,10 +1638,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             'aria-hidden' => 'true'
         ));
         $html .= html_writer::empty_tag('input',array(
-            'name'=>'',
-            'type'=>'hidden',
-            'data-lang'=>json_encode($lang_messages),
-            'id'=>'datatables_lang_messages'
+            'name' => '',
+            'type' => 'hidden',
+            'data-lang' => json_encode($lang_messages),
+            'id' => 'datatables_lang_messages'
         ));
         $html = html_writer::div($html);
 

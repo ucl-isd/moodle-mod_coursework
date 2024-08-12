@@ -778,19 +778,19 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $html = html_writer::tag('h2',get_string('sampling', 'mod_coursework'));
 
 
-        $html .= html_writer::start_tag('div', array('class'=>'assessor-sampling-wrapper accordion'));
+        $html .= html_writer::start_tag('div', array('class' => 'assessor-sampling-wrapper accordion'));
 
         $html .= html_writer::start_tag('h3', array('id' => 'sampling_strategy_settings_header'));
         $html .= get_string('samplingstrategy', 'mod_coursework');
         $html .= html_writer::end_tag('h3');
 
-        $html .= html_writer::start_tag('div', array('class'=>'sampling-rules'));
+        $html .= html_writer::start_tag('div', array('class' => 'sampling-rules'));
 
 
         // We want to allow the allocation strategy to add configuration options.
 
 
-        $html .= html_writer::start_tag('div',array('class'=>'sampling-select'));
+        $html .= html_writer::start_tag('div',array('class' => 'sampling-select'));
 
         $script = "
             var samplingValidateHdl = Array();
@@ -829,7 +829,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $table->head = $assessorheaders;
 
-        $assessor1cell = html_writer::start_tag('div',array('class'=>'samples_strategy'));
+        $assessor1cell = html_writer::start_tag('div',array('class' => 'samples_strategy'));
         $assessor1cell  .=  get_string('assessoronedefault','mod_coursework');
         $assessor1cell  .=  html_writer::end_tag('div');
 
@@ -853,14 +853,14 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             //check whether any rules have been saved for this stage
             $selected = ($samplingwidget->get_coursework()->has_automatic_sampling_at_stage('assessor_'.$i)) ? '1' : false;
 
-            $sampling_cell = html_writer::start_tag('div',array('class'=>'samples_strategy'));
+            $sampling_cell = html_writer::start_tag('div',array('class' => 'samples_strategy'));
             $sampling_cell   .= html_writer::label(get_string('sampletype', 'mod_coursework'), "assessor_{$i}_samplingstrategy");
 
             $sampling_cell   .=    html_writer::select($sampling_strategies,
                 "assessor_{$i}_samplingstrategy",
                 $selected,
                 false,
-                array('id'=>"assessor_{$i}_samplingstrategy",'class'=>"assessor_sampling_strategy sampling_strategy_detail"));
+                array('id' => "assessor_{$i}_samplingstrategy",'class' => "assessor_sampling_strategy sampling_strategy_detail"));
 
             $sampling_cell   .= html_writer::end_tag('div');
 
@@ -876,7 +876,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $graderules .= $this->get_sampling_strategy_form_elements($samplingwidget->get_coursework(),$i,$javascript);
 
 
-            $sampling_cell   .=     html_writer::div($graderules,'', array('id'=>"assessor_{$i}_automatic_rules"));
+            $sampling_cell   .=     html_writer::div($graderules,'', array('id' => "assessor_{$i}_automatic_rules"));
 
             $columndata[] = new html_table_cell($sampling_cell);
         }
@@ -954,7 +954,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $sampling_column .= html_writer::start_tag('span', array('class' => "assessor_{$suffix}_grade_rules", 'id' => "assessor_{$suffix}_grade_rules"));
 
             $sampling_column .= html_writer::checkbox("assessor_{$suffix}_samplerules[]", 1, false, get_string('grade', 'mod_coursework'),
-                array('id' => "assessor_{$suffix}_samplerules_{$i}", 'class'=>"assessor_{$suffix} sampling_strategy_detail"));
+                array('id' => "assessor_{$suffix}_samplerules_{$i}", 'class' => "assessor_{$suffix} sampling_strategy_detail"));
 
             $options = array('0' => get_string('percentagesign', 'mod_coursework'),
                 '1' => get_string('gradescale', 'mod_coursework'));
@@ -963,7 +963,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 "assessor_{$suffix}_sampletype[]",
                 $samplingwidget->get_sampling_strategy(),
                 false,
-                array('id' => "assessor_{$suffix}_sampletype_{$i}", 'class'=>"grade_type assessor_{$suffix} sampling_strategy_detail"));
+                array('id' => "assessor_{$suffix}_sampletype_{$i}", 'class' => "grade_type assessor_{$suffix} sampling_strategy_detail"));
 
             $sampling_column .= html_writer::label(get_string('from', 'mod_coursework'), 'assessortwo_samplefrom[0]');
 
@@ -973,7 +973,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 "assessor_{$suffix}_samplefrom[]",
                 $samplingwidget->get_sampling_strategy(),
                 false,
-                array('id' => "assessor_{$suffix}_samplefrom_{$i}", 'class'=>"assessor_{$suffix} sampling_strategy_detail"));
+                array('id' => "assessor_{$suffix}_samplefrom_{$i}", 'class' => "assessor_{$suffix} sampling_strategy_detail"));
 
             $sampling_column .= html_writer::label(get_string('to', 'mod_coursework'), "assessor_{$suffix}_sampleto[0]");
 
@@ -981,7 +981,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 "assessor_{$suffix}_sampleto[]",
                 $samplingwidget->get_sampling_strategy(),
                 false,
-                array('id' => "assessor_{$suffix}_sampleto_{$i}", 'class'=>"assessor_{$suffix} sampling_strategy_detail"));
+                array('id' => "assessor_{$suffix}_sampleto_{$i}", 'class' => "assessor_{$suffix} sampling_strategy_detail"));
 
 
             $sampling_column .= html_writer::end_tag('span', '');
@@ -990,12 +990,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $sampling_column  .= html_writer::end_tag('div');
 
 
-        $sampling_column      .=  html_writer::link('#',get_string('addgraderule','mod_coursework'),array('id'=>"assessor_{$suffix}_addgradderule", 'class'=>'addgradderule sampling_strategy_detail'));
-        $sampling_column      .=  html_writer::link('#',get_string('removegraderule','mod_coursework'),array('id'=>"assessor_{$suffix}_removegradderule", 'class'=>'removegradderule sampling_strategy_detail'));
+        $sampling_column      .=  html_writer::link('#',get_string('addgraderule','mod_coursework'),array('id' => "assessor_{$suffix}_addgradderule", 'class' => 'addgradderule sampling_strategy_detail'));
+        $sampling_column      .=  html_writer::link('#',get_string('removegraderule','mod_coursework'),array('id' => "assessor_{$suffix}_removegradderule", 'class' => 'removegradderule sampling_strategy_detail'));
 
 
         $sampling_column    .=  html_writer::checkbox("assessor_{$suffix}_samplertopup",1,false,get_string('topupto','mod_coursework'),
-            array('id'=>"assessor_{$suffix}_samplerules[]",'class'=>"assessor_{$suffix} sampling_strategy_detail"));
+            array('id' => "assessor_{$suffix}_samplerules[]",'class' => "assessor_{$suffix} sampling_strategy_detail"));
 
 
 
@@ -1003,7 +1003,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             "assessor_{$suffix}_sampletopup",
             $samplingwidget->get_sampling_strategy(),
             false,
-            array('id'=>"assessor_{$suffix}_sampletopup", 'class' => "assessor_{$suffix} sampling_strategy_detail"));
+            array('id' => "assessor_{$suffix}_sampletopup", 'class' => "assessor_{$suffix} sampling_strategy_detail"));
         $sampling_column    .= html_writer::label(get_string('ofallstudents', 'mod_coursework'),'assessortwo_sampleto[]');
 
         return $sampling_column ;

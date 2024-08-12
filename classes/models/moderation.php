@@ -94,7 +94,7 @@ class moderation extends table_base{
         global $DB;
 
         //Moderation done only for single courseworks so submission id to retrieve feedback is enough
-        $params = array('id'=>$this->feedbackid);
+        $params = array('id' => $this->feedbackid);
         $feedback = $DB->get_record('coursework_feedbacks', $params);
         return $feedback;
 
