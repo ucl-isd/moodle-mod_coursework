@@ -20,13 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/**
- * Created by PhpStorm.
- * User: Nigel.Daley
- * Date: 10/08/2015
- * Time: 18:27
- */
-
 require_once($CFG->libdir.'/formslib.php');
 
 class upload_grading_sheet_form extends moodleform {

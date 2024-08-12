@@ -20,13 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/**
- * Created by PhpStorm.
- * User: Nigel.Daley
- * Date: 08/10/2015
- * Time: 17:19
- */
-
 defined('MOODLE_INTERNAL') || die();
 
 function xmldb_coursework_install() {

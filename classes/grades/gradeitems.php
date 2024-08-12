@@ -15,6 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/**
  * Grade item mappings for the activity.
  *
  * @package   mod_coursework
