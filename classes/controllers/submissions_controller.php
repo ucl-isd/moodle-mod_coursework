@@ -327,7 +327,7 @@ class submissions_controller extends controller_base {
 
         global  $USER, $DB;
 
-        $allocatableids = (!is_array($this->params['allocatableid']))  ?  array($this->params['allocatableid']) : $this->params['allocatableid'];
+        $allocatableids = (!is_array($this->params['allocatableid'])) ? array($this->params['allocatableid']) : $this->params['allocatableid'];
 
         $personaldeadline_page_url = new \moodle_url('/mod/coursework/actions/personal_deadline.php',
             array('id' => $this->coursework->get_coursemodule_id(), 'multipleuserdeadlines' => 1, 'setpersonaldeadlinespage' => 1,

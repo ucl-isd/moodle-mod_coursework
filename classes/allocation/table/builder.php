@@ -128,7 +128,7 @@ class builder {
         $start = ($this->options['page']) * $this->options['perpage']; // Will start at 0.
         $end = ($this->options['page'] + 1) * $this->options['perpage']; // Take care of overlap: 0-10, 10-20, 20-30.
 
-        $end = (empty($end))  ?  count($rows) : $end;
+        $end = (empty($end)) ? count($rows) : $end;
         $counter = 0; // Begin from the first one that the user could see.
         foreach ($rows as $allocatable_id => $row) {
 
