@@ -177,19 +177,19 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                         var spanClone = $('div.'+linkid[0] + '_' + linkid[1] +'_grade_rules').first().clone(true);
 
-                        //find out how many rule spans exist
+                        // Find out how many rule spans exist
                         var gradeSpans = $('div.'+linkid[0] + '_' + linkid[1] +'_grade_rules');
 
                         if (gradeSpans.length < 5) {
-                            //put a new line in
+                            // Put a new line in
 
-                            //rename the select box ids
+                            // Rename the select box ids
                             spanClone.find('select').each(function (n, ele) {
                                 var elename = $(ele).attr('id').split('_');
                                 $(ele).attr('id', elename[0] + '_' + elename[1] + '_' + elename[2] + '_' + gradeSpans.length);
                             });
 
-                            //rename the checkbox
+                            // Rename the checkbox
                             spanClone.find('input').each(function (n, ele) {
                                 var elename = $(ele).attr('id').split('_');
                                 $(ele).attr('id', elename[0] + '_' + elename[1] + '_' + elename[2] + '_' + gradeSpans.length);
@@ -201,7 +201,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                             //spanClone.appendTo($('#'+linkid[0] + '_' + linkid[1]+'_grade_rules_0').parent());
                              spanClone.insertAfter($('div.'+linkid[0] + '_' + linkid[1] +'_grade_rules').last());
 
-                            //make sure the from and to selects are set to the correct type
+                            // Make sure the from and to selects are set to the correct type
 
                             change_options($('#'+linkid[0] + '_' + linkid[1] + '_sampletype_' + gradeSpans.length));
 
@@ -210,7 +210,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                 });
             })
 
-            //remove grade rule buttons
+            // Remove grade rule buttons
             $('.removegradderule').each(function(e,element) {
 
                 $(element).on('click',function (e) {
@@ -222,7 +222,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                     if ($('#'+linkid[0] + '_' + linkid[1] + '_samplingstrategy').val() == AUTOMATIC_SAMPLING) {
 
-                        //find out how many rule spans exist
+                        // Find out how many rule spans exist
                         var gradeSpans = $(spanclass);
                         if (gradeSpans.length > 1) {
                             $(spanclass).last().remove();
@@ -262,7 +262,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                     })
             });
 
-            //grade rule drop downs
+            // Grade rule drop downs
             $('.grade_type').each(function(e,element) {
 
                 $(element).on('change',function() {
@@ -280,7 +280,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                     var samplefromid = '#'+ele_id[0]+'_'+ele_id[1]+'_samplefrom_'+ele_id[3];
                     var sampletoid = '#'+ele_id[0]+'_'+ele_id[1]+'_sampleto_'+ele_id[3];
 
-                    //remove the contents from the grade rule from and to drop downs
+                    // Remove the contents from the grade rule from and to drop downs
                     $(samplefromid).find('option').remove();
                     $(sampletoid).find('option').remove();
 
@@ -427,7 +427,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                         $limits[0] = ceil($limits[0]/$weighting); // element of array
                         $limits[1] = ceil($limits[1]/$weighting); // element of array
 
-                        //note we have to add one as the values are not stored in there element positions
+                        // Note we have to add one as the values are not stored in there element positions
 
                     }
 
@@ -450,7 +450,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                     AND stage_identifier = :stage
                     AND $gradesql BETWEEN {$limit1} AND {$limit2}";
 
-        //note as things stand limit1 and limit2 can not be params as the type of the grade field (varchar)
+        // Note as things stand limit1 and limit2 can not be params as the type of the grade field (varchar)
         //means the values are cast as strings
 
        return $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id,

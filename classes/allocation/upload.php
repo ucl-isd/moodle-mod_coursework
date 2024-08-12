@@ -192,7 +192,7 @@ class upload {
 
         while ($line = $csvreader->next()) {
 
-            //we will not process the content of any line that has been flagged up with an error
+            // We will not process the content of any line that has been flagged up with an error
             if ( is_array($processingresults) && array_key_exists($s, $processingresults) ) {
                 $s++;
                 continue;

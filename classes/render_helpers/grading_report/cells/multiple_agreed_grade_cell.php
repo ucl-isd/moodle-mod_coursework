@@ -65,7 +65,7 @@ class multiple_agreed_grade_cell extends cell_base {
 
         global $USER, $OUTPUT;
 
-        //if coursework uses sampling check if any enabled for this submission, otherwise there is no agreed grade
+        // If coursework uses sampling check if any enabled for this submission, otherwise there is no agreed grade
         if ($rowobject->get_coursework()->sampling_enabled() && $rowobject->get_submission() && !$rowobject->get_submission()->sampled_feedback_exists()) {
             $content = get_string('singlemarker', 'coursework');
             return $content;
@@ -79,8 +79,8 @@ class multiple_agreed_grade_cell extends cell_base {
         if ($finalfeedback !== false) {
             $grade_judge = new grade_judge($this->coursework);
             $content .= $grade_judge->grade_to_display($finalfeedback->get_grade());
-          //  $content .= html_writer::empty_tag('br');
-         //   $content .= ' by: ' . $finalfeedback->get_assesor_username();
+          // $content .= html_writer::empty_tag('br');
+         // $content .= ' by: ' . $finalfeedback->get_assesor_username();
         }
 
         // Edit/new link
@@ -113,7 +113,7 @@ class multiple_agreed_grade_cell extends cell_base {
             );
             $new_feedback = feedback::build($feedback_params);
 
-            //if the user is a site admin then they can add final feedback
+            // If the user is a site admin then they can add final feedback
             if ($ability->can('new', $new_feedback) || is_siteadmin()) {
                 $title = get_string('addfinalfeedback', 'coursework');
                 $feedback_route_params = array(
@@ -168,7 +168,7 @@ class multiple_agreed_grade_cell extends cell_base {
     public function get_table_header($options = array()) {
 
         //adding this line so that the sortable heading function will make a sortable link unique to the table
-        //if tablename is set
+        // If tablename is set
         $tablename = (isset($options['tablename']))  ? $options['tablename']  : ''  ;
 
         $column_name = get_string('agreedgrade', 'coursework');

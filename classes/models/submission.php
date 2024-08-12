@@ -261,7 +261,7 @@ class submission extends table_base implements \renderable {
             if ($deadline < time()) {
                 // if deadline passed check if extension exists
                 if ($submission->has_extension()) {
-                    //check if extension is valid
+                    // Check if extension is valid
                     $extension = $submission->submission_extension();
                     if ($extension->extended_deadline > time()) {
                         //unset as it doesn't need to be autofinalise yet
@@ -769,7 +769,7 @@ class submission extends table_base implements \renderable {
 
         $id = $USER->id;
 
-        //if this is a submission on behalf of the student and it is a group submission we have to make sure
+        // If this is a submission on behalf of the student and it is a group submission we have to make sure
         // the author is the first member of the group
 
             if ($this->is_submission_on_behalf()) {
@@ -1470,7 +1470,7 @@ class submission extends table_base implements \renderable {
         return (empty($feedback))  ?   false : $feedback;
     }
 
-    //caching
+    // Caching
 
     /**
      * cache array

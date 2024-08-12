@@ -24,8 +24,8 @@ require_once($CFG->libdir.'/formslib.php');
 
 class upload_feedback_form extends moodleform {
 
-    private     $cmid;
-    private     $coursework;
+    private $cmid;
+    private $coursework;
 
     function __construct($coursework, $cmid) {
         $this->cmid = $cmid;

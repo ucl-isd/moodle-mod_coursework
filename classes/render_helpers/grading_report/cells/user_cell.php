@@ -79,7 +79,7 @@ class user_cell extends cell_base implements allocatable_cell {
        $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->coursework->get_context());
 
         //adding this line so that the sortable heading function will make a sortable link unique to the table
-        //if tablename is set
+        // If tablename is set
         $tablename = (!empty($options['tablename']))  ? $options['tablename']  : ''  ;
 
       // allow to sort users only if CW is not set to blind marking or a user has capability to view anonymous

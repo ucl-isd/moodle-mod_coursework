@@ -649,13 +649,13 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             || has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context))
             && $coursework->get_finalised_submissions()) {
-            //export grading sheet
+            // Export grading sheet
             $url = $pageurl.'&export_grading_sheet=1';
             $links[$url] = get_string('exportgradingsheets', 'mod_coursework');
-            //import grading sheet
+            // Import grading sheet
             $url = '/mod/coursework/actions/upload_grading_sheet.php?cmid='.$PAGE->cm->id;
             $links[$url] = get_string('uploadgradingworksheet', 'mod_coursework');
-            //import annotated submissions
+            // Import annotated submissions
             $url = '/mod/coursework/actions/upload_feedback.php?cmid='.$PAGE->cm->id;
             $links[$url] = get_string('uploadfeedbackfiles', 'mod_coursework');
         }
@@ -1391,7 +1391,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $timedue = ($coursework->deadline)? date('l, d F Y, h:i A', $coursework->deadline) : "No deadline";
             if ($coursework->can_grade()) { // teachers
                 $submitted = count($coursework->get_all_submissions());
-            } else if ($coursework->can_submit()) { //students
+            } else if ($coursework->can_submit()) { // Students
                 if ($coursework->use_groups) {
                     $allocatable = $coursework->get_student_group($USER);
                 } else {

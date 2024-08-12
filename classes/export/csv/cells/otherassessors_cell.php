@@ -42,7 +42,7 @@ class otherassessors_cell extends cell_base{
         global $DB, $USER;
         // find out current user stage identifier
 
-      //  $stage_identifier =
+      // $stage_identifier =
     // retrieve all feedbacks without currents user feedback
 
         $params = array(

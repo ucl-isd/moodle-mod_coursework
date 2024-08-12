@@ -77,8 +77,8 @@ abstract class cell_base implements cell_interface {
 
         // Need a little icon to show ASC or DESC.
         // if ($field == $sortby) {
-        //     $display_name .= '&nbsp;'; // Keep them on the same line.
-        //     $display_name .= $sort_how == 'ASC' ? '&#x25B2;' : '&#x25BC;'; // Small unicode triangles.
+        // $display_name .= '&nbsp;'; // Keep them on the same line.
+        // $display_name .= $sort_how == 'ASC' ? '&#x25B2;' : '&#x25BC;'; // Small unicode triangles.
         // }
 
         // return html_writer::link($url, $display_name);

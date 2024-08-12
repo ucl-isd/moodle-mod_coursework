@@ -87,19 +87,19 @@ class processor {
     private function clean_data($raw_data) {
 
         // Data looks like this:
-//        $example_data = array(
-//            4543 => array( // Student id
-//                'assessor_1' => array(
-//                    'allocation_id' => 43,
-//                    'assessor_id' => 232,
-//                ),
-//                'moderator_1' => array(
-//                    'allocation_id' => 46,
-//                    'assessor_id' => 235,
-//                    'in_set' => 1,
-//                )
-//            )
-//        );
+// $example_data = array(
+// 4543 => array( // Student id
+// 'assessor_1' => array(
+// 'allocation_id' => 43,
+// 'assessor_id' => 232,
+// ),
+// 'moderator_1' => array(
+// 'allocation_id' => 46,
+// 'assessor_id' => 235,
+// 'in_set' => 1,
+// )
+// )
+// );
 
         $clean_data = array();
         foreach ($raw_data as $allocatable_id => $datarrays) {

@@ -1040,7 +1040,7 @@ class mod_coursework_mod_form extends moodleform_mod {
             $moodle_form->disabledIf('individualfeedback', 'forceautorelease', 'eq', 1);
         }
         $moodle_form->disabledIf('individualfeedback', 'deadline[enabled]', 'notchecked');
-//        $moodle_form->addRule(array('individualfeedback', 'deadline'), get_string('must_be_after_dealdine', 'mod_coursework'), 'compare', 'gt');
+// $moodle_form->addRule(array('individualfeedback', 'deadline'), get_string('must_be_after_dealdine', 'mod_coursework'), 'compare', 'gt');
     }
 
     /**
@@ -1113,16 +1113,16 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodle_form->disabledIf('finalstagegrading', 'feedbackexists', 'eq', 1);
 
         // Don't think this belongs here...
-//        $options = array(0 => get_string('no'), 1 => get_string('yes'));
-//        $moodle_form->addElement('select', 'automaticagreement', get_string('automaticagreement', 'mod_coursework'), $options);
-//        $moodle_form->addHelpButton('automaticagreement', 'automaticagreement', 'mod_coursework');
-//        $moodle_form->setDefault('automaticagreement',0);
-//        $moodle_form->disabledIf('automaticagreement', 'numberofmarkers', 'eq', '1');
+// $options = array(0 => get_string('no'), 1 => get_string('yes'));
+// $moodle_form->addElement('select', 'automaticagreement', get_string('automaticagreement', 'mod_coursework'), $options);
+// $moodle_form->addHelpButton('automaticagreement', 'automaticagreement', 'mod_coursework');
+// $moodle_form->setDefault('automaticagreement',0);
+// $moodle_form->disabledIf('automaticagreement', 'numberofmarkers', 'eq', '1');
 //
-//        $moodle_form->addElement('text', 'automaticagreementrange', get_string('automaticagreementrange', 'mod_coursework'), array('size' => 3));
-//        $moodle_form->addHelpButton('automaticagreementrange', 'automaticagreementrange', 'mod_coursework');
-//        $moodle_form->setDefault('automaticagreementrange',0);
-//        $moodle_form->disabledIf('automaticagreementrange', 'automaticagreement', 'eq', '0');
+// $moodle_form->addElement('text', 'automaticagreementrange', get_string('automaticagreementrange', 'mod_coursework'), array('size' => 3));
+// $moodle_form->addHelpButton('automaticagreementrange', 'automaticagreementrange', 'mod_coursework');
+// $moodle_form->setDefault('automaticagreementrange',0);
+// $moodle_form->disabledIf('automaticagreementrange', 'automaticagreement', 'eq', '0');
 
     }
 

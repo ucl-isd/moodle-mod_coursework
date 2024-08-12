@@ -106,7 +106,7 @@ abstract class sample_set_rule extends table_base implements renderable {
 
         $this->coursework = $coursework;
 
-        //parent::__construct($dbrecord);
+        // Parent::__construct($dbrecord);
 
         // We cannot set this from outside if we are making a new one.
         if (!isset($this->ruleorder)) {

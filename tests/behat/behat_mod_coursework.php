@@ -1935,9 +1935,9 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
         $page->should_have_moderator_grade_for($this->student, '56');
-//        if (!$this->find('xpath', $this->xpath_tag_class_contains_text('td', 'moderated', '56'))) {
-//            throw new ExpectationException('Could not find the moderated grade', $this->getSession());
-//        }
+// if (!$this->find('xpath', $this->xpath_tag_class_contains_text('td', 'moderated', '56'))) {
+// throw new ExpectationException('Could not find the moderated grade', $this->getSession());
+// }
     }
 
     /**
@@ -2106,11 +2106,11 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
         $page->assessor_grade_should_be_present($this->student, 1, 56);
-//        $xpath = $this->xpath_tag_class_contains_text('td', 'cfeedbackcomment', '56');
-//        if (!$this->getSession()->getPage()->has('xpath', $xpath)) {
-//            throw new ExpectationException('Should have seen the grade ("56"), but it was not there',
-//                                           $this->getSession());
-//        }
+// $xpath = $this->xpath_tag_class_contains_text('td', 'cfeedbackcomment', '56');
+// if (!$this->getSession()->getPage()->has('xpath', $xpath)) {
+// throw new ExpectationException('Should have seen the grade ("56"), but it was not there',
+// $this->getSession());
+// }
     }
 
     /**
@@ -2319,7 +2319,7 @@ class behat_mod_coursework extends behat_base {
         // possibly be a new id in there.
         if ($ignore_params) {
             $current_path = parse_url($currentUrl, PHP_URL_PATH);
-//            $desired_path = parse_url($desirtedUrl, PHP_URL_PATH);
+// $desired_path = parse_url($desirtedUrl, PHP_URL_PATH);
             $message = "Should be on the " . $desirtedUrl . " page but instead the url is " . $current_path;
             assertEquals($current_path, $desirtedUrl, $message);
         } else {
@@ -2368,7 +2368,7 @@ class behat_mod_coursework extends behat_base {
         $this->getSession()->wait($seconds * 1000);
     }
 
-    //     And I click on ".moodle-dialogue-focused.filepicker .yui3-button.closebutton" "css_element"
+    // And I click on ".moodle-dialogue-focused.filepicker .yui3-button.closebutton" "css_element"
     public function dismiss() {
         $this->find('css', ".moodle-dialogue-focused.filepicker .yui3-button.closebutton")->click();
     }
@@ -2897,27 +2897,27 @@ class behat_mod_coursework extends behat_base {
      * @AfterStep
      * @param \Behat\Behat\Event\StepEvent $event
      */
-//    public function takeScreenshotAfterFailedStep(Behat\Behat\Event\StepEvent $event) {
-//        if ($event->getResult() === Behat\Behat\Event\StepEvent::FAILED) {
+// public function takeScreenshotAfterFailedStep(Behat\Behat\Event\StepEvent $event) {
+// if ($event->getResult() === Behat\Behat\Event\StepEvent::FAILED) {
 //
-//            $step = $event->getStep();
-//            $path = array(
-//                'date' => date("Ymd-Hi"),
-//                'feature' => $step->getParent()->getFeature()->getTitle(),
-//                'scenario' => $step->getParent()->getTitle(),
-//                'step' => $step->getType() . ' ' . $step->getText(),
-//            );
-//            $path = preg_replace('/[^\-\.\w]/', '_', $path);
-//            $filename = implode($path);
+// $step = $event->getStep();
+// $path = array(
+// 'date' => date("Ymd-Hi"),
+// 'feature' => $step->getParent()->getFeature()->getTitle(),
+// 'scenario' => $step->getParent()->getTitle(),
+// 'step' => $step->getType() . ' ' . $step->getText(),
+// );
+// $path = preg_replace('/[^\-\.\w]/', '_', $path);
+// $filename = implode($path);
 //
-//            $driver = $this->getSession()->getDriver();
-//            if ($driver instanceof Behat\Mink\Driver\Selenium2Driver) {
-//                $filename .= '_screenshot.jpg';
-//                $this->show_me_a_screenshot($filename);
-//            } else {
-//                $filename .= '_page.html';
-//                $this->show_me_the_page($filename);
-//            }
-//        }
-//    }
+// $driver = $this->getSession()->getDriver();
+// if ($driver instanceof Behat\Mink\Driver\Selenium2Driver) {
+// $filename .= '_screenshot.jpg';
+// $this->show_me_a_screenshot($filename);
+// } else {
+// $filename .= '_page.html';
+// $this->show_me_the_page($filename);
+// }
+// }
+// }
 }

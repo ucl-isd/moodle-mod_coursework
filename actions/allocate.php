@@ -196,7 +196,7 @@ if ($coursework->allocation_enabled()) {
 // Add coursework id etc.
 echo \html_writer::input_hidden_params($PAGE->url);
 
-if ($coursework->sampling_enabled()) { //  Do not delete yet - refactoring...
+if ($coursework->sampling_enabled()) { // Do not delete yet - refactoring...
     echo \html_writer::start_tag('form', array('id' => 'sampling_form',
         'method' => 'post'));
     $samplesetwidget = $allocationsmanager->get_sampling_set_widget();

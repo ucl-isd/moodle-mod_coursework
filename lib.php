@@ -159,8 +159,8 @@ function coursework_add_instance($formdata) {
 
     // You may have to add extra stuff in here.
 
-    //we have to check to see if this coursework has a deadline ifm it doesn't we need to set the
-    //deadline to zero
+    // We have to check to see if this coursework has a deadline ifm it doesn't we need to set the
+    // Deadline to zero
 
     $formdata->deadline = empty($formdata->deadline)  ?   0   :   $formdata->deadline;
     $subnotify = '';
@@ -173,7 +173,7 @@ function coursework_add_instance($formdata) {
     }
     $formdata->submissionnotification = $subnotify;
 
-    //if blindmarking is set we will rename files
+    // If blindmarking is set we will rename files
     if ($formdata->blindmarking == 1) {
 
         $formdata->renamefiles = 1;
@@ -184,17 +184,17 @@ function coursework_add_instance($formdata) {
     $formdata->id = $returnid;
 
     // IMPORTANT: at this point, the coursemodule will be in existence, but will
-    // not have the coursework id saved, because we only just made it.
+    // Not have the coursework id saved, because we only just made it.
     $coursemodule = $DB->get_record('course_modules', array('id' => $formdata->coursemodule));
     $coursemodule->instance = $returnid;
     // This is doing what will be done later by the core routines. Makes it simpler to use existing
-    // code without special cases.
+    // Code without special cases.
     $DB->update_record('course_modules', $coursemodule);
 
     // Get all the other data e.g. coursemodule.
     $coursework = coursework::find($returnid);
 
-    //create event for coursework deadline [due]
+    // Create event for coursework deadline [due]
     if ($coursework && $coursework->deadline) {
         $event = coursework_event($coursework, format_module_intro('coursework', $coursework,
             $coursemodule->id), $returnid, 'due', $coursework->deadline);
@@ -202,7 +202,7 @@ function coursework_add_instance($formdata) {
         calendar_event::create($event);
     }
 
-    //create event for coursework initialmarking deadline [initialgradingdue]
+    // Create event for coursework initialmarking deadline [initialgradingdue]
     if ($coursework && $coursework->marking_deadline_enabled() && $coursework->initialmarkingdeadline) {
         $event = coursework_event($coursework, format_module_intro('coursework', $coursework,
             $coursemodule->id), $returnid, 'initialgradingdue', $coursework->initialmarkingdeadline);
@@ -210,7 +210,7 @@ function coursework_add_instance($formdata) {
         calendar_event::create($event);
     }
 
-    //create event for coursework agreedgrademarking deadline [agreedgradingdue]
+    // Create event for coursework agreedgrademarking deadline [agreedgradingdue]
     if ($coursework && $coursework->marking_deadline_enabled() && $coursework->agreedgrademarkingdeadline && $coursework->has_multiple_markers()) {
         $event = coursework_event($coursework, format_module_intro('coursework', $coursework,
             $coursemodule->id), $returnid, 'agreedgradingdue', $coursework->agreedgrademarkingdeadline);
@@ -278,19 +278,19 @@ function mod_coursework_core_calendar_provide_event_action(calendar_event $event
     $student = $coursework->can_submit();
     $marker = $coursework->is_assessor($user);
 
-    if ($marker) { // for markers
+    if ($marker) { // For markers
 
-        // check how many submissions to mark
+        // Check how many submissions to mark
        $outstandingmarking = new outstanding_marking();
 
        if ($event->eventtype == 'initialgradingdue') {
-           //initial grades
+           // Initial grades
            $togradeinitialcount = $outstandingmarking->get_to_grade_initial_count($dbcoursework, $user->id());
            $name = ($coursework->has_multiple_markers())? get_string('initialgrade', 'coursework') : get_string('grade', 'mod_coursework');
            $itemcount = $togradeinitialcount ;
 
        } else if ($event->eventtype == 'agreedgradingdue') {
-           //agreed grades
+           // Agreed grades
            $togradeagreedcount = $outstandingmarking->get_to_grade_agreed_count($dbcoursework, $user->id());
            $name = get_string('agreedgrade', 'coursework');
            $itemcount = $togradeagreedcount;
@@ -314,7 +314,7 @@ function mod_coursework_core_calendar_provide_event_action(calendar_event $event
             if (!$submission) {
                 $submission = $new_submission;
             }
-            // check if user can still submit
+            // Check if user can still submit
             $ability = new ability($user, $coursework);
             if (!$submission || $ability->can('new', $submission)) {
                 $name = get_string('addsubmission', 'coursework');
@@ -447,7 +447,7 @@ function coursework_update_instance($coursework) {
     $courseworkhassubmissions = ($DB->get_records('coursework_submissions', array('courseworkid' => $coursework->id)))
         ?   true : false;
 
-    //if the coursework has submissions then we the renamefiles setting can't be changes
+    // If the coursework has submissions then we the renamefiles setting can't be changes
     if ($courseworkhassubmissions) {
 
         $currentcoursework = $DB->get_record('coursework', array('id' => $coursework->id));
@@ -493,25 +493,25 @@ function coursework_update_instance($coursework) {
 
     }
 
-    // update event for calendar(cw name/deadline) if a coursework has a deadline
+    // Update event for calendar(cw name/deadline) if a coursework has a deadline
     if ($coursework->deadline) {
-        coursework_update_events($coursework, 'due'); //cw deadline
+        coursework_update_events($coursework, 'due'); // Cw deadline
         if ($coursework->initialmarkingdeadline) {
-            //update
-            coursework_update_events($coursework, 'initialgradingdue'); //cw initial grading deadine
+            // Update
+            coursework_update_events($coursework, 'initialgradingdue'); // Cw initial grading deadine
         } else {
-            //remove it
+            // Remove it
             remove_event($coursework, 'initialgradingdue');
         }
         if ($coursework->agreedgrademarkingdeadline && $coursework->numberofmarkers > 1) {
-            //update
-            coursework_update_events($coursework, 'agreedgradingdue'); //cw agreed grade deadine
+            // Update
+            coursework_update_events($coursework, 'agreedgradingdue'); // Cw agreed grade deadine
         } else {
-            //remove it
+            // Remove it
             remove_event($coursework, 'agreedgradingdue' );
         }
     } else {
-        // remove all deadline events for this coursework regardless the type
+        // Remove all deadline events for this coursework regardless the type
         remove_event($coursework);
     }
 
@@ -533,33 +533,33 @@ function coursework_update_instance($coursework) {
          $event = calendar_event::load($eventid->id);
      }
 
-     // update/create event for coursework deadline [due]
+     // Update/create event for coursework deadline [due]
      if ($eventtype == 'due') {
          $data = coursework_event($coursework, $coursework->intro, $coursework->id, $eventtype, $coursework->deadline);
          if ($event) {
              $event->update($data); //update if event exists
          } else {
-             calendar_event::create($data); //create new event as it doesn't exist
+             calendar_event::create($data); // Create new event as it doesn't exist
          }
      }
 
-     // update/create event for coursework initialmarking deadline [initialgradingdue]
+     // Update/create event for coursework initialmarking deadline [initialgradingdue]
      if ($eventtype == 'initialgradingdue') {
          $data = coursework_event($coursework, $coursework->intro, $coursework->id, $eventtype, $coursework->initialmarkingdeadline);
          if ($event) {
              $event->update($data); //update if event exists
          } else {
-             calendar_event::create($data); //create new event as it doesn't exist
+             calendar_event::create($data); // Create new event as it doesn't exist
          }
      }
 
-     // update/create event for coursework agreedgrademarking deadline [agreedgradingdue]
+     // Update/create event for coursework agreedgrademarking deadline [agreedgradingdue]
      if ($eventtype == 'agreedgradingdue') {
          $data = coursework_event($coursework, $coursework->intro, $coursework->id, $eventtype, $coursework->agreedgrademarkingdeadline);
          if ($event) {
              $event->update($data); //update if event exists
          } else {
-             calendar_event::create($data); //create new event as it doesn't exist
+             calendar_event::create($data); // Create new event as it doesn't exist
          }
      }
 }
@@ -906,7 +906,7 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
 function coursework_role_assigned_event_handler($roleassignment) {
     global $DB;
 
-//    return true; // Until we fix the auto allocator. The stuff below causes an infinite loop.
+// return true; // Until we fix the auto allocator. The stuff below causes an infinite loop.
 
     $courseworkids = coursework_get_coursework_ids_from_context_id($roleassignment->contextid);
 
@@ -1108,8 +1108,7 @@ function coursework_send_deadline_changed_emails($eventdata) {
 
         // Now we need a decent message that provides the relevant data and notifies what changed.
         // - Submissions deadline if it's in the future and the user has not already submitted.
-        // - Feedback deadline if it's in the future and the student's personal deadline for feedback has
-        // not passed.
+        // - Feedback deadline if it's in the future and the student's personal deadline for feedback has not passed.
         // - Link to get to the view.php page.
         // - Change since last time.
 
@@ -1286,11 +1285,11 @@ function course_group_member_added($event_data) {
         if ($initial_stage_assessor) {
             // check if any assessor already exists in the group except currently added one
             $assessors_in_group = get_enrolled_users($coursework->get_context(), 'mod/coursework:addinitialgrade', $groupid);
-            unset($assessors_in_group[$addeduserid]); //remove added assessor as at this point they will be already in the group
+            unset($assessors_in_group[$addeduserid]); // Remove added assessor as at this point they will be already in the group
 
             if ($assessors_in_group) {//yes - do nothing as other assessor is already assigned to group members, return true
                 break;
-            } else{ //no - check if CW is a group coursework
+            } else{ // No - check if CW is a group coursework
                 if ($coursework->is_configured_to_have_group_submissions()) {// yes - assign the tutor to a allocatable group
                     $stage_1->make_auto_allocation_if_necessary(group::find($groupid));
                 } else {  // no, check if group has any student members
@@ -1401,7 +1400,7 @@ function course_group_member_removed($event_data) {
                 }
 
             } else {
-                //if individual coursework
+                // If individual coursework
                 $allocatableid = $removeduserid;
             }
 

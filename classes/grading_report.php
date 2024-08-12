@@ -78,7 +78,7 @@ class grading_report {
     /**
      * @var cell_interface[]
      */
-    private  $cells;
+    private $cells;
 
     /**
      * Grades in $data must be already rounded to the set number of decimals or must be null

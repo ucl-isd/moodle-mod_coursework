@@ -1392,8 +1392,8 @@ class coursework extends table_base {
 
         $uhash = $id . $userid;
 
-        //hash with zero have the potential to become changed in outside programs
-        //so we generate a hash without a leading zero
+        // Hash with zero have the potential to become changed in outside programs
+        // So we generate a hash without a leading zero
         $uhash = substr(md5($uhash), 0, 8);
         $uhash = 'X' . $uhash;
 
@@ -2288,7 +2288,7 @@ class coursework extends table_base {
             $groups = $DB->get_records_sql($sql, $params);
             foreach ($groups as $group) {
                 $group = group::find($group);
-                //find out if members of this group can access this coursework, if group is left without members then remove it
+                // Find out if members of this group can access this coursework, if group is left without members then remove it
                 $cm = $this->get_course_module();
                 $cmobject = $this->cm_object($cm);
                 /**

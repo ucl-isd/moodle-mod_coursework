@@ -35,7 +35,7 @@ class coursework_plagiarism_flag_updated extends \core\event\base {
      */
     protected function init() {
 
-        $this->data['crud'] = 'u'; //One of [crud] letters - indicating 'c'reate, 'r'ead, 'u'pdate or 'd'elete operation. Statically declared in the event class method init().
+        $this->data['crud'] = 'u'; // One of [crud] letters - indicating 'c'reate, 'r'ead, 'u'pdate or 'd'elete operation. Statically declared in the event class method init().
         $this->data['edulevel'] = self::LEVEL_TEACHING;
         $this->data['objecttable'] = 'coursework';
     }

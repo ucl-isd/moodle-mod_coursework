@@ -227,10 +227,10 @@ class feedback_controller extends controller_base {
                 $submission->publish();
             }
 
-            //only implement auto feedback (automatic agreement) if the settings is set to disabled otherwise
-            //we will do this in the cron
-            //only implement auto feedback (automatic agreement) if the settings is set to disabled otherwise
-            //we will do this in the cron
+            // Only implement auto feedback (automatic agreement) if the settings is set to disabled otherwise
+            // We will do this in the cron
+            // Only implement auto feedback (automatic agreement) if the settings is set to disabled otherwise
+            // We will do this in the cron
             $gradeeditingtime = $teacherfeedback->get_coursework()->get_grade_editing_time();
 
             if (empty($gradeeditingtime) || time() > $teacherfeedback->timecreated + $gradeeditingtime) {
@@ -358,7 +358,7 @@ class feedback_controller extends controller_base {
 
             } else {
                 $teacherfeedback->destroy();
-                //remove associated files
+                // Remove associated files
                 $fs = get_file_storage();
                 $fs->delete_area_files($teacherfeedback->get_coursework()->get_context()->id, 'mod_coursework', 'feedback', $teacherfeedback->id());
 

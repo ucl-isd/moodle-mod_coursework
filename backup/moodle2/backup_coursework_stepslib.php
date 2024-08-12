@@ -307,31 +307,31 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                         "selectiontype"
                                                 ));
 
-            //A coursework instance has submissions.
+            // A coursework instance has submissions.
             $coursework->add_child($submissions);
-            //Each coursework may have reminders
+            // Each coursework may have reminders
             $coursework->add_child($reminders);
-            //And allocations pairs
+            // And allocations pairs
             $coursework->add_child($pairs);
-            //And moderation sets
+            // And moderation sets
             $coursework->add_child($modsetrules);
-            //And a set of extensionsenabled
+            // And a set of extensionsenabled
             $coursework->add_child($extensions);
-            //And a set of personaldeadlines
+            // And a set of personaldeadlines
             $coursework->add_child($personal_deadlines);
-            //And a set of moderation rule sets
+            // And a set of moderation rule sets
             $coursework->add_child($modsetmembers);
-            //And allocation configs
+            // And allocation configs
             $coursework->add_child($allocation_configs);
-            //And sample members
+            // And sample members
             $coursework->add_child($sample_members);
 
-            //And submissions are made up from individual submission instances
+            // And submissions are made up from individual submission instances
             $submissions->add_child($submission);
-            //Submissions have multiple feedback items
+            // Submissions have multiple feedback items
             $submission->add_child($feedbacks);
 
-            //Feedbacks is a set of individual items
+            // Feedbacks is a set of individual items
             $feedbacks->add_child($feedback);
 
             $feedback->add_child($moderation_agreements);
@@ -340,7 +340,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
             $submission->add_child($plagiarism_flags);
             $plagiarism_flags->add_child($plagiarism_flag);
 
-            //as are reminders, pairs, extensions, modsets and modsetrules,
+            // as are reminders, pairs, extensions, modsets and modsetrules,
             // and allocation configs
             $reminders->add_child($reminder);
             $pairs->add_child($pair);
@@ -387,7 +387,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
             $allocation_config->set_source_table('coursework_allocation_config',
                                                  array('courseworkid' => backup::VAR_PARENTID));
 
-            //Mark important foreign keys
+            // Mark important foreign keys
             $feedback->annotate_ids('user', 'assessorid');
             $feedback->annotate_ids('user', 'lasteditedbyuser');
             $feedback->annotate_ids('user', 'markernumber');

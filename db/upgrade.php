@@ -1989,7 +1989,7 @@ function xmldb_coursework_upgrade($oldversion) {
         if (!$dbman->table_exists($table)) {
             $dbman->create_table($table);
 
-            //now create plugin records for sample set plugins
+            // Now create plugin records for sample set plugins
             $plugins = array('range_sample_type', 'total_sample_type');
 
             $i = 1;
@@ -2284,12 +2284,12 @@ function xmldb_coursework_upgrade($oldversion) {
             $coursework = coursework::find($coursework);
 
             if ($coursework->marking_deadline_enabled() && $coursework->initialmarkingdeadline) {
-                //create initialgradingdue event
+                // Create initialgradingdue event
                 coursework_update_events($coursework, 'initialgradingdue');
             }
 
             if ($coursework->marking_deadline_enabled() && $coursework->agreedgrademarkingdeadline) {
-                //create agreedgradegradingdue event
+                // Create agreedgradegradingdue event
                 coursework_update_events($coursework, 'agreedgradingdue');
             }
         }

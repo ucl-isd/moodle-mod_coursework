@@ -129,7 +129,7 @@ class warnings {
                 if (!has_capability('mod/coursework:addinitialgrade', $this->coursework->get_context(), $student->userid)) {
                     $studentmessage .= '<li>' . $student->firstname . ' ' . $student->lastname;
 
-                    //get group ids of these students
+                    // Get group ids of these students
                     if ($this->coursework->grouping_id) {
 
                         $sql = "SELECT groups.id,groups.name

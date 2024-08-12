@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
 function xmldb_coursework_install() {
     global $DB;
 
-    //install the plugins used by sampling in the correct order
+    // Install the plugins used by sampling in the correct order
     $plugins = array('range_sample_type', 'total_sample_type');
 
     $i = 1;

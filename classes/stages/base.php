@@ -296,8 +296,8 @@ abstract class base {
 
         $serialised_teachers = $cache->get($this->coursework->id()."_teachers");
 
-        //there is a chance that when the teachers were initially cached the dataset was empty
-        //so check again
+        // There is a chance that when the teachers were initially cached the dataset was empty
+        // So check again
         if (empty($serialised_teachers) || empty(unserialize($serialised_teachers))) {
             $teachers = get_enrolled_users($this->coursework->get_context(), $this->assessor_capability());
             $teacher_users = array();
@@ -907,7 +907,7 @@ abstract class base {
 
         $result = $this->get_coursework()->get_grade_editing_time();
 
-        //the feedback is not in the editable period if the editable setting is disabled
+        // The feedback is not in the editable period if the editable setting is disabled
         if (empty($this->get_coursework()->get_grade_editing_time()))  return false;
 
         $coursework_id = $this->get_coursework_id();

@@ -89,8 +89,8 @@ class grading_sheet extends csv{
                    }
                }
 
-               //TODO - decide if already marked submissions should be displayed in single marking
-               //  if not marked by a user than dont display it as it would allow them to edit it??
+               // TODO - decide if already marked submissions should be displayed in single marking
+               // if not marked by a user than dont display it as it would allow them to edit it??
                // || $submission->get_state() == submission::FINAL_GRADED
                if (!$ability->can('show', $submission)
                    || ($stages == 1 && !has_capability('mod/coursework:addinitialgrade', $PAGE->context))
@@ -183,7 +183,7 @@ class grading_sheet extends csv{
             $csv_cells[] = 'singlegrade';
             $csv_cells[] = 'feedbackcomments';
 
-            //other grades
+            // Other grades
             $csv_cells[] = 'otherassessors';
 
             $csv_cells[] = 'agreedgrade';
@@ -192,7 +192,7 @@ class grading_sheet extends csv{
         } else if (has_capability('mod/coursework:addinitialgrade', $PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context)) {
 
-         //   if (!$coursework->is_using_rubric()) {
+         // if (!$coursework->is_using_rubric()) {
                 $csv_cells[] = 'singlegrade';
         /*    }   else   {
 

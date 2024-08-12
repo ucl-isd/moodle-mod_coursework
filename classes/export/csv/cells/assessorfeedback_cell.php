@@ -85,16 +85,16 @@ class assessorfeedback_cell extends cell_base{
         if (has_any_capability($agreedgradecap, $PAGE->context) && has_any_capability($initialgradecap, $PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context)) {
 
-            //is the submission in question ready to grade?
+            // Is the submission in question ready to grade?
             if (!$submission->ready_to_grade()) return get_string('submissionnotreadytograde', 'coursework');
 
-            //has the submission been published if yes then no further grades are allowed
+            // Has the submission been published if yes then no further grades are allowed
             if ($submission->get_state() >= submission::PUBLISHED)  return $submission->get_status_text();
 
-            //if you have administer grades you can grade anything
+            // If you have administer grades you can grade anything
             if (has_capability('mod/coursework:administergrades', $PAGE->context)) return true;
 
-            //has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
+            // Has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
             $feedback_params = array(
                 'submissionid' => $submission->id,
                 'stage_identifier' => $stage_identifier,
@@ -105,25 +105,25 @@ class assessorfeedback_cell extends cell_base{
 
             //does a feedback exist for this stage
             if (!empty($feedback)) {
-                //this is a new feedback check it against the new ability checks
+                // This is a new feedback check it against the new ability checks
                 if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('new', $feedback))   return get_string('nopermissiontoeditgrade', 'coursework');
 
             } else {
 
-                //this is a new feedback check it against the edit ability checks
+                // This is a new feedback check it against the edit ability checks
                 if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade', 'coursework');
 
             }
 
             if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
-                //was this user the one who last graded this submission if not then user cannot grade
+               // Was this user the one who last graded this submission if not then user cannot grade
                 if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $PAGE->context) )
                     return get_string('nopermissiontogradesubmission', 'coursework');
 
             }
 
             if ($this->coursework->allocation_enabled()) {
-                //check that the user is allocated to the author of the submission
+                // Check that the user is allocated to the author of the submission
                 $allocation_params = array(
                     'courseworkid' => $this->coursework->id,
                     'allocatableid' => $submission->allocatableid,
@@ -135,7 +135,7 @@ class assessorfeedback_cell extends cell_base{
                     && !$DB->get_record('coursework_allocation_pairs', $allocation_params)) return get_string('nopermissiontogradesubmission', 'coursework');
             }
 
-            //check for coursework without allocations - with/without samplings
+            // Check for coursework without allocations - with/without samplings
             if (has_capability('mod/coursework:addinitialgrade', $PAGE->context) && !has_capability('mod/coursework:editinitialgrade', $PAGE->context)
                 && $this->coursework->get_max_markers() > 1 && !$this->coursework->allocation_enabled()) {
 
@@ -147,7 +147,7 @@ class assessorfeedback_cell extends cell_base{
                     $in_sample = $submission->get_submissions_in_sample();
                     $assessors = ($in_sample)? sizeof($in_sample) + 1 : 1;
                 } else {
-                    //check how many assessors for this coursework
+                    // Check how many assessors for this coursework
                     $assessors = $this->coursework->get_max_markers();
                 }
                 if ($assessors == $feedbacks) return get_string('gradealreadyexists', 'coursework');
@@ -155,8 +155,8 @@ class assessorfeedback_cell extends cell_base{
 
         }  else if (has_any_capability($agreedgradecap, $PAGE->context)) {
 
-            //if you have the add agreed or edit agreed grades capabilities then you may have the grades on your export sheet
-            //we will return true as we will ignore them
+            // If you have the add agreed or edit agreed grades capabilities then you may have the grades on your export sheet
+            // We will return true as we will ignore them
             return true;
 
         } else {

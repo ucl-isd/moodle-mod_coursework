@@ -50,9 +50,9 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         if ($userinfo) {
             // Define each element separated.
             // Note: when I started the code I didn't realise that the names were arbitrary
-            //       and that the coursework_ prefix is not needed.
-            //   It would be nice to go back and take these out here and in backup.
-            //       But not essential
+            // and that the coursework_ prefix is not needed.
+            // It would be nice to go back and take these out here and in backup.
+            // But not essential
             $bits = array('submission' => 'coursework_submissions',
                         'feedback' => 'coursework_submissions/coursework_submission/coursework_feedbacks',
                         'reminder' => 'coursework_reminders',
@@ -120,7 +120,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
             $newitemid = $DB->insert_record('coursework_submissions', $data);
             $this->set_mapping('coursework_submission', $oldid, $newitemid);
 
-            //Tell system how to map the old submission id to its new one.
+            // Tell system how to map the old submission id to its new one.
             $this->set_mapping('coursework_submission', $oldid, $newitemid, false, null, $this->task->get_old_contextid());
         }
 
@@ -389,7 +389,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                 'deadline'), $data);
 
         $now = time();
-        //Taken from install.xml
+        // Taken from install.xml
         $this->set_defaults(array('formid' => 0,
                                   'course' => 0,
                                   'name' => '',
@@ -493,7 +493,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $this->add_related_files('mod_coursework', 'submission', 'coursework_submission');
         $this->add_related_files('mod_coursework', 'feedback', 'coursework_feedback');
 
-        //Fixup names
+        // Fixup names
         $fs = get_file_storage();
         $ctx = context::instance_by_id($this->task->get_contextid());
 

@@ -120,7 +120,7 @@ if (!(isset($SESSION->sorthow[$course_module_id]))) {
     $SESSION->sorthow[$course_module_id] = $sorthow;
 }
 
-// first name alpha
+// First name alpha
 if (!(isset($SESSION->coursework_firstname_alpha[$course_module_id]))) {
     $SESSION->coursework_firstname_alpha[$course_module_id] = optional_param('coursework_firstname_alpha', '', PARAM_ALPHA);
     $coursework_firstname_alpha = $SESSION->coursework_firstname_alpha[$course_module_id];
@@ -129,7 +129,7 @@ if (!(isset($SESSION->coursework_firstname_alpha[$course_module_id]))) {
     $SESSION->coursework_firstname_alpha[$course_module_id] = $coursework_firstname_alpha;
 }
 
-// last name alpha
+// Last name alpha
 if (!(isset($SESSION->coursework_lastname_alpha[$course_module_id]))) {
     $SESSION->coursework_lastname_alpha[$course_module_id] = optional_param('coursework_lastname_alpha', '', PARAM_ALPHA);
     $coursework_lastname_alpha = $SESSION->coursework_lastname_alpha[$course_module_id];
@@ -138,7 +138,7 @@ if (!(isset($SESSION->coursework_lastname_alpha[$course_module_id]))) {
     $SESSION->coursework_lastname_alpha[$course_module_id] = $coursework_lastname_alpha;
 }
 
-// group name alpha
+// Group name alpha
 if (!(isset($SESSION->coursework_groupname_alpha[$course_module_id]))) {
     $SESSION->coursework_groupname_alpha[$course_module_id] = optional_param('coursework_groupname_alpha', '', PARAM_ALPHA);
     $coursework_groupname_alpha = $SESSION->coursework_groupname_alpha[$course_module_id];
@@ -147,7 +147,7 @@ if (!(isset($SESSION->coursework_groupname_alpha[$course_module_id]))) {
     $SESSION->coursework_groupname_alpha[$course_module_id] = $coursework_groupname_alpha;
 }
 
-//we will use the same defaults as page (above) defaulting to page setting if no specific viewallstudents_page has been set
+// We will use the same defaults as page (above) defaulting to page setting if no specific viewallstudents_page has been set
 if (isset($SESSION->viewallstudents_perpage[$course_module_id]) && optional_param('viewallstudents_per_page', 0, PARAM_INT) != $SESSION->viewallstudents_perpage[$course_module_id]
     && optional_param('viewallstudents_per_page', 0, PARAM_INT) != 0) { // prevent blank pages if not in correct page
     $viewallstudents_page = 0;
@@ -160,7 +160,7 @@ if (isset($SESSION->viewallstudents_perpage[$course_module_id]) && optional_para
     $SESSION->viewallstudents_page[$course_module_id] = $viewallstudents_page;
 }
 
-//we will use the same defaults as perpage (above) defaulting to perpage setting if no specific viewallstudents_perpage has been set
+// We will use the same defaults as perpage (above) defaulting to perpage setting if no specific viewallstudents_perpage has been set
 if (!(isset($SESSION->viewallstudents_perpage[$course_module_id]))) {
     $SESSION->viewallstudents_perpage[$course_module_id] = optional_param('viewallstudents_per_page', $perpage, PARAM_INT);
     $viewallstudents_perpage = $SESSION->viewallstudents_perpage[$course_module_id];
@@ -169,7 +169,7 @@ if (!(isset($SESSION->viewallstudents_perpage[$course_module_id]))) {
     $SESSION->viewallstudents_perpage[$course_module_id] = $viewallstudents_perpage;
 }
 
-//we will use the same defaults as sortby (above) defaulting to sortby setting if no specific viewallstudents_sortby has been set
+// We will use the same defaults as sortby (above) defaulting to sortby setting if no specific viewallstudents_sortby has been set
 if (!(isset($SESSION->viewallstudents_sortby[$course_module_id]))) {
     $SESSION->viewallstudents_sortby[$course_module_id] = optional_param('viewallstudents_sortby', $sortby, PARAM_ALPHA);
     $viewallstudents_sortby = $SESSION->viewallstudents_sortby[$course_module_id];
@@ -178,7 +178,7 @@ if (!(isset($SESSION->viewallstudents_sortby[$course_module_id]))) {
     $SESSION->viewallstudents_sortby[$course_module_id] = $viewallstudents_sortby;
 }
 
-//we will use the same defaults as sorthow (above) defaulting to sorthow setting if no specific viewallstudents_sorthow has been set
+// We will use the same defaults as sorthow (above) defaulting to sorthow setting if no specific viewallstudents_sorthow has been set
 if (!(isset($SESSION->viewallstudents_sorthow[$course_module_id]))) {
     $SESSION->viewallstudents_sorthow[$course_module_id] = optional_param('viewallstudents_sorthow', $sorthow, PARAM_ALPHA);
     $viewallstudents_sorthow = $SESSION->viewallstudents_sorthow[$course_module_id];
@@ -187,7 +187,7 @@ if (!(isset($SESSION->viewallstudents_sorthow[$course_module_id]))) {
     $SESSION->viewallstudents_sorthow[$course_module_id] = $viewallstudents_sorthow;
 }
 
-// first name alpha
+// First name alpha
 if (!(isset($SESSION->viewallstudents_firstname_alpha[$course_module_id]))) {
     $SESSION->viewallstudents_firstname_alpha[$course_module_id] = optional_param('viewallstudents_firstname_alpha', '', PARAM_ALPHA);
     $viewallstudents_firstname_alpha = $SESSION->coursework_firstname_alpha[$course_module_id];
@@ -196,7 +196,7 @@ if (!(isset($SESSION->viewallstudents_firstname_alpha[$course_module_id]))) {
     $SESSION->viewallstudents_firstname_alpha[$course_module_id] = $viewallstudents_firstname_alpha;
 }
 
-// last name alpha
+// Last name alpha
 if (!(isset($SESSION->viewallstudents_lastname_alpha[$course_module_id]))) {
     $SESSION->viewallstudents_lastname_alpha[$course_module_id] = optional_param('viewallstudents_lastname_alpha', '', PARAM_ALPHA);
     $viewallstudents_lastname_alpha = $SESSION->viewallstudents_lastname_alpha[$course_module_id];
@@ -205,7 +205,7 @@ if (!(isset($SESSION->viewallstudents_lastname_alpha[$course_module_id]))) {
     $SESSION->viewallstudents_lastname_alpha[$course_module_id] = $viewallstudents_lastname_alpha;
 }
 
-// group name alpha
+// Group name alpha
 if (!(isset($SESSION->viewallstudents_groupname_alpha[$course_module_id]))) {
     $SESSION->viewallstudents_groupname_alpha[$course_module_id] = optional_param('viewallstudents_groupname_alpha', '', PARAM_ALPHA);
     $viewallstudents_groupname_alpha = $SESSION->viewallstudents_groupname_alpha[$course_module_id];
@@ -253,13 +253,13 @@ if ($course_module_id) {
 
 $coursework = mod_coursework\models\coursework::find($coursework_record);
 
-// check if group is in session and use it no group available in url
+// Check if group is in session and use it no group available in url
 if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $group == -1) {
-    // check if a group is in SESSION
+    // Check if a group is in SESSION
     $group = groups_get_activity_group($coursework->get_course_module());
 }
 
-// commented out the redirection for Release1 #108535552, this will be revisited for Release2
+// Commented out the redirection for Release1 #108535552, this will be revisited for Release2
 /*if (has_capability('mod/coursework:allocate', $coursework->get_context())) {
     $warnings = new \mod_coursework\warnings($coursework);
 
@@ -279,7 +279,7 @@ if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $gro
     }
 }*/
 
-// change default sortby to Date (timesubmitted) if CW is set to blind marking and a user doesn't have capability to view anonymous
+// Change default sortby to Date (timesubmitted) if CW is set to blind marking and a user doesn't have capability to view anonymous
 $viewanonymous = has_capability('mod/coursework:viewanonymous', $coursework->get_context());
 if (($coursework->blindmarking && !$viewanonymous )) {
     $sortby = optional_param('sortby', 'timesubmitted', PARAM_ALPHA);
@@ -301,7 +301,7 @@ if ($download && $zip_file = $coursework->pack_files()) {
 
 if ($export_grades) {
 
-    // headers and data for csv
+    // Headers and data for csv
     $csv_cells = array('name', 'username', 'idnumber', 'email');
 
     if ($coursework->personal_deadlines_enabled()) {
@@ -394,7 +394,7 @@ if ((float)substr($CFG->release, 0, 5) > 2.6) { // 2.8 > 2.6
 
 // Print the page header.
 
-// sort group by groupname (default)
+// Sort group by groupname (default)
 if ($coursework->is_configured_to_have_group_submissions()) {
     $sortby = optional_param('sortby', 'groupname', PARAM_ALPHA);
     $viewallstudents_sortby = optional_param('viewallstudents_sortby', 'groupname', PARAM_ALPHA);
@@ -416,7 +416,7 @@ $PAGE->set_url('/mod/coursework/view.php', $params);
 $PAGE->set_title($coursework->name);
 $PAGE->set_heading($course->shortname);
 
-//$PAGE->set_button($OUTPUT->update_module_button($course_module->id, 'coursework')); // deprecated from 3.2 (MDL-53765 core)
+// $PAGE->set_button($OUTPUT->update_module_button($course_module->id, 'coursework')); // deprecated from 3.2 (MDL-53765 core)
 
 // Auto publish after the deadline
 if ($coursework->has_individual_autorelease_feedback_enabled() &&
@@ -427,7 +427,7 @@ if ($coursework->has_individual_autorelease_feedback_enabled() &&
     $coursework->publish_grades();
 }
 
-//Create automatic feedback
+// Create automatic feedback
 if ($coursework->automaticagreement_enabled()) {
     $coursework->create_automatic_feedback();
 
@@ -543,8 +543,8 @@ echo '<script src="'.$CFG->wwwroot.'/mod/coursework/datatables/js/jquery-3.3.1.m
 <script src="'.$CFG->wwwroot.'/mod/coursework/datatables/js/edit_datatables.js"></script>
 ';
 
-//$PAGE->requires->js('/mod/coursework/datatables/js/jquery-3.3.1.min.js');
-//$PAGE->requires->js('/mod/coursework/datatables/js/jquery.datatables.js');
+// $PAGE->requires->js('/mod/coursework/datatables/js/jquery-3.3.1.min.js');
+// $PAGE->requires->js('/mod/coursework/datatables/js/jquery.datatables.js');
 // Finish the page.
 echo $OUTPUT->footer();
 

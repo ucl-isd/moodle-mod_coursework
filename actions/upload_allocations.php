@@ -60,7 +60,7 @@ if ($allocationsuploadform->is_cancelled()) {
 
 if ($data = $allocationsuploadform->get_data()) {
 
-    //perform checks on data
+    // Perform checks on data
 
     $content = $allocationsuploadform->get_file_content('allocationsdata');
 
@@ -68,7 +68,7 @@ if ($data = $allocationsuploadform->get_data()) {
 
     $procsessingresults = $csvimport->validate_csv($content, $data->encoding, $data->delimiter_name);
 
-    //process
+    // Process
     $csvimport->process_csv($content, $data->encoding, $data->delimiter_name, $procsessingresults);
     $page_renderer = $PAGE->get_renderer('mod_coursework', 'page');
     echo $page_renderer->process_csv_upload($procsessingresults, $content, $csvtype);

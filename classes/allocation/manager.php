@@ -51,12 +51,12 @@ class manager {
     /**
      * @var strategy\base
      */
-    private  $assessorallocationstrategy;
+    private $assessorallocationstrategy;
 
     /**
      * @var strategy\base
      */
-    private  $moderatorallocationstrategy;
+    private $moderatorallocationstrategy;
 
     /**
      * New instance created with references to the coursework stored.
@@ -295,7 +295,7 @@ class manager {
 
         $final_agreed_allocatables = $this->get_allocatables_with_final_agreed();
 
-        //remove any allocatables that have a status of final agreed as these can not be sampled
+        // Remove any allocatables that have a status of final agreed as these can not be sampled
         foreach ($final_agreed_allocatables as $faa) {
             if (isset($allocatables[$faa->allocatableid]))  unset($allocatables[$faa->allocatableid]);
         }
@@ -323,9 +323,9 @@ class manager {
 
                 $auto_with_feedback = $this->get_automatic_with_feedback($stage);
 
-                //ok this array merge is being carried out using an foreach rather than array_merge as we want to preserve keys
-                //I am also not using add the two arrays as using the overloaded + can produce dubious results when a key exists
-                //in both arrays
+                // Ok this array merge is being carried out using an foreach rather than array_merge as we want to preserve keys
+                // I am also not using add the two arrays as using the overloaded + can produce dubious results when a key exists
+                // In both arrays
 
                 foreach ($auto_with_feedback as $k => $v) {
                     if (!isset($manual_sample_set[$k])) $manual_sample_set[$k] = $v;
@@ -342,7 +342,7 @@ class manager {
 
                 }
 
-                //save sample set
+                // Save sample set
                 if (!empty($auto_sample_set)) {
                         foreach ($auto_sample_set    as  $allocatable) {
                             $sample = new \stdClass();
@@ -352,7 +352,7 @@ class manager {
                             $sample->stage_identifier = "assessor_{$stage_number}";
                             $sample->selectiontype = "automatic";
 
-                            //if this a manually selected allocatable check to see if the allocatable is already in the table
+                            // If this a manually selected allocatable check to see if the allocatable is already in the table
                             $DB->insert_record("coursework_sample_set_mbrs", $sample);
 
                         }
@@ -377,7 +377,7 @@ class manager {
                      AND        stage_identifier = :stage_identifier
                      AND        selectiontype = 'manual'";
 
-        //get all users in manually selected for stage in coursework
+        // Get all users in manually selected for stage in coursework
         return $DB->get_records_sql($sql,
             array('courseworkid' => $this->coursework->id, 'stage_identifier' => $stage));
 

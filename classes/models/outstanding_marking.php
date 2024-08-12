@@ -24,7 +24,7 @@ namespace mod_coursework\models;
 
 class outstanding_marking   {
 
-    private     $day_in_secs;
+    private $day_in_secs;
 
     public function __construct() {
 
@@ -99,7 +99,7 @@ class outstanding_marking   {
         $sqlextra = "";
 
         if ($allocationenabled) {
-            //we only have to check for submissions allocated to this user
+            // We only have to check for submissions allocated to this user
             $sqltable = ", {coursework_allocation_pairs}  cap ";
 
             $sqlextra = " AND cap.courseworkid = cs.courseworkid
@@ -180,7 +180,7 @@ class outstanding_marking   {
         $sqlextra = '';
 
         if ($allocationenabled) {
-            //we only have to check for submissions allocated to this user
+            // We only have to check for submissions allocated to this user
             $sqltable = ", {coursework_allocation_pairs}  cap ";
 
             $sqlextra = "	
@@ -302,7 +302,7 @@ class outstanding_marking   {
 
         $coursework = new \mod_coursework\models\coursework($courseworkid);
 
-        //findout if the user can create an initial grade
+        // Findout if the user can create an initial grade
         $user_has_initial_grade_capability = $this->has_initial_grade($coursework->get_course()->id, $userid);
 
         return  $user_has_initial_grade_capability;
@@ -317,7 +317,7 @@ class outstanding_marking   {
 
         $coursework = new \mod_coursework\models\coursework($courseworkid);
 
-        //findout if the user can create an initial grade
+        // Findout if the user can create an initial grade
         $user_has_agreed_grade_capability = $this->has_agreed_grade($coursework->get_course()->id, $userid);
 
         return  $user_has_agreed_grade_capability;

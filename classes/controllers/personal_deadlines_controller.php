@@ -132,15 +132,15 @@ class personal_deadlines_controller extends controller_base{
             'courseworkid' => $this->params['courseworkid'],
         );
 
-        //if the allocatableid is an array then the current page will probably be setting multiple the personal deadlines
-        //we use the first element in the array to setup the personal deadline object
+        // If the allocatableid is an array then the current page will probably be setting multiple the personal deadlines
+        // We use the first element in the array to setup the personal deadline object
         $params['allocatableid'] = (is_array($this->params['allocatableid']))  ? current($this->params['allocatableid'])  : $this->params['allocatableid']  ;
 
          $this->personal_deadline = personal_deadline::find_or_build($params);
 
         $params['allocatableid'] = $this->params['allocatableid'];
 
-            //if the allocatableid is an array then the current page will probably be setting multiple the personal deadlines
+            // If the allocatableid is an array then the current page will probably be setting multiple the personal deadlines
             // of multiple allocatable ids in which case set the personal deadline to the coursework default
             if (is_array($this->params['allocatableid']) || !$this->get_personal_deadline()) { // if no personal deadline then use coursework deadline
                 $this->personal_deadline->personal_deadline = $this->coursework->deadline;

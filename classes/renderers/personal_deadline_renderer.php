@@ -44,7 +44,7 @@ class personal_deadline_renderer {
 
         $html = '';
 
-        //if page has been accessed via the set personal deadline page then we dont want to say who set the last personal
+        // If page has been accessed via the set personal deadline page then we dont want to say who set the last personal
         //deadline
         if (empty($vars['params']['multipleuserdeadlines'])) {
             $allocatable = $vars['personal_deadline']->get_allocatable();

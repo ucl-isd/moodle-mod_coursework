@@ -592,7 +592,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $select->formid = 'sectionmenu';
         $table_html     .=  $OUTPUT->render($select);
 
-        //get the hidden elements used for assessors and moderators selected on other pages;
+        // Get the hidden elements used for assessors and moderators selected on other pages;
 
         $allocatable_cell_helper = $allocation_table->get_allocatable_cell();
         $table_html .= '<th>';
@@ -640,7 +640,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 </tbody>
             </table>
         ';
-        //form save button.
+        // Form save button.
 
         $attributes = array('name' => 'save',
             'type' => 'submit',
@@ -822,12 +822,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         for ($i = 2; $i <= $samplingwidget->get_coursework()->get_max_markers(); $i++) {
 
-            //create the secon
+            // Create the secon
 
             $sampling_strategies = array('0' => get_string('sampling_manual', 'mod_coursework'),
                                               '1' => get_string('sampling_automatic', 'mod_coursework'));
 
-            //check whether any rules have been saved for this stage
+            // Check whether any rules have been saved for this stage
             $selected = ($samplingwidget->get_coursework()->has_automatic_sampling_at_stage('assessor_'.$i)) ? '1' : false;
 
             $sampling_cell = html_writer::start_tag('div', array('class' => 'samples_strategy'));
@@ -911,7 +911,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $percentage_options[$i] = "{$i}%";
         }
 
-        //hidden input containing scale values
+        // Hidden input containing scale values
         $scale = array();
         $sampling_column = "<input id='scale_values' type='hidden' value='".implode(',', $scale)."' />";
 
@@ -1526,14 +1526,14 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $assessable_submitted_submissions = $this->remove_ungradable_submissions($assessable_submitted_submissions);
 
-            //remove all submission with final grade
+            // Remove all submission with final grade
             $assessable_submitted_submissions = $this->removed_final_graded_submissions($assessable_submitted_submissions);
 
-            //if has addagreedgrade or administergrade or addallocatedagreedgrade+initialgrade
+            // If has addagreedgrade or administergrade or addallocatedagreedgrade+initialgrade
             if (has_any_capability(array('mod/coursework:addagreedgrade', 'mod/coursework:administergrades'), $coursework->get_context())
                 || (has_capability('mod/coursework:addinitialgrade', $coursework->get_context()) && has_capability('mod/coursework:addallocatedagreedgrade', $coursework->get_context()))) {
 
-                //count number of submissions at final grade stage
+                // Count number of submissions at final grade stage
                 $numberofassessable = count($assessable_submitted_submissions);
 
                 $assessable_submitted_submissions = $this->remove_final_gradable_submissions($assessable_submitted_submissions);
@@ -1541,7 +1541,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 $needsgrading = $numberofassessable - count($assessable_submitted_submissions);
             }
 
-            //if has initialgrade
+            // If has initialgrade
             if (has_any_capability(array('mod/coursework:addinitialgrade', 'mod/coursework:administergrades'), $coursework->get_context())) {
 
                 $assessable_submitted_submissions = $this->remove_final_gradable_submissions($assessable_submitted_submissions);
@@ -1735,7 +1735,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             if (count($submission->get_assessor_feedbacks()) >= $submission->max_number_of_feedbacks() || $submission->is_assessor_initial_grader()
                 && (!has_capability('mod/coursework:administergrades', $submission->get_coursework()->get_context()) && !is_siteadmin($USER->id))) {
 
-                //is this submission assessable by this user at an inital gradig stage
+                // Is this submission assessable by this user at an inital gradig stage
                 unset($submissions[$sub->id]);
             }
         }

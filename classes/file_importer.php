@@ -34,7 +34,7 @@ class coursework_file_zip_importer    {
 
         global $USER;
 
-        //raise_memory_limit(MEMORY_EXTRA);
+        // Raise_memory_limit(MEMORY_EXTRA);
         //@set_time_limit(ASSIGNFEEDBACK_FILE_MAXFILEUNZIPTIME);
 
         $packer = get_file_packer('application/zip');
@@ -124,7 +124,7 @@ class coursework_file_zip_importer    {
 
                 if ($submission->get_state() < \mod_coursework\models\submission::PUBLISHED) {
 
-                    //if only add/edit initial capability then workout stage identifier
+                    // If only add/edit initial capability then workout stage identifier
                     if ($feedbackstage == 'initialassessor') {
 
                         $feedback = $DB->get_record('coursework_feedbacks', array('submissionid' => $submission->id, 'assessorid' => $USER->id ));
@@ -182,7 +182,7 @@ class coursework_file_zip_importer    {
             }
         }
 
-        //clear up the files that have not been moved to the mod_coursework area
+        // Clear up the files that have not been moved to the mod_coursework area
         $this->delete_import_files($contextid);
 
         return $results;
