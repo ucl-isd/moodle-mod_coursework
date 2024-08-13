@@ -370,7 +370,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $courseworkid = $this->get_coursework_id();
         $disabled = [];
         if (coursework_personal_deadline_passed($courseworkid)) {
-            $moodle_form->disabledif('personaldeadlineenabled', 'deadline[enabled]', 'notchecked');
+            $moodle_form->disabledIf('personaldeadlineenabled', 'deadline[enabled]', 'notchecked');
             $disabled = array('disabled' => true);
         }
         $moodle_form->addElement('select',
