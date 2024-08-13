@@ -160,7 +160,7 @@ class single_assessor_feedback_cell extends cell_base {
 
     /**
      * @param $rowobject
-     * @return array
+     * @return string
      * @throws \coding_exception
      */
     private function edit_feedback_button($rowobject) {
@@ -208,7 +208,7 @@ class single_assessor_feedback_cell extends cell_base {
     /**
      * @param grading_table_row_base $rowobject
      * @param user $assessor
-     * @return array
+     * @return string
      * @throws \coding_exception
      */
     private function new_feedback_button($rowobject, $assessor) {

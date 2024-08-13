@@ -1267,7 +1267,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $deadline_extension_message = '';
         if ($dealine_extension) {
             $deadline_extension_message .= html_writer::start_tag('div');
-            $deadline_extension_message .= '<span class="text-success">You have an extension!</span><br> Your deadine is: '.userdate($dealine_extension->extended_deadline).'';
+            $deadline_extension_message .= '<span class="text-success">You have an extension!</span><br> Your deadine is: '
+                . userdate($dealine_extension->extended_deadline);
             $deadline_extension_message .= html_writer::end_tag('div');
         }
 

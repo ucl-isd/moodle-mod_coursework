@@ -154,7 +154,7 @@ class moderation_agreement_cell extends cell_base {
     /**
      * @param grading_table_row_base $rowobject
      * @param user $assessor
-     * @return array
+     * @return string
      * @throws \coding_exception
      */
     private function new_moderation_button($rowobject, $assessor) {
@@ -183,7 +183,7 @@ class moderation_agreement_cell extends cell_base {
 
     /**
      * @param $rowobject
-     * @return array
+     * @return string
      * @throws \coding_exception
      */
     private function edit_moderation_button($rowobject) {

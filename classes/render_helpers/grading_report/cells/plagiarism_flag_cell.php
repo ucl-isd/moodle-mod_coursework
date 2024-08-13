@@ -101,9 +101,8 @@ class plagiarism_flag_cell extends cell_base {
     }
 
     /**
-     * @param grading_table_row_base $rowobject
-     * @param $row_object
-     * @return array
+     * @param grading_table_row_base $row_object
+     * @return string
      * @throws \coding_exception
      */
     private function new_flag_plagiarism_button($row_object) {
@@ -125,9 +124,8 @@ class plagiarism_flag_cell extends cell_base {
     }
 
     /**
-     * @param grading_table_row_base $rowobject
-     * @param $row_object
-     * @return array
+     * @param grading_table_row_base $row_object
+     * @return string
      * @throws \coding_exception
      */
     private function edit_flag_plagiarism_button($row_object) {

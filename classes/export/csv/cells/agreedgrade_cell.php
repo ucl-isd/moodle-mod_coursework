@@ -229,8 +229,9 @@ class agreedgrade_cell extends cell_base {
      * Takes the given cells and returns the cells with the singlegrade cell replaced by the rubric headers if the coursework instance
      * makes use of rubrics
      *
+     * @param $coursework
      * @param $csv_cells
-     *
+     * @return array
      */
     function get_rubrics($coursework, $csv_cells) {
 

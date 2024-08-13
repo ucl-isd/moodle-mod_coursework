@@ -321,7 +321,7 @@ class feedback_controller extends controller_base {
      */
     protected function update_feedback() {
 
-        global $USER, $CFG;
+        global $USER, $PAGE;
 
         $teacherfeedback = new feedback($this->params['feedbackid']);
         $teacherfeedback->lasteditedbyuser = $USER->id;

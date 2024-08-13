@@ -206,7 +206,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
 
     /**
      * @param assessor_feedback_row $feedback_row
-     * @return array
+     * @return string
      * @throws \coding_exception
      */
     protected function edit_existing_feedback_link($feedback_row) {
