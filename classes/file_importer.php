@@ -34,8 +34,8 @@ class coursework_file_zip_importer {
 
         global $USER;
 
-        // Raise_memory_limit(MEMORY_EXTRA);
-        //@set_time_limit(ASSIGNFEEDBACK_FILE_MAXFILEUNZIPTIME);
+        // raise_memory_limit(MEMORY_EXTRA);
+        // @set_time_limit(ASSIGNFEEDBACK_FILE_MAXFILEUNZIPTIME);
 
         $packer = get_file_packer('application/zip');
 

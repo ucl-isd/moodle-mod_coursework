@@ -855,7 +855,7 @@ $string['yoursubmissionfile_renamed'] = '(this will be automatically renamed)';
 $string['moderationenabled_help'] = 'Allow a moderator to mark a subset of the submissions. A moderator\'s grade becomes the final grade for any submission they mark.';
 $string['grade_help'] = 'Select the grade scale on which this coursework will be marked';
 $string['anonymitydescription'] = '<p>Blind marking - You will not see students names';
-$string['allocationenabled_help'] = 'Restrict which assessors will mark which submission,';
+$string['allocationenabled_help'] = 'Restrict which assessors will mark which submission';
 
 $string['oneweekoption'] = '1 week';
 $string['twoweeksoption'] = '2 weeks';

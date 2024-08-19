@@ -416,8 +416,6 @@ $PAGE->set_url('/mod/coursework/view.php', $params);
 $PAGE->set_title($coursework->name);
 $PAGE->set_heading($course->shortname);
 
-// $PAGE->set_button($OUTPUT->update_module_button($course_module->id, 'coursework')); // deprecated from 3.2 (MDL-53765 core)
-
 // Auto publish after the deadline
 if ($coursework->has_individual_autorelease_feedback_enabled() &&
     $coursework->individual_feedback_deadline_has_passed() &&
