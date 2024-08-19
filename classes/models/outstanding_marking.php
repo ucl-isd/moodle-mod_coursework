@@ -1,71 +1,88 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_coursework\models;
 
-class outstanding_marking   {
+class outstanding_marking {
 
-    private     $day_in_secs;
+    private $day_in_secs;
 
+    public function __construct() {
 
-    public function __construct()   {
-
-        $this->day_in_secs             =   86400;
+        $this->day_in_secs = 86400;
     }
-
 
     /**
      * @param $cwkrecord
      * @param $userid
      * @return int
      */
-    public function get_to_grade_initial_count($cwkrecord,$userid){
+    public function get_to_grade_initial_count($cwkrecord, $userid) {
 
-        $coursework     =   new \mod_coursework\models\coursework($cwkrecord);
+        $coursework = new \mod_coursework\models\coursework($cwkrecord);
 
-        $initialsubmissions =   array();
+        $initialsubmissions = [];
 
-        if($this->should_get_to_mark_initial_grade_info($coursework->id,$userid)){
+        if ($this->should_get_to_mark_initial_grade_info($coursework->id, $userid)) {
 
             if (!$coursework->has_multiple_markers()) {
-                $initialsubmissions = $this->get_single_marker_initial_grade_submissions_to_mark($coursework->id, $userid,$coursework->allocation_enabled());
+                $initialsubmissions = $this->get_single_marker_initial_grade_submissions_to_mark($coursework->id, $userid, $coursework->allocation_enabled());
 
             } else if ($coursework->sampling_enabled() && !$coursework->allocation_enabled()) { //
 
-                $initialsubmissions = $this->get_multiple_to_mark_sampled_initial_grade_submissions($coursework->id,$userid);
+                $initialsubmissions = $this->get_multiple_to_mark_sampled_initial_grade_submissions($coursework->id, $userid);
 
             } else {
-                $initialsubmissions =   $this->get_multiple_to_mark_initial_grade_submissions($coursework->id,$userid,$coursework->get_max_markers(),$coursework->allocation_enabled());
+                $initialsubmissions = $this->get_multiple_to_mark_initial_grade_submissions($coursework->id, $userid, $coursework->get_max_markers(), $coursework->allocation_enabled());
 
             }
         }
 
-        return  (!empty($initialsubmissions))   ?  count($initialsubmissions) : 0  ;
+        return  (!empty($initialsubmissions)) ? count($initialsubmissions) : 0;
     }
-
 
     /**
      * @param $cwkrecord
      * @param $userid
      * @return int
      */
-    public function get_to_grade_agreed_count($cwkrecord,$userid) {
+    public function get_to_grade_agreed_count($cwkrecord, $userid) {
 
-        $coursework     =   new \mod_coursework\models\coursework($cwkrecord);
+        $coursework = new \mod_coursework\models\coursework($cwkrecord);
 
-        $agreedsubmissions  =   array();
+        $agreedsubmissions = [];
 
             //AGREED GRADE INFORMATION
 
-            if ($this->should_get_to_mark_agreed_grade_info($coursework->id,$userid) && $coursework->has_multiple_markers())  {
+            if ($this->should_get_to_mark_agreed_grade_info($coursework->id, $userid) && $coursework->has_multiple_markers()) {
                 if (!$coursework->sampling_enabled()) {
-                    $agreedsubmissions = $this->get_to_grade_agreed_grade_submissions($coursework->id,$coursework->get_max_markers());
+                    $agreedsubmissions = $this->get_to_grade_agreed_grade_submissions($coursework->id, $coursework->get_max_markers());
                 } else {
                     $agreedsubmissions = $this->get_to_grade_agreed_grade_sampled_submissions($coursework->id);
                 }
             }
 
-        return  (!empty($agreedsubmissions))    ?   count($agreedsubmissions)   :   0;
+        return  (!empty($agreedsubmissions)) ? count($agreedsubmissions) : 0;
     }
-
 
     /**
      * @param $courseworkid
@@ -73,58 +90,56 @@ class outstanding_marking   {
      * @param bool $allocationenabled
      * @return array
      */
-    private function get_single_marker_initial_grade_submissions_to_mark($courseworkid, $userid=false, $allocationenabled=false)    {
+    private function get_single_marker_initial_grade_submissions_to_mark($courseworkid, $userid=false, $allocationenabled=false) {
 
         global  $DB;
 
-        $sqlparams  =   array();
-        $sqltable  =    "";
-        $sqlextra   =   "";
+        $sqlparams = [];
+        $sqltable = "";
+        $sqlextra = "";
 
-        if ($allocationenabled)  {
-            //we only have to check for submissions allocated to this user
-            $sqltable  =   ", {coursework_allocation_pairs}  cap ";
+        if ($allocationenabled) {
+            // We only have to check for submissions allocated to this user
+            $sqltable = ", {coursework_allocation_pairs}  cap ";
 
-            $sqlextra   =   "	
-	                                    AND cap.courseworkid = cs.courseworkid
+            $sqlextra = " AND cap.courseworkid = cs.courseworkid
 		                                AND cap.allocatableid = cs.allocatableid
 	                                    AND cap.allocatabletype = cs.allocatabletype
 	                                    AND cap.assessorid = :assessorid ";
 
-            $sqlparams['assessorid']    =   $userid;
+            $sqlparams['assessorid'] = $userid;
         }
 
-        $sql =      "SELECT     cs.id as submissionid
+        $sql = "SELECT cs.id as submissionid
                                  FROM       {coursework_submissions}    cs
                                  LEFT JOIN  {coursework_feedbacks}   f
                                  ON          cs.id = f.submissionid
                                  {$sqltable}
                                  WHERE     f.id IS NULL
                                  AND cs.finalised = 1
-                                 AND cs.courseworkid = :courseworkid              
-                                  {$sqlextra}                                  
+                                 AND cs.courseworkid = :courseworkid
+                                  {$sqlextra}
                                  ";
 
-        $sqlparams['courseworkid']      =   $courseworkid;
+        $sqlparams['courseworkid'] = $courseworkid;
 
         return  $DB->get_records_sql($sql, $sqlparams);
     }
-
 
     /**
      * @param $courseworkid
      * @param $userid
      * @return array
      */
-    private function get_multiple_to_mark_sampled_initial_grade_submissions($courseworkid,$userid)    {
+    private function get_multiple_to_mark_sampled_initial_grade_submissions($courseworkid, $userid) {
 
         global  $DB;
 
         $countsamples = 'CASE WHEN a.id = NULL THEN 0 ELSE COUNT(a.id)+1 END';
-        $sql    =   "     SELECT  *,
+        $sql = "     SELECT  *,
                                   $countsamples AS count_samples,
                                   COUNT(a.id) AS ssmID  FROM(
-                                                  SELECT  cs.id AS csid, f.id AS fid, cs.allocatableid ,ssm.id, COUNT(f.id) AS count_feedback,
+                                                  SELECT  cs.id AS csid, f.id AS fid, cs.allocatableid, ssm.id, COUNT(f.id) AS count_feedback,
                                                       cs.courseworkid
                                                   FROM {coursework_submissions} cs  LEFT JOIN
                                                        {coursework_feedbacks} f ON f.submissionid= cs.id
@@ -141,15 +156,13 @@ class outstanding_marking   {
                                    GROUP BY a.allocatableid, a.csid, a.fid, a.id, a.count_feedback, a.courseworkid
                                    HAVING (count_feedback < $countsamples  )";
 
-        $sqlparams  =   array();
-        $sqlparams['subassessorid']             =   $userid;
-        $sqlparams['subcourseworkid']           =   $courseworkid;
-        $sqlparams['courseworkid']              =   $courseworkid;
-
+        $sqlparams = [];
+        $sqlparams['subassessorid'] = $userid;
+        $sqlparams['subcourseworkid'] = $courseworkid;
+        $sqlparams['courseworkid'] = $courseworkid;
 
         return  $DB->get_records_sql($sql, $sqlparams);
     }
-
 
     /**
      * @param $courseworkid
@@ -158,81 +171,74 @@ class outstanding_marking   {
      * @param $allocationenabled
      * @return array
      */
-    private function get_multiple_to_mark_initial_grade_submissions($courseworkid,$userid,$numberofmarkers,$allocationenabled)    {
+    private function get_multiple_to_mark_initial_grade_submissions($courseworkid, $userid, $numberofmarkers, $allocationenabled) {
 
         global      $DB;
 
-        $sqlparams  =   array();
-        $sqltable   =   '';
-        $sqlextra   =   '';
+        $sqlparams = [];
+        $sqltable = '';
+        $sqlextra = '';
 
-        if ($allocationenabled)  {
-            //we only have to check for submissions allocated to this user
-            $sqltable  =   ", {coursework_allocation_pairs}  cap ";
+        if ($allocationenabled) {
+            // We only have to check for submissions allocated to this user
+            $sqltable = ", {coursework_allocation_pairs}  cap ";
 
-            $sqlextra   =   "	
+            $sqlextra = "	
 	                                    AND cap.courseworkid = cs.courseworkid
 		                                AND cap.allocatableid = cs.allocatableid
 	                                    AND cap.allocatabletype = cs.allocatabletype
 	                                    AND cap.assessorid = :assessorid2 ";
 
-            $sqlparams['assessorid2']    =   $userid;
+            $sqlparams['assessorid2'] = $userid;
         }
 
-
-        $sql    =   "SELECT cs.id AS submissionid, COUNT(f.id) AS count_feedback
+        $sql = "SELECT cs.id AS submissionid, COUNT(f.id) AS count_feedback
                                       FROM 	{coursework_submissions}	cs LEFT JOIN
                                             {coursework_feedbacks} f ON   cs.id = f.submissionid
                                             {$sqltable}
                                      WHERE cs.finalised = 1
-                                       AND cs.courseworkid = :courseworkid                
+                                       AND cs.courseworkid = :courseworkid
                                           AND (f.assessorid != :assessorid OR f.assessorid IS NULL)
                                           {$sqlextra}
-                                          AND cs.id NOT IN (SELECT      sub.id  FROM 
-                                                                        {coursework_feedbacks} feed JOIN 
-                                                                        {coursework_submissions} sub ON sub.id = feed.submissionid 
+                                          AND cs.id NOT IN (SELECT      sub.id  FROM
+                                                                        {coursework_feedbacks} feed
+                                                                        JOIN {coursework_submissions} sub ON sub.id = feed.submissionid
                                                                         WHERE assessorid = :subassessorid AND sub.courseworkid= :subcourseworkid)
                                           GROUP BY cs.id, f.id
                                           HAVING (COUNT(f.id) < :numofmarkers)";
 
-
-        $sqlparams['subassessorid']     =   $userid;
-        $sqlparams['subcourseworkid']   =   $courseworkid;
-        $sqlparams['courseworkid']      =   $courseworkid;
-        $sqlparams['numofmarkers']      =   $numberofmarkers;
-        $sqlparams['assessorid']        =   $userid;
-
+        $sqlparams['subassessorid'] = $userid;
+        $sqlparams['subcourseworkid'] = $courseworkid;
+        $sqlparams['courseworkid'] = $courseworkid;
+        $sqlparams['numofmarkers'] = $numberofmarkers;
+        $sqlparams['assessorid'] = $userid;
 
         return  $DB->get_records_sql($sql, $sqlparams);
     }
-
 
     /**
      * @param $courseworkid
      * @param $numberofmarkers
      * @return array
      */
-    private function get_to_grade_agreed_grade_submissions($courseworkid,$numberofmarkers){
+    private function get_to_grade_agreed_grade_submissions($courseworkid, $numberofmarkers) {
 
         global $DB;
 
         $sql = "SELECT cs.id as submissionid, COUNT(cs.id) AS count_feedback
-                                      FROM 	{coursework_submissions}	cs ,
-                                            {coursework_feedbacks} f 
+                                      FROM 	{coursework_submissions} cs ,
+                                            {coursework_feedbacks} f
                                      WHERE  f.submissionid= cs.id
                                         AND cs.finalised = 1
                                         AND cs.courseworkid = :courseworkid
                                         GROUP BY cs.id
                                         HAVING (COUNT(cs.id) = :numofmarkers)";
 
-
         $sqlparams['numofmarkers'] = $numberofmarkers;
         $sqlparams['courseworkid'] = $courseworkid;
 
-
         return $DB->get_records_sql($sql, $sqlparams);
     }
-
 
     /**
      * @param $courseworkid
@@ -243,10 +249,10 @@ class outstanding_marking   {
         global  $DB;
 
         $countsamples = 'CASE WHEN a.id = NULL THEN 0 ELSE COUNT(a.id)+1 END';
-        $sql        =   "SELECT  *,
+        $sql = "SELECT  *,
                                   $countsamples AS count_samples,
                                    COUNT(a.id) AS ssmID  FROM(
-                                                  SELECT f.id AS fid, cs.id AS csid, cs.allocatableid ,ssm.id, COUNT(f.id) AS count_feedback,
+                                                  SELECT f.id AS fid, cs.id AS csid, cs.allocatableid, ssm.id, COUNT(f.id) AS count_feedback,
                                                       cs.courseworkid
                                                   FROM {coursework_submissions} cs  LEFT JOIN
                                                        {coursework_feedbacks} f ON f.submissionid= cs.id
@@ -256,51 +262,48 @@ class outstanding_marking   {
                                                   GROUP BY cs.allocatableid, ssm.stage_identifier, f.id, cs.id, ssm.id
                                                 ) a
                                    GROUP BY a.allocatableid, a.csid, a.fid, a.id, a.count_feedback, a.courseworkid
-                                   HAVING (count_feedback = $countsamples AND $countsamples > 1 );";    
+                                   HAVING (count_feedback = $countsamples AND $countsamples > 1 );";
 
         $sqlparams['courseworkid'] = $courseworkid;
 
         return $DB->get_records_sql($sql, $sqlparams);
     }
 
+    /**
+     * @param $course_id
+     * @param $user_id
+     * @return bool
+     */
+    private function has_agreed_grade($course_id, $user_id) {
+
+        $coursecontext = \context_course::instance($course_id);
+
+        return  has_capability('mod/coursework:addagreedgrade', $coursecontext, $user_id) || has_capability('mod/coursework:addallocatedagreedgrade', $coursecontext, $user_id);
+    }
 
     /**
      * @param $course_id
      * @param $user_id
      * @return bool
      */
-    private function has_agreed_grade($course_id,$user_id)     {
+    private function has_initial_grade($course_id, $user_id) {
 
-        $coursecontext  =   \context_course::instance($course_id);
+        $coursecontext = \context_course::instance($course_id);
 
-        return  has_capability('mod/coursework:addagreedgrade',$coursecontext,$user_id) || has_capability('mod/coursework:addallocatedagreedgrade',$coursecontext,$user_id);
+        return  has_capability('mod/coursework:addinitialgrade', $coursecontext, $user_id);
     }
-
-
-    /**
-     * @param $course_id
-     * @param $user_id
-     * @return bool
-     */
-    private function has_initial_grade($course_id,$user_id)     {
-
-        $coursecontext  =   \context_course::instance($course_id);
-
-        return  has_capability('mod/coursework:addinitialgrade',$coursecontext,$user_id);
-    }
-
 
     /**
      * @param $courseworkid
      * @param $userid
      * @return bool
      */
-    private function should_get_to_mark_initial_grade_info($courseworkid,$userid)    {
+    private function should_get_to_mark_initial_grade_info($courseworkid, $userid) {
 
-        $coursework     =   new \mod_coursework\models\coursework($courseworkid);
+        $coursework = new \mod_coursework\models\coursework($courseworkid);
 
-        //findout if the user can create an initial grade
-        $user_has_initial_grade_capability =   $this->has_initial_grade($coursework->get_course()->id, $userid);
+        // Findout if the user can create an initial grade
+        $user_has_initial_grade_capability = $this->has_initial_grade($coursework->get_course()->id, $userid);
 
         return  $user_has_initial_grade_capability;
     }
@@ -310,12 +313,12 @@ class outstanding_marking   {
      * @param $userid
      * @return bool
      */
-    private function should_get_to_mark_agreed_grade_info($courseworkid,$userid)    {
+    private function should_get_to_mark_agreed_grade_info($courseworkid, $userid) {
 
-        $coursework     =   new \mod_coursework\models\coursework($courseworkid);
+        $coursework = new \mod_coursework\models\coursework($courseworkid);
 
-        //findout if the user can create an initial grade
-        $user_has_agreed_grade_capability   =   $this->has_agreed_grade($coursework->get_course()->id, $userid);
+        // Findout if the user can create an initial grade
+        $user_has_agreed_grade_capability = $this->has_agreed_grade($coursework->get_course()->id, $userid);
 
         return  $user_has_agreed_grade_capability;
 

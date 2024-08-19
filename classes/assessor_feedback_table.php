@@ -14,13 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_coursework;
 
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
 
 defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Renderable class to represent a table containing assessor feedbacks for a single student submission.
@@ -73,7 +78,7 @@ class assessor_feedback_table {
         // Makes a new result set every time, so we can modify this array without worrying about
         // messing up the cache.
 
-        $feedbackobjects = array();
+        $feedbackobjects = [];
         foreach ($this->coursework->get_assessor_marking_stages() as $stage) {
             $renderable_row = new assessor_feedback_row($stage, $this->get_allocatable(), $this->coursework);
             $feedbackobjects[] = $renderable_row;

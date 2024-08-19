@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework\render_helpers\grading_report\cells;
 use coding_exception;
@@ -28,11 +48,10 @@ class group_cell extends cell_base implements allocatable_cell {
         $content .= '<div class="group_style">';
         $content .= '<select>';
 
-
-        if ($this->coursework->blindmarking_enabled() && !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context()) && !$row_object->is_published()){
-            $content .= '<option class="expand_members" selected="selected">'.get_string('membershidden','coursework').'</option>';
-        } else{
-            $content .= '<option class="expand_members" selected="selected">'.get_string('viewmembers','coursework').'</option>';
+        if ($this->coursework->blindmarking_enabled() && !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context()) && !$row_object->is_published()) {
+            $content .= '<option class="expand_members" selected="selected">'.get_string('membershidden', 'coursework').'</option>';
+        } else {
+            $content .= '<option class="expand_members" selected="selected">'.get_string('viewmembers', 'coursework').'</option>';
         }
 
         $cm = $this->coursework->get_course_module();
@@ -51,11 +70,11 @@ class group_cell extends cell_base implements allocatable_cell {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options = array()) {
+    public function get_table_header($options  = []) {
 
         //adding this line so that the sortable heading function will make a sortable link unique to the table
-        //if tablename is set
-        $tablename  =   (isset($options['tablename']))  ? $options['tablename']  : ''  ;
+        // If tablename is set
+        $tablename = (isset($options['tablename'])) ? $options['tablename'] : '';
 
         return $this->helper_sortable_heading(get_string('tableheadgroups', 'coursework'),
                                               'groupname',
@@ -67,7 +86,7 @@ class group_cell extends cell_base implements allocatable_cell {
     /**
      * @return string
      */
-    public function get_table_header_class(){
+    public function get_table_header_class() {
         return 'tableheadgroups';
     }
 

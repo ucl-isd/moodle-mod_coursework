@@ -17,8 +17,7 @@
 /**
  * Unit tests for the coursework class
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2012 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,7 +28,6 @@ use mod_coursework\models\submission;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-
 
 /**
  * Class that will make sure the allocation_manager works.
@@ -180,7 +178,6 @@ class coursework_submission_test extends advanced_testcase {
         $grade_item = $DB->get_record('grade_items', array('itemtype' => 'mod', 'itemmodule' => 'coursework', 'iteminstance' => $this->coursework->id));
         $grade = $DB->get_record('grade_grades', array('itemid' => $grade_item->id, 'userid' => $student->id));
         $grade_time_modified = $grade->timemodified;
-
 
         $this->assertNotEquals($initial_time, $grade_time_modified);
 

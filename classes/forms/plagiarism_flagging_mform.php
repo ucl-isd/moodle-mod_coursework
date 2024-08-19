@@ -17,8 +17,7 @@
 /**
  * Creates an mform for moderator agreement
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -44,7 +43,6 @@ class plagiarism_flagging_mform extends moodleform {
      */
     public $submission_id;
 
-
     /**
      * Makes the form elements.
      */
@@ -61,7 +59,7 @@ class plagiarism_flagging_mform extends moodleform {
         $mform->setType('submissionid', PARAM_INT);
 
         // plagiarism status
-        $options = array(plagiarism_flag::INVESTIGATION => get_string('plagiarism_'.plagiarism_flag::INVESTIGATION , 'coursework'),
+        $options = array(plagiarism_flag::INVESTIGATION => get_string('plagiarism_'.plagiarism_flag::INVESTIGATION, 'coursework'),
                          plagiarism_flag::RELEASED => get_string('plagiarism_'.plagiarism_flag::RELEASED, 'coursework'),
                          plagiarism_flag::CLEARED => get_string('plagiarism_'.plagiarism_flag::CLEARED, 'coursework'),
                          plagiarism_flag::NOTCLEARED => get_string('plagiarism_'.plagiarism_flag::NOTCLEARED, 'coursework'));

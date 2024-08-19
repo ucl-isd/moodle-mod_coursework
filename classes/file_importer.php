@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework;
 
@@ -8,16 +28,14 @@ use mod_coursework\export;
 
 defined('MOODLE_INTERNAL') || die();
 
-class coursework_file_zip_importer    {
+class coursework_file_zip_importer {
 
-
-
-    public function extract_zip_file($filename,$contextid)  {
+    public function extract_zip_file($filename, $contextid) {
 
         global $USER;
 
-        //raise_memory_limit(MEMORY_EXTRA);
-        //@set_time_limit(ASSIGNFEEDBACK_FILE_MAXFILEUNZIPTIME);
+        // raise_memory_limit(MEMORY_EXTRA);
+        // @set_time_limit(ASSIGNFEEDBACK_FILE_MAXFILEUNZIPTIME);
 
         $packer = get_file_packer('application/zip');
 
@@ -71,23 +89,22 @@ class coursework_file_zip_importer    {
             $USER->id);
     }
 
-
     /**
      * Process an uploaded zip file
      *
      * @param coursework $coursework
      * @return string - The html response
      */
-    public function import_zip_files($coursework,$feedbackstage,$overwritecurrent)   {
+    public function import_zip_files($coursework, $feedbackstage, $overwritecurrent) {
         global $CFG, $PAGE, $DB, $USER;
 
         @set_time_limit(ASSIGNFEEDBACK_FILE_MAXFILEUNZIPTIME);
 
-        $results        =   array();
+        $results = [];
 
         $feedbackfilesupdated = 0;
         $feedbackfilesadded = 0;
-        $userswithnewfeedback = array();
+        $userswithnewfeedback = [];
         $contextid = $coursework->get_context_id();
 
         $fs = get_file_storage();
@@ -95,32 +112,30 @@ class coursework_file_zip_importer    {
 
         $participants = $coursework->get_allocatables();
 
-
         foreach ($feedbackfiles as $file) {
 
-            $filename   =   $file->get_filename();
+            $filename = $file->get_filename();
 
             if ($allocatableid = $this->is_valid_feedback_file_filename($coursework, $file, $participants) ) {
 
-                $subdbrecord =   $DB->get_record('coursework_submissions',array('courseworkid'=>$coursework->id(),'allocatableid'=>$allocatableid,'allocatabletype'=>$coursework->get_allocatable_type()));
+                $subdbrecord = $DB->get_record('coursework_submissions', array('courseworkid' => $coursework->id(), 'allocatableid' => $allocatableid, 'allocatabletype' => $coursework->get_allocatable_type()));
 
-                $submission =   \mod_coursework\models\submission::find($subdbrecord);
+                $submission = \mod_coursework\models\submission::find($subdbrecord);
 
                 if ($submission->get_state() < \mod_coursework\models\submission::PUBLISHED) {
 
-                    //if only add/edit initial capability then workout stage identifier
-                    if ($feedbackstage == 'initialassessor'){
+                    // If only add/edit initial capability then workout stage identifier
+                    if ($feedbackstage == 'initialassessor') {
 
-                        $feedback = $DB->get_record('coursework_feedbacks', array('submissionid'=>$submission->id, 'assessorid'=>$USER->id ));
+                        $feedback = $DB->get_record('coursework_feedbacks', array('submissionid' => $submission->id, 'assessorid' => $USER->id ));
 
-                        if($feedback){
+                        if ($feedback) {
                             $feedbackstage = $feedback->stage_identifier;
 
                         } else {
                             $results[$filename] = get_string('assessorfeedbacknotfound', 'mod_coursework');
                         }
                     }
-
 
                     if ($feedback = $this->feedback_exists($coursework, $submission, $feedbackstage)) {
 
@@ -155,7 +170,6 @@ class coursework_file_zip_importer    {
                             $results[$filename] = get_string('feedbackfilecreated', 'mod_coursework');
                         }
 
-
                     } else {
                         $results[$filename] = get_string('assessorfeedbacknotfound', 'mod_coursework');
                     }
@@ -164,26 +178,23 @@ class coursework_file_zip_importer    {
                 }
 
              } else {
-                $results[$filename] = get_string('feedbacknotfound','mod_coursework');
+                $results[$filename] = get_string('feedbacknotfound', 'mod_coursework');
             }
         }
 
-        //clear up the files that have not been moved to the mod_coursework area
+        // Clear up the files that have not been moved to the mod_coursework area
         $this->delete_import_files($contextid);
 
         return $results;
 
-
     }
 
+    public function is_valid_feedback_file_filename($coursework, $feedbackfile, $participants) {
 
-    public function is_valid_feedback_file_filename($coursework,$feedbackfile,$participants) {
+        $result = false;
 
-
-        $result     =   false;
-
-        $filename   =   explode('.',$feedbackfile->get_filename());
-        $filename   =   $filename[0];
+        $filename = explode('.', $feedbackfile->get_filename());
+        $filename = $filename[0];
 
         if ($feedbackfile->is_directory()) {
             return $result;
@@ -198,41 +209,38 @@ class coursework_file_zip_importer    {
             return $result;
         }
 
-        foreach ($participants as $user)    {
-            if ($filename   ==  $coursework->get_username_hash($user->id))   {
+        foreach ($participants as $user) {
+            if ($filename == $coursework->get_username_hash($user->id)) {
                 $result = $user->id;
                 break;
             }
         }
 
-
         return $result;
 
     }
 
-
-    public function feedback_exists($coursework,$submission,$stageidentifier)   {
+    public function feedback_exists($coursework, $submission, $stageidentifier) {
 
         global $DB, $USER;
 
-        $sql    =   "SELECT     *
+        $sql = "SELECT     *
                      FROM       {coursework_feedbacks}
-                     WHERE      submissionid  = :submissionid
+                     WHERE      submissionid = :submissionid
                      AND        stage_identifier = :stage
                      ";
 
-        $params     =   array('submissionid'=>$submission->id,
-                              'stage'=>$stageidentifier);
+        $params = array('submissionid' => $submission->id,
+                              'stage' => $stageidentifier);
 
-        if (!has_capability('mod/coursework:administergrades',$coursework->get_context())) {
+        if (!has_capability('mod/coursework:administergrades', $coursework->get_context())) {
             $sql .= "AND        (assessorid = :assessorid || lasteditedbyuser = :lasteditedbyuser)";
             $params['assessorid'] = $USER->id;
             $params['lasteditedbyuser'] = $USER->id;
         }
 
-        return   $DB->get_record_sql($sql,$params);
+        return   $DB->get_record_sql($sql, $params);
 
     }
-
 
 }

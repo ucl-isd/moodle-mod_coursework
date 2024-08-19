@@ -17,8 +17,7 @@
 /**
  * ccoursework_plagiarism_flag_updated
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2016 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,7 +25,6 @@
 namespace mod_coursework\event;
 
 defined('MOODLE_INTERNAL') || die();
-
 
 class coursework_plagiarism_flag_updated extends \core\event\base {
 
@@ -37,7 +35,7 @@ class coursework_plagiarism_flag_updated extends \core\event\base {
      */
     protected function init() {
 
-        $this->data['crud'] = 'u'; //One of [crud] letters - indicating 'c'reate, 'r'ead, 'u'pdate or 'd'elete operation. Statically declared in the event class method init().
+        $this->data['crud'] = 'u'; // One of [crud] letters - indicating 'c'reate, 'r'ead, 'u'pdate or 'd'elete operation. Statically declared in the event class method init().
         $this->data['edulevel'] = self::LEVEL_TEACHING;
         $this->data['objecttable'] = 'coursework';
     }

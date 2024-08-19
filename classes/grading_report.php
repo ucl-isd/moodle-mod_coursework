@@ -14,6 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_coursework;
 
 use mod_coursework\models\allocation;
@@ -72,18 +78,18 @@ class grading_report {
     /**
      * @var cell_interface[]
      */
-    private  $cells;
+    private $cells;
 
     /**
      * Grades in $data must be already rounded to the set number of decimals or must be null
-     * (in which later case, the [mod_workshop,nullgrade] string shall be displayed)
+     * (in which later case, the [mod_workshop, nullgrade] string shall be displayed)
      *
      * @param array $options
      * @param coursework $coursework
      */
     public function __construct(array $options, $coursework) {
 
-        $options['courseworkid']    =   $coursework->id;
+        $options['courseworkid'] = $coursework->id;
 
         $this->options = $options;
         $this->coursework = $coursework;
@@ -113,7 +119,6 @@ class grading_report {
     public function get_coursework() {
         return $this->coursework;
     }
-
 
     /**
      * @param $options
@@ -199,7 +204,6 @@ class grading_report {
         return $sort;
     }
 
-
     /**
      * For use with usort.
      * Method called dynamically, so don't delete if unused. See construct_sort_function_name().
@@ -251,7 +255,6 @@ class grading_report {
         return $this->sort_by_stringfield($a->get_student_lastname(), $b->get_student_lastname());
     }
 
-
     /**
      * For use with usort.
      * Method called dynamically, so don't delete if unused. See construct_sort_function_name().
@@ -263,8 +266,6 @@ class grading_report {
     public function sort_by_groupname($a, $b) {
         return $this->sort_by_stringfield($a->get_allocatable()->name, $b->get_allocatable()->name);
     }
-
-
 
     /**
      * For use with usort.
@@ -340,7 +341,7 @@ class grading_report {
      *
      * @return grading_table_row_base[] row objects
      */
-    public function get_table_rows_for_page($rowcount=false) {
+    public function get_table_rows_for_page($rowcount = false) {
 
         global $USER;
 
@@ -350,20 +351,20 @@ class grading_report {
             $participants = $this->coursework->get_allocatables();
 
             // Make tablerow objects so we can use the methods to check permissions and set things.
-            $rows = array();
+            $rows = [];
             $row_class = $this->coursework->has_multiple_markers() ? 'mod_coursework\grading_table_row_multi' : 'mod_coursework\grading_table_row_single';
             $ability = new ability(user::find($USER, false), $this->get_coursework());
 
-            $participantsfound  =   0;
+            $participantsfound = 0;
 
             foreach ($participants as $key => $participant) {
 
                 // handle 'Group mode' - unset groups/individuals thaat are not in the chosen group
-                if(!empty($options['group']) && $options['group'] != -1){
-                    if ($this->coursework->is_configured_to_have_group_submissions()){
-                        if($options['group'] != $participant->id) continue;
+                if (!empty($options['group']) && $options['group'] != -1) {
+                    if ($this->coursework->is_configured_to_have_group_submissions()) {
+                        if ($options['group'] != $participant->id) continue;
                     } else {
-                        if(!$this->coursework->student_in_group($participant->id, $options['group']))continue;
+                        if (!$this->coursework->student_in_group($participant->id, $options['group']))continue;
                     }
                 }
 
@@ -425,6 +426,5 @@ class grading_report {
     public function get_options() {
         return $this->options;
     }
-
 
 }

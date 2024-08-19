@@ -19,8 +19,7 @@ namespace mod_coursework\personal_deadline\table\row;
 /**
  * Class file for the renderable object that makes a single row in the marker personal deadline table.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -59,7 +58,6 @@ class builder implements user_row {
         $this->personaldeadlinetable = $personal_deadline_table;
         $this->allocatable = $allocatable;
     }
-
 
     /**
      * @return allocatable
@@ -121,7 +119,7 @@ class builder implements user_row {
 
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->firstname)) {
-            $this->allocatable =  user::find($allocatable);
+            $this->allocatable = user::find($allocatable);
         }
 
         return $this->get_allocatable()->firstname;
@@ -136,7 +134,7 @@ class builder implements user_row {
 
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->lastname)) {
-            $this->allocatable =  user::find($allocatable);
+            $this->allocatable = user::find($allocatable);
         }
 
         return $this->get_allocatable()->lastname;
@@ -151,12 +149,11 @@ class builder implements user_row {
 
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->idnumber)) {
-            $this->allocatable =  user::find($allocatable);
+            $this->allocatable = user::find($allocatable);
         }
 
         return $this->get_allocatable()->idnumber;
     }
-
 
     /**
      * @return string
@@ -167,7 +164,7 @@ class builder implements user_row {
 
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->email)) {
-            $this->allocatable =  user::find($allocatable);
+            $this->allocatable = user::find($allocatable);
         }
 
         return $this->get_allocatable()->email;
@@ -190,8 +187,8 @@ class builder implements user_row {
         $personal_deadline = $DB->get_record('coursework_person_deadlines',
             array('courseworkid' => $this->get_coursework()->id,
                   'allocatableid' => $this->allocatable->id(),
-                  'allocatabletype'=>  $this->allocatable->type()));
-        if ($personal_deadline){
+                  'allocatabletype' => $this->allocatable->type()));
+        if ($personal_deadline) {
             $personal_deadline = $personal_deadline->personal_deadline;
         } else {
             $personal_deadline = $this->get_coursework()->deadline;
@@ -200,27 +197,24 @@ class builder implements user_row {
         return  $personal_deadline;
     }
 
-
-    public  function get_submission_status()    {
+    public function get_submission_status() {
         global  $DB;
 
-        $submission_db =   $DB->get_record('coursework_submissions',
+        $submission_db = $DB->get_record('coursework_submissions',
             array('courseworkid' => $this->get_coursework()->id,
                 'allocatableid' => $this->allocatable->id(),
-                'allocatabletype'=>  $this->allocatable->type()));
+                'allocatabletype' => $this->allocatable->type()));
 
-        $submission     =   \mod_coursework\models\submission::find($submission_db);
+        $submission = \mod_coursework\models\submission::find($submission_db);
 
-        $statustext     =   get_string('statusnotsubmitted','mod_coursework');
+        $statustext = get_string('statusnotsubmitted', 'mod_coursework');
 
-        if (!empty($submission) && $submission->is_finalised())   {
-            $statustext     =   get_string('finalisedsubmission','mod_coursework');
+        if (!empty($submission) && $submission->is_finalised()) {
+            $statustext = get_string('finalisedsubmission', 'mod_coursework');
         } else if (!empty($submission)) {
-            $statustext     =    $submission->get_status_text();
+            $statustext = $submission->get_status_text();
         }
 
         return  $statustext;
     }
-   
-
 }

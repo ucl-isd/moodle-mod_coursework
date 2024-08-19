@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework;
 use mod_coursework\models\coursework;
@@ -109,7 +129,7 @@ class warnings {
                 if (!has_capability('mod/coursework:addinitialgrade', $this->coursework->get_context(), $student->userid)) {
                     $studentmessage .= '<li>' . $student->firstname . ' ' . $student->lastname;
 
-                    //get group ids of these students
+                    // Get group ids of these students
                     if ($this->coursework->grouping_id) {
 
                         $sql = "SELECT groups.id,groups.name
@@ -151,8 +171,8 @@ class warnings {
                 }
             }
 
-            if(!empty($studentmessage)) {
-                $message  = '<div class = "multiple_groups_warning">';
+            if (!empty($studentmessage)) {
+                $message = '<div class = "multiple_groups_warning">';
                 $message .= '<p>' . get_string('studentsinmultiplegroups', 'mod_coursework') . '</p>';
                 $message .= '<ul>';
                 $message .= $studentmessage;
@@ -195,13 +215,13 @@ class warnings {
      * @return string
      * @throws \coding_exception
      */
-    public function manual_allocation_not_completed(){
+    public function manual_allocation_not_completed() {
         global $DB;
 
         $coursework = $this->coursework;
 
         $coursework_stages = $coursework->numberofmarkers;
-        for ($i = 1; $i <= $coursework_stages; $i++){
+        for ($i = 1; $i <= $coursework_stages; $i++) {
              $assessor = 'assessor_'.$i;
 
              if ($coursework->samplingenabled == 0 || $assessor == 'assessor_1') {
@@ -219,7 +239,7 @@ class warnings {
                          return $this->alert_div(get_string('assessors_no_allocated_warning', 'mod_coursework'));
                      }
                  }
-             }else{
+             } else {
 
                  $params = array('courseworkid' => $coursework->id);
                  $sql = "SELECT id, stage_identifier, allocatableid
@@ -247,7 +267,7 @@ class warnings {
      * @param $params
      * @return array
      */
-    public function check_existing_allocations($params){
+    public function check_existing_allocations($params) {
         global $DB;
         $sql = "SELECT 1
                 FROM {coursework_allocation_pairs}

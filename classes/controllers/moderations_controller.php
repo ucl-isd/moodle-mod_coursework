@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework\controllers;
 
@@ -33,7 +53,6 @@ class moderations_controller extends controller_base {
      */
     protected $moderation;
 
-
     /**
      * This deals with the page that the assessors see when they want to add component feedbacks.
      *
@@ -50,13 +69,12 @@ class moderations_controller extends controller_base {
         $moderator_agreement->courseworkid = $this->params['courseworkid'];
         $moderator_agreement->feedbackid = $this->params['feedbackid'];
 
-
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('new', $moderator_agreement);
 
         $this->check_stage_permissions($this->params['stage_identifier']);
 
-        $urlparams = array();
+        $urlparams = [];
         $urlparams['submissionid'] = $moderator_agreement->submissionid;
         $urlparams['moderatorid'] = $moderator_agreement->moderatorid;
         $urlparams['stage_identifier'] = $moderator_agreement->stage_identifier;
@@ -76,7 +94,6 @@ class moderations_controller extends controller_base {
     protected function edit_moderation() {
 
         global $DB, $PAGE, $USER;
-
 
         $moderation = new moderation($this->params['moderationid']);
         $this->check_stage_permissions($moderation->stage_identifier);
@@ -122,7 +139,6 @@ class moderations_controller extends controller_base {
         );
         $url = $this->get_router()->get_path('new moderation', $path_params, true);
         $PAGE->set_url($url);
-
 
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('new', $moderatoragreement);
@@ -196,7 +212,6 @@ class moderations_controller extends controller_base {
         $renderer->show_moderation_page($moderation);
     }
 
-
     /**
      * Get any feedback-specific stuff.
      */
@@ -242,7 +257,7 @@ class moderations_controller extends controller_base {
 
         $stage = $this->coursework->get_stage($identifier);
         if (!$stage->user_is_moderator($USER)) {
-            if (!(has_capability('mod/coursework:moderate', $this->coursework->get_context()) ) ){
+            if (!(has_capability('mod/coursework:moderate', $this->coursework->get_context()) ) ) {
                 throw new access_denied($this->coursework, 'You are not authorised to moderte this feedback');
             }
         }

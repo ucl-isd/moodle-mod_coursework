@@ -17,8 +17,7 @@
 /**
  * Creates an mform for final grade
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2012 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -48,10 +47,10 @@ class advance_plugins_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $mform->addElement('editor', 'text_element', get_string('comment', 'mod_coursework'), array());
+        $mform->addElement('editor', 'text_element', get_string('comment', 'mod_coursework'), []);
         $mform->setType('editor', PARAM_RAW);
 
-        $file_manager_options =  array(
+        $file_manager_options = array(
             'subdirs' => false,
             'accepted_types' => '*',
             'return_types' => FILE_INTERNAL

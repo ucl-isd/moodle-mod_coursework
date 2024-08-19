@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework\controllers;
 
@@ -33,7 +53,6 @@ class plagiarism_flagging_controller extends controller_base {
      */
     protected $plagiarism_flag;
 
-
     /**
      * This deals with the page that the assessors see when they want to add component feedbacks.
      *
@@ -45,14 +64,12 @@ class plagiarism_flagging_controller extends controller_base {
 
         $plagiarismflag = new plagiarism_flag();
         $plagiarismflag->submissionid = $this->params['submissionid'];
-        $plagiarismflag->courseworkid =  $this->coursework->id;
-
+        $plagiarismflag->courseworkid = $this->coursework->id;
 
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('new', $plagiarismflag);
 
-
-        $urlparams = array();
+        $urlparams = [];
         $urlparams['submissionid'] = $plagiarismflag->submissionid;
 
         $PAGE->set_url('/mod/coursework/actions/moderations/new.php', $urlparams);
@@ -90,7 +107,6 @@ class plagiarism_flagging_controller extends controller_base {
         $renderer->edit_plagiarism_flag_page($plagiarism_flag, $creator, $editor);
     }
 
-
     /**
      * Saves the new plagiarism flag for the first time.
      */
@@ -99,7 +115,7 @@ class plagiarism_flagging_controller extends controller_base {
         global $USER, $PAGE;
 
         $plagiarismflag = new plagiarism_flag();
-        $plagiarismflag->courseworkid =  $this->coursework->id();
+        $plagiarismflag->courseworkid = $this->coursework->id();
         $plagiarismflag->submissionid = $this->params['submissionid'];
         $plagiarismflag->createdby = $USER->id;
 
@@ -131,7 +147,6 @@ class plagiarism_flagging_controller extends controller_base {
         }
     }
 
-
     /**
      * Updates plagiarism flag
      */
@@ -156,15 +171,15 @@ class plagiarism_flagging_controller extends controller_base {
         $plagiarismflag = $form->process_data($plagiarismflag);
 
         // add to log here
-        $oldstatus =  $DB->get_field(plagiarism_flag::get_table_name(), 'status', array('id' => $flagid)); //retrieve old status before saving new
+        $oldstatus = $DB->get_field(plagiarism_flag::get_table_name(), 'status', array('id' => $flagid)); // Retrieve old status before saving new
         $params = array(
             'context' => \context_module::instance($this->coursework->get_course_module()->id),
             'courseid' => $this->coursework->get_course()->id,
             'objectid' => $this->coursework->id,
             'other' => array(
-                'courseworkid' =>  $this->coursework->id,
-                'submissionid' =>  $plagiarismflag->submissionid,
-                'flagid' =>  $flagid,
+                'courseworkid' => $this->coursework->id,
+                'submissionid' => $plagiarismflag->submissionid,
+                'flagid' => $flagid,
                 'oldstatus' => $oldstatus,
                 'newstatus' => $plagiarismflag->status
             )
@@ -177,8 +192,6 @@ class plagiarism_flagging_controller extends controller_base {
 
         redirect($coursework_page_url);
     }
-
-
 
     /**
      * Get any plagiarism flag-specific stuff.

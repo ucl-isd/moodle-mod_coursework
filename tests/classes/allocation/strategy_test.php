@@ -14,10 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-
 
 /**
  * Unit tests for the base allocation strategy class.
@@ -75,6 +80,5 @@ class coursework_allocation_strategy_test extends advanced_testcase {
         // Check that the original one is still OK.
 
     }
-
 
 }

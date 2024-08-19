@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework\render_helpers\grading_report\sub_rows;
 
@@ -62,9 +82,9 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         if (empty($ability)) {
             $ability = new ability(user::find($USER), $coursework);
         }
-        $gradedby = ($coursework->allocation_enabled() && $feedback_row->has_feedback() && $feedback_row->get_graded_by() != $feedback_row->get_assessor())?
+        $gradedby = ($coursework->allocation_enabled() && $feedback_row->has_feedback() && $feedback_row->get_graded_by() != $feedback_row->get_assessor()) ?
             ' (Graded by: '. $feedback_row->get_graders_name().')' : '';
-        $editable = (!$feedback_row->has_feedback() || $feedback_row->get_feedback()->finalised)? '' : '</br>'.get_string('notfinalised', 'coursework');
+        $editable = (!$feedback_row->has_feedback() || $feedback_row->get_feedback()->finalised) ? '' : '</br>'.get_string('notfinalised', 'coursework');
         $result = $this->comment_for_row($feedback_row, $ability) . $gradedby . $editable;
         return $result;
     }
@@ -83,7 +103,6 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         $coursework = $assessor_feedback_table->get_coursework();
         $ability = new ability(user::find($USER, false), $coursework);
         $feedbackrows = $assessor_feedback_table->get_renderable_feedback_rows();
-
 
         $allocatable = $assessor_feedback_table->get_allocatable();
 
@@ -105,19 +124,17 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
                 continue;
             }*/
 
-
             $output_rows .= ' <tr class="' . $this->row_class($feedback_row) . '">';
 
             if ($coursework->sampling_enabled() && $stage->uses_sampling() && !$stage->allocatable_is_in_sample($allocatable)) {
 
                 $output_rows .= '
-                        <td class = "not_included_in_sample" colspan =3>'.get_string('notincludedinsample','mod_coursework').'</td>
+                        <td class = "not_included_in_sample" colspan =3>'.get_string('notincludedinsample', 'mod_coursework').'</td>
                         </tr >';
             } else {
 
-                $assessor_details  =   (empty($feedback_row->get_assessor()->id()) && $coursework->allocation_enabled()) ?
-                     get_string('assessornotallocated','mod_coursework') : $this->profile_link($feedback_row);
-                
+                $assessor_details = (empty($feedback_row->get_assessor()->id()) && $coursework->allocation_enabled()) ?
+                     get_string('assessornotallocated', 'mod_coursework') : $this->profile_link($feedback_row);
                  $output_rows .=
                      '<td>' . $assessor_details. ' </td>
                      <td class="assessor_feedback_grade" data-class-name="' . get_class($this) . '">' .
@@ -129,9 +146,9 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
 
         if (!empty($output_rows)) {
 
-            $allocation_string =  ($coursework->allocation_enabled())?
-                                   get_string('allocatedtoassessor', 'mod_coursework'):
-                                   get_string('assessor', 'mod_coursework');
+            $allocation_string = ($coursework->allocation_enabled())
+                ? get_string('allocatedtoassessor', 'mod_coursework')
+                : get_string('assessor', 'mod_coursework');
 /*
             $table_html = '
                 <tr class = "submissionrowmultisub">
@@ -189,7 +206,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
 
     /**
      * @param assessor_feedback_row $feedback_row
-     * @return array
+     * @return string
      * @throws \coding_exception
      */
     protected function edit_existing_feedback_link($feedback_row) {
@@ -238,7 +255,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         $iconlink = $OUTPUT->action_link($link,
                                          $linktitle,
                                          null,
-                                         array('class'=>'show_feedback','id' => $link_id));
+                                         array('class' => 'show_feedback', 'id' => $link_id));
         return $iconlink;
     }
 
@@ -264,7 +281,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         $iconlink = $OUTPUT->action_link($link,
                                          $linktitle,
                                          null,
-                                         array('class'=>'new_feedback'));
+                                         array('class' => 'new_feedback'));
         return $iconlink;
     }
 
@@ -330,8 +347,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
                 }
             }
 
-            $grade_editing    =    get_config('mod_coursework','coursework_grade_editing');
-
+            $grade_editing = get_config('mod_coursework', 'coursework_grade_editing');
 
             if ($ability->can('edit', $feedback_row->get_feedback()) && !$submission->already_published()) {
                 $html .= $this->edit_existing_feedback_link($feedback_row);

@@ -14,8 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_coursework\framework;;
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
+namespace mod_coursework\framework;;
 
 use moodle_database;
 use stdClass;
@@ -108,7 +113,7 @@ abstract class table_base {
      * @return array
      * @throws \coding_exception
      */
-    public static function find_all($params = array()) {
+    public static function find_all($params  = []) {
 
         if (!is_array($params)) {
             throw new \coding_exception('::all() require an array of parameters');
@@ -118,7 +123,6 @@ abstract class table_base {
 
         return self::instantiate_objects($params);
     }
-
 
     /**
      * Makes a new object ready to save
@@ -149,7 +153,6 @@ abstract class table_base {
         return $item;
     }
 
-
     /**
      * Takes the supplied DB record (one row of the table) and applies it to this object. If it's a
      * number, change it to a DB row and then do it.
@@ -179,7 +182,7 @@ abstract class table_base {
         global $DB;
 
         $raw_records = $DB->get_records(static::get_table_name(), $params);
-        $objects = array();
+        $objects = [];
         $klass = get_called_class();
         foreach ($raw_records as $raw_record) {
             $objects[$raw_record->id] = new $klass($raw_record);
@@ -510,7 +513,7 @@ abstract class table_base {
      * @param array|table_base $conditions key value pairs of DB columns
      * @return bool
      */
-    public static function exists($conditions = array()) {
+    public static function exists($conditions  = []) {
         global $DB;
 
         if (is_number($conditions)) {
@@ -520,7 +523,7 @@ abstract class table_base {
             $conditions = $conditions->to_array();
         }
 
-        foreach($conditions as $colname => $value) {
+        foreach ($conditions as $colname => $value) {
             static::ensure_column_exists($colname);
         }
         return $DB->record_exists(static::get_table_name(), $conditions);
@@ -530,7 +533,7 @@ abstract class table_base {
      * @param array $conditions
      * @return int
      */
-    public static function count($conditions = array()) {
+    public static function count($conditions  = []) {
         global $DB;
 
         foreach ($conditions as $colname => $value) {
@@ -594,7 +597,7 @@ abstract class table_base {
      * @return array
      */
     public function to_array() {
-        $data = array();
+        $data = [];
 
         // Only save the non-null fields.
         foreach (static::get_column_names() as $column_name) {

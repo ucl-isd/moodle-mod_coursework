@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework;
 use context;
@@ -54,7 +74,7 @@ class cron {
             'users' => 0
         );
 
-        $userswhoneedreminding = array();
+        $userswhoneedreminding = [];
 
         $raw_courseworks = $DB->get_records('coursework');
         foreach ($raw_courseworks as $raw_coursework) {
@@ -72,24 +92,22 @@ class cron {
                 continue;
             }
 
-
             $students = $coursework->get_students_who_have_not_yet_submitted();
 
             foreach ($students as $student) {
                 $individual_extension = false;
                 $personal_deadline = false;
 
-                if ($coursework->extensions_enabled()){
+                if ($coursework->extensions_enabled()) {
                     $individual_extension = \mod_coursework\models\deadline_extension::get_extension_for_student($student, $coursework);
                 }
-                if ($coursework->personal_deadlines_enabled()){
+                if ($coursework->personal_deadlines_enabled()) {
                     $personal_deadline = \mod_coursework\models\personal_deadline::get_personal_deadline_for_student($student, $coursework);
                 }
 
                 $deadline = $personal_deadline ? $personal_deadline->personal_deadline : $coursework->deadline;
 
-
-                if ($individual_extension){
+                if ($individual_extension) {
                     // check if 1st reminder is due to be sent but has not been sent yet
                    if ($coursework->due_to_send_first_reminders($individual_extension->extended_deadline) &&
                        $student->has_not_been_sent_reminder($coursework, 1, $individual_extension->extended_deadline)) {
@@ -105,11 +123,9 @@ class cron {
                            $student->deadline = $individual_extension->extended_deadline;
                            $student->extension = $individual_extension->extended_deadline;
                            $student->coursework_id = $coursework->id;
-                           $student->nextremindernumber= 2;
+                           $student->nextremindernumber = 2;
                            $userswhoneedreminding[$student->id().'_'.$coursework->id] = $student;
                    }
-
-
 
                 } else if ($deadline > time()) { // coursework or personal deadline hasn't passed
                     // check if 1st reminder is due to be sent but has not been sent yet
@@ -219,7 +235,7 @@ class cron {
                 }
 
                 $user->coursework_name = $coursework_instance->name;
-                $user->deadline = userdate($coursework_instance->get_deadline(),'%a, %d %b %Y, %H:%M');
+                $user->deadline = userdate($coursework_instance->get_deadline(), '%a, %d %b %Y, %H:%M');
                 $user->day_hour = coursework_seconds_to_string($coursework_instance->get_deadline() - time());
 
                 $subject = get_string('cron_email_subject_admin', 'mod_coursework', $user);
@@ -262,7 +278,7 @@ class cron {
      * @global  $CFG
      * @return string
      */
-    public static function coursework_debuggable_query($query, $params = array()) {
+    public static function coursework_debuggable_query($query, $params  = []) {
 
         global $CFG;
 
@@ -294,7 +310,7 @@ class cron {
         global $DB;
 
         $emailcounter = 0;
-        $usercounter = array();
+        $usercounter = [];
 
         foreach ($users as $user) {
 
@@ -311,7 +327,7 @@ class cron {
                     $usercounter[$user->id]++;
                 }
 
-                $extension =  isset($user->extension)? $user->extension : 0;
+                $extension = isset($user->extension) ? $user->extension : 0;
                 $email_reminder = new stdClass();
                 $email_reminder->userid = $user->id;
                 $email_reminder->coursework_id = $user->coursework_id;
@@ -370,7 +386,6 @@ class cron {
         global $DB;
         echo 'Auto releasing feedbacks for courseworks where the release date have passed...';
 
-
        $sql = "SELECT *
                  FROM {coursework} c
                  JOIN {coursework_submissions} cs
@@ -402,8 +417,7 @@ class cron {
      * @param $context
      * @return array
      */
-    public static function get_admins_and_teachers($context){
-
+    public static function get_admins_and_teachers($context) {
 
         $graders = get_enrolled_users($context, 'mod/coursework:addinitialgrade');
         $managers = get_enrolled_users($context, 'mod/coursework:addagreedgrade');
@@ -418,9 +432,6 @@ class cron {
         return $users;
 
     }
-
-
-
 
 }
 

@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework\models;
 
@@ -29,10 +49,10 @@ class plagiarism_flag extends table_base {
     /**
      * Constants with Statuses for Plagiarism flagging
      */
-    const INVESTIGATION =   0;
-    const RELEASED      =   1;
-    const CLEARED       =   2;
-    const NOTCLEARED    =   3;
+    const INVESTIGATION = 0;
+    const RELEASED = 1;
+    const CLEARED = 2;
+    const NOTCLEARED = 3;
 
     /**
      * @return mixed|\mod_coursework_coursework
@@ -71,13 +91,12 @@ class plagiarism_flag extends table_base {
         return $result;
     }
 
-
     /**
      * @return bool
      */
-    public function can_release_grades(){
+    public function can_release_grades() {
 
-        switch ($this->status){
+        switch ($this->status) {
 
             case self::INVESTIGATION:
             case self::NOTCLEARED:
@@ -146,6 +165,5 @@ class plagiarism_flag extends table_base {
     protected function after_destroy() {
         self::remove_cache($this->courseworkid);
     }
-
 
 }

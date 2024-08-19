@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework\export\csv\cells;
 use mod_coursework\models\submission;
@@ -9,8 +29,7 @@ use mod_coursework\grade_judge;
 /**
  * Class agreedfeedback_cell
  */
-class agreedfeedback_cell extends cell_base{
-
+class agreedfeedback_cell extends cell_base {
 
     /**
      * @param submission$submission
@@ -19,7 +38,7 @@ class agreedfeedback_cell extends cell_base{
      * @return string
      */
 
-    public function get_cell($submission, $student, $stage_identifier){
+    public function get_cell($submission, $student, $stage_identifier) {
         return  $gradedata[] = $submission->get_agreed_grade() == false ? '' : strip_tags($submission->get_agreed_grade()->feedbackcomment);
     }
 
@@ -28,36 +47,34 @@ class agreedfeedback_cell extends cell_base{
      * @return string
      * @throws \coding_exception
      */
-    public function get_header($stage){
+    public function get_header($stage) {
         return  get_string('agreedgradefeedback', 'coursework');
     }
 
+    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells  = []) {
 
-
-    public function validate_cell($value,$submissionid,$stage_identifier='',$uploadedgradecells = array()) {
-
-        global $DB,$PAGE,$USER;
+        global $DB, $PAGE, $USER;
 
         $stage_identifier = 'final_agreed_1';
-        $agreedgradecap    =   array('mod/coursework:addagreedgrade','mod/coursework:editagreedgrade',
-            'mod/coursework:addallocatedagreedgrade','mod/coursework:editallocatedagreedgrade');
+        $agreedgradecap = array('mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade',
+            'mod/coursework:addallocatedagreedgrade', 'mod/coursework:editallocatedagreedgrade');
 
-        if (has_any_capability($agreedgradecap,$PAGE->context)
-            || has_capability('mod/coursework:administergrades', $PAGE->context))   {
+        if (has_any_capability($agreedgradecap, $PAGE->context)
+            || has_capability('mod/coursework:administergrades', $PAGE->context)) {
 
-            $subdbrecord =   $DB->get_record('coursework_submissions',array('id'=>$submissionid));
+            $subdbrecord = $DB->get_record('coursework_submissions', array('id' => $submissionid));
             $submission = \mod_coursework\models\submission::find($subdbrecord);
 
-            //is the submission in question ready to grade?
-            if (!$submission->all_inital_graded()  && !empty($value)) return get_string('submissionnotreadyforagreedgrade','coursework');
+            // Is the submission in question ready to grade?
+            if (!$submission->all_inital_graded()  && !empty($value)) return get_string('submissionnotreadyforagreedgrade', 'coursework');
 
-            //has the submission been published if yes then no further grades are allowed
+            // Has the submission been published if yes then no further grades are allowed
             if ($submission->get_state() >= submission::PUBLISHED)  return $submission->get_status_text();
 
-            //if you have administer grades you can grade anything
+            // If you have administer grades you can grade anything
             if (has_capability('mod/coursework:administergrades', $PAGE->context)) return true;
 
-            //has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
+            // Has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
             $feedback_params = array(
                 'submissionid' => $submission->id,
                 'stage_identifier' => $stage_identifier,
@@ -76,11 +93,11 @@ class agreedfeedback_cell extends cell_base{
                 );
                 $new_feedback = feedback::build($feedback_params);
 
-                //this is a new feedback check it against the new ability checks
-                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && !$ability->can('new',$new_feedback))   return get_string('nopermissiontogradesubmission','coursework');
+                // This is a new feedback check it against the new ability checks
+                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && !$ability->can('new', $new_feedback))   return get_string('nopermissiontogradesubmission', 'coursework');
             } else {
-                //this is a new feedback check it against the edit ability checks
-                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit',$feedback))   return get_string('nopermissiontoeditgrade','coursework');
+                // This is a new feedback check it against the edit ability checks
+                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade', 'coursework');
             }
 
         } else {

@@ -17,8 +17,7 @@
 /**
  * Creates an mform for final grade
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2012 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -106,7 +105,7 @@ class assessor_feedback_mform extends moodleform {
         $mform->addElement('editor', 'feedbackcomment', get_string('comment', 'mod_coursework'));
         $mform->setType('editor', PARAM_RAW);
 
-        $file_manager_options =  array(
+        $file_manager_options = array(
             'subdirs' => false,
             'accepted_types' => '*',
             'return_types' => FILE_INTERNAL
@@ -119,7 +118,6 @@ class assessor_feedback_mform extends moodleform {
                                  null,
                                  $file_manager_options);
 
-
         $this->add_submit_buttons($coursework->draft_feedback_enabled(), $feedback->id);
 
     }
@@ -131,26 +129,23 @@ class assessor_feedback_mform extends moodleform {
         return $this->_grading_controller;
     }
 
-
     /**
      * @param $draftenabled
      */
-    public function add_submit_buttons($draftenabled,  $feedbackid){
+    public function add_submit_buttons($draftenabled,  $feedbackid) {
 
-        $button_array = array();
+        $button_array = [];
 
         if ($draftenabled) {
             $button_array[] = $this->_form->createElement('submit', 'submitfeedbackbutton', get_string('saveasdraft', 'coursework'));
         }
-
 
             $button_array[] =
                 $this->_form->createElement('submit', 'submitbutton', get_string('saveandfinalise', 'coursework'));
 
         $feedback = $this->_customdata['feedback'];
 
-
-        $is_published   =   $feedback->get_submission()->is_published();
+        $is_published = $feedback->get_submission()->is_published();
 
         if ($feedbackid &&  !$is_published) {
             $button_array[] = $this->_form->createElement('submit', 'removefeedbackbutton', get_string('removefeedback', 'coursework'));
@@ -166,7 +161,7 @@ class assessor_feedback_mform extends moodleform {
      * @param $data
      * @return bool
      */
-    public function validate_grade($data){
+    public function validate_grade($data) {
         $result = true;
         if (!empty($this->_grading_instance) && property_exists($data, 'advancedgrading')) {
             $result = $this->_grading_instance->validate_grading_element($data->advancedgrading);
@@ -198,7 +193,6 @@ class assessor_feedback_mform extends moodleform {
 
         $feedback->feedbackcomment = $formdata->feedbackcomment['text'];
         $feedback->feedbackcommentformat = $formdata->feedbackcomment['format'];
-
 
         return $feedback;
     }
@@ -236,12 +230,12 @@ class assessor_feedback_mform extends moodleform {
         $filemanager = $this->_form->getElement('feedback_manager');
         if ($filemanager) {
             $params = (object) [
-                'maxfiles'  => $filemanager->getMaxfiles(),
-                'subdirs'   => $filemanager->getSubdirs(),
+                'maxfiles' => $filemanager->getMaxfiles(),
+                'subdirs' => $filemanager->getSubdirs(),
                 'areamaxbytes' => $filemanager->getAreamaxbytes(),
-                'target'    => 'id_' . $filemanager->getName(),
+                'target' => 'id_' . $filemanager->getName(),
                 'context' => $PAGE->context,
-                'itemid'    => $filemanager->getValue()
+                'itemid' => $filemanager->getValue()
             ];
             $fm = new \form_filemanager($params);
             $options = $fm->options;

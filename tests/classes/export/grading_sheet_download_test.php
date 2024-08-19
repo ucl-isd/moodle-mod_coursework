@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -34,7 +32,6 @@ global $CFG;
  * @group mod_coursework
  */
 class grading_sheet_download_test extends advanced_testcase {
-
 
     use mod_coursework\test_helpers\factory_mixin;
 
@@ -57,7 +54,7 @@ class grading_sheet_download_test extends advanced_testcase {
      * One stage only, no allocation, one student, coursework submitted but not graded
      * @throws coding_exception
      */
-    public function test_one_stage_no_allocations(){
+    public function test_one_stage_no_allocations() {
 
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
 
@@ -65,7 +62,7 @@ class grading_sheet_download_test extends advanced_testcase {
         $this->coursework = $generator->create_instance(array('course' => $this->course->id,
                                                              'grade' => 100,
                                                              'numberofmarkers' => 1,
-                                                             'deadline'=>time()+86400));
+                                                             'deadline' => time()+86400));
         $this->submission = new stdClass();
         $this->submission->userid = $this->student->id;
         $this->submission->allocatableid = $this->student->id;
@@ -75,12 +72,12 @@ class grading_sheet_download_test extends advanced_testcase {
         $submission = $this->submission;
 
         // headers and data for csv
-        $csv_cells = array('submissionid','submissionfileid','name','username','submissiontime','singlegrade','feedbackcomments');
+        $csv_cells = array('submissionid', 'submissionfileid', 'name', 'username', 'submissiontime', 'singlegrade', 'feedbackcomments');
 
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('gradingsheetfor', 'coursework'). $this->coursework->name .' '.$timestamp;
         $grading_sheet = new \mod_coursework\export\grading_sheet($this->coursework, $csv_cells, $filename);
-        $actual_submission = $grading_sheet->add_cells_to_array($submission,$student,$csv_cells);
+        $actual_submission = $grading_sheet->add_cells_to_array($submission, $student, $csv_cells);
 
         $studentname = $student->lastname .' '.$student->firstname;
 
@@ -101,16 +98,15 @@ class grading_sheet_download_test extends advanced_testcase {
      * student1 graded by assessor2, student2 graded by assessor1 and assessor2
      * @throws coding_exception
      */
-    public function test_two_stages_with_allocations(){
+    public function test_two_stages_with_allocations() {
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
-
 
         /* @var mod_coursework_generator $generator */
         $this->coursework = $generator->create_instance(array('course' => $this->course->id,
                                                               'grade' => 100,
                                                               'numberofmarkers' => 2,
                                                               'allocationenabled' => 1,
-                                                              'deadline'=>time()+86400));
+                                                              'deadline' => time()+86400));
 
         // 2 assessors
         $assessor1 = $this->teacher;
@@ -129,8 +125,6 @@ class grading_sheet_download_test extends advanced_testcase {
         $submission2->userid = $student2->id;
         $submission2->allocatableid = $student2->id;
         $submission2 = $generator->create_submission($submission2, $this->coursework);
-
-
 
         // Assessor2 feedback for student1
         $feedback_data1 = new stdClass();
@@ -159,7 +153,6 @@ class grading_sheet_download_test extends advanced_testcase {
         $feedback_data3->stage_identifier = 'assessor_2';
         $feedback3 = $generator->create_feedback($feedback_data3);
 
-
         // Agreed grade feedback
         $feedback_data4 = new stdClass();
         $feedback_data4->submissionid = $submission2->id;
@@ -169,17 +162,16 @@ class grading_sheet_download_test extends advanced_testcase {
         $feedback_data4->stage_identifier = 'final_agreed_1';
         $feedback4 = $generator->create_feedback($feedback_data4);
 
-
         // headers and data for csv
-        $csv_cells = array('submissionid','submissionfileid','name','username','submissiontime',
-                           'assessor1','assessorgrade1','assessorfeedback1','assessor2','assessorgrade2','assessorfeedback2',
-                           'agreedgrade','agreedfeedback');
+        $csv_cells = array('submissionid', 'submissionfileid', 'name', 'username', 'submissiontime',
+                           'assessor1', 'assessorgrade1', 'assessorfeedback1', 'assessor2', 'assessorgrade2', 'assessorfeedback2',
+                           'agreedgrade', 'agreedfeedback');
 
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('gradingsheetfor', 'coursework'). $this->coursework->name .' '.$timestamp;
         $grading_sheet = new \mod_coursework\export\grading_sheet($this->coursework, $csv_cells, $filename);
-        $actual_submission1 = $grading_sheet->add_cells_to_array($submission1,$student1,$csv_cells);
-        $actual_submission2 = $grading_sheet->add_cells_to_array($submission2,$student2,$csv_cells);
+        $actual_submission1 = $grading_sheet->add_cells_to_array($submission1, $student1, $csv_cells);
+        $actual_submission2 = $grading_sheet->add_cells_to_array($submission2, $student2, $csv_cells);
         $actual_submission = array_merge($actual_submission1, $actual_submission2);
 
         $studentname1 = $student1->lastname .' '.$student1->firstname;
@@ -220,5 +212,4 @@ class grading_sheet_download_test extends advanced_testcase {
 
     }
 }
-
 

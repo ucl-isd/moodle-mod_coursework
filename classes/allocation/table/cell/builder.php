@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework\allocation\table\cell;
 use mod_coursework\models\allocation;
@@ -38,12 +58,11 @@ class builder {
      * @param stage_base $stage
      * @param array $data_array incoming data from the allocation form
      */
-    public function __construct($coursework, $allocatable, $stage, $data_array = array()) {
+    public function __construct($coursework, $allocatable, $stage, $data_array  = []) {
         $this->coursework = $coursework;
         $this->allocatable = $allocatable;
         $this->stage = $stage;
     }
-
 
     /**
      * @return \html_table_cell
@@ -75,13 +94,12 @@ class builder {
 
         return $this->get_stage()->potential_marker_dropdown($this->get_allocatable());
 
-
     }
 
     /**
      * @return string
      */
-    private function get_potential_moderators_dropdown(){
+    private function get_potential_moderators_dropdown() {
 
         if ($this->stage_does_not_use_allocation()) {
             return '';
@@ -96,8 +114,8 @@ class builder {
     /**
      * @return bool
      */
-    private function has_moderation(){
-        if ($this->get_submission()){
+    private function has_moderation() {
+        if ($this->get_submission()) {
             return $this->get_stage()->has_moderation($this->get_submission());
         } else {
             return false;
@@ -118,12 +136,11 @@ class builder {
         return $this->get_stage()->get_feedback_for_allocatable($this->get_allocatable());
     }
 
-
     /**
      * @return bool|\mod_coursework\models\moderation
      */
     private function get_moderation() {
-        if ($this->get_submission()){
+        if ($this->get_submission()) {
             return $this->get_stage()->get_moderation($this->get_submission());
         }
         return false;
@@ -151,19 +168,19 @@ class builder {
         $contents = '';
         $assessor_dropdown = '';
 
-        if ($this->coursework->sampling_enabled()){
-            if ($class == 'final_agreed_1'){
+        if ($this->coursework->sampling_enabled()) {
+            if ($class == 'final_agreed_1') {
 
             } else if ($this->get_stage()->uses_sampling()) {
 
-                if ($this->has_automatic_sampling()){
+                if ($this->has_automatic_sampling()) {
                     $contents .= $this->get_automatically_in_sample_label();
                     $contents .= $this->sampling_hidden_checkbox();
                 } else {
                     if ($this->has_feedback()) {
                         $contents .= $this->get_included_in_sample_label();
                         $contents .= $this->sampling_hidden_checkbox();
-                    } else{
+                    } else {
                         $contents .= $this->sampling_set_checkbox();
                     }
                 }
@@ -188,10 +205,9 @@ class builder {
             $assessor_name .= 'Grade: ';
             $assessor_name .= $this->get_feedback()->get_grade();
         } else if ($this->has_allocation()) {
-            $assessor_name .=  ' '.$this->pinned_checkbox($assessor_dropdown) ;
+            $assessor_name .= ' '.$this->pinned_checkbox($assessor_dropdown);
             $assessor_name .= $this->get_stage()->get_allocated_assessor_name($this->get_allocatable());
         }
-
 
         if ($assessor_name) {
            if ($this->get_stage()->uses_sampling() && !$this->get_feedback() && !$this->has_automatic_sampling()) {
@@ -214,7 +230,7 @@ class builder {
     /**
      * @return string
      */
-    private function prepare_moderation_table_cell(){
+    private function prepare_moderation_table_cell() {
 
         $contents = '';
         $class = 'moderators';
@@ -239,12 +255,10 @@ class builder {
             $moderator_name .= $this->get_stage()->get_allocated_assessor_name($this->get_allocatable());
         }
 
-
         if ($moderator_name) {
             $contents .= '<br>';
             $contents .= "<span class='existing-moderator'>{$moderator_name}</span>";
         }
-
 
         if ($moderator_dropdown) {
             $contents .= '<br>';
@@ -256,7 +270,6 @@ class builder {
             </td>
         ';
     }
-
 
     /**
      * @return allocatable
@@ -283,12 +296,12 @@ class builder {
             $checkbox_checked = 1;
         }
 
-        $checkbox_checked   =   $this->checkbox_checked_in_session($checkbox_name,$checkbox_checked);
+        $checkbox_checked = $this->checkbox_checked_in_session($checkbox_name, $checkbox_checked);
 
         $checkbox_title = 'Included in sample';
 
         $attributes = array('class' => 'sampling_set_checkbox',
-                            'id'=>$this->get_allocatable()->type().'_' . $this->get_allocatable()->id() . '_'.$this->get_stage()->identifier() .'_samplecheckbox',
+                            'id' => $this->get_allocatable()->type().'_' . $this->get_allocatable()->id() . '_'.$this->get_stage()->identifier() .'_samplecheckbox',
                             'title' => $checkbox_title);
 
         // if agreed grade given or grade published to students disable remaining sampling checkbox
@@ -317,8 +330,8 @@ class builder {
             1,
            '',
             array('class' => 'sampling_set_checkbox',
-                'id'=>$this->get_allocatable()->type().'_' . $this->get_allocatable()->id() . '_'.$this->get_stage()->identifier() .'_samplecheckbox',
-                'title' => $checkbox_title, 'hidden'=>true));
+                'id' => $this->get_allocatable()->type().'_' . $this->get_allocatable()->id() . '_'.$this->get_stage()->identifier() .'_samplecheckbox',
+                'title' => $checkbox_title, 'hidden' => true));
     }
 
     /**
@@ -327,26 +340,22 @@ class builder {
      * @return bool
      * @throws \coding_exception
      */
-    private function has_automatic_sampling()   {
+    private function has_automatic_sampling() {
 
         global $DB;
 
-        $params =   array('courseworkid'=>$this->coursework->id(),
-                          'allocatableid'=>$this->get_allocatable()->id(),
-                          'stage_identifier'=>$this->get_stage()->identifier(),
+        $params = array('courseworkid' => $this->coursework->id(),
+                          'allocatableid' => $this->get_allocatable()->id(),
+                          'stage_identifier' => $this->get_stage()->identifier(),
                           'selectiontype' => 'automatic');
 
-
-
-        return $DB->record_exists('coursework_sample_set_mbrs',$params);
+        return $DB->record_exists('coursework_sample_set_mbrs', $params);
     }
 
     /**
      * @return string
      */
     private function pinned_checkbox() {
-
-
 
         $checkbox_name =
             'allocatables[' . $this->get_allocatable()->id . '][' . $this->get_stage()->identifier() . '][pinned]';
@@ -357,7 +366,7 @@ class builder {
             }
         }
 
-        $checkbox_checked   =   $this->checkbox_checked_in_session($checkbox_name,$checkbox_checked);
+        $checkbox_checked = $this->checkbox_checked_in_session($checkbox_name, $checkbox_checked);
 
         $stage = substr($this->get_stage()->identifier(), -1);
         $checkbox_title = 'Pinned (auto allocations will not alter this)';
@@ -369,20 +378,16 @@ class builder {
                                                            'title' => $checkbox_title));
     }
 
-
-
-    private function checkbox_checked_in_session($checkboxname,$checkboxstate)  {
+    private function checkbox_checked_in_session($checkboxname, $checkboxstate) {
 
         global  $SESSION;
 
-        $cm =   $this->coursework->get_course_module();
+        $cm = $this->coursework->get_course_module();
 
-        if (!empty($SESSION->coursework_allocationsessions[$cm->id]))   {
-            if (isset($SESSION->coursework_allocationsessions[$cm->id][$checkboxname]))    {
+        if (!empty($SESSION->coursework_allocationsessions[$cm->id])) {
+            if (isset($SESSION->coursework_allocationsessions[$cm->id][$checkboxname])) {
                 return  $SESSION->coursework_allocationsessions[$cm->id][$checkboxname];
             }
-
-
 
         }
 
@@ -409,7 +414,7 @@ class builder {
      * @throws \coding_exception
      */
     private function get_included_in_sample_label() {
-        return \html_writer::label(get_string('includedinsample', 'mod_coursework'), null, true, array('class'=>'included_in_sample'));
+        return \html_writer::label(get_string('includedinsample', 'mod_coursework'), null, true, array('class' => 'included_in_sample'));
     }
 
     /**
@@ -417,7 +422,7 @@ class builder {
      * @throws \coding_exception
      */
     private function get_automatically_in_sample_label() {
-        return \html_writer::label(get_string('automaticallyinsample', 'mod_coursework'), null, true, array('class'=>'included_in_sample'));
+        return \html_writer::label(get_string('automaticallyinsample', 'mod_coursework'), null, true, array('class' => 'included_in_sample'));
     }
 
     /**
@@ -431,7 +436,7 @@ class builder {
             'allocatableid-allocatabletype',
             [$this->allocatable->id(), $this->allocatable->type()]
         );
-        if($submission){
+        if ($submission) {
         $feedbacks = isset(feedback::$pool[$this->coursework->id]['submissionid'][$submission->id]) ?
             feedback::$pool[$this->coursework->id]['submissionid'][$submission->id] : [];
 

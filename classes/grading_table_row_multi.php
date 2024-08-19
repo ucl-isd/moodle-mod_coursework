@@ -14,16 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_coursework;
 
 defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Single row of the grading table for when there are multiple markers.
  */
 class grading_table_row_multi extends grading_table_row_base {
-
 
     /**
      * Returns a new table object using the attached submission as a constructor.
@@ -34,6 +38,5 @@ class grading_table_row_multi extends grading_table_row_base {
         $table = new assessor_feedback_table($this->coursework, $this->get_allocatable(), $this->get_submission());
         return $table;
     }
-
 
 }

@@ -14,6 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_coursework\models;
 
 use context;
@@ -21,7 +27,7 @@ use html_writer;
 use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\grade_judge;
-use \mod_coursework\submission_files;
+use mod_coursework\submission_files;
 use mod_coursework\framework\table_base;
 use moodle_database;
 use moodle_url;
@@ -248,16 +254,16 @@ class submission extends table_base implements \renderable {
             $deadline = $submission->deadline;
             $submission = static::find($submission);
 
-            if ($submission->get_coursework()->personal_deadlines_enabled()){
+            if ($submission->get_coursework()->personal_deadlines_enabled()) {
                 $deadline = $submission->submission_personal_deadline();
             }
-            
-            if ($deadline < time()){
+
+            if ($deadline < time()) {
                 // if deadline passed check if extension exists
-                if ($submission->has_extension()){
-                    //check if extension is valid
+                if ($submission->has_extension()) {
+                    // Check if extension is valid
                     $extension = $submission->submission_extension();
-                    if($extension->extended_deadline > time()){
+                    if ($extension->extended_deadline > time()) {
                         //unset as it doesn't need to be autofinalise yet
                         unset($submissions[$submission->id]);
                     }
@@ -347,7 +353,6 @@ class submission extends table_base implements \renderable {
         $files = $fs->get_area_files($this->get_context_id(), 'mod_coursework', 'submission',
             $this->id, "id", false);
 
-
         $params = array(
             'context' => \context_module::instance($this->get_coursework()->get_course_module()->id),
             'courseid' => $this->get_course_id(),
@@ -359,7 +364,6 @@ class submission extends table_base implements \renderable {
                 'pathnamehashes' => array_keys($files)
             )
         );
-
 
         $event = \mod_coursework\event\assessable_uploaded::create($params);
         //$event->set_legacy_files($files);
@@ -380,7 +384,7 @@ class submission extends table_base implements \renderable {
         }
 
         if ($this->id < 1 || $this->get_context_id() < 1) {
-            return new submission_files(array(), $this);
+            return new submission_files([], $this);
         }
 
         $submission_files = $this->get_files();
@@ -391,7 +395,7 @@ class submission extends table_base implements \renderable {
             return $this->submission_files;
         }
 
-        $files = new submission_files(array(), $this);
+        $files = new submission_files([], $this);
         return $files;
     }
 
@@ -457,7 +461,7 @@ class submission extends table_base implements \renderable {
     public function get_assessor_feedbacks() {
         if (!$this->id) {
             // No submission - empty placeholder.
-            return array();
+            return [];
         }
 
         if (!isset(feedback::$pool[$this->courseworkid]['submissionid-stage_identifier_index'])) {
@@ -505,18 +509,17 @@ class submission extends table_base implements \renderable {
 
     }
 
-
     /**
      * @return mixed|feedback|string
      * @throws \dml_missing_record_exception
      * @throws \dml_multiple_records_exception
      */
-    public function get_agreed_grade(){
+    public function get_agreed_grade() {
         global $DB;
 
         if (!$this->id) {
             // No submission - empty placeholder.
-            return array();
+            return [];
         }
 
         $params = [
@@ -607,8 +610,6 @@ class submission extends table_base implements \renderable {
         // Final grade is done.
         $hasfinalfeedback = (bool)$this->get_final_feedback();
         $maxfeedbacksreached = count($assessor_feedbacks) >= $this->max_number_of_feedbacks();
-
-
 
         if ($hasfinalfeedback) {
             return self::FINAL_GRADED;
@@ -759,7 +760,6 @@ class submission extends table_base implements \renderable {
         return false;
     }
 
-
     /*
      * As with the author id field this function was created to verify that coursework will work correctly with Turnitin
      * Plagiarism plugin that requires the author of a submission to
@@ -769,11 +769,11 @@ class submission extends table_base implements \renderable {
 
         $id = $USER->id;
 
-        //if this is a submission on behalf of the student and it is a group submission we have to make sure
+        // If this is a submission on behalf of the student and it is a group submission we have to make sure
         // the author is the first member of the group
 
             if ($this->is_submission_on_behalf()) {
-                if ( $this->get_coursework()->is_configured_to_have_group_submissions())   {
+                if ( $this->get_coursework()->is_configured_to_have_group_submissions()) {
                     $members = groups_get_members($this->allocatableid, 'u.id', 'id');
                     if ($members) {
                         $id = reset($members)->id;
@@ -797,21 +797,21 @@ class submission extends table_base implements \renderable {
      * @param $groupid
      * @return array
      */
-        public function get_tii_group_member_with_eula($groupid)   {
+        public function get_tii_group_member_with_eula($groupid) {
 
         global  $DB;
 
-        $sql    =   "
+        $sql = "
                 SELECT  gm.userid as id
                 FROM 	{groups_members} gm,
 	                    {turnitintooltwo_users} tu
                 WHERE 	tu.userid = gm.userid
                 AND  	user_agreement_accepted != 0
-                AND 	gm.groupid =  ?
+                AND 	gm.groupid = ?
                 ORDER   BY  gm.userid
                 LIMIT   1";
 
-        return $DB->get_record_sql($sql,array($groupid));
+        return $DB->get_record_sql($sql, array($groupid));
     }
 
     /**
@@ -825,34 +825,34 @@ class submission extends table_base implements \renderable {
 
         switch ($this->get_state()) {
 
-            case submission::NOT_SUBMITTED:
+            case self::NOT_SUBMITTED:
                 $statustext = get_string('statusnotsubmitted', 'coursework');
                 break;
 
-            case submission::SUBMITTED:
+            case self::SUBMITTED:
                 $allowearlyfinalisation = $this->get_coursework()->allowearlyfinalisation;
-                $statustext = ($allowearlyfinalisation)?get_string('statusnotfinalised', 'coursework') : get_string('submitted', 'coursework');
+                $statustext = ($allowearlyfinalisation) ?get_string('statusnotfinalised', 'coursework') : get_string('submitted', 'coursework');
 
                 break;
 
-            case submission::FINALISED:
+            case self::FINALISED:
                 $statustext = get_string('statussubmittedfinalised', 'coursework');
 
                 break;
 
-            case submission::PARTIALLY_GRADED:
+            case self::PARTIALLY_GRADED:
                 $statustext = get_string('statuspartiallygraded', 'coursework');
-                if($this->any_editable_feedback_exists()){
+                if ($this->any_editable_feedback_exists()) {
                     $statustext = get_string('statusfullygraded', 'coursework'). "<br>";
-                    $statustext .=  get_string('stilleditable', 'coursework');
+                    $statustext .= get_string('stilleditable', 'coursework');
                 }
                 break;
 
-            case submission::FULLY_GRADED:
+            case self::FULLY_GRADED:
                 $statustext = get_string('statusfullygraded', 'coursework');
                 break;
 
-            case submission::FINAL_GRADED:
+            case self::FINAL_GRADED:
                 $spanfinalgraded = html_writer::tag('span',
                                                     get_string('statusfinalgraded', 'coursework'),
                                                     array('class' => 'highlight'));
@@ -861,12 +861,12 @@ class submission extends table_base implements \renderable {
                                      get_string('statusfinalgradedsingle', 'coursework'),
                                      array('class' => 'highlight'));
                 $statustext = $this->has_multiple_markers() && $this->sampled_feedback_exists() ? $spanfinalgraded : $spanfinalgradedsingle;
-                if($this->editable_final_feedback_exist()){
+                if ($this->editable_final_feedback_exist()) {
                     $statustext .= "<br>". get_string('finalgradestilleditable', 'coursework');
                 }
                 break;
 
-            case submission::PUBLISHED:
+            case self::PUBLISHED:
                 $statustext = get_string('statuspublished', 'coursework');
                 if (!$this->coursework->deadline_has_passed()) {
                     $statustext .= ' '.get_string('released_early', 'mod_coursework');
@@ -895,35 +895,32 @@ class submission extends table_base implements \renderable {
      * @return bool
      */
     public function ready_to_grade() {
-        return $this->get_state() >= submission::FINALISED;
+        return $this->get_state() >= self::FINALISED;
     }
 
     /**
      * @return bool
      */
     public function already_published() {
-        return $this->get_state() >= submission::PUBLISHED;
+        return $this->get_state() >= self::PUBLISHED;
     }
-
-
 
     /**
      * @return bool
      */
     public function all_inital_graded() {
-        return $this->get_state() >= submission::FULLY_GRADED;
+        return $this->get_state() >= self::FULLY_GRADED;
     }
 
-    public function is_finalised()  {
-        return $this->get_state() == submission::FINALISED;
+    public function is_finalised() {
+        return $this->get_state() == self::FINALISED;
     }
-
 
     /**
      * @return bool
      */
     public function final_grade_agreed() {
-        return $this->get_state() >= submission::FINAL_GRADED;
+        return $this->get_state() >= self::FINAL_GRADED;
     }
 
     /**
@@ -941,7 +938,7 @@ class submission extends table_base implements \renderable {
      * @return user[]
      */
     public function get_students() {
-        $allocatables = array();
+        $allocatables = [];
         if ($this->get_coursework()->is_configured_to_have_group_submissions() && $this->allocatabletype == 'group') {
             /**
              * @var group $group
@@ -972,7 +969,7 @@ class submission extends table_base implements \renderable {
         }
 
         $grade_judge = new grade_judge($this->get_coursework());
-        if($grade_judge->has_feedback_that_is_promoted_to_gradebook($this) && $this->final_grade_agreed() && !$this->editable_final_feedback_exist()) {
+        if ($grade_judge->has_feedback_that_is_promoted_to_gradebook($this) && $this->final_grade_agreed() && !$this->editable_final_feedback_exist()) {
             return true;
         }
 
@@ -1029,7 +1026,7 @@ class submission extends table_base implements \renderable {
         // Only updating, not actually creating?
         $grades = grade_get_grades($this->get_course_id(), 'mod', 'coursework', $this->get_coursework()->id, $student_ids);
         $grades = $grades->items[0]->grades;
-        foreach($student_ids as $userid) {
+        foreach ($student_ids as $userid) {
             if (!array_key_exists($userid, $grades)) {
                 $grades[$userid] = new stdClass();
             }
@@ -1052,8 +1049,8 @@ class submission extends table_base implements \renderable {
      */
     public function is_late() {
         // check if submission has personal deadline
-        if ($this->get_coursework()->personaldeadlineenabled){
-            $deadline =  $this->submission_personal_deadline();
+        if ($this->get_coursework()->personaldeadlineenabled) {
+            $deadline = $this->submission_personal_deadline();
         } else { // if not, use coursework default deadline
             $deadline = $this->get_coursework()->get_deadline();
         }
@@ -1121,7 +1118,7 @@ class submission extends table_base implements \renderable {
     private function rename_file($file, $counter) {
 
         // if a submission was made of behalf of student/group, we need to use owner's id, not the person who submitted it
-        if ($this->is_submission_on_behalf()){
+        if ($this->is_submission_on_behalf()) {
             $userid = $this->allocatableid;
         } else {
             $userid = $this->userid;
@@ -1145,7 +1142,7 @@ class submission extends table_base implements \renderable {
         return $this->timesubmitted;
     }
 
-    public function sampled_feedback_exists(){
+    public function sampled_feedback_exists() {
         global $DB;
         return $DB->record_exists('coursework_sample_set_mbrs', array('courseworkid' => $this->courseworkid,
                                                                      'allocatableid' => $this->get_allocatable()->id(),
@@ -1153,10 +1150,10 @@ class submission extends table_base implements \renderable {
 
     }
 
-    public function max_number_of_feedbacks(){
+    public function max_number_of_feedbacks() {
         global $DB;
 
-        if ($this->get_coursework()->sampling_enabled()){
+        if ($this->get_coursework()->sampling_enabled()) {
            // calculate how many stages(markers) are enabled for this submission
             $parameters = array('courseworkid' => $this->coursework->id,
                                  'allocatableid' => $this->get_allocatable()->id(),
@@ -1180,7 +1177,7 @@ class submission extends table_base implements \renderable {
      * @return array|bool
      * @throws \coding_exception
      */
-    public function students_for_gradebook(){
+    public function students_for_gradebook() {
         if ($this->get_coursework()->is_configured_to_have_group_submissions()) {
             $students = groups_get_members($this->allocatableid);
             return $students;
@@ -1207,10 +1204,10 @@ class submission extends table_base implements \renderable {
     /**
      * @return bool
      */
-    private function is_submission_on_behalf(){
+    private function is_submission_on_behalf() {
         global $USER;
 
-        if (($this->allocatableid == $USER->id && $this->allocatabletype != 'group') || groups_is_member($this->allocatableid)){
+        if (($this->allocatableid == $USER->id && $this->allocatabletype != 'group') || groups_is_member($this->allocatableid)) {
             return false;
         } else {
             return true;
@@ -1230,7 +1227,6 @@ class submission extends table_base implements \renderable {
         return $records;
     }
 
-
     /**
      *  Function to get samplings for the submission
      * @return array
@@ -1246,7 +1242,6 @@ class submission extends table_base implements \renderable {
         );
         return $record;
     }
-
 
     /**
      * Check if submission has an extension
@@ -1278,12 +1273,12 @@ class submission extends table_base implements \renderable {
      * @return mixed
      * @throws \coding_exception
      */
-    public function submission_personal_deadline(){
+    public function submission_personal_deadline() {
         $allocatableid = $this->get_allocatable()->id();
         $allocatabletype = $this->get_allocatable()->type();
         $personal_deadline = personal_deadline::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$allocatableid, $allocatabletype]);
 
-        if ($personal_deadline){
+        if ($personal_deadline) {
             $personal_deadline = $personal_deadline->personal_deadline;
         } else {
             $personal_deadline = $this->get_coursework()->deadline;
@@ -1293,14 +1288,12 @@ class submission extends table_base implements \renderable {
 
     }
 
-
-
     /**
      * Check if submission was submitted within the extension time
      *
      * @return bool
      */
-    public function submitted_within_extension(){
+    public function submitted_within_extension() {
         return $this->time_submitted() < $this->extension_deadline();
     }
 
@@ -1308,7 +1301,7 @@ class submission extends table_base implements \renderable {
      * Retrieve submission's extended deadline
      * @return mixed
      */
-    public function extension_deadline(){
+    public function extension_deadline() {
         return $this->submission_extension()->extended_deadline;
     }
 
@@ -1328,9 +1321,6 @@ class submission extends table_base implements \renderable {
         }
         return false;
     }
-
-
-
 
     /**
      * Tells us whether any initial feedbacks for this submission are editable
@@ -1359,9 +1349,8 @@ class submission extends table_base implements \renderable {
             }
         }
 
-        return (empty($editablefeedbacks))  ?   false : $editablefeedbacks;
+        return (empty($editablefeedbacks)) ? false : $editablefeedbacks;
     }
-
 
     /**
      * Tells us whether any final feedback for this submission is editable
@@ -1380,7 +1369,7 @@ class submission extends table_base implements \renderable {
                         if ($final_feedback->timecreated + $grade_editing_time > time()) {
                             $this->editable_final_feedback = true;
                         }
-                    } elseif ($final_feedback->finalised == 0 && $final_feedback->assessorid <> 0) {
+                    } else if ($final_feedback->finalised == 0 && $final_feedback->assessorid <> 0) {
                         $this->editable_final_feedback = true;
                     }
                 }
@@ -1399,7 +1388,7 @@ class submission extends table_base implements \renderable {
 
         $this->get_coursework()->get_grade_editing_time();
 
-        $sql    =   "
+        $sql = "
                     SELECT  *
                     FROM 	{coursework} c,
 					        {coursework_submissions} cs,
@@ -1414,21 +1403,21 @@ class submission extends table_base implements \renderable {
 			         AND    cf.timecreated + c.gradeeditingtime > :time
         ";
 
-        $editablefeedbacks  =   $DB->get_records_sql($sql,array('submissionid'=>$this->id,'time'=>time()));
+        $editablefeedbacks = $DB->get_records_sql($sql, array('submissionid' => $this->id, 'time' => time()));
 
-        return (empty($editablefeedbacks))  ?   false : $editablefeedbacks;
+        return (empty($editablefeedbacks)) ? false : $editablefeedbacks;
     }
 
 /*
  * Determines whether the current user is able to add a turnitin grademark to this submission
  */
-    function can_add_tii_grademark()    {
-        $canadd =   false;
+    function can_add_tii_grademark() {
+        $canadd = false;
 
         if ($this->get_coursework()->get_max_markers() == 1) {
-            $canadd     =     (has_any_capability(array('mod/coursework:addinitialgrade','mod/coursework:addministergrades'),$this->get_context()) && $this->ready_to_grade()) ;
+            $canadd = (has_any_capability(array('mod/coursework:addinitialgrade', 'mod/coursework:addministergrades'), $this->get_context()) && $this->ready_to_grade());
         } else {
-            $canadd     =     (has_any_capability(array('mod/coursework:addagreedgrade','mod/coursework:addallocatedagreedgrade','mod/coursework:addministergrades'),$this->get_context()) && $this->all_inital_graded()) ;
+            $canadd = (has_any_capability(array('mod/coursework:addagreedgrade', 'mod/coursework:addallocatedagreedgrade', 'mod/coursework:addministergrades'), $this->get_context()) && $this->all_inital_graded());
         }
 
         return  $canadd;
@@ -1439,7 +1428,7 @@ class submission extends table_base implements \renderable {
      *
      * @return bool
      */
-    function any_editable_feedback_exists(){
+    function any_editable_feedback_exists() {
 
         return count($this->get_assessor_feedbacks()) >= $this->max_number_of_feedbacks() && $this->editable_feedbacks_exist();
     }
@@ -1449,7 +1438,7 @@ class submission extends table_base implements \renderable {
      *
      * @return bool
      */
-    function has_valid_extension(){
+    function has_valid_extension() {
         deadline_extension::fill_pool_coursework($this->courseworkid);
         $extension = deadline_extension::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$this->allocatableid, $this->allocatabletype]);
 
@@ -1461,9 +1450,8 @@ class submission extends table_base implements \renderable {
         return $valid_extension;
     }
 
-
-    function can_be_unfinalised()   {
-        return  ($this->get_state()  == submission::FINALISED);
+    function can_be_unfinalised() {
+        return  ($this->get_state() == self::FINALISED);
     }
 
     /**
@@ -1473,16 +1461,16 @@ class submission extends table_base implements \renderable {
      * @return bool|false|mixed|stdClass
      * @throws \dml_exception
      */
-    function has_specific_assessor_feedback($assessorid){
+    function has_specific_assessor_feedback($assessorid) {
         global $DB;
 
-        $feedback = $DB->get_record('coursework_feedbacks', array('submissionid'=>$this->id,
-                                                                        'assessorid'=>$assessorid));
+        $feedback = $DB->get_record('coursework_feedbacks', array('submissionid' => $this->id,
+                                                                        'assessorid' => $assessorid));
 
-        return (empty($feedback))  ?   false : $feedback;
+        return (empty($feedback)) ? false : $feedback;
     }
 
-    //caching
+    // Caching
 
     /**
      * cache array

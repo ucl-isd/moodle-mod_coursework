@@ -14,17 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_coursework;
 
 use coding_exception;
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * Single row of the grading table for when there is just one marker
  */
 class grading_table_row_single extends grading_table_row_base {
-
 
 }

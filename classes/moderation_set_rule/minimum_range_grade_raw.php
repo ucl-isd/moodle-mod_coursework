@@ -17,8 +17,7 @@
 /**
  * File for a moderation set rule that will include X students from between an upper and lower limit.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2012 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -30,8 +29,6 @@ use mod_coursework\allocation\allocatable;
 use mod_coursework\models\moderation_set_rule;
 
 defined('MOODLE_INTERNAL') || die();
-
-
 
 /**
  * Defines a rule that will include all students above or below a particular percentage of

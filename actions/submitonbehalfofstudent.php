@@ -18,8 +18,7 @@
  * This file provides an interface for someone with the appropriate permissions to submit a file on behalf of a student
  * who may have problems with their internet access, or who cannot for some reason work out how to use the submission form.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2012 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -30,7 +29,6 @@ use mod_coursework\models\submission;
 require_once(dirname(__FILE__).'/../../../config.php');
 
 global $CFG, $DB, $PAGE, $OUTPUT;
-
 
 $coursemoduleid = required_param('cmid', PARAM_INT);
 $coursemodule = $DB->get_record('course_modules', array('id' => $coursemoduleid));
@@ -91,7 +89,6 @@ if (!$submission->persisted()) {
     $submission->submission_manager = $draftitemid;
     $submitform->set_data($submission);
 }
-
 
 /**
  * @var mod_coursework_page_renderer $page_renderer

@@ -1,16 +1,27 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Nigel.Daley
- * Date: 11/08/2015
- * Time: 11:32
- */
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 use mod_coursework\models\coursework;
 use mod_coursework\export;
-
-
 
 require_once(dirname(__FILE__).'/../../../config.php');
 
@@ -33,8 +44,7 @@ $title = get_string('feedbackupload', 'mod_coursework');
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
-$grading_sheet_capabilities = array('mod/coursework:addinitialgrade','mod/coursework:addagreedgrade','mod/coursework:administergrades');
-
+$grading_sheet_capabilities = array('mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade', 'mod/coursework:administergrades');
 
 // Bounce anyone who shouldn't be here.
 if (!has_any_capability($grading_sheet_capabilities, $PAGE->context)) {
@@ -42,39 +52,33 @@ if (!has_any_capability($grading_sheet_capabilities, $PAGE->context)) {
     redirect(new moodle_url('mod/coursework/view.php'), $message);
 }
 
-
-
-$feedbackform    =   new upload_feedback_form($coursework,$coursemoduleid);
+$feedbackform = new upload_feedback_form($coursework, $coursemoduleid);
 
 if ($feedbackform->is_cancelled()) {
     redirect(new moodle_url("$CFG->wwwroot/mod/coursework/view.php", array('id' => $coursemoduleid)));
 }
 
+if ($data = $feedbackform->get_data()) {
 
-
-if ($data   =   $feedbackform->get_data())   {
-
-    //perform checks on data
+    // Perform checks on data
     $courseworktempdir = $CFG->dataroot."/temp/coursework/";
 
-    if (!is_dir($courseworktempdir)) 	{
+    if (!is_dir($courseworktempdir)) {
         mkdir($courseworktempdir);
     }
 
     $filename = clean_param($feedbackform->get_new_filename('feedbackzip'), PARAM_FILE);
-    $filename = md5(rand(0,1000000).$filename);
+    $filename = md5(rand(0, 1000000).$filename);
     $filepath = $courseworktempdir.'/'.$filename.".zip";
     $feedbackform->save_file('feedbackzip', $filepath);
 
-    $stageidentifier  =   $data->feedbackstage;
+    $stageidentifier = $data->feedbackstage;
 
-    $fileimporter   =  new  mod_coursework\coursework_file_zip_importer();
+    $fileimporter = new  mod_coursework\coursework_file_zip_importer();
 
+    $fileimporter->extract_zip_file($filepath, $coursework->get_context_id());
 
-
-    $fileimporter->extract_zip_file($filepath,$coursework->get_context_id());
-
-    $updateresults  =   $fileimporter->import_zip_files($coursework,$stageidentifier,$data->overwrite);
+    $updateresults = $fileimporter->import_zip_files($coursework, $stageidentifier, $data->overwrite);
 
     $page_renderer = $PAGE->get_renderer('mod_coursework', 'page');
     echo $page_renderer->process_feedback_upload($updateresults);

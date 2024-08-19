@@ -16,36 +16,33 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2016 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once($CFG->libdir.'/formslib.php');
 
-
-
 class upload_allocations_form extends moodleform {
 
     private $cmid;
 
-    function __construct($cmid)  {
-        $this->cmid =   $cmid;
+    function __construct($cmid) {
+        $this->cmid = $cmid;
 
         parent::__construct();
     }
 
-    function definition()   {
+    function definition() {
         $mform =& $this->_form;
 
-        $mform->addElement('filepicker', 'allocationsdata', get_string('allocationsfile','coursework'), null, array( 'accepted_types' => '*.csv'));
+        $mform->addElement('filepicker', 'allocationsdata', get_string('allocationsfile', 'coursework'), null, array( 'accepted_types' => '*.csv'));
         $mform->addRule('allocationsdata', null, 'required');
 
-      //  $mform->addElement('checkbox','overwrite','',get_string('overwritegrades','coursework'));
-        $mform->addElement('hidden','cmid',$this->cmid);
+      // $mform->addElement('checkbox', 'overwrite', '', get_string('overwritegrades', 'coursework'));
+        $mform->addElement('hidden', 'cmid', $this->cmid);
 
-        $mform->setType('cmid',PARAM_RAW);
+        $mform->setType('cmid', PARAM_RAW);
 
         $choices = csv_import_reader::get_delimiter_list();
         $mform->addElement('select', 'delimiter_name', get_string('csvdelimiter', 'tool_uploaduser'), $choices);
@@ -61,11 +58,10 @@ class upload_allocations_form extends moodleform {
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
         $mform->setDefault('encoding', 'UTF-8');
 
-
-        $this->add_action_buttons(true,get_string('uploadallocations','coursework'));
+        $this->add_action_buttons(true, get_string('uploadallocations', 'coursework'));
     }
 
-    function display()  {
+    function display() {
         return $this->_form->toHtml();
     }
 

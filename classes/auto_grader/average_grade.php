@@ -1,5 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework\auto_grader;
 
@@ -34,7 +53,7 @@ class average_grade implements auto_grader {
      * @param coursework $coursework
      * @param allocatable $allocatable
      */
-    public function __construct($coursework, $allocatable){
+    public function __construct($coursework, $allocatable) {
         $this->coursework = $coursework;
         $this->roundingrule = $this->coursework->roundingrule;
         $this->allocatable = $allocatable;
@@ -45,7 +64,7 @@ class average_grade implements auto_grader {
      * state of the initial assessor grades and make an automatic grade if they do.
      *
      */
-    public function create_auto_grade_if_rules_match(){
+    public function create_auto_grade_if_rules_match() {
 
         // bounce out if conditions are not right/
         if (!$this->get_allocatable()->has_all_initial_feedbacks($this->get_coursework())) {
@@ -54,8 +73,6 @@ class average_grade implements auto_grader {
         if ($this->get_coursework()->numberofmarkers == 1) {
             return;
         }
-
-
 
         if (!$this->get_allocatable()->has_agreed_feedback($this->get_coursework())) {
             $this->create_final_feedback();
@@ -67,8 +84,6 @@ class average_grade implements auto_grader {
             }
         }
 
-
-
         // trigger events?
 
     }
@@ -76,15 +91,14 @@ class average_grade implements auto_grader {
     /**
      * @return coursework
      */
-    private function get_coursework()
-    {
+    private function get_coursework() {
         return $this->coursework;
     }
 
     /**
      * @return int
      */
-    private function automatic_grade(){
+    private function automatic_grade() {
 
         $grades = $this->grades_as_percentages();
 
@@ -94,25 +108,23 @@ class average_grade implements auto_grader {
         // round it according to the chosen rule
         switch ($this->roundingrule) {
             case 'mid':
-                $avggrade =  round($avggrade);
+                $avggrade = round($avggrade);
                 break;
             case 'up':
-                $avggrade =  ceil($avggrade);
+                $avggrade = ceil($avggrade);
                 break;
             case 'down':
-                $avggrade =  floor($avggrade);
+                $avggrade = floor($avggrade);
                 break;
         }
-
 
         return $avggrade;
     }
 
-
     /**
      * @return allocatable
      */
-    private function get_allocatable(){
+    private function get_allocatable() {
         return $this->allocatable;
     }
 
@@ -128,11 +140,10 @@ class average_grade implements auto_grader {
         ));
     }
 
-
     /**
      *
      */
-    private function update_final_feedback($feedback){
+    private function update_final_feedback($feedback) {
         global $DB;
 
         $updated_feedback = new \stdClass();
@@ -143,7 +154,6 @@ class average_grade implements auto_grader {
         $DB->update_record('coursework_feedbacks', $updated_feedback);
 
     }
-
 
     /**
      * @return array

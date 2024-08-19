@@ -17,8 +17,7 @@
 /**
  * Unit tests for the coursework class
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2012 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,7 +28,6 @@ use mod_coursework\stages\assessor;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-
 
 /**
  * Class that will make sure the allocation_manager works.
@@ -283,7 +281,7 @@ class coursework_test extends advanced_testcase {
         $coursework->update_attribute('individualfeedback', 0);
         $this->assertTrue($coursework->individual_feedback_deadline_has_passed());
     }
-    
+
     public function test_finalise_all_leaves_other_submissions_alone() {
         $coursework = $this->get_coursework();
         $submission = $this->create_a_submission_for_the_student();

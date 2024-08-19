@@ -13,16 +13,23 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_coursework\privacy;
 defined('MOODLE_INTERNAL') || die();
-use \core_privacy\local\metadata\collection;
-use \core_privacy\local\request\contextlist;
-use \core_privacy\local\request\writer;
-use \core_privacy\local\request\approved_contextlist;
-use \core_privacy\local\request\transform;
-use \core_privacy\local\request\helper;
-use \core_privacy\local\request\userlist;
-use \core_privacy\local\request\approved_userlist;
+use core_privacy\local\metadata\collection;
+use core_privacy\local\request\contextlist;
+use core_privacy\local\request\writer;
+use core_privacy\local\request\approved_contextlist;
+use core_privacy\local\request\transform;
+use core_privacy\local\request\helper;
+use core_privacy\local\request\userlist;
+use core_privacy\local\request\approved_userlist;
 /**
  * Privacy Subsystem implementation for coursework.
  *
@@ -42,48 +49,48 @@ class provider implements
      */
     public static function get_metadata(collection $collection) : collection {
         $feedbacks = [
-            'assessorid'        => 'privacy:metadata:assessorid',
-            'timecreated'       => 'privacy:metadata:timecreated',
-            'timemodified'      => 'timemodified',
-            'grade'             => 'privacy:metadata:grade',
-            'submissionid'      => 'privacy:metadata:submissionid',
-            'feedbackcomment'   => 'privacy:metadata:feedbackcomment'
+            'assessorid' => 'privacy:metadata:assessorid',
+            'timecreated' => 'privacy:metadata:timecreated',
+            'timemodified' => 'timemodified',
+            'grade' => 'privacy:metadata:grade',
+            'submissionid' => 'privacy:metadata:submissionid',
+            'feedbackcomment' => 'privacy:metadata:feedbackcomment'
         ];
         $submissions = [
-            'authorid'          => 'privacy:metadata:authorid',
-            'userid'            => 'privacy:metadata:userid',
-            'timecreated'       => 'privacy:metadata:timecreated',
-            'timemodified'      => 'timemodified',
-            'createdby'         => 'createdby',
-            'timesubmitted'     => 'timesubmitted'
+            'authorid' => 'privacy:metadata:authorid',
+            'userid' => 'privacy:metadata:userid',
+            'timecreated' => 'privacy:metadata:timecreated',
+            'timemodified' => 'timemodified',
+            'createdby' => 'createdby',
+            'timesubmitted' => 'timesubmitted'
         ];
         $extensions = [
             'allocatableid' => 'privacy:metadata:allocatableid',
-            'createdbyid'   => 'privacy:metadata:createdbyid',
+            'createdbyid' => 'privacy:metadata:createdbyid',
             'extra_information_text' => 'privacy:metadata:extra_information_text',
             'extended_deadline' => 'privacy:metadata:extended_deadline',
-            'allocatableuser'   => 'privacy:metadata:userid',
-            'allocatablegroup'  => 'privacy:metadata:groupid'
+            'allocatableuser' => 'privacy:metadata:userid',
+            'allocatablegroup' => 'privacy:metadata:groupid'
         ];
         $persondeadlines = [
-            'allocatableid'     => 'privacy:metadata:allocatableid',
-            'createdbyid'       => 'privacy:metadata:createdbyid',
+            'allocatableid' => 'privacy:metadata:allocatableid',
+            'createdbyid' => 'privacy:metadata:createdbyid',
             'personal_deadline' => 'privacy:metadata:personal_deadline',
-            'allocatableuser'   => 'privacy:metadata:userid',
-            'allocatablegroup'  => 'privacy:metadata:groupid'
+            'allocatableuser' => 'privacy:metadata:userid',
+            'allocatablegroup' => 'privacy:metadata:groupid'
         ];
         $modagreements = [
-            'moderatorid'   => 'privacy:metadata:moderatorid',
-            'agreement'     => 'privacy:metadata:agreement',
-            'modcomment'    => 'privacy:metadata:modcomment',
-            'timecreated'   => 'privacy:metadata:timecreated',
-            'timemodified'  => 'timemodified'
+            'moderatorid' => 'privacy:metadata:moderatorid',
+            'agreement' => 'privacy:metadata:agreement',
+            'modcomment' => 'privacy:metadata:modcomment',
+            'timecreated' => 'privacy:metadata:timecreated',
+            'timemodified' => 'timemodified'
         ];
         $plagiarismflags = [
-            'createdby'     => 'privacy:metadata:createdby',
-            'comment'       => 'privacy:metadata:comment',
-            'timecreated'   => 'privacy:metadata:timecreated',
-            'timemodified'  => 'timemodified'
+            'createdby' => 'privacy:metadata:createdby',
+            'comment' => 'privacy:metadata:comment',
+            'timecreated' => 'privacy:metadata:timecreated',
+            'timemodified' => 'timemodified'
         ];
         $collection->add_database_table('coursework_feedbacks', $feedbacks, 'privacy:metadata:feedbacks');
         $collection->add_database_table('coursework_submissions', $submissions, 'privacy:metadata:submissions');
@@ -166,7 +173,6 @@ class provider implements
                     JOIN {coursework_plagiarism_flags} cwpf ON cws.id = cwpf.submissionid
                 WHERE ctx.id = :contextid AND ctx.contextlevel = :contextlevel";
         $userlist->add_from_sql('createdby', $sql, $params);
-
 
     }
     /**

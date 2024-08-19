@@ -19,8 +19,7 @@ namespace mod_coursework\allocation;
 /**
  * Rendererable object to make the widget to choose allocation strategy.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2012 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,7 +27,6 @@ namespace mod_coursework\allocation;
 use mod_coursework\models\coursework;
 
 defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Just a placeholder for the renderer really.

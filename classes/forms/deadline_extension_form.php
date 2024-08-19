@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework\forms;
 use mod_coursework\models\coursework;
@@ -24,15 +44,12 @@ class deadline_extension_form extends \moodleform {
         $this->_form->addElement('hidden', 'id');
         $this->_form->settype('id', PARAM_INT);
 
-
-        if ($this->get_coursework()->personaldeadlineenabled &&  $personal_deadline = $this->personal_deadline()){
+        if ($this->get_coursework()->personaldeadlineenabled &&  $personal_deadline = $this->personal_deadline()) {
             $this->_form->addElement('html', '<div class="alert">Personal deadline: '. userdate($personal_deadline->personal_deadline).'</div>');
         } else {
             // Current deadline for comparison
             $this->_form->addElement('html', '<div class="alert">Default deadline: ' . userdate($this->get_coursework()->deadline) . '</div>');
         }
-
-
 
         // Date and time picker
         $this->_form->addElement('date_time_selector', 'extended_deadline', get_string('extended_deadline',
@@ -67,15 +84,13 @@ class deadline_extension_form extends \moodleform {
         global $CFG;
         $max_deadline = $CFG->coursework_max_extension_deadline;
 
-
-        if ($this->get_coursework()->personaldeadlineenabled && $personal_deadline = $this->personal_deadline()){
+        if ($this->get_coursework()->personaldeadlineenabled && $personal_deadline = $this->personal_deadline()) {
             $deadline = $personal_deadline->personal_deadline;
         } else {
             $deadline = $this->get_coursework()->deadline;
         }
 
-
-        $errors = array();
+        $errors = [];
         if ($data['extended_deadline'] <= $deadline) {
             $errors['extended_deadline'] = 'The new deadline must be later than the current deadline';
         }
@@ -85,13 +100,13 @@ class deadline_extension_form extends \moodleform {
         return $errors;
     }
 
-    public function personal_deadline(){
+    public function personal_deadline() {
         global $DB;
 
-        $extensionid = optional_param('id',0,  PARAM_INT);
+        $extensionid = optional_param('id', 0,  PARAM_INT);
 
-        if($extensionid != 0){
-            $ext =  $DB->get_record('coursework_extensions', array('id'=>$extensionid));
+        if ($extensionid != 0) {
+            $ext = $DB->get_record('coursework_extensions', array('id' => $extensionid));
             $allocatableid = $ext->allocatableid;
             $allocatabletype = $ext->allocatabletype;
             $courseworkid = $ext->courseworkid;
@@ -100,17 +115,16 @@ class deadline_extension_form extends \moodleform {
 
             $allocatableid = required_param('allocatableid', PARAM_INT);
             $allocatabletype = required_param('allocatabletype', PARAM_ALPHANUMEXT);
-            $courseworkid =  required_param('courseworkid', PARAM_INT);
+            $courseworkid = required_param('courseworkid', PARAM_INT);
         }
 
         $params = array(
             'allocatableid' => $allocatableid,
-            'allocatabletype' =>$allocatabletype ,
-            'courseworkid' =>$courseworkid,
+            'allocatabletype' => $allocatabletype ,
+            'courseworkid' => $courseworkid,
         );
 
       return  $personal_deadline = $DB->get_record('coursework_person_deadlines', $params);
     }
-
 
 }

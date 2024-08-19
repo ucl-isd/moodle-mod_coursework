@@ -14,6 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_coursework\models;
 
 use context;
@@ -22,7 +28,7 @@ use mod_coursework\framework\table_base;
 use mod_coursework\ability;
 use mod_coursework\stages\base as stage_base;
 use stdClass;
-use \mod_coursework\feedback_files;
+use mod_coursework\feedback_files;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -32,8 +38,7 @@ defined('MOODLE_INTERNAL') || die();
  * @property mixed stage_identifier
  * @property int feedback_manager
  */
-class moderation extends table_base{
-
+class moderation extends table_base {
 
     /**
      * @var int
@@ -44,7 +49,6 @@ class moderation extends table_base{
      * @var int
      */
    public $feedbackid;
-
 
     /**
  * @var int
@@ -76,7 +80,6 @@ class moderation extends table_base{
      */
     public $modcommentformat;
 
-
     /**
      * Chained getter for loose coupling.
      *
@@ -86,26 +89,23 @@ class moderation extends table_base{
         return $this->get_submission()->get_coursework();
     }
 
-
     /**
      *
      */
-    public function get_feedback(){
+    public function get_feedback() {
         global $DB;
 
         //Moderation done only for single courseworks so submission id to retrieve feedback is enough
-        $params = array('id'=>$this->feedbackid);
+        $params = array('id' => $this->feedbackid);
         $feedback = $DB->get_record('coursework_feedbacks', $params);
         return $feedback;
 
     }
 
-    public function get_agreement(){
+    public function get_agreement() {
         return $this->agreement;
 
-
     }
-
 
     /**
      * Memoized getter
@@ -113,13 +113,11 @@ class moderation extends table_base{
      * @return bool|submission
      */
     public function get_submission() {
-       $feedback =  $this->get_feedback();
+       $feedback = $this->get_feedback();
        $this->submission = submission::find($feedback->submissionid);
 
         return $this->submission;
     }
-
-
 
     /**
      * @return user
@@ -141,16 +139,15 @@ class moderation extends table_base{
         return fullname($this->moderator);
     }
 
-    public function get_moderator_id(){
+    public function get_moderator_id() {
         return $this->moderator->id;
     }
-
 
     /**
      * Check if assessor is allocated to the user in this stage
      * @return bool
      */
-    public function is_moderator_allocated(){
+    public function is_moderator_allocated() {
 
         return $this->get_stage()->assessor_has_allocation($this->get_allocatable());
     }

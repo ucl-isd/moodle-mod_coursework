@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework\allocation;
 
@@ -29,7 +49,7 @@ class auto_allocator {
         $this->delete_all_ungraded_auto_allocations();
 
         foreach ($this->marking_stages() as $stage) {
-            if ($stage->group_assessor_enabled() && $stage->identifier() == 'assessor_1'){
+            if ($stage->group_assessor_enabled() && $stage->identifier() == 'assessor_1') {
                 // if allocation strategy 'group_assessor' then assign assessor from that group to stage1 and continue
                 // for the rest of stages with manual allocation
                 $allocatables = $this->get_allocatables();

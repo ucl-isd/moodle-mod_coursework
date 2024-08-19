@@ -19,8 +19,7 @@ namespace mod_coursework\allocation\strategy;
 /**
  * Allocation strategy for giving each teacher a different percentage of work to mark.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -34,7 +33,6 @@ use mod_coursework\models\user;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Allocates all students equally between teachers.
@@ -141,7 +139,7 @@ class percentages extends base {
 
         // Get the data from the form.
         $name = $this->get_name();
-        $data = optional_param_array('assessorstrategy'.$name, array(), PARAM_RAW); // Array[teacherid] => value.
+        $data = optional_param_array('assessorstrategy'.$name, [], PARAM_RAW); // Array[teacherid] => value.
 
         if (!is_array($data)) {
             return true;
@@ -200,7 +198,7 @@ class percentages extends base {
      * @param $teacher
      * @return int|mixed
      */
-    private function percentage_for_teacher($teacher){
+    private function percentage_for_teacher($teacher) {
 
         global $DB;
 
@@ -246,7 +244,7 @@ class percentages extends base {
      * @return array
      */
     protected function list_of_allocatable_teachers_and_their_current_number_of_allocations($teachers, $student) {
-        $teacherids = array();
+        $teacherids = [];
         foreach ($teachers as $teacher) {
 
             if ($this->teacher_already_has_an_allocation_for_this_allocatable($student, $teacher)) {

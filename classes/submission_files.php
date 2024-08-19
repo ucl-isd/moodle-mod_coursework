@@ -19,8 +19,7 @@ namespace mod_coursework;
 /**
  * Displays the information a student sees when they submit or have submitted work
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2012 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -30,7 +29,6 @@ use mod_coursework\models\submission;
 use stored_file;
 
 defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Represents the files a student has submitted.

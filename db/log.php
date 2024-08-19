@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -37,8 +36,8 @@ defined('MOODLE_INTERNAL') || die();
 global $DB;
 
 $logs = array(
-    array('module'=>'coursework', 'action'=>'add', 'mtable'=>'coursework', 'field'=>'name'),
-    array('module'=>'coursework', 'action'=>'update', 'mtable'=>'coursework', 'field'=>'name'),
-    array('module'=>'coursework', 'action'=>'view', 'mtable'=>'coursework', 'field'=>'name'),
-    array('module'=>'coursework', 'action'=>'view all', 'mtable'=>'coursework', 'field'=>'name')
+    array('module' => 'coursework', 'action' => 'add', 'mtable' => 'coursework', 'field' => 'name'),
+    array('module' => 'coursework', 'action' => 'update', 'mtable' => 'coursework', 'field' => 'name'),
+    array('module' => 'coursework', 'action' => 'view', 'mtable' => 'coursework', 'field' => 'name'),
+    array('module' => 'coursework', 'action' => 'view all', 'mtable' => 'coursework', 'field' => 'name')
 );

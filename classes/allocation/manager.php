@@ -20,8 +20,7 @@ namespace mod_coursework\allocation;
  * Page that prints a table of all students and all markers so that first marker, second marker,
  * moderators etc can be allocated manually or automatically.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -31,12 +30,11 @@ use mod_coursework\models\coursework;
 use mod_coursework\models\moderation_set_rule;
 use mod_coursework\moderation_set_widget;
 use mod_coursework\sampling_set_widget;
-use \mod_coursework\stages\base as stage_base;
+use mod_coursework\stages\base as stage_base;
 use moodle_exception;
 use mod_coursework\grade_judge;
 
 defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * This takes responsibility for managing the allocations of markers to students, both manually and
@@ -53,12 +51,12 @@ class manager {
     /**
      * @var strategy\base
      */
-    private  $assessorallocationstrategy;
+    private $assessorallocationstrategy;
 
     /**
      * @var strategy\base
      */
-    private  $moderatorallocationstrategy;
+    private $moderatorallocationstrategy;
 
     /**
      * New instance created with references to the coursework stored.
@@ -71,7 +69,7 @@ class manager {
         $this->coursework = $coursework;
 
         // Instantiate the allocation strategies so we can use them.
-        $strategytypes = array();
+        $strategytypes = [];
         if (!empty($this->coursework->assessorallocationstrategy)) {
             $strategytypes[] = coursework::ASSESSOR;
         }
@@ -84,7 +82,6 @@ class manager {
 
             $classname = !empty($coursework->$propertyname) ?
                 '\\mod_coursework\allocation\strategy\\'.$coursework->$propertyname : '';
-
 
             if (class_exists($classname)) {
                 $this->$propertyname = new $classname($coursework);
@@ -113,7 +110,7 @@ class manager {
 
         $classdir = $CFG->dirroot . '/mod/coursework/classes/allocation/strategy';
         $fullclassnames = glob($classdir . '/*.php');
-        $options = array();
+        $options = [];
         foreach ($fullclassnames as $fullclassname) {
             if (strpos($fullclassname, 'base') !== false) {
                 continue;
@@ -125,8 +122,8 @@ class manager {
         }
 
         // move 'none' to be the first option
-        if (array_key_exists('none', $options)){
-            $new_value = array('none'=> $options['none']);
+        if (array_key_exists('none', $options)) {
+            $new_value = array('none' => $options['none']);
             unset($options['none']);
             $options = $new_value + $options;
         }
@@ -172,7 +169,7 @@ class manager {
         }
 
         // These are the ones we will actually moderate (or which have already been moderated).
-        $moderation_set = array();
+        $moderation_set = [];
 
         // Move all the already marked ones into the set. These have to stay in it and ought to
         // be taken into account so that the other rules just add to them.
@@ -187,16 +184,15 @@ class manager {
 
     }
 
-
     /**
      * Returns array of sampling options. This function should be looked upon as a placeholder
      * in case more complex functionality is defined
      *
      * @return array
      */
-    public function get_sampling_options()  {
-        return array('0'=>get_string('manual','mod_coursework'),
-                     '1'=>get_string('automatic','mod_coursework'));
+    public function get_sampling_options() {
+        return array('0' => get_string('manual', 'mod_coursework'),
+                     '1' => get_string('automatic', 'mod_coursework'));
 
     }
 
@@ -233,18 +229,12 @@ class manager {
      */
     public function get_sampling_set_widget($requestedrule = false) {
 
-
-
         $rules = $this->get_sampling_set_rules();
-
-
 
         $widget = new sampling_set_widget($rules, $this->coursework, $requestedrule);
 
         return new \mod_coursework_sampling_set_widget($widget);
     }
-
-
 
     /**
      * We know a rule came in, so we save it by delegating to the class, which will know what the form submitted.
@@ -256,32 +246,31 @@ class manager {
 
         global $CFG, $DB;
 
-        $sampleplugins  =   $DB->get_records('coursework_sample_set_plugin',null,'pluginorder');
-        $order  =   0;
+        $sampleplugins = $DB->get_records('coursework_sample_set_plugin', null, 'pluginorder');
+        $order = 0;
         foreach ($sampleplugins as $plugin) {
 
             $classname = '\mod_coursework\sample_set_rule\\' . $plugin->rulename;
 
             $rule = new $classname($this->coursework);
 
-            $rule->save_form_data($assessor_number,$order);
+            $rule->save_form_data($assessor_number, $order);
 
         }
 
     }
 
-    public function save_sample()   {
+    public function save_sample() {
 
         global  $DB;
-        $DB->delete_records('coursework_sample_set_rules',array('courseworkid'=>$this->coursework->id));
-        for ($i = 2; $i <= $this->coursework->get_max_markers(); $i++)   {
+        $DB->delete_records('coursework_sample_set_rules', array('courseworkid' => $this->coursework->id));
+        for ($i = 2; $i <= $this->coursework->get_max_markers(); $i++) {
 
-            $sample_strategy    =   required_param("assessor_{$i}_samplingstrategy",PARAM_INT);
+            $sample_strategy = required_param("assessor_{$i}_samplingstrategy", PARAM_INT);
 
-            if ($sample_strategy)   {
+            if ($sample_strategy) {
                 $this->save_sample_set_rule($i);
             }
-
 
         }
         $this->auto_generate_sample_set();
@@ -294,84 +283,76 @@ class manager {
         return $this->coursework;
     }
 
-
-    public function auto_generate_sample_set()  {
+    public function auto_generate_sample_set() {
         global $DB;
 
-        $sampleplugins  =   $DB->get_records('coursework_sample_set_plugin',null,'pluginorder');
-        $order  =   0;
+        $sampleplugins = $DB->get_records('coursework_sample_set_plugin', null, 'pluginorder');
+        $order = 0;
 
-
-        $sample_set  =   array();
+        $sample_set = [];
 
         $allocatables = $this->get_coursework()->get_allocatables();
 
-        $final_agreed_allocatables  =   $this->get_allocatables_with_final_agreed();
+        $final_agreed_allocatables = $this->get_allocatables_with_final_agreed();
 
-        //remove any allocatables that have a status of final agreed as these can not be sampled
-        foreach($final_agreed_allocatables as $faa)   {
+        // Remove any allocatables that have a status of final agreed as these can not be sampled
+        foreach ($final_agreed_allocatables as $faa) {
             if (isset($allocatables[$faa->allocatableid]))  unset($allocatables[$faa->allocatableid]);
         }
 
-        for($stage_number = 2; $stage_number <= $this->get_coursework()->get_max_markers(); $stage_number++) {
+        for ($stage_number = 2; $stage_number <= $this->get_coursework()->get_max_markers(); $stage_number++) {
 
-
-            $stage  =   "assessor_{$stage_number}";
+            $stage = "assessor_{$stage_number}";
 
             $this->remove_unmarked_automatic_allocatables($stage);
 
-            $sql    =   "SELECT DISTINCT rulename
+            $sql = "SELECT DISTINCT rulename
                          FROM (SELECT         rulename,ruleorder
                                FROM           {coursework_sample_set_plugin} p,
                                               {coursework_sample_set_rules} r
-                               WHERE          p.id  = r.sample_set_plugin_id
+                               WHERE          p.id = r.sample_set_plugin_id
                                AND            r.courseworkid = :courseworkid
                                AND            stage_identifier = :stage
                                ORDER BY       ruleorder)a";
 
-
-            if ($sampleplugins  = $DB->get_records_sql($sql,array('courseworkid'=>$this->coursework->id,'stage'=>$stage))) {
+            if ($sampleplugins = $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id, 'stage' => $stage))) {
 
                 //$allocatables = $this->get_coursework()->get_allocatables_with_feedback();
                 $allocatables = $this->get_coursework()->get_allocatables();
                 $manual_sample_set = $this->get_include_in_sample_set($stage_number);
 
-                $auto_with_feedback =   $this->get_automatic_with_feedback($stage);
+                $auto_with_feedback = $this->get_automatic_with_feedback($stage);
 
+                // Ok this array merge is being carried out using an foreach rather than array_merge as we want to preserve keys
+                // I am also not using add the two arrays as using the overloaded + can produce dubious results when a key exists
+                // In both arrays
 
-
-
-                //ok this array merge is being carried out using an foreach rather than array_merge as we want to preserve keys
-                //I am also not using add the two arrays as using the overloaded + can produce dubious results when a key exists
-                //in both arrays
-
-                foreach($auto_with_feedback as $k => $v)   {
-                    if (!isset($manual_sample_set[$k])) $manual_sample_set[$k]  =   $v;
+                foreach ($auto_with_feedback as $k => $v) {
+                    if (!isset($manual_sample_set[$k])) $manual_sample_set[$k] = $v;
                 }
 
-
-                $auto_sample_set    =   array();
+                $auto_sample_set = [];
 
                 foreach ($sampleplugins as $plugin) {
                     $classname = '\mod_coursework\sample_set_rule\\' . $plugin->rulename;
 
                     $rule = new $classname($this->coursework);
 
-                       $rule->adjust_sample_set($stage_number,$allocatables,$manual_sample_set,$auto_sample_set);
+                       $rule->adjust_sample_set($stage_number, $allocatables, $manual_sample_set, $auto_sample_set);
 
                 }
 
-                //save sample set
-                if (!empty($auto_sample_set))    {
-                        foreach($auto_sample_set    as  $allocatable)   {
-                            $sample     =   new \stdClass();
-                            $sample->courseworkid       =   $this->coursework->id;
-                            $sample->allocatableid      =   $allocatable->id;
-                            $sample->allocatabletype    =   ($this->coursework->is_configured_to_have_group_submissions()) ? "group" : "user";
-                            $sample->stage_identifier   =   "assessor_{$stage_number}";
-                            $sample->selectiontype      =   "automatic";
+                // Save sample set
+                if (!empty($auto_sample_set)) {
+                        foreach ($auto_sample_set as $allocatable) {
+                            $sample = new \stdClass();
+                            $sample->courseworkid = $this->coursework->id;
+                            $sample->allocatableid = $allocatable->id;
+                            $sample->allocatabletype = ($this->coursework->is_configured_to_have_group_submissions()) ? "group" : "user";
+                            $sample->stage_identifier = "assessor_{$stage_number}";
+                            $sample->selectiontype = "automatic";
 
-                            //if this a manually selected allocatable check to see if the allocatable is already in the table
+                            // If this a manually selected allocatable check to see if the allocatable is already in the table
                             $DB->insert_record("coursework_sample_set_mbrs", $sample);
 
                         }
@@ -384,59 +365,57 @@ class manager {
 
         global  $DB;
 
-        $stage  =   "assessor_{$stage_number}";
+        $stage = "assessor_{$stage_number}";
 
-        $sql    =   "SELECT     allocatableid,
+        $sql = "SELECT     allocatableid,
                                 courseworkid,
                                 allocatabletype,
                                 stage_identifier,
                                 selectiontype
                      FROM       {coursework_sample_set_mbrs}
-                     WHERE      courseworkid  = :courseworkid
-                     AND        stage_identifier  = :stage_identifier
+                     WHERE      courseworkid = :courseworkid
+                     AND        stage_identifier = :stage_identifier
                      AND        selectiontype = 'manual'";
 
-
-        //get all users in manually selected for stage in coursework
+        // Get all users in manually selected for stage in coursework
         return $DB->get_records_sql($sql,
-            array('courseworkid'=>$this->coursework->id,'stage_identifier'=>$stage));
+            array('courseworkid' => $this->coursework->id, 'stage_identifier' => $stage));
 
     }
 
-    public function get_automatic_with_feedback($stage)  {
+    public function get_automatic_with_feedback($stage) {
 
         global $DB;
 
-        $sql    =   "SELECT         s.allocatableid, f.*
+        $sql = "SELECT         s.allocatableid, f.*
                          FROM       {coursework_submissions}  s,
                                     {coursework_feedbacks}    f,
                                     {coursework_sample_set_mbrs} m
-                         WHERE      s.id   = f.submissionid
+                         WHERE      s.id = f.submissionid
                          AND        s.courseworkid = :courseworkid
                          AND        f.stage_identifier = :stage
                          AND        s.courseworkid = m.courseworkid
-                         AND        s.allocatableid =  m.allocatableid
-                         AND        s.allocatabletype =  m.allocatabletype
+                         AND        s.allocatableid = m.allocatableid
+                         AND        s.allocatabletype = m.allocatabletype
                          AND        f.stage_identifier = m.stage_identifier
                          ";
 
-        return $DB->get_records_sql($sql,array('courseworkid'=>$this->coursework->id,'stage'=>$stage));
+        return $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id, 'stage' => $stage));
     }
 
-
-    public function remove_unmarked_automatic_allocatables($stage)    {
+    public function remove_unmarked_automatic_allocatables($stage) {
         global $DB;
 
-        $sql    =   "DELETE
+        $sql = "DELETE
                      FROM     {coursework_sample_set_mbrs}
                      WHERE    selectiontype = 'automatic'
                      AND      stage_identifier = '{$stage}'
-                     AND      courseworkid  = {$this->coursework->id}
+                     AND      courseworkid = {$this->coursework->id}
                      AND      allocatableid NOT IN (
                         SELECT    s.allocatableid
                         FROM      {coursework_submissions} s,
                                   {coursework_feedbacks}    f
-                        WHERE     s.id   = f.submissionid
+                        WHERE     s.id = f.submissionid
                          AND      s.courseworkid = {$this->coursework->id}
                          AND      f.stage_identifier = '{$stage}'
 
@@ -444,11 +423,9 @@ class manager {
 
         return $DB->execute($sql);
 
-
-
     }
 
-    public function get_allocatables_with_final_agreed()    {
+    public function get_allocatables_with_final_agreed() {
 
         global $DB;
 
@@ -459,11 +436,8 @@ class manager {
                  WHERE s.courseworkid = {$this->coursework->id}
                    AND f.stage_identifier = 'final_agreed_1'";
 
-        return $DB->get_records_sql($sql, array('courseworkid'=>$this->coursework->id));
+        return $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id));
 
     }
-
-
-
 
 }

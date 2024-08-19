@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\user;
@@ -8,7 +28,6 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
 require_once($CFG->dirroot . '/mod/coursework/tests/behat/pages/page_base.php');
-
 
 /**
  * Holds the functions that know about the HTML structure of the student page.
@@ -62,7 +81,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param allocatable $student
      * @param string $stage_identifier
      */
-    public function select_for_sample($student, $stage_identifier){
+    public function select_for_sample($student, $stage_identifier) {
         $elementid = $this->sampling_checkbox_id($student, $stage_identifier);
         $node = $this->getPage()->find('css', $elementid);
         $node->check();
@@ -111,8 +130,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param $stage_identifier
      * @throws \Behat\Mink\Exception\ElementException
      */
-    public function deselect_for_sample($student, $stage_identifier)
-    {
+    public function deselect_for_sample($student, $stage_identifier) {
         $elementid = $this->sampling_checkbox_id($student, $stage_identifier);
         $node = $this->getPage()->find('css', $elementid);
         $node->uncheck();
@@ -123,8 +141,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param $stage_identifier
      * @return string
      */
-    public function sampling_checkbox_id($student, $stage_identifier)
-    {
+    public function sampling_checkbox_id($student, $stage_identifier) {
         $elementid = '#' . $student->type() . '_' . $student->id . '_' . $stage_identifier . '_samplecheckbox';
         return $elementid;
     }
@@ -137,8 +154,8 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param $stage
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
-    public function enable_atomatic_sampling_for($stage)  {
-        $elementid  =   '#assessor_'.$stage.'_samplingstrategy';
+    public function enable_atomatic_sampling_for($stage) {
+        $elementid = '#assessor_'.$stage.'_samplingstrategy';
         $node = $this->getPage()->find('css', $elementid);
 
         $node->selectOption('Automatic');
@@ -210,12 +227,12 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param $stage
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
-    public function select_total_percentage_for_stage($percentage,$stage)   {
+    public function select_total_percentage_for_stage($percentage, $stage) {
 
-        //increment stage as the this will match the id of the element;
+        // Increment stage as the this will match the id of the element;
         $stage++;
 
-        $elementid  =   '#assessor_'.$stage.'_sampletotal';
+        $elementid = '#assessor_'.$stage.'_sampletotal';
         $node = $this->getPage()->find('css', $elementid);
 
         $node->selectOption($percentage);
@@ -226,26 +243,25 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param $user
      * @param $stage_number
      */
-    public function automatically_included_in_sample($coursework,$user,$other_user,$stage_number,$negate)  {
+    public function automatically_included_in_sample($coursework, $user, $other_user, $stage_number, $negate) {
         global $DB;
 
-        $other_sql = (!empty($other_user))?  "OR allocatableid = $other_user->id" : '';
+        $other_sql = (!empty($other_user)) ? "OR allocatableid = $other_user->id" : '';
 
-        $sql    =   "SELECT     *
+        $sql = "SELECT     *
                      FROM       {coursework_sample_set_mbrs}
                      WHERE      courseworkid = :courseworkid
                      AND        stage_identifier = :stage
                      AND        (allocatableid = :user $other_sql)";
 
+        $stage = "assessor_".$stage_number;
 
-        $stage  =   "assessor_".$stage_number;
-
-        $params     =   array('courseworkid'=>$coursework->id,
-            'user'=>$user->id,
+        $params = array('courseworkid' => $coursework->id,
+            'user' => $user->id,
             'stage' => $stage);
 
-        if (empty($negate)){
-             assertTrue($DB->record_exists_sql($sql,$params));
+        if (empty($negate)) {
+             assertTrue($DB->record_exists_sql($sql, $params));
         } else {
             assertFalse($DB->record_exists_sql($sql, $params));
         }
@@ -267,13 +283,10 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
         $this->$role_name_to_save = $this->create_user($role_name, $role_name_to_save);
     }
 
-
-    public function save_sampling_strategy()     {
+    public function save_sampling_strategy() {
 
         $this->getPage()->pressButton('save_manual_sampling');
 
     }
-
-
 
 }

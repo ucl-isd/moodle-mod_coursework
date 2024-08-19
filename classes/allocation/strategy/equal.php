@@ -19,8 +19,7 @@ namespace mod_coursework\allocation\strategy;
 /**
  * Allocation strategy for giving all teachers equal numbers of students to mark
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,7 +27,6 @@ namespace mod_coursework\allocation\strategy;
 use mod_coursework\allocation\allocatable;
 
 defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Allocates all students equally between teachers.
@@ -88,7 +86,7 @@ class equal extends base {
      * @return mixed
      */
     protected function list_of_allocatable_teachers_and_their_current_number_of_allocations($teachers, $student) {
-        $teacherids = array();
+        $teacherids = [];
 
         foreach ($teachers as $id => $teacher) {
             if ($this->teacher_already_has_an_allocation_for_this_allocatable($student, $teacher)) {

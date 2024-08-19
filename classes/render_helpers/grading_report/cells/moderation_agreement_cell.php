@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework\render_helpers\grading_report\cells;
 use coding_exception;
@@ -17,7 +37,6 @@ use pix_icon;
  */
 class moderation_agreement_cell extends cell_base {
 
-
     /**
      * @var allocatable
      */
@@ -28,16 +47,12 @@ class moderation_agreement_cell extends cell_base {
      */
     private $stage;
 
-
-
     /**
      * @param array $items
      */
     protected function after_initialisation($items) {
         $this->stage = $items['stage'];
     }
-
-
 
     /**
      * @param grading_table_row_base $rowobject
@@ -49,16 +64,15 @@ class moderation_agreement_cell extends cell_base {
         $ability = new ability(user::find($USER), $rowobject->get_coursework());
 
         $content = '';
-        $moderation  = '';
+        $moderation = '';
         if ($rowobject->has_submission()) {
-            if ($rowobject->get_single_feedback()){
+            if ($rowobject->get_single_feedback()) {
                 $moderation = $this->stage->get_moderation_for_feedback($rowobject->get_single_feedback());
             }
             // Add new moderations agreement
             if (!$moderation &&
                 $rowobject->get_submission()->final_grade_agreed() &&
                 ($this->stage->user_is_moderator($USER))) {
-
 
                 $moderation_params = array(
                     'submissionid' => $rowobject->get_submission()->id,
@@ -111,14 +125,14 @@ class moderation_agreement_cell extends cell_base {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options = array()) {
+    public function get_table_header($options  = []) {
         return get_string('tableheadmoderationagreement', 'coursework');
     }
 
     /**
      * @return string
      */
-    public function get_table_header_class(){
+    public function get_table_header_class() {
         return 'tableheadmoderationagreement';
     }
 
@@ -132,16 +146,15 @@ class moderation_agreement_cell extends cell_base {
     /**
      * @return string
      */
-    public function get_table_header_help_icon(){
+    public function get_table_header_help_icon() {
         global $OUTPUT;
         return ($OUTPUT->help_icon('moderationagreement', 'coursework'));
     }
 
-
     /**
      * @param grading_table_row_base $rowobject
      * @param user $assessor
-     * @return array
+     * @return string
      * @throws \coding_exception
      */
     private function new_moderation_button($rowobject, $assessor) {
@@ -165,13 +178,12 @@ class moderation_agreement_cell extends cell_base {
         return  $OUTPUT->action_link($link,
                                      $title,
                                 null,
-                                array('class'=>'new_moderation','id' => $link_id));
+                                array('class' => 'new_moderation', 'id' => $link_id));
     }
-
 
     /**
      * @param $rowobject
-     * @return array
+     * @return string
      * @throws \coding_exception
      */
     private function edit_moderation_button($rowobject) {
@@ -188,7 +200,6 @@ class moderation_agreement_cell extends cell_base {
 
         $title = get_string('editmoderation', 'coursework');
         $icon = new pix_icon('edit', $title, 'coursework');
-
 
         return  $OUTPUT->action_icon($link,
             $icon,
@@ -218,6 +229,6 @@ class moderation_agreement_cell extends cell_base {
         return $OUTPUT->action_link($link,
                                     $linktitle,
                                 null,
-                                      array('class'=>'show_moderation','id' => $link_id));
+                                      array('class' => 'show_moderation', 'id' => $link_id));
     }
 }

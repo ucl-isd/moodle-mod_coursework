@@ -17,7 +17,6 @@
 namespace mod_coursework;
 namespace mod_coursework\task;
 
-
 /**
  * A scheduled task for the coursework module cron.
  *
@@ -44,9 +43,9 @@ class enrol_task extends \core\task\scheduled_task {
 
         global $DB;
 
-        $courseworkids     =   $DB->get_records('coursework',array('processenrol'=>1));
+        $courseworkids = $DB->get_records('coursework', array('processenrol' => 1));
 
-        if (!empty($courseworkids))   {
+        if (!empty($courseworkids)) {
             foreach ($courseworkids as $courseworkid) {
                 $coursework = \mod_coursework\models\coursework::find($courseworkid);
                 if (empty($coursework)) {
@@ -58,7 +57,7 @@ class enrol_task extends \core\task\scheduled_task {
                 $allocator = new \mod_coursework\allocation\auto_allocator($coursework);
                 $allocator->process_allocations();
 
-                $DB->set_field('coursework','processenrol',0,array('id'=>$coursework->id()));
+                $DB->set_field('coursework', 'processenrol', 0, array('id' => $coursework->id()));
             }
         }
 

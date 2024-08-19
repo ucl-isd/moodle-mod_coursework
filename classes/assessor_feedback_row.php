@@ -14,6 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_coursework;
 
 use mod_coursework\allocation\allocatable;
@@ -23,7 +29,6 @@ use mod_coursework\models\user;
 use mod_coursework\stages\base as stage_base;
 
 defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Class that exists to tell the renderer to use a different function. This one will make the
@@ -114,7 +119,7 @@ class assessor_feedback_row {
      *
      * @return user
      */
-    public function get_graded_by(){
+    public function get_graded_by() {
         return $this->get_feedback()->assessor();
     }
 
@@ -122,7 +127,7 @@ class assessor_feedback_row {
      * Gets the grader's name and link to the profile
      * @return string
      */
-    public function get_graders_name(){
+    public function get_graders_name() {
       return  $this->get_graded_by()->profile_link();
     }
 

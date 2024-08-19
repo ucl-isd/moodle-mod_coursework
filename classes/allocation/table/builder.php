@@ -19,8 +19,7 @@ namespace mod_coursework\allocation\table;
 /**
  * Class file for the renderable object that makes the table for allocating markerts to students.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -62,7 +61,6 @@ class builder {
         $this->options = $options;
     }
 
-
     /**
      * Takes the raw data, instantiates each row as a new renderable object and returns the whole lot.
      *
@@ -71,12 +69,10 @@ class builder {
     public function get_rows() {
         $allocatables = $this->get_coursework()->get_allocatables();
 
-        $rows = array();
+        $rows = [];
         foreach ($allocatables as $allocatable) {
             $rows[] = new row_builder($this, $allocatable);
         }
-
-        
         // Sort the rows.
         $sorting = new mod_coursework\grading_report($this->options, $this->coursework);
         $method_name = 'sort_by_' . $this->options['sortby'];
@@ -86,11 +82,9 @@ class builder {
                     $method_name));
         }
 
-
         return $rows;
 
     }
-
 
     /**
      * Counts the total number of students that the current user can see.
@@ -112,11 +106,10 @@ class builder {
 
         $allocatables = $this->get_coursework()->get_allocatables();
 
-        $rows = array();
+        $rows = [];
         foreach ($allocatables as $allocatable) {
             $rows[] = new row_builder($this, $allocatable);
         }
-
 
         // Sort the rows.
         $sorting = new mod_coursework\grading_report($this->options, $this->coursework);
@@ -135,7 +128,7 @@ class builder {
         $start = ($this->options['page']) * $this->options['perpage']; // Will start at 0.
         $end = ($this->options['page'] + 1) * $this->options['perpage']; // Take care of overlap: 0-10, 10-20, 20-30.
 
-        $end    =   (empty($end))  ?  count($rows) :   $end;
+        $end = (empty($end)) ? count($rows) : $end;
         $counter = 0; // Begin from the first one that the user could see.
         foreach ($rows as $allocatable_id => $row) {
 
@@ -146,14 +139,12 @@ class builder {
             }
         }
 
-        $this->totalrows    =   $rows;
-        $this->totalcount   =   $counter;
-
+        $this->totalrows = $rows;
+        $this->totalcount = $counter;
 
         return $this->totalrows;
 
     }
-
 
     /**
      * Getter for the coursework instance
@@ -194,20 +185,20 @@ class builder {
         return new user_cell($items);
     }
 
-    public function get_hidden_elements()   {
+    public function get_hidden_elements() {
         global $SESSION;
 
-        $elements   =   '';
+        $elements = '';
 
-        $cm     =   $this->coursework->get_course_module();
+        $cm = $this->coursework->get_course_module();
 
-        if  (isset($SESSION->coursework_allocationsessions[$cm->id]))  {
+        if  (isset($SESSION->coursework_allocationsessions[$cm->id])) {
 
-            foreach($SESSION->coursework_allocationsessions[$cm->id] as $name   =>  $val)   {
+            foreach ($SESSION->coursework_allocationsessions[$cm->id] as $name => $val) {
 
-                if(!is_array($val))   {
+                if (!is_array($val)) {
 
-                    $elements   .=  "<input type='hidden' name='$name'   value='$val'> ";
+                    $elements .= "<input type='hidden' name='$name'   value='$val'> ";
 
                 }
 
@@ -216,7 +207,6 @@ class builder {
         }
 
         return  $elements;
-
 
     }
 }

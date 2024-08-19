@@ -19,8 +19,7 @@ namespace mod_coursework\personal_deadline\table;
 /**
  * Class file for the renderable object that makes the table for assigning personal deadlines to students.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -64,7 +63,6 @@ class builder {
         $this->options = $options;
     }
 
-
     /**
      * Takes the raw data, instantiates each row as a new renderable object and returns the whole lot.
      *
@@ -73,7 +71,7 @@ class builder {
     public function get_rows() {
         $allocatables = $this->get_coursework()->get_allocatables();
 
-        $rows = array();
+        $rows = [];
         foreach ($allocatables as $allocatable) {
             $rows[] = new row_builder($this, $allocatable);
         }
@@ -86,7 +84,6 @@ class builder {
                 array($sorting,
                     $method_name));
         }
-
 
         return $rows;
 
@@ -123,7 +120,6 @@ class builder {
         }
         return new user_cell($items);
     }
-
 
     /**
      * @return personal_deadline_cell

@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework\render_helpers\grading_report\cells;
 use core_user;
@@ -35,13 +55,13 @@ class user_cell extends cell_base implements allocatable_cell {
         // TODO CSS for the space!!
         $content .= ' ' . $rowobject->get_user_name(true);
         $content .= "<br>".$rowobject->get_email();
-        $user   =   $rowobject->get_allocatable();
+        $user = $rowobject->get_allocatable();
 /*
-        $candidatenumber    =   $user->candidate_number();
+        $candidatenumber = $user->candidate_number();
 
-        if (!empty($candidatenumber))   {
+        if (!empty($candidatenumber)) {
 
-            $content    .=  '<br /> ('.$candidatenumber.')';
+            $content  .= '<br /> ('.$candidatenumber.')';
 
         }
 
@@ -54,16 +74,16 @@ class user_cell extends cell_base implements allocatable_cell {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options = array()) {
+    public function get_table_header($options  = []) {
 
        $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->coursework->get_context());
 
         //adding this line so that the sortable heading function will make a sortable link unique to the table
-        //if tablename is set
-        $tablename  =   (!empty($options['tablename']))  ? $options['tablename']  : ''  ;
+        // If tablename is set
+        $tablename = (!empty($options['tablename'])) ? $options['tablename'] : '';
 
       // allow to sort users only if CW is not set to blind marking or a user has capability to view anonymous
-       if($viewanonymous || !$this->coursework->blindmarking) {
+       if ($viewanonymous || !$this->coursework->blindmarking) {
            $sort_by_first_name = $this->helper_sortable_heading(get_string('firstname'),
                                                                 'firstname',
                                                                 $options['sorthow'],
@@ -110,7 +130,7 @@ class user_cell extends cell_base implements allocatable_cell {
     /**
      * @return string
      */
-    public function get_table_header_class(){
+    public function get_table_header_class() {
         return 'studentname';
     }
 

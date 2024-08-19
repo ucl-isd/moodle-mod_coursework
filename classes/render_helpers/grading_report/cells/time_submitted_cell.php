@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework\render_helpers\grading_report\cells;
 use coding_exception;
@@ -60,8 +80,8 @@ class time_submitted_cell extends cell_base {
             if ($submission->is_late() && (!$submission->has_extension() || !$submission->submitted_within_extension())) {
 
                 // check if submission has personal deadline
-                if ($coursework->personaldeadlineenabled ){
-                    $deadline =  $submission->submission_personal_deadline();
+                if ($coursework->personaldeadlineenabled ) {
+                    $deadline = $submission->submission_personal_deadline();
                 } else { // if not, use coursework default deadline
                     $deadline = $coursework->deadline;
                 }
@@ -84,7 +104,7 @@ class time_submitted_cell extends cell_base {
                 $content .= html_writer::end_span();
 
             } else {
-                $content .= html_writer::span('(' . get_string('ontime', 'mod_coursework') . ')','ontime_submission');
+                $content .= html_writer::span('(' . get_string('ontime', 'mod_coursework') . ')', 'ontime_submission');
             }
 
             if ($submission->get_allocatable()->type() == 'group') {
@@ -114,19 +134,18 @@ class time_submitted_cell extends cell_base {
             $displayeddeadline = $extension->extended_deadline;
         }
 
-
-        if($extension->id) {
+        if ($extension->id) {
             $new_extension_params['id'] = $extension->id;
         }
-        if($submission) {
+        if ($submission) {
             $new_extension_params['submissionid'] = $submission->id;
         }
 
         $deadline = $deadline ?? $coursework->deadline;
         $content_time = [
-            'time' => date('d-m-Y H:i',$deadline),
+            'time' => date('d-m-Y H:i', $deadline),
             'time_content' => userdate($deadline),
-            'is_have_deadline' => ($coursework->deadline > 0)? 1 : 0,
+            'is_have_deadline' => ($coursework->deadline > 0) ? 1 : 0,
         ];
 
         if ($ability->can('new', $extension) && $coursework->extensions_enabled()) {
@@ -135,7 +154,7 @@ class time_submitted_cell extends cell_base {
             $content .= $OUTPUT->action_link($link,
                 $title,
                 null,
-                array('class' => 'new_deadline_extension', 'data-name' => $row_object->get_allocatable()->name(), 'data-params' => json_encode($new_extension_params), 'data-time' =>json_encode($content_time) ));
+                array('class' => 'new_deadline_extension', 'data-name' => $row_object->get_allocatable()->name(), 'data-params' => json_encode($new_extension_params), 'data-time' => json_encode($content_time) ));
 
         } else if ($ability->can('edit', $extension) && $coursework->extensions_enabled()) {
             $link = $this->get_router()->get_path('edit deadline extension', array('id' => $extension->id));
@@ -144,9 +163,8 @@ class time_submitted_cell extends cell_base {
             $content .= $OUTPUT->action_icon($link,
                 $icon,
                 null,
-                array('class' => 'edit_deadline_extension', 'data-name' => $row_object->get_allocatable()->name(), 'data-params' => json_encode($new_extension_params), 'data-time' =>json_encode($content_time)));
+                array('class' => 'edit_deadline_extension', 'data-name' => $row_object->get_allocatable()->name(), 'data-params' => json_encode($new_extension_params), 'data-time' => json_encode($content_time)));
         }
-
 
         $content .= '</div>';
 
@@ -177,11 +195,11 @@ class time_submitted_cell extends cell_base {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options = array()) {
+    public function get_table_header($options  = []) {
 
         //adding this line so that the sortable heading function will make a sortable link unique to the table
-        //if tablename is set
-        $tablename  =   (!empty($options['tablename']))  ? $options['tablename']  : ''  ;
+        // If tablename is set
+        $tablename = (!empty($options['tablename'])) ? $options['tablename'] : '';
 
         return $this->helper_sortable_heading(get_string('tableheadsubmissiondate', 'coursework'),
             'timesubmitted',
@@ -193,7 +211,7 @@ class time_submitted_cell extends cell_base {
     /**
      * @return string
      */
-    public function get_table_header_class(){
+    public function get_table_header_class() {
         return 'tableheaddate';
     }
 

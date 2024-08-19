@@ -19,8 +19,7 @@ namespace mod_coursework\allocation\table\row;
 /**
  * Class file for the renderable object that makes a single row in the marker allocation table.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -120,7 +119,7 @@ class builder implements user_row {
 
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->firstname)) {
-            $this->allocatable =  user::find($allocatable);
+            $this->allocatable = user::find($allocatable);
         }
 
         return $this->get_allocatable()->firstname;
@@ -135,7 +134,7 @@ class builder implements user_row {
 
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->lastname)) {
-            $this->allocatable =  user::find($allocatable);
+            $this->allocatable = user::find($allocatable);
         }
 
         return $this->get_allocatable()->lastname;
@@ -149,12 +148,11 @@ class builder implements user_row {
 
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->idnumber)) {
-            $this->allocatable =  user::find($allocatable);
+            $this->allocatable = user::find($allocatable);
         }
 
         return $this->get_allocatable()->idnumber;
     }
-
 
     /**
      * @return string
@@ -165,11 +163,10 @@ class builder implements user_row {
 
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->email)) {
-            $this->allocatable =  user::find($allocatable);
+            $this->allocatable = user::find($allocatable);
         }
 
         return $this->get_allocatable()->email;
     }
-
 
 }

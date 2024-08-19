@@ -17,8 +17,7 @@
 /**
  * File for a moderation set rule that will include X students from between an upper and lower limit.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2012 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -31,7 +30,6 @@ use mod_coursework\models\coursework;
 use mod_coursework\models\moderation_set_rule;
 
 defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Defines a rule that will include all students above or below a particular percentage of
@@ -57,7 +55,6 @@ class minimum_range_grade_percent extends moderation_set_rule {
 
         // Convert percentages to raw grades for comparison.
         global $DB;
-
 
         $params = array('id' => $this->courseworkid);
         $maxgrade = $DB->get_field('coursework', 'grade', $params);
@@ -173,6 +170,5 @@ class minimum_range_grade_percent extends moderation_set_rule {
     protected function grade_is_above_lower_limit($grade, $lowerlimit) {
         return $grade >= $lowerlimit;
     }
-
 
 }

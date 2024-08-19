@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework\controllers;
 use mod_coursework\ability;
@@ -136,8 +156,7 @@ class deadline_extensions_controller extends controller_base {
      * Set the deadline to default current deadline if the extension was never given before
      * @return array
      */
-    protected function set_default_current_deadline()
-    {
+    protected function set_default_current_deadline() {
         global $DB;
         $params = array(
             'allocatableid' => $this->params['allocatableid'],
@@ -147,8 +166,8 @@ class deadline_extensions_controller extends controller_base {
         $this->deadline_extension = deadline_extension::build($params);
         // Default to current deadline
         // check for personal deadline first o
-        if ($this->coursework->personaldeadlineenabled){
-            $personal_deadline =  $DB->get_record('coursework_person_deadlines', $params);
+        if ($this->coursework->personaldeadlineenabled) {
+            $personal_deadline = $DB->get_record('coursework_person_deadlines', $params);
             if ($personal_deadline) {
                 $this->coursework->deadline = $personal_deadline->personal_deadline;
             }
@@ -157,13 +176,10 @@ class deadline_extensions_controller extends controller_base {
         return $params;
     }
 
-
-
     /**
      * Begin Ajax functions
      */
-    public function ajax_submit_mitigation($data_params)
-    {
+    public function ajax_submit_mitigation($data_params) {
         global $USER, $OUTPUT;
         $extended_deadline = false;
         $response = [];
@@ -204,17 +220,15 @@ class deadline_extensions_controller extends controller_base {
         }
     }
 
-    public function validation($data){
+    public function validation($data) {
         global $CFG;
         $max_deadline = $CFG->coursework_max_extension_deadline;
-
 
         if ($this->coursework->personaldeadlineenabled && $personal_deadline = $this->personal_deadline()) {
             $deadline = $personal_deadline->personal_deadline;
         } else {
             $deadline = $this->coursework->deadline;
         }
-
 
         if ( $data['extended_deadline'] <= $deadline) {
             return $errors = 'The new deadline must be later than the current deadline';
@@ -223,7 +237,7 @@ class deadline_extensions_controller extends controller_base {
         return false;
     }
 
-    public function submission_exists($data){
+    public function submission_exists($data) {
         global $DB;
 
         return  $DB->record_exists('coursework_submissions', array(
@@ -233,13 +247,13 @@ class deadline_extensions_controller extends controller_base {
         ));
     }
 
-    public function personal_deadline(){
+    public function personal_deadline() {
         global $DB;
 
         $extensionid = optional_param('id', 0,  PARAM_INT);
 
         if ($extensionid != 0) {
-            $ext =  $DB->get_record('coursework_extensions', array('id' => $extensionid));
+            $ext = $DB->get_record('coursework_extensions', array('id' => $extensionid));
             $allocatableid = $ext->allocatableid;
             $allocatabletype = $ext->allocatabletype;
             $courseworkid = $ext->courseworkid;
@@ -247,7 +261,7 @@ class deadline_extensions_controller extends controller_base {
 
             $allocatableid = required_param('allocatableid', PARAM_INT);
             $allocatabletype = required_param('allocatabletype', PARAM_ALPHANUMEXT);
-            $courseworkid =  required_param('courseworkid', PARAM_INT);
+            $courseworkid = required_param('courseworkid', PARAM_INT);
         }
 
         $params = array(
@@ -286,18 +300,18 @@ class deadline_extensions_controller extends controller_base {
                     $time = date('d-m-Y H:i', $this->coursework->deadline);
                 }
 
-                if(!empty($deadline_extension->extended_deadline) && $deadline_extension->extended_deadline > 0) {
+                if (!empty($deadline_extension->extended_deadline) && $deadline_extension->extended_deadline > 0) {
                     $time = date('d-m-Y H:i', $deadline_extension->extended_deadline);
                 }
 
                 $deadline_extension_transform = [
                     'time_content' => $time_content,
-                    'time'  => $time,
+                    'time' => $time,
                     'text' => $deadline_extension->extra_information_text,
                     'allocatableid' => $deadline_extension->allocatableid,
                     'allocatabletype' => $deadline_extension->allocatabletype,
                     'courseworkid' => $deadline_extension->courseworkid,
-                    'id'    => $deadline_extension->id,
+                    'id' => $deadline_extension->id,
                     'pre_defined_reason' => $deadline_extension->pre_defined_reason,
                 ];
                 $response = [
@@ -314,7 +328,7 @@ class deadline_extensions_controller extends controller_base {
         echo json_encode($response);
     }
 
-    public function ajax_new_mitigation($data_params){
+    public function ajax_new_mitigation($data_params) {
         global $USER, $DB;
         $response = [];
         $this->coursework = coursework::find(['id' => $this->params['courseworkid']]);
@@ -327,12 +341,12 @@ class deadline_extensions_controller extends controller_base {
         );
 
         $ability = new ability(user::find($USER), $this->coursework);
-        $deadline_extension= deadline_extension::build($params);
+        $deadline_extension = deadline_extension::build($params);
         $ability->require_can('new', $deadline_extension);
         $time_content = '';
         $time = '';
-        if ($this->coursework->deadline){
-            $personal_deadline =  $DB->get_record('coursework_person_deadlines', $params);
+        if ($this->coursework->deadline) {
+            $personal_deadline = $DB->get_record('coursework_person_deadlines', $params);
             if ($personal_deadline) {
                 $time_content = 'Personal deadline: ' . userdate($personal_deadline->personal_deadline);
                 // $this->coursework->deadline = $personal_deadline->personal_deadline;
@@ -345,7 +359,7 @@ class deadline_extensions_controller extends controller_base {
 
         $deadline_extension_transform = [
             'time_content' => $time_content,
-            'time'  => $time,
+            'time' => $time,
         ];
 
         $response = [
@@ -355,7 +369,6 @@ class deadline_extensions_controller extends controller_base {
 
         echo json_encode($response);
     }
-
 
     /**
      * function table_cell_response
@@ -375,12 +388,11 @@ class deadline_extensions_controller extends controller_base {
             $row_object = new \mod_coursework\grading_table_row_single($coursework, $participant);
         }
 
-        $time_submitted_cell = new  \mod_coursework\render_helpers\grading_report\cells\time_submitted_cell(array('coursework'=>$this->coursework));
+        $time_submitted_cell = new  \mod_coursework\render_helpers\grading_report\cells\time_submitted_cell(array('coursework' => $this->coursework));
 
         $content = $time_submitted_cell->prepare_content_cell($row_object);
 
         return $content;
     }
-
 
 }

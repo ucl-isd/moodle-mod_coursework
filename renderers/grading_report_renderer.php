@@ -1,4 +1,25 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\grading_report;
@@ -23,7 +44,6 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @var
      */
     protected $is_multiple_markers;
-
 
     /**
      * @param grading_report $grading_report
@@ -57,7 +77,6 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         return  $langelement . $table_html;
     }
 
-
     /**
      *
      * @return mixed
@@ -69,17 +88,16 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
             'exportgradingsheets' => get_string('exportgradingsheets', 'mod_coursework'),
             'loadingpagination' => get_string('loadingpagination', 'mod_coursework')
         ];
-        $result = html_writer::empty_tag('input',array(
-            'name'=>'',
-            'type'=>'hidden',
-            'data-lang'=>json_encode($lang_messages),
-            'id'=>'element_lang_messages'
+        $result = html_writer::empty_tag('input', array(
+            'name' => '',
+            'type' => 'hidden',
+            'data-lang' => json_encode($lang_messages),
+            'id' => 'element_lang_messages'
         ));
         $result = html_writer::div($result);
 
         return $result;
     }
-
 
     /**
      * @param cell_interface $cell_helper
@@ -105,7 +123,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      */
     protected function make_row_for_allocatable($row_object, $cell_helpers, $sub_row_helper) {
 
-        //$class = (!$row_object->get_coursework()->has_multiple_markers())? "submissionrowsingle": "submissionrowmulti";
+        //$class = (!$row_object->get_coursework()->has_multiple_markers()) ? "submissionrowsingle": "submissionrowmulti";
         $class = $this->row_class;
 
         $submission = $row_object->get_submission();
@@ -118,7 +136,6 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
             $table_html .= '<td class="details-control"></td>';
         }
 
-
         foreach ($cell_helpers as $cell_helper) {
             $html_td = trim($cell_helper->get_table_cell($row_object));
 
@@ -126,7 +143,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
                 ($cell_helper instanceof \mod_coursework\render_helpers\grading_report\cells\user_cell ||
                     $cell_helper instanceof \mod_coursework\render_helpers\grading_report\cells\group_cell)
             ) {
-                $html_td = str_replace('</td>' , $tbl_assessor_feedbacks.'</td>', $html_td);
+                $html_td = str_replace('</td>', $tbl_assessor_feedbacks.'</td>', $html_td);
             }
 
             $table_html .= $html_td;
@@ -143,8 +160,8 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     /**
      * @return string
      */
-    public function submissions_header($header_text='') {
-        $submisions = (!empty($header_text))    ? $header_text  :   get_string('submissions', 'mod_coursework');
+    public function submissions_header($header_text = '') {
+        $submisions = (!empty($header_text)) ? $header_text : get_string('submissions', 'mod_coursework');
 
         return html_writer::tag('h3', $submisions);
     }
@@ -176,11 +193,11 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     /**
      * @return string
      */
-    protected function start_table($options=array()) {
+    protected function start_table($options  = []) {
         $options['width'] = '100%';
         $options['class'] = (!empty($options['class'])) ? $options['class'] : '';
         $options['class'] .= ' submissions datatabletest display compact';
-        $options['id']  = 'dt_table';
+        $options['id'] = 'dt_table';
         $table_html = \html_writer::start_tag('table', $options);
         $table_html .= \html_writer::start_tag('thead');
         return $table_html;
@@ -221,7 +238,6 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @return string
      */
     private function make_upper_headers($cell_helpers, $is_multiple_markers) {
-        global $OUTPUT;
         $html = '';
         $headers = $this->upper_header_names_and_colspans($cell_helpers);
 
@@ -234,8 +250,8 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
 
             $html .= '<th colspan="'.$colspan_value.'">';
             $html .= get_string($header_name.'_table_header', 'mod_coursework');
-            $html .= get_string($header_name.'_table_header', 'mod_coursework')?
-                    ($OUTPUT->help_icon($header_name.'_table_header', 'mod_coursework')) : '';
+            $html .= get_string($header_name.'_table_header', 'mod_coursework')
+                ? ($this->output->help_icon($header_name.'_table_header', 'mod_coursework')) : '';
             $html .= '</th>';
         }
 
@@ -247,7 +263,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @return mixed
      */
     private function upper_header_names_and_colspans($cell_helpers) {
-        $headers = array();
+        $headers = [];
 
         foreach ($cell_helpers as $helper) {
             if (!array_key_exists($helper->header_group(), $headers)) {
@@ -267,6 +283,5 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     public function grading_table_row_id(allocatable $allocatable, coursework $coursework) {
         return 'allocatable_' . $coursework->get_allocatable_identifier_hash($allocatable);
     }
-
 
 }

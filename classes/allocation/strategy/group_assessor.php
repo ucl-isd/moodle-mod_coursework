@@ -19,8 +19,7 @@ namespace mod_coursework\allocation\strategy;
 /**
  * Class file for the Group assessor allocation strategy.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2018 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -67,6 +66,6 @@ class group_assessor extends base {
      * @return mixed
      */
     protected function list_of_allocatable_teachers_and_their_current_number_of_allocations($teachers, $student) {
-        return array();
+        return [];
     }
 }

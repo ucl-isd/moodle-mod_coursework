@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 /**
  * This class is here to take the data from the table on the allocation page and process each
@@ -32,7 +52,7 @@ class processor {
     /**
      * @param array $table_data
      */
-    public function process_data($table_data = array()) {
+    public function process_data($table_data  = []) {
         $clean_data = $this->clean_data($table_data);
         $allocatables = $this->coursework->get_allocatables();
 
@@ -40,7 +60,7 @@ class processor {
             if (array_key_exists($allocatable->id(), $clean_data)) {
                 $row_data = $clean_data[$allocatable->id()];
             } else {
-                $row_data = array();
+                $row_data = [];
             }
 
             $allocatable = $this->get_allocatable_from_id($allocatable->id());
@@ -67,28 +87,28 @@ class processor {
     private function clean_data($raw_data) {
 
         // Data looks like this:
-//        $example_data = array(
-//            4543 => array( // Student id
-//                'assessor_1' => array(
-//                    'allocation_id' => 43,
-//                    'assessor_id' => 232,
-//                ),
-//                'moderator_1' => array(
-//                    'allocation_id' => 46,
-//                    'assessor_id' => 235,
-//                    'in_set' => 1,
-//                )
-//            )
-//        );
+// $example_data = array(
+// 4543 => array( // Student id
+// 'assessor_1' => array(
+// 'allocation_id' => 43,
+// 'assessor_id' => 232,
+// ),
+// 'moderator_1' => array(
+// 'allocation_id' => 46,
+// 'assessor_id' => 235,
+// 'in_set' => 1,
+// )
+// )
+// );
 
-        $clean_data = array();
+        $clean_data = [];
         foreach ($raw_data as $allocatable_id => $datarrays) {
 
             if (!$this->allocatable_id_is_valid($allocatable_id)) { // Should be the id of a student.
                 continue;
             }
 
-            $clean_data[$allocatable_id] = array();
+            $clean_data[$allocatable_id] = [];
 
             foreach ($this->coursework->marking_stages() as $stage) {
 

@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework\render_helpers\grading_report\cells;
 use coding_exception;
@@ -35,14 +55,14 @@ class grade_for_gradebook_cell extends cell_base {
      * @throws coding_exception
      * @return string
      */
-    public function get_table_header($options = array()) {
+    public function get_table_header($options  = []) {
         return get_string('provisionalgrade', 'mod_coursework');
     }
 
     /**
      * @return string
      */
-    public function get_table_header_class(){
+    public function get_table_header_class() {
         return 'provisionalgrade';
     }
 
@@ -56,7 +76,7 @@ class grade_for_gradebook_cell extends cell_base {
     /**
      * @return string
      */
-    public function get_table_header_help_icon(){
+    public function get_table_header_help_icon() {
         global $OUTPUT;
         return ($OUTPUT->help_icon('provisionalgrade', 'mod_coursework'));
     }

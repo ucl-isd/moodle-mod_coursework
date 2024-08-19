@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 /**
  * Step definitions for the Coursework module Behat tests.
@@ -19,7 +39,7 @@ require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
 require_once(__DIR__ . '/../../../../vendor/phpunit/phpunit/src/Framework/Assert/Functions.php');
 
 $files = glob(dirname(__FILE__) . '/steps/*.php');
-foreach($files as $filename) {
+foreach ($files as $filename) {
     require_once($filename);
 }
 
@@ -64,7 +84,7 @@ class behat_mod_coursework extends behat_base {
 
         if (file_exists($file_path)) {
             require_once($file_path);
-            $class_name = 'mod_coursework_behat_' . $page_name ;
+            $class_name = 'mod_coursework_behat_' . $page_name;
             return new $class_name($this);
         }
 
@@ -207,10 +227,10 @@ class behat_mod_coursework extends behat_base {
      * @Then /^I should( not)? see( the)? (.*)'s name on the page$/
      * @param bool $negate
      */
-    public function iShouldSeeTheStudentSNameOnThePage($negate = false,$negate2=false,$studentrole) {
+    public function iShouldSeeTheStudentSNameOnThePage($negate = false, $negate2=false, $studentrole) {
         $page = $this->get_page('coursework page');
 
-        $student    =   ($studentrole == "another student") ? $this->other_student : $this->student;
+        $student = ($studentrole == "another student") ? $this->other_student : $this->student;
 
         $studentname = fullname($student);
 
@@ -244,7 +264,6 @@ class behat_mod_coursework extends behat_base {
         $stages = $this->coursework->get_assessor_marking_stages();
         return reset($stages);
     }
-
 
     /**
      *
@@ -616,7 +635,7 @@ class behat_mod_coursework extends behat_base {
         $generator = testing_util::get_data_generator();
         $grouping = new stdClass();
         $grouping->courseid = $this->course->id;
-        $grouping =  $generator->create_grouping($grouping);
+        $grouping = $generator->create_grouping($grouping);
         groups_assign_grouping($grouping->id, $this->group->id);
         $this->get_coursework()->update_attribute('grouping_id', $grouping->id);
     }
@@ -705,17 +724,15 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Given /^I am allowed to view all students$/
      */
-    public function iAmAllowedToViewAllStudents()   {
+    public function iAmAllowedToViewAllStudents() {
         global $DB;
 
-        $teacher_role   =   $DB->get_record('role', array('shortname' => 'teacher'));
-        $params =   array('roleid'      => $teacher_role->id,
-                          'capability'  => 'mod/coursework:viewallstudents');
-        $permission_setting =   CAP_ALLOW;
+        $teacher_role = $DB->get_record('role', array('shortname' => 'teacher'));
+        $params = array('roleid' => $teacher_role->id,
+                          'capability' => 'mod/coursework:viewallstudents');
+        $permission_setting = CAP_ALLOW;
         $DB->set_field('role_capabilities', 'permission', $permission_setting, $params);
     }
-
-
 
     /**
      * IMPORTANT: CI server borks if this is not done *before* the manager
@@ -797,7 +814,6 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
 
-
         if ($negate) {
             $page->should_not_have_add_button_for_final_feedback($this->student->id());
         } else {
@@ -805,9 +821,6 @@ class behat_mod_coursework extends behat_base {
         }
 
     }
-
-
-
 
     /**
      * @Then /^I should not see the edit final feedback button on the multiple marker page$/
@@ -883,8 +896,7 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Given /^the coursework allocation option is disabled$/
      */
-    public function theCourseworkAllocationOptionIsDisabled()
-    {
+    public function theCourseworkAllocationOptionIsDisabled() {
         $coursework = $this->get_coursework();
 
         $coursework->allocationenabled = 0;
@@ -894,8 +906,7 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Given /^the manager has a capability to allocate students in samplings$/
      */
-    public function theManagerHasACapabilityToAllocateStudentsInSamplings()
-    {
+    public function theManagerHasACapabilityToAllocateStudentsInSamplings() {
         global $DB;
 
         $manager_role = $DB->get_record('role', array('shortname' => 'manager'));
@@ -907,8 +918,7 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Given /^I (de)?select (a|another) student as a part of the sample for the second stage$/
      */
-    public function iSelectTheStudentAsAPartOfTheSample($negate = false,$other)
-    {
+    public function iSelectTheStudentAsAPartOfTheSample($negate = false, $other) {
         /**
          * @var mod_coursework_behat_allocations_page $page
          */
@@ -916,7 +926,7 @@ class behat_mod_coursework extends behat_base {
         $student = $other ? 'other_student' : 'student';
 
         $page = $this->get_page('allocations page');
-        if ($negate){
+        if ($negate) {
             $page->deselect_for_sample($this->$student, 'assessor_2');
         } else {
             $page->select_for_sample($this->$student, 'assessor_2');
@@ -926,8 +936,7 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Given /^the teacher has a capability to mark submissions$/
      */
-    public function theTeacherHasACapabilityToMarkSubmissions()
-    {
+    public function theTeacherHasACapabilityToMarkSubmissions() {
         global $DB;
 
         $teacher_role = $DB->get_record('role', array('shortname' => 'teacher'));
@@ -941,8 +950,7 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Given /^the teacher has a capability to edit their own initial feedbacks$/
      */
-    public function theTeacherHasACapabilityToEditOwnFeedbacks()
-    {
+    public function theTeacherHasACapabilityToEditOwnFeedbacks() {
         global $DB;
 
         $teacher_role = $DB->get_record('role', array('shortname' => 'teacher'));
@@ -968,30 +976,27 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Given /^the coursework has sampling enabled$/
      */
-    public function theCourseworkHasSamplingEnabled()
-    {
+    public function theCourseworkHasSamplingEnabled() {
         $this->get_coursework()->update_attribute('samplingenabled', '1');
     }
 
     /**
      * @Given /^there is feedback for the submission from the other teacher$/
      */
-    public function thereIsFeedbackForTheSubmissionFromTheOtherTeacher()
-    {
+    public function thereIsFeedbackForTheSubmissionFromTheOtherTeacher() {
         $this->feedback = feedback::create(array(
-            'submissionid'=>$this->submission->id,
+            'submissionid' => $this->submission->id,
             'assessorid' => $this->other_teacher->id,
-            'grade'=> '78',
-            'feedbackcomment'=>'Blah',
-            'stage_identifier'=>'assessor_1'
+            'grade' => '78',
+            'feedbackcomment' => 'Blah',
+            'stage_identifier' => 'assessor_1'
         ));
     }
 
     /**
      * @Then /^I should (not )?be able to add the second grade for this student$/
      */
-    public function iShouldNotBeAbleToAddTheSecondGradeForThisStudent($negate = false)
-    {
+    public function iShouldNotBeAbleToAddTheSecondGradeForThisStudent($negate = false) {
         /**
          * @var mod_coursework_behat_multiple_grading_interface $page
          */
@@ -1008,8 +1013,7 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Then /^I should see the grade given by the initial teacher in the provisional grade column$/
      */
-    public function iShouldSeeTheGradeGivenByTheInitialTeacherInTheProvisionalGradeColumn()
-    {
+    public function iShouldSeeTheGradeGivenByTheInitialTeacherInTheProvisionalGradeColumn() {
 
         /**
          * @var mod_coursework_behat_multiple_grading_interface $page
@@ -1055,7 +1059,6 @@ class behat_mod_coursework extends behat_base {
          */
         $multigrader_page = $this->get_page('multiple grading interface');
         $multigrader_page->click_new_extension_button_for($this->student);
-
 
         /**
          * @var mod_coursework_behat_new_extension_page $new_extension_page
@@ -1204,8 +1207,7 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Given /^the coursework individual extension option is enabled$/
      */
-    public function theCourseworkIndividualExtensionOptionIsEnabled()
-    {
+    public function theCourseworkIndividualExtensionOptionIsEnabled() {
         $coursework = $this->get_coursework();
 
         $coursework->extensionsenabled = 1;
@@ -1317,8 +1319,6 @@ class behat_mod_coursework extends behat_base {
     public function running_javascript() {
         return parent::running_javascript();
     }
-
-
 
     // Course steps
 
@@ -1499,9 +1499,6 @@ class behat_mod_coursework extends behat_base {
     public function theSitewideSettingIs($setting_name, $setting_value) {
         set_config($setting_name, $setting_value);
     }
-
-
-
 
     // Allocation steps
 
@@ -1713,7 +1710,6 @@ class behat_mod_coursework extends behat_base {
 
         assertNotEmpty($result);
     }
-
 
     // Feedback steps
 
@@ -1939,9 +1935,9 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
         $page->should_have_moderator_grade_for($this->student, '56');
-//        if (!$this->find('xpath', $this->xpath_tag_class_contains_text('td', 'moderated', '56'))) {
-//            throw new ExpectationException('Could not find the moderated grade', $this->getSession());
-//        }
+// if (!$this->find('xpath', $this->xpath_tag_class_contains_text('td', 'moderated', '56'))) {
+// throw new ExpectationException('Could not find the moderated grade', $this->getSession());
+// }
     }
 
     /**
@@ -2110,11 +2106,11 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
         $page->assessor_grade_should_be_present($this->student, 1, 56);
-//        $xpath = $this->xpath_tag_class_contains_text('td', 'cfeedbackcomment', '56');
-//        if (!$this->getSession()->getPage()->has('xpath', $xpath)) {
-//            throw new ExpectationException('Should have seen the grade ("56"), but it was not there',
-//                                           $this->getSession());
-//        }
+// $xpath = $this->xpath_tag_class_contains_text('td', 'cfeedbackcomment', '56');
+// if (!$this->getSession()->getPage()->has('xpath', $xpath)) {
+// throw new ExpectationException('Should have seen the grade ("56"), but it was not there',
+// $this->getSession());
+// }
     }
 
     /**
@@ -2138,7 +2134,6 @@ class behat_mod_coursework extends behat_base {
         if ($nodeElement) {
             $nodeElement->selectOption($grade);
         }
-
 
         if (empty($withoutcomments)) {
             $nodeElement1 = $this->find('css', '#feedback_comment');
@@ -2294,7 +2289,6 @@ class behat_mod_coursework extends behat_base {
         $grading_interface->there_should_not_be_a_feedback_icon($this->student);
     }
 
-
     // General web steps
 
     /**
@@ -2325,7 +2319,7 @@ class behat_mod_coursework extends behat_base {
         // possibly be a new id in there.
         if ($ignore_params) {
             $current_path = parse_url($currentUrl, PHP_URL_PATH);
-//            $desired_path = parse_url($desirtedUrl, PHP_URL_PATH);
+// $desired_path = parse_url($desirtedUrl, PHP_URL_PATH);
             $message = "Should be on the " . $desirtedUrl . " page but instead the url is " . $current_path;
             assertEquals($current_path, $desirtedUrl, $message);
         } else {
@@ -2374,14 +2368,10 @@ class behat_mod_coursework extends behat_base {
         $this->getSession()->wait($seconds * 1000);
     }
 
-    //     And I click on ".moodle-dialogue-focused.filepicker .yui3-button.closebutton" "css_element"
+    // And I click on ".moodle-dialogue-focused.filepicker .yui3-button.closebutton" "css_element"
     public function dismiss() {
         $this->find('css', ".moodle-dialogue-focused.filepicker .yui3-button.closebutton")->click();
     }
-
-
-
-
 
     // Submission steps
 
@@ -2414,7 +2404,6 @@ class behat_mod_coursework extends behat_base {
         $submission->allocatabletype = $this->other_student->type();
         $this->other_submission = $generator->create_submission($submission, $this->coursework);
     }
-
 
     /**
      * @Given /^the group has a submission$/
@@ -2504,7 +2493,7 @@ class behat_mod_coursework extends behat_base {
             ->findAll('xpath', "//div[@class='{$action}submissionbutton']//input[@type='submit']");
         $button = $this->getSession()->getPage()
             ->findAll('xpath', "//div[@class='{$action}submissionbutton']//button[@type='submit']");
-        $buttons = ($input)? $input : $button;// check how element was created and use it to find the button
+        $buttons = ($input) ? $input : $button;// check how element was created and use it to find the button
 
         assertCount(($negate ? 0 : 1), $buttons);
     }
@@ -2534,9 +2523,6 @@ class behat_mod_coursework extends behat_base {
         $student_page = $this->get_page('student page');
         $student_page->should_show_the_submitter_as($role_name);
     }
-
-
-
 
     // User steps
 
@@ -2642,7 +2628,6 @@ class behat_mod_coursework extends behat_base {
         $group = $generator->create_group($group);
         $this->group = group::find($group);
 
-
         $membership = new stdClass();
         $membership->groupid = $this->group->id;
         $membership->userid = $this->student->id;
@@ -2730,8 +2715,6 @@ class behat_mod_coursework extends behat_base {
         $page->should_have_grade('67');
     }
 
-
-
     /**
      * @return mixed
      */
@@ -2778,21 +2761,18 @@ class behat_mod_coursework extends behat_base {
 
         $page->show_hide_non_allocated_students();
 
-
     }
-
 
     /**
      *
      * @When /^I enable automatic sampling for stage ([1-3])$/
      *
      */
-    public function IEnableAutomaticSamplingForStage($stage)   {
+    public function IEnableAutomaticSamplingForStage($stage) {
 
         $page = $this->get_page('allocations page');
         $page->enable_atomatic_sampling_for($stage);
     }
-
 
     /**
      * @Given /^I enable total rule for stage (\d+)$/
@@ -2800,11 +2780,10 @@ class behat_mod_coursework extends behat_base {
      * @param $stage
      * @throws coding_exception
      */
-    public function IEnableTotalRuleForStage($stage)  {
+    public function IEnableTotalRuleForStage($stage) {
         $page = $this->get_page('allocations page');
         $page->enable_total_rule_for_stage($stage);
     }
-
 
     /**
      * @Given /^I add grade range rule for stage (\d+)$/
@@ -2812,7 +2791,7 @@ class behat_mod_coursework extends behat_base {
      * @param $stage
      * @throws coding_exception
      */
-    public function IAddGradeRangeRuleForStage($stage)  {
+    public function IAddGradeRangeRuleForStage($stage) {
         $page = $this->get_page('allocations page');
         $page->add_grade_range_rule_for_stage($stage);
     }
@@ -2824,12 +2803,11 @@ class behat_mod_coursework extends behat_base {
      * @param $stage
      * @throws coding_exception
      */
-    public function IEnableGradeRangeRuleForStage($ruleno, $stage)  {
+    public function IEnableGradeRangeRuleForStage($ruleno, $stage) {
         $ruleno = $ruleno - 1;
         $page = $this->get_page('allocations page');
         $page->enable_grade_range_rule_for_stage($stage, $ruleno);
     }
-
 
     /**
      * @Then  /^I select limit type for grade range rule (\d+) in stage (\d+) as "([\w]*)"$/
@@ -2839,12 +2817,11 @@ class behat_mod_coursework extends behat_base {
      * @param $type
      * @throws coding_exception
      */
-    public function ISelectLimitTypeForGradeRangeRuleInStageAs($ruleno, $stage, $type)  {
+    public function ISelectLimitTypeForGradeRangeRuleInStageAs($ruleno, $stage, $type) {
         $ruleno = $ruleno - 1;
         $page = $this->get_page('allocations page');
         $page->select_type_of_grade_range_rule_for_stage($stage, $ruleno, $type);
     }
-
 
     /**
      * @Then  /^I select "([\w]*)" grade limit for grade range rule (\d+) in stage (\d+) as "(\d+)"$/
@@ -2855,12 +2832,11 @@ class behat_mod_coursework extends behat_base {
      * @param $value
      * @throws coding_exception
      */
-    public function ISelectGradeLimitTypeForGradeRangeRuleInStageAs($range, $ruleno, $stage, $value)  {
+    public function ISelectGradeLimitTypeForGradeRangeRuleInStageAs($range, $ruleno, $stage, $value) {
         $ruleno = $ruleno - 1;
         $page = $this->get_page('allocations page');
         $page->select_range_for_grade_range_rule_for_stage($range, $stage, $ruleno, $value);
     }
-
 
     /**
      * @Given /^I select (\d+)% of total students in stage (\d+)$/
@@ -2869,9 +2845,9 @@ class behat_mod_coursework extends behat_base {
      * @param $stage
      * @throws coding_exception
      */
-    public function ISelectTotalSubmissionsInStage($percentage,$stage)   {
+    public function ISelectTotalSubmissionsInStage($percentage, $stage) {
         $page = $this->get_page('allocations page');
-        $page->select_total_percentage_for_stage($percentage,$stage);
+        $page->select_total_percentage_for_stage($percentage, $stage);
     }
 
     /**
@@ -2880,15 +2856,14 @@ class behat_mod_coursework extends behat_base {
      * @param $stage
      * @throws coding_exception
      */
-    public function StudentAutomaticallyIncludedInSampleForStage($other,$another,$negate,$stage)  {
+    public function StudentAutomaticallyIncludedInSampleForStage($other, $another, $negate, $stage) {
         $page = $this->get_page('allocations page');
-        $another = (!empty($another))? $this->other_student: '';
+        $another = (!empty($another)) ? $this->other_student: '';
         $other = ($other == 'another');
         $student = $other ? 'other_student' : 'student';
 
-        $page->automatically_included_in_sample($this->coursework,$this->$student,$another,$stage,$negate);
+        $page->automatically_included_in_sample($this->coursework, $this->$student, $another, $stage, $negate);
     }
-
 
     /**
      * @Given /^I save sampling strategy$/
@@ -2922,27 +2897,27 @@ class behat_mod_coursework extends behat_base {
      * @AfterStep
      * @param \Behat\Behat\Event\StepEvent $event
      */
-//    public function takeScreenshotAfterFailedStep(Behat\Behat\Event\StepEvent $event) {
-//        if ($event->getResult() === Behat\Behat\Event\StepEvent::FAILED) {
+// public function takeScreenshotAfterFailedStep(Behat\Behat\Event\StepEvent $event) {
+// if ($event->getResult() === Behat\Behat\Event\StepEvent::FAILED) {
 //
-//            $step = $event->getStep();
-//            $path = array(
-//                'date' => date("Ymd-Hi"),
-//                'feature' => $step->getParent()->getFeature()->getTitle(),
-//                'scenario' => $step->getParent()->getTitle(),
-//                'step' => $step->getType() . ' ' . $step->getText(),
-//            );
-//            $path = preg_replace('/[^\-\.\w]/', '_', $path);
-//            $filename = implode($path);
+// $step = $event->getStep();
+// $path = array(
+// 'date' => date("Ymd-Hi"),
+// 'feature' => $step->getParent()->getFeature()->getTitle(),
+// 'scenario' => $step->getParent()->getTitle(),
+// 'step' => $step->getType() . ' ' . $step->getText(),
+// );
+// $path = preg_replace('/[^\-\.\w]/', '_', $path);
+// $filename = implode($path);
 //
-//            $driver = $this->getSession()->getDriver();
-//            if ($driver instanceof Behat\Mink\Driver\Selenium2Driver) {
-//                $filename .= '_screenshot.jpg';
-//                $this->show_me_a_screenshot($filename);
-//            } else {
-//                $filename .= '_page.html';
-//                $this->show_me_the_page($filename);
-//            }
-//        }
-//    }
+// $driver = $this->getSession()->getDriver();
+// if ($driver instanceof Behat\Mink\Driver\Selenium2Driver) {
+// $filename .= '_screenshot.jpg';
+// $this->show_me_a_screenshot($filename);
+// } else {
+// $filename .= '_page.html';
+// $this->show_me_the_page($filename);
+// }
+// }
+// }
 }

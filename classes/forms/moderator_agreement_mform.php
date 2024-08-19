@@ -17,8 +17,7 @@
 /**
  * Creates an mform for moderator agreement
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -66,7 +65,6 @@ class moderator_agreement_mform extends moodleform {
         $mform->addElement('hidden', 'submissionid', $moderation->get_submission()->id);
         $mform->setType('submissionid', PARAM_INT);
 
-
         $mform->addElement('hidden', 'moderatorid', $moderation->moderatorid);
         $mform->setType('moderatorid', PARAM_INT);
 
@@ -82,18 +80,15 @@ class moderator_agreement_mform extends moodleform {
         $mform->addElement('hidden', 'courseworkid', $coursework->id);
         $mform->setType('courseworkid', PARAM_INT);
 
-
         // moderator agreement
-        $options = array('agreed'=>get_string('agreed', 'coursework'), 'disagreed'=>get_string('disagreed', 'coursework'));
+        $options = array('agreed' => get_string('agreed', 'coursework'), 'disagreed' => get_string('disagreed', 'coursework'));
         $mform->addElement('select', 'agreement',
                             get_string('moderationagreement', 'coursework'),
                             $options,
                             array('id' => 'moderation_agreement'));
 
-
         $mform->addElement('editor', 'modcomment', get_string('comment', 'mod_coursework'), array('id' => 'moderation_comment'));
         $mform->setType('editor', PARAM_RAW);
-
 
         $this->add_action_buttons();
     }
@@ -113,7 +108,6 @@ class moderator_agreement_mform extends moodleform {
         $moderation->courseworkid = $formdata->courseworkid;
         $moderation->modcomment = $formdata->modcomment['text'];
         $moderation->modcommentformat = $formdata->modcomment['format'];
-
 
         return $moderation;
     }

@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -58,7 +57,7 @@ class student_submission_form extends moodleform {
         $this->add_hidden_elements_to_form();
 
         // if TII plagiarism enabled check if user agreed/disagreed EULA
-        if(!$this->get_coursework()->plagiarism_enbled() || has_user_seen_tii_EULA_agreement()) {
+        if (!$this->get_coursework()->plagiarism_enbled() || has_user_seen_tii_EULA_agreement()) {
 
             $this->add_header_to_form();
 
@@ -176,18 +175,16 @@ class student_submission_form extends moodleform {
 
                     if (!$submission->get_coursework()->has_deadline()) {
 
-                        $userids  =   explode(',',$submission->get_coursework()->get_submission_notification_users());
+                        $userids = explode(',', $submission->get_coursework()->get_submission_notification_users());
 
                         if (!empty($userids)) {
-                            foreach($userids as $u)   {
-                                $notifyuser   = $DB->get_record('user',array('id'=>trim($u)));
+                            foreach ($userids as $u) {
+                                $notifyuser = $DB->get_record('user', array('id' => trim($u)));
                                 $mailer = new mailer($coursework);
 
                                 if (!empty($notifyuser))   $mailer->send_submission_notification($notifyuser);
                           }
                         }
-
-
 
                     }
 
@@ -230,7 +227,6 @@ class student_submission_form extends moodleform {
         }
     }
 
-
     /**
      * Sets the data, tweaking the submission to conform to the form's field names
      *
@@ -263,7 +259,6 @@ class student_submission_form extends moodleform {
         parent::set_data($data);
 
     }
-
 
     /**
      * @return coursework
@@ -304,7 +299,7 @@ class student_submission_form extends moodleform {
 
         $ability = new ability(user::find($USER), $this->get_coursework());
 
-        $button_array = array();
+        $button_array = [];
         // If submitting on behalf of someone else, we want to make sure that we don't have people leaving it in a draft
         // state because the reason for doing submit on behalf of in the first place is that the student cannot use the
         // interface themselves, so they are unable to come back later to finalise it themselves.
@@ -359,7 +354,7 @@ class student_submission_form extends moodleform {
                                  $uploadfilestring,
                                  null,
                                  $this->get_file_manager_options());
-        $this->_form->addRule('submission_manager', 'You must upload file(s) into the box below before you can save', 'required', null,'server',false,true);
+        $this->_form->addRule('submission_manager', 'You must upload file(s) into the box below before you can save', 'required', null, 'server', false, true);
 
     }
 
@@ -370,7 +365,7 @@ class student_submission_form extends moodleform {
         $file_manager_options = $this->get_file_manager_options();
 
         $usernamehash = $this->get_coursework()->get_username_hash($this->get_submission()->userid);
-        $filerenamestring =  ($this->get_coursework()->renamefiles == 1)? get_string('file_rename', 'coursework', $usernamehash) : "";
+        $filerenamestring = ($this->get_coursework()->renamefiles == 1) ? get_string('file_rename', 'coursework', $usernamehash) : "";
         $filerenamestring .= $this->make_plagiarism_instructions();
         $filerenamestring .= html_writer::empty_tag('br');
         if ($file_manager_options['accepted_types'] != '*') {
@@ -387,9 +382,8 @@ class student_submission_form extends moodleform {
      */
     protected function add_header_to_form() {
         $file_manager_options = $this->get_file_manager_options();
-        $files_string = ($file_manager_options['maxfiles'] == 1) ? 'yoursubmissionfile'
-            : 'yoursubmissionfiles';
-        $renamed = ($this->get_coursework()->renamefiles == 1)?get_string('yoursubmissionfile_renamed', 'coursework') : "";
+        $files_string = ($file_manager_options['maxfiles'] == 1) ? 'yoursubmissionfile' : 'yoursubmissionfiles';
+        $renamed = ($this->get_coursework()->renamefiles == 1) ? get_string('yoursubmissionfile_renamed', 'coursework') : "";
 
         $this->_form->addElement('header', 'submitform', get_string($files_string, 'coursework'). $renamed);
 
@@ -408,7 +402,7 @@ class student_submission_form extends moodleform {
      */
     protected function make_plagiarism_instructions() {
         $plagiarism_helpers = $this->get_coursework()->get_plagiarism_helpers();
-        $plagiarism_instructions = array();
+        $plagiarism_instructions = [];
         foreach ($plagiarism_helpers as $helper) {
             if ($helper->file_submission_instructions()) {
                 $plagiarism_instructions[] = $helper->file_submission_instructions();

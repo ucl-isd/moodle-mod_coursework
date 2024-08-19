@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2014 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -24,7 +23,6 @@
 require_once(dirname(__FILE__) . '/../../../../config.php');
 
 global $CFG, $USER;
-
 
 $feedbackid = optional_param('feedbackid', 0, PARAM_INT);
 $ajax = optional_param('ajax', 0, PARAM_INT);

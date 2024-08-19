@@ -13,13 +13,15 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework\event;
 use mod_coursework\models\submission;
 defined('MOODLE_INTERNAL') || die();
-
 
 class assessable_uploaded extends \core\event\assessable_uploaded {
 
@@ -28,7 +30,7 @@ class assessable_uploaded extends \core\event\assessable_uploaded {
      *
      * @var array
      */
-    protected $legacyfiles = array();
+    protected $legacyfiles = [];
 
     /**
      * Returns description of what happened.

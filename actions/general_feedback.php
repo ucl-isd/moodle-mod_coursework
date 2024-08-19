@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2011 University of London computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -24,7 +23,6 @@
 use mod_coursework\forms\general_feedback_form;
 
 require_once(dirname(__FILE__) . '/../../../config.php');
-
 
 global $CFG, $PAGE, $DB, $OUTPUT;
 

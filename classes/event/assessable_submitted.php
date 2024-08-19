@@ -33,7 +33,6 @@ defined('MOODLE_INTERNAL') || die();
  */
 class assessable_submitted extends \core\event\assessable_submitted {
 
-
     /**
      * Init method.
      *

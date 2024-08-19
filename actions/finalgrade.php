@@ -17,8 +17,7 @@
 /**
  * This file displays a moodle form used to create a final grade for a submission
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2012 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -146,7 +145,7 @@ if (!empty($teacherfeedback)) { // May not have been marked yet.
     }
     $details = new stdClass();
     $details->name = fullname($editor);
-    $details->time = userdate($teacherfeedback->timemodified,'%a, %d %b %Y, %H:%M');
+    $details->time = userdate($teacherfeedback->timemodified, '%a, %d %b %Y, %H:%M');
     echo html_writer::tag('p', get_string('lastedited', 'coursework', $details));
 }
 
@@ -167,5 +166,4 @@ echo $object_renderer->render_submission_files_with_plagiarism_links(new mod_cou
 $gradeform->display();
 
 echo $OUTPUT->footer();
-
 

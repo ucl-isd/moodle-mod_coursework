@@ -17,8 +17,7 @@
 /**
  * PHPUnit data generator tests
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @category   phpunit
  * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -186,6 +185,5 @@ class mod_coursework_generator_testcase extends advanced_testcase {
         $this->assertEquals($coursework->id, $submission->courseworkid);
         $this->assertEquals($user->id, $submission->userid);
     }
-
 
 }

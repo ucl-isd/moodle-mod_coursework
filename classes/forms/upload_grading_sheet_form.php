@@ -1,37 +1,47 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * Created by PhpStorm.
- * User: Nigel.Daley
- * Date: 10/08/2015
- * Time: 18:27
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-
 require_once($CFG->libdir.'/formslib.php');
-
-
 
 class upload_grading_sheet_form extends moodleform {
 
     private $cmid;
 
-    function __construct($cmid)  {
-        $this->cmid =   $cmid;
+    function __construct($cmid) {
+        $this->cmid = $cmid;
 
         parent::__construct();
     }
 
-    function definition()   {
+    function definition() {
         $mform =& $this->_form;
 
-        $mform->addElement('filepicker', 'gradingdata', get_string('gradingsheetfile','coursework'), null, array( 'accepted_types' => '*.csv'));
+        $mform->addElement('filepicker', 'gradingdata', get_string('gradingsheetfile', 'coursework'), null, array( 'accepted_types' => '*.csv'));
         $mform->addRule('gradingdata', null, 'required');
 
-        $mform->addElement('checkbox','overwrite','',get_string('overwritegrades','coursework'));
-        $mform->addElement('hidden','cmid',$this->cmid);
+        $mform->addElement('checkbox', 'overwrite', '', get_string('overwritegrades', 'coursework'));
+        $mform->addElement('hidden', 'cmid', $this->cmid);
 
-        $mform->setType('cmid',PARAM_RAW);
+        $mform->setType('cmid', PARAM_RAW);
 
         $choices = csv_import_reader::get_delimiter_list();
         $mform->addElement('select', 'delimiter_name', get_string('csvdelimiter', 'tool_uploaduser'), $choices);
@@ -47,15 +57,11 @@ class upload_grading_sheet_form extends moodleform {
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
         $mform->setDefault('encoding', 'UTF-8');
 
-
-        $this->add_action_buttons(true,get_string('uploadgradingworksheet','coursework'));
+        $this->add_action_buttons(true, get_string('uploadgradingworksheet', 'coursework'));
     }
 
-    function display()  {
+    function display() {
         return $this->_form->toHtml();
     }
-
-
-
 
 }

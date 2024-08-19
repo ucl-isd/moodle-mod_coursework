@@ -14,6 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_coursework\forms;
 
 use mod_coursework\grading_report;
@@ -38,7 +44,7 @@ class publish_form extends moodleform {
         $this->_form->addElement('hidden', 'id', $this->_customdata['cmid']);
         $this->_form->setType('id', PARAM_INT);
 
-        $attributes = array();
+        $attributes = [];
         $explaintext = false;
         $should_release = true;
 
@@ -49,7 +55,7 @@ class publish_form extends moodleform {
 
         } else if ($coursework->blindmarking_enabled() && $coursework->has_stuff_to_publish()) {
 
-            $allocatable = ($coursework->is_configured_to_have_group_submissions())? 'group' : 'user';
+            $allocatable = ($coursework->is_configured_to_have_group_submissions()) ? 'group' : 'user';
             $explaintext = '<div class ="anonymity_warning">'.get_string('anonymity_warning_'. $allocatable, 'mod_coursework').'</div>';
 
         } else if ($coursework->blindmarking_enabled() &&

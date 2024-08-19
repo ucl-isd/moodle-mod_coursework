@@ -19,8 +19,7 @@ namespace mod_coursework\allocation\strategy;
     /**
  * lass file for the default allocation strategy.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2012 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -49,10 +48,10 @@ class none extends base {
      * @return string
      */
     public function add_form_elements($strategypurpose = 'assessor') {
-        global $PAGE,$CFG;
+        global $PAGE, $CFG;
 
         $url = "$CFG->wwwroot/mod/coursework/actions/upload_allocations.php?cmid={$PAGE->cm->id}";
-        $html = html_writer::link($url,get_string('uploadallocations', 'mod_coursework'));
+        $html = html_writer::link($url, get_string('uploadallocations', 'mod_coursework'));
 
         return $html;
     }
@@ -73,6 +72,6 @@ class none extends base {
      * @return mixed
      */
     protected function list_of_allocatable_teachers_and_their_current_number_of_allocations($teachers, $student) {
-        return array();
+        return [];
     }
 }

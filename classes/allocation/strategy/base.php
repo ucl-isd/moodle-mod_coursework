@@ -14,6 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_coursework\allocation\strategy;
 
 use mod_coursework\allocation\allocatable;
@@ -22,9 +28,7 @@ use mod_coursework\models\coursework;
 use mod_coursework\models\user;
 use mod_coursework\stages\base as stage_base;
 
-
 defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * This base class is extended to make specific allocation strategies, which when run, will
@@ -60,7 +64,7 @@ abstract class base {
      *
      * @var array
      */
-    private $settings = array();
+    private $settings = [];
 
     /**
      * @var stage_base

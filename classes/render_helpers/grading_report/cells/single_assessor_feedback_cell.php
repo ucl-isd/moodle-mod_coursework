@@ -1,7 +1,26 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework\render_helpers\grading_report\cells;
-
 
 use coding_exception;
 use html_table_cell;
@@ -49,7 +68,6 @@ class single_assessor_feedback_cell extends cell_base {
         $content = $this->get_content($rowobject);
         return $this->get_new_cell_with_class($content);
     }
-    
     public function get_content($rowobject) {
 
         global $USER;
@@ -122,14 +140,14 @@ class single_assessor_feedback_cell extends cell_base {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options = array()) {
+    public function get_table_header($options  = []) {
         return get_string('feedbackandgrading', 'coursework');
     }
 
     /**
      * @return string
      */
-    public function get_table_header_class(){
+    public function get_table_header_class() {
         return 'feedbackandgrading';
     }
 
@@ -142,7 +160,7 @@ class single_assessor_feedback_cell extends cell_base {
 
     /**
      * @param $rowobject
-     * @return array
+     * @return string
      * @throws \coding_exception
      */
     private function edit_feedback_button($rowobject) {
@@ -158,7 +176,6 @@ class single_assessor_feedback_cell extends cell_base {
 
         $title = get_string('editfinalgrade', 'coursework');
         $icon = new pix_icon('edit', $title, 'coursework');
-
 
         return  $OUTPUT->action_icon($link,
                                      $icon,
@@ -183,17 +200,15 @@ class single_assessor_feedback_cell extends cell_base {
         $iconlink = $OUTPUT->action_link($link,
                                          $linktitle,
                                          null,
-                                         array('class'=>'show_feedback','id' => $link_id));
-
+                                         array('class' => 'show_feedback', 'id' => $link_id));
 
         return $iconlink;
     }
 
-
     /**
      * @param grading_table_row_base $rowobject
      * @param user $assessor
-     * @return array
+     * @return string
      * @throws \coding_exception
      */
     private function new_feedback_button($rowobject, $assessor) {
@@ -214,7 +229,7 @@ class single_assessor_feedback_cell extends cell_base {
         return  $OUTPUT->action_link($link,
                                      $title,
                                      null,
-                                     array('class'=>'new_final_feedback','id' => $link_id));
+                                     array('class' => 'new_final_feedback', 'id' => $link_id));
     }
 
 }

@@ -17,8 +17,7 @@
 /**
  * Library of interface functions and constants for module coursework
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -50,7 +49,7 @@ require_once($CFG->dirroot.'/mod/coursework/renderable.php');
  * @return array
  */
 function coursework_get_file_areas($course, $cm, $context) {
-    $areas = array();
+    $areas = [];
 
     if (has_capability('mod/coursework:submit', $context)) {
         $areas['submission'] = get_string('submissionfiles', 'coursework');
@@ -106,7 +105,7 @@ function mod_coursework_pluginfile($course, $cm, $context, $filearea, $args, $fo
         $fullpath = "/{$context->id}/mod_coursework/submission/{$submission->id}/{$relativepath}";
 
         $fs = get_file_storage();
-        if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
+        if (!$file = $fs->get_file_by_hash(sha1($fullpath)) || $file->is_directory()) {
             return false;
         }
         send_stored_file($file, 0, 0, true); // Download MUST be forced - security!
@@ -133,7 +132,7 @@ function mod_coursework_pluginfile($course, $cm, $context, $filearea, $args, $fo
                 "{$feedback->id}/{$relativepath}";
 
             $fs = get_file_storage();
-            if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
+            if (!$file = $fs->get_file_by_hash(sha1($fullpath)) || $file->is_directory()) {
                 return false;
             }
             send_stored_file($file, 0, 0, true);
@@ -160,10 +159,10 @@ function coursework_add_instance($formdata) {
 
     // You may have to add extra stuff in here.
 
-    //we have to check to see if this coursework has a deadline ifm it doesn't we need to set the
-    //deadline to zero
+    // We have to check to see if this coursework has a deadline ifm it doesn't we need to set the
+    // Deadline to zero
 
-    $formdata->deadline     =   empty($formdata->deadline)  ?   0   :   $formdata->deadline;
+    $formdata->deadline = empty($formdata->deadline) ? 0 : $formdata->deadline;
     $subnotify = '';
     $comma = '';
     if (!empty($formdata->submissionnotification)) {
@@ -174,8 +173,8 @@ function coursework_add_instance($formdata) {
     }
     $formdata->submissionnotification = $subnotify;
 
-    //if blindmarking is set we will rename files
-    if ($formdata->blindmarking == 1)  {
+    // If blindmarking is set we will rename files
+    if ($formdata->blindmarking == 1) {
 
         $formdata->renamefiles = 1;
 
@@ -185,17 +184,17 @@ function coursework_add_instance($formdata) {
     $formdata->id = $returnid;
 
     // IMPORTANT: at this point, the coursemodule will be in existence, but will
-    // not have the coursework id saved, because we only just made it.
+    // Not have the coursework id saved, because we only just made it.
     $coursemodule = $DB->get_record('course_modules', array('id' => $formdata->coursemodule));
     $coursemodule->instance = $returnid;
     // This is doing what will be done later by the core routines. Makes it simpler to use existing
-    // code without special cases.
+    // Code without special cases.
     $DB->update_record('course_modules', $coursemodule);
 
     // Get all the other data e.g. coursemodule.
     $coursework = coursework::find($returnid);
 
-    //create event for coursework deadline [due]
+    // Create event for coursework deadline [due]
     if ($coursework && $coursework->deadline) {
         $event = coursework_event($coursework, format_module_intro('coursework', $coursework,
             $coursemodule->id), $returnid, 'due', $coursework->deadline);
@@ -203,7 +202,7 @@ function coursework_add_instance($formdata) {
         calendar_event::create($event);
     }
 
-    //create event for coursework initialmarking deadline [initialgradingdue]
+    // Create event for coursework initialmarking deadline [initialgradingdue]
     if ($coursework && $coursework->marking_deadline_enabled() && $coursework->initialmarkingdeadline) {
         $event = coursework_event($coursework, format_module_intro('coursework', $coursework,
             $coursemodule->id), $returnid, 'initialgradingdue', $coursework->initialmarkingdeadline);
@@ -211,7 +210,7 @@ function coursework_add_instance($formdata) {
         calendar_event::create($event);
     }
 
-    //create event for coursework agreedgrademarking deadline [agreedgradingdue]
+    // Create event for coursework agreedgrademarking deadline [agreedgradingdue]
     if ($coursework && $coursework->marking_deadline_enabled() && $coursework->agreedgrademarkingdeadline && $coursework->has_multiple_markers()) {
         $event = coursework_event($coursework, format_module_intro('coursework', $coursework,
             $coursemodule->id), $returnid, 'agreedgradingdue', $coursework->agreedgrademarkingdeadline);
@@ -222,8 +221,6 @@ function coursework_add_instance($formdata) {
 
     return $returnid;
 }
-
-
 
 /**
  * Is the event visible?
@@ -254,7 +251,6 @@ function mod_coursework_core_calendar_is_event_visible(calendar_event $event) {
     return false;
 }
 
-
 /**
  * This function receives a calendar event and returns the action associated with it, or null if there is none.
  *
@@ -282,28 +278,28 @@ function mod_coursework_core_calendar_provide_event_action(calendar_event $event
     $student = $coursework->can_submit();
     $marker = $coursework->is_assessor($user);
 
-    if ($marker){ // for markers
+    if ($marker) { // For markers
 
-        // check how many submissions to mark
-       $outstandingmarking =   new outstanding_marking();
+        // Check how many submissions to mark
+       $outstandingmarking = new outstanding_marking();
 
-       if($event->eventtype == 'initialgradingdue') {
-           //initial grades
+       if ($event->eventtype == 'initialgradingdue') {
+           // Initial grades
            $togradeinitialcount = $outstandingmarking->get_to_grade_initial_count($dbcoursework, $user->id());
-           $name = ($coursework->has_multiple_markers())? get_string('initialgrade', 'coursework') : get_string('grade', 'mod_coursework');
-           $itemcount = $togradeinitialcount ;
+           $name = ($coursework->has_multiple_markers()) ? get_string('initialgrade', 'coursework') : get_string('grade', 'mod_coursework');
+           $itemcount = $togradeinitialcount;
 
-       } else if($event->eventtype == 'agreedgradingdue') {
-           //agreed grades
+       } else if ($event->eventtype == 'agreedgradingdue') {
+           // Agreed grades
            $togradeagreedcount = $outstandingmarking->get_to_grade_agreed_count($dbcoursework, $user->id());
            $name = get_string('agreedgrade', 'coursework');
-           $itemcount =  $togradeagreedcount;
+           $itemcount = $togradeagreedcount;
 
        }
 
         $submission_url = new \moodle_url('/mod/coursework/view.php', array('id' => $cm->id));
 
-    } elseif ($student) { // for students
+    } else if ($student) { // for students
 
         // if group cw check if student is in group, if not then don't display 'Add submission' link
         if ($coursework->is_configured_to_have_group_submissions() && !$coursework->get_student_group($user)) {
@@ -318,7 +314,7 @@ function mod_coursework_core_calendar_provide_event_action(calendar_event $event
             if (!$submission) {
                 $submission = $new_submission;
             }
-            // check if user can still submit
+            // Check if user can still submit
             $ability = new ability($user, $coursework);
             if (!$submission || $ability->can('new', $submission)) {
                 $name = get_string('addsubmission', 'coursework');
@@ -432,7 +428,7 @@ function coursework_update_instance($coursework) {
     $coursework->timemodified = time();
     $coursework->id = $coursework->instance;
 
-    if ($coursework->finalstagegrading == 1){
+    if ($coursework->finalstagegrading == 1) {
         $coursework->automaticagreementstrategy = 'none';
         $coursework->automaticagreementrange = 10;
     }
@@ -448,24 +444,20 @@ function coursework_update_instance($coursework) {
 
     $coursework->submissionnotification = $subnotify;
 
-    $courseworkhassubmissions   =   ($DB->get_records('coursework_submissions',array('courseworkid'=>$coursework->id)))
-        ?   true : false;
+    $courseworkhassubmissions = $DB->record_exists('coursework_submissions', array('courseworkid' => $coursework->id));
 
-    //if the coursework has submissions then we the renamefiles setting can't be changes
+    // If the coursework has submissions then we the renamefiles setting can't be changes
     if ($courseworkhassubmissions) {
 
-        $currentcoursework          =   $DB->get_record('coursework',array('id'=>$coursework->id));
+        $currentcoursework = $DB->get_record('coursework', array('id' => $coursework->id));
 
         $coursework->renamefiles = $currentcoursework->renamefiles;
 
-    } else if ($coursework->blindmarking == 1)  {
+    } else if ($coursework->blindmarking == 1) {
 
         $coursework->renamefiles = 1;
 
     }
-
-
-
 
     $oldsubmissiondeadline = $DB->get_field('coursework', 'deadline', array('id' => $coursework->id));
     $oldgeneraldeadline = $DB->get_field('coursework', 'generalfeedback', array('id' => $coursework->id));
@@ -479,13 +471,12 @@ function coursework_update_instance($coursework) {
 
         $courseworkobj = coursework::find($coursework->id);
 
-
         $params = array(
             'context' => context_module::instance($courseworkobj->get_course_module()->id),
             'courseid' => $courseworkobj->get_course()->id,
             'objectid' => $coursework->id,
             'other' => array(
-                'courseworkid' =>  $coursework->id,
+                'courseworkid' => $coursework->id,
                 'oldsubmissiondeadline' => $oldsubmissiondeadline,
                 'newsubmissionsdeadline' => $coursework->deadline,
                 'oldgeneraldeadline' => $oldgeneraldeadline,
@@ -496,31 +487,30 @@ function coursework_update_instance($coursework) {
             )
         );
 
-
         $event = \mod_coursework\event\coursework_deadline_changed::create($params);
         $event->trigger();
 
     }
 
-    // update event for calendar(cw name/deadline) if a coursework has a deadline
+    // Update event for calendar(cw name/deadline) if a coursework has a deadline
     if ($coursework->deadline) {
-        coursework_update_events($coursework, 'due'); //cw deadline
-        if ($coursework->initialmarkingdeadline){
-            //update
-            coursework_update_events($coursework, 'initialgradingdue'); //cw initial grading deadine
+        coursework_update_events($coursework, 'due'); // Cw deadline
+        if ($coursework->initialmarkingdeadline) {
+            // Update
+            coursework_update_events($coursework, 'initialgradingdue'); // Cw initial grading deadine
         } else {
-            //remove it
+            // Remove it
             remove_event($coursework, 'initialgradingdue');
         }
-        if ($coursework->agreedgrademarkingdeadline && $coursework->numberofmarkers > 1){
-            //update
-            coursework_update_events($coursework, 'agreedgradingdue'); //cw agreed grade deadine
+        if ($coursework->agreedgrademarkingdeadline && $coursework->numberofmarkers > 1) {
+            // Update
+            coursework_update_events($coursework, 'agreedgradingdue'); // Cw agreed grade deadine
         } else {
-            //remove it
-            remove_event($coursework,'agreedgradingdue' );
+            // Remove it
+            remove_event($coursework, 'agreedgradingdue' );
         }
     } else {
-        // remove all deadline events for this coursework regardless the type
+        // Remove all deadline events for this coursework regardless the type
         remove_event($coursework);
     }
 
@@ -532,63 +522,62 @@ function coursework_update_instance($coursework) {
  *
  * @param $coursework
  */
- function coursework_update_events($coursework, $eventtype){
+ function coursework_update_events($coursework, $eventtype) {
      global $DB;
 
      $event = "";
-     $eventid = $DB->get_record('event', array('modulename'=>'coursework', 'instance'=>$coursework->id, 'eventtype'=>$eventtype));
+     $eventid = $DB->get_record('event', array('modulename' => 'coursework', 'instance' => $coursework->id, 'eventtype' => $eventtype));
 
-     if ($eventid){
+     if ($eventid) {
          $event = calendar_event::load($eventid->id);
      }
 
-     // update/create event for coursework deadline [due]
+     // Update/create event for coursework deadline [due]
      if ($eventtype == 'due') {
          $data = coursework_event($coursework, $coursework->intro, $coursework->id, $eventtype, $coursework->deadline);
          if ($event) {
              $event->update($data); //update if event exists
          } else {
-             calendar_event::create($data); //create new event as it doesn't exist
+             calendar_event::create($data); // Create new event as it doesn't exist
          }
      }
 
-     // update/create event for coursework initialmarking deadline [initialgradingdue]
-     if ($eventtype == 'initialgradingdue'){
-         $data = coursework_event($coursework, $coursework->intro, $coursework->id,$eventtype, $coursework->initialmarkingdeadline);
+     // Update/create event for coursework initialmarking deadline [initialgradingdue]
+     if ($eventtype == 'initialgradingdue') {
+         $data = coursework_event($coursework, $coursework->intro, $coursework->id, $eventtype, $coursework->initialmarkingdeadline);
          if ($event) {
              $event->update($data); //update if event exists
          } else {
-             calendar_event::create($data); //create new event as it doesn't exist
+             calendar_event::create($data); // Create new event as it doesn't exist
          }
      }
 
-     // update/create event for coursework agreedgrademarking deadline [agreedgradingdue]
-     if ($eventtype == 'agreedgradingdue'){
+     // Update/create event for coursework agreedgrademarking deadline [agreedgradingdue]
+     if ($eventtype == 'agreedgradingdue') {
          $data = coursework_event($coursework, $coursework->intro, $coursework->id, $eventtype, $coursework->agreedgrademarkingdeadline);
          if ($event) {
              $event->update($data); //update if event exists
          } else {
-             calendar_event::create($data); //create new event as it doesn't exist
+             calendar_event::create($data); // Create new event as it doesn't exist
          }
      }
 }
 
-function remove_event($coursework, $eventtype = false){
+function remove_event($coursework, $eventtype = false) {
      global $DB;
 
-     $params = array('modulename'=>'coursework', 'instance'=>$coursework->id);
+     $params = array('modulename' => 'coursework', 'instance' => $coursework->id);
 
-     if ($eventtype){
+     if ($eventtype) {
          $params['eventtype'] = $eventtype;
      }
 
      $events = $DB->get_records('event', $params);
-     foreach($events as $eventid) {
+     foreach ($events as $eventid) {
          $event = calendar_event::load($eventid->id);
          $event->delete(); // delete events from mdl_event table
      }
 }
-
 
 /**
  * Given an ID of an instance of this module,
@@ -713,7 +702,7 @@ function coursework_scale_used($courseworkid, $scaleid) {
 
     $params = array('grade' => $scaleid,
                     'id' => $courseworkid);
-    if ($scaleid and $DB->record_exists('coursework', $params)) {
+    if ($scaleid && $DB->record_exists('coursework', $params)) {
         return true;
     } else {
         return false;
@@ -731,7 +720,7 @@ function coursework_scale_used($courseworkid, $scaleid) {
 function coursework_scale_used_anywhere($scaleid) {
     global $DB;
 
-    if ($scaleid and $DB->record_exists('coursework', array('grade' => $scaleid))) {
+    if ($scaleid && $DB->record_exists('coursework', array('grade' => $scaleid))) {
         return true;
     } else {
         return false;
@@ -776,7 +765,6 @@ function coursework_supports($feature) {
             return null;
     }
 }
-
 
 /**
  * Checks whether the student with the given username has been flagged
@@ -896,11 +884,10 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
         ($coursework->allocation_enabled() || $coursework->sampling_enabled())) {
 
         $link = new moodle_url('/mod/coursework/actions/allocate.php', array('id' => $cm->id));
-        $lang_str = ($coursework->moderation_agreement_enabled())? 'allocateassessorsandmoderators':'allocateassessors';
+        $lang_str = ($coursework->moderation_agreement_enabled()) ? 'allocateassessorsandmoderators' : 'allocateassessors';
         $navref->add(get_string($lang_str, 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
 
     }
-    
     // Link to personal deadlines screen
     if (has_capability('mod/coursework:editpersonaldeadline', $context) && ($coursework->personal_deadlines_enabled())) {
         $link = new moodle_url('/mod/coursework/actions/set_personal_deadlines.php', array('id' => $cm->id));
@@ -908,7 +895,6 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
     }
 
 }
-
 
 /**
  * Auto-allocates after a new student or teacher is added to a coursework.
@@ -919,12 +905,12 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
 function coursework_role_assigned_event_handler($roleassignment) {
     global $DB;
 
-//    return true; // Until we fix the auto allocator. The stuff below causes an infinite loop.
+// return true; // Until we fix the auto allocator. The stuff below causes an infinite loop.
 
     $courseworkids = coursework_get_coursework_ids_from_context_id($roleassignment->contextid);
 
     foreach ($courseworkids as $courseworkid) {
-        $DB->set_field('coursework','processenrol',1,array('id'=>$courseworkid));
+        $DB->set_field('coursework', 'processenrol', 1, array('id' => $courseworkid));
     }
 
     return true;
@@ -945,7 +931,7 @@ function coursework_role_unassigned_event_handler($roleassignment) {
     $courseworkids = coursework_get_coursework_ids_from_context_id($roleassignment->contextid);
 
     foreach ($courseworkids as $courseworkid) {
-        $DB->set_field('coursework','processunenrol',1,array('id'=>$courseworkid));
+        $DB->set_field('coursework', 'processunenrol', 1, array('id' => $courseworkid));
     }
 
     return true;
@@ -962,7 +948,7 @@ function coursework_get_coursework_ids_from_context_id($contextid) {
 
     global $DB;
 
-    $courseworkids = array();
+    $courseworkids = [];
 
     // Is this a coursework?
     $context = context::instance_by_id($contextid);
@@ -1012,7 +998,7 @@ function coursework_seconds_to_string($seconds) {
                    get_string('seconds', 'mod_coursework'))
     );
 
-    $result = array();
+    $result = [];
     foreach ($units as $divisor => $unitame) {
         $units = intval($seconds / $divisor);
         if ($units) {
@@ -1121,29 +1107,28 @@ function coursework_send_deadline_changed_emails($eventdata) {
 
         // Now we need a decent message that provides the relevant data and notifies what changed.
         // - Submissions deadline if it's in the future and the user has not already submitted.
-        // - Feedback deadline if it's in the future and the student's personal deadline for feedback has
-        // not passed.
+        // - Feedback deadline if it's in the future and the student's personal deadline for feedback has not passed.
         // - Link to get to the view.php page.
         // - Change since last time.
 
-        $deadlinechangedmessage = array();
+        $deadlinechangedmessage = [];
 
         $strings = new stdClass();
         $strings->courseworkname = $coursework->name;
 
         if ($submissionsdeadlinechanged) {
             $strings->typeofdeadline = strtolower(get_string('submission', 'mod_coursework'));
-            $strings->deadline = userdate($coursework->deadline,'%a, %d %b %Y, %H:%M');
+            $strings->deadline = userdate($coursework->deadline, '%a, %d %b %Y, %H:%M');
             $deadlinechangedmessage[] = get_string('deadlinechanged', 'mod_coursework', $strings);
         }
         if ($generaldeadlinechanged) {
             $strings->typeofdeadline = strtolower(get_string('generalfeedback', 'mod_coursework'));
-            $strings->deadline = userdate($coursework->generalfeedback,'%a, %d %b %Y, %H:%M');
+            $strings->deadline = userdate($coursework->generalfeedback, '%a, %d %b %Y, %H:%M');
             $deadlinechangedmessage[] = get_string('deadlinechanged', 'mod_coursework', $strings);
         }
         if ($individualdeadlinechanged) {
             $strings->typeofdeadline = strtolower(get_string('individualfeedback', 'mod_coursework'));
-            $strings->deadline = userdate($userreleasedate,'%a, %d %b %Y, %H:%M');
+            $strings->deadline = userdate($userreleasedate, '%a, %d %b %Y, %H:%M');
             $deadlinechangedmessage[] = get_string('deadlinechanged', 'mod_coursework', $strings);
         }
 
@@ -1184,7 +1169,7 @@ function coursework_plugin_exists($plugintype, $pluginname) {
  */
 function coursework_records_to_menu($records, $field1, $field2) {
 
-    $menu = array();
+    $menu = [];
 
     if (!empty($records)) {
         foreach ($records as $record) {
@@ -1194,7 +1179,6 @@ function coursework_records_to_menu($records, $field1, $field2) {
     return $menu;
 
 }
-
 
 /**
  * Custom error handler for ADODB used by the sits class. Came with no docs so not sure what it's for.
@@ -1249,7 +1233,6 @@ function mod_coursework_supports($feature) {
     }
 }
 
-
 /**
  * @param $event_data
  * @return bool
@@ -1288,32 +1271,31 @@ function course_group_member_added($event_data) {
     $addeduserid = $event_data->relateduserid;
 
     // get all courseworks with group_assessor allocation strategy
-    $courseworks = $DB->get_records('coursework', array('course'=>$courseid, 'assessorallocationstrategy' => 'group_assessor'));
+    $courseworks = $DB->get_records('coursework', array('course' => $courseid, 'assessorallocationstrategy' => 'group_assessor'));
 
-    foreach($courseworks as $coursework){
+    foreach ($courseworks as $coursework) {
 
         $coursework = coursework::find($coursework);
         $stage = $coursework->marking_stages();
         $stage_1 = $stage['assessor_1']; // this allocation is only for 1st stage, we don't touch other stages
-        
         $student = $coursework->can_submit(); // check if user is student in this course
         $initial_stage_assessor = has_capability('mod/coursework:addinitialgrade', $coursework->get_context(), $addeduserid); // check if user is initial stage assessor in this course
 
-        if($initial_stage_assessor){
+        if ($initial_stage_assessor) {
             // check if any assessor already exists in the group except currently added one
             $assessors_in_group = get_enrolled_users($coursework->get_context(), 'mod/coursework:addinitialgrade', $groupid);
-            unset($assessors_in_group[$addeduserid]); //remove added assessor as at this point they will be already in the group
+            unset($assessors_in_group[$addeduserid]); // Remove added assessor as at this point they will be already in the group
 
-            if ($assessors_in_group){//yes - do nothing as other assessor is already assigned to group members, return true
+            if ($assessors_in_group) {//yes - do nothing as other assessor is already assigned to group members, return true
                 break;
-            } else{ //no - check if CW is a group coursework
-                if($coursework->is_configured_to_have_group_submissions()){// yes - assign the tutor to a allocatable group
+            } else { // No - check if CW is a group coursework
+                if ($coursework->is_configured_to_have_group_submissions()) {// yes - assign the tutor to a allocatable group
                     $stage_1->make_auto_allocation_if_necessary(group::find($groupid));
                 } else {  // no, check if group has any student members
                     $allocatables = $coursework->get_allocatables();
-                    if ($allocatables){
+                    if ($allocatables) {
                         // yes - assign this assessor to every allocatable student in the appropriate course group - at this point assessor should already be a member
-                        foreach($allocatables as $allocatable) {
+                        foreach ($allocatables as $allocatable) {
                             // process students allocations
                             if ($coursework->student_is_in_any_group($allocatable)) { // student must belong to a group
                                 $stage_1->make_auto_allocation_if_necessary($allocatable);
@@ -1324,8 +1306,8 @@ function course_group_member_added($event_data) {
                     }
                 }
             }
-        } else if($student) {
-            if($coursework->is_configured_to_have_group_submissions()) {
+        } else if ($student) {
+            if ($coursework->is_configured_to_have_group_submissions()) {
                 $allocatable = group::find($groupid);
             } else {
                 $allocatable = user::find($addeduserid);
@@ -1336,7 +1318,6 @@ function course_group_member_added($event_data) {
     }
     return true;
 }
-
 
 /**
  * * Function to process allocation of new group members (student/group - assign to a group assessor or assessor - assign to students/group) when a group member is deleted
@@ -1354,9 +1335,9 @@ function course_group_member_removed($event_data) {
     $removeduserid = $event_data->relateduserid;
 
     // get all courseworks with group_assessor allocation strategy
-    $courseworks = $DB->get_records('coursework', array('course'=>$courseid, 'assessorallocationstrategy' => 'group_assessor'));
+    $courseworks = $DB->get_records('coursework', array('course' => $courseid, 'assessorallocationstrategy' => 'group_assessor'));
 
-    foreach($courseworks as $coursework){
+    foreach ($courseworks as $coursework) {
 
         $coursework = coursework::find($coursework);
         $stage = $coursework->marking_stages();
@@ -1365,17 +1346,17 @@ function course_group_member_removed($event_data) {
         $student = $coursework->can_submit(); // check if user is student in this course
         $initial_stage_assessor = has_capability('mod/coursework:addinitialgrade', $coursework->get_context(), $removeduserid); // check if user was initial stage assessor in this course
 
-        if($initial_stage_assessor){
+        if ($initial_stage_assessor) {
             // remove all assessor allocations for this group
-            if($coursework->is_configured_to_have_group_submissions()) {
+            if ($coursework->is_configured_to_have_group_submissions()) {
                 if (can_delete_allocation($coursework->id(), $groupid)) {
                     $DB->delete_records('coursework_allocation_pairs', array('courseworkid' => $coursework->id(), 'assessorid' => $removeduserid, 'allocatableid' => $groupid, 'stage_identifier' => 'assessor_1'));
                 }
             } else {
                 // find all individual students in the group
-               $students =  get_enrolled_users($coursework->get_context(), 'mod/coursework:submit', $groupid);
-               if ($students){
-                   foreach($students as $student){
+               $students = get_enrolled_users($coursework->get_context(), 'mod/coursework:submit', $groupid);
+               if ($students) {
+                   foreach ($students as $student) {
                        if (can_delete_allocation($coursework->id(), $student->id)) {
                            $DB->delete_records('coursework_allocation_pairs', array('courseworkid' => $coursework->id(), 'assessorid' => $removeduserid, 'allocatableid' => $student->id, 'stage_identifier' => 'assessor_1'));
                        }
@@ -1388,8 +1369,8 @@ function course_group_member_removed($event_data) {
             // check if there are any other assessor in the group, at this point the removed member should no longer be in the group
             $assessors_in_group = get_enrolled_users($coursework->get_context(), 'mod/coursework:addinitialgrade', $groupid);
 
-             if($assessors_in_group) { // if another assessor found, assign all allocatables in this group to the other assessor
-                 if($coursework->is_configured_to_have_group_submissions()){// yes - assign the assessor to a allocatable group
+             if ($assessors_in_group) { // if another assessor found, assign all allocatables in this group to the other assessor
+                 if ($coursework->is_configured_to_have_group_submissions()) {// yes - assign the assessor to a allocatable group
                      $stage_1->make_auto_allocation_if_necessary(group::find($groupid));
                  } else {
                      $allocatables = $coursework->get_allocatables();
@@ -1403,10 +1384,10 @@ function course_group_member_removed($event_data) {
                          continue;
                      }
                  }
-             } else{
+             } else {
                  continue;
              }
-        } else if($student) {
+        } else if ($student) {
             if ($coursework->is_configured_to_have_group_submissions()) {
                 // check if student was the only student member in the group
                 $students = get_enrolled_users($coursework->get_context(), 'mod/coursework:submit', $groupid); // at this point student should be already removed from the group
@@ -1418,7 +1399,7 @@ function course_group_member_removed($event_data) {
                 }
 
             } else {
-                //if individual coursework
+                // If individual coursework
                 $allocatableid = $removeduserid;
             }
 
@@ -1438,7 +1419,6 @@ function course_group_member_removed($event_data) {
     return true;
 }
 
-
 /**
  * Function to check the allocation if it is not pinned or its submission has not been marked yet
  *
@@ -1454,7 +1434,7 @@ function can_delete_allocation($courseworkid, $allocatableid) {
     $ungraded_allocations = $DB->get_record_sql("SELECT *
                                                     FROM {coursework_allocation_pairs} p
                                                     WHERE courseworkid = :courseworkid
-                                                    AND p.manual = 0  
+                                                    AND p.manual = 0
                                                     AND stage_identifier = 'assessor_1'
                                                     AND allocatableid = :allocatableid
                                                     AND NOT EXISTS (SELECT 1
@@ -1486,7 +1466,7 @@ function can_delete_allocation($courseworkid, $allocatableid) {
 /**
  * @return bool
  */
-function has_user_seen_tii_EULA_agreement(){
+function has_user_seen_tii_EULA_agreement() {
     global $CFG, $DB, $USER;
 
     // if TII plagiarism enabled check if user agreed/disagreed EULA
@@ -1495,7 +1475,7 @@ function has_user_seen_tii_EULA_agreement(){
         $plagiarismsettings = (array)get_config('plagiarism_turnitin');
         if (!empty($plagiarismsettings['enabled'])) {
 
-            if ($DB->get_manager()->table_exists('plagiarism_turnitin_users')){
+            if ($DB->get_manager()->table_exists('plagiarism_turnitin_users')) {
                 $sql = "SELECT * FROM {plagiarism_turnitin_users}
                         WHERE userid = :userid
                         AND user_agreement_accepted <> 0";
@@ -1505,9 +1485,9 @@ function has_user_seen_tii_EULA_agreement(){
                         AND user_agreement_accepted <> 0";
             }
 
-            $shouldseeEULA = $DB->record_exists_sql($sql, array('userid'=>$USER->id));
+            $shouldseeEULA = $DB->record_exists_sql($sql, array('userid' => $USER->id));
         }
-    }   else {
+    } else {
         $shouldseeEULA = true;
     }
     return $shouldseeEULA;
@@ -1517,11 +1497,11 @@ function coursework_is_ulcc_digest_coursework_plugin_installed() {
 
     global  $DB;
 
-    $pluginexists   =   false;
-    $disgestblockexists     =   $DB->record_exists_sql("SELECT id FROM {block} WHERE name = 'ulcc_digest' AND visible = 1");
+    $pluginexists = false;
+    $disgestblockexists = $DB->record_exists_sql("SELECT id FROM {block} WHERE name = 'ulcc_digest' AND visible = 1");
 
     if (!empty($disgestblockexists)) {
-         $pluginexists  =   ($DB->get_records('block_ulcc_digest_plgs',array('module'=>'coursework','status'=>1)))    ?   true    :  false;
+         $pluginexists = $DB->record_exists('block_ulcc_digest_plgs', array('module' => 'coursework', 'status' => 1));
     }
 
     return $pluginexists;
@@ -1531,15 +1511,15 @@ function coursework_is_ulcc_digest_coursework_plugin_installed() {
  * @param $courseworkid
  * @return bool
  */
-function coursework_personal_deadline_passed($courseworkid){
+function coursework_personal_deadline_passed($courseworkid) {
     global $DB;
 
-    $sql = "SELECT * 
+    $sql = "SELECT *
             FROM {coursework_person_deadlines}
             WHERE courseworkid = :courseworkid
             AND personal_deadline < :now";
 
-   return $DB->record_exists_sql($sql, array('courseworkid' =>$courseworkid , 'now' => time()));
+   return $DB->record_exists_sql($sql, array('courseworkid' => $courseworkid, 'now' => time()));
 
 }
 
@@ -1551,7 +1531,7 @@ function coursework_personal_deadline_passed($courseworkid){
  * @param $deadline
  * @return stdClass
  */
-function coursework_event($coursework, $description, $instance, $eventtype, $deadline){
+function coursework_event($coursework, $description, $instance, $eventtype, $deadline) {
 
     $event = new stdClass();
     $event->type = CALENDAR_EVENT_TYPE_ACTION;
@@ -1569,7 +1549,7 @@ function coursework_event($coursework, $description, $instance, $eventtype, $dea
     $event->timesort = $deadline;
     $event->visible = instance_is_visible('coursework', $coursework);
 
-  /*  if ($eventtype == 'initialgradingdue'){
+  /*  if ($eventtype == 'initialgradingdue') {
         $event->name .= " (Initial stage)";
     } else if ($eventtype == 'agreedgradingdue') {
         $event->name .= " (Agreed Grade stage)";
@@ -1584,7 +1564,7 @@ function coursework_event($coursework, $description, $instance, $eventtype, $dea
  * @param $event_data
  * @return bool
  */
-function teacher_allocation_cache_purge($event_data){
+function teacher_allocation_cache_purge($event_data) {
     global $DB;
 
     $roleid = $event_data->objectid;
@@ -1599,7 +1579,6 @@ function teacher_allocation_cache_purge($event_data){
     return true;
 }
 
-
 /**
  * Function to remove teacher allocation (also if pinned), don't remove if teacher already graded
  *
@@ -1607,20 +1586,20 @@ function teacher_allocation_cache_purge($event_data){
  * @return bool
  * @throws dml_exception
  */
-function teacher_removed_allocated_not_graded($event_data){
+function teacher_removed_allocated_not_graded($event_data) {
     global $DB;
 
     $userid = $event_data->relateduserid;
     $courseid = $event_data->courseid;
 
     $courseworks = coursework_get_courseworks_by_courseid($courseid);
-    foreach($courseworks as $cw){
+    foreach ($courseworks as $cw) {
         $coursework = coursework::find($cw->id);
-        if($coursework->allocation_enabled()){
-            $assessor_allocations = $DB->get_records('coursework_allocation_pairs', array('courseworkid'=>$coursework->id,
-                                                                                                'assessorid'=>$userid));
-            foreach($assessor_allocations as $allocation){
-                if($allocation->allocatabletype == 'user'){
+        if ($coursework->allocation_enabled()) {
+            $assessor_allocations = $DB->get_records('coursework_allocation_pairs', array('courseworkid' => $coursework->id,
+                                                                                                'assessorid' => $userid));
+            foreach ($assessor_allocations as $allocation) {
+                if ($allocation->allocatabletype == 'user') {
                     $allocatable = user::find($allocation->allocatableid);
                 } else {
                     $allocatable = group::find($allocation->allocatableid);
@@ -1628,13 +1607,13 @@ function teacher_removed_allocated_not_graded($event_data){
 
                 $submission = $coursework->get_allocatable_submission($allocatable);
                 // if assessor grade the submission already, skip it
-                if($submission && $submission->has_specific_assessor_feedback($userid)){
+                if ($submission && $submission->has_specific_assessor_feedback($userid)) {
                     continue;
                 }
 
-                $DB->delete_records('coursework_allocation_pairs', array('courseworkid'=>$coursework->id,
-                                                                              'assessorid'=>$userid,
-                                                                              'allocatableid'=>$allocatable->id));
+                $DB->delete_records('coursework_allocation_pairs', array('courseworkid' => $coursework->id,
+                                                                              'assessorid' => $userid,
+                                                                              'allocatableid' => $allocatable->id));
             }
         }
     }
@@ -1649,9 +1628,9 @@ function teacher_removed_allocated_not_graded($event_data){
  * @return array
  * @throws dml_exception
  */
-function coursework_get_courseworks_by_courseid($courseid){
+function coursework_get_courseworks_by_courseid($courseid) {
     global $DB;
 
-    return $DB->get_records('coursework', array('course'=>$courseid));
+    return $DB->get_records('coursework', array('course' => $courseid));
 
 }

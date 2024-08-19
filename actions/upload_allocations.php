@@ -15,15 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2016 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 use mod_coursework\models\coursework;
 use mod_coursework\allocation;
-
 
 require_once(dirname(__FILE__).'/../../../config.php');
 
@@ -32,7 +30,6 @@ global $CFG, $DB, $PAGE, $OUTPUT;
 require_once($CFG->dirroot.'/mod/coursework/classes/forms/upload_allocations_form.php');
 
 require_once($CFG->libdir.'/csvlib.class.php');
-
 
 $coursemoduleid = required_param('cmid', PARAM_INT);
 
@@ -49,34 +46,29 @@ $PAGE->set_heading($title);
 
 $grading_sheet_capabilities = array('mod/coursework:allocate');
 
-
 // Bounce anyone who shouldn't be here.
 if (!has_any_capability($grading_sheet_capabilities, $PAGE->context)) {
     $message = 'You do not have permission to upload allocations';
     redirect(new moodle_url('mod/coursework/view.php'), $message);
 }
 
-
-
-$allocationsuploadform    =   new upload_allocations_form($coursemoduleid);
+$allocationsuploadform = new upload_allocations_form($coursemoduleid);
 
 if ($allocationsuploadform->is_cancelled()) {
     redirect("$CFG->wwwroot/mod/coursework/view.php?id=$coursemoduleid");
 }
 
+if ($data = $allocationsuploadform->get_data()) {
 
-
-if ($data   =   $allocationsuploadform->get_data())   {
-
-    //perform checks on data
+    // Perform checks on data
 
     $content = $allocationsuploadform->get_file_content('allocationsdata');
 
-    $csvimport   =  new \mod_coursework\allocation\upload($coursework);
+    $csvimport = new \mod_coursework\allocation\upload($coursework);
 
-    $procsessingresults =  $csvimport->validate_csv($content, $data->encoding, $data->delimiter_name);
+    $procsessingresults = $csvimport->validate_csv($content, $data->encoding, $data->delimiter_name);
 
-    //process
+    // Process
     $csvimport->process_csv($content, $data->encoding, $data->delimiter_name, $procsessingresults);
     $page_renderer = $PAGE->get_renderer('mod_coursework', 'page');
     echo $page_renderer->process_csv_upload($procsessingresults, $content, $csvtype);

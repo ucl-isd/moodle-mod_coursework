@@ -17,8 +17,7 @@
 /**
  * Renderer for the coursework module.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -37,7 +36,7 @@ global $CFG, $OUTPUT;
 foreach (scandir($CFG->dirroot . '/mod/coursework/renderers') as $filename) {
     $path = $CFG->dirroot . '/mod/coursework/renderers' . '/' . $filename;
     if (is_file($path)) {
-        require $path;
+        require($path);
     }
 }
 

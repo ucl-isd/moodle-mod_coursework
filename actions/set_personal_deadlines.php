@@ -17,14 +17,13 @@
 /**
  * Page that prints a table of all students and their personal deadlines in order to change it one by  one or in bulk .
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2016 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use \mod_coursework\models\coursework;
-use \mod_coursework\models\personal_deadline;
+use mod_coursework\models\coursework;
+use mod_coursework\models\personal_deadline;
 
 require_once(dirname(__FILE__).'/../../../config.php');
 
@@ -42,7 +41,6 @@ $coursework = coursework::find($coursework);
 $sortby = optional_param('sortby', '', PARAM_ALPHA);
 $sorthow = optional_param('sorthow', '', PARAM_ALPHA);
 $options = compact('sortby', 'sorthow');
-
 
 require_login($course, true, $coursemodule);
 require_capability('mod/coursework:editpersonaldeadline', $PAGE->context, null, true, "Can't change personal deadlines here - permission denied.");
@@ -64,7 +62,7 @@ $jsmodule = array(
         'node-base')
 );
 $PAGE->requires->js_init_call('M.mod_coursework.init_personal_deadlines_page',
-    array(),
+    [],
     false,
     $jsmodule);
 
@@ -77,6 +75,5 @@ $personal_deadlines_table = new mod_coursework_personal_deadlines_table($persona
 echo $OUTPUT->header();
 
 echo $object_renderer->render($personal_deadlines_table);
-
 
 echo $OUTPUT->footer();

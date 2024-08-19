@@ -17,7 +17,7 @@
 namespace mod_coursework\models;
 
 use mod_coursework\allocation\allocatable;
-use \mod_coursework\stages\base as stage_base;
+use mod_coursework\stages\base as stage_base;
 
 /**
  * This file keeps track of upgrades to the eassessment module
@@ -29,8 +29,7 @@ use \mod_coursework\stages\base as stage_base;
  * it cannot do itself, it will tell you what you need to do.  The commands in
  * here will all be database-neutral, using the functions defined in DLL libraries.
  *
- * @package    mod
- * @subpackage coursework
+ * @package    mod_coursework
  * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -40,7 +39,6 @@ use renderable;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Forms a base for the moderation set rules, which determine various sets of students which
@@ -100,7 +98,6 @@ abstract class moderation_set_rule extends table_base implements renderable {
         'lowerlimit',
         'minimum'
     );
-
 
     /**
      * @param bool|int|stdClass $dbrecord

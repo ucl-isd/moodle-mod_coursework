@@ -1,5 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace mod_coursework;
 
@@ -141,12 +160,11 @@ class grade_judge {
         return $gradebook_feedback && $gradebook_feedback->id == $feedback->id;
     }
 
-
     /**
      * @param allocatable $allocatable
      * @return bool
      */
-    public function allocatable_needs_more_than_one_feedback ($allocatable){
+    public function allocatable_needs_more_than_one_feedback ($allocatable) {
 
         if ($this->coursework->sampling_enabled()) {
             assessment_set_membership::fill_pool_coursework($this->coursework->id);
@@ -156,15 +174,14 @@ class grade_judge {
             return $this->coursework->has_multiple_markers();
         }
 
-
     }
 
-    public function grade_in_scale($value)    {
+    public function grade_in_scale($value) {
         if (is_null($value)) {
             return true;
         } else if ($this->coursework->grade >= 1) {
             // Numeric grade
-            return is_numeric($value) && $value < $this->coursework->grade +1 && $value > 0;
+            return is_numeric($value) && $value < $this->coursework->grade + 1 && $value > 0;
         } else if ($this->coursework->grade == 0) {
             // No grade
             return true;
@@ -172,7 +189,7 @@ class grade_judge {
             // Scale
             $scale = \grade_scale::fetch(array('id' => abs($this->coursework->grade)));
             $scale->load_items();
-            return in_array($value,$scale->scale_items);
+            return in_array($value, $scale->scale_items);
         }
     }
 
@@ -182,21 +199,17 @@ class grade_judge {
      * @param $value
      * @return mixed
      */
-    public function get_grade($value)   {
+    public function get_grade($value) {
 
         if ($this->coursework->grade <= -1) {
             // Scale
             $scale = \grade_scale::fetch(array('id' => abs($this->coursework->grade)));
             $scale->load_items();
-            return array_search($value,$scale->scale_items)+1;
+            return array_search($value, $scale->scale_items) + 1;
         } else {
             return $value;
         }
 
-
     }
-
-
-
 
 }

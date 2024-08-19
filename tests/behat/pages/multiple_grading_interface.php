@@ -1,4 +1,24 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
@@ -82,7 +102,6 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
         return '#allocatable_' . $this->allocatable_identifier_hash($allocatable);
     }
 
-
     /**
      * @param allocatable $allocatable
      * @return string
@@ -90,8 +109,6 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
     private function assessor_feedback_table_id($allocatable) {
         return '#assessorfeedbacktable_' . $this->allocatable_identifier_hash($allocatable);
     }
-
-
 
     /**
      * @param allocatable $allocatable
@@ -171,14 +188,11 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
 
     public function confirm_publish_action() {
 
-
-
         if ($this->getPage()->hasButton('Continue')) {
             $this->getPage()->pressButton('Continue');
         } else {
 echo "failed";
         }
-
 
         if ($this->getPage()->hasLink('Continue')) {
             $this->getPage()->clickLink('Continue');
@@ -262,8 +276,6 @@ echo "failed";
         $this->should_have_css($identifier);
     }
 
-
-
     /**
      * @param feedback $feedback
      */
@@ -272,12 +284,10 @@ echo "failed";
         $this->should_not_have_css($identifier);
     }
 
-
     /**
      * @param submission $submission
      */
-    public function should_not_have_new_feedback_button($submission)
-    {
+    public function should_not_have_new_feedback_button($submission) {
         $elementid = $this->new_feedback_button_css($submission);
         $this->should_not_have_css($elementid);
     }
@@ -308,7 +318,7 @@ echo "failed";
     public function get_provisional_grade_field($submission) {
        $elementid = '#allocatable_' . $submission->get_coursework()
                 ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .assessor_feedback_grade';
-       $grade_field =  $this->getPage()->find('css', $elementid);
+       $grade_field = $this->getPage()->find('css', $elementid);
        return $grade_field ? $grade_field->getValue() : false;
     }
 
@@ -316,10 +326,10 @@ echo "failed";
      * @param submission $submission
      * @return string
      */
-    public function get_grade_field($submission){
+    public function get_grade_field($submission) {
         $elementid = '#assessorfeedbacktable_' . $submission->get_coursework()
                  ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .grade_for_gradebook_cell';
-        $grade_field =  $this->getPage()->find('css', $elementid);
+        $grade_field = $this->getPage()->find('css', $elementid);
         return $grade_field ? $grade_field->getValue() : false;
     }
 
@@ -358,7 +368,6 @@ echo "failed";
         $reasons = coursework::extension_reasons();
         $this->should_have_css($element_selector, $reasons[1]);
     }
-
 
     /**
      * @param allocatable $allocatable
