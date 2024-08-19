@@ -26,43 +26,42 @@ require_once(dirname(__FILE__) . '/../../../config.php');
 
 global $CFG, $PAGE, $DB, $OUTPUT;
 
-$course_module_id = required_param('cmid', PARAM_INT);
-$id = optional_param('id', 0, PARAM_INT);
+$cmid = required_param('cmid', PARAM_INT);
 $ajax = optional_param('ajax', false, PARAM_BOOL);
 
-$coursework = $DB->get_record('coursework', array('id' => $id));
-$course = $DB->get_record('course', array('id' => $coursework->course));
+$cm = get_coursemodule_from_instance('coursework', $cmid);
+$course = $DB->get_record('course', array('id' => $cm->course));
+require_login($course, false, $cm);
 
-require_login($course);
+$coursework = $DB->get_record('coursework', array('id' => $cm->instance));
 
 if (!has_capability('mod/coursework:addinitialgrade', $PAGE->context)) {
-    print_error('Can\'t grade here - permission denied.');
-    die();
+    throw new \moodle_exception('access_denied', 'coursework');
 }
 
 $url = '/mod/coursework/actions/general_feedback.php';
-$link = new moodle_url($url, array('cmid' => $course_module_id, 'id' => $id));
+$link = new moodle_url($url, array('cmid' => $cmid));
 $PAGE->set_url($link);
 $title = get_string('generalfeedback', 'mod_coursework');
 $PAGE->set_title($title);
 
-$custom_data = new stdClass();
-$custom_data->ajax = $ajax;
-$custom_data->id = $id;
-$custom_data->cmid = $course_module_id;
+$customdata = new stdClass();
+$customdata->ajax = $ajax;
+$customdata->id = $coursework->id;
+$customdata->cmid = $cmid;
 
-$grading_form = new general_feedback_form(null, $custom_data);
+$gradingform = new general_feedback_form(null, $customdata);
 
-$returned_data = $grading_form->get_data();
+$returneddata = $gradingform->get_data();
 
-if ($grading_form->is_cancelled()) {
-    redirect(new moodle_url('/mod/coursework/view.php', array('id' => $course_module_id)));
-} else if ($returned_data) {
-    $grading_form->process_data($returned_data);
+if ($gradingform->is_cancelled()) {
+    redirect(new moodle_url('/mod/coursework/view.php', array('id' => $cmid)));
+} else if ($returneddata) {
+    $gradingform->process_data($returneddata);
     // TODO should not echo before header.
     echo 'General feedback updated..';
     if (!$ajax) {
-        redirect(new moodle_url('/mod/coursework/view.php', array('id' => $course_module_id)),
+        redirect(new moodle_url('/mod/coursework/view.php', array('id' => $cmid)),
                                 get_string('changessaved'));
     }
 } else {
@@ -72,9 +71,9 @@ if ($grading_form->is_cancelled()) {
         echo $OUTPUT->header();
         echo $OUTPUT->heading('General Feedback');
     }
-    $custom_data->feedbackcomment_editor['text'] = $coursework->feedbackcomment;
-    $grading_form->set_data($custom_data);
-    $grading_form->display();
+    $customdata->feedbackcomment_editor['text'] = $coursework->feedbackcomment;
+    $gradingform->set_data($customdata);
+    $gradingform->display();
 
     if (!$ajax) {
         echo $OUTPUT->footer();

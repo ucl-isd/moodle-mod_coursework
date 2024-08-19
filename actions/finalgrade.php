@@ -42,17 +42,17 @@ $isfinalgrade = optional_param('isfinalgrade', 1, PARAM_INT);;
 // Determines whether the current user is the owner of the grade.
 $gradeowner = true;
 
-$course_module = get_coursemodule_from_id('coursework', $cmid, 0, false, MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $course_module->course), '*', MUST_EXIST);
-require_login($course, false, $course_module);
+$coursemodule = get_coursemodule_from_id('coursework', $cmid, 0, false, MUST_EXIST);
+$course = $DB->get_record('course', array('id' => $coursemodule->course), '*', MUST_EXIST);
+require_login($course, false, $coursemodule);
 
-$coursework = mod_coursework\models\coursework::find($course_module->instance);
+$coursework = mod_coursework\models\coursework::find($coursemodule->instance);
 $submission = submission::find($submission_id);
 $teacherfeedback = $DB->get_record('coursework_feedbacks', array('id' => $feedbackid));
 
 // This is where stuff used to construct the dynamic form is fed in.
 
-// Can the user final grade in this course?
+// Can the user final grade for this course module?
 $canfinalgrade = has_capability('mod/coursework:addagreedgrade', $PAGE->context);
 
 // TODO shift into custom data and set via somewhere else.

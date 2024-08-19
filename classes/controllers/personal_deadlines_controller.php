@@ -183,7 +183,10 @@ class personal_deadlines_controller extends controller_base {
             ];
         }
         $this->coursework = coursework::find(['id' => $this->params['courseworkid']]);
-        require_login($this->coursework->course);
+        $cm = get_coursemodule_from_instance(
+            'coursework', $this->coursework->id, 0, false, MUST_EXIST
+        );
+        require_login($this->coursework->course, false, $cm);
         $params = $this->set_default_current_deadline();
 
         $ability = new ability(user::find($USER), $this->coursework);
