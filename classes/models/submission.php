@@ -1222,6 +1222,7 @@ class submission extends table_base implements \renderable {
 
     public function get_submissions_in_sample() {
         assessment_set_membership::fill_pool_coursework($this->courseworkid);
+        $allocatable = $this->get_allocatable();
         $records = isset(assessment_set_membership::$pool[$this->courseworkid]['allocatableid-allocatabletype'][$allocatable->id . '-' . $allocatable->type()]) ?
             assessment_set_membership::$pool[$this->courseworkid]['allocatableid-allocatabletype'][$allocatable->id . '-' . $allocatable->type()] : [];
         return $records;
