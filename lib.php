@@ -767,53 +767,6 @@ function coursework_supports($feature) {
 }
 
 /**
- * Checks whether the student with the given username has been flagged
- * as having a disability
- *
- * @param string $username
- * @return bool
- */
-function has_disability($username) {
-    global $CFG;
-
-    // TODO we are assuming a lot here.
-    $dbhost = $CFG->dbhost;
-    $dbuser = $CFG->dbuser;
-    $dbpass = $CFG->dbpass;
-
-    $disabilitydb = 'exuimport';
-    $disabilitycolumn = 'DISABILITY_CODE';
-    $disabilitytable = 'ELE_STUDENT_ACCOUNTS';
-    $usernamefield = 'USERNAME';
-    $hasdisabilityvalue = 'Y';
-
-    $sql = "SELECT {$disabilitycolumn}
-              FROM {$disabilitytable}
-             WHERE {$usernamefield} = '{$username}'";
-
-    // TODO make this use normal Moodle DB functions.
-    $dbconnection = mysql_connect($dbhost, $dbuser, $dbpass);
-    if (!$dbconnection) {
-        return false;
-    }
-    if (!mysql_select_db($disabilitydb, $dbconnection)) {
-        return false;
-    }
-    $disabilities = mysql_query($sql, $dbconnection);
-    if (!$disabilities) {
-        return false;
-    }
-    $row = mysql_fetch_assoc($disabilities);
-    if (!$row || empty($row[$disabilitycolumn])) {
-        return false;
-    }
-    // TODO get all data at once and cache it as a static variable
-    mysql_close($dbconnection); // Inefficient - we will be doing this a lot sometimes.
-
-    return ($row[$disabilitycolumn] == $hasdisabilityvalue) ? true : false;
-}
-
-/**
  * Puts items in order of their configured display order within forms data, so that responses are
  * always displayed the same way the form was when the respondents filled it in.
  *
