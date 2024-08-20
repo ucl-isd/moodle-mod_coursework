@@ -286,17 +286,6 @@ class submission extends table_base implements \renderable {
     }
 
     /**
-     * Returns whether or not the student that made the submission has a disability.
-     *
-     * @return bool
-     */
-    public function has_disability() {
-        global $DB;
-        $user = user::get_object($this->userid);
-        return (!empty($user)) ? has_disability($user->username) : false;
-    }
-
-    /**
      * Gets the file options for file managers and submission save operations from the parent
      * coursework.
      *
