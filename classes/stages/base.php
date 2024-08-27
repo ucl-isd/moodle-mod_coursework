@@ -965,6 +965,7 @@ abstract class base {
                     if ($assessor) {
                         $assessorid = $assessor[0];
                         $assessor = user::get_object($assessorid);
+                        break;
                     }
                 }
             }
