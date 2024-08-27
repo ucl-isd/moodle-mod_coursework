@@ -299,19 +299,19 @@ abstract class base {
         // There is a chance that when the teachers were initially cached the dataset was empty
         // So check again
         if (empty($serialised_teachers) || empty(unserialize($serialised_teachers))) {
-            $teachers = get_enrolled_users($this->coursework->get_context(), $this->assessor_capability());
+            $users = get_enrolled_users($this->coursework->get_context());
             $teacher_users = [];
-            foreach ($teachers as $teacher) {
-                $teacher_users[] = user::build($teacher);
+            $modcontext = $this->coursework->get_context();
+            foreach ($users as $user) {
+                if (has_capability($this->assessor_capability(), $modcontext, $user)) {
+                    $teacher_users[] = user::build($user);
+                }
             }
-
             $cache->set($this->coursework->id()."_teachers", serialize($teacher_users));
         } else {
             $teacher_users = unserialize($serialised_teachers);
         }
-
         return $teacher_users;
-
     }
 
     /**
@@ -563,10 +563,9 @@ abstract class base {
      */
     public function user_is_assessor($assessor) {
         if (!isset(self::$self_cache['user_is_assessor'][$this->coursework->id][$assessor->id])) {
-            $modulecontext = $this->coursework->get_context();
             $enrolled = is_enrolled($this->coursework->get_course_context(), $assessor);
             $hasmoduleassessorcapability =
-                ($enrolled && has_capability($this->assessor_capability(), $modulecontext))
+                ($enrolled && has_capability($this->assessor_capability(), $this->coursework->get_context(), $assessor))
                 || is_primary_admin($assessor->id);
             self::$self_cache['user_is_assessor'][$this->coursework->id][$assessor->id] = $hasmoduleassessorcapability;
         }
@@ -957,14 +956,17 @@ abstract class base {
 
         if ($groupid) {
             // find 1st assessor in the group
-            $first_group_assessor = get_enrolled_users($this->coursework->get_context(), $this->assessor_capability(),
-                $groupid, 'u.*', 'id ASC', 0, 1);
+            $modcontext = $this->coursework->get_context();
+            $users = get_enrolled_users($modcontext, '', $groupid, 'u.*', 'id ASC');
 
-            $assessor = array_column($first_group_assessor, 'id');
-
-            if ($assessor) {
-                $assessorid = $assessor[0];
-                $assessor = user::get_object($assessorid);
+            foreach ($users as $user) {
+                if (has_capability($this->assessor_capability(), $modcontext, $user)) {
+                    $assessor = array_column($user, 'id');
+                    if ($assessor) {
+                        $assessorid = $assessor[0];
+                        $assessor = user::get_object($assessorid);
+                    }
+                }
             }
         }
 
