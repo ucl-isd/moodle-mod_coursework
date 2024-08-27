@@ -563,9 +563,12 @@ abstract class base {
      */
     public function user_is_assessor($assessor) {
         if (!isset(self::$self_cache['user_is_assessor'][$this->coursework->id][$assessor->id])) {
-            $enrolled = is_enrolled($this->coursework->get_course_context(), $assessor, $this->assessor_capability());
-            $res = $enrolled || is_primary_admin($assessor->id);
-            self::$self_cache['user_is_assessor'][$this->coursework->id][$assessor->id] = $res;
+            $modulecontext = $this->coursework->get_context();
+            $enrolled = is_enrolled($this->coursework->get_course_context(), $assessor);
+            $hasmoduleassessorcapability =
+                ($enrolled && has_capability($this->assessor_capability(), $modulecontext))
+                || is_primary_admin($assessor->id);
+            self::$self_cache['user_is_assessor'][$this->coursework->id][$assessor->id] = $hasmoduleassessorcapability;
         }
         return self::$self_cache['user_is_assessor'][$this->coursework->id][$assessor->id];
     }
