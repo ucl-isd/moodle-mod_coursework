@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
 $string['access_denied'] = 'Access denied';
+$string['accesserror'] = 'Access error';
 $string['all'] = 'ALL';
 
 $string['aday'] = 'A day';

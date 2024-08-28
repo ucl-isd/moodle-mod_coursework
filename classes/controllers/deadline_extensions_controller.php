@@ -184,7 +184,10 @@ class deadline_extensions_controller extends controller_base {
         $extended_deadline = false;
         $response = [];
         $this->coursework = coursework::find(['id' => $this->params['courseworkid']]);
-        require_login($this->coursework->course);
+        $cm = get_coursemodule_from_instance(
+            'coursework', $this->coursework->id, 0, false, MUST_EXIST
+        );
+        require_login($this->coursework->course, false, $cm);
         $params = $this->set_default_current_deadline();
         $ability = new ability(user::find($USER), $this->coursework);
         $errors = $this->validation($data_params);
@@ -278,7 +281,10 @@ class deadline_extensions_controller extends controller_base {
         $response = [];
         if ($data_params['id'] > 0) {
             $this->coursework = coursework::find(['id' => $this->params['courseworkid']]);
-            require_login($this->coursework->course);
+            $cm = get_coursemodule_from_instance(
+                'coursework', $this->coursework->id, 0, false, MUST_EXIST
+            );
+            require_login($this->coursework->course, false, $cm);
 
             $ability = new ability(user::find($USER), $this->coursework);
             $deadline_extension = deadline_extension::find(['id' => $data_params['id']]);
@@ -332,7 +338,10 @@ class deadline_extensions_controller extends controller_base {
         global $USER, $DB;
         $response = [];
         $this->coursework = coursework::find(['id' => $this->params['courseworkid']]);
-        require_login($this->coursework->course);
+        $cm = get_coursemodule_from_instance(
+            'coursework', $this->coursework->id, 0, false, MUST_EXIST
+        );
+        require_login($this->coursework->course, false, $cm);
 
         $params = array(
             'allocatableid' => $this->params['allocatableid'],

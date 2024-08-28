@@ -36,9 +36,9 @@ class grading_controller extends controller_base {
         $coursework_record = $DB->get_record('coursework', array('id' => $options['courseworkid']), '*', MUST_EXIST);
         //$coursework = mod_coursework\models\coursework::find($coursework_record);
         $coursework = coursework::find($coursework_record, false);
-        require_login($coursework->course);
 
         $coursework->coursemodule = get_coursemodule_from_instance('coursework', $coursework->id, $coursework->course, false, MUST_EXIST);
+        require_login($coursework->course, false, $coursework->coursemodule);
         $grading_report = $coursework->renderable_grading_report_factory($options);
 
         $tablerows = $grading_report->get_table_rows_for_page();

@@ -536,8 +536,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 $class = ($coursework->feedbackcomment) ? 'edit-btn' : 'add-general_feedback-btn';
                 $out .= html_writer::tag('p', '', array('id' => 'feedback_text'));
                 $link = new moodle_url('/mod/coursework/actions/general_feedback.php',
-                                       array('cmid' => $coursework->get_coursemodule_id(),
-                                             'id' => $coursework->id));
+                                       array('cmid' => $coursework->get_coursemodule_id()));
                 $out .= html_writer::link($link,
                                           $title,
                                           array('class' => $class));
