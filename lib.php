@@ -196,24 +196,19 @@ function coursework_add_instance($formdata) {
 
     // Create event for coursework deadline [due]
     if ($coursework && $coursework->deadline) {
-        $event = coursework_event($coursework, format_module_intro('coursework', $coursework,
-            $coursemodule->id), $returnid, 'due', $coursework->deadline);
-
+        $event = \mod_coursework\calendar::coursework_event($coursework, 'due', $coursework->deadline);
         calendar_event::create($event);
     }
 
     // Create event for coursework initialmarking deadline [initialgradingdue]
     if ($coursework && $coursework->marking_deadline_enabled() && $coursework->initialmarkingdeadline) {
-        $event = coursework_event($coursework, format_module_intro('coursework', $coursework,
-            $coursemodule->id), $returnid, 'initialgradingdue', $coursework->initialmarkingdeadline);
-
+        $event = \mod_coursework\calendar::coursework_event($coursework, 'initialgradingdue', $coursework->initialmarkingdeadline);
         calendar_event::create($event);
     }
 
     // Create event for coursework agreedgrademarking deadline [agreedgradingdue]
     if ($coursework && $coursework->marking_deadline_enabled() && $coursework->agreedgrademarkingdeadline && $coursework->has_multiple_markers()) {
-        $event = coursework_event($coursework, format_module_intro('coursework', $coursework,
-            $coursemodule->id), $returnid, 'agreedgradingdue', $coursework->agreedgrademarkingdeadline);
+        $event = \mod_coursework\calendar::coursework_event($coursework, 'agreedgradingdue', $coursework->agreedgrademarkingdeadline);
         calendar_event::create($event);
     }
 
@@ -500,18 +495,18 @@ function coursework_update_instance($coursework) {
             coursework_update_events($coursework, 'initialgradingdue'); // Cw initial grading deadine
         } else {
             // Remove it
-            remove_event($coursework, 'initialgradingdue');
+             \mod_coursework\calendar::remove_event($coursework, 'initialgradingdue');
         }
         if ($coursework->agreedgrademarkingdeadline && $coursework->numberofmarkers > 1) {
             // Update
             coursework_update_events($coursework, 'agreedgradingdue'); // Cw agreed grade deadine
         } else {
             // Remove it
-            remove_event($coursework, 'agreedgradingdue' );
+             \mod_coursework\calendar::remove_event($coursework, 'agreedgradingdue' );
         }
     } else {
         // Remove all deadline events for this coursework regardless the type
-        remove_event($coursework);
+         \mod_coursework\calendar::remove_event($coursework);
     }
 
     return $DB->update_record('coursework', $coursework);
@@ -534,7 +529,7 @@ function coursework_update_instance($coursework) {
 
      // Update/create event for coursework deadline [due]
      if ($eventtype == 'due') {
-         $data = coursework_event($coursework, $coursework->intro, $coursework->id, $eventtype, $coursework->deadline);
+         $data = \mod_coursework\calendar::coursework_event($coursework, $eventtype, $coursework->deadline);
          if ($event) {
              $event->update($data); //update if event exists
          } else {
@@ -544,7 +539,7 @@ function coursework_update_instance($coursework) {
 
      // Update/create event for coursework initialmarking deadline [initialgradingdue]
      if ($eventtype == 'initialgradingdue') {
-         $data = coursework_event($coursework, $coursework->intro, $coursework->id, $eventtype, $coursework->initialmarkingdeadline);
+         $data = \mod_coursework\calendar::coursework_event($coursework, $eventtype, $coursework->initialmarkingdeadline);
          if ($event) {
              $event->update($data); //update if event exists
          } else {
@@ -554,28 +549,12 @@ function coursework_update_instance($coursework) {
 
      // Update/create event for coursework agreedgrademarking deadline [agreedgradingdue]
      if ($eventtype == 'agreedgradingdue') {
-         $data = coursework_event($coursework, $coursework->intro, $coursework->id, $eventtype, $coursework->agreedgrademarkingdeadline);
+         $data = \mod_coursework\calendar::coursework_event($coursework, $eventtype, $coursework->agreedgrademarkingdeadline);
          if ($event) {
              $event->update($data); //update if event exists
          } else {
              calendar_event::create($data); // Create new event as it doesn't exist
          }
-     }
-}
-
-function remove_event($coursework, $eventtype = false) {
-     global $DB;
-
-     $params = array('modulename' => 'coursework', 'instance' => $coursework->id);
-
-     if ($eventtype) {
-         $params['eventtype'] = $eventtype;
-     }
-
-     $events = $DB->get_records('event', $params);
-     foreach ($events as $eventid) {
-         $event = calendar_event::load($eventid->id);
-         $event->delete(); // delete events from mdl_event table
      }
 }
 
@@ -1474,41 +1453,6 @@ function coursework_personal_deadline_passed($courseworkid) {
 
    return $DB->record_exists_sql($sql, array('courseworkid' => $courseworkid, 'now' => time()));
 
-}
-
-/**
- * @param coursework $coursework
- * @param $description
- * @param $instance
- * @param $eventtype
- * @param $deadline
- * @return stdClass
- */
-function coursework_event($coursework, $description, $instance, $eventtype, $deadline) {
-
-    $event = new stdClass();
-    $event->type = CALENDAR_EVENT_TYPE_ACTION;
-
-    $event->description = $description;
-    $event->courseid = $coursework->course;
-    $event->name = $coursework->name;
-    $event->groupid = 0;
-    $event->userid = 0;
-    $event->modulename = 'coursework';
-    $event->instance = $instance;
-    $event->eventtype = $eventtype;
-    $event->timestart = $deadline;
-    $event->timeduration = 0;
-    $event->timesort = $deadline;
-    $event->visible = instance_is_visible('coursework', $coursework);
-
-  /*  if ($eventtype == 'initialgradingdue') {
-        $event->name .= " (Initial stage)";
-    } else if ($eventtype == 'agreedgradingdue') {
-        $event->name .= " (Agreed Grade stage)";
-    }*/
-
-    return $event;
 }
 
 /**
