@@ -29,6 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Represents a row in the course_modules table.
  */
+#[\AllowDynamicProperties]
 class course_module extends table_base {
 
     /**
