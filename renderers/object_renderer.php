@@ -585,8 +585,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             100 => 100,
             $all => get_string('all', 'mod_coursework')); // for boost themes instead of 'all' we can put 0, however currently it is a bug
 
-        $single_select_params = compact('sortby', 'sorthow', 'page');
-        $single_select_params['page'] = '0';
+        // Commenting these out as they appear unused and are causing exception in behat test.
+        // $single_select_params = compact('sortby', 'sorthow', 'page');
+        // $single_select_params['page'] = '0';
         $select = new single_select($this->page->url, 'per_page', $records_per_page, $options['perpage'], null);
         $select->label = get_string('records_per_page', 'coursework');
         $select->class = 'jumpmenu';
