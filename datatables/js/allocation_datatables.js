@@ -8,10 +8,9 @@
  */
 
 
+const wwwroot = document.getElementById('mod-coursework-config').dataset.wwwroot;
+
 M.mod_coursework_datatables = {
-
-
-
 
     /**
      * This is to set up the listeners etc for the page elements on the allocations page.
@@ -79,7 +78,7 @@ M.mod_coursework_datatables = {
 
 
             $.ajax({
-                url: '/mod/coursework/actions/ajax/datatable/allocation.php',
+                url: wwwroot + '/mod/coursework/actions/ajax/datatable/allocation.php',
                 type: 'POST',
                 data: options
             }).done(function(response) {
@@ -177,7 +176,7 @@ M.mod_coursework_datatables = {
                     var dropdown = $(this);
 
                     $.ajax({
-                        url: '/mod/coursework/actions/update_allocated_assessor.php',
+                        url: wwwroot + '/mod/coursework/actions/update_allocated_assessor.php',
                         type: 'POST',
                         data: allocationoptions
                     }).done(function (response) {
@@ -238,7 +237,7 @@ M.mod_coursework_datatables = {
 
 
                 $.ajax({
-                    url: '/mod/coursework/actions/update_allocated_pinned.php',
+                    url: wwwroot + '/mod/coursework/actions/update_allocated_pinned.php',
                     type: 'POST',
                     data: pinneddata
                 }).done(function (response) {
@@ -270,7 +269,7 @@ M.mod_coursework_datatables = {
 
 
                 $.ajax({
-                    url: '/mod/coursework/actions/update_allocated_pinned.php',
+                    url: wwwroot + '/mod/coursework/actions/update_allocated_pinned.php',
                     type: 'POST',
                     data: pinneddata
                 }).done(function (response) {
@@ -302,7 +301,7 @@ M.mod_coursework_datatables = {
 
 
                 $.ajax({
-                    url: '/mod/coursework/actions/update_allocated_pinned.php',
+                    url: wwwroot + '/mod/coursework/actions/update_allocated_pinned.php',
                     type: 'POST',
                     data: pinneddata
                 }).done(function (response) {
@@ -441,7 +440,7 @@ M.mod_coursework_datatables = {
 
 
                 $.ajax({
-                    url: '/mod/coursework/actions/update_allocatable_in_sample.php',
+                    url: wwwroot + '/mod/coursework/actions/update_allocatable_in_sample.php',
                     type: 'POST',
                     data: allocstablesampledata
                 }).done(function (response) {

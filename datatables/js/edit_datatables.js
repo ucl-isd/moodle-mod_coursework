@@ -3,6 +3,8 @@ function notification_init() {
     // Init stuff ...
 }
 
+const wwwroot = document.getElementById('mod-coursework-config').dataset.wwwroot
+
 /**
  *
  * @param row
@@ -142,7 +144,7 @@ $(document).ready(function () {
                 return 0;
             }
 
-            var url = datatables_lang_messages.url_root + "/mod/coursework/actions/personal_deadline.php";
+            var url = wwwroot + "/mod/coursework/actions/personal_deadline.php";
             var param = JSON.parse(data_get);
             param.personal_deadline_time = value;
 
@@ -237,7 +239,7 @@ $(document).ready(function () {
             params.pre_defined_reason = $('#extension-reason-select').val();
             params.requesttype = 'submit';
             current_rowid = $('#button-id').val();
-            var url = datatables_lang_messages.url_root;
+            var url = wwwroot;
             $.ajax({
                 type: "POST",
                 url: url + "/mod/coursework/actions/ajax/deadline_extension/submit.php",
@@ -587,7 +589,7 @@ $(document).ready(function () {
             $('#extension-submissionid').val(data_params.submissionid);
             $('#extension-name').val(data_name);
             data_params.requesttype = 'edit';
-            var url = datatables_lang_messages.url_root;
+            var url = wwwroot;
             $.ajax({
                 type: "GET",
                 url: url + "/mod/coursework/actions/ajax/deadline_extension/edit.php",
@@ -652,7 +654,7 @@ $(document).ready(function () {
             $('#form-extension').find('textarea').val('');
 
             if(data_time.is_have_deadline == '1') {
-                var url = datatables_lang_messages.url_root;
+                var url = wwwroot;
                 $.ajax({
                     type: "GET",
                     url: url + "/mod/coursework/actions/ajax/deadline_extension/new.php",
@@ -815,11 +817,11 @@ $(document).ready(function () {
             var removefeedbackbutton = (button.attr('id') == 'id_removefeedbackbutton') ? 1 : 0;
             var submitfeedbackbutton = (button.attr('id') == 'id_submitfeedbackbutton') ? 1 : 0;
             var modal = $('#modal-grading');
-            var url = '/mod/coursework/actions/feedbacks/create.php';
+            var url = wwwroot + '/mod/coursework/actions/feedbacks/create.php';
             var form_data = modal.find('form').serializeArray();
             for (var i = 0, length = form_data.length; i < length; i++) {
                 if (form_data[i].name == 'feedbackid' && !isNaN(parseInt(form_data[i].value)) && form_data[i].value != '0') {
-                    url = '/mod/coursework/actions/feedbacks/update.php';
+                    url = wwwroot + '/mod/coursework/actions/feedbacks/update.php';
                     break;
                 }
             }
@@ -876,7 +878,7 @@ $(document).ready(function () {
                 var removefeedbackbutton = (button.attr('id') == 'id_removefeedbackbutton') ? 1 : 0;
                 var submitfeedbackbutton = (button.attr('id') == 'id_submitfeedbackbutton') ? 1 : 0;
                 var modal = $('#modal-grading');
-                var url = '/mod/coursework/actions/feedbacks/update.php';
+                var url = wwwroot + '/mod/coursework/actions/feedbacks/update.php';
                 var form_data = modal.find('form').serializeArray();
                 var cell_type = modal.find('#cell_type').val();
                 update_feedback(form_data, url, cell_type, submitbutton, removefeedbackbutton, submitfeedbackbutton,1, button);

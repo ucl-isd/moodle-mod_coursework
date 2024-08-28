@@ -7,11 +7,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+const wwwroot = document.getElementById('mod-coursework-config').dataset.wwwroot;
 
 M.mod_coursework_datatables = {
-
-
-
 
     /**
      * This is to set up the listeners etc for the page elements on the allocations page.
@@ -62,7 +60,7 @@ console.log('calling datatables');
 
 
             $.ajax({
-                url: '/mod/coursework/actions/ajax/datatable/bulkplagiarismflag.php',
+                url: wwwroot + '/mod/coursework/actions/ajax/datatable/bulkplagiarismflag.php',
                 type: 'POST',
                 data: options
             }).done(function(response) {
@@ -208,7 +206,7 @@ console.log(datatable);
 
 
                 $.ajax({
-                    url: '/mod/coursework/actions/update_allocatable_in_sample.php',
+                    url: wwwroot + '/mod/coursework/actions/update_allocatable_in_sample.php',
                     type: 'POST',
                     data: allocstablesampledata
                 }).done(function (response) {

@@ -529,20 +529,20 @@ if ($can_view_students) {
         $html .= $page_renderer->render_modal();
     }
 }
+$PAGE->requires->jquery();
+$PAGE->requires->css(new moodle_url('/mod/coursework/datatables/css/datatables.bootstrap.min.css'));
+$PAGE->requires->css(new moodle_url('//mod/coursework/datatables/css/jquery.datetimepicker.css'));
+$datatablesjsfiles = [
+    'datatables.js',  'edit_datatables.js',
+    // 'jquery-3.3.1.min.js', 'jquery.datatables.js', 'php-date-formatter.min.js',
+];
+foreach ($datatablesjsfiles as $datatablesjs) {
+    $PAGE->requires->js(new moodle_url("/mod/coursework/datatables/js/$datatablesjs"));
+}
 
 echo $OUTPUT->header();
 echo $html;
-echo '<script src="'.$CFG->wwwroot.'/mod/coursework/datatables/js/jquery-3.3.1.min.js"></script>
-<link rel="stylesheet" type="text/css" href="'. $CFG->wwwroot .'/mod/coursework/datatables/css/datatables.bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="'. $CFG->wwwroot .'/mod/coursework/datatables/css/jquery.datetimepicker.css"/>
-<script src="'.$CFG->wwwroot.'/mod/coursework/datatables/js/jquery.datatables.js"></script>
-<script src="'.$CFG->wwwroot.'/mod/coursework/datatables/js/datatables.js"></script>
-<script src="'.$CFG->wwwroot.'/mod/coursework/datatables/js/php-date-formatter.min.js"></script>
-<script src="'.$CFG->wwwroot.'/mod/coursework/datatables/js/edit_datatables.js"></script>
-';
-
-// $PAGE->requires->js('/mod/coursework/datatables/js/jquery-3.3.1.min.js');
-// $PAGE->requires->js('/mod/coursework/datatables/js/jquery.datatables.js');
-// Finish the page.
+// Provide wwwroot to JS.
+echo html_writer::div('', '', ['id' => 'mod-coursework-config', 'data-wwwroot' => $CFG->wwwroot]);
 echo $OUTPUT->footer();
 

@@ -9,12 +9,9 @@ var display_suspended_gbl   =   0;
 var tableobject = 0;
 
 $( document ).ready(function() {
-
-
-
     var langmessage = JSON.parse($('#element_lang_messages').attr('data-lang'));
-
-    var base_url = window.location.origin  + '/mod/coursework/datatables/js/';
+    const wwwroot = document.getElementById('mod-coursework-config').dataset.wwwroot
+    var base_url = wwwroot  + '/mod/coursework/datatables/js/';
 
     require.config({
         paths: {
@@ -124,7 +121,7 @@ $( document ).ready(function() {
         };
 
         $.ajax({
-            url: '/mod/coursework/actions/ajax/datatable/grading.php',
+            url: wwwroot + '/mod/coursework/actions/ajax/datatable/grading.php',
             type: 'POST',
             data: params
         }).done(function(response) {
