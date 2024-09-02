@@ -1,3 +1,4 @@
+@mod @mod_coursework
 Feature: Automatic sample based on range set grades using marking of students in stage 1 and 2
 
   As a manager, I want to be able to automatically allocate assessors to students
@@ -26,10 +27,9 @@ Feature: Automatic sample based on range set grades using marking of students in
     And I grade the submission as 45 using the simple form
     And I log out
 
-
   Scenario: Automatically allocating a set of students within specified grade rule range in stage 2 based on stage 1 grades
     Given I am logged in as a manager
-    And I am on the allocations page
+    And I visit the allocations page
     And I enable automatic sampling for stage 2
     And show me the page
     And I enable grade range rule 1 for stage 2
@@ -50,11 +50,9 @@ Feature: Automatic sample based on range set grades using marking of students in
     #Then a student should be automatically included in sample for stage 2
     #And another student should be automatically included in sample for stage 2
 
-
-
   Scenario: Automatically allocating a set of students within specified percentage rule range in stage 3 based on stage 2 grades
     Given I am logged in as a manager
-    And I am on the allocations page
+    And I visit the allocations page
     And I enable automatic sampling for stage 2
     And I enable total rule for stage 2
     And I select 100% of total students in stage 1
@@ -66,7 +64,7 @@ Feature: Automatic sample based on range set grades using marking of students in
     And I grade the submission as 40 using the simple form
     And I log out
     And I am logged in as a manager
-    And I am on the allocations page
+    And I visit the allocations page
     When I enable automatic sampling for stage 3
     And I enable grade range rule 1 for stage 3
     And I select limit type for grade range rule 1 in stage 3 as "percentage"
@@ -75,13 +73,3 @@ Feature: Automatic sample based on range set grades using marking of students in
     And I save sampling strategy
     Then a student should be automatically included in sample for stage 3
     And another student should not be automatically included in sample for stage 3
-
-
-
-
-
-
-
-
-
-

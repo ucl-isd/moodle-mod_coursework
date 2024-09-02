@@ -28,7 +28,7 @@ Feature: Deadlines extensions for submissions
   Scenario: The teacher can add a deadline extension to an individual submission
     Given the coursework deadline has passed
     And I log in as a manager
-    And I am on the coursework page
+    And I visit the coursework page
     When I add a new extension for the student
     Then I should be on the coursework page
     And I should see the extended deadline in the student row
@@ -37,7 +37,7 @@ Feature: Deadlines extensions for submissions
     Given the coursework deadline has passed
     And there is an extension for the student which has expired
     And I log in as a manager
-    And I am on the coursework page
+    And I visit the coursework page
     When I edit the extension for the student
     Then I should be on the coursework page
     And I should see the extended deadline in the student row

@@ -1,11 +1,11 @@
-
+@mod @mod_coursework
 Feature: Allow markers to edit their marking but only during specific marking stages
 
   As an initial marker
   I want to be able to edit my initial marking if I have made a mistake.
   So that if the marking stage is at final agreed grading there is a time window for initial marks edition to happen
 
-   Background:
+  Background:
     Given there is a course
     And there is a coursework
     And the coursework "allocationenabled" setting is "1" in the database
@@ -17,23 +17,19 @@ Feature: Allow markers to edit their marking but only during specific marking st
     And the student has a submission
     And the submission is finalised
 
-
-
   Scenario: Edit own initial feedback before delayed time
     Given there are feedbacks from both teachers
     And I log in as the teacher
     And I visit the coursework page
     Then I should see the edit feedback button for the teacher's feedback
 
-
- @javascript
+  @javascript
   Scenario: Edit own initial feedback after delayed time
     Given there are feedbacks from both teachers
     And I wait "35" seconds
     And I log in as the teacher
     And I visit the coursework page
-   Then I should not see the edit feedback button for the teacher's feedback
-
+    Then I should not see the edit feedback button for the teacher's feedback
 
   Scenario: Automatic agreement before delayed time
     Given the coursework "automaticagreementstrategy" setting is "percentage_distance" in the database
@@ -50,7 +46,6 @@ Feature: Allow markers to edit their marking but only during specific marking st
     And I visit the coursework page
     Then I should not see the final grade on the multiple marker page
 
-
   @javascript
   Scenario: Automatic agreement after delayed time
     Given the coursework "automaticagreementstrategy" setting is "percentage_distance" in the database
@@ -64,6 +59,6 @@ Feature: Allow markers to edit their marking but only during specific marking st
     And I visit the coursework page
     And I click on the new feedback button for assessor 2
     And I grade the submission as 63 without comments using the simple form
-  And I wait "50" seconds
+    And I wait "50" seconds
     And I visit the coursework page
     Then I should see the final grade as 67 on the multiple marker page
