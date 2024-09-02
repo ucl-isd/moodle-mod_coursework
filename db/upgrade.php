@@ -1649,6 +1649,7 @@ function xmldb_coursework_upgrade($oldversion) {
 
     if ($oldversion < 2014090200) {
         $DB->execute("UPDATE {coursework} SET moderationenabled = 0");
+        upgrade_mod_savepoint(true, 2014090200, 'coursework');
     }
 
     if ($oldversion < 2014090801) {
