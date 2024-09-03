@@ -66,7 +66,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         $percentage_options = [];
 
-        for ($i = 5;$i <= 100; $i = $i + 5) {
+        for ($i = 5; $i <= 100; $i = $i + 5) {
             $percentage_options[$i] = "{$i}";
         }
 

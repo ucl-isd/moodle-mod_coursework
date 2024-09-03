@@ -88,14 +88,14 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         $percentage_options = [];
 
-        for ($i = 0;$i < 110; $i = $i + 10) {
+        for ($i = 0; $i < 110; $i = $i + 10) {
             $percentage_options[$i] = "{$i}";
         }
 
         $scale = [];
 
         if     ($this->coursework->grade > 0) {
-            for ($i = 0;$i <= $this->coursework->grade; $i++) {
+            for ($i = 0; $i <= $this->coursework->grade; $i++) {
                 $scale[] = $i;
             }
         } else {

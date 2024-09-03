@@ -812,7 +812,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $percentage_options = [];
 
-        for ($i = 0;$i < 110; $i = $i + 10) {
+        for ($i = 0; $i < 110; $i = $i + 10) {
             $percentage_options[$i] = "{$i}%";
         }
 
@@ -907,7 +907,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $percentage_options = [];
 
-        for ($i = 0;$i < 110; $i = $i + 10) {
+        for ($i = 0; $i < 110; $i = $i + 10) {
             $percentage_options[$i] = "{$i}%";
         }
 
