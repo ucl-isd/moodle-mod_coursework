@@ -127,7 +127,7 @@ class range_total_percent extends moderation_set_rule {
         $html .= get_string('upperlimit', 'mod_coursework').' ';
         $attributes = array(
             'name' => 'rule_range_total_percent_upperlimit',
-            'size' => 3
+            'size' => 3,
         );
         $html .= html_writer::empty_tag('input', $attributes).'%';
         $html .= html_writer::end_tag('p');

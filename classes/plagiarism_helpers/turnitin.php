@@ -50,7 +50,7 @@ class turnitin extends base {
                 $params = array(
                     'cm' => $this->get_coursework()->get_course_module()->id,
                     'name' => 'use_turnitin',
-                    'value' => 1
+                    'value' => 1,
                 );
                 if ($DB->record_exists('plagiarism_turnitin_config', $params)) {
                     return true;

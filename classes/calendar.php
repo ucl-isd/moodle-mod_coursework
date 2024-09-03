@@ -58,12 +58,12 @@ class calendar {
         if ($cm->showdescription) {
             $event->description = array(
                 'text' => $intro,
-                'format' => $coursework->introformat
+                'format' => $coursework->introformat,
             );
         } else {
             $event->description = array(
                 'text' => '',
-                'format' => $coursework->introformat
+                'format' => $coursework->introformat,
             );
         }
 

@@ -105,7 +105,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                     'draftfeedbackenabled',
                                                     'processenrol',
                                                     'processunenrol',
-                                                    'plagiarismflagenabled'
+                                                    'plagiarismflagenabled',
                                                   ));
 
             $sample_strategies = new backup_nested_element('coursework_sample_set_rules');
@@ -140,7 +140,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                                     "createdby",
                                                                     "timecreated",
                                                                     "lastmodifiedby",
-                                                                    "timemodified"
+                                                                    "timemodified",
                                                             ));
 
             $moderation_agreements = new backup_nested_element('coursework_mod_agreements');
@@ -154,7 +154,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                         "timemodified",
                                                         "lasteditedby",
                                                         "modcomment",
-                                                        "modecommentformat"
+                                                        "modecommentformat",
                                                     ));
 
             $feedbacks = new backup_nested_element('coursework_feedbacks');
@@ -176,7 +176,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                      "entry_id",
                                                      "markernumber",
                                                      "stage_identifier",
-                                                     "finalised"
+                                                     "finalised",
                                                  ));
 
             $submissions = new backup_nested_element('coursework_submissions');
@@ -198,7 +198,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                       'allocatablegroup',
                                                       "firstpublished",
                                                       "lastpublished",
-                                                      "timesubmitted"
+                                                      "timesubmitted",
                                                   ));
             $reminders = new backup_nested_element('coursework_reminders');
 
@@ -207,7 +207,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                     "userid",
                                                     "coursework_id",
                                                     "remindernumber",
-                                                    "extension"
+                                                    "extension",
                                                 ));
 
             $pairs = new backup_nested_element('coursework_allocation_pairs');
@@ -223,7 +223,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                 "allocatableid",
                                                 "allocatabletype",
                                                 'allocatableuser',
-                                                'allocatablegroup'
+                                                'allocatablegroup',
                                             ));
 
             $modsetrules = new backup_nested_element('coursework_mod_set_rules');
@@ -235,7 +235,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                       "ruleorder",
                                                       "upperlimit",
                                                       "lowerlimit",
-                                                      "minimum"
+                                                      "minimum",
                                                   ));
 
             $allocation_configs = new backup_nested_element('coursework_allocation_configs');
@@ -246,7 +246,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                              "allocationstrategy",
                                                              "assessorid",
                                                              "value",
-                                                             "purpose"
+                                                             "purpose",
                                                          ));
 
             $modsetmembers = new backup_nested_element('coursework_mod_set_members');
@@ -258,7 +258,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                         "allocatabletype",
                                                         'allocatableuser',
                                                         'allocatablegroup',
-                                                        "stage_identifier"
+                                                        "stage_identifier",
                                                     ));
 
             $extensions = new backup_nested_element('coursework_extensions');
@@ -274,7 +274,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                      "pre_defined_reason",
                                                      "createdbyid",
                                                      "extra_information_text",
-                                                     "extra_information_format"
+                                                     "extra_information_format",
                                                  ));
 
             $personal_deadlines = new backup_nested_element('coursework_person_deadlines');
@@ -290,7 +290,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                     "createdbyid",
                                                     "timecreated",
                                                     "timemodified",
-                                                    "lastmodifiedbyid"
+                                                    "lastmodifiedbyid",
                                                 ));
 
             $sample_members = new backup_nested_element('coursework_sample_set_mbrs');
@@ -303,7 +303,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                         'allocatableuser',
                                                         'allocatablegroup',
                                                         "stage_identifier",
-                                                        "selectiontype"
+                                                        "selectiontype",
                                                 ));
 
             // A coursework instance has submissions.

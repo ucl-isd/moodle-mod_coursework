@@ -167,7 +167,7 @@ class single_assessor_feedback_cell extends cell_base {
         global $OUTPUT;
 
         $feedback_params = array(
-            'feedback' => $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable())
+            'feedback' => $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable()),
         );
         $link = $this->get_router()->get_path('edit feedback', $feedback_params);
 

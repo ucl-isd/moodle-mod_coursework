@@ -112,7 +112,7 @@ class builder {
      */
     public function get_allocatable_cell() {
         $items = array(
-            'coursework' => $this->coursework
+            'coursework' => $this->coursework,
         );
 
         if ($this->coursework->is_configured_to_have_group_submissions()) {
@@ -126,7 +126,7 @@ class builder {
      */
     public function get_personal_deadline_cell() {
         $items = array(
-            'coursework' => $this->coursework
+            'coursework' => $this->coursework,
         );
 
         return new personal_deadline_cell($items);

@@ -108,7 +108,7 @@ class assessor_feedback_mform extends moodleform {
         $file_manager_options = array(
             'subdirs' => false,
             'accepted_types' => '*',
-            'return_types' => FILE_INTERNAL
+            'return_types' => FILE_INTERNAL,
         );
 
         $uploadfilestring = get_string('uploadafile');
@@ -235,7 +235,7 @@ class assessor_feedback_mform extends moodleform {
                 'areamaxbytes' => $filemanager->getAreamaxbytes(),
                 'target' => 'id_' . $filemanager->getName(),
                 'context' => $PAGE->context,
-                'itemid' => $filemanager->getValue()
+                'itemid' => $filemanager->getValue(),
             ];
             $fm = new \form_filemanager($params);
             $options = $fm->options;

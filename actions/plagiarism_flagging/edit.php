@@ -27,7 +27,7 @@ global $CFG, $USER;
 $flagid = optional_param('flagid', 0, PARAM_INT);
 
 $params = array(
-    'flagid' => $flagid
+    'flagid' => $flagid,
 );
 
 $controller = new mod_coursework\controllers\plagiarism_flagging_controller($params);

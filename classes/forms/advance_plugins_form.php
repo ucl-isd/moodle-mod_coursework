@@ -53,7 +53,7 @@ class advance_plugins_form extends moodleform {
         $file_manager_options = array(
             'subdirs' => false,
             'accepted_types' => '*',
-            'return_types' => FILE_INTERNAL
+            'return_types' => FILE_INTERNAL,
         );
         $this->_form->addElement('filemanager',
             'file_element',

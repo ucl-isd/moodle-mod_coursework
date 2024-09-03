@@ -48,7 +48,7 @@ class otherassessors_cell extends cell_base {
         $params = array(
             'submissionid' => $submission->id,
             'assessorid' => $USER->id,
-            'stageidentifier' => $stage_identifier
+            'stageidentifier' => $stage_identifier,
         );
 
         $sql = "SELECT * FROM {coursework_feedbacks}

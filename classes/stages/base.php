@@ -66,7 +66,7 @@ abstract class base {
      * @var array
      */
     private static $self_cache = [
-        'user_is_assessor' => []
+        'user_is_assessor' => [],
     ];
 
     /**
@@ -552,7 +552,7 @@ abstract class base {
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $allocatable->id(),
             'allocatabletype' => $allocatable->type(),
-            'stage_identifier' => $this->stage_identifier
+            'stage_identifier' => $this->stage_identifier,
         );
         $DB->delete_records('coursework_sample_set_mbrs', $params);
     }
@@ -719,7 +719,7 @@ abstract class base {
      */
     public function get_moderation_for_feedback($feedback) {
         $moderation_params = array(
-            'feedbackid' => $feedback->id
+            'feedbackid' => $feedback->id,
         );
         return moderation::find($moderation_params);
     }

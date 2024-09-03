@@ -92,7 +92,7 @@ class multiple_agreed_grade_cell extends cell_base {
         if ($existing_feedback && $ability->can('edit', $existing_feedback)) {
 
             $feedback_route_params = array(
-                'feedback' => $finalfeedback
+                'feedback' => $finalfeedback,
             );
             $link = $this->get_router()->get_path('ajax edit feedback', $feedback_route_params);
 

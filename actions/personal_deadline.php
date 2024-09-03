@@ -46,7 +46,7 @@ $params = array(
     'allocatableid' => $allocatableid,
     'allocatabletype' => $allocatabletype,
     'setpersonaldeadlinespage' => $setpersonaldeadlinespage,
-    'multipleuserdeadlines' => $multipleuserdeadlines
+    'multipleuserdeadlines' => $multipleuserdeadlines,
 );
 
 if ($selectedtype != 'unfinalise') {

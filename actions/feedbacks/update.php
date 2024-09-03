@@ -39,7 +39,7 @@ $params = array(
     'finalised' => $finalised,
     'remove' => $remove,
     'confirm' => $confirm,
-    'ajax' => $ajax
+    'ajax' => $ajax,
 );
 
 if ($ajax) {

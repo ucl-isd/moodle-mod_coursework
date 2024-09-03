@@ -87,7 +87,7 @@ abstract class sample_base {
         'ruleorder',
         'upperlimit',
         'lowerlimit',
-        'minimum'
+        'minimum',
     );
 
     function __construct($coursework) {

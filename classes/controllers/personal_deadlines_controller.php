@@ -179,7 +179,7 @@ class personal_deadlines_controller extends controller_base {
         if (!$this->validated($time)) {
             return [
                 'error' => 1,
-                'message' => 'The new deadline you chose has already passed. Please select appropriate deadline'
+                'message' => 'The new deadline you chose has already passed. Please select appropriate deadline',
             ];
         }
         $this->coursework = coursework::find(['id' => $this->params['courseworkid']]);
@@ -243,7 +243,7 @@ class personal_deadlines_controller extends controller_base {
         return [
             'error' => 0,
             'time' => $date,
-            'timestamp' => $timestamp
+            'timestamp' => $timestamp,
         ];
     }
 

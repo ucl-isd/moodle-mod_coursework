@@ -135,7 +135,7 @@ class average_grade implements auto_grader {
         feedback::create(array(
             'stage_identifier' => 'final_agreed_1',
             'submissionid' => $this->get_allocatable()->get_submission($this->get_coursework())->id(),
-            'grade' => $this->automatic_grade()
+            'grade' => $this->automatic_grade(),
 
         ));
     }

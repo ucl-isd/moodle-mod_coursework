@@ -96,7 +96,7 @@ abstract class sample_set_rule extends table_base implements renderable {
         'ruleorder',
         'upperlimit',
         'lowerlimit',
-        'minimum'
+        'minimum',
     );
 
     /**

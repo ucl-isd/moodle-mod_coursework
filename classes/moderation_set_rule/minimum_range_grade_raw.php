@@ -122,7 +122,7 @@ class minimum_range_grade_raw extends moderation_set_rule {
         $html .= get_string('upperlimit', 'mod_coursework').' ';
         $attributes = array(
             'name' => 'rule_minimum_range_grade_raw_upperlimit',
-            'size' => 3
+            'size' => 3,
         );
         $html .= html_writer::empty_tag('input', $attributes);
         $html .= html_writer::end_tag('p');
@@ -131,7 +131,7 @@ class minimum_range_grade_raw extends moderation_set_rule {
         $html .= get_string('lowerlimit', 'mod_coursework').' ';
         $attributes = array(
             'name' => 'rule_minimum_range_grade_raw_lowerlimit',
-            'size' => 3
+            'size' => 3,
         );
         $html .= html_writer::empty_tag('input', $attributes);
         $html .= html_writer::end_tag('p');
@@ -140,7 +140,7 @@ class minimum_range_grade_raw extends moderation_set_rule {
         $html .= get_string('modsetminimum', 'mod_coursework').' ';
         $attributes = array(
             'name' => 'rule_minimum_range_grade_raw_minimum',
-            'size' => 4
+            'size' => 4,
         );
         $html .= html_writer::empty_tag('input', $attributes);
         $html .= html_writer::end_tag('p');

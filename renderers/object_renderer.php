@@ -328,7 +328,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $new_feedback_params = array(
                 'submission' => $feedbackrow->get_submission(),
                 'assessor' => $feedbackrow->get_assessor(),
-                'stage' => $feedbackrow->get_stage()
+                'stage' => $feedbackrow->get_stage(),
             );
             $link = $this->get_router()->get_path('new feedback', $new_feedback_params);
             $iconlink = $this->output->action_icon($link, $icon, null, array('class' => "new_feedback"));
@@ -1038,7 +1038,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $attributes = array(
             'type' => 'submit',
             'name' => 'delete-mod-set-rule[' . $rule->id . ']',
-            'value' => $linktitle
+            'value' => $linktitle,
         );
         $controlscell->text .= html_writer::empty_tag('input', $attributes);
         $row->cells[] = $controlscell;
@@ -1073,7 +1073,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $attributes = array(
                 'class' => 'assessor-strategy-options',
-                'id' => 'assessor-strategy-' . $classname
+                'id' => 'assessor-strategy-' . $classname,
             );
             // Hide this if it's not currently selected.
             $strategytype = 'assessorallocationstrategy';
@@ -1166,7 +1166,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             'cmid' => $coursework->get_coursemodule_id(),
             'course' => $coursework->get_course(),
             'coursework' => $coursework->id,
-            'modname' => 'coursework'
+            'modname' => 'coursework',
         );
         $plagiarsmlinks = plagiarism_get_links($plagiarism_links_params);
 
@@ -1473,7 +1473,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             'allocatableid' => $personal_deadline_row->get_allocatable()->id(),
             'allocatabletype' => $personal_deadline_row->get_allocatable()->type(),
             'courseworkid' => $personal_deadline_row->get_coursework()->id,
-            'setpersonaldeadlinespage' => '1'
+            'setpersonaldeadlinespage' => '1',
         );
 
         $allocatable_cell_helper = $personal_deadline_row->get_allocatable_cell();

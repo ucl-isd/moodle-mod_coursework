@@ -104,7 +104,7 @@ class percentages extends base {
 
                 $attributes = array(
                     'name' => 'assessorstrategy'.$this->get_name().'['.$teacher->id.']',
-                    'size' => 3
+                    'size' => 3,
                 );
                 if ($currentsetting) {
                     $attributes['value'] = $currentsetting->value;
@@ -159,7 +159,7 @@ class percentages extends base {
                     'courseworkid' => $this->coursework->id,
                     'allocationstrategy' => $this->get_name(),
                     'assessorid' => $teacherid,
-                    'purpose' => 'assessor'
+                    'purpose' => 'assessor',
                 );
                 $DB->delete_records('coursework_allocation_config', $params);
                 continue;

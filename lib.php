@@ -479,7 +479,7 @@ function coursework_update_instance($coursework) {
                 'oldindividualdeadline' => $oldindividualdeadline,
                 'newindividualdeadline' => $coursework->individualfeedback,
                 'userfrom' => $USER->id,
-            )
+            ),
         );
 
         $event = \mod_coursework\event\coursework_deadline_changed::create($params);
@@ -927,7 +927,7 @@ function coursework_seconds_to_string($seconds) {
         60 => array(get_string('minute', 'mod_coursework'),
                     get_string('minutes', 'mod_coursework')),
         1 => array(get_string('second', 'mod_coursework'),
-                   get_string('seconds', 'mod_coursework'))
+                   get_string('seconds', 'mod_coursework')),
     );
 
     $result = [];
@@ -966,7 +966,7 @@ function coursework_get_current_max_feedbacks($courseworkid) {
                   GROUP BY feedbacks.submissionid) AS feedbackcounts
                       ";
     $params = array(
-        'courseworkid' => $courseworkid
+        'courseworkid' => $courseworkid,
     );
     $max = $DB->get_field_sql($sql, $params);
 

@@ -210,13 +210,13 @@ class deadline_extensions_controller extends controller_base {
             $response = [
                 'error' => 0,
                 'data' => $data_params,
-                'content' => $content
+                'content' => $content,
             ];
             echo json_encode($response);
         } else {
             $response = [
                 'error' => 1,
-                'messages' => $errors
+                'messages' => $errors,
             ];
 
             echo json_encode($response);
@@ -246,7 +246,7 @@ class deadline_extensions_controller extends controller_base {
         return  $DB->record_exists('coursework_submissions', array(
                             'courseworkid' => $data['courseworkid'],
                             'allocatableid' => $data['allocatableid'],
-                            'allocatabletype' => $data['allocatabletype']
+                            'allocatabletype' => $data['allocatabletype'],
         ));
     }
 
@@ -322,13 +322,13 @@ class deadline_extensions_controller extends controller_base {
                 ];
                 $response = [
                     'error' => 0,
-                    'data' => $deadline_extension_transform
+                    'data' => $deadline_extension_transform,
                 ];
             }
         } else {
             $response = [
                 'error' => 1,
-                'message' => 'ID can not be lower than 1!'
+                'message' => 'ID can not be lower than 1!',
             ];
         }
         echo json_encode($response);
@@ -373,7 +373,7 @@ class deadline_extensions_controller extends controller_base {
 
         $response = [
             'error' => 0,
-            'data' => $deadline_extension_transform
+            'data' => $deadline_extension_transform,
         ];
 
         echo json_encode($response);

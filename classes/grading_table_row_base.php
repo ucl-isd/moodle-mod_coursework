@@ -257,7 +257,7 @@ abstract class grading_table_row_base implements user_row {
 
        $submission = $this->get_submission();
         $params = array(
-            'submissionid' => $submission->id
+            'submissionid' => $submission->id,
         );
 
         return plagiarism_flag::find($params);

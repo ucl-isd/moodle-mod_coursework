@@ -47,7 +47,7 @@ $jsmodule = array(
     'fullpath' => '/mod/coursework/module.js',
     'requires' => array('base',
                         'node-base'),
-    'strings' => []
+    'strings' => [],
 );
 
 $PAGE->requires->yui_module('moodle-core-notification', 'notification_init');
@@ -481,7 +481,7 @@ if ($can_view_students) {
         // work.
         if ($filehash) {
             $params = array(
-                'pathnamehash' => $filehash
+                'pathnamehash' => $filehash,
             );
             $file = $DB->get_record('files', $params);
             $file->timemodified = time();

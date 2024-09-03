@@ -78,7 +78,7 @@ class moderation_agreement_cell extends cell_base {
                     'submissionid' => $rowobject->get_submission()->id,
                     'moderatorid' => $USER->id,
                     'stage_identifier' => $this->stage->identifier(),
-                    'feedbackid' => $rowobject->get_single_feedback()->id
+                    'feedbackid' => $rowobject->get_single_feedback()->id,
                 );
                 // allow moderations if feedback exists
                 $new_moderation = moderation::build($moderation_params);
@@ -166,7 +166,7 @@ class moderation_agreement_cell extends cell_base {
             'submission' => $rowobject->get_submission(),
             'assessor' => $assessor,
             'stage' => $this->stage,
-            'feedbackid' => $feedback->id
+            'feedbackid' => $feedback->id,
         );
         $link = $this->get_router()->get_path('new moderations', $moderation_params);
 
@@ -191,7 +191,7 @@ class moderation_agreement_cell extends cell_base {
 
         $feedback = $rowobject->get_submission()->get_assessor_feedback_by_stage('assessor_1');
         $feedback_params = array(
-            'moderation' => $this->stage->get_moderation_for_feedback($feedback)
+            'moderation' => $this->stage->get_moderation_for_feedback($feedback),
         );
         $link = $this->get_router()->get_path('edit moderation', $feedback_params);
 
@@ -218,7 +218,7 @@ class moderation_agreement_cell extends cell_base {
 
         $feedback = $rowobject->get_submission()->get_assessor_feedback_by_stage('assessor_1');
         $moderation_params = array(
-            'moderation' => $this->stage->get_moderation_for_feedback($feedback)
+            'moderation' => $this->stage->get_moderation_for_feedback($feedback),
         );
 
         $linktitle = get_string('viewmoderation', 'mod_coursework');

@@ -57,7 +57,7 @@ class course_module extends table_base {
     public static function fill_pool($array) {
         self::$pool = [
             'id' => [],
-            'course-module-instance' => []
+            'course-module-instance' => [],
         ];
         foreach ($array as $record) {
             $object = new self($record);

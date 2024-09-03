@@ -146,7 +146,7 @@ abstract class base {
             $params = array(
                 'courseworkid' => $this->coursework->id,
                 'allocationstrategy' => $this->get_name(),
-                'purpose' => $type
+                'purpose' => $type,
 
             );
             $this->settings[$type] = $DB->get_records('coursework_allocation_config', $params);

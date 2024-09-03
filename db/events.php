@@ -35,7 +35,7 @@ $observers = array(
     array(
         'eventname' => '\mod_coursework\event\coursework_deadline_changed',
         'callback' => 'mod_coursework_observer::coursework_deadline_changed',
-        'schedule' => 'cron'
+        'schedule' => 'cron',
     ),
     array(
         'eventname' => '\core\event\course_module_updated',

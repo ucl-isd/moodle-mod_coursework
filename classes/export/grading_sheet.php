@@ -32,7 +32,7 @@ class grading_sheet extends csv {
     public function get_submissions($groupid = null, $selected_submission_ids = '') {
         global $PAGE, $USER;
         $params = array(
-            'courseworkid' => $this->coursework->id
+            'courseworkid' => $this->coursework->id,
         );
 
        $submissions = submission::find_all($params);

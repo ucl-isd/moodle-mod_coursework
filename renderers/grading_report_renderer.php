@@ -86,13 +86,13 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
             'download_submitted_files' => get_string('download_submitted_files', 'mod_coursework'),
             'exportfinalgrades' => get_string('exportfinalgrades', 'mod_coursework'),
             'exportgradingsheets' => get_string('exportgradingsheets', 'mod_coursework'),
-            'loadingpagination' => get_string('loadingpagination', 'mod_coursework')
+            'loadingpagination' => get_string('loadingpagination', 'mod_coursework'),
         ];
         $result = html_writer::empty_tag('input', array(
             'name' => '',
             'type' => 'hidden',
             'data-lang' => json_encode($lang_messages),
-            'id' => 'element_lang_messages'
+            'id' => 'element_lang_messages',
         ));
         $result = html_writer::div($result);
 

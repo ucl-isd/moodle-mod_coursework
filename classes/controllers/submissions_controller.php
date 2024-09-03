@@ -77,7 +77,7 @@ class submissions_controller extends controller_base {
         $submit_form = new student_submission_form($path,
                                                     array(
                                                       'coursework' => $this->coursework,
-                                                      'submission' => $submission
+                                                      'submission' => $submission,
                                                     ));
         if ($submit_form->is_submitted()) {
             $validation = $submit_form->validate_defined_fields();
@@ -152,8 +152,8 @@ class submissions_controller extends controller_base {
             'context' => $context,
             'objectid' => $submission->id,
             'other' => array(
-                'courseworkid' => $this->coursework->id
-            )
+                'courseworkid' => $this->coursework->id,
+            ),
         );
         $event = assessable_submitted::create($params);
         $event->trigger();
@@ -213,7 +213,7 @@ class submissions_controller extends controller_base {
         $submit_form = new student_submission_form($path,
                                                    array(
                                                        'coursework' => $this->coursework,
-                                                       'submission' => $submission
+                                                       'submission' => $submission,
                                                    ));
         if ($submit_form->is_submitted()) {
             $validation = $submit_form->validate_defined_fields();
@@ -273,8 +273,8 @@ class submissions_controller extends controller_base {
             'context' => $context,
             'objectid' => $submission->id,
             'other' => array(
-                'courseworkid' => $this->coursework->id
-            )
+                'courseworkid' => $this->coursework->id,
+            ),
         );
         $event = assessable_submitted::create($params);
         $event->trigger();

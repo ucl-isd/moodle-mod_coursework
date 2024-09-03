@@ -126,7 +126,7 @@ class sampling_set_widget {
             if (!$fullclassname::allow_multiple()) {
                 $params = array(
                     'courseworkid' => $this->coursework->id,
-                    'rulename' => $rulename
+                    'rulename' => $rulename,
                 );
                 $alreadygotone = $DB->record_exists('coursework_mod_set_rules', $params);
                 if ($alreadygotone) {
@@ -174,7 +174,7 @@ class sampling_set_widget {
             $attributes = array(
                 'class' => 'rule-config',
                 'id' => 'rule-config-'.$shortname,
-                'style' => 'display:none' // Always hide, so they only get revealed by clicking the radio buttons.
+                'style' => 'display:none', // Always hide, so they only get revealed by clicking the radio buttons.
             );
             $html .= html_writer::start_tag('div', $attributes);
             /* @var models\moderation_set_rule $instance */

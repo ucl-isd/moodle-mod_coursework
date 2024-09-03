@@ -60,9 +60,9 @@ $capabilities = array(
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => array(
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
+            'manager' => CAP_ALLOW,
         ),
-        'clonepermissionsfrom' => 'moodle/course:manageactivities'
+        'clonepermissionsfrom' => 'moodle/course:manageactivities',
     ),
 
     'mod/coursework:view' => array(
@@ -73,8 +73,8 @@ $capabilities = array(
             'student' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:submit' => array(
@@ -82,8 +82,8 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'student' => CAP_ALLOW
-        )
+            'student' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:submitonbehalfof' => array(
@@ -91,8 +91,8 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:addinitialgrade' => array(
@@ -102,8 +102,8 @@ $capabilities = array(
         'legacy' => array(
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:editinitialgrade' => array(
@@ -111,8 +111,8 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:addagreedgrade' => array(
@@ -120,8 +120,8 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:editagreedgrade' => array(
@@ -129,8 +129,8 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:publish' => array(
@@ -138,8 +138,8 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:viewanonymous' => array(
@@ -147,8 +147,8 @@ $capabilities = array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:revertfinalised' => array(
@@ -156,8 +156,8 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:allocate' => array(
@@ -165,8 +165,8 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:viewallgradesatalltimes' => array(
@@ -174,8 +174,8 @@ $capabilities = array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:administergrades' => array(
@@ -183,8 +183,8 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:grantextensions' => array(
@@ -192,8 +192,8 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:canexportfinalgrades' => array(
@@ -201,8 +201,8 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:viewextensions' => array(
@@ -213,7 +213,7 @@ $capabilities = array(
             'manager' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-        )
+        ),
     ),
 
     'mod/coursework:grade' => array(
@@ -224,7 +224,7 @@ $capabilities = array(
             'manager' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-        )
+        ),
     ),
     'mod/coursework:addgeneralfeedback' => array(
         'riskbitmask' => RISK_MANAGETRUST | RISK_PERSONAL,
@@ -232,7 +232,7 @@ $capabilities = array(
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
             'manager' => CAP_ALLOW,
-        )
+        ),
     ),
 
     'mod/coursework:viewallstudents' => array(
@@ -242,8 +242,8 @@ $capabilities = array(
         'legacy' => array(
             'manager' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW
-        )
+            'editingteacher' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:addallocatedagreedgrade' => array(
@@ -251,8 +251,8 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:editallocatedagreedgrade' => array(
@@ -260,8 +260,8 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:editpersonaldeadline' => array(
@@ -269,8 +269,8 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:moderate' => array(
@@ -278,8 +278,8 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:receivesubmissionnotifications' => array(
@@ -287,8 +287,8 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:addplagiarismflag' => array(
@@ -298,8 +298,8 @@ $capabilities = array(
         'legacy' => array(
             'manager' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW
-        )
+            'editingteacher' => CAP_ALLOW,
+        ),
     ),
 
     'mod/coursework:updateplagiarismflag' => array(
@@ -307,8 +307,8 @@ $capabilities = array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
-            'manager' => CAP_ALLOW
-        )
+            'manager' => CAP_ALLOW,
+        ),
     ),
 
 );

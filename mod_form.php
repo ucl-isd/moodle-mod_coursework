@@ -51,7 +51,7 @@ class mod_coursework_mod_form extends moodleform_mod {
             'fullpath' => '/mod/coursework/mod_form.js',
             'requires' => array(
                 'node',
-                'ajax'
+                'ajax',
             ));
 
         $PAGE->requires->js_init_call('M.mod_coursework.init', [], true, $module);
@@ -824,7 +824,7 @@ class mod_coursework_mod_form extends moodleform_mod {
             // Don't want to give the option for 0!
             1 => 1,
             2 => 2,
-            3 => 3
+            3 => 3,
         );
         // Remove all options lower than the current maximum number of feedbacks that any student has.
         $currentmaxfeedbacks = coursework_get_current_max_feedbacks($courseworkid);

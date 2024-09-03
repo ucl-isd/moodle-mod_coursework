@@ -98,7 +98,7 @@ $jsmodule = array(
     'name' => 'mod_coursework',
     'fullpath' => '/mod/coursework/module.js',
     'requires' => array('base',
-                        'node-base')
+                        'node-base'),
 );
 $PAGE->requires->js_init_call('M.mod_coursework.init_allocate_page',
                               array('wwwroot' => $CFG->wwwroot, 'coursemoduleid' => $coursemoduleid),
@@ -215,7 +215,7 @@ if ($coursework->allocation_enabled()) {
 
 // Spacer so that we can float the headers next to each other.
 $attributes = array(
-    'class' => 'coursework_spacer'
+    'class' => 'coursework_spacer',
 );
 echo html_writer::start_tag('div', $attributes);
 echo html_writer::end_tag('div');

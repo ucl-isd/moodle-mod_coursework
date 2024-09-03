@@ -71,7 +71,7 @@ class cron {
 
         $counts = array(
             'emails' => 0,
-            'users' => 0
+            'users' => 0,
         );
 
         $userswhoneedreminding = [];

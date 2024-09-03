@@ -706,7 +706,7 @@ class import extends grading_sheet {
                                                array('courseworkid' => $this->coursework->id,
                                                      'allocatableid' => $submission->allocatableid,
                                                      'allocatabletype' => $submission->allocatabletype,
-                                                     'assessorid' => $USER->id
+                                                     'assessorid' => $USER->id,
                                                      ));
             $stage_identifier = $dbrecord->stage_identifier;
         }

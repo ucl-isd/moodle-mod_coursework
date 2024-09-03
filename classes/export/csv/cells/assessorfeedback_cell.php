@@ -137,7 +137,7 @@ class assessorfeedback_cell extends cell_base {
                     'courseworkid' => $this->coursework->id,
                     'allocatableid' => $submission->allocatableid,
                     'allocatabletype' => $submission->allocatabletype,
-                    'stage_identifier' => $stage_identifier
+                    'stage_identifier' => $stage_identifier,
                 );
 
                 if (!has_capability('mod/coursework:administergrades', $modulecontext)

@@ -54,7 +54,7 @@ class provider implements
             'timemodified' => 'timemodified',
             'grade' => 'privacy:metadata:grade',
             'submissionid' => 'privacy:metadata:submissionid',
-            'feedbackcomment' => 'privacy:metadata:feedbackcomment'
+            'feedbackcomment' => 'privacy:metadata:feedbackcomment',
         ];
         $submissions = [
             'authorid' => 'privacy:metadata:authorid',
@@ -62,7 +62,7 @@ class provider implements
             'timecreated' => 'privacy:metadata:timecreated',
             'timemodified' => 'timemodified',
             'createdby' => 'createdby',
-            'timesubmitted' => 'timesubmitted'
+            'timesubmitted' => 'timesubmitted',
         ];
         $extensions = [
             'allocatableid' => 'privacy:metadata:allocatableid',
@@ -70,27 +70,27 @@ class provider implements
             'extra_information_text' => 'privacy:metadata:extra_information_text',
             'extended_deadline' => 'privacy:metadata:extended_deadline',
             'allocatableuser' => 'privacy:metadata:userid',
-            'allocatablegroup' => 'privacy:metadata:groupid'
+            'allocatablegroup' => 'privacy:metadata:groupid',
         ];
         $persondeadlines = [
             'allocatableid' => 'privacy:metadata:allocatableid',
             'createdbyid' => 'privacy:metadata:createdbyid',
             'personal_deadline' => 'privacy:metadata:personal_deadline',
             'allocatableuser' => 'privacy:metadata:userid',
-            'allocatablegroup' => 'privacy:metadata:groupid'
+            'allocatablegroup' => 'privacy:metadata:groupid',
         ];
         $modagreements = [
             'moderatorid' => 'privacy:metadata:moderatorid',
             'agreement' => 'privacy:metadata:agreement',
             'modcomment' => 'privacy:metadata:modcomment',
             'timecreated' => 'privacy:metadata:timecreated',
-            'timemodified' => 'timemodified'
+            'timemodified' => 'timemodified',
         ];
         $plagiarismflags = [
             'createdby' => 'privacy:metadata:createdby',
             'comment' => 'privacy:metadata:comment',
             'timecreated' => 'privacy:metadata:timecreated',
-            'timemodified' => 'timemodified'
+            'timemodified' => 'timemodified',
         ];
         $collection->add_database_table('coursework_feedbacks', $feedbacks, 'privacy:metadata:feedbacks');
         $collection->add_database_table('coursework_submissions', $submissions, 'privacy:metadata:submissions');
@@ -113,7 +113,7 @@ class provider implements
         $params = [
             'modulename' => 'coursework',
             'contextid' => $context->id,
-            'contextlevel' => CONTEXT_MODULE
+            'contextlevel' => CONTEXT_MODULE,
         ];
         $sql = "SELECT cwf.assessorid
                     FROM {context} ctx
@@ -192,7 +192,7 @@ class provider implements
             'allocatableuser' => $userid,
             'allocatablegroup' => $userid,
             'moderatorid' => $userid,
-            'createdby' => $userid
+            'createdby' => $userid,
         ];
         $sql = "SELECT ctx.id
                     FROM {course_modules} cm
@@ -445,7 +445,7 @@ class provider implements
             'timemodified' => transform::datetime($submission->timemodified),
             'timesubmitted' => transform::datetime($submission->timesubmitted),
             'createdby' => $submission->createdby,
-            'finalised' => transform::yesno($submission->finalised)
+            'finalised' => transform::yesno($submission->finalised),
         ];
         writer::with_context($context)
             ->export_data(array_merge($currentpath, [get_string('privacy:submissionpath', 'mod_coursework')]), $submissionData);
@@ -503,7 +503,7 @@ class provider implements
             'grade' => $feedback->grade,
             'feedbackcomment' => $feedback->feedbackcomment,
             'stage_identifier' => $feedback->stage_identifier,
-            'finalised' => transform::yesno($feedback->finalised)
+            'finalised' => transform::yesno($feedback->finalised),
         ];
         return $feedbackData;
     }
@@ -523,7 +523,7 @@ class provider implements
         $extensionData = [
             'extended_deadline' => transform::datetime($extension->extended_deadline),
             'extra_information_text' => $extension->extra_information_text,
-            'createdbyid' => $extension->createdbyid
+            'createdbyid' => $extension->createdbyid,
         ];
         writer::with_context($context)
             ->export_data(array_merge($path, [get_string('privacy:extensionpath', 'mod_coursework')]), (object) $extensionData);
@@ -545,7 +545,7 @@ class provider implements
             'personal_deadline' => transform::datetime($personDeadline->personal_deadline),
             'timecreated' => transform::datetime($personDeadline->timecreated),
             'timemodified' => transform::datetime($personDeadline->timemodified),
-            'createdbyid' => $personDeadline->createdbyid
+            'createdbyid' => $personDeadline->createdbyid,
         ];
         writer::with_context($context)
             ->export_data(array_merge($path, [get_string('privacy:person_deadlines', 'mod_coursework')]), (object) $personDeadlineData);
@@ -577,7 +577,7 @@ class provider implements
             'status' => $status,
             'timecreated' => transform::datetime($plagiarism->timecreated),
             'timemodified' => transform::datetime($plagiarism->timemodified),
-            'createdby' => $plagiarism->createdby
+            'createdby' => $plagiarism->createdby,
         ];
 
         writer::with_context($context)

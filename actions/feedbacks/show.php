@@ -29,7 +29,7 @@ $ajax = optional_param('ajax', 0, PARAM_INT);
 
 $params = array(
     'feedbackid' => $feedbackid,
-    'ajax' => $ajax
+    'ajax' => $ajax,
 
 );
 $controller = new mod_coursework\controllers\feedback_controller($params);

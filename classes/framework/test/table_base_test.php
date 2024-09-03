@@ -52,7 +52,7 @@ class framework_table_base_test extends advanced_testcase {
         $generator = testing_util::get_data_generator();
 
         $params = array(
-            'username' => 'freddo'
+            'username' => 'freddo',
         );
         $user = $generator->create_user($params);
 
@@ -63,7 +63,7 @@ class framework_table_base_test extends advanced_testcase {
         $generator = testing_util::get_data_generator();
 
         $params = array(
-            'username' => 'freddo'
+            'username' => 'freddo',
         );
         $user = $generator->create_user($params);
 
@@ -74,7 +74,7 @@ class framework_table_base_test extends advanced_testcase {
         $generator = testing_util::get_data_generator();
 
         $params = array(
-            'username' => 'freddo'
+            'username' => 'freddo',
         );
         $user = $generator->create_user($params);
 
@@ -83,7 +83,7 @@ class framework_table_base_test extends advanced_testcase {
 
     public function test_find_when_false() {
         $params = array(
-            'username' => 'freddo'
+            'username' => 'freddo',
         );
         $this->assertFalse(framework_user_table::find($params));
     }
@@ -96,7 +96,7 @@ class framework_table_base_test extends advanced_testcase {
         $generator = testing_util::get_data_generator();
 
         $params = array(
-            'username' => 'freddo'
+            'username' => 'freddo',
         );
         $generator->create_user($params);
 
@@ -105,7 +105,7 @@ class framework_table_base_test extends advanced_testcase {
 
     public function test_exists_when_false() {
         $params = array(
-            'username' => 'freddo'
+            'username' => 'freddo',
         );
         $this->assertFalse(framework_user_table::exists($params));
     }
@@ -114,7 +114,7 @@ class framework_table_base_test extends advanced_testcase {
         $generator = testing_util::get_data_generator();
 
         $params = array(
-            'username' => 'freddo'
+            'username' => 'freddo',
         );
         $user = $generator->create_user($params);
         $this->assertEquals($user->id, framework_user_table::find($user)->id);

@@ -51,7 +51,7 @@ class plagiarism_flag_cell extends cell_base {
 
         if ($rowobject->has_submission() && $rowobject->get_submission()->finalised) {
             $plagiarism_flag_params = array(
-                'submissionid' => $rowobject->get_submission()->id
+                'submissionid' => $rowobject->get_submission()->id,
             );
             $plagiarism_flag = plagiarism_flag::find($plagiarism_flag_params);
 
@@ -111,7 +111,7 @@ class plagiarism_flag_cell extends cell_base {
         $title = get_string('flagplagiarism', 'coursework');
 
         $feedback_params = array(
-            'submission' => $row_object->get_submission()
+            'submission' => $row_object->get_submission(),
         );
         $link = $this->get_router()->get_path('new plagiarism flag', $feedback_params);
 
@@ -134,7 +134,7 @@ class plagiarism_flag_cell extends cell_base {
         $title = get_string('editflagplagiarism', 'coursework');
 
         $feedback_params = array(
-            'flag' => $row_object->get_plagiarism_flag()
+            'flag' => $row_object->get_plagiarism_flag(),
         );
         $link = $this->get_router()->get_path('edit plagiarism flag', $feedback_params);
 

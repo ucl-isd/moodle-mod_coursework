@@ -371,7 +371,7 @@ class warnings {
 
         $params = array_merge($student_params,
                               array(
-                                  'courseid' => $this->coursework->get_course()->id
+                                  'courseid' => $this->coursework->get_course()->id,
                               ));
         $students = $DB->get_records_sql($sql, $params);
         return $students;

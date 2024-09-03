@@ -181,8 +181,8 @@ class plagiarism_flagging_controller extends controller_base {
                 'submissionid' => $plagiarismflag->submissionid,
                 'flagid' => $flagid,
                 'oldstatus' => $oldstatus,
-                'newstatus' => $plagiarismflag->status
-            )
+                'newstatus' => $plagiarismflag->status,
+            ),
         );
 
         $event = \mod_coursework\event\coursework_plagiarism_flag_updated::create($params);
