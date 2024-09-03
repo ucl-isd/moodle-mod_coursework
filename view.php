@@ -377,20 +377,11 @@ foreach ($capabilities as $capability) {
     }
 }
 
-if ((float)substr($CFG->release, 0, 5) > 2.6) { // 2.8 > 2.6
-    $event = \mod_coursework\event\course_module_viewed::create([
-                                                                    'objectid' => $coursework->id,
-                                                                    'context' => $coursework->get_context(),
-                                                                ]);
-    $event->trigger();
-} else {
-    add_to_log($course->id,
-               'coursework',
-               'view',
-               "view.php?id=$coursemodule->id",
-               $coursework->name,
-               $coursemodule->id);
-}
+
+$event = \mod_coursework\event\course_module_viewed::create(
+    ['objectid' => $coursework->id, 'context' => $coursework->get_context()]
+);
+$event->trigger();
 
 // Print the page header.
 

@@ -35,17 +35,8 @@ if (! $course = $DB->get_record('course', ['id' => $id])) {
 
 require_course_login($course);
 
-if ((float)substr($CFG->release, 0, 5) > 2.6) { // 2.8 > 2.6
-    $event = \mod_coursework\event\course_module_instance_list_viewed::create(['context' => context_course::instance($course->id)]);
-    $event->trigger();
-} else {
-    add_to_log($course->id,
-               'coursework',
-               'view',
-               "view.php?id=$coursemodule->id",
-               $coursework->name,
-               $coursemodule->id);
-}
+$event = \mod_coursework\event\course_module_instance_list_viewed::create(['context' => context_course::instance($course->id)]);
+$event->trigger();
 
 // Print the header.
 
