@@ -46,7 +46,8 @@ class router {
     /**
      * Singleton.
      */
-    private function __construct() {}
+    private function __construct() {
+    }
 
     /**
      * Singleton accessor.

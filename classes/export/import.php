@@ -90,7 +90,9 @@ class import extends grading_sheet {
             $submissionid = false;
 
             // if the csv headers count is different than expected return error
-            if ((!$this->coursework->is_using_rubric() && count($line) != count($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($cells, $line))) {$errors = get_string('incorrectfileformat', 'coursework'); break;}
+            if ((!$this->coursework->is_using_rubric() && count($line) != count($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($cells, $line))) {
+                $errors = get_string('incorrectfileformat', 'coursework'); break;
+            }
 
             $offset = 0;
 
