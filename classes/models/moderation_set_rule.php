@@ -49,7 +49,7 @@ abstract class moderation_set_rule extends table_base implements renderable {
     /**
      * @var string DB table this class relates to.
      */
-    protected static $table_name = 'coursework_mod_set_rules';
+    protected static $tablename = 'coursework_mod_set_rules';
 
     /**
      * @var int
@@ -123,7 +123,7 @@ abstract class moderation_set_rule extends table_base implements renderable {
      * @param stage_base $stage
      * @return mixed
      */
-    abstract public function adjust_set(array &$moderationset, array &$potential_allocatables, $stage);
+    abstract public function adjust_set(array &$moderationset, array &$potentialallocatables, $stage);
 
     /**
      * Returns the name of the class without the 'coursework_moderation_set_rule_' prefix.

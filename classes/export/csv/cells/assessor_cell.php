@@ -35,10 +35,10 @@ class assessor_cell extends cell_base {
      * @return string
      */
 
-    public function get_cell($submission, $student, $stage_identifier) {
+    public function get_cell($submission, $student, $stageidentifier) {
 
         $assessor = '';
-        $allocation = $this->coursework->get_assessor_allocation($submission, $stage_identifier );
+        $allocation = $this->coursework->get_assessor_allocation($submission, $stageidentifier );
         if ($allocation) {
             $assessor = $this->get_assessor_name($allocation->assessorid);
         } else if ($this->coursework->sampling_enabled()) {

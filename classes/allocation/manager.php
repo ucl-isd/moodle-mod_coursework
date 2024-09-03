@@ -123,9 +123,9 @@ class manager {
 
         // move 'none' to be the first option
         if (array_key_exists('none', $options)) {
-            $new_value = ['none' => $options['none']];
+            $newvalue = ['none' => $options['none']];
             unset($options['none']);
-            $options = $new_value + $options;
+            $options = $newvalue + $options;
         }
 
         return $options;
@@ -161,25 +161,25 @@ class manager {
         $allocatables = $this->get_coursework()->get_allocatables();
         $stage = $this->get_coursework()->get_moderator_marking_stage();
 
-        $set_rules = $this->get_moderation_set_rules();
+        $setrules = $this->get_moderation_set_rules();
 
         // No set to make.
-        if (empty($set_rules)) {
+        if (empty($setrules)) {
             return;
         }
 
         // These are the ones we will actually moderate (or which have already been moderated).
-        $moderation_set = [];
+        $moderationset = [];
 
         // Move all the already marked ones into the set. These have to stay in it and ought to
         // be taken into account so that the other rules just add to them.
-        $moderation_set = $this->add_already_moderated_allocatables_to_set($allocatables, $stage, $moderation_set);
+        $moderationset = $this->add_already_moderated_allocatables_to_set($allocatables, $stage, $moderationset);
 
         // Now, we loop over the set repeatedly, once for each rule, and add those we want to the set.
-        foreach ($set_rules as $rule) {
+        foreach ($setrules as $rule) {
             // The rule will separate out those students that ought to be included, leaving
             // the arrays altered.
-            $rule->adjust_set($moderation_set, $allocatables, $stage);
+            $rule->adjust_set($moderationset, $allocatables, $stage);
         }
 
     }
@@ -242,7 +242,7 @@ class manager {
      * @param string $rule_name
      * @throws moodle_exception
      */
-    public function save_sample_set_rule($assessor_number) {
+    public function save_sample_set_rule($assessornumber) {
 
         global $CFG, $DB;
 
@@ -254,7 +254,7 @@ class manager {
 
             $rule = new $classname($this->coursework);
 
-            $rule->save_form_data($assessor_number, $order);
+            $rule->save_form_data($assessornumber, $order);
 
         }
 
@@ -266,9 +266,9 @@ class manager {
         $DB->delete_records('coursework_sample_set_rules', ['courseworkid' => $this->coursework->id]);
         for ($i = 2; $i <= $this->coursework->get_max_markers(); $i++) {
 
-            $sample_strategy = required_param("assessor_{$i}_samplingstrategy", PARAM_INT);
+            $samplestrategy = required_param("assessor_{$i}_samplingstrategy", PARAM_INT);
 
-            if ($sample_strategy) {
+            if ($samplestrategy) {
                 $this->save_sample_set_rule($i);
             }
 
@@ -289,22 +289,22 @@ class manager {
         $sampleplugins = $DB->get_records('coursework_sample_set_plugin', null, 'pluginorder');
         $order = 0;
 
-        $sample_set = [];
+        $sampleset = [];
 
         $allocatables = $this->get_coursework()->get_allocatables();
 
-        $final_agreed_allocatables = $this->get_allocatables_with_final_agreed();
+        $finalagreedallocatables = $this->get_allocatables_with_final_agreed();
 
         // Remove any allocatables that have a status of final agreed as these can not be sampled
-        foreach ($final_agreed_allocatables as $faa) {
+        foreach ($finalagreedallocatables as $faa) {
             if (isset($allocatables[$faa->allocatableid])) {
                 unset($allocatables[$faa->allocatableid]);
             }
         }
 
-        for ($stage_number = 2; $stage_number <= $this->get_coursework()->get_max_markers(); $stage_number++) {
+        for ($stagenumber = 2; $stagenumber <= $this->get_coursework()->get_max_markers(); $stagenumber++) {
 
-            $stage = "assessor_{$stage_number}";
+            $stage = "assessor{$stagenumber}";
 
             $this->remove_unmarked_automatic_allocatables($stage);
 
@@ -321,39 +321,39 @@ class manager {
 
                 //$allocatables = $this->get_coursework()->get_allocatables_with_feedback();
                 $allocatables = $this->get_coursework()->get_allocatables();
-                $manual_sample_set = $this->get_include_in_sample_set($stage_number);
+                $manualsampleset = $this->get_include_in_sample_set($stagenumber);
 
-                $auto_with_feedback = $this->get_automatic_with_feedback($stage);
+                $autowithfeedback = $this->get_automatic_with_feedback($stage);
 
                 // Ok this array merge is being carried out using an foreach rather than array_merge as we want to preserve keys
                 // I am also not using add the two arrays as using the overloaded + can produce dubious results when a key exists
                 // In both arrays
 
-                foreach ($auto_with_feedback as $k => $v) {
-                    if (!isset($manual_sample_set[$k])) {
-                        $manual_sample_set[$k] = $v;
+                foreach ($autowithfeedback as $k => $v) {
+                    if (!isset($manualsampleset[$k])) {
+                        $manualsampleset[$k] = $v;
                     }
                 }
 
-                $auto_sample_set = [];
+                $autosampleset = [];
 
                 foreach ($sampleplugins as $plugin) {
                     $classname = '\mod_coursework\sample_set_rule\\' . $plugin->rulename;
 
                     $rule = new $classname($this->coursework);
 
-                       $rule->adjust_sample_set($stage_number, $allocatables, $manual_sample_set, $auto_sample_set);
+                       $rule->adjust_sample_set($stagenumber, $allocatables, $manualsampleset, $autosampleset);
 
                 }
 
                 // Save sample set
-                if (!empty($auto_sample_set)) {
-                    foreach ($auto_sample_set as $allocatable) {
+                if (!empty($autosampleset)) {
+                    foreach ($autosampleset as $allocatable) {
                         $sample = new \stdClass();
                         $sample->courseworkid = $this->coursework->id;
                         $sample->allocatableid = $allocatable->id;
                         $sample->allocatabletype = ($this->coursework->is_configured_to_have_group_submissions()) ? "group" : "user";
-                        $sample->stage_identifier = "assessor_{$stage_number}";
+                        $sample->stage_identifier = "assessor{$stagenumber}";
                         $sample->selectiontype = "automatic";
 
                         // If this a manually selected allocatable check to see if the allocatable is already in the table
@@ -365,11 +365,11 @@ class manager {
         }
     }
 
-    public function get_include_in_sample_set($stage_number) {
+    public function get_include_in_sample_set($stagenumber) {
 
         global  $DB;
 
-        $stage = "assessor_{$stage_number}";
+        $stage = "assessor{$stagenumber}";
 
         $sql = "SELECT     allocatableid,
                                 courseworkid,

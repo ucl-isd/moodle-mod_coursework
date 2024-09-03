@@ -77,24 +77,24 @@ class multiple_agreed_grade_cell extends cell_base {
         $finalfeedback = $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable());
 
         if ($finalfeedback !== false) {
-            $grade_judge = new grade_judge($this->coursework);
-            $content .= $grade_judge->grade_to_display($finalfeedback->get_grade());
+            $gradejudge = new grade_judge($this->coursework);
+            $content .= $gradejudge->grade_to_display($finalfeedback->get_grade());
             // $content .= html_writer::empty_tag('br');
             // $content .= ' by: ' . $finalfeedback->get_assesor_username();
         }
 
         // Edit/new link
-        $existing_feedback = $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable());
+        $existingfeedback = $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable());
         $title = get_string('editfinalgrade', 'coursework');
         $icon = new pix_icon('edit', $title, 'coursework');
         $iconlink = '';
 
-        if ($existing_feedback && $ability->can('edit', $existing_feedback)) {
+        if ($existingfeedback && $ability->can('edit', $existingfeedback)) {
 
-            $feedback_route_params = [
+            $feedbackrouteparams = [
                 'feedback' => $finalfeedback,
             ];
-            $link = $this->get_router()->get_path('ajax edit feedback', $feedback_route_params);
+            $link = $this->get_router()->get_path('ajax edit feedback', $feedbackrouteparams);
 
             $iconlink = $OUTPUT->action_icon($link,
                                              $icon,
@@ -106,22 +106,22 @@ class multiple_agreed_grade_cell extends cell_base {
 
         } else if ($rowobject->has_submission()) { // New
 
-            $feedback_params = [
+            $feedbackparams = [
                 'submissionid' => $rowobject->get_submission()->id,
                 'assessorid' => $USER->id,
                 'stage_identifier' => $this->stage->identifier(),
             ];
-            $new_feedback = feedback::build($feedback_params);
+            $newfeedback = feedback::build($feedbackparams);
 
             // If the user is a site admin then they can add final feedback
-            if ($ability->can('new', $new_feedback) || is_siteadmin()) {
+            if ($ability->can('new', $newfeedback) || is_siteadmin()) {
                 $title = get_string('addfinalfeedback', 'coursework');
-                $feedback_route_params = [
+                $feedbackrouteparams = [
                     'submission' => $rowobject->get_submission(),
                     'assessor' => $USER,
                     'stage' => $this->stage,
                 ];
-                $link = $this->get_router()->get_path('ajax new final feedback', $feedback_route_params);
+                $link = $this->get_router()->get_path('ajax new final feedback', $feedbackrouteparams);
 
                 $iconlink = $OUTPUT->action_link($link,
                                                  $title,
@@ -130,17 +130,17 @@ class multiple_agreed_grade_cell extends cell_base {
                                                        'id' => 'new_final_feedback_' . $rowobject->get_coursework()
                                                            ->get_allocatable_identifier_hash($rowobject->get_allocatable())]);
 
-            } else if ($existing_feedback && $ability->can('show', $existing_feedback)) {
+            } else if ($existingfeedback && $ability->can('show', $existingfeedback)) {
 
                 $linktitle = get_string('viewfeedback', 'mod_coursework');
-                $link_id = "show_feedback_" . $rowobject->get_coursework()
+                $linkid = "show_feedback_" . $rowobject->get_coursework()
                     ->get_allocatable_identifier_hash($rowobject->get_allocatable());
                 $link = $this->get_router()
                     ->get_path('show feedback', ['feedback' => $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable())]);
                 $iconlink = $OUTPUT->action_link($link,
                                                  $linktitle,
                                                  null,
-                                                 ['class' => 'show_feedback', 'id' => $link_id]);
+                                                 ['class' => 'show_feedback', 'id' => $linkid]);
             }
         }
 
@@ -171,8 +171,8 @@ class multiple_agreed_grade_cell extends cell_base {
         // If tablename is set
         $tablename = (isset($options['tablename'])) ? $options['tablename'] : '';
 
-        $column_name = get_string('agreedgrade', 'coursework');
-        return $this->helper_sortable_heading($column_name, 'finalgrade', $options['sorthow'], $options['sortby'], $tablename);
+        $columnname = get_string('agreedgrade', 'coursework');
+        return $this->helper_sortable_heading($columnname, 'finalgrade', $options['sorthow'], $options['sortby'], $tablename);
     }
 
     /**

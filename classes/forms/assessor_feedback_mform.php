@@ -44,7 +44,7 @@ class assessor_feedback_mform extends moodleform {
     /**
      * @var int the id of the submission that the grade pertains to
      */
-    public $submission_id;
+    public $submissionid;
 
     /**
      * @var int
@@ -105,7 +105,7 @@ class assessor_feedback_mform extends moodleform {
         $mform->addElement('editor', 'feedbackcomment', get_string('comment', 'mod_coursework'));
         $mform->setType('editor', PARAM_RAW);
 
-        $file_manager_options = [
+        $filemanageroptions = [
             'subdirs' => false,
             'accepted_types' => '*',
             'return_types' => FILE_INTERNAL,
@@ -116,7 +116,7 @@ class assessor_feedback_mform extends moodleform {
                                  'feedback_manager',
                                  $uploadfilestring,
                                  null,
-                                 $file_manager_options);
+                                 $filemanageroptions);
 
         $this->add_submit_buttons($coursework->draft_feedback_enabled(), $feedback->id);
 
@@ -134,24 +134,24 @@ class assessor_feedback_mform extends moodleform {
      */
     public function add_submit_buttons($draftenabled,  $feedbackid) {
 
-        $button_array = [];
+        $buttonarray = [];
 
         if ($draftenabled) {
-            $button_array[] = $this->_form->createElement('submit', 'submitfeedbackbutton', get_string('saveasdraft', 'coursework'));
+            $buttonarray[] = $this->_form->createElement('submit', 'submitfeedbackbutton', get_string('saveasdraft', 'coursework'));
         }
 
-            $button_array[] =
+            $buttonarray[] =
                 $this->_form->createElement('submit', 'submitbutton', get_string('saveandfinalise', 'coursework'));
 
         $feedback = $this->_customdata['feedback'];
 
-        $is_published = $feedback->get_submission()->is_published();
+        $ispublished = $feedback->get_submission()->is_published();
 
-        if ($feedbackid &&  !$is_published) {
-            $button_array[] = $this->_form->createElement('submit', 'removefeedbackbutton', get_string('removefeedback', 'coursework'));
+        if ($feedbackid &&  !$ispublished) {
+            $buttonarray[] = $this->_form->createElement('submit', 'removefeedbackbutton', get_string('removefeedback', 'coursework'));
         }
-        $button_array[] = $this->_form->createElement('cancel');
-        $this->_form->addGroup($button_array, 'buttonar', '', [' '], false);
+        $buttonarray[] = $this->_form->createElement('cancel');
+        $this->_form->addGroup($buttonarray, 'buttonar', '', [' '], false);
         $this->_form->closeHeaderBefore('buttonar');
 
     }

@@ -31,13 +31,13 @@ require_once(dirname(__FILE__).'/../../../config.php');
 global $DB, $PAGE, $CFG;
 
 $cmid = required_param('cmid', PARAM_INT);
-$submission_id = required_param('submissionid', PARAM_INT);
+$submissionid = required_param('submissionid', PARAM_INT);
 
 $cm = $DB->get_record('course_modules', ['id' => $cmid]);
 $coursework = coursework::find($cm->instance);
 $course = $DB->get_record('course', ['id' => $cm->course]);
-$submission_db = $DB->get_record('coursework_submissions', ['id' => $submission_id]);
-$submission = submission::find($submission_db);
+$submissiondb = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
+$submission = submission::find($submissiondb);
 
 require_login($course, false, $cm);
 $url = new moodle_url('/mod/coursework/view.php', ['id' => $cm->id]);

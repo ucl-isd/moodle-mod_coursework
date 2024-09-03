@@ -58,7 +58,7 @@ class moderation extends table_base {
     /**
      * @var int
      */
-    public $stage_identifier = 'moderator';
+    public $stageidentifier = 'moderator';
     /**
      * @var string
      */
@@ -68,7 +68,7 @@ class moderation extends table_base {
     /**
      * @var string
      */
-    protected static $table_name = 'coursework_mod_agreements';
+    protected static $tablename = 'coursework_mod_agreements';
 
     /**
      * @var string

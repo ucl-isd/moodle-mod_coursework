@@ -33,14 +33,14 @@ class extensionextrainfo_cell extends cell_base {
      * @param $stage_identifier
      * @return string
      */
-    public function get_cell($submission, $student, $stage_identifier) {
+    public function get_cell($submission, $student, $stageidentifier) {
 
         if ($this->extension_exists($student)) {
-            $extra_info = $this->get_extension_extra_info_for_csv($student);
+            $extrainfo = $this->get_extension_extra_info_for_csv($student);
         } else {
-            $extra_info = '';
+            $extrainfo = '';
         }
-        return $extra_info;
+        return $extrainfo;
     }
 
     /**

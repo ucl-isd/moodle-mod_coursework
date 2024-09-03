@@ -32,7 +32,7 @@ class no_sub_rows implements sub_rows_interface {
      * @param int $column_width
      * @return mixed
      */
-    public function get_row_with_assessor_feedback_table($row_object, $column_width) {
+    public function get_row_with_assessor_feedback_table($rowobject, $columnwidth) {
         return '';
     }
 }

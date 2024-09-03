@@ -74,15 +74,15 @@ class moderation_agreement_cell extends cell_base {
                 $rowobject->get_submission()->final_grade_agreed() &&
                 ($this->stage->user_is_moderator($USER))) {
 
-                $moderation_params = [
+                $moderationparams = [
                     'submissionid' => $rowobject->get_submission()->id,
                     'moderatorid' => $USER->id,
                     'stage_identifier' => $this->stage->identifier(),
                     'feedbackid' => $rowobject->get_single_feedback()->id,
                 ];
                 // allow moderations if feedback exists
-                $new_moderation = moderation::build($moderation_params);
-                if ($ability->can('new', $new_moderation) && ($rowobject->get_single_feedback()->finalised || is_siteadmin($USER->id))) {
+                $newmoderation = moderation::build($moderationparams);
+                if ($ability->can('new', $newmoderation) && ($rowobject->get_single_feedback()->finalised || is_siteadmin($USER->id))) {
                     $content .= $this->new_moderation_button($rowobject, user::find($USER));
                     $content .= html_writer::empty_tag('br');
                 }
@@ -162,15 +162,15 @@ class moderation_agreement_cell extends cell_base {
         // moderation only done for single marking courseworks
         $feedback = $rowobject->get_submission()->get_assessor_feedback_by_stage('assessor_1');
 
-        $moderation_params = [
+        $moderationparams = [
             'submission' => $rowobject->get_submission(),
             'assessor' => $assessor,
             'stage' => $this->stage,
             'feedbackid' => $feedback->id,
         ];
-        $link = $this->get_router()->get_path('new moderations', $moderation_params);
+        $link = $this->get_router()->get_path('new moderations', $moderationparams);
 
-        $link_id = 'new_moderation_' . $rowobject->get_coursework()
+        $linkid = 'new_moderation_' . $rowobject->get_coursework()
             ->get_allocatable_identifier_hash($rowobject->get_allocatable());
 
         $title = get_string('moderate', 'coursework');
@@ -178,7 +178,7 @@ class moderation_agreement_cell extends cell_base {
         return  $OUTPUT->action_link($link,
                                      $title,
                                 null,
-                                ['class' => 'new_moderation', 'id' => $link_id]);
+                                ['class' => 'new_moderation', 'id' => $linkid]);
     }
 
     /**
@@ -190,12 +190,12 @@ class moderation_agreement_cell extends cell_base {
         global $OUTPUT;
 
         $feedback = $rowobject->get_submission()->get_assessor_feedback_by_stage('assessor_1');
-        $feedback_params = [
+        $feedbackparams = [
             'moderation' => $this->stage->get_moderation_for_feedback($feedback),
         ];
-        $link = $this->get_router()->get_path('edit moderation', $feedback_params);
+        $link = $this->get_router()->get_path('edit moderation', $feedbackparams);
 
-        $link_id = 'edit_moderation_' . $rowobject->get_coursework()
+        $linkid = 'edit_moderation_' . $rowobject->get_coursework()
             ->get_allocatable_identifier_hash($rowobject->get_allocatable());
 
         $title = get_string('editmoderation', 'coursework');
@@ -204,7 +204,7 @@ class moderation_agreement_cell extends cell_base {
         return  $OUTPUT->action_icon($link,
             $icon,
             null,
-            ['id' => $link_id]);
+            ['id' => $linkid]);
 
     }
 
@@ -217,18 +217,18 @@ class moderation_agreement_cell extends cell_base {
         global $OUTPUT;
 
         $feedback = $rowobject->get_submission()->get_assessor_feedback_by_stage('assessor_1');
-        $moderation_params = [
+        $moderationparams = [
             'moderation' => $this->stage->get_moderation_for_feedback($feedback),
         ];
 
         $linktitle = get_string('viewmoderation', 'mod_coursework');
-        $link_id = "show_moderation_" . $rowobject->get_coursework()
+        $linkid = "show_moderation_" . $rowobject->get_coursework()
             ->get_allocatable_identifier_hash($rowobject->get_allocatable());
-        $link = $this->get_router()->get_path('show moderation', $moderation_params);
+        $link = $this->get_router()->get_path('show moderation', $moderationparams);
 
         return $OUTPUT->action_link($link,
                                     $linktitle,
                                 null,
-                                      ['class' => 'show_moderation', 'id' => $link_id]);
+                                      ['class' => 'show_moderation', 'id' => $linkid]);
     }
 }

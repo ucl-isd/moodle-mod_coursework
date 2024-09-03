@@ -56,7 +56,7 @@ class processor {
      * @param stage_base $stage
      * @param array $data_array incoming data from the allocation form
      */
-    public function __construct($coursework, $allocatable, $stage, $data_array  = []) {
+    public function __construct($coursework, $allocatable, $stage, $dataarray  = []) {
         $this->coursework = $coursework;
         $this->allocatable = $allocatable;
         $this->stage = $stage;
@@ -65,16 +65,16 @@ class processor {
     /**
      * @param data $cell_data
      */
-    public function process($cell_data) {
+    public function process($celldata) {
 
         if ($this->get_stage()->uses_sampling()) {
-            $this->process_sampling_membership($cell_data);
+            $this->process_sampling_membership($celldata);
         } else if ($this->get_stage()->has_allocation($this->get_allocatable())) {
-            $this->process_pin($cell_data);
+            $this->process_pin($celldata);
         }
 
-        if ($cell_data->has_assessor() && $this->get_stage()->allocatable_is_in_sample($this->get_allocatable())) {
-            $this->save_assessor_allocation($cell_data);
+        if ($celldata->has_assessor() && $this->get_stage()->allocatable_is_in_sample($this->get_allocatable())) {
+            $this->save_assessor_allocation($celldata);
         }
     }
 
@@ -153,10 +153,10 @@ class processor {
     /**
      * @param data $cell_data
      */
-    private function process_pin($cell_data) {
+    private function process_pin($celldata) {
         $allocation = $this->get_allocation();
 
-        if ($cell_data->is_pinned()) {
+        if ($celldata->is_pinned()) {
             $allocation->pin();
         } else {
             $allocation->unpin();

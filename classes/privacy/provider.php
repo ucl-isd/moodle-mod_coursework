@@ -345,11 +345,11 @@ class provider implements
         // Get the coursework related to this context.
         $coursework = self::get_coursework_instance($context);
         $userids = $userlist->get_userids();
-        foreach ($userids as $user_id) {
+        foreach ($userids as $userid) {
             // Get the coursework related to this context.
             $coursework = self::get_coursework_instance($context);
             // Retrieve all submissions by user-id to remove relating data
-            $submissions = $coursework->retrieve_submissions_by_user($user_id);
+            $submissions = $coursework->retrieve_submissions_by_user($userid);
             foreach ($submissions as $submission) {
                 // Remove all plagiarisms of the current submission
                 $coursework->remove_plagiarisms_by_submission($submission->id);
@@ -367,21 +367,21 @@ class provider implements
                 $coursework->remove_feedbacks_by_submission($submission->id);
             }
             // Remove all submissions submitted by this user
-            $coursework->remove_submissions_by_user($user_id);
+            $coursework->remove_submissions_by_user($userid);
             // Remove all deadline extensions
-            $coursework->remove_deadline_extensions_by_user($user_id);
+            $coursework->remove_deadline_extensions_by_user($userid);
             // Remove all personal deadlines
-            $coursework->remove_personal_deadlines_by_user($user_id);
+            $coursework->remove_personal_deadlines_by_user($userid);
         }
     }
     protected static function get_coursework_instance(\context $context) {
         global $DB;
-        $courseId = ['id' => $context->get_course_context()->instanceid];
-        $course = $DB->get_record('course', $courseId, '*', MUST_EXIST);
+        $courseid = ['id' => $context->get_course_context()->instanceid];
+        $course = $DB->get_record('course', $courseid, '*', MUST_EXIST);
         $modinfo = get_fast_modinfo($course);
         $coursemodule = $modinfo->get_cm($context->instanceid);
-        $courseworkId = ['id' => $coursemodule->instance];
-        $coursework = new \mod_coursework\models\coursework($courseworkId);
+        $courseworkid = ['id' => $coursemodule->instance];
+        $coursework = new \mod_coursework\models\coursework($courseworkid);
         return $coursework;
     }
     /**
@@ -408,9 +408,9 @@ class provider implements
             }
         }
     }
-    protected static function export_submission_files($context, $submissionId, $currentpath) {
+    protected static function export_submission_files($context, $submissionid, $currentpath) {
         $fs = get_file_storage();
-        $files = $fs->get_area_files($context->id, 'mod_coursework', 'submission', $submissionId);
+        $files = $fs->get_area_files($context->id, 'mod_coursework', 'submission', $submissionid);
         if (!empty($files)) {
             foreach ($files as $file) {
                 writer::with_context($context)->export_file($currentpath, $file);
@@ -438,7 +438,7 @@ class provider implements
      */
     protected static function export_coursework_submission(\stdClass $submission, \context $context, array $currentpath) {
         $status = self::get_submissions_status($submission->id);
-        $submissionData = (object)[
+        $submissiondata = (object)[
             'userid' => $submission->userid,
             'status' => $status ? $status : '',
             'timecreated' => transform::datetime($submission->timecreated),
@@ -448,7 +448,7 @@ class provider implements
             'finalised' => transform::yesno($submission->finalised),
         ];
         writer::with_context($context)
-            ->export_data(array_merge($currentpath, [get_string('privacy:submissionpath', 'mod_coursework')]), $submissionData);
+            ->export_data(array_merge($currentpath, [get_string('privacy:submissionpath', 'mod_coursework')]), $submissiondata);
     }
     protected static function get_submissions_status($submissionid) {
         $submission = new \mod_coursework\models\submission($submissionid);
@@ -464,11 +464,11 @@ class provider implements
         return $feedbacks;
     }
     protected static function export_submissions_feedbacks($feedbacks, $context, $path) {
-        $feedbacksData = [];
+        $feedbacksdata = [];
         foreach ($feedbacks as $feedback) {
-            $feedbackDataFormatted = self::format_submissions_feedback($feedback);
-            if ($feedbackDataFormatted) {
-                array_push($feedbacksData, $feedbackDataFormatted);
+            $feedbackdataformatted = self::format_submissions_feedback($feedback);
+            if ($feedbackdataformatted) {
+                array_push($feedbacksdata, $feedbackdataformatted);
             }
             if ($feedback->ismoderation) {
                 self::export_mod_agreements($feedback->id, $context, $path);
@@ -476,14 +476,14 @@ class provider implements
             self::export_feedback_files($context, $feedback->id, $path);
         }
         // coursework_feedbacks table contains all grading information
-        if (!empty($feedbacksData)) {
+        if (!empty($feedbacksdata)) {
             writer::with_context($context)
-                ->export_data(array_merge($path, [get_string('privacy:feedbackspath', 'mod_coursework')]), (object) $feedbacksData);
+                ->export_data(array_merge($path, [get_string('privacy:feedbackspath', 'mod_coursework')]), (object) $feedbacksdata);
         }
     }
-    protected static function export_feedback_files($context, $feedbackId, $currentpath) {
+    protected static function export_feedback_files($context, $feedbackid, $currentpath) {
         $fs = get_file_storage();
-        $files = $fs->get_area_files($context->id, 'mod_coursework', 'feedback', $feedbackId);
+        $files = $fs->get_area_files($context->id, 'mod_coursework', 'feedback', $feedbackid);
         if (!empty($files)) {
             foreach ($files as $file) {
                 writer::with_context($context)->export_file($currentpath, $file);
@@ -496,7 +496,7 @@ class provider implements
      * @param  \stdClass $feedback The coursework submission grade object
      */
     protected static function format_submissions_feedback(\stdClass $feedback) {
-        $feedbackData = [
+        $feedbackdata = [
             'assessorid' => $feedback->assessorid,
             'timecreated' => transform::datetime($feedback->timecreated),
             'timemodified' => transform::datetime($feedback->timemodified),
@@ -505,63 +505,63 @@ class provider implements
             'stage_identifier' => $feedback->stage_identifier,
             'finalised' => transform::yesno($feedback->finalised),
         ];
-        return $feedbackData;
+        return $feedbackdata;
     }
-    protected static function export_coursework_extension($courseworkId, $userId, $context, $path) {
-        $extension = self::get_coursework_extension($courseworkId, $userId);
+    protected static function export_coursework_extension($courseworkid, $userid, $context, $path) {
+        $extension = self::get_coursework_extension($courseworkid, $userid);
         if ($extension) {
             self::export_coursework_extension_data($extension, $context, $path);
         }
     }
-    protected static function get_coursework_extension($courseworkId, $userId) {
+    protected static function get_coursework_extension($courseworkid, $userid) {
         global $DB;
-        $params = ['courseworkid' => $courseworkId, 'allocatableid' => $userId];
+        $params = ['courseworkid' => $courseworkid, 'allocatableid' => $userid];
         $extension = $DB->get_record('coursework_extensions', $params);
         return $extension;
     }
     protected static function export_coursework_extension_data($extension, $context, $path) {
-        $extensionData = [
+        $extensiondata = [
             'extended_deadline' => transform::datetime($extension->extended_deadline),
             'extra_information_text' => $extension->extra_information_text,
             'createdbyid' => $extension->createdbyid,
         ];
         writer::with_context($context)
-            ->export_data(array_merge($path, [get_string('privacy:extensionpath', 'mod_coursework')]), (object) $extensionData);
+            ->export_data(array_merge($path, [get_string('privacy:extensionpath', 'mod_coursework')]), (object) $extensiondata);
     }
-    protected static function export_person_deadlines($courseworkId, $userId, $context, $path) {
-        $personDeadline = self::get_person_deadline($courseworkId, $userId);
-        if ($personDeadline) {
-            self::export_person_deadline_data($personDeadline, $context, $path);
+    protected static function export_person_deadlines($courseworkid, $userid, $context, $path) {
+        $persondeadline = self::get_person_deadline($courseworkid, $userid);
+        if ($persondeadline) {
+            self::export_person_deadline_data($persondeadline, $context, $path);
         }
     }
-    protected static function get_person_deadline($courseworkId, $userId) {
+    protected static function get_person_deadline($courseworkid, $userid) {
         global $DB;
-        $params = ['courseworkid' => $courseworkId, 'allocatableid' => $userId];
-        $personDeadline = $DB->get_record('coursework_person_deadlines', $params);
-        return $personDeadline;
+        $params = ['courseworkid' => $courseworkid, 'allocatableid' => $userid];
+        $persondeadline = $DB->get_record('coursework_person_deadlines', $params);
+        return $persondeadline;
     }
-    protected static function export_person_deadline_data($personDeadline, $context, $path) {
-        $personDeadlineData = [
-            'personal_deadline' => transform::datetime($personDeadline->personal_deadline),
-            'timecreated' => transform::datetime($personDeadline->timecreated),
-            'timemodified' => transform::datetime($personDeadline->timemodified),
-            'createdbyid' => $personDeadline->createdbyid,
+    protected static function export_person_deadline_data($persondeadline, $context, $path) {
+        $persondeadlinedata = [
+            'personal_deadline' => transform::datetime($persondeadline->personal_deadline),
+            'timecreated' => transform::datetime($persondeadline->timecreated),
+            'timemodified' => transform::datetime($persondeadline->timemodified),
+            'createdbyid' => $persondeadline->createdbyid,
         ];
         writer::with_context($context)
-            ->export_data(array_merge($path, [get_string('privacy:person_deadlines', 'mod_coursework')]), (object) $personDeadlineData);
+            ->export_data(array_merge($path, [get_string('privacy:person_deadlines', 'mod_coursework')]), (object) $persondeadlinedata);
     }
 
-    protected static function export_plagiarism_flags($courseworkId, $context, $path) {
-        $plagiarism = self::get_plagiarism_flags($courseworkId);
+    protected static function export_plagiarism_flags($courseworkid, $context, $path) {
+        $plagiarism = self::get_plagiarism_flags($courseworkid);
         if ($plagiarism) {
             self::export_plagiarism_flags_data($plagiarism, $context, $path);
         }
     }
 
-    protected static function get_plagiarism_flags($courseworkId) {
+    protected static function get_plagiarism_flags($courseworkid) {
         global $DB;
 
-        $param = ['courseworkid' => $courseworkId];
+        $param = ['courseworkid' => $courseworkid];
 
         $plagiarism = $DB->get_record('coursework_plagiarism_flags', $param);
 
@@ -572,7 +572,7 @@ class provider implements
 
         $status = self::format_plagiarism_status($plagiarism->status);
 
-        $plagiarismData = [
+        $plagiarismdata = [
             'comment' => transform::datetime($plagiarism->comment),
             'status' => $status,
             'timecreated' => transform::datetime($plagiarism->timecreated),
@@ -581,45 +581,45 @@ class provider implements
         ];
 
         writer::with_context($context)
-                ->export_data(array_merge($path, [get_string('privacy:plagiarism_alert', 'mod_coursework')]), (object) $plagiarismData);
+                ->export_data(array_merge($path, [get_string('privacy:plagiarism_alert', 'mod_coursework')]), (object) $plagiarismdata);
     }
 
     protected static function format_plagiarism_status($status) {
         switch ($status) {
             case 0:
-                $statusString = get_string('plagiarism_0', 'mod_coursework');
+                $statusstring = get_string('plagiarism_0', 'mod_coursework');
                 break;
             case 1:
-                $statusString = get_string('plagiarism_1', 'mod_coursework');
+                $statusstring = get_string('plagiarism_1', 'mod_coursework');
                 break;
             case 2:
-                $statusString = get_string('plagiarism_2', 'mod_coursework');
+                $statusstring = get_string('plagiarism_2', 'mod_coursework');
                 break;
             case 3:
-                $statusString = get_string('plagiarism_3', 'mod_coursework');
+                $statusstring = get_string('plagiarism_3', 'mod_coursework');
                 break;
             default:
-                $statusString = '';
+                $statusstring = '';
                 break;
         }
 
-        return $statusString;
+        return $statusstring;
     }
 
-    protected static function export_mod_agreements($feedbackId, $context, $path) {
-        $agreement = self::get_mod_agreement($feedbackId);
+    protected static function export_mod_agreements($feedbackid, $context, $path) {
+        $agreement = self::get_mod_agreement($feedbackid);
         if ($agreement) {
             self::export_mod_agreement_data($agreement, $context, $path);
         }
     }
-    protected static function get_mod_agreement($feedbackId) {
+    protected static function get_mod_agreement($feedbackid) {
         global $DB;
-        $param = ['feedbackid' => $feedbackId];
+        $param = ['feedbackid' => $feedbackid];
         $agreement = $DB->get_record('coursework_mod_agreements', $param);
         return $agreement;
     }
     protected static function export_mod_agreement_data($agreement, $context, $path) {
-        $agreementData = [
+        $agreementdata = [
             'moderatorid' => $agreement->moderatorid,
             'agreement' => $agreement->agreement,
             'modcomment' => $agreement->modcomment,
@@ -627,6 +627,6 @@ class provider implements
             'timemodified' => transform::datetime($agreement->timemodified),
         ];
         writer::with_context($context)
-            ->export_data(array_merge($path, [get_string('privacy:moderator', 'mod_coursework')]), (object) $agreementData);
+            ->export_data(array_merge($path, [get_string('privacy:moderator', 'mod_coursework')]), (object) $agreementdata);
     }
 }

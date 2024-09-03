@@ -108,7 +108,7 @@ trait allocatable_functions {
     public function has_all_initial_feedbacks($coursework) {
         global $DB;
 
-        $expected_markers = $coursework->numberofmarkers;
+        $expectedmarkers = $coursework->numberofmarkers;
 
         $sql = "
             SELECT COUNT(*)
@@ -137,10 +137,10 @@ trait allocatable_functions {
                     'allocatableid' => $this->id(),
                     'allocatabletype' => $this->type()]);
 
-            $expected_markers = $markers + 1; // there is always a marker for stage 1
+            $expectedmarkers = $markers + 1; // there is always a marker for stage 1
         }
 
-        return $feedbacks == $expected_markers;
+        return $feedbacks == $expectedmarkers;
     }
 
     /**
@@ -173,8 +173,8 @@ trait allocatable_functions {
      * @param $coursework
      */
     private function fill_submission_and_feedback($coursework) {
-        $coursework_id = $coursework->id;
-        submission::fill_pool_coursework($coursework_id);
-        feedback::fill_pool_coursework($coursework_id);
+        $courseworkid = $coursework->id;
+        submission::fill_pool_coursework($courseworkid);
+        feedback::fill_pool_coursework($courseworkid);
     }
 }

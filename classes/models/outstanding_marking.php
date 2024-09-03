@@ -24,7 +24,7 @@ namespace mod_coursework\models;
 
 class outstanding_marking {
 
-    private $day_in_secs;
+    private $dayinsecs;
 
     public function __construct() {
 
@@ -274,11 +274,11 @@ class outstanding_marking {
      * @param $user_id
      * @return bool
      */
-    private function has_agreed_grade($course_id, $user_id) {
+    private function has_agreed_grade($courseid, $userid) {
 
-        $coursecontext = \context_course::instance($course_id);
+        $coursecontext = \context_course::instance($courseid);
 
-        return  has_capability('mod/coursework:addagreedgrade', $coursecontext, $user_id) || has_capability('mod/coursework:addallocatedagreedgrade', $coursecontext, $user_id);
+        return  has_capability('mod/coursework:addagreedgrade', $coursecontext, $userid) || has_capability('mod/coursework:addallocatedagreedgrade', $coursecontext, $userid);
     }
 
     /**
@@ -286,11 +286,11 @@ class outstanding_marking {
      * @param $user_id
      * @return bool
      */
-    private function has_initial_grade($course_id, $user_id) {
+    private function has_initial_grade($courseid, $userid) {
 
-        $coursecontext = \context_course::instance($course_id);
+        $coursecontext = \context_course::instance($courseid);
 
-        return  has_capability('mod/coursework:addinitialgrade', $coursecontext, $user_id);
+        return  has_capability('mod/coursework:addinitialgrade', $coursecontext, $userid);
     }
 
     /**
@@ -303,9 +303,9 @@ class outstanding_marking {
         $coursework = new \mod_coursework\models\coursework($courseworkid);
 
         // Findout if the user can create an initial grade
-        $user_has_initial_grade_capability = $this->has_initial_grade($coursework->get_course()->id, $userid);
+        $userhasinitialgradecapability = $this->has_initial_grade($coursework->get_course()->id, $userid);
 
-        return  $user_has_initial_grade_capability;
+        return  $userhasinitialgradecapability;
     }
 
     /**
@@ -318,9 +318,9 @@ class outstanding_marking {
         $coursework = new \mod_coursework\models\coursework($courseworkid);
 
         // Findout if the user can create an initial grade
-        $user_has_agreed_grade_capability = $this->has_agreed_grade($coursework->get_course()->id, $userid);
+        $userhasagreedgradecapability = $this->has_agreed_grade($coursework->get_course()->id, $userid);
 
-        return  $user_has_agreed_grade_capability;
+        return  $userhasagreedgradecapability;
 
     }
 }

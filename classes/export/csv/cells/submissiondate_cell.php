@@ -34,7 +34,7 @@ class submissiondate_cell extends cell_base {
      * @param $stage_identifier
      * @return string
      */
-    public function get_cell($submission, $student, $stage_identifier) {
+    public function get_cell($submission, $student, $stageidentifier) {
         return userdate($submission->time_submitted(), $this->dateformat);
     }
 

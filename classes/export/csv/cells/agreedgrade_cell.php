@@ -38,7 +38,7 @@ class agreedgrade_cell extends cell_base {
      * @return array|mixed|null|string
      */
 
-    public function get_cell($submission, $student, $stage_identifier) {
+    public function get_cell($submission, $student, $stageidentifier) {
 
         $agreedgrade = $submission->get_agreed_grade();
         if ($this->coursework->is_using_rubric() && $this->coursework->finalstagegrading != 1) {
@@ -72,11 +72,11 @@ class agreedgrade_cell extends cell_base {
         return $strings;
     }
 
-    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells  = []) {
+    public function validate_cell($value, $submissionid, $stageidentifier='', $uploadedgradecells  = []) {
 
         global $DB, $PAGE, $USER;
 
-        $stage_identifier = 'final_agreed_1';
+        $stageidentifier = 'final_agreed_1';
         $agreedgradecap = ['mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade',
                                      'mod/coursework:addallocatedagreedgrade', 'mod/coursework:editallocatedagreedgrade'];
 
@@ -170,27 +170,27 @@ class agreedgrade_cell extends cell_base {
             }
 
             // Has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
-            $feedback_params = [
+            $feedbackparams = [
                 'submissionid' => $submission->id,
-                'stage_identifier' => $stage_identifier,
+                'stage_identifier' => $stageidentifier,
             ];
 
-            $feedback = feedback::find($feedback_params);
+            $feedback = feedback::find($feedbackparams);
 
             $ability = new ability(user::find($USER), $this->coursework);
 
             //does a feedback exist for this stage
             if (empty($feedback)) {
 
-                $feedback_params = [
+                $feedbackparams = [
                     'submissionid' => $submissionid,
                     'assessorid' => $USER->id,
-                    'stage_identifier' => $stage_identifier,
+                    'stage_identifier' => $stageidentifier,
                 ];
-                $new_feedback = feedback::build($feedback_params);
+                $newfeedback = feedback::build($feedbackparams);
 
                 // This is a new feedback check it against the new ability checks
-                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && !$ability->can('new', $new_feedback)) {
+                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && !$ability->can('new', $newfeedback)) {
                     return get_string('nopermissiontogradesubmission', 'coursework');
                 }
             } else {
@@ -246,7 +246,7 @@ class agreedgrade_cell extends cell_base {
      * @param $csv_cells
      * @return array
      */
-    function get_rubrics($coursework, $csv_cells) {
+    function get_rubrics($coursework, $csvcells) {
 
         if ($coursework->is_using_rubric()  && $this->coursework->finalstagegrading != 1) {
 
@@ -260,16 +260,16 @@ class agreedgrade_cell extends cell_base {
             }
 
             // Find out the position of singlegrade
-            $position = array_search('singlegrade', $csv_cells);
+            $position = array_search('singlegrade', $csvcells);
             // Get all data from the position of the singlegrade to the length of rubricheaders
             // $csv_cells = array_splice($csv_cells,5, 1, $rubricheaders);
 
-            $start_cells = array_slice($csv_cells, 0, $position, true);
-            $end_cells = array_slice($csv_cells, $position + 1, count($csv_cells), true);
+            $startcells = array_slice($csvcells, 0, $position, true);
+            $endcells = array_slice($csvcells, $position + 1, count($csvcells), true);
 
-            $cells = array_merge($start_cells, $rubricheaders);
+            $cells = array_merge($startcells, $rubricheaders);
 
-            $cells = array_merge($cells, $end_cells);
+            $cells = array_merge($cells, $endcells);
 
         }
 

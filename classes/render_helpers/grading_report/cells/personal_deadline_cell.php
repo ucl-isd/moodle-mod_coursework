@@ -38,40 +38,40 @@ class personal_deadline_cell extends cell_base {
      * @throws coding_exception
      * @return string
      */
-    public function get_table_cell($row_object) {
+    public function get_table_cell($rowobject) {
         global $OUTPUT, $USER;
 
-        $coursework = $row_object->get_coursework();
+        $coursework = $rowobject->get_coursework();
         $deadline = $coursework->get_deadline();
         $content = '<div class="show_personal_dealine">';
 
-        $new_personal_deadline_params = [
-            'allocatableid' => $row_object->get_allocatable()->id(),
-            'allocatabletype' => $row_object->get_allocatable()->type(),
-            'courseworkid' => $row_object->get_coursework()->id,
+        $newpersonaldeadlineparams = [
+            'allocatableid' => $rowobject->get_allocatable()->id(),
+            'allocatabletype' => $rowobject->get_allocatable()->type(),
+            'courseworkid' => $rowobject->get_coursework()->id,
         ];
 
-        $personal_deadline = personal_deadline::find_or_build($new_personal_deadline_params);
-        if ($personal_deadline->personal_deadline) {
-            $deadline = $personal_deadline->personal_deadline;
+        $personaldeadline = personal_deadline::find_or_build($newpersonaldeadlineparams);
+        if ($personaldeadline->personal_deadline) {
+            $deadline = $personaldeadline->personal_deadline;
         }
         $date = userdate($deadline, '%a, %d %b %Y, %H:%M');
         $content .= '<div class="content_personal_deadline">'.$date.'</div>';
-        $ability = new ability(user::find($USER, false), $row_object->get_coursework());
+        $ability = new ability(user::find($USER, false), $rowobject->get_coursework());
         $class = 'edit_personal_deadline';
-        if (!$ability->can('edit', $personal_deadline)) {
+        if (!$ability->can('edit', $personaldeadline)) {
             $class .= ' display-none';
         }
 
-        $link = $this->get_router()->get_path('edit personal deadline', $new_personal_deadline_params);
+        $link = $this->get_router()->get_path('edit personal deadline', $newpersonaldeadlineparams);
         // $link = '/';
         $icon = new pix_icon('edit', 'Edit personal deadline', 'coursework');
-        $new_personal_deadline_params['multipleuserdeadlines'] = 0;
+        $newpersonaldeadlineparams['multipleuserdeadlines'] = 0;
 
         $content .= $OUTPUT->action_icon($link,
             $icon,
             null,
-            ['class' => $class, 'data-get' => json_encode($new_personal_deadline_params), 'data-time' => date('d-m-Y H:i', $deadline) ]);
+            ['class' => $class, 'data-get' => json_encode($newpersonaldeadlineparams), 'data-time' => date('d-m-Y H:i', $deadline) ]);
         $content .= '</div><div class="show_edit_personal_dealine display-none"> </div>';
 
         return $this->get_new_cell_with_order_data(['display' => $content, '@data-order' => $deadline]);

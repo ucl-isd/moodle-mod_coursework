@@ -31,6 +31,6 @@ class framework_user_table extends \mod_coursework\framework\table_base {
     /**
      * @var string
      */
-    protected static $table_name = 'user';
+    protected static $tablename = 'user';
 
 }

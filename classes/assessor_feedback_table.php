@@ -80,8 +80,8 @@ class assessor_feedback_table {
 
         $feedbackobjects = [];
         foreach ($this->coursework->get_assessor_marking_stages() as $stage) {
-            $renderable_row = new assessor_feedback_row($stage, $this->get_allocatable(), $this->coursework);
-            $feedbackobjects[] = $renderable_row;
+            $renderablerow = new assessor_feedback_row($stage, $this->get_allocatable(), $this->coursework);
+            $feedbackobjects[] = $renderablerow;
         }
 
         return $feedbackobjects;

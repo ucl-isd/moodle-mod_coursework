@@ -46,11 +46,11 @@ class publish_form extends moodleform {
 
         $attributes = [];
         $explaintext = false;
-        $should_release = true;
+        $shouldrelease = true;
 
         if (!$coursework->has_stuff_to_publish()) {
 
-            $should_release = false;
+            $shouldrelease = false;
             $explaintext = get_string('nofinalgradedworkyet', 'mod_coursework');
 
         } else if ($coursework->blindmarking_enabled() && $coursework->has_stuff_to_publish()) {
@@ -62,12 +62,12 @@ class publish_form extends moodleform {
                    $coursework->moderation_enabled() &&
                    $coursework->unmoderated_work_exists()) {
 
-            $should_release = false;
+            $shouldrelease = false;
             $explaintext = get_string('unmoderatedworkexists', 'mod_coursework');
         }
 
         // Confusing to show them the button with nothing to release.
-        if ($coursework->has_stuff_to_publish() && $should_release) {
+        if ($coursework->has_stuff_to_publish() && $shouldrelease) {
             $buttontext = get_string('publish', 'coursework');
             $this->_form->addElement('submit', 'publishbutton', $buttontext, $attributes);
         }

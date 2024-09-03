@@ -44,10 +44,10 @@ $title = get_string('feedbackupload', 'mod_coursework');
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
-$grading_sheet_capabilities = ['mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade', 'mod/coursework:administergrades'];
+$gradingsheetcapabilities = ['mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade', 'mod/coursework:administergrades'];
 
 // Bounce anyone who shouldn't be here.
-if (!has_any_capability($grading_sheet_capabilities, $PAGE->context)) {
+if (!has_any_capability($gradingsheetcapabilities, $PAGE->context)) {
     $message = 'You do not have permission to upload feedback sheets';
     redirect(new moodle_url('mod/coursework/view.php'), $message);
 }
@@ -80,10 +80,10 @@ if ($data = $feedbackform->get_data()) {
 
     $updateresults = $fileimporter->import_zip_files($coursework, $stageidentifier, $data->overwrite);
 
-    $page_renderer = $PAGE->get_renderer('mod_coursework', 'page');
-    echo $page_renderer->process_feedback_upload($updateresults);
+    $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
+    echo $pagerenderer->process_feedback_upload($updateresults);
 
 } else {
-    $page_renderer = $PAGE->get_renderer('mod_coursework', 'page');
-    echo $page_renderer->feedback_upload($feedbackform);
+    $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
+    echo $pagerenderer->feedback_upload($feedbackform);
 }

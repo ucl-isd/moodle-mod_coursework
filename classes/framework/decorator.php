@@ -33,13 +33,13 @@ class decorator {
     /**
      * @var
      */
-    protected $wrapped_object;
+    protected $wrappedobject;
 
     /**
      * @param $wrapped_object
      */
-    public function __construct($wrapped_object) {
-        $this->wrapped_object = $wrapped_object;
+    public function __construct($wrappedobject) {
+        $this->wrapped_object = $wrappedobject;
     }
 
     /**

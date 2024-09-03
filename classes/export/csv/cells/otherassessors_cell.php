@@ -38,7 +38,7 @@ class otherassessors_cell extends cell_base {
      * @param $stage_identifier
      * @return null|string
      */
-    public function get_cell($submission, $student, $stage_identifier) {
+    public function get_cell($submission, $student, $stageidentifier) {
         global $DB, $USER;
         // find out current user stage identifier
 
@@ -48,7 +48,7 @@ class otherassessors_cell extends cell_base {
         $params = [
             'submissionid' => $submission->id,
             'assessorid' => $USER->id,
-            'stageidentifier' => $stage_identifier,
+            'stageidentifier' => $stageidentifier,
         ];
 
         $sql = "SELECT * FROM {coursework_feedbacks}
@@ -91,8 +91,8 @@ class otherassessors_cell extends cell_base {
                 if ($this->coursework->is_using_rubric()) {
                     $criterias = $this->coursework->get_rubric_criteria();
                     foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
-                        $gradedata['assessor' . $stage_identifier . '_' . $criteria['id']] = get_string('grade_hidden_manager', 'mod_coursework');
-                        $gradedata['assessor' . $stage_identifier . '_' . $criteria['id'] . 'comment'] = '';
+                        $gradedata['assessor' . $stageidentifier . '_' . $criteria['id']] = get_string('grade_hidden_manager', 'mod_coursework');
+                        $gradedata['assessor' . $stageidentifier . '_' . $criteria['id'] . 'comment'] = '';
                     }
                 } else {
                     $gradedata[] = '';
@@ -112,8 +112,8 @@ class otherassessors_cell extends cell_base {
                 if ($this->coursework->is_using_rubric()) {
                     $criterias = $this->coursework->get_rubric_criteria();
                     foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
-                        $gradedata['assessor' . $stage_identifier.$i. '_' . $criteria['id']] = '';
-                        $gradedata['assessor' . $stage_identifier.$i. '_' . $criteria['id'] . 'comment'] = '';
+                        $gradedata['assessor' . $stageidentifier.$i. '_' . $criteria['id']] = '';
+                        $gradedata['assessor' . $stageidentifier.$i. '_' . $criteria['id'] . 'comment'] = '';
                     }
                 } else {
                     $gradedata[] = '';

@@ -31,13 +31,13 @@ global $CFG, $USER;
 $submissionid = required_param('submissionid', PARAM_INT);
 $feedbackid = required_param('feedbackid', PARAM_INT);
 $moderatorid = optional_param('moderatorid', $USER->id, PARAM_INT);
-$stage_identifier = optional_param('stage_identifier', '', PARAM_ALPHANUMEXT);
+$stageidentifier = optional_param('stage_identifier', '', PARAM_ALPHANUMEXT);
 
 $params = [
     'submissionid' => $submissionid,
     'feedbackid' => $feedbackid,
     'moderatorid' => $moderatorid,
-    'stage_identifier' => $stage_identifier,
+    'stage_identifier' => $stageidentifier,
 ];
 $controller = new mod_coursework\controllers\moderations_controller($params);
 $controller->create_moderation();

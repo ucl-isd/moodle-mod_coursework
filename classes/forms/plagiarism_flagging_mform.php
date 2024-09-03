@@ -41,7 +41,7 @@ class plagiarism_flagging_mform extends moodleform {
     /**
      * @var int the id of the submission that the grade pertains to
      */
-    public $submission_id;
+    public $submissionid;
 
     /**
      * Makes the form elements.
@@ -53,9 +53,9 @@ class plagiarism_flagging_mform extends moodleform {
         /**
          * @var $plagiarism_flag plagiarism_flag
          */
-        $plagiarism_flag = $this->_customdata['plagiarism_flag'];
+        $plagiarismflag = $this->_customdata['plagiarism_flag'];
 
-        $mform->addElement('hidden', 'submissionid', $plagiarism_flag->get_submission()->id);
+        $mform->addElement('hidden', 'submissionid', $plagiarismflag->get_submission()->id);
         $mform->setType('submissionid', PARAM_INT);
 
         // plagiarism status

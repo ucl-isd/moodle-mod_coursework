@@ -74,16 +74,16 @@ class submissions_controller extends controller_base {
         $PAGE->set_url('/mod/coursework/actions/submissions/new.php', $urlparams);
 
         $path = $this->get_router()->get_path('create submission', ['coursework' => $this->coursework]);
-        $submit_form = new student_submission_form($path,
+        $submitform = new student_submission_form($path,
                                                     [
                                                       'coursework' => $this->coursework,
                                                       'submission' => $submission,
                                                     ]);
-        if ($submit_form->is_submitted()) {
-            $validation = $submit_form->validate_defined_fields();
+        if ($submitform->is_submitted()) {
+            $validation = $submitform->validate_defined_fields();
         }
         if ($validation != true) {
-            $this->get_page_renderer()->new_submission_page($submit_form, $submission);
+            $this->get_page_renderer()->new_submission_page($submitform, $submission);
             return true;
         }
 
@@ -95,9 +95,9 @@ class submissions_controller extends controller_base {
     protected function create_submission() {
         global $USER, $CFG, $DB;
 
-        $coursework_page_url = $this->get_path('coursework', ['coursework' => $this->coursework]);
+        $courseworkpageurl = $this->get_path('coursework', ['coursework' => $this->coursework]);
         if ($this->cancel_button_was_pressed()) {
-            redirect($coursework_page_url);
+            redirect($courseworkpageurl);
         }
 
         $validated = $this->new_submission();
@@ -143,8 +143,8 @@ class submissions_controller extends controller_base {
 
         $submission->save();
 
-        $files_id = file_get_submitted_draft_itemid('submission_manager');
-        $submission->save_files($files_id);
+        $filesid = file_get_submitted_draft_itemid('submission_manager');
+        $submission->save_files($filesid);
 
         $context = \context_module::instance($this->coursemodule->id);
         // Trigger assessable_submitted event to show files are complete.
@@ -186,7 +186,7 @@ class submissions_controller extends controller_base {
 
         }
 
-        redirect($coursework_page_url);
+        redirect($courseworkpageurl);
     }
 
     /**
@@ -212,19 +212,19 @@ class submissions_controller extends controller_base {
         $PAGE->set_url('/mod/coursework/actions/submissions/edit.php', $urlparams);
 
         $path = $this->get_router()->get_path('update submission', ['submission' => $submission]);
-        $submit_form = new student_submission_form($path,
+        $submitform = new student_submission_form($path,
                                                    [
                                                        'coursework' => $this->coursework,
                                                        'submission' => $submission,
                                                    ]);
-        if ($submit_form->is_submitted()) {
-            $validation = $submit_form->validate_defined_fields();
+        if ($submitform->is_submitted()) {
+            $validation = $submitform->validate_defined_fields();
         }
 
-        $submit_form->set_data($submission);
+        $submitform->set_data($submission);
 
         if ($validation != true) {
-            $this->get_page_renderer()->edit_submission_page($submit_form, $submission);
+            $this->get_page_renderer()->edit_submission_page($submitform, $submission);
             return true;
         }
     }
@@ -236,9 +236,9 @@ class submissions_controller extends controller_base {
 
         global $USER, $CFG;
 
-        $coursework_page_url = $this->get_path('coursework', ['coursework' => $this->coursework]);
+        $courseworkpageurl = $this->get_path('coursework', ['coursework' => $this->coursework]);
         if ($this->cancel_button_was_pressed()) {
-            redirect($coursework_page_url);
+            redirect($courseworkpageurl);
         }
 
          $validated = $this->edit_submission();
@@ -255,19 +255,19 @@ class submissions_controller extends controller_base {
             throw new access_denied($this->coursework, $ability->get_last_message());
         }
 
-        $notify_about_finalisation = false;
-        $incoming_finalised_setting = $this->params['finalised'] ? 1 : 0;
-        if ($incoming_finalised_setting == 1 && $submission->finalised == 0) {
-            $notify_about_finalisation = true;
+        $notifyaboutfinalisation = false;
+        $incomingfinalisedsetting = $this->params['finalised'] ? 1 : 0;
+        if ($incomingfinalisedsetting == 1 && $submission->finalised == 0) {
+            $notifyaboutfinalisation = true;
         }
-        $submission->finalised = $incoming_finalised_setting;
+        $submission->finalised = $incomingfinalisedsetting;
         $submission->lastupdatedby = $USER->id;
         $submission->timesubmitted = time();
 
         $submission->save();
 
-        $files_id = file_get_submitted_draft_itemid('submission_manager');
-        $submission->save_files($files_id);
+        $filesid = file_get_submitted_draft_itemid('submission_manager');
+        $submission->save_files($filesid);
 
         $context = \context_module::instance($this->coursemodule->id);
         // Trigger assessable_submitted event to show files are complete.
@@ -283,14 +283,14 @@ class submissions_controller extends controller_base {
 
         $submission->submit_plagiarism();
 
-        if ($CFG->coursework_allsubmissionreceipt || $notify_about_finalisation) {
+        if ($CFG->coursework_allsubmissionreceipt || $notifyaboutfinalisation) {
             $mailer = new mailer($this->coursework);
             foreach ($submission->get_students() as $student) {
-                $mailer->send_submission_receipt($student, $notify_about_finalisation);
+                $mailer->send_submission_receipt($student, $notifyaboutfinalisation);
             }
         }
 
-        redirect($coursework_page_url);
+        redirect($courseworkpageurl);
 
     }
 
@@ -301,9 +301,9 @@ class submissions_controller extends controller_base {
 
         global $USER;
 
-        $coursework_page_url = $this->get_path('coursework', ['coursework' => $this->coursework]);
+        $courseworkpageurl = $this->get_path('coursework', ['coursework' => $this->coursework]);
         if ($this->cancel_button_was_pressed()) {
-            redirect($coursework_page_url);
+            redirect($courseworkpageurl);
         }
 
         $submission = submission::find($this->params['submissionid']);
@@ -322,7 +322,7 @@ class submissions_controller extends controller_base {
             $mailer->send_submission_receipt($student, true);
         }
 
-        redirect($coursework_page_url);
+        redirect($courseworkpageurl);
     }
 
     protected function unfinalise_submission() {
@@ -331,7 +331,7 @@ class submissions_controller extends controller_base {
 
         $allocatableids = (!is_array($this->params['allocatableid'])) ? [$this->params['allocatableid']] : $this->params['allocatableid'];
 
-        $personaldeadline_page_url = new \moodle_url('/mod/coursework/actions/personal_deadline.php',
+        $personaldeadlinepageurl = new \moodle_url('/mod/coursework/actions/personal_deadline.php',
             ['id' => $this->coursework->get_coursemodule_id(), 'multipleuserdeadlines' => 1, 'setpersonaldeadlinespage' => 1,
                 'courseworkid' => $this->params['courseworkid'], 'allocatabletype' => $this->params['allocatabletype']]);
 
@@ -339,15 +339,15 @@ class submissions_controller extends controller_base {
 
         foreach ($allocatableids as $aid) {
 
-            $submission_db = $DB->get_record('coursework_submissions',
+            $submissiondb = $DB->get_record('coursework_submissions',
                 ['courseworkid' => $this->params['courseworkid'], 'allocatableid' => $aid, 'allocatabletype' => $this->params['allocatabletype']]);
-            if (!empty($submission_db)) {
-                $submission = \mod_coursework\models\submission::find($submission_db);
+            if (!empty($submissiondb)) {
+                $submission = \mod_coursework\models\submission::find($submissiondb);
 
                 if ($submission->can_be_unfinalised()) {
                     $submission->finalised = 0;
                     $submission->save();
-                    $personaldeadline_page_url->param("allocatableid_arr[$aid]", $aid);
+                    $personaldeadlinepageurl->param("allocatableid_arr[$aid]", $aid);
                     $changedeadlines = true;
                 }
             }
@@ -355,11 +355,11 @@ class submissions_controller extends controller_base {
         }
 
         if (!empty($changedeadlines)) {
-            redirect($personaldeadline_page_url, get_string('unfinalisedchangesubmissiondate', 'mod_coursework'));
+            redirect($personaldeadlinepageurl, get_string('unfinalisedchangesubmissiondate', 'mod_coursework'));
         } else {
-            $setpersonaldeadline_page_url = new \moodle_url('/mod/coursework/actions/set_personal_deadlines.php',
+            $setpersonaldeadlinepageurl = new \moodle_url('/mod/coursework/actions/set_personal_deadlines.php',
                 ['id' => $this->coursework->get_coursemodule_id()]);
-            redirect($setpersonaldeadline_page_url);
+            redirect($setpersonaldeadlinepageurl);
         }
 
     }
@@ -400,14 +400,14 @@ class submissions_controller extends controller_base {
      * @throws late_submission
      */
     private function exception_if_late($submission) {
-        $could_have_submitted = has_capability('mod/coursework:submit', $this->coursework->get_context());
+        $couldhavesubmitted = has_capability('mod/coursework:submit', $this->coursework->get_context());
         if ($this->coursework->personal_deadlines_enabled()) {
-            $deadline_has_passed = !$this->has_valid_personal_deadline($submission);
+            $deadlinehaspassed = !$this->has_valid_personal_deadline($submission);
         } else {
-            $deadline_has_passed = $this->coursework->deadline_has_passed();
+            $deadlinehaspassed = $this->coursework->deadline_has_passed();
         }
 
-        if ($could_have_submitted && $deadline_has_passed && !$this->has_valid_extension($submission) && !$this->coursework->allow_late_submissions()) {
+        if ($couldhavesubmitted && $deadlinehaspassed && !$this->has_valid_extension($submission) && !$this->coursework->allow_late_submissions()) {
             throw new late_submission($this->coursework);
         }
     }
@@ -419,12 +419,12 @@ class submissions_controller extends controller_base {
     protected function submissions_exists($submission) {
         global $DB;
 
-        $sub_exists = $DB->record_exists('coursework_submissions',
+        $subexists = $DB->record_exists('coursework_submissions',
                                      ['courseworkid' => $submission->courseworkid,
                                            'allocatableid' => $submission->allocatableid,
                                            'allocatabletype' => $submission->allocatabletype]);
 
-        return $sub_exists;
+        return $subexists;
     }
 
     /**
@@ -434,7 +434,7 @@ class submissions_controller extends controller_base {
     protected function has_valid_extension($submission) {
         global $DB;
 
-        $valid_extension = false;
+        $validextension = false;
         $extension = $DB->get_record('coursework_extensions',
                                          ['courseworkid' => $submission->courseworkid,
                                                'allocatableid' => $submission->allocatableid,
@@ -442,11 +442,11 @@ class submissions_controller extends controller_base {
 
         if ($extension) {
             if ($extension->extended_deadline > time()) {
-                $valid_extension = true;
+                $validextension = true;
             }
         }
 
-        return $valid_extension;
+        return $validextension;
     }
 
     /**
@@ -456,18 +456,18 @@ class submissions_controller extends controller_base {
     protected function has_valid_personal_deadline($submission) {
         global $DB;
 
-        $valid_personal_deadline = false;
-        $personal_deadline = $DB->get_record('coursework_person_deadlines',
+        $validpersonaldeadline = false;
+        $personaldeadline = $DB->get_record('coursework_person_deadlines',
                                             ['courseworkid' => $submission->courseworkid,
                                                   'allocatableid' => $submission->allocatableid,
                                                   'allocatabletype' => $submission->allocatabletype]);
-        if ($personal_deadline) {
-            if ($personal_deadline->personal_deadline > time()) {
-                $valid_personal_deadline = true;
+        if ($personaldeadline) {
+            if ($personaldeadline->personal_deadline > time()) {
+                $validpersonaldeadline = true;
             }
         } else {
-            $valid_personal_deadline = !$this->coursework->deadline_has_passed();
+            $validpersonaldeadline = !$this->coursework->deadline_has_passed();
         }
-        return $valid_personal_deadline;
+        return $validpersonaldeadline;
     }
 }

@@ -80,9 +80,9 @@ class percentage_distance implements auto_grader {
                 $this->create_final_feedback();
             } else {
                 // update only if AgreedGrade has been automatic
-                $agreed_feedback = $this->get_allocatable()->get_agreed_feedback($this->get_coursework());
-                if ($agreed_feedback->timecreated == $agreed_feedback->timemodified || $agreed_feedback->lasteditedbyuser == 0) {
-                    $this->update_final_feedback($agreed_feedback);
+                $agreedfeedback = $this->get_allocatable()->get_agreed_feedback($this->get_coursework());
+                if ($agreedfeedback->timecreated == $agreedfeedback->timemodified || $agreedfeedback->lasteditedbyuser == 0) {
+                    $this->update_final_feedback($agreedfeedback);
                 }
             }
 
@@ -113,10 +113,10 @@ class percentage_distance implements auto_grader {
     private function grades_are_close_enough() {
         // test if the rules apply
         $grades = $this->grades_as_percentages();
-        $max_grade = max($grades);
-        $min_grade = min($grades);
+        $maxgrade = max($grades);
+        $mingrade = min($grades);
 
-        return ($max_grade - $min_grade) <= $this->percentage;
+        return ($maxgrade - $mingrade) <= $this->percentage;
     }
 
     /**
@@ -144,12 +144,12 @@ class percentage_distance implements auto_grader {
     private function update_final_feedback($feedback) {
         global $DB;
 
-        $updated_feedback = new \stdClass();
-        $updated_feedback->id = $feedback->id;
-        $updated_feedback->grade = $this->automatic_grade();
-        $updated_feedback->lasteditedbyuser = 0;
+        $updatedfeedback = new \stdClass();
+        $updatedfeedback->id = $feedback->id;
+        $updatedfeedback->grade = $this->automatic_grade();
+        $updatedfeedback->lasteditedbyuser = 0;
 
-        $DB->update_record('coursework_feedbacks', $updated_feedback);
+        $DB->update_record('coursework_feedbacks', $updatedfeedback);
 
     }
 
@@ -157,11 +157,11 @@ class percentage_distance implements auto_grader {
      * @return array
      */
     private function grades_as_percentages() {
-        $initial_feedbacks = $this->get_allocatable()->get_initial_feedbacks($this->get_coursework());
+        $initialfeedbacks = $this->get_allocatable()->get_initial_feedbacks($this->get_coursework());
         $grades = array_map(function ($feedback) {
             return ($feedback->get_grade() / $this->get_coursework()->get_max_grade()) * 100;
         },
-            $initial_feedbacks);
+            $initialfeedbacks);
         return $grades;
     }
 }

@@ -159,8 +159,8 @@ abstract class base {
      * @return string
      */
     protected function get_type() {
-        $exploded_class_name = explode('\\', get_class($this->stage));
-        return array_pop($exploded_class_name);
+        $explodedclassname = explode('\\', get_class($this->stage));
+        return array_pop($explodedclassname);
     }
 
     /**
@@ -194,17 +194,17 @@ abstract class base {
      * @param array $teacher_counts teacherid => number_of_allocations_so_far
      * @return user|bool
      */
-    protected function get_teacher_with_smallest_number_of_current_allocations($teacher_counts) {
+    protected function get_teacher_with_smallest_number_of_current_allocations($teachercounts) {
         // What if there aren't any e.g. only one teacher, but two are needed?
-        if (empty($teacher_counts)) {
+        if (empty($teachercounts)) {
             return false;
         }
 
         // Which is the best one? Whichever has the fewest. Might be several with the same number, so we
         // get the allocations count value that's lowest (may represent multiple teachers), then get the first array
         // key (teacher id) that has that number of allocations.
-        $smallestcount = min($teacher_counts);
-        return user::find(array_search($smallestcount, $teacher_counts));
+        $smallestcount = min($teachercounts);
+        return user::find(array_search($smallestcount, $teachercounts));
     }
 
     /**

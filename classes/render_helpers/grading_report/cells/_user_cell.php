@@ -77,27 +77,27 @@ class user_cell extends cell_base implements allocatable_cell {
 
         // allow to sort users only if CW is not set to blind marking or a user has capability to view anonymous
         if ($viewanonymous || !$this->coursework->blindmarking) {
-            $sort_by_first_name = $this->helper_sortable_heading(get_string('firstname'),
+            $sortbyfirstname = $this->helper_sortable_heading(get_string('firstname'),
                                                                 'firstname',
                                                                 $options['sorthow'],
                                                                 $options['sortby'],
                                                                 $tablename);
-            $sort_by_last_name = $this->helper_sortable_heading(get_string('lastname'),
+            $sortbylastname = $this->helper_sortable_heading(get_string('lastname'),
                                                                'lastname',
                                                                $options['sorthow'],
                                                                $options['sortby'],
                                                                 $tablename);
         } else { // otherwise display header without sorting
-            $sort_by_first_name = get_string('firstname');
-            $sort_by_last_name = get_string('lastname');
+            $sortbyfirstname = get_string('firstname');
+            $sortbylastname = get_string('lastname');
         }
 
         if ($this->fullname_format() == 'lf') {
-            $sort_by_name = $sort_by_last_name . ' / ' . $sort_by_first_name;
+            $sortbyname = $sortbylastname . ' / ' . $sortbyfirstname;
         } else {
-            $sort_by_name = $sort_by_first_name . ' / ' . $sort_by_last_name;
+            $sortbyname = $sortbyfirstname . ' / ' . $sortbylastname;
         }
-        return $sort_by_name;
+        return $sortbyname;
     }
 
     /**

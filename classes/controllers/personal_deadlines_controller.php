@@ -42,7 +42,7 @@ class personal_deadlines_controller extends controller_base {
     protected function new_personal_deadline() {
         global $USER, $PAGE;
 
-        $coursework_page_url = (empty($this->params['setpersonaldeadlinespage'])) ? $this->get_path('coursework', ['coursework' => $this->coursework]) :
+        $courseworkpageurl = (empty($this->params['setpersonaldeadlinespage'])) ? $this->get_path('coursework', ['coursework' => $this->coursework]) :
             $this->get_path('set personal deadlines', ['coursework' => $this->coursework]);
 
         $params = $this->set_default_current_deadline();
@@ -54,9 +54,9 @@ class personal_deadlines_controller extends controller_base {
             : serialize($params['allocatableid']);
 
         $PAGE->set_url('/mod/coursework/actions/personal_deadline/new.php', $params);
-        $create_url = $this->get_router()->get_path('edit personal deadline');
+        $createurl = $this->get_router()->get_path('edit personal deadline');
 
-        $this->form = new personal_deadline_form($create_url, ['coursework' => $this->coursework]);
+        $this->form = new personal_deadline_form($createurl, ['coursework' => $this->coursework]);
 
         $this->personal_deadline->setpersonaldeadlinespage = $this->params['setpersonaldeadlinespage'];
         $this->personal_deadline->multipleuserdeadlines = $this->params['multipleuserdeadlines'];
@@ -64,7 +64,7 @@ class personal_deadlines_controller extends controller_base {
         $this->personal_deadline->allocatableid = $params['allocatableid'];
         $this->form->set_data($this->personal_deadline);
         if ($this->cancel_button_was_pressed()) {
-            redirect($coursework_page_url);
+            redirect($courseworkpageurl);
         }
         if ($this->form->is_validated()) {
 
@@ -113,7 +113,7 @@ class personal_deadlines_controller extends controller_base {
                 }
 
             }
-            redirect($coursework_page_url);
+            redirect($courseworkpageurl);
         }
 
         $this->render_page('new');

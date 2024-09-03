@@ -112,10 +112,10 @@ abstract class cell_base implements cell_interface {
     public function get_extension_reason_for_csv($student) {
 
         $extension = $this->extension->get_extension_for_student($student, $this->coursework);
-        $extension_reasons = $this->get_extension_predefined_reasons();
+        $extensionreasons = $this->get_extension_predefined_reasons();
 
-        return (!empty($extension_reasons[$extension->pre_defined_reason])) ?
-            strip_tags($extension_reasons[$extension->pre_defined_reason]) : "";
+        return (!empty($extensionreasons[$extension->pre_defined_reason])) ?
+            strip_tags($extensionreasons[$extension->pre_defined_reason]) : "";
     }
 
     /**
@@ -250,7 +250,7 @@ abstract class cell_base implements cell_interface {
      * Function to validate cell for the file upload
      * @return mixed
      */
-    public function validate_cell($value, $submissions, $stage_dentifier='', $uploadedgradecells  = []) {
+    public function validate_cell($value, $submissions, $stagedentifier='', $uploadedgradecells  = []) {
         return true;
     }
 
@@ -267,9 +267,9 @@ abstract class cell_base implements cell_interface {
             /**
              * @var gradingform_rubric_instance $grade
              */
-            $rubric_marks = $gradinginstance->get_rubric_filling();
+            $rubricmarks = $gradinginstance->get_rubric_filling();
 
-            foreach ($rubric_marks['criteria'] as $id => $record) {
+            foreach ($rubricmarks['criteria'] as $id => $record) {
                 $gradedata[] = $controller->get_definition()->rubric_criteria[$id]['levels'][$record['levelid']]['score'];
                 $gradedata[] = $record['remark'];
 

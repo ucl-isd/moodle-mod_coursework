@@ -78,11 +78,11 @@ class builder {
 
         // Sort the rows.
         $sorting = new mod_coursework\grading_report($this->options, $this->coursework);
-        $method_name = 'sort_by_' . $this->options['sortby'];
-        if (method_exists($sorting, $method_name)) {
+        $methodname = 'sort_by_' . $this->options['sortby'];
+        if (method_exists($sorting, $methodname)) {
             usort($rows,
                 [$sorting,
-                    $method_name]);
+                    $methodname]);
         }
 
         return $rows;

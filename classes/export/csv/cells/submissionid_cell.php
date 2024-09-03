@@ -33,7 +33,7 @@ class submissionid_cell extends cell_base {
      * @param $stage_identifier
      * @return mixed
      */
-    public function get_cell($submission, $student, $stage_identifier) {
+    public function get_cell($submission, $student, $stageidentifier) {
         return $submission->id;
     }
 
@@ -46,7 +46,7 @@ class submissionid_cell extends cell_base {
         return  get_string('submissionid', 'coursework');
     }
 
-    public function validate_cell($value, $submissionid, $stage_dentifier = '', $uploadedgradecells  = []) {
+    public function validate_cell($value, $submissionid, $stagedentifier = '', $uploadedgradecells  = []) {
         global $DB;
         return $DB->record_exists('coursework_submissions', ['id' => $submissionid, 'courseworkid' => $this->coursework->id()])
             ? true

@@ -38,7 +38,7 @@ class agreedfeedback_cell extends cell_base {
      * @return string
      */
 
-    public function get_cell($submission, $student, $stage_identifier) {
+    public function get_cell($submission, $student, $stageidentifier) {
         return  $gradedata[] = $submission->get_agreed_grade() == false ? '' : strip_tags($submission->get_agreed_grade()->feedbackcomment);
     }
 
@@ -51,11 +51,11 @@ class agreedfeedback_cell extends cell_base {
         return  get_string('agreedgradefeedback', 'coursework');
     }
 
-    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells  = []) {
+    public function validate_cell($value, $submissionid, $stageidentifier='', $uploadedgradecells  = []) {
 
         global $DB, $PAGE, $USER;
 
-        $stage_identifier = 'final_agreed_1';
+        $stageidentifier = 'final_agreed_1';
         $agreedgradecap = ['mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade',
             'mod/coursework:addallocatedagreedgrade', 'mod/coursework:editallocatedagreedgrade'];
 
@@ -81,26 +81,26 @@ class agreedfeedback_cell extends cell_base {
             }
 
             // Has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
-            $feedback_params = [
+            $feedbackparams = [
                 'submissionid' => $submission->id,
-                'stage_identifier' => $stage_identifier,
+                'stage_identifier' => $stageidentifier,
             ];
 
-            $feedback = feedback::find($feedback_params);
+            $feedback = feedback::find($feedbackparams);
 
             $ability = new ability(user::find($USER), $this->coursework);
 
             //does a feedback exist for this stage
             if (empty($feedback)) {
-                $feedback_params = [
+                $feedbackparams = [
                     'submissionid' => $submissionid,
                     'assessorid' => $USER->id,
-                    'stage_identifier' => $stage_identifier,
+                    'stage_identifier' => $stageidentifier,
                 ];
-                $new_feedback = feedback::build($feedback_params);
+                $newfeedback = feedback::build($feedbackparams);
 
                 // This is a new feedback check it against the new ability checks
-                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && !$ability->can('new', $new_feedback)) {
+                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && !$ability->can('new', $newfeedback)) {
                     return get_string('nopermissiontogradesubmission', 'coursework');
                 }
             } else {

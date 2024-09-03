@@ -108,9 +108,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                     'plagiarismflagenabled',
                                                   ]);
 
-            $sample_strategies = new backup_nested_element('coursework_sample_set_rules');
+            $samplestrategies = new backup_nested_element('coursework_sample_set_rules');
 
-            $sample_strategy = new backup_nested_element('coursework_sample_set_rule', ['id'],
+            $samplestrategy = new backup_nested_element('coursework_sample_set_rule', ['id'],
                                                                 ['courseworkid',
                                                                      'sample_set_plugin_id',
                                                                      'ruleorder',
@@ -119,18 +119,18 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                                      'lowerlimit',
                                                                      'stage_identifier']);
 
-            $coursework->add_child($sample_strategies);
+            $coursework->add_child($samplestrategies);
 
-            $sample_strategies->add_child($sample_strategy);
+            $samplestrategies->add_child($samplestrategy);
 
-            $sample_strategy->set_source_table('coursework_sample_set_rules',
+            $samplestrategy->set_source_table('coursework_sample_set_rules',
                                         ['courseworkid' => backup::VAR_PARENTID]);
 
         if ($userinfo) {
 
-            $plagiarism_flags = new backup_nested_element('coursework_plagiarism_flags');
+            $plagiarismflags = new backup_nested_element('coursework_plagiarism_flags');
 
-            $plagiarism_flag = new backup_nested_element('coursework_plagiarism_flag', ['id'],
+            $plagiarismflag = new backup_nested_element('coursework_plagiarism_flag', ['id'],
                                                             [
                                                                     "courseworkid",
                                                                     "submissiond",
@@ -143,9 +143,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                                     "timemodified",
                                                             ]);
 
-            $moderation_agreements = new backup_nested_element('coursework_mod_agreements');
+            $moderationagreements = new backup_nested_element('coursework_mod_agreements');
 
-            $moderation_agreement = new backup_nested_element('coursework_mod_agreement', ['id'],
+            $moderationagreement = new backup_nested_element('coursework_mod_agreement', ['id'],
                                                     [
                                                         "feedbackid",
                                                         "moderatorid",
@@ -238,9 +238,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                       "minimum",
                                                   ]);
 
-            $allocation_configs = new backup_nested_element('coursework_allocation_configs');
+            $allocationconfigs = new backup_nested_element('coursework_allocation_configs');
 
-            $allocation_config = new backup_nested_element('coursework_allocation_config', ['id'],
+            $allocationconfig = new backup_nested_element('coursework_allocation_config', ['id'],
                                                          [
                                                              "courseworkid",
                                                              "allocationstrategy",
@@ -277,9 +277,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                      "extra_information_format",
                                                  ]);
 
-            $personal_deadlines = new backup_nested_element('coursework_person_deadlines');
+            $personaldeadlines = new backup_nested_element('coursework_person_deadlines');
 
-            $personal_deadline = new backup_nested_element('coursework_person_deadline', ['id'],
+            $personaldeadline = new backup_nested_element('coursework_person_deadline', ['id'],
                                                 [
                                                     "allocatableid",
                                                     'allocatableuser',
@@ -293,9 +293,9 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                     "lastmodifiedbyid",
                                                 ]);
 
-            $sample_members = new backup_nested_element('coursework_sample_set_mbrs');
+            $samplemembers = new backup_nested_element('coursework_sample_set_mbrs');
 
-            $sample_member = new backup_nested_element('coursework_sample_set_mbr', ['id'],
+            $samplemember = new backup_nested_element('coursework_sample_set_mbr', ['id'],
                                                 [
                                                         "courseworkid",
                                                         "allocatableid",
@@ -317,13 +317,13 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
             // And a set of extensionsenabled
             $coursework->add_child($extensions);
             // And a set of personaldeadlines
-            $coursework->add_child($personal_deadlines);
+            $coursework->add_child($personaldeadlines);
             // And a set of moderation rule sets
             $coursework->add_child($modsetmembers);
             // And allocation configs
-            $coursework->add_child($allocation_configs);
+            $coursework->add_child($allocationconfigs);
             // And sample members
-            $coursework->add_child($sample_members);
+            $coursework->add_child($samplemembers);
 
             // And submissions are made up from individual submission instances
             $submissions->add_child($submission);
@@ -333,22 +333,22 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
             // Feedbacks is a set of individual items
             $feedbacks->add_child($feedback);
 
-            $feedback->add_child($moderation_agreements);
-            $moderation_agreements->add_child($moderation_agreement);
+            $feedback->add_child($moderationagreements);
+            $moderationagreements->add_child($moderationagreement);
 
-            $submission->add_child($plagiarism_flags);
-            $plagiarism_flags->add_child($plagiarism_flag);
+            $submission->add_child($plagiarismflags);
+            $plagiarismflags->add_child($plagiarismflag);
 
             // as are reminders, pairs, extensions, modsets and modsetrules,
             // and allocation configs
             $reminders->add_child($reminder);
             $pairs->add_child($pair);
             $extensions->add_child($extension);
-            $personal_deadlines->add_child($personal_deadline);
+            $personaldeadlines->add_child($personaldeadline);
             $modsetrules->add_child($modsetrule);
             $modsetmembers->add_child($modsetmember);
-            $sample_members->add_child($sample_member);
-            $allocation_configs->add_child($allocation_config);
+            $samplemembers->add_child($samplemember);
+            $allocationconfigs->add_child($allocationconfig);
 
             $submission->set_source_table('coursework_submissions',
                                           ['courseworkid' => backup::VAR_PARENTID]);
@@ -356,10 +356,10 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
             $feedback->set_source_table('coursework_feedbacks',
                                         ['submissionid' => backup::VAR_PARENTID]);
 
-            $plagiarism_flag->set_source_table('coursework_plagiarism_flags',
+            $plagiarismflag->set_source_table('coursework_plagiarism_flags',
                                          ['submissionid' => backup::VAR_PARENTID]);
 
-            $moderation_agreement->set_source_table('coursework_mod_agreements',
+            $moderationagreement->set_source_table('coursework_mod_agreements',
                                         ['feedbackid' => backup::VAR_PARENTID]);
 
             $reminder->set_source_table('coursework_reminder',
@@ -374,16 +374,16 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
             $extension->set_source_table('coursework_extensions',
                                          ['courseworkid' => backup::VAR_PARENTID]);
 
-            $personal_deadline->set_source_table('coursework_person_deadlines',
+            $personaldeadline->set_source_table('coursework_person_deadlines',
                                         ['courseworkid' => backup::VAR_PARENTID]);
 
             $modsetmember->set_source_table('coursework_mod_set_members',
                 ['courseworkid' => backup::VAR_PARENTID]);
 
-            $sample_member->set_source_table('coursework_sample_set_mbrs',
+            $samplemember->set_source_table('coursework_sample_set_mbrs',
                                 ['courseworkid' => backup::VAR_PARENTID]);
 
-            $allocation_config->set_source_table('coursework_allocation_config',
+            $allocationconfig->set_source_table('coursework_allocation_config',
                                                  ['courseworkid' => backup::VAR_PARENTID]);
 
             // Mark important foreign keys
@@ -403,7 +403,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
             $pair->annotate_ids('user', 'allocatableuser');
             $pair->annotate_ids('group', 'allocatablegroup');
 
-            $allocation_config->annotate_ids('user', 'assessorid');
+            $allocationconfig->annotate_ids('user', 'assessorid');
 
             $modsetmember->annotate_ids('user', 'allocatableuser');
             $modsetmember->annotate_ids('group', 'allocatablegroup');
@@ -411,17 +411,17 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
             $extension->annotate_ids('user', 'allocatableuser');
             $extension->annotate_ids('group', 'allocatablegroup');
 
-            $personal_deadline->annotate_ids('user', 'allocatableuser');
-            $personal_deadline->annotate_ids('group', 'allocatablegroup');
+            $personaldeadline->annotate_ids('user', 'allocatableuser');
+            $personaldeadline->annotate_ids('group', 'allocatablegroup');
 
-            $sample_member->annotate_ids('user', 'allocatableuser');
-            $sample_member->annotate_ids('group', 'allocatablegroup');
+            $samplemember->annotate_ids('user', 'allocatableuser');
+            $samplemember->annotate_ids('group', 'allocatablegroup');
 
-            $moderation_agreement->annotate_ids('user', 'moderatorid');
-            $moderation_agreement->annotate_ids('user', 'lasteditedby');
+            $moderationagreement->annotate_ids('user', 'moderatorid');
+            $moderationagreement->annotate_ids('user', 'lasteditedby');
 
-            $plagiarism_flag->annotate_ids('user', 'createdby');
-            $plagiarism_flag->annotate_ids('user', 'lastmodifiedby');
+            $plagiarismflag->annotate_ids('user', 'createdby');
+            $plagiarismflag->annotate_ids('user', 'lastmodifiedby');
 
             $coursework->annotate_files('mod_coursework', 'feedback', null);
             $coursework->annotate_files('mod_coursework', 'submission', null);

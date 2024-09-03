@@ -34,7 +34,7 @@ class stages_cell extends cell_base {
      * @param $stage_identifier
      * @return array
      */
-    public function get_cell($submission, $student, $stage_identifier) {
+    public function get_cell($submission, $student, $stageidentifier) {
         global $DB;
 
         $timecreated = 0;
@@ -49,11 +49,11 @@ class stages_cell extends cell_base {
         $gradedata = [];
         // go through each stage and get a grade, if grade not present then put  a placeholder
         for ($i = 1; $i <= $this->stages; $i++) {
-            $stage_identifier = 'assessor_'.$i;
-            $grade = $submission->get_assessor_feedback_by_stage($stage_identifier);
+            $stageidentifier = 'assessor_'.$i;
+            $grade = $submission->get_assessor_feedback_by_stage($stageidentifier);
 
             if ($this->coursework->allocation_enabled()) {
-                $allocation = $submission->get_assessor_allocation_by_stage($stage_identifier);
+                $allocation = $submission->get_assessor_allocation_by_stage($stageidentifier);
                 if ($allocation) {
                     $gradedata[] = $this->get_assessor_name($allocation->assessorid);
                     $gradedata[] = $this->get_assessor_username($allocation->assessorid);

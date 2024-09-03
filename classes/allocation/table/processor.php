@@ -52,20 +52,20 @@ class processor {
     /**
      * @param array $table_data
      */
-    public function process_data($table_data  = []) {
-        $clean_data = $this->clean_data($table_data);
+    public function process_data($tabledata  = []) {
+        $cleandata = $this->clean_data($tabledata);
         $allocatables = $this->coursework->get_allocatables();
 
         foreach ($allocatables as $allocatable) {
-            if (array_key_exists($allocatable->id(), $clean_data)) {
-                $row_data = $clean_data[$allocatable->id()];
+            if (array_key_exists($allocatable->id(), $cleandata)) {
+                $rowdata = $cleandata[$allocatable->id()];
             } else {
-                $row_data = [];
+                $rowdata = [];
             }
 
             $allocatable = $this->get_allocatable_from_id($allocatable->id());
-            $row_object = $this->get_row($allocatable);
-            $row_object->process($row_data);
+            $rowobject = $this->get_row($allocatable);
+            $rowobject->process($rowdata);
         }
     }
 
@@ -84,7 +84,7 @@ class processor {
      * @param array $raw_data
      * @return array
      */
-    private function clean_data($raw_data) {
+    private function clean_data($rawdata) {
 
         // Data looks like this:
         // $example_data = array(
@@ -101,20 +101,20 @@ class processor {
         // )
         // );
 
-        $clean_data = [];
-        foreach ($raw_data as $allocatable_id => $datarrays) {
+        $cleandata = [];
+        foreach ($rawdata as $allocatableid => $datarrays) {
 
-            if (!$this->allocatable_id_is_valid($allocatable_id)) { // Should be the id of a student.
+            if (!$this->allocatable_id_is_valid($allocatableid)) { // Should be the id of a student.
                 continue;
             }
 
-            $clean_data[$allocatable_id] = [];
+            $cleandata[$allocatableid] = [];
 
             foreach ($this->coursework->marking_stages() as $stage) {
 
                 if (array_key_exists($stage->identifier(), $datarrays)) {
-                    $stage_data = $datarrays[$stage->identifier()];
-                    $clean_data[$allocatable_id][$stage->identifier()] = $stage_data;
+                    $stagedata = $datarrays[$stage->identifier()];
+                    $cleandata[$allocatableid][$stage->identifier()] = $stagedata;
                 }
             }
             /* if (array_key_exists('moderator', $datarrays)) {
@@ -122,15 +122,15 @@ class processor {
                 $clean_data[$allocatable_id]['moderator'] = $moderator_data;
             }*/
         }
-        return $clean_data;
+        return $cleandata;
     }
 
     /**
      * @param int $student_id
      * @return bool
      */
-    private function allocatable_id_is_valid($student_id) {
-        $allocatable = $this->get_allocatable_from_id($student_id);
+    private function allocatable_id_is_valid($studentid) {
+        $allocatable = $this->get_allocatable_from_id($studentid);
         return $allocatable && $allocatable->is_valid_for_course($this->coursework->get_course());
     }
 
@@ -138,11 +138,11 @@ class processor {
      * @param int $allocatable_id
      * @return allocatable
      */
-    private function get_allocatable_from_id($allocatable_id) {
+    private function get_allocatable_from_id($allocatableid) {
         if ($this->coursework->is_configured_to_have_group_submissions()) {
-            return group::find($allocatable_id);
+            return group::find($allocatableid);
         } else {
-            return user::find($allocatable_id);
+            return user::find($allocatableid);
         }
     }
 }

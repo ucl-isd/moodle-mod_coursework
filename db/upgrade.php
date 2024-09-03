@@ -1186,14 +1186,14 @@ function xmldb_coursework_upgrade($oldversion) {
         $courseworks = $DB->get_records('coursework', null, '', 'id');
         foreach ($courseworks as $coursework) {
             $coursework = \mod_coursework\models\coursework::find($coursework->id);
-            $students_with_assessor_allocations = $DB->get_records_sql('
+            $studentswithassessorallocations = $DB->get_records_sql('
                 SELECT DISTINCT studentid
                   FROM {coursework_allocation_pairs} ap
                  WHERE ap.courseworkid = :courseworkid
                    AND ap.moderator = 0
 
             ', ['courseworkid' => $coursework->id]);
-            foreach ($students_with_assessor_allocations as $student) {
+            foreach ($studentswithassessorallocations as $student) {
                 $params = [
                     'studentid' => $student->studentid,
                     'courseworkid' => $coursework->id,
@@ -1266,7 +1266,7 @@ function xmldb_coursework_upgrade($oldversion) {
         foreach ($courseworks as $coursework) {
             $coursework = \mod_coursework\models\coursework::find($coursework->id);
 
-            $submissions_with_feedbacks = $DB->get_records_sql('
+            $submissionswithfeedbacks = $DB->get_records_sql('
                 SELECT DISTINCT s.id
                   FROM {coursework_feedbacks} f
             INNER JOIN {coursework_submissions} s
@@ -1276,7 +1276,7 @@ function xmldb_coursework_upgrade($oldversion) {
                    AND f.ismoderation = 0
             ', ['courseworkid' => $coursework->id]);
 
-            foreach ($submissions_with_feedbacks as $submission) {
+            foreach ($submissionswithfeedbacks as $submission) {
                 $params = [
                     'submissionid' => $submission->id,
                     'isfinalgrade' => 0,
@@ -1451,9 +1451,9 @@ function xmldb_coursework_upgrade($oldversion) {
 
         // Set group submission allocatables
 
-        $courseworks_with_groups = $DB->get_records('coursework', ['use_groups' => 1]);
+        $courseworkswithgroups = $DB->get_records('coursework', ['use_groups' => 1]);
 
-        foreach ($courseworks_with_groups as $coursework) {
+        foreach ($courseworkswithgroups as $coursework) {
             $coursework = \mod_coursework\models\coursework::find($coursework);
 
             $params = [

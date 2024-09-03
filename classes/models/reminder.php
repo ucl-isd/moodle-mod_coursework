@@ -30,6 +30,6 @@ use mod_coursework\framework\table_base;
  */
 class reminder extends table_base {
 
-    protected static $table_name = 'coursework_reminder';
+    protected static $tablename = 'coursework_reminder';
 
 }

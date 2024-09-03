@@ -32,37 +32,37 @@ class abiity_rule_test extends basic_testcase {
 
     public function test_allows_when_allowed_and_rule_returns_true() {
         $coursework = new \mod_coursework\models\coursework();
-        $rule_function = function ($object) {
+        $rulefunction = function ($object) {
             return true;
         };
-        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rule_function, true );
+        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rulefunction, true );
         $this->assertTrue($rule->allows($coursework));
     }
 
     public function test_allows_when_prevent_and_rule_returns_true() {
         $coursework = new \mod_coursework\models\coursework();
-        $rule_function = function ($object) {
+        $rulefunction = function ($object) {
             return true;
         };
-        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rule_function, false);
+        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rulefunction, false);
         $this->assertFalse($rule->allows($coursework));
     }
 
     public function test_prevents_when_allowed_and_rule_returns_true() {
         $coursework = new \mod_coursework\models\coursework();
-        $rule_function = function ($object) {
+        $rulefunction = function ($object) {
             return true;
         };
-        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rule_function, true);
+        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rulefunction, true);
         $this->assertFalse($rule->prevents($coursework));
     }
 
     public function test_prevents_when_prevent_and_rule_returns_true() {
         $coursework = new \mod_coursework\models\coursework();
-        $rule_function = function ($object) {
+        $rulefunction = function ($object) {
             return true;
         };
-        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rule_function, false);
+        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rulefunction, false);
         $this->assertTrue($rule->prevents($coursework));
     }
 
@@ -70,37 +70,37 @@ class abiity_rule_test extends basic_testcase {
 
     public function test_allows_when_allowed_and_rule_returns_false() {
         $coursework = new \mod_coursework\models\coursework();
-        $rule_function = function ($object) {
+        $rulefunction = function ($object) {
             return false;
         };
-        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rule_function, true);
+        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rulefunction, true);
         $this->assertFalse($rule->allows($coursework));
     }
 
     public function test_allows_when_prevent_and_rule_returns_false() {
         $coursework = new \mod_coursework\models\coursework();
-        $rule_function = function ($object) {
+        $rulefunction = function ($object) {
             return false;
         };
-        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rule_function, false);
+        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rulefunction, false);
         $this->assertFalse($rule->allows($coursework));
     }
 
     public function test_prevents_when_allowed_and_rule_returns_false() {
         $coursework = new \mod_coursework\models\coursework();
-        $rule_function = function ($object) {
+        $rulefunction = function ($object) {
             return false;
         };
-        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rule_function, true);
+        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rulefunction, true);
         $this->assertFalse($rule->prevents($coursework));
     }
 
     public function test_prevents_when_prevent_and_rule_returns_false() {
         $coursework = new \mod_coursework\models\coursework();
-        $rule_function = function ($object) {
+        $rulefunction = function ($object) {
             return false;
         };
-        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rule_function, false);
+        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rulefunction, false);
         $this->assertFalse($rule->prevents($coursework));
     }
 }

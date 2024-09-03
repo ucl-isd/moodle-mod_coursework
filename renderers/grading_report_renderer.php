@@ -38,43 +38,43 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     /**
      * @var
      */
-    protected $row_class;
+    protected $rowclass;
 
     /**
      * @var
      */
-    protected $is_multiple_markers;
+    protected $ismultiplemarkers;
 
     /**
      * @param grading_report $grading_report
      * param $is_multiple_markers
      * @return string
      */
-    public function render_grading_report($grading_report, $is_multiple_markers) {
+    public function render_grading_report($gradingreport, $ismultiplemarkers) {
         $langelement = $this->generate_lang_element();
 
-        $options = $grading_report->get_options();
-        $tablerows = $grading_report->get_table_rows_for_page();
-        $cell_helpers = $grading_report->get_cells_helpers();
-        $sub_row_helper = $grading_report->get_sub_row_helper();
-        if (count($tablerows) == $grading_report->realtotalrows) {
+        $options = $gradingreport->get_options();
+        $tablerows = $gradingreport->get_table_rows_for_page();
+        $cellhelpers = $gradingreport->get_cells_helpers();
+        $subrowhelper = $gradingreport->get_sub_row_helper();
+        if (count($tablerows) == $gradingreport->realtotalrows) {
             $options['class'] = 'full-loaded';
         }
-        $this->row_class = $is_multiple_markers ? 'submissionrowmulti' : 'submissionrowsingle';
+        $this->row_class = $ismultiplemarkers ? 'submissionrowmulti' : 'submissionrowsingle';
 
         if (empty($tablerows)) {
             return $langelement . '<div class="no-users">'.get_string('nousers', 'coursework').'</div><br>';
         }
 
-        $table_html = $this->start_table($options);
-        $table_html .= $this->make_table_headers($cell_helpers, $options, $is_multiple_markers);
-        $table_html .= '</thead>';
-        $table_html .= '<tbody>';
-        $table_html .= $this->make_rows($tablerows, $cell_helpers, $sub_row_helper, $is_multiple_markers, );
-        $table_html .= '</tbody>';
-        $table_html .= $this->end_table();
+        $tablehtml = $this->start_table($options);
+        $tablehtml .= $this->make_table_headers($cellhelpers, $options, $ismultiplemarkers);
+        $tablehtml .= '</thead>';
+        $tablehtml .= '<tbody>';
+        $tablehtml .= $this->make_rows($tablerows, $cellhelpers, $subrowhelper, $ismultiplemarkers, );
+        $tablehtml .= '</tbody>';
+        $tablehtml .= $this->end_table();
 
-        return  $langelement . $table_html;
+        return  $langelement . $tablehtml;
     }
 
     /**
@@ -82,7 +82,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @return mixed
      */
     private function generate_lang_element() {
-        $lang_messages = [
+        $langmessages = [
             'download_submitted_files' => get_string('download_submitted_files', 'mod_coursework'),
             'exportfinalgrades' => get_string('exportfinalgrades', 'mod_coursework'),
             'exportgradingsheets' => get_string('exportgradingsheets', 'mod_coursework'),
@@ -91,7 +91,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         $result = html_writer::empty_tag('input', [
             'name' => '',
             'type' => 'hidden',
-            'data-lang' => json_encode($lang_messages),
+            'data-lang' => json_encode($langmessages),
             'id' => 'element_lang_messages',
         ]);
         $result = html_writer::div($result);
@@ -104,15 +104,15 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @param array $options
      * @return string
      */
-    protected function make_header_cell($cell_helper, $options) {
+    protected function make_header_cell($cellhelper, $options) {
         $seq = empty($options['seq']) ? 0 : $options['seq'];
-        $table_html = '<th class=' . $cell_helper->get_table_header_class() . ' data-seq=' . $seq . '>';
+        $tablehtml = '<th class=' . $cellhelper->get_table_header_class() . ' data-seq=' . $seq . '>';
 
-        $header_name = $cell_helper->get_table_header($options);
-        $table_html .= $header_name;
-        $table_html .= $cell_helper->get_table_header_help_icon();
-        $table_html .= '</th>';
-        return $table_html;
+        $headername = $cellhelper->get_table_header($options);
+        $tablehtml .= $headername;
+        $tablehtml .= $cellhelper->get_table_header_help_icon();
+        $tablehtml .= '</th>';
+        return $tablehtml;
     }
 
     /**
@@ -121,47 +121,47 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @param sub_rows_interface $sub_row_helper
      * @return string
      */
-    protected function make_row_for_allocatable($row_object, $cell_helpers, $sub_row_helper) {
+    protected function make_row_for_allocatable($rowobject, $cellhelpers, $subrowhelper) {
 
         //$class = (!$row_object->get_coursework()->has_multiple_markers()) ? "submissionrowsingle": "submissionrowmulti";
         $class = $this->row_class;
 
-        $submission = $row_object->get_submission();
-        $allocatable = $row_object->get_allocatable();
+        $submission = $rowobject->get_submission();
+        $allocatable = $rowobject->get_allocatable();
 
-        $table_html = '<tr class="'.$class.'" id="' . $this->grading_table_row_id($row_object->get_allocatable(), $row_object->get_coursework()) . '">';
-        $is_multiple_markers = $this->is_multiple_markers;
-        $tbl_assessor_feedbacks = $sub_row_helper->get_row_with_assessor_feedback_table($row_object, count($cell_helpers));
-        if ($is_multiple_markers) {
-            $table_html .= '<td class="details-control"></td>';
+        $tablehtml = '<tr class="'.$class.'" id="' . $this->grading_table_row_id($rowobject->get_allocatable(), $rowobject->get_coursework()) . '">';
+        $ismultiplemarkers = $this->is_multiple_markers;
+        $tblassessorfeedbacks = $subrowhelper->get_row_with_assessor_feedback_table($rowobject, count($cellhelpers));
+        if ($ismultiplemarkers) {
+            $tablehtml .= '<td class="details-control"></td>';
         }
 
-        foreach ($cell_helpers as $cell_helper) {
-            $html_td = trim($cell_helper->get_table_cell($row_object));
+        foreach ($cellhelpers as $cellhelper) {
+            $htmltd = trim($cellhelper->get_table_cell($rowobject));
 
-            if ($is_multiple_markers &&
-                ($cell_helper instanceof \mod_coursework\render_helpers\grading_report\cells\user_cell ||
-                    $cell_helper instanceof \mod_coursework\render_helpers\grading_report\cells\group_cell)
+            if ($ismultiplemarkers &&
+                ($cellhelper instanceof \mod_coursework\render_helpers\grading_report\cells\user_cell ||
+                    $cellhelper instanceof \mod_coursework\render_helpers\grading_report\cells\group_cell)
             ) {
-                $html_td = str_replace('</td>', $tbl_assessor_feedbacks.'</td>', $html_td);
+                $htmltd = str_replace('</td>', $tblassessorfeedbacks.'</td>', $htmltd);
             }
 
-            $table_html .= $html_td;
+            $tablehtml .= $htmltd;
         }
-        $table_html .= '</tr>';
+        $tablehtml .= '</tr>';
 
-        if (!$is_multiple_markers) {
-            $table_html .= $tbl_assessor_feedbacks;
+        if (!$ismultiplemarkers) {
+            $tablehtml .= $tblassessorfeedbacks;
         }
 
-        return $table_html;
+        return $tablehtml;
     }
 
     /**
      * @return string
      */
-    public function submissions_header($header_text = '') {
-        $submisions = (!empty($header_text)) ? $header_text : get_string('submissions', 'mod_coursework');
+    public function submissions_header($headertext = '') {
+        $submisions = (!empty($headertext)) ? $headertext : get_string('submissions', 'mod_coursework');
 
         return html_writer::tag('h3', $submisions);
     }
@@ -171,23 +171,23 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @param $options
      * @return string
      */
-    protected function make_table_headers($cell_helpers, $options, $is_multiple_markers) {
+    protected function make_table_headers($cellhelpers, $options, $ismultiplemarkers) {
 
-        $table_html = $this->make_upper_headers($cell_helpers, $is_multiple_markers);
-        $table_html .= '<tr>';
-        $tr_html = '';
+        $tablehtml = $this->make_upper_headers($cellhelpers, $ismultiplemarkers);
+        $tablehtml .= '<tr>';
+        $trhtml = '';
 
         $i = 0;
-        if ($is_multiple_markers) {
-            $tr_html .= '<th class="addition-multiple-button"></th>'; // This is for open or close buttons
+        if ($ismultiplemarkers) {
+            $trhtml .= '<th class="addition-multiple-button"></th>'; // This is for open or close buttons
             ++$i;
         }
 
-        foreach ($cell_helpers as $cell_helper) {
+        foreach ($cellhelpers as $cellhelper) {
             $options['seq'] = $i++;
-            $tr_html .= $this->make_header_cell($cell_helper, $options);
+            $trhtml .= $this->make_header_cell($cellhelper, $options);
         }
-        return $table_html . $tr_html . '</tr>';
+        return $tablehtml . $trhtml . '</tr>';
     }
 
     /**
@@ -198,9 +198,9 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         $options['class'] = (!empty($options['class'])) ? $options['class'] : '';
         $options['class'] .= ' submissions datatabletest display compact';
         $options['id'] = 'dt_table';
-        $table_html = \html_writer::start_tag('table', $options);
-        $table_html .= \html_writer::start_tag('thead');
-        return $table_html;
+        $tablehtml = \html_writer::start_tag('table', $options);
+        $tablehtml .= \html_writer::start_tag('thead');
+        return $tablehtml;
     }
 
     /**
@@ -219,16 +219,16 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @param $is_multiple_markers
      * @return string
      */
-    public function make_rows($tablerows, $cell_helpers, $sub_row_helper, $is_multiple_markers) {
-        $table_html = '';
+    public function make_rows($tablerows, $cellhelpers, $subrowhelper, $ismultiplemarkers) {
+        $tablehtml = '';
 
-        $this->row_class = $is_multiple_markers ? 'submissionrowmulti' : 'submissionrowsingle';
-        $this->is_multiple_markers = $is_multiple_markers;
+        $this->row_class = $ismultiplemarkers ? 'submissionrowmulti' : 'submissionrowsingle';
+        $this->is_multiple_markers = $ismultiplemarkers;
 
-        foreach ($tablerows as $row_object) {
-            $table_html .= $this->make_row_for_allocatable($row_object, $cell_helpers, $sub_row_helper);
+        foreach ($tablerows as $rowobject) {
+            $tablehtml .= $this->make_row_for_allocatable($rowobject, $cellhelpers, $subrowhelper);
         }
-        return $table_html;
+        return $tablehtml;
     }
 
     /**
@@ -237,21 +237,21 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @param cell_interface[] $cell_helpers
      * @return string
      */
-    private function make_upper_headers($cell_helpers, $is_multiple_markers) {
+    private function make_upper_headers($cellhelpers, $ismultiplemarkers) {
         $html = '';
-        $headers = $this->upper_header_names_and_colspans($cell_helpers);
+        $headers = $this->upper_header_names_and_colspans($cellhelpers);
 
-        foreach ($headers as $header_name => $colspan) {
-            $colspan_value = $colspan;
+        foreach ($headers as $headername => $colspan) {
+            $colspanvalue = $colspan;
 
-            if ($html == '' && $is_multiple_markers) {
-                $colspan_value += 1;
+            if ($html == '' && $ismultiplemarkers) {
+                $colspanvalue += 1;
             }
 
-            $html .= '<th colspan="'.$colspan_value.'">';
-            $html .= get_string($header_name.'_table_header', 'mod_coursework');
-            $html .= get_string($header_name.'_table_header', 'mod_coursework')
-                ? ($this->output->help_icon($header_name.'_table_header', 'mod_coursework')) : '';
+            $html .= '<th colspan="'.$colspanvalue.'">';
+            $html .= get_string($headername.'_table_header', 'mod_coursework');
+            $html .= get_string($headername.'_table_header', 'mod_coursework')
+                ? ($this->output->help_icon($headername.'_table_header', 'mod_coursework')) : '';
             $html .= '</th>';
         }
 
@@ -262,10 +262,10 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @param cell_interface[] $cell_helpers
      * @return mixed
      */
-    private function upper_header_names_and_colspans($cell_helpers) {
+    private function upper_header_names_and_colspans($cellhelpers) {
         $headers = [];
 
-        foreach ($cell_helpers as $helper) {
+        foreach ($cellhelpers as $helper) {
             if (!array_key_exists($helper->header_group(), $headers)) {
                 $headers[$helper->header_group()] = 1;
             } else {

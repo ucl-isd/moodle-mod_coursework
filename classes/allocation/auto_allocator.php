@@ -105,7 +105,7 @@ class auto_allocator {
     private function delete_all_ungraded_auto_allocations() {
         global $DB;
 
-        $ungraded_allocations = $DB->get_records_sql('
+        $ungradedallocations = $DB->get_records_sql('
             SELECT *
             FROM {coursework_allocation_pairs} p
             WHERE courseworkid = ?
@@ -122,12 +122,12 @@ class auto_allocator {
             )
         ', ['courseworkid' => $this->get_coursework()->id]);
 
-        foreach ($ungraded_allocations as &$allocation) {
+        foreach ($ungradedallocations as &$allocation) {
             /**
              * @var allocation $allocation_object
              */
-            $allocation_object = allocation::find($allocation);
-            $allocation_object->destroy();
+            $allocationobject = allocation::find($allocation);
+            $allocationobject->destroy();
         }
     }
 

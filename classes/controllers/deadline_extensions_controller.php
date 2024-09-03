@@ -61,9 +61,9 @@ class deadline_extensions_controller extends controller_base {
         $ability->require_can('new', $this->deadline_extension);
 
         $PAGE->set_url('/mod/coursework/actions/deadline_extensions/new.php', $params);
-        $create_url = $this->get_router()->get_path('create deadline extension');
+        $createurl = $this->get_router()->get_path('create deadline extension');
 
-        $this->form = new deadline_extension_form($create_url, ['coursework' => $this->coursework]);
+        $this->form = new deadline_extension_form($createurl, ['coursework' => $this->coursework]);
         $this->form->set_data($this->deadline_extension);
 
         $this->render_page('new');
@@ -73,11 +73,11 @@ class deadline_extensions_controller extends controller_base {
     protected function create_deadline_extension() {
         global $USER;
 
-        $create_url = $this->get_router()->get_path('create deadline extension');
-        $this->form = new deadline_extension_form($create_url, ['coursework' => $this->coursework]);
-        $coursework_page_url = $this->get_path('coursework', ['coursework' => $this->coursework]);
+        $createurl = $this->get_router()->get_path('create deadline extension');
+        $this->form = new deadline_extension_form($createurl, ['coursework' => $this->coursework]);
+        $courseworkpageurl = $this->get_path('coursework', ['coursework' => $this->coursework]);
         if ($this->cancel_button_was_pressed()) {
-            redirect($coursework_page_url);
+            redirect($courseworkpageurl);
         }
         /**
          * @var deadline_extension $deadline_extension
@@ -92,7 +92,7 @@ class deadline_extensions_controller extends controller_base {
             $ability->require_can('create', $this->deadline_extension);
 
             $this->deadline_extension->save();
-            redirect($coursework_page_url);
+            redirect($courseworkpageurl);
         } else {
             $this->set_default_current_deadline();
             $this->render_page('new');
@@ -112,9 +112,9 @@ class deadline_extensions_controller extends controller_base {
         $ability->require_can('edit', $this->deadline_extension);
 
         $PAGE->set_url('/mod/coursework/actions/deadline_extensions/edit.php', $params);
-        $update_url = $this->get_router()->get_path('update deadline extension');
+        $updateurl = $this->get_router()->get_path('update deadline extension');
 
-        $this->form = new deadline_extension_form($update_url, ['coursework' => $this->coursework]);
+        $this->form = new deadline_extension_form($updateurl, ['coursework' => $this->coursework]);
         $this->deadline_extension->extra_information = [
             'text' => $this->deadline_extension->extra_information_text,
             'format' => $this->deadline_extension->extra_information_format,
@@ -127,11 +127,11 @@ class deadline_extensions_controller extends controller_base {
     protected function update_deadline_extension() {
         global $USER;
 
-        $update_url = $this->get_router()->get_path('update deadline extension');
-        $this->form = new deadline_extension_form($update_url, ['coursework' => $this->coursework]);
-        $coursework_page_url = $this->get_path('coursework', ['coursework' => $this->coursework]);
+        $updateurl = $this->get_router()->get_path('update deadline extension');
+        $this->form = new deadline_extension_form($updateurl, ['coursework' => $this->coursework]);
+        $courseworkpageurl = $this->get_path('coursework', ['coursework' => $this->coursework]);
         if ($this->cancel_button_was_pressed()) {
-            redirect($coursework_page_url);
+            redirect($courseworkpageurl);
         }
         /**
          * @var deadline_extension $deadline_extension
@@ -145,7 +145,7 @@ class deadline_extensions_controller extends controller_base {
             $values->extra_information_text = $values->extra_information['text'];
             $values->extra_information_format = $values->extra_information['format'];
             $this->deadline_extension->update_attributes($values);
-            redirect($coursework_page_url);
+            redirect($courseworkpageurl);
         } else {
             $this->render_page('edit');
         }
@@ -167,9 +167,9 @@ class deadline_extensions_controller extends controller_base {
         // Default to current deadline
         // check for personal deadline first o
         if ($this->coursework->personaldeadlineenabled) {
-            $personal_deadline = $DB->get_record('coursework_person_deadlines', $params);
-            if ($personal_deadline) {
-                $this->coursework->deadline = $personal_deadline->personal_deadline;
+            $personaldeadline = $DB->get_record('coursework_person_deadlines', $params);
+            if ($personaldeadline) {
+                $this->coursework->deadline = $personaldeadline->personal_deadline;
             }
         }
         $this->deadline_extension->extended_deadline = $this->coursework->deadline;
@@ -179,9 +179,9 @@ class deadline_extensions_controller extends controller_base {
     /**
      * Begin Ajax functions
      */
-    public function ajax_submit_mitigation($data_params) {
+    public function ajax_submit_mitigation($dataparams) {
         global $USER, $OUTPUT;
-        $extended_deadline = false;
+        $extendeddeadline = false;
         $response = [];
         $this->coursework = coursework::find(['id' => $this->params['courseworkid']]);
         $cm = get_coursemodule_from_instance(
@@ -190,8 +190,8 @@ class deadline_extensions_controller extends controller_base {
         require_login($this->coursework->course, false, $cm);
         $params = $this->set_default_current_deadline();
         $ability = new ability(user::find($USER), $this->coursework);
-        $errors = $this->validation($data_params);
-        $data = (object) $data_params;
+        $errors = $this->validation($dataparams);
+        $data = (object) $dataparams;
         if (!$errors) {
             if ($data->id > 0) {
                 $this->deadline_extension = deadline_extension::find(['id' => $data->id]);
@@ -202,14 +202,14 @@ class deadline_extensions_controller extends controller_base {
                 $this->deadline_extension = deadline_extension::build($data);
                 $ability->require_can('new', $this->deadline_extension);
                 $this->deadline_extension->save();
-                $data_params['id'] = $this->deadline_extension->id;
+                $dataparams['id'] = $this->deadline_extension->id;
             }
 
-            $content = $this->table_cell_response($data_params);
+            $content = $this->table_cell_response($dataparams);
 
             $response = [
                 'error' => 0,
-                'data' => $data_params,
+                'data' => $dataparams,
                 'content' => $content,
             ];
             echo json_encode($response);
@@ -225,10 +225,10 @@ class deadline_extensions_controller extends controller_base {
 
     public function validation($data) {
         global $CFG;
-        $max_deadline = $CFG->coursework_max_extension_deadline;
+        $maxdeadline = $CFG->coursework_max_extension_deadline;
 
-        if ($this->coursework->personaldeadlineenabled && $personal_deadline = $this->personal_deadline()) {
-            $deadline = $personal_deadline->personal_deadline;
+        if ($this->coursework->personaldeadlineenabled && $personaldeadline = $this->personal_deadline()) {
+            $deadline = $personaldeadline->personal_deadline;
         } else {
             $deadline = $this->coursework->deadline;
         }
@@ -273,13 +273,13 @@ class deadline_extensions_controller extends controller_base {
             'courseworkid' => $courseworkid ?? 0,
         ];
 
-        return  $personal_deadline = $DB->get_record('coursework_person_deadlines', $params);
+        return  $personaldeadline = $DB->get_record('coursework_person_deadlines', $params);
     }
 
-    public function ajax_edit_mitigation($data_params) {
+    public function ajax_edit_mitigation($dataparams) {
         global $USER;
         $response = [];
-        if ($data_params['id'] > 0) {
+        if ($dataparams['id'] > 0) {
             $this->coursework = coursework::find(['id' => $this->params['courseworkid']]);
             $cm = get_coursemodule_from_instance(
                 'coursework', $this->coursework->id, 0, false, MUST_EXIST
@@ -287,42 +287,42 @@ class deadline_extensions_controller extends controller_base {
             require_login($this->coursework->course, false, $cm);
 
             $ability = new ability(user::find($USER), $this->coursework);
-            $deadline_extension = deadline_extension::find(['id' => $data_params['id']]);
-            if (empty($deadline_extension)) {
+            $deadlineextension = deadline_extension::find(['id' => $dataparams['id']]);
+            if (empty($deadlineextension)) {
                 $response = [
                     'error' => 1,
                     'message' => 'This Deadline Extension does not exist!',
                 ];
             } else {
-                $ability->require_can('edit', $deadline_extension);
-                $time_content = '';
+                $ability->require_can('edit', $deadlineextension);
+                $timecontent = '';
                 $time = '';
-                if ($this->coursework->personaldeadlineenabled &&  $personal_deadline = $this->personal_deadline()) {
-                    $time_content = 'Personal deadline: ' . userdate($personal_deadline->personal_deadline);
-                    $time = date('d-m-Y H:i', $personal_deadline->personal_deadline);
+                if ($this->coursework->personaldeadlineenabled &&  $personaldeadline = $this->personal_deadline()) {
+                    $timecontent = 'Personal deadline: ' . userdate($personaldeadline->personal_deadline);
+                    $time = date('d-m-Y H:i', $personaldeadline->personal_deadline);
                 } else if ($this->coursework->deadline) {
                     // Current deadline for comparison
-                    $time_content = 'Default deadline: ' . userdate($this->coursework->deadline);
+                    $timecontent = 'Default deadline: ' . userdate($this->coursework->deadline);
                     $time = date('d-m-Y H:i', $this->coursework->deadline);
                 }
 
-                if (!empty($deadline_extension->extended_deadline) && $deadline_extension->extended_deadline > 0) {
-                    $time = date('d-m-Y H:i', $deadline_extension->extended_deadline);
+                if (!empty($deadlineextension->extended_deadline) && $deadlineextension->extended_deadline > 0) {
+                    $time = date('d-m-Y H:i', $deadlineextension->extended_deadline);
                 }
 
-                $deadline_extension_transform = [
-                    'time_content' => $time_content,
+                $deadlineextensiontransform = [
+                    'time_content' => $timecontent,
                     'time' => $time,
-                    'text' => $deadline_extension->extra_information_text,
-                    'allocatableid' => $deadline_extension->allocatableid,
-                    'allocatabletype' => $deadline_extension->allocatabletype,
-                    'courseworkid' => $deadline_extension->courseworkid,
-                    'id' => $deadline_extension->id,
-                    'pre_defined_reason' => $deadline_extension->pre_defined_reason,
+                    'text' => $deadlineextension->extra_information_text,
+                    'allocatableid' => $deadlineextension->allocatableid,
+                    'allocatabletype' => $deadlineextension->allocatabletype,
+                    'courseworkid' => $deadlineextension->courseworkid,
+                    'id' => $deadlineextension->id,
+                    'pre_defined_reason' => $deadlineextension->pre_defined_reason,
                 ];
                 $response = [
                     'error' => 0,
-                    'data' => $deadline_extension_transform,
+                    'data' => $deadlineextensiontransform,
                 ];
             }
         } else {
@@ -334,7 +334,7 @@ class deadline_extensions_controller extends controller_base {
         echo json_encode($response);
     }
 
-    public function ajax_new_mitigation($data_params) {
+    public function ajax_new_mitigation($dataparams) {
         global $USER, $DB;
         $response = [];
         $this->coursework = coursework::find(['id' => $this->params['courseworkid']]);
@@ -350,30 +350,30 @@ class deadline_extensions_controller extends controller_base {
         ];
 
         $ability = new ability(user::find($USER), $this->coursework);
-        $deadline_extension = deadline_extension::build($params);
-        $ability->require_can('new', $deadline_extension);
-        $time_content = '';
+        $deadlineextension = deadline_extension::build($params);
+        $ability->require_can('new', $deadlineextension);
+        $timecontent = '';
         $time = '';
         if ($this->coursework->deadline) {
-            $personal_deadline = $DB->get_record('coursework_person_deadlines', $params);
-            if ($personal_deadline) {
-                $time_content = 'Personal deadline: ' . userdate($personal_deadline->personal_deadline);
+            $personaldeadline = $DB->get_record('coursework_person_deadlines', $params);
+            if ($personaldeadline) {
+                $timecontent = 'Personal deadline: ' . userdate($personaldeadline->personal_deadline);
                 // $this->coursework->deadline = $personal_deadline->personal_deadline;
-                $time = date('d-m-Y H:i', $personal_deadline->personal_deadline);
+                $time = date('d-m-Y H:i', $personaldeadline->personal_deadline);
             } else {
-                $time_content = 'Default deadline: ' . userdate($this->coursework->deadline);
+                $timecontent = 'Default deadline: ' . userdate($this->coursework->deadline);
                 $time = date('d-m-Y H:i', $this->coursework->deadline);
             }
         }
 
-        $deadline_extension_transform = [
-            'time_content' => $time_content,
+        $deadlineextensiontransform = [
+            'time_content' => $timecontent,
             'time' => $time,
         ];
 
         $response = [
             'error' => 0,
-            'data' => $deadline_extension_transform,
+            'data' => $deadlineextensiontransform,
         ];
 
         echo json_encode($response);
@@ -388,18 +388,18 @@ class deadline_extensions_controller extends controller_base {
      *
      */
 
-    public function table_cell_response($data_params) {
-        $participant = ($data_params['allocatabletype'] && $data_params['allocatabletype'] == 'group') ? group::find($data_params['allocatableid']) : user::find($data_params['allocatableid']);
+    public function table_cell_response($dataparams) {
+        $participant = ($dataparams['allocatabletype'] && $dataparams['allocatabletype'] == 'group') ? group::find($dataparams['allocatableid']) : user::find($dataparams['allocatableid']);
         $coursework = ($this->coursework instanceof coursework_groups_decorator) ? $this->coursework->wrapped_object() : $this->coursework;
         if ($this->coursework->has_multiple_markers()) {
-            $row_object = new \mod_coursework\grading_table_row_multi($coursework, $participant);
+            $rowobject = new \mod_coursework\grading_table_row_multi($coursework, $participant);
         } else {
-            $row_object = new \mod_coursework\grading_table_row_single($coursework, $participant);
+            $rowobject = new \mod_coursework\grading_table_row_single($coursework, $participant);
         }
 
-        $time_submitted_cell = new  \mod_coursework\render_helpers\grading_report\cells\time_submitted_cell(['coursework' => $this->coursework]);
+        $timesubmittedcell = new  \mod_coursework\render_helpers\grading_report\cells\time_submitted_cell(['coursework' => $this->coursework]);
 
-        $content = $time_submitted_cell->prepare_content_cell($row_object);
+        $content = $timesubmittedcell->prepare_content_cell($rowobject);
 
         return $content;
     }

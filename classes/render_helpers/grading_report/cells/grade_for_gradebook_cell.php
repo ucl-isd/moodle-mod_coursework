@@ -37,14 +37,14 @@ class grade_for_gradebook_cell extends cell_base {
      * @param grading_table_row_base $row_object
      * @return string
      */
-    public function get_table_cell($row_object) {
+    public function get_table_cell($rowobject) {
         global $USER;
 
         $content = '';
-        $ability = new ability(user::find($USER), $row_object->get_coursework());
+        $ability = new ability(user::find($USER), $rowobject->get_coursework());
         $judge = new grade_judge($this->coursework);
-        if ($ability->can('show', $judge->get_feedback_that_is_promoted_to_gradebook($row_object->get_submission())) && !$row_object->get_submission()->editable_final_feedback_exist()) {
-            $grade = $judge->get_grade_capped_by_submission_time($row_object->get_submission());
+        if ($ability->can('show', $judge->get_feedback_that_is_promoted_to_gradebook($rowobject->get_submission())) && !$rowobject->get_submission()->editable_final_feedback_exist()) {
+            $grade = $judge->get_grade_capped_by_submission_time($rowobject->get_submission());
             $content .= $judge->grade_to_display($grade);
         }
         return $this->get_new_cell_with_class($content);

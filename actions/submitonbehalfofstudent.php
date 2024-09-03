@@ -93,10 +93,10 @@ if (!$submission->persisted()) {
 /**
  * @var mod_coursework_page_renderer $page_renderer
  */
-$page_renderer = $PAGE->get_renderer('mod_coursework', 'page');
+$pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
 
 if (!$studentid) {
-    echo $page_renderer->choose_student_to_submit_for($coursemoduleid, $chooseform);
+    echo $pagerenderer->choose_student_to_submit_for($coursemoduleid, $chooseform);
 } else {
-    echo $page_renderer->submit_on_behalf_of_student_interface($student, $submitform);
+    echo $pagerenderer->submit_on_behalf_of_student_interface($student, $submitform);
 }

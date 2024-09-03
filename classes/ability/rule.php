@@ -38,12 +38,12 @@ class rule {
     /**
      * @var string
      */
-    protected $class_name;
+    protected $classname;
 
     /**
      * @var callable
      */
-    protected $rule_function;
+    protected $rulefunction;
 
     /**
      * @var bool
@@ -56,10 +56,10 @@ class rule {
      * @param $rule_function
      * @param bool $allow
      */
-    public function __construct($action, $class_name, $rule_function, $allow = true) {
+    public function __construct($action, $classname, $rulefunction, $allow = true) {
         $this->action = $action;
-        $this->class_name = $class_name;
-        $this->rule_function = $rule_function;
+        $this->class_name = $classname;
+        $this->rule_function = $rulefunction;
         $this->allow = $allow;
     }
 

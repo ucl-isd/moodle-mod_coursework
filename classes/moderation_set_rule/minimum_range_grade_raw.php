@@ -50,13 +50,13 @@ class minimum_range_grade_raw extends moderation_set_rule {
      * @param \mod_coursework\stages\base $stage
      * @return mixed
      */
-    public function adjust_set(array &$moderation_set, array &$potential_allocatables, $stage) {
+    public function adjust_set(array &$moderationset, array &$potentialallocatables, $stage) {
 
         // Convert percentages to raw grades for comparison.
         $upperlimit = $this->upperlimit;
         $lowerlimit = $this->lowerlimit;
 
-        foreach ($potential_allocatables as $id => $allocatable) {
+        foreach ($potentialallocatables as $id => $allocatable) {
 
             if ($this->allocatable_is_not_yet_graded($allocatable)) {
                 continue;
@@ -68,8 +68,8 @@ class minimum_range_grade_raw extends moderation_set_rule {
                 $grade >= $lowerlimit &&
                 ($this->counter < $this->minimum)) {
 
-                $moderation_set[$id] = $allocatable;
-                unset ($potential_allocatables[$id]);
+                $moderationset[$id] = $allocatable;
+                unset ($potentialallocatables[$id]);
                 $this->counter++;
             }
         }

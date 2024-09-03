@@ -197,17 +197,17 @@ abstract class grading_table_row_base implements user_row {
             return '';
         }
 
-        $personal_deadline = $DB->get_record('coursework_person_deadlines',
+        $personaldeadline = $DB->get_record('coursework_person_deadlines',
                                             ['courseworkid' => $this->get_coursework()->id,
                                                   'allocatableid' => $allocatable->id(),
                                                   'allocatabletype' => $allocatable->type()]);
-        if ($personal_deadline) {
-            $personal_deadline = $personal_deadline->personal_deadline;
+        if ($personaldeadline) {
+            $personaldeadline = $personaldeadline->personal_deadline;
         } else {
-            $personal_deadline = $this->get_coursework()->deadline;
+            $personaldeadline = $this->get_coursework()->deadline;
         }
 
-        return  $personal_deadline;
+        return  $personaldeadline;
     }
 
     /**

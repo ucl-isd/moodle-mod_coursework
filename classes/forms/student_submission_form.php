@@ -145,8 +145,8 @@ class student_submission_form extends moodleform {
                     $file = $submission->get_first_submitted_file();
                     $file->get_id();
 
-                    $file_information = new stdClass();
-                    $file_information->id = $file->get_id();
+                    $fileinformation = new stdClass();
+                    $fileinformation->id = $file->get_id();
 
                     // Some files may have more thn one dot in the name. This makes sure we get the chunk after
                     // the last dot.
@@ -156,18 +156,18 @@ class student_submission_form extends moodleform {
                     if (!empty($extension)) {
                         $extension = '.'.$extension;
                     }
-                    $file_information->filename = $coursework->get_username_hash($submission->userid).$extension;
+                    $fileinformation->filename = $coursework->get_username_hash($submission->userid).$extension;
 
                     $pathnamehash = file_storage::get_pathname_hash($file->get_contextid(),
                                                                     $file->get_component(),
                                                                     $file->get_filearea(),
                                                                     $file->get_itemid(),
                                                                     $file->get_filepath(),
-                                                                    $file_information->filename);
+                                                                    $fileinformation->filename);
 
-                    $file_information->pathnamehash = $pathnamehash;
+                    $fileinformation->pathnamehash = $pathnamehash;
 
-                    $DB->update_record('files', $file_information);
+                    $DB->update_record('files', $fileinformation);
 
                     // Force submission to update file record.
                     $submission->submission_files = null;
@@ -209,10 +209,10 @@ class student_submission_form extends moodleform {
 
             if ($CFG->coursework_allsubmissionreceipt || $data->finalisebutton) {
                 // send the receipts to students
-                $students_who_need_a_receipt = $submission->get_students();
+                $studentswhoneedareceipt = $submission->get_students();
                 $mailer = new mailer($coursework);
 
-                foreach ($students_who_need_a_receipt as $student) {
+                foreach ($studentswhoneedareceipt as $student) {
                     $mailer->send_submission_receipt($student, $data->finalisebutton);
                 }
             }
@@ -241,19 +241,19 @@ class student_submission_form extends moodleform {
 
         // Get any files that were previously submitted. This fetches an itemid from the $_GET
         // params.
-        $draft_item_id = file_get_submitted_draft_itemid('submission_manager');
+        $draftitemid = file_get_submitted_draft_itemid('submission_manager');
         // Put them into a draft area.
-        file_prepare_draft_area($draft_item_id,
+        file_prepare_draft_area($draftitemid,
                                 $this->get_coursework()->get_context_id(),
                                 'mod_coursework',
                                 'submission',
                                 $this->get_submission()->id,
                                 $this->get_coursework()->get_file_options());
         // Load that area into the form.
-        $submission->submission_manager = $draft_item_id;
+        $submission->submission_manager = $draftitemid;
 
         $data = new stdClass();
-        $data->submission_manager = $draft_item_id;
+        $data->submission_manager = $draftitemid;
         $data->courseworkid = $this->get_coursework()->id;
         $data->userid = $submission->userid;
         $data->submissionid = $this->get_submission()->id;
@@ -282,12 +282,12 @@ class student_submission_form extends moodleform {
     protected function add_agree_terms_elements_to_form() {
         global $CFG;
 
-        $terms_html = '';
-        $terms_html .= html_writer::start_tag('h4');
-        $terms_html .= get_string('youmustagreetotheterms', 'mod_coursework');
-        $terms_html .= html_writer::end_tag('h4');
-        $terms_html .= $CFG->coursework_agree_terms_text;
-        $this->_form->addElement('html', $terms_html);
+        $termshtml = '';
+        $termshtml .= html_writer::start_tag('h4');
+        $termshtml .= get_string('youmustagreetotheterms', 'mod_coursework');
+        $termshtml .= html_writer::end_tag('h4');
+        $termshtml .= $CFG->coursework_agree_terms_text;
+        $this->_form->addElement('html', $termshtml);
         $this->_form->addElement('checkbox', 'termsagreed', get_string('iagreetotheterms', 'mod_coursework'));
         $this->_form->setType('termsagreed', PARAM_INT);
         $this->_form->addRule('termsagreed', null, 'required');
@@ -301,20 +301,20 @@ class student_submission_form extends moodleform {
 
         $ability = new ability(user::find($USER), $this->get_coursework());
 
-        $button_array = [];
+        $buttonarray = [];
         // If submitting on behalf of someone else, we want to make sure that we don't have people leaving it in a draft
         // state because the reason for doing submit on behalf of in the first place is that the student cannot use the
         // interface themselves, so they are unable to come back later to finalise it themselves.
         if (($ability->can('create', $this->get_submission()) || $ability->can('update', $this->get_submission()))
             &&  $this->get_submission()->get_coursework()->has_deadline() ) {
-            $button_array[] = $this->_form->createElement('submit', 'submitbutton', get_string('submit'));
+            $buttonarray[] = $this->_form->createElement('submit', 'submitbutton', get_string('submit'));
         }
         if ($ability->can('finalise', $this->get_submission())) {
-            $button_array[] =
+            $buttonarray[] =
                 $this->_form->createElement('submit', 'finalisebutton', get_string('submitandfinalise', 'coursework'));
         }
-        $button_array[] = $this->_form->createElement('cancel');
-        $this->_form->addGroup($button_array, 'buttonar', '', [' '], false);
+        $buttonarray[] = $this->_form->createElement('cancel');
+        $this->_form->addGroup($buttonarray, 'buttonar', '', [' '], false);
         $this->_form->closeHeaderBefore('buttonar');
     }
 
@@ -364,14 +364,14 @@ class student_submission_form extends moodleform {
      * @throws \coding_exception
      */
     protected function add_instructions_to_form() {
-        $file_manager_options = $this->get_file_manager_options();
+        $filemanageroptions = $this->get_file_manager_options();
 
         $usernamehash = $this->get_coursework()->get_username_hash($this->get_submission()->userid);
         $filerenamestring = ($this->get_coursework()->renamefiles == 1) ? get_string('file_rename', 'coursework', $usernamehash) : "";
         $filerenamestring .= $this->make_plagiarism_instructions();
         $filerenamestring .= html_writer::empty_tag('br');
-        if ($file_manager_options['accepted_types'] != '*') {
-            $filerenamestring .= 'Allowed file types: ' . implode(' ', $file_manager_options['accepted_types']);
+        if ($filemanageroptions['accepted_types'] != '*') {
+            $filerenamestring .= 'Allowed file types: ' . implode(' ', $filemanageroptions['accepted_types']);
         } else {
             $filerenamestring .= 'All file types are allowed.';
         }
@@ -383,11 +383,11 @@ class student_submission_form extends moodleform {
      * @throws \coding_exception
      */
     protected function add_header_to_form() {
-        $file_manager_options = $this->get_file_manager_options();
-        $files_string = ($file_manager_options['maxfiles'] == 1) ? 'yoursubmissionfile' : 'yoursubmissionfiles';
+        $filemanageroptions = $this->get_file_manager_options();
+        $filesstring = ($filemanageroptions['maxfiles'] == 1) ? 'yoursubmissionfile' : 'yoursubmissionfiles';
         $renamed = ($this->get_coursework()->renamefiles == 1) ? get_string('yoursubmissionfile_renamed', 'coursework') : "";
 
-        $this->_form->addElement('header', 'submitform', get_string($files_string, 'coursework'). $renamed);
+        $this->_form->addElement('header', 'submitform', get_string($filesstring, 'coursework'). $renamed);
 
     }
 
@@ -395,26 +395,26 @@ class student_submission_form extends moodleform {
      * @return array
      */
     protected function get_file_manager_options() {
-        $file_manager_options = $this->get_coursework()->get_file_options();
-        return $file_manager_options;
+        $filemanageroptions = $this->get_coursework()->get_file_options();
+        return $filemanageroptions;
     }
 
     /**
      * @return string
      */
     protected function make_plagiarism_instructions() {
-        $plagiarism_helpers = $this->get_coursework()->get_plagiarism_helpers();
-        $plagiarism_instructions = [];
-        foreach ($plagiarism_helpers as $helper) {
+        $plagiarismhelpers = $this->get_coursework()->get_plagiarism_helpers();
+        $plagiarisminstructions = [];
+        foreach ($plagiarismhelpers as $helper) {
             if ($helper->file_submission_instructions()) {
-                $plagiarism_instructions[] = $helper->file_submission_instructions();
+                $plagiarisminstructions[] = $helper->file_submission_instructions();
             }
         }
-        $plagiarism_instructions = implode(' ', $plagiarism_instructions);
-        if ($plagiarism_instructions) {
-            $plagiarism_instructions = '<br>' . $plagiarism_instructions;
-            return $plagiarism_instructions;
+        $plagiarisminstructions = implode(' ', $plagiarisminstructions);
+        if ($plagiarisminstructions) {
+            $plagiarisminstructions = '<br>' . $plagiarisminstructions;
+            return $plagiarisminstructions;
         }
-        return $plagiarism_instructions;
+        return $plagiarisminstructions;
     }
 }

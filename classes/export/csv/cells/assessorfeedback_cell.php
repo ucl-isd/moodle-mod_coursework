@@ -37,20 +37,20 @@ class assessorfeedback_cell extends cell_base {
      * @return string
      */
 
-    public function get_cell($submission, $student, $stage_identifier) {
+    public function get_cell($submission, $student, $stageidentifier) {
 
         global $USER;
 
-        $grade = $submission->get_assessor_feedback_by_stage($stage_identifier);
+        $grade = $submission->get_assessor_feedback_by_stage($stageidentifier);
         if ($grade) {
             // check if user can see initial grades before all of them are completed
             $ability = new ability(user::find($USER), $this->coursework);
 
-            $feedback_params = [
+            $feedbackparams = [
                 'submissionid' => $submission->id,
-                'stage_identifier' => $stage_identifier,
+                'stage_identifier' => $stageidentifier,
             ];
-            $feedback = feedback::find($feedback_params);
+            $feedback = feedback::find($feedbackparams);
 
             if ($submission->get_agreed_grade() || $ability->can('show', $feedback) || is_siteadmin($USER->id)) {
                 $grade = strip_tags($grade->feedbackcomment);
@@ -74,7 +74,7 @@ class assessorfeedback_cell extends cell_base {
         return  get_string('assessorfeedbackcsv', 'coursework', $stage);
     }
 
-    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells  = []) {
+    public function validate_cell($value, $submissionid, $stageidentifier='', $uploadedgradecells  = []) {
         global $DB, $PAGE, $USER;
 
         $modulecontext = $PAGE->context;
@@ -110,11 +110,11 @@ class assessorfeedback_cell extends cell_base {
             }
 
             // Has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
-            $feedback_params = [
+            $feedbackparams = [
                 'submissionid' => $submission->id,
-                'stage_identifier' => $stage_identifier,
+                'stage_identifier' => $stageidentifier,
             ];
-            $feedback = feedback::find($feedback_params);
+            $feedback = feedback::find($feedbackparams);
 
             $ability = new ability(user::find($USER), $this->coursework);
 
@@ -144,15 +144,15 @@ class assessorfeedback_cell extends cell_base {
 
             if ($this->coursework->allocation_enabled()) {
                 // Check that the user is allocated to the author of the submission
-                $allocation_params = [
+                $allocationparams = [
                     'courseworkid' => $this->coursework->id,
                     'allocatableid' => $submission->allocatableid,
                     'allocatabletype' => $submission->allocatabletype,
-                    'stage_identifier' => $stage_identifier,
+                    'stage_identifier' => $stageidentifier,
                 ];
 
                 if (!has_capability('mod/coursework:administergrades', $modulecontext)
-                    && !$DB->get_record('coursework_allocation_pairs', $allocation_params)) {
+                    && !$DB->get_record('coursework_allocation_pairs', $allocationparams)) {
                     return get_string('nopermissiontogradesubmission', 'coursework');
                 }
             }
@@ -166,8 +166,8 @@ class assessorfeedback_cell extends cell_base {
 
                 if ($this->coursework->sampling_enabled()) {
                     // check how many sample assessors + add 1 that is always in sample
-                    $in_sample = $submission->get_submissions_in_sample();
-                    $assessors = ($in_sample) ? count($in_sample) + 1 : 1;
+                    $insample = $submission->get_submissions_in_sample();
+                    $assessors = ($insample) ? count($insample) + 1 : 1;
                 } else {
                     // Check how many assessors for this coursework
                     $assessors = $this->coursework->get_max_markers();

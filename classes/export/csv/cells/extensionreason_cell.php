@@ -33,7 +33,7 @@ class extensionreason_cell extends cell_base {
      * @param $stage_identifier
      * @return string
      */
-    public function get_cell($submission, $student, $stage_identifier) {
+    public function get_cell($submission, $student, $stageidentifier) {
 
         if ($this->extension_exists($student)) {
             $reason = $this->get_extension_reason_for_csv($student);

@@ -41,7 +41,7 @@ class moderator_agreement_mform extends moodleform {
     /**
      * @var int the id of the submission that the grade pertains to
      */
-    public $submission_id;
+    public $submissionid;
 
     /**
      * @var int

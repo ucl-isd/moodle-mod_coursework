@@ -69,11 +69,11 @@ $PAGE->requires->js_init_call('M.mod_coursework.init_personal_deadlines_page',
 /**
  * @var mod_coursework_object_renderer $object_renderer
  */
-$object_renderer = $PAGE->get_renderer('mod_coursework', 'object');
-$personal_deadlines_table = new mod_coursework\personal_deadline\table\builder($coursework, $options);
-$personal_deadlines_table = new mod_coursework_personal_deadlines_table($personal_deadlines_table);
+$objectrenderer = $PAGE->get_renderer('mod_coursework', 'object');
+$personaldeadlinestable = new mod_coursework\personal_deadline\table\builder($coursework, $options);
+$personaldeadlinestable = new mod_coursework_personal_deadlines_table($personaldeadlinestable);
 echo $OUTPUT->header();
 
-echo $object_renderer->render($personal_deadlines_table);
+echo $objectrenderer->render($personaldeadlinestable);
 
 echo $OUTPUT->footer();

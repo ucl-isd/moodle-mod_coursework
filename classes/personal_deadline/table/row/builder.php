@@ -54,8 +54,8 @@ class builder implements user_row {
      * @param table_builder $personal_deadline_table
      * @param allocatable $allocatable
      */
-    public function __construct($personal_deadline_table, $allocatable) {
-        $this->personaldeadlinetable = $personal_deadline_table;
+    public function __construct($personaldeadlinetable, $allocatable) {
+        $this->personaldeadlinetable = $personaldeadlinetable;
         $this->allocatable = $allocatable;
     }
 
@@ -184,28 +184,28 @@ class builder implements user_row {
             return '';
         }
 
-        $personal_deadline = $DB->get_record('coursework_person_deadlines',
+        $personaldeadline = $DB->get_record('coursework_person_deadlines',
             ['courseworkid' => $this->get_coursework()->id,
                   'allocatableid' => $this->allocatable->id(),
                   'allocatabletype' => $this->allocatable->type()]);
-        if ($personal_deadline) {
-            $personal_deadline = $personal_deadline->personal_deadline;
+        if ($personaldeadline) {
+            $personaldeadline = $personaldeadline->personal_deadline;
         } else {
-            $personal_deadline = $this->get_coursework()->deadline;
+            $personaldeadline = $this->get_coursework()->deadline;
         }
 
-        return  $personal_deadline;
+        return  $personaldeadline;
     }
 
     public function get_submission_status() {
         global  $DB;
 
-        $submission_db = $DB->get_record('coursework_submissions',
+        $submissiondb = $DB->get_record('coursework_submissions',
             ['courseworkid' => $this->get_coursework()->id,
                 'allocatableid' => $this->allocatable->id(),
                 'allocatabletype' => $this->allocatable->type()]);
 
-        $submission = \mod_coursework\models\submission::find($submission_db);
+        $submission = \mod_coursework\models\submission::find($submissiondb);
 
         $statustext = get_string('statusnotsubmitted', 'mod_coursework');
 

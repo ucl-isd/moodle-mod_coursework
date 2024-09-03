@@ -35,26 +35,26 @@ $courseworkid = required_param('courseworkid', PARAM_INT);
 $unallocated = optional_param('unallocated', false, PARAM_BOOL);
 
 // Grading report display options.
-$report_options = [];
+$reportoptions = [];
 if ($unallocated) {
-    $report_options['unallocated'] = true;
+    $reportoptions['unallocated'] = true;
 }
 
-$report_options['group'] = $group;
-$report_options['perpage'] = $perpage;
-$report_options['sortby'] = $sortby;
-$report_options['sorthow'] = $sorthow;
-$report_options['showsubmissiongrade'] = false;
-$report_options['showgradinggrade'] = false;
-$report_options['courseworkid'] = $courseworkid;
-$report_options['mode'] = \mod_coursework\grading_report::$MODE_GET_REMAIN_RECORDS;
+$reportoptions['group'] = $group;
+$reportoptions['perpage'] = $perpage;
+$reportoptions['sortby'] = $sortby;
+$reportoptions['sorthow'] = $sorthow;
+$reportoptions['showsubmissiongrade'] = false;
+$reportoptions['showgradinggrade'] = false;
+$reportoptions['courseworkid'] = $courseworkid;
+$reportoptions['mode'] = \mod_coursework\grading_report::$modegetremainrecords;
 
 //$controller = new mod_coursework\controllers\grading_controller(['courseworkid' => $report_options, 'allocatableid' => $USER->id, 'allocatabletype' => $USER->id]);
 $controller = new mod_coursework\controllers\grading_controller([]);
 sleep(10);
-$table_html = $controller->get_remain_rows_grading_table($report_options);
+$tablehtml = $controller->get_remain_rows_grading_table($reportoptions);
 if (ob_get_contents()) {
     ob_end_clean();
 }
 
-echo $table_html;
+echo $tablehtml;

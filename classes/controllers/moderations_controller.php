@@ -62,27 +62,27 @@ class moderations_controller extends controller_base {
 
         global $PAGE, $USER;
 
-        $moderator_agreement = new moderation();
-        $moderator_agreement->submissionid = $this->params['submissionid'];
-        $moderator_agreement->moderatorid = $this->params['moderatorid'];
-        $moderator_agreement->stage_identifier = $this->params['stage_identifier'];
-        $moderator_agreement->courseworkid = $this->params['courseworkid'];
-        $moderator_agreement->feedbackid = $this->params['feedbackid'];
+        $moderatoragreement = new moderation();
+        $moderatoragreement->submissionid = $this->params['submissionid'];
+        $moderatoragreement->moderatorid = $this->params['moderatorid'];
+        $moderatoragreement->stage_identifier = $this->params['stage_identifier'];
+        $moderatoragreement->courseworkid = $this->params['courseworkid'];
+        $moderatoragreement->feedbackid = $this->params['feedbackid'];
 
         $ability = new ability(user::find($USER), $this->coursework);
-        $ability->require_can('new', $moderator_agreement);
+        $ability->require_can('new', $moderatoragreement);
 
         $this->check_stage_permissions($this->params['stage_identifier']);
 
         $urlparams = [];
-        $urlparams['submissionid'] = $moderator_agreement->submissionid;
-        $urlparams['moderatorid'] = $moderator_agreement->moderatorid;
-        $urlparams['stage_identifier'] = $moderator_agreement->stage_identifier;
-        $urlparams['feedbackid'] = $moderator_agreement->feedbackid;
+        $urlparams['submissionid'] = $moderatoragreement->submissionid;
+        $urlparams['moderatorid'] = $moderatoragreement->moderatorid;
+        $urlparams['stage_identifier'] = $moderatoragreement->stage_identifier;
+        $urlparams['feedbackid'] = $moderatoragreement->feedbackid;
         $PAGE->set_url('/mod/coursework/actions/moderations/new.php', $urlparams);
 
         $renderer = $this->get_page_renderer();
-        $renderer->new_moderation_page($moderator_agreement);
+        $renderer->new_moderation_page($moderatoragreement);
 
     }
 
@@ -132,12 +132,12 @@ class moderations_controller extends controller_base {
         $moderatoragreement->feedbackid = $this->params['feedbackid'];
 
         $submission = submission::find($this->params['submissionid']);
-        $path_params = [
+        $pathparams = [
             'submission' => $submission,
             'moderator' => \core_user::get_user($this->params['moderatorid']),
             'stage' => 'moderator',
         ];
-        $url = $this->get_router()->get_path('new moderation', $path_params, true);
+        $url = $this->get_router()->get_path('new moderation', $pathparams, true);
         $PAGE->set_url($url);
 
         $ability = new ability(user::find($USER), $this->coursework);
@@ -145,9 +145,9 @@ class moderations_controller extends controller_base {
 
         $form = new moderator_agreement_mform(null, ['moderation' => $moderatoragreement]);
 
-        $coursework_page_url = $this->get_path('coursework', ['coursework' => $moderatoragreement->get_coursework()]);
+        $courseworkpageurl = $this->get_path('coursework', ['coursework' => $moderatoragreement->get_coursework()]);
         if ($form->is_cancelled()) {
-            redirect($coursework_page_url);
+            redirect($courseworkpageurl);
         }
 
         $data = $form->get_data();
@@ -156,7 +156,7 @@ class moderations_controller extends controller_base {
             $moderatoragreement = $form->process_data($moderatoragreement);
             $moderatoragreement->save();
 
-            redirect($coursework_page_url);
+            redirect($courseworkpageurl);
         } else {
             $renderer = $this->get_page_renderer();
             $renderer->new_moderation_page($moderatoragreement);
@@ -180,15 +180,15 @@ class moderations_controller extends controller_base {
 
         $form = new moderator_agreement_mform(null, ['moderation' => $moderatoragreement]);
 
-        $coursework_page_url = $this->get_path('coursework', ['coursework' => $moderatoragreement->get_coursework()]);
+        $courseworkpageurl = $this->get_path('coursework', ['coursework' => $moderatoragreement->get_coursework()]);
         if ($form->is_cancelled()) {
-            redirect($coursework_page_url);
+            redirect($courseworkpageurl);
         }
 
         $moderatoragreement = $form->process_data($moderatoragreement);
         $moderatoragreement->save();
 
-        redirect($coursework_page_url);
+        redirect($courseworkpageurl);
     }
 
     /**

@@ -233,9 +233,9 @@ class percentages extends base {
      */
     private function teacher_already_has_maximum_allocations($teacher) {
         $targetnumber = $this->number_of_total_allocations_this_teacher_should_have($teacher);
-        $number_of_exisiting_allocations = $this->number_of_existing_allocations_teacher_has($teacher);
+        $numberofexisitingallocations = $this->number_of_existing_allocations_teacher_has($teacher);
 
-        return $number_of_exisiting_allocations >= $targetnumber;
+        return $numberofexisitingallocations >= $targetnumber;
     }
 
     /**

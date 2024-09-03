@@ -33,7 +33,7 @@ require_once($CFG->dirroot.'/lib/adminlib.php');
 require_once($CFG->dirroot.'/lib/formslib.php');
 require_once($CFG->dirroot.'/mod/coursework/renderer.php');
 
-$submission_id = optional_param('submissionid', 0, PARAM_INT);
+$submissionid = optional_param('submissionid', 0, PARAM_INT);
 $assessorid = optional_param('assessorid', $USER->id, PARAM_INT);
 $feedbackid = optional_param('feedbackid', 0, PARAM_INT);
 $cmid = optional_param('cmid', 0, PARAM_INT);
@@ -47,7 +47,7 @@ $course = $DB->get_record('course', ['id' => $coursemodule->course], '*', MUST_E
 require_login($course, false, $coursemodule);
 
 $coursework = mod_coursework\models\coursework::find($coursemodule->instance);
-$submission = submission::find($submission_id);
+$submission = submission::find($submissionid);
 $teacherfeedback = $DB->get_record('coursework_feedbacks', ['id' => $feedbackid]);
 
 // This is where stuff used to construct the dynamic form is fed in.
@@ -56,7 +56,7 @@ $teacherfeedback = $DB->get_record('coursework_feedbacks', ['id' => $feedbackid]
 $canfinalgrade = has_capability('mod/coursework:addagreedgrade', $PAGE->context);
 
 // TODO shift into custom data and set via somewhere else.
-$coursework->submissionid = $submission_id;
+$coursework->submissionid = $submissionid;
 $coursework->cmid = $cmid;
 
 $gradeform = new assessor_feedback_mform();
@@ -90,7 +90,7 @@ if ($gradeform->is_submitted()) {
     }
 }
 
-$params = ['submissionid' => $submission_id,
+$params = ['submissionid' => $submissionid,
                 'assessorid' => $assessorid,
                 'isfinalgrade' => $isfinalgrade];
 $oldfinalgrade = $DB->get_record('coursework_feedbacks', $params);
@@ -99,7 +99,7 @@ $oldfinalgrade = $DB->get_record('coursework_feedbacks', $params);
 // a final grade.
 
 if (empty($oldfinalgrade) && $canfinalgrade) {
-    $params = ['submissionid' => $submission_id,
+    $params = ['submissionid' => $submissionid,
                     'isfinalgrade' => $isfinalgrade];
     $oldfinalgrade = $DB->get_record('coursework_feedbacks', $params);
     if ($oldfinalgrade) {
@@ -138,7 +138,7 @@ echo html_writer::tag('p', get_string('gradingoutof', 'coursework', round($cours
 
 // In case we have an editor come along, we want to show that this has happened.
 if (!empty($teacherfeedback)) { // May not have been marked yet.
-    if ($submission_id && !empty($teacherfeedback->lasteditedbyuser)) {
+    if ($submissionid && !empty($teacherfeedback->lasteditedbyuser)) {
         $editor = $DB->get_record('user', ['id' => $teacherfeedback->lasteditedbyuser]);
     } else {
         $editor = $assessor;
@@ -150,18 +150,18 @@ if (!empty($teacherfeedback)) { // May not have been marked yet.
 }
 
 $files = $submission->get_submission_files();
-$files_string = $files->has_multiple_files() ? 'submissionfiles' : 'submissionfile';
+$filesstring = $files->has_multiple_files() ? 'submissionfiles' : 'submissionfile';
 
 echo html_writer::start_tag('h1');
-echo get_string($files_string, 'coursework');
+echo get_string($filesstring, 'coursework');
 echo html_writer::end_tag('h1');
 
 /**
  * @var mod_coursework_object_renderer $object_renderer
  */
-$object_renderer = $PAGE->get_renderer('mod_coursework', 'object');
+$objectrenderer = $PAGE->get_renderer('mod_coursework', 'object');
 
-echo $object_renderer->render_submission_files_with_plagiarism_links(new mod_coursework_submission_files($files));
+echo $objectrenderer->render_submission_files_with_plagiarism_links(new mod_coursework_submission_files($files));
 
 $gradeform->display();
 
