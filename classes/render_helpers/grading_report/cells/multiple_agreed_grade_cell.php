@@ -128,13 +128,13 @@ class multiple_agreed_grade_cell extends cell_base {
                                                  null,
                                                  array('class' => 'new_final_feedback',
                                                        'id' => 'new_final_feedback_' . $rowobject->get_coursework()
-                                                        ->get_allocatable_identifier_hash($rowobject->get_allocatable())));
+                                                           ->get_allocatable_identifier_hash($rowobject->get_allocatable())));
 
             } else if ($existing_feedback && $ability->can('show', $existing_feedback)) {
 
                 $linktitle = get_string('viewfeedback', 'mod_coursework');
                 $link_id = "show_feedback_" . $rowobject->get_coursework()
-                        ->get_allocatable_identifier_hash($rowobject->get_allocatable());
+                    ->get_allocatable_identifier_hash($rowobject->get_allocatable());
                 $link = $this->get_router()
                     ->get_path('show feedback', array('feedback' => $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable())));
                 $iconlink = $OUTPUT->action_link($link,

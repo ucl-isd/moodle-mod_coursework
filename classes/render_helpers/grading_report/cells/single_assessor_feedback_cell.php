@@ -172,7 +172,7 @@ class single_assessor_feedback_cell extends cell_base {
         $link = $this->get_router()->get_path('edit feedback', $feedback_params);
 
         $link_id = 'edit_final_feedback_' . $rowobject->get_coursework()
-                ->get_allocatable_identifier_hash($rowobject->get_allocatable());
+            ->get_allocatable_identifier_hash($rowobject->get_allocatable());
 
         $title = get_string('editfinalgrade', 'coursework');
         $icon = new pix_icon('edit', $title, 'coursework');
@@ -222,7 +222,7 @@ class single_assessor_feedback_cell extends cell_base {
         $link = $this->get_router()->get_path('ajax new final feedback', $feedback_params);
 
         $link_id = 'new_final_feedback_' . $rowobject->get_coursework()
-                ->get_allocatable_identifier_hash($rowobject->get_allocatable());
+            ->get_allocatable_identifier_hash($rowobject->get_allocatable());
 
         $title = get_string('addfinalfeedback', 'coursework');
 

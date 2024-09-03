@@ -668,7 +668,7 @@ class ability extends \mod_coursework\framework\ability {
             'mod_coursework\models\moderation',
             function (moderation $moderation) {
                    $has_capability = has_capability('mod/coursework:moderate',  $moderation->get_coursework()
-                    ->get_context());
+                       ->get_context());
                 $is_creator = $moderation->moderatorid == $this->get_user()->id;
                 return $has_capability && ($is_creator || is_siteadmin());
             });
@@ -1066,11 +1066,11 @@ class ability extends \mod_coursework\framework\ability {
                                                            ->get_context());
 
                 if ($grading_table_row->get_coursework()
-                        ->allocation_enabled() && $grading_table_row->has_submission()
+                    ->allocation_enabled() && $grading_table_row->has_submission()
                 ) {
 
                     $submission_has_all_initial_assessor_feedbacks = $grading_table_row->get_submission()
-                            ->get_state() >= submission::FULLY_GRADED;
+                        ->get_state() >= submission::FULLY_GRADED;
                     if ($can_add_agreed_grade &&
                         $submission_has_all_initial_assessor_feedbacks
                     ) {
@@ -1172,7 +1172,7 @@ class ability extends \mod_coursework\framework\ability {
                                                                           ->get_context())
                                                         || has_capability('mod/coursework:addallocatedagreedgrade',
                                                                          $feedback->get_coursework()
-                                                                            ->get_context())
+                                                                             ->get_context())
                                                             && $feedback->get_submission()->is_assessor_initial_grader());
             });
     }

@@ -95,7 +95,7 @@ class grading_sheet extends csv {
                 if (!$ability->can('show', $submission)
                    || ($stages == 1 && !has_capability('mod/coursework:addinitialgrade', $PAGE->context))
                    || ($this->coursework->allocation_enabled() && !$this->coursework
-                           ->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable())
+                       ->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable())
                        && (has_capability('mod/coursework:addinitialgrade', $PAGE->context) && !has_capability('mod/coursework:addagreedgrade', $PAGE->context)))
                    || ($stages > 1 && $this->coursework->sampling_enabled()
                        && !$submission->sampled_feedback_exists()

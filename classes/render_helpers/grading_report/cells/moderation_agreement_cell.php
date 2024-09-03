@@ -171,7 +171,7 @@ class moderation_agreement_cell extends cell_base {
         $link = $this->get_router()->get_path('new moderations', $moderation_params);
 
         $link_id = 'new_moderation_' . $rowobject->get_coursework()
-                ->get_allocatable_identifier_hash($rowobject->get_allocatable());
+            ->get_allocatable_identifier_hash($rowobject->get_allocatable());
 
         $title = get_string('moderate', 'coursework');
 
@@ -196,7 +196,7 @@ class moderation_agreement_cell extends cell_base {
         $link = $this->get_router()->get_path('edit moderation', $feedback_params);
 
         $link_id = 'edit_moderation_' . $rowobject->get_coursework()
-                ->get_allocatable_identifier_hash($rowobject->get_allocatable());
+            ->get_allocatable_identifier_hash($rowobject->get_allocatable());
 
         $title = get_string('editmoderation', 'coursework');
         $icon = new pix_icon('edit', $title, 'coursework');
@@ -223,7 +223,7 @@ class moderation_agreement_cell extends cell_base {
 
         $linktitle = get_string('viewmoderation', 'mod_coursework');
         $link_id = "show_moderation_" . $rowobject->get_coursework()
-                ->get_allocatable_identifier_hash($rowobject->get_allocatable());
+            ->get_allocatable_identifier_hash($rowobject->get_allocatable());
         $link = $this->get_router()->get_path('show moderation', $moderation_params);
 
         return $OUTPUT->action_link($link,
