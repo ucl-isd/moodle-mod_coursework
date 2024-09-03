@@ -89,7 +89,7 @@ class user_cell extends cell_base implements allocatable_cell {
                                                                 $tablename);
         } else { // otherwise display header without sorting
             $sort_by_first_name = get_string('firstname');
-            $sort_by_last_name =get_string('lastname');
+            $sort_by_last_name = get_string('lastname');
         }
 
         if ($this->fullname_format() == 'lf') {

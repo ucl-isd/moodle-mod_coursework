@@ -379,7 +379,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $limit = $this->rationalise($ri->ruletype, $ri->lowerlimit, $ri->upperlimit);
 
             // all allocatables that are within specified range based on previous stage
-            $previous_stage = $stage_number-1;
+            $previous_stage = $stage_number - 1;
             $allocatables_in_range = $this->get_allocatables_in_range("assessor_".$previous_stage, $limit[0], $limit[1]);
 
             $finalised = $this->finalised_submissions();
@@ -401,8 +401,8 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         $limits = [];
 
-            $limits[0] = ($limit1>$limit2) ? $limit2 : $limit1;
-            $limits[1] = ($limit1>$limit2) ? $limit1 : $limit2;
+            $limits[0] = ($limit1 > $limit2) ? $limit2 : $limit1;
+            $limits[1] = ($limit1 > $limit2) ? $limit1 : $limit2;
 
         if ($ruletype == 'scale') {
             ++$limits[0];
@@ -424,8 +424,8 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                     $weighting = 100 / $number_of_items; // shall we round it????
 
-                    $limits[0] = ceil($limits[0]/$weighting); // element of array
-                    $limits[1] = ceil($limits[1]/$weighting); // element of array
+                    $limits[0] = ceil($limits[0] / $weighting); // element of array
+                    $limits[1] = ceil($limits[1] / $weighting); // element of array
 
                     // Note we have to add one as the values are not stored in there element positions
 

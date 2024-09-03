@@ -137,7 +137,7 @@ class import extends grading_sheet {
                     $result = $cell->validate_cell($rubriclinedata, $submissionid, $stage_identifier, $uploadedgradecells);
 
                     $z = $z + count($rubricheaders) - 1;
-                    $offset = $offset + count($rubricheaders)-1;
+                    $offset = $offset + count($rubricheaders) - 1;
 
                 } else {
                     $result = $cell->validate_cell($value, $submissionid, $stage_identifier, $uploadedgradecells);
@@ -409,7 +409,7 @@ class import extends grading_sheet {
 
                         $criteriacount = 0;
 
-                        $numberofrubrics = count($criterias)  *   2;
+                        $numberofrubrics = count($criterias) * 2;
 
                     // If the stage is  final agrade we need to make sure the offset is set to the position of the
                     //agreed grades in the csv, this is needed as some users will only have agreed grade capability
@@ -808,13 +808,13 @@ class import extends grading_sheet {
 
                 $criterias = $this->coursework->get_rubric_criteria();
 
-                $startposition = $singlegradeposition+ ((count($criterias) * 2) + 1);
+                $startposition = $singlegradeposition + ((count($criterias) * 2) + 1);
 
             } else {
                 $startposition = array_search('otherassessors', $csv_cells);
             }
 
-            for ($i = $startposition; $i < $startposition+$othercells; $i++) {
+            for ($i = $startposition; $i < $startposition + $othercells; $i++) {
                 unset($line[$i]);
             }
             $csv_cells = array_values($csv_cells);

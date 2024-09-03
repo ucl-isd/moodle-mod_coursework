@@ -145,7 +145,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
 
         // Rubric stuff if it's there
-        if ($coursework->is_using_advanced_grading() && ($coursework->finalstagegrading ==0  || ($coursework->finalstagegrading ==1 &&  $feedback->stage_identifier != 'final_agreed_1'))) {
+        if ($coursework->is_using_advanced_grading() && ($coursework->finalstagegrading == 0  || ($coursework->finalstagegrading == 1 &&  $feedback->stage_identifier != 'final_agreed_1'))) {
             $table_row = new html_table_row();
             $left_cell = new html_table_cell();
             $right_cell = new html_table_cell();
@@ -1626,7 +1626,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
                 if ($coursework->assessor_has_any_allocation_for_student($allocatable) || has_capability('mod/coursework:addagreedgrade', $coursework->get_context())
                     && !empty($submission) && (($submission->all_inital_graded()  && !$coursework->sampling_enabled())
-                        || ($coursework->sampling_enabled() && $submission->all_inital_graded() && $submission->max_number_of_feedbacks() >1 ))) {
+                        || ($coursework->sampling_enabled() && $submission->all_inital_graded() && $submission->max_number_of_feedbacks() > 1 ))) {
                     $participant  ++;
                 }
             }

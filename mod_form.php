@@ -484,7 +484,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodle_form =& $this->_form;
 
-        $default_timestamp =strtotime('today');
+        $default_timestamp = strtotime('today');
         $disabled = true;
 
         $submission_deadline_timestamp = strtotime('today');
