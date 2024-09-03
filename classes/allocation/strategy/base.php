@@ -54,10 +54,10 @@ abstract class base {
     /**
      * @var array the columns in the DB
      */
-    protected $fields = array(
+    protected $fields = [
         'id',
         'courseworkid',
-    );
+    ];
 
     /**
      * Holds the config settings to avoid repeated DB calls.
@@ -143,12 +143,12 @@ abstract class base {
         global $DB;
 
         if (!isset($this->settings[$type]) || $reset) {
-            $params = array(
+            $params = [
                 'courseworkid' => $this->coursework->id,
                 'allocationstrategy' => $this->get_name(),
                 'purpose' => $type,
 
-            );
+            ];
             $this->settings[$type] = $DB->get_records('coursework_allocation_config', $params);
         }
 
@@ -169,12 +169,12 @@ abstract class base {
      * @return bool
      */
     protected function teacher_already_has_an_allocation_for_this_allocatable($student, $teacher) {
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $student->id(),
             'allocatabletype' => $student->type(),
             'assessorid' => $teacher->id,
-        );
+        ];
         return allocation::exists($params);
     }
 
@@ -183,10 +183,10 @@ abstract class base {
      * @return int
      */
     protected function number_of_existing_allocations_teacher_has($teacher) {
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'assessorid' => $teacher->id,
-        );
+        ];
         return allocation::count($params);
     }
 

@@ -35,19 +35,19 @@ $personal_deadline_time = optional_param('personal_deadline_time', null, PARAM_R
 
 $allocatableid = (!empty($allocatableid_arr)) ? $allocatableid_arr : $allocatableid;
 
-$coursework_db = $DB->get_record('coursework', array('id' => $courseworkid));
+$coursework_db = $DB->get_record('coursework', ['id' => $courseworkid]);
 
 $coursework = \mod_coursework\models\coursework::find($coursework_db);
 
 require_login($coursework->get_course(), false, $coursework->get_course_module());
 
-$params = array(
+$params = [
     'courseworkid' => $courseworkid,
     'allocatableid' => $allocatableid,
     'allocatabletype' => $allocatabletype,
     'setpersonaldeadlinespage' => $setpersonaldeadlinespage,
     'multipleuserdeadlines' => $multipleuserdeadlines,
-);
+];
 
 if ($selectedtype != 'unfinalise') {
     $controller = new mod_coursework\controllers\personal_deadlines_controller($params);

@@ -40,7 +40,7 @@ class stages_cell extends cell_base {
         $timecreated = 0;
         $timemodified = 0;
 
-        $feedback = $DB->get_record('coursework_feedbacks', array('submissionid' => $submission->id, 'assessorid' => 0));
+        $feedback = $DB->get_record('coursework_feedbacks', ['submissionid' => $submission->id, 'assessorid' => 0]);
         if ($feedback) {
             $timecreated = $feedback->timecreated;
             $timemodified = $feedback->timemodified;

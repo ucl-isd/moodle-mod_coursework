@@ -43,12 +43,12 @@ $isfinalgrade = optional_param('isfinalgrade', 1, PARAM_INT);;
 $gradeowner = true;
 
 $coursemodule = get_coursemodule_from_id('coursework', $cmid, 0, false, MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $coursemodule->course), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $coursemodule->course], '*', MUST_EXIST);
 require_login($course, false, $coursemodule);
 
 $coursework = mod_coursework\models\coursework::find($coursemodule->instance);
 $submission = submission::find($submission_id);
-$teacherfeedback = $DB->get_record('coursework_feedbacks', array('id' => $feedbackid));
+$teacherfeedback = $DB->get_record('coursework_feedbacks', ['id' => $feedbackid]);
 
 // This is where stuff used to construct the dynamic form is fed in.
 
@@ -90,17 +90,17 @@ if ($gradeform->is_submitted()) {
     }
 }
 
-$params = array('submissionid' => $submission_id,
+$params = ['submissionid' => $submission_id,
                 'assessorid' => $assessorid,
-                'isfinalgrade' => $isfinalgrade);
+                'isfinalgrade' => $isfinalgrade];
 $oldfinalgrade = $DB->get_record('coursework_feedbacks', $params);
 
 // If the no old final grade exists and the current user is a manager lets see if another user has created
 // a final grade.
 
 if (empty($oldfinalgrade) && $canfinalgrade) {
-    $params = array('submissionid' => $submission_id,
-                    'isfinalgrade' => $isfinalgrade);
+    $params = ['submissionid' => $submission_id,
+                    'isfinalgrade' => $isfinalgrade];
     $oldfinalgrade = $DB->get_record('coursework_feedbacks', $params);
     if ($oldfinalgrade) {
         $gradeowner = false;
@@ -132,14 +132,14 @@ $PAGE->set_heading($SITE->fullname);
 echo $OUTPUT->header();
 
 echo $OUTPUT->heading($gradingstring);
-$assessor = $DB->get_record('user', array('id' => $assessorid));
+$assessor = $DB->get_record('user', ['id' => $assessorid]);
 echo html_writer::tag('p', get_string('assessor', 'coursework').' '.fullname($assessor));
 echo html_writer::tag('p', get_string('gradingoutof', 'coursework', round($coursework->grade)));
 
 // In case we have an editor come along, we want to show that this has happened.
 if (!empty($teacherfeedback)) { // May not have been marked yet.
     if ($submission_id && !empty($teacherfeedback->lasteditedbyuser)) {
-        $editor = $DB->get_record('user', array('id' => $teacherfeedback->lasteditedbyuser));
+        $editor = $DB->get_record('user', ['id' => $teacherfeedback->lasteditedbyuser]);
     } else {
         $editor = $assessor;
     }

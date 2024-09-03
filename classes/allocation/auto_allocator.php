@@ -120,7 +120,7 @@ class auto_allocator {
                 AND s.courseworkid = p.courseworkid
                 AND f.stage_identifier = p.stage_identifier
             )
-        ', array('courseworkid' => $this->get_coursework()->id));
+        ', ['courseworkid' => $this->get_coursework()->id]);
 
         foreach ($ungraded_allocations as &$allocation) {
             /**

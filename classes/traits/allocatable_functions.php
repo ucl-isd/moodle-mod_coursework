@@ -55,12 +55,12 @@ trait allocatable_functions {
                    AND allocatabletype = :type
                  ";
 
-        $params = array(
+        $params = [
             'courseworkid' => $coursework->id,
             'courseworkid2' => $coursework->id,
             'id' => $this->id(),
             'type' => $this->type(),
-        );
+        ];
         $DB->execute($sql, $params);
     }
 
@@ -79,7 +79,7 @@ trait allocatable_functions {
                AND s.allocatableid = :id
                AND s.courseworkid = :courseworkid
         ";
-        $result = $DB->count_records_sql($sql, array('id' => $this->id(), 'courseworkid' => $coursework->id()));
+        $result = $DB->count_records_sql($sql, ['id' => $this->id(), 'courseworkid' => $coursework->id()]);
         return !empty($result);
     }
 
@@ -98,7 +98,7 @@ trait allocatable_functions {
                AND s.allocatableid = :id
                AND s.courseworkid = :courseworkid";
 
-        return $DB->get_record_sql($sql, array('id' => $this->id(), 'courseworkid' => $coursework->id()));
+        return $DB->get_record_sql($sql, ['id' => $this->id(), 'courseworkid' => $coursework->id()]);
     }
 
     /**
@@ -120,8 +120,8 @@ trait allocatable_functions {
                AND s.courseworkid = :courseworkid
         ";
         $feedbacks = $DB->count_records_sql($sql,
-            array('id' => $this->id(),
-                'courseworkid' => $coursework->id()));
+            ['id' => $this->id(),
+                'courseworkid' => $coursework->id()]);
 
         // when sampling is enabled, calculate how many stages are in sample
         if ($coursework->sampling_enabled()) {
@@ -133,9 +133,9 @@ trait allocatable_functions {
                   AND allocatabletype = :allocatabletype";
 
             $markers = $DB->count_records_sql($sql,
-                array('courseworkid' => $coursework->id(),
+                ['courseworkid' => $coursework->id(),
                     'allocatableid' => $this->id(),
-                    'allocatabletype' => $this->type()));
+                    'allocatabletype' => $this->type()]);
 
             $expected_markers = $markers + 1; // there is always a marker for stage 1
         }

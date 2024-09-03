@@ -91,44 +91,44 @@ class multiple_agreed_grade_cell extends cell_base {
 
         if ($existing_feedback && $ability->can('edit', $existing_feedback)) {
 
-            $feedback_route_params = array(
+            $feedback_route_params = [
                 'feedback' => $finalfeedback,
-            );
+            ];
             $link = $this->get_router()->get_path('ajax edit feedback', $feedback_route_params);
 
             $iconlink = $OUTPUT->action_icon($link,
                                              $icon,
                                              null,
-                                             array(
+                                             [
                                                  'class' => 'edit_final_feedback',
                                                  'id' => 'edit_final_feedback_' . $rowobject->get_coursework()
-                                                     ->get_allocatable_identifier_hash($rowobject->get_allocatable())));
+                                                     ->get_allocatable_identifier_hash($rowobject->get_allocatable())]);
 
         } else if ($rowobject->has_submission()) { // New
 
-            $feedback_params = array(
+            $feedback_params = [
                 'submissionid' => $rowobject->get_submission()->id,
                 'assessorid' => $USER->id,
                 'stage_identifier' => $this->stage->identifier(),
-            );
+            ];
             $new_feedback = feedback::build($feedback_params);
 
             // If the user is a site admin then they can add final feedback
             if ($ability->can('new', $new_feedback) || is_siteadmin()) {
                 $title = get_string('addfinalfeedback', 'coursework');
-                $feedback_route_params = array(
+                $feedback_route_params = [
                     'submission' => $rowobject->get_submission(),
                     'assessor' => $USER,
                     'stage' => $this->stage,
-                );
+                ];
                 $link = $this->get_router()->get_path('ajax new final feedback', $feedback_route_params);
 
                 $iconlink = $OUTPUT->action_link($link,
                                                  $title,
                                                  null,
-                                                 array('class' => 'new_final_feedback',
+                                                 ['class' => 'new_final_feedback',
                                                        'id' => 'new_final_feedback_' . $rowobject->get_coursework()
-                                                           ->get_allocatable_identifier_hash($rowobject->get_allocatable())));
+                                                           ->get_allocatable_identifier_hash($rowobject->get_allocatable())]);
 
             } else if ($existing_feedback && $ability->can('show', $existing_feedback)) {
 
@@ -136,11 +136,11 @@ class multiple_agreed_grade_cell extends cell_base {
                 $link_id = "show_feedback_" . $rowobject->get_coursework()
                     ->get_allocatable_identifier_hash($rowobject->get_allocatable());
                 $link = $this->get_router()
-                    ->get_path('show feedback', array('feedback' => $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable())));
+                    ->get_path('show feedback', ['feedback' => $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable())]);
                 $iconlink = $OUTPUT->action_link($link,
                                                  $linktitle,
                                                  null,
-                                                 array('class' => 'show_feedback', 'id' => $link_id));
+                                                 ['class' => 'show_feedback', 'id' => $link_id]);
             }
         }
 

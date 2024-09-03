@@ -33,7 +33,7 @@ class grading_controller extends controller_base {
     public function get_remain_rows_grading_table($options) {
 
         global $DB, $PAGE;
-        $coursework_record = $DB->get_record('coursework', array('id' => $options['courseworkid']), '*', MUST_EXIST);
+        $coursework_record = $DB->get_record('coursework', ['id' => $options['courseworkid']], '*', MUST_EXIST);
         //$coursework = mod_coursework\models\coursework::find($coursework_record);
         $coursework = coursework::find($coursework_record, false);
 

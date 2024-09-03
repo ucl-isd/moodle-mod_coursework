@@ -80,7 +80,7 @@ abstract class sample_base {
     /**
      * @var array List of class properties that correspond with DB fields.
      */
-    protected $fields = array(
+    protected $fields = [
         'id',
         'courseworkid',
         'rulename',
@@ -88,7 +88,7 @@ abstract class sample_base {
         'upperlimit',
         'lowerlimit',
         'minimum',
-    );
+    ];
 
     function __construct($coursework) {
         $this->coursework = $coursework;
@@ -164,7 +164,7 @@ abstract class sample_base {
                  WHERE  s.courseworkid = :courseworkid
                    AND  f.stage_identifier = 'final_agreed_1'";
 
-        return $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id));
+        return $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id]);
     }
 
     /**
@@ -179,7 +179,7 @@ abstract class sample_base {
                  WHERE  courseworkid = :courseworkid
                    AND  firstpublished IS NOT NULL";
 
-        return $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id));
+        return $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id]);
     }
 
 }

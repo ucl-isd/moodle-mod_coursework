@@ -59,19 +59,19 @@ class plagiarism_flagging_mform extends moodleform {
         $mform->setType('submissionid', PARAM_INT);
 
         // plagiarism status
-        $options = array(plagiarism_flag::INVESTIGATION => get_string('plagiarism_'.plagiarism_flag::INVESTIGATION, 'coursework'),
+        $options = [plagiarism_flag::INVESTIGATION => get_string('plagiarism_'.plagiarism_flag::INVESTIGATION, 'coursework'),
                          plagiarism_flag::RELEASED => get_string('plagiarism_'.plagiarism_flag::RELEASED, 'coursework'),
                          plagiarism_flag::CLEARED => get_string('plagiarism_'.plagiarism_flag::CLEARED, 'coursework'),
-                         plagiarism_flag::NOTCLEARED => get_string('plagiarism_'.plagiarism_flag::NOTCLEARED, 'coursework'));
+                         plagiarism_flag::NOTCLEARED => get_string('plagiarism_'.plagiarism_flag::NOTCLEARED, 'coursework')];
 
         $mform->addElement('select', 'status',
                             get_string('status', 'coursework'),
                             $options,
-                            array('id' => 'plagiarism_status'));
+                            ['id' => 'plagiarism_status']);
 
         $mform->addHelpButton('status', 'status', 'mod_coursework');
 
-        $mform->addElement('editor', 'plagiarismcomment', get_string('comment', 'mod_coursework'), array('id' => 'plagiarism_comment'));
+        $mform->addElement('editor', 'plagiarismcomment', get_string('comment', 'mod_coursework'), ['id' => 'plagiarism_comment']);
         $mform->setType('editor', PARAM_RAW);
 
         $mform->hideIf('plagiarismcomment', 'status', 'eq', "1");

@@ -53,7 +53,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
             // and that the coursework_ prefix is not needed.
             // It would be nice to go back and take these out here and in backup.
             // But not essential
-            $bits = array('submission' => 'coursework_submissions',
+            $bits = ['submission' => 'coursework_submissions',
                         'feedback' => 'coursework_submissions/coursework_submission/coursework_feedbacks',
                         'reminder' => 'coursework_reminders',
                         'allocation_pair' => 'coursework_allocation_pairs',
@@ -64,7 +64,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                         'extension' => 'coursework_extensions',
                         'person_deadline' => 'coursework_person_deadlines',
                         'mod_agreement' => 'coursework_submissions/coursework_submission/coursework_feedbacks/coursework_feedback/coursework_mod_agreements',
-                        'plagiarism_flag' => 'coursework_submissions/coursework_submission/coursework_plagiarism_flags');
+                        'plagiarism_flag' => 'coursework_submissions/coursework_submission/coursework_plagiarism_flags'];
 
             foreach ($bits as $bit => $bitpath) {
                 $p = new restore_path_element("coursework_$bit", "/activity/coursework/{$bitpath}/coursework_$bit");
@@ -97,23 +97,23 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $this->fixallocatable($data);
 
-        $this->updatedate(array('timemodified',
+        $this->updatedate(['timemodified',
                                 'timecreated',
                                 'timesubmitted',
                                 'firstpublished',
-                                'lastpublished', ),  $data);
+                                'lastpublished', ],  $data);
 
         $now = time();
-        $this->set_defaults(array('timecreated' => $now,
+        $this->set_defaults(['timecreated' => $now,
                                   'timemodified' => $now,
                                   'firstpublished' => null,
                                   'lastpublished' => null,
                                   'timesubmitted' => null,
                                   'finalised' => 0,
-                                  'manualsrscode' => ''),
+                                  'manualsrscode' => ''],
                             $data);
 
-        if (!$DB->record_exists('coursework_submissions', array('courseworkid' => $data->courseworkid, 'allocatableid' => $data->allocatableid, 'allocatabletype' => $data->allocatabletype))) {
+        if (!$DB->record_exists('coursework_submissions', ['courseworkid' => $data->courseworkid, 'allocatableid' => $data->allocatableid, 'allocatabletype' => $data->allocatabletype])) {
 
             $newitemid = $DB->insert_record('coursework_submissions', $data);
             $this->set_mapping('coursework_submission', $oldid, $newitemid);
@@ -135,15 +135,15 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $data->lasteditedbyuser = $this->get_mappingid('user', $data->lasteditedbyuser);
         $data->markernumber = $this->get_mappingid('user', $data->markernumber);
 
-        $this->updatedate(array('timemodified',
+        $this->updatedate(['timemodified',
                                 'timecreated',
-                                'timepublished'), $data);
+                                'timepublished'], $data);
 
         $this->check_grade('grade', $data);
         $this->check_grade('cappedgrade', $data);
 
         $now = time();
-        $this->set_defaults(array('assessorid' => 0,
+        $this->set_defaults(['assessorid' => 0,
                                   'timecreated' => $now,
                                   'timemodified' => $now,
                                   'grade' => '',
@@ -157,7 +157,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'entry_id' => 0,
                                   'markernumber' => 0,
                                   'stage_identifier' => '',
-                                  'finalised' => 0), $data);
+                                  'finalised' => 0], $data);
 
         $newitemid = $DB->insert_record('coursework_feedbacks', $data);
 
@@ -171,7 +171,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $data->coursework_id = $this->get_new_parentid('coursework');
         $data->userid = $this->get_mappingid('user', $data->userid);
 
-        $this->set_defaults(array('remindernumber' => 0), $data);
+        $this->set_defaults(['remindernumber' => 0], $data);
 
         global $DB;
         $newitemid = $DB->insert_record('coursework_reminder', $data);
@@ -183,15 +183,15 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $data->courseworkid = $this->get_new_parentid('coursework');
         $data->assessorid = $this->get_mappingid('user', $data->assessorid);
-        $this->updatedate(array('timelocked'), $data);
+        $this->updatedate(['timelocked'], $data);
 
         $this->fixallocatable($data);
 
-        $this->set_defaults(array('assessorid' => 0,
+        $this->set_defaults(['assessorid' => 0,
                                   'manual' => 0,
                                   'moderator' => 0,
                                   'timelocked' => time(),
-                                  'stage_identifier' => ''), $data);
+                                  'stage_identifier' => ''], $data);
 
         global $DB;
         $newitemid = $DB->insert_record('coursework_allocation_pairs', $data);
@@ -203,11 +203,11 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $data->courseworkid = $this->get_new_parentid('coursework');
 
-        $this->set_defaults(array('rulename' => '',
+        $this->set_defaults(['rulename' => '',
                                   'ruleorder' => 0,
                                   'upperlimit' => 0,
                                   'lowerlimit' => 0,
-                                  'minimum' => 0), $data);
+                                  'minimum' => 0], $data);
 
         global $DB;
         $newitemid = $DB->insert_record('coursework_mod_set_members', $data);
@@ -219,12 +219,12 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $data->courseworkid = $this->get_new_parentid('coursework');
 
-        $this->set_defaults(array('ruletype' => '',
+        $this->set_defaults(['ruletype' => '',
             'ruleorder' => 0,
             'upperlimit' => 0,
             'lowerlimit' => 0,
             'sample_set_plugin_id' => 0,
-            'stage_identifier' => ''), $data);
+            'stage_identifier' => ''], $data);
 
         global $DB;
         $newitemid = $DB->insert_record('coursework_sample_set_rules', $data);
@@ -237,9 +237,9 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $data->courseworkid = $this->get_new_parentid('coursework');
         $data->assessorid = $this->get_mappingid('user', $data->assessorid);
 
-        $this->set_defaults(array('allocationstrategy' => '',
+        $this->set_defaults(['allocationstrategy' => '',
                                   'value' => 0,
-                                  'purpose' => ''),
+                                  'purpose' => ''],
                             $data);
 
         global $DB;
@@ -253,7 +253,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $this->fixallocatable($data);
 
-        $this->set_defaults(array('stage_identifier' => ''), $data);
+        $this->set_defaults(['stage_identifier' => ''], $data);
 
         global $DB;
         $newitemid = $DB->insert_record('coursework_mod_set_members', $data);
@@ -266,12 +266,12 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $this->fixallocatable($data);
 
-        $this->set_defaults(array('allocatableid' => 0,
+        $this->set_defaults(['allocatableid' => 0,
                                   'allocatabletype' => '',
                                   'allocatableuser' => 0,
                                   'allocatablegroup' => 0,
                                   'stage_identifier' => '',
-                                  'selectiontype' => ''), $data);
+                                  'selectiontype' => ''], $data);
 
         global $DB;
         $newitemid = $DB->insert_record('coursework_sample_set_mbrs', $data);
@@ -285,12 +285,12 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $this->fixallocatable($data);
 
-        $this->updatedate(array('extended_deadline'), $data);
+        $this->updatedate(['extended_deadline'], $data);
 
-        $this->set_defaults(array('extended_deadline' => 0,
+        $this->set_defaults(['extended_deadline' => 0,
                                   'pre_defined_reason' => '',
                                   'extra_information_text' => '',
-                                  'extra_information_format' => FORMAT_HTML)
+                                  'extra_information_format' => FORMAT_HTML]
                             , $data);
 
         global $DB;
@@ -307,15 +307,15 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $this->fixallocatable($data);
 
-        $this->updatedate(array('personal_deadline',
+        $this->updatedate(['personal_deadline',
                                 'timecreated',
-                                'timemodified'), $data);
+                                'timemodified'], $data);
 
         $now = time();
-        $this->set_defaults(array('personal_deadline' => 0,
+        $this->set_defaults(['personal_deadline' => 0,
                                   'timecreated' => $now,
                                   'timemodified' => 0,
-                                  'lastmodifiedbyid' => 0), $data);
+                                  'lastmodifiedbyid' => 0], $data);
 
         global $DB;
         $newitemid = $DB->insert_record('coursework_person_deadlines', $data);
@@ -330,15 +330,15 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $this->fixallocatable($data);
 
-        $this->updatedate(array('timecreated',
-                                'timemodified'), $data);
+        $this->updatedate(['timecreated',
+                                'timemodified'], $data);
 
         $now = time();
-        $this->set_defaults(array('timecreated' => $now,
+        $this->set_defaults(['timecreated' => $now,
                                   'timemodified' => $now,
                                   'lasteditedby' => 0,
                                   'modcomment' => '',
-                                  'modcommentformat' => 1), $data);
+                                  'modcommentformat' => 1], $data);
 
         global $DB;
         $newitemid = $DB->insert_record('coursework_mod_agreements', $data);
@@ -353,15 +353,15 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $this->fixallocatable($data);
 
-        $this->updatedate(array('timecreated',
-                                'timemodified'), $data);
+        $this->updatedate(['timecreated',
+                                'timemodified'], $data);
 
         $now = time();
-        $this->set_defaults(array('timecreated' => $now,
+        $this->set_defaults(['timecreated' => $now,
                                   'timemodified' => $now,
                                   'lastmodifieddby' => 0,
                                   'comment' => '',
-                                  'comment_format' => 1), $data);
+                                  'comment_format' => 1], $data);
 
         global $DB;
         $newitemid = $DB->insert_record('coursework_plagiarism_flags', $data);
@@ -380,15 +380,15 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $oldid = $data->id;
         $data->course = $this->get_courseid();
 
-        $this->updatedate(array('timemodified',
+        $this->updatedate(['timemodified',
                                 'timecreated',
                                 'startdate',
                                 'generalfeedbacktimepublished',
-                                'deadline'), $data);
+                                'deadline'], $data);
 
         $now = time();
         // Taken from install.xml
-        $this->set_defaults(array('formid' => 0,
+        $this->set_defaults(['formid' => 0,
                                   'course' => 0,
                                   'name' => '',
                                   'intro' => '',
@@ -455,7 +455,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'draftfeedbackenabled' => 0,
                                     'processenrol' => 0,
                                   'plagiarismflagenabled' => 0,
-                                    'processunenrol' => 0), $data);
+                                    'processunenrol' => 0], $data);
 
         $this->check_grade('grade', $data);
 
@@ -501,7 +501,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                 $itemid = $file->get_itemid();
 
                 $entry = $DB->get_record('coursework_submissions',
-                                       array('id' => $itemid));
+                                       ['id' => $itemid]);
 
                 $submission = \mod_coursework\models\submission::find($entry->id);
                 $submission->rename_files(); // use cw function to handle file renaming as submission may have few files

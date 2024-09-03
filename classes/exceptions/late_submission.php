@@ -42,7 +42,7 @@ class late_submission extends \moodle_exception {
      */
     public function __construct($coursework, $message = null) {
 
-        $link = router::instance()->get_path('coursework', array('coursework' => $coursework));
+        $link = router::instance()->get_path('coursework', ['coursework' => $coursework]);
 
         parent::__construct('latesubmissionsnotallowed', 'mod_coursework', $link, null, $message);
     }

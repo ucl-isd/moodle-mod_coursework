@@ -102,10 +102,10 @@ class percentages extends base {
                     }
                 }
 
-                $attributes = array(
+                $attributes = [
                     'name' => 'assessorstrategy'.$this->get_name().'['.$teacher->id.']',
                     'size' => 3,
-                );
+                ];
                 if ($currentsetting) {
                     $attributes['value'] = $currentsetting->value;
                 }
@@ -155,12 +155,12 @@ class percentages extends base {
 
             if (!is_numeric($value)) {
                 // Empty or duff - make sure we delete any existing record.
-                $params = array(
+                $params = [
                     'courseworkid' => $this->coursework->id,
                     'allocationstrategy' => $this->get_name(),
                     'assessorid' => $teacherid,
                     'purpose' => 'assessor',
-                );
+                ];
                 $DB->delete_records('coursework_allocation_config', $params);
                 continue;
             }
@@ -202,13 +202,13 @@ class percentages extends base {
 
         global $DB;
 
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'allocationstrategy' => $this->get_name(),
             'purpose' => $this->get_type(),
             'assessorid' => $teacher->id,
 
-        );
+        ];
         $setting = $DB->get_field('coursework_allocation_config', 'value', $params);
 
         return $setting ? $setting : 0; // Default to 0 percent.

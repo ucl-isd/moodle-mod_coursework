@@ -35,7 +35,7 @@ class upload_allocations_form extends moodleform {
     function definition() {
         $mform =& $this->_form;
 
-        $mform->addElement('filepicker', 'allocationsdata', get_string('allocationsfile', 'coursework'), null, array( 'accepted_types' => '*.csv'));
+        $mform->addElement('filepicker', 'allocationsdata', get_string('allocationsfile', 'coursework'), null, [ 'accepted_types' => '*.csv']);
         $mform->addRule('allocationsdata', null, 'required');
 
         // $mform->addElement('checkbox', 'overwrite', '', get_string('overwritegrades', 'coursework'));

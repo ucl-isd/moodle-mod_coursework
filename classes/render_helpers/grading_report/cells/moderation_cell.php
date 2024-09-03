@@ -64,11 +64,11 @@ class moderation_cell extends cell_base {
 
         $ability = new ability(user::find($USER), $row_object->get_coursework());
         $existing_feedback = $this->stage->get_feedback_for_allocatable($row_object->get_allocatable());
-        $new_feedback = feedback::build(array(
+        $new_feedback = feedback::build([
             'submissionid' => $row_object->get_submission_id(),
             'stage_identifier' => $this->stage->identifier(),
             'assessorid' => $USER->id,
-        ));
+        ]);
         // New or edit for moderators
         if ($existing_feedback && $ability->can('edit', $existing_feedback)) { // Edit
             $content .= $this->add_edit_feedback_link_to_cell($row_object, $existing_feedback);
@@ -126,16 +126,16 @@ class moderation_cell extends cell_base {
         global $OUTPUT;
 
         $title = get_string('moderatethis', 'coursework');
-        $icon = new pix_icon('moderate', $title, 'coursework', array('width' => '20px'));
+        $icon = new pix_icon('moderate', $title, 'coursework', ['width' => '20px']);
 
-        $feedback_params = array(
+        $feedback_params = [
             'feedback' => $feedback,
-        );
+        ];
         $link = $this->get_router()->get_path('edit feedback', $feedback_params);
-        $html_attributes = array(
+        $html_attributes = [
             'id' => 'edit_moderator_feedback_' . $row_object->get_filename_hash(),
             'class' => 'edit_feedback',
-        );
+        ];
         $iconlink = $OUTPUT->action_icon($link, $icon, null, $html_attributes);
 
         return ' ' . $iconlink;
@@ -150,18 +150,18 @@ class moderation_cell extends cell_base {
         global $OUTPUT;
 
         $title = get_string('moderatethis', 'coursework');
-        $icon = new pix_icon('moderate', $title, 'coursework', array('width' => '20px'));
+        $icon = new pix_icon('moderate', $title, 'coursework', ['width' => '20px']);
 
-        $feedback_params = array(
+        $feedback_params = [
             'submission' => $row_object->get_submission(),
             'stage' => $this->stage,
-        );
+        ];
         $link = $this->get_router()->get_path('new moderator feedback', $feedback_params);
 
-        $html_attributes = array(
+        $html_attributes = [
             'id' => 'new_moderator_feedback_' . $row_object->get_coursework()->get_allocatable_identifier_hash($row_object->get_allocatable()),
             'class' => 'new_feedback',
-        );
+        ];
         $iconlink = $OUTPUT->action_icon($link, $icon, null, $html_attributes);
         return ' ' . $iconlink;
     }

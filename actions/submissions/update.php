@@ -29,9 +29,9 @@ require_once(dirname(__FILE__) . '/../../../../config.php');
 $submissionid = required_param('submissionid', PARAM_INT);
 $finalised = !!optional_param('finalisebutton', 0, PARAM_TEXT);
 
-$params = array(
+$params = [
     'submissionid' => $submissionid,
     'finalised' => $finalised,
-);
+];
 $controller = new mod_coursework\controllers\submissions_controller($params);
 $controller->update_submission();

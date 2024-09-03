@@ -31,9 +31,9 @@ require_once(dirname(__FILE__).'/../../../config.php');
 global $CFG, $DB, $PAGE, $OUTPUT;
 
 $coursemoduleid = required_param('cmid', PARAM_INT);
-$coursemodule = $DB->get_record('course_modules', array('id' => $coursemoduleid));
+$coursemodule = $DB->get_record('course_modules', ['id' => $coursemoduleid]);
 $coursework = coursework::find($coursemodule->instance);
-$course = $DB->get_record('course', array('id' => $coursemodule->course));
+$course = $DB->get_record('course', ['id' => $coursemodule->course]);
 $studentid = optional_param('userid', 0, PARAM_INT);
 $student = \mod_coursework\models\user::find($studentid);
 
@@ -48,7 +48,7 @@ require_login($course, false, $coursemodule);
 
 require_capability('mod/coursework:submitonbehalfof', $PAGE->context);
 
-$params = array('cmid' => $coursemoduleid);
+$params = ['cmid' => $coursemoduleid];
 $url = new moodle_url('/mod/coursework/actions/submitonbehalfofstudent.php', $params);
 $PAGE->set_url($url, $params);
 
@@ -57,12 +57,12 @@ $customdata = new stdClass();
 $customdata->coursework = $coursework;
 $chooseform = new \mod_coursework\forms\choose_student_for_submission_mform($PAGE->url->out(), $customdata);
 if ($chooseform->is_cancelled()) {
-    redirect(new moodle_url('mod/coursework/view.php', array('id' => $coursemoduleid)));
+    redirect(new moodle_url('mod/coursework/view.php', ['id' => $coursemoduleid]));
 }
 
 $student = false;
 if ($studentid) {
-    $student = $DB->get_record('user', array('id' => $studentid));
+    $student = $DB->get_record('user', ['id' => $studentid]);
     $title = get_string('submitonbehalfofstudent', 'mod_coursework', fullname($student));
 } else {
     $title = get_string('submitonbehalfof', 'mod_coursework');
@@ -72,10 +72,10 @@ $PAGE->set_heading($title);
 
 $html = '';
 
-$customdata = array(
+$customdata = [
     'coursework' => $coursework,
     'submission' => $submission,
-);
+];
 $submitform = new mod_coursework\forms\student_submission_form($url->out(), $customdata);
 
 // Save any data that's there and redirect if successful.

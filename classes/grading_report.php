@@ -397,8 +397,8 @@ class grading_report {
             $method_name = 'sort_by_' . $options['sortby'];
             if (method_exists($this, $method_name)) {
                 usort($rows,
-                    array($this,
-                        $method_name));
+                    [$this,
+                        $method_name]);
             }
 
             // Some will have submissions and therefore data fields. Others will have those fields null.

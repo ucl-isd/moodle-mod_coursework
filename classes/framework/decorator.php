@@ -50,8 +50,8 @@ class decorator {
      * @return mixed
      */
     public function __call($method, $args) {
-        return call_user_func_array(array($this->wrapped_object,
-                                          $method),
+        return call_user_func_array([$this->wrapped_object,
+                                          $method],
                                     $args);
     }
 

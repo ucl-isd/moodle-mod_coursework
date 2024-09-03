@@ -46,13 +46,13 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $PAGE->requires->jquery();
 
-        $module = array(
+        $module = [
             'name' => 'mod_coursework',
             'fullpath' => '/mod/coursework/mod_form.js',
-            'requires' => array(
+            'requires' => [
                 'node',
                 'ajax',
-            ));
+            ]];
 
         $PAGE->requires->js_init_call('M.mod_coursework.init', [], true, $module);
 
@@ -303,7 +303,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodle_form->addElement('text',
                                  'name',
                                  get_string('courseworkname', 'coursework'),
-                                 array('size' => '64'));
+                                 ['size' => '64']);
         $moodle_form->addRule('name', null, 'required', null, 'client');
         $moodle_form->addRule('name',
                               get_string('maximumchars', '', 255),
@@ -349,7 +349,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodle_form->addElement('date_time_selector',
                                  'deadline',
                                  get_string('deadline', 'coursework'),
-                                 array('optional' => $optional, 'disabled' => $disabled));
+                                 ['optional' => $optional, 'disabled' => $disabled]);
 
          $moodle_form->addElement('html', '<div class ="submission_deadline_info alert">');
          $moodle_form->addElement('html', get_string('submissionsdeadlineinfo', 'mod_coursework'));
@@ -367,13 +367,13 @@ class mod_coursework_mod_form extends moodleform_mod {
     protected function add_personal_deadline_field() {
 
         $moodle_form =& $this->_form;
-        $options = array(0 => get_string('no'), 1 => get_string('yes'));
+        $options = [0 => get_string('no'), 1 => get_string('yes')];
 
         $courseworkid = $this->get_coursework_id();
         $disabled = [];
         if (coursework_personal_deadline_passed($courseworkid)) {
             $moodle_form->disabledIf('personaldeadlineenabled', 'deadline[enabled]', 'notchecked');
-            $disabled = array('disabled' => true);
+            $disabled = ['disabled' => true];
         }
         $moodle_form->addElement('select',
                                  'personaldeadlineenabled',
@@ -405,7 +405,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodle_form->addElement('date_time_selector',
                                  'startdate',
                                  get_string('startdate', 'coursework'),
-                                 array('optional' => true, 'disabled' => $disabled)
+                                 ['optional' => true, 'disabled' => $disabled]
         );
 
         if (!empty($CFG->coursework_start_date)) {
@@ -417,7 +417,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     private function add_marking_deadline_field() {
         global $CFG;
         $moodle_form =& $this->_form;
-        $options = array(0 => get_string('no'), 1 => get_string('yes'));
+        $options = [0 => get_string('no'), 1 => get_string('yes')];
         $moodle_form->addElement('select',
             'markingdeadlineenabled',
             get_string('usemarkingdeadline', 'mod_coursework'), $options);
@@ -472,7 +472,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodle_form->addElement('date_time_selector',
             'initialmarkingdeadline',
             get_string('initialmarkingdeadline', 'coursework'),
-            array('optional' => true, 'disabled' => $disabled)
+            ['optional' => true, 'disabled' => $disabled]
         );
 
         if (!empty($CFG->coursework_marking_deadline)) {
@@ -525,7 +525,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodle_form->addElement('date_time_selector',
             'agreedgrademarkingdeadline',
             get_string('agreedgrademarkingdeadline', 'coursework'),
-            array('optional' => true, 'disabled' => $disabled)
+            ['optional' => true, 'disabled' => $disabled]
         );
 
         // $moodle_form->disabledIf('agreedgrademarkingdeadline', 'numberofmarkers', 'eq', '1');
@@ -544,7 +544,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodle_form =&  $this->_form;
 
-        $options = array('0' => get_string('disabled', 'mod_coursework'));
+        $options = ['0' => get_string('disabled', 'mod_coursework')];
         $options['7'] = get_string('oneweekoption', 'mod_coursework');
         $options['14'] = get_string('twoweeksoption', 'mod_coursework');
         $options['21'] = get_string('threeweeksoption', 'mod_coursework');
@@ -571,7 +571,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodle_form =&  $this->_form;
 
-        $options = array('0' => get_string('disabled', 'mod_coursework'));
+        $options = ['0' => get_string('disabled', 'mod_coursework')];
         $options['7'] = get_string('oneweekoption', 'mod_coursework');
         $options['14'] = get_string('twoweeksoption', 'mod_coursework');
         $options['21'] = get_string('threeweeksoption', 'mod_coursework');
@@ -604,7 +604,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     private function add_marking_reminder_field() {
         global $CFG;
         $moodle_form =& $this->_form;
-        $options = array(0 => get_string('no'), 1 => get_string('yes'));
+        $options = [0 => get_string('no'), 1 => get_string('yes')];
         $moodle_form->addElement('select',
             'markingreminderenabled',
             get_string('sendmarkingreminder', 'mod_coursework'), $options);
@@ -627,7 +627,7 @@ class mod_coursework_mod_form extends moodleform_mod {
      */
     protected function add_allow_early_finalisation_field() {
         $moodle_form =& $this->_form;
-        $options = array( 0 => get_string('no'), 1 => get_string('yes'));
+        $options = [ 0 => get_string('no'), 1 => get_string('yes')];
         $moodle_form->addElement('select',
                                  'allowearlyfinalisation',
                                  get_string('allowearlyfinalisation', 'mod_coursework'), $options);
@@ -654,7 +654,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     protected function add_use_groups_field() {
         $moodle_form =& $this->_form;
 
-        $options = array( 0 => get_string('no'), 1 => get_string('yes'));
+        $options = [ 0 => get_string('no'), 1 => get_string('yes')];
         $moodle_form->addElement('select', 'use_groups', get_string('use_groups', 'mod_coursework'), $options);
         $moodle_form->addHelpButton('use_groups', 'use_groups', 'mod_coursework');
     }
@@ -667,7 +667,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodle_form =& $this->_form;
 
-        $groups_options_result = $DB->get_records('groupings', array('courseid' => $COURSE->id), 'name', 'id, name');
+        $groups_options_result = $DB->get_records('groupings', ['courseid' => $COURSE->id], 'name', 'id, name');
         $groups_options = [];
         if ($groups_options_result !== false) {
             foreach ($groups_options_result as $result) {
@@ -677,7 +677,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         // Not calling it groupingid as this conflicts with the groupingid field in the common module
         // settings.
-        $default_groups_options = array(0 => 'Use all groups');
+        $default_groups_options = [0 => 'Use all groups'];
         $groups_options = $default_groups_options + $groups_options;
         $moodle_form->addElement('select',
                                  'grouping_id',
@@ -705,7 +705,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodle_form->addElement('text',
                                  'filetypes',
                                  get_string('filetypes', 'coursework'),
-                                 array('placeholder' => 'e.g. doc, docx, txt, rtf'));
+                                 ['placeholder' => 'e.g. doc, docx, txt, rtf']);
         $moodle_form->addHelpButton('filetypes', 'filetypes', 'mod_coursework');
         $moodle_form->setType('filetypes', PARAM_TEXT);
         $moodle_form->disabledIf('filetypes', 'use_turnitin', 'eq', '1');
@@ -746,7 +746,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodle_form =& $this->_form;
 
         // Maximum number of files:
-        $choices = array(1 => 1,
+        $choices = [1 => 1,
                          2 => 2,
                          3 => 3,
                          4 => 4,
@@ -755,7 +755,7 @@ class mod_coursework_mod_form extends moodleform_mod {
                          7 => 7,
                          8 => 8,
                          9 => 9,
-                         10 => 10);
+                         10 => 10];
         $moodle_form->addElement('select',
                                  'maxfiles',
                                  get_string('maxfiles', 'coursework'),
@@ -772,10 +772,10 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodle_form =& $this->_form;
 
-        $choices = array('0' => get_string('no'), '1' => get_string('yes'));
+        $choices = ['0' => get_string('no'), '1' => get_string('yes')];
         $courseworkid = $this->get_coursework_id();
         $courseworkhassubmissions = !empty($courseworkid)
-            && $DB->record_exists('coursework_submissions', array('courseworkid' => $courseworkid));
+            && $DB->record_exists('coursework_submissions', ['courseworkid' => $courseworkid]);
 
         if (empty($courseworkid) || empty($courseworkhassubmissions)) {
 
@@ -806,7 +806,7 @@ class mod_coursework_mod_form extends moodleform_mod {
                          WHERE      id = :courseworkid
                          AND        renamefiles = 1";
 
-            $settingvalue = ($DB->get_records_sql($sql, array('courseworkid' => $courseworkid))) ? get_string('yesrenamefile', 'mod_coursework') : get_string('norenamefile', 'mod_coursework');
+            $settingvalue = ($DB->get_records_sql($sql, ['courseworkid' => $courseworkid])) ? get_string('yesrenamefile', 'mod_coursework') : get_string('norenamefile', 'mod_coursework');
 
             $moodle_form->addElement('static', 'renamefilesdescription', get_string('renamefiles', 'mod_coursework'),
                 $settingvalue);
@@ -832,12 +832,12 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodle_form =& $this->_form;
         $courseworkid = $this->get_coursework_id();
 
-        $multi_options = array(
+        $multi_options = [
             // Don't want to give the option for 0!
             1 => 1,
             2 => 2,
             3 => 3,
-        );
+        ];
         // Remove all options lower than the current maximum number of feedbacks that any student has.
         $currentmaxfeedbacks = coursework_get_current_max_feedbacks($courseworkid);
         if ($currentmaxfeedbacks) {
@@ -862,7 +862,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     protected function add_enable_moderation_agreement_field() {
         $moodle_form =& $this->_form;
 
-        $options = array(0 => get_string('no'), 1 => get_string('yes'));
+        $options = [0 => get_string('no'), 1 => get_string('yes')];
         $moodle_form->addElement('select', 'moderationagreementenabled', get_string('moderationagreementenabled', 'mod_coursework'), $options);
         $moodle_form->addHelpButton('moderationagreementenabled', 'moderationagreementenabled', 'mod_coursework');
         $moodle_form->setDefault('moderationagreementenabled', 0);
@@ -890,7 +890,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     protected function add_enable_allocation_field() {
         $moodle_form =& $this->_form;
 
-        $options = array( 0 => get_string('no'), 1 => get_string('yes'));
+        $options = [ 0 => get_string('no'), 1 => get_string('yes')];
         $moodle_form->addElement('select', 'allocationenabled', get_string('allocationenabled', 'mod_coursework'), $options);
         $moodle_form->addHelpButton('allocationenabled', 'allocationenabled', 'mod_coursework');
     }
@@ -909,7 +909,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         foreach ($keys as $key) {
             $radioarray[] =& $moodle_form->createElement('radio', 'assessorallocationstrategy', '', $options[$key], $key, '');
         }
-        $moodle_form->addGroup($radioarray, 'radioarray',  get_string('assessorallocationstrategy', 'mod_coursework'), array(' '), false);
+        $moodle_form->addGroup($radioarray, 'radioarray',  get_string('assessorallocationstrategy', 'mod_coursework'), [' '], false);
         $moodle_form->addHelpButton('radioarray', 'assessorallocationstrategy', 'mod_coursework');
         $moodle_form->disabledIf('radioarray', 'allocationenabled', 'eq', 0);
     }
@@ -960,7 +960,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodle_form =& $this->_form;
 
-        $options = array( 0 => get_string('no'), 1 => get_string('yes'));
+        $options = [ 0 => get_string('no'), 1 => get_string('yes')];
         $moodle_form->addElement('select', 'blindmarking', get_string('blindmarking', 'mod_coursework'), $options);
         $moodle_form->addHelpButton('blindmarking', 'blindmarking', 'mod_coursework');
         $moodle_form->setDefault('blindmarking', $CFG->coursework_blindmarking);
@@ -992,7 +992,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         global $CFG;
 
         $moodle_form =& $this->_form;
-        $options = array(0 => get_string('no'), 1 => get_string('yes'));
+        $options = [0 => get_string('no'), 1 => get_string('yes')];
         $moodle_form->addElement('select', 'assessoranonymity', get_string('assessoranonymity', 'mod_coursework'), $options);
         $moodle_form->addHelpButton('assessoranonymity', 'assessoranonymity', 'mod_coursework');
         $moodle_form->setDefault('assessoranonymity', $CFG->coursework_assessoranonymity);
@@ -1019,14 +1019,14 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $timestamp = strtotime('+' . $CFG->coursework_individualfeedback . ' weeks');
 
-        $default = array(
+        $default = [
             'day' => date('j', $timestamp),
             'month' => date('n', $timestamp),
             'year' => date('Y', $timestamp),
             'hour' => date('G', $timestamp),
             'minute' => date('i', $timestamp),
-        );
-        $options = array('optional' => true);
+        ];
+        $options = ['optional' => true];
         if ($CFG->coursework_auto_release_individual_feedback == 0) {
             $options['disabled'] = true;
 
@@ -1061,7 +1061,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         global $CFG;
 
         $moodle_form =& $this->_form;
-        $options = array(0 => get_string('no'), 1 => get_string('yes'));
+        $options = [0 => get_string('no'), 1 => get_string('yes')];
         $moodle_form->addElement('select', 'feedbackreleaseemail', get_string('feedbackreleaseemail', 'mod_coursework'), $options);
         $moodle_form->addHelpButton('feedbackreleaseemail', 'feedbackreleaseemail', 'mod_coursework');
         $moodle_form->setDefault('feedbackreleaseemail', $CFG->coursework_feedbackreleaseemail);
@@ -1078,18 +1078,18 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodle_form->addElement('date_time_selector',
                                  'generalfeedback',
                                  get_string('generalfeedbackreleasedate', 'coursework'),
-                                 array('optional' => true, 'disabled' => true));
+                                 ['optional' => true, 'disabled' => true]);
         // We have a field which is sometimes disabled. Disabled fields are not sent back to the
         // server, so the default is used.
         $timestamp = strtotime('+' . $CFG->coursework_generalfeedback . ' weeks');
 
-        $default = array(
+        $default = [
             'day' => date('j', $timestamp),
             'month' => date('n', $timestamp),
             'year' => date('Y', $timestamp),
             'hour' => date('G', $timestamp),
             'minute' => date('i', $timestamp),
-        );
+        ];
         $moodle_form->setDefault('generalfeedback', $default);
         $moodle_form->addHelpButton('generalfeedback', 'generalfeedback', 'mod_coursework');
         $moodle_form->disabledIf('generalfeedback', 'deadline[enabled]', 'notchecked');
@@ -1103,8 +1103,8 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodle_form->addHelpButton('grade', 'grade', 'mod_coursework');
         $moodle_form->setExpanded('modstandardgrade');
 
-        $options = array(0 => get_string('sameforallstages', 'mod_coursework'),
-                         1 => get_string('simpledirectgrading', 'mod_coursework'));
+        $options = [0 => get_string('sameforallstages', 'mod_coursework'),
+                         1 => get_string('simpledirectgrading', 'mod_coursework')];
 
         $moodle_form->addElement('select', 'finalstagegrading', get_string('finalstagegrading', 'mod_coursework'), $options);
         $moodle_form->addHelpButton('finalstagegrading', 'finalstagegrading', 'mod_coursework');
@@ -1155,7 +1155,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     private function add_allow_late_submissions_field() {
         global $CFG;
         $moodle_form =& $this->_form;
-        $options = array( 0 => get_string('no'), 1 => get_string('yes'));
+        $options = [ 0 => get_string('no'), 1 => get_string('yes')];
         $moodle_form->addElement('select',
                                  'allowlatesubmissions',
                                  get_string('allowlatesubmissions', 'mod_coursework'), $options);
@@ -1169,7 +1169,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodle_form =& $this->_form;
 
-        $options = array( 0 => get_string('no'), 1 => get_string('yes'));
+        $options = [ 0 => get_string('no'), 1 => get_string('yes')];
         $moodle_form->addElement('select',
                                  'showallfeedbacks',
                                  get_string('showallfeedbacks', 'mod_coursework'), $options);
@@ -1213,7 +1213,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodle_form =& $this->_form;
 
-        $options = array('0' => get_string('disabled', 'mod_coursework'));
+        $options = ['0' => get_string('disabled', 'mod_coursework')];
         $options['1800'] = get_string('timedminutes', 'mod_coursework', '30');
         $options['3600'] = get_string('timedhour', 'mod_coursework', '1');
         $options['7200'] = get_string('timedhours', 'mod_coursework', '2');
@@ -1236,7 +1236,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodle_form =& $this->_form;
 
-        $options = array(0 => get_string('no'), 1 => get_string('yes'));
+        $options = [0 => get_string('no'), 1 => get_string('yes')];
 
         $moodle_form->addElement('select', 'draftfeedbackenabled', get_string('savefeedbackasdraft', 'mod_coursework'), $options);
         $moodle_form->addHelpButton('draftfeedbackenabled', 'savefeedbackasdraft', 'mod_coursework');
@@ -1276,7 +1276,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         global $CFG;
         $moodle_form =& $this->_form;
 
-        $options = array( 0 => get_string('no'), 1 => get_string('yes'));
+        $options = [ 0 => get_string('no'), 1 => get_string('yes')];
         $moodle_form->addElement('select', 'extensionsenabled', get_string('individual_extension', 'mod_coursework'), $options);
         $moodle_form->addHelpButton('extensionsenabled', 'individual_extension', 'mod_coursework');
         $moodle_form->setDefault('extensionsenabled', $CFG->coursework_individual_extension);
@@ -1305,9 +1305,9 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     private function add_automatic_agreement_enabled() {
-        $options = array('none' => 'none',
+        $options = ['none' => 'none',
                          'percentage_distance' => 'percentage distance',
-                         'average_grade' => 'average grade');
+                         'average_grade' => 'average grade'];
         $this->form()->addelement('select',
                                   'automaticagreementstrategy',
                                   get_string('automaticagreementofgrades', 'mod_coursework'),
@@ -1326,9 +1326,9 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->form()->setDefault('automaticagreementrange', 10);
 
         // rounding of the average grade
-        $roundingoptions = array('mid' => get_string('roundmid', 'mod_coursework'),
+        $roundingoptions = ['mid' => get_string('roundmid', 'mod_coursework'),
                                  'up' => get_string('roundup', 'mod_coursework'),
-                                 'down' => get_string('rounddown', 'mod_coursework'));
+                                 'down' => get_string('rounddown', 'mod_coursework')];
 
         $this->form()->addElement('select',
                                    'roundingrule',
@@ -1346,7 +1346,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         global $CFG;
         $moodle_form =& $this->_form;
 
-        $options = array( 0 => get_string('no'), 1 => get_string('yes'));
+        $options = [ 0 => get_string('no'), 1 => get_string('yes')];
         $moodle_form->addElement('select', 'plagiarismflagenabled', get_string('plagiarism_flag_enable', 'mod_coursework'), $options);
         $moodle_form->addHelpButton('plagiarismflagenabled', 'plagiarism_flag_enable', 'mod_coursework');
         $moodle_form->setDefault('plagiarismflagenabled', $CFG->coursework_plagiarismflag);

@@ -101,12 +101,12 @@ class moderations_controller extends controller_base {
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('edit', $moderation);
 
-        $urlparams = array('moderationid' => $this->params['moderationid']);
+        $urlparams = ['moderationid' => $this->params['moderationid']];
         $PAGE->set_url('/mod/coursework/actions/moderations/edit.php', $urlparams);
 
-        $moderator = $DB->get_record('user', array('id' => $moderation->moderatorid));
+        $moderator = $DB->get_record('user', ['id' => $moderation->moderatorid]);
         if (!empty($moderation->lasteditedby)) {
-            $editor = $DB->get_record('user', array('id' => $moderation->lasteditedby));
+            $editor = $DB->get_record('user', ['id' => $moderation->lasteditedby]);
         } else {
             $editor = $moderator;
         }
@@ -132,20 +132,20 @@ class moderations_controller extends controller_base {
         $moderatoragreement->feedbackid = $this->params['feedbackid'];
 
         $submission = submission::find($this->params['submissionid']);
-        $path_params = array(
+        $path_params = [
             'submission' => $submission,
             'moderator' => \core_user::get_user($this->params['moderatorid']),
             'stage' => 'moderator',
-        );
+        ];
         $url = $this->get_router()->get_path('new moderation', $path_params, true);
         $PAGE->set_url($url);
 
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('new', $moderatoragreement);
 
-        $form = new moderator_agreement_mform(null, array('moderation' => $moderatoragreement));
+        $form = new moderator_agreement_mform(null, ['moderation' => $moderatoragreement]);
 
-        $coursework_page_url = $this->get_path('coursework', array('coursework' => $moderatoragreement->get_coursework()));
+        $coursework_page_url = $this->get_path('coursework', ['coursework' => $moderatoragreement->get_coursework()]);
         if ($form->is_cancelled()) {
             redirect($coursework_page_url);
         }
@@ -178,9 +178,9 @@ class moderations_controller extends controller_base {
 
         $this->check_stage_permissions($moderatoragreement->stage_identifier);
 
-        $form = new moderator_agreement_mform(null, array('moderation' => $moderatoragreement));
+        $form = new moderator_agreement_mform(null, ['moderation' => $moderatoragreement]);
 
-        $coursework_page_url = $this->get_path('coursework', array('coursework' => $moderatoragreement->get_coursework()));
+        $coursework_page_url = $this->get_path('coursework', ['coursework' => $moderatoragreement->get_coursework()]);
         if ($form->is_cancelled()) {
             redirect($coursework_page_url);
         }
@@ -200,7 +200,7 @@ class moderations_controller extends controller_base {
     protected function show_moderation() {
         global $PAGE, $USER;
 
-        $urlparams = array('moderationid' => $this->params['moderationid']);
+        $urlparams = ['moderationid' => $this->params['moderationid']];
         $PAGE->set_url('/mod/coursework/actions/moderations/show.php', $urlparams);
 
         $moderation = new moderation($this->params['moderationid']);
@@ -220,7 +220,7 @@ class moderations_controller extends controller_base {
 
         if (!empty($this->params['feedbackid'])) {
             $feedback = $DB->get_record('coursework_feedbacks',
-                array('id' => $this->params['feedbackid']),
+                ['id' => $this->params['feedbackid']],
                 '*',
                 MUST_EXIST);
             $this->feedback = new feedback($feedback);
@@ -229,7 +229,7 @@ class moderations_controller extends controller_base {
 
         if (!empty($this->params['submissionid'])) {
             $submission = $DB->get_record('coursework_submissions',
-                array('id' => $this->params['submissionid']),
+                ['id' => $this->params['submissionid']],
                 '*',
                 MUST_EXIST);
             $this->submission = submission::find($submission);
@@ -238,7 +238,7 @@ class moderations_controller extends controller_base {
 
         if (!empty($this->params['moderationid'])) {
             $moderation = $DB->get_record('coursework_mod_agreements',
-                array('id' => $this->params['moderationid']),
+                ['id' => $this->params['moderationid']],
                 '*',
                 MUST_EXIST);
             $this->moderation = moderation::find($moderation);

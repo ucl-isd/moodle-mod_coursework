@@ -35,14 +35,14 @@ $stage_identifier = optional_param('stage_identifier', '', PARAM_ALPHANUMEXT);
 $finalised = !!optional_param('submitbutton', 0, PARAM_TEXT);
 $ajax = optional_param('ajax', 0, PARAM_INT);
 
-$params = array(
+$params = [
     'submissionid' => $submissionid,
     'isfinalgrade' => $isfinalgrade,
     'assessorid' => $assessorid,
     'stage_identifier' => $stage_identifier,
     'finalised' => $finalised,
     'ajax' => $ajax,
-);
+];
 
 if ($ajax) {
     $params['cell_type'] = required_param('cell_type', PARAM_TEXT);

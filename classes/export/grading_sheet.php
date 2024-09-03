@@ -31,9 +31,9 @@ class grading_sheet extends csv {
 
     public function get_submissions($groupid = null, $selected_submission_ids = '') {
         global $PAGE, $USER;
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
-        );
+        ];
 
         $submissions = submission::find_all($params);
 
@@ -151,7 +151,7 @@ class grading_sheet extends csv {
         global $PAGE;
 
         // headers and data for csv
-        $csv_cells = array('submissionid', 'submissionfileid');
+        $csv_cells = ['submissionid', 'submissionfileid'];
 
         if ($coursework->is_configured_to_have_group_submissions()) {
             $csv_cells[] = 'group';

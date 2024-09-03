@@ -70,9 +70,9 @@ class personal_deadline extends table_base {
     public function extension_exists() {
         $coursework = $this->get_coursework();
 
-        $params = array('courseworkid' => $coursework->id,
+        $params = ['courseworkid' => $coursework->id,
                         'allocatableid' => $this->allocatableid,
-                        'allocatabletype' => $this->allocatabletype);
+                        'allocatabletype' => $this->allocatabletype];
 
         return   deadline_extension::find($params);
     }
@@ -89,10 +89,10 @@ class personal_deadline extends table_base {
             $allocatable = $student;
         }
         if ($allocatable) {
-            return static::find(array('courseworkid' => $coursework->id,
+            return static::find(['courseworkid' => $coursework->id,
                                       'allocatableid' => $allocatable->id(),
                                       'allocatabletype' => $allocatable->type(),
-            ));
+            ]);
         }
     }
 

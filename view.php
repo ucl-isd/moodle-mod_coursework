@@ -42,13 +42,13 @@ require_once($CFG->dirroot . '/lib/plagiarismlib.php');
 require_once($CFG->dirroot . '/mod/coursework/classes/export/csv.php');
 
 // TODO move all js to renderer.
-$jsmodule = array(
+$jsmodule = [
     'name' => 'mod_coursework',
     'fullpath' => '/mod/coursework/module.js',
-    'requires' => array('base',
-                        'node-base'),
+    'requires' => ['base',
+                        'node-base'],
     'strings' => [],
-);
+];
 
 $PAGE->requires->yui_module('moodle-core-notification', 'notification_init');
 
@@ -226,19 +226,19 @@ if ($course_module_id) {
                                               0,
                                               false,
                                               MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $course_module->course), '*', MUST_EXIST);
+    $course = $DB->get_record('course', ['id' => $course_module->course], '*', MUST_EXIST);
     $coursework_record = $DB->get_record('coursework',
-                                         array('id' => $course_module->instance),
+                                         ['id' => $course_module->instance],
                                          '*',
                                          MUST_EXIST);
 } else {
     if ($coursework_id) {
         $coursework_record = $DB->get_record('coursework',
-                                             array('id' => $coursework_id),
+                                             ['id' => $coursework_id],
                                              '*',
                                              MUST_EXIST);
         $course = $DB->get_record('course',
-                                  array('id' => $coursework_record->course),
+                                  ['id' => $coursework_record->course],
                                   '*',
                                   MUST_EXIST);
         $course_module = get_coursemodule_from_instance('coursework',
@@ -302,7 +302,7 @@ if ($download && $zip_file = $coursework->pack_files()) {
 if ($export_grades) {
 
     // Headers and data for csv
-    $csv_cells = array('name', 'username', 'idnumber', 'email');
+    $csv_cells = ['name', 'username', 'idnumber', 'email'];
 
     if ($coursework->personal_deadlines_enabled()) {
         $csv_cells[] = 'personaldeadline';
@@ -352,7 +352,7 @@ $can_submit = has_capability('mod/coursework:submit', $PAGE->context);
 $can_view_students = false;
 
 // TODO this is awful.
-$capabilities = array('addinstance',
+$capabilities = ['addinstance',
                       'submitonbehalfof',
                       'addinitialgrade',
                       'editinitialgrade',
@@ -367,7 +367,7 @@ $capabilities = array('addinstance',
                       'grantextensions',
                       'canexportfinalgrades',
                       'viewextensions',
-                      'grade');
+                      'grade'];
 
 foreach ($capabilities as $capability) {
 
@@ -378,10 +378,10 @@ foreach ($capabilities as $capability) {
 }
 
 if ((float)substr($CFG->release, 0, 5) > 2.6) { // 2.8 > 2.6
-    $event = \mod_coursework\event\course_module_viewed::create(array(
+    $event = \mod_coursework\event\course_module_viewed::create([
                                                                     'objectid' => $coursework->id,
                                                                     'context' => $coursework->get_context(),
-                                                                ));
+                                                                ]);
     $event->trigger();
 } else {
     add_to_log($course->id,
@@ -400,11 +400,11 @@ if ($coursework->is_configured_to_have_group_submissions()) {
     $viewallstudents_sortby = optional_param('viewallstudents_sortby', 'groupname', PARAM_ALPHA);
 
 }
-$params = array('id' => $course_module->id,
+$params = ['id' => $course_module->id,
                 'sortby' => $sortby,
                 'sorthow' => $sorthow,
                 'per_page' => $perpage,
-                'group' => $group);
+                'group' => $group];
 
 if (!empty($SESSION->displayallstudents[$course_module_id])) {
     $params['viewallstudents_sorthow'] = $viewallstudents_sorthow;
@@ -465,10 +465,10 @@ if ($can_view_students) {
          */
         $submission = submission::find($submissionid);
 
-        $params = array(
+        $params = [
             'cm' => $course_module->id,
             'userid' => $submission->get_author_id(),
-        );
+        ];
         // Get the hash so we can retrieve the file and update timemodified.
         $filehash = $DB->get_field('plagiarism_turnitin_files', 'identifier', $params);
 
@@ -480,9 +480,9 @@ if ($can_view_students) {
         // to be now and rely on the submission timemodified date to tell us when the student finalised their
         // work.
         if ($filehash) {
-            $params = array(
+            $params = [
                 'pathnamehash' => $filehash,
-            );
+            ];
             $file = $DB->get_record('files', $params);
             $file->timemodified = time();
             $DB->update_record('files', $file);
@@ -505,8 +505,8 @@ if ($can_view_students) {
             // Already confirmed. Publish and redirect.
             $coursework->publish_grades();
             $url = clone($PAGE->url);
-            $url->remove_params(array('confirm',
-                                      'publishbutton'));
+            $url->remove_params(['confirm',
+                                      'publishbutton']);
             redirect($url, get_string('gradespublished', 'mod_coursework'));
         }
     } else {

@@ -88,7 +88,7 @@ class csv {
         $submissions = $this->get_submissions();
 
         // sort submissions by lastname
-        usort($submissions, array($this, "sort_by_lastname"));
+        usort($submissions, [$this, "sort_by_lastname"]);
 
         // loop through each submission in the coursework
         foreach ($submissions as $submission) {

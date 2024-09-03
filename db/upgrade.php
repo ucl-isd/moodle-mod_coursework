@@ -129,7 +129,7 @@ function xmldb_coursework_upgrade($oldversion) {
             $newcomment = [];
             $oldcomment = $datarow->feedbackcomment; // Comma separated, with lots of extra commas.
             $components = $DB->get_records('coursework_form_component',
-                                           array('fieldid' => $datarow->fieldid));
+                                           ['fieldid' => $datarow->fieldid]);
             foreach ($components as $component) {
                 if (!empty($oldcomment) && strpos($component->comp_description, $oldcomment) !== false) {
                     $newcomment[] = $component->id;
@@ -230,7 +230,7 @@ function xmldb_coursework_upgrade($oldversion) {
         $table->add_field('manual', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
 
         // Adding keys to table coursework_allocation_pairs.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for coursework_allocation_pairs.
         if (!$dbman->table_exists($table)) {
@@ -339,9 +339,9 @@ function xmldb_coursework_upgrade($oldversion) {
         $table->add_field('ruleorder', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
 
         // Adding keys to table coursework_moderation_set_ru.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-        $table->add_key('coursework_fk', XMLDB_KEY_FOREIGN, array('courseworkid'), 'coursework',
-                        array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('coursework_fk', XMLDB_KEY_FOREIGN, ['courseworkid'], 'coursework',
+                        ['id']);
 
         // Conditionally launch create table for coursework_moderation_set_ru.
         if (!$dbman->table_exists($table)) {
@@ -366,9 +366,9 @@ function xmldb_coursework_upgrade($oldversion) {
                           null);
 
         // Adding keys to table coursework_mod_set_rule_bg.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-        $table->add_key('ruleinstance_fk', XMLDB_KEY_FOREIGN, array('ruleinstanceid'),
-                        'coursework_mod_set_rules', array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('ruleinstance_fk', XMLDB_KEY_FOREIGN, ['ruleinstanceid'],
+                        'coursework_mod_set_rules', ['id']);
 
         // Conditionally launch create table for coursework_mod_set_rule_bg.
         if (!$dbman->table_exists($table)) {
@@ -454,9 +454,9 @@ function xmldb_coursework_upgrade($oldversion) {
         $table->add_field('value', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table coursework_allocation_config.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-        $table->add_key('courseworkid_fk', XMLDB_KEY_FOREIGN, array('courseworkid'), 'coursework', array('id'));
-        $table->add_key('assessorid_fk', XMLDB_KEY_FOREIGN, array('assessorid'), 'user', array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('courseworkid_fk', XMLDB_KEY_FOREIGN, ['courseworkid'], 'coursework', ['id']);
+        $table->add_key('assessorid_fk', XMLDB_KEY_FOREIGN, ['assessorid'], 'user', ['id']);
 
         // Conditionally launch create table for coursework_allocation_config.
         if (!$dbman->table_exists($table)) {
@@ -558,11 +558,11 @@ function xmldb_coursework_upgrade($oldversion) {
         $table->add_field('createdby', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table coursework_mitigations.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-        $table->add_key('courseworkid_fk', XMLDB_KEY_FOREIGN, array('courseworkid'), 'coursework', array('id'));
-        $table->add_key('studentid_fk', XMLDB_KEY_FOREIGN, array('studentid'), 'user', array('id'));
-        $table->add_key('lastmodifiedby_fk', XMLDB_KEY_FOREIGN, array('lastmodifiedby'), 'user', array('id'));
-        $table->add_key('createdby_fk', XMLDB_KEY_FOREIGN, array('createdby'), 'user', array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('courseworkid_fk', XMLDB_KEY_FOREIGN, ['courseworkid'], 'coursework', ['id']);
+        $table->add_key('studentid_fk', XMLDB_KEY_FOREIGN, ['studentid'], 'user', ['id']);
+        $table->add_key('lastmodifiedby_fk', XMLDB_KEY_FOREIGN, ['lastmodifiedby'], 'user', ['id']);
+        $table->add_key('createdby_fk', XMLDB_KEY_FOREIGN, ['createdby'], 'user', ['id']);
 
         // Conditionally launch create table for coursework_mitigations.
         if (!$dbman->table_exists($table)) {
@@ -726,7 +726,7 @@ function xmldb_coursework_upgrade($oldversion) {
         $table = new xmldb_table('coursework_submissions');
 
         // Conditionally launch drop index mitigation_id.
-        $index = new xmldb_index('mitigation_id', XMLDB_INDEX_NOTUNIQUE, array('mitigation_id'));
+        $index = new xmldb_index('mitigation_id', XMLDB_INDEX_NOTUNIQUE, ['mitigation_id']);
         if ($dbman->index_exists($table, $index)) {
             $dbman->drop_index($table, $index);
         }
@@ -975,7 +975,7 @@ function xmldb_coursework_upgrade($oldversion) {
         ";
         $feedbacks = $DB->get_records_sql($sql);
         foreach ($feedbacks as $feedback) {
-            $DB->set_field('coursework_feedbacks', 'markernumber', 1, array('id' => $feedback->id));
+            $DB->set_field('coursework_feedbacks', 'markernumber', 1, ['id' => $feedback->id]);
         }
 
         // Then the second ones.
@@ -995,7 +995,7 @@ function xmldb_coursework_upgrade($oldversion) {
         ";
         $feedbacks = $DB->get_records_sql($sql);
         foreach ($feedbacks as $feedback) {
-            $DB->set_field('coursework_feedbacks', 'markernumber', 2, array('id' => $feedback->id));
+            $DB->set_field('coursework_feedbacks', 'markernumber', 2, ['id' => $feedback->id]);
         }
         // And the third.
         $sql = "
@@ -1014,7 +1014,7 @@ function xmldb_coursework_upgrade($oldversion) {
         ";
         $feedbacks = $DB->get_records_sql($sql);
         foreach ($feedbacks as $feedback) {
-            $DB->set_field('coursework_feedbacks', 'markernumber', 3, array('id' => $feedback->id));
+            $DB->set_field('coursework_feedbacks', 'markernumber', 3, ['id' => $feedback->id]);
         }
 
         // Just in case we have others floating around...
@@ -1034,7 +1034,7 @@ function xmldb_coursework_upgrade($oldversion) {
         ";
         $feedbacks = $DB->get_records_sql($sql);
         foreach ($feedbacks as $feedback) {
-            $DB->set_field('coursework_feedbacks', 'markernumber', 4, array('id' => $feedback->id));
+            $DB->set_field('coursework_feedbacks', 'markernumber', 4, ['id' => $feedback->id]);
         }
 
         // Coursework savepoint reached.
@@ -1154,7 +1154,7 @@ function xmldb_coursework_upgrade($oldversion) {
         $table->add_field('studentid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table coursework_mod_set_members.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for coursework_mod_set_members.
         if (!$dbman->table_exists($table)) {
@@ -1192,13 +1192,13 @@ function xmldb_coursework_upgrade($oldversion) {
                  WHERE ap.courseworkid = :courseworkid
                    AND ap.moderator = 0
 
-            ', array('courseworkid' => $coursework->id));
+            ', ['courseworkid' => $coursework->id]);
             foreach ($students_with_assessor_allocations as $student) {
-                $params = array(
+                $params = [
                     'studentid' => $student->studentid,
                     'courseworkid' => $coursework->id,
                     'moderator' => 0,
-                );
+                ];
                 $allocations = $DB->get_records('coursework_allocation_pairs', $params);
                 $number = 1;
                 foreach ($allocations as $allocation) {
@@ -1274,14 +1274,14 @@ function xmldb_coursework_upgrade($oldversion) {
                  WHERE s.courseworkid = :courseworkid
                    AND f.isfinalgrade = 0
                    AND f.ismoderation = 0
-            ', array('courseworkid' => $coursework->id));
+            ', ['courseworkid' => $coursework->id]);
 
             foreach ($submissions_with_feedbacks as $submission) {
-                $params = array(
+                $params = [
                     'submissionid' => $submission->id,
                     'isfinalgrade' => 0,
                     'ismoderation' => 0,
-                );
+                ];
                 $feedbacks = $DB->get_records('coursework_feedbacks', $params);
                 $number = 1;
                 foreach ($feedbacks as $feedback) {
@@ -1451,14 +1451,14 @@ function xmldb_coursework_upgrade($oldversion) {
 
         // Set group submission allocatables
 
-        $courseworks_with_groups = $DB->get_records('coursework', array('use_groups' => 1));
+        $courseworks_with_groups = $DB->get_records('coursework', ['use_groups' => 1]);
 
         foreach ($courseworks_with_groups as $coursework) {
             $coursework = \mod_coursework\models\coursework::find($coursework);
 
-            $params = array(
+            $params = [
                 'courseworkid' => $coursework->id,
-            );
+            ];
             $submissions = $DB->get_records('coursework_submissions', $params);
             foreach ($submissions as $submission) {
                 $group = $coursework->get_student_group($submission->userid);
@@ -1725,7 +1725,7 @@ function xmldb_coursework_upgrade($oldversion) {
         $table->add_field('extended_deadline', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table coursework_extensions.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for coursework_extensions.
         if (!$dbman->table_exists($table)) {
@@ -1969,7 +1969,7 @@ function xmldb_coursework_upgrade($oldversion) {
         $table->add_field('stage_identifier', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table coursework_moderation_set_ru.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for coursework_moderation_set_ru.
         if (!$dbman->table_exists($table)) {
@@ -1985,13 +1985,13 @@ function xmldb_coursework_upgrade($oldversion) {
         $table->add_field('pluginorder', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table coursework_moderation_set_ru.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         if (!$dbman->table_exists($table)) {
             $dbman->create_table($table);
 
             // Now create plugin records for sample set plugins
-            $plugins = array('range_sample_type', 'total_sample_type');
+            $plugins = ['range_sample_type', 'total_sample_type'];
 
             $i = 1;
 
@@ -2025,7 +2025,7 @@ function xmldb_coursework_upgrade($oldversion) {
         $table->add_field('selectiontype', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, 'manual');
 
         // Adding keys to table coursework_sample_set_mbrs.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for coursework_sample_set_mbrs.
         if (!$dbman->table_exists($table)) {
@@ -2037,11 +2037,11 @@ function xmldb_coursework_upgrade($oldversion) {
 
     }
 
-    $allocatabletables = array('coursework_submissions',
+    $allocatabletables = ['coursework_submissions',
                              'coursework_allocation_pairs',
                              'coursework_mod_set_members',
                              'coursework_extensions',
-                             'coursework_sample_set_mbrs');
+                             'coursework_sample_set_mbrs'];
 
     if ($oldversion < 2015110303) {
         $fields = [];
@@ -2218,7 +2218,7 @@ function xmldb_coursework_upgrade($oldversion) {
         $table->add_field('lastmodifiedbyid', XMLDB_TYPE_INTEGER, '10', null, false, null, null);
 
         // Adding keys to table coursework_person_deadlines.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for coursework_person_deadlines.
         if (!$dbman->table_exists($table)) {
@@ -2266,7 +2266,7 @@ function xmldb_coursework_upgrade($oldversion) {
 
         // update default value of automaticagreementstrategy field from NULL to none
 
-        $allcourseworks = $DB->get_records('coursework', array('automaticagreementstrategy' => 'NULL')); // get all courseworks with automaticagreementstrategy set to NULL
+        $allcourseworks = $DB->get_records('coursework', ['automaticagreementstrategy' => 'NULL']); // get all courseworks with automaticagreementstrategy set to NULL
         foreach ($allcourseworks as $coursework) {
             $coursework->automaticagreementstrategy = 'none';
             $DB->update_record('coursework', $coursework);
@@ -2308,7 +2308,7 @@ function xmldb_coursework_upgrade($oldversion) {
         $dbman->change_field_default($table, $field);
 
         // again update default value of automaticagreementstrategy field from NULL to none
-        $allcourseworks = $DB->get_records('coursework', array('automaticagreementstrategy' => 'NULL')); // get all courseworks with automaticagreementstrategy set to NULL
+        $allcourseworks = $DB->get_records('coursework', ['automaticagreementstrategy' => 'NULL']); // get all courseworks with automaticagreementstrategy set to NULL
         foreach ($allcourseworks as $coursework) {
             $coursework->automaticagreementstrategy = 'none';
             $DB->update_record('coursework', $coursework);
@@ -2347,7 +2347,7 @@ function xmldb_coursework_upgrade($oldversion) {
         $table->add_field('modcomment', XMLDB_TYPE_TEXT, null, null, null, null, null);
         $table->add_field('modcommentformat', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1');
         // Adding keys to table coursework_person_deadlines.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for coursework_person_deadlines.
         if (!$dbman->table_exists($table)) {
@@ -2465,7 +2465,7 @@ function xmldb_coursework_upgrade($oldversion) {
         $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
 
         // Adding keys to table coursework_plagiarism_flag.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for coursework_plagiarism_flag.
         if (!$dbman->table_exists($table)) {
@@ -2491,7 +2491,7 @@ function xmldb_coursework_upgrade($oldversion) {
         $courseworkinstances = $DB->get_records('coursework');
 
         foreach ($courseworkinstances as $cwk) {
-            $courseworkhassubmissions = $DB->record_exists('coursework_submissions', array('courseworkid' => $cwk->id));
+            $courseworkhassubmissions = $DB->record_exists('coursework_submissions', ['courseworkid' => $cwk->id]);
 
             $cwk->renamefiles = ($cwk->blindmarking == 1 || $courseworkhassubmissions) ? 1 : 0;
 

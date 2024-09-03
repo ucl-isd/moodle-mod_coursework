@@ -33,9 +33,9 @@ require_once($CFG->libdir.'/csvlib.class.php');
 
 $coursemoduleid = required_param('cmid', PARAM_INT);
 
-$coursemodule = $DB->get_record('course_modules', array('id' => $coursemoduleid));
+$coursemodule = $DB->get_record('course_modules', ['id' => $coursemoduleid]);
 $coursework = coursework::find($coursemodule->instance);
-$course = $DB->get_record('course', array('id' => $coursemodule->course));
+$course = $DB->get_record('course', ['id' => $coursemodule->course]);
 
 require_login($course, false, $coursemodule);
 
@@ -45,7 +45,7 @@ $title = get_string($csvtype, 'mod_coursework');
 $PAGE->set_url(new moodle_url('/mod/coursework/actions/upload_grading_sheet.php'));
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
-$grading_sheet_capabilities = array('mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade', 'mod/coursework:administergrades');
+$grading_sheet_capabilities = ['mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade', 'mod/coursework:administergrades'];
 
 // Bounce anyone who shouldn't be here.
 if (!has_any_capability($grading_sheet_capabilities, $PAGE->context)) {

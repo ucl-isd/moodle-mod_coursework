@@ -57,7 +57,7 @@ abstract class cell_base implements cell_interface {
 
         global $PAGE;
 
-        $params = array('id' => optional_param('id', 0, PARAM_INT));
+        $params = ['id' => optional_param('id', 0, PARAM_INT)];
 
         $tablename = (!empty($tablename)) ? $tablename.'_' : '';
 

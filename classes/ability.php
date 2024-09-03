@@ -259,10 +259,10 @@ class ability extends \mod_coursework\framework\ability {
      * @return array
      */
     protected function classname_mappings() {
-        return array(
+        return [
             'submission_groups_decorator' => 'submission',
             'coursework_groups_decorator' => 'coursework',
-        );
+        ];
     }
 
     /**
@@ -309,11 +309,11 @@ class ability extends \mod_coursework\framework\ability {
         $this->prevent('new',
                        'mod_coursework\models\submission',
             function (submission $submission) {
-                $exists_params = array(
+                $exists_params = [
                     'courseworkid' => $submission->courseworkid,
                     'allocatableid' => $submission->allocatableid,
                     'allocatabletype' => $submission->allocatabletype,
-                );
+                ];
                 if (submission::exists($exists_params)) {
                     $this->set_message('Submission already exists');
                     return true;
@@ -383,8 +383,8 @@ class ability extends \mod_coursework\framework\ability {
         $this->allow('show',
                      'mod_coursework\models\submission',
             function (submission $submission) {
-                return feedback::exists(array('submissionid' => $submission->id,
-                                              'assessorid' => $this->get_user()->id()));
+                return feedback::exists(['submissionid' => $submission->id,
+                                              'assessorid' => $this->get_user()->id()]);
             });
     }
 
@@ -1102,8 +1102,8 @@ class ability extends \mod_coursework\framework\ability {
                      'mod_coursework\grading_table_row_base',
             function (grading_table_row_base $grading_table_row) {
                 if ($grading_table_row->has_submission()) {
-                    if (feedback::exists(array('submissionid' => $grading_table_row->get_submission()->id,
-                                               'assessorid' => $this->get_user()->id()))
+                    if (feedback::exists(['submissionid' => $grading_table_row->get_submission()->id,
+                                               'assessorid' => $this->get_user()->id()])
                     ) {
                         return true;
                     }
@@ -1253,11 +1253,11 @@ class ability extends \mod_coursework\framework\ability {
         $this->prevent('new',
                        'mod_coursework\models\deadline_extension',
             function (deadline_extension $deadline_extension) {
-                $conditions = array(
+                $conditions = [
                     'allocatableid' => $deadline_extension->allocatableid,
                     'allocatabletype' => $deadline_extension->allocatabletype,
                     'courseworkid' => $deadline_extension->courseworkid,
-                );
+                ];
                 return deadline_extension::exists($conditions);
             });
     }

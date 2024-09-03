@@ -88,12 +88,12 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
             'exportgradingsheets' => get_string('exportgradingsheets', 'mod_coursework'),
             'loadingpagination' => get_string('loadingpagination', 'mod_coursework'),
         ];
-        $result = html_writer::empty_tag('input', array(
+        $result = html_writer::empty_tag('input', [
             'name' => '',
             'type' => 'hidden',
             'data-lang' => json_encode($lang_messages),
             'id' => 'element_lang_messages',
-        ));
+        ]);
         $result = html_writer::div($result);
 
         return $result;

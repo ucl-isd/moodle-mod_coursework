@@ -34,8 +34,8 @@ require_once($CFG->dirroot.'/mod/coursework/lib.php');
 
 $coursemoduleid = required_param('id', PARAM_INT);
 $coursemodule = get_coursemodule_from_id('coursework', $coursemoduleid, 0, false, MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $coursemodule->course), '*', MUST_EXIST);
-$coursework = $DB->get_record('coursework', array('id' => $coursemodule->instance), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $coursemodule->course], '*', MUST_EXIST);
+$coursework = $DB->get_record('coursework', ['id' => $coursemodule->instance], '*', MUST_EXIST);
 $coursework = coursework::find($coursework);
 $formsavebutton = optional_param('save', 0, PARAM_BOOL);
 $samplingformsavebutton = optional_param('save_sampling', 0, PARAM_BOOL);
@@ -83,7 +83,7 @@ require_login($course, true, $coursemodule);
 require_capability('mod/coursework:allocate', $PAGE->context, null, true, "Can't allocate here - permission denied.");
 
 $url = '/mod/coursework/actions/allocate.php';
-$link = new \moodle_url($url, array('id' => $coursemoduleid));
+$link = new \moodle_url($url, ['id' => $coursemoduleid]);
 $PAGE->set_url($link);
 $title = get_string('allocatefor', 'mod_coursework', $coursework->name);
 $PAGE->set_title($title);
@@ -94,14 +94,14 @@ $PAGE->requires->jquery();
 $PAGE->requires->js('/mod/coursework/loadingoverlay.min.js');
 
 // Will set off the function that adds listeners for onclick/onchange etc.
-$jsmodule = array(
+$jsmodule = [
     'name' => 'mod_coursework',
     'fullpath' => '/mod/coursework/module.js',
-    'requires' => array('base',
-                        'node-base'),
-);
+    'requires' => ['base',
+                        'node-base'],
+];
 $PAGE->requires->js_init_call('M.mod_coursework.init_allocate_page',
-                              array('wwwroot' => $CFG->wwwroot, 'coursemoduleid' => $coursemoduleid),
+                              ['wwwroot' => $CFG->wwwroot, 'coursemoduleid' => $coursemoduleid],
                               false,
                               $jsmodule);
 
@@ -138,7 +138,7 @@ if ($deletemodsetrule) {
         reset($deletemodsetrule);
         $deleteruleid = key($deletemodsetrule); // Only one button can be clicked.
         if (is_numeric($deleteruleid)) {
-            $DB->delete_records('coursework_mod_set_rules', array('id' => $deleteruleid));
+            $DB->delete_records('coursework_mod_set_rules', ['id' => $deleteruleid]);
         }
     }
 }
@@ -197,8 +197,8 @@ if ($coursework->allocation_enabled()) {
 echo \html_writer::input_hidden_params($PAGE->url);
 
 if ($coursework->sampling_enabled()) { // Do not delete yet - refactoring...
-    echo \html_writer::start_tag('form', array('id' => 'sampling_form',
-        'method' => 'post'));
+    echo \html_writer::start_tag('form', ['id' => 'sampling_form',
+        'method' => 'post']);
     $samplesetwidget = $allocationsmanager->get_sampling_set_widget();
     echo $object_renderer->render($samplesetwidget);
     echo html_writer::end_tag('form');
@@ -206,22 +206,22 @@ if ($coursework->sampling_enabled()) { // Do not delete yet - refactoring...
 
 // Start form. The page has now been broken into two forms sampling section and allocation section
 // Open form tag.
-echo \html_writer::start_tag('form', array('id' => 'allocation_form',
-    'method' => 'post'));
+echo \html_writer::start_tag('form', ['id' => 'allocation_form',
+    'method' => 'post']);
 
 if ($coursework->allocation_enabled()) {
     echo $object_renderer->render($allocationwidget);
 }
 
 // Spacer so that we can float the headers next to each other.
-$attributes = array(
+$attributes = [
     'class' => 'coursework_spacer',
-);
+];
 echo html_writer::start_tag('div', $attributes);
 echo html_writer::end_tag('div');
 
 echo html_writer::tag('h3', get_string('assessormoderatorgrades', 'mod_coursework'));
-echo html_writer::tag('div', get_string('pininfo', 'mod_coursework'), array('class' => 'pininfo'));
+echo html_writer::tag('div', get_string('pininfo', 'mod_coursework'), ['class' => 'pininfo']);
 
 // Start the form with save button.
 /*

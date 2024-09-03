@@ -111,7 +111,7 @@ class controller_base {
         }
 
         if (!empty($this->params['courseworkid'])) {
-            $coursework = $DB->get_record('coursework', array('id' => $this->params['courseworkid']), '*', MUST_EXIST);
+            $coursework = $DB->get_record('coursework', ['id' => $this->params['courseworkid']], '*', MUST_EXIST);
             $this->coursework = coursework::find($coursework);
 
             $this->coursemodule = get_coursemodule_from_instance('coursework', $this->coursework->id);
@@ -131,7 +131,7 @@ class controller_base {
         if (empty($this->course)) {
 
             if (!empty($this->params['courseid'])) {
-                $this->course = $DB->get_record('course', array('id' => $this->params['courseid']), '*', MUST_EXIST);
+                $this->course = $DB->get_record('course', ['id' => $this->params['courseid']], '*', MUST_EXIST);
             }
 
             if (!empty($this->coursework)) {
@@ -172,8 +172,8 @@ class controller_base {
 
         if (method_exists($this, $method_name)) {
             $this->prepare_environment();
-            call_user_func(array($this,
-                                 $method_name));
+            call_user_func([$this,
+                                 $method_name]);
         } else {
             throw new coding_exception('No page defined in the controller called "'.$method_name.'"');
         }
@@ -195,7 +195,7 @@ class controller_base {
      */
     protected function get_path($path_name, $items) {
 
-        return call_user_func_array(array($this->get_router(), 'get_path'), func_get_args());
+        return call_user_func_array([$this->get_router(), 'get_path'], func_get_args());
 
     }
 

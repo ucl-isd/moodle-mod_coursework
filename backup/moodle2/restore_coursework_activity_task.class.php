@@ -55,7 +55,7 @@ class restore_coursework_activity_task extends restore_activity_task {
     public static function define_decode_contents() {
         $contents = [];
 
-        $contents[] = new restore_decode_content('coursework', array('intro'), 'assign');
+        $contents[] = new restore_decode_content('coursework', ['intro'], 'assign');
 
         return $contents;
     }

@@ -185,9 +185,9 @@ class builder implements user_row {
         }
 
         $personal_deadline = $DB->get_record('coursework_person_deadlines',
-            array('courseworkid' => $this->get_coursework()->id,
+            ['courseworkid' => $this->get_coursework()->id,
                   'allocatableid' => $this->allocatable->id(),
-                  'allocatabletype' => $this->allocatable->type()));
+                  'allocatabletype' => $this->allocatable->type()]);
         if ($personal_deadline) {
             $personal_deadline = $personal_deadline->personal_deadline;
         } else {
@@ -201,9 +201,9 @@ class builder implements user_row {
         global  $DB;
 
         $submission_db = $DB->get_record('coursework_submissions',
-            array('courseworkid' => $this->get_coursework()->id,
+            ['courseworkid' => $this->get_coursework()->id,
                 'allocatableid' => $this->allocatable->id(),
-                'allocatabletype' => $this->allocatable->type()));
+                'allocatabletype' => $this->allocatable->type()]);
 
         $submission = \mod_coursework\models\submission::find($submission_db);
 

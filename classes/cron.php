@@ -69,10 +69,10 @@ class cron {
 
         global $CFG, $DB;
 
-        $counts = array(
+        $counts = [
             'emails' => 0,
             'users' => 0,
-        );
+        ];
 
         $userswhoneedreminding = [];
 
@@ -226,11 +226,11 @@ class cron {
 
             foreach ($users as $user) {
 
-                if ($DB->record_exists('coursework_reminder', array(
+                if ($DB->record_exists('coursework_reminder', [
                     'coursework_id' => $coursework_instance->id,
                     'userid' => $user->id,
                     'remindernumber' => 1,
-                ))) {
+                ])) {
                     continue;
                 }
 
@@ -248,9 +248,9 @@ class cron {
                 $emailssent++;
 
                 // Need to record this so they don;t get another one.
-                $number_of_existing_reminders = $DB->count_records('coursework_reminder', array('coursework_id' => $coursework_instance->id,
+                $number_of_existing_reminders = $DB->count_records('coursework_reminder', ['coursework_id' => $coursework_instance->id,
                                                                                                  'userid' => $user->id,
-                ));
+                ]);
                 $reminder = new stdClass();
                 $reminder->userid = $user->id;
                 $reminder->coursework_id = $coursework_instance->id;
@@ -395,7 +395,7 @@ class cron {
                   AND c.individualfeedback IS NOT NULL
                   AND cs.firstpublished IS NULL";
 
-        $coursework_submissions = $DB->get_records_sql($sql, array('now' => time()));
+        $coursework_submissions = $DB->get_records_sql($sql, ['now' => time()]);
 
         foreach ($coursework_submissions as $coursework_submission) {
 

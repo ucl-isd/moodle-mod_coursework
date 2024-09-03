@@ -33,14 +33,14 @@ global $DB, $PAGE, $CFG;
 $cmid = required_param('cmid', PARAM_INT);
 $submission_id = required_param('submissionid', PARAM_INT);
 
-$cm = $DB->get_record('course_modules', array('id' => $cmid));
+$cm = $DB->get_record('course_modules', ['id' => $cmid]);
 $coursework = coursework::find($cm->instance);
-$course = $DB->get_record('course', array('id' => $cm->course));
-$submission_db = $DB->get_record('coursework_submissions', array('id' => $submission_id));
+$course = $DB->get_record('course', ['id' => $cm->course]);
+$submission_db = $DB->get_record('coursework_submissions', ['id' => $submission_id]);
 $submission = submission::find($submission_db);
 
 require_login($course, false, $cm);
-$url = new moodle_url('/mod/coursework/view.php', array('id' => $cm->id));
+$url = new moodle_url('/mod/coursework/view.php', ['id' => $cm->id]);
 
 // Bounce anyone who shouldn't be here.
 if (!has_capability('mod/coursework:revertfinalised', $PAGE->context)) {

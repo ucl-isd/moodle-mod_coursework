@@ -56,7 +56,7 @@ class minimum_range_grade_percent extends moderation_set_rule {
         // Convert percentages to raw grades for comparison.
         global $DB;
 
-        $params = array('id' => $this->courseworkid);
+        $params = ['id' => $this->courseworkid];
         $maxgrade = $DB->get_field('coursework', 'grade', $params);
         // Convert percentages to raw grades for comparison.
         $upperlimit = ($this->upperlimit / 100) * $maxgrade;
@@ -126,28 +126,28 @@ class minimum_range_grade_percent extends moderation_set_rule {
         // Upper limit.
         $html .= html_writer::start_tag('p');
         $html .= get_string('upperlimit', 'mod_coursework').' ';
-        $attributes = array(
+        $attributes = [
             'name' => 'rule_'.self::get_name().'_upperlimit',
             'size' => 3,
-        );
+        ];
         $html .= html_writer::empty_tag('input', $attributes);
         $html .= html_writer::end_tag('p');
         // Lower limit.
         $html .= html_writer::start_tag('p');
         $html .= get_string('lowerlimit', 'mod_coursework').' ';
-        $attributes = array(
+        $attributes = [
             'name' => self::get_name().'_lowerlimit',
             'size' => 3,
-        );
+        ];
         $html .= html_writer::empty_tag('input', $attributes);
         $html .= html_writer::end_tag('p');
         // Lower limit.
         $html .= html_writer::start_tag('p');
         $html .= get_string('modsetminimum', 'mod_coursework').' ';
-        $attributes = array(
+        $attributes = [
             'name' => self::get_name().'_minimum',
             'size' => 4,
-        );
+        ];
         $html .= html_writer::empty_tag('input', $attributes);
         $html .= html_writer::end_tag('p');
         return $html;

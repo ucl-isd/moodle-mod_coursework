@@ -58,7 +58,7 @@ class assessable_uploaded extends \core\event\assessable_uploaded {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/coursework/view.php', array('id' => $this->contextinstanceid));
+        return new \moodle_url('/mod/coursework/view.php', ['id' => $this->contextinstanceid]);
     }
 
     /**
@@ -82,6 +82,6 @@ class assessable_uploaded extends \core\event\assessable_uploaded {
     }
 
     public static function get_objectid_mapping() {
-        return array('db' => 'coursework_submissions', 'restore' => 'submission');
+        return ['db' => 'coursework_submissions', 'restore' => 'submission'];
     }
 }

@@ -120,11 +120,11 @@ class time_submitted_cell extends cell_base {
         $allocatableid = $row_object->get_allocatable()->id();
         $allocatabletype = $row_object->get_allocatable()->type();
         $coursework = $row_object->get_coursework();
-        $new_extension_params = array(
+        $new_extension_params = [
             'allocatableid' => $allocatableid,
             'allocatabletype' => $allocatabletype,
             'courseworkid' => $coursework->id,
-        );
+        ];
 
         $extension = deadline_extension::find_or_build($new_extension_params);
         $ability = new ability(user::find($USER), $row_object->get_coursework());
@@ -154,16 +154,16 @@ class time_submitted_cell extends cell_base {
             $content .= $OUTPUT->action_link($link,
                 $title,
                 null,
-                array('class' => 'new_deadline_extension', 'data-name' => $row_object->get_allocatable()->name(), 'data-params' => json_encode($new_extension_params), 'data-time' => json_encode($content_time) ));
+                ['class' => 'new_deadline_extension', 'data-name' => $row_object->get_allocatable()->name(), 'data-params' => json_encode($new_extension_params), 'data-time' => json_encode($content_time) ]);
 
         } else if ($ability->can('edit', $extension) && $coursework->extensions_enabled()) {
-            $link = $this->get_router()->get_path('edit deadline extension', array('id' => $extension->id));
+            $link = $this->get_router()->get_path('edit deadline extension', ['id' => $extension->id]);
             $icon = new pix_icon('edit', 'Edit extension', 'coursework');
 
             $content .= $OUTPUT->action_icon($link,
                 $icon,
                 null,
-                array('class' => 'edit_deadline_extension', 'data-name' => $row_object->get_allocatable()->name(), 'data-params' => json_encode($new_extension_params), 'data-time' => json_encode($content_time)));
+                ['class' => 'edit_deadline_extension', 'data-name' => $row_object->get_allocatable()->name(), 'data-params' => json_encode($new_extension_params), 'data-time' => json_encode($content_time)]);
         }
 
         $content .= '</div>';

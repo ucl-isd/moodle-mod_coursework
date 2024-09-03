@@ -99,8 +99,8 @@ class warnings {
                        GROUP BY gm.userid, groupings.groupingid, u.firstname, u.lastname)a
                           WHERE noofgroups > 1";
 
-            $params = array('courseid' => $this->coursework->get_course()->id,
-                            'groupingid' => $this->coursework->grouping_id);
+            $params = ['courseid' => $this->coursework->get_course()->id,
+                            'groupingid' => $this->coursework->grouping_id];
         } else {
             $sql = "SELECT * FROM (
                             SELECT gm.userid,
@@ -116,7 +116,7 @@ class warnings {
                           GROUP BY gm.userid, u.firstname, u.lastname) a
                     WHERE noofgroups > 1";
 
-            $params = array('courseid' => $this->coursework->get_course()->id);
+            $params = ['courseid' => $this->coursework->get_course()->id];
         }
 
         // get all students that are in more than a one group
@@ -142,10 +142,10 @@ class warnings {
                                 AND gm.userid = :userid
                                 AND groupings.groupingid =:grouping_id";
 
-                        $params = array(
+                        $params = [
                             'grouping_id' => $this->coursework->grouping_id,
                             'courseid' => $this->coursework->get_course()->id,
-                            'userid' => $student->userid);
+                            'userid' => $student->userid];
                     } else {
 
                         $sql = "SELECT groups.id,groups.name
@@ -155,9 +155,9 @@ class warnings {
                                WHERE groups.courseid = :courseid
 		                         AND gm.userid = :userid";
 
-                        $params = array(
+                        $params = [
                             'courseid' => $this->coursework->get_course()->id,
-                            'userid' => $student->userid);
+                            'userid' => $student->userid];
                     }
                     $studentmessage .= '<ul>';
                     $groups = $DB->get_records_sql($sql, $params);
@@ -201,7 +201,7 @@ class warnings {
                       WHERE courseworkid = ?
                       AND allocationstrategy = 'percentages'
                       ";
-            $total_percentages = $DB->count_records_sql($sql, array($this->coursework->id));
+            $total_percentages = $DB->count_records_sql($sql, [$this->coursework->id]);
 
             if ($total_percentages < 100) {
                 return $this->alert_div(get_string('percentages_do_not_add_up', 'mod_coursework', $total_percentages));
@@ -229,9 +229,9 @@ class warnings {
 
                 foreach ($allocatables as $allocatable) {
 
-                    $params = array('courseworkid' => $coursework->id,
+                    $params = ['courseworkid' => $coursework->id,
                                     'stageidentifier' => $assessor,
-                                    'allocatableid' => $allocatable->id);
+                                    'allocatableid' => $allocatable->id];
 
                     $existing_allocations = $this->check_existing_allocations($params);
 
@@ -241,16 +241,16 @@ class warnings {
                 }
             } else {
 
-                $params = array('courseworkid' => $coursework->id);
+                $params = ['courseworkid' => $coursework->id];
                 $sql = "SELECT id, stage_identifier, allocatableid
                          FROM {coursework_sample_set_mbrs}
                          WHERE courseworkid = :courseworkid";
 
                 $stage_identifiers = $DB->get_records_sql($sql, $params);
                 foreach ($stage_identifiers as $stage_identifier) {
-                    $params = array('courseworkid' => $coursework->id,
+                    $params = ['courseworkid' => $coursework->id,
                                     'stageidentifier' => $stage_identifier->stage_identifier,
-                                    'allocatableid' => $stage_identifier->allocatableid);
+                                    'allocatableid' => $stage_identifier->allocatableid];
 
                     $existing_allocations = $this->check_existing_allocations($params);
 
@@ -370,9 +370,9 @@ class warnings {
                 ";
 
         $params = array_merge($student_params,
-                              array(
+                              [
                                   'courseid' => $this->coursework->get_course()->id,
-                              ));
+                              ]);
         $students = $DB->get_records_sql($sql, $params);
         return $students;
     }
@@ -402,10 +402,10 @@ class warnings {
                 ";
 
         $params = array_merge($student_params,
-                              array(
+                              [
                                   'courseid' => $this->coursework->get_course()->id,
                                   'groupingid' => $this->coursework->grouping_id,
-                              ));
+                              ]);
         $students = $DB->get_records_sql($sql, $params);
         return $students;
     }

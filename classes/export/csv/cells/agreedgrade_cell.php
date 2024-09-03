@@ -77,8 +77,8 @@ class agreedgrade_cell extends cell_base {
         global $DB, $PAGE, $USER;
 
         $stage_identifier = 'final_agreed_1';
-        $agreedgradecap = array('mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade',
-                                     'mod/coursework:addallocatedagreedgrade', 'mod/coursework:editallocatedagreedgrade');
+        $agreedgradecap = ['mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade',
+                                     'mod/coursework:addallocatedagreedgrade', 'mod/coursework:editallocatedagreedgrade'];
 
         if (empty($value)) {
             return true;
@@ -152,7 +152,7 @@ class agreedgrade_cell extends cell_base {
                 return $errormsg;
             }
 
-            $subdbrecord = $DB->get_record('coursework_submissions', array('id' => $submissionid));
+            $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
             $submission = \mod_coursework\models\submission::find($subdbrecord);
 
             // Is the submission in question ready to grade?
@@ -170,10 +170,10 @@ class agreedgrade_cell extends cell_base {
             }
 
             // Has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
-            $feedback_params = array(
+            $feedback_params = [
                 'submissionid' => $submission->id,
                 'stage_identifier' => $stage_identifier,
-            );
+            ];
 
             $feedback = feedback::find($feedback_params);
 
@@ -182,11 +182,11 @@ class agreedgrade_cell extends cell_base {
             //does a feedback exist for this stage
             if (empty($feedback)) {
 
-                $feedback_params = array(
+                $feedback_params = [
                     'submissionid' => $submissionid,
                     'assessorid' => $USER->id,
                     'stage_identifier' => $stage_identifier,
-                );
+                ];
                 $new_feedback = feedback::build($feedback_params);
 
                 // This is a new feedback check it against the new ability checks

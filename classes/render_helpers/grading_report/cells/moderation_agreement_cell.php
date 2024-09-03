@@ -74,12 +74,12 @@ class moderation_agreement_cell extends cell_base {
                 $rowobject->get_submission()->final_grade_agreed() &&
                 ($this->stage->user_is_moderator($USER))) {
 
-                $moderation_params = array(
+                $moderation_params = [
                     'submissionid' => $rowobject->get_submission()->id,
                     'moderatorid' => $USER->id,
                     'stage_identifier' => $this->stage->identifier(),
                     'feedbackid' => $rowobject->get_single_feedback()->id,
-                );
+                ];
                 // allow moderations if feedback exists
                 $new_moderation = moderation::build($moderation_params);
                 if ($ability->can('new', $new_moderation) && ($rowobject->get_single_feedback()->finalised || is_siteadmin($USER->id))) {
@@ -162,12 +162,12 @@ class moderation_agreement_cell extends cell_base {
         // moderation only done for single marking courseworks
         $feedback = $rowobject->get_submission()->get_assessor_feedback_by_stage('assessor_1');
 
-        $moderation_params = array(
+        $moderation_params = [
             'submission' => $rowobject->get_submission(),
             'assessor' => $assessor,
             'stage' => $this->stage,
             'feedbackid' => $feedback->id,
-        );
+        ];
         $link = $this->get_router()->get_path('new moderations', $moderation_params);
 
         $link_id = 'new_moderation_' . $rowobject->get_coursework()
@@ -178,7 +178,7 @@ class moderation_agreement_cell extends cell_base {
         return  $OUTPUT->action_link($link,
                                      $title,
                                 null,
-                                array('class' => 'new_moderation', 'id' => $link_id));
+                                ['class' => 'new_moderation', 'id' => $link_id]);
     }
 
     /**
@@ -190,9 +190,9 @@ class moderation_agreement_cell extends cell_base {
         global $OUTPUT;
 
         $feedback = $rowobject->get_submission()->get_assessor_feedback_by_stage('assessor_1');
-        $feedback_params = array(
+        $feedback_params = [
             'moderation' => $this->stage->get_moderation_for_feedback($feedback),
-        );
+        ];
         $link = $this->get_router()->get_path('edit moderation', $feedback_params);
 
         $link_id = 'edit_moderation_' . $rowobject->get_coursework()
@@ -204,7 +204,7 @@ class moderation_agreement_cell extends cell_base {
         return  $OUTPUT->action_icon($link,
             $icon,
             null,
-            array('id' => $link_id));
+            ['id' => $link_id]);
 
     }
 
@@ -217,9 +217,9 @@ class moderation_agreement_cell extends cell_base {
         global $OUTPUT;
 
         $feedback = $rowobject->get_submission()->get_assessor_feedback_by_stage('assessor_1');
-        $moderation_params = array(
+        $moderation_params = [
             'moderation' => $this->stage->get_moderation_for_feedback($feedback),
-        );
+        ];
 
         $linktitle = get_string('viewmoderation', 'mod_coursework');
         $link_id = "show_moderation_" . $rowobject->get_coursework()
@@ -229,6 +229,6 @@ class moderation_agreement_cell extends cell_base {
         return $OUTPUT->action_link($link,
                                     $linktitle,
                                 null,
-                                      array('class' => 'show_moderation', 'id' => $link_id));
+                                      ['class' => 'show_moderation', 'id' => $link_id]);
     }
 }

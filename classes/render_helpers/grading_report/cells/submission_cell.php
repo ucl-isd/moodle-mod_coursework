@@ -58,8 +58,8 @@ class submission_cell extends cell_base {
 
             if ($ability->can('revert', $rowobject->get_submission())) {
                 $url = new moodle_url('/mod/coursework/actions/revert.php',
-                                      array('cmid' => $rowobject->get_course_module_id(),
-                                            'submissionid' => $rowobject->get_submission_id()));
+                                      ['cmid' => $rowobject->get_course_module_id(),
+                                            'submissionid' => $rowobject->get_submission_id()]);
                 $content .= html_writer::empty_tag('br');
                 $revertstring = get_string('revert', 'coursework');
                 $content .= html_writer::link($url, $revertstring);
@@ -70,14 +70,14 @@ class submission_cell extends cell_base {
 
         $ability = new ability(user::find($USER), $rowobject->get_coursework());
 
-        $submission_on_behalf_of_allocatable = submission::build(array(
+        $submission_on_behalf_of_allocatable = submission::build([
                                                                      'allocatableid' => $rowobject->get_allocatable()
                                                                          ->id(),
                                                                      'allocatabletype' => $rowobject->get_allocatable()
                                                                          ->type(),
                                                                      'courseworkid' => $rowobject->get_coursework()->id,
                                                                      'createdby' => $USER->id,
-                                                                 ));
+                                                                 ]);
 
         if (($rowobject->get_submission()&& !$rowobject->get_submission()->finalised)
             || !$rowobject->get_submission()) {
@@ -88,7 +88,7 @@ class submission_cell extends cell_base {
                 // New submission on behalf of button
 
                 $url = $this->get_router()
-                    ->get_path('new submission', array('submission' => $submission_on_behalf_of_allocatable), true);
+                    ->get_path('new submission', ['submission' => $submission_on_behalf_of_allocatable], true);
 
                 $label =
                     'Submit on behalf';
@@ -96,7 +96,7 @@ class submission_cell extends cell_base {
                 $content .= $OUTPUT->action_link($url,
                                                  $label,
                                                  null,
-                                                 array('class' => 'new_submission'));
+                                                 ['class' => 'new_submission']);
             } else if ($rowobject->has_submission() &&
                        $ability->can('edit', $rowobject->get_submission()) &&
                        !$rowobject->has_feedback() ) {
@@ -104,7 +104,7 @@ class submission_cell extends cell_base {
                 // Edit submission on behalf of button
 
                 $url = $this->get_router()
-                    ->get_path('edit submission', array('submission' => $rowobject->get_submission()), true);
+                    ->get_path('edit submission', ['submission' => $rowobject->get_submission()], true);
 
                 $label =
                     'Edit submission on behalf of this ' . ($rowobject->get_coursework()
@@ -115,7 +115,7 @@ class submission_cell extends cell_base {
                 $content .= ' '.$OUTPUT->action_icon($url,
                                                  $icon,
                                                  null,
-                                                 array('class' => 'edit_submission'));
+                                                 ['class' => 'edit_submission']);
             }
         }
 

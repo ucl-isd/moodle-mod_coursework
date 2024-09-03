@@ -107,12 +107,12 @@ abstract class grading_table_row_base implements user_row {
 
         $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context());
         if (!$this->get_coursework()->blindmarking || $viewanonymous || $this->is_published()) {
-            $user = $DB->get_record('user', array('id' => $this->get_allocatable_id()));
+            $user = $DB->get_record('user', ['id' => $this->get_allocatable_id()]);
             $fullname = fullname($user);
             $allowed = has_capability('moodle/user:viewdetails', $this->get_coursework()->get_context());
             if ($link && $allowed) {
-                $url = new moodle_url('/user/view.php', array('id' => $this->get_allocatable_id(),
-                                                              'course' => $this->get_coursework()->get_course_id()));
+                $url = new moodle_url('/user/view.php', ['id' => $this->get_allocatable_id(),
+                                                              'course' => $this->get_coursework()->get_course_id()]);
                 return html_writer::link($url, $fullname);
             } else {
                 return $fullname;
@@ -133,7 +133,7 @@ abstract class grading_table_row_base implements user_row {
 
         $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context());
         if (!$this->get_coursework()->blindmarking || $viewanonymous || $this->is_published()) {
-            $user = $DB->get_record('user', array('id' => $this->get_allocatable_id()));
+            $user = $DB->get_record('user', ['id' => $this->get_allocatable_id()]);
             return $user->idnumber;
         } else {
             return get_string('hidden', 'mod_coursework');
@@ -151,7 +151,7 @@ abstract class grading_table_row_base implements user_row {
 
         $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context());
         if (!$this->get_coursework()->blindmarking || $viewanonymous || $this->is_published()) {
-            $user = $DB->get_record('user', array('id' => $this->get_allocatable_id()));
+            $user = $DB->get_record('user', ['id' => $this->get_allocatable_id()]);
             return $user->email;
         } else {
             return '';
@@ -198,9 +198,9 @@ abstract class grading_table_row_base implements user_row {
         }
 
         $personal_deadline = $DB->get_record('coursework_person_deadlines',
-                                            array('courseworkid' => $this->get_coursework()->id,
+                                            ['courseworkid' => $this->get_coursework()->id,
                                                   'allocatableid' => $allocatable->id(),
-                                                  'allocatabletype' => $allocatable->type()));
+                                                  'allocatabletype' => $allocatable->type()]);
         if ($personal_deadline) {
             $personal_deadline = $personal_deadline->personal_deadline;
         } else {
@@ -256,9 +256,9 @@ abstract class grading_table_row_base implements user_row {
     public function get_plagiarism_flag() {
 
         $submission = $this->get_submission();
-        $params = array(
+        $params = [
             'submissionid' => $submission->id,
-        );
+        ];
 
         return plagiarism_flag::find($params);
     }
@@ -405,9 +405,9 @@ abstract class grading_table_row_base implements user_row {
     public function has_extension() {
 
         global $DB;
-        return $DB->record_exists('coursework_extensions', array('courseworkid' => $this->get_coursework()->id,
+        return $DB->record_exists('coursework_extensions', ['courseworkid' => $this->get_coursework()->id,
                                                                       'allocatableid' => $this->get_allocatable()->id(),
-                                                                      'allocatabletype' => $this->get_allocatable()->type()));
+                                                                      'allocatabletype' => $this->get_allocatable()->type()]);
 
     }
 
@@ -419,9 +419,9 @@ abstract class grading_table_row_base implements user_row {
      */
     public function get_extension() {
         global $DB;
-        return $DB->get_record('coursework_extensions', array('courseworkid' => $this->get_coursework()->id,
+        return $DB->get_record('coursework_extensions', ['courseworkid' => $this->get_coursework()->id,
                                                                    'allocatableid' => $this->get_allocatable()->id(),
-                                                                   'allocatabletype' => $this->get_allocatable()->type()));
+                                                                   'allocatabletype' => $this->get_allocatable()->type()]);
     }
 
     public function get_user_firstname() {

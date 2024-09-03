@@ -26,7 +26,7 @@ function xmldb_coursework_install() {
     global $DB;
 
     // Install the plugins used by sampling in the correct order
-    $plugins = array('range_sample_type', 'total_sample_type');
+    $plugins = ['range_sample_type', 'total_sample_type'];
 
     $i = 1;
 

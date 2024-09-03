@@ -50,14 +50,14 @@ class plagiarism_flag_cell extends cell_base {
         $ability = new ability(user::find($USER), $rowobject->get_coursework());
 
         if ($rowobject->has_submission() && $rowobject->get_submission()->finalised) {
-            $plagiarism_flag_params = array(
+            $plagiarism_flag_params = [
                 'submissionid' => $rowobject->get_submission()->id,
-            );
+            ];
             $plagiarism_flag = plagiarism_flag::find($plagiarism_flag_params);
 
             if (!$plagiarism_flag) {  // if plagiarism flag for this submission doesn't exist, we can create one
-                $plagiarism_flag_params = array('courseworkid' => $rowobject->get_coursework()->id,
-                                                'submissionid' => $rowobject->get_submission()->id);
+                $plagiarism_flag_params = ['courseworkid' => $rowobject->get_coursework()->id,
+                                                'submissionid' => $rowobject->get_submission()->id];
                 $new_plagiarism_flag = plagiarism_flag::build($plagiarism_flag_params);
 
                 if ($ability->can('new', $new_plagiarism_flag)) {
@@ -110,15 +110,15 @@ class plagiarism_flag_cell extends cell_base {
 
         $title = get_string('flagplagiarism', 'coursework');
 
-        $feedback_params = array(
+        $feedback_params = [
             'submission' => $row_object->get_submission(),
-        );
+        ];
         $link = $this->get_router()->get_path('new plagiarism flag', $feedback_params);
 
-        $html_attributes = array(
+        $html_attributes = [
             'id' => 'new_plagiarism_flag_' . $row_object->get_coursework()->get_allocatable_identifier_hash($row_object->get_allocatable()),
             'class' => 'new_plagiarism_flag',
-        );
+        ];
 
         return $OUTPUT->action_link($link, $title, null, $html_attributes);
     }
@@ -133,14 +133,14 @@ class plagiarism_flag_cell extends cell_base {
 
         $title = get_string('editflagplagiarism', 'coursework');
 
-        $feedback_params = array(
+        $feedback_params = [
             'flag' => $row_object->get_plagiarism_flag(),
-        );
+        ];
         $link = $this->get_router()->get_path('edit plagiarism flag', $feedback_params);
 
         $link_id = 'edit_plagiarism_flag_' . $row_object->get_coursework()->get_allocatable_identifier_hash($row_object->get_allocatable());
 
         $icon = new pix_icon('edit', $title, 'coursework');
-        return $OUTPUT->action_icon($link, $icon, null, array('id' => $link_id));
+        return $OUTPUT->action_icon($link, $icon, null, ['id' => $link_id]);
     }
 }

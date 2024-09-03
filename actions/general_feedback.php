@@ -30,17 +30,17 @@ $cmid = required_param('cmid', PARAM_INT);
 $ajax = optional_param('ajax', false, PARAM_BOOL);
 
 $cm = get_coursemodule_from_instance('coursework', $cmid);
-$course = $DB->get_record('course', array('id' => $cm->course));
+$course = $DB->get_record('course', ['id' => $cm->course]);
 require_login($course, false, $cm);
 
-$coursework = $DB->get_record('coursework', array('id' => $cm->instance));
+$coursework = $DB->get_record('coursework', ['id' => $cm->instance]);
 
 if (!has_capability('mod/coursework:addinitialgrade', $PAGE->context)) {
     throw new \moodle_exception('access_denied', 'coursework');
 }
 
 $url = '/mod/coursework/actions/general_feedback.php';
-$link = new moodle_url($url, array('cmid' => $cmid));
+$link = new moodle_url($url, ['cmid' => $cmid]);
 $PAGE->set_url($link);
 $title = get_string('generalfeedback', 'mod_coursework');
 $PAGE->set_title($title);
@@ -55,13 +55,13 @@ $gradingform = new general_feedback_form(null, $customdata);
 $returneddata = $gradingform->get_data();
 
 if ($gradingform->is_cancelled()) {
-    redirect(new moodle_url('/mod/coursework/view.php', array('id' => $cmid)));
+    redirect(new moodle_url('/mod/coursework/view.php', ['id' => $cmid]));
 } else if ($returneddata) {
     $gradingform->process_data($returneddata);
     // TODO should not echo before header.
     echo 'General feedback updated..';
     if (!$ajax) {
-        redirect(new moodle_url('/mod/coursework/view.php', array('id' => $cmid)),
+        redirect(new moodle_url('/mod/coursework/view.php', ['id' => $cmid]),
                                 get_string('changessaved'));
     }
 } else {

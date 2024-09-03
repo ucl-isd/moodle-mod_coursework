@@ -250,7 +250,7 @@ abstract class base {
     private function get_percentage_allocated_teachers() {
         global $DB;
 
-        return $DB->get_records('coursework_allocation_config', array('courseworkid' => $this->get_coursework_id()), '', 'assessorid as id');
+        return $DB->get_records('coursework_allocation_config', ['courseworkid' => $this->get_coursework_id()], '', 'assessorid as id');
     }
 
     /**
@@ -350,7 +350,7 @@ abstract class base {
             $sql = "SELECT *
                     FROM {coursework_mod_agreements}
                     WHERE feedbackid = ?";
-            return $DB->record_exists_sql($sql, array($feedback->id));
+            return $DB->record_exists_sql($sql, [$feedback->id]);
         } else {
             return false;
         }
@@ -363,7 +363,7 @@ abstract class base {
     public function get_moderation($submission) {
         $feedback = $this->get_single_feedback($submission);
         if ($feedback) {
-            $moderation_params = array('feedbackid' => $feedback->id);
+            $moderation_params = ['feedbackid' => $feedback->id];
             return moderation::find($moderation_params);
         } else {
             return false;
@@ -548,12 +548,12 @@ abstract class base {
     public function remove_allocatable_from_sampling($allocatable) {
         global $DB;
 
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $allocatable->id(),
             'allocatabletype' => $allocatable->type(),
             'stage_identifier' => $this->stage_identifier,
-        );
+        ];
         $DB->delete_records('coursework_sample_set_mbrs', $params);
     }
 
@@ -718,9 +718,9 @@ abstract class base {
      * @return moderation|bool
      */
     public function get_moderation_for_feedback($feedback) {
-        $moderation_params = array(
+        $moderation_params = [
             'feedbackid' => $feedback->id,
-        );
+        ];
         return moderation::find($moderation_params);
     }
 
@@ -728,7 +728,7 @@ abstract class base {
      * return bool
      */
     public function assessment_set_is_not_empty() {
-        return assessment_set_membership::exists(array('courseworkid' => $this->coursework->id));
+        return assessment_set_membership::exists(['courseworkid' => $this->coursework->id]);
     }
 
     /**
@@ -772,10 +772,10 @@ abstract class base {
             return '<br>' . get_string('nomarkers', 'mod_coursework');
         }
 
-        $html_attributes = array(
+        $html_attributes = [
             'id' => $this->assessor_dropdown_id($allocatable),
             'class' => 'assessor_id_dropdown',
-        );
+        ];
 
         if ($this->identifier() != 'assessor_1' && !$this->currently_allocated_assessor($allocatable)
             && $this->coursework->sampling_enabled() && !$this->allocatable_is_in_sample($allocatable)
@@ -790,7 +790,7 @@ abstract class base {
             $identifier = 'change' . $grader;
         }
 
-        $option_for_nothing_chosen_yet = array('' => get_string($identifier, 'mod_coursework'));
+        $option_for_nothing_chosen_yet = ['' => get_string($identifier, 'mod_coursework')];
 
         $dropdown_name = $this->assessor_dropdown_name($allocatable);
 
@@ -812,11 +812,11 @@ abstract class base {
      */
     public function potential_moderator_dropdown($allocatable) {
 
-        $option_for_nothing_chosen_yet = array('' => 'Choose Moderator');
-        $html_attributes = array(
+        $option_for_nothing_chosen_yet = ['' => 'Choose Moderator'];
+        $html_attributes = [
             'id' => $this->moderator_dropdown_id($allocatable),
             'class' => 'moderator_id_dropdown',
-        );
+        ];
 
         $dropdown_name = $this->assessor_dropdown_name($allocatable);
 

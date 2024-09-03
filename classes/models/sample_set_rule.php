@@ -89,7 +89,7 @@ abstract class sample_set_rule extends table_base implements renderable {
     /**
      * @var array List of class properties that correspond with DB fields.
      */
-    protected $fields = array(
+    protected $fields = [
         'id',
         'courseworkid',
         'rulename',
@@ -97,7 +97,7 @@ abstract class sample_set_rule extends table_base implements renderable {
         'upperlimit',
         'lowerlimit',
         'minimum',
-    );
+    ];
 
     /**
      * @param bool|int|stdClass $dbrecord

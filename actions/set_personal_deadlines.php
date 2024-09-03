@@ -33,8 +33,8 @@ require_once($CFG->dirroot.'/mod/coursework/lib.php');
 
 $coursemoduleid = required_param('id', PARAM_INT);
 $coursemodule = get_coursemodule_from_id('coursework', $coursemoduleid, 0, false, MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $coursemodule->course), '*', MUST_EXIST);
-$coursework = $DB->get_record('coursework', array('id' => $coursemodule->instance), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $coursemodule->course], '*', MUST_EXIST);
+$coursework = $DB->get_record('coursework', ['id' => $coursemodule->instance], '*', MUST_EXIST);
 $coursework = coursework::find($coursework);
 
 // SQL sort for allocation table.
@@ -46,7 +46,7 @@ require_login($course, true, $coursemodule);
 require_capability('mod/coursework:editpersonaldeadline', $PAGE->context, null, true, "Can't change personal deadlines here - permission denied.");
 
 $url = '/mod/coursework/actions/set_personal_deadlines.php';
-$link = new \moodle_url($url, array('id' => $coursemoduleid));
+$link = new \moodle_url($url, ['id' => $coursemoduleid]);
 $PAGE->set_url($link);
 $title = get_string('setpersonaldeadlinesfor', 'mod_coursework', $coursework->name);
 $PAGE->set_title($title);
@@ -55,12 +55,12 @@ $PAGE->set_heading($title);
 $PAGE->requires->jquery();
 
 // Will set off the function that adds listeners for onclick/onchange etc.
-$jsmodule = array(
+$jsmodule = [
     'name' => 'mod_coursework',
     'fullpath' => '/mod/coursework/module.js',
-    'requires' => array('base',
-        'node-base'),
-);
+    'requires' => ['base',
+        'node-base'],
+];
 $PAGE->requires->js_init_call('M.mod_coursework.init_personal_deadlines_page',
     [],
     false,

@@ -103,7 +103,7 @@ class student_submission_form extends moodleform {
         $link = $CFG->wwwroot.'/mod/coursework/view.php?id='.$cmid;
 
         if ($this->is_cancelled()) {
-            redirect(new moodle_url('/mod/coursework/view.php', array('id' => $cmid)));
+            redirect(new moodle_url('/mod/coursework/view.php', ['id' => $cmid]));
         }
 
         $data = $this->get_data();
@@ -179,7 +179,7 @@ class student_submission_form extends moodleform {
 
                         if (!empty($userids)) {
                             foreach ($userids as $u) {
-                                $notifyuser = $DB->get_record('user', array('id' => trim($u)));
+                                $notifyuser = $DB->get_record('user', ['id' => trim($u)]);
                                 $mailer = new mailer($coursework);
 
                                 if (!empty($notifyuser)) {
@@ -314,7 +314,7 @@ class student_submission_form extends moodleform {
                 $this->_form->createElement('submit', 'finalisebutton', get_string('submitandfinalise', 'coursework'));
         }
         $button_array[] = $this->_form->createElement('cancel');
-        $this->_form->addGroup($button_array, 'buttonar', '', array(' '), false);
+        $this->_form->addGroup($button_array, 'buttonar', '', [' '], false);
         $this->_form->closeHeaderBefore('buttonar');
     }
 

@@ -34,17 +34,17 @@ $allocatabletype = required_param('allocatabletype', PARAM_ALPHANUMEXT);
 $submissionid = optional_param('submissionid', 0, PARAM_INT);
 $finalised = !!optional_param('finalisebutton', 0, PARAM_TEXT);
 
-if (!in_array($allocatabletype, array('user', 'group'))) {
+if (!in_array($allocatabletype, ['user', 'group'])) {
     throw new \mod_coursework\exceptions\access_denied(\mod_coursework\models\coursework::find($courseworkid),
                                                        'Bad alloctable type');
 }
 
-$params = array(
+$params = [
     'courseworkid' => $courseworkid,
     'finalised' => $finalised,
     'allocatableid' => $allocatableid,
     'allocatabletype' => $allocatabletype,
-);
+];
 if ($submissionid) {
     $params['submissionid'] = $submissionid;
 }

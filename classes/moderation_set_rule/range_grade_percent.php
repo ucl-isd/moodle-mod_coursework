@@ -117,19 +117,19 @@ class range_grade_percent extends moderation_set_rule {
         // Upper limit.
         $html .= html_writer::start_tag('p');
         $html .= get_string('upperlimit', 'mod_coursework').' ';
-        $attributes = array(
+        $attributes = [
             'name' => 'rule_range_grade_percent_upperlimit',
             'size' => 3,
-        );
+        ];
         $html .= html_writer::empty_tag('input', $attributes).'%';
         $html .= html_writer::end_tag('p');
         // Lower limit.
         $html .= html_writer::start_tag('p');
         $html .= get_string('lowerlimit', 'mod_coursework').' ';
-        $attributes = array(
+        $attributes = [
             'name' => 'rule_range_grade_percent_lowerlimit',
             'size' => 3,
-        );
+        ];
         $html .= html_writer::empty_tag('input', $attributes).'%';
         $html .= html_writer::end_tag('p');
 

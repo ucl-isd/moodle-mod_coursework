@@ -137,7 +137,7 @@ class singlegrade_cell extends cell_base {
                 return $errormsg;
             }
 
-            $dbrecord = $DB->get_record('coursework_submissions', array('id' => $submissionid));
+            $dbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
 
             $submission = \mod_coursework\models\submission::find($dbrecord);
 
@@ -162,10 +162,10 @@ class singlegrade_cell extends cell_base {
             }
 
             // Has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
-            $feedback_params = array(
+            $feedback_params = [
                 'submissionid' => $submission->id,
                 'stage_identifier' => $stage_identifier,
-            );
+            ];
             $feedback = feedback::find($feedback_params);
 
             if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
@@ -178,10 +178,10 @@ class singlegrade_cell extends cell_base {
 
             $ability = new ability(user::find($USER), $this->coursework);
 
-            $feedback_params = array(
+            $feedback_params = [
                 'submissionid' => $submission->id,
                 'stage_identifier' => $stage_identifier,
-            );
+            ];
             $feedback = feedback::find($feedback_params);
 
             //if (!$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade', 'coursework');
@@ -189,11 +189,11 @@ class singlegrade_cell extends cell_base {
             //does a feedback exist for this stage
             if (empty($feedback)) {
 
-                $feedback_params = array(
+                $feedback_params = [
                     'submissionid' => $submissionid,
                     'assessorid' => $USER->id,
                     'stage_identifier' => $stage_identifier,
-                );
+                ];
                 $new_feedback = feedback::build($feedback_params);
 
                 // This is a new feedback check it against the new ability checks

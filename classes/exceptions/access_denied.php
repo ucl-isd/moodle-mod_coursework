@@ -42,7 +42,7 @@ class access_denied extends \moodle_exception {
      */
     public function __construct($coursework, $message = null) {
 
-        $link = router::instance()->get_path('coursework', array('coursework' => $coursework));
+        $link = router::instance()->get_path('coursework', ['coursework' => $coursework]);
 
         parent::__construct('access_denied', 'mod_coursework', $link, null, $message);
     }

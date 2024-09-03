@@ -166,7 +166,7 @@ class import extends grading_sheet {
         // get criteria of rubrics and match it to grade cells
         if ($this->coursework->is_using_rubric()) {
 
-            $types = array("singlegrade", "assessorgrade");
+            $types = ["singlegrade", "assessorgrade"];
 
             if ($this->coursework->finalstagegrading == 0 ) { $types[] = "agreedgrade";
             }
@@ -212,7 +212,7 @@ class import extends grading_sheet {
                             unset($linefromimportedcsv[$position + $offset]);
                         // if ($type == 'agreedgrade' && $this->coursework->finalstagegrading == 0) {
                             array_splice($csvheader, $position + $offset, 0, array_keys($headers));
-                            array_splice($linefromimportedcsv, $position + $offset, 0, array(''));
+                            array_splice($linefromimportedcsv, $position + $offset, 0, ['']);
                         // }
                             $offset = $offset + count($headers) - 1;
                             $expectedsize = (int)count($csvheader);
@@ -233,7 +233,7 @@ class import extends grading_sheet {
         // get criteria of rubrics and match it to grade cells
         if ($this->coursework->is_using_rubric()) {
 
-            $types = array("singlegrade", "assessorgrade");
+            $types = ["singlegrade", "assessorgrade"];
 
             foreach ($types as $type) {
 
@@ -335,7 +335,7 @@ class import extends grading_sheet {
                 $i++;
             }
 
-            $subdbrecord = $DB->get_record('coursework_submissions', array('id' => $submissionid));
+            $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
             $submission = \mod_coursework\models\submission::find($subdbrecord);
 
             // Is this submission graded? if yes did this user grade it?
@@ -585,7 +585,7 @@ class import extends grading_sheet {
             $markernumber = 1;
         } else {
             // get all feedbacks and add 1
-            $feedbacks = $DB->count_records('coursework_feedbacks', array('submissionid' => $submissionid));
+            $feedbacks = $DB->count_records('coursework_feedbacks', ['submissionid' => $submissionid]);
             $markernumber = $feedbacks + 1;
         }
 
@@ -637,8 +637,8 @@ class import extends grading_sheet {
     public function get_coursework_feedback_id($submissionid, $stage_identifier) {
         global $DB;
 
-        $record = $DB->get_record('coursework_feedbacks', array('submissionid' => $submissionid,
-                                                               'stage_identifier' => $stage_identifier),
+        $record = $DB->get_record('coursework_feedbacks', ['submissionid' => $submissionid,
+                                                               'stage_identifier' => $stage_identifier],
                                   'id');
 
         return $record->id;
@@ -670,7 +670,7 @@ class import extends grading_sheet {
         $update = false;
 
         // update record only if the value of grade or feedback is changed
-        $current_feedback = $DB->get_record('coursework_feedbacks', array('id' => $cwfeedbackid));
+        $current_feedback = $DB->get_record('coursework_feedbacks', ['id' => $cwfeedbackid]);
 
         if ($current_feedback->grade != $grade || strip_tags($current_feedback->feedbackcomment) != $feedback) {
 
@@ -706,7 +706,7 @@ class import extends grading_sheet {
     public function get_stage_identifier($submissionid, $cell_identifier) {
 
         global $DB, $USER;
-        $submission = $DB->get_record('coursework_submissions', array('id' => $submissionid));
+        $submission = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
 
         $submission = \mod_coursework\models\submission::find($submission);
 
@@ -718,11 +718,11 @@ class import extends grading_sheet {
             && $this->coursework->allocation_enabled()) {
 
             $dbrecord = $DB->get_record('coursework_allocation_pairs',
-                                               array('courseworkid' => $this->coursework->id,
+                                               ['courseworkid' => $this->coursework->id,
                                                      'allocatableid' => $submission->allocatableid,
                                                      'allocatabletype' => $submission->allocatabletype,
                                                      'assessorid' => $USER->id,
-                                                     ));
+                                                     ]);
             $stage_identifier = $dbrecord->stage_identifier;
         }
 
@@ -752,16 +752,16 @@ class import extends grading_sheet {
                 }
             } else if ($this->coursework->sampling_enabled()) { // samplings enabled
                 $in_sample = ($subs = $submission->get_submissions_in_sample()) ? count($subs) : 0;
-                $feedback = $DB->record_exists('coursework_feedbacks', array('submissionid' => $submissionid,
-                                                                             'stage_identifier' => 'assessor_1'));
+                $feedback = $DB->record_exists('coursework_feedbacks', ['submissionid' => $submissionid,
+                                                                             'stage_identifier' => 'assessor_1']);
                 // no sample or no feedback for sample yet
                 if (!$in_sample || ($in_sample && !$feedback)) {
                     $stage_identifier = 'assessor_1';
                 } else { // find out which sample wasn't graded yet
                     $samples = $submission->get_submissions_in_sample();
                     foreach ($samples as $sample) {
-                        $feedback = $DB->record_exists('coursework_feedbacks', array('submissionid' => $submissionid,
-                                                                                    'stage_identifier' => $sample->stage_identifier));
+                        $feedback = $DB->record_exists('coursework_feedbacks', ['submissionid' => $submissionid,
+                                                                                    'stage_identifier' => $sample->stage_identifier]);
                          // if feedback doesn't exist, we'll use this stage identifier for a new feedback
                         if (!$feedback) {
                             $stage_identifier = $sample->stage_identifier;
@@ -793,7 +793,7 @@ class import extends grading_sheet {
     public function auto_agreement($cwfeedbackid) {
         global $DB;
 
-        $feedback = $DB->get_record('coursework_feedbacks', array('id' => $cwfeedbackid));
+        $feedback = $DB->get_record('coursework_feedbacks', ['id' => $cwfeedbackid]);
         $feedback = \mod_coursework\models\feedback::find($feedback);
 
         $auto_feedback_classname = '\mod_coursework\auto_grader\\' . $this->coursework->automaticagreementstrategy;

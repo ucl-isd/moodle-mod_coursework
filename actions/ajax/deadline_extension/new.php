@@ -34,11 +34,11 @@ $extended_deadline = optional_param('extended_deadline', 0, PARAM_ALPHANUMEXT);
 $pre_defined_reason = optional_param('pre_defined_reason', null, PARAM_ALPHANUMEXT);
 $submissionid = optional_param('submissionid', 0, PARAM_INT);
 $name = optional_param('name', 0, PARAM_ALPHANUMEXT);
-$params = array(
+$params = [
     'courseworkid' => $courseworkid,
     'allocatableid' => $allocatableid,
     'allocatabletype' => $allocatabletype,
-);
+];
 $controller = new mod_coursework\controllers\deadline_extensions_controller($params);
 
 $params['id'] = $id;

@@ -63,7 +63,7 @@ class deadline_extensions_controller extends controller_base {
         $PAGE->set_url('/mod/coursework/actions/deadline_extensions/new.php', $params);
         $create_url = $this->get_router()->get_path('create deadline extension');
 
-        $this->form = new deadline_extension_form($create_url, array('coursework' => $this->coursework));
+        $this->form = new deadline_extension_form($create_url, ['coursework' => $this->coursework]);
         $this->form->set_data($this->deadline_extension);
 
         $this->render_page('new');
@@ -74,8 +74,8 @@ class deadline_extensions_controller extends controller_base {
         global $USER;
 
         $create_url = $this->get_router()->get_path('create deadline extension');
-        $this->form = new deadline_extension_form($create_url, array('coursework' => $this->coursework));
-        $coursework_page_url = $this->get_path('coursework', array('coursework' => $this->coursework));
+        $this->form = new deadline_extension_form($create_url, ['coursework' => $this->coursework]);
+        $coursework_page_url = $this->get_path('coursework', ['coursework' => $this->coursework]);
         if ($this->cancel_button_was_pressed()) {
             redirect($coursework_page_url);
         }
@@ -103,9 +103,9 @@ class deadline_extensions_controller extends controller_base {
     protected function edit_deadline_extension() {
         global $USER, $PAGE;
 
-        $params = array(
+        $params = [
             'id' => $this->params['id'],
-        );
+        ];
         $this->deadline_extension = deadline_extension::find($params);
 
         $ability = new ability(user::find($USER), $this->coursework);
@@ -114,11 +114,11 @@ class deadline_extensions_controller extends controller_base {
         $PAGE->set_url('/mod/coursework/actions/deadline_extensions/edit.php', $params);
         $update_url = $this->get_router()->get_path('update deadline extension');
 
-        $this->form = new deadline_extension_form($update_url, array('coursework' => $this->coursework));
-        $this->deadline_extension->extra_information = array(
+        $this->form = new deadline_extension_form($update_url, ['coursework' => $this->coursework]);
+        $this->deadline_extension->extra_information = [
             'text' => $this->deadline_extension->extra_information_text,
             'format' => $this->deadline_extension->extra_information_format,
-        );
+        ];
         $this->form->set_data($this->deadline_extension);
 
         $this->render_page('edit');
@@ -128,8 +128,8 @@ class deadline_extensions_controller extends controller_base {
         global $USER;
 
         $update_url = $this->get_router()->get_path('update deadline extension');
-        $this->form = new deadline_extension_form($update_url, array('coursework' => $this->coursework));
-        $coursework_page_url = $this->get_path('coursework', array('coursework' => $this->coursework));
+        $this->form = new deadline_extension_form($update_url, ['coursework' => $this->coursework]);
+        $coursework_page_url = $this->get_path('coursework', ['coursework' => $this->coursework]);
         if ($this->cancel_button_was_pressed()) {
             redirect($coursework_page_url);
         }
@@ -158,11 +158,11 @@ class deadline_extensions_controller extends controller_base {
      */
     protected function set_default_current_deadline() {
         global $DB;
-        $params = array(
+        $params = [
             'allocatableid' => $this->params['allocatableid'],
             'allocatabletype' => $this->params['allocatabletype'],
             'courseworkid' => $this->params['courseworkid'],
-        );
+        ];
         $this->deadline_extension = deadline_extension::build($params);
         // Default to current deadline
         // check for personal deadline first o
@@ -243,11 +243,11 @@ class deadline_extensions_controller extends controller_base {
     public function submission_exists($data) {
         global $DB;
 
-        return  $DB->record_exists('coursework_submissions', array(
+        return  $DB->record_exists('coursework_submissions', [
                             'courseworkid' => $data['courseworkid'],
                             'allocatableid' => $data['allocatableid'],
                             'allocatabletype' => $data['allocatabletype'],
-        ));
+        ]);
     }
 
     public function personal_deadline() {
@@ -256,7 +256,7 @@ class deadline_extensions_controller extends controller_base {
         $extensionid = optional_param('id', 0,  PARAM_INT);
 
         if ($extensionid != 0) {
-            $ext = $DB->get_record('coursework_extensions', array('id' => $extensionid));
+            $ext = $DB->get_record('coursework_extensions', ['id' => $extensionid]);
             $allocatableid = $ext->allocatableid;
             $allocatabletype = $ext->allocatabletype;
             $courseworkid = $ext->courseworkid;
@@ -267,11 +267,11 @@ class deadline_extensions_controller extends controller_base {
             $courseworkid = required_param('courseworkid', PARAM_INT);
         }
 
-        $params = array(
+        $params = [
             'allocatableid' => $allocatableid ?? 0,
             'allocatabletype' => $allocatabletype ?? 0,
             'courseworkid' => $courseworkid ?? 0,
-        );
+        ];
 
         return  $personal_deadline = $DB->get_record('coursework_person_deadlines', $params);
     }
@@ -343,11 +343,11 @@ class deadline_extensions_controller extends controller_base {
         );
         require_login($this->coursework->course, false, $cm);
 
-        $params = array(
+        $params = [
             'allocatableid' => $this->params['allocatableid'],
             'allocatabletype' => $this->params['allocatabletype'],
             'courseworkid' => $this->params['courseworkid'],
-        );
+        ];
 
         $ability = new ability(user::find($USER), $this->coursework);
         $deadline_extension = deadline_extension::build($params);
@@ -397,7 +397,7 @@ class deadline_extensions_controller extends controller_base {
             $row_object = new \mod_coursework\grading_table_row_single($coursework, $participant);
         }
 
-        $time_submitted_cell = new  \mod_coursework\render_helpers\grading_report\cells\time_submitted_cell(array('coursework' => $this->coursework));
+        $time_submitted_cell = new  \mod_coursework\render_helpers\grading_report\cells\time_submitted_cell(['coursework' => $this->coursework]);
 
         $content = $time_submitted_cell->prepare_content_cell($row_object);
 

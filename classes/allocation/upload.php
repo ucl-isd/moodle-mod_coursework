@@ -81,7 +81,7 @@ class upload {
         $assessors = array_keys($assessors); // keep only assessors' ids
         $allocatablesinfile = [];
 
-        $csv_cells = array('allocatable');
+        $csv_cells = ['allocatable'];
         $stages = $this->coursework->get_max_markers();
         for ($i = 1; $i <= $stages; $i++) {
             $csv_cells[] = 'assessor_'.$i;
@@ -106,12 +106,12 @@ class upload {
 
                     if ($allocatabletype == 'user') {
                         // get user id
-                        $suballocatable = $DB->get_record('user', array($assessor_identifier => $value));
+                        $suballocatable = $DB->get_record('user', [$assessor_identifier => $value]);
                         $allocatable = ($suballocatable) ? \mod_coursework\models\user::find($suballocatable->id) : '';
                     } else {
                         // get group id
-                        $suballocatable = $DB->get_record('groups', array('courseid' => $this->coursework->course,
-                                                                        'name' => $value));
+                        $suballocatable = $DB->get_record('groups', ['courseid' => $this->coursework->course,
+                                                                        'name' => $value]);
                         $allocatable = ($suballocatable) ? \mod_coursework\models\group::find($suballocatable->id) : '';
                     }
 
@@ -134,7 +134,7 @@ class upload {
                         continue;
                     }
 
-                    $assessor = $DB->get_record('user', array($assessor_identifier => $value));
+                    $assessor = $DB->get_record('user', [$assessor_identifier => $value]);
 
                     if (!$assessor ||!in_array($assessor->id, $assessors)) {
                         $errors[$s] = get_string('assessornotincoursework', 'coursework', $keynum ); continue;
@@ -196,7 +196,7 @@ class upload {
         $csvreader->init();
 
         $s = 0;
-        $csv_cells = array('allocatable');
+        $csv_cells = ['allocatable'];
         $stages = $this->coursework->get_max_markers();
         for ($i = 1; $i <= $stages; $i++) {
             $csv_cells[] = 'assessor_'.$i;
@@ -225,23 +225,23 @@ class upload {
                 if ($cells[$keynum] == 'allocatable') {
                     if ($allocatabletype == 'user') {
                         // get user id
-                        $suballocatable = $DB->get_record('user', array($assessor_identifier => $value));
+                        $suballocatable = $DB->get_record('user', [$assessor_identifier => $value]);
                         $allocatable = ($suballocatable) ? \mod_coursework\models\user::find($suballocatable->id) : '';
                     } else {
                         // get group id
-                        $suballocatable = $DB->get_record('groups', array('courseid' => $this->coursework->course,
-                            'name' => $value));
+                        $suballocatable = $DB->get_record('groups', ['courseid' => $this->coursework->course,
+                            'name' => $value]);
                         $allocatable = ($suballocatable) ? \mod_coursework\models\group::find($suballocatable->id) : '';
                     }
                 }
                 if (substr($cells[$keynum], 0, 8) == 'assessor' && !(empty($value))) {
 
-                    $assessor = $DB->get_record('user', array($assessor_identifier => $value));
+                    $assessor = $DB->get_record('user', [$assessor_identifier => $value]);
 
-                    $params = array('courseworkid' => $this->coursework->id,
+                    $params = ['courseworkid' => $this->coursework->id,
                                     'allocatableid' => $allocatable->id,
                                     'allocatabletype' => $allocatabletype,
-                                    'stage_identifier' => $cells[$keynum]);
+                                    'stage_identifier' => $cells[$keynum]];
 
                     $allocation = $DB->get_record('coursework_allocation_pairs', $params);
 
@@ -251,9 +251,9 @@ class upload {
 
                     } else {
                         // update allocation if submission was not marked yet
-                        $subdbrecord = $DB->get_record('coursework_submissions', array('courseworkid' => $this->coursework->id,
+                        $subdbrecord = $DB->get_record('coursework_submissions', ['courseworkid' => $this->coursework->id,
                                                                                        'allocatabletype' => $allocatabletype,
-                                                                                       'allocatableid' => $allocatable->id));
+                                                                                       'allocatableid' => $allocatable->id]);
                         $submission = \mod_coursework\models\submission::find($subdbrecord);
 
                         if (!$submission || !$submission->get_assessor_feedback_by_stage($cells[$keynum])) {

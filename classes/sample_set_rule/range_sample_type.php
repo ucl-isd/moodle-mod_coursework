@@ -77,9 +77,9 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $html .= $this->range_elements($assessor_number, 0, false);
         }
 
-        $html  .= html_writer::link('#', get_string('addgraderule', 'mod_coursework'), array('id' => "assessor_{$assessor_number}_addgradderule", 'class' => 'addgradderule sample_set_rule'));
+        $html  .= html_writer::link('#', get_string('addgraderule', 'mod_coursework'), ['id' => "assessor_{$assessor_number}_addgradderule", 'class' => 'addgradderule sample_set_rule']);
         $html  .= "  ";
-        $html  .= html_writer::link('#', get_string('removegraderule', 'mod_coursework'), array('id' => "assessor_{$assessor_number}_removegradderule", 'class' => 'removegradderule sample_set_rule'));
+        $html  .= html_writer::link('#', get_string('removegraderule', 'mod_coursework'), ['id' => "assessor_{$assessor_number}_removegradderule", 'class' => 'removegradderule sample_set_rule']);
 
         return $html;
     }
@@ -99,41 +99,41 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                 $scale[] = $i;
             }
         } else {
-            $grade_scale = \grade_scale::fetch(array('id' => abs($this->coursework->grade)));
+            $grade_scale = \grade_scale::fetch(['id' => abs($this->coursework->grade)]);
             $scale = explode(",", $grade_scale->scale);
         }
 
         if ($dbrecord) {
-            $selected_type = array($dbrecord->ruletype => get_string($dbrecord->ruletype, 'mod_coursework'));
-            $selected_to = ($dbrecord->ruletype == 'scale') ? array($dbrecord->upperlimit => $scale[$dbrecord->upperlimit]) : array($dbrecord->upperlimit => $dbrecord->upperlimit);
+            $selected_type = [$dbrecord->ruletype => get_string($dbrecord->ruletype, 'mod_coursework')];
+            $selected_to = ($dbrecord->ruletype == 'scale') ? [$dbrecord->upperlimit => $scale[$dbrecord->upperlimit]] : [$dbrecord->upperlimit => $dbrecord->upperlimit];
 
-            $selected_from = ($dbrecord->ruletype == 'scale') ? array($dbrecord->lowerlimit => $scale[$dbrecord->lowerlimit]) : array($dbrecord->lowerlimit => $dbrecord->lowerlimit);
+            $selected_from = ($dbrecord->ruletype == 'scale') ? [$dbrecord->lowerlimit => $scale[$dbrecord->lowerlimit]] : [$dbrecord->lowerlimit => $dbrecord->lowerlimit];
 
             $rules_checked = ($dbrecord) ? true : false;
 
         } else {
-            $selected_type = array('percentage' => get_string('percentage', 'mod_coursework'));
-            $selected_to = array('100' => '100');
-            $selected_from = array('0' => '0');;
+            $selected_type = ['percentage' => get_string('percentage', 'mod_coursework')];
+            $selected_to = ['100' => '100'];
+            $selected_from = ['0' => '0'];;
             $rules_checked = false;
         }
 
-        $html = html_writer::start_tag('div', array('class' => "assessor_{$assessor_number}_grade_rules", 'id' => "assessor_{$assessor_number}_grade_rules_{$sequence}"));
+        $html = html_writer::start_tag('div', ['class' => "assessor_{$assessor_number}_grade_rules", 'id' => "assessor_{$assessor_number}_grade_rules_{$sequence}"]);
 
         $html .= html_writer::checkbox("assessor_{$assessor_number}_samplerules[]", 1, $rules_checked, '',
-            array('id' => "assessor_{$assessor_number}_samplerules_{$sequence}", 'class' => "assessor_{$assessor_number} range_grade_checkbox sample_set_rule"));
+            ['id' => "assessor_{$assessor_number}_samplerules_{$sequence}", 'class' => "assessor_{$assessor_number} range_grade_checkbox sample_set_rule"]);
 
         $grade_scale_text = ($this->coursework->grade < 0) ? get_string('scale', 'mod_coursework') : get_string('grade', 'mod_coursework');
         $grade_scale_val = ($this->coursework->grade < 0) ? 'scale' : 'grade';
 
-        $options = array('percentage' => get_string('percentage', 'mod_coursework'),
-            $grade_scale_val => $grade_scale_text);
+        $options = ['percentage' => get_string('percentage', 'mod_coursework'),
+            $grade_scale_val => $grade_scale_text];
 
         $html .= html_writer::select($options,
             "assessor_{$assessor_number}_sampletype[]",
             "",
             $selected_type,
-            array('id' => "assessor_{$assessor_number}_sampletype_{$sequence}", 'class' => "grade_type  sample_set_rule"));
+            ['id' => "assessor_{$assessor_number}_sampletype_{$sequence}", 'class' => "grade_type  sample_set_rule"]);
 
         $html .= html_writer::label(get_string('from', 'mod_coursework'), 'assessortwo_samplefrom[0]');
 
@@ -143,7 +143,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             "assessor_{$assessor_number}_samplefrom[]",
             "",
             $selected_from,
-            array('id' => "assessor_{$assessor_number}_samplefrom_{$sequence}", 'class' => " sample_set_rule range_drop_down range_samp_from"));
+            ['id' => "assessor_{$assessor_number}_samplefrom_{$sequence}", 'class' => " sample_set_rule range_drop_down range_samp_from"]);
 
         $html .= html_writer::label(get_string('to', 'mod_coursework'), "assessor_{$assessor_number}_sampleto[0]");
 
@@ -151,7 +151,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             "assessor_{$assessor_number}_sampleto[]",
             "",
             $selected_to,
-            array('id' => "assessor_{$assessor_number}_sampleto_{$sequence}", 'class' => " sample_set_rule range_drop_down"));
+            ['id' => "assessor_{$assessor_number}_sampleto_{$sequence}", 'class' => " sample_set_rule range_drop_down"]);
 
         $html .= html_writer::end_tag('div', '');
 
@@ -335,7 +335,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $sample_from = optional_param_array("assessor_{$assessor_number}_samplefrom", false, PARAM_RAW);
             $sample_to = optional_param_array("assessor_{$assessor_number}_sampleto", false, PARAM_RAW);
 
-            $sample_plugin = $DB->get_record('coursework_sample_set_plugin', array('rulename' => 'range_sample_type'));
+            $sample_plugin = $DB->get_record('coursework_sample_set_plugin', ['rulename' => 'range_sample_type']);
 
         if ($sample_rules) {
             foreach ($sample_rules as $i => $val) {
@@ -372,7 +372,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                          AND            stage_identifier = :stage
                          ORDER BY       ruleorder";
 
-        $ruleinstance = $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id, 'stage' => $stage));
+        $ruleinstance = $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id, 'stage' => $stage]);
 
         foreach ($ruleinstance as $ri) {
 
@@ -415,7 +415,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                 $limits[0] = $this->coursework->grade * $limits[0] / 100;
                 $limits[1] = $this->coursework->grade * $limits[1] / 100;
             } else {
-                $scale = $DB->get_record("scale", array('id' => abs($this->coursework->grade)));
+                $scale = $DB->get_record("scale", ['id' => abs($this->coursework->grade)]);
 
                 if ($scale) {
 
@@ -454,8 +454,8 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         // Note as things stand limit1 and limit2 can not be params as the type of the grade field (varchar)
         //means the values are cast as strings
 
-        return $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id,
-                                               'stage' => $stage));
+        return $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id,
+                                               'stage' => $stage]);
 
     }
 

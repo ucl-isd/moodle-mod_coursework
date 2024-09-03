@@ -45,11 +45,11 @@ class otherassessors_cell extends cell_base {
         // $stage_identifier =
         // retrieve all feedbacks without currents user feedback
 
-        $params = array(
+        $params = [
             'submissionid' => $submission->id,
             'assessorid' => $USER->id,
             'stageidentifier' => $stage_identifier,
-        );
+        ];
 
         $sql = "SELECT * FROM {coursework_feedbacks}
                 WHERE submissionid = :submissionid

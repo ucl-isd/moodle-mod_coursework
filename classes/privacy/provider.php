@@ -376,11 +376,11 @@ class provider implements
     }
     protected static function get_coursework_instance(\context $context) {
         global $DB;
-        $courseId = array('id' => $context->get_course_context()->instanceid);
+        $courseId = ['id' => $context->get_course_context()->instanceid];
         $course = $DB->get_record('course', $courseId, '*', MUST_EXIST);
         $modinfo = get_fast_modinfo($course);
         $coursemodule = $modinfo->get_cm($context->instanceid);
-        $courseworkId = array('id' => $coursemodule->instance);
+        $courseworkId = ['id' => $coursemodule->instance];
         $coursework = new \mod_coursework\models\coursework($courseworkId);
         return $coursework;
     }
@@ -425,7 +425,7 @@ class provider implements
      */
     protected static function get_user_submissions($userid, $courseworkid) {
         global $DB;
-        $params = array('courseworkid' => $courseworkid, 'authorid' => $userid);
+        $params = ['courseworkid' => $courseworkid, 'authorid' => $userid];
         $submissions = $DB->get_records('coursework_submissions', $params);
         return $submissions;
     }
@@ -459,7 +459,7 @@ class provider implements
     }
     protected static function get_submission_feedbacks($submissionid) {
         global $DB;
-        $params = array('submissionid' => $submissionid);
+        $params = ['submissionid' => $submissionid];
         $feedbacks = $DB->get_records('coursework_feedbacks', $params);
         return $feedbacks;
     }
@@ -515,7 +515,7 @@ class provider implements
     }
     protected static function get_coursework_extension($courseworkId, $userId) {
         global $DB;
-        $params = array('courseworkid' => $courseworkId, 'allocatableid' => $userId);
+        $params = ['courseworkid' => $courseworkId, 'allocatableid' => $userId];
         $extension = $DB->get_record('coursework_extensions', $params);
         return $extension;
     }
@@ -536,7 +536,7 @@ class provider implements
     }
     protected static function get_person_deadline($courseworkId, $userId) {
         global $DB;
-        $params = array('courseworkid' => $courseworkId, 'allocatableid' => $userId);
+        $params = ['courseworkid' => $courseworkId, 'allocatableid' => $userId];
         $personDeadline = $DB->get_record('coursework_person_deadlines', $params);
         return $personDeadline;
     }
@@ -561,7 +561,7 @@ class provider implements
     protected static function get_plagiarism_flags($courseworkId) {
         global $DB;
 
-        $param = array('courseworkid' => $courseworkId);
+        $param = ['courseworkid' => $courseworkId];
 
         $plagiarism = $DB->get_record('coursework_plagiarism_flags', $param);
 
@@ -614,7 +614,7 @@ class provider implements
     }
     protected static function get_mod_agreement($feedbackId) {
         global $DB;
-        $param = array('feedbackid' => $feedbackId);
+        $param = ['feedbackid' => $feedbackId];
         $agreement = $DB->get_record('coursework_mod_agreements', $param);
         return $agreement;
     }
