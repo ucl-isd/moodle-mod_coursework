@@ -47,7 +47,7 @@ class provider implements
      * @param  collection $collection A collection of meta data items to be added to.
      * @return  collection Returns the collection of metadata.
      */
-    public static function get_metadata(collection $collection) : collection {
+    public static function get_metadata(collection $collection): collection {
         $feedbacks = [
             'assessorid' => 'privacy:metadata:assessorid',
             'timecreated' => 'privacy:metadata:timecreated',
@@ -181,7 +181,7 @@ class provider implements
      * @param  int $userid The user ID.
      * @return contextlist an object with the contexts related to a userid.
      */
-    public static function get_contexts_for_userid(int $userid) : contextlist {
+    public static function get_contexts_for_userid(int $userid): contextlist {
         $params = [
             'modulename' => 'coursework',
             'contextlevel' => CONTEXT_MODULE,
