@@ -66,7 +66,7 @@ class csv {
     public function __construct($coursework, $csvcells, $filename) {
         $this->coursework = $coursework;
         $this->dateformat = '%a, %d %b %Y, %H:%M';
-        $this->csv_cells = $csvcells;
+        $this->csvcells = $csvcells;
         $this->filename = $filename;
     }
 
@@ -80,7 +80,7 @@ class csv {
 
         $csvdata = [];
         // headers
-        $this->add_headers($this->csv_cells);
+        $this->add_headers($this->csvcells);
 
         /**
          * @var submission[] $submissions
@@ -246,7 +246,7 @@ class csv {
         $students = $submission->get_students();
 
         foreach ($students as $student) {
-            $csvdata[] = $this->add_cells_to_array($submission, $student, $this->csv_cells);
+            $csvdata[] = $this->add_cells_to_array($submission, $student, $this->csvcells);
         }
 
         return $csvdata;

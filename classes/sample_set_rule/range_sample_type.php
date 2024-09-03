@@ -60,7 +60,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                                 {coursework_sample_set_plugin}  sp
                      WHERE      sr.sample_set_plugin_id = sp.id
                      AND        sr.courseworkid = {$this->coursework->id}
-                     AND        sr.stageidentifier = 'assessor{$assessornumber}'
+                     AND        sr.stage_identifier = 'assessor_{$assessornumber}'
                      AND        sp.rulename = 'range_sample_type'";
 
         $rulesfound = false;
@@ -77,9 +77,9 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $html .= $this->range_elements($assessornumber, 0, false);
         }
 
-        $html  .= html_writer::link('#', get_string('addgraderule', 'mod_coursework'), ['id' => "assessor{$assessornumber}addgradderule", 'class' => 'addgradderule sample_set_rule']);
+        $html  .= html_writer::link('#', get_string('addgraderule', 'mod_coursework'), ['id' => "assessor_{$assessornumber}_addgradderule", 'class' => 'addgradderule sample_set_rule']);
         $html  .= "  ";
-        $html  .= html_writer::link('#', get_string('removegraderule', 'mod_coursework'), ['id' => "assessor{$assessornumber}removegradderule", 'class' => 'removegradderule sample_set_rule']);
+        $html  .= html_writer::link('#', get_string('removegraderule', 'mod_coursework'), ['id' => "assessor_{$assessornumber}_removegradderule", 'class' => 'removegradderule sample_set_rule']);
 
         return $html;
     }
@@ -118,10 +118,14 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $ruleschecked = false;
         }
 
-        $html = html_writer::start_tag('div', ['class' => "assessor{$assessornumber}graderules", 'id' => "assessor{$assessornumber}graderules{$sequence}"]);
+        $html = html_writer::start_tag(
+            'div',
+            ['class' => "assessor_{$assessornumber}_grade_rules", 'id' => "assessor_{$assessornumber}_grade_rules_{$sequence}"]
+        );
 
-        $html .= html_writer::checkbox("assessor{$assessornumber}samplerules[]", 1, $ruleschecked, '',
-            ['id' => "assessor{$assessornumber}samplerules{$sequence}", 'class' => "assessor{$assessornumber} rangegradecheckbox samplesetrule"]);
+        $html .= html_writer::checkbox(
+            "assessor_{$assessornumber}_samplerules[]", 1, $ruleschecked, '',
+            ['id' => "assessor_{$assessornumber}_samplerules_{$sequence}", 'class' => "assessor_{$assessornumber} range_grade_checkbox sample_set_rule"]);
 
         $gradescaletext = ($this->coursework->grade < 0) ? get_string('scale', 'mod_coursework') : get_string('grade', 'mod_coursework');
         $gradescaleval = ($this->coursework->grade < 0) ? 'scale' : 'grade';
@@ -130,28 +134,28 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $gradescaleval => $gradescaletext];
 
         $html .= html_writer::select($options,
-            "assessor{$assessornumber}sampletype[]",
+            "assessor_{$assessornumber}_sampletype[]",
             "",
             $selectedtype,
-            ['id' => "assessor{$assessornumber}sampletype{$sequence}", 'class' => "grade_type  sample_set_rule"]);
+            ['id' => "assessor_{$assessornumber}_sampletype_{$sequence}", 'class' => "grade_type  sample_set_rule"]);
 
         $html .= html_writer::label(get_string('from', 'mod_coursework'), 'assessortwo_samplefrom[0]');
 
         $ruleoptions = (!empty($selectedtype) && array_key_exists('percentage', $selectedtype)) ? $percentageoptions : $scale; //change this into a ternary statement that
 
         $html .= html_writer::select($ruleoptions,
-            "assessor{$assessornumber}samplefrom[]",
+            "assessor_{$assessornumber}_samplefrom[]",
             "",
             $selectedfrom,
-            ['id' => "assessor{$assessornumber}samplefrom{$sequence}", 'class' => " sample_set_rule range_drop_down range_samp_from"]);
+            ['id' => "assessor_{$assessornumber}_samplefrom_{$sequence}", 'class' => " sample_set_rule range_drop_down range_samp_from"]);
 
-        $html .= html_writer::label(get_string('to', 'mod_coursework'), "assessor{$assessornumber}sampleto[0]");
+        $html .= html_writer::label(get_string('to', 'mod_coursework'), "assessor_{$assessornumber}_sampleto[0]");
 
         $html .= html_writer::select(array_reverse($ruleoptions, true),
-            "assessor{$assessornumber}sampleto[]",
+            "assessor_{$assessornumber}_sampleto[]",
             "",
             $selectedto,
-            ['id' => "assessor{$assessornumber}sampleto{$sequence}", 'class' => " sample_set_rule range_drop_down"]);
+            ['id' => "assessor_{$assessornumber}_sampleto_{$sequence}", 'class' => " sample_set_rule range_drop_down"]);
 
         $html .= html_writer::end_tag('div', '');
 
@@ -330,10 +334,10 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
             global $DB;
 
-            $samplerules = optional_param_array("assessor{$assessornumber}samplerules", false, PARAM_RAW);
-            $sampletype = optional_param_array("assessor{$assessornumber}sampletype", false, PARAM_RAW);
-            $samplefrom = optional_param_array("assessor{$assessornumber}samplefrom", false, PARAM_RAW);
-            $sampleto = optional_param_array("assessor{$assessornumber}sampleto", false, PARAM_RAW);
+            $samplerules = optional_param_array("assessor_{$assessornumber}_samplerules", false, PARAM_RAW);
+            $sampletype = optional_param_array("assessor_{$assessornumber}_sampletype", false, PARAM_RAW);
+            $samplefrom = optional_param_array("assessor_{$assessornumber}_samplefrom", false, PARAM_RAW);
+            $sampleto = optional_param_array("assessor_{$assessornumber}_sampleto", false, PARAM_RAW);
 
             $sampleplugin = $DB->get_record('coursework_sample_set_plugin', ['rulename' => 'range_sample_type']);
 
@@ -348,7 +352,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                 $dbrecord->sample_set_plugin_id = $sampleplugin->id;
                 $dbrecord->courseworkid = $this->coursework->id;
                 $dbrecord->ruleorder = $order;
-                $dbrecord->stage_identifier = "assessor{$assessornumber}";
+                $dbrecord->stage_identifier = "assessor_{$assessornumber}";
 
                 $DB->insert_record("coursework_sample_set_rules", $dbrecord);
                 $order++;
@@ -361,7 +365,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         global  $DB;
 
-        $stage = "assessor_".$stagenumber;
+        $stage = "assessor_" . $stagenumber;
 
         $sql = "SELECT         r.*,p.rulename
                          FROM           {coursework_sample_set_plugin} p,
@@ -391,7 +395,6 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                     && isset($allocatables[$awf->allocatableid])) {
                         $autosampleset[$awf->allocatableid] = $allocatables[$awf->allocatableid];
                 }
-
             }
         }
     }
@@ -454,9 +457,9 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         // Note as things stand limit1 and limit2 can not be params as the type of the grade field (varchar)
         //means the values are cast as strings
 
-        return $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id,
-                                               'stage' => $stage]);
-
+        return $DB->get_records_sql($sql,
+            ['courseworkid' => $this->coursework->id, 'stage' => $stage]
+        );
     }
 
 }

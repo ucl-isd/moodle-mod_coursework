@@ -47,7 +47,7 @@ $reportoptions['sorthow'] = $sorthow;
 $reportoptions['showsubmissiongrade'] = false;
 $reportoptions['showgradinggrade'] = false;
 $reportoptions['courseworkid'] = $courseworkid;
-$reportoptions['mode'] = \mod_coursework\grading_report::$modegetremainrecords;
+$reportoptions['mode'] = \mod_coursework\grading_report::MODE_GET_REMAIN_RECORDS;
 
 //$controller = new mod_coursework\controllers\grading_controller(['courseworkid' => $report_options, 'allocatableid' => $USER->id, 'allocatabletype' => $USER->id]);
 $controller = new mod_coursework\controllers\grading_controller([]);

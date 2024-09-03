@@ -304,7 +304,7 @@ class manager {
 
         for ($stagenumber = 2; $stagenumber <= $this->get_coursework()->get_max_markers(); $stagenumber++) {
 
-            $stage = "assessor{$stagenumber}";
+            $stage = "assessor_{$stagenumber}";
 
             $this->remove_unmarked_automatic_allocatables($stage);
 
@@ -353,7 +353,7 @@ class manager {
                         $sample->courseworkid = $this->coursework->id;
                         $sample->allocatableid = $allocatable->id;
                         $sample->allocatabletype = ($this->coursework->is_configured_to_have_group_submissions()) ? "group" : "user";
-                        $sample->stage_identifier = "assessor{$stagenumber}";
+                        $sample->stage_identifier = "assessor_{$stagenumber}";
                         $sample->selectiontype = "automatic";
 
                         // If this a manually selected allocatable check to see if the allocatable is already in the table
@@ -369,7 +369,7 @@ class manager {
 
         global  $DB;
 
-        $stage = "assessor{$stagenumber}";
+        $stage = "assessor_{$stagenumber}";
 
         $sql = "SELECT     allocatableid,
                                 courseworkid,

@@ -49,7 +49,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
     }
 
-    public function add_form_elements($assessornumber=0) {
+    public function add_form_elements($assessornumber = 0) {
 
         global $DB;
 
@@ -58,7 +58,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                                 {coursework_sample_set_plugin}  sp
                      WHERE      sr.sample_set_plugin_id = sp.id
                      AND        sr.courseworkid = {$this->coursework->id}
-                     AND        sr.stageidentifier = 'assessor{$assessornumber}'
+                     AND        sr.stage_identifier = 'assessor_{$assessornumber}'
                      AND        sp.rulename = 'total_sample_type'";
 
         $selected = ($record = $DB->get_record_sql($sql)) ? [$record->upperlimit => $record->upperlimit] : false;
@@ -72,14 +72,16 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         $html = html_writer::start_div('sampletotal');
 
-        $html  .= html_writer::checkbox("assessor{$assessornumber}sampletotalcheckbox", 1, $checked, get_string('topupto', 'mod_coursework'),
-            ['id' => "assessor{$assessornumber}sampletotalcheckbox", 'class' => "assessor{$assessornumber} totalcheckbox samplesetrule"]);
+        $html .= html_writer::checkbox(
+            "assessor_{$assessornumber}_sampletotal_checkbox", 1, $checked, get_string('topupto', 'mod_coursework'),
+            ['id' => "assessor_{$assessornumber}_sampletotal_checkbox", 'class' => "assessor{$assessornumber} totalcheckbox samplesetrule"]);
 
-        $html .= html_writer::select($percentageoptions,
-            "assessor{$assessornumber}sampletotal",
+        $html .= html_writer::select(
+            $percentageoptions,
+            "assessor_{$assessornumber}_sampletotal",
             "",
             $selected,
-            ['id' => "assessor{$assessornumber}sampletotal", 'class' => " sample_set_rule"]);
+            ['id' => "assessor_{$assessornumber}_sampletotal", 'class' => " sample_set_rule"]);
         $html  .= html_writer::label(get_string('ofallstudents', 'mod_coursework'), 'assessortwo_sampletotal[]');
 
         $html .= html_writer::end_div();
@@ -87,7 +89,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         return $html;
     }
 
-    public function add_form_elements_js($assessornumber=0) {
+    public function add_form_elements_js($assessornumber = 0) {
 
         $jsscript = "
 
@@ -113,11 +115,11 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
     }
 
-    function save_form_data($assessornumber=0, &$order=0) {
+    function save_form_data($assessornumber = 0, &$order = 0) {
         global $DB;
 
-        $totalcheckbox = optional_param("assessor{$assessornumber}sampletotalcheckbox", false, PARAM_INT);
-        $sampletotal = optional_param("assessor{$assessornumber}sampletotal", false, PARAM_INT);
+        $totalcheckbox = optional_param("assessor_{$assessornumber}_sampletotal_checkbox", false, PARAM_INT);
+        $sampletotal = optional_param("assessor_{$assessornumber}_sampletotal", false, PARAM_INT);
 
         if ($totalcheckbox) {
 
@@ -128,7 +130,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $dbrecord->sample_set_plugin_id = 2; // TODO: THIS SHOULD NOT BE HARD CODED - AF
             $dbrecord->courseworkid = $this->coursework->id;
             $dbrecord->ruleorder = $order;
-            $dbrecord->stage_identifier = "assessor{$assessornumber}";
+            $dbrecord->stage_identifier = "assessor_{$assessornumber}";
 
             $DB->insert_record('coursework_sample_set_rules', $dbrecord);
         }
@@ -146,7 +148,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         global $DB;
 
-        $stage = "assessor_".$stagenumber;
+        $stage = "assessor_" . $stagenumber;
 
         $sql = "SELECT         r.*,p.rulename
                          FROM           {coursework_sample_set_plugin} p,

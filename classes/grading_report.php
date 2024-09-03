@@ -39,10 +39,10 @@ defined('MOODLE_INTERNAL') || die();
  */
 class grading_report {
 
-    //added static vars to determine in what manner the report is loaded
-    public static $modegetall = 1;
-    public static $modegetfirstrecords = 2;
-    public static $modegetremainrecords = 3;
+    // Added constants to determine in what manner the report is loaded.
+    const MODE_GET_ALL = 1;
+    const MODE_GET_FIRST_RECORDS = 2;
+    const MODE_GET_REMAIN_RECORDS = 3;
 
     /**
      * @var array rendering options
@@ -406,13 +406,13 @@ class grading_report {
 
             $counter = count($rows);
             $this->realtotalrows = $counter;
-            $mode = empty($this->options['mode']) ? self::$modegetall : $this->options['mode'];
+            $mode = empty($this->options['mode']) ? self::MODE_GET_ALL : $this->options['mode'];
             if ($mode != self::$modegetall) {
                 $perpage = $this->options['perpage'] ?? 10;
                 if ($counter > $perpage) {
-                    if ($mode == self::$modegetfirstrecords) {
+                    if ($mode == self::MODE_GET_FIRST_RECORDS) {
                         $rows = array_slice($rows, 0, $perpage);
-                    } else if ($mode == self::$modegetremainrecords) {
+                    } else if ($mode == self::MODE_GET_REMAIN_RECORDS) {
                         $rows = array_slice($rows, $perpage);
                     }
                 }
