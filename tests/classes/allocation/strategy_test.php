@@ -38,7 +38,7 @@ class coursework_allocation_strategy_test extends advanced_testcase {
     /**
      * Makes us a blank coursework and allocation manager.
      */
-    public function setUp() {
+    public function setUp(): void {
 
         $this->resetAfterTest();
 

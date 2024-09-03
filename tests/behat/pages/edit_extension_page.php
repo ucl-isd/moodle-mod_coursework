@@ -56,18 +56,17 @@ class mod_coursework_behat_edit_extension_page extends mod_coursework_behat_page
     }
 
     /**
-     * @param string $reason
+     * @return string $reason
      */
-    public function should_show_extension_reason_for_allocatable($reason) {
-        $field = $this->getPage()->findField('pre_defined_reason');
-        assertEquals($reason, $field->getValue());
+    public function get_extension_reason_for_allocatable() {
+        return $this->getPage()->findField('pre_defined_reason')->getValue();
     }
 
     /**
      * @param string $string
      */
-    public function should_show_extra_information_for_allocatable($string) {
+    public function get_extra_information_for_allocatable($string) {
         $field = $this->getPage()->findField('extra_information[text]');
-        assertContains($string, $field->getValue());
+        return $field->getValue();
     }
 }

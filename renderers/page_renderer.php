@@ -43,14 +43,18 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     /**
      * @param feedback $feedback
      */
-    public function show_feedback_page($feedback, $ajax) {
+    public function show_feedback_page($feedback, bool $ajax) {
         $html = '';
 
         $object_renderer = $this->get_object_renderer();
 
-        if (empty($ajax))  $html .= $this->output->header();
+        if (!$ajax) {
+            $html .= $this->output->header();
+        }
         $html .= $object_renderer->render_feedback($feedback);
-        if (empty($ajax)) $html .= $this->output->header();
+        if (!$ajax)  {
+            $html .= $this->output->footer();
+        }
 
         return $html;
     }

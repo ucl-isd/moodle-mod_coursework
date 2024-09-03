@@ -38,19 +38,19 @@ class mod_coursework_behat_single_grading_interface extends mod_coursework_behat
     /**
      * @param $student_hash
      */
-    public function student_should_have_a_final_grade($student_hash) {
+    public function student_has_a_final_grade($student_hash): bool {
         $student_grade_cell = $this->getPage()->find('css', '#submission_'. $student_hash.' .single_final_grade_cell');
-        $message = "Should be a grade in the student row final grade cell, but there's not";
-        assertNotEmpty($student_grade_cell->getText(), $message);
+        return !empty($student_grade_cell->getText());
     }
 
     /**
      * @param allocatable $allocatable
+     * @return bool is there an icon?
      */
-    public function there_should_not_be_a_feedback_icon($allocatable) {
+    public function there_is_a_feedback_icon($allocatable):bool {
         $feedback_cell = $this->getPage()->find('css', $this->allocatable_row_id($allocatable).' .single_assessor_feedback_cell');
         $feedback_icon = $feedback_cell->findAll('css', '.smallicon');
-        assertEquals(0, count($feedback_icon));
+        return !empty($feedback_icon);
     }
 
     /**

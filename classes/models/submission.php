@@ -51,6 +51,7 @@ defined('MOODLE_INTERNAL') || die();
  * @property mixed timesubmitted
  * @property mixed lastpublished
  */
+#[\AllowDynamicProperties]
 class submission extends table_base implements \renderable {
 
     /**

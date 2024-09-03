@@ -34,11 +34,10 @@ require_once($CFG->dirroot . '/mod/coursework/tests/behat/pages/page_base.php');
 class mod_coursework_behat_gradebook_page extends mod_coursework_behat_page_base {
 
     /**
-     * @param $coursework
-     * @param $student
-     * @param $grade
+     * @param object $coursework
+     * @return string
      */
-    public function should_have_coursework_grade_for_student($coursework, $student, $grade) {
+    public function get_coursework_grade_for_student($coursework) {
         global $CFG;
 
         // This changed in 2.8, so we need a different selector
@@ -48,7 +47,6 @@ class mod_coursework_behat_gradebook_page extends mod_coursework_behat_page_base
             $locator = '//th[a[contains(text(), "' . $coursework->name . '")]]/following-sibling::td[1]';
         }
         $grade_cell = $this->getPage()->find('xpath', $locator);
-        $cell_contents = $grade_cell->getText();
-        assertEquals($grade, $cell_contents, "Expected the gradebook grade to be '{$grade}', but got '{$cell_contents}'");
+        return $grade_cell ? $grade_cell->getText() : '';
     }
 }

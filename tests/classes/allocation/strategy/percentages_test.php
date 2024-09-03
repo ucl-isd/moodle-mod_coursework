@@ -32,7 +32,7 @@ class mod_coursework_allocation_strategy_percentages_test extends advanced_testc
 
     use mod_coursework\test_helpers\factory_mixin;
 
-    public function setUp() {
+    public function setUp(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
 

@@ -16,11 +16,12 @@
 
 /**
  *
- * @packagev   mod
- * @subpackage coursework
+ * @package   mod_coursework
  * @copyright  2012 ULCC {@link http://ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+namespace mod_coursework;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -28,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
  * Checks that parts of the renderer are doing what they should. Mostly for helper functions as
  * we will use Selenium for most of it.
  */
-class renderer_test extends basic_testcase {
+class renderer_test extends \basic_testcase {
 
     public function test_equals() {
         $this->assertEquals(1, 1);

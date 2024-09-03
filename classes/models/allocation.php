@@ -35,6 +35,7 @@ defined('MOODLE_INTERNAL') || die();
  * @property mixed allocatableid
  * @property mixed allocatabletype
  */
+#[\AllowDynamicProperties]
 class allocation extends table_base {
 
     /**

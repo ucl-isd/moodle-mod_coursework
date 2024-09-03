@@ -36,7 +36,6 @@ use mod_coursework\models\submission;
 use mod_coursework\stages\base as stage_base;
 
 require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
-require_once(__DIR__ . '/../../../../vendor/phpunit/phpunit/src/Framework/Assert/Functions.php');
 
 $files = glob(dirname(__FILE__) . '/steps/*.php');
 foreach ($files as $filename) {
@@ -66,6 +65,34 @@ class behat_mod_coursework extends behat_base {
      * without username/email collisions.
      */
     protected $user_suffix = 0;
+
+    public $coursework;
+
+    public $course;
+
+    public $editingteacher;
+
+    public $teacher;
+
+    public $manager;
+
+    public $student;
+
+    public $extension_deadline;
+
+    public $group;
+
+    public $feedback;
+
+    public $final_feedback;
+
+    public $submission;
+
+    public $other_submission;
+
+    public $other_teacher;
+
+    public $other_student;
 
     /**
      * Factory that makes an instance of the page class, passing in the session context, then caches it
@@ -191,7 +218,7 @@ class behat_mod_coursework extends behat_base {
      * @Given /^I should( not)? see the file on the page$/
      *
      * @param bool $negate
-     * @throws Behat\Mink\Exception\ExpectationException
+     * @throws ExpectationException
      */
     public function iShouldSeeTheFileOnThePage($negate = false) {
         $file_count = count($this->getSession()->getPage()->findAll('css', '.submissionfile'));
@@ -206,7 +233,7 @@ class behat_mod_coursework extends behat_base {
      * @Then /^I should see (\d+) file(?:s)? on the page$/
      *
      * @param $numberoffiles
-     * @throws Behat\Mink\Exception\ExpectationException
+     * @throws ExpectationException
      */
     public function iShouldSeeFileOnThePage($numberoffiles) {
         $file_count = count($this->getSession()->getPage()->findAll('css', '.submissionfile'));
@@ -224,22 +251,26 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Then /^I should( not)? see( the)? (.*)'s name on the page$/
-     * @param bool $negate
+     * @Then /^I (should|should not) see (the|another) student's name on the page$/
+     * @param string $shouldornot
      */
-    public function iShouldSeeTheStudentSNameOnThePage($negate = false, $negate2=false, $studentrole) {
+    public function iShouldSeeTheStudentSNameOnThePage(string $shouldornot, string $studentrole) {
         $page = $this->get_page('coursework page');
-
-        $student = ($studentrole == "another student") ? $this->other_student : $this->student;
-
-        $studentname = fullname($student);
-
+        $student = ($studentrole == "another") ? $this->other_student : $this->student;
+        // The var $student is a user object but we must pass stdClass to fullname() to avoid  core error.
+        $studentname = fullname((object)(array)$student);
         $student_found = $page->get_coursework_student_name($studentname);
-
-        if ($negate) {
-            assertFalse($student_found);
-        } else {
-            assertTrue($student_found);
+        $should = ($shouldornot == 'should');
+        if (!$should && $student_found) {
+            throw new ExpectationException(
+                "Student '$studentname' found but should not be",
+                $this->getSession()
+            );
+        } else if ($should && !$student_found) {
+            throw new ExpectationException(
+                "Student '$studentname' not found but should be",
+                $this->getSession()
+            );
         }
     }
 
@@ -338,7 +369,12 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_allocations_page $page
          */
         $page = $this->get_page('allocations page');
-        $page->user_should_be_alocated_to_assessor($this->student, $this->other_teacher, 'assessor_1');
+        $allocatedassessor = $page->user_allocated_assessor($this->student, 'assessor_1');
+        if ($allocatedassessor != $this->other_teacher->name()) {
+            $message = "Expected the allocated teacher name to be '{$this->other_teacher->name()}'"
+                . " but got '$allocatedassessor' instead.";
+            throw new ExpectationException($message, $this->getSession());
+        }
     }
 
     /**
@@ -349,7 +385,12 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_allocations_page $page
          */
         $page = $this->get_page('allocations page');
-        $page->user_should_be_alocated_to_assessor($this->student, $this->teacher, 'assessor_1');
+        $allocatedassessor = $page->user_allocated_assessor($this->student, 'assessor_1');
+        if ($allocatedassessor != $this->teacher->name()) {
+            $message = 'Expected the allocated teacher name to be ' . $this->teacher->name()
+                . ' but got ' . $allocatedassessor . ' instead.';
+            throw new ExpectationException($message, $this->getSession());
+        }
     }
 
     /**
@@ -359,7 +400,13 @@ class behat_mod_coursework extends behat_base {
         $params = array(
             'courseworkid' => $this->coursework->id,
         );
-        assertEmpty(\mod_coursework\models\allocation::count($params));
+        $count = \mod_coursework\models\allocation::count($params);
+        if ($count !== 0) {
+            throw new ExpectationException(
+                "Found '$count' allocations in the database for coursework ID '{$this->coursework->id}'",
+                $this->getSession()
+            );
+        };
     }
 
     /**
@@ -370,7 +417,9 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_student_page $page
          */
         $page = $this->get_page('student page');
-        $page->should_not_have_a_finalise_button();
+        if ($page->has_finalise_button()) {
+            throw new ExpectationException('Should not have finalise button', $this->getSession());
+        }
     }
 
     /**
@@ -403,7 +452,9 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_student_submission_form $page
          */
         $page = $this->get_page('student submission form');
-        $page->should_not_have_the_save_and_finalise_button();
+        if ($page->has_the_save_and_finalise_button()) {
+            throw new ExpectationException("Should not have save and finalise button");
+        }
     }
 
     /**
@@ -589,7 +640,12 @@ class behat_mod_coursework extends behat_base {
      */
     public function theCourseworkGeneralFeedbackShouldBeDisabled() {
         $this->get_coursework()->reload();
-        assertFalse($this->get_coursework()->is_general_feedback_enabled());
+        if ($this->get_coursework()->is_general_feedback_enabled()) {
+            throw new ExpectationException(
+                "Feedback is enabled for for coursework ID '{$this->coursework->id}' and should be disabled",
+                $this->getSession()
+            );
+        };
     }
 
     /**
@@ -916,17 +972,18 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I (de)?select (a|another) student as a part of the sample for the second stage$/
+     *
+     * @Given /^I (select|deselect) (a|another) student as a part of the sample for the second stage$/
+     * @param string $selectordeselect
+     * @param string $other
      */
-    public function iSelectTheStudentAsAPartOfTheSample($negate = false, $other) {
+    public function iSelectTheStudentAsAPartOfTheSample(string $selectordeselect, string $other) {
         /**
          * @var mod_coursework_behat_allocations_page $page
          */
-        $other = ($other == 'another');
-        $student = $other ? 'other_student' : 'student';
-
+        $student = $other == 'another' ? 'other_student' : 'student';
         $page = $this->get_page('allocations page');
-        if ($negate) {
+        if ($selectordeselect == 'deselect') {
             $page->deselect_for_sample($this->$student, 'assessor_2');
         } else {
             $page->select_for_sample($this->$student, 'assessor_2');
@@ -1019,10 +1076,15 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_multiple_grading_interface $page
          */
         $page = $this->get_page('multiple grading interface');
-        $provisional_grade_field = $page->get_provisional_grade_field($this->submission);
-        $grade_field = $page->get_grade_field($this->submission);
+        $provisionalgradefield = $page->get_provisional_grade_field($this->submission);
+        $gradefield = $page->get_grade_field($this->submission);
 
-        assertEquals($provisional_grade_field, $grade_field);
+        if ($provisionalgradefield != $gradefield) {
+            throw new ExpectationException(
+                "Provisional grade '$provisionalgradefield' does not match '$gradefield'",
+                $this->getSession()
+            );
+        };
     }
 
     /**
@@ -1030,11 +1092,11 @@ class behat_mod_coursework extends behat_base {
      */
     public function thereIsAnExtensionForTheStudentThatAllowsThemToSubmit() {
         \mod_coursework\models\deadline_extension::create(array(
-                                       'allocatableid' => $this->student->id(),
-                                       'allocatabletype' => 'user',
-                                       'courseworkid' => $this->coursework->id,
-                                       'extended_deadline' => strtotime('+2 weeks 3:30pm', $this->coursework->deadline)
-                                   ));
+           'allocatableid' => $this->student->id(),
+           'allocatabletype' => 'user',
+           'courseworkid' => $this->coursework->id,
+           'extended_deadline' => strtotime('+2 weeks 3:30pm', $this->coursework->deadline)
+       ));
     }
 
     /**
@@ -1111,8 +1173,11 @@ class behat_mod_coursework extends behat_base {
         /**
          * @var mod_coursework_behat_edit_extension_page $edit_extension_page
          */
-        $edit_extension_page = $this->get_page('edit extension page');
-        $edit_extension_page->should_show_extension_reason_for_allocatable(0);
+        $editextensionpage = $this->get_page('edit extension page');
+        $reason = $editextensionpage->get_extension_reason_for_allocatable();
+        if ($reason != 0) {
+            throw new ExpectationException("Unexpected extension reason '$reason'", $this->getSession());
+        }
     }
 
     /**
@@ -1123,7 +1188,9 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_edit_extension_page $edit_extension_page
          */
         $edit_extension_page = $this->get_page('edit extension page');
-        $edit_extension_page->should_show_extra_information_for_allocatable('Extra info here');
+        if (!$edit_extension_page->get_extra_information_for_allocatable('Extra info here')) {
+            throw new ExpectationException("Extra info not found", $this->getSession());
+        }
     }
 
     /**
@@ -1167,8 +1234,11 @@ class behat_mod_coursework extends behat_base {
         /**
          * @var mod_coursework_behat_edit_extension_page $edit_extension_page
          */
-        $edit_extension_page = $this->get_page('edit extension page');
-        $edit_extension_page->should_show_extension_reason_for_allocatable(1);
+        $editextensionpage = $this->get_page('edit extension page');
+        $reason = $editextensionpage->get_extension_reason_for_allocatable();
+        if ($reason != 1) {
+            throw new ExpectationException("Unexpected extension reason '$reason'", $this->getSession());
+        }
     }
 
     /**
@@ -1179,7 +1249,9 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_edit_extension_page $edit_extension_page
          */
         $edit_extension_page = $this->get_page('edit extension page');
-        $edit_extension_page->should_show_extra_information_for_allocatable('New info here');
+        if (!$edit_extension_page->get_extra_information_for_allocatable('New info here')) {
+            throw new ExpectationException("New info not found", $this->getSession());
+        }
     }
 
     /**
@@ -1222,8 +1294,22 @@ class behat_mod_coursework extends behat_base {
          * @var $page mod_coursework_behat_allocations_page
          */
         $page = $this->get_page('allocations page');
-        $page->user_should_be_alocated_to_assessor($this->student, $this->teacher, 'assessor_1');
-        $page->user_should_be_alocated_to_assessor($this->student, $this->other_teacher, 'assessor_2');
+
+        // Teacher - assessor_1.
+        $allocatedassessor = $page->user_allocated_assessor($this->student, 'assessor_1');
+        if ($allocatedassessor != $this->teacher->name()) {
+            $message = 'Expected the allocated teacher name to be ' . $this->teacher->name()
+                . ' but got ' . $allocatedassessor . ' instead.';
+            throw new ExpectationException($message, $this->getSession());
+        }
+
+        // Other teacher - assessor_2.
+        $allocatedassessor = $page->user_allocated_assessor($this->student, 'assessor_2');
+        if ($allocatedassessor != $this->other_teacher->name()) {
+            $message = 'Expected the allocated teacher name to be ' . $this->other_teacher->name()
+                . ' but got ' . $allocatedassessor . ' instead.';
+            throw new ExpectationException($message, $this->getSession());
+        }
     }
 
     /**
@@ -1234,8 +1320,22 @@ class behat_mod_coursework extends behat_base {
          * @var $page mod_coursework_behat_allocations_page
          */
         $page = $this->get_page('allocations page');
-        $page->user_should_be_alocated_to_assessor($this->student, $this->teacher, 'assessor_1');
-        $page->user_should_be_alocated_to_assessor($this->other_student, $this->teacher, 'assessor_1');
+
+        // Student.
+        $allocatedassessor = $page->user_allocated_assessor($this->student, 'assessor_1');
+        if ($allocatedassessor != $this->teacher->name()) {
+            $message = 'Expected the allocated teacher name to be ' . $this->teacher->name()
+                . ' but got ' . $allocatedassessor . ' instead.';
+            throw new ExpectationException($message, $this->getSession());
+        }
+
+        // Other student.
+        $allocatedassessor = $page->user_allocated_assessor($this->other_student, 'assessor_1');
+        if ($allocatedassessor != $this->teacher->name()) {
+            $message = 'Expected the allocated teacher name to be ' . $this->teacher->name()
+                . ' but got ' . $allocatedassessor . ' instead.';
+            throw new ExpectationException($message, $this->getSession());
+        }
     }
 
     /**
@@ -1376,14 +1476,16 @@ class behat_mod_coursework extends behat_base {
     public function iShouldSeeTheTitleOfTheCourseworkOnThePage() {
         $page = $this->get_page('coursework page');
 
-        assertTrue($page->get_coursework_name($this->coursework->name));
+        if (!$page->get_coursework_name($this->coursework->name)) {
+            throw new ExpectationException('Coursework title not seen', $this->getSession());
+        }
     }
 
     /**
      * @Then /^the coursework "([\w]+)" setting should be "([\w]*)" in the database$/
      * @param $setting_name
      * @param $seting_value
-     * @throws Behat\Mink\Exception\ExpectationException
+     * @throws ExpectationException
      */
     public function the_coursework_setting_should_be($setting_name, $seting_value) {
         if ($seting_value == 'NULL') {
@@ -1413,7 +1515,7 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Then /^there should be ([\d]+) coursework$/
      * @param $expected_count
-     * @throws Behat\Mink\Exception\ExpectationException
+     * @throws ExpectationException
      */
     public function there_should_only_be_one_coursework($expected_count) {
         global $DB;
@@ -1488,7 +1590,30 @@ class behat_mod_coursework extends behat_base {
      * @Given /^the grades have been published$/
      */
     public function theGradesHaveBeenPublished() {
-        $this->coursework->publish_grades();
+        global $DB;
+        // $this->coursework->publish_grades();
+
+        // Using publish_grades was causing a user not found DB error so trying to isolate that here.
+        $submissions = $this->coursework->get_submissions_to_publish();
+        foreach ($submissions as $submission) {
+            // First check user exists as this will create DB error in behat if not.
+            if ($DB->record_exists('user', ['id' => $submission->userid, 'deleted' => 0])) {
+                try {
+                    $submission->publish();
+                } catch (\Exception $e) {
+                    throw new ExpectationException(
+                        "Could not publish submission ID $submission->id for User ID $submission->userid",
+                        $this->getSession()
+                    );
+                }
+            } else {
+                throw new ExpectationException(
+                    "User ID $submission->userid not found for submission $submission->id - could not publish"
+                    . " - JSON submission: " . json_encode($submission),
+                    $this->getSession()
+                );
+            }
+        }
     }
 
     /**
@@ -1708,7 +1833,9 @@ class behat_mod_coursework extends behat_base {
 
         $result = $DB->get_record('coursework_allocation_pairs', $params);
 
-        assertNotEmpty($result);
+        if (empty($result)) {
+            throw new ExpectationException('Expected assessor allocation', $this->getSession());
+        }
     }
 
     // Feedback steps
@@ -1727,8 +1854,9 @@ class behat_mod_coursework extends behat_base {
         } else {
             $comment_field = $this->find('css', $css_id);
             $text = $comment_field->getText();
-
-            assertEquals(56, $text);
+            if ($text != 56) {
+                throw new ExpectationException("Expected final grade 56 got $text", $this->getSession());
+            }
         }
     }
 
@@ -1743,7 +1871,9 @@ class behat_mod_coursework extends behat_base {
         } else {
             $comment_field = $this->find('css', '#final_feedback_comment');
             $text = $comment_field->getText();
-            assertEquals('New comment here', $text);
+            if ($text != 'New comment here') {
+                throw new ExpectationException("Unexpected comment '$text'", $this->getSession());
+            }
         }
     }
 
@@ -1847,8 +1977,10 @@ class behat_mod_coursework extends behat_base {
      */
     public function iShouldSeeTheGradeInTheFormOnThePage() {
         $comment_field = $this->find('css', '#feedback_grade');
-
-        assertEquals(56, $comment_field->getValue());
+        $expectedvalue = 56;
+        if ($comment_field->getValue() != $expectedvalue) {
+            throw new ExpectationException("Expected grade $expectedvalue got $text", $this->getSession());
+        }
     }
 
     /**
@@ -1856,8 +1988,10 @@ class behat_mod_coursework extends behat_base {
      */
     public function iShouldSeeTheOtherTeachersFinalGradeInTheFormOnThePage() {
         $comment_field = $this->find('css', '#feedback_grade');
-
-        assertEquals(45, $comment_field->getValue());
+        $expectedvalue = 45;
+        if ($comment_field->getValue() != $expectedvalue) {
+            throw new ExpectationException("Expected grade $expectedvalue got $text", $this->getSession());
+        }
     }
 
     /**
@@ -1865,8 +1999,10 @@ class behat_mod_coursework extends behat_base {
      */
     public function iShouldSeeTheOtherTeachersGradeInTheFormOnThePage() {
         $comment_field = $this->find('css', '#feedback_grade');
-
-        assertEquals(58, $comment_field->getValue());
+        $expectedvalue = 58;
+        if ($comment_field->getValue() != $expectedvalue) {
+            throw new ExpectationException("Expected final grade $expectedvalue got $text", $this->getSession());
+        }
     }
 
     /**
@@ -1934,7 +2070,9 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_multiple_grading_interface $page
          */
         $page = $this->get_page('multiple grading interface');
-        $page->should_have_moderator_grade_for($this->student, '56');
+        if (!$page->has_moderator_grade_for($this->student, '56')) {
+            throw new ExpectationException("Does not have moderator grade");
+        }
 // if (!$this->find('xpath', $this->xpath_tag_class_contains_text('td', 'moderated', '56'))) {
 // throw new ExpectationException('Could not find the moderated grade', $this->getSession());
 // }
@@ -1948,7 +2086,11 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_multiple_grading_interface $page
          */
         $page = $this->get_page('multiple grading interface');
-        $page->click_edit_final_feedback_button($this->student);
+        $button = $page->get_edit_final_feedback_button($this->student);
+        if (!$button) {
+            throw new ExpectationException('Edit feedback button not present', $this->getSession());
+        }
+        $button->click();
     }
 
     /**
@@ -2024,7 +2166,7 @@ class behat_mod_coursework extends behat_base {
      * @Then /^I should( not)? see the final grade(?: as )?(\d+)? on the multiple marker page$/
      * @param bool $negate
      * @param int $grade
-     * @throws Behat\Mink\Exception\ExpectationException
+     * @throws ExpectationException
      * @throws coding_exception
      */
     public function iShouldSeeTheFinalMultipleGradeOnThePage($negate = false, $grade = 56) {
@@ -2047,7 +2189,7 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Then /^I should see the final grade(?: as )?(\d+)? on the single marker page$/
      * @param int $grade
-     * @throws Behat\Mink\Exception\ExpectationException
+     * @throws ExpectationException
      * @throws coding_exception
      */
     public function iShouldSeeTheFinalSingleGradeOnThePage($grade = 56) {
@@ -2077,12 +2219,13 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * @Then /^I should see the grade comment (?:as ")?(\w+)?(?:" )?in the form on the page$/
-     * @param string $comment
+     * @param string $expectedvalue
      */
-    public function iShouldSeeTheGradeCommentInTheFormOnThePage($comment = 'New comment here') {
-        $comment_field = $this->find('css', '#feedback_comment');
-
-        assertEquals($comment, $comment_field->getValue());
+    public function iShouldSeeTheGradeCommentInTheFormOnThePage($expectedvalue = 'New comment here') {
+        $commentfield = $this->find('css', '#feedback_comment');
+        if ($commentfield->getValue() != $expectedvalue) {
+            throw new ExpectationException("Expected comment $expectedvalue got " . $commentfield->getValue(), $this->getSession());
+        }
     }
 
     /**
@@ -2117,9 +2260,13 @@ class behat_mod_coursework extends behat_base {
      * @Then /^I should see the rubric grade on the page$/
      */
     public function iShouldSeeTheRubricGradeOnThePage() {
-        $cell_text = $this->find('css', '#final_feedback_grade')->getText();
-
-        assertContains('50', $cell_text);
+        $celltext = $this->find('css', '#final_feedback_grade')->getText();
+        if (strpos($celltext, '50') === false) {
+            throw new ExpectationException(
+                "Expected rubric grade 50 got '$celltext'",
+               $this->getSession()
+            );
+        }
     }
 
     /**
@@ -2156,7 +2303,10 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_multiple_grading_interface $page
          */
         $page = $this->get_page('multiple grading interface');
-        $page->group_should_have_a_final_multiple_grade($this->group);
+        if (!$page->group_has_a_final_multiple_grade($this->group)) {
+            $message = "Should be a grade in the student row final grade cell, but there's not";
+            throw new ExpectationException($message, $this->getSession());
+        };
     }
 
     /**
@@ -2177,7 +2327,12 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_multiple_grading_interface $page
          */
         $page = $this->get_page('multiple grading interface');
-        $page->student_should_have_a_final_grade($this->other_student);
+        if ($page->student_has_a_final_grade($this->other_student)) {
+            throw new ExpectationException(
+                $message = "Should be a grade in the student row final grade cell, but there's not",
+                $this->getSession()
+            );
+        }
     }
 
     /**
@@ -2188,7 +2343,12 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_student_page $page
          */
         $page = $this->get_page('student page');
-        $page->should_have_visible_grade(45);
+        $visiblegrade = $page->get_visible_grade();
+        if ($visiblegrade != 45) {
+            throw new ExpectationException(
+                "Expected the final grade to be '45', but got '{$visiblegrade}'", $this->getSession()
+            );
+        }
     }
 
     /**
@@ -2199,7 +2359,12 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_student_page $page
          */
         $page = $this->get_page('student page');
-        $page->should_have_visible_feedback('blah');
+        $visiblefeedback = $page->get_visible_feedback('blah');
+        if ($visiblefeedback != 'blah') {
+            throw new ExpectationException(
+                "Expected the feedback to be 'blah', but got '{$visiblefeedback}'", $this->getSession()
+            );
+        }
     }
 
     /**
@@ -2210,7 +2375,10 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_gradebook_page $page
          */
         $page = $this->get_page('gradebook page');
-        $page->should_have_coursework_grade_for_student($this->coursework, $this->student, 45);
+        $grade = $page->get_coursework_grade_for_student($this->coursework);
+        if ($grade != 45) {
+            throw new ExpectationException("Expected grade '45' found '$grade'", $this->getSession());
+        }
     }
 
     /**
@@ -2221,7 +2389,10 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_gradebook_page $page
          */
         $page = $this->get_page('gradebook page');
-        $page->should_have_coursework_grade_for_student($this->coursework, $this->student, 50);
+        $grade = $page->get_coursework_grade_for_student($this->coursework);
+        if ($grade != 50) {
+            throw new ExpectationException("Expected grade '50' found '$grade'", $this->getSession());
+        }
     }
 
     /**
@@ -2286,13 +2457,15 @@ class behat_mod_coursework extends behat_base {
         } else {
             $grading_interface = $this->get_page('single grading interface');
         }
-        $grading_interface->there_should_not_be_a_feedback_icon($this->student);
+        if ($grading_interface->there_is_a_feedback_icon($this->student)) {
+            throw new ExpectationException('Feedback link is present', $this->getSession());
+        };
     }
 
     // General web steps
 
     /**
-     * @Given /^I (?:am on|visit) the ([\w ]+) page$/
+     * @Given /^I visit the ([\w ]+) page$/
      * @param $path_name
      */
     public function visit_page($path_name) {
@@ -2321,10 +2494,14 @@ class behat_mod_coursework extends behat_base {
             $current_path = parse_url($currentUrl, PHP_URL_PATH);
 // $desired_path = parse_url($desirtedUrl, PHP_URL_PATH);
             $message = "Should be on the " . $desirtedUrl . " page but instead the url is " . $current_path;
-            assertEquals($current_path, $desirtedUrl, $message);
+            if ($current_path != $desirtedUrl) {
+                throw new ExpectationException($message, $this->getSession());
+            }
         } else {
             $message = "Should be on the " . $desirtedUrl . " page but instead the url is " . $currentUrlwithoutAnchor;
-            assertEquals($currentUrlwithoutAnchor, $desirtedUrl, $message);
+            if ($currentUrlwithoutAnchor != $desirtedUrl) {
+                throw new ExpectationException($message, $this->getSession());
+            }
         }
     }
 
@@ -2430,8 +2607,11 @@ class behat_mod_coursework extends behat_base {
         global $DB;
 
         $finalised = $DB->get_field('coursework_submissions', 'finalised', array('id' => $this->submission->id));
-
-        assertEquals($negate ? 0 : 1, $finalised);
+        if ($negate && $finalised == 1) {
+            throw new ExpectationException('Submission is finalised and should not be', $this->getSession());
+        } else if (!$negate && $finalised == 0) {
+            throw new ExpectationException('Submission is not finalised and should be', $this->getSession());
+        }
     }
 
     /**
@@ -2441,7 +2621,12 @@ class behat_mod_coursework extends behat_base {
     public function iShouldSeeTheStudentSSubmissionOnThePage($negate = false) {
         $fields =
             $this->getSession()->getPage()->findAll('css', ".submission-{$this->submission->id}");
-        assertCount($negate ? 0 : 1, $fields);
+        $countfields = count($fields);
+        if ($countfields == 0 && !$negate) {
+            throw new ExpectationException('Student submission is not on page and should be', $this->getSession());
+        } else if ($negate && $countfields > 0) {
+            throw new ExpectationException('Student submission is on page and should not be', $this->getSession());
+        }
     }
 
     /**
@@ -2456,10 +2641,10 @@ class behat_mod_coursework extends behat_base {
      * @Then /^the file upload button should not be visible$/
      */
     public function theFileUploadButtonShouldNotBeVisible() {
-
         $button = $this->find('css', 'div.fp-btn-add a');
-
-        assertFalse($button->isVisible(), "The file picker upload buton should be hidden, but it isn't");
+        if ($button->isVisible()) {
+            throw new ExpectationException("The file picker upload button should be hidden, but it isn't", $this->getSession());
+        }
     }
 
     /**
@@ -2470,16 +2655,32 @@ class behat_mod_coursework extends behat_base {
         /**
          * @var mod_coursework_behat_student_page $page
          */
-        $page = $this->get_page('student page');
+//        $page = $this->get_page('student page');
         if ($action == 'edit') {
-            $page->click_on_the_edit_submission_button();
+            $locator = "//div[@class='editsubmissionbutton']";
         } else if ($action == 'new') {
-            $page->click_on_the_new_submission_button();
+            $locator = "//div[@class='newsubmissionbutton']";
         } else if ($action == 'finalise') {
-            $page->click_on_the_finalise_submission_button();
+            $locator = "//div[@class='finalisesubmissionbutton']";
         } else if ($action == 'save') {
-            $page->click_on_the_save_submission_button();
+            $locator = "//div[@class='newsubmissionbutton']";
         }
+
+        // Behat generates button type submit whereas code does input.
+        $page = $this->getSession()->getPage();
+        $inputtype = $page->find('xpath', $locator ."//input[@type='submit']");
+        $buttontype = $page->find('xpath',  $locator ."//button[@type='submit']");
+
+        // Check how element was created and use it to find the button.
+        $button = ($inputtype !== null) ? $inputtype : $buttontype;
+
+        if (!$button) {
+            throw new ExpectationException(
+                "Button not found ($action): " . $button->getXpath(), $this->getSession()
+            );
+        }
+
+        $button->press();
     }
 
     /**
@@ -2494,8 +2695,12 @@ class behat_mod_coursework extends behat_base {
         $button = $this->getSession()->getPage()
             ->findAll('xpath', "//div[@class='{$action}submissionbutton']//button[@type='submit']");
         $buttons = ($input) ? $input : $button;// check how element was created and use it to find the button
-
-        assertCount(($negate ? 0 : 1), $buttons);
+        $countbuttons = count($buttons);
+        if ($countbuttons > 0 && $negate) {
+            throw new ExpectationException('I see the button when I should not', $this->getSession());
+        } else if ($countbuttons == 0 && !$negate) {
+            throw new ExpectationException('I do not see the button when I should', $this->getSession());
+        }
     }
 
     /**
@@ -2666,7 +2871,9 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_coursework_page $page
          */
         $page = $this->get_page('coursework page');
-        assertTrue($page->individual_feedback_date_present());
+        if (!$page->individual_feedback_date_present()) {
+            throw new ExpectationException('I do not see the feedback release date', $this->getSession());
+        }
     }
 
     /**
@@ -2677,7 +2884,10 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_coursework_page $page
          */
         $page = $this->get_page('coursework page');
-        assertFalse($page->individual_feedback_date_present());
+
+        if ($page->individual_feedback_date_present()) {
+            throw new ExpectationException('I see the feedback release date when I should not', $this->getSession());
+        }
     }
 
     /**
@@ -2688,7 +2898,9 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_coursework_page $page
          */
         $page = $this->get_page('coursework page');
-        assertFalse($page->general_feedback_date_present());
+        if($page->general_feedback_date_present()) {
+            throw new ExpectationException('I see the general feedback release date when I should not', $this->getSession());
+        }
     }
 
     /**
@@ -2699,7 +2911,11 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_coursework_page $page
          */
         $page = $this->get_page('coursework page');
-        assertTrue($page->general_feedback_date_present());
+        if (!$page->general_feedback_date_present()) {
+            throw new ExpectationException(
+                'I do not see the general feedback release date when I should', $this->getSession()
+            );
+        }
     }
 
     /**
@@ -2711,8 +2927,12 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('show feedback page');
         $page->set_feedback($this->get_initial_assessor_feedback_for_student());
-        $page->should_have_comment('New comment here');
-        $page->should_have_grade('67');
+        if (!$page->has_comment('New comment here')) {
+            throw new ExpectationException('Comment not found', $this->getSession());
+        }
+        if (!$page->has_grade('67')) {
+            throw new ExpectationException('Grade 67 not found', $this->getSession());
+        }
     }
 
     /**
@@ -2862,7 +3082,12 @@ class behat_mod_coursework extends behat_base {
         $other = ($other == 'another');
         $student = $other ? 'other_student' : 'student';
 
-        $page->automatically_included_in_sample($this->coursework, $this->$student, $another, $stage, $negate);
+        $included = $page->automatically_included_in_sample($this->coursework, $this->$student, $another, $stage);
+        if ($included && $negate) {
+            throw new ExpectationException('Student included in sample and should not be', $this->getSession());
+        } else if (!$included && !$negate) {
+            throw new ExpectationException('Student not included in sample and should be', $this->getSession());
+        }
     }
 
     /**

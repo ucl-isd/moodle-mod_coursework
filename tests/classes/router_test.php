@@ -44,7 +44,7 @@ class router_test extends advanced_testcase {
      */
     protected $moodle_location = 'https://www.example.com/moodle';
 
-    public function setUp() {
+    public function setUp(): void {
         $this->router = router::instance();
         $this->setAdminUser();
         $this->resetAfterTest();

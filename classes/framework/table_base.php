@@ -20,7 +20,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_coursework\framework;;
+namespace mod_coursework\framework;
 
 use moodle_database;
 use stdClass;

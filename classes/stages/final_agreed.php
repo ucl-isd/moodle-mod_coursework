@@ -30,6 +30,7 @@ use mod_coursework\models\user;
  *
  * @package mod_coursework
  */
+#[\AllowDynamicProperties]
 class final_agreed extends base {
 
     /**

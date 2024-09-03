@@ -36,6 +36,7 @@ use mod_coursework\allocation\allocatable;
  * @property mixed allocatableid
  * @package mod_coursework\models
  */
+#[\AllowDynamicProperties]
 class deadline_extension extends table_base {
 
     /**

@@ -38,6 +38,7 @@ use mod_coursework\allocation\moderatable;
  * @package mod_coursework\models
  *
  */
+#[\AllowDynamicProperties]
 class assessment_set_membership extends table_base implements moderatable {
 
     /**

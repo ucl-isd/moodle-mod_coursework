@@ -27,6 +27,7 @@ namespace mod_coursework\models;
  * class.
  *
  */
+#[\AllowDynamicProperties]
 class null_feedback {
 
     /**

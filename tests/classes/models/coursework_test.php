@@ -39,6 +39,7 @@ global $CFG;
  * @property mixed other_student
  * @group mod_coursework
  */
+#[\AllowDynamicProperties]
 class coursework_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
@@ -46,7 +47,7 @@ class coursework_test extends advanced_testcase {
     /**
      * Makes us a blank coursework and allocation manager.
      */
-    public function setUp() {
+    public function setUp(): void {
 
         $this->resetAfterTest();
 
@@ -60,7 +61,7 @@ class coursework_test extends advanced_testcase {
     /**
      * Clean up the test fixture by removing the objects.
      */
-    public function tearDown() {
+    public function tearDown(): void {
         global $DB;
 
         $DB->delete_records('coursework', array('id' => $this->coursework->id));

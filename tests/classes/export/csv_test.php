@@ -40,7 +40,7 @@ class csv_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
 
-    public function setUp():void {
+    public function setUp(): void {
 
         $this->resetAfterTest();
 

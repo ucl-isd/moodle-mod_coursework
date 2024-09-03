@@ -35,7 +35,7 @@ class grading_sheet_download_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
 
-    public function setUp() {
+    public function setUp(): void {
 
         $this->resetAfterTest();
 

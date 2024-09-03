@@ -84,6 +84,7 @@ require_once($CFG->dirroot.'/grade/grading/lib.php');
  * @property mixed startdate
  * @author administrator
  */
+#[\AllowDynamicProperties]
 class coursework extends table_base {
 
     /**
@@ -882,13 +883,10 @@ class coursework extends table_base {
      * @return void
      */
     public function publish_grades() {
-
-        $submisisons = $this->get_submissions_to_publish();
-
-        foreach ($submisisons as $submisison) {
-            $submisison->publish();
+        $submissions = $this->get_submissions_to_publish();
+        foreach ($submissions as $submission) {
+            $submission->publish();
         }
-
     }
 
     /**

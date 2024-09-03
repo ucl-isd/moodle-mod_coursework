@@ -40,7 +40,7 @@ class coursework_submission_test extends advanced_testcase {
     /**
      * Makes us a blank coursework and allocation manager.
      */
-    public function setUp() {
+    public function setUp(): void {
 
         $this->resetAfterTest();
 
@@ -56,7 +56,7 @@ class coursework_submission_test extends advanced_testcase {
     /**
      * Clean up the test fixture by removing the objects.
      */
-    public function tearDown() {
+    public function tearDown(): void {
         global $DB;
 
         $DB->delete_records('coursework', array('id' => $this->coursework->id));

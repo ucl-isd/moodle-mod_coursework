@@ -40,6 +40,7 @@ use mod_coursework\traits\allocatable_functions;
  * @property mixed courseid
  * @package mod_coursework\models
  */
+#[\AllowDynamicProperties]
 class group extends table_base implements allocatable, moderatable {
 
     use allocatable_functions;

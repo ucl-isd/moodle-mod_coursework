@@ -41,8 +41,8 @@ class mod_coursework_behat_student_submission_form extends mod_coursework_behat_
         $this->getPage()->find('css', "#id_finalisebutton")->press();
     }
 
-    public function should_not_have_the_save_and_finalise_button() {
+    public function has_the_save_and_finalise_button() {
         $buttons = $this->getPage()->findAll('css', '#id_finalisebutton');
-        assertEmpty($buttons);
+        return !empty($buttons);
     }
 }
