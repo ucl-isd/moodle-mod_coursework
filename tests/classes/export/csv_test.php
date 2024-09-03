@@ -46,7 +46,7 @@ class csv_test extends advanced_testcase {
 
         $this->course = $this->getDataGenerator()->create_course();
 
-       // $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
+        // $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $this->setAdminUser();
 
         $this->student = $this->create_a_student();
@@ -123,7 +123,7 @@ class csv_test extends advanced_testcase {
         $csv = new \mod_coursework\export\csv($this->coursework, $csv_cells, $filename);
         $csv_grades = $csv->add_cells_to_array($submission, $student, $csv_cells);
 
-       // build an array
+        // build an array
         $studentname = $student->lastname .' '.$student->firstname;
         $assessorname = $assessor->lastname .' '. $assessor->firstname;
         $assessorusername = $assessor->username;

@@ -199,7 +199,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
         if ($this->getPage()->hasButton('Continue')) {
             $this->getPage()->pressButton('Continue');
         } else {
-echo "failed";
+            echo "failed";
         }
 
         if ($this->getPage()->hasLink('Continue')) {
@@ -324,10 +324,10 @@ echo "failed";
      * @return string
      */
     public function get_provisional_grade_field($submission) {
-       $elementid = '#allocatable_' . $submission->get_coursework()
+        $elementid = '#allocatable_' . $submission->get_coursework()
                 ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .assessor_feedback_grade';
-       $grade_field = $this->getPage()->find('css', $elementid);
-       return $grade_field ? $grade_field->getValue() : false;
+        $grade_field = $this->getPage()->find('css', $elementid);
+        return $grade_field ? $grade_field->getValue() : false;
     }
 
     /**
