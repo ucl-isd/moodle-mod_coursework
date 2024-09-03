@@ -60,7 +60,7 @@ class moderator_agreement_mform extends moodleform {
          */
         $moderation = $this->_customdata['moderation'];
         $feedback = $moderation->get_feedback();
-        $coursework = $moderation-> get_coursework();
+        $coursework = $moderation->get_coursework();
 
         $mform->addElement('hidden', 'submissionid', $moderation->get_submission()->id);
         $mform->setType('submissionid', PARAM_INT);
