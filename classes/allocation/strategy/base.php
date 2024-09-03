@@ -138,7 +138,7 @@ abstract class base {
      * @param bool $reset we cache this stuff, so reset = true will wipe the cache
      * @return \stdClass[]
      */
-    protected final function get_existing_config_data($type = 'assessor', $reset = false) {
+    final protected function get_existing_config_data($type = 'assessor', $reset = false) {
 
         global $DB;
 
