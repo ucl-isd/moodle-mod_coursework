@@ -66,7 +66,9 @@ class otherassessors_cell extends cell_base {
             if ($grade) {
                 // skip if you are allocated but someone else graded it
                 $allocation = $submission->get_assessor_allocation_by_stage($feedback->stage_identifier);
-                if ($allocation && $allocation->assessorid == $USER->id) continue;
+                if ($allocation && $allocation->assessorid == $USER->id) {
+                    continue;
+                }
                 $ability = new ability(user::find($USER), $this->coursework);
                 if ((($ability->can('show', $feedback)  || has_capability('mod/coursework:addallocatedagreedgrade', $submission->get_coursework()->get_context())) &&
                     (!$submission->any_editable_feedback_exists() && count($submission->get_assessor_feedbacks()) <= $submission->max_number_of_feedbacks())) || is_siteadmin($USER->id)) {

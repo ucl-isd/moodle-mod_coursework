@@ -133,24 +133,33 @@ class singlegrade_cell extends cell_base {
 
             }
 
-            if (!empty($errormsg))  return $errormsg;
+            if (!empty($errormsg)) {
+                return $errormsg;
+            }
 
             $dbrecord = $DB->get_record('coursework_submissions', array('id' => $submissionid));
 
             $submission = \mod_coursework\models\submission::find($dbrecord);
 
             // Is this submission ready to be graded
-            if (!$submission->ready_to_grade() && $submission->get_state() < \mod_coursework\models\submission::FULLY_GRADED) return get_string('submissionnotreadytograde', 'coursework');
+            if (!$submission->ready_to_grade() && $submission->get_state() < \mod_coursework\models\submission::FULLY_GRADED) {
+                return get_string('submissionnotreadytograde', 'coursework');
+            }
 
             // If you have administer grades you can grade anything
-            if (has_capability('mod/coursework:administergrades', $PAGE->context)) return true;
+            if (has_capability('mod/coursework:administergrades', $PAGE->context)) {
+                return true;
+            }
 
             // Is the current user an assessor at any of this submissions grading stages or do they have administer grades
-            if ($this->coursework->allocation_enabled() && !$this->coursework->is_assessor($USER) && !has_capability('mod/coursework:administergrades', $PAGE->context))
+            if ($this->coursework->allocation_enabled() && !$this->coursework->is_assessor($USER) && !has_capability('mod/coursework:administergrades', $PAGE->context)) {
                 return get_string('nopermissiontogradesubmission', 'coursework');
+            }
 
                         // Has the submission been published if yes then no further grades are allowed
-            if ($submission->get_state() >= submission::PUBLISHED)  return $submission->get_status_text();
+            if ($submission->get_state() >= submission::PUBLISHED) {
+                return $submission->get_status_text();
+            }
 
             // Has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
             $feedback_params = array(
@@ -161,8 +170,9 @@ class singlegrade_cell extends cell_base {
 
             if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
                 // Was this user the one who last graded this submission if not then user cannot grade
-                if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $PAGE->context) && !has_capability('mod/coursework:administergrades', $PAGE->context))
+                if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $PAGE->context) && !has_capability('mod/coursework:administergrades', $PAGE->context)) {
                     return get_string('nopermissiontoeditgrade', 'coursework');
+                }
 
             }
 
@@ -187,10 +197,14 @@ class singlegrade_cell extends cell_base {
                 $new_feedback = feedback::build($feedback_params);
 
                 // This is a new feedback check it against the new ability checks
-                if (!$ability->can('new', $new_feedback))   return get_string('nopermissiontogradesubmission', 'coursework');
+                if (!$ability->can('new', $new_feedback)) {
+                    return get_string('nopermissiontogradesubmission', 'coursework');
+                }
             } else {
                 // This is a new feedback check it against the edit ability checks
-                if (!$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade', 'coursework');
+                if (!$ability->can('edit', $feedback)) {
+                    return get_string('nopermissiontoeditgrade', 'coursework');
+                }
             }
 
         } else {

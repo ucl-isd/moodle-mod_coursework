@@ -355,7 +355,9 @@ class mod_coursework_mod_form extends moodleform_mod {
          $moodle_form->addElement('html', get_string('submissionsdeadlineinfo', 'mod_coursework'));
          $moodle_form->addElement('html', '</div>');
 
-        if (!empty($CFG->coursework_submission_deadline)) $moodle_form->setDefault('deadline', $default_timestamp);
+        if (!empty($CFG->coursework_submission_deadline)) {
+            $moodle_form->setDefault('deadline', $default_timestamp);
+        }
         $moodle_form->addHelpButton('deadline', 'deadline', 'mod_coursework');
     }
 
@@ -406,7 +408,9 @@ class mod_coursework_mod_form extends moodleform_mod {
                                  array('optional' => true, 'disabled' => $disabled)
         );
 
-        if (!empty($CFG->coursework_start_date))   $moodle_form->setDefault('startdate', $default_timestamp);
+        if (!empty($CFG->coursework_start_date)) {
+            $moodle_form->setDefault('startdate', $default_timestamp);
+        }
         $moodle_form->addHelpButton('startdate', 'startdate', 'mod_coursework');
     }
 
@@ -471,7 +475,9 @@ class mod_coursework_mod_form extends moodleform_mod {
             array('optional' => true, 'disabled' => $disabled)
         );
 
-        if (!empty($CFG->coursework_marking_deadline)) $moodle_form->setDefault('initialmarkingdeadline', $default_timestamp);
+        if (!empty($CFG->coursework_marking_deadline)) {
+            $moodle_form->setDefault('initialmarkingdeadline', $default_timestamp);
+        }
 
         $moodle_form->addHelpButton('initialmarkingdeadline', 'initialmarkingdeadline', 'mod_coursework');
     }
@@ -524,7 +530,9 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         // $moodle_form->disabledIf('agreedgrademarkingdeadline', 'numberofmarkers', 'eq', '1');
 
-        if (!empty($CFG->coursework_agreed_marking_deadline)) $moodle_form->setDefault('agreedgrademarkingdeadline', $default_timestamp);
+        if (!empty($CFG->coursework_agreed_marking_deadline)) {
+            $moodle_form->setDefault('agreedgrademarkingdeadline', $default_timestamp);
+        }
         $moodle_form->addHelpButton('agreedgrademarkingdeadline', 'agreedgrademarkingdeadline', 'mod_coursework');
     }
 
@@ -548,7 +556,9 @@ class mod_coursework_mod_form extends moodleform_mod {
             'relativeinitialmarkingdeadline',
             get_string('relativeinitialmarkingdeadline', 'mod_coursework'), $options);
 
-        if (!empty($CFG->coursework_marking_deadline)) $moodle_form->setDefault('relativeinitialmarkingdeadline', $CFG->coursework_marking_deadline);
+        if (!empty($CFG->coursework_marking_deadline)) {
+            $moodle_form->setDefault('relativeinitialmarkingdeadline', $CFG->coursework_marking_deadline);
+        }
         $moodle_form->addHelpButton('relativeinitialmarkingdeadline', 'agreedgrademarkingdeadline', 'mod_coursework');
 
     }
@@ -573,7 +583,9 @@ class mod_coursework_mod_form extends moodleform_mod {
             'relativeagreedmarkingdeadline',
             get_string('relativeagreedmarkingdeadline', 'mod_coursework'), $options);
 
-        if (!empty($CFG->coursework_agreed_marking_deadline)) $moodle_form->setDefault('relativeagreedmarkingdeadline', $CFG->coursework_agreed_marking_deadline);
+        if (!empty($CFG->coursework_agreed_marking_deadline)) {
+            $moodle_form->setDefault('relativeagreedmarkingdeadline', $CFG->coursework_agreed_marking_deadline);
+        }
         $moodle_form->addHelpButton('relativeagreedmarkingdeadline', 'agreedgrademarkingdeadline', 'mod_coursework');
 
     }

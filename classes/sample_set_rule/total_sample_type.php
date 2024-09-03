@@ -136,7 +136,9 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
     }
 
     static function compare_key($a, $b) {
-        if ($a === $b) return 0;
+        if ($a === $b) {
+            return 0;
+        }
         return ($a > $b) ? 1 : -1;
     }
 
@@ -173,7 +175,9 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             if ($total_to_return > 0) {
 
                 //use array chunk to split auto sample set into chunks we will only use the first chunk
-                if ($chunked_array = array_chunk($auto_sample_set, $total_to_return, true)) $auto_sample_set = $chunked_array[0];
+                if ($chunked_array = array_chunk($auto_sample_set, $total_to_return, true)) {
+                    $auto_sample_set = $chunked_array[0];
+                }
 
                 // If the number in the sample set is less than the total to return
                 if (count($auto_sample_set) < $total_to_return) {
@@ -191,10 +195,13 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                     foreach ($allocatables_feedback as $af) {
 
                         if (!isset($published[$af->allocatableid]) && !isset($finalised[$af->allocatableid])
-                            && !isset($auto_sample_set[$af->allocatableid]) && !isset($manual_sample_set[$af->allocatableid]))
-                            $auto_sample_set[$af->allocatableid] = $allocatables[$af->allocatableid];
+                            && !isset($auto_sample_set[$af->allocatableid]) && !isset($manual_sample_set[$af->allocatableid])) {
+                                $auto_sample_set[$af->allocatableid] = $allocatables[$af->allocatableid];
+                        }
 
-                        if (count($auto_sample_set) == $total_to_return) break;
+                        if (count($auto_sample_set) == $total_to_return) {
+                            break;
+                        }
 
                     }
                 }
@@ -216,17 +223,22 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                         $array_keys = array_rand($allocatable_sample_set, $total_to_return - count($auto_sample_set));
 
-                        if (!is_array($array_keys)) $array_keys = array($array_keys);
+                        if (!is_array($array_keys)) {
+                            $array_keys = array($array_keys);
+                        }
 
                         //use the allocatables array to get other ungraded allocatables
                     foreach ($array_keys as $id) {
 
                         if (!isset($published[$id]) && !isset($finalised[$id])
                             && !isset($auto_sample_set[$id]) && !isset($manual_sample_set[$id])
-                        )
+                        ) {
                             $auto_sample_set[$id] = $allocatables[$id];
+                        }
 
-                        if (count($auto_sample_set) == $total_to_return) break;
+                        if (count($auto_sample_set) == $total_to_return) {
+                            break;
+                        }
                     }
 
                 }

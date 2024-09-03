@@ -53,9 +53,13 @@ class moderationagreement_cell extends cell_base {
             }
         }
         $feedback = $submission->get_assessor_feedback_by_stage('assessor_1');
-        if ($feedback) $moderation = moderation::find(array('feedbackid' => $feedback->id));
+        if ($feedback) {
+            $moderation = moderation::find(array('feedbackid' => $feedback->id));
+        }
 
-        if ($moderation) $moderation_agreement = $moderation->get_moderator_agreement($feedback);
+        if ($moderation) {
+            $moderation_agreement = $moderation->get_moderator_agreement($feedback);
+        }
 
         if ($moderation_agreement) {
                 $data[] = $moderation_agreement->agreement;

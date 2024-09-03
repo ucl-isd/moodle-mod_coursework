@@ -388,8 +388,9 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             foreach ($allocatables_in_range as $awf) {
                 if (!isset($published[$awf->allocatableid]) && !isset($finalised[$awf->allocatableid])
                     && !isset($auto_sample_set[$awf->allocatableid]) && !isset($manual_sample_set[$awf->allocatableid])
-                    && isset($allocatables[$awf->allocatableid]))
-                    $auto_sample_set[$awf->allocatableid] = $allocatables[$awf->allocatableid];
+                    && isset($allocatables[$awf->allocatableid])) {
+                        $auto_sample_set[$awf->allocatableid] = $allocatables[$awf->allocatableid];
+                }
 
             }
         }

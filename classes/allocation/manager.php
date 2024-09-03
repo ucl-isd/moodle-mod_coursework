@@ -297,7 +297,9 @@ class manager {
 
         // Remove any allocatables that have a status of final agreed as these can not be sampled
         foreach ($final_agreed_allocatables as $faa) {
-            if (isset($allocatables[$faa->allocatableid]))  unset($allocatables[$faa->allocatableid]);
+            if (isset($allocatables[$faa->allocatableid])) {
+                unset($allocatables[$faa->allocatableid]);
+            }
         }
 
         for ($stage_number = 2; $stage_number <= $this->get_coursework()->get_max_markers(); $stage_number++) {
@@ -328,7 +330,9 @@ class manager {
                 // In both arrays
 
                 foreach ($auto_with_feedback as $k => $v) {
-                    if (!isset($manual_sample_set[$k])) $manual_sample_set[$k] = $v;
+                    if (!isset($manual_sample_set[$k])) {
+                        $manual_sample_set[$k] = $v;
+                    }
                 }
 
                 $auto_sample_set = [];

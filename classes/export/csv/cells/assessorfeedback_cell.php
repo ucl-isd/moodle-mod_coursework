@@ -95,13 +95,19 @@ class assessorfeedback_cell extends cell_base {
             || has_capability('mod/coursework:administergrades', $modulecontext)) {
 
             // Is the submission in question ready to grade?
-            if (!$submission->ready_to_grade()) return get_string('submissionnotreadytograde', 'coursework');
+            if (!$submission->ready_to_grade()) {
+                return get_string('submissionnotreadytograde', 'coursework');
+            }
 
             // Has the submission been published if yes then no further grades are allowed
-            if ($submission->get_state() >= submission::PUBLISHED)  return $submission->get_status_text();
+            if ($submission->get_state() >= submission::PUBLISHED) {
+                return $submission->get_status_text();
+            }
 
             // If you have administer grades you can grade anything
-            if (has_capability('mod/coursework:administergrades', $modulecontext)) return true;
+            if (has_capability('mod/coursework:administergrades', $modulecontext)) {
+                return true;
+            }
 
             // Has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
             $feedback_params = array(
@@ -115,19 +121,24 @@ class assessorfeedback_cell extends cell_base {
             //does a feedback exist for this stage
             if (!empty($feedback)) {
                 // This is a new feedback check it against the new ability checks
-                if (!has_capability('mod/coursework:administergrades', $modulecontext) && !$ability->can('new', $feedback))   return get_string('nopermissiontoeditgrade', 'coursework');
+                if (!has_capability('mod/coursework:administergrades', $modulecontext) && !$ability->can('new', $feedback)) {
+                    return get_string('nopermissiontoeditgrade', 'coursework');
+                }
 
             } else {
 
                 // This is a new feedback check it against the edit ability checks
-                if (!has_capability('mod/coursework:administergrades', $modulecontext) && !$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade', 'coursework');
+                if (!has_capability('mod/coursework:administergrades', $modulecontext) && !$ability->can('edit', $feedback)) {
+                    return get_string('nopermissiontoeditgrade', 'coursework');
+                }
 
             }
 
             if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
                 // Was this user the one who last graded this submission if not then user cannot grade
-                if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $modulecontext) )
+                if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $modulecontext) ) {
                     return get_string('nopermissiontogradesubmission', 'coursework');
+                }
 
             }
 
@@ -141,7 +152,9 @@ class assessorfeedback_cell extends cell_base {
                 );
 
                 if (!has_capability('mod/coursework:administergrades', $modulecontext)
-                    && !$DB->get_record('coursework_allocation_pairs', $allocation_params)) return get_string('nopermissiontogradesubmission', 'coursework');
+                    && !$DB->get_record('coursework_allocation_pairs', $allocation_params)) {
+                    return get_string('nopermissiontogradesubmission', 'coursework');
+                }
             }
 
             // Check for coursework without allocations - with/without samplings
@@ -159,7 +172,9 @@ class assessorfeedback_cell extends cell_base {
                     // Check how many assessors for this coursework
                     $assessors = $this->coursework->get_max_markers();
                 }
-                if ($assessors == $feedbacks) return get_string('gradealreadyexists', 'coursework');
+                if ($assessors == $feedbacks) {
+                    return get_string('gradealreadyexists', 'coursework');
+                }
             }
 
         } else if (has_any_capability($agreedgradecap, $modulecontext)) {

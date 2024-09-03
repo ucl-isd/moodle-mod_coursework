@@ -55,12 +55,18 @@ class upload_feedback_form extends moodleform {
 
             } else if (has_capability('mod/coursework:administergrades', $this->coursework->get_context())) {
                 $options['assessor_1'] = get_string('assessorupload', 'coursework', '1');
-                if ($this->coursework->get_max_markers() >= 2) $options['assessor_2'] = get_string('assessorupload', 'coursework', '2');
-                if ($this->coursework->get_max_markers() >= 3) $options['assessor_3'] = get_string('assessorupload', 'coursework', '3');
+                if ($this->coursework->get_max_markers() >= 2) {
+                    $options['assessor_2'] = get_string('assessorupload', 'coursework', '2');
+                }
+                if ($this->coursework->get_max_markers() >= 3) {
+                    $options['assessor_3'] = get_string('assessorupload', 'coursework', '3');
+                }
             }
 
             $capability = array('mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade', 'mod/coursework:administergrades');
-            if (has_any_capability($capability, $this->coursework->get_context())) $options['final_agreed_1'] = get_string('finalagreed', 'coursework');
+            if (has_any_capability($capability, $this->coursework->get_context())) {
+                $options['final_agreed_1'] = get_string('finalagreed', 'coursework');
+            }
 
             $mform->addElement('select', 'feedbackstage', get_string('feedbackstage', 'coursework'), $options);
         } else {

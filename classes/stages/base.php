@@ -910,7 +910,9 @@ abstract class base {
         $result = $this->get_coursework()->get_grade_editing_time();
 
         // The feedback is not in the editable period if the editable setting is disabled
-        if (empty($this->get_coursework()->get_grade_editing_time()))  return false;
+        if (empty($this->get_coursework()->get_grade_editing_time())) {
+            return false;
+        }
 
         $coursework_id = $this->get_coursework_id();
         submission::fill_pool_coursework($coursework_id);

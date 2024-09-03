@@ -117,7 +117,9 @@ class import extends grading_sheet {
                     $submissionid = $value;
                 }
 
-                if (empty($submissionid)) $errors[$s][] = get_string('emptysubmissionid', 'coursework');
+                if (empty($submissionid)) {
+                    $errors[$s][] = get_string('emptysubmissionid', 'coursework');
+                }
 
                 // Offsets the position of that we extract the data from $line based on data that has been extracted before
 
@@ -166,7 +168,8 @@ class import extends grading_sheet {
 
             $types = array("singlegrade", "assessorgrade");
 
-            if ($this->coursework->finalstagegrading == 0 ) $types[] = "agreedgrade";
+            if ($this->coursework->finalstagegrading == 0 ) { $types[] = "agreedgrade";
+            }
 
             foreach ($types as $type) {
 
@@ -181,7 +184,9 @@ class import extends grading_sheet {
 
                     if (strpos($ch, $type) !== false) {
 
-                        if (empty($typepositions))   $typepositions = [];
+                        if (empty($typepositions)) {
+                            $typepositions = [];
+                        }
 
                         $typefound = true;
                         $typepositions[] = $i;
@@ -323,7 +328,9 @@ class import extends grading_sheet {
                 }
 
                 // Save the value into the csvline with the relevant pointer
-                if (isset($cells[$i]))   $csvline[$cells[$i]] = $value;
+                if (isset($cells[$i])) {
+                    $csvline[$cells[$i]] = $value;
+                }
 
                 $i++;
             }
@@ -367,7 +374,9 @@ class import extends grading_sheet {
                 // When allocation is enabled
                 if (has_capability('mod/coursework:administergrades', $PAGE->context) && $coursework->allocation_enabled() && $stage != 'final_agreed_1' && $coursework->has_multiple_markers() == true) {
                     $rubricoffset += 1;
-                    if ($a == 1) $rubricoffsetstart  += 1;
+                    if ($a == 1) {
+                        $rubricoffsetstart  += 1;
+                    }
                 }
                 // check for initial grade capability otherwise ignore it
                 if ($stage != 'final_agreed_1' && (!has_capability('mod/coursework:addinitialgrade', $PAGE->context)) &&
@@ -420,7 +429,9 @@ class import extends grading_sheet {
 
                         $rubricoffset = $rubricoffsetstart + $stagemultiplier + ($numberofrubrics * $stagemultiplier);
 
-                        if ($coursework->allocation_enabled())  $rubricoffset += 1;
+                        if ($coursework->allocation_enabled()) {
+                            $rubricoffset += 1;
+                        }
                         $rubricdata = array_slice($line, $rubricoffset, $numberofrubrics);
 
                         $feedbackdata = array_slice($line, $rubricoffset + $numberofrubrics, 1);
@@ -486,7 +497,9 @@ class import extends grading_sheet {
 
                     $rubricoffset = $rubricoffsetstart + $stagemultiplier + ($numberofrubrics * $stagemultiplier);
 
-                    if ($coursework->allocation_enabled())  $rubricoffset += 1;
+                    if ($coursework->allocation_enabled()) {
+                        $rubricoffset += 1;
+                    }
 
                     $gradearrvalue = array_slice($line, $rubricoffset, 2);
 
