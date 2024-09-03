@@ -170,7 +170,7 @@ class behat_mod_coursework extends behat_base {
                 $submission = submission::build(array(
                                                     'courseworkid' => $this->coursework->id,
                                                     'allocatableid' => $this->student->id,
-                                                    'allocatabletype' => 'user'
+                                                    'allocatabletype' => 'user',
                                                 ));
                 return $this->get_router()->get_path('new submission',
                                                      array('submission' => $submission), false, $escape);
@@ -1046,7 +1046,7 @@ class behat_mod_coursework extends behat_base {
             'assessorid' => $this->other_teacher->id,
             'grade' => '78',
             'feedbackcomment' => 'Blah',
-            'stage_identifier' => 'assessor_1'
+            'stage_identifier' => 'assessor_1',
         ));
     }
 
@@ -1095,7 +1095,7 @@ class behat_mod_coursework extends behat_base {
            'allocatableid' => $this->student->id(),
            'allocatabletype' => 'user',
            'courseworkid' => $this->coursework->id,
-           'extended_deadline' => strtotime('+2 weeks 3:30pm', $this->coursework->deadline)
+           'extended_deadline' => strtotime('+2 weeks 3:30pm', $this->coursework->deadline),
         ));
     }
 
@@ -1108,7 +1108,7 @@ class behat_mod_coursework extends behat_base {
                                                               'allocatableid' => $this->student->id(),
                                                               'allocatabletype' => 'user',
                                                               'courseworkid' => $this->coursework->id,
-                                                              'extended_deadline' => $this->extension_deadline
+                                                              'extended_deadline' => $this->extension_deadline,
                                                           ));
     }
 
@@ -1347,7 +1347,7 @@ class behat_mod_coursework extends behat_base {
         $teacher_role = $DB->get_record('role', array('shortname' => 'editingteacher'));
         $params = array('roleid' => $teacher_role->id,
                         'capability' => 'mod/coursework:addgeneralfeedback',
-                        'contextid' => 1
+                        'contextid' => 1,
                         );
         $cap = $DB->get_record('role_capabilities', $params);
         $cap->permission = CAP_PREVENT;
@@ -3078,7 +3078,7 @@ class behat_mod_coursework extends behat_base {
      */
     public function StudentAutomaticallyIncludedInSampleForStage($other, $another, $negate, $stage) {
         $page = $this->get_page('allocations page');
-        $another = (!empty($another)) ? $this->other_student: '';
+        $another = (!empty($another)) ? $this->other_student : '';
         $other = ($other == 'another');
         $student = $other ? 'other_student' : 'student';
 

@@ -47,7 +47,7 @@ class mod_coursework_behat_single_grading_interface extends mod_coursework_behat
      * @param allocatable $allocatable
      * @return bool is there an icon?
      */
-    public function there_is_a_feedback_icon($allocatable):bool {
+    public function there_is_a_feedback_icon($allocatable): bool {
         $feedback_cell = $this->getPage()->find('css', $this->allocatable_row_id($allocatable).' .single_assessor_feedback_cell');
         $feedback_icon = $feedback_cell->findAll('css', '.smallicon');
         return !empty($feedback_icon);

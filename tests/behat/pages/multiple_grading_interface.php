@@ -46,7 +46,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
      * @param allocatable $allocatable
      * @return bool is there an icon?
      */
-    public function there_is_a_feedback_icon($allocatable):bool {
+    public function there_is_a_feedback_icon($allocatable): bool {
         $this->getContext()->show_me_the_page();
         $feedback_icon = $this->getPage()->findAll('css', '.cfeedbackcomment .smallicon');
         return !empty($feedback_icon);
@@ -55,7 +55,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
     /**
      * @param user $allocatable
      */
-    public function student_has_a_final_grade($allocatable):bool {
+    public function student_has_a_final_grade($allocatable): bool {
         $student_grade_cell =
             $this->getPage()->find('css', $this->allocatable_row_id($allocatable) . ' .multiple_agreed_grade_cell');
         return !empty($student_grade_cell->getText());
@@ -64,7 +64,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
     /**
      * @param group $allocatable
      */
-    public function group_has_a_final_multiple_grade($allocatable):bool {
+    public function group_has_a_final_multiple_grade($allocatable): bool {
         $group_row_id = $this->allocatable_row_id($allocatable);
         $locator = $group_row_id . ' .multiple_agreed_grade_cell';
         $grade_cell = $this->getPage()->find('css', $locator);
@@ -236,7 +236,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
     public function should_not_have_grade_in_assessor_table($feedback) {
         $assessor = $feedback->assessor();
         $row_class = '.feedback-' . $assessor->id() . '-' . $feedback->get_allocatable()
-                ->id() . '.' . $feedback->get_stage()->identifier().' .assessor_feedback_grade';
+            ->id() . '.' . $feedback->get_stage()->identifier().' .assessor_feedback_grade';
 
         $this->should_not_have_css($row_class, $feedback->grade);
     }
@@ -247,7 +247,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
     public function should_have_grade_in_assessor_table($feedback) {
         $assessor = $feedback->assessor();
         $row_class = '.feedback-' . $assessor->id() . '-' . $feedback->get_allocatable()
-                ->id() . '.' . $feedback->get_stage()->identifier() . ' .assessor_feedback_grade';
+            ->id() . '.' . $feedback->get_stage()->identifier() . ' .assessor_feedback_grade';
 
         $this->should_have_css($row_class, $feedback->grade);
     }
@@ -315,7 +315,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
      */
     protected function new_feedback_button_css($submission) {
         $elementid = '#assessorfeedbacktable_' . $submission->get_coursework()
-                ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .new_feedback';
+            ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .new_feedback';
         return $elementid;
     }
 
@@ -325,7 +325,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
      */
     public function get_provisional_grade_field($submission) {
         $elementid = '#allocatable_' . $submission->get_coursework()
-                ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .assessor_feedback_grade';
+            ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .assessor_feedback_grade';
         $grade_field = $this->getPage()->find('css', $elementid);
         return $grade_field ? $grade_field->getValue() : false;
     }
@@ -336,7 +336,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
      */
     public function get_grade_field($submission) {
         $elementid = '#assessorfeedbacktable_' . $submission->get_coursework()
-                 ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .grade_for_gradebook_cell';
+            ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .grade_for_gradebook_cell';
         $grade_field = $this->getPage()->find('css', $elementid);
         return $grade_field ? $grade_field->getValue() : false;
     }

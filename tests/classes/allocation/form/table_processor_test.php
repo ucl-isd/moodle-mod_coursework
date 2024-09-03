@@ -140,9 +140,9 @@ class table_processor_test extends advanced_testcase {
             $this->student->id => array(
                 'assessor_1' => array(
                     'allocation_id' => $allocation->id,
-                    'assessor_id' => $this->other_teacher->id
-                )
-            )
+                    'assessor_id' => $this->other_teacher->id,
+                ),
+            ),
         );
 
         $processor = new processor($this->coursework);

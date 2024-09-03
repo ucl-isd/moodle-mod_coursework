@@ -242,7 +242,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param $stagenumber
      * @return bool
      */
-    public function automatically_included_in_sample($coursework, $user, $otheruser, $stagenumber): bool  {
+    public function automatically_included_in_sample($coursework, $user, $otheruser, $stagenumber): bool {
         global $DB;
 
         $othersql = (!empty($otheruser)) ? "OR allocatableid = $otheruser->id" : '';
@@ -258,7 +258,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
         $params = [
             'courseworkid' => $coursework->id,
             'user' => $user->id,
-            'stage' => $stage
+            'stage' => $stage,
         ];
 
         return $DB->record_exists_sql($sql, $params);
