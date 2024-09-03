@@ -74,7 +74,7 @@ class time_submitted_cell extends cell_base {
 
             $time_submitted = $submission->time_submitted();
 
-            $content .= userdate($time_submitted,'%a, %d %b %Y, %H:%M');
+            $content .= userdate($time_submitted, '%a, %d %b %Y, %H:%M');
             $content .= html_writer::empty_tag('br');
 
             if ($submission->is_late() && (!$submission->has_extension() || !$submission->submitted_within_extension())) {

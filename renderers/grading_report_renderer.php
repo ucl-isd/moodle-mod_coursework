@@ -70,7 +70,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         $table_html .= $this->make_table_headers($cell_helpers, $options, $is_multiple_markers);
         $table_html .= '</thead>';
         $table_html .= '<tbody>';
-        $table_html .= $this->make_rows($tablerows, $cell_helpers, $sub_row_helper, $is_multiple_markers,);
+        $table_html .= $this->make_rows($tablerows, $cell_helpers, $sub_row_helper, $is_multiple_markers, );
         $table_html .= '</tbody>';
         $table_html .= $this->end_table();
 

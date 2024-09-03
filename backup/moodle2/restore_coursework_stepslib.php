@@ -30,7 +30,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
             $append = FILE_APPEND;
         }
 
-        file_put_contents('/tmp/cheap.log',print_r($thing, true)."\n---------------\n", $append);
+        file_put_contents('/tmp/cheap.log', print_r($thing, true)."\n---------------\n", $append);
     }
 
     /**
@@ -101,7 +101,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                 'timecreated',
                                 'timesubmitted',
                                 'firstpublished',
-                                'lastpublished',),  $data);
+                                'lastpublished', ),  $data);
 
         $now = time();
         $this->set_defaults(array('timecreated' => $now,
