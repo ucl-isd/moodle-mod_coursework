@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * @package    mod_coursework
  * @copyright  2017 University of London Computer Centre {@link ulcc.ac.uk}
