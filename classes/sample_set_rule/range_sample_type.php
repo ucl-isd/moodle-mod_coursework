@@ -105,7 +105,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         if ($dbrecord) {
             $selected_type = array($dbrecord->ruletype => get_string($dbrecord->ruletype, 'mod_coursework'));
-           $selected_to = ($dbrecord->ruletype == 'scale') ? array($dbrecord->upperlimit => $scale[$dbrecord->upperlimit]) : array($dbrecord->upperlimit => $dbrecord->upperlimit);
+            $selected_to = ($dbrecord->ruletype == 'scale') ? array($dbrecord->upperlimit => $scale[$dbrecord->upperlimit]) : array($dbrecord->upperlimit => $dbrecord->upperlimit);
 
             $selected_from = ($dbrecord->ruletype == 'scale') ? array($dbrecord->lowerlimit => $scale[$dbrecord->lowerlimit]) : array($dbrecord->lowerlimit => $dbrecord->lowerlimit);
 
@@ -337,23 +337,23 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
             $sample_plugin = $DB->get_record('coursework_sample_set_plugin', array('rulename' => 'range_sample_type'));
 
-            if ($sample_rules) {
-                foreach ($sample_rules as $i => $val) {
+        if ($sample_rules) {
+            foreach ($sample_rules as $i => $val) {
 
-                    $dbrecord = new \stdClass();
+                $dbrecord = new \stdClass();
 
-                    $dbrecord->ruletype = $sample_type[$i];
-                    $dbrecord->lowerlimit = $sample_from[$i];
-                    $dbrecord->upperlimit = $sample_to[$i];
-                    $dbrecord->sample_set_plugin_id = $sample_plugin->id;
-                    $dbrecord->courseworkid = $this->coursework->id;
-                    $dbrecord->ruleorder = $order;
-                    $dbrecord->stage_identifier = "assessor_{$assessor_number}";
+                $dbrecord->ruletype = $sample_type[$i];
+                $dbrecord->lowerlimit = $sample_from[$i];
+                $dbrecord->upperlimit = $sample_to[$i];
+                $dbrecord->sample_set_plugin_id = $sample_plugin->id;
+                $dbrecord->courseworkid = $this->coursework->id;
+                $dbrecord->ruleorder = $order;
+                $dbrecord->stage_identifier = "assessor_{$assessor_number}";
 
-                    $DB->insert_record("coursework_sample_set_rules", $dbrecord);
-                    $order++;
-                }
+                $DB->insert_record("coursework_sample_set_rules", $dbrecord);
+                $order++;
             }
+        }
 
     }
 
@@ -404,35 +404,35 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $limits[0] = ($limit1>$limit2) ? $limit2 : $limit1;
             $limits[1] = ($limit1>$limit2) ? $limit1 : $limit2;
 
-            if ($ruletype == 'scale') {
-                ++$limits[0];
-                ++$limits[1];
-            }
+        if ($ruletype == 'scale') {
+            ++$limits[0];
+            ++$limits[1];
+        }
 
-            if ($ruletype == 'percentage') {
-                if ($this->coursework->grade > 0) {
-                    $limits[0] = $this->coursework->grade * $limits[0] / 100;
-                    $limits[1] = $this->coursework->grade * $limits[1] / 100;
-                } else {
-                    $scale = $DB->get_record("scale", array('id' => abs($this->coursework->grade)));
+        if ($ruletype == 'percentage') {
+            if ($this->coursework->grade > 0) {
+                $limits[0] = $this->coursework->grade * $limits[0] / 100;
+                $limits[1] = $this->coursework->grade * $limits[1] / 100;
+            } else {
+                $scale = $DB->get_record("scale", array('id' => abs($this->coursework->grade)));
 
-                    if ($scale) {
+                if ($scale) {
 
-                        $coursework_scale = explode(",", $scale->scale);
+                    $coursework_scale = explode(",", $scale->scale);
 
-                        $number_of_items = count($coursework_scale);
+                    $number_of_items = count($coursework_scale);
 
-                        $weighting = 100 / $number_of_items; // shall we round it????
+                    $weighting = 100 / $number_of_items; // shall we round it????
 
-                        $limits[0] = ceil($limits[0]/$weighting); // element of array
-                        $limits[1] = ceil($limits[1]/$weighting); // element of array
+                    $limits[0] = ceil($limits[0]/$weighting); // element of array
+                    $limits[1] = ceil($limits[1]/$weighting); // element of array
 
-                        // Note we have to add one as the values are not stored in there element positions
-
-                    }
+                    // Note we have to add one as the values are not stored in there element positions
 
                 }
+
             }
+        }
 
         return $limits;
     }
@@ -453,7 +453,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         // Note as things stand limit1 and limit2 can not be params as the type of the grade field (varchar)
         //means the values are cast as strings
 
-       return $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id,
+        return $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id,
                                                'stage' => $stage));
 
     }

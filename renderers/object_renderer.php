@@ -791,10 +791,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $comma = "";
 
-                for ($i = 0; $i <= $samplingwidget->get_coursework()->grade; $i++) {
-                    $scale .= $comma.$i;
-                    $comma = ",";
-                }
+            for ($i = 0; $i <= $samplingwidget->get_coursework()->grade; $i++) {
+                $scale .= $comma.$i;
+                $comma = ",";
+            }
         } else {
             $grade_scale = \grade_scale::fetch(array('id' => abs($samplingwidget->get_coursework()->grade)));
             $scale = $grade_scale->scale;
@@ -1100,7 +1100,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         //$fullclasspaths = glob($classdir . '/*.php');
         foreach ($sampleplugins as $plugin) {
-        /*    if (strpos($fullclassname, 'base') !== false) {
+            /*    if (strpos($fullclassname, 'base') !== false) {
                 continue;
             }*/
             preg_match('/([^\/]+).php/', $classdir."/".$plugin->rulename.".php", $matches);
@@ -1792,22 +1792,22 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         } else if (is_siteadmin($USER) || !$coursework->allocation_enabled() || has_any_capability(array('mod/coursework:administergrades'), $coursework->get_context())) {
 
-                foreach ($submissions as $sub) {
-                    $submission = submission::find($sub);
+            foreach ($submissions as $sub) {
+                $submission = submission::find($sub);
+                $gradeblesub[$submission->id] = $submission;
+            }
+
+        } else {
+            foreach ($submissions as $sub) {
+                $submission = submission::find($sub);
+                if ($coursework->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable()) || (has_capability('mod/coursework:addagreedgrade', $coursework->get_context()))
+                    && !empty($submission) && (($submission->all_inital_graded()  && !$submission->get_coursework()->sampling_enabled())
+                        || ($submission->get_coursework()->sampling_enabled() && $submission->all_inital_graded() && $submission->max_number_of_feedbacks() > 1))) {
+
                     $gradeblesub[$submission->id] = $submission;
                 }
-
-            } else {
-                foreach ($submissions as $sub) {
-                    $submission = submission::find($sub);
-                    if ($coursework->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable()) || (has_capability('mod/coursework:addagreedgrade', $coursework->get_context()))
-                        && !empty($submission) && (($submission->all_inital_graded()  && !$submission->get_coursework()->sampling_enabled())
-                            || ($submission->get_coursework()->sampling_enabled() && $submission->all_inital_graded() && $submission->max_number_of_feedbacks() > 1))) {
-
-                        $gradeblesub[$submission->id] = $submission;
-                    }
-                }
             }
+        }
 
         return $gradeblesub;
     }

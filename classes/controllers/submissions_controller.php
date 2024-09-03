@@ -116,14 +116,14 @@ class submissions_controller extends controller_base {
         $submission->authorid = $submission->get_author_id(); // Create new function to get the author id depending on whether the current user is submitting on behalf
         $submission->timesubmitted = time();
 
-       // Automatically finalise any submissions that's past the deadline/personal deadline and doesn't have valid extension
+        // Automatically finalise any submissions that's past the deadline/personal deadline and doesn't have valid extension
         if ($this->coursework->personal_deadlines_enabled()) {
             // Check is submission has a valid personal deadline or a valid extension
-              if (!$this->has_valid_personal_deadline($submission) && !$this->has_valid_extension($submission)) {
-                  $submission->finalised = 1;
-              }
+            if (!$this->has_valid_personal_deadline($submission) && !$this->has_valid_extension($submission)) {
+                $submission->finalised = 1;
+            }
         } else if ($this->coursework->deadline_has_passed() && !$this->has_valid_extension($submission)) {
-                  $submission->finalised = 1;
+            $submission->finalised = 1;
         }
 
         $ability = new ability(user::find($USER), $this->coursework);
@@ -167,7 +167,7 @@ class submissions_controller extends controller_base {
             }
         }
 
-         if ($submission->finalised) {
+        if ($submission->finalised) {
             if (!$submission->get_coursework()->has_deadline()) {
 
                 $userids = explode(',', $submission->get_coursework()->get_submission_notification_users());
@@ -221,11 +221,11 @@ class submissions_controller extends controller_base {
 
         $submit_form->set_data($submission);
 
-         if ($validation != true) {
+        if ($validation != true) {
             $this->get_page_renderer()->edit_submission_page($submit_form, $submission);
             return true;
-         }
-  }
+        }
+    }
 
     /**
      *
@@ -399,11 +399,11 @@ class submissions_controller extends controller_base {
      */
     private function exception_if_late($submission) {
         $could_have_submitted = has_capability('mod/coursework:submit', $this->coursework->get_context());
-       if ($this->coursework->personal_deadlines_enabled()) {
-           $deadline_has_passed = !$this->has_valid_personal_deadline($submission);
-       } else {
-           $deadline_has_passed = $this->coursework->deadline_has_passed();
-       }
+        if ($this->coursework->personal_deadlines_enabled()) {
+            $deadline_has_passed = !$this->has_valid_personal_deadline($submission);
+        } else {
+            $deadline_has_passed = $this->coursework->deadline_has_passed();
+        }
 
         if ($could_have_submitted && $deadline_has_passed && !$this->has_valid_extension($submission) && !$this->coursework->allow_late_submissions()) {
             throw new late_submission($this->coursework);

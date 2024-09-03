@@ -339,7 +339,7 @@ if ($export_grades) {
 
 if ($download_grading_sheet) {
 
-   $csv_cells = \mod_coursework\export\grading_sheet::cells_array($coursework);
+    $csv_cells = \mod_coursework\export\grading_sheet::cells_array($coursework);
 
     $timestamp = date('d_m_y @ H-i');
     $filename = get_string('gradingsheetfor', 'coursework'). $coursework->name .' '.$timestamp;

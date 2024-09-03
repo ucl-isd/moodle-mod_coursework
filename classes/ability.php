@@ -152,7 +152,7 @@ class ability extends \mod_coursework\framework\ability {
 
         // New feedback
         $this->prevent_new_feedback_with_no_submission();
-       $this->prevent_new_feedback_when_submission_not_finalised();
+        $this->prevent_new_feedback_when_submission_not_finalised();
         $this->prevent_new_feedback_when_prerequisite_stages_have_no_feedback();
         $this->prevent_new_feedback_with_empty_stage();
         $this->prevent_new_feedback_when_allocatable_already_has_feedback_for_this_stage();
@@ -163,7 +163,7 @@ class ability extends \mod_coursework\framework\ability {
         $this->prevent_new_feedback_when_not_assessor_for_stage();
         $this->prevent_new_feedback_from_non_allocated_assessors();
         $this->allow_new_feedback_by_allocated_assessor();
-       $this->allow_new_feedback_from_any_assessor_when_allocation_is_disabled_for_stage_or_instance();
+        $this->allow_new_feedback_from_any_assessor_when_allocation_is_disabled_for_stage_or_instance();
         $this->allow_new_feedback_if_agreed_feedback_and_user_can_add_agreed_feedback();
 
         // Create feedback
@@ -230,7 +230,7 @@ class ability extends \mod_coursework\framework\ability {
         // Plagiarism flagging rules for Plagiarism Alert
 
         // New
-       // $this->prevent_new_plagiarism_flag_if_already_exists();
+        // $this->prevent_new_plagiarism_flag_if_already_exists();
         $this->allow_new_plagiarism_flag_with_capability();
 
         // Edit
@@ -425,7 +425,7 @@ class ability extends \mod_coursework\framework\ability {
     }
 
     protected function allow_show_submission_to_graders_after_feedback_release() {
-// Show to graders after release
+        // Show to graders after release
         $this->allow('show',
                      'mod_coursework\models\submission',
             function (submission $submission) {
@@ -485,8 +485,8 @@ class ability extends \mod_coursework\framework\ability {
                 // take into account courseworks with personal deadlines
                 if ($submission->get_coursework()->personal_deadlines_enabled()) {
                     $deadline_passed = (bool)$submission->submission_personal_deadline() < time();
-                 } else {
-                     $deadline_passed = $submission->get_coursework()->deadline_has_passed();
+                } else {
+                    $deadline_passed = $submission->get_coursework()->deadline_has_passed();
                 }
                 $ok_to_submit_late = $submission->get_coursework()->allow_late_submissions();
                 $coursework = $submission->get_coursework();
@@ -1202,7 +1202,7 @@ class ability extends \mod_coursework\framework\ability {
             'mod_coursework\grading_table_row_base',
             function (grading_table_row_base $row) {
 
-               return  (!$row->get_coursework()->allocation_enabled() && has_capability('mod/coursework:grantextensions',
+                return  (!$row->get_coursework()->allocation_enabled() && has_capability('mod/coursework:grantextensions',
                         $row->get_coursework()
                             ->get_context()));
 

@@ -160,7 +160,7 @@ class singlegrade_cell extends cell_base {
             $feedback = feedback::find($feedback_params);
 
             if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
-               // Was this user the one who last graded this submission if not then user cannot grade
+                // Was this user the one who last graded this submission if not then user cannot grade
                 if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $PAGE->context) && !has_capability('mod/coursework:administergrades', $PAGE->context))
                     return get_string('nopermissiontoeditgrade', 'coursework');
 
@@ -253,7 +253,7 @@ class singlegrade_cell extends cell_base {
             // Find out the position of singlegrade
             $position = array_search('singlegrade', $csv_cells);
             // Get all data from the position of the singlegrade to the length of rubricheaders
-           // $csv_cells = array_splice($csv_cells,5, 1, $rubricheaders);
+            // $csv_cells = array_splice($csv_cells,5, 1, $rubricheaders);
 
             $start_cells = array_slice($csv_cells, 0, $position, true);
             $end_cells = array_slice($csv_cells, $position + 1, count($csv_cells), true);

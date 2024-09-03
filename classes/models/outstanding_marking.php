@@ -73,13 +73,13 @@ class outstanding_marking {
 
             //AGREED GRADE INFORMATION
 
-            if ($this->should_get_to_mark_agreed_grade_info($coursework->id, $userid) && $coursework->has_multiple_markers()) {
-                if (!$coursework->sampling_enabled()) {
-                    $agreedsubmissions = $this->get_to_grade_agreed_grade_submissions($coursework->id, $coursework->get_max_markers());
-                } else {
-                    $agreedsubmissions = $this->get_to_grade_agreed_grade_sampled_submissions($coursework->id);
-                }
+        if ($this->should_get_to_mark_agreed_grade_info($coursework->id, $userid) && $coursework->has_multiple_markers()) {
+            if (!$coursework->sampling_enabled()) {
+                $agreedsubmissions = $this->get_to_grade_agreed_grade_submissions($coursework->id, $coursework->get_max_markers());
+            } else {
+                $agreedsubmissions = $this->get_to_grade_agreed_grade_sampled_submissions($coursework->id);
             }
+        }
 
         return  (!empty($agreedsubmissions)) ? count($agreedsubmissions) : 0;
     }

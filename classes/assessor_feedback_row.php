@@ -128,7 +128,7 @@ class assessor_feedback_row {
      * @return string
      */
     public function get_graders_name() {
-      return  $this->get_graded_by()->profile_link();
+        return  $this->get_graded_by()->profile_link();
     }
 
     /**

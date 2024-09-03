@@ -169,7 +169,7 @@ if ($ADMIN->fulltree) {
                                                                                     get_string('maximum_extension_deadline_desc', 'coursework'),
                                                                                     18, PARAM_INT, 2));
 
-   // Default per page
+    // Default per page
 
     $options = array('3' => '3', '10' => '10', '20' => '20', '30' => '30', '40' => '40', '50' => '50', '100' => '100');
 

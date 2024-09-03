@@ -183,7 +183,7 @@ class student_submission_form extends moodleform {
                                 $mailer = new mailer($coursework);
 
                                 if (!empty($notifyuser))   $mailer->send_submission_notification($notifyuser);
-                          }
+                            }
                         }
 
                     }

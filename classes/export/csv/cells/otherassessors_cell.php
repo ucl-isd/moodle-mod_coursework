@@ -42,8 +42,8 @@ class otherassessors_cell extends cell_base {
         global $DB, $USER;
         // find out current user stage identifier
 
-      // $stage_identifier =
-    // retrieve all feedbacks without currents user feedback
+        // $stage_identifier =
+        // retrieve all feedbacks without currents user feedback
 
         $params = array(
             'submissionid' => $submission->id,
@@ -59,7 +59,7 @@ class otherassessors_cell extends cell_base {
         $feedbacks = $DB->get_records_sql($sql, $params);
         $gradedata = [];
 
-       // $stage_identifier = ($this->coursework->get_max_markers() == 1) ? "assessor_1" : $this->get_stage_identifier_for_assessor($submission, $student);
+        // $stage_identifier = ($this->coursework->get_max_markers() == 1) ? "assessor_1" : $this->get_stage_identifier_for_assessor($submission, $student);
         foreach ($feedbacks as $feedback) {
 
             $grade = $submission->get_assessor_feedback_by_stage($feedback->stage_identifier);
@@ -146,7 +146,7 @@ class otherassessors_cell extends cell_base {
             }
                 $fields['otherassessorfeedback' . $i] = get_string('otherassessorfeedback', 'coursework', $i);
         }
-       return $fields;
+        return $fields;
     }
 
 }

@@ -2496,7 +2496,7 @@ function xmldb_coursework_upgrade($oldversion) {
             $cwk->renamefiles = ($cwk->blindmarking == 1 || $courseworkhassubmissions) ? 1 : 0;
 
             $DB->update_record('coursework', $cwk);
-         }
+        }
 
         // Coursework savepoint reached.
         upgrade_mod_savepoint(true, 2019121403, 'coursework');

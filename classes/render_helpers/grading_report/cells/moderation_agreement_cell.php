@@ -162,7 +162,7 @@ class moderation_agreement_cell extends cell_base {
         // moderation only done for single marking courseworks
         $feedback = $rowobject->get_submission()->get_assessor_feedback_by_stage('assessor_1');
 
-       $moderation_params = array(
+        $moderation_params = array(
             'submission' => $rowobject->get_submission(),
             'assessor' => $assessor,
             'stage' => $this->stage,

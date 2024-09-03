@@ -128,11 +128,11 @@ class csv {
                 }
             } else if ($csv_cell != 'stages' && $csv_cell != 'moderationagreement' && $csv_cell != 'otherassessors') {
                 $cell = $cell->get_cell($submission, $student, false);
-               if (is_array($cell)) {
-                   $row = array_merge($row, $cell);
-               } else {
-                   $row[] = $cell;
-               }
+                if (is_array($cell)) {
+                    $row = array_merge($row, $cell);
+                } else {
+                    $row[] = $cell;
+                }
             } else {
 
                 $stages = $cell->get_cell($submission, $student, false);
@@ -147,50 +147,50 @@ class csv {
      * create headers for CSV
      * @param $csv_headers
      */
-        public function add_headers($csv_headers) {
-            $headers = [];
-            foreach ($csv_headers as $header) {
-                if (substr($header, 0, 8) == 'assessor') {
-                    $stage = (substr($header, -1));
-                    $header = substr($header, 0, -1);
-                }
-                $class = "mod_coursework\\export\\csv\\cells\\".$header."_cell";
-                $cell = new $class($this->coursework);
-                if (substr($header, 0, 8) == 'assessor') {
-                    $head = $cell->get_header($stage);
-                    if (is_array($head)) {
-                        $headers = array_merge($headers, $head);
-                    } else {
-                        $headers[$header.$stage] = $head;
-                    }
-
-                } else if ($header != 'stages' && $header != 'moderationagreement' && $header != 'otherassessors' ) {
-                     $head = $cell->get_header(false);
-                    if (is_array($head)) {
-                        $headers = array_merge($headers, $head);
-                    } else {
-                        $headers[$header] = $head;
-                    }
-                } else {
-                    $array_headers = $cell->get_header(false);
-                    $headers = array_merge($headers, $array_headers);
-                }
+    public function add_headers($csv_headers) {
+        $headers = [];
+        foreach ($csv_headers as $header) {
+            if (substr($header, 0, 8) == 'assessor') {
+                $stage = (substr($header, -1));
+                $header = substr($header, 0, -1);
             }
+            $class = "mod_coursework\\export\\csv\\cells\\".$header."_cell";
+            $cell = new $class($this->coursework);
+            if (substr($header, 0, 8) == 'assessor') {
+                $head = $cell->get_header($stage);
+                if (is_array($head)) {
+                    $headers = array_merge($headers, $head);
+                } else {
+                    $headers[$header.$stage] = $head;
+                }
 
-            $this->csvexport->add_data($headers);
-
+            } else if ($header != 'stages' && $header != 'moderationagreement' && $header != 'otherassessors' ) {
+                 $head = $cell->get_header(false);
+                if (is_array($head)) {
+                    $headers = array_merge($headers, $head);
+                } else {
+                    $headers[$header] = $head;
+                }
+            } else {
+                $array_headers = $cell->get_header(false);
+                $headers = array_merge($headers, $array_headers);
+            }
         }
+
+        $this->csvexport->add_data($headers);
+
+    }
 
     /**
      * Add filename to the CSV
      * @param $filename
      * @return string
      */
-        public function add_filename($filename) {
+    public function add_filename($filename) {
 
-            $filename = clean_filename($filename);
-            return $this->csvexport->filename = $filename.'.csv';
-        }
+        $filename = clean_filename($filename);
+        return $this->csvexport->filename = $filename.'.csv';
+    }
 
     /**
      * Function to sort array in order of submission's lastname
@@ -264,9 +264,9 @@ class csv {
             $increment = 2;
         }
 
-            for ($i = 1; $i < $this->coursework->get_max_markers(); $i++) {
-                $cells = $cells + $increment; // one for grade, one for feedback
-            }
+        for ($i = 1; $i < $this->coursework->get_max_markers(); $i++) {
+            $cells = $cells + $increment; // one for grade, one for feedback
+        }
 
         return $cells;
 

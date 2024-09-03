@@ -125,7 +125,7 @@ class assessorfeedback_cell extends cell_base {
             }
 
             if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
-               // Was this user the one who last graded this submission if not then user cannot grade
+                // Was this user the one who last graded this submission if not then user cannot grade
                 if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $modulecontext) )
                     return get_string('nopermissiontogradesubmission', 'coursework');
 

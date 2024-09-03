@@ -51,7 +51,7 @@ class cron {
         echo "Starting coursework cron functions...\n";
         self::finalise_any_submissions_where_the_deadline_has_passed();
         self::send_reminders_to_students();
-       // self::send_first_reminders_to_admins(); #90211934
+        // self::send_first_reminders_to_admins(); #90211934
         self::autorelease_feedbacks_where_the_release_date_has_passed();
         return true;
     }
@@ -109,7 +109,7 @@ class cron {
 
                 if ($individual_extension) {
                     // check if 1st reminder is due to be sent but has not been sent yet
-                   if ($coursework->due_to_send_first_reminders($individual_extension->extended_deadline) &&
+                    if ($coursework->due_to_send_first_reminders($individual_extension->extended_deadline) &&
                        $student->has_not_been_sent_reminder($coursework, 1, $individual_extension->extended_deadline)) {
                            $student->deadline = $individual_extension->extended_deadline;
                            $student->extension = $individual_extension->extended_deadline;
@@ -117,15 +117,15 @@ class cron {
                            $student->nextremindernumber = 1;
                            $userswhoneedreminding[$student->id().'_'.$coursework->id] = $student;
 
-                       // check if 2nd reminder is due to be sent but has not been sent yet
-                   } else if ($coursework->due_to_send_second_reminders($individual_extension->extended_deadline) &&
+                        // check if 2nd reminder is due to be sent but has not been sent yet
+                    } else if ($coursework->due_to_send_second_reminders($individual_extension->extended_deadline) &&
                        $student->has_not_been_sent_reminder($coursework, 2, $individual_extension->extended_deadline)) {
                            $student->deadline = $individual_extension->extended_deadline;
                            $student->extension = $individual_extension->extended_deadline;
                            $student->coursework_id = $coursework->id;
                            $student->nextremindernumber = 2;
                            $userswhoneedreminding[$student->id().'_'.$coursework->id] = $student;
-                   }
+                    }
 
                 } else if ($deadline > time()) { // coursework or personal deadline hasn't passed
                     // check if 1st reminder is due to be sent but has not been sent yet
@@ -386,7 +386,7 @@ class cron {
         global $DB;
         echo 'Auto releasing feedbacks for courseworks where the release date have passed...';
 
-       $sql = "SELECT *
+        $sql = "SELECT *
                  FROM {coursework} c
                  JOIN {coursework_submissions} cs
                    ON c.id = cs.courseworkid

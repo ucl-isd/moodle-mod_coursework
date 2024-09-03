@@ -230,7 +230,7 @@ abstract class cell_base implements cell_interface {
         } else if ($this->coursework->get_max_markers() > 1) {
             // get existing feedback
 
-          $sql = "SELECT * FROM {coursework_feedbacks}
+            $sql = "SELECT * FROM {coursework_feedbacks}
                   WHERE submissionid= $submission->id
                   AND assessorid = $USER->id
                   AND stage_identifier <> 'final_agreed_1'";

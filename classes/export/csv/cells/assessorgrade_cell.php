@@ -205,7 +205,7 @@ class assessorgrade_cell extends cell_base {
             }
 
             if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
-               // Was this user the one who last graded this submission if not then user cannot grade
+                // Was this user the one who last graded this submission if not then user cannot grade
                 if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $PAGE->context))
                     return get_string('nopermissiontogradesubmission', 'coursework');
 
@@ -246,9 +246,9 @@ class assessorgrade_cell extends cell_base {
 
         } else if (has_any_capability($agreedgradecap, $PAGE->context)) {
 
-          // If you have the add agreed or edit agreed grades capabilities then you may have the grades on your export sheet
-          // We will return true as we will ignore them
-          return true;
+            // If you have the add agreed or edit agreed grades capabilities then you may have the grades on your export sheet
+            // We will return true as we will ignore them
+            return true;
 
         } else {
             return get_string('nopermissiontoimportgrade', 'coursework');

@@ -69,13 +69,13 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->add_submission_deadline_field();
         $this->add_personal_deadline_field();
 
-       // if (coursework_is_ulcc_digest_coursework_plugin_installed()) {
+        // if (coursework_is_ulcc_digest_coursework_plugin_installed()) {
             $this->add_marking_deadline_field();
             $this->add_initial_marking_deadline_field();
             $this->add_agreed_grade_marking_deadline_field();
             $this->add_relative_initial_marking_deadline_field();
             $this->add_relative_agreed_grade_marking_deadline_field();
-       // }
+        // }
 
         $this->add_allow_early_finalisation_field();
         $this->add_allow_late_submissions_field();
@@ -191,11 +191,11 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $errors = [];
 
-       if ($data['startdate'] != 0 && !empty($data['deadline']) && $data['startdate'] > $data['deadline']) {
-           $errors['startdate'] = get_string('must_be_before_dealdine', 'mod_coursework');
-       }
+        if ($data['startdate'] != 0 && !empty($data['deadline']) && $data['startdate'] > $data['deadline']) {
+            $errors['startdate'] = get_string('must_be_before_dealdine', 'mod_coursework');
+        }
 
-       if ($data['individualfeedback'] != 0 && !empty($data['deadline']) && $data['individualfeedback'] < $data['deadline']) {
+        if ($data['individualfeedback'] != 0 && !empty($data['deadline']) && $data['individualfeedback'] < $data['deadline']) {
             $errors['individualfeedback'] = get_string('must_be_after_dealdine', 'mod_coursework');
         }
 
@@ -262,7 +262,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         }
 
         if ($this->forceblindmarking() == 1) {
-           $data->blindmarking = $CFG->coursework_blindmarking;
+            $data->blindmarking = $CFG->coursework_blindmarking;
         }
 
         if ($data->numberofmarkers > 1) {
@@ -522,7 +522,7 @@ class mod_coursework_mod_form extends moodleform_mod {
             array('optional' => true, 'disabled' => $disabled)
         );
 
-       // $moodle_form->disabledIf('agreedgrademarkingdeadline', 'numberofmarkers', 'eq', '1');
+        // $moodle_form->disabledIf('agreedgrademarkingdeadline', 'numberofmarkers', 'eq', '1');
 
         if (!empty($CFG->coursework_agreed_marking_deadline)) $moodle_form->setDefault('agreedgrademarkingdeadline', $default_timestamp);
         $moodle_form->addHelpButton('agreedgrademarkingdeadline', 'agreedgrademarkingdeadline', 'mod_coursework');
@@ -715,7 +715,7 @@ class mod_coursework_mod_form extends moodleform_mod {
                                  get_string('maximumsize', 'coursework'),
                                  $choices);
         $moodle_form->setDefault('maxbytes', $CFG->coursework_maxbytes);
-       /* $moodle_form->addElement('static',
+        /* $moodle_form->addElement('static',
                                  'maxbyteslabel',
                                  '',
                                  get_string('maximumsizelabel', 'coursework'));*/
@@ -1039,7 +1039,7 @@ class mod_coursework_mod_form extends moodleform_mod {
             $moodle_form->disabledIf('individualfeedback', 'forceautorelease', 'eq', 1);
         }
         $moodle_form->disabledIf('individualfeedback', 'deadline[enabled]', 'notchecked');
-// $moodle_form->addRule(array('individualfeedback', 'deadline'), get_string('must_be_after_dealdine', 'mod_coursework'), 'compare', 'gt');
+        // $moodle_form->addRule(array('individualfeedback', 'deadline'), get_string('must_be_after_dealdine', 'mod_coursework'), 'compare', 'gt');
     }
 
     /**
@@ -1112,16 +1112,16 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodle_form->disabledIf('finalstagegrading', 'feedbackexists', 'eq', 1);
 
         // Don't think this belongs here...
-// $options = array(0 => get_string('no'), 1 => get_string('yes'));
-// $moodle_form->addElement('select', 'automaticagreement', get_string('automaticagreement', 'mod_coursework'), $options);
-// $moodle_form->addHelpButton('automaticagreement', 'automaticagreement', 'mod_coursework');
-// $moodle_form->setDefault('automaticagreement',0);
-// $moodle_form->disabledIf('automaticagreement', 'numberofmarkers', 'eq', '1');
-//
-// $moodle_form->addElement('text', 'automaticagreementrange', get_string('automaticagreementrange', 'mod_coursework'), array('size' => 3));
-// $moodle_form->addHelpButton('automaticagreementrange', 'automaticagreementrange', 'mod_coursework');
-// $moodle_form->setDefault('automaticagreementrange',0);
-// $moodle_form->disabledIf('automaticagreementrange', 'automaticagreement', 'eq', '0');
+        // $options = array(0 => get_string('no'), 1 => get_string('yes'));
+        // $moodle_form->addElement('select', 'automaticagreement', get_string('automaticagreement', 'mod_coursework'), $options);
+        // $moodle_form->addHelpButton('automaticagreement', 'automaticagreement', 'mod_coursework');
+        // $moodle_form->setDefault('automaticagreement',0);
+        // $moodle_form->disabledIf('automaticagreement', 'numberofmarkers', 'eq', '1');
+        //
+        // $moodle_form->addElement('text', 'automaticagreementrange', get_string('automaticagreementrange', 'mod_coursework'), array('size' => 3));
+        // $moodle_form->addHelpButton('automaticagreementrange', 'automaticagreementrange', 'mod_coursework');
+        // $moodle_form->setDefault('automaticagreementrange',0);
+        // $moodle_form->disabledIf('automaticagreementrange', 'automaticagreement', 'eq', '0');
 
     }
 

@@ -219,15 +219,15 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                         if (!is_array($array_keys)) $array_keys = array($array_keys);
 
                         //use the allocatables array to get other ungraded allocatables
-                        foreach ($array_keys as $id) {
+                    foreach ($array_keys as $id) {
 
-                            if (!isset($published[$id]) && !isset($finalised[$id])
-                                && !isset($auto_sample_set[$id]) && !isset($manual_sample_set[$id])
-                            )
-                                $auto_sample_set[$id] = $allocatables[$id];
+                        if (!isset($published[$id]) && !isset($finalised[$id])
+                            && !isset($auto_sample_set[$id]) && !isset($manual_sample_set[$id])
+                        )
+                            $auto_sample_set[$id] = $allocatables[$id];
 
-                            if (count($auto_sample_set) == $total_to_return) break;
-                        }
+                        if (count($auto_sample_set) == $total_to_return) break;
+                    }
 
                 }
 

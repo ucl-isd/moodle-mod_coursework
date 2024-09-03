@@ -177,7 +177,7 @@ class coursework_file_zip_importer {
                     $results[$filename] = get_string('feedbacksubmissionpublished', 'mod_coursework');
                 }
 
-             } else {
+            } else {
                 $results[$filename] = get_string('feedbacknotfound', 'mod_coursework');
             }
         }

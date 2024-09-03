@@ -191,9 +191,9 @@ class builder {
         }
         $contents .= '<br>';
 
-       if ($this->coursework->allocation_enabled()) {
-           $assessor_dropdown = $this->get_potential_marker_dropdown();
-       }
+        if ($this->coursework->allocation_enabled()) {
+            $assessor_dropdown = $this->get_potential_marker_dropdown();
+        }
         $assessor_name = '';
         if ($this->has_feedback()) {
             $class .= ' has-assessor-feedback ';
@@ -210,7 +210,7 @@ class builder {
         }
 
         if ($assessor_name) {
-           if ($this->get_stage()->uses_sampling() && !$this->get_feedback() && !$this->has_automatic_sampling()) {
+            if ($this->get_stage()->uses_sampling() && !$this->get_feedback() && !$this->has_automatic_sampling()) {
                 $contents .= '<br>';
             }
             $contents .= "<span class='existing-assessor'>{$assessor_name}</span>";
@@ -437,14 +437,14 @@ class builder {
             [$this->allocatable->id(), $this->allocatable->type()]
         );
         if ($submission) {
-        $feedbacks = isset(feedback::$pool[$this->coursework->id]['submissionid'][$submission->id]) ?
+            $feedbacks = isset(feedback::$pool[$this->coursework->id]['submissionid'][$submission->id]) ?
             feedback::$pool[$this->coursework->id]['submissionid'][$submission->id] : [];
 
-        foreach ($feedbacks as $feedback) {
-            if ($feedback->stage_identifier == 'final_agreed_1') {
-                return true;
+            foreach ($feedbacks as $feedback) {
+                if ($feedback->stage_identifier == 'final_agreed_1') {
+                    return true;
+                }
             }
-        }
         }
         return false;
     }

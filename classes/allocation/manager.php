@@ -344,18 +344,18 @@ class manager {
 
                 // Save sample set
                 if (!empty($auto_sample_set)) {
-                        foreach ($auto_sample_set as $allocatable) {
-                            $sample = new \stdClass();
-                            $sample->courseworkid = $this->coursework->id;
-                            $sample->allocatableid = $allocatable->id;
-                            $sample->allocatabletype = ($this->coursework->is_configured_to_have_group_submissions()) ? "group" : "user";
-                            $sample->stage_identifier = "assessor_{$stage_number}";
-                            $sample->selectiontype = "automatic";
+                    foreach ($auto_sample_set as $allocatable) {
+                        $sample = new \stdClass();
+                        $sample->courseworkid = $this->coursework->id;
+                        $sample->allocatableid = $allocatable->id;
+                        $sample->allocatabletype = ($this->coursework->is_configured_to_have_group_submissions()) ? "group" : "user";
+                        $sample->stage_identifier = "assessor_{$stage_number}";
+                        $sample->selectiontype = "automatic";
 
-                            // If this a manually selected allocatable check to see if the allocatable is already in the table
-                            $DB->insert_record("coursework_sample_set_mbrs", $sample);
+                        // If this a manually selected allocatable check to see if the allocatable is already in the table
+                        $DB->insert_record("coursework_sample_set_mbrs", $sample);
 
-                        }
+                    }
                 }
             }
         }

@@ -224,41 +224,41 @@ class warnings {
         for ($i = 1; $i <= $coursework_stages; $i++) {
              $assessor = 'assessor_'.$i;
 
-             if ($coursework->samplingenabled == 0 || $assessor == 'assessor_1') {
-                 $allocatables = $coursework->get_allocatables();
+            if ($coursework->samplingenabled == 0 || $assessor == 'assessor_1') {
+                $allocatables = $coursework->get_allocatables();
 
-                 foreach ($allocatables as $allocatable) {
+                foreach ($allocatables as $allocatable) {
 
-                     $params = array('courseworkid' => $coursework->id,
-                                     'stageidentifier' => $assessor,
-                                     'allocatableid' => $allocatable->id);
+                    $params = array('courseworkid' => $coursework->id,
+                                    'stageidentifier' => $assessor,
+                                    'allocatableid' => $allocatable->id);
 
-                     $existing_allocations = $this->check_existing_allocations($params);
+                    $existing_allocations = $this->check_existing_allocations($params);
 
-                     if ($existing_allocations == false) {
-                         return $this->alert_div(get_string('assessors_no_allocated_warning', 'mod_coursework'));
-                     }
-                 }
-             } else {
+                    if ($existing_allocations == false) {
+                        return $this->alert_div(get_string('assessors_no_allocated_warning', 'mod_coursework'));
+                    }
+                }
+            } else {
 
-                 $params = array('courseworkid' => $coursework->id);
-                 $sql = "SELECT id, stage_identifier, allocatableid
+                $params = array('courseworkid' => $coursework->id);
+                $sql = "SELECT id, stage_identifier, allocatableid
                          FROM {coursework_sample_set_mbrs}
                          WHERE courseworkid = :courseworkid";
 
-                 $stage_identifiers = $DB->get_records_sql($sql, $params);
-                 foreach ($stage_identifiers as $stage_identifier) {
-                     $params = array('courseworkid' => $coursework->id,
-                                     'stageidentifier' => $stage_identifier->stage_identifier,
-                                     'allocatableid' => $stage_identifier->allocatableid);
+                $stage_identifiers = $DB->get_records_sql($sql, $params);
+                foreach ($stage_identifiers as $stage_identifier) {
+                    $params = array('courseworkid' => $coursework->id,
+                                    'stageidentifier' => $stage_identifier->stage_identifier,
+                                    'allocatableid' => $stage_identifier->allocatableid);
 
-                     $existing_allocations = $this->check_existing_allocations($params);
+                    $existing_allocations = $this->check_existing_allocations($params);
 
-                     if ($existing_allocations == false) {
-                         return $this->alert_div(get_string('assessors_no_allocated_warning', 'mod_coursework'));
-                     }
-                 }
-             }
+                    if ($existing_allocations == false) {
+                        return $this->alert_div(get_string('assessors_no_allocated_warning', 'mod_coursework'));
+                    }
+                }
+            }
         }
         return '';
     }
@@ -275,7 +275,7 @@ class warnings {
                 AND stage_identifier = :stageidentifier
                 AND allocatableid = :allocatableid";
 
-       return $existing_allocations = $DB->get_records_sql($sql, $params);
+        return $existing_allocations = $DB->get_records_sql($sql, $params);
 
     }
 

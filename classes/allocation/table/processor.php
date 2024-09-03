@@ -87,19 +87,19 @@ class processor {
     private function clean_data($raw_data) {
 
         // Data looks like this:
-// $example_data = array(
-// 4543 => array( // Student id
-// 'assessor_1' => array(
-// 'allocation_id' => 43,
-// 'assessor_id' => 232,
-// ),
-// 'moderator_1' => array(
-// 'allocation_id' => 46,
-// 'assessor_id' => 235,
-// 'in_set' => 1,
-// )
-// )
-// );
+        // $example_data = array(
+        // 4543 => array( // Student id
+        // 'assessor_1' => array(
+        // 'allocation_id' => 43,
+        // 'assessor_id' => 232,
+        // ),
+        // 'moderator_1' => array(
+        // 'allocation_id' => 46,
+        // 'assessor_id' => 235,
+        // 'in_set' => 1,
+        // )
+        // )
+        // );
 
         $clean_data = [];
         foreach ($raw_data as $allocatable_id => $datarrays) {
@@ -117,7 +117,7 @@ class processor {
                     $clean_data[$allocatable_id][$stage->identifier()] = $stage_data;
                 }
             }
-           /* if (array_key_exists('moderator', $datarrays)) {
+            /* if (array_key_exists('moderator', $datarrays)) {
                 $moderator_data = $datarrays['moderator'];
                 $clean_data[$allocatable_id]['moderator'] = $moderator_data;
             }*/

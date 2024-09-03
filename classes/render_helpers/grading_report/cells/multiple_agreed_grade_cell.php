@@ -79,8 +79,8 @@ class multiple_agreed_grade_cell extends cell_base {
         if ($finalfeedback !== false) {
             $grade_judge = new grade_judge($this->coursework);
             $content .= $grade_judge->grade_to_display($finalfeedback->get_grade());
-          // $content .= html_writer::empty_tag('br');
-         // $content .= ' by: ' . $finalfeedback->get_assesor_username();
+            // $content .= html_writer::empty_tag('br');
+            // $content .= ' by: ' . $finalfeedback->get_assesor_username();
         }
 
         // Edit/new link
@@ -150,13 +150,13 @@ class multiple_agreed_grade_cell extends cell_base {
 
         if ($finalfeedback !== false) {
             $content .= html_writer::empty_tag('br');
-             if ((!$this->coursework->sampling_enabled() || $rowobject->get_submission()->sampled_feedback_exists()) && ($finalfeedback->get_feedbacks_assessorid() == 0
+            if ((!$this->coursework->sampling_enabled() || $rowobject->get_submission()->sampled_feedback_exists()) && ($finalfeedback->get_feedbacks_assessorid() == 0
                  && $finalfeedback->timecreated == $finalfeedback->timemodified)
                  || $finalfeedback->lasteditedbyuser == 0) { // if the grade was automatically agreed
-                 $content .= "(".get_string('automaticagreement', 'coursework').")";
-             } else {
-                 $content .= ' by: ' . $finalfeedback->get_assesor_username();
-             }
+                $content .= "(".get_string('automaticagreement', 'coursework').")";
+            } else {
+                $content .= ' by: ' . $finalfeedback->get_assesor_username();
+            }
         }
         return $content;
     }

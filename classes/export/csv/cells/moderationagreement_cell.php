@@ -62,12 +62,12 @@ class moderationagreement_cell extends cell_base {
                 $data[] = $this->get_assessor_name($moderation_agreement->moderatorid);
                 $data[] = $this->get_assessor_username($moderation_agreement->moderatorid);
                 $data[] = userdate($moderation_agreement->timemodified, $this->dateformat);
-            } else {
-                $data[] = '';
-                $data[] = '';
-                $data[] = '';
-                $data[] = '';
-            }
+        } else {
+            $data[] = '';
+            $data[] = '';
+            $data[] = '';
+            $data[] = '';
+        }
         return $data;
     }
 
