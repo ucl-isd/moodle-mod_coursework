@@ -94,7 +94,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         $scale = [];
 
-        if     ($this->coursework->grade > 0) {
+        if ($this->coursework->grade > 0) {
             for ($i = 0; $i <= $this->coursework->grade; $i++) {
                 $scale[] = $i;
             }

@@ -70,7 +70,7 @@ class personal_deadlines_controller extends controller_base {
 
             $data = $this->form->get_data();
 
-            if  (empty($data->multipleuserdeadlines)  ) {
+            if (empty($data->multipleuserdeadlines)) {
                 if (!$this->get_personal_deadline()) { // personal deadline doesnt exist
                     // add new
                     $data->createdbyid = $USER->id;

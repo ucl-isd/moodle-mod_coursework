@@ -227,7 +227,7 @@ class mod_coursework_mod_form extends moodleform_mod {
             $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_initial_grade_dealdine', 'mod_coursework');
         }
 
-        if (isset($data['relativeagreedmarkingdeadline'])  && $data['relativeagreedmarkingdeadline'] != 0 && $data['relativeagreedmarkingdeadline'] < $data['relativeinitialmarkingdeadline'] ) {
+        if (isset($data['relativeagreedmarkingdeadline']) && $data['relativeagreedmarkingdeadline'] != 0 && $data['relativeagreedmarkingdeadline'] < $data['relativeinitialmarkingdeadline'] ) {
             $errors['relativeagreedmarkingdeadline'] = get_string('must_be_after_or_equal_to_relative_initial_grade_dealdine', 'mod_coursework');
 
         }

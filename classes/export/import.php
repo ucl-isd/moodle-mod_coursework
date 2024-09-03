@@ -202,7 +202,7 @@ class import extends grading_sheet {
                     $offset = 0;
 
                     foreach ($typepositions as $position) {
-                        //if  ($position = array_search($type, $csvheader)) {
+                        // if ($position = array_search($type, $csvheader)) {
                             $class = "mod_coursework\\export\\csv\\cells\\{$type}_cell";
                         $cell = new $class($this->coursework);
 
@@ -611,7 +611,7 @@ class import extends grading_sheet {
 
         $feedbackid = $DB->insert_record('coursework_feedbacks', $addgrade, true);
 
-        if  ($usesrubric) {
+        if ($usesrubric) {
             $controller = $this->coursework->get_advanced_grading_active_controller();
             // Find out how many criteria there are
             $gradinginstance = $controller->get_or_create_instance(0, $USER->id, $feedbackid);

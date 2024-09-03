@@ -66,7 +66,7 @@ class agreedfeedback_cell extends cell_base {
             $submission = \mod_coursework\models\submission::find($subdbrecord);
 
             // Is the submission in question ready to grade?
-            if (!$submission->all_inital_graded()  && !empty($value)) {
+            if (!$submission->all_inital_graded() && !empty($value)) {
                 return get_string('submissionnotreadyforagreedgrade', 'coursework');
             }
 

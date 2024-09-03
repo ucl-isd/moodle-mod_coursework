@@ -787,7 +787,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $scale = "";
 
-        if     ($samplingwidget->get_coursework()->grade > 0) {
+        if ($samplingwidget->get_coursework()->grade > 0) {
 
             $comma = "";
 
@@ -1629,7 +1629,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 $submission = $allocatable->get_submission($coursework);
 
                 if ($coursework->assessor_has_any_allocation_for_student($allocatable) || has_capability('mod/coursework:addagreedgrade', $coursework->get_context())
-                    && !empty($submission) && (($submission->all_inital_graded()  && !$coursework->sampling_enabled())
+                    && !empty($submission) && (($submission->all_inital_graded() && !$coursework->sampling_enabled())
                         || ($coursework->sampling_enabled() && $submission->all_inital_graded() && $submission->max_number_of_feedbacks() > 1 ))) {
                     $participant  ++;
                 }
@@ -1805,7 +1805,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             foreach ($submissions as $sub) {
                 $submission = submission::find($sub);
                 if ($coursework->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable()) || (has_capability('mod/coursework:addagreedgrade', $coursework->get_context()))
-                    && !empty($submission) && (($submission->all_inital_graded()  && !$submission->get_coursework()->sampling_enabled())
+                    && !empty($submission) && (($submission->all_inital_graded() && !$submission->get_coursework()->sampling_enabled())
                         || ($submission->get_coursework()->sampling_enabled() && $submission->all_inital_graded() && $submission->max_number_of_feedbacks() > 1))) {
 
                     $gradeblesub[$submission->id] = $submission;

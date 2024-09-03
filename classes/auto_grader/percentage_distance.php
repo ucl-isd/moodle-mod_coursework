@@ -75,7 +75,7 @@ class percentage_distance implements auto_grader {
             return;
         }
 
-        if ($this->grades_are_close_enough()  ) {
+        if ($this->grades_are_close_enough()) {
             if (!$this->get_allocatable()->has_agreed_feedback($this->get_coursework())) {
                 $this->create_final_feedback();
             } else {
