@@ -2345,7 +2345,7 @@ class coursework extends table_base {
      * @return submission[]
      * @throws \coding_exception
      */
-    private function get_submissions_to_publish() {
+    public function get_submissions_to_publish() {
         $params = array(
             'courseworkid' => $this->id
         );
