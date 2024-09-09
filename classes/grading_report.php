@@ -313,14 +313,14 @@ class grading_report {
      * @return sub_rows_interface
      */
     public function get_sub_row_helper() {
-        return $this->sub_rows;
+        return $this->subrows;
     }
 
     /**
      * @param $rows_strategy
      */
     public function add_sub_rows($rowsstrategy) {
-        $this->sub_rows = $rowsstrategy;
+        $this->subrows = $rowsstrategy;
     }
 
     /**
