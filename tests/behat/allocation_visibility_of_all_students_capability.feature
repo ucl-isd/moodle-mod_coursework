@@ -38,11 +38,3 @@ Feature: View of all students: allocated and non allocated students
     And I visit the coursework page
     And I click show all students button
     Then I should see another student's name on the page
-
-
-
-
-
-
-
-

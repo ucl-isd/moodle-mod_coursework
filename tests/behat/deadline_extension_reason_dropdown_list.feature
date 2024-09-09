@@ -15,7 +15,7 @@ Feature: Deadline extension reasons dropdown list
     Given the coursework deadline has passed
     And there are some extension reasons configured at site level
     And I log in as a manager
-    And I am on the coursework page
+    And I visit the coursework page
     When I add a new extension for the student
     Then I should be on the coursework page
     When I click on the edit extension icon for the student
@@ -27,11 +27,10 @@ Feature: Deadline extension reasons dropdown list
     And there are some extension reasons configured at site level
     And there is an extension for the student which has expired
     And I log in as a manager
-    And I am on the coursework page
+    And I visit the coursework page
     When I edit the extension for the student
     Then I should be on the coursework page
     And I should see the new extended deadline in the student row
     When I click on the edit extension icon for the student
     Then I should see the new deadline reason in the dropdown
     And I should see the new extra deadline information in the deadline extension form
-

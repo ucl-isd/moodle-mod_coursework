@@ -11,7 +11,7 @@ Feature: User can submit on behalf of a student
     And there is a student
     And I am logged in as a manager
 
-  @javascript
+  @javascript @_file_upload
   Scenario: As a teacher, I upload a file and see it on the coursework page as read only
     When I visit the coursework page
     And I click on the new submission button for the student
