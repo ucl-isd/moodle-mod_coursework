@@ -47,7 +47,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
 
     /**
      * @param grading_report $grading_report
-     * param $is_multiple_markers
+     * param $ismultiplemarkers
      * @return string
      */
     public function render_grading_report($gradingreport, $ismultiplemarkers) {
@@ -60,7 +60,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         if (count($tablerows) == $gradingreport->realtotalrows) {
             $options['class'] = 'full-loaded';
         }
-        $this->row_class = $ismultiplemarkers ? 'submissionrowmulti' : 'submissionrowsingle';
+        $this->rowclass = $ismultiplemarkers ? 'submissionrowmulti' : 'submissionrowsingle';
 
         if (empty($tablerows)) {
             return $langelement . '<div class="no-users">'.get_string('nousers', 'coursework').'</div><br>';
@@ -124,13 +124,13 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     protected function make_row_for_allocatable($rowobject, $cellhelpers, $subrowhelper) {
 
         //$class = (!$row_object->get_coursework()->has_multiple_markers()) ? "submissionrowsingle": "submissionrowmulti";
-        $class = $this->row_class;
+        $class = $this->rowclass;
 
         $submission = $rowobject->get_submission();
         $allocatable = $rowobject->get_allocatable();
 
         $tablehtml = '<tr class="'.$class.'" id="' . $this->grading_table_row_id($rowobject->get_allocatable(), $rowobject->get_coursework()) . '">';
-        $ismultiplemarkers = $this->is_multiple_markers;
+        $ismultiplemarkers = $this->ismultiplemarkers;
         $tblassessorfeedbacks = $subrowhelper->get_row_with_assessor_feedback_table($rowobject, count($cellhelpers));
         if ($ismultiplemarkers) {
             $tablehtml .= '<td class="details-control"></td>';
@@ -216,14 +216,14 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @param $tablerows
      * @param $cell_helpers
      * @param $sub_row_helper
-     * @param $is_multiple_markers
+     * @param $ismultiplemarkers
      * @return string
      */
     public function make_rows($tablerows, $cellhelpers, $subrowhelper, $ismultiplemarkers) {
         $tablehtml = '';
 
-        $this->row_class = $ismultiplemarkers ? 'submissionrowmulti' : 'submissionrowsingle';
-        $this->is_multiple_markers = $ismultiplemarkers;
+        $this->rowclass = $ismultiplemarkers ? 'submissionrowmulti' : 'submissionrowsingle';
+        $this->ismultiplemarkers = $ismultiplemarkers;
 
         foreach ($tablerows as $rowobject) {
             $tablehtml .= $this->make_row_for_allocatable($rowobject, $cellhelpers, $subrowhelper);

@@ -75,7 +75,7 @@ abstract class base {
      */
     public function __construct($coursework, $stageidentifier) {
         $this->coursework = $coursework;
-        $this->stage_identifier = $stageidentifier;
+        $this->stageidentifier = $stageidentifier;
     }
 
     /**
@@ -164,7 +164,7 @@ abstract class base {
      * @return string 'assessor_1'
      */
     public function identifier() {
-        return $this->stage_identifier;
+        return $this->stageidentifier;
     }
 
     /**
@@ -405,7 +405,7 @@ abstract class base {
             if (!isset(allocation::$pool[$courseworkid]['stage_identifier'])) {
                 allocation::fill_pool_coursework($courseworkid);
             }
-            $this->allocatables_with_allocations = array_column(allocation::$pool[$courseworkid]['stage_identifier'][$this->stage_identifier] ?? [], 'allocatableid');
+            $this->allocatables_with_allocations = array_column(allocation::$pool[$courseworkid]['stage_identifier'][$this->stageidentifier] ?? [], 'allocatableid');
         }
 
         return in_array($allocatable->id, $this->allocatables_with_allocations);
@@ -419,7 +419,7 @@ abstract class base {
     public function stage_has_allocation() {
         $courseworkid = $this->get_coursework_id();
         allocation::fill_pool_coursework($courseworkid);
-        $record = allocation::get_object($courseworkid, 'stage_identifier', [$this->stage_identifier]);
+        $record = allocation::get_object($courseworkid, 'stage_identifier', [$this->stageidentifier]);
 
         return !empty($record);
     }
@@ -510,7 +510,7 @@ abstract class base {
             return true;
         }
 
-        if ($this->stage_identifier == 'final_agreed_1') {
+        if ($this->stageidentifier == 'final_agreed_1') {
             return true;
         }
 
@@ -518,7 +518,7 @@ abstract class base {
         $record = assessment_set_membership::get_object(
             $this->coursework->id,
             'allocatableid-allocatabletype-stage_identifier',
-            [$allocatable->id(), $allocatable->type(), $this->stage_identifier]);
+            [$allocatable->id(), $allocatable->type(), $this->stageidentifier]);
         return !empty($record);
     }
 
@@ -538,7 +538,7 @@ abstract class base {
         $moderationsetmembership->courseworkid = $this->coursework->id;
         $moderationsetmembership->allocatableid = $allocatable->id();
         $moderationsetmembership->allocatabletype = $allocatable->type();
-        $moderationsetmembership->stage_identifier = $this->stage_identifier;
+        $moderationsetmembership->stage_identifier = $this->stageidentifier;
         $moderationsetmembership->save();
     }
 
@@ -552,7 +552,7 @@ abstract class base {
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $allocatable->id(),
             'allocatabletype' => $allocatable->type(),
-            'stage_identifier' => $this->stage_identifier,
+            'stage_identifier' => $this->stageidentifier,
         ];
         $DB->delete_records('coursework_sample_set_mbrs', $params);
     }
@@ -592,7 +592,7 @@ abstract class base {
         $allocation = allocation::get_object(
             $this->coursework->id,
             'allocatableid-allocatabletype-stage_identifier',
-            [$allocatable->id(), $allocatable->type(), $this->stage_identifier]
+            [$allocatable->id(), $allocatable->type(), $this->stageidentifier]
         );
         $result = ($allocation && $allocation->assessorid == $USER->id);
         return $result;
@@ -744,7 +744,7 @@ abstract class base {
      * @return string
      */
     public function type() {
-        return substr($this->stage_identifier, 0, -2);
+        return substr($this->stageidentifier, 0, -2);
     }
 
     /**
