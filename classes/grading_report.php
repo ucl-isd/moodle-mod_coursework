@@ -407,7 +407,7 @@ class grading_report {
             $counter = count($rows);
             $this->realtotalrows = $counter;
             $mode = empty($this->options['mode']) ? self::MODE_GET_ALL : $this->options['mode'];
-            if ($mode != self::$modegetall) {
+            if ($mode != self::MODE_GET_ALL) {
                 $perpage = $this->options['perpage'] ?? 10;
                 if ($counter > $perpage) {
                     if ($mode == self::MODE_GET_FIRST_RECORDS) {
