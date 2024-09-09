@@ -31,7 +31,7 @@ use mod_coursework\models\submission;
  * submissions enabled. We want to make sure that the students get the grade of the group thing rather
  * than their own missing assignment.
  *
- * @property submission wrapped_object
+ * @property submission wrappedobject
  * @package mod_coursework\decorators
  */
 class submission_groups_decorator extends decorator {
@@ -43,11 +43,11 @@ class submission_groups_decorator extends decorator {
      */
     public function user_is_in_same_group($user) {
 
-        if (!$this->wrapped_object->get_coursework()->is_configured_to_have_group_submissions()) {
+        if (!$this->wrappedobject->get_coursework()->is_configured_to_have_group_submissions()) {
             throw new \coding_exception('Asking for groups membership of a submissions when we are not using groups');
         }
 
-        $group = $this->wrapped_object->get_allocatable();
+        $group = $this->wrappedobject->get_allocatable();
 
         return groups_is_member($group->id, $user->id);
     }
