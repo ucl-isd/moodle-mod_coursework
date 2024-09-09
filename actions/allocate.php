@@ -97,13 +97,14 @@ $PAGE->requires->js('/mod/coursework/loadingoverlay.min.js');
 $jsmodule = [
     'name' => 'mod_coursework',
     'fullpath' => '/mod/coursework/module.js',
-    'requires' => ['base',
-                        'node-base'],
+    'requires' => ['base', 'node-base'],
 ];
-$PAGE->requires->js_init_call('M.mod_coursework.init_allocate_page',
-                              ['wwwroot' => $CFG->wwwroot, 'coursemoduleid' => $coursemoduleid],
-                              false,
-                              $jsmodule);
+$PAGE->requires->js_init_call(
+        'M.mod_coursework.init_allocate_page',
+    ['wwwroot' => $CFG->wwwroot, 'coursemoduleid' => $coursemoduleid],
+    false,
+    $jsmodule
+);
 
 $PAGE->requires->string_for_js('sameassessorerror', 'coursework');
 
