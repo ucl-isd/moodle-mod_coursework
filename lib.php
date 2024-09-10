@@ -1398,7 +1398,7 @@ function plagiarism_similarity_information($coursemodule) {
 /**
  * @return bool
  */
-function has_user_seen_tii_EULA_agreement() {
+function has_user_seen_tii_eula_agreement() {
     global $CFG, $DB, $USER;
 
     // if TII plagiarism enabled check if user agreed/disagreed EULA

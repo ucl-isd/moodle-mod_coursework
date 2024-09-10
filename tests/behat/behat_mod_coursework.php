@@ -594,7 +594,7 @@ class behat_mod_coursework extends behat_base {
      * @param $assessor_number
      * @throws coding_exception
      */
-    public function i_click_on_the_new_feedback_button_for_assessorForAnotherStudent($assessor_number) {
+    public function i_click_on_the_new_feedback_button_for_assessor_for_another_student($assessor_number) {
         /**
          * @var mod_coursework_behat_multiple_grading_interface $page
          */
@@ -1647,7 +1647,7 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Given /^I manually allocate the student to the other teacher for the second assessment$/
      */
-    public function i_manually_allocate_the_student_to_the_other_teacherForTheSecondAssessment() {
+    public function i_manually_allocate_the_student_to_the_other_teacher_for_the_second_assessment() {
 
         // Identify the allocation dropdown.
         $dropdownname = 'user_' . $this->student->id . '_assessor_2';
@@ -2025,7 +2025,7 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Given /^there is final feedback from the other teacher$/
      */
-    public function there_is_final_feedbackFromTheOtherTeacher() {
+    public function there_is_final_feedback_from_the_other_teacher() {
         $generator = $this->get_coursework_generator();
 
         $feedback = new stdClass();

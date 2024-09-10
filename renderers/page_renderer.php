@@ -283,7 +283,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= $plagdisclosure;
 
         // if TII plagiarism enabled check if user agreed/disagreed EULA
-        $shouldseeEULA = has_user_seen_tii_EULA_agreement();
+        $shouldseeEULA = has_user_seen_tii_eula_agreement();
 
         if ($ability->can('new', $submission) && (!$coursework->tii_enabled() || $shouldseeEULA)) {
             if ($coursework->start_date_has_passed()) {
