@@ -269,8 +269,8 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
     }
 
     /**
- * @param $allocatable
- */
+     * @param $allocatable
+     */
     public function should_not_have_add_button_for_final_feedback($studentid) {
         $identifier = '#new_final_feedback_'.$studentid;
         $this->should_not_have_css($identifier);
