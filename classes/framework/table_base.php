@@ -298,7 +298,13 @@ abstract class table_base {
             $class_name = get_called_class(); // 'mod_coursework\models\deadline_extension'
             $pieces = explode('\\', $class_name); // 'mod_coursework', 'models', 'deadline_extension'
             $table_name = end($pieces); // 'deadline_extension'
-            $table_name .= 's'; // 'deadline_extensions'
+            //todo this may need further attention but fixing the one issue identified so far.
+            if ($table_name == 'personal_deadline') {
+                // Table personal_deadline does not exist but coursework_person_deadline does.
+                $table_name = 'coursework_person_deadline';
+            } else {
+                $table_name .= 's'; // 'deadline_extensions'
+            }
         } else {
             $table_name = static::$table_name;
         }
