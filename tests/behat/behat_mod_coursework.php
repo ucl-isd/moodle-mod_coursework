@@ -1986,8 +1986,9 @@ class behat_mod_coursework extends behat_base {
     public function i_should_see_the_grade_in_the_form_on_the_page() {
         $commentfield = $this->find('css', '#feedback_grade');
         $expectedvalue = 56;
-        if ($commentfield->getValue() != $expectedvalue) {
-            throw new ExpectationException("Expected grade $expectedvalue got $text", $this->getSession());
+        $actual = $commentfield->getValue();
+        if ($actual != $expectedvalue) {
+            throw new ExpectationException("Expected grade $expectedvalue got $actual", $this->getSession());
         }
     }
 
@@ -1997,8 +1998,9 @@ class behat_mod_coursework extends behat_base {
     public function i_should_see_the_other_teachers_final_grade_in_the_form_on_the_page() {
         $commentfield = $this->find('css', '#feedback_grade');
         $expectedvalue = 45;
-        if ($commentfield->getValue() != $expectedvalue) {
-            throw new ExpectationException("Expected grade $expectedvalue got $text", $this->getSession());
+        $actual = $commentfield->getValue();
+        if ($actual != $expectedvalue) {
+            throw new ExpectationException("Expected grade $expectedvalue got $actual", $this->getSession());
         }
     }
 
