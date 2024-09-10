@@ -104,14 +104,14 @@ class controller_base {
 
         // if there's an id, lets's assume it's an edit or update and we should just get the main model
         if (!empty($this->params['id'])) {
-            $model_class = $this->model_class();
-            $model_name = $this->model_name();
-            $this->$model_name = $model_class::find($this->params['id']);
-            $this->coursework = $this->$model_name->get_coursework();
+            $modelclass = $this->model_class();
+            $modelname = $this->model_name();
+            $this->$modelname = $modelclass::find($this->params['id']);
+            $this->coursework = $this->$modelname->get_coursework();
         }
 
         if (!empty($this->params['courseworkid'])) {
-            $coursework = $DB->get_record('coursework', array('id' => $this->params['courseworkid']), '*', MUST_EXIST);
+            $coursework = $DB->get_record('coursework', ['id' => $this->params['courseworkid']], '*', MUST_EXIST);
             $this->coursework = coursework::find($coursework);
 
             $this->coursemodule = get_coursemodule_from_instance('coursework', $this->coursework->id);
@@ -131,7 +131,7 @@ class controller_base {
         if (empty($this->course)) {
 
             if (!empty($this->params['courseid'])) {
-                $this->course = $DB->get_record('course', array('id' => $this->params['courseid']), '*', MUST_EXIST);
+                $this->course = $DB->get_record('course', ['id' => $this->params['courseid']], '*', MUST_EXIST);
             }
 
             if (!empty($this->coursework)) {
@@ -168,14 +168,14 @@ class controller_base {
      * @param $arguments
      * @throws coding_exception
      */
-    public function __call($method_name, $arguments) {
+    public function __call($methodname, $arguments) {
 
-        if (method_exists($this, $method_name)) {
+        if (method_exists($this, $methodname)) {
             $this->prepare_environment();
-            call_user_func(array($this,
-                                 $method_name));
+            call_user_func([$this,
+                                 $methodname]);
         } else {
-            throw new coding_exception('No page defined in the controller called "'.$method_name.'"');
+            throw new coding_exception('No page defined in the controller called "'.$methodname.'"');
         }
     }
 
@@ -193,9 +193,9 @@ class controller_base {
      * @param $items
      * @return string
      */
-    protected function get_path($path_name, $items) {
+    protected function get_path($pathname, $items) {
 
-        return call_user_func_array(array($this->get_router(), 'get_path'), func_get_args());
+        return call_user_func_array([$this->get_router(), 'get_path'], func_get_args());
 
     }
 
@@ -228,11 +228,11 @@ class controller_base {
     /**
      * @param string $page_name
      */
-    protected function render_page($page_name) {
-        $renderer_class = $this->renderer_class();
-        $renderer = new $renderer_class;
-        $function_name = $page_name . '_page';
-        $renderer->$function_name(get_object_vars($this));
+    protected function render_page($pagename) {
+        $rendererclass = $this->renderer_class();
+        $renderer = new $rendererclass;
+        $functionname = $pagename . '_page';
+        $renderer->$functionname(get_object_vars($this));
         $this->page_rendered = true;
     }
 
@@ -240,10 +240,10 @@ class controller_base {
      * @return string
      */
     public function model_name() {
-        $class_name = get_class($this);
-        $bits = explode('\\', $class_name);
-        $controller_name = end($bits);
-        return str_replace('s_controller', '', $controller_name);
+        $classname = get_class($this);
+        $bits = explode('\\', $classname);
+        $controllername = end($bits);
+        return str_replace('s_controller', '', $controllername);
     }
 
     /**
@@ -260,15 +260,15 @@ class controller_base {
      * @return table_base
      */
     protected function model_class() {
-        $renderer_class_name = "\\mod_coursework\\models\\{$this->model_name()}";
-        return $renderer_class_name;
+        $rendererclassname = "\\mod_coursework\\models\\{$this->model_name()}";
+        return $rendererclassname;
     }
 
     /**
      * @return string
      */
     protected function renderer_class() {
-        $renderer_class_name = "\\mod_coursework\\renderers\\{$this->model_name()}_renderer";
-        return $renderer_class_name;
+        $rendererclassname = "\\mod_coursework\\renderers\\{$this->model_name()}_renderer";
+        return $rendererclassname;
     }
 }

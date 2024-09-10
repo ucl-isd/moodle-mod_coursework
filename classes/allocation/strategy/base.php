@@ -54,10 +54,10 @@ abstract class base {
     /**
      * @var array the columns in the DB
      */
-    protected $fields = array(
+    protected $fields = [
         'id',
         'courseworkid',
-    );
+    ];
 
     /**
      * Holds the config settings to avoid repeated DB calls.
@@ -138,17 +138,17 @@ abstract class base {
      * @param bool $reset we cache this stuff, so reset = true will wipe the cache
      * @return \stdClass[]
      */
-    protected final function get_existing_config_data($type = 'assessor', $reset = false) {
+    final protected function get_existing_config_data($type = 'assessor', $reset = false) {
 
         global $DB;
 
         if (!isset($this->settings[$type]) || $reset) {
-            $params = array(
+            $params = [
                 'courseworkid' => $this->coursework->id,
                 'allocationstrategy' => $this->get_name(),
-                'purpose' => $type
+                'purpose' => $type,
 
-            );
+            ];
             $this->settings[$type] = $DB->get_records('coursework_allocation_config', $params);
         }
 
@@ -159,8 +159,8 @@ abstract class base {
      * @return string
      */
     protected function get_type() {
-        $exploded_class_name = explode('\\', get_class($this->stage));
-        return array_pop($exploded_class_name);
+        $explodedclassname = explode('\\', get_class($this->stage));
+        return array_pop($explodedclassname);
     }
 
     /**
@@ -169,12 +169,12 @@ abstract class base {
      * @return bool
      */
     protected function teacher_already_has_an_allocation_for_this_allocatable($student, $teacher) {
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $student->id(),
             'allocatabletype' => $student->type(),
             'assessorid' => $teacher->id,
-        );
+        ];
         return allocation::exists($params);
     }
 
@@ -183,10 +183,10 @@ abstract class base {
      * @return int
      */
     protected function number_of_existing_allocations_teacher_has($teacher) {
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'assessorid' => $teacher->id,
-        );
+        ];
         return allocation::count($params);
     }
 
@@ -194,17 +194,17 @@ abstract class base {
      * @param array $teacher_counts teacherid => number_of_allocations_so_far
      * @return user|bool
      */
-    protected function get_teacher_with_smallest_number_of_current_allocations($teacher_counts) {
+    protected function get_teacher_with_smallest_number_of_current_allocations($teachercounts) {
         // What if there aren't any e.g. only one teacher, but two are needed?
-        if (empty($teacher_counts)) {
+        if (empty($teachercounts)) {
             return false;
         }
 
         // Which is the best one? Whichever has the fewest. Might be several with the same number, so we
         // get the allocations count value that's lowest (may represent multiple teachers), then get the first array
         // key (teacher id) that has that number of allocations.
-        $smallestcount = min($teacher_counts);
-        return user::find(array_search($smallestcount, $teacher_counts));
+        $smallestcount = min($teachercounts);
+        return user::find(array_search($smallestcount, $teachercounts));
     }
 
     /**

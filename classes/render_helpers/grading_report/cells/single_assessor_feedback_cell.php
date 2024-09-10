@@ -87,13 +87,13 @@ class single_assessor_feedback_cell extends cell_base {
             ($this->stage->user_is_assessor($USER) ||
                 has_capability('mod/coursework:administergrades', $this->coursework->get_context()))) {
 
-            $feedback_params = array(
+            $feedbackparams = [
                 'submissionid' => $rowobject->get_submission()->id,
                 'assessorid' => $USER->id,
                 'stage_identifier' => $this->stage->identifier(),
-            );
-            $new_feedback = feedback::build($feedback_params);
-            if ($ability->can('new', $new_feedback)) {
+            ];
+            $newfeedback = feedback::build($feedbackparams);
+            if ($ability->can('new', $newfeedback)) {
                 $content .= $this->new_feedback_button($rowobject, user::find($USER));
                 $content .= html_writer::empty_tag('br');
             }
@@ -166,13 +166,13 @@ class single_assessor_feedback_cell extends cell_base {
     private function edit_feedback_button($rowobject) {
         global $OUTPUT;
 
-        $feedback_params = array(
-            'feedback' => $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable())
-        );
-        $link = $this->get_router()->get_path('edit feedback', $feedback_params);
+        $feedbackparams = [
+            'feedback' => $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable()),
+        ];
+        $link = $this->get_router()->get_path('edit feedback', $feedbackparams);
 
-        $link_id = 'edit_final_feedback_' . $rowobject->get_coursework()
-                ->get_allocatable_identifier_hash($rowobject->get_allocatable());
+        $linkid = 'edit_final_feedback_' . $rowobject->get_coursework()
+            ->get_allocatable_identifier_hash($rowobject->get_allocatable());
 
         $title = get_string('editfinalgrade', 'coursework');
         $icon = new pix_icon('edit', $title, 'coursework');
@@ -180,7 +180,7 @@ class single_assessor_feedback_cell extends cell_base {
         return  $OUTPUT->action_icon($link,
                                      $icon,
                                      null,
-                                     array('id' => $link_id, 'class' => 'edit_final_feedback'));
+                                     ['id' => $linkid, 'class' => 'edit_final_feedback']);
 
     }
 
@@ -193,14 +193,14 @@ class single_assessor_feedback_cell extends cell_base {
         global $OUTPUT;
 
         $linktitle = get_string('viewfeedback', 'mod_coursework');
-        $link_id = "show_feedback_" . $rowobject->get_coursework()
+        $linkid = "show_feedback_" . $rowobject->get_coursework()
             ->get_allocatable_identifier_hash($rowobject->get_allocatable());
         $link = $this->get_router()
-            ->get_path('show feedback', array('feedback' => $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable())));
+            ->get_path('show feedback', ['feedback' => $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable())]);
         $iconlink = $OUTPUT->action_link($link,
                                          $linktitle,
                                          null,
-                                         array('class' => 'show_feedback', 'id' => $link_id));
+                                         ['class' => 'show_feedback', 'id' => $linkid]);
 
         return $iconlink;
     }
@@ -214,22 +214,22 @@ class single_assessor_feedback_cell extends cell_base {
     private function new_feedback_button($rowobject, $assessor) {
         global $OUTPUT;
 
-        $feedback_params = array(
+        $feedbackparams = [
             'submission' => $rowobject->get_submission(),
             'assessor' => $assessor,
             'stage' => $this->stage,
-        );
-        $link = $this->get_router()->get_path('ajax new final feedback', $feedback_params);
+        ];
+        $link = $this->get_router()->get_path('ajax new final feedback', $feedbackparams);
 
-        $link_id = 'new_final_feedback_' . $rowobject->get_coursework()
-                ->get_allocatable_identifier_hash($rowobject->get_allocatable());
+        $linkid = 'new_final_feedback_' . $rowobject->get_coursework()
+            ->get_allocatable_identifier_hash($rowobject->get_allocatable());
 
         $title = get_string('addfinalfeedback', 'coursework');
 
         return  $OUTPUT->action_link($link,
                                      $title,
                                      null,
-                                     array('class' => 'new_final_feedback', 'id' => $link_id));
+                                     ['class' => 'new_final_feedback', 'id' => $linkid]);
     }
 
 }

@@ -53,11 +53,11 @@ abstract class cell_base implements cell_interface {
      * @param string $sortby The current sort from the URL.
      * @return string
      */
-    protected function helper_sortable_heading($display_name, $field, $sort_how, $sortby = '', $tablename='') {
+    protected function helper_sortable_heading($displayname, $field, $sorthow, $sortby = '', $tablename='') {
 
         global $PAGE;
 
-        $params = array('id' => optional_param('id', 0, PARAM_INT));
+        $params = ['id' => optional_param('id', 0, PARAM_INT)];
 
         $tablename = (!empty($tablename)) ? $tablename.'_' : '';
 
@@ -66,7 +66,7 @@ abstract class cell_base implements cell_interface {
         }
         $params[$tablename.'sortby'] = $field;
         if ($field == $sortby) {
-            $params[$tablename.'sorthow'] = $sort_how == 'ASC' ? 'DESC' : 'ASC';
+            $params[$tablename.'sorthow'] = $sorthow == 'ASC' ? 'DESC' : 'ASC';
         } else {
             // Default for columns not currently being sorted.
             $params[$tablename.'sorthow'] = 'ASC';
@@ -82,7 +82,7 @@ abstract class cell_base implements cell_interface {
         // }
 
         // return html_writer::link($url, $display_name);
-        return $display_name;
+        return $displayname;
     }
 
     /**
@@ -105,8 +105,8 @@ abstract class cell_base implements cell_interface {
      * @return string|void
      */
     public function cell_name() {
-        $namespaced_class = get_class($this);
-        $bits = explode('\\', $namespaced_class);
+        $namespacedclass = get_class($this);
+        $bits = explode('\\', $namespacedclass);
         return end($bits);
     }
 

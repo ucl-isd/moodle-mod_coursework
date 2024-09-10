@@ -53,27 +53,27 @@ class moderation_cell extends cell_base {
      * @throws coding_exception
      * @return string
      */
-    public function get_table_cell($row_object) {
+    public function get_table_cell($rowobject) {
         global $USER;
 
         $content = '';
 
-        if ($this->stage->has_feedback($row_object->get_allocatable())) {
-            $content .= $this->add_existing_moderator_feedback_details_to_cell($row_object);
+        if ($this->stage->has_feedback($rowobject->get_allocatable())) {
+            $content .= $this->add_existing_moderator_feedback_details_to_cell($rowobject);
         }
 
-        $ability = new ability(user::find($USER), $row_object->get_coursework());
-        $existing_feedback = $this->stage->get_feedback_for_allocatable($row_object->get_allocatable());
-        $new_feedback = feedback::build(array(
-            'submissionid' => $row_object->get_submission_id(),
+        $ability = new ability(user::find($USER), $rowobject->get_coursework());
+        $existingfeedback = $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable());
+        $newfeedback = feedback::build([
+            'submissionid' => $rowobject->get_submission_id(),
             'stage_identifier' => $this->stage->identifier(),
             'assessorid' => $USER->id,
-        ));
+        ]);
         // New or edit for moderators
-        if ($existing_feedback && $ability->can('edit', $existing_feedback)) { // Edit
-            $content .= $this->add_edit_feedback_link_to_cell($row_object, $existing_feedback);
-        } else if ($ability->can('new', $new_feedback)) { // New
-            $content .= $this->add_new_feedback_link_to_cell($row_object);
+        if ($existingfeedback && $ability->can('edit', $existingfeedback)) { // Edit
+            $content .= $this->add_edit_feedback_link_to_cell($rowobject, $existingfeedback);
+        } else if ($ability->can('new', $newfeedback)) { // New
+            $content .= $this->add_new_feedback_link_to_cell($rowobject);
         }
 
         return $this->get_new_cell_with_class($content);
@@ -107,8 +107,8 @@ class moderation_cell extends cell_base {
      * @param grading_table_row_base $row_object
      * @return string
      */
-    protected function add_existing_moderator_feedback_details_to_cell($row_object) {
-        $feedback = $this->stage->get_feedback_for_allocatable($row_object->get_allocatable());
+    protected function add_existing_moderator_feedback_details_to_cell($rowobject) {
+        $feedback = $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable());
         $html = '';
         $html .= $feedback->assessor()->profile_link();
         $html .= '<br>';
@@ -122,21 +122,21 @@ class moderation_cell extends cell_base {
      * @return string
      * @throws \coding_exception
      */
-    protected function add_edit_feedback_link_to_cell($row_object, $feedback) {
+    protected function add_edit_feedback_link_to_cell($rowobject, $feedback) {
         global $OUTPUT;
 
         $title = get_string('moderatethis', 'coursework');
-        $icon = new pix_icon('moderate', $title, 'coursework', array('width' => '20px'));
+        $icon = new pix_icon('moderate', $title, 'coursework', ['width' => '20px']);
 
-        $feedback_params = array(
+        $feedbackparams = [
             'feedback' => $feedback,
-        );
-        $link = $this->get_router()->get_path('edit feedback', $feedback_params);
-        $html_attributes = array(
-            'id' => 'edit_moderator_feedback_' . $row_object->get_filename_hash(),
+        ];
+        $link = $this->get_router()->get_path('edit feedback', $feedbackparams);
+        $htmlattributes = [
+            'id' => 'edit_moderator_feedback_' . $rowobject->get_filename_hash(),
             'class' => 'edit_feedback',
-        );
-        $iconlink = $OUTPUT->action_icon($link, $icon, null, $html_attributes);
+        ];
+        $iconlink = $OUTPUT->action_icon($link, $icon, null, $htmlattributes);
 
         return ' ' . $iconlink;
     }
@@ -146,23 +146,23 @@ class moderation_cell extends cell_base {
      * @return string
      * @throws \coding_exception
      */
-    protected function add_new_feedback_link_to_cell($row_object) {
+    protected function add_new_feedback_link_to_cell($rowobject) {
         global $OUTPUT;
 
         $title = get_string('moderatethis', 'coursework');
-        $icon = new pix_icon('moderate', $title, 'coursework', array('width' => '20px'));
+        $icon = new pix_icon('moderate', $title, 'coursework', ['width' => '20px']);
 
-        $feedback_params = array(
-            'submission' => $row_object->get_submission(),
+        $feedbackparams = [
+            'submission' => $rowobject->get_submission(),
             'stage' => $this->stage,
-        );
-        $link = $this->get_router()->get_path('new moderator feedback', $feedback_params);
+        ];
+        $link = $this->get_router()->get_path('new moderator feedback', $feedbackparams);
 
-        $html_attributes = array(
-            'id' => 'new_moderator_feedback_' . $row_object->get_coursework()->get_allocatable_identifier_hash($row_object->get_allocatable()),
+        $htmlattributes = [
+            'id' => 'new_moderator_feedback_' . $rowobject->get_coursework()->get_allocatable_identifier_hash($rowobject->get_allocatable()),
             'class' => 'new_feedback',
-        );
-        $iconlink = $OUTPUT->action_icon($link, $icon, null, $html_attributes);
+        ];
+        $iconlink = $OUTPUT->action_icon($link, $icon, null, $htmlattributes);
         return ' ' . $iconlink;
     }
 

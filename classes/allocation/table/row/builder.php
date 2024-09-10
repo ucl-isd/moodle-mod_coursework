@@ -54,8 +54,8 @@ class builder implements user_row {
      * @param table_builder $allocation_table
      * @param allocatable $allocatable
      */
-    public function __construct($allocation_table, $allocatable) {
-        $this->allocationtable = $allocation_table;
+    public function __construct($allocationtable, $allocatable) {
+        $this->allocationtable = $allocationtable;
         $this->allocatable = $allocatable;
     }
 

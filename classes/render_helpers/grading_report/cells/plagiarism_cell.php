@@ -48,9 +48,9 @@ class plagiarism_cell extends cell_base {
 
         if ($rowobject->has_submission() && $ability->can('show', $rowobject->get_submission())) {
             // The files and the form to resubmit them.
-            $submission_files = $rowobject->get_submission_files();
-            if ($submission_files) {
-                $content .= $this->get_renderer()->render_plagiarism_links(new mod_coursework_submission_files($submission_files));
+            $submissionfiles = $rowobject->get_submission_files();
+            if ($submissionfiles) {
+                $content .= $this->get_renderer()->render_plagiarism_links(new mod_coursework_submission_files($submissionfiles));
             }
         }
 

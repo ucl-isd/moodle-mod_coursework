@@ -38,7 +38,7 @@ abstract class sample_base {
     /**
      * @var string DB table this class relates to.
      */
-    protected static $table_name = 'coursework_mod_set_rules';
+    protected static $tablename = 'coursework_mod_set_rules';
 
     /**
      * @var int
@@ -80,15 +80,15 @@ abstract class sample_base {
     /**
      * @var array List of class properties that correspond with DB fields.
      */
-    protected $fields = array(
+    protected $fields = [
         'id',
         'courseworkid',
         'rulename',
         'ruleorder',
         'upperlimit',
         'lowerlimit',
-        'minimum'
-    );
+        'minimum',
+    ];
 
     function __construct($coursework) {
         $this->coursework = $coursework;
@@ -115,7 +115,7 @@ abstract class sample_base {
      * @param stage_base $stage
      * @return mixed
      */
-    abstract public function adjust_set(array &$moderationset, array &$potential_allocatables, $stage);
+    abstract public function adjust_set(array &$moderationset, array &$potentialallocatables, $stage);
 
     /**
      * Tells us where this ought to be in relation to other rules. The one for percent of total must happen last,
@@ -142,13 +142,13 @@ abstract class sample_base {
      * @abstract
      * @return mixed
      */
-    abstract public function add_form_elements($assessor_number);
+    abstract public function add_form_elements($assessornumber);
 
-    abstract public function add_form_elements_js($assessor_number);
+    abstract public function add_form_elements_js($assessornumber);
 
-    abstract public function save_form_data($assessor_number=0, &$order=0);
+    abstract public function save_form_data($assessornumber=0, &$order=0);
 
-    abstract public function adjust_sample_set($rule_id, &$manual_sample_set, &$allocatables, &$auto_sample_set);
+    abstract public function adjust_sample_set($ruleid, &$manualsampleset, &$allocatables, &$autosampleset);
 
     /**
      *
@@ -164,7 +164,7 @@ abstract class sample_base {
                  WHERE  s.courseworkid = :courseworkid
                    AND  f.stage_identifier = 'final_agreed_1'";
 
-        return $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id));
+        return $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id]);
     }
 
     /**
@@ -179,7 +179,7 @@ abstract class sample_base {
                  WHERE  courseworkid = :courseworkid
                    AND  firstpublished IS NOT NULL";
 
-        return $DB->get_records_sql($sql, array('courseworkid' => $this->coursework->id));
+        return $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id]);
     }
 
 }

@@ -41,7 +41,7 @@ class moderator_agreement_mform extends moodleform {
     /**
      * @var int the id of the submission that the grade pertains to
      */
-    public $submission_id;
+    public $submissionid;
 
     /**
      * @var int
@@ -60,7 +60,7 @@ class moderator_agreement_mform extends moodleform {
          */
         $moderation = $this->_customdata['moderation'];
         $feedback = $moderation->get_feedback();
-        $coursework = $moderation-> get_coursework();
+        $coursework = $moderation->get_coursework();
 
         $mform->addElement('hidden', 'submissionid', $moderation->get_submission()->id);
         $mform->setType('submissionid', PARAM_INT);
@@ -81,13 +81,13 @@ class moderator_agreement_mform extends moodleform {
         $mform->setType('courseworkid', PARAM_INT);
 
         // moderator agreement
-        $options = array('agreed' => get_string('agreed', 'coursework'), 'disagreed' => get_string('disagreed', 'coursework'));
+        $options = ['agreed' => get_string('agreed', 'coursework'), 'disagreed' => get_string('disagreed', 'coursework')];
         $mform->addElement('select', 'agreement',
                             get_string('moderationagreement', 'coursework'),
                             $options,
-                            array('id' => 'moderation_agreement'));
+                            ['id' => 'moderation_agreement']);
 
-        $mform->addElement('editor', 'modcomment', get_string('comment', 'mod_coursework'), array('id' => 'moderation_comment'));
+        $mform->addElement('editor', 'modcomment', get_string('comment', 'mod_coursework'), ['id' => 'moderation_comment']);
         $mform->setType('editor', PARAM_RAW);
 
         $this->add_action_buttons();

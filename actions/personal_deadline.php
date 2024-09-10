@@ -25,35 +25,35 @@ require_once(dirname(__FILE__) . '/../../../config.php');
 global $CFG, $USER, $PAGE, $DB;
 
 $courseworkid = required_param('courseworkid', PARAM_INT);
-$allocatableid_arr = optional_param_array('allocatableid_arr', false, PARAM_RAW);
+$allocatableidarr = optional_param_array('allocatableid_arr', false, PARAM_RAW);
 $allocatableid = optional_param('allocatableid', $USER->id, PARAM_RAW);
 $allocatabletype = optional_param('allocatabletype', $USER->id, PARAM_ALPHANUMEXT);
 $setpersonaldeadlinespage = optional_param('setpersonaldeadlinespage', 0, PARAM_INT);
 $multipleuserdeadlines = optional_param('multipleuserdeadlines', 0, PARAM_INT);
 $selectedtype = optional_param('selectedtype', 'date', PARAM_RAW);
-$personal_deadline_time = optional_param('personal_deadline_time', null, PARAM_RAW);
+$personaldeadlinetime = optional_param('personal_deadline_time', null, PARAM_RAW);
 
-$allocatableid = (!empty($allocatableid_arr)) ? $allocatableid_arr : $allocatableid;
+$allocatableid = (!empty($allocatableidarr)) ? $allocatableidarr : $allocatableid;
 
-$coursework_db = $DB->get_record('coursework', array('id' => $courseworkid));
+$courseworkdb = $DB->get_record('coursework', ['id' => $courseworkid]);
 
-$coursework = \mod_coursework\models\coursework::find($coursework_db);
+$coursework = \mod_coursework\models\coursework::find($courseworkdb);
 
 require_login($coursework->get_course(), false, $coursework->get_course_module());
 
-$params = array(
+$params = [
     'courseworkid' => $courseworkid,
     'allocatableid' => $allocatableid,
     'allocatabletype' => $allocatabletype,
     'setpersonaldeadlinespage' => $setpersonaldeadlinespage,
-    'multipleuserdeadlines' => $multipleuserdeadlines
-);
+    'multipleuserdeadlines' => $multipleuserdeadlines,
+];
 
 if ($selectedtype != 'unfinalise') {
     $controller = new mod_coursework\controllers\personal_deadlines_controller($params);
 
-    if (!empty($personal_deadline_time)) {
-        $result = $controller->insert_update($personal_deadline_time);
+    if (!empty($personaldeadlinetime)) {
+        $result = $controller->insert_update($personaldeadlinetime);
         echo json_encode($result);
     } else {
         $controller->new_personal_deadline();

@@ -120,8 +120,8 @@ abstract class ability {
             return $thing;
         }
 
-        $class_name_with_namespace = get_class($thing);
-        $bits = explode('\\', $class_name_with_namespace); // 'mod_coursework\models\submission'
+        $classnamewithnamespace = get_class($thing);
+        $bits = explode('\\', $classnamewithnamespace); // 'mod_coursework\models\submission'
         $classname = end($bits); // 'submission'
 
         // For non-standard things like decorated classes:

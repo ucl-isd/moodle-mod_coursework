@@ -47,9 +47,9 @@ class range_grade_raw extends moderation_set_rule {
      * @param \mod_coursework\stages\base $stage
      * @return mixed
      */
-    public function adjust_set(array &$moderation_set, array &$potential_allocatables, $stage) {
+    public function adjust_set(array &$moderationset, array &$potentialallocatables, $stage) {
 
-        foreach ($potential_allocatables as $id => $allocatable) {
+        foreach ($potentialallocatables as $id => $allocatable) {
 
             if ($this->allocatable_is_not_yet_graded($allocatable)) {
                 continue;
@@ -59,8 +59,8 @@ class range_grade_raw extends moderation_set_rule {
 
             if ($grade <= $this->upperlimit && $grade >= $this->lowerlimit) {
 
-                $moderation_set[$id] = $allocatable;
-                unset ($potential_allocatables[$id]);
+                $moderationset[$id] = $allocatable;
+                unset ($potentialallocatables[$id]);
             }
         }
     }
@@ -108,19 +108,19 @@ class range_grade_raw extends moderation_set_rule {
         // Upper limit.
         $html .= html_writer::start_tag('p');
         $html .= get_string('upperlimit', 'mod_coursework').' ';
-        $attributes = array(
+        $attributes = [
             'name' => 'rule_range_grade_raw_upperlimit',
-            'size' => 3
-        );
+            'size' => 3,
+        ];
         $html .= html_writer::empty_tag('input', $attributes);
         $html .= html_writer::end_tag('p');
         // Lower limit.
         $html .= html_writer::start_tag('p');
         $html .= get_string('lowerlimit', 'mod_coursework').' ';
-        $attributes = array(
+        $attributes = [
             'name' => 'rule_range_grade_raw_lowerlimit',
-            'size' => 3
-        );
+            'size' => 3,
+        ];
         $html .= html_writer::empty_tag('input', $attributes);
         $html .= html_writer::end_tag('p');
         return $html;

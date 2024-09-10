@@ -35,7 +35,7 @@ class upload_grading_sheet_form extends moodleform {
     function definition() {
         $mform =& $this->_form;
 
-        $mform->addElement('filepicker', 'gradingdata', get_string('gradingsheetfile', 'coursework'), null, array( 'accepted_types' => '*.csv'));
+        $mform->addElement('filepicker', 'gradingdata', get_string('gradingsheetfile', 'coursework'), null, [ 'accepted_types' => '*.csv']);
         $mform->addRule('gradingdata', null, 'required');
 
         $mform->addElement('checkbox', 'overwrite', '', get_string('overwritegrades', 'coursework'));

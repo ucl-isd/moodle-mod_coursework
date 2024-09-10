@@ -51,7 +51,7 @@ class plagiarism_flagging_controller extends controller_base {
     /**
      * @var plagiarism_flag
      */
-    protected $plagiarism_flag;
+    protected $plagiarismflag;
 
     /**
      * This deals with the page that the assessors see when they want to add component feedbacks.
@@ -88,23 +88,23 @@ class plagiarism_flagging_controller extends controller_base {
 
         global $DB, $PAGE, $USER;
 
-        $plagiarism_flag = new plagiarism_flag($this->params['flagid']);
+        $plagiarismflag = new plagiarism_flag($this->params['flagid']);
 
         $ability = new ability(user::find($USER), $this->coursework);
-        $ability->require_can('edit', $plagiarism_flag);
+        $ability->require_can('edit', $plagiarismflag);
 
-        $urlparams = array('flagid' => $this->params['flagid']);
+        $urlparams = ['flagid' => $this->params['flagid']];
         $PAGE->set_url('/mod/coursework/actions/plagiarism_flagging/edit.php', $urlparams);
 
-        $creator = $DB->get_record('user', array('id' => $plagiarism_flag->createdby));
-        if (!empty($plagiarism_flag->lastmodifiedby)) {
-            $editor = $DB->get_record('user', array('id' => $plagiarism_flag->lastmodifiedby));
+        $creator = $DB->get_record('user', ['id' => $plagiarismflag->createdby]);
+        if (!empty($plagiarismflag->lastmodifiedby)) {
+            $editor = $DB->get_record('user', ['id' => $plagiarismflag->lastmodifiedby]);
         } else {
             $editor = $creator;
         }
 
         $renderer = $this->get_page_renderer();
-        $renderer->edit_plagiarism_flag_page($plagiarism_flag, $creator, $editor);
+        $renderer->edit_plagiarism_flag_page($plagiarismflag, $creator, $editor);
     }
 
     /**
@@ -120,18 +120,18 @@ class plagiarism_flagging_controller extends controller_base {
         $plagiarismflag->createdby = $USER->id;
 
         $submission = submission::find($this->params['submissionid']);
-        $path_params = array('submission' => $submission);
-        $url = $this->get_router()->get_path('new plagiarism flag', $path_params, true);
+        $pathparams = ['submission' => $submission];
+        $url = $this->get_router()->get_path('new plagiarism flag', $pathparams, true);
         $PAGE->set_url($url);
 
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('new', $plagiarismflag);
 
-        $form = new plagiarism_flagging_mform(null, array('plagiarism_flag' => $plagiarismflag));
+        $form = new plagiarism_flagging_mform(null, ['plagiarism_flag' => $plagiarismflag]);
 
-        $coursework_page_url = $this->get_path('coursework', array('coursework' => $plagiarismflag->get_coursework()));
+        $courseworkpageurl = $this->get_path('coursework', ['coursework' => $plagiarismflag->get_coursework()]);
         if ($form->is_cancelled()) {
-            redirect($coursework_page_url);
+            redirect($courseworkpageurl);
         }
 
         $data = $form->get_data();
@@ -140,7 +140,7 @@ class plagiarism_flagging_controller extends controller_base {
             $plagiarismflag = $form->process_data($plagiarismflag);
             $plagiarismflag->save();
 
-            redirect($coursework_page_url);
+            redirect($courseworkpageurl);
         } else {
             $renderer = $this->get_page_renderer();
             $renderer->new_plagiarism_flag_page($plagiarismflag);
@@ -161,36 +161,36 @@ class plagiarism_flagging_controller extends controller_base {
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('edit', $plagiarismflag);
 
-        $form = new plagiarism_flagging_mform(null, array('plagiarism_flag' => $plagiarismflag));
+        $form = new plagiarism_flagging_mform(null, ['plagiarism_flag' => $plagiarismflag]);
 
-        $coursework_page_url = $this->get_path('coursework', array('coursework' => $plagiarismflag->get_coursework()));
+        $courseworkpageurl = $this->get_path('coursework', ['coursework' => $plagiarismflag->get_coursework()]);
         if ($form->is_cancelled()) {
-            redirect($coursework_page_url);
+            redirect($courseworkpageurl);
         }
 
         $plagiarismflag = $form->process_data($plagiarismflag);
 
         // add to log here
-        $oldstatus = $DB->get_field(plagiarism_flag::get_table_name(), 'status', array('id' => $flagid)); // Retrieve old status before saving new
-        $params = array(
+        $oldstatus = $DB->get_field(plagiarism_flag::get_table_name(), 'status', ['id' => $flagid]); // Retrieve old status before saving new
+        $params = [
             'context' => \context_module::instance($this->coursework->get_course_module()->id),
             'courseid' => $this->coursework->get_course()->id,
             'objectid' => $this->coursework->id,
-            'other' => array(
+            'other' => [
                 'courseworkid' => $this->coursework->id,
                 'submissionid' => $plagiarismflag->submissionid,
                 'flagid' => $flagid,
                 'oldstatus' => $oldstatus,
-                'newstatus' => $plagiarismflag->status
-            )
-        );
+                'newstatus' => $plagiarismflag->status,
+            ],
+        ];
 
         $event = \mod_coursework\event\coursework_plagiarism_flag_updated::create($params);
         $event->trigger();
 
         $plagiarismflag->save();
 
-        redirect($coursework_page_url);
+        redirect($courseworkpageurl);
     }
 
     /**
@@ -200,17 +200,17 @@ class plagiarism_flagging_controller extends controller_base {
         global $DB;
 
         if (!empty($this->params['flagid'])) {
-            $plagiarism_flag = $DB->get_record('coursework_plagiarism_flags',
-                array('id' => $this->params['flagid']),
+            $plagiarismflag = $DB->get_record('coursework_plagiarism_flags',
+                ['id' => $this->params['flagid']],
                 '*',
                 MUST_EXIST);
-            $this->flag = new plagiarism_flag($plagiarism_flag);
+            $this->flag = new plagiarism_flag($plagiarismflag);
             $this->params['courseworkid'] = $this->flag->get_coursework()->id;
         }
 
         if (!empty($this->params['submissionid'])) {
             $submission = $DB->get_record('coursework_submissions',
-                array('id' => $this->params['submissionid']),
+                ['id' => $this->params['submissionid']],
                 '*',
                 MUST_EXIST);
             $this->submission = submission::find($submission);
@@ -219,7 +219,7 @@ class plagiarism_flagging_controller extends controller_base {
 
         if (!empty($this->params['moderationid'])) {
             $moderation = $DB->get_record('coursework_mod_agreements',
-                array('id' => $this->params['moderationid']),
+                ['id' => $this->params['moderationid']],
                 '*',
                 MUST_EXIST);
             $this->moderation = moderation::find($moderation);

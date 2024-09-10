@@ -33,11 +33,11 @@ class personaldeadline_cell extends cell_base {
      * @param $stage_identifier
      * @return string
      */
-    public function get_cell($submission, $student, $stage_identifier) {
+    public function get_cell($submission, $student, $stageidentifier) {
 
-        $personal_deadline = $submission->submission_personal_deadline();
+        $personaldeadline = $submission->submission_personal_deadline();
 
-        return userdate($personal_deadline, $this->dateformat);
+        return userdate($personaldeadline, $this->dateformat);
     }
 
     /**

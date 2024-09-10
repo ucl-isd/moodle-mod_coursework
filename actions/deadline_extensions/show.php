@@ -26,8 +26,8 @@ global $CFG, $USER;
 
 $id = required_param('id', PARAM_INT);
 
-$params = array(
+$params = [
     'id' => $id,
-);
+];
 $controller = new mod_coursework\controllers\deadline_extensions_controller($params);
 $controller->show_deadline_extension();

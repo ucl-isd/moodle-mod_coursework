@@ -78,11 +78,11 @@ class builder {
 
         // Sort the rows.
         $sorting = new mod_coursework\grading_report($this->options, $this->coursework);
-        $method_name = 'sort_by_' . $this->options['sortby'];
-        if (method_exists($sorting, $method_name)) {
+        $methodname = 'sort_by_' . $this->options['sortby'];
+        if (method_exists($sorting, $methodname)) {
             usort($rows,
-                array($sorting,
-                    $method_name));
+                [$sorting,
+                    $methodname]);
         }
 
         return $rows;
@@ -111,9 +111,9 @@ class builder {
      * @return allocatable_cell
      */
     public function get_allocatable_cell() {
-        $items = array(
-            'coursework' => $this->coursework
-        );
+        $items = [
+            'coursework' => $this->coursework,
+        ];
 
         if ($this->coursework->is_configured_to_have_group_submissions()) {
             return new group_cell($items);
@@ -125,9 +125,9 @@ class builder {
      * @return personal_deadline_cell
      */
     public function get_personal_deadline_cell() {
-        $items = array(
-            'coursework' => $this->coursework
-        );
+        $items = [
+            'coursework' => $this->coursework,
+        ];
 
         return new personal_deadline_cell($items);
     }

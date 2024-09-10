@@ -42,22 +42,22 @@ require_once($CFG->dirroot . '/lib/plagiarismlib.php');
 require_once($CFG->dirroot . '/mod/coursework/classes/export/csv.php');
 
 // TODO move all js to renderer.
-$jsmodule = array(
+$jsmodule = [
     'name' => 'mod_coursework',
     'fullpath' => '/mod/coursework/module.js',
-    'requires' => array('base',
-                        'node-base'),
-    'strings' => []
-);
+    'requires' => ['base',
+                        'node-base'],
+    'strings' => [],
+];
 
 $PAGE->requires->yui_module('moodle-core-notification', 'notification_init');
 
 // Course_module ID, or coursework instance ID - it should be named as the first character of the module.
-$course_module_id = optional_param('id', 0, PARAM_INT);
-$coursework_id = optional_param('e', 0, PARAM_INT);
+$coursemoduleid = optional_param('id', 0, PARAM_INT);
+$courseworkid = optional_param('e', 0, PARAM_INT);
 // Hacky fix for the need for the form to self-submit to this page.
-if (!$coursework_id) {
-    $coursework_id = optional_param('courseworkid', 0, PARAM_INT);
+if (!$courseworkid) {
+    $courseworkid = optional_param('courseworkid', 0, PARAM_INT);
 }
 $publish = optional_param('publishbutton', 0, PARAM_ALPHA);
 $download = optional_param('download', false, PARAM_BOOL);
@@ -65,184 +65,184 @@ $resubmit = optional_param('resubmit', 0, PARAM_TEXT); // Are we resubmitting a 
 $resubmitted = optional_param('resubmitted', 0, PARAM_INT); // Is this a post-resubmit redirect?
 $submissionid = optional_param('submissionid', 0, PARAM_INT); // Which thing to resubmit.
 $confirm = optional_param('confirm', 0, PARAM_INT);
-$export_grades = optional_param('export', false, PARAM_BOOL);
-$download_grading_sheet = optional_param('export_grading_sheet', false, PARAM_BOOL);
+$exportgrades = optional_param('export', false, PARAM_BOOL);
+$downloadgradingsheet = optional_param('export_grading_sheet', false, PARAM_BOOL);
 $group = optional_param('group', -1, PARAM_INT);
 $resettable = optional_param('treset', 0, PARAM_INT);
 $allresettable = optional_param('alltreset', 0, PARAM_INT);
 
-if (!isset($SESSION->displayallstudents[$course_module_id])) {
-    $SESSION->displayallstudents[$course_module_id] = optional_param('displayallstudents', false, PARAM_BOOL);
+if (!isset($SESSION->displayallstudents[$coursemoduleid])) {
+    $SESSION->displayallstudents[$coursemoduleid] = optional_param('displayallstudents', false, PARAM_BOOL);
 
-    $displayallstudents = $SESSION->displayallstudents[$course_module_id];
+    $displayallstudents = $SESSION->displayallstudents[$coursemoduleid];
 } else {
-    $displayallstudents = optional_param('displayallstudents', $SESSION->displayallstudents[$course_module_id], PARAM_INT);
-    $SESSION->displayallstudents[$course_module_id] = $displayallstudents;
+    $displayallstudents = optional_param('displayallstudents', $SESSION->displayallstudents[$coursemoduleid], PARAM_INT);
+    $SESSION->displayallstudents[$coursemoduleid] = $displayallstudents;
 }
 
 // If a session variable holding page preference for the specific coursework is not set, set default value (0).
-if (isset($SESSION->perpage[$course_module_id]) && optional_param('per_page', 0, PARAM_INT) != $SESSION->perpage[$course_module_id]
+if (isset($SESSION->perpage[$coursemoduleid]) && optional_param('per_page', 0, PARAM_INT) != $SESSION->perpage[$coursemoduleid]
     && optional_param('per_page', 0, PARAM_INT) != 0) { // prevent blank pages if not in correct page
     $page = 0;
-    $SESSION->page[$course_module_id] = $page;
-} else if (!(isset($SESSION->page[$course_module_id]))) {
-    $SESSION->page[$course_module_id] = optional_param('page', 0, PARAM_INT);
-    $page = $SESSION->page[$course_module_id];
+    $SESSION->page[$coursemoduleid] = $page;
+} else if (!(isset($SESSION->page[$coursemoduleid]))) {
+    $SESSION->page[$coursemoduleid] = optional_param('page', 0, PARAM_INT);
+    $page = $SESSION->page[$coursemoduleid];
 } else {
-    $page = optional_param('page', $SESSION->page[$course_module_id], PARAM_INT);
-    $SESSION->page[$course_module_id] = $page;
+    $page = optional_param('page', $SESSION->page[$coursemoduleid], PARAM_INT);
+    $SESSION->page[$coursemoduleid] = $page;
 }
 
 // If a session variable holding perpage preference for the specific coursework is not set, set default value (grab default value from global setting).
-if (!(isset($SESSION->perpage[$course_module_id]))) {
-    $SESSION->perpage[$course_module_id] = optional_param('per_page', $CFG->coursework_per_page, PARAM_INT);
-    $perpage = $SESSION->perpage[$course_module_id];
+if (!(isset($SESSION->perpage[$coursemoduleid]))) {
+    $SESSION->perpage[$coursemoduleid] = optional_param('per_page', $CFG->coursework_per_page, PARAM_INT);
+    $perpage = $SESSION->perpage[$coursemoduleid];
 } else {
-    $perpage = optional_param('per_page', $SESSION->perpage[$course_module_id], PARAM_INT);
-    $SESSION->perpage[$course_module_id] = $perpage;
+    $perpage = optional_param('per_page', $SESSION->perpage[$coursemoduleid], PARAM_INT);
+    $SESSION->perpage[$coursemoduleid] = $perpage;
 }
 
 // If a session variable holding sortby preference for the specific coursework is not set, set default value ('lastname').
-if (!(isset($SESSION->sortby[$course_module_id]))) {
-    $SESSION->sortby[$course_module_id] = optional_param('sortby', 'lastname', PARAM_ALPHA);
-    $sortby = $SESSION->sortby[$course_module_id];
+if (!(isset($SESSION->sortby[$coursemoduleid]))) {
+    $SESSION->sortby[$coursemoduleid] = optional_param('sortby', 'lastname', PARAM_ALPHA);
+    $sortby = $SESSION->sortby[$coursemoduleid];
 } else {
-    $sortby = optional_param('sortby', $SESSION->sortby[$course_module_id], PARAM_ALPHA);
-    $SESSION->sortby[$course_module_id] = $sortby;
+    $sortby = optional_param('sortby', $SESSION->sortby[$coursemoduleid], PARAM_ALPHA);
+    $SESSION->sortby[$coursemoduleid] = $sortby;
 }
 
 // If a session variable holding sorthow preference for the specific coursework is not set, set default value ('ASC').
-if (!(isset($SESSION->sorthow[$course_module_id]))) {
-    $SESSION->sorthow[$course_module_id] = optional_param('sorthow', 'ASC', PARAM_ALPHA);
-    $sorthow = $SESSION->sorthow[$course_module_id];
+if (!(isset($SESSION->sorthow[$coursemoduleid]))) {
+    $SESSION->sorthow[$coursemoduleid] = optional_param('sorthow', 'ASC', PARAM_ALPHA);
+    $sorthow = $SESSION->sorthow[$coursemoduleid];
 } else {
-    $sorthow = optional_param('sorthow', $SESSION->sorthow[$course_module_id], PARAM_ALPHA);
-    $SESSION->sorthow[$course_module_id] = $sorthow;
+    $sorthow = optional_param('sorthow', $SESSION->sorthow[$coursemoduleid], PARAM_ALPHA);
+    $SESSION->sorthow[$coursemoduleid] = $sorthow;
 }
 
 // First name alpha
-if (!(isset($SESSION->coursework_firstname_alpha[$course_module_id]))) {
-    $SESSION->coursework_firstname_alpha[$course_module_id] = optional_param('coursework_firstname_alpha', '', PARAM_ALPHA);
-    $coursework_firstname_alpha = $SESSION->coursework_firstname_alpha[$course_module_id];
+if (!(isset($SESSION->coursework_firstname_alpha[$coursemoduleid]))) {
+    $SESSION->coursework_firstname_alpha[$coursemoduleid] = optional_param('coursework_firstname_alpha', '', PARAM_ALPHA);
+    $courseworkfirstnamealpha = $SESSION->coursework_firstname_alpha[$coursemoduleid];
 } else {
-    $coursework_firstname_alpha = optional_param('coursework_firstname_alpha', $SESSION->coursework_firstname_alpha[$course_module_id], PARAM_ALPHA);
-    $SESSION->coursework_firstname_alpha[$course_module_id] = $coursework_firstname_alpha;
+    $courseworkfirstnamealpha = optional_param('coursework_firstname_alpha', $SESSION->coursework_firstname_alpha[$coursemoduleid], PARAM_ALPHA);
+    $SESSION->coursework_firstname_alpha[$coursemoduleid] = $courseworkfirstnamealpha;
 }
 
 // Last name alpha
-if (!(isset($SESSION->coursework_lastname_alpha[$course_module_id]))) {
-    $SESSION->coursework_lastname_alpha[$course_module_id] = optional_param('coursework_lastname_alpha', '', PARAM_ALPHA);
-    $coursework_lastname_alpha = $SESSION->coursework_lastname_alpha[$course_module_id];
+if (!(isset($SESSION->coursework_lastname_alpha[$coursemoduleid]))) {
+    $SESSION->coursework_lastname_alpha[$coursemoduleid] = optional_param('coursework_lastname_alpha', '', PARAM_ALPHA);
+    $courseworklastnamealpha = $SESSION->coursework_lastname_alpha[$coursemoduleid];
 } else {
-    $coursework_lastname_alpha = optional_param('coursework_lastname_alpha', $SESSION->coursework_lastname_alpha[$course_module_id], PARAM_ALPHA);
-    $SESSION->coursework_lastname_alpha[$course_module_id] = $coursework_lastname_alpha;
+    $courseworklastnamealpha = optional_param('coursework_lastname_alpha', $SESSION->coursework_lastname_alpha[$coursemoduleid], PARAM_ALPHA);
+    $SESSION->coursework_lastname_alpha[$coursemoduleid] = $courseworklastnamealpha;
 }
 
 // Group name alpha
-if (!(isset($SESSION->coursework_groupname_alpha[$course_module_id]))) {
-    $SESSION->coursework_groupname_alpha[$course_module_id] = optional_param('coursework_groupname_alpha', '', PARAM_ALPHA);
-    $coursework_groupname_alpha = $SESSION->coursework_groupname_alpha[$course_module_id];
+if (!(isset($SESSION->coursework_groupname_alpha[$coursemoduleid]))) {
+    $SESSION->coursework_groupname_alpha[$coursemoduleid] = optional_param('coursework_groupname_alpha', '', PARAM_ALPHA);
+    $courseworkgroupnamealpha = $SESSION->coursework_groupname_alpha[$coursemoduleid];
 } else {
-    $coursework_groupname_alpha = optional_param('coursework_groupname_alpha', $SESSION->coursework_groupname_alpha[$course_module_id], PARAM_ALPHA);
-    $SESSION->coursework_groupname_alpha[$course_module_id] = $coursework_groupname_alpha;
+    $courseworkgroupnamealpha = optional_param('coursework_groupname_alpha', $SESSION->coursework_groupname_alpha[$coursemoduleid], PARAM_ALPHA);
+    $SESSION->coursework_groupname_alpha[$coursemoduleid] = $courseworkgroupnamealpha;
 }
 
 // We will use the same defaults as page (above) defaulting to page setting if no specific viewallstudents_page has been set
-if (isset($SESSION->viewallstudents_perpage[$course_module_id]) && optional_param('viewallstudents_per_page', 0, PARAM_INT) != $SESSION->viewallstudents_perpage[$course_module_id]
+if (isset($SESSION->viewallstudents_perpage[$coursemoduleid]) && optional_param('viewallstudents_per_page', 0, PARAM_INT) != $SESSION->viewallstudents_perpage[$coursemoduleid]
     && optional_param('viewallstudents_per_page', 0, PARAM_INT) != 0) { // prevent blank pages if not in correct page
-    $viewallstudents_page = 0;
-    $SESSION->viewallstudents_page[$course_module_id] = $viewallstudents_page;
-} else if (!(isset($SESSION->viewallstudents_page[$course_module_id]))) {
-    $SESSION->viewallstudents_page[$course_module_id] = optional_param('viewallstudents_page', 0, PARAM_INT);
-    $viewallstudents_page = $SESSION->viewallstudents_page[$course_module_id];
+    $viewallstudentspage = 0;
+    $SESSION->viewallstudents_page[$coursemoduleid] = $viewallstudentspage;
+} else if (!(isset($SESSION->viewallstudents_page[$coursemoduleid]))) {
+    $SESSION->viewallstudents_page[$coursemoduleid] = optional_param('viewallstudents_page', 0, PARAM_INT);
+    $viewallstudentspage = $SESSION->viewallstudents_page[$coursemoduleid];
 } else {
-    $viewallstudents_page = optional_param('viewallstudents_page', $SESSION->viewallstudents_page[$course_module_id], PARAM_INT);
-    $SESSION->viewallstudents_page[$course_module_id] = $viewallstudents_page;
+    $viewallstudentspage = optional_param('viewallstudents_page', $SESSION->viewallstudents_page[$coursemoduleid], PARAM_INT);
+    $SESSION->viewallstudents_page[$coursemoduleid] = $viewallstudentspage;
 }
 
 // We will use the same defaults as perpage (above) defaulting to perpage setting if no specific viewallstudents_perpage has been set
-if (!(isset($SESSION->viewallstudents_perpage[$course_module_id]))) {
-    $SESSION->viewallstudents_perpage[$course_module_id] = optional_param('viewallstudents_per_page', $perpage, PARAM_INT);
-    $viewallstudents_perpage = $SESSION->viewallstudents_perpage[$course_module_id];
+if (!(isset($SESSION->viewallstudents_perpage[$coursemoduleid]))) {
+    $SESSION->viewallstudents_perpage[$coursemoduleid] = optional_param('viewallstudents_per_page', $perpage, PARAM_INT);
+    $viewallstudentsperpage = $SESSION->viewallstudents_perpage[$coursemoduleid];
 } else {
-    $viewallstudents_perpage = optional_param('viewallstudents_per_page', $SESSION->perpage[$course_module_id], PARAM_INT);
-    $SESSION->viewallstudents_perpage[$course_module_id] = $viewallstudents_perpage;
+    $viewallstudentsperpage = optional_param('viewallstudents_per_page', $SESSION->perpage[$coursemoduleid], PARAM_INT);
+    $SESSION->viewallstudents_perpage[$coursemoduleid] = $viewallstudentsperpage;
 }
 
 // We will use the same defaults as sortby (above) defaulting to sortby setting if no specific viewallstudents_sortby has been set
-if (!(isset($SESSION->viewallstudents_sortby[$course_module_id]))) {
-    $SESSION->viewallstudents_sortby[$course_module_id] = optional_param('viewallstudents_sortby', $sortby, PARAM_ALPHA);
-    $viewallstudents_sortby = $SESSION->viewallstudents_sortby[$course_module_id];
+if (!(isset($SESSION->viewallstudents_sortby[$coursemoduleid]))) {
+    $SESSION->viewallstudents_sortby[$coursemoduleid] = optional_param('viewallstudents_sortby', $sortby, PARAM_ALPHA);
+    $viewallstudentssortby = $SESSION->viewallstudents_sortby[$coursemoduleid];
 } else {
-    $viewallstudents_sortby = optional_param('viewallstudents_sortby', $SESSION->sortby[$course_module_id], PARAM_ALPHA);
-    $SESSION->viewallstudents_sortby[$course_module_id] = $viewallstudents_sortby;
+    $viewallstudentssortby = optional_param('viewallstudents_sortby', $SESSION->sortby[$coursemoduleid], PARAM_ALPHA);
+    $SESSION->viewallstudents_sortby[$coursemoduleid] = $viewallstudentssortby;
 }
 
 // We will use the same defaults as sorthow (above) defaulting to sorthow setting if no specific viewallstudents_sorthow has been set
-if (!(isset($SESSION->viewallstudents_sorthow[$course_module_id]))) {
-    $SESSION->viewallstudents_sorthow[$course_module_id] = optional_param('viewallstudents_sorthow', $sorthow, PARAM_ALPHA);
-    $viewallstudents_sorthow = $SESSION->viewallstudents_sorthow[$course_module_id];
+if (!(isset($SESSION->viewallstudents_sorthow[$coursemoduleid]))) {
+    $SESSION->viewallstudents_sorthow[$coursemoduleid] = optional_param('viewallstudents_sorthow', $sorthow, PARAM_ALPHA);
+    $viewallstudentssorthow = $SESSION->viewallstudents_sorthow[$coursemoduleid];
 } else {
-    $viewallstudents_sorthow = optional_param('viewallstudents_sorthow', $SESSION->sorthow[$course_module_id], PARAM_ALPHA);
-    $SESSION->viewallstudents_sorthow[$course_module_id] = $viewallstudents_sorthow;
+    $viewallstudentssorthow = optional_param('viewallstudents_sorthow', $SESSION->sorthow[$coursemoduleid], PARAM_ALPHA);
+    $SESSION->viewallstudents_sorthow[$coursemoduleid] = $viewallstudentssorthow;
 }
 
 // First name alpha
-if (!(isset($SESSION->viewallstudents_firstname_alpha[$course_module_id]))) {
-    $SESSION->viewallstudents_firstname_alpha[$course_module_id] = optional_param('viewallstudents_firstname_alpha', '', PARAM_ALPHA);
-    $viewallstudents_firstname_alpha = $SESSION->coursework_firstname_alpha[$course_module_id];
+if (!(isset($SESSION->viewallstudents_firstname_alpha[$coursemoduleid]))) {
+    $SESSION->viewallstudents_firstname_alpha[$coursemoduleid] = optional_param('viewallstudents_firstname_alpha', '', PARAM_ALPHA);
+    $viewallstudentsfirstnamealpha = $SESSION->coursework_firstname_alpha[$coursemoduleid];
 } else {
-    $viewallstudents_firstname_alpha = optional_param('viewallstudents_firstname_alpha', $SESSION->viewallstudents_firstname_alpha[$course_module_id], PARAM_ALPHA);
-    $SESSION->viewallstudents_firstname_alpha[$course_module_id] = $viewallstudents_firstname_alpha;
+    $viewallstudentsfirstnamealpha = optional_param('viewallstudents_firstname_alpha', $SESSION->viewallstudents_firstname_alpha[$coursemoduleid], PARAM_ALPHA);
+    $SESSION->viewallstudents_firstname_alpha[$coursemoduleid] = $viewallstudentsfirstnamealpha;
 }
 
 // Last name alpha
-if (!(isset($SESSION->viewallstudents_lastname_alpha[$course_module_id]))) {
-    $SESSION->viewallstudents_lastname_alpha[$course_module_id] = optional_param('viewallstudents_lastname_alpha', '', PARAM_ALPHA);
-    $viewallstudents_lastname_alpha = $SESSION->viewallstudents_lastname_alpha[$course_module_id];
+if (!(isset($SESSION->viewallstudents_lastname_alpha[$coursemoduleid]))) {
+    $SESSION->viewallstudents_lastname_alpha[$coursemoduleid] = optional_param('viewallstudents_lastname_alpha', '', PARAM_ALPHA);
+    $viewallstudentslastnamealpha = $SESSION->viewallstudents_lastname_alpha[$coursemoduleid];
 } else {
-    $viewallstudents_lastname_alpha = optional_param('viewallstudents_lastname_alpha', $SESSION->viewallstudents_lastname_alpha[$course_module_id], PARAM_ALPHA);
-    $SESSION->viewallstudents_lastname_alpha[$course_module_id] = $viewallstudents_lastname_alpha;
+    $viewallstudentslastnamealpha = optional_param('viewallstudents_lastname_alpha', $SESSION->viewallstudents_lastname_alpha[$coursemoduleid], PARAM_ALPHA);
+    $SESSION->viewallstudents_lastname_alpha[$coursemoduleid] = $viewallstudentslastnamealpha;
 }
 
 // Group name alpha
-if (!(isset($SESSION->viewallstudents_groupname_alpha[$course_module_id]))) {
-    $SESSION->viewallstudents_groupname_alpha[$course_module_id] = optional_param('viewallstudents_groupname_alpha', '', PARAM_ALPHA);
-    $viewallstudents_groupname_alpha = $SESSION->viewallstudents_groupname_alpha[$course_module_id];
+if (!(isset($SESSION->viewallstudents_groupname_alpha[$coursemoduleid]))) {
+    $SESSION->viewallstudents_groupname_alpha[$coursemoduleid] = optional_param('viewallstudents_groupname_alpha', '', PARAM_ALPHA);
+    $viewallstudentsgroupnamealpha = $SESSION->viewallstudents_groupname_alpha[$coursemoduleid];
 } else {
-    $viewallstudents_groupname_alpha = optional_param('viewallstudents_groupname_alpha', $SESSION->viewallstudents_groupname_alpha[$course_module_id], PARAM_ALPHA);
-    $SESSION->viewallstudents_groupname_alpha[$course_module_id] = $viewallstudents_groupname_alpha;
+    $viewallstudentsgroupnamealpha = optional_param('viewallstudents_groupname_alpha', $SESSION->viewallstudents_groupname_alpha[$coursemoduleid], PARAM_ALPHA);
+    $SESSION->viewallstudents_groupname_alpha[$coursemoduleid] = $viewallstudentsgroupnamealpha;
 }
 
 if (!($sorthow === 'ASC' || $sorthow === 'DESC')) {
     $sorthow = 'ASC';
 }
 
-$coursework_record = new stdClass();
+$courseworkrecord = new stdClass();
 
-if ($course_module_id) {
-    $course_module = get_coursemodule_from_id('coursework',
-                                              $course_module_id,
+if ($coursemoduleid) {
+    $coursemodule = get_coursemodule_from_id('coursework',
+                                              $coursemoduleid,
                                               0,
                                               false,
                                               MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $course_module->course), '*', MUST_EXIST);
-    $coursework_record = $DB->get_record('coursework',
-                                         array('id' => $course_module->instance),
+    $course = $DB->get_record('course', ['id' => $coursemodule->course], '*', MUST_EXIST);
+    $courseworkrecord = $DB->get_record('coursework',
+                                         ['id' => $coursemodule->instance],
                                          '*',
                                          MUST_EXIST);
 } else {
-    if ($coursework_id) {
-        $coursework_record = $DB->get_record('coursework',
-                                             array('id' => $coursework_id),
+    if ($courseworkid) {
+        $courseworkrecord = $DB->get_record('coursework',
+                                             ['id' => $courseworkid],
                                              '*',
                                              MUST_EXIST);
         $course = $DB->get_record('course',
-                                  array('id' => $coursework_record->course),
+                                  ['id' => $courseworkrecord->course],
                                   '*',
                                   MUST_EXIST);
-        $course_module = get_coursemodule_from_instance('coursework',
-                                                        $coursework_record->id,
+        $coursemodule = get_coursemodule_from_instance('coursework',
+                                                        $courseworkrecord->id,
                                                         $course->id,
                                                         false,
                                                         MUST_EXIST);
@@ -251,7 +251,7 @@ if ($course_module_id) {
     }
 }
 
-$coursework = mod_coursework\models\coursework::find($coursework_record);
+$coursework = mod_coursework\models\coursework::find($courseworkrecord);
 
 // Check if group is in session and use it no group available in url
 if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $group == -1) {
@@ -291,68 +291,68 @@ if (($coursework->has_deadline() && $coursework->deadline_has_passed()) || $cour
 }
 
 // This will set $PAGE->context to the coursemodule's context.
-require_login($course, true, $course_module);
+require_login($course, true, $coursemodule);
 
 // Name of new zip file.
 $filename = str_replace(' ', '_', clean_filename($COURSE->shortname . '-' . $coursework->name . '.zip'));
-if ($download && $zip_file = $coursework->pack_files()) {
-    send_temp_file($zip_file, $filename); // Send file and delete after sending.
+if ($download && $zipfile = $coursework->pack_files()) {
+    send_temp_file($zipfile, $filename); // Send file and delete after sending.
 }
 
-if ($export_grades) {
+if ($exportgrades) {
 
     // Headers and data for csv
-    $csv_cells = array('name', 'username', 'idnumber', 'email');
+    $csvcells = ['name', 'username', 'idnumber', 'email'];
 
     if ($coursework->personal_deadlines_enabled()) {
-        $csv_cells[] = 'personaldeadline';
+        $csvcells[] = 'personaldeadline';
     }
 
-    $csv_cells[] = 'submissiondate';
-    $csv_cells[] = 'submissiontime';
-    $csv_cells[] = 'submissionfileid';
+    $csvcells[] = 'submissiondate';
+    $csvcells[] = 'submissiontime';
+    $csvcells[] = 'submissionfileid';
 
     if ($coursework->extensions_enabled() && ($coursework->has_deadline()) || $coursework->personal_deadlines_enabled()) {
-        $csv_cells[] = 'extensiondeadline';
-        $csv_cells[] = 'extensionreason';
-        $csv_cells[] = 'extensionextrainfo';
+        $csvcells[] = 'extensiondeadline';
+        $csvcells[] = 'extensionreason';
+        $csvcells[] = 'extensionextrainfo';
     }
 
     if ($coursework->plagiarism_flagging_enbled()) {
-        $csv_cells[] = 'plagiarismflagstatus';
-        $csv_cells[] = 'plagiarismflagcomment';
+        $csvcells[] = 'plagiarismflagstatus';
+        $csvcells[] = 'plagiarismflagcomment';
     }
 
-    $csv_cells[] = 'stages';
+    $csvcells[] = 'stages';
 
     if ($coursework->moderation_agreement_enabled()) {
-        $csv_cells[] = 'moderationagreement';
+        $csvcells[] = 'moderationagreement';
     }
-    $csv_cells[] = 'finalgrade';
+    $csvcells[] = 'finalgrade';
 
     $timestamp = date('d_m_y @ H-i');
     $filename = get_string('finalgradesfor', 'coursework'). $coursework->name .' '.$timestamp;
-    $csv = new \mod_coursework\export\csv($coursework, $csv_cells, $filename);
+    $csv = new \mod_coursework\export\csv($coursework, $csvcells, $filename);
     $csv->export();
 
 }
 
-if ($download_grading_sheet) {
+if ($downloadgradingsheet) {
 
-   $csv_cells = \mod_coursework\export\grading_sheet::cells_array($coursework);
+    $csvcells = \mod_coursework\export\grading_sheet::cells_array($coursework);
 
     $timestamp = date('d_m_y @ H-i');
     $filename = get_string('gradingsheetfor', 'coursework'). $coursework->name .' '.$timestamp;
-    $grading_sheet = new \mod_coursework\export\grading_sheet($coursework, $csv_cells, $filename);
-    $grading_sheet->export();
+    $gradingsheet = new \mod_coursework\export\grading_sheet($coursework, $csvcells, $filename);
+    $gradingsheet->export();
 }
 
-$can_grade = has_capability('mod/coursework:addinitialgrade', $PAGE->context);
-$can_submit = has_capability('mod/coursework:submit', $PAGE->context);
-$can_view_students = false;
+$cangrade = has_capability('mod/coursework:addinitialgrade', $PAGE->context);
+$cansubmit = has_capability('mod/coursework:submit', $PAGE->context);
+$canviewstudents = false;
 
 // TODO this is awful.
-$capabilities = array('addinstance',
+$capabilities = ['addinstance',
                       'submitonbehalfof',
                       'addinitialgrade',
                       'editinitialgrade',
@@ -367,49 +367,40 @@ $capabilities = array('addinstance',
                       'grantextensions',
                       'canexportfinalgrades',
                       'viewextensions',
-                      'grade');
+                      'grade'];
 
 foreach ($capabilities as $capability) {
 
     if (has_capability('mod/coursework:' . $capability, $PAGE->context)) {
-        $can_view_students = true;
+        $canviewstudents = true;
         break;
     }
 }
 
-if ((float)substr($CFG->release, 0, 5) > 2.6) { // 2.8 > 2.6
-    $event = \mod_coursework\event\course_module_viewed::create(array(
-                                                                    'objectid' => $coursework->id,
-                                                                    'context' => $coursework->get_context(),
-                                                                ));
-    $event->trigger();
-} else {
-    add_to_log($course->id,
-               'coursework',
-               'view',
-               "view.php?id=$course_module->id",
-               $coursework->name,
-               $course_module->id);
-}
+
+$event = \mod_coursework\event\course_module_viewed::create(
+    ['objectid' => $coursework->id, 'context' => $coursework->get_context()]
+);
+$event->trigger();
 
 // Print the page header.
 
 // Sort group by groupname (default)
 if ($coursework->is_configured_to_have_group_submissions()) {
     $sortby = optional_param('sortby', 'groupname', PARAM_ALPHA);
-    $viewallstudents_sortby = optional_param('viewallstudents_sortby', 'groupname', PARAM_ALPHA);
+    $viewallstudentssortby = optional_param('viewallstudents_sortby', 'groupname', PARAM_ALPHA);
 
 }
-$params = array('id' => $course_module->id,
+$params = ['id' => $coursemodule->id,
                 'sortby' => $sortby,
                 'sorthow' => $sorthow,
                 'per_page' => $perpage,
-                'group' => $group);
+                'group' => $group];
 
-if (!empty($SESSION->displayallstudents[$course_module_id])) {
-    $params['viewallstudents_sorthow'] = $viewallstudents_sorthow;
-    $params['viewallstudents_sortby'] = $viewallstudents_sortby;
-    $params['viewallstudents_per_page'] = $viewallstudents_perpage;
+if (!empty($SESSION->displayallstudents[$coursemoduleid])) {
+    $params['viewallstudents_sorthow'] = $viewallstudentssorthow;
+    $params['viewallstudents_sortby'] = $viewallstudentssortby;
+    $params['viewallstudents_per_page'] = $viewallstudentsperpage;
 }
 
 $PAGE->set_url('/mod/coursework/view.php', $params);
@@ -437,25 +428,25 @@ $html = '';
 /**
  * @var mod_coursework_object_renderer $object_renderer
  */
-$object_renderer = $PAGE->get_renderer('mod_coursework', 'object');
+$objectrenderer = $PAGE->get_renderer('mod_coursework', 'object');
 /**
  * @var mod_coursework_page_renderer $page_renderer
  */
-$page_renderer = $PAGE->get_renderer('mod_coursework', 'page');
+$pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
 
-$html .= $object_renderer->render(new mod_coursework_coursework($coursework));
+$html .= $objectrenderer->render(new mod_coursework_coursework($coursework));
 
 // Allow tutors to upload files as part of the coursework task? Easily done via the main
 // course thing, so not necessary.
 
 // If this is a student, show the submission form, or their existing submission, or both
 // There is scope for an arbitrary number of files to be added here, before the deadline.
-if ($can_submit && !$can_grade) {
-    $html .= $page_renderer->student_view_page($coursework, \mod_coursework\models\user::find($USER));
+if ($cansubmit && !$cangrade) {
+    $html .= $pagerenderer->student_view_page($coursework, \mod_coursework\models\user::find($USER));
 }
 
 // Display the submissions table of all the students instead.
-if ($can_view_students) {
+if ($canviewstudents) {
 
     // If the resubmit button was pressed (for plagiarism), we need to fire a new event.
     if ($resubmit && $submissionid) {
@@ -465,10 +456,10 @@ if ($can_view_students) {
          */
         $submission = submission::find($submissionid);
 
-        $params = array(
-            'cm' => $course_module->id,
+        $params = [
+            'cm' => $coursemodule->id,
             'userid' => $submission->get_author_id(),
-        );
+        ];
         // Get the hash so we can retrieve the file and update timemodified.
         $filehash = $DB->get_field('plagiarism_turnitin_files', 'identifier', $params);
 
@@ -480,9 +471,9 @@ if ($can_view_students) {
         // to be now and rely on the submission timemodified date to tell us when the student finalised their
         // work.
         if ($filehash) {
-            $params = array(
-                'pathnamehash' => $filehash
-            );
+            $params = [
+                'pathnamehash' => $filehash,
+            ];
             $file = $DB->get_record('files', $params);
             $file->timemodified = time();
             $DB->update_record('files', $file);
@@ -505,28 +496,28 @@ if ($can_view_students) {
             // Already confirmed. Publish and redirect.
             $coursework->publish_grades();
             $url = clone($PAGE->url);
-            $url->remove_params(array('confirm',
-                                      'publishbutton'));
+            $url->remove_params(['confirm',
+                                      'publishbutton']);
             redirect($url, get_string('gradespublished', 'mod_coursework'));
         }
     } else {
 
         if ($resettable) {
-            $coursework_firstname_alpha = $SESSION->coursework_firstname_alpha[$course_module_id] = "";
-            $coursework_lastname_alpha = $SESSION->coursework_lastname_alpha[$course_module_id] = "";
-            $coursework_groupname_alpha = $SESSION->coursework_groupname_alpha[$course_module_id] = "";
+            $courseworkfirstnamealpha = $SESSION->coursework_firstname_alpha[$coursemoduleid] = "";
+            $courseworklastnamealpha = $SESSION->coursework_lastname_alpha[$coursemoduleid] = "";
+            $courseworkgroupnamealpha = $SESSION->coursework_groupname_alpha[$coursemoduleid] = "";
         }
 
         if ($allresettable) {
-            $viewallstudents_firstname_alpha = $SESSION->viewallstudents_firstname_alpha[$course_module_id] = "";
-            $viewallstudents_lastname_alpha = $SESSION->viewallstudents_lastname_alpha[$course_module_id] = "";
-            $viewallstudents_groupname_alpha = $SESSION->viewallstudents_groupname_alpha[$course_module_id] = "";
+            $viewallstudentsfirstnamealpha = $SESSION->viewallstudents_firstname_alpha[$coursemoduleid] = "";
+            $viewallstudentslastnamealpha = $SESSION->viewallstudents_lastname_alpha[$coursemoduleid] = "";
+            $viewallstudentsgroupnamealpha = $SESSION->viewallstudents_groupname_alpha[$coursemoduleid] = "";
         }
 
-        $html .= $page_renderer->teacher_grading_page($coursework, $page, $perpage, $sortby, $sorthow, $group, $coursework_firstname_alpha, $coursework_lastname_alpha, $coursework_groupname_alpha, $resettable);
-        $html .= $page_renderer->non_teacher_allocated_grading_page($coursework, $viewallstudents_page, $viewallstudents_perpage, $viewallstudents_sortby, $viewallstudents_sorthow, $group, $displayallstudents, $viewallstudents_firstname_alpha, $viewallstudents_lastname_alpha, $viewallstudents_groupname_alpha);
-        $html .= $page_renderer->datatables_render($coursework);
-        $html .= $page_renderer->render_modal();
+        $html .= $pagerenderer->teacher_grading_page($coursework, $page, $perpage, $sortby, $sorthow, $group, $courseworkfirstnamealpha, $courseworklastnamealpha, $courseworkgroupnamealpha, $resettable);
+        $html .= $pagerenderer->non_teacher_allocated_grading_page($coursework, $viewallstudentspage, $viewallstudentsperpage, $viewallstudentssortby, $viewallstudentssorthow, $group, $displayallstudents, $viewallstudentsfirstnamealpha, $viewallstudentslastnamealpha, $viewallstudentsgroupnamealpha);
+        $html .= $pagerenderer->datatables_render($coursework);
+        $html .= $pagerenderer->render_modal();
     }
 }
 

@@ -33,9 +33,9 @@ require_once($CFG->libdir.'/csvlib.class.php');
 
 $coursemoduleid = required_param('cmid', PARAM_INT);
 
-$coursemodule = $DB->get_record('course_modules', array('id' => $coursemoduleid));
+$coursemodule = $DB->get_record('course_modules', ['id' => $coursemoduleid]);
 $coursework = coursework::find($coursemodule->instance);
-$course = $DB->get_record('course', array('id' => $coursemodule->course));
+$course = $DB->get_record('course', ['id' => $coursemodule->course]);
 require_login($course, false, $coursemodule);
 
 $csvtype = 'allocationsupload';
@@ -44,10 +44,10 @@ $PAGE->set_url(new moodle_url('/mod/coursework/actions/upload_allocations.php'))
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
-$grading_sheet_capabilities = array('mod/coursework:allocate');
+$gradingsheetcapabilities = ['mod/coursework:allocate'];
 
 // Bounce anyone who shouldn't be here.
-if (!has_any_capability($grading_sheet_capabilities, $PAGE->context)) {
+if (!has_any_capability($gradingsheetcapabilities, $PAGE->context)) {
     $message = 'You do not have permission to upload allocations';
     redirect(new moodle_url('mod/coursework/view.php'), $message);
 }
@@ -70,13 +70,13 @@ if ($data = $allocationsuploadform->get_data()) {
 
     // Process
     $csvimport->process_csv($content, $data->encoding, $data->delimiter_name, $procsessingresults);
-    $page_renderer = $PAGE->get_renderer('mod_coursework', 'page');
-    echo $page_renderer->process_csv_upload($procsessingresults, $content, $csvtype);
+    $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
+    echo $pagerenderer->process_csv_upload($procsessingresults, $content, $csvtype);
 
     $cache = \cache::make('mod_coursework', 'courseworkdata', ['id' => $coursework->id]);
     $cache->purge();
 
 } else {
-    $page_renderer = $PAGE->get_renderer('mod_coursework', 'page');
-    echo $page_renderer->csv_upload($allocationsuploadform, $csvtype);
+    $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
+    echo $pagerenderer->csv_upload($allocationsuploadform, $csvtype);
 }

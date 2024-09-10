@@ -46,7 +46,8 @@ class router {
     /**
      * Singleton.
      */
-    private function __construct() {}
+    private function __construct() {
+    }
 
     /**
      * Singleton accessor.
@@ -68,32 +69,32 @@ class router {
      * @throws \coding_exception
      * @return moodle_url|string url
      */
-    public function get_path($path_name, $items = [], $as_url_object = false, $escaped = true) {
+    public function get_path($pathname, $items = [], $asurlobject = false, $escaped = true) {
 
         global $CFG;
 
-        $context_id = false;
-        $coursemodule_id = false;
+        $contextid = false;
+        $coursemoduleid = false;
 
         if (array_key_exists('coursework', $items)) {
             /**
              * @var coursework $coursework
              */
             $coursework = $items['coursework'];
-            $context_id = $coursework->get_context_id();
-            $coursemodule_id = $coursework->get_coursemodule_id();
+            $contextid = $coursework->get_context_id();
+            $coursemoduleid = $coursework->get_coursemodule_id();
         }
 
         $url = false;
 
-        switch ($path_name) {
+        switch ($pathname) {
 
             case 'create feedback':
                 $url = new moodle_url('/mod/coursework/actions/feedbacks/create.php');
                 break;
 
             case 'course':
-                $url = new moodle_url('/course/view.php', array('id' => $items['course']->id));
+                $url = new moodle_url('/course/view.php', ['id' => $items['course']->id]);
                 break;
 
             case 'edit coursework':
@@ -101,47 +102,47 @@ class router {
                 break;
 
             case 'coursework settings':
-                $url = new moodle_url('/course/modedit.php', array('update' => $coursemodule_id));
+                $url = new moodle_url('/course/modedit.php', ['update' => $coursemoduleid]);
                 break;
 
             case 'coursework':
-                $url = new moodle_url('/mod/coursework/view.php', array('id' => $coursemodule_id));
+                $url = new moodle_url('/mod/coursework/view.php', ['id' => $coursemoduleid]);
                 break;
 
             case 'allocations':
                 $url = new moodle_url('/mod/coursework/actions/allocate.php',
-                                      array('id' => $coursemodule_id));
+                                      ['id' => $coursemoduleid]);
                 break;
 
             case 'assessor grading':
 
             case 'ajax new feedback':
                 $url = new moodle_url('/mod/coursework/actions/feedbacks/new.php',
-                    array('submissionid' => $items['submission']->id,
+                    ['submissionid' => $items['submission']->id,
                         'stage_identifier' => $items['stage']->identifier(),
                         'assessorid' => $items['assessor']->id,
-                        'ajax' => 1));
+                        'ajax' => 1]);
                 break;
 
             case 'new feedback':
                 $url = new moodle_url('/mod/coursework/actions/feedbacks/new.php',
-                                          array('submissionid' => $items['submission']->id,
+                                          ['submissionid' => $items['submission']->id,
                                                 'stage_identifier' => $items['stage']->identifier(),
-                                                'assessorid' => $items['assessor']->id));
+                                                'assessorid' => $items['assessor']->id]);
                 break;
 
             case 'ajax new final feedback':
-                $params = array('submissionid' => $items['submission']->id,
+                $params = ['submissionid' => $items['submission']->id,
                     'stage_identifier' => $items['stage']->identifier(),
                     'isfinalgrade' => 1,
-                    'ajax' => 1);
+                    'ajax' => 1];
                 $url = new moodle_url('/mod/coursework/actions/feedbacks/new.php', $params);
                 break;
 
             case 'new final feedback':
-                $params = array('submissionid' => $items['submission']->id,
+                $params = ['submissionid' => $items['submission']->id,
                                 'stage_identifier' => $items['stage']->identifier(),
-                                'isfinalgrade' => 1);
+                                'isfinalgrade' => 1];
                 $url = new moodle_url('/mod/coursework/actions/feedbacks/new.php', $params);
                 break;
 
@@ -154,31 +155,31 @@ class router {
 
             case 'new submission':
                 $url = new moodle_url('/mod/coursework/actions/submissions/new.php',
-                                      array(
+                                      [
                                           'allocatableid' => $items['submission']->allocatableid,
                                           'allocatabletype' => $items['submission']->allocatabletype,
                                           'courseworkid' => $items['submission']->courseworkid,
-                                      ));
+                                      ]);
                 break;
 
             case 'ajax edit feedback':
                 $url = new moodle_url('/mod/coursework/actions/feedbacks/edit.php',
-                    array('feedbackid' => $items['feedback']->id, 'ajax' => 1));
+                    ['feedbackid' => $items['feedback']->id, 'ajax' => 1]);
                 break;
 
             case 'edit feedback':
                 $url = new moodle_url('/mod/coursework/actions/feedbacks/edit.php',
-                                      array('feedbackid' => $items['feedback']->id));
+                                      ['feedbackid' => $items['feedback']->id]);
                 break;
 
             case 'ajax update feedback':
                 $url = new moodle_url('/mod/coursework/actions/feedbacks/update.php',
-                    array('feedbackid' => $items['feedback']->id, 'ajax' => 1));
+                    ['feedbackid' => $items['feedback']->id, 'ajax' => 1]);
                 break;
 
             case 'update feedback':
                 $url = new moodle_url('/mod/coursework/actions/feedbacks/update.php',
-                                      array('feedbackid' => $items['feedback']->id));
+                                      ['feedbackid' => $items['feedback']->id]);
                 break;
 
             case 'new deadline extension':
@@ -198,13 +199,13 @@ class router {
 
             case 'set personal deadlines':
                 $url = new moodle_url('/mod/coursework/actions/set_personal_deadlines.php',
-                    array('id' => $coursemodule_id));
+                    ['id' => $coursemoduleid]);
                 break;
 
             case 'new moderations':
-                $params = array('submissionid' => $items['submission']->id,
+                $params = ['submissionid' => $items['submission']->id,
                                 'stage_identifier' => $items['stage']->identifier(),
-                                'feedbackid' => $items['feedbackid']);
+                                'feedbackid' => $items['feedbackid']];
                 $url = new moodle_url('/mod/coursework/actions/moderations/new.php', $params);
                 break;
 
@@ -214,8 +215,8 @@ class router {
 
             case 'edit moderation':
                 $url = new moodle_url('/mod/coursework/actions/moderations/edit.php',
-                                      array('moderationid' => $items['moderation']->id,
-                                           'feedbackid' => $items['moderation']->feedbackid));
+                                      ['moderationid' => $items['moderation']->id,
+                                           'feedbackid' => $items['moderation']->feedbackid]);
                 break;
 
             case 'update moderation':
@@ -224,14 +225,14 @@ class router {
 
             case 'show moderation':
                 $url = new moodle_url('/mod/coursework/actions/moderations/show.php',
-                                        array('moderationid' => $items['moderation']->id,
-                                        'feedbackid' => $items['moderation']->feedbackid));
+                                        ['moderationid' => $items['moderation']->id,
+                                        'feedbackid' => $items['moderation']->feedbackid]);
 
                 break;
 
             case 'new plagiarism flag':
                 $url = new moodle_url('/mod/coursework/actions/plagiarism_flagging/new.php',
-                                        array('submissionid' => $items['submission']->id ));
+                                        ['submissionid' => $items['submission']->id ]);
 
                 break;
 
@@ -242,13 +243,13 @@ class router {
 
             case 'edit plagiarism flag':
                 $url = new moodle_url('/mod/coursework/actions/plagiarism_flagging/edit.php',
-                                        array('flagid' => $items['flag']->id ));
+                                        ['flagid' => $items['flag']->id ]);
 
                 break;
 
             case 'update plagiarism flag':
                 $url = new moodle_url('/mod/coursework/actions/plagiarism_flagging/update.php',
-                                        array('flagid' => $items['flag']->id));
+                                        ['flagid' => $items['flag']->id]);
                 break;
 
         }
@@ -256,12 +257,12 @@ class router {
         if (!$url) {
 
             // Try to auto construct it.
-            $bits = explode(' ', $path_name);
+            $bits = explode(' ', $pathname);
             $action = array_shift($bits);
             $type = implode('_', $bits);
 
-            $auto_path = '/mod/coursework/actions/' . $this->pluralise($type) . '/' . $action . '.php';
-            if (file_exists($CFG->dirroot . $auto_path)) {
+            $autopath = '/mod/coursework/actions/' . $this->pluralise($type) . '/' . $action . '.php';
+            if (file_exists($CFG->dirroot . $autopath)) {
 
                 $params = [];
                 if (array_key_exists($type, $items)) {
@@ -272,15 +273,15 @@ class router {
                     $params['courseworkid'] = $items['courseworkid'];
                 }
 
-                $url = new moodle_url($auto_path, $params);
+                $url = new moodle_url($autopath, $params);
             }
         }
 
         if (!$url) {
-            throw new coding_exception("No target file for path: '{$path_name}'");
+            throw new coding_exception("No target file for path: '{$pathname}'");
         }
 
-        return $as_url_object ? $url : $url->out($escaped);
+        return $asurlobject ? $url : $url->out($escaped);
     }
 
     /**

@@ -35,11 +35,11 @@ class moderationagreement_cell extends cell_base {
      * @param $stage_identifier
      * @return array
      */
-    public function get_cell($submission, $student, $stage_identifier) {
+    public function get_cell($submission, $student, $stageidentifier) {
         global $DB;
 
         $data = [];
-        $moderation_agreement = '';
+        $moderationagreement = '';
         $moderation = '';
 
         if ($this->coursework->allocation_enabled()) {
@@ -53,21 +53,25 @@ class moderationagreement_cell extends cell_base {
             }
         }
         $feedback = $submission->get_assessor_feedback_by_stage('assessor_1');
-        if ($feedback) $moderation = moderation::find(array('feedbackid' => $feedback->id));
+        if ($feedback) {
+            $moderation = moderation::find(['feedbackid' => $feedback->id]);
+        }
 
-        if ($moderation) $moderation_agreement = $moderation->get_moderator_agreement($feedback);
+        if ($moderation) {
+            $moderationagreement = $moderation->get_moderator_agreement($feedback);
+        }
 
-        if ($moderation_agreement) {
-                $data[] = $moderation_agreement->agreement;
-                $data[] = $this->get_assessor_name($moderation_agreement->moderatorid);
-                $data[] = $this->get_assessor_username($moderation_agreement->moderatorid);
-                $data[] = userdate($moderation_agreement->timemodified, $this->dateformat);
-            } else {
-                $data[] = '';
-                $data[] = '';
-                $data[] = '';
-                $data[] = '';
-            }
+        if ($moderationagreement) {
+                $data[] = $moderationagreement->agreement;
+                $data[] = $this->get_assessor_name($moderationagreement->moderatorid);
+                $data[] = $this->get_assessor_username($moderationagreement->moderatorid);
+                $data[] = userdate($moderationagreement->timemodified, $this->dateformat);
+        } else {
+            $data[] = '';
+            $data[] = '';
+            $data[] = '';
+            $data[] = '';
+        }
         return $data;
     }
 

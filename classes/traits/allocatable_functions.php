@@ -55,12 +55,12 @@ trait allocatable_functions {
                    AND allocatabletype = :type
                  ";
 
-        $params = array(
+        $params = [
             'courseworkid' => $coursework->id,
             'courseworkid2' => $coursework->id,
             'id' => $this->id(),
             'type' => $this->type(),
-        );
+        ];
         $DB->execute($sql, $params);
     }
 
@@ -79,7 +79,7 @@ trait allocatable_functions {
                AND s.allocatableid = :id
                AND s.courseworkid = :courseworkid
         ";
-        $result = $DB->count_records_sql($sql, array('id' => $this->id(), 'courseworkid' => $coursework->id()));
+        $result = $DB->count_records_sql($sql, ['id' => $this->id(), 'courseworkid' => $coursework->id()]);
         return !empty($result);
     }
 
@@ -98,7 +98,7 @@ trait allocatable_functions {
                AND s.allocatableid = :id
                AND s.courseworkid = :courseworkid";
 
-        return $DB->get_record_sql($sql, array('id' => $this->id(), 'courseworkid' => $coursework->id()));
+        return $DB->get_record_sql($sql, ['id' => $this->id(), 'courseworkid' => $coursework->id()]);
     }
 
     /**
@@ -108,7 +108,7 @@ trait allocatable_functions {
     public function has_all_initial_feedbacks($coursework) {
         global $DB;
 
-        $expected_markers = $coursework->numberofmarkers;
+        $expectedmarkers = $coursework->numberofmarkers;
 
         $sql = "
             SELECT COUNT(*)
@@ -120,8 +120,8 @@ trait allocatable_functions {
                AND s.courseworkid = :courseworkid
         ";
         $feedbacks = $DB->count_records_sql($sql,
-            array('id' => $this->id(),
-                'courseworkid' => $coursework->id()));
+            ['id' => $this->id(),
+                'courseworkid' => $coursework->id()]);
 
         // when sampling is enabled, calculate how many stages are in sample
         if ($coursework->sampling_enabled()) {
@@ -133,14 +133,14 @@ trait allocatable_functions {
                   AND allocatabletype = :allocatabletype";
 
             $markers = $DB->count_records_sql($sql,
-                array('courseworkid' => $coursework->id(),
+                ['courseworkid' => $coursework->id(),
                     'allocatableid' => $this->id(),
-                    'allocatabletype' => $this->type()));
+                    'allocatabletype' => $this->type()]);
 
-            $expected_markers = $markers + 1; // there is always a marker for stage 1
+            $expectedmarkers = $markers + 1; // there is always a marker for stage 1
         }
 
-        return $feedbacks == $expected_markers;
+        return $feedbacks == $expectedmarkers;
     }
 
     /**
@@ -173,8 +173,8 @@ trait allocatable_functions {
      * @param $coursework
      */
     private function fill_submission_and_feedback($coursework) {
-        $coursework_id = $coursework->id;
-        submission::fill_pool_coursework($coursework_id);
-        feedback::fill_pool_coursework($coursework_id);
+        $courseworkid = $coursework->id;
+        submission::fill_pool_coursework($courseworkid);
+        feedback::fill_pool_coursework($courseworkid);
     }
 }

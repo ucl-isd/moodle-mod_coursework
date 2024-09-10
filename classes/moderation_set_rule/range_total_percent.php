@@ -65,23 +65,23 @@ class range_total_percent extends moderation_set_rule {
      * @param \mod_coursework\stages\base $stage
      * @return mixed
      */
-    public function adjust_set(array &$moderation_set, array &$potential_allocatables, $stage) {
+    public function adjust_set(array &$moderationset, array &$potentialallocatables, $stage) {
 
-        $total_number = count($moderation_set) + count($potential_allocatables);
+        $totalnumber = count($moderationset) + count($potentialallocatables);
 
         // We need to round up as we may have small numbers of students and e.g. 25% of 10 students ought to
         // equate to 3.
-        $number_needed = ceil($total_number * ($this->upperlimit / 100));
+        $numberneeded = ceil($totalnumber * ($this->upperlimit / 100));
 
-        while (count($moderation_set) < $number_needed) {
+        while (count($moderationset) < $numberneeded) {
 
             // Add random ones till we have enough.
-            $id = array_rand($potential_allocatables);
+            $id = array_rand($potentialallocatables);
 
-            $moderation_set[$id] = $potential_allocatables[$id];
-            unset ($potential_allocatables[$id]);
+            $moderationset[$id] = $potentialallocatables[$id];
+            unset ($potentialallocatables[$id]);
 
-            $number_needed--;
+            $numberneeded--;
 
         }
     }
@@ -125,10 +125,10 @@ class range_total_percent extends moderation_set_rule {
         // Upper limit.
         $html .= html_writer::start_tag('p');
         $html .= get_string('upperlimit', 'mod_coursework').' ';
-        $attributes = array(
+        $attributes = [
             'name' => 'rule_range_total_percent_upperlimit',
-            'size' => 3
-        );
+            'size' => 3,
+        ];
         $html .= html_writer::empty_tag('input', $attributes).'%';
         $html .= html_writer::end_tag('p');
         return $html;

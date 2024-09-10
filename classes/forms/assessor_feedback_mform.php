@@ -44,7 +44,7 @@ class assessor_feedback_mform extends moodleform {
     /**
      * @var int the id of the submission that the grade pertains to
      */
-    public $submission_id;
+    public $submissionid;
 
     /**
      * @var int
@@ -88,16 +88,16 @@ class assessor_feedback_mform extends moodleform {
 
         $grademenu = make_grades_menu($coursework->grade);
 
-        if (($coursework->is_using_advanced_grading() && $coursework->finalstagegrading ==0 ) || ($coursework->is_using_advanced_grading() && $coursework->finalstagegrading == 1 &&  $feedback->stage_identifier != 'final_agreed_1')) {
+        if (($coursework->is_using_advanced_grading() && $coursework->finalstagegrading == 0 ) || ($coursework->is_using_advanced_grading() && $coursework->finalstagegrading == 1 &&  $feedback->stage_identifier != 'final_agreed_1')) {
             $this->_grading_controller = $coursework->get_advanced_grading_active_controller();
             $this->_grading_instance = $this->_grading_controller->get_or_create_instance(0, $feedback->assessorid, $feedback->id);
-            $mform->addElement('grading', 'advancedgrading', get_string('grade', 'mod_coursework'), array('gradinginstance' => $this->_grading_instance));
+            $mform->addElement('grading', 'advancedgrading', get_string('grade', 'mod_coursework'), ['gradinginstance' => $this->_grading_instance]);
         } else {
             $mform->addElement('select',
                                'grade',
                                get_string('grade', 'mod_coursework'),
                                $grademenu,
-                               array('id' => 'feedback_grade'));
+                               ['id' => 'feedback_grade']);
         }
 
         // Useful to keep the overall comments even if we have a rubric or something. There may be a place
@@ -105,18 +105,18 @@ class assessor_feedback_mform extends moodleform {
         $mform->addElement('editor', 'feedbackcomment', get_string('comment', 'mod_coursework'));
         $mform->setType('editor', PARAM_RAW);
 
-        $file_manager_options = array(
+        $filemanageroptions = [
             'subdirs' => false,
             'accepted_types' => '*',
-            'return_types' => FILE_INTERNAL
-        );
+            'return_types' => FILE_INTERNAL,
+        ];
 
         $uploadfilestring = get_string('uploadafile');
         $this->_form->addElement('filemanager',
                                  'feedback_manager',
                                  $uploadfilestring,
                                  null,
-                                 $file_manager_options);
+                                 $filemanageroptions);
 
         $this->add_submit_buttons($coursework->draft_feedback_enabled(), $feedback->id);
 
@@ -134,24 +134,24 @@ class assessor_feedback_mform extends moodleform {
      */
     public function add_submit_buttons($draftenabled,  $feedbackid) {
 
-        $button_array = [];
+        $buttonarray = [];
 
         if ($draftenabled) {
-            $button_array[] = $this->_form->createElement('submit', 'submitfeedbackbutton', get_string('saveasdraft', 'coursework'));
+            $buttonarray[] = $this->_form->createElement('submit', 'submitfeedbackbutton', get_string('saveasdraft', 'coursework'));
         }
 
-            $button_array[] =
+            $buttonarray[] =
                 $this->_form->createElement('submit', 'submitbutton', get_string('saveandfinalise', 'coursework'));
 
         $feedback = $this->_customdata['feedback'];
 
-        $is_published = $feedback->get_submission()->is_published();
+        $ispublished = $feedback->get_submission()->is_published();
 
-        if ($feedbackid &&  !$is_published) {
-            $button_array[] = $this->_form->createElement('submit', 'removefeedbackbutton', get_string('removefeedback', 'coursework'));
+        if ($feedbackid &&  !$ispublished) {
+            $buttonarray[] = $this->_form->createElement('submit', 'removefeedbackbutton', get_string('removefeedback', 'coursework'));
         }
-        $button_array[] = $this->_form->createElement('cancel');
-        $this->_form->addGroup($button_array, 'buttonar', '', array(' '), false);
+        $buttonarray[] = $this->_form->createElement('cancel');
+        $this->_form->addGroup($buttonarray, 'buttonar', '', [' '], false);
         $this->_form->closeHeaderBefore('buttonar');
 
     }
@@ -235,7 +235,7 @@ class assessor_feedback_mform extends moodleform {
                 'areamaxbytes' => $filemanager->getAreamaxbytes(),
                 'target' => 'id_' . $filemanager->getName(),
                 'context' => $PAGE->context,
-                'itemid' => $filemanager->getValue()
+                'itemid' => $filemanager->getValue(),
             ];
             $fm = new \form_filemanager($params);
             $options = $fm->options;

@@ -33,13 +33,13 @@ class decorator {
     /**
      * @var
      */
-    protected $wrapped_object;
+    protected $wrappedobject;
 
     /**
-     * @param $wrapped_object
+     * @param $wrappedobject
      */
-    public function __construct($wrapped_object) {
-        $this->wrapped_object = $wrapped_object;
+    public function __construct($wrappedobject) {
+        $this->wrappedobject = $wrappedobject;
     }
 
     /**
@@ -50,8 +50,8 @@ class decorator {
      * @return mixed
      */
     public function __call($method, $args) {
-        return call_user_func_array(array($this->wrapped_object,
-                                          $method),
+        return call_user_func_array([$this->wrappedobject,
+                                          $method],
                                     $args);
     }
 
@@ -62,7 +62,7 @@ class decorator {
      * @return mixed
      */
     public function __get($name) {
-        return $this->wrapped_object->$name;
+        return $this->wrappedobject->$name;
     }
 
     /**
@@ -73,13 +73,13 @@ class decorator {
      * @return mixed
      */
     public function __set($name, $value) {
-        return $this->wrapped_object->$name = $value;
+        return $this->wrappedobject->$name = $value;
     }
 
     /**
      * @return mixed
      */
     public function wrapped_object() {
-        return $this->wrapped_object;
+        return $this->wrappedobject;
     }
 }

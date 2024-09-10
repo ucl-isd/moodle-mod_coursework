@@ -240,7 +240,7 @@ class mod_coursework_generator extends testing_module_generator {
 
         $fs = get_file_storage();
         // Prepare file record object
-        $fileinfo = array(
+        $fileinfo = [
             'contextid' => $coursework->get_context_id(),
             // ID of context
             'component' => 'mod_coursework',
@@ -251,7 +251,7 @@ class mod_coursework_generator extends testing_module_generator {
             // usually = ID of row in table
             'filepath' => '/',
             // any path beginning and ending in /
-            'filename' => 'myfile.txt'); // any filename
+            'filename' => 'myfile.txt']; // any filename
         // Create file containing text 'hello world'
         $fs->create_file_from_string($fileinfo, 'hello world');
 

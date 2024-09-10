@@ -37,11 +37,11 @@ class upload_feedback_form extends moodleform {
     function definition() {
         $mform =& $this->_form;
 
-        $mform->addElement('filepicker', 'feedbackzip', get_string('feedbackzipfile', 'coursework'), null, array( 'accepted_types' => '*.zip'));
+        $mform->addElement('filepicker', 'feedbackzip', get_string('feedbackzipfile', 'coursework'), null, [ 'accepted_types' => '*.zip']);
         $mform->addRule('feedbackzip', null, 'required');
         $mform->addHelpButton('feedbackzip', 'feedbackzipfile', 'coursework');
 
-        $mform->addElement('advcheckbox', 'overwrite', '', get_string('overwritefeedback', 'coursework'), null, array(0, 1));
+        $mform->addElement('advcheckbox', 'overwrite', '', get_string('overwritefeedback', 'coursework'), null, [0, 1]);
         $mform->addElement('hidden', 'cmid', $this->cmid);
         $mform->setType('cmid', PARAM_RAW);
 
@@ -49,18 +49,24 @@ class upload_feedback_form extends moodleform {
 
         if ($this->coursework->get_max_markers() > 1) {
 
-            $capability = array('mod/coursework:addinitialgrade', 'mod/coursework:editinitialgrade');
+            $capability = ['mod/coursework:addinitialgrade', 'mod/coursework:editinitialgrade'];
             if (has_any_capability($capability, $this->coursework->get_context()) && !has_capability('mod/coursework:administergrades', $this->coursework->get_context())) {
                 $options['initialassessor'] = get_string('initialassessor', 'coursework');
 
             } else if (has_capability('mod/coursework:administergrades', $this->coursework->get_context())) {
                 $options['assessor_1'] = get_string('assessorupload', 'coursework', '1');
-                if ($this->coursework->get_max_markers() >= 2) $options['assessor_2'] = get_string('assessorupload', 'coursework', '2');
-                if ($this->coursework->get_max_markers() >= 3) $options['assessor_3'] = get_string('assessorupload', 'coursework', '3');
+                if ($this->coursework->get_max_markers() >= 2) {
+                    $options['assessor_2'] = get_string('assessorupload', 'coursework', '2');
+                }
+                if ($this->coursework->get_max_markers() >= 3) {
+                    $options['assessor_3'] = get_string('assessorupload', 'coursework', '3');
+                }
             }
 
-            $capability = array('mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade', 'mod/coursework:administergrades');
-            if (has_any_capability($capability, $this->coursework->get_context())) $options['final_agreed_1'] = get_string('finalagreed', 'coursework');
+            $capability = ['mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade', 'mod/coursework:administergrades'];
+            if (has_any_capability($capability, $this->coursework->get_context())) {
+                $options['final_agreed_1'] = get_string('finalagreed', 'coursework');
+            }
 
             $mform->addElement('select', 'feedbackstage', get_string('feedbackstage', 'coursework'), $options);
         } else {

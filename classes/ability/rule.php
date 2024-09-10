@@ -38,12 +38,12 @@ class rule {
     /**
      * @var string
      */
-    protected $class_name;
+    protected $classname;
 
     /**
      * @var callable
      */
-    protected $rule_function;
+    protected $rulefunction;
 
     /**
      * @var bool
@@ -52,14 +52,14 @@ class rule {
 
     /**
      * @param string $action
-     * @param string $class_name
-     * @param $rule_function
+     * @param string $classname
+     * @param $rulefunction
      * @param bool $allow
      */
-    public function __construct($action, $class_name, $rule_function, $allow = true) {
+    public function __construct($action, $classname, $rulefunction, $allow = true) {
         $this->action = $action;
-        $this->class_name = $class_name;
-        $this->rule_function = $rule_function;
+        $this->classname = $classname;
+        $this->rulefunction = $rulefunction;
         $this->allow = $allow;
     }
 
@@ -81,7 +81,7 @@ class rule {
      * @return bool
      */
     public function allows($object) {
-        $rule = $this->rule_function;
+        $rule = $this->rulefunction;
         return $rule($object) && $this->allow;
     }
 
@@ -92,7 +92,7 @@ class rule {
      * @return bool
      */
     public function prevents($object) {
-        $rule = $this->rule_function;
+        $rule = $this->rulefunction;
         return $rule($object) && !$this->allow;
     }
 
@@ -109,10 +109,10 @@ class rule {
      * @return bool
      */
     protected function class_matches($object) {
-        if (get_class($object) == $this->class_name) {
+        if (get_class($object) == $this->classname) {
             return true;
         }
-        if (get_parent_class($object) == $this->class_name) {
+        if (get_parent_class($object) == $this->classname) {
             return true;
         }
         return false;

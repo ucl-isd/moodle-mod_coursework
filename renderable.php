@@ -76,7 +76,8 @@ class mod_coursework_assessor_feedback_table extends mod_coursework_renderable {
 /**
  * @mixin \mod_coursework\models\coursework
  */
-class mod_coursework_coursework extends mod_coursework_renderable  { }
+class mod_coursework_coursework extends mod_coursework_renderable  { 
+}
 
 /**
  * @mixin \mod_coursework\grading_table_row_multi

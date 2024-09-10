@@ -34,13 +34,13 @@ $ajax = optional_param('ajax', 0, PARAM_INT);
 $remove = !!optional_param('removefeedbackbutton', 0, PARAM_TEXT);
 $confirm = optional_param('confirm', 0, PARAM_INT);
 
-$params = array(
+$params = [
     'feedbackid' => $feedbackid,
     'finalised' => $finalised,
     'remove' => $remove,
     'confirm' => $confirm,
-    'ajax' => $ajax
-);
+    'ajax' => $ajax,
+];
 
 if ($ajax) {
     $params['cell_type'] = required_param('cell_type', PARAM_TEXT);

@@ -48,17 +48,17 @@ class moderation extends table_base {
     /**
      * @var int
      */
-   public $feedbackid;
+    public $feedbackid;
 
     /**
- * @var int
- */
+     * @var int
+     */
     public $moderatorid;
 
     /**
      * @var int
      */
-    public $stage_identifier = 'moderator';
+    public $stageidentifier = 'moderator';
     /**
      * @var string
      */
@@ -68,7 +68,7 @@ class moderation extends table_base {
     /**
      * @var string
      */
-    protected static $table_name = 'coursework_mod_agreements';
+    protected static $tablename = 'coursework_mod_agreements';
 
     /**
      * @var string
@@ -96,7 +96,7 @@ class moderation extends table_base {
         global $DB;
 
         //Moderation done only for single courseworks so submission id to retrieve feedback is enough
-        $params = array('id' => $this->feedbackid);
+        $params = ['id' => $this->feedbackid];
         $feedback = $DB->get_record('coursework_feedbacks', $params);
         return $feedback;
 
@@ -113,8 +113,8 @@ class moderation extends table_base {
      * @return bool|submission
      */
     public function get_submission() {
-       $feedback = $this->get_feedback();
-       $this->submission = submission::find($feedback->submissionid);
+        $feedback = $this->get_feedback();
+        $this->submission = submission::find($feedback->submissionid);
 
         return $this->submission;
     }
@@ -173,7 +173,7 @@ class moderation extends table_base {
     public static function get_moderator_agreement($feedback) {
         global $DB;
 
-        $params = array('feedbackid' => $feedback->id);
+        $params = ['feedbackid' => $feedback->id];
 
         // Should only ever be one that has the particular combination of these three options.
         $moderation = $DB->get_record('coursework_mod_agreements', $params);

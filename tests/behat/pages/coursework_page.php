@@ -41,8 +41,8 @@ class mod_coursework_behat_coursework_page extends mod_coursework_behat_page_bas
      */
     public function individual_feedback_date_present() {
         $table = $this->getPage()->find('css', 'table.deadlines');
-        $table_header_present = strpos($table->getText(), 'utomatically release individual feedback') !== false;
-        return $table_header_present;
+        $tableheaderpresent = strpos($table->getText(), 'utomatically release individual feedback') !== false;
+        return $tableheaderpresent;
     }
 
     /**
@@ -50,8 +50,8 @@ class mod_coursework_behat_coursework_page extends mod_coursework_behat_page_bas
      */
     public function general_feedback_date_present() {
         $table = $this->getPage()->find('css', 'table.deadlines');
-        $table_header_present = strpos($table->getText(), 'General feedback deadline');
-        return $table_header_present !== false;
+        $tableheaderpresent = strpos($table->getText(), 'General feedback deadline');
+        return $tableheaderpresent !== false;
     }
 
     public function confirm() {
@@ -68,21 +68,21 @@ class mod_coursework_behat_coursework_page extends mod_coursework_behat_page_bas
         }
     }
 
-    public function get_coursework_name($courseworkName) {
-        $coursework_heading = $this->getPage()->find('css', 'h2');
-        $coursework_heading_present = strpos($coursework_heading->getText(), $courseworkName);
+    public function get_coursework_name($courseworkname) {
+        $courseworkheading = $this->getPage()->find('css', 'h2');
+        $courseworkheadingpresent = strpos($courseworkheading->getText(), $courseworkname);
 
-        return $coursework_heading_present !== false;
+        return $courseworkheadingpresent !== false;
     }
 
-    public function get_coursework_student_name($studentName) {
-        $table_users = $this->getPage()->findAll('css', 'table.submissions');
+    public function get_coursework_student_name($studentname) {
+        $tableusers = $this->getPage()->findAll('css', 'table.submissions');
 
-        if (!empty($table_users)) {
-            foreach ($table_users as $table_user) {
-                $coursework_student_name = strpos($table_user->getText(), $studentName);
+        if (!empty($tableusers)) {
+            foreach ($tableusers as $tableuser) {
+                $courseworkstudentname = strpos($tableuser->getText(), $studentname);
 
-                if ($coursework_student_name !== false) {
+                if ($courseworkstudentname !== false) {
                     return true;
                 }
             }

@@ -24,27 +24,27 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-$messageproviders = array(
-    'deadlinechanged' => array(
-    ),
-    'submission_receipt' => array(
-        'defaults' => array(
+$messageproviders = [
+    'deadlinechanged' => [
+    ],
+    'submission_receipt' => [
+        'defaults' => [
             'popup' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_ENABLED,
             'email' => MESSAGE_FORCED,
-        ),
-    ),
-    'coursework_submission' => array(
-        'defaults' => array(
+        ],
+    ],
+    'coursework_submission' => [
+        'defaults' => [
             'popup' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_ENABLED,
             'email' => MESSAGE_FORCED,
-        ),
-    ),
-    'feedback_released' => array(
-        'defaults' => array(
+        ],
+    ],
+    'feedback_released' => [
+        'defaults' => [
             'popup' => MESSAGE_DISALLOWED,
             'email' => MESSAGE_FORCED,
-        ),
-    ),
-    'student_deadline_reminder' => array(
-    ),
-);
+        ],
+    ],
+    'student_deadline_reminder' => [
+    ],
+];

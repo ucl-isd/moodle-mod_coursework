@@ -33,9 +33,9 @@ require_once($CFG->libdir.'/csvlib.class.php');
 
 $coursemoduleid = required_param('cmid', PARAM_INT);
 
-$coursemodule = $DB->get_record('course_modules', array('id' => $coursemoduleid));
+$coursemodule = $DB->get_record('course_modules', ['id' => $coursemoduleid]);
 $coursework = coursework::find($coursemodule->instance);
-$course = $DB->get_record('course', array('id' => $coursemodule->course));
+$course = $DB->get_record('course', ['id' => $coursemodule->course]);
 
 require_login($course, false, $coursemodule);
 
@@ -45,10 +45,10 @@ $title = get_string($csvtype, 'mod_coursework');
 $PAGE->set_url(new moodle_url('/mod/coursework/actions/upload_grading_sheet.php'));
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
-$grading_sheet_capabilities = array('mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade', 'mod/coursework:administergrades');
+$gradingsheetcapabilities = ['mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade', 'mod/coursework:administergrades'];
 
 // Bounce anyone who shouldn't be here.
-if (!has_any_capability($grading_sheet_capabilities, $PAGE->context)) {
+if (!has_any_capability($gradingsheetcapabilities, $PAGE->context)) {
     $message = 'You do not have permission to upload grading sheets';
     redirect(new moodle_url('mod/coursework/view.php'), $message);
 }
@@ -65,25 +65,25 @@ if ($data = $gradinguploadform->get_data()) {
 
     $content = $gradinguploadform->get_file_content('gradingdata');
 
-    $csv_cells = \mod_coursework\export\grading_sheet::cells_array($coursework);
+    $csvcells = \mod_coursework\export\grading_sheet::cells_array($coursework);
 
     $csvimport = new \mod_coursework\export\import($coursework, false, false);
 
-   // $csv_cells = $csvimport->csv_columns(); //all columns from spreadsheet
+    // $csv_cells = $csvimport->csv_columns(); //all columns from spreadsheet
 
-    $procsessingresults = $csvimport->validate_csv($content, $data->encoding, $data->delimiter_name, $csv_cells);
+    $procsessingresults = $csvimport->validate_csv($content, $data->encoding, $data->delimiter_name, $csvcells);
 
     // Process
 
     // If (!empty($procsessingresults)) {
-    $csvimport->process_csv($content, $data->encoding, $data->delimiter_name, $csv_cells, $procsessingresults);
-    $page_renderer = $PAGE->get_renderer('mod_coursework', 'page');
-    echo $page_renderer->process_csv_upload($procsessingresults, $content, $csvtype);
+    $csvimport->process_csv($content, $data->encoding, $data->delimiter_name, $csvcells, $procsessingresults);
+    $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
+    echo $pagerenderer->process_csv_upload($procsessingresults, $content, $csvtype);
     //} else {
         //
     //}
 
 } else {
-    $page_renderer = $PAGE->get_renderer('mod_coursework', 'page');
-    echo $page_renderer->csv_upload($gradinguploadform, $csvtype);
+    $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
+    echo $pagerenderer->csv_upload($gradinguploadform, $csvtype);
 }

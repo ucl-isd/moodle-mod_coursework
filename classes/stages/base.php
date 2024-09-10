@@ -50,41 +50,41 @@ abstract class base {
     /**
      * @var string
      */
-    protected $stage_identifier;
+    protected $stageidentifier;
 
     /**
      * @var array|null
      */
-    protected $allocatables_with_feedback;
+    protected $allocatableswithfeedback;
 
     /**
      * @var array|null
      */
-    protected $allocatables_with_moderation;
+    protected $allocatableswithmoderation;
 
     /**
      * @var array
      */
-    private static $self_cache = [
-        'user_is_assessor' => []
+    private static $selfcache = [
+        'user_is_assessor' => [],
     ];
 
     /**
      * @param coursework $coursework
      * @param int $stage_identifier
      */
-    public function __construct($coursework, $stage_identifier) {
+    public function __construct($coursework, $stageidentifier) {
         $this->coursework = $coursework;
-        $this->stage_identifier = $stage_identifier;
+        $this->stageidentifier = $stageidentifier;
     }
 
     /**
      * @return strategy_base
      */
     private function get_allocation_strategy() {
-        $strategy_name = $this->strategy_name();
-        $class_name = "\\mod_coursework\\allocation\\strategy\\{$strategy_name}";
-        return new $class_name($this->get_coursework(), $this);
+        $strategyname = $this->strategy_name();
+        $classname = "\\modcoursework\\allocation\\strategy\\{$strategyname}";
+        return new $classname($this->get_coursework(), $this);
     }
 
     /**
@@ -121,10 +121,10 @@ abstract class base {
      * @return bool
      */
     private function already_allocated($allocatable) {
-        $coursework_id = $this->get_coursework_id();
-        allocation::fill_pool_coursework($coursework_id);
+        $courseworkid = $this->get_coursework_id();
+        allocation::fill_pool_coursework($courseworkid);
         $record = allocation::get_object(
-            $coursework_id,
+            $courseworkid,
             'allocatableid-allocatabletype-stage_identifier',
             [$allocatable->id(), $allocatable->type(), $this->identifier()]
         );
@@ -139,10 +139,10 @@ abstract class base {
     public function assessor_already_allocated_for_this_submission($allocatable, $assessor) {
 
         if (!empty($assessor)) {
-            $coursework_id = $this->get_coursework_id();
-            allocation::fill_pool_coursework($coursework_id);
+            $courseworkid = $this->get_coursework_id();
+            allocation::fill_pool_coursework($courseworkid);
             $record = allocation::get_object(
-                $coursework_id,
+                $courseworkid,
                 'allocatableid-allocatabletype-assessorid',
                 [$allocatable->id(), $allocatable->type(), $assessor->id]
             );
@@ -164,7 +164,7 @@ abstract class base {
      * @return string 'assessor_1'
      */
     public function identifier() {
-        return $this->stage_identifier;
+        return $this->stageidentifier;
     }
 
     /**
@@ -194,9 +194,9 @@ abstract class base {
      * @return \html_table_cell
      */
     public function get_allocation_table_cell($allocatable) {
-        $cell_helper = $this->get_cell_helper($allocatable);
+        $cellhelper = $this->get_cell_helper($allocatable);
 
-        return $cell_helper->get_renderable_allocation_table_cell();
+        return $cellhelper->get_renderable_allocation_table_cell();
     }
 
     /**
@@ -204,9 +204,9 @@ abstract class base {
      * @return \html_table_cell
      */
     public function get_moderation_table_cell($allocatable) {
-        $cell_helper = $this->get_cell_helper($allocatable);
+        $cellhelper = $this->get_cell_helper($allocatable);
 
-        return $cell_helper->get_renderable_moderation_table_cell();
+        return $cellhelper->get_renderable_moderation_table_cell();
     }
 
     /**
@@ -250,7 +250,7 @@ abstract class base {
     private function get_percentage_allocated_teachers() {
         global $DB;
 
-        return $DB->get_records('coursework_allocation_config', array('courseworkid' => $this->get_coursework_id()), '', 'assessorid as id');
+        return $DB->get_records('coursework_allocation_config', ['courseworkid' => $this->get_coursework_id()], '', 'assessorid as id');
     }
 
     /**
@@ -275,10 +275,10 @@ abstract class base {
      */
     public function allocation_is_manual($allocatable) {
 
-        $coursework_id = $this->get_coursework_id();
-        allocation::fill_pool_coursework($coursework_id);
+        $courseworkid = $this->get_coursework_id();
+        allocation::fill_pool_coursework($courseworkid);
         $record = allocation::get_object(
-            $coursework_id,
+            $courseworkid,
             'allocatableid-allocatabletype-stage_identifier',
             [$allocatable->id(), $allocatable->type(), $this->identifier()]
         );
@@ -294,24 +294,24 @@ abstract class base {
     public function get_teachers() {
         $cache = \cache::make('mod_coursework', 'courseworkdata');
 
-        $serialised_teachers = $cache->get($this->coursework->id()."_teachers");
+        $serialisedteachers = $cache->get($this->coursework->id()."_teachers");
 
         // There is a chance that when the teachers were initially cached the dataset was empty
         // So check again
-        if (empty($serialised_teachers) || empty(unserialize($serialised_teachers))) {
+        if (empty($serialisedteachers) || empty(unserialize($serialisedteachers))) {
             $users = get_enrolled_users($this->coursework->get_context());
-            $teacher_users = [];
+            $teacherusers = [];
             $modcontext = $this->coursework->get_context();
             foreach ($users as $user) {
                 if (has_capability($this->assessor_capability(), $modcontext, $user)) {
-                    $teacher_users[] = user::build($user);
+                    $teacherusers[] = user::build($user);
                 }
             }
-            $cache->set($this->coursework->id()."_teachers", serialize($teacher_users));
+            $cache->set($this->coursework->id()."_teachers", serialize($teacherusers));
         } else {
-            $teacher_users = unserialize($serialised_teachers);
+            $teacherusers = unserialize($serialisedteachers);
         }
-        return $teacher_users;
+        return $teacherusers;
     }
 
     /**
@@ -327,12 +327,12 @@ abstract class base {
      */
     public function has_feedback($allocatable) {
         $feedback = null;
-        $coursework_id = $this->get_coursework_id();
-        submission::fill_pool_coursework($coursework_id);
-        $submission = submission::get_object($coursework_id, 'allocatableid', [$allocatable->id]);
+        $courseworkid = $this->get_coursework_id();
+        submission::fill_pool_coursework($courseworkid);
+        $submission = submission::get_object($courseworkid, 'allocatableid', [$allocatable->id]);
         if ($submission) {
-            feedback::fill_pool_coursework($coursework_id);
-            $feedback = feedback::get_object($coursework_id, 'submissionid-stage_identifier', [$submission->id, $this->identifier()]);
+            feedback::fill_pool_coursework($courseworkid);
+            $feedback = feedback::get_object($courseworkid, 'submissionid-stage_identifier', [$submission->id, $this->identifier()]);
         }
         return !empty($feedback);
     }
@@ -350,7 +350,7 @@ abstract class base {
             $sql = "SELECT *
                     FROM {coursework_mod_agreements}
                     WHERE feedbackid = ?";
-            return $DB->record_exists_sql($sql, array($feedback->id));
+            return $DB->record_exists_sql($sql, [$feedback->id]);
         } else {
             return false;
         }
@@ -363,8 +363,8 @@ abstract class base {
     public function get_moderation($submission) {
         $feedback = $this->get_single_feedback($submission);
         if ($feedback) {
-            $moderation_params = array('feedbackid' => $feedback->id);
-            return moderation::find($moderation_params);
+            $moderationparams = ['feedbackid' => $feedback->id];
+            return moderation::find($moderationparams);
         } else {
             return false;
         }
@@ -401,11 +401,11 @@ abstract class base {
      */
     public function has_allocation($allocatable) {
         if (!isset($this->allocatables_with_allocations)) {
-            $coursework_id = $this->get_coursework()->id;
-            if (!isset(allocation::$pool[$coursework_id]['stage_identifier'])) {
-                allocation::fill_pool_coursework($coursework_id);
+            $courseworkid = $this->get_coursework()->id;
+            if (!isset(allocation::$pool[$courseworkid]['stage_identifier'])) {
+                allocation::fill_pool_coursework($courseworkid);
             }
-            $this->allocatables_with_allocations = array_column(allocation::$pool[$coursework_id]['stage_identifier'][$this->stage_identifier] ?? [], 'allocatableid');
+            $this->allocatables_with_allocations = array_column(allocation::$pool[$courseworkid]['stage_identifier'][$this->stageidentifier] ?? [], 'allocatableid');
         }
 
         return in_array($allocatable->id, $this->allocatables_with_allocations);
@@ -417,9 +417,9 @@ abstract class base {
      * @return bool
      */
     public function stage_has_allocation() {
-        $coursework_id = $this->get_coursework_id();
-        allocation::fill_pool_coursework($coursework_id);
-        $record = allocation::get_object($coursework_id, 'stage_identifier', [$this->stage_identifier]);
+        $courseworkid = $this->get_coursework_id();
+        allocation::fill_pool_coursework($courseworkid);
+        $record = allocation::get_object($courseworkid, 'stage_identifier', [$this->stageidentifier]);
 
         return !empty($record);
     }
@@ -448,10 +448,10 @@ abstract class base {
      * @return user
      */
     public function allocated_teacher_for($allocatable) {
-        $coursework_id = $this->get_coursework_id();
-        allocation::fill_pool_coursework($coursework_id);
+        $courseworkid = $this->get_coursework_id();
+        allocation::fill_pool_coursework($courseworkid);
         $allocation = allocation::get_object(
-            $coursework_id,
+            $courseworkid,
             'allocatableid-allocatabletype-stage_identifier',
             [$allocatable->id(), $allocatable->type(), $this->identifier()]
         );
@@ -468,19 +468,19 @@ abstract class base {
      * @param array $row_data
      * @return void
      */
-    public function process_allocation_form_row_data($allocatable, $row_data) {
-        $cell_helper = $this->get_cell_processor($allocatable);
-        $cell_data = $this->get_cell_data($row_data);
-        $cell_helper->process($cell_data);
+    public function process_allocation_form_row_data($allocatable, $rowdata) {
+        $cellhelper = $this->get_cell_processor($allocatable);
+        $celldata = $this->get_cell_data($rowdata);
+        $cellhelper->process($celldata);
     }
 
     /**
      * @param array $row_data
      * @return mixed
      */
-    private function get_cell_data($row_data) {
-        if (array_key_exists($this->identifier(), $row_data)) {
-            return new data($this, $row_data[$this->identifier()]);
+    private function get_cell_data($rowdata) {
+        if (array_key_exists($this->identifier(), $rowdata)) {
+            return new data($this, $rowdata[$this->identifier()]);
         }
         return new data($this);
     }
@@ -510,7 +510,7 @@ abstract class base {
             return true;
         }
 
-        if ($this->stage_identifier == 'final_agreed_1') {
+        if ($this->stageidentifier == 'final_agreed_1') {
             return true;
         }
 
@@ -518,7 +518,7 @@ abstract class base {
         $record = assessment_set_membership::get_object(
             $this->coursework->id,
             'allocatableid-allocatabletype-stage_identifier',
-            [$allocatable->id(), $allocatable->type(), $this->stage_identifier]);
+            [$allocatable->id(), $allocatable->type(), $this->stageidentifier]);
         return !empty($record);
     }
 
@@ -534,12 +534,12 @@ abstract class base {
      * @param allocatable $allocatable
      */
     public function add_allocatable_to_sampling($allocatable) {
-        $moderation_set_membership = new assessment_set_membership();
-        $moderation_set_membership->courseworkid = $this->coursework->id;
-        $moderation_set_membership->allocatableid = $allocatable->id();
-        $moderation_set_membership->allocatabletype = $allocatable->type();
-        $moderation_set_membership->stage_identifier = $this->stage_identifier;
-        $moderation_set_membership->save();
+        $moderationsetmembership = new assessment_set_membership();
+        $moderationsetmembership->courseworkid = $this->coursework->id;
+        $moderationsetmembership->allocatableid = $allocatable->id();
+        $moderationsetmembership->allocatabletype = $allocatable->type();
+        $moderationsetmembership->stage_identifier = $this->stageidentifier;
+        $moderationsetmembership->save();
     }
 
     /**
@@ -548,12 +548,12 @@ abstract class base {
     public function remove_allocatable_from_sampling($allocatable) {
         global $DB;
 
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $allocatable->id(),
             'allocatabletype' => $allocatable->type(),
-            'stage_identifier' => $this->stage_identifier
-        );
+            'stage_identifier' => $this->stageidentifier,
+        ];
         $DB->delete_records('coursework_sample_set_mbrs', $params);
     }
 
@@ -562,14 +562,14 @@ abstract class base {
      * @return bool
      */
     public function user_is_assessor($assessor) {
-        if (!isset(self::$self_cache['user_is_assessor'][$this->coursework->id][$assessor->id])) {
+        if (!isset(self::$selfcache['user_is_assessor'][$this->coursework->id][$assessor->id])) {
             $enrolled = is_enrolled($this->coursework->get_course_context(), $assessor);
             $hasmoduleassessorcapability =
                 ($enrolled && has_capability($this->assessor_capability(), $this->coursework->get_context(), $assessor))
                 || is_primary_admin($assessor->id);
-            self::$self_cache['user_is_assessor'][$this->coursework->id][$assessor->id] = $hasmoduleassessorcapability;
+            self::$selfcache['user_is_assessor'][$this->coursework->id][$assessor->id] = $hasmoduleassessorcapability;
         }
-        return self::$self_cache['user_is_assessor'][$this->coursework->id][$assessor->id];
+        return self::$selfcache['user_is_assessor'][$this->coursework->id][$assessor->id];
     }
 
     /**
@@ -592,7 +592,7 @@ abstract class base {
         $allocation = allocation::get_object(
             $this->coursework->id,
             'allocatableid-allocatabletype-stage_identifier',
-            [$allocatable->id(), $allocatable->type(), $this->stage_identifier]
+            [$allocatable->id(), $allocatable->type(), $this->stageidentifier]
         );
         $result = ($allocation && $allocation->assessorid == $USER->id);
         return $result;
@@ -643,21 +643,21 @@ abstract class base {
      * @return bool
      */
     public function prerequisite_stages_have_feedback($allocatable) {
-        $all_stages = $this->get_coursework()->marking_stages();
+        $allstages = $this->get_coursework()->marking_stages();
 
         // Some stages are parallel, so we ignore them being partially complete.
-        $previous_stage_ok = true;
-        $current_stage = false;
-        $current_stage_ok = true;
-        $coursework_id = $this->get_coursework_id();
-        submission::fill_pool_coursework($coursework_id);
+        $previousstageok = true;
+        $currentstage = false;
+        $currentstageok = true;
+        $courseworkid = $this->get_coursework_id();
+        submission::fill_pool_coursework($courseworkid);
 
-        foreach ($all_stages as $stage) {
+        foreach ($allstages as $stage) {
 
             // if coursework has sampling enabled, each stage must be checked if it uses sampling
             if ($this->get_coursework()->sampling_enabled()) {
 
-                $submission = submission::get_object($coursework_id, 'allocatableid-allocatabletype', [$allocatable->id(), $allocatable->type()]);
+                $submission = submission::get_object($courseworkid, 'allocatableid-allocatabletype', [$allocatable->id(), $allocatable->type()]);
 
                 if (count($submission->get_assessor_feedbacks()) >= $submission->max_number_of_feedbacks()
                     && $submission->sampled_feedback_exists()) {
@@ -669,16 +669,16 @@ abstract class base {
                 break;
             }
             $class = get_class($stage);
-            if ($class != $current_stage) { // New stage type
-                $current_stage = $class;
-                $previous_stage_ok = $current_stage_ok;
-                $current_stage_ok = $stage->has_feedback($allocatable) && !$stage->in_editable_period($allocatable);
+            if ($class != $currentstage) { // New stage type
+                $currentstage = $class;
+                $previousstageok = $currentstageok;
+                $currentstageok = $stage->has_feedback($allocatable) && !$stage->in_editable_period($allocatable);
             } else { // Same stage (parallel)
-                $current_stage_ok = $current_stage_ok && $stage->has_feedback($allocatable) && !$stage->in_editable_period($allocatable);
+                $currentstageok = $currentstageok && $stage->has_feedback($allocatable) && !$stage->in_editable_period($allocatable);
             }
         }
 
-        return $this->is_parallell() ? $previous_stage_ok : $current_stage_ok;
+        return $this->is_parallell() ? $previousstageok : $currentstageok;
     }
 
     /**
@@ -708,8 +708,8 @@ abstract class base {
      * @return feedback|bool
      */
     public function get_feedback_for_submission($submission) {
-        $stage_identifier = $this->identifier();
-        $feedback = feedback::get_object($submission->courseworkid, 'submissionid-stage_identifier', [$submission->id, $stage_identifier]);
+        $stageidentifier = $this->identifier();
+        $feedback = feedback::get_object($submission->courseworkid, 'submissionid-stage_identifier', [$submission->id, $stageidentifier]);
         return $feedback;
     }
 
@@ -718,17 +718,17 @@ abstract class base {
      * @return moderation|bool
      */
     public function get_moderation_for_feedback($feedback) {
-        $moderation_params = array(
-            'feedbackid' => $feedback->id
-        );
-        return moderation::find($moderation_params);
+        $moderationparams = [
+            'feedbackid' => $feedback->id,
+        ];
+        return moderation::find($moderationparams);
     }
 
     /**
      * return bool
      */
     public function assessment_set_is_not_empty() {
-        return assessment_set_membership::exists(array('courseworkid' => $this->coursework->id));
+        return assessment_set_membership::exists(['courseworkid' => $this->coursework->id]);
     }
 
     /**
@@ -744,7 +744,7 @@ abstract class base {
      * @return string
      */
     public function type() {
-        return substr($this->stage_identifier, 0, -2);
+        return substr($this->stageidentifier, 0, -2);
     }
 
     /**
@@ -772,15 +772,15 @@ abstract class base {
             return '<br>' . get_string('nomarkers', 'mod_coursework');
         }
 
-        $html_attributes = array(
+        $htmlattributes = [
             'id' => $this->assessor_dropdown_id($allocatable),
             'class' => 'assessor_id_dropdown',
-        );
+        ];
 
         if ($this->identifier() != 'assessor_1' && !$this->currently_allocated_assessor($allocatable)
             && $this->coursework->sampling_enabled() && !$this->allocatable_is_in_sample($allocatable)
         ) {
-            $html_attributes['disabled'] = 'disabled';
+            $htmlattributes['disabled'] = 'disabled';
         }
         $grader = substr($this->identifier(), 0, -2);
 
@@ -790,20 +790,20 @@ abstract class base {
             $identifier = 'change' . $grader;
         }
 
-        $option_for_nothing_chosen_yet = array('' => get_string($identifier, 'mod_coursework'));
+        $optionfornothingchosenyet = ['' => get_string($identifier, 'mod_coursework')];
 
-        $dropdown_name = $this->assessor_dropdown_name($allocatable);
+        $dropdownname = $this->assessor_dropdown_name($allocatable);
 
-        $selected = $this->selected_allocation_in_session($dropdown_name);
+        $selected = $this->selected_allocation_in_session($dropdownname);
 
-        $assessor_dropdown = \html_writer::select($this->assessor_dropdown_options,
-                                                 $dropdown_name,
+        $assessordropdown = \html_writer::select($this->assessor_dropdown_options,
+                                                 $dropdownname,
                                                  $selected,
-                                                  $option_for_nothing_chosen_yet,
-                                                  $html_attributes
+                                                  $optionfornothingchosenyet,
+                                                  $htmlattributes
         );
 
-        return $assessor_dropdown;
+        return $assessordropdown;
     }
 
     /**
@@ -812,21 +812,21 @@ abstract class base {
      */
     public function potential_moderator_dropdown($allocatable) {
 
-        $option_for_nothing_chosen_yet = array('' => 'Choose Moderator');
-        $html_attributes = array(
+        $optionfornothingchosenyet = ['' => 'Choose Moderator'];
+        $htmlattributes = [
             'id' => $this->moderator_dropdown_id($allocatable),
             'class' => 'moderator_id_dropdown',
-        );
+        ];
 
-        $dropdown_name = $this->assessor_dropdown_name($allocatable);
+        $dropdownname = $this->assessor_dropdown_name($allocatable);
 
-        $selected = $this->selected_allocation_in_session($dropdown_name);
+        $selected = $this->selected_allocation_in_session($dropdownname);
 
-        return  $moderator_dropdown = \html_writer::select($this->potential_moderators_as_options_array(),
+        return  $moderatordropdown = \html_writer::select($this->potential_moderators_as_options_array(),
             'allocatables[' . $allocatable->id . '][moderator][assessor_id]',
             $selected,
-            $option_for_nothing_chosen_yet,
-            $html_attributes);
+            $optionfornothingchosenyet,
+            $htmlattributes);
     }
 
     /**
@@ -886,9 +886,9 @@ abstract class base {
      * @return string
      */
     private function assessor_dropdown_name($allocatable) {
-        $input_name =
+        $inputname =
             'allocatables[' . $allocatable->id . '][' . $this->identifier() . '][assessor_id]';
-        return $input_name;
+        return $inputname;
     }
 
     /**
@@ -910,11 +910,13 @@ abstract class base {
         $result = $this->get_coursework()->get_grade_editing_time();
 
         // The feedback is not in the editable period if the editable setting is disabled
-        if (empty($this->get_coursework()->get_grade_editing_time()))  return false;
+        if (empty($this->get_coursework()->get_grade_editing_time())) {
+            return false;
+        }
 
-        $coursework_id = $this->get_coursework_id();
-        submission::fill_pool_coursework($coursework_id);
-        $submission = submission::get_object($coursework_id, 'allocatableid-allocatabletype', [$allocatable->id(), $allocatable->type()]);
+        $courseworkid = $this->get_coursework_id();
+        submission::fill_pool_coursework($courseworkid);
+        $submission = submission::get_object($courseworkid, 'allocatableid-allocatabletype', [$allocatable->id(), $allocatable->type()]);
 
         $feedback = $this->get_feedback_for_submission($submission);
         if ($feedback) {

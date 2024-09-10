@@ -25,32 +25,32 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$tasks = array(
-    array(
+$tasks = [
+    [
         'classname' => 'mod_coursework\task\cron_task',
         'blocking' => 0,
         'minute' => '0',
         'hour' => '0',
         'day' => '*',
         'month' => '*',
-        'dayofweek' => '*'
-    ),
-    array(
+        'dayofweek' => '*',
+    ],
+    [
         'classname' => 'mod_coursework\task\enrol_task',
         'blocking' => 0,
         'minute' => '0',
         'hour' => '*',
         'day' => '*',
         'month' => '*',
-        'dayofweek' => '*'
-    ),
-    array(
+        'dayofweek' => '*',
+    ],
+    [
         'classname' => 'mod_coursework\task\unenrol_task',
         'blocking' => 0,
         'minute' => '0',
         'hour' => '*',
         'day' => '*',
         'month' => '*',
-        'dayofweek' => '*'
-    )
-);
+        'dayofweek' => '*',
+    ],
+];

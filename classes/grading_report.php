@@ -39,10 +39,10 @@ defined('MOODLE_INTERNAL') || die();
  */
 class grading_report {
 
-    //added static vars to determine in what manner the report is loaded
-    public static $MODE_GET_ALL = 1;
-    public static $MODE_GET_FIRST_RECORDS = 2;
-    public static $MODE_GET_REMAIN_RECORDS = 3;
+    // Added constants to determine in what manner the report is loaded.
+    const MODE_GET_ALL = 1;
+    const MODE_GET_FIRST_RECORDS = 2;
+    const MODE_GET_REMAIN_RECORDS = 3;
 
     /**
      * @var array rendering options
@@ -73,7 +73,7 @@ class grading_report {
     /**
      * @var
      */
-    private $sub_rows;
+    private $subrows;
 
     /**
      * @var cell_interface[]
@@ -102,13 +102,13 @@ class grading_report {
     protected function fill_pool() {
         global $DB;
 
-        $coursework_id = $this->coursework->id;
-        submission::fill_pool_coursework($coursework_id);
+        $courseworkid = $this->coursework->id;
+        submission::fill_pool_coursework($courseworkid);
         coursework::fill_pool([$this->coursework]);
         course_module::fill_pool([$this->coursework->get_course_module()]);
         module::fill_pool($DB->get_records('modules', ['name' => 'coursework']));
-        feedback::fill_pool_submissions($coursework_id, array_keys(submission::$pool[$coursework_id]['id']));
-        allocation::fill_pool_coursework($coursework_id);
+        feedback::fill_pool_submissions($courseworkid, array_keys(submission::$pool[$courseworkid]['id']));
+        allocation::fill_pool_coursework($courseworkid);
     }
 
     /**
@@ -125,8 +125,8 @@ class grading_report {
      * @return string
      */
     protected function construct_sort_function_name($options) {
-        $method_name = 'sort_by_' . $options['sortby'];
-        return $method_name;
+        $methodname = 'sort_by_' . $options['sortby'];
+        return $methodname;
     }
 
     /**
@@ -313,14 +313,14 @@ class grading_report {
      * @return sub_rows_interface
      */
     public function get_sub_row_helper() {
-        return $this->sub_rows;
+        return $this->subrows;
     }
 
     /**
      * @param $rows_strategy
      */
-    public function add_sub_rows($rows_strategy) {
-        $this->sub_rows = $rows_strategy;
+    public function add_sub_rows($rowsstrategy) {
+        $this->subrows = $rowsstrategy;
     }
 
     /**
@@ -352,7 +352,7 @@ class grading_report {
 
             // Make tablerow objects so we can use the methods to check permissions and set things.
             $rows = [];
-            $row_class = $this->coursework->has_multiple_markers() ? 'mod_coursework\grading_table_row_multi' : 'mod_coursework\grading_table_row_single';
+            $rowclass = $this->coursework->has_multiple_markers() ? 'mod_coursework\grading_table_row_multi' : 'mod_coursework\grading_table_row_single';
             $ability = new ability(user::find($USER, false), $this->get_coursework());
 
             $participantsfound = 0;
@@ -362,37 +362,43 @@ class grading_report {
                 // handle 'Group mode' - unset groups/individuals thaat are not in the chosen group
                 if (!empty($options['group']) && $options['group'] != -1) {
                     if ($this->coursework->is_configured_to_have_group_submissions()) {
-                        if ($options['group'] != $participant->id) continue;
+                        if ($options['group'] != $participant->id) {
+                            continue;
+                        }
                     } else {
-                        if (!$this->coursework->student_in_group($participant->id, $options['group']))continue;
+                        if (!$this->coursework->student_in_group($participant->id, $options['group'])) {
+                            continue;
+                        }
                     }
                 }
 
-                $row = new $row_class($this->coursework, $participant);
+                $row = new $rowclass($this->coursework, $participant);
 
                 // Now, we skip the ones who should not be visible on this page.
-                $can_show = $ability->can('show', $row);
-                if (!$can_show && !isset($options['unallocated'])) {
+                $canshow = $ability->can('show', $row);
+                if (!$canshow && !isset($options['unallocated'])) {
                     unset($participants[$key]);
                     continue;
                 }
-                if ($can_show && isset($options['unallocated'])) {
+                if ($canshow && isset($options['unallocated'])) {
                     unset($participants[$key]);
                     continue;
                 }
 
                 $rows[$participant->id()] = $row;
                 $participantsfound++;
-                if (!empty($rowcount) && $participantsfound >= $rowcount) break;
+                if (!empty($rowcount) && $participantsfound >= $rowcount) {
+                    break;
+                }
 
             }
 
             // Sort the rows.
-            $method_name = 'sort_by_' . $options['sortby'];
-            if (method_exists($this, $method_name)) {
+            $methodname = 'sort_by_' . $options['sortby'];
+            if (method_exists($this, $methodname)) {
                 usort($rows,
-                    array($this,
-                        $method_name));
+                    [$this,
+                        $methodname]);
             }
 
             // Some will have submissions and therefore data fields. Others will have those fields null.
@@ -400,13 +406,13 @@ class grading_report {
 
             $counter = count($rows);
             $this->realtotalrows = $counter;
-            $mode = empty($this->options['mode']) ? self::$MODE_GET_ALL : $this->options['mode'];
-            if ($mode != self::$MODE_GET_ALL) {
+            $mode = empty($this->options['mode']) ? self::MODE_GET_ALL : $this->options['mode'];
+            if ($mode != self::MODE_GET_ALL) {
                 $perpage = $this->options['perpage'] ?? 10;
                 if ($counter > $perpage) {
-                    if ($mode == self::$MODE_GET_FIRST_RECORDS) {
+                    if ($mode == self::MODE_GET_FIRST_RECORDS) {
                         $rows = array_slice($rows, 0, $perpage);
-                    } else if ($mode == self::$MODE_GET_REMAIN_RECORDS) {
+                    } else if ($mode == self::MODE_GET_REMAIN_RECORDS) {
                         $rows = array_slice($rows, $perpage);
                     }
                 }

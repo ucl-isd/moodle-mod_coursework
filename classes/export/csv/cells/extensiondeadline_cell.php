@@ -33,7 +33,7 @@ class extensiondeadline_cell extends cell_base {
      * @param $stage_identifier
      * @return string
      */
-    public function get_cell($submission, $student, $stage_identifier) {
+    public function get_cell($submission, $student, $stageidentifier) {
 
         if ($this->extension_exists($student)) {
             $deadline = $this->get_extension_date_for_csv($student);

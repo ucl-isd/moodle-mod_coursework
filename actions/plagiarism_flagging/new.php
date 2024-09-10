@@ -26,9 +26,9 @@ global $CFG, $USER;
 
 $submissionid = required_param('submissionid', PARAM_INT);
 
-$params = array(
-    'submissionid' => $submissionid
-);
+$params = [
+    'submissionid' => $submissionid,
+];
 
 $controller = new mod_coursework\controllers\plagiarism_flagging_controller($params);
 $controller->new_plagiarism_flag();

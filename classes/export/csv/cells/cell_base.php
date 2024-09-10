@@ -112,10 +112,10 @@ abstract class cell_base implements cell_interface {
     public function get_extension_reason_for_csv($student) {
 
         $extension = $this->extension->get_extension_for_student($student, $this->coursework);
-        $extension_reasons = $this->get_extension_predefined_reasons();
+        $extensionreasons = $this->get_extension_predefined_reasons();
 
-        return (!empty($extension_reasons[$extension->pre_defined_reason])) ?
-            strip_tags($extension_reasons[$extension->pre_defined_reason]) : "";
+        return (!empty($extensionreasons[$extension->pre_defined_reason])) ?
+            strip_tags($extensionreasons[$extension->pre_defined_reason]) : "";
     }
 
     /**
@@ -182,7 +182,7 @@ abstract class cell_base implements cell_interface {
     public function get_assessor_name($assessorid) {
         global $DB;
 
-        $assessor = $DB->get_record('user', array('id' => $assessorid), 'firstname, lastname');
+        $assessor = $DB->get_record('user', ['id' => $assessorid], 'firstname, lastname');
 
         return $assessor->lastname .' '. $assessor->firstname;
     }
@@ -195,7 +195,7 @@ abstract class cell_base implements cell_interface {
     public function get_assessor_username($assessorid) {
         global $DB;
 
-        $assessor = $DB->get_record('user', array('id' => $assessorid), 'username');
+        $assessor = $DB->get_record('user', ['id' => $assessorid], 'username');
 
         return $assessor->username;
     }
@@ -230,7 +230,7 @@ abstract class cell_base implements cell_interface {
         } else if ($this->coursework->get_max_markers() > 1) {
             // get existing feedback
 
-          $sql = "SELECT * FROM {coursework_feedbacks}
+            $sql = "SELECT * FROM {coursework_feedbacks}
                   WHERE submissionid= $submission->id
                   AND assessorid = $USER->id
                   AND stage_identifier <> 'final_agreed_1'";
@@ -250,7 +250,7 @@ abstract class cell_base implements cell_interface {
      * Function to validate cell for the file upload
      * @return mixed
      */
-    public function validate_cell($value, $submissions, $stage_dentifier='', $uploadedgradecells  = []) {
+    public function validate_cell($value, $submissions, $stagedentifier='', $uploadedgradecells  = []) {
         return true;
     }
 
@@ -267,9 +267,9 @@ abstract class cell_base implements cell_interface {
             /**
              * @var gradingform_rubric_instance $grade
              */
-            $rubric_marks = $gradinginstance->get_rubric_filling();
+            $rubricmarks = $gradinginstance->get_rubric_filling();
 
-            foreach ($rubric_marks['criteria'] as $id => $record) {
+            foreach ($rubricmarks['criteria'] as $id => $record) {
                 $gradedata[] = $controller->get_definition()->rubric_criteria[$id]['levels'][$record['levelid']]['score'];
                 $gradedata[] = $record['remark'];
 

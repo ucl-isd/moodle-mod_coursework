@@ -152,7 +152,7 @@ class ability extends \mod_coursework\framework\ability {
 
         // New feedback
         $this->prevent_new_feedback_with_no_submission();
-       $this->prevent_new_feedback_when_submission_not_finalised();
+        $this->prevent_new_feedback_when_submission_not_finalised();
         $this->prevent_new_feedback_when_prerequisite_stages_have_no_feedback();
         $this->prevent_new_feedback_with_empty_stage();
         $this->prevent_new_feedback_when_allocatable_already_has_feedback_for_this_stage();
@@ -163,7 +163,7 @@ class ability extends \mod_coursework\framework\ability {
         $this->prevent_new_feedback_when_not_assessor_for_stage();
         $this->prevent_new_feedback_from_non_allocated_assessors();
         $this->allow_new_feedback_by_allocated_assessor();
-       $this->allow_new_feedback_from_any_assessor_when_allocation_is_disabled_for_stage_or_instance();
+        $this->allow_new_feedback_from_any_assessor_when_allocation_is_disabled_for_stage_or_instance();
         $this->allow_new_feedback_if_agreed_feedback_and_user_can_add_agreed_feedback();
 
         // Create feedback
@@ -230,7 +230,7 @@ class ability extends \mod_coursework\framework\ability {
         // Plagiarism flagging rules for Plagiarism Alert
 
         // New
-       // $this->prevent_new_plagiarism_flag_if_already_exists();
+        // $this->prevent_new_plagiarism_flag_if_already_exists();
         $this->allow_new_plagiarism_flag_with_capability();
 
         // Edit
@@ -259,10 +259,10 @@ class ability extends \mod_coursework\framework\ability {
      * @return array
      */
     protected function classname_mappings() {
-        return array(
+        return [
             'submission_groups_decorator' => 'submission',
             'coursework_groups_decorator' => 'coursework',
-        );
+        ];
     }
 
     /**
@@ -309,12 +309,12 @@ class ability extends \mod_coursework\framework\ability {
         $this->prevent('new',
                        'mod_coursework\models\submission',
             function (submission $submission) {
-                $exists_params = array(
+                $existsparams = [
                     'courseworkid' => $submission->courseworkid,
                     'allocatableid' => $submission->allocatableid,
                     'allocatabletype' => $submission->allocatabletype,
-                );
-                if (submission::exists($exists_params)) {
+                ];
+                if (submission::exists($existsparams)) {
                     $this->set_message('Submission already exists');
                     return true;
                 }
@@ -349,8 +349,8 @@ class ability extends \mod_coursework\framework\ability {
                      'mod_coursework\models\submission',
             function (submission $submission) {
                 $coursework = $submission->get_coursework();
-                $submitting_allocatable = $coursework->submiting_allocatable_for_student($this->get_user());
-                return deadline_extension::allocatable_extension_allows_submission($submitting_allocatable,
+                $submittingallocatable = $coursework->submiting_allocatable_for_student($this->get_user());
+                return deadline_extension::allocatable_extension_allows_submission($submittingallocatable,
                                                                                    $coursework);
             });
     }
@@ -383,8 +383,8 @@ class ability extends \mod_coursework\framework\ability {
         $this->allow('show',
                      'mod_coursework\models\submission',
             function (submission $submission) {
-                return feedback::exists(array('submissionid' => $submission->id,
-                                              'assessorid' => $this->get_user()->id()));
+                return feedback::exists(['submissionid' => $submission->id,
+                                              'assessorid' => $this->get_user()->id()]);
             });
     }
 
@@ -402,10 +402,10 @@ class ability extends \mod_coursework\framework\ability {
             function (submission $submission) {
 
                 // Should be visible to those who are OK to mark it.
-                $allocation_enabled = $submission->get_coursework()->allocation_enabled();
-                $user_has_any_allocation = $submission->get_coursework()
+                $allocationenabled = $submission->get_coursework()->allocation_enabled();
+                $userhasanyallocation = $submission->get_coursework()
                     ->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable());
-                return $allocation_enabled && $user_has_any_allocation;
+                return $allocationenabled && $userhasanyallocation;
             });
     }
 
@@ -415,28 +415,28 @@ class ability extends \mod_coursework\framework\ability {
             function (submission $submission) {
 
                 // Should be visible to those who are OK to mark it.
-                $allocation_disabled = !$submission->get_coursework()->allocation_enabled();
-                $allowed_to_grade = has_capability('mod/coursework:addinitialgrade',
+                $allocationdisabled = !$submission->get_coursework()->allocation_enabled();
+                $allowedtograde = has_capability('mod/coursework:addinitialgrade',
                                                    $submission->get_coursework()->get_context());
-                $allowed_to_agree_grades = has_capability('mod/coursework:addagreedgrade',
+                $allowedtoagreegrades = has_capability('mod/coursework:addagreedgrade',
                                                           $submission->get_coursework()->get_context());
-                return $allocation_disabled && ($allowed_to_grade || $allowed_to_agree_grades);
+                return $allocationdisabled && ($allowedtograde || $allowedtoagreegrades);
             });
     }
 
     protected function allow_show_submission_to_graders_after_feedback_release() {
-// Show to graders after release
+        // Show to graders after release
         $this->allow('show',
                      'mod_coursework\models\submission',
             function (submission $submission) {
 
-                $allowed_to_grade = has_capability('mod/coursework:addinitialgrade',
+                $allowedtograde = has_capability('mod/coursework:addinitialgrade',
                                                    $submission->get_coursework()->get_context());
-                $allowed_to_agree_grades = has_capability('mod/coursework:addagreedgrade',
+                $allowedtoagreegrades = has_capability('mod/coursework:addagreedgrade',
                                                           $submission->get_coursework()->get_context());
-                $allocation_disabled = !$submission->get_coursework()->allocation_enabled();
+                $allocationdisabled = !$submission->get_coursework()->allocation_enabled();
 
-                return $allocation_disabled && $submission->is_published() && ($allowed_to_grade || $allowed_to_agree_grades);
+                return $allocationdisabled && $submission->is_published() && ($allowedtograde || $allowedtoagreegrades);
             });
     }
 
@@ -445,9 +445,9 @@ class ability extends \mod_coursework\framework\ability {
                      'mod_coursework\models\submission',
             function (submission $submission) {
                 $state = $submission->get_state();
-                $allowed_to_agree_grades = has_capability('mod/coursework:addagreedgrade', $submission->get_coursework()->get_context());
-                $allowed_to_edit_agree_grades = has_capability('mod/coursework:editagreedgrade', $submission->get_coursework()->get_context());
-                return (($allowed_to_agree_grades && $state == submission::FULLY_GRADED) || ($allowed_to_edit_agree_grades && $state >= submission::FULLY_GRADED));
+                $allowedtoagreegrades = has_capability('mod/coursework:addagreedgrade', $submission->get_coursework()->get_context());
+                $allowedtoeditagreegrades = has_capability('mod/coursework:editagreedgrade', $submission->get_coursework()->get_context());
+                return (($allowedtoagreegrades && $state == submission::FULLY_GRADED) || ($allowedtoeditagreegrades && $state >= submission::FULLY_GRADED));
             });
     }
 
@@ -484,15 +484,15 @@ class ability extends \mod_coursework\framework\ability {
             function (submission $submission) {
                 // take into account courseworks with personal deadlines
                 if ($submission->get_coursework()->personal_deadlines_enabled()) {
-                    $deadline_passed = (bool)$submission->submission_personal_deadline() < time();
-                 } else {
-                     $deadline_passed = $submission->get_coursework()->deadline_has_passed();
+                    $deadlinepassed = (bool)$submission->submission_personal_deadline() < time();
+                } else {
+                    $deadlinepassed = $submission->get_coursework()->deadline_has_passed();
                 }
-                $ok_to_submit_late = $submission->get_coursework()->allow_late_submissions();
+                $oktosubmitlate = $submission->get_coursework()->allow_late_submissions();
                 $coursework = $submission->get_coursework();
-                $submitting_allocatable = $coursework->submiting_allocatable_for_student($this->get_user());
-                if ($deadline_passed && !deadline_extension::allocatable_extension_allows_submission($submitting_allocatable, $coursework)) {
-                    if (!$ok_to_submit_late) {
+                $submittingallocatable = $coursework->submiting_allocatable_for_student($this->get_user());
+                if ($deadlinepassed && !deadline_extension::allocatable_extension_allows_submission($submittingallocatable, $coursework)) {
+                    if (!$oktosubmitlate) {
                         $this->set_message('Cannot submit past the deadline');
                         return true;
                     } else {
@@ -518,8 +518,8 @@ class ability extends \mod_coursework\framework\ability {
         $this->allow('edit',
                      'mod_coursework\models\submission',
             function (submission $submission) {
-                $can_submit = has_capability('mod/coursework:submit', $submission->get_context(), $this->get_user());
-                return $can_submit && $submission->belongs_to_user($this->get_user());
+                $cansubmit = has_capability('mod/coursework:submit', $submission->get_context(), $this->get_user());
+                return $cansubmit && $submission->belongs_to_user($this->get_user());
             });
     }
 
@@ -571,12 +571,12 @@ class ability extends \mod_coursework\framework\ability {
                 /**
                  * @var submission $submission
                  */
-                $not_already_finalised = !$submission->ready_to_grade();
-                $early_finalisation_allowed = $submission->get_coursework()->early_finalisation_allowed();
-                $coursework_has_no_deadline = !$submission->get_coursework()->has_deadline();
-                $allowed_to = $this->can('new', $submission) || $this->can('edit', $submission);
+                $notalreadyfinalised = !$submission->ready_to_grade();
+                $earlyfinalisationallowed = $submission->get_coursework()->early_finalisation_allowed();
+                $courseworkhasnodeadline = !$submission->get_coursework()->has_deadline();
+                $allowedto = $this->can('new', $submission) || $this->can('edit', $submission);
 
-                return $allowed_to && $not_already_finalised && ($early_finalisation_allowed || $coursework_has_no_deadline);
+                return $allowedto && $notalreadyfinalised && ($earlyfinalisationallowed || $courseworkhasnodeadline);
             });
     }
 
@@ -643,11 +643,11 @@ class ability extends \mod_coursework\framework\ability {
         $this->allow('new',
             'mod_coursework\models\moderation',
             function (moderation $moderation) {
-                $is_allocated = false;
+                $isallocated = false;
                 if ($moderation->get_coursework()->allocation_enabled()) {
-                    $is_allocated = $moderation->is_moderator_allocated();
+                    $isallocated = $moderation->is_moderator_allocated();
                 }
-                return  $is_allocated;
+                return  $isallocated;
             });
     }
 
@@ -655,11 +655,11 @@ class ability extends \mod_coursework\framework\ability {
         $this->prevent('new',
             'mod_coursework\models\moderation',
             function (moderation $moderation) {
-                $is_allocated = false;
+                $isallocated = false;
                 if ($moderation->get_coursework()->allocation_enabled() && !is_siteadmin()) {
-                    $is_allocated = !$moderation->is_moderator_allocated();
+                    $isallocated = !$moderation->is_moderator_allocated();
                 }
-                return  $is_allocated;
+                return  $isallocated;
             });
     }
 
@@ -667,10 +667,10 @@ class ability extends \mod_coursework\framework\ability {
         $this->allow('edit',
             'mod_coursework\models\moderation',
             function (moderation $moderation) {
-                   $has_capability = has_capability('mod/coursework:moderate',  $moderation->get_coursework()
-                    ->get_context());
-                $is_creator = $moderation->moderatorid == $this->get_user()->id;
-                return $has_capability && ($is_creator || is_siteadmin());
+                   $hascapability = has_capability('mod/coursework:moderate',  $moderation->get_coursework()
+                       ->get_context());
+                $iscreator = $moderation->moderatorid == $this->get_user()->id;
+                return $hascapability && ($iscreator || is_siteadmin());
             });
     }
 
@@ -678,8 +678,8 @@ class ability extends \mod_coursework\framework\ability {
         $this->allow('edit',
             'mod_coursework\models\moderation',
             function (moderation $moderation) {
-                $is_allocated = $moderation->is_moderator_allocated();
-                return  $is_allocated;
+                $isallocated = $moderation->is_moderator_allocated();
+                return  $isallocated;
             });
     }
 
@@ -803,9 +803,9 @@ class ability extends \mod_coursework\framework\ability {
                 $allocatable = $feedback->get_submission()->get_allocatable();
 
                 if ($stage->uses_allocation() && $feedback->get_coursework()->allocation_enabled()) {
-                    $allocated_teacher = $stage->allocated_teacher_for($allocatable);
-                    if ($allocated_teacher) {
-                        if ($allocated_teacher->id == $this->user->id) {
+                    $allocatedteacher = $stage->allocated_teacher_for($allocatable);
+                    if ($allocatedteacher) {
+                        if ($allocatedteacher->id == $this->user->id) {
                             return true;
                         }
                     }
@@ -823,9 +823,9 @@ class ability extends \mod_coursework\framework\ability {
                 $allocatable = $feedback->get_submission()->get_allocatable();
 
                 if ($stage->uses_allocation() && $feedback->get_coursework()->allocation_enabled()) {
-                    $allocated_teacher = $stage->allocated_teacher_for($allocatable);
-                    if ($allocated_teacher) {
-                        if ($allocated_teacher->id() != $this->get_user()->id()) {
+                    $allocatedteacher = $stage->allocated_teacher_for($allocatable);
+                    if ($allocatedteacher) {
+                        if ($allocatedteacher->id() != $this->get_user()->id()) {
                             return true;
                         }
                     }
@@ -839,14 +839,14 @@ class ability extends \mod_coursework\framework\ability {
                      'mod_coursework\models\feedback',
             function (feedback $feedback) {
 
-                $has_editable_feedbacks = false;
+                $haseditablefeedbacks = false;
 
                 // find out if the previous grades are editable
                 if ($feedback->is_agreed_grade()) {
-                    $has_editable_feedbacks = $feedback->get_submission()->editable_feedbacks_exist();
+                    $haseditablefeedbacks = $feedback->get_submission()->editable_feedbacks_exist();
                 }
 
-                if ((!$feedback->get_coursework()->allocation_enabled() || !$feedback->get_stage()->uses_allocation()) && !$has_editable_feedbacks ) {
+                if ((!$feedback->get_coursework()->allocation_enabled() || !$feedback->get_stage()->uses_allocation()) && !$haseditablefeedbacks ) {
                     return true;
                 }
                 return false;
@@ -896,16 +896,16 @@ class ability extends \mod_coursework\framework\ability {
             function (feedback $feedback) {
                 global $CFG;
 
-                $is_initial_grade = $feedback->is_initial_assessor_feedback();
-                $has_capability = has_capability('mod/coursework:editinitialgrade', $feedback->get_context());
-                $is_creator = $feedback->assessorid == $this->get_user()->id;
-                $is_allocated = $feedback->is_assessor_allocated();
+                $isinitialgrade = $feedback->is_initial_assessor_feedback();
+                $hascapability = has_capability('mod/coursework:editinitialgrade', $feedback->get_context());
+                $iscreator = $feedback->assessorid == $this->get_user()->id;
+                $isallocated = $feedback->is_assessor_allocated();
 
                 $submission = $feedback->get_submission();
 
-                $in_editable_period = (!empty($feedback->get_coursework()->get_grade_editing_time()) && $feedback->timecreated + $feedback->get_coursework()->get_grade_editing_time() > time());
+                $ineditableperiod = (!empty($feedback->get_coursework()->get_grade_editing_time()) && $feedback->timecreated + $feedback->get_coursework()->get_grade_editing_time() > time());
 
-                return $is_initial_grade && ($has_capability || $in_editable_period) && ($is_creator || $is_allocated);
+                return $isinitialgrade && ($hascapability || $ineditableperiod) && ($iscreator || $isallocated);
             });
     }
 
@@ -933,9 +933,9 @@ class ability extends \mod_coursework\framework\ability {
         $this->allow('edit',
             'mod_coursework\models\feedback',
             function (feedback $feedback) {
-                $is_creator = $feedback->assessorid == $this->get_user()->id;
+                $iscreator = $feedback->assessorid == $this->get_user()->id;
                 $stage = $feedback->get_stage();
-                return  $is_creator && ($feedback->get_submission()->editable_feedbacks_exist() || $feedback->get_submission()->editable_final_feedback_exist()
+                return  $iscreator && ($feedback->get_submission()->editable_feedbacks_exist() || $feedback->get_submission()->editable_final_feedback_exist()
                         && ((!$feedback->get_coursework()->has_multiple_markers() && $stage->is_initial_assesor_stage() ) || !$stage->is_initial_assesor_stage()));
             });
     }
@@ -998,10 +998,10 @@ class ability extends \mod_coursework\framework\ability {
         $this->allow('show',
                      'mod_coursework\models\feedback',
             function (feedback $feedback) {
-                $is_assessor =
+                $isassessor =
                     has_capability('mod/coursework:addinitialgrade', $feedback->get_coursework()->get_context());
-                $agreed_grade_done = $feedback->get_submission()->final_grade_agreed();
-                return $is_assessor && $agreed_grade_done;
+                $agreedgradedone = $feedback->get_submission()->final_grade_agreed();
+                return $isassessor && $agreedgradedone;
             });
     }
 
@@ -1045,11 +1045,11 @@ class ability extends \mod_coursework\framework\ability {
     protected function allow_show_grading_table_row_if_allocation_enabled_and_user_has_any_allocation() {
         $this->allow('show',
                      'mod_coursework\grading_table_row_base',
-            function (grading_table_row_base $grading_table_row) {
-                $allocatable = $grading_table_row->get_allocatable();
+            function (grading_table_row_base $gradingtablerow) {
+                $allocatable = $gradingtablerow->get_allocatable();
 
-                if ($grading_table_row->get_coursework()->allocation_enabled()) {
-                    if ($grading_table_row->get_coursework()->assessor_has_any_allocation_for_student($allocatable)) {
+                if ($gradingtablerow->get_coursework()->allocation_enabled()) {
+                    if ($gradingtablerow->get_coursework()->assessor_has_any_allocation_for_student($allocatable)) {
                         return true;
                     }
                 }
@@ -1060,22 +1060,22 @@ class ability extends \mod_coursework\framework\ability {
     protected function allow_show_grading_table_row_if_allocation_enabled_and_all_initial_feedback_done_and_user_can_do_agreed_grades() {
         $this->allow('show',
                      'mod_coursework\grading_table_row_base',
-            function (grading_table_row_base $grading_table_row) {
-                $can_add_agreed_grade = has_capability('mod/coursework:addagreedgrade',
-                                                       $grading_table_row->get_coursework()
+            function (grading_table_row_base $gradingtablerow) {
+                $canaddagreedgrade = has_capability('mod/coursework:addagreedgrade',
+                                                       $gradingtablerow->get_coursework()
                                                            ->get_context());
 
-                if ($grading_table_row->get_coursework()
-                        ->allocation_enabled() && $grading_table_row->has_submission()
+                if ($gradingtablerow->get_coursework()
+                    ->allocation_enabled() && $gradingtablerow->has_submission()
                 ) {
 
-                    $submission_has_all_initial_assessor_feedbacks = $grading_table_row->get_submission()
-                            ->get_state() >= submission::FULLY_GRADED;
-                    if ($can_add_agreed_grade &&
-                        $submission_has_all_initial_assessor_feedbacks
+                    $submissionhasallinitialassessorfeedbacks = $gradingtablerow->get_submission()
+                        ->get_state() >= submission::FULLY_GRADED;
+                    if ($canaddagreedgrade &&
+                        $submissionhasallinitialassessorfeedbacks
                     ) {
-                        $submission_in_sample = $grading_table_row->get_submission()->sampled_feedback_exists();
-                        return (!$grading_table_row->get_coursework()->sampling_enabled() || $submission_in_sample) ? true : false;
+                        $submissioninsample = $gradingtablerow->get_submission()->sampled_feedback_exists();
+                        return (!$gradingtablerow->get_coursework()->sampling_enabled() || $submissioninsample) ? true : false;
                     }
                 }
                 return false;
@@ -1085,9 +1085,9 @@ class ability extends \mod_coursework\framework\ability {
     protected function allow_show_grading_table_row_if_allocation_not_enabled_and_user_is_assessor_of_any_stage() {
         $this->allow('show',
                      'mod_coursework\grading_table_row_base',
-            function (grading_table_row_base $grading_table_row) {
-                if (!$grading_table_row->get_coursework()->allocation_enabled()) {
-                    foreach ($grading_table_row->get_coursework()->marking_stages() as $stage) {
+            function (grading_table_row_base $gradingtablerow) {
+                if (!$gradingtablerow->get_coursework()->allocation_enabled()) {
+                    foreach ($gradingtablerow->get_coursework()->marking_stages() as $stage) {
                         if ($stage->user_is_assessor($this->get_user())) {
                             return true;
                         }
@@ -1100,10 +1100,10 @@ class ability extends \mod_coursework\framework\ability {
     protected function allow_show_grading_table_row_if_user_has_added_feedback_for_this_submission() {
         $this->allow('show',
                      'mod_coursework\grading_table_row_base',
-            function (grading_table_row_base $grading_table_row) {
-                if ($grading_table_row->has_submission()) {
-                    if (feedback::exists(array('submissionid' => $grading_table_row->get_submission()->id,
-                                               'assessorid' => $this->get_user()->id()))
+            function (grading_table_row_base $gradingtablerow) {
+                if ($gradingtablerow->has_submission()) {
+                    if (feedback::exists(['submissionid' => $gradingtablerow->get_submission()->id,
+                                               'assessorid' => $this->get_user()->id()])
                     ) {
                         return true;
                     }
@@ -1115,27 +1115,27 @@ class ability extends \mod_coursework\framework\ability {
     protected function allow_show_grading_table_row_if_user_can_view_grades_at_all_times() {
         $this->allow('show',
                      'mod_coursework\grading_table_row_base',
-            function (grading_table_row_base $grading_table_row) {
+            function (grading_table_row_base $gradingtablerow) {
                 return has_capability('mod/coursework:viewallgradesatalltimes',
-                                      $grading_table_row->get_coursework()->get_context());
+                                      $gradingtablerow->get_coursework()->get_context());
             });
     }
 
     protected function allow_show_grading_table_row_if_user_can_submit_on_behalf_of() {
         $this->allow('show',
                      'mod_coursework\grading_table_row_base',
-            function (grading_table_row_base $grading_table_row) {
+            function (grading_table_row_base $gradingtablerow) {
                 return has_capability('mod/coursework:submitonbehalfof',
-                                      $grading_table_row->get_coursework()->get_context());
+                                      $gradingtablerow->get_coursework()->get_context());
             });
     }
 
     protected function allow_show_grading_table_row_if_user_can_export_final_grades() {
         $this->allow('show',
                      'mod_coursework\grading_table_row_base',
-            function (grading_table_row_base $grading_table_row) {
+            function (grading_table_row_base $gradingtablerow) {
                 return has_capability('mod/coursework:canexportfinalgrades',
-                                      $grading_table_row->get_coursework()->get_context());
+                                      $gradingtablerow->get_coursework()->get_context());
             });
     }
 
@@ -1158,21 +1158,21 @@ class ability extends \mod_coursework\framework\ability {
             function (feedback $feedback) {
                 $this->set_message('User can not add new agreed feedback.');
 
-                $has_editable_feedbacks = false;
+                $haseditablefeedbacks = false;
 
                 // find out if the previous grades are editable
                 if ($feedback->is_agreed_grade()) {
 
-                    $has_editable_feedbacks = $feedback->get_submission()->editable_feedbacks_exist();
+                    $haseditablefeedbacks = $feedback->get_submission()->editable_feedbacks_exist();
 
                 }
 
-                return $feedback->is_agreed_grade() && !$has_editable_feedbacks && (has_capability('mod/coursework:addagreedgrade',
+                return $feedback->is_agreed_grade() && !$haseditablefeedbacks && (has_capability('mod/coursework:addagreedgrade',
                                                                       $feedback->get_coursework()
                                                                           ->get_context())
                                                         || has_capability('mod/coursework:addallocatedagreedgrade',
                                                                          $feedback->get_coursework()
-                                                                            ->get_context())
+                                                                             ->get_context())
                                                             && $feedback->get_submission()->is_assessor_initial_grader());
             });
     }
@@ -1202,7 +1202,7 @@ class ability extends \mod_coursework\framework\ability {
             'mod_coursework\grading_table_row_base',
             function (grading_table_row_base $row) {
 
-               return  (!$row->get_coursework()->allocation_enabled() && has_capability('mod/coursework:grantextensions',
+                return  (!$row->get_coursework()->allocation_enabled() && has_capability('mod/coursework:grantextensions',
                         $row->get_coursework()
                             ->get_context()));
 
@@ -1222,9 +1222,9 @@ class ability extends \mod_coursework\framework\ability {
     private function allow_new_deadline_extension_with_capability() {
         $this->allow('new',
                      'mod_coursework\models\deadline_extension',
-            function (deadline_extension $deadline_extension) {
-                return $deadline_extension->get_coursework()->has_deadline() && has_capability('mod/coursework:grantextensions',
-                                      $deadline_extension->get_coursework()
+            function (deadline_extension $deadlineextension) {
+                return $deadlineextension->get_coursework()->has_deadline() && has_capability('mod/coursework:grantextensions',
+                                      $deadlineextension->get_coursework()
                                           ->get_context());
             });
     }
@@ -1232,9 +1232,9 @@ class ability extends \mod_coursework\framework\ability {
     private function allow_show_deadline_extension_with_capability() {
         $this->allow('show',
                      'mod_coursework\models\deadline_extension',
-            function (deadline_extension $deadline_extension) {
+            function (deadline_extension $deadlineextension) {
                 return has_capability('mod/coursework:viewextensions',
-                                      $deadline_extension->get_coursework()
+                                      $deadlineextension->get_coursework()
                                           ->get_context());
             });
     }
@@ -1242,9 +1242,9 @@ class ability extends \mod_coursework\framework\ability {
     private function allow_edit_deadline_extension_with_capability() {
         $this->allow('edit',
                      'mod_coursework\models\deadline_extension',
-            function (deadline_extension $deadline_extension) {
+            function (deadline_extension $deadlineextension) {
                 return has_capability('mod/coursework:grantextensions',
-                                      $deadline_extension->get_coursework()
+                                      $deadlineextension->get_coursework()
                                           ->get_context());
             });
     }
@@ -1252,12 +1252,12 @@ class ability extends \mod_coursework\framework\ability {
     private function prevent_new_deadline_extension_if_already_exists() {
         $this->prevent('new',
                        'mod_coursework\models\deadline_extension',
-            function (deadline_extension $deadline_extension) {
-                $conditions = array(
-                    'allocatableid' => $deadline_extension->allocatableid,
-                    'allocatabletype' => $deadline_extension->allocatabletype,
-                    'courseworkid' => $deadline_extension->courseworkid,
-                );
+            function (deadline_extension $deadlineextension) {
+                $conditions = [
+                    'allocatableid' => $deadlineextension->allocatableid,
+                    'allocatabletype' => $deadlineextension->allocatabletype,
+                    'courseworkid' => $deadlineextension->courseworkid,
+                ];
                 return deadline_extension::exists($conditions);
             });
     }
@@ -1265,24 +1265,24 @@ class ability extends \mod_coursework\framework\ability {
     private function prevent_edit_deadline_extension_if_not_persisted() {
         $this->prevent('edit',
                        'mod_coursework\models\deadline_extension',
-            function (deadline_extension $deadline_extension) {
-                return !$deadline_extension->persisted();
+            function (deadline_extension $deadlineextension) {
+                return !$deadlineextension->persisted();
             });
     }
 
     private function allow_create_deadline_extension_if_can_new() {
         $this->allow('create',
                      'mod_coursework\models\deadline_extension',
-            function (deadline_extension $deadline_extension) {
-                return $this->can('new', $deadline_extension);
+            function (deadline_extension $deadlineextension) {
+                return $this->can('new', $deadlineextension);
             });
     }
 
     private function allow_update_deadline_extension_if_can_edit() {
         $this->allow('update',
                      'mod_coursework\models\deadline_extension',
-            function (deadline_extension $deadline_extension) {
-                return $this->can('edit', $deadline_extension);
+            function (deadline_extension $deadlineextension) {
+                return $this->can('edit', $deadlineextension);
             });
     }
 
@@ -1306,10 +1306,10 @@ class ability extends \mod_coursework\framework\ability {
     private function allow_edit_personal_deadline_with_capability() {
         $this->allow('edit',
             'mod_coursework\models\personal_deadline',
-            function (personal_deadline $personal_deadline) {
-                return $personal_deadline->get_coursework()->personal_deadlines_enabled()
+            function (personal_deadline $personaldeadline) {
+                return $personaldeadline->get_coursework()->personal_deadlines_enabled()
                         && has_capability('mod/coursework:editpersonaldeadline',
-                    $personal_deadline->get_coursework()
+                    $personaldeadline->get_coursework()
                         ->get_context());
             });
     }
@@ -1317,26 +1317,26 @@ class ability extends \mod_coursework\framework\ability {
     private function prevent_edit_personal_deadline_if_extension_given() {
         $this->prevent('edit',
             'mod_coursework\models\personal_deadline',
-            function (personal_deadline $personal_deadline) {
+            function (personal_deadline $personaldeadline) {
                 // check if extension for this PD exists
-                return $personal_deadline->extension_exists();
+                return $personaldeadline->extension_exists();
             });
     }
 
     private function allow_new_plagiarism_flag_with_capability() {
         $this->allow('new',
             'mod_coursework\models\plagiarism_flag',
-            function (plagiarism_flag $plagiarism_flag) {
-                return  has_capability('mod/coursework:addplagiarismflag', $plagiarism_flag->get_coursework()->get_context());
+            function (plagiarism_flag $plagiarismflag) {
+                return  has_capability('mod/coursework:addplagiarismflag', $plagiarismflag->get_coursework()->get_context());
             });
     }
 
     private function allow_edit_plagiarism_flag_with_capability() {
         $this->allow('edit',
             'mod_coursework\models\plagiarism_flag',
-            function (plagiarism_flag $plagiarism_flag) {
+            function (plagiarism_flag $plagiarismflag) {
                 return has_capability('mod/coursework:updateplagiarismflag',
-                    $plagiarism_flag->get_coursework()
+                    $plagiarismflag->get_coursework()
                         ->get_context());
             });
     }
@@ -1344,8 +1344,8 @@ class ability extends \mod_coursework\framework\ability {
     private function prevent_edit_plagiarism_flag_if_not_persisted() {
         $this->prevent('edit',
             'mod_coursework\models\plagiarism_flag',
-            function (plagiarism_flag $plagiarism_flag) {
-                return !$plagiarism_flag->persisted();
+            function (plagiarism_flag $plagiarismflag) {
+                return !$plagiarismflag->persisted();
             });
     }
 

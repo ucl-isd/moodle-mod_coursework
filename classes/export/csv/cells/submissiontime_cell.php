@@ -33,8 +33,8 @@ class submissiontime_cell extends cell_base {
      * @param $stage_identifier
      * @return string
      */
-    public function get_cell($submission, $student, $stage_identifier) {
-       return $this->submission_time($submission);
+    public function get_cell($submission, $student, $stageidentifier) {
+        return $this->submission_time($submission);
     }
 
     /**

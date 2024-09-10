@@ -48,8 +48,8 @@ class personal_deadline_renderer {
         //deadline
         if (empty($vars['params']['multipleuserdeadlines'])) {
             $allocatable = $vars['personal_deadline']->get_allocatable();
-            $createdby = $DB->get_record('user', array('id' => $vars['personal_deadline']->createdbyid));
-            $lasteditedby = $DB->get_record('user', array('id' => $vars['personal_deadline']->lastmodifiedbyid));
+            $createdby = $DB->get_record('user', ['id' => $vars['personal_deadline']->createdbyid]);
+            $lasteditedby = $DB->get_record('user', ['id' => $vars['personal_deadline']->lastmodifiedbyid]);
 
             $html = '<h1> Edit personal deadline for ' . $allocatable->name() . '</h1>';
 

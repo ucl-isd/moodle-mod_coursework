@@ -26,8 +26,8 @@ global $CFG, $USER;
 
 $moderationid = optional_param('moderationid', 0, PARAM_INT);
 
-$params = array(
+$params = [
     'moderationid' => $moderationid,
-);
+];
 $controller = new mod_coursework\controllers\moderations_controller($params);
 $controller->edit_moderation();

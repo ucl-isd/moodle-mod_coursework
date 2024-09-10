@@ -29,27 +29,18 @@ global $CFG, $DB, $PAGE, $OUTPUT;
 
 $id = required_param('id', PARAM_INT);   // course
 
-if (! $course = $DB->get_record('course', array('id' => $id))) {
+if (! $course = $DB->get_record('course', ['id' => $id])) {
     error('Course ID is incorrect');
 }
 
 require_course_login($course);
 
-if ((float)substr($CFG->release, 0, 5) > 2.6) { // 2.8 > 2.6
-    $event = \mod_coursework\event\course_module_instance_list_viewed::create(array('context' => context_course::instance($course->id)));
-    $event->trigger();
-} else {
-    add_to_log($course->id,
-               'coursework',
-               'view',
-               "view.php?id=$course_module->id",
-               $coursework->name,
-               $course_module->id);
-}
+$event = \mod_coursework\event\course_module_instance_list_viewed::create(['context' => context_course::instance($course->id)]);
+$event->trigger();
 
 // Print the header.
 
-$PAGE->set_url('/mod/coursework/view.php', array('id' => $id));
+$PAGE->set_url('/mod/coursework/view.php', ['id' => $id]);
 $PAGE->set_title($course->fullname);
 $PAGE->set_heading($course->shortname);
 $PAGE->set_pagelayout('incourse');
@@ -65,6 +56,6 @@ if (! $courseworks = get_all_instances_in_course('coursework', $course)) {
 }
 
 echo $OUTPUT->heading(get_string('modulenameplural', 'coursework'), 2);
-$page_renderer = $PAGE->get_renderer('mod_coursework', 'page');
-echo $page_renderer->view_course_index($course->id);
+$pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
+echo $pagerenderer->view_course_index($course->id);
 echo $OUTPUT->footer();

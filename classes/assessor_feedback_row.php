@@ -128,7 +128,7 @@ class assessor_feedback_row {
      * @return string
      */
     public function get_graders_name() {
-      return  $this->get_graded_by()->profile_link();
+        return  $this->get_graded_by()->profile_link();
     }
 
     /**
@@ -194,11 +194,11 @@ class assessor_feedback_row {
         if (isset($this->submission)) {
             return $this->submission;
         }
-        $params = array(
+        $params = [
             'courseworkid' => $this->get_coursework()->id,
             'allocatableid' => $this->get_allocatable()->id(),
             'allocatabletype' => $this->get_allocatable()->type(),
-        );
+        ];
         $this->submission = submission::find($params);
         return $this->submission;
     }

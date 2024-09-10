@@ -50,16 +50,16 @@ class advance_plugins_form extends moodleform {
         $mform->addElement('editor', 'text_element', get_string('comment', 'mod_coursework'), []);
         $mform->setType('editor', PARAM_RAW);
 
-        $file_manager_options = array(
+        $filemanageroptions = [
             'subdirs' => false,
             'accepted_types' => '*',
-            'return_types' => FILE_INTERNAL
-        );
+            'return_types' => FILE_INTERNAL,
+        ];
         $this->_form->addElement('filemanager',
             'file_element',
             '',
             null,
-            $file_manager_options);
+            $filemanageroptions);
 
     }
 }

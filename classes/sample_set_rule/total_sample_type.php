@@ -37,7 +37,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
-    public function adjust_set(array &$moderation_set, array &$potential_allocatables, $stage) {
+    public function adjust_set(array &$moderationset, array &$potentialallocatables, $stage) {
 
     }
 
@@ -49,7 +49,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
     }
 
-    public function add_form_elements($assessor_number=0) {
+    public function add_form_elements($assessornumber = 0) {
 
         global $DB;
 
@@ -58,28 +58,30 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                                 {coursework_sample_set_plugin}  sp
                      WHERE      sr.sample_set_plugin_id = sp.id
                      AND        sr.courseworkid = {$this->coursework->id}
-                     AND        sr.stage_identifier = 'assessor_{$assessor_number}'
+                     AND        sr.stage_identifier = 'assessor_{$assessornumber}'
                      AND        sp.rulename = 'total_sample_type'";
 
-        $selected = ($record = $DB->get_record_sql($sql)) ? array($record->upperlimit => $record->upperlimit) : false;
+        $selected = ($record = $DB->get_record_sql($sql)) ? [$record->upperlimit => $record->upperlimit] : false;
         $checked = ($selected) ? true : false;
 
-        $percentage_options = [];
+        $percentageoptions = [];
 
-        for ($i = 5;$i <= 100; $i = $i + 5) {
-            $percentage_options[$i] = "{$i}";
+        for ($i = 5; $i <= 100; $i = $i + 5) {
+            $percentageoptions[$i] = "{$i}";
         }
 
         $html = html_writer::start_div('sampletotal');
 
-        $html  .= html_writer::checkbox("assessor_{$assessor_number}_sampletotal_checkbox", 1, $checked, get_string('topupto', 'mod_coursework'),
-            array('id' => "assessor_{$assessor_number}_sampletotal_checkbox", 'class' => "assessor_{$assessor_number} total_checkbox sample_set_rule"));
+        $html .= html_writer::checkbox(
+            "assessor_{$assessornumber}_sampletotal_checkbox", 1, $checked, get_string('topupto', 'mod_coursework'),
+            ['id' => "assessor_{$assessornumber}_sampletotal_checkbox", 'class' => "assessor{$assessornumber} totalcheckbox samplesetrule"]);
 
-        $html .= html_writer::select($percentage_options,
-            "assessor_{$assessor_number}_sampletotal",
+        $html .= html_writer::select(
+            $percentageoptions,
+            "assessor_{$assessornumber}_sampletotal",
             "",
             $selected,
-            array('id' => "assessor_{$assessor_number}_sampletotal", 'class' => " sample_set_rule"));
+            ['id' => "assessor_{$assessornumber}_sampletotal", 'class' => " sample_set_rule"]);
         $html  .= html_writer::label(get_string('ofallstudents', 'mod_coursework'), 'assessortwo_sampletotal[]');
 
         $html .= html_writer::end_div();
@@ -87,9 +89,9 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         return $html;
     }
 
-    public function add_form_elements_js($assessor_number=0) {
+    public function add_form_elements_js($assessornumber = 0) {
 
-        $js_script = "
+        $jsscript = "
 
             $('.total_checkbox').each(function(e,element) {
 
@@ -109,26 +111,26 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         ";
 
-        return  html_writer::script($js_script, null);
+        return  html_writer::script($jsscript, null);
 
     }
 
-    function save_form_data($assessor_number=0, &$order=0) {
+    function save_form_data($assessornumber = 0, &$order = 0) {
         global $DB;
 
-        $total_checkbox = optional_param("assessor_{$assessor_number}_sampletotal_checkbox", false, PARAM_INT);
-        $sample_total = optional_param("assessor_{$assessor_number}_sampletotal", false, PARAM_INT);
+        $totalcheckbox = optional_param("assessor_{$assessornumber}_sampletotal_checkbox", false, PARAM_INT);
+        $sampletotal = optional_param("assessor_{$assessornumber}_sampletotal", false, PARAM_INT);
 
-        if ($total_checkbox) {
+        if ($totalcheckbox) {
 
             $dbrecord = new \stdClass();
             $dbrecord->ruletype = "";
             $dbrecord->lowerlimit = 0;
-            $dbrecord->upperlimit = $sample_total;
+            $dbrecord->upperlimit = $sampletotal;
             $dbrecord->sample_set_plugin_id = 2; // TODO: THIS SHOULD NOT BE HARD CODED - AF
             $dbrecord->courseworkid = $this->coursework->id;
             $dbrecord->ruleorder = $order;
-            $dbrecord->stage_identifier = "assessor_{$assessor_number}";
+            $dbrecord->stage_identifier = "assessor_{$assessornumber}";
 
             $DB->insert_record('coursework_sample_set_rules', $dbrecord);
         }
@@ -136,15 +138,17 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
     }
 
     static function compare_key($a, $b) {
-        if ($a === $b) return 0;
+        if ($a === $b) {
+            return 0;
+        }
         return ($a > $b) ? 1 : -1;
     }
 
-    public function adjust_sample_set($stage_number, &$allocatables, &$manual_sample_set, &$auto_sample_set) {
+    public function adjust_sample_set($stagenumber, &$allocatables, &$manualsampleset, &$autosampleset) {
 
         global $DB;
 
-        $stage = "assessor_".$stage_number;
+        $stage = "assessor_" . $stagenumber;
 
         $sql = "SELECT         r.*,p.rulename
                          FROM           {coursework_sample_set_plugin} p,
@@ -155,84 +159,94 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                          AND            stage_identifier = :stage
                          ORDER BY       ruleorder";
 
-        $rule = $DB->get_record_sql($sql, array('courseworkid' => $this->coursework->id, 'stage' => $stage));
+        $rule = $DB->get_record_sql($sql, ['courseworkid' => $this->coursework->id, 'stage' => $stage]);
 
         if ($rule) {
 
             $finalised = $this->finalised_submissions();
             $published = $this->released_submissions();
-            $number_of_alloctables = count($allocatables);
+            $numberofalloctables = count($allocatables);
 
-            $total_to_return = ceil(($rule->upperlimit / 100) * $number_of_alloctables);
+            $totaltoreturn = ceil(($rule->upperlimit / 100) * $numberofalloctables);
 
             // We include the manual sample set in the count
             // TODO: should we do this?
-            $total_to_return -= count($manual_sample_set);
+            $totaltoreturn -= count($manualsampleset);
 
             // If the resultant number isnt greater than 0 then no automatic sample allocatables will be used
-            if ($total_to_return > 0) {
+            if ($totaltoreturn > 0) {
 
                 //use array chunk to split auto sample set into chunks we will only use the first chunk
-                if ($chunked_array = array_chunk($auto_sample_set, $total_to_return, true)) $auto_sample_set = $chunked_array[0];
+                if ($chunkedarray = array_chunk($autosampleset, $totaltoreturn, true)) {
+                    $autosampleset = $chunkedarray[0];
+                }
 
                 // If the number in the sample set is less than the total to return
-                if (count($auto_sample_set) < $total_to_return) {
+                if (count($autosampleset) < $totaltoreturn) {
 
                     // We need to top up the sample set with other allocatables
 
                     // Graded at the previous stage take precedence
 
-                    $previous_stage_number = $stage_number - 1;
+                    $previousstagenumber = $stagenumber - 1;
 
-                    $previous_stage = 'assessor_' . $previous_stage_number;
+                    $previousstage = 'assessor_' . $previousstagenumber;
 
-                    $allocatables_feedback = $this->coursework->get_allocatables_with_feedback($previous_stage, true);
+                    $allocatablesfeedback = $this->coursework->get_allocatables_with_feedback($previousstage, true);
 
-                    foreach ($allocatables_feedback as $af) {
+                    foreach ($allocatablesfeedback as $af) {
 
                         if (!isset($published[$af->allocatableid]) && !isset($finalised[$af->allocatableid])
-                            && !isset($auto_sample_set[$af->allocatableid]) && !isset($manual_sample_set[$af->allocatableid]))
-                            $auto_sample_set[$af->allocatableid] = $allocatables[$af->allocatableid];
+                            && !isset($autosampleset[$af->allocatableid]) && !isset($manualsampleset[$af->allocatableid])) {
+                                $autosampleset[$af->allocatableid] = $allocatables[$af->allocatableid];
+                        }
 
-                        if (count($auto_sample_set) == $total_to_return) break;
+                        if (count($autosampleset) == $totaltoreturn) {
+                            break;
+                        }
 
                     }
                 }
 
                 // If this is not enough select anyone (which should == the ungraded as all graded should have been added)
-                if (count($auto_sample_set) < $total_to_return) {
+                if (count($autosampleset) < $totaltoreturn) {
 
                         // Remove allocatables with published submissions
-                        $allocatable_sample_set = array_diff_ukey($allocatables, $published, array("mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"));
+                        $allocatablesampleset = array_diff_ukey($allocatables, $published, ["mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"]);
 
                     // Remove allocatables with finalised submissions
-                    $allocatable_sample_set = array_diff_ukey($allocatable_sample_set, $finalised, array("mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"));
+                    $allocatablesampleset = array_diff_ukey($allocatablesampleset, $finalised, ["mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"]);
 
                     // Remove allocatables who have been manually selected
-                    $allocatable_sample_set = array_diff_ukey($allocatable_sample_set, $manual_sample_set, array("mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"));
+                    $allocatablesampleset = array_diff_ukey($allocatablesampleset, $manualsampleset, ["mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"]);
 
                     // Remove allocatables already in the sample set
-                    $allocatable_sample_set = array_diff_ukey($allocatable_sample_set, $auto_sample_set, array("mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"));
+                    $allocatablesampleset = array_diff_ukey($allocatablesampleset, $autosampleset, ["mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"]);
 
-                        $array_keys = array_rand($allocatable_sample_set, $total_to_return - count($auto_sample_set));
+                        $arraykeys = array_rand($allocatablesampleset, $totaltoreturn - count($autosampleset));
 
-                        if (!is_array($array_keys)) $array_keys = array($array_keys);
+                        if (!is_array($arraykeys)) {
+                            $arraykeys = [$arraykeys];
+                        }
 
                         //use the allocatables array to get other ungraded allocatables
-                        foreach ($array_keys as $id) {
+                    foreach ($arraykeys as $id) {
 
-                            if (!isset($published[$id]) && !isset($finalised[$id])
-                                && !isset($auto_sample_set[$id]) && !isset($manual_sample_set[$id])
-                            )
-                                $auto_sample_set[$id] = $allocatables[$id];
-
-                            if (count($auto_sample_set) == $total_to_return) break;
+                        if (!isset($published[$id]) && !isset($finalised[$id])
+                            && !isset($autosampleset[$id]) && !isset($manualsampleset[$id])
+                        ) {
+                            $autosampleset[$id] = $allocatables[$id];
                         }
+
+                        if (count($autosampleset) == $totaltoreturn) {
+                            break;
+                        }
+                    }
 
                 }
 
             } else {
-                $auto_sample_set = [];
+                $autosampleset = [];
             }
 
         }

@@ -43,7 +43,7 @@ class user_cell extends cell_base implements allocatable_cell {
 
         $content = '';
 
-  /*      if ($rowobject->can_view_username()) {
+        /*      if ($rowobject->can_view_username()) {
             $content .= $OUTPUT->user_picture($user->get_raw_record());
         } else {
             $renderer = $PAGE->get_renderer('core');
@@ -56,7 +56,7 @@ class user_cell extends cell_base implements allocatable_cell {
         $content .= ' ' . $rowobject->get_user_name(true);
         $content .= "<br>".$rowobject->get_email();
         $user = $rowobject->get_allocatable();
-/*
+        /*
         $candidatenumber = $user->candidate_number();
 
         if (!empty($candidatenumber)) {
@@ -65,7 +65,7 @@ class user_cell extends cell_base implements allocatable_cell {
 
         }
 
-*/
+        */
 
         return $this->get_new_cell_with_class($content);
     }
@@ -76,54 +76,54 @@ class user_cell extends cell_base implements allocatable_cell {
      */
     public function get_table_header($options  = []) {
 
-       $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->coursework->get_context());
+        $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->coursework->get_context());
 
         //adding this line so that the sortable heading function will make a sortable link unique to the table
         // If tablename is set
         $tablename = (!empty($options['tablename'])) ? $options['tablename'] : '';
 
-      // allow to sort users only if CW is not set to blind marking or a user has capability to view anonymous
-       if ($viewanonymous || !$this->coursework->blindmarking) {
-           $sort_by_first_name = $this->helper_sortable_heading(get_string('firstname'),
+        // allow to sort users only if CW is not set to blind marking or a user has capability to view anonymous
+        if ($viewanonymous || !$this->coursework->blindmarking) {
+            $sortbyfirstname = $this->helper_sortable_heading(get_string('firstname'),
                                                                 'firstname',
                                                                 $options['sorthow'],
                                                                 $options['sortby'],
                                                                 $tablename);
-           $sort_by_last_name = $this->helper_sortable_heading(get_string('lastname'),
+            $sortbylastname = $this->helper_sortable_heading(get_string('lastname'),
                                                                'lastname',
                                                                $options['sorthow'],
                                                                $options['sortby'],
                                                                 $tablename);
-           $sort_by_email = $this->helper_sortable_heading(get_string('email', 'mod_coursework'),
+            $sortbyemail = $this->helper_sortable_heading(get_string('email', 'mod_coursework'),
                'email',
                $options['sorthow'],
                $options['sortby'],
                $tablename);
 
-       } else { // otherwise display header without sorting
-           $sort_by_first_name = get_string('firstname');
-           $sort_by_last_name = get_string('lastname');
-           $sort_by_email = get_string('email', 'mod_coursework');
-       }
-
-        if ($this->fullname_format() == 'lf') {
-            $sort_by_first_name = ' / ' . $sort_by_first_name;
-        } else {
-            $sort_by_last_name = ' / ' . $sort_by_last_name;
+        } else { // otherwise display header without sorting
+            $sortbyfirstname = get_string('firstname');
+            $sortbylastname = get_string('lastname');
+            $sortbyemail = get_string('email', 'mod_coursework');
         }
 
-        $sort_by_first_name = '<span class="data-table-splitter splitter-firstname sorting">'.$sort_by_first_name.'</span>';
+        if ($this->fullname_format() == 'lf') {
+            $sortbyfirstname = ' / ' . $sortbyfirstname;
+        } else {
+            $sortbylastname = ' / ' . $sortbylastname;
+        }
 
-        $sort_by_last_name = '<span class="data-table-splitter splitter-lastname sorting">'.$sort_by_last_name.'</span>';
+        $sortbyfirstname = '<span class="data-table-splitter splitter-firstname sorting">'.$sortbyfirstname.'</span>';
 
-        $sort_by_email = '<span class="data-table-splitter splitter-email sorting">'.$sort_by_email.'</span>';
+        $sortbylastname = '<span class="data-table-splitter splitter-lastname sorting">'.$sortbylastname.'</span>';
+
+        $sortbyemail = '<span class="data-table-splitter splitter-email sorting">'.$sortbyemail.'</span>';
 
         if ($this->fullname_format() == 'lf') {
-            $sort_by_name = $sort_by_last_name . $sort_by_first_name;
+            $sortbyname = $sortbylastname . $sortbyfirstname;
         } else {
-            $sort_by_name = $sort_by_first_name . $sort_by_last_name;
+            $sortbyname = $sortbyfirstname . $sortbylastname;
         }
-        $sort = $sort_by_name ."<br>" .$sort_by_email;
+        $sort = $sortbyname ."<br>" .$sortbyemail;
         return $sort;
     }
 

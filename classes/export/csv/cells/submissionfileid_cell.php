@@ -33,7 +33,7 @@ class submissionfileid_cell extends cell_base {
      * @param $stage_identifier
      * @return string
      */
-    public function get_cell($submission, $student, $stage_identifier) {
+    public function get_cell($submission, $student, $stageidentifier) {
         return  $this->coursework->get_username_hash($submission->allocatableid);
     }
 
@@ -46,14 +46,14 @@ class submissionfileid_cell extends cell_base {
         return  get_string('submissionfileid', 'coursework');
     }
 
-    public function validate_cell($value, $submissionid, $stage_dentifier='', $uploadedgradecells  = []) {
+    public function validate_cell($value, $submissionid, $stagedentifier='', $uploadedgradecells  = []) {
         global $DB;
 
         if (empty($value)) {
             return 'No submission hash value entered';
         }
 
-        $subdbrecord = $DB->get_record('coursework_submissions', array('id' => $submissionid));
+        $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
 
         $submission = \mod_coursework\models\submission::find($subdbrecord);
 

@@ -37,27 +37,27 @@ class group_cell extends cell_base implements allocatable_cell {
      * @throws coding_exception
      * @return string
      */
-    public function get_table_cell($row_object) {
+    public function get_table_cell($rowobject) {
         $content = '';
         /**
          * @var group $group
          */
-        $group = $row_object->get_allocatable();
+        $group = $rowobject->get_allocatable();
         $content .= '<span class="group">'.$group->name().'</span>';
         $content .= '<br>';
         $content .= '<div class="group_style">';
         $content .= '<select>';
 
-        if ($this->coursework->blindmarking_enabled() && !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context()) && !$row_object->is_published()) {
+        if ($this->coursework->blindmarking_enabled() && !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context()) && !$rowobject->is_published()) {
             $content .= '<option class="expand_members" selected="selected">'.get_string('membershidden', 'coursework').'</option>';
         } else {
             $content .= '<option class="expand_members" selected="selected">'.get_string('viewmembers', 'coursework').'</option>';
         }
 
         $cm = $this->coursework->get_course_module();
-        foreach ($group->get_members($this->coursework->get_context(), $cm) as $group_member) {
+        foreach ($group->get_members($this->coursework->get_context(), $cm) as $groupmember) {
 
-            $content .= $this->add_group_member_name($group_member, $row_object);
+            $content .= $this->add_group_member_name($groupmember, $rowobject);
         }
         $content .= '</select>';
         $content .= '</div>';
@@ -95,12 +95,12 @@ class group_cell extends cell_base implements allocatable_cell {
      * @param user $group_member
      * @return string
      */
-    protected function add_group_member_name($group_member, $row_object) {
+    protected function add_group_member_name($groupmember, $rowobject) {
         $text = '<option>';
-        if ($this->coursework->blindmarking_enabled() && !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context()) && !$row_object->is_published()) {
+        if ($this->coursework->blindmarking_enabled() && !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context()) && !$rowobject->is_published()) {
             $text .= 'Hidden';
         } else {
-            $text .= $group_member->profile_link(false) . ' ('. $group_member->email.')';
+            $text .= $groupmember->profile_link(false) . ' ('. $groupmember->email.')';
         }
         $text .= '</option>';
         return $text;

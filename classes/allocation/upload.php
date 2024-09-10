@@ -47,7 +47,7 @@ class upload {
     public function validate_csv($content, $encoding, $delimeter) {
         global $CFG, $DB;
 
-        $assessor_identifier = $CFG->coursework_allocation_identifier;
+        $assessoridentifier = $CFG->coursework_allocation_identifier;
 
         $iid = \csv_import_reader::get_new_iid('courseworkallocationsdata');
         $csvreader = new \csv_import_reader($iid, 'courseworkallocationsdata');
@@ -81,40 +81,48 @@ class upload {
         $assessors = array_keys($assessors); // keep only assessors' ids
         $allocatablesinfile = [];
 
-        $csv_cells = array('allocatable');
+        $csvcells = ['allocatable'];
         $stages = $this->coursework->get_max_markers();
         for ($i = 1; $i <= $stages; $i++) {
-            $csv_cells[] = 'assessor_'.$i;
+            $csvcells[] = 'assessor_'.$i;
         }
 
         while ($line = $csvreader->next()) {
 
-            $cells = $csv_cells;
+            $cells = $csvcells;
             $assessorsinfile = [];
 
-            if (count($line) != count($csv_cells)) {$errors = get_string('incorrectfileformat', 'coursework'); break;}
+            if (count($line) != count($csvcells)) {
+                $errors = get_string('incorrectfileformat', 'coursework'); break;
+            }
             foreach ($line as $keynum => $value) {
 
                 // validate allocatable (user or group)
                 if ($cells[$keynum] == 'allocatable') {
                     // check if allocatable exists in the file
-                    if (empty($value)) {$errors[$s] = get_string($allocatabletype .'namemissing', 'coursework'); break;}
+                    if (empty($value)) {
+                        $errors[$s] = get_string($allocatabletype .'namemissing', 'coursework'); break;
+                    }
 
                     if ($allocatabletype == 'user') {
                         // get user id
-                        $suballocatable = $DB->get_record('user', array($assessor_identifier => $value));
+                        $suballocatable = $DB->get_record('user', [$assessoridentifier => $value]);
                         $allocatable = ($suballocatable) ? \mod_coursework\models\user::find($suballocatable->id) : '';
                     } else {
                         // get group id
-                        $suballocatable = $DB->get_record('groups', array('courseid' => $this->coursework->course,
-                                                                        'name' => $value));
+                        $suballocatable = $DB->get_record('groups', ['courseid' => $this->coursework->course,
+                                                                        'name' => $value]);
                         $allocatable = ($suballocatable) ? \mod_coursework\models\group::find($suballocatable->id) : '';
                     }
 
                     // check if allocatable exists in this coursework
-                    if (!$allocatable || !in_array($allocatable->id, $allocatables)) {$errors[$s] = get_string($allocatabletype .'notincoursework', 'coursework'); break;}
+                    if (!$allocatable || !in_array($allocatable->id, $allocatables)) {
+                        $errors[$s] = get_string($allocatabletype .'notincoursework', 'coursework'); break;
+                    }
                     // duplicate user or group
-                    if ($allocatable && in_array($allocatable->id, $allocatablesinfile)) {$errors[$s] = get_string('duplicate'. $allocatabletype, 'coursework'); break;}
+                    if ($allocatable && in_array($allocatable->id, $allocatablesinfile)) {
+                        $errors[$s] = get_string('duplicate'. $allocatabletype, 'coursework'); break;
+                    }
                     $allocatablesinfile[] = $allocatable->id;
                 }
 
@@ -122,11 +130,15 @@ class upload {
                 // in initial stage
                 if (substr($cells[$keynum], 0, 8) == 'assessor') {
                     // skip empty assessors fields
-                    if (empty($value)) { continue;}
+                    if (empty($value)) {
+                        continue;
+                    }
 
-                    $assessor = $DB->get_record('user', array($assessor_identifier => $value));
+                    $assessor = $DB->get_record('user', [$assessoridentifier => $value]);
 
-                    if (!$assessor ||!in_array($assessor->id, $assessors)) {$errors[$s] = get_string('assessornotincoursework', 'coursework', $keynum ); continue;}
+                    if (!$assessor ||!in_array($assessor->id, $assessors)) {
+                        $errors[$s] = get_string('assessornotincoursework', 'coursework', $keynum ); continue;
+                    }
 
                     // check if current assessor is not already allocated for this allocatable in different stage
                     // or is not already in the file in previous stage
@@ -159,7 +171,7 @@ class upload {
 
         global $CFG, $DB, $PAGE;
 
-        $assessor_identifier = $CFG->coursework_allocation_identifier;
+        $assessoridentifier = $CFG->coursework_allocation_identifier;
 
         $iid = \csv_import_reader::get_new_iid('courseworkallocationsdata');
         $csvreader = new \csv_import_reader($iid, 'courseworkallocationsdata');
@@ -184,10 +196,10 @@ class upload {
         $csvreader->init();
 
         $s = 0;
-        $csv_cells = array('allocatable');
+        $csvcells = ['allocatable'];
         $stages = $this->coursework->get_max_markers();
         for ($i = 1; $i <= $stages; $i++) {
-            $csv_cells[] = 'assessor_'.$i;
+            $csvcells[] = 'assessor_'.$i;
         }
 
         while ($line = $csvreader->next()) {
@@ -198,9 +210,11 @@ class upload {
                 continue;
             }
 
-            $cells = $csv_cells;
+            $cells = $csvcells;
 
-            if (count($line) != count($csv_cells)) {$errors = get_string('incorrectfileformat', 'coursework'); break;}
+            if (count($line) != count($csvcells)) {
+                $errors = get_string('incorrectfileformat', 'coursework'); break;
+            }
 
             foreach ($line as $keynum => $value) {
 
@@ -211,23 +225,23 @@ class upload {
                 if ($cells[$keynum] == 'allocatable') {
                     if ($allocatabletype == 'user') {
                         // get user id
-                        $suballocatable = $DB->get_record('user', array($assessor_identifier => $value));
+                        $suballocatable = $DB->get_record('user', [$assessoridentifier => $value]);
                         $allocatable = ($suballocatable) ? \mod_coursework\models\user::find($suballocatable->id) : '';
                     } else {
                         // get group id
-                        $suballocatable = $DB->get_record('groups', array('courseid' => $this->coursework->course,
-                            'name' => $value));
+                        $suballocatable = $DB->get_record('groups', ['courseid' => $this->coursework->course,
+                            'name' => $value]);
                         $allocatable = ($suballocatable) ? \mod_coursework\models\group::find($suballocatable->id) : '';
                     }
                 }
                 if (substr($cells[$keynum], 0, 8) == 'assessor' && !(empty($value))) {
 
-                    $assessor = $DB->get_record('user', array($assessor_identifier => $value));
+                    $assessor = $DB->get_record('user', [$assessoridentifier => $value]);
 
-                    $params = array('courseworkid' => $this->coursework->id,
+                    $params = ['courseworkid' => $this->coursework->id,
                                     'allocatableid' => $allocatable->id,
                                     'allocatabletype' => $allocatabletype,
-                                    'stage_identifier' => $cells[$keynum]);
+                                    'stage_identifier' => $cells[$keynum]];
 
                     $allocation = $DB->get_record('coursework_allocation_pairs', $params);
 
@@ -237,9 +251,9 @@ class upload {
 
                     } else {
                         // update allocation if submission was not marked yet
-                        $subdbrecord = $DB->get_record('coursework_submissions', array('courseworkid' => $this->coursework->id,
+                        $subdbrecord = $DB->get_record('coursework_submissions', ['courseworkid' => $this->coursework->id,
                                                                                        'allocatabletype' => $allocatabletype,
-                                                                                       'allocatableid' => $allocatable->id));
+                                                                                       'allocatableid' => $allocatable->id]);
                         $submission = \mod_coursework\models\submission::find($subdbrecord);
 
                         if (!$submission || !$submission->get_assessor_feedback_by_stage($cells[$keynum])) {
@@ -266,19 +280,19 @@ class upload {
      * @param $allocatabletype
      * @return bool|int
      */
-    public function add_allocation($assessorid, $stage_identifier, $allocatable) {
+    public function add_allocation($assessorid, $stageidentifier, $allocatable) {
         global $DB;
 
-        $add_allocation = new \stdClass();
-        $add_allocation->id = '';
-        $add_allocation->courseworkid = $this->coursework->id;
-        $add_allocation->assessorid = $assessorid;
-        $add_allocation->manual = 1;
-        $add_allocation->stage_identifier = $stage_identifier;
-        $add_allocation->allocatableid = $allocatable->id();
-        $add_allocation->allocatabletype = $allocatable->type();
+        $addallocation = new \stdClass();
+        $addallocation->id = '';
+        $addallocation->courseworkid = $this->coursework->id;
+        $addallocation->assessorid = $assessorid;
+        $addallocation->manual = 1;
+        $addallocation->stage_identifier = $stageidentifier;
+        $addallocation->allocatableid = $allocatable->id();
+        $addallocation->allocatabletype = $allocatable->type();
 
-        $allocationid = $DB->insert_record('coursework_allocation_pairs', $add_allocation, true);
+        $allocationid = $DB->insert_record('coursework_allocation_pairs', $addallocation, true);
 
         return $allocationid;
 
@@ -294,12 +308,12 @@ class upload {
     public function update_allocation($allocationid, $assessorid) {
         global $DB;
 
-        $update_allocation = new \stdClass();
-        $update_allocation->id = $allocationid;
-        $update_allocation->manual = 1;
-        $update_allocation->assessorid = $assessorid;
+        $updateallocation = new \stdClass();
+        $updateallocation->id = $allocationid;
+        $updateallocation->manual = 1;
+        $updateallocation->assessorid = $assessorid;
 
-        $update = $DB->update_record('coursework_allocation_pairs', $update_allocation);
+        $update = $DB->update_record('coursework_allocation_pairs', $updateallocation);
         return $update;
     }
 

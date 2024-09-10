@@ -47,11 +47,11 @@ class turnitin extends base {
         if ($CFG->enableplagiarism) {
             $plagiarismsettings = (array)get_config('plagiarism_turnitin');
             if (!empty($plagiarismsettings['enabled'])) {
-                $params = array(
+                $params = [
                     'cm' => $this->get_coursework()->get_course_module()->id,
                     'name' => 'use_turnitin',
-                    'value' => 1
-                );
+                    'value' => 1,
+                ];
                 if ($DB->record_exists('plagiarism_turnitin_config', $params)) {
                     return true;
                 }

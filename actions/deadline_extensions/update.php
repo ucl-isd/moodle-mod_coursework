@@ -26,9 +26,9 @@ global $CFG, $PAGE, $USER;
 
 $id = required_param('id', PARAM_INT);
 
-$params = array(
+$params = [
     'id' => $id,
-);
+];
 $url = '/mod/coursework/actions/deadline_extensions/create.php';
 $link = new \moodle_url($url, $params);
 $PAGE->set_url($link);

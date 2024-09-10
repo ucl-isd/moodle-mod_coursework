@@ -32,8 +32,8 @@ require_once($CFG->dirroot.'/mod/coursework/lib.php');
 $coursemoduleid = required_param('coursemoduleid', PARAM_INT);
 $stagenumber = required_param('stage', PARAM_INT);
 $coursemodule = get_coursemodule_from_id('coursework', $coursemoduleid, 0, false, MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $coursemodule->course), '*', MUST_EXIST);
-$coursework = $DB->get_record('coursework', array('id' => $coursemodule->instance), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $coursemodule->course], '*', MUST_EXIST);
+$coursework = $DB->get_record('coursework', ['id' => $coursemodule->instance], '*', MUST_EXIST);
 $coursework = coursework::find($coursework);
 $assessorallocationstrategy = optional_param('assessorallocationstrategy', false, PARAM_TEXT);
 

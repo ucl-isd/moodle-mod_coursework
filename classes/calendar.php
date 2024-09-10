@@ -56,15 +56,15 @@ class calendar {
         // to support module events with file areas.
         $intro = strip_pluginfile_content($intro);
         if ($cm->showdescription) {
-            $event->description = array(
+            $event->description = [
                 'text' => $intro,
-                'format' => $coursework->introformat
-            );
+                'format' => $coursework->introformat,
+            ];
         } else {
-            $event->description = array(
+            $event->description = [
                 'text' => '',
-                'format' => $coursework->introformat
-            );
+                'format' => $coursework->introformat,
+            ];
         }
 
         $event->courseid = $coursework->course;
@@ -92,7 +92,7 @@ class calendar {
     public static function remove_event($coursework, $eventtype = '') {
         global $DB;
 
-        $params = array('modulename' => 'coursework', 'instance' => $coursework->id);
+        $params = ['modulename' => 'coursework', 'instance' => $coursework->id];
 
         if ($eventtype) {
             $params['eventtype'] = $eventtype;

@@ -58,7 +58,7 @@ class builder {
      * @param stage_base $stage
      * @param array $data_array incoming data from the allocation form
      */
-    public function __construct($coursework, $allocatable, $stage, $data_array  = []) {
+    public function __construct($coursework, $allocatable, $stage, $dataarray  = []) {
         $this->coursework = $coursework;
         $this->allocatable = $allocatable;
         $this->stage = $stage;
@@ -166,7 +166,7 @@ class builder {
 
         $class = $this->get_stage()->identifier();
         $contents = '';
-        $assessor_dropdown = '';
+        $assessordropdown = '';
 
         if ($this->coursework->sampling_enabled()) {
             if ($class == 'final_agreed_1') {
@@ -191,33 +191,33 @@ class builder {
         }
         $contents .= '<br>';
 
-       if ($this->coursework->allocation_enabled()) {
-           $assessor_dropdown = $this->get_potential_marker_dropdown();
-       }
-        $assessor_name = '';
+        if ($this->coursework->allocation_enabled()) {
+            $assessordropdown = $this->get_potential_marker_dropdown();
+        }
+        $assessorname = '';
         if ($this->has_feedback()) {
             $class .= ' has-assessor-feedback ';
 
             $feedback = $this->get_feedback();
             $assessor = $feedback->assessor();
-            $assessor_name = $assessor->profile_link();
-            $assessor_name .= '<br>';
-            $assessor_name .= 'Grade: ';
-            $assessor_name .= $this->get_feedback()->get_grade();
+            $assessorname = $assessor->profile_link();
+            $assessorname .= '<br>';
+            $assessorname .= 'Grade: ';
+            $assessorname .= $this->get_feedback()->get_grade();
         } else if ($this->has_allocation()) {
-            $assessor_name .= ' '.$this->pinned_checkbox($assessor_dropdown);
-            $assessor_name .= $this->get_stage()->get_allocated_assessor_name($this->get_allocatable());
+            $assessorname .= ' '.$this->pinned_checkbox($assessordropdown);
+            $assessorname .= $this->get_stage()->get_allocated_assessor_name($this->get_allocatable());
         }
 
-        if ($assessor_name) {
-           if ($this->get_stage()->uses_sampling() && !$this->get_feedback() && !$this->has_automatic_sampling()) {
+        if ($assessorname) {
+            if ($this->get_stage()->uses_sampling() && !$this->get_feedback() && !$this->has_automatic_sampling()) {
                 $contents .= '<br>';
             }
-            $contents .= "<span class='existing-assessor'>{$assessor_name}</span>";
+            $contents .= "<span class='existing-assessor'>{$assessorname}</span>";
         }
 
-        if ($assessor_dropdown) {
-            $contents .= $assessor_dropdown;
+        if ($assessordropdown) {
+            $contents .= $assessordropdown;
         }
 
         return '
@@ -234,35 +234,35 @@ class builder {
 
         $contents = '';
         $class = 'moderators';
-        $moderator_dropdown = '';
+        $moderatordropdown = '';
 
         if ($this->coursework->allocation_enabled()) {
-            $moderator_dropdown = $this->get_potential_moderators_dropdown();
+            $moderatordropdown = $this->get_potential_moderators_dropdown();
         }
 
-        $moderator_name = '';
+        $moderatorname = '';
         if ($this->has_moderation()) {
             $class .= ' has-moderation-agreement ';
 
             $moderation = $this->get_moderation();
             $moderator = $moderation->moderator();
-            $moderator_name = $moderator->profile_link();
-            $moderator_name .= '<br>';
-            $moderator_name .= 'Agreement: ';
-            $moderator_name .= get_string($this->get_moderation()->agreement, 'coursework');
+            $moderatorname = $moderator->profile_link();
+            $moderatorname .= '<br>';
+            $moderatorname .= 'Agreement: ';
+            $moderatorname .= get_string($this->get_moderation()->agreement, 'coursework');
         } else if ($this->has_allocation()) {
-            $moderator_name = ' ' . $this->pinned_checkbox($moderator_dropdown);
-            $moderator_name .= $this->get_stage()->get_allocated_assessor_name($this->get_allocatable());
+            $moderatorname = ' ' . $this->pinned_checkbox($moderatordropdown);
+            $moderatorname .= $this->get_stage()->get_allocated_assessor_name($this->get_allocatable());
         }
 
-        if ($moderator_name) {
+        if ($moderatorname) {
             $contents .= '<br>';
-            $contents .= "<span class='existing-moderator'>{$moderator_name}</span>";
+            $contents .= "<span class='existing-moderator'>{$moderatorname}</span>";
         }
 
-        if ($moderator_dropdown) {
+        if ($moderatordropdown) {
             $contents .= '<br>';
-            $contents .= $moderator_dropdown;
+            $contents .= $moderatordropdown;
         }
         return '
             <td class="' . $class . '">
@@ -289,20 +289,20 @@ class builder {
      * @throws \coding_exception
      */
     private function sampling_set_checkbox() {
-        $checkbox_name =
+        $checkboxname =
             'allocatables[' . $this->get_allocatable()->id . '][' . $this->get_stage()->identifier() . '][in_set]';
-        $checkbox_checked = 0;
+        $checkboxchecked = 0;
         if ($this->get_stage()->allocatable_is_in_sample($this->get_allocatable()) || $this->get_stage()->identifier() == 'assessor_1') {
-            $checkbox_checked = 1;
+            $checkboxchecked = 1;
         }
 
-        $checkbox_checked = $this->checkbox_checked_in_session($checkbox_name, $checkbox_checked);
+        $checkboxchecked = $this->checkbox_checked_in_session($checkboxname, $checkboxchecked);
 
-        $checkbox_title = 'Included in sample';
+        $checkboxtitle = 'Included in sample';
 
-        $attributes = array('class' => 'sampling_set_checkbox',
+        $attributes = ['class' => 'sampling_set_checkbox',
                             'id' => $this->get_allocatable()->type().'_' . $this->get_allocatable()->id() . '_'.$this->get_stage()->identifier() .'_samplecheckbox',
-                            'title' => $checkbox_title);
+                            'title' => $checkboxtitle];
 
         // if agreed grade given or grade published to students disable remaining sampling checkbox
         $submission = $this->get_submission();
@@ -310,9 +310,9 @@ class builder {
             $attributes['disabled'] = 'true';
         }
 
-        return \html_writer::checkbox($checkbox_name,
+        return \html_writer::checkbox($checkboxname,
                                       1,
-                                      $checkbox_checked,
+                                      $checkboxchecked,
                                       get_string('includedinsample', 'mod_coursework'),
                                       $attributes);
     }
@@ -321,17 +321,17 @@ class builder {
      * @return string
      */
     private function sampling_hidden_checkbox() {
-        $checkbox_name =
+        $checkboxname =
             'allocatables[' . $this->get_allocatable()->id . '][' . $this->get_stage()->identifier() . '][in_set]';
-        $checkbox_title = 'Included in sample';
+        $checkboxtitle = 'Included in sample';
 
-        return \html_writer::checkbox($checkbox_name,
+        return \html_writer::checkbox($checkboxname,
             1,
             1,
            '',
-            array('class' => 'sampling_set_checkbox',
+            ['class' => 'sampling_set_checkbox',
                 'id' => $this->get_allocatable()->type().'_' . $this->get_allocatable()->id() . '_'.$this->get_stage()->identifier() .'_samplecheckbox',
-                'title' => $checkbox_title, 'hidden' => true));
+                'title' => $checkboxtitle, 'hidden' => true]);
     }
 
     /**
@@ -344,10 +344,10 @@ class builder {
 
         global $DB;
 
-        $params = array('courseworkid' => $this->coursework->id(),
+        $params = ['courseworkid' => $this->coursework->id(),
                           'allocatableid' => $this->get_allocatable()->id(),
                           'stage_identifier' => $this->get_stage()->identifier(),
-                          'selectiontype' => 'automatic');
+                          'selectiontype' => 'automatic'];
 
         return $DB->record_exists('coursework_sample_set_mbrs', $params);
     }
@@ -357,25 +357,25 @@ class builder {
      */
     private function pinned_checkbox() {
 
-        $checkbox_name =
+        $checkboxname =
             'allocatables[' . $this->get_allocatable()->id . '][' . $this->get_stage()->identifier() . '][pinned]';
-        $checkbox_checked = 0;
+        $checkboxchecked = 0;
         if ($this->get_stage()->has_allocation($this->get_allocatable())) {
             if ($this->get_stage()->get_allocation($this->get_allocatable())->is_pinned()) {
-                $checkbox_checked = 1;
+                $checkboxchecked = 1;
             }
         }
 
-        $checkbox_checked = $this->checkbox_checked_in_session($checkbox_name, $checkbox_checked);
+        $checkboxchecked = $this->checkbox_checked_in_session($checkboxname, $checkboxchecked);
 
         $stage = substr($this->get_stage()->identifier(), -1);
-        $checkbox_title = 'Pinned (auto allocations will not alter this)';
-        return \html_writer::checkbox($checkbox_name,
+        $checkboxtitle = 'Pinned (auto allocations will not alter this)';
+        return \html_writer::checkbox($checkboxname,
                                                      1,
-                                                     $checkbox_checked,
+                                                     $checkboxchecked,
                                                      '',
-                                                     array('class' => "pinned pin_$stage",
-                                                           'title' => $checkbox_title));
+                                                     ['class' => "pinned pin_$stage",
+                                                           'title' => $checkboxtitle]);
     }
 
     private function checkbox_checked_in_session($checkboxname, $checkboxstate) {
@@ -414,7 +414,7 @@ class builder {
      * @throws \coding_exception
      */
     private function get_included_in_sample_label() {
-        return \html_writer::label(get_string('includedinsample', 'mod_coursework'), null, true, array('class' => 'included_in_sample'));
+        return \html_writer::label(get_string('includedinsample', 'mod_coursework'), null, true, ['class' => 'included_in_sample']);
     }
 
     /**
@@ -422,7 +422,7 @@ class builder {
      * @throws \coding_exception
      */
     private function get_automatically_in_sample_label() {
-        return \html_writer::label(get_string('automaticallyinsample', 'mod_coursework'), null, true, array('class' => 'included_in_sample'));
+        return \html_writer::label(get_string('automaticallyinsample', 'mod_coursework'), null, true, ['class' => 'included_in_sample']);
     }
 
     /**
@@ -437,14 +437,14 @@ class builder {
             [$this->allocatable->id(), $this->allocatable->type()]
         );
         if ($submission) {
-        $feedbacks = isset(feedback::$pool[$this->coursework->id]['submissionid'][$submission->id]) ?
+            $feedbacks = isset(feedback::$pool[$this->coursework->id]['submissionid'][$submission->id]) ?
             feedback::$pool[$this->coursework->id]['submissionid'][$submission->id] : [];
 
-        foreach ($feedbacks as $feedback) {
-            if ($feedback->stage_identifier == 'final_agreed_1') {
-                return true;
+            foreach ($feedbacks as $feedback) {
+                if ($feedback->stage_identifier == 'final_agreed_1') {
+                    return true;
+                }
             }
-        }
         }
         return false;
     }
