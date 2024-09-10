@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 class renderer_test extends \basic_testcase {
 
-    public function test_equals() {
+    public function test_equals(): void {
         $this->assertEquals(1, 1);
     }
 

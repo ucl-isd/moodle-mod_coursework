@@ -48,7 +48,7 @@ class mod_coursework_allocation_strategy_percentages_test extends advanced_testc
         $this->create_another_teacher();
     }
 
-    public function test_next_assessor_from_list_chooses_when_at_100_percent_for_one_teacher_and_no_other_allocations() {
+    public function test_next_assessor_from_list_chooses_when_at_100_percent_for_one_teacher_and_no_other_allocations(): void {
 
         $strategy = $this->assessor_strategy();
 
@@ -59,7 +59,7 @@ class mod_coursework_allocation_strategy_percentages_test extends advanced_testc
 
     }
 
-    public function test_next_assessor_from_list_fails_when_at_100_percent_for_one_teacher_and_already_allocated() {
+    public function test_next_assessor_from_list_fails_when_at_100_percent_for_one_teacher_and_already_allocated(): void {
 
         $strategy = $this->assessor_strategy();
 
@@ -70,7 +70,7 @@ class mod_coursework_allocation_strategy_percentages_test extends advanced_testc
         $this->assertFalse($next_teacher);
     }
 
-    public function test_when_at_100_percent_for_one_teacher_and_the_other_student_is_already_allocated() {
+    public function test_when_at_100_percent_for_one_teacher_and_the_other_student_is_already_allocated(): void {
 
         $strategy = $this->assessor_strategy();
 
@@ -85,7 +85,7 @@ class mod_coursework_allocation_strategy_percentages_test extends advanced_testc
      * Theory here is that we want to not allocate when the percentage is below that which would represent
      * a whole person. However, we sill need all of the allocations to be made without missing any.
      */
-    public function test_weird_percentages_work() {
+    public function test_weird_percentages_work(): void {
         $this->delete_all_allocations();
 
         $this->coursework->update_attribute('numberofmarkers', 1);

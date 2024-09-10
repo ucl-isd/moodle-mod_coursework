@@ -35,7 +35,7 @@ class grade_judge_test extends advanced_testcase {
         $this->resetAfterTest();
     }
 
-    public function test_get_feedbck_that_is_promoted_to_gradebook_returns_initial_feedback() {
+    public function test_get_feedbck_that_is_promoted_to_gradebook_returns_initial_feedback(): void {
         $coursework = $this->create_a_coursework();
         $grade_judge = new grade_judge($coursework);
 
@@ -48,7 +48,7 @@ class grade_judge_test extends advanced_testcase {
         $this->assertEquals($feedback->id, $grade_judge->get_feedback_that_is_promoted_to_gradebook($submission)->id);
     }
 
-    public function test_sampling_disabled_one_marker() {
+    public function test_sampling_disabled_one_marker(): void {
         $coursework = $this->create_a_coursework();
         $grade_judge = new grade_judge($coursework);
 

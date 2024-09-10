@@ -60,7 +60,7 @@ class auto_allocator_test extends advanced_testcase {
         $this->create_another_teacher();
     }
 
-    public function test_process_allocations_makes_an_allocation() {
+    public function test_process_allocations_makes_an_allocation(): void {
         global $DB;
 
         $this->set_coursework_to_single_marker();
@@ -80,7 +80,7 @@ class auto_allocator_test extends advanced_testcase {
 
     }
 
-    public function test_process_allocations_does_not_delete_other_coursework_allocations() {
+    public function test_process_allocations_does_not_delete_other_coursework_allocations(): void {
         $params = array(
             'courseworkid' => 555,
             'allocatableid' => 555,
@@ -96,7 +96,7 @@ class auto_allocator_test extends advanced_testcase {
         $this->assertTrue(\mod_coursework\models\allocation::exists($params));
     }
 
-    public function test_process_allocations_does_not_alter_manual_allocations() {
+    public function test_process_allocations_does_not_alter_manual_allocations(): void {
         $params = array(
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
@@ -113,7 +113,7 @@ class auto_allocator_test extends advanced_testcase {
         $this->assertTrue(\mod_coursework\models\allocation::exists($params));
     }
 
-    public function test_process_allocations_alters_non_manual_allocations() {
+    public function test_process_allocations_alters_non_manual_allocations(): void {
         $params = array(
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
@@ -129,7 +129,7 @@ class auto_allocator_test extends advanced_testcase {
         $this->assertFalse(\mod_coursework\models\allocation::exists($params));
     }
 
-    public function test_process_allocations_alters_non_manual_allocations_with_submissions() {
+    public function test_process_allocations_alters_non_manual_allocations_with_submissions(): void {
         $params = array(
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
@@ -151,7 +151,7 @@ class auto_allocator_test extends advanced_testcase {
         $this->assertFalse(\mod_coursework\models\allocation::exists($params));
     }
 
-    public function test_process_allocations_does_not_alter_non_manual_allocations_with_feedback() {
+    public function test_process_allocations_does_not_alter_non_manual_allocations_with_feedback(): void {
         $allocation_params = array(
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,

@@ -65,7 +65,7 @@ class table_processor_test extends advanced_testcase {
         $this->delete_all_auto_allocations_caused_by_enrol_hooks();
     }
 
-    public function test_process_rows_makes_a_new_assessor_allocation() {
+    public function test_process_rows_makes_a_new_assessor_allocation(): void {
 
         global $DB;
 
@@ -94,7 +94,7 @@ class table_processor_test extends advanced_testcase {
 
     }
 
-    public function test_process_rows_sets_the_stage_identifiers_for_new_assessor_allocation() {
+    public function test_process_rows_sets_the_stage_identifiers_for_new_assessor_allocation(): void {
 
         global $DB;
 
@@ -129,7 +129,7 @@ class table_processor_test extends advanced_testcase {
         $this->assertEquals('assessor_2', $second_allocation->stage_identifier);
     }
 
-    public function test_process_rows_alters_an_existing_allocation() {
+    public function test_process_rows_alters_an_existing_allocation(): void {
 
         global $DB;
 
@@ -161,12 +161,12 @@ class table_processor_test extends advanced_testcase {
 
     }
 
-    public function test_that_missing_columns_dont_mess_it_up() {
+    public function test_that_missing_columns_dont_mess_it_up(): void {
         $processor = new processor($this->coursework);
         $processor->process_data(array($this->student->id => []));
     }
 
-    public function test_that_missing_rows_dont_mess_it_up() {
+    public function test_that_missing_rows_dont_mess_it_up(): void {
         $processor = new processor($this->coursework);
         $processor->process_data();
     }

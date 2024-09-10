@@ -30,7 +30,7 @@ class coursework_moderation_set_membership_test extends advanced_testcase {
         $this->resetAfterTest();
     }
 
-    public function test_find() {
+    public function test_find(): void {
         global $DB;
 
         $record = new stdClass();

@@ -50,7 +50,7 @@ class router_test extends advanced_testcase {
         $this->resetAfterTest();
     }
 
-    public function test_new_submission_path() {
+    public function test_new_submission_path(): void {
 
         $submission = submission::build(array('allocatableid' => 4, 'allocatabletype' => 'user', 'courseworkid' => 5));
 

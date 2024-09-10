@@ -37,7 +37,7 @@ class percentage_distance_test extends \advanced_testcase {
         $this->resetAfterTest();
     }
 
-    public function test_nothing_happens_when_there_is_already_an_agreed_feedback() {
+    public function test_nothing_happens_when_there_is_already_an_agreed_feedback(): void {
         global $DB;
 
         $user = $this->createMock('\mod_coursework\models\user');
@@ -53,7 +53,7 @@ class percentage_distance_test extends \advanced_testcase {
         // reset_after_test() has not been called, so this will fail if the DB is changed.
     }
 
-    public function test_nothing_happens_when_the_initial_feedbacks_are_not_there() {
+    public function test_nothing_happens_when_the_initial_feedbacks_are_not_there(): void {
         global $DB;
 
         $user = $this->createMock('\mod_coursework\models\user');
@@ -72,7 +72,7 @@ class percentage_distance_test extends \advanced_testcase {
         $this->assertEquals(0, $DB->count_records('coursework_feedbacks'));
     }
 
-    public function test_that_a_new_record_is_created_when_all_initial_feedbacks_are_close_enough() {
+    public function test_that_a_new_record_is_created_when_all_initial_feedbacks_are_close_enough(): void {
         global $DB;
 
         $user = $this->createMock('\mod_coursework\models\user');
@@ -105,7 +105,7 @@ class percentage_distance_test extends \advanced_testcase {
         $this->assertEquals(1, $DB->count_records('coursework_feedbacks'));
     }
 
-    public function test_that_a_new_record_is_not_created_when_all_initial_feedbacks_are_far_apart() {
+    public function test_that_a_new_record_is_not_created_when_all_initial_feedbacks_are_far_apart(): void {
         global $DB;
 
         $user = $this->createMock('\mod_coursework\models\user');

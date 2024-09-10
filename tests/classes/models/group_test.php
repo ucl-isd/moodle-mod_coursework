@@ -32,7 +32,7 @@ class coursework_group_test extends advanced_testcase {
         $this->resetAfterTest();
     }
 
-    public function test_find() {
+    public function test_find(): void {
 
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();

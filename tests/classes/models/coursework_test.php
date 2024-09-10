@@ -72,7 +72,7 @@ class coursework_test extends advanced_testcase {
      * Checks whether the code to validate the class name works
      *
      */
-    public function test_set_assessor_allocation_strategy() {
+    public function test_set_assessor_allocation_strategy(): void {
 
         global $DB;
 
@@ -90,7 +90,7 @@ class coursework_test extends advanced_testcase {
     /**
      * Makes sure we can get the allocation manager and a default if it's duff.
      */
-    public function test_get_allocation_manager() {
+    public function test_get_allocation_manager(): void {
 
         $allocationmanager = $this->coursework->get_allocation_manager();
         $this->assertInstanceOf('\mod_coursework\allocation\manager', $allocationmanager);
@@ -106,7 +106,7 @@ class coursework_test extends advanced_testcase {
         $this->assertInstanceOf('\mod_coursework\allocation\manager', $allocationmanager);
     }
 
-    public function test_group_decorator_is_added() {
+    public function test_group_decorator_is_added(): void {
         /* @var mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $coursework = $generator->create_instance(array('course' => $this->course->id,
@@ -115,7 +115,7 @@ class coursework_test extends advanced_testcase {
         $this->assertInstanceOf('\mod_coursework\decorators\coursework_groups_decorator', coursework::find($coursework->id));
     }
 
-    public function test_group_decorator_is_not_added() {
+    public function test_group_decorator_is_not_added(): void {
         /* @var mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $coursework = $generator->create_instance(array('course' => $this->course->id,
@@ -124,7 +124,7 @@ class coursework_test extends advanced_testcase {
                                 coursework::find($coursework->id));
     }
 
-    public function test_get_user_group_no_grouping() {
+    public function test_get_user_group_no_grouping(): void {
 
         $generator = $this->get_coursework_generator();
 
@@ -140,7 +140,7 @@ class coursework_test extends advanced_testcase {
 
     }
 
-    public function test_get_user_group_with_grouping() {
+    public function test_get_user_group_with_grouping(): void {
 
         $generator = $this->get_coursework_generator();
 
@@ -157,7 +157,7 @@ class coursework_test extends advanced_testcase {
         $this->assertEquals($this->group->id, $coursework->get_student_group($this->student)->id);
     }
 
-    public function test_get_user_group_with_wrong_grouping() {
+    public function test_get_user_group_with_wrong_grouping(): void {
 
         /**
          * @var mod_coursework_generator
@@ -177,7 +177,7 @@ class coursework_test extends advanced_testcase {
         $this->assertEquals(false, $coursework->get_student_group($this->student));
     }
 
-    public function test_marking_stages_does_single_marker() {
+    public function test_marking_stages_does_single_marker(): void {
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('moderationenabled', 0);
         $coursework->update_attribute('numberofmarkers', 1);
@@ -188,7 +188,7 @@ class coursework_test extends advanced_testcase {
         $this->assertEquals('assessor_1', $stage_identifier);
     }
 
-    public function test_marking_stages_does_double_marker() {
+    public function test_marking_stages_does_double_marker(): void {
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('moderationenabled', 0);
         $coursework->update_attribute('numberofmarkers', 2);
@@ -196,13 +196,13 @@ class coursework_test extends advanced_testcase {
         $this->assertEquals(array('assessor_1', 'assessor_2', 'final_agreed_1'), array_keys($actual));
     }
 
-    public function test_get_stage() {
+    public function test_get_stage(): void {
         $coursework = $this->create_a_coursework();
         $stage = $coursework->get_stage('assessor_1');
         $this->assertEquals(new \mod_coursework\stages\assessor($coursework, 'assessor_1'), $stage);
     }
 
-    public function test_initial_assessors_sends_each_teacher_once() {
+    public function test_initial_assessors_sends_each_teacher_once(): void {
         $coursework = $this->create_a_coursework();
         $student = $this->create_a_student();
         $coursework->update_attribute('numberofmarkers', 2);
@@ -212,7 +212,7 @@ class coursework_test extends advanced_testcase {
         $this->assertEquals(2, count($coursework->initial_assessors($student)));
     }
 
-    public function test_file_types_spaces() {
+    public function test_file_types_spaces(): void {
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('filetypes', 'doc docx');
         $this->assertEquals(array('.doc',
@@ -220,13 +220,13 @@ class coursework_test extends advanced_testcase {
                             $coursework->get_file_options()['accepted_types']);
     }
 
-    public function test_file_types_commas() {
+    public function test_file_types_commas(): void {
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('filetypes', 'doc, docx');
         $this->assertEquals(array('.doc', '.docx'), $coursework->get_file_options()['accepted_types']);
     }
 
-    public function test_file_types_commas_dots() {
+    public function test_file_types_commas_dots(): void {
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('filetypes', '.doc, .docx');
         $this->assertEquals(array('.doc',
@@ -234,7 +234,7 @@ class coursework_test extends advanced_testcase {
                             $coursework->get_file_options()['accepted_types']);
     }
 
-    public function test_file_types_commas_dots_stars() {
+    public function test_file_types_commas_dots_stars(): void {
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('filetypes', '*.doc, *.docx');
         $this->assertEquals(array('.doc',
@@ -242,7 +242,7 @@ class coursework_test extends advanced_testcase {
                             $coursework->get_file_options()['accepted_types']);
     }
 
-    public function test_groupings_appear_in_allocatabeles() {
+    public function test_groupings_appear_in_allocatabeles(): void {
 
         $this->create_a_course();
 
@@ -265,25 +265,25 @@ class coursework_test extends advanced_testcase {
 
     }
 
-    public function test_individual_feedback_deadline_has_passed() {
+    public function test_individual_feedback_deadline_has_passed(): void {
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('individualfeedback', strtotime('1 week ago'));
         $this->assertTrue($coursework->individual_feedback_deadline_has_passed());
     }
 
-    public function test_individual_feedback_deadline_has_not_passed() {
+    public function test_individual_feedback_deadline_has_not_passed(): void {
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('individualfeedback', strtotime('+1 week'));
         $this->assertFalse($coursework->individual_feedback_deadline_has_passed());
     }
 
-    public function test_individual_feedback_deadline_has_passed_when_not_set() {
+    public function test_individual_feedback_deadline_has_passed_when_not_set(): void {
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('individualfeedback', 0);
         $this->assertTrue($coursework->individual_feedback_deadline_has_passed());
     }
 
-    public function test_finalise_all_leaves_other_submissions_alone() {
+    public function test_finalise_all_leaves_other_submissions_alone(): void {
         $coursework = $this->get_coursework();
         $submission = $this->create_a_submission_for_the_student();
         $submission->update_attribute('courseworkid', 54443434);
@@ -292,7 +292,7 @@ class coursework_test extends advanced_testcase {
         $this->assertEquals(0, $submission->reload()->finalised);
     }
 
-    public function test_finalise_all_works() {
+    public function test_finalise_all_works(): void {
         $coursework = $this->get_coursework();
         $submission = $this->create_a_submission_for_the_student();
         $coursework->update_attribute('deadline', strtotime('1 week ago'));
@@ -300,13 +300,13 @@ class coursework_test extends advanced_testcase {
         $this->assertEquals(1, $submission->reload()->finalised);
     }
 
-    public function test_deadline_has_passed_when_it_has() {
+    public function test_deadline_has_passed_when_it_has(): void {
         $coursework = $this->get_coursework();
         $coursework->update_attribute('deadline', strtotime('1 week ago'));
         $this->assertTrue($coursework->deadline_has_passed());
     }
 
-    public function test_deadline_has_passed_when_it_has_not() {
+    public function test_deadline_has_passed_when_it_has_not(): void {
         $coursework = $this->get_coursework();
         $coursework->update_attribute('deadline', strtotime('+1 week'));
         $this->assertFalse($coursework->deadline_has_passed());

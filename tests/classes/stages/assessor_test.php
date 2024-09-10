@@ -34,7 +34,7 @@ class assessor_test extends advanced_testcase {
         $this->create_a_coursework();
     }
 
-    public function test_prerequisite_stages_is_ok_with_no_feedbacks() {
+    public function test_prerequisite_stages_is_ok_with_no_feedbacks(): void {
         $this->coursework->update_attribute('numberofmarkers', 2);
         $this->coursework->update_attribute('moderationenabled', 1);
         $this->coursework->update_attribute('moderatorallocationstrategy', 'none');
@@ -49,7 +49,7 @@ class assessor_test extends advanced_testcase {
 
     }
 
-    public function test_prerequisite_stages_is_ok_with_one_assessor_feedback() {
+    public function test_prerequisite_stages_is_ok_with_one_assessor_feedback(): void {
         $this->coursework->update_attribute('numberofmarkers', 2);
         $this->coursework->update_attribute('moderationenabled', 1);
         $this->coursework->update_attribute('moderatorallocationstrategy', 'none');
@@ -67,7 +67,7 @@ class assessor_test extends advanced_testcase {
         $this->assertTrue($second_stage->prerequisite_stages_have_feedback($student));
     }
 
-    public function test_type() {
+    public function test_type(): void {
         $stage = new \mod_coursework\stages\assessor($this->coursework, 'assessor_1');
         $this->assertEquals('assessor', $stage->type());
     }

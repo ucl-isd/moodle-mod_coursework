@@ -36,7 +36,7 @@ class mod_coursework_models_deadline_extension_test extends advanced_testcase {
         $this->setAdminUser();
     }
 
-    public function test_create() {
+    public function test_create(): void {
         $params = array('allocatableid' => 3,
                         'allocatabletype' => 'user',
                         'courseworkid' => 4,
@@ -45,7 +45,7 @@ class mod_coursework_models_deadline_extension_test extends advanced_testcase {
         $this->assertInstanceOf('mod_coursework\models\deadline_extension', $new_thing);
     }
 
-    public function test_user_extension_allows_submission_when_active() {
+    public function test_user_extension_allows_submission_when_active(): void {
         $coursework = $this->create_a_coursework();
         $user = $this->create_a_student();
         $params = array('allocatableid' => $user->id(),
@@ -56,7 +56,7 @@ class mod_coursework_models_deadline_extension_test extends advanced_testcase {
         $this->assertTrue(deadline_extension::allocatable_extension_allows_submission($user, $coursework));
     }
 
-    public function test_user_extension_allows_submission_when_passed() {
+    public function test_user_extension_allows_submission_when_passed(): void {
         $coursework = $this->create_a_coursework();
         $user = $this->create_a_student();
         $params = array('allocatableid' => $user->id(),
@@ -67,7 +67,7 @@ class mod_coursework_models_deadline_extension_test extends advanced_testcase {
         $this->assertFalse(deadline_extension::allocatable_extension_allows_submission($user, $coursework));
     }
 
-    public function test_get_coursework() {
+    public function test_get_coursework(): void {
         $coursework = $this->create_a_coursework();
         $params = array('allocatableid' => 3,
                         'allocatabletype' => 'user',

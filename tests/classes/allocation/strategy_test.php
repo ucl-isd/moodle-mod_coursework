@@ -53,7 +53,7 @@ class coursework_allocation_strategy_test extends advanced_testcase {
     /**
      * See whether this works to create all allocations
      */
-    public function test_allocate_all_ungraded() {
+    public function test_allocate_all_ungraded(): void {
 
         $generator = $this->getDataGenerator();
         /* @var mod_coursework_generator $courseworkgenerator */

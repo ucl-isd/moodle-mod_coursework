@@ -66,7 +66,7 @@ class coursework_submission_test extends advanced_testcase {
     /**
      * Test that get_coursework() will get the coursework when asked to.
      */
-    public function test_get_coursework() {
+    public function test_get_coursework(): void {
         $submission = new submission();
         $submission->courseworkid = $this->coursework->id;
         $submission->save();
@@ -77,7 +77,7 @@ class coursework_submission_test extends advanced_testcase {
     /**
      * Make sure that the id field is created automatically.
      */
-    public function test_save_id() {
+    public function test_save_id(): void {
         $submission = new submission();
         $submission->courseworkid = $this->coursework->id;
         $submission->save();
@@ -88,7 +88,7 @@ class coursework_submission_test extends advanced_testcase {
     /**
      * Make sure we can get the courseworkid to save.
      */
-    public function test_save_courseworkid() {
+    public function test_save_courseworkid(): void {
         $submission = new submission();
         $submission->courseworkid = $this->coursework->id;
         $submission->save();
@@ -98,7 +98,7 @@ class coursework_submission_test extends advanced_testcase {
         $this->assertNotEmpty($retrieved->courseworkid);
     }
 
-    public function test_group_decorator_is_not_added() {
+    public function test_group_decorator_is_not_added(): void {
         /* @var mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $coursework = $generator->create_instance(array('course' => $this->course->id,
@@ -112,7 +112,7 @@ class coursework_submission_test extends advanced_testcase {
                                 submission::find($submission->id));
     }
 
-    public function test_get_allocatable_student() {
+    public function test_get_allocatable_student(): void {
 
         $student = $this->create_a_student();
         /**
@@ -122,7 +122,7 @@ class coursework_submission_test extends advanced_testcase {
         $this->assertEquals($student, $submission->get_allocatable());
     }
 
-    public function test_get_allocatable_group() {
+    public function test_get_allocatable_group(): void {
 
         $group = $this->create_a_group();
         /**
@@ -133,13 +133,13 @@ class coursework_submission_test extends advanced_testcase {
         $this->assertEquals($group, $submission->get_allocatable());
     }
 
-    public function test_extract_extenstion_from_filename() {
+    public function test_extract_extenstion_from_filename(): void {
         $filename = 'thing.docx';
         $submission = new submission();
         $this->assertEquals('docx', $submission->extract_extension_from_file_name($filename));
     }
 
-    public function test_publish_updates_grade_timemodified() {
+    public function test_publish_updates_grade_timemodified(): void {
         global $DB;
 
         /* @var mod_coursework_generator $generator */
@@ -183,7 +183,7 @@ class coursework_submission_test extends advanced_testcase {
 
     }
 
-    public function test_publish_updates_grade_rawgrade() {
+    public function test_publish_updates_grade_rawgrade(): void {
         global $DB;
 
         /* @var mod_coursework_generator $generator */
@@ -223,7 +223,7 @@ class coursework_submission_test extends advanced_testcase {
 
     }
 
-    public function test_publish_sets_grade_timemodified() {
+    public function test_publish_sets_grade_timemodified(): void {
         global $DB;
 
         /* @var mod_coursework_generator $generator */

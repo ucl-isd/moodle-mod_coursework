@@ -52,7 +52,7 @@ class generator_test extends \advanced_testcase {
      * Checks that the data generator for making coursework instances in the PHPUnit DB is working.
      * Mostly pinched from the same file in the assignment module.
      */
-    public function test_create_instance() {
+    public function test_create_instance(): void {
         global $DB;
         $this->assertEquals(0, $DB->count_records('coursework'));
         $course = $this->getDataGenerator()->create_course();
@@ -102,7 +102,7 @@ class generator_test extends \advanced_testcase {
     /**
      * Makes sure we can make allocations OK.
      */
-    public function test_create_allocation_default_assessor() {
+    public function test_create_allocation_default_assessor(): void {
         global $DB;
 
         $data = new \stdClass();
@@ -132,7 +132,7 @@ class generator_test extends \advanced_testcase {
     /**
      * Makes sure we can make feedbacks OK.
      */
-    public function test_create_feedback() {
+    public function test_create_feedback(): void {
         global $DB;
 
         $data = new \stdClass();
@@ -161,7 +161,7 @@ class generator_test extends \advanced_testcase {
     /**
      * Makes sure we can make fake submissions.
      */
-    public function test_create_submission() {
+    public function test_create_submission(): void {
         global $DB;
 
         $user = $this->getDataGenerator()->create_user();
