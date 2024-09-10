@@ -37,6 +37,7 @@ use mod_coursework\traits\allocatable_functions;
  * Class user
  * @package mod_coursework\models
  */
+#[\AllowDynamicProperties]
 class user extends table_base implements allocatable, moderatable {
 
     use allocatable_functions;

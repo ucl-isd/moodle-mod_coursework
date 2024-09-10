@@ -38,6 +38,7 @@ use pix_icon;
 /**
  * Class no_sub_rows
  */
+#[\AllowDynamicProperties]
 class multi_marker_feedback_sub_rows implements sub_rows_interface {
 
     /**
@@ -268,7 +269,8 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         global $USER, $OUTPUT;
 
         $this->already_shown_a_new_buton = true;
-        $this->displaytable = true;
+//        $this->displaytable = true; //todo this is deprecated and causes behat exception - was it doing anything useful?
+
         // New
         $linktitle = get_string('newfeedback', 'coursework');
 

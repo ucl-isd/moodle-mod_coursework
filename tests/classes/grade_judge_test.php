@@ -30,7 +30,7 @@ class grade_judge_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
 
-    public function setUp() {
+    public function setUp(): void {
         $this->setAdminUser();
         $this->resetAfterTest();
     }

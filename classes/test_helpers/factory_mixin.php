@@ -75,6 +75,16 @@ trait factory_mixin {
     protected $other_teacher;
 
     /**
+     * @var group
+     */
+    protected $group;
+
+    /**
+     * @var
+     */
+    protected $final_feedback;
+
+    /**
      * @return user
      */
     protected function create_a_student() {

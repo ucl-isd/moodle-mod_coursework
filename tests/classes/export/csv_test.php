@@ -17,8 +17,7 @@
 /**
  * Unit tests for the csv class
  *
- * @package    mod
- * @subpackage csv
+ * @package    mod_coursework
  * @copyright  2012 University of London Computer Centre {@link ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -40,13 +39,13 @@ class csv_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
 
-    public function setUp():void {
+    public function setUp(): void {
 
         $this->resetAfterTest();
 
         $this->course = $this->getDataGenerator()->create_course();
 
-       // $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
+        // $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $this->setAdminUser();
 
         $this->student = $this->create_a_student();
@@ -68,7 +67,7 @@ class csv_test extends advanced_testcase {
         $this->coursework = $generator->create_instance(array('course' => $this->course->id,
                                                               'grade' => 100,
                                                               'numberofmarkers' => 1,
-                                                              'deadline' => time()+86400,
+                                                              'deadline' => time() + 86400,
                                                                 'extensionsenabled' => 1));
         $this->submission = new stdClass();
         $this->submission->userid = $this->student->id;
@@ -123,7 +122,7 @@ class csv_test extends advanced_testcase {
         $csv = new \mod_coursework\export\csv($this->coursework, $csv_cells, $filename);
         $csv_grades = $csv->add_cells_to_array($submission, $student, $csv_cells);
 
-       // build an array
+        // build an array
         $studentname = $student->lastname .' '.$student->firstname;
         $assessorname = $assessor->lastname .' '. $assessor->firstname;
         $assessorusername = $assessor->username;
@@ -157,7 +156,7 @@ class csv_test extends advanced_testcase {
         $this->coursework = $generator->create_instance(array('course' => $this->course->id,
                                                               'grade' => 100,
                                                               'numberofmarkers' => 2,
-                                                              'deadline' => time()-86400));
+                                                              'deadline' => time() - 86400));
         $this->submission = new stdClass();
         $this->submission->userid = $this->student->id;
         $this->submission = $generator->create_submission($this->submission, $this->coursework);
@@ -252,7 +251,7 @@ class csv_test extends advanced_testcase {
                                                               'grade' => 100,
                                                               'numberofmarkers' => 2,
                                                               'samplingenabled' => 1,
-                                                              'deadline' => time()+86400));
+                                                              'deadline' => time() + 86400));
         $this->submission = new stdClass();
         $this->submission->userid = $this->student->id;
         $this->submission = $generator->create_submission($this->submission, $this->coursework);
@@ -327,7 +326,7 @@ class csv_test extends advanced_testcase {
                                                               'grade' => 100,
                                                               'numberofmarkers' => 2,
                                                               'samplingenabled' => 1,
-                                                              'deadline' => time()+86400));
+                                                              'deadline' => time() + 86400));
         $student1 = $this->student;
         $assessor1 = $this->teacher;
         $assessor2 = $this->other_teacher;

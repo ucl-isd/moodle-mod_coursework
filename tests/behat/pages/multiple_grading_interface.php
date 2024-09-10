@@ -43,34 +43,33 @@ require_once($CFG->dirroot . '/mod/coursework/tests/behat/pages/single_grading_i
 class mod_coursework_behat_multiple_grading_interface extends mod_coursework_behat_single_grading_interface {
 
     /**
-     * @param string $student_hash
+     * @param allocatable $allocatable
+     * @return bool is there an icon?
      */
-    public function there_should_not_be_a_feedback_icon($student_hash) {
+    public function there_is_a_feedback_icon($allocatable): bool {
         $this->getContext()->show_me_the_page();
         $feedback_icon = $this->getPage()->findAll('css', '.cfeedbackcomment .smallicon');
-        assertEquals(0, count($feedback_icon));
+        return !empty($feedback_icon);
     }
 
     /**
      * @param user $allocatable
      */
-    public function student_should_have_a_final_grade($allocatable) {
+    public function student_has_a_final_grade($allocatable): bool {
         $student_grade_cell =
             $this->getPage()->find('css', $this->allocatable_row_id($allocatable) . ' .multiple_agreed_grade_cell');
-        $message = "Should be a grade in the student row final grade cell, but there's not";
-        assertNotEmpty($student_grade_cell->getText(), $message);
+        return !empty($student_grade_cell->getText());
     }
 
     /**
      * @param group $allocatable
      */
-    public function group_should_have_a_final_multiple_grade($allocatable) {
+    public function group_has_a_final_multiple_grade($allocatable): bool {
         $group_row_id = $this->allocatable_row_id($allocatable);
         $locator = $group_row_id . ' .multiple_agreed_grade_cell';
         $grade_cell = $this->getPage()->find('css', $locator);
-        $message = "Should be a grade in the student row final grade cell, but there's not (css: {$locator})";
         $actual_text = $grade_cell ? $grade_cell->getText() : '';
-        assertNotEmpty($actual_text, $message);
+        return !empty($actual_text);
     }
 
     /**
@@ -87,11 +86,9 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
     /**
      * @param allocatable $allocatable
      */
-    public function click_edit_final_feedback_button($allocatable) {
+    public function get_edit_final_feedback_button($allocatable) {
         $identifier = '#edit_final_feedback_' . $this->allocatable_identifier_hash($allocatable);
-        $nodeElement = $this->getPage()->find('css', $identifier);
-        assertNotEmpty($nodeElement, 'Edit feedback button not present');
-        $nodeElement->click();
+        return $this->getPage()->find('css', $identifier);
     }
 
     /**
@@ -123,10 +120,10 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
      * @param allocatable $student
      * @param $grade
      */
-    public function should_have_moderator_grade_for($student, $grade) {
+    public function has_moderator_grade_for($student, $grade) {
         $identifier = $this->allocatable_row_id($student) . ' .moderation_cell';
         $text = $this->getPage()->find('css', $identifier)->getText();
-        assertContains($grade, $text);
+        return str_contains($text, $grade);
     }
 
     /**
@@ -147,7 +144,12 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
         $locator = $this->assessor_feedback_table_id($allocatable) . ' .assessor_'.$assessor_number.' '. $this->assessor_grade_cell_class();
         $grade_container = $this->getPage()->find('css', $locator);
         $text = $grade_container ? $grade_container->getText() : '';
-        assertContains((string)$expected_grade, $text);
+        if (!str_contains($text, (string)$expected_grade)) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                "Did not find expected grade '$expected_grade' in '$text'",
+                $this->getSession()
+            );
+        }
     }
 
     /**
@@ -161,7 +163,13 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
         $cell = $this->getPage()->findAll('css', $locator);
         if (!empty($cell)) {
             $cell = reset($cell);
-            assertNotContains($expected_grade, $cell->getText());
+            $text = $cell ? $cell->getText() : '';
+            if (str_contains($text, $expected_grade)) {
+                throw new \Behat\Mink\Exception\ExpectationException(
+                    "Expected not to find grade '$expected_grade' but did find it in '$text'",
+                    $this->getSession()
+                );
+            }
         }
     }
 
@@ -191,7 +199,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
         if ($this->getPage()->hasButton('Continue')) {
             $this->getPage()->pressButton('Continue');
         } else {
-echo "failed";
+            echo "failed";
         }
 
         if ($this->getPage()->hasLink('Continue')) {
@@ -228,7 +236,7 @@ echo "failed";
     public function should_not_have_grade_in_assessor_table($feedback) {
         $assessor = $feedback->assessor();
         $row_class = '.feedback-' . $assessor->id() . '-' . $feedback->get_allocatable()
-                ->id() . '.' . $feedback->get_stage()->identifier().' .assessor_feedback_grade';
+            ->id() . '.' . $feedback->get_stage()->identifier().' .assessor_feedback_grade';
 
         $this->should_not_have_css($row_class, $feedback->grade);
     }
@@ -239,7 +247,7 @@ echo "failed";
     public function should_have_grade_in_assessor_table($feedback) {
         $assessor = $feedback->assessor();
         $row_class = '.feedback-' . $assessor->id() . '-' . $feedback->get_allocatable()
-                ->id() . '.' . $feedback->get_stage()->identifier() . ' .assessor_feedback_grade';
+            ->id() . '.' . $feedback->get_stage()->identifier() . ' .assessor_feedback_grade';
 
         $this->should_have_css($row_class, $feedback->grade);
     }
@@ -307,7 +315,7 @@ echo "failed";
      */
     protected function new_feedback_button_css($submission) {
         $elementid = '#assessorfeedbacktable_' . $submission->get_coursework()
-                ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .new_feedback';
+            ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .new_feedback';
         return $elementid;
     }
 
@@ -316,10 +324,10 @@ echo "failed";
      * @return string
      */
     public function get_provisional_grade_field($submission) {
-       $elementid = '#allocatable_' . $submission->get_coursework()
-                ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .assessor_feedback_grade';
-       $grade_field = $this->getPage()->find('css', $elementid);
-       return $grade_field ? $grade_field->getValue() : false;
+        $elementid = '#allocatable_' . $submission->get_coursework()
+            ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .assessor_feedback_grade';
+        $grade_field = $this->getPage()->find('css', $elementid);
+        return $grade_field ? $grade_field->getValue() : false;
     }
 
     /**
@@ -328,7 +336,7 @@ echo "failed";
      */
     public function get_grade_field($submission) {
         $elementid = '#assessorfeedbacktable_' . $submission->get_coursework()
-                 ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .grade_for_gradebook_cell';
+            ->get_allocatable_identifier_hash($submission->get_allocatable()). ' .grade_for_gradebook_cell';
         $grade_field = $this->getPage()->find('css', $elementid);
         return $grade_field ? $grade_field->getValue() : false;
     }
@@ -358,15 +366,6 @@ echo "failed";
     public function should_show_extension_for_allocatable($student, $deadline_extension) {
         $element_selector = $this->allocatable_row_id($student).' .time_submitted_cell';
         $this->should_have_css($element_selector, userdate($deadline_extension, '%a, %d %b %Y, %H:%M' ));
-    }
-
-    /**
-     * @param allocatable $student
-     */
-    public function should_show_extension_reason_for_allocatable($student) {
-        $element_selector = $this->allocatable_row_id($student) . ' .time_submitted_cell';
-        $reasons = coursework::extension_reasons();
-        $this->should_have_css($element_selector, $reasons[1]);
     }
 
     /**

@@ -29,6 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Represents a row in the modules table.
  */
+#[\AllowDynamicProperties]
 class module extends table_base {
 
     /**

@@ -80,7 +80,7 @@ class mod_coursework_behat_page_base {
     public function should_have_text($text) {
 
         $page_text = $this->getPage()->getText();
-        if (substr_count($page_text, $text)== 0) {
+        if (substr_count($page_text, $text) == 0) {
             throw new ExpectationException('Page did not have text "'.$text.'"', $this->getSession());
         }
 
@@ -93,10 +93,15 @@ class mod_coursework_behat_page_base {
      */
     protected function should_have_css($css, $text = '', $error = '') {
         $elements = $this->getPage()->findAll('css', $css);
-        assertGreaterThanOrEqual(1, count($elements), $error);
+        $message = "CSS containing '$text' not found " . $error;
+        if (empty($elements)) {
+            throw new ExpectationException($message, $this->getSession());
+        }
         if ($text) {
             $actual_text = reset($elements)->getText();
-            assertContains($text, $actual_text, $error);
+            if (!str_contains($actual_text, $text)) {
+                throw new ExpectationException($message, $this->getSession());
+            }
         }
     }
 
@@ -109,10 +114,14 @@ class mod_coursework_behat_page_base {
         if ($text) {
             foreach ($elements as $element) {
                 $actual_text = $element->getText();
-                assertNotContains($text, $actual_text);
+                if (str_contains($actual_text, $text)) {
+                    throw new ExpectationException("Should not have CSS $css", $this->getSession());
+                }
             }
         } else {
-            assertEquals(0, count($elements));
+            if (!empty($elements)) {
+                throw new ExpectationException("Should not have CSS $css", $this->getSession());
+            }
         }
     }
 
@@ -195,25 +204,5 @@ class mod_coursework_behat_page_base {
         $this->getPage()->fillField($day_dropdown_selector, $day);
         $this->getPage()->fillField($month_dropdown_selector, $month);
         $this->getPage()->fillField($year_dropdown_selector, $year);
-    }
-
-    /**
-     * @param string $locator xpath
-     * @throws ElementNotFoundException
-     */
-    protected function pressButtonXpath($locator) {
-        // behat generates button type submit whereas code does input
-        $inputtype = $this->getPage()->find('xpath', $locator ."//input[@type='submit']");
-        $buttontype = $this->getPage()->find('xpath',  $locator ."//button[@type='submit']");
-
-        $button = ($inputtype !== null) ? $inputtype : $buttontype;// check how element was created and use it to find the button
-
-        if (null === $button) {
-            throw new ElementNotFoundException(
-                $this->getSession(), 'button', 'xpath', $button->getXpath()
-            );
-        }
-
-        $button->press();
     }
 }

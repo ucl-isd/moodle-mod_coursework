@@ -22,6 +22,7 @@
 
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\user;
+use \Behat\Mink\Exception\ElementNotFoundException;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -46,16 +47,12 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
 
     /**
      * @param \mod_coursework\models\user $user
-     * @param \mod_coursework\models\user $assessor
-     * @param string $stage_identifier e.g. 'assessor_1'
+     * @param string $stageidentifier e.g. 'assessor_1'
      * @throws Behat\Mink\Exception\ElementNotFoundException
      */
-    public function user_should_be_alocated_to_assessor($user, $assessor, $stage_identifier) {
-        $cell_span = $this->getPage()->find('css', '#user_'.$user->id.' .'.$stage_identifier.' .existing-assessor');
-        if (!$cell_span) {
-            throw new \Behat\Mink\Exception\ElementNotFoundException($this->getSession(), 'Current allocated assessor ');
-        }
-        assertEquals($assessor->name(), $cell_span->getText(), 'Expected the allocated teacher name to be '.$assessor->name().' but got '.$cell_span->getText().' instead.');
+    public function user_allocated_assessor($user, $stageidentifier): string {
+        $cell_span = $this->getPage()->find('css', '#user_'.$user->id.' .'.$stageidentifier.' .existing-assessor');
+        return $cell_span ? $cell_span->getText() : '';
     }
 
     /**
@@ -152,7 +149,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
 
     /**
      * @param $stage
-     * @throws \Behat\Mink\Exception\ElementNotFoundException
+     * @throws ElementNotFoundException
      */
     public function enable_atomatic_sampling_for($stage) {
         $elementid = '#assessor_'.$stage.'_samplingstrategy';
@@ -198,7 +195,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param $stage
      * @param $ruleno
      * @param $type
-     * @throws \Behat\Mink\Exception\ElementNotFoundException
+     * @throws ElementNotFoundException
      */
     public function select_type_of_grade_range_rule_for_stage($stage, $ruleno, $type) {
         $elementid = '#assessor_'.$stage.'_sampletype_'.$ruleno;
@@ -213,7 +210,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param $stage
      * @param $ruleno
      * @param $value
-     * @throws \Behat\Mink\Exception\ElementNotFoundException
+     * @throws ElementNotFoundException
      */
     public function select_range_for_grade_range_rule_for_stage($range, $stage, $ruleno, $value) {
         $elementid = '#assessor_'.$stage.'_sample'.$range.'_'.$ruleno;
@@ -225,7 +222,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
     /**
      * @param $percentage
      * @param $stage
-     * @throws \Behat\Mink\Exception\ElementNotFoundException
+     * @throws ElementNotFoundException
      */
     public function select_total_percentage_for_stage($percentage, $stage) {
 
@@ -241,52 +238,33 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
     /**
      * @param $coursework
      * @param $user
-     * @param $stage_number
+     * @param $otheruser
+     * @param $stagenumber
+     * @return bool
      */
-    public function automatically_included_in_sample($coursework, $user, $other_user, $stage_number, $negate) {
+    public function automatically_included_in_sample($coursework, $user, $otheruser, $stagenumber): bool {
         global $DB;
 
-        $other_sql = (!empty($other_user)) ? "OR allocatableid = $other_user->id" : '';
+        $othersql = (!empty($otheruser)) ? "OR allocatableid = $otheruser->id" : '';
 
-        $sql = "SELECT     *
-                     FROM       {coursework_sample_set_mbrs}
-                     WHERE      courseworkid = :courseworkid
-                     AND        stage_identifier = :stage
-                     AND        (allocatableid = :user $other_sql)";
+        $sql = "SELECT *
+                     FROM {coursework_sample_set_mbrs}
+                     WHERE courseworkid = :courseworkid
+                     AND stage_identifier = :stage
+                     AND (allocatableid = :user $othersql)";
 
-        $stage = "assessor_".$stage_number;
+        $stage = "assessor_".$stagenumber;
 
-        $params = array('courseworkid' => $coursework->id,
+        $params = [
+            'courseworkid' => $coursework->id,
             'user' => $user->id,
-            'stage' => $stage);
+            'stage' => $stage,
+        ];
 
-        if (empty($negate)) {
-             assertTrue($DB->record_exists_sql($sql, $params));
-        } else {
-            assertFalse($DB->record_exists_sql($sql, $params));
-        }
-    }
-
-    /**
-     * @param $other
-     * @param $role_name
-     */
-
-    public function thereIsAnotherTeacher($other, $role_name) {
-
-        $other = ($other == 'another');
-
-        $role_name = str_replace(' ', '', $role_name);
-
-        $role_name_to_save = $other ? 'other_' . $role_name : $role_name;
-
-        $this->$role_name_to_save = $this->create_user($role_name, $role_name_to_save);
+        return $DB->record_exists_sql($sql, $params);
     }
 
     public function save_sampling_strategy() {
-
         $this->getPage()->pressButton('save_manual_sampling');
-
     }
-
 }

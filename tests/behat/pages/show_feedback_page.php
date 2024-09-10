@@ -43,16 +43,18 @@ class mod_coursework_behat_show_feedback_page extends mod_coursework_behat_page_
 
     /**
      * @param string $grade
+     * @return bool
      */
-    public function should_have_grade($grade) {
-        assertContains($grade, $this->get_feedback_table()->getText());
+    public function has_grade($grade): bool {
+        return str_contains($this->get_feedback_table()->getText(), $grade);
     }
 
     /**
      * @param string $comment
+     * @return bool
      */
-    public function should_have_comment($comment) {
-        assertContains($comment, $this->get_feedback_table()->getText());
+    public function has_comment($comment): bool {
+        return str_contains($this->get_feedback_table()->getText(), $comment);
     }
 
     /**

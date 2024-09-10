@@ -38,6 +38,7 @@ defined('MOODLE_INTERNAL') || die();
  * Represents the table that will show all students and all markers so that they can be matched up with one another for grading.
  * Various automatic strategies will be available for this, but the manual override happens here.
  */
+#[\AllowDynamicProperties]
 class builder {
 
     /**

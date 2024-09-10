@@ -69,56 +69,34 @@ class mod_coursework_behat_student_page extends mod_coursework_behat_page_base {
     public function should_show_the_submitter_as($rolename) {
         $submission_user_cell = $this->getPage()->find('css', 'td.submission-user');
         $cell_contents = $submission_user_cell->getText();
-        $student_name = fullname($this->getContext()->$rolename);
-        assertContains($student_name, $cell_contents, "Expected the submission to have been made by {$student_name}, but got {$cell_contents}");
+        $student_name = fullname((object)(array)$this->getContext()->$rolename);
+        if (!str_contains($cell_contents, $student_name)) {
+            throw new ExpectationException(
+                "Expected the submission to have been made by {$student_name}, but got {$cell_contents}",
+                $this->getSession()
+            );
+        }
     }
 
     /**
-     * @param mixed $grade
+     * @return string
      */
-    public function should_have_visible_grade($grade) {
+    public function get_visible_grade(): ?string {
         // final_feedback_grade
         $final_grade_cell = $this->getPage()->find('css', '#final_feedback_grade');
-        $cell_contents = $final_grade_cell ? $final_grade_cell->getText() : false;
-        assertEquals($grade,
-                       $cell_contents,
-                       "Expected the final grade to be '{$grade}', but got '{$cell_contents}'");
+        return $final_grade_cell ? $final_grade_cell->getText() : null;
     }
 
     /**
-     * @param $feedback_text
+     * @return string
      */
-    public function should_have_visible_feedback($feedback_text) {
+    public function get_visible_feedback() {
         // final_feedback_grade
         $final_grade_cell = $this->getPage()->find('css', '#final_feedback_comment');
-        $cell_contents = $final_grade_cell->getText();
-        assertEquals($feedback_text,
-                     $cell_contents,
-                     "Expected the final feedback comment to be '{$feedback_text}', but got '{$cell_contents}'");
+        return $final_grade_cell->getText();
     }
 
-    public function click_on_the_edit_submission_button() {
-       $locator = "//div[@class='editsubmissionbutton']";
-       $this->pressButtonXpath($locator);
-    }
-
-    public function click_on_the_finalise_submission_button() {
-        $locator = "//div[@class='finalisesubmissionbutton']";
-        $this->pressButtonXpath($locator);
-    }
-
-    public function click_on_the_new_submission_button() {
-        $locator = "//div[@class='newsubmissionbutton']";
-        $this->pressButtonXpath($locator);
-    }
-
-    public function should_not_have_a_finalise_button() {
-        $buttons = $this->getPage()->findAll('css', '.finalisesubmissionbutton');
-        assertEmpty($buttons);
-    }
-
-    public function click_on_the_save_submission_button() {
-        $locator = "//div[@class='newsubmissionbutton']";
-        $this->pressButtonXpath($locator);
+    public function has_finalise_button(): bool {
+        return !empty($this->getPage()->findAll('css', '.finalisesubmissionbutton'));
     }
 }

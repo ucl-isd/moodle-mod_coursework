@@ -65,10 +65,14 @@ class grade_judge {
     }
 
     /**
-     * @param $grade
+     * @param int|float $grade
      * @return float
      */
     private function round_grade_decimals($grade) {
+        if ($grade === '' || $grade === null) {
+            // Avoid PHPUnit exception passing null or empty string to round().
+            return null;
+        }
         return round($grade, 2);
     }
 
@@ -145,10 +149,10 @@ class grade_judge {
 
     /**
      * @param submission $submission
-     * @return int
+     * @return int|null
      */
     public function get_time_graded($submission) {
-        return $this->get_feedback_that_is_promoted_to_gradebook($submission)->timemodified;
+        return $this->get_feedback_that_is_promoted_to_gradebook($submission)->timemodified ?? null;
     }
 
     /**

@@ -74,16 +74,19 @@ class feedback_controller extends controller_base {
 
         $teacherfeedback = new feedback($this->params['feedbackid']);
 
-        $ability = new ability(user::find($USER), $this->coursework);
-        $ability->require_can('show', $teacherfeedback);
+        $user = user::find($USER);
+        if ($user) {
+            $ability = new ability($user, $this->coursework);
+            $ability->require_can('show', $teacherfeedback);
 
-        $renderer = $this->get_page_renderer();
-        $html = $renderer->show_feedback_page($teacherfeedback, $ajax);
+            $renderer = $this->get_page_renderer();
+            $html = $renderer->show_feedback_page($teacherfeedback, (bool)$ajax);
 
-        if (empty($ajax)) {
-            echo $html;
-        } else {
-            echo json_encode(['success' => true, 'formhtml' => $html]);
+            if (empty($ajax)) {
+                echo $html;
+            } else {
+                echo json_encode(['success' => true, 'formhtml' => $html]);
+            }
         }
     }
 

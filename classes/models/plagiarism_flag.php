@@ -142,7 +142,7 @@ class plagiarism_flag extends table_base {
      * @param $coursework_id
      * @param $key
      * @param $params
-     * @return bool
+     * @return self|bool
      */
     public static function get_object($coursework_id, $key, $params) {
         if (!isset(self::$pool[$coursework_id])) {

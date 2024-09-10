@@ -38,6 +38,7 @@ defined('MOODLE_INTERNAL') || die();
  * @property mixed stage_identifier
  * @property int feedback_manager
  */
+#[\AllowDynamicProperties]
 class feedback extends table_base {
 
     /**
@@ -475,7 +476,8 @@ class feedback extends table_base {
 
         if (!isset($this->submission) && !empty($this->submissionid)) {
             global $DB;
-            $coursework_id = $this->courseworkid ?? $DB->get_field(submission::$table_name, 'courseworkid', ['id' => $this->submissionid], MUST_EXIST);
+            $coursework_id = $this->courseworkid
+                ?? $DB->get_field(submission::$table_name, 'courseworkid', ['id' => $this->submissionid], MUST_EXIST);
             if (!isset(submission::$pool[$coursework_id])) {
                 submission::fill_pool_coursework($coursework_id);
             }
@@ -591,7 +593,7 @@ class feedback extends table_base {
         if (isset(self::$pool[$coursework_id])) {
             return;
         }
-        if (submission::$pool[$coursework_id]) {
+        if (submission::$pool[$coursework_id] ?? null) {
             $submission_ids = submission::$pool[$coursework_id]['id'];
         } else {
             $submission_ids = $DB->get_records(submission::$table_name, ['courseworkid' => $coursework_id], '', 'id');
@@ -650,7 +652,7 @@ class feedback extends table_base {
      * @param $coursework_id
      * @param $key
      * @param $params
-     * @return bool
+     * @return self|bool
      */
     public static function get_object($coursework_id, $key, $params) {
         if (!isset(self::$pool[$coursework_id])) {
