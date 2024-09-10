@@ -55,7 +55,7 @@ final class router_test extends advanced_testcase {
         $submission = submission::build(['allocatableid' => 4, 'allocatabletype' => 'user', 'courseworkid' => 5]);
 
         $path = $this->router->get_path('new submission', ['submission' => $submission]);
-        $this->assertEquals($this->moodle_location.'/mod/coursework/actions/submissions/new.php?allocatableid=4&amp;allocatabletype=user&amp;courseworkid=5', $path);
+        $this->assertEquals($this->moodlelocation.'/mod/coursework/actions/submissions/new.php?allocatableid=4&amp;allocatabletype=user&amp;courseworkid=5', $path);
     }
 
     /**
