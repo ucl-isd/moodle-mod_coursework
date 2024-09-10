@@ -158,7 +158,7 @@ class feedback extends table_base {
      * in the DB table, ignoring the others.
      * @var array
      */
-    protected $fields = array(
+    protected $fields = [
         'id',
         'submissionid',
         'timecreated',
@@ -173,7 +173,7 @@ class feedback extends table_base {
         'ismoderation',
         'entry_id',
         'markernumber',
-    );
+    ];
 
     /**
      * @var stdClass
@@ -248,7 +248,7 @@ class feedback extends table_base {
 
         global $DB, $OUTPUT;
 
-        $user = $DB->get_record('user', array('id' => $this->assessorid));
+        $user = $DB->get_record('user', ['id' => $this->assessorid]);
         if ($user) {
             return $OUTPUT->user_picture($user);
         }
@@ -290,7 +290,7 @@ class feedback extends table_base {
                                                 $assessorid = 0 ) {
         global $DB;
 
-        $params = array('submissionid' => $submission->id);
+        $params = ['submissionid' => $submission->id];
         // If it's single marker, we just get the only one.
         if ($assessorid && $submission->has_multiple_markers()) {
             $params['assessorid'] = $assessorid;
@@ -369,7 +369,7 @@ class feedback extends table_base {
                     ON u.id = s.userid
                  WHERE s.id = :sid
                     ";
-        $params = array('sid' => $this->submissionid);
+        $params = ['sid' => $this->submissionid];
         $this->student = $DB->get_record_sql($sql, $params);
     }
 
@@ -389,7 +389,7 @@ class feedback extends table_base {
             $sql = 'SELECT MAX(feedbacks.markernumber)
                       FROM {coursework_feedbacks} feedbacks
                      WHERE feedbacks.submissionid = :subid';
-            $params = array('subid' => $this->submissionid);
+            $params = ['subid' => $this->submissionid];
             $maxmarkernumber = $DB->get_field_sql($sql, $params);
 
             if (empty($maxmarkernumber)) {

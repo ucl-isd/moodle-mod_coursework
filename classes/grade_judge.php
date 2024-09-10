@@ -91,7 +91,7 @@ class grade_judge {
             return null;
         } else if ($this->coursework->grade <= -1) {
             // Scale
-            $scale = \grade_scale::fetch(array('id' => abs($this->coursework->grade)));
+            $scale = \grade_scale::fetch(['id' => abs($this->coursework->grade)]);
             return $scale->get_nearest_item($grade);
         }
     }
@@ -131,9 +131,9 @@ class grade_judge {
         }
 
         if ($this->allocatable_needs_more_than_one_feedback($submission->get_allocatable())) {
-            $feedback = feedback::find(array('submissionid' => $submission->id, 'stage_identifier' => 'final_agreed_1'));
+            $feedback = feedback::find(['submissionid' => $submission->id, 'stage_identifier' => 'final_agreed_1']);
         } else {
-            $feedback = feedback::find(array('submissionid' => $submission->id, 'stage_identifier' => 'assessor_1'));
+            $feedback = feedback::find(['submissionid' => $submission->id, 'stage_identifier' => 'assessor_1']);
         }
 
         return $feedback ? $feedback : new null_feedback();
@@ -191,7 +191,7 @@ class grade_judge {
             return true;
         } else if ($this->coursework->grade <= -1) {
             // Scale
-            $scale = \grade_scale::fetch(array('id' => abs($this->coursework->grade)));
+            $scale = \grade_scale::fetch(['id' => abs($this->coursework->grade)]);
             $scale->load_items();
             return in_array($value, $scale->scale_items);
         }
@@ -207,7 +207,7 @@ class grade_judge {
 
         if ($this->coursework->grade <= -1) {
             // Scale
-            $scale = \grade_scale::fetch(array('id' => abs($this->coursework->grade)));
+            $scale = \grade_scale::fetch(['id' => abs($this->coursework->grade)]);
             $scale->load_items();
             return array_search($value, $scale->scale_items) + 1;
         } else {

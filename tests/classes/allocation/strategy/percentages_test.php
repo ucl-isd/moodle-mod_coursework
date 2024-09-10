@@ -143,10 +143,10 @@ final class mod_coursework_allocation_strategy_percentages_test extends advanced
      * @return array
      */
     private function list_of_teachers() {
-        return array(
+        return [
             $this->teacher,
             $this->other_teacher,
-        );
+        ];
     }
 
     /**

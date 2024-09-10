@@ -69,26 +69,26 @@ final class table_processor_test extends advanced_testcase {
 
         global $DB;
 
-        $test_rows = array(
-            $this->student->id => array(
-                'assessor_1' => array(
+        $test_rows = [
+            $this->student->id => [
+                'assessor_1' => [
                     'assessor_id' => $this->teacher->id,
-                ),
-                'assessor_2' => array(
+                ],
+                'assessor_2' => [
                     'assessor_id' => $this->other_teacher->id,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
 
         $processor = new processor($this->coursework);
         $processor->process_data($test_rows);
 
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
             'manual' => 1,
-        );
+        ];
         $allocations = $DB->get_records('coursework_allocation_pairs', $params);
         $this->assertEquals(2, count($allocations));
 
@@ -98,28 +98,28 @@ final class table_processor_test extends advanced_testcase {
 
         global $DB;
 
-        $test_rows = array(
-            $this->student->id => array(
-                'assessor_1' => array(
+        $test_rows = [
+            $this->student->id => [
+                'assessor_1' => [
                     'assessor_id' => $this->teacher->id,
-                ),
-                'assessor_2' => array(
+                ],
+                'assessor_2' => [
                     'assessor_id' => $this->other_teacher->id,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
 
         $processor = new processor($this->coursework);
         $processor->process_data($test_rows);
 
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
             'manual' => 1,
             'assessorid' => $this->teacher->id,
             'stage_identifier' => 'assessor_1',
-        );
+        ];
         $first_allocation = $DB->get_record('coursework_allocation_pairs', $params);
         $params['assessorid'] = $this->other_teacher->id;
         $params['stage_identifier'] = 'assessor_2';
@@ -136,24 +136,24 @@ final class table_processor_test extends advanced_testcase {
         $this->set_coursework_to_single_marker();
         $allocation = $this->make_a_non_manual_allocation_for_teacher();
 
-        $test_rows = array(
-            $this->student->id => array(
-                'assessor_1' => array(
+        $test_rows = [
+            $this->student->id => [
+                'assessor_1' => [
                     'allocation_id' => $allocation->id,
                     'assessor_id' => $this->other_teacher->id,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
 
         $processor = new processor($this->coursework);
         $processor->process_data($test_rows);
 
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
             'stage_identifier' => 'assessor_1',
-        );
+        ];
         $records = $DB->get_records('coursework_allocation_pairs', $params);
         $this->assertEquals(1, $DB->count_records('coursework_allocation_pairs'), 'Too many allocations.');
 
@@ -163,7 +163,7 @@ final class table_processor_test extends advanced_testcase {
 
     public function test_that_missing_columns_dont_mess_it_up(): void {
         $processor = new processor($this->coursework);
-        $processor->process_data(array($this->student->id => []));
+        $processor->process_data([$this->student->id => []]);
     }
 
     public function test_that_missing_rows_dont_mess_it_up(): void {

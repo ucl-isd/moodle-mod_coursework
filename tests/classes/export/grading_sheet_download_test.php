@@ -59,10 +59,10 @@ final class grading_sheet_download_test extends advanced_testcase {
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
 
         /* @var mod_coursework_generator $generator */
-        $this->coursework = $generator->create_instance(array('course' => $this->course->id,
+        $this->coursework = $generator->create_instance(['course' => $this->course->id,
                                                              'grade' => 100,
                                                              'numberofmarkers' => 1,
-                                                             'deadline' => time() + 86400));
+                                                             'deadline' => time() + 86400]);
         $this->submission = new stdClass();
         $this->submission->userid = $this->student->id;
         $this->submission->allocatableid = $this->student->id;
@@ -72,7 +72,7 @@ final class grading_sheet_download_test extends advanced_testcase {
         $submission = $this->submission;
 
         // headers and data for csv
-        $csv_cells = array('submissionid', 'submissionfileid', 'name', 'username', 'submissiontime', 'singlegrade', 'feedbackcomments');
+        $csv_cells = ['submissionid', 'submissionfileid', 'name', 'username', 'submissiontime', 'singlegrade', 'feedbackcomments'];
 
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('gradingsheetfor', 'coursework'). $this->coursework->name .' '.$timestamp;
@@ -82,13 +82,13 @@ final class grading_sheet_download_test extends advanced_testcase {
         $studentname = $student->lastname .' '.$student->firstname;
 
         // build an array
-        $expected_submission = array('0' => $submission->id,
+        $expected_submission = ['0' => $submission->id,
                                      '1' => $this->coursework->get_username_hash($student->id),
                                      '2' => $studentname,
                                      '3' => $student->username,
                                      '4' => 'On time',
                                      '5' => '',
-                                     '6' => '');
+                                     '6' => ''];
 
         $this->assertEquals($expected_submission, $actual_submission);
     }
@@ -102,11 +102,11 @@ final class grading_sheet_download_test extends advanced_testcase {
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
 
         /* @var mod_coursework_generator $generator */
-        $this->coursework = $generator->create_instance(array('course' => $this->course->id,
+        $this->coursework = $generator->create_instance(['course' => $this->course->id,
                                                               'grade' => 100,
                                                               'numberofmarkers' => 2,
                                                               'allocationenabled' => 1,
-                                                              'deadline' => time() + 86400));
+                                                              'deadline' => time() + 86400]);
 
         // 2 assessors
         $assessor1 = $this->teacher;
@@ -163,9 +163,9 @@ final class grading_sheet_download_test extends advanced_testcase {
         $feedback4 = $generator->create_feedback($feedback_data4);
 
         // headers and data for csv
-        $csv_cells = array('submissionid', 'submissionfileid', 'name', 'username', 'submissiontime',
+        $csv_cells = ['submissionid', 'submissionfileid', 'name', 'username', 'submissiontime',
                            'assessor1', 'assessorgrade1', 'assessorfeedback1', 'assessor2', 'assessorgrade2', 'assessorfeedback2',
-                           'agreedgrade', 'agreedfeedback');
+                           'agreedgrade', 'agreedfeedback'];
 
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('gradingsheetfor', 'coursework'). $this->coursework->name .' '.$timestamp;
@@ -181,7 +181,7 @@ final class grading_sheet_download_test extends advanced_testcase {
         $assessor2name = $assessor2->lastname .' '. $assessor2->firstname;
 
         // build an array
-        $expected_submission = array('0' => $submission1->id,
+        $expected_submission = ['0' => $submission1->id,
                                      '1' => $this->coursework->get_username_hash($student1->id),
                                      '2' => $studentname1,
                                      '3' => $student1->username,
@@ -206,7 +206,7 @@ final class grading_sheet_download_test extends advanced_testcase {
                                      '22' => $feedback_data3->grade,
                                      '23' => $feedback_data3->feedbackcomment,
                                      '24' => $feedback_data4->grade,
-                                     '25' => $feedback_data4->feedbackcomment );
+                                     '25' => $feedback_data4->feedbackcomment ];
 
         $this->assertEquals($expected_submission, $actual_submission);
 

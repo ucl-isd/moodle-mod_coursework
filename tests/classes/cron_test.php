@@ -48,11 +48,11 @@ final class cron_test extends advanced_testcase {
         $coursework->update_attribute('deadline', strtotime('1 week ago'));
 
         // And the student has a submission
-        $submission_params = array(
+        $submission_params = [
             'allocatableid' => $student->id,
             'allocatabletype' => 'user',
             'courseworkid' => $coursework->id,
-        );
+        ];
         $submission = submission::create($submission_params);
 
         // When the cron runs
@@ -72,11 +72,11 @@ final class cron_test extends advanced_testcase {
         $coursework = $this->create_a_coursework();
 
         // And the student has a submission
-        $submission_params = array(
+        $submission_params = [
             'allocatableid' => $student->id,
             'allocatabletype' => 'user',
             'courseworkid' => $coursework->id,
-        );
+        ];
         $submission = submission::create($submission_params);
 
         // When the cron runs
@@ -93,7 +93,7 @@ final class cron_test extends advanced_testcase {
         $teacher = $this->create_a_teacher();
         $this->enrol_as_manager($teacher);
         $cron_class = new cron();
-        $this->assertEquals(array($teacher), $cron_class->get_admins_and_teachers($this->coursework->get_context()));
+        $this->assertEquals([$teacher], $cron_class->get_admins_and_teachers($this->coursework->get_context()));
     }
 
     public function test_auto_finalising_does_not_alter_time_submitted(): void {

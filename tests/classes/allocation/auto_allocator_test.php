@@ -71,22 +71,22 @@ final class auto_allocator_test extends advanced_testcase {
 
         $allocator->process_allocations();
 
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
-        );
+        ];
         $this->assertEquals(1, $DB->count_records('coursework_allocation_pairs', $params));
 
     }
 
     public function test_process_allocations_does_not_delete_other_coursework_allocations(): void {
-        $params = array(
+        $params = [
             'courseworkid' => 555,
             'allocatableid' => 555,
             'allocatabletype' => 'user',
             'assessorid' => 555,
-        );
+        ];
         $other_allocation = \mod_coursework\models\allocation::build($params);
         $other_allocation->save();
 
@@ -97,13 +97,13 @@ final class auto_allocator_test extends advanced_testcase {
     }
 
     public function test_process_allocations_does_not_alter_manual_allocations(): void {
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
             'assessorid' => 555,
             'manual' => 1,
-        );
+        ];
         $other_allocation = \mod_coursework\models\allocation::build($params);
         $other_allocation->save();
 
@@ -114,12 +114,12 @@ final class auto_allocator_test extends advanced_testcase {
     }
 
     public function test_process_allocations_alters_non_manual_allocations(): void {
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
             'assessorid' => 555,
-        );
+        ];
         $other_allocation = \mod_coursework\models\allocation::build($params);
         $other_allocation->save();
 
@@ -130,12 +130,12 @@ final class auto_allocator_test extends advanced_testcase {
     }
 
     public function test_process_allocations_alters_non_manual_allocations_with_submissions(): void {
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
             'assessorid' => 555,
-        );
+        ];
         $other_allocation = \mod_coursework\models\allocation::build($params);
         $other_allocation->save();
 
@@ -152,13 +152,13 @@ final class auto_allocator_test extends advanced_testcase {
     }
 
     public function test_process_allocations_does_not_alter_non_manual_allocations_with_feedback(): void {
-        $allocation_params = array(
+        $allocation_params = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
             'stage_identifier' => 'assessor_1',
             'assessorid' => 555,
-        );
+        ];
         $other_allocation = \mod_coursework\models\allocation::build($allocation_params);
         $other_allocation->save();
 
@@ -168,11 +168,11 @@ final class auto_allocator_test extends advanced_testcase {
         $submission->allocatabletype = 'user';
         $submission->save();
 
-        $feedback_params = array(
+        $feedback_params = [
             'submissionid' => $submission->id,
             'assessorid' => 555,
             'stage_identifier' => 'assessor_1',
-        );
+        ];
         \mod_coursework\models\feedback::create($feedback_params);
 
         $allocator = new \mod_coursework\allocation\auto_allocator($this->coursework);

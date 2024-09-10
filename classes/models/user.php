@@ -90,12 +90,12 @@ class user extends table_base implements allocatable, moderatable {
 
         $output = '';
         if ($with_picture) {
-            $output .= $OUTPUT->user_picture($this->get_raw_record(), array('link' => false));
+            $output .= $OUTPUT->user_picture($this->get_raw_record(), ['link' => false]);
             $output .= ' ';
         }
         $output .= ' ' . $this->name();
 
-        return \html_writer::link(new \moodle_url('/user/view.php', array('id' => $this->id())), $output, array('data-assessorid' => $this->id()));
+        return \html_writer::link(new \moodle_url('/user/view.php', ['id' => $this->id()]), $output, ['data-assessorid' => $this->id()]);
     }
 
     /**
@@ -113,12 +113,12 @@ class user extends table_base implements allocatable, moderatable {
      * @return bool
      */
     public function has_not_been_sent_reminder($coursework, $reminder_number, $extension=0) {
-        $conditions = array(
+        $conditions = [
             'coursework_id' => $coursework->id,
             'userid' => $this->id(),
             'remindernumber' => $reminder_number,
             'extension' => $extension,
-        );
+        ];
         return !reminder::exists($conditions);
 
     }

@@ -47,7 +47,7 @@ final class coursework_allocation_strategy_test extends advanced_testcase {
         /* @var mod_coursework_generator $courseworkgenerator */
         $courseworkgenerator = $generator->get_plugin_generator('mod_coursework');
         $this->setAdminUser();
-        $this->coursework = $courseworkgenerator->create_instance(array('course' => $course->id, 'grade' => 0));
+        $this->coursework = $courseworkgenerator->create_instance(['course' => $course->id, 'grade' => 0]);
     }
 
     /**

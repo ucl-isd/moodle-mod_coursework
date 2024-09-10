@@ -208,7 +208,7 @@ trait factory_mixin {
      */
     protected function create_a_coursework() {
         $generator = $this->get_coursework_generator();
-        $this->coursework = $generator->create_instance(array('course' => $this->get_course()->id));
+        $this->coursework = $generator->create_instance(['course' => $this->get_course()->id]);
         return $this->coursework;
     }
 
@@ -287,7 +287,7 @@ trait factory_mixin {
     private function get_teacher_role_id() {
         global $DB;
 
-        return $DB->get_field('role', 'id', array('shortname' => 'teacher'));
+        return $DB->get_field('role', 'id', ['shortname' => 'teacher']);
     }
 
     /**
@@ -296,7 +296,7 @@ trait factory_mixin {
     private function get_student_role_id() {
         global $DB;
 
-        return $DB->get_field('role', 'id', array('shortname' => 'student'));
+        return $DB->get_field('role', 'id', ['shortname' => 'student']);
     }
 
     /**
@@ -305,7 +305,7 @@ trait factory_mixin {
     private function get_manager_role_id() {
         global $DB;
 
-        return $DB->get_field('role', 'id', array('shortname' => 'manager'));
+        return $DB->get_field('role', 'id', ['shortname' => 'manager']);
     }
 
     /**
@@ -345,8 +345,8 @@ trait factory_mixin {
     protected function number_of_assessor_feedbacks() {
         $count = 0;
         for ($i = 1; $i <= 3; $i++) {
-            $params = array('submissionid' => $this->get_submission()->id,
-                            'stage_identifier' => 'assessor_' . $i);
+            $params = ['submissionid' => $this->get_submission()->id,
+                            'stage_identifier' => 'assessor_' . $i];
             if (feedback::exists($params)) {
                 $count++;
             }

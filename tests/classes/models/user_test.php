@@ -56,7 +56,7 @@ final class coursework_user_test extends advanced_testcase {
     public function test_has_final_agreed_grade_returns_false_when_present_for_different_coursework(): void {
         $this->create_a_student();
         $this->create_a_final_feedback_for_the_submisison();
-        $coursework = $this->getMockBuilder('\mod_coursework\coursework')->setMethods(array('id'))->getMock();
+        $coursework = $this->getMockBuilder('\mod_coursework\coursework')->setMethods(['id'])->getMock();
         $coursework->expects($this->any())
             ->method('id')
             ->will($this->returnValue(234234));

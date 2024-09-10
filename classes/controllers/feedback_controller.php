@@ -68,7 +68,7 @@ class feedback_controller extends controller_base {
     protected function show_feedback() {
         global $PAGE, $USER;
 
-        $urlparams = array('feedbackid' => $this->params['feedbackid']);
+        $urlparams = ['feedbackid' => $this->params['feedbackid']];
         $PAGE->set_url('/mod/coursework/actions/feedbacks/show.php', $urlparams);
         $ajax = (isset($this->params['ajax'])) ? $this->params['ajax'] : 0;
 
@@ -107,8 +107,8 @@ class feedback_controller extends controller_base {
         $teacherfeedback->stage_identifier = $this->params['stage_identifier'];
         $teacherfeedback->courseworkid = $this->params['courseworkid'];
 
-        $conditions = array('submissionid' => $this->params['submissionid'],
-                            'stage_identifier' => $this->params['stage_identifier']);
+        $conditions = ['submissionid' => $this->params['submissionid'],
+                            'stage_identifier' => $this->params['stage_identifier']];
         if (feedback::exists($conditions)) {
             if ($this->space_for_another_feedback($teacherfeedback)) {
                 $teacherfeedback->stage_identifier = $this->next_available_stage($teacherfeedback);
@@ -148,12 +148,12 @@ class feedback_controller extends controller_base {
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('edit', $teacherfeedback);
 
-        $urlparams = array('feedbackid' => $this->params['feedbackid']);
+        $urlparams = ['feedbackid' => $this->params['feedbackid']];
         $PAGE->set_url('/mod/coursework/actions/feedbacks/edit.php', $urlparams);
 
-        $assessor = $DB->get_record('user', array('id' => $teacherfeedback->assessorid));
+        $assessor = $DB->get_record('user', ['id' => $teacherfeedback->assessorid]);
         if (!empty($teacherfeedback->lasteditedbyuser)) {
-            $editor = $DB->get_record('user', array('id' => $teacherfeedback->lasteditedbyuser));
+            $editor = $DB->get_record('user', ['id' => $teacherfeedback->lasteditedbyuser]);
         } else {
             $editor = $assessor;
         }
@@ -181,17 +181,17 @@ class feedback_controller extends controller_base {
         $teacherfeedback->finalised = $this->params['finalised'] ? 1 : 0;
 
         $submission = submission::find($this->params['submissionid']);
-        $path_params = array(
+        $path_params = [
             'submission' => $submission,
             'assessor' => \core_user::get_user($this->params['assessorid']),
             'stage' => $teacherfeedback->get_stage(),
 
-        );
+        ];
         $url = $this->get_router()->get_path('new feedback', $path_params, true);
         $PAGE->set_url($url);
 
-        $conditions = array('submissionid' => $this->params['submissionid'],
-                            'stage_identifier' => $this->params['stage_identifier']);
+        $conditions = ['submissionid' => $this->params['submissionid'],
+                            'stage_identifier' => $this->params['stage_identifier']];
         if (feedback::exists($conditions)) {
 
             if ($this->space_for_another_feedback($teacherfeedback)) {
@@ -206,9 +206,9 @@ class feedback_controller extends controller_base {
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('create', $teacherfeedback);
 
-        $form = new assessor_feedback_mform(null, array('feedback' => $teacherfeedback));
+        $form = new assessor_feedback_mform(null, ['feedback' => $teacherfeedback]);
 
-        $coursework_page_url = $this->get_path('coursework', array('coursework' => $teacherfeedback->get_coursework()));
+        $coursework_page_url = $this->get_path('coursework', ['coursework' => $teacherfeedback->get_coursework()]);
         if ($form->is_cancelled()) {
             redirect($coursework_page_url);
         }
@@ -249,9 +249,9 @@ class feedback_controller extends controller_base {
                 $participant = $submission->get_allocatable();
                 $cell_class = $this->params['cell_type'];
                 $stage = new assessor($coursework, $teacherfeedback->stage_identifier);
-                $provisional = new grade_for_gradebook_cell(array('coursework' => $coursework));
+                $provisional = new grade_for_gradebook_cell(['coursework' => $coursework]);
 
-                $jsonarray = array('success' => true);
+                $jsonarray = ['success' => true];
 
                 if (strpos($cell_class, 'multi_marker_feedback_sub_rows') !== false) {
                     $feedback_row = new assessor_feedback_row($stage, $participant, $this->coursework);
@@ -283,7 +283,7 @@ class feedback_controller extends controller_base {
                         if ($coursework->automaticagreementrange != 'none' && !empty($finalfeedback) && $finalsubmission->all_inital_graded()) {
                             $finalstage = new assessor($coursework, "final_agreed_1");
                             $finalfeedback_row = new assessor_feedback_row($finalstage, $participant, $coursework);
-                            $agreed_grade_object = new multiple_agreed_grade_cell(array('coursework' => $coursework, 'stage' => $finalstage));
+                            $agreed_grade_object = new multiple_agreed_grade_cell(['coursework' => $coursework, 'stage' => $finalstage]);
                             $jsonarray['finalhtml'] = $agreed_grade_object->get_table_cell($finalfeedback_row);
                             $jsonarray['allocatableid'] = $submission->get_allocatable()->id();
                         }
@@ -334,14 +334,14 @@ class feedback_controller extends controller_base {
 
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('update', $teacherfeedback);
-        $coursework_page_url = $this->get_path('coursework', array('coursework' => $teacherfeedback->get_coursework()));
+        $coursework_page_url = $this->get_path('coursework', ['coursework' => $teacherfeedback->get_coursework()]);
 
         // remove feedback comments and associated feedback files if 'Remove feedback' button pressed
         if ($this->params['remove']) {
             if (!$this->params['confirm']) {
 
-                $urlparams = array('confirm' => $this->params['confirm'],
-                    'remove' => $this->params['remove'], 'feedbackid' => $this->params['feedbackid'], 'finalised' => $this->params['finalised']);
+                $urlparams = ['confirm' => $this->params['confirm'],
+                    'remove' => $this->params['remove'], 'feedbackid' => $this->params['feedbackid'], 'finalised' => $this->params['finalised']];
 
                 $PAGE->set_url('/mod/coursework/actions/feedbacks/edit.php', $urlparams);
 
@@ -405,9 +405,9 @@ class feedback_controller extends controller_base {
 
         $this->check_stage_permissions($teacherfeedback->stage_identifier);
 
-        $form = new assessor_feedback_mform(null, array('feedback' => $teacherfeedback));
+        $form = new assessor_feedback_mform(null, ['feedback' => $teacherfeedback]);
 
-        $coursework_page_url = $this->get_path('coursework', array('coursework' => $teacherfeedback->get_coursework()));
+        $coursework_page_url = $this->get_path('coursework', ['coursework' => $teacherfeedback->get_coursework()]);
         if ($form->is_cancelled()) {
             redirect($coursework_page_url);
         }
@@ -438,8 +438,8 @@ class feedback_controller extends controller_base {
             $participant = $submission->get_allocatable();
             $cell_class = $this->params['cell_type'];
             $stage = new assessor($coursework, $teacherfeedback->stage_identifier);
-            $provisional = new grade_for_gradebook_cell(array('coursework' => $coursework));
-            $jsonarray = array('success' => true);
+            $provisional = new grade_for_gradebook_cell(['coursework' => $coursework]);
+            $jsonarray = ['success' => true];
 
             if (strpos($cell_class, 'multi_marker_feedback_sub_rows') !== false) {
                 $feedback_row = new assessor_feedback_row($stage, $participant, $coursework);
@@ -505,7 +505,7 @@ class feedback_controller extends controller_base {
 
         if (!empty($this->params['feedbackid'])) {
             $feedback = $DB->get_record('coursework_feedbacks',
-                                          array('id' => $this->params['feedbackid']),
+                                          ['id' => $this->params['feedbackid']],
                                           '*',
                                           MUST_EXIST);
             $this->feedback = new feedback($feedback);
@@ -514,7 +514,7 @@ class feedback_controller extends controller_base {
 
         if (!empty($this->params['submissionid'])) {
             $submission = $DB->get_record('coursework_submissions',
-                                          array('id' => $this->params['submissionid']),
+                                          ['id' => $this->params['submissionid']],
                                           '*',
                                           MUST_EXIST);
             $this->submission = submission::find($submission);
@@ -568,7 +568,7 @@ class feedback_controller extends controller_base {
             return false;
         }
 
-        if (feedback::count(array('submissionid' => $feedback->submissionid)) >= $this->coursework->numberofmarkers) {
+        if (feedback::count(['submissionid' => $feedback->submissionid]) >= $this->coursework->numberofmarkers) {
             return false;
         }
 

@@ -78,7 +78,7 @@ abstract class table_base {
         $klass = get_called_class();
 
         if (is_numeric($db_record) && $db_record > 0) {
-            $data = $DB->get_record(self::get_table_name(), array('id' => $db_record));
+            $data = $DB->get_record(self::get_table_name(), ['id' => $db_record]);
             if (!$data) {
                 return false;
             }
@@ -332,7 +332,7 @@ abstract class table_base {
     public function persisted() {
         global $DB;
 
-        return !empty($this->id) && $DB->record_exists(static::$table_name, array('id' => $this->id));
+        return !empty($this->id) && $DB->record_exists(static::$table_name, ['id' => $this->id]);
     }
 
     /**
@@ -413,7 +413,7 @@ abstract class table_base {
         }
 
         $strictness = $complain_if_not_found ? MUST_EXIST : IGNORE_MISSING;
-        $db_record = $DB->get_record(static::get_table_name(), array('id' => $this->id), '*', $strictness);
+        $db_record = $DB->get_record(static::get_table_name(), ['id' => $this->id], '*', $strictness);
 
         if ($db_record) {
             $this->apply_data($db_record);
@@ -463,7 +463,7 @@ abstract class table_base {
 
         $this->before_destroy();
 
-        $DB->delete_records(static::get_table_name(), array('id' => $this->id));
+        $DB->delete_records(static::get_table_name(), ['id' => $this->id]);
     }
 
     /**
@@ -523,7 +523,7 @@ abstract class table_base {
         global $DB;
 
         if (is_number($conditions)) {
-            $conditions = array('id' => $conditions);
+            $conditions = ['id' => $conditions];
         }
         if (is_object($conditions) && method_exists($conditions, 'to_array')) {
             $conditions = $conditions->to_array();
@@ -554,7 +554,7 @@ abstract class table_base {
      */
     public function get_raw_record() {
         global $DB;
-        return $DB->get_record(static::get_table_name(), array('id' => $this->id));
+        return $DB->get_record(static::get_table_name(), ['id' => $this->id]);
     }
 
     /**

@@ -52,9 +52,9 @@ final class router_test extends advanced_testcase {
 
     public function test_new_submission_path(): void {
 
-        $submission = submission::build(array('allocatableid' => 4, 'allocatabletype' => 'user', 'courseworkid' => 5));
+        $submission = submission::build(['allocatableid' => 4, 'allocatabletype' => 'user', 'courseworkid' => 5]);
 
-        $path = $this->router->get_path('new submission', array('submission' => $submission));
+        $path = $this->router->get_path('new submission', ['submission' => $submission]);
         $this->assertEquals($this->moodle_location.'/mod/coursework/actions/submissions/new.php?allocatableid=4&amp;allocatabletype=user&amp;courseworkid=5', $path);
     }
 

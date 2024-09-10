@@ -55,7 +55,7 @@ final class coursework_test extends advanced_testcase {
         /* @var mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $this->setAdminUser();
-        $this->coursework = $generator->create_instance(array('course' => $this->course->id, 'grade' => 0));
+        $this->coursework = $generator->create_instance(['course' => $this->course->id, 'grade' => 0]);
     }
 
     /**
@@ -64,7 +64,7 @@ final class coursework_test extends advanced_testcase {
     public function tearDown(): void {
         global $DB;
 
-        $DB->delete_records('coursework', array('id' => $this->coursework->id));
+        $DB->delete_records('coursework', ['id' => $this->coursework->id]);
         unset($this->coursework);
     }
 
@@ -80,7 +80,7 @@ final class coursework_test extends advanced_testcase {
         $badstrategy = 'badone';
 
         $this->coursework->set_assessor_allocation_strategy($goodstrategy);
-        $dbstrategy = $DB->get_field('coursework', 'assessorallocationstrategy', array('id' => $this->coursework->id));
+        $dbstrategy = $DB->get_field('coursework', 'assessorallocationstrategy', ['id' => $this->coursework->id]);
         $this->assertEquals($goodstrategy, $dbstrategy);
 
         $this->assertFalse($this->coursework->set_assessor_allocation_strategy($badstrategy));
@@ -98,7 +98,7 @@ final class coursework_test extends advanced_testcase {
         // Now make a new coursework with a duff class name.
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         /* @var mod_coursework_generator $generator */
-        $this->coursework = $generator->create_instance(array('course' => $this->course->id, 'grade' => 0));
+        $this->coursework = $generator->create_instance(['course' => $this->course->id, 'grade' => 0]);
         $this->coursework->assessorallocationstrategy = 'duffclass';
         $this->coursework->save();
 
@@ -109,17 +109,17 @@ final class coursework_test extends advanced_testcase {
     public function test_group_decorator_is_added(): void {
         /* @var mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
-        $coursework = $generator->create_instance(array('course' => $this->course->id,
+        $coursework = $generator->create_instance(['course' => $this->course->id,
                                                         'grade' => 0,
-                                                        'use_groups' => true));
+                                                        'use_groups' => true]);
         $this->assertInstanceOf('\mod_coursework\decorators\coursework_groups_decorator', coursework::find($coursework->id));
     }
 
     public function test_group_decorator_is_not_added(): void {
         /* @var mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
-        $coursework = $generator->create_instance(array('course' => $this->course->id,
-                                                        'grade' => 0));
+        $coursework = $generator->create_instance(['course' => $this->course->id,
+                                                        'grade' => 0]);
         $this->assertInstanceOf('\mod_coursework\models\coursework',
                                 coursework::find($coursework->id));
     }
@@ -132,9 +132,9 @@ final class coursework_test extends advanced_testcase {
         $this->create_a_group();
         $this->add_student_to_the_group();
 
-        $coursework = $generator->create_instance(array('course' => $this->course->id,
+        $coursework = $generator->create_instance(['course' => $this->course->id,
                                                         'grade' => 0,
-                                                        'use_groups' => true));
+                                                        'use_groups' => true]);
 
         $this->assertEquals($this->group->id, $coursework->get_student_group($this->student)->id);
 
@@ -149,10 +149,10 @@ final class coursework_test extends advanced_testcase {
         $this->create_a_grouping_and_add_the_group_to_it();
         $this->add_student_to_the_group();
 
-        $coursework = $generator->create_instance(array('course' => $this->course->id,
+        $coursework = $generator->create_instance(['course' => $this->course->id,
                                                         'grade' => 0,
                                                         'use_groups' => true,
-                                                        'grouping_id' => $this->grouping->id));
+                                                        'grouping_id' => $this->grouping->id]);
 
         $this->assertEquals($this->group->id, $coursework->get_student_group($this->student)->id);
     }
@@ -169,10 +169,10 @@ final class coursework_test extends advanced_testcase {
         $this->create_a_grouping_and_add_the_group_to_it();
         $this->add_student_to_the_group();
 
-        $coursework = $generator->create_instance(array('course' => $this->course->id,
+        $coursework = $generator->create_instance(['course' => $this->course->id,
                                                         'grade' => 0,
                                                         'use_groups' => true,
-                                                        'grouping_id' => 543));
+                                                        'grouping_id' => 543]);
 
         $this->assertEquals(false, $coursework->get_student_group($this->student));
     }
@@ -193,7 +193,7 @@ final class coursework_test extends advanced_testcase {
         $coursework->update_attribute('moderationenabled', 0);
         $coursework->update_attribute('numberofmarkers', 2);
         $actual = $coursework->marking_stages();
-        $this->assertEquals(array('assessor_1', 'assessor_2', 'final_agreed_1'), array_keys($actual));
+        $this->assertEquals(['assessor_1', 'assessor_2', 'final_agreed_1'], array_keys($actual));
     }
 
     public function test_get_stage(): void {
@@ -215,30 +215,30 @@ final class coursework_test extends advanced_testcase {
     public function test_file_types_spaces(): void {
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('filetypes', 'doc docx');
-        $this->assertEquals(array('.doc',
-                                  '.docx'),
+        $this->assertEquals(['.doc',
+                                  '.docx'],
                             $coursework->get_file_options()['accepted_types']);
     }
 
     public function test_file_types_commas(): void {
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('filetypes', 'doc, docx');
-        $this->assertEquals(array('.doc', '.docx'), $coursework->get_file_options()['accepted_types']);
+        $this->assertEquals(['.doc', '.docx'], $coursework->get_file_options()['accepted_types']);
     }
 
     public function test_file_types_commas_dots(): void {
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('filetypes', '.doc, .docx');
-        $this->assertEquals(array('.doc',
-                                  '.docx'),
+        $this->assertEquals(['.doc',
+                                  '.docx'],
                             $coursework->get_file_options()['accepted_types']);
     }
 
     public function test_file_types_commas_dots_stars(): void {
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('filetypes', '*.doc, *.docx');
-        $this->assertEquals(array('.doc',
-                                  '.docx'),
+        $this->assertEquals(['.doc',
+                                  '.docx'],
                             $coursework->get_file_options()['accepted_types']);
     }
 

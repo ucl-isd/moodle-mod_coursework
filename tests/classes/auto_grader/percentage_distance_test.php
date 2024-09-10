@@ -92,7 +92,7 @@ final class percentage_distance_test extends \advanced_testcase {
 
         $user->expects($this->any())->method('get_initial_feedbacks')
             ->with($this->get_coursework())
-            ->will($this->returnValue(array($feedback_one, $feedback_two)));
+            ->will($this->returnValue([$feedback_one, $feedback_two]));
 
         $submission = $this->createMock('\mod_coursework\models\submission');
         $submission->expects($this->any())->method('id')->will($this->returnValue(234234));
@@ -125,8 +125,8 @@ final class percentage_distance_test extends \advanced_testcase {
 
         $user->expects($this->any())->method('get_initial_feedbacks')
             ->with($this->get_coursework())
-            ->will($this->returnValue(array($feedback_one,
-                                            $feedback_two)));
+            ->will($this->returnValue([$feedback_one,
+                                            $feedback_two]));
 
         $submission = $this->createMock('\mod_coursework\models\submission');
         $submission->expects($this->any())->method('id')->will($this->returnValue(234234));

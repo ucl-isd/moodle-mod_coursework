@@ -79,8 +79,8 @@ class builder {
         $method_name = 'sort_by_' . $this->options['sortby'];
         if (method_exists($sorting, $method_name)) {
             usort($rows,
-                array($sorting,
-                    $method_name));
+                [$sorting,
+                    $method_name]);
         }
 
         return $rows;
@@ -117,8 +117,8 @@ class builder {
         $method_name = 'sort_by_' . $this->options['sortby'];
         if (method_exists($sorting, $method_name)) {
             usort($rows,
-                array($sorting,
-                    $method_name));
+                [$sorting,
+                    $method_name]);
         }
 
         // Now, we remove the ones who should not be visible on this page. Must happen AFTER the sort!
@@ -176,9 +176,9 @@ class builder {
      * @return allocatable_cell
      */
     public function get_allocatable_cell() {
-        $items = array(
+        $items = [
             'coursework' => $this->coursework,
-        );
+        ];
 
         if ($this->coursework->is_configured_to_have_group_submissions()) {
             return new group_cell($items);

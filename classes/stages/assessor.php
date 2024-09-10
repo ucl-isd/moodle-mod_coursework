@@ -80,8 +80,8 @@ class assessor extends base {
             AND submissionid = ?
             AND stage_identifier LIKE '{$this->type()}%'
         ";
-        return $DB->record_exists_sql($sql, array($assessor->id(),
-                                                  $submission->id));
+        return $DB->record_exists_sql($sql, [$assessor->id(),
+                                                  $submission->id]);
     }
 
     /**

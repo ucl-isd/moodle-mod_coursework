@@ -65,12 +65,12 @@ final class generator_test extends \advanced_testcase {
         // Calendar event creation will fail if we have no user.
         $this->setAdminUser();
 
-        $generator->create_instance(array('course' => $course->id,
-                                          'grade' => 0));
-        $generator->create_instance(array('course' => $course->id,
-                                          'grade' => 0));
-        $coursework = $generator->create_instance(array('course' => $course->id,
-                                                        'grade' => 100));
+        $generator->create_instance(['course' => $course->id,
+                                          'grade' => 0]);
+        $generator->create_instance(['course' => $course->id,
+                                          'grade' => 0]);
+        $coursework = $generator->create_instance(['course' => $course->id,
+                                                        'grade' => 100]);
         $this->assertEquals(3, $DB->count_records('coursework'));
 
         $cm = get_coursemodule_from_instance('coursework', $coursework->id);
@@ -83,10 +83,10 @@ final class generator_test extends \advanced_testcase {
 
         // Test gradebook integration using low level DB access - DO NOT USE IN PLUGIN CODE!
         $gitem = $DB->get_record('grade_items',
-                                 array('courseid' => $course->id,
+                                 ['courseid' => $course->id,
                                        'itemtype' => 'mod',
                                        'itemmodule' => 'coursework',
-                                       'iteminstance' => $coursework->id));
+                                       'iteminstance' => $coursework->id]);
         $this->assertNotEmpty($gitem);
         $this->assertEquals(100, $gitem->grademax);
         $this->assertEquals(0, $gitem->grademin);
@@ -94,8 +94,8 @@ final class generator_test extends \advanced_testcase {
 
         // Test eventslib integration.
         // TODO doesn't seem to do anything.
-        $generator->create_instance(array('course' => $course->id,
-                                          'timedue' => strtotime('+1 day')));
+        $generator->create_instance(['course' => $course->id,
+                                          'timedue' => strtotime('+1 day')]);
         $this->setUser(null);
     }
 
@@ -118,7 +118,7 @@ final class generator_test extends \advanced_testcase {
 
         // Should fail because we have no assessorid and we have no logged ourselves in.
         $allocation = $generator->create_allocation($data);
-        $allocation = $DB->get_record('coursework_allocation_pairs', array('id' => $allocation->id));
+        $allocation = $DB->get_record('coursework_allocation_pairs', ['id' => $allocation->id]);
 
         $this->assertNotEmpty($allocation);
 
@@ -147,7 +147,7 @@ final class generator_test extends \advanced_testcase {
         // Otherwise we get PHPUnit exception.
         try {
             $feedback = $generator->create_feedback($data);
-            $feedback = $DB->get_record('coursework_feedbacks', array('id' => $feedback->id));
+            $feedback = $DB->get_record('coursework_feedbacks', ['id' => $feedback->id]);
 
             $this->assertNotEmpty($feedback);
 
@@ -180,7 +180,7 @@ final class generator_test extends \advanced_testcase {
 
         // Should fail because we have no assessorid and we have no logged ourselves in.
         $submission = $generator->create_submission($data, $coursework);
-        $submission = $DB->get_record('coursework_submissions', array('id' => $submission->id));
+        $submission = $DB->get_record('coursework_submissions', ['id' => $submission->id]);
 
         $this->assertNotEmpty($submission);
 

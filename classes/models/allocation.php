@@ -82,14 +82,14 @@ class allocation extends table_base {
     /**
      * @var array
      */
-    protected $fields = array(
+    protected $fields = [
         'id',
         'courseworkid',
         'assessorid',
         'studentid',
         'manual',
         'timelocked',
-    );
+    ];
 
     /**
      * @return coursework|mixed

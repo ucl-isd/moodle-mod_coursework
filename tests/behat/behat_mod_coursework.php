@@ -155,41 +155,41 @@ class behat_mod_coursework extends behat_base {
 
             case 'new feedback':
                 return $this->get_router()->get_path('new feedback',
-                                                     array('submission' => $this->submission,
+                                                     ['submission' => $this->submission,
                                                            'assessor' => $this->teacher,
-                                                           'stage' => $this->get_first_assesor_stage()),
+                                                           'stage' => $this->get_first_assesor_stage()],
                                                      false,
                                                      $escape);
             case 'create feedback':
                 return $this->get_router()->get_path('create feedback',
-                                                     array('coursework' => $this->coursework),
+                                                     ['coursework' => $this->coursework],
                                                      false,
                                                      $escape);
 
             case 'new submission':
-                $submission = submission::build(array(
+                $submission = submission::build([
                                                     'courseworkid' => $this->coursework->id,
                                                     'allocatableid' => $this->student->id,
                                                     'allocatabletype' => 'user',
-                                                ));
+                                                ]);
                 return $this->get_router()->get_path('new submission',
-                                                     array('submission' => $submission), false, $escape);
+                                                     ['submission' => $submission], false, $escape);
 
             case 'create submission':
                 return $this->get_router()->get_path('create submission',
-                                                     array('coursework' => $this->coursework),
+                                                     ['coursework' => $this->coursework],
                                                      false,
                                                      $escape);
 
             case 'edit submission':
                 return $this->get_router()->get_path('edit submission',
-                                                     array('submission' => $this->submission),
+                                                     ['submission' => $this->submission],
                                                      false,
                                                      $escape);
 
             case 'update submission':
                 return $this->get_router()->get_path('update submission',
-                                                     array('submission' => $this->submission),
+                                                     ['submission' => $this->submission],
                                                      false,
                                                      $escape);
 
@@ -197,7 +197,7 @@ class behat_mod_coursework extends behat_base {
                 if (empty($this->feedback)) {
                     $this->feedback = feedback::last();
                 }
-                return $this->get_router()->get_path('edit feedback', array('feedback' => $this->feedback), false, $escape);
+                return $this->get_router()->get_path('edit feedback', ['feedback' => $this->feedback], false, $escape);
 
             case 'gradebook':
                 return parent::locate_path('/grade/report/user/index.php?id=' . $this->course->id);
@@ -397,9 +397,9 @@ class behat_mod_coursework extends behat_base {
      * @Then /^there should be no allocations in the db$/
      */
     public function there_should_be_no_allocations_in_the_db() {
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
-        );
+        ];
         $count = \mod_coursework\models\allocation::count($params);
         if ($count !== 0) {
             throw new ExpectationException(
@@ -776,9 +776,9 @@ class behat_mod_coursework extends behat_base {
     public function managers_do_not_have_the_manage_capability() {
         global $DB;
 
-        $manager_role = $DB->get_record('role', array('shortname' => 'manager'));
-        $params = array('roleid' => $manager_role->id,
-                        'capability' => 'mod/coursework:manage');
+        $manager_role = $DB->get_record('role', ['shortname' => 'manager']);
+        $params = ['roleid' => $manager_role->id,
+                        'capability' => 'mod/coursework:manage'];
         $permission_setting = CAP_PROHIBIT;
         $DB->set_field('role_capabilities', 'permission', $permission_setting, $params);
     }
@@ -789,9 +789,9 @@ class behat_mod_coursework extends behat_base {
     public function i_am_allowed_to_view_all_students() {
         global $DB;
 
-        $teacher_role = $DB->get_record('role', array('shortname' => 'teacher'));
-        $params = array('roleid' => $teacher_role->id,
-                          'capability' => 'mod/coursework:viewallstudents');
+        $teacher_role = $DB->get_record('role', ['shortname' => 'teacher']);
+        $params = ['roleid' => $teacher_role->id,
+                          'capability' => 'mod/coursework:viewallstudents'];
         $permission_setting = CAP_ALLOW;
         $DB->set_field('role_capabilities', 'permission', $permission_setting, $params);
     }
@@ -805,11 +805,11 @@ class behat_mod_coursework extends behat_base {
     public function teachers_have_the_add_agreed_grade_capability() {
         global $DB;
 
-        $teacher_role = $DB->get_record('role', array('shortname' => 'teacher'));
-        $params = array('roleid' => $teacher_role->id,
+        $teacher_role = $DB->get_record('role', ['shortname' => 'teacher']);
+        $params = ['roleid' => $teacher_role->id,
                         'capability' => 'mod/coursework:addagreedgrade',
                         'contextid' => 1,
-                        'permission' => CAP_ALLOW);
+                        'permission' => CAP_ALLOW];
         $DB->insert_record('role_capabilities', $params);
     }
 
@@ -973,9 +973,9 @@ class behat_mod_coursework extends behat_base {
     public function the_manager_has_a_capability_to_allocate_students_in_samplings() {
         global $DB;
 
-        $manager_role = $DB->get_record('role', array('shortname' => 'manager'));
-        $params = array('roleid' => $manager_role->id,
-            'capability' => 'mod/coursework:sampleselection');
+        $manager_role = $DB->get_record('role', ['shortname' => 'manager']);
+        $params = ['roleid' => $manager_role->id,
+            'capability' => 'mod/coursework:sampleselection'];
         $DB->set_field('role_capabilities', 'permission', CAP_ALLOW, $params);
     }
 
@@ -1004,7 +1004,7 @@ class behat_mod_coursework extends behat_base {
     public function the_teacher_has_a_capability_to_mark_submissions() {
         global $DB;
 
-        $teacher_role = $DB->get_record('role', array('shortname' => 'teacher'));
+        $teacher_role = $DB->get_record('role', ['shortname' => 'teacher']);
 
         role_change_permission($teacher_role->id,
                                $this->get_coursework()->get_context(),
@@ -1018,7 +1018,7 @@ class behat_mod_coursework extends behat_base {
     public function the_teacher_has_a_capability_to_edit_own_feedbacks() {
         global $DB;
 
-        $teacher_role = $DB->get_record('role', array('shortname' => 'teacher'));
+        $teacher_role = $DB->get_record('role', ['shortname' => 'teacher']);
 
         role_change_permission($teacher_role->id, $this->get_coursework()->get_context(),
                                'mod/coursework:editinitialgrade', CAP_ALLOW);
@@ -1031,7 +1031,7 @@ class behat_mod_coursework extends behat_base {
     public function the_teacher_has_a_capability_to_edit_own_agreed_feedbacks() {
         global $DB;
 
-        $teacher_role = $DB->get_record('role', array('shortname' => 'teacher'));
+        $teacher_role = $DB->get_record('role', ['shortname' => 'teacher']);
         role_change_permission($teacher_role->id,
                                $this->get_coursework()->get_context(),
                                'mod/coursework:editagreedgrade',
@@ -1049,13 +1049,13 @@ class behat_mod_coursework extends behat_base {
      * @Given /^there is feedback for the submission from the other teacher$/
      */
     public function there_is_feedback_for_the_submission_from_the_other_teacher() {
-        $this->feedback = feedback::create(array(
+        $this->feedback = feedback::create([
             'submissionid' => $this->submission->id,
             'assessorid' => $this->other_teacher->id,
             'grade' => '78',
             'feedbackcomment' => 'Blah',
             'stage_identifier' => 'assessor_1',
-        ));
+        ]);
     }
 
     /**
@@ -1099,12 +1099,12 @@ class behat_mod_coursework extends behat_base {
      * @Given /^there is an extension for the student that allows them to submit$/
      */
     public function there_is_an_extension_for_the_student_that_allows_them_to_submit() {
-        \mod_coursework\models\deadline_extension::create(array(
+        \mod_coursework\models\deadline_extension::create([
            'allocatableid' => $this->student->id(),
            'allocatabletype' => 'user',
            'courseworkid' => $this->coursework->id,
            'extended_deadline' => strtotime('+2 weeks 3:30pm', $this->coursework->deadline),
-        ));
+        ]);
     }
 
     /**
@@ -1112,12 +1112,12 @@ class behat_mod_coursework extends behat_base {
      */
     public function there_is_an_extension_for_the_student_which_has_expired() {
         $this->extension_deadline = strtotime('3:30pm', strtotime('-2 weeks ', $this->coursework->deadline));
-        \mod_coursework\models\deadline_extension::create(array(
+        \mod_coursework\models\deadline_extension::create([
                                                               'allocatableid' => $this->student->id(),
                                                               'allocatabletype' => 'user',
                                                               'courseworkid' => $this->coursework->id,
                                                               'extended_deadline' => $this->extension_deadline,
-                                                          ));
+                                                          ]);
     }
 
     /**
@@ -1352,11 +1352,11 @@ class behat_mod_coursework extends behat_base {
     public function editing_teachers_are_prevented_from_adding_general_feedback() {
         global $DB;
 
-        $teacher_role = $DB->get_record('role', array('shortname' => 'editingteacher'));
-        $params = array('roleid' => $teacher_role->id,
+        $teacher_role = $DB->get_record('role', ['shortname' => 'editingteacher']);
+        $params = ['roleid' => $teacher_role->id,
                         'capability' => 'mod/coursework:addgeneralfeedback',
                         'contextid' => 1,
-                        );
+                        ];
         $cap = $DB->get_record('role_capabilities', $params);
         $cap->permission = CAP_PREVENT;
         $DB->update_record('role_capabilities', $cap);
@@ -1450,7 +1450,7 @@ class behat_mod_coursework extends behat_base {
     public function the_course_has_been_kept_for_later() {
         global $DB;
 
-        $this->course = $DB->get_record('course', array('shortname' => 'C1'));
+        $this->course = $DB->get_record('course', ['shortname' => 'C1']);
     }
 
     /**
@@ -1460,7 +1460,7 @@ class behat_mod_coursework extends behat_base {
         global $DB;
 
         set_config('enablecompletion', 1); // Global setting.
-        $DB->set_field('course', 'enablecompletion', 1, array('id' => $this->course->id));
+        $DB->set_field('course', 'enablecompletion', 1, ['id' => $this->course->id]);
     }
 
     /**
@@ -1546,7 +1546,7 @@ class behat_mod_coursework extends behat_base {
         $coursework->formid = $this->form->id;
         $coursework->save();
 
-        if (!$DB->record_exists('coursework', array('formid' => $this->form->id))) {
+        if (!$DB->record_exists('coursework', ['formid' => $this->form->id])) {
             throw new ExpectationException('no field change', $this->getSession());
         }
     }
@@ -1583,9 +1583,9 @@ class behat_mod_coursework extends behat_base {
     public function the_managers_are_not_allowed_to_grade($negate = false) {
         global $DB;
 
-        $manager_role = $DB->get_record('role', array('shortname' => 'manager'));
-        $params = array('roleid' => $manager_role->id,
-                        'capability' => 'mod/coursework:addinitialgrade');
+        $manager_role = $DB->get_record('role', ['shortname' => 'manager']);
+        $params = ['roleid' => $manager_role->id,
+                        'capability' => 'mod/coursework:addinitialgrade'];
         if ($negate) {
             $permission_setting = CAP_PROHIBIT;
         } else {
@@ -1833,11 +1833,11 @@ class behat_mod_coursework extends behat_base {
     public function the_student_should_be_allocated_to_an_assessor() {
         global $DB;
 
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
-        );
+        ];
 
         $result = $DB->get_record('coursework_allocation_pairs', $params);
 
@@ -2620,7 +2620,7 @@ class behat_mod_coursework extends behat_base {
     public function the_submission_should_be_finalised($negate = false) {
         global $DB;
 
-        $finalised = $DB->get_field('coursework_submissions', 'finalised', array('id' => $this->submission->id));
+        $finalised = $DB->get_field('coursework_submissions', 'finalised', ['id' => $this->submission->id]);
         if ($negate && $finalised == 1) {
             throw new ExpectationException('Submission is finalised and should not be', $this->getSession());
         } else if (!$negate && $finalised == 0) {
@@ -2776,7 +2776,7 @@ class behat_mod_coursework extends behat_base {
     public function the_user_has_been_kept_for_later($role_name) {
         global $DB;
 
-        $this->$role_name = $DB->get_record('user', array('username' => "user{$this->user_suffix}"));
+        $this->$role_name = $DB->get_record('user', ['username' => "user{$this->user_suffix}"]);
     }
 
     /**
@@ -2821,7 +2821,7 @@ class behat_mod_coursework extends behat_base {
         $user = \mod_coursework\models\user::find($user);
         $user->password = 'user' . $this->user_suffix;
 
-        $role_id = $DB->get_field('role', 'id', array('shortname' => $role_name), MUST_EXIST);
+        $role_id = $DB->get_field('role', 'id', ['shortname' => $role_name], MUST_EXIST);
 
         if (empty($this->course)) {
             throw new coding_exception('Must have a course to enrol the user onto');
@@ -2953,15 +2953,15 @@ class behat_mod_coursework extends behat_base {
      * @return mixed
      */
     protected function get_initial_assessor_feedback_for_student() {
-        $submission_params = array('courseworkid' => $this->get_coursework()->id,
+        $submission_params = ['courseworkid' => $this->get_coursework()->id,
                                    'allocatableid' => $this->student->id,
-                                   'allocatabletype' => 'user');
+                                   'allocatabletype' => 'user'];
         $submission = submission::find($submission_params);
 
-        $feedback_params = array(
+        $feedback_params = [
             'stage_identifier' => 'assessor_1',
             'submissionid' => $submission->id,
-        );
+        ];
         $feedback = \mod_coursework\models\feedback::find($feedback_params);
         return $feedback;
     }
@@ -3121,7 +3121,7 @@ class behat_mod_coursework extends behat_base {
     public function teachers_hava_a_capability_to_administer_grades() {
         global $DB;
 
-        $teacher_role = $DB->get_record('role', array('shortname' => 'teacher'));
+        $teacher_role = $DB->get_record('role', ['shortname' => 'teacher']);
         role_change_permission($teacher_role->id,
                                $this->get_coursework()->get_context(),
                                'mod/coursework:administergrades',
