@@ -56,7 +56,7 @@ class builder {
      * @param coursework $coursework
      * @param allocatable $allocatable
      * @param stage_base $stage
-     * @param array $dataarray
+     * @param array $dataarray incoming data from the allocation form
      */
     public function __construct($coursework, $allocatable, $stage, $dataarray  = []) {
         $this->coursework = $coursework;

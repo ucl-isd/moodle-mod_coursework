@@ -302,7 +302,7 @@ class submission extends table_base implements \renderable {
      * @param $courseid
      */
     public function set_course_id($courseid) {
-        $this->course_id = $courseid;
+        $this->courseid = $courseid;
     }
 
     /**
