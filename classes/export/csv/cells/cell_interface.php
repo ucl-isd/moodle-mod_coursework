@@ -47,6 +47,6 @@ interface cell_interface {
      * @param $stage_dentifier
      * @return mixed
      */
-    public function validate_cell($value, $submissions, $stagedentifier='');
+    public function validate_cell($value, $submissions, $stageidentifier='');
 
 }

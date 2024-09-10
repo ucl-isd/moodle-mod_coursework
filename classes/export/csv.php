@@ -114,13 +114,13 @@ class csv {
         $row = [];
         foreach ($csvcells as $csvcell) {
             if (substr($csvcell, 0, 8) == 'assessor') {
-                $stagedentifier = 'assessor_'.(substr($csvcell, -1));
+                $stageidentifier = 'assessor_'.(substr($csvcell, -1));
                 $csvcell = substr($csvcell, 0, -1);
             }
             $class = "mod_coursework\\export\\csv\\cells\\".$csvcell."_cell";
             $cell = new $class($this->coursework);
             if (substr($csvcell, 0, 8) == 'assessor') {
-                $cell = $cell->get_cell($submission, $student, $stagedentifier);
+                $cell = $cell->get_cell($submission, $student, $stageidentifier);
                 if (is_array($cell)) {
                     $row = array_merge($row, $cell);
                 } else {

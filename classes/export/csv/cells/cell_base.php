@@ -250,7 +250,7 @@ abstract class cell_base implements cell_interface {
      * Function to validate cell for the file upload
      * @return mixed
      */
-    public function validate_cell($value, $submissions, $stagedentifier='', $uploadedgradecells  = []) {
+    public function validate_cell($value, $submissions, $stageidentifier='', $uploadedgradecells  = []) {
         return true;
     }
 

@@ -1224,7 +1224,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     protected function coursework_deadlines_table(mod_coursework_coursework $coursework) {
         global $USER;
 
-        $dealineextension =
+        $deadlineextension =
             \mod_coursework\models\deadline_extension::get_extension_for_student(user::find($USER), $coursework);
 
         $personaldeadline =
@@ -1241,7 +1241,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
         $deadlinedate = '';
 
-        if ($dealineextension) {
+        if ($deadlineextension) {
             $deadlinedate .= '<span class="crossed-out">';
             $deadlinedate .= userdate($normaldeadline, '%a, %d %b %Y, %H:%M');
             $deadlinedate .= '</span>';
@@ -1269,10 +1269,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // Does the user have an extension?
 
         $deadlineextensionmessage = '';
-        if ($dealineextension) {
+        if ($deadlineextension) {
             $deadlineextensionmessage .= html_writer::start_tag('div');
             $deadlineextensionmessage .= '<span class="text-success">You have an extension!</span><br> Your deadine is: '
-                . userdate($dealineextension->extended_deadline);
+                . userdate($deadlineextension->extended_deadline);
             $deadlineextensionmessage .= html_writer::end_tag('div');
         }
 
