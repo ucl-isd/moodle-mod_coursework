@@ -28,7 +28,7 @@ global $CFG;
  * @property mixed teacher
  * @group mod_coursework
  */
-class mod_coursework_allocation_strategy_percentages_test extends advanced_testcase {
+final class mod_coursework_allocation_strategy_percentages_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
 

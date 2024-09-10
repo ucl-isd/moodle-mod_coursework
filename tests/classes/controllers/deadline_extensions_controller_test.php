@@ -25,7 +25,7 @@
  * class.
  * @group mod_coursework
  */
-class deadline_extensions_controller_test extends basic_testcase {
+final class deadline_extensions_controller_test extends basic_testcase {
 
     public function test_model_name(): void {
         $controller = new \mod_coursework\controllers\deadline_extensions_controller([]);

@@ -39,7 +39,7 @@ global $CFG;
  * @property stdClass other_teacher
  * @group mod_coursework
  */
-class table_processor_test extends advanced_testcase {
+final class table_processor_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
 

@@ -31,7 +31,7 @@ use mod_coursework\models\coursework;
  * @property stdClass course
  * @group mod_coursework
  */
-class auto_allocator_test extends advanced_testcase {
+final class auto_allocator_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
 

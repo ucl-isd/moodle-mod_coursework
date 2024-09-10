@@ -31,7 +31,7 @@ global $CFG;
  * @property mixed csv
  * @group mod_coursework
  */
-class grading_sheet_download_test extends advanced_testcase {
+final class grading_sheet_download_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
 

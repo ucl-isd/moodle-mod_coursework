@@ -26,7 +26,7 @@ use mod_coursework\ability;
  * Class ability_test is responsible for testing the ability class to make sure the mechanisms work.
  * @group mod_coursework
  */
-class ability_test extends advanced_testcase {
+final class ability_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
 

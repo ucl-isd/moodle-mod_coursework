@@ -39,7 +39,7 @@ require_once($CFG->dirroot . '/mod/coursework/lib.php');
  * @copyright  2012 ULCC {@link http://ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class generator_test extends \advanced_testcase {
+final class generator_test extends \advanced_testcase {
 
     /**
      * Sets things up for every test. We want all to clean up after themselves.

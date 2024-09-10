@@ -28,7 +28,7 @@ namespace mod_coursework\auto_grader;
  * @package mod_coursework\auto_grader
  * @group mod_coursework
  */
-class percentage_distance_test extends \advanced_testcase {
+final class percentage_distance_test extends \advanced_testcase {
 
     use \mod_coursework\test_helpers\factory_mixin;
 

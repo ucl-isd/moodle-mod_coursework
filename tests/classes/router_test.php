@@ -27,7 +27,7 @@ use mod_coursework\router;
  * Class router_test
  * @group mod_coursework
  */
-class router_test extends advanced_testcase {
+final class router_test extends advanced_testcase {
 
     /**
      * @var router

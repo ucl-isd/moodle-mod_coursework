@@ -27,7 +27,7 @@ use mod_coursework\cron;
  * Class cron_test
  * @group mod_coursework
  */
-class cron_test extends advanced_testcase {
+final class cron_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
 

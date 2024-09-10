@@ -40,7 +40,7 @@ global $CFG;
  * @group mod_coursework
  */
 #[\AllowDynamicProperties]
-class coursework_test extends advanced_testcase {
+final class coursework_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
 

@@ -24,7 +24,7 @@
  * Class coursework_user_test
  * @group mod_coursework
  */
-class coursework_user_test extends advanced_testcase {
+final class coursework_user_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
 

@@ -23,7 +23,7 @@
 /**
  * @group mod_coursework
  */
-class final_agreed_test extends advanced_testcase {
+final class final_agreed_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
 
