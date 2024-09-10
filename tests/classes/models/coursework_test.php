@@ -259,10 +259,10 @@ final class coursework_test extends advanced_testcase {
         $coursework->update_attribute('use_groups', 1);
 
         $allocatables = $coursework->get_allocatables();
-        // print_r($allocatables);die;
-        $allocatableids = array_keys($allocatables);
-        $this->assertContains($group->id, $allocatableids, "Actual array keys: ".implode(', ', $allocatableids));
-
+        $ispresent = is_numeric($group->id) && in_array($group->id, array_keys($allocatables));
+        $this->assertTrue(
+            $ispresent, "Actual array keys: ".implode(', ', array_keys($allocatables))
+        );
     }
 
     public function test_individual_feedback_deadline_has_passed(): void {
