@@ -171,7 +171,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
                 </tr>';
             */
             $table_html = '<table class="assessors" id="assessorfeedbacktable_' . $assessor_feedback_table->get_coursework()
-                        ->get_allocatable_identifier_hash($assessor_feedback_table->get_allocatable()) . '" style="display: none;">
+                ->get_allocatable_identifier_hash($assessor_feedback_table->get_allocatable()) . '" style="display: none;">
                         <tr>
                           <th>' . $allocation_string . '</th>
                           <th>' . get_string('grade', 'mod_coursework') . '</th>
@@ -308,7 +308,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     protected function row_class($feedback_row) {
         $assessor = $feedback_row->get_assessor();
         $row_class = 'feedback-' . $assessor->id() . '-' . $feedback_row->get_allocatable()
-                ->id() . ' ' . $feedback_row->get_stage()->identifier();
+            ->id() . ' ' . $feedback_row->get_stage()->identifier();
         return $row_class;
     }
 

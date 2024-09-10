@@ -108,7 +108,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $files_string = count($files) > 1 ? 'submissionfiles' : 'submissionfile';
 
         $html .= '<tr><th>' . get_string($files_string, 'coursework') . '</th><td>' . $this->get_object_renderer()
-                ->render_submission_files_with_plagiarism_links(new mod_coursework_submission_files($files)) . '</td></tr>';
+            ->render_submission_files_with_plagiarism_links(new mod_coursework_submission_files($files)) . '</td></tr>';
         $html .= '</table>';
 
         $submit_url = $this->get_router()->get_path('update feedback', array('feedback' => $teacher_feedback));
@@ -1125,7 +1125,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html = '';
         $string_name = $coursework->is_configured_to_have_group_submissions() ? 'editgroupsubmission' : 'edityoursubmission';
         $button = new \single_button($this->get_router()
-                                         ->get_path('edit submission', array('submission' => $submission), true),
+            ->get_path('edit submission', array('submission' => $submission), true),
                                      get_string($string_name, 'mod_coursework'), 'get');
         $button->class = 'editsubmissionbutton';
         $html .= $this->output->render($button);
