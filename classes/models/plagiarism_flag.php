@@ -126,7 +126,7 @@ class plagiarism_flag extends table_base {
         global $DB;
         $records = $DB->get_records(self::$table_name, ['courseworkid' => $coursework_id]);
         $result = [
-            'submissionid' => []
+            'submissionid' => [],
         ];
         if ($records) {
             foreach ($records as $record) {

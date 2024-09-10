@@ -564,7 +564,7 @@ class feedback_controller extends controller_base {
             return false;
         }
 
-        if (feedback::count(array('submissionid' => $feedback->submissionid,)) >= $this->coursework->numberofmarkers) {
+        if (feedback::count(array('submissionid' => $feedback->submissionid)) >= $this->coursework->numberofmarkers) {
             return false;
         }
 

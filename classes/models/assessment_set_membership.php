@@ -64,7 +64,7 @@ class assessment_set_membership extends table_base implements moderatable {
         $result = [
             'allocatableid-allocatabletype' => [],
             'allocatableid-allocatabletype-stage_identifier' => [],
-            'allocatableid-stage_identifier-selectiontype' => []
+            'allocatableid-stage_identifier-selectiontype' => [],
         ];
         if ($records) {
             foreach ($records as $record) {

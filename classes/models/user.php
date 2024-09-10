@@ -117,7 +117,7 @@ class user extends table_base implements allocatable, moderatable {
             'coursework_id' => $coursework->id,
             'userid' => $this->id(),
             'remindernumber' => $reminder_number,
-            'extension' => $extension
+            'extension' => $extension,
         );
         return !reminder::exists($conditions);
 

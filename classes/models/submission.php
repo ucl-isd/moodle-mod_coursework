@@ -155,7 +155,7 @@ class submission extends table_base implements \renderable {
         'timecreated',
         'timemodified',
         'finalised',
-        'manualsrscode'
+        'manualsrscode',
     );
 
     /**
@@ -351,8 +351,8 @@ class submission extends table_base implements \renderable {
             'userid' => $USER->id,
             'other' => array(
                 'content' => '',
-                'pathnamehashes' => array_keys($files)
-            )
+                'pathnamehashes' => array_keys($files),
+            ),
         );
 
         $event = \mod_coursework\event\assessable_uploaded::create($params);
@@ -474,7 +474,7 @@ class submission extends table_base implements \renderable {
             'submissionid' => $this->id,
             'ismoderation' => 0,
             'isfinalgrade' => 0,
-            'stage_identifier' => $stage_identifier
+            'stage_identifier' => $stage_identifier,
         ];
         feedback::fill_pool_coursework($this->courseworkid);
         $feedback = feedback::get_object($this->courseworkid, 'submissionid-ismoderation-isfinalgrade-stage_identifier', $params);
@@ -516,7 +516,7 @@ class submission extends table_base implements \renderable {
             'submissionid' => $this->id,
             'ismoderation' => 0,
             'isfinalgrade' => 0,
-            'stage_identifier' => 'final_agreed_1'
+            'stage_identifier' => 'final_agreed_1',
         ];
         feedback::fill_pool_coursework($this->courseworkid);
         $feedback = feedback::get_object($this->courseworkid, 'submissionid-ismoderation-isfinalgrade-stage_identifier', $params);
@@ -547,7 +547,7 @@ class submission extends table_base implements \renderable {
 
         $params = array(
             'submissionid' => $this->id,
-            'stage_identifier' => $identifier
+            'stage_identifier' => $identifier,
         );
 
         $feedback = $DB->get_record('coursework_feedbacks', $params);
@@ -656,7 +656,7 @@ class submission extends table_base implements \renderable {
             if ($as_link && $allowed) {
                 $link_params = array(
                     'id' => $this->userid,
-                    'course' => $this->get_coursework()->get_course_id()
+                    'course' => $this->get_coursework()->get_course_id(),
                 );
                 $url = new moodle_url('/user/view.php', $link_params);
                 return html_writer::link($url, $fullname);
@@ -740,7 +740,7 @@ class submission extends table_base implements \renderable {
 
         $params = [
             'submissionid' => $this->id,
-            'assessorid' => $userid
+            'assessorid' => $userid,
         ];
         feedback::fill_pool_coursework($this->courseworkid);
         $feedback = feedback::get_object($this->courseworkid, 'submissionid-assessorid', $params);
@@ -1482,7 +1482,7 @@ class submission extends table_base implements \renderable {
             'id' => [],
             'allocatableid' => [],
             'finalised' => [],
-            'allocatableid-allocatabletype' => []
+            'allocatableid-allocatabletype' => [],
         ];
         if ($records) {
             foreach ($records as $record) {

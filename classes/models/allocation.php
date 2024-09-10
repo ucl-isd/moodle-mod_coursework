@@ -88,7 +88,7 @@ class allocation extends table_base {
         'assessorid',
         'studentid',
         'manual',
-        'timelocked'
+        'timelocked',
     );
 
     /**
@@ -169,7 +169,7 @@ class allocation extends table_base {
             'stage_identifier' => [],
             'allocatableid-allocatabletype-stage_identifier' => [],
             'allocatableid-allocatabletype-assessorid' => [],
-            'assessorid-allocatabletype' => []
+            'assessorid-allocatabletype' => [],
         ];
         if ($records) {
             foreach ($records as $record) {

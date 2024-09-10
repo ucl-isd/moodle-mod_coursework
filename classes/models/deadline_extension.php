@@ -119,7 +119,7 @@ class deadline_extension extends table_base {
         global $DB;
         $records = $DB->get_records(static::$table_name, ['courseworkid' => $coursework_id]);
         $result = [
-            'allocatableid-allocatabletype' => []
+            'allocatableid-allocatabletype' => [],
         ];
         if ($records) {
             foreach ($records as $record) {

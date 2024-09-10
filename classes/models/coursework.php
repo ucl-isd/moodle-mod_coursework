@@ -729,7 +729,7 @@ class coursework extends table_base {
             'maxbytes' => $this->get_max_bytes(),
             'maxfiles' => $max_files,
             'accepted_types' => $file_types,
-            'return_types' => FILE_INTERNAL
+            'return_types' => FILE_INTERNAL,
         );
     }
 
@@ -1187,7 +1187,7 @@ class coursework extends table_base {
                                            AND p.courseworkid = s.courseworkid)";
         }
         $params = array(
-            'courseworkid' => $this->id
+            'courseworkid' => $this->id,
         );
 
         return $DB->record_exists_sql($sql, $params);
@@ -1415,7 +1415,7 @@ class coursework extends table_base {
         $params = array(
             'courseworkid' => $this->id,
             'studentid' => $studentid,
-            'moderator' => 1
+            'moderator' => 1,
         );
         $moderatorallocation = $DB->get_record('coursework_allocation_pairs', $params);
         if ($moderatorallocation) {
@@ -1448,7 +1448,7 @@ class coursework extends table_base {
             'courseworkid' => $this->id,
             'allocatableid' => $allocatable->allocatableid,
             'stage_identifier' => $stage_identifier,
-            'allocatabletype' => $allocatable->allocatabletype
+            'allocatabletype' => $allocatable->allocatabletype,
         );
         $allocation = $DB->get_record('coursework_allocation_pairs', $params);
 
@@ -1461,7 +1461,7 @@ class coursework extends table_base {
         $params = array(
             'courseworkid' => $this->id,
             'assessorid' => $assessor_id,
-            'allocatableid' => $allocatable_id
+            'allocatableid' => $allocatable_id,
         );
 
         $stage_identifier = $DB->get_record('coursework_allocation_pairs', $params);
@@ -2347,7 +2347,7 @@ class coursework extends table_base {
      */
     public function get_submissions_to_publish() {
         $params = array(
-            'courseworkid' => $this->id
+            'courseworkid' => $this->id,
         );
 
         $submissions = submission::find_all($params);
@@ -2646,7 +2646,7 @@ class coursework extends table_base {
                     $params = array(
                         'cm' => $this->get_coursemodule_id(),
                         'name' => 'use_turnitin',
-                        'value' => 1
+                        'value' => 1,
                     );
                     if ($DB->record_exists('plagiarism_turnitin_config', $params)) {
                         $turnitinenabled = true;
@@ -3034,7 +3034,7 @@ class coursework extends table_base {
      */
     public static function fill_pool($array) {
         self::$pool = [
-            'id' => []
+            'id' => [],
         ];
 
         foreach ($array as $record) {

@@ -277,7 +277,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         $new_feedback_params = array(
             'submission' => $feedback_row->get_submission(),
             'assessor' => user::find($USER, false),
-            'stage' => $feedback_row->get_stage()
+            'stage' => $feedback_row->get_stage(),
         );
         $link = $this->get_router()->get_path('ajax new feedback', $new_feedback_params);
         $iconlink = $OUTPUT->action_link($link,

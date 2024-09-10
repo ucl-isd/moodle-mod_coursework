@@ -172,7 +172,7 @@ class feedback extends table_base {
         'isfinalgrade',
         'ismoderation',
         'entry_id',
-        'markernumber'
+        'markernumber',
     );
 
     /**
@@ -624,7 +624,7 @@ class feedback extends table_base {
                 'submissionid-finalised' => [],
                 'submissionid-ismoderation-isfinalgrade-stage_identifier' => [],
                 'submissionid-assessorid' => [],
-                'submissionid' => []
+                'submissionid' => [],
             ];
             if ($submission_ids) {
                 list($submission_id_sql, $submission_id_params) = $DB->get_in_or_equal($submission_ids, SQL_PARAMS_NAMED);
