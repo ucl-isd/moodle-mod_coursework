@@ -53,7 +53,7 @@ table.deadlines th {
     font-weight: normal;
     vertical-align: top;
 }
-table.deadlines tbody tr:nth-of-type(odd){
+table.deadlines tbody tr:nth-of-type(odd) {
     background: #f9f9f9;
 }
 table.deadlines tr:last-of-type {
@@ -61,8 +61,8 @@ table.deadlines tr:last-of-type {
 }
 table.deadlines td,
 table.deadlines th {
-     border-top: 1px solid #ddd;
-     border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 }
 table.deadlines .autofinalise_info {
     background-color: #fcf8e3;
@@ -85,7 +85,7 @@ table.gradingsummary th {
     font-weight: normal;
     vertical-align: top;
 }
-table.gradingsummary tbody tr:nth-of-type(odd){
+table.gradingsummary tbody tr:nth-of-type(odd) {
     background: #f9f9f9;
 }
 table.gradingsummary tr:last-of-type {
@@ -106,7 +106,6 @@ table.gradingsummary .autofinalise_info {
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
     margin: .6em 0 0 0;
 }
-
 
 /**
 Submissions tables
@@ -129,7 +128,7 @@ Submissions tables
 #page-mod-coursework-view .urlselect div label {
     display: inline;
     font-weight: bold;
-    padding-right:.5em;
+    padding-right: 0.5em;
 }
 table.submissions .provisionalgrade,
 table.submissions .agreedgrade {
@@ -161,7 +160,7 @@ table.dataTable tr th.checkbox_cell.selected::after {
     font-size: 14px;
     font-weight: normal;
     position: absolute;
-    text-shadow: 1px 1px #B0BED9, -1px -1px #B0BED9, 1px -1px #B0BED9, -1px 1px #B0BED9;
+    text-shadow: 1px 1px #b0bed9, -1px -1px #b0bed9, 1px -1px #b0bed9, -1px 1px #b0bed9;
     top: 50%;
     left: 50%;
 }
@@ -169,7 +168,7 @@ table.dataTable tr th.checkbox_cell.selected::after {
 table.submissions.dataTable tbody tr.selected,
 table.submissions.dataTable tbody tr.selected td {
     color: #212529;
-    background-color: #c7e5f5!important;
+    background-color: #c7e5f5 !important;
 }
 
 table.submissions.dataTable tbody tr.selected a,
@@ -189,16 +188,15 @@ table.submissions.dataTable tbody th.select-checkbox:after {
 table.submissions tr.submissionrowsingle:nth-child(2n+1),
 table.allocations tr:nth-child(2n+1),
 table.personal_deadline tr:nth-child(2n+1),
-table.plagiarism_flag tr:nth-child(2n+1){
+table.plagiarism_flag tr:nth-child(2n+1) {
     background: #ededed;
 }
 table.submissions tr.submissionrowsingle:nth-child(2n),
 table.allocations tr:nth-child(2n),
 table.personal_deadline tr:nth-child(2n),
-table.plagiarism_flag tr:nth-child(2n){
+table.plagiarism_flag tr:nth-child(2n) {
     background: #d9d9d9;
 }
-
 
 /**Submission tables with allocated assessors tables**/
 
@@ -209,7 +207,7 @@ table.submissions td.assessors {
 }
 table.submissions td.assessors > table.assessors {
     border: none !important;
-    width:70%;
+    width: 70%;
     margin-left: 1%;
 }
 table.submissions td.assessors > table.assessors th {
@@ -217,9 +215,9 @@ table.submissions td.assessors > table.assessors th {
     border-bottom: 1px solid #ddd;
 }
 table.submissions td.assessors > table.assessors td {
-     border-top: 1px solid #ddd;
-     text-align: left;
-     vertical-align: top;
+    border-top: 1px solid #ddd;
+    text-align: left;
+    vertical-align: top;
     background: #fff !important;
 }
 
@@ -235,8 +233,8 @@ table.submissions td.assessors > table.assessors td {
 .show_moderation,
 .new_plagiarism_flag,
 .new_deadline_extension {
-    padding:5px 5px 5px 25px;
-    border: 1px solid #b3b3b3 ;
+    padding: 5px 5px 5px 25px;
+    border: 1px solid #b3b3b3;
     border-radius: 4px;
     color: #333 !important;
     display: inline-block;
@@ -256,7 +254,7 @@ table.submissions td.assessors > table.assessors td {
     background: #f3f3f3 url([[pix:coursework|add-feedback]]) no-repeat 5px center;
 }
 .new_final_feedback {
-     background: #f3f3f3 url([[pix:coursework|add-feedback]]) no-repeat 5px center;
+    background: #f3f3f3 url([[pix:coursework|add-feedback]]) no-repeat 5px center;
 }
 .new_moderation {
     background: #f3f3f3 url([[pix:coursework|moderate]]) no-repeat 5px center;
@@ -317,23 +315,23 @@ table.submissions td.assessors > table.assessors td {
 /* buttons */
 
 .edit-btn {
-    padding:7px 5px 7px 25px;
-    border: 1px solid #ddd ;
+    padding: 7px 5px 7px 25px;
+    border: 1px solid #ddd;
     background: #f3f3f3 url([[pix:coursework|edit]]) no-repeat 5px center;
     color: #606060 !important;
 }
 a:hover .edit-btn,
- a:hover .download-btn {
-     color: #fff !important;
-     background: #222;
+a:hover .download-btn {
+    color: #fff !important;
+    background: #222;
 }
 a.edit-btn,
 a.download-btn {
     color: #222 !important;
 }
 .add-general_feedback-btn {
-    padding:7px 5px 7px 30px;
-    border: 1px solid #b3b3b3 ;
+    padding: 7px 5px 7px 30px;
+    border: 1px solid #b3b3b3;
     border-radius: 4px;
     background: #f5f5f5 url([[pix:coursework|add-feedback]]) no-repeat 5px center;
     color: #333;
@@ -363,14 +361,14 @@ a.download-btn {
 }
 #fitem_id_queuetoplagiarismbutton input[type="submit"] {
     background: #0070a8;
-    color:#fff;
+    color: #fff;
 }
 #fitem_id_publishbutton {
     margin: 1em;
 }
 #fitem_id_publishbutton input[type="submit"] {
     background: #0070a8;
-    color:#fff;
+    color: #fff;
 }
 
 #id_displayallstudentbutton {
@@ -381,18 +379,18 @@ a.download-btn {
 
 table.submissions .ontime_submission {
     padding: 0 0 .5em 0;
-    display:block;
-    text-transform:uppercase;
+    display: block;
+    text-transform: uppercase;
 }
 table.submissions .late_submission {
     padding: 0 0 .5em 0;
-    display:block;
+    display: block;
 }
 table.submissions .late_submission {
-    color:#cc0000;
+    color: #cc0;
 }
 table.submissions .ontime_submission {
-    color: #669900;
+    color: #690;
 }
 
 /* Allocation pages */
@@ -401,7 +399,7 @@ table.submissions .ontime_submission {
 .assessor-sampling-wrapper,
 .moderator-allocation-wrapper {
     margin: 1em 0;
-    padding: 0 ;
+    padding: 0;
     /*min-height: 120px;*/
 }
 .assessor-allocation-wrapper h3,
@@ -409,7 +407,7 @@ table.submissions .ontime_submission {
 .moderator-allocation-wrapper h3 {
     background: url([[pix:coursework|collapsed]]) no-repeat left !important;
     padding: 0 0 0 20px;
-    font-weight:normal;
+    font-weight: normal;
     font-size: 1.3em;
     border-bottom: 1px solid #ddd;
 }
@@ -419,24 +417,24 @@ table.submissions .ontime_submission {
     padding: 1em;
 }
 table.sampling tbody td:nth-of-type(odd),
- table.sampling thead th:nth-of-type(odd){
-    background:#e5eef6;
+table.sampling thead th:nth-of-type(odd) {
+    background: #e5eef6;
     width: 33%;
 }
 table.sampling {
-    background:#fff;
+    background: #fff;
     margin-bottom: 1em;
- }
-table.sampling h4{
-    background:#999;
+}
+table.sampling h4 {
+    background: #999;
     color: #fff;
     font-size: 1em;
-    padding: .5em ;
-    margin-bottom:0;
+    padding: .5em;
+    margin-bottom: 0;
 }
 table.sampling td.c0,
 table.sampling td.c1,
-table.sampling td.c2{
+table.sampling td.c2 {
     vertical-align: top;
 }
 table.sampling td,
@@ -444,38 +442,38 @@ table.sampling th {
     padding: 1em;
 }
 .samples_strategy {
-    border-bottom:1px solid #ddd;
-    border-top:1px solid #ddd;
-    padding:.5em 0 0 0;
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    padding: 0.5em 0 0 0;
 }
 .samples_strategy label {
-    display:inline;
-    padding-right:.5em;
+    display: inline;
+    padding-right: 0.5em;
 }
 .assessor_2_grade_rules label,
 .assessor_3_grade_rules label,
 .sampletotal label {
-    display:inline;
+    display: inline;
     padding: 0 .3em 0 .3em;
 }
 .assessor_2_grade_rules:nth-of-type(odd),
-.assessor_3_grade_rules:nth-of-type(odd){
-   background: #f3f3f3;
+.assessor_3_grade_rules:nth-of-type(odd) {
+    background: #f3f3f3;
     padding: 1em 0 .5em .3em;
-    border-bottom:1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 }
 .assessor_2_grade_rules:nth-of-type(even),
-.assessor_3_grade_rules:nth-of-type(even){
+.assessor_3_grade_rules:nth-of-type(even) {
     background: #ddd;
     padding: 1em 0 .5em .3em;
-    border-bottom:1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 }
 .addgradderule,
 .removegradderule {
-    display:block;
+    display: block;
     padding: .3em .3em .3em 1.3em;
     margin: .5em 0;
-    border:1px solid #b3b3b3;
+    border: 1px solid #b3b3b3;
     border-radius: 4px;
     color: #333;
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -484,27 +482,26 @@ table.sampling th {
 }
 .addgradderule {
     background: #f5f5f5 url([[pix:coursework|add]]) no-repeat .3em !important;
-    float:left;
+    float: left;
 }
 .removegradderule {
     background: #f5f5f5 url([[pix:coursework|delete]]) no-repeat .3em !important;
-    float:right;
+    float: right;
 }
 .sampletotal {
-    display:inline-block;
-    padding:  1em 0 .5em 0;
+    display: inline-block;
+    padding: 1em 0 .5em 0;
     background: #f3f3f3;
     width: 100%;
-    border-top:1px solid #ddd;
-    border-bottom:1px solid #ddd;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 }
 .sampletotal input[type="checkbox"] {
     margin-left: .5em !important;
 }
 table.allocations td,
 table.personal_deadline td,
-table.plagiarism_flag td
-{
+table.plagiarism_flag td {
     vertical-align: top;
 }
 
@@ -514,13 +511,13 @@ table.plagiarism_flag td
 
     font-size: 15px;
     color: #333 !important;
-    padding:5px 5px 5px 25px;
-    border: 1px solid #b3b3b3 ;
+    padding: 5px 5px 5px 25px;
+    border: 1px solid #b3b3b3;
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
     border-radius: 4px;
     background: #f3f3f3;
-    display:inline-block;
-    white-space:nowrap;
+    display: inline-block;
+    white-space: nowrap;
 }
 
 .largelink a:hover {
@@ -528,28 +525,35 @@ table.plagiarism_flag td
     background: #e6e6e6;
 }
 
-.return_to_page,.personal_deadline_upload_url {
+.return_to_page,
+.personal_deadline_upload_url {
     margin: 15px 5px 20px 5px;
 }
 
 /* Student view - Feedback tables
 Moderation table*/
 
-table.feedback, table.moderation {
+table.feedback,
+table.moderation {
     width: 100%;
     margin-bottom: 1em;
 }
-table.feedback td,table.moderation td,
-table.feedback th, table.moderation th {
-    padding:1em;
+table.feedback td,
+table.moderation td,
+table.feedback th,
+table.moderation th {
+    padding: 1em;
 }
-table.feedback  th, table.moderation th {
-    border-bottom:3px solid #ddd;
+table.feedback  th,
+table.moderation th {
+    border-bottom: 3px solid #ddd;
 }
-table.feedback tbody tr:nth-of-type(2n+1), table.moderation tbody tr:nth-of-type(2n+1){
-    background: #f9f9f9 ;
+table.feedback tbody tr:nth-of-type(2n+1),
+table.moderation tbody tr:nth-of-type(2n+1) {
+    background: #f9f9f9;
 }
-table.feedback td.cleft, table.moderation td.cleft {
+table.feedback td.cleft,
+table.moderation td.cleft {
     width: 40%;
 }
 /*  Groupings */
@@ -557,7 +561,7 @@ table.feedback td.cleft, table.moderation td.cleft {
     font-weight: bold;
 }
 .group_style {
-    background: #fff url([[pix:coursework|arrow-down]]) no-repeat scroll 170px center ;
+    background: #fff url([[pix:coursework|arrow-down]]) no-repeat scroll 170px center;
     border: 1px solid #ddd;
     height: 34px;
     overflow: hidden;
@@ -574,26 +578,25 @@ table.feedback td.cleft, table.moderation td.cleft {
     width: 220px;
 }
 .group_style select option {
-    padding:5px;
+    padding: 5px;
 }
 /*  Grading pages within OCM- rubric */
 
 #page-mod-coursework-actions-feedbacks-edit .row-fluid .span9,
-#page-mod-coursework-actions-feedbacks-new .row-fluid .span9
-{
+#page-mod-coursework-actions-feedbacks-new .row-fluid .span9 {
     width: 99.359% !important;
 }
 #page-mod-coursework-actions-feedbacks-edit .row-fluid .span4,
-#page-mod-coursework-actions-feedbacks-new .row-fluid .span4{
-    display: none
+#page-mod-coursework-actions-feedbacks-new .row-fluid .span4 {
+    display: none;
 }
 #page-mod-coursework-actions-feedbacks-edit .row-fluid .span8,
-#page-mod-coursework-actions-feedbacks-new .row-fluid .span8{
-    width:99.812% !important;
+#page-mod-coursework-actions-feedbacks-new .row-fluid .span8 {
+    width: 99.812% !important;
 }
 #page-mod-coursework-actions-feedbacks-edit .mform .fitem div.fitemtitle,
 #page-mod-coursework-actions-feedbacks-new .mform .fitem div.fitemtitle {
-    text-align:left;
+    text-align: left;
     float: none;
 }
 #page-mod-coursework-actions-feedbacks-edit .mform label,
@@ -608,12 +611,18 @@ table.feedback td.cleft, table.moderation td.cleft {
 #page-mod-coursework-actions-feedbacks-new .mform {
     padding: 1em !important;
 }
-table.grading-details th, table.moderating-details th table.personal-deadline-details th,
-table.grading-details td, table.moderating-details td, table.personal-deadline-details, td {
+table.grading-details th,
+table.moderating-details th table.personal-deadline-details th,
+table.grading-details td,
+table.moderating-details td,
+table.personal-deadline-details,
+td {
     border-bottom: 1px solid #fff;
     padding: .5em;
 }
-table.grading-details th, table.moderating-details th, table.personal-deadline-details th {
+table.grading-details th,
+table.moderating-details th,
+table.personal-deadline-details th {
     background: #ccdfee !important;
     width: 150px;
 }
@@ -622,28 +631,27 @@ table.grading-details th, table.moderating-details th, table.personal-deadline-d
 
 #courseworkmodformfeedback th {
     background: #f1f1f1;
-    padding:1em;
+    padding: 1em;
 }
 #courseworkmodformfeedback td {
     padding: 1em;
 }
 #page-mod-coursework-mod #courseworkmodformfeedback .fitemtitle {
-    width:auto !important;
+    width: auto !important;
 }
 #page-mod-coursework-mod #courseworkmodformfeedback .felement {
-    margin-left:1em !important;
+    margin-left: 1em !important;
 }
 
-
 .plagiarism_tii_version {
-    background-color: #F6CECE;
-    border: 1px solid #cc0000;
-    color:#cc0000;
+    background-color: #f6cece;
+    border: 1px solid #cc0;
+    color: #cc0;
     padding: 8px 35px 8px 14px;
 }
 
 #coursework_input_buttons {
-    height:120px;
+    height: 120px;
     text-align: center;
 }
 
@@ -657,19 +665,21 @@ table.grading-details th, table.moderating-details th, table.personal-deadline-d
 }
 
 /* Colours to highlight plagiarism status*/
-.plagiarism_0{
-    background-color:  #fcf3cf;
+.plagiarism_0 {
+    background-color: #fcf3cf;
     border-radius: 4px;
     padding: 4px;
 }
 
-.plagiarism_1, .plagiarism_2{
-    background-color:    #d0ece7;
+.plagiarism_1,
+.plagiarism_2 {
+    background-color: #d0ece7;
     border-radius: 4px;
     padding: 4px;
 }
 
-.plagiarism_3, .plagiarism_4{
+.plagiarism_3,
+.plagiarism_4 {
     background-color: #fadbd8;
     border-radius: 4px;
     padding: 4px;
@@ -696,7 +706,7 @@ table.grading-details th, table.moderating-details th, table.personal-deadline-d
 }
 
 .path-mod-coursework .form-check-input,
-.path-mod-coursework-actions .form-check-input  {
+.path-mod-coursework-actions .form-check-input {
     position: relative;
 }
 
@@ -776,8 +786,8 @@ table.dataTable thead .sorting_asc,
 table.dataTable thead .sorting_desc,
 table.dataTable thead .sorting_asc_disabled,
 table.dataTable thead .sorting_desc_disabled {
-  background-repeat: no-repeat;
-  background-position: center right;
+    background-repeat: no-repeat;
+    background-position: center right;
 }
 
 table.dataTable thead .sorting {
@@ -803,21 +813,21 @@ table.dataTable thead .sorting_desc::after {
 }
 
 table.dataTable thead .data-table-splitter {
-    display:inline-block;
-    padding-right:20px;
+    display: inline-block;
+    padding-right: 20px;
     white-space: nowrap;
 }
 
 table.datatabletest  th.firstname_cell,
-table.datatabletest  th.lastname_cell ,
+table.datatabletest  th.lastname_cell,
 table.datatabletest  td.first_name_cell,
 table.datatabletest  td.last_name_cell,
 table.datatabletest  th.email_cell,
-table.datatabletest  td.email_cell ,
+table.datatabletest  td.email_cell,
 table.datatabletest  th.firstname_letter_cell,
-table.datatabletest  th.lastname_letter_cell ,
+table.datatabletest  th.lastname_letter_cell,
 table.datatabletest  td.first_name_letter_cell,
-table.datatabletest  td.last_name_letter_cell  {
+table.datatabletest  td.last_name_letter_cell {
     display: none;
 }
 
@@ -883,16 +893,16 @@ table.dataTable td {
     border-bottom: 1px solid #ddd;
 }
 
-table.dataTable>tbody>tr:last-child>td,
+table.dataTable > tbody > tr:last-child > td,
 table.dataTable th {
     border-bottom: 1px solid black;
 }
 
-table.dataTable tr.even>.sorting_1 {
+table.dataTable tr.even > .sorting_1 {
     background-color: #fafafa;
 }
 
-table.dataTable tr.odd>.sorting_1 {
+table.dataTable tr.odd > .sorting_1 {
     background-color: #f1f1f1;
 }
 
@@ -928,19 +938,24 @@ a.paginate_button {
     font-size: 14px;
 }
 
-a.paginate_button, a.paginate_button.disabled:hover,a.paginate_button.disabled {
+a.paginate_button,
+a.paginate_button.disabled:hover,
+a.paginate_button.disabled {
     font-style: normal;
 }
 
-table.dataTable.hover tbody tr:hover td, table.dataTable.display tbody tr:hover td {
+table.dataTable.hover tbody tr:hover td,
+table.dataTable.display tbody tr:hover td {
     background-color: #f6f6f6;
 }
 
-table.dataTable.display tbody tr:hover>.sorting_1, table.dataTable.order-column.hover tbody tr:hover>.sorting_1 {
+table.dataTable.display tbody tr:hover > .sorting_1,
+table.dataTable.order-column.hover tbody tr:hover > .sorting_1 {
     background-color: #eaeaea;
 }
 
-#region-main:hover div.dataTables_wrapper a.paginate_button,#region-main div.dataTables_wrapper a.paginate_button {
+#region-main:hover div.dataTables_wrapper a.paginate_button,
+#region-main div.dataTables_wrapper a.paginate_button {
     color: #343a40;
 }
 
@@ -956,7 +971,7 @@ table.datatabletest.dataTable th {
 div.dtsp-searchPanes div.dataTables_scrollBody tbody tr.selected td {
     color: #000;
     font-weight: bold;
-    background-color: #B0BED9;
+    background-color: #b0bed9;
 }
 
 .modal-dialog {
@@ -966,8 +981,6 @@ div.dtsp-searchPanes div.dataTables_scrollBody tbody tr.selected td {
 .modal-lg {
     max-width: 90% !important;
 }
-
-
 
 .personal_deadline_button a {
     margin-right: 10px;
@@ -984,7 +997,6 @@ div.dtsp-searchPanes div.dataTables_scrollBody tbody tr.selected td {
 .plagiarism_flag_button {
     float: right;
 }
-
 
 #id_extra_information {
     margin-right: 15px;
@@ -1028,7 +1040,7 @@ div.dtsp-searchPanes div.dataTables_scrollBody tbody tr.selected td {
 
 /* FIX BOOTSTRAP MODAL NOT AlIGNING CENTER */
 .vertical-alignment-helper {
-    display:table;
+    display: table;
     height: 100%;
     width: 100%;
     pointer-events: none;
@@ -1064,8 +1076,8 @@ div.dtsp-searchPanes div.dataTables_scrollBody tbody tr.selected td {
 /* Feedback notes toggle*/
 .feedbacknotestoggle {
     display: inline-block;
-    height:20px;
-    width:25px;
+    height: 20px;
+    width: 25px;
     background: url([[pix:coursework|details_open]]) no-repeat;
 
 }
