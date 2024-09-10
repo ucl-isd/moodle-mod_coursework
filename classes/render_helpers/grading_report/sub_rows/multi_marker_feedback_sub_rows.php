@@ -119,7 +119,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
             // Don't show empty rows with nothing in them
             // As a part of Release 1 we decided to show all rows to apply styling correctly,
             // this is expected to be rewritten for Release 2
-           /* if (!$feedback_row->get_assessor()->id() && (!$feedback_row->get_submission() ||
+            /* if (!$feedback_row->get_assessor()->id() && (!$feedback_row->get_submission() ||
                                                          !$feedback_row->get_submission()->ready_to_grade() ||
                                                           $this->already_shown_a_new_buton)) {
                 continue;
@@ -150,7 +150,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
             $allocation_string = ($coursework->allocation_enabled())
                 ? get_string('allocatedtoassessor', 'mod_coursework')
                 : get_string('assessor', 'mod_coursework');
-/*
+            /*
             $table_html = '
                 <tr class = "submissionrowmultisub">
 
@@ -169,7 +169,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
                     </table>
                   </td>
                 </tr>';
-*/
+            */
             $table_html = '<table class="assessors" id="assessorfeedbacktable_' . $assessor_feedback_table->get_coursework()
                         ->get_allocatable_identifier_hash($assessor_feedback_table->get_allocatable()) . '" style="display: none;">
                         <tr>
@@ -269,7 +269,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         global $USER, $OUTPUT;
 
         $this->already_shown_a_new_buton = true;
-//        $this->displaytable = true; //todo this is deprecated and causes behat exception - was it doing anything useful?
+        //        $this->displaytable = true; //todo this is deprecated and causes behat exception - was it doing anything useful?
 
         // New
         $linktitle = get_string('newfeedback', 'coursework');

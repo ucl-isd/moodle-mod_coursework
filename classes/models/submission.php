@@ -762,20 +762,20 @@ class submission extends table_base implements \renderable {
         // If this is a submission on behalf of the student and it is a group submission we have to make sure
         // the author is the first member of the group
 
-            if ($this->is_submission_on_behalf()) {
-                if ( $this->get_coursework()->is_configured_to_have_group_submissions()) {
-                    $members = groups_get_members($this->allocatableid, 'u.id', 'id');
-                    if ($members) {
-                        $id = reset($members)->id;
-                    }
-
-                    if ($this->get_coursework()->plagiarism_enbled()) {
-                        $groupmember = $this->get_tii_group_member_with_eula($this->allocatableid);
-                        if (!empty($groupmember)) $id = $groupmember->id;
-                    }
-                } else {
-                    $id = $this->allocatableid;
+        if ($this->is_submission_on_behalf()) {
+            if ( $this->get_coursework()->is_configured_to_have_group_submissions()) {
+                $members = groups_get_members($this->allocatableid, 'u.id', 'id');
+                if ($members) {
+                    $id = reset($members)->id;
                 }
+
+                if ($this->get_coursework()->plagiarism_enbled()) {
+                    $groupmember = $this->get_tii_group_member_with_eula($this->allocatableid);
+                    if (!empty($groupmember)) $id = $groupmember->id;
+                }
+            } else {
+                $id = $this->allocatableid;
+            }
         }
 
         return $id;
@@ -787,7 +787,7 @@ class submission extends table_base implements \renderable {
      * @param $groupid
      * @return array
      */
-        public function get_tii_group_member_with_eula($groupid) {
+    public function get_tii_group_member_with_eula($groupid) {
 
         global  $DB;
 
@@ -1144,7 +1144,7 @@ class submission extends table_base implements \renderable {
         global $DB;
 
         if ($this->get_coursework()->sampling_enabled()) {
-           // calculate how many stages(markers) are enabled for this submission
+            // calculate how many stages(markers) are enabled for this submission
             $parameters = array('courseworkid' => $this->coursework->id,
                                  'allocatableid' => $this->get_allocatable()->id(),
                                  'allocatabletype' => $this->get_allocatable()->type());
@@ -1399,9 +1399,9 @@ class submission extends table_base implements \renderable {
         return (empty($editablefeedbacks)) ? false : $editablefeedbacks;
     }
 
-/*
- * Determines whether the current user is able to add a turnitin grademark to this submission
- */
+    /*
+    * Determines whether the current user is able to add a turnitin grademark to this submission
+    */
     function can_add_tii_grademark() {
         $canadd = false;
 

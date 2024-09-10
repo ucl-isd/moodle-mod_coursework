@@ -952,7 +952,7 @@ class coursework extends table_base {
         $fs = get_file_storage();
 
         $grading_sheet = new \mod_coursework\export\grading_sheet($this, null, null);
-       // get only submissions that user can grade
+        // get only submissions that user can grade
         $submissions = $grading_sheet->get_submissions();
 
         foreach ($submissions as $submission) {
@@ -1296,7 +1296,7 @@ class coursework extends table_base {
                 $needsgrading[] = $submission;
             }
 
-         }
+        }
 
         return $needsgrading;
 
@@ -1366,7 +1366,7 @@ class coursework extends table_base {
                 WHERE courseworkid = :courseworkid
                 AND firstpublished IS NOT NULL";
 
-      $submissions = $DB->get_records_sql($sql, array('courseworkid' => $this->id));
+        $submissions = $DB->get_records_sql($sql, array('courseworkid' => $this->id));
         foreach ($submissions as &$submission) {
             $submission = submission::find($submission);
         }
@@ -1926,7 +1926,7 @@ class coursework extends table_base {
         $users = [];
         $raw_users = get_enrolled_users($this->get_context(), 'mod/coursework:submit');
 
-       // filter students who are restricted from the coursework
+        // filter students who are restricted from the coursework
         $cm = $this->get_course_module();
         $cmobject = $this->cm_object($cm);
 
@@ -2064,7 +2064,7 @@ class coursework extends table_base {
      * @return bool
      */
     public function sampling_enabled() {
-      return  (bool)$this->samplingenabled;
+        return  (bool)$this->samplingenabled;
     }
 
     /**
@@ -2478,7 +2478,7 @@ class coursework extends table_base {
             $extension_reasons = explode("\n", $extension_reasons);
             $extension_reasons = array_map(function ($i) {
                     return trim($i);
-                },
+            },
                 $extension_reasons);
             $extension_reasons = array_merge(array('' => 'Not specified'), $extension_reasons);
         }
@@ -2494,8 +2494,8 @@ class coursework extends table_base {
     }
 
     /*
-* @return bool
-*/
+    * @return bool
+    */
     public function extension_exists() {
 
         global $DB;

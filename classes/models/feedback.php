@@ -313,7 +313,7 @@ class feedback extends table_base {
      * @return bool
      */
     public function is_assessor_allocated() {
-       return $this->get_stage()->assessor_has_allocation($this->get_allocatable());
+        return $this->get_stage()->assessor_has_allocation($this->get_allocatable());
     }
 
     /**

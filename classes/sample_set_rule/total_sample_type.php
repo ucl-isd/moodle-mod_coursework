@@ -225,9 +225,9 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                         $arraykeys = array_rand($allocatablesampleset, $totaltoreturn - count($autosampleset));
 
-                        if (!is_array($arraykeys)) {
-                            $arraykeys = [$arraykeys];
-                        }
+                    if (!is_array($arraykeys)) {
+                        $arraykeys = [$arraykeys];
+                    }
 
                         //use the allocatables array to get other ungraded allocatables
                     foreach ($arraykeys as $id) {

@@ -385,7 +385,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $feedbackcomment = '';
             $count = 1;
             foreach ($initial_feedbacks as $initial_feedback) {
-               // put all initial feedbacks together for the comment field
+                // put all initial feedbacks together for the comment field
                 $feedbackcomment .= get_string('assessorcomments', 'mod_coursework', $count);
                 $feedbackcomment .= $initial_feedback->feedbackcomment;
                 $feedbackcomment .= '<br>';
@@ -1230,10 +1230,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             if (!is_array($processingresults)) {
                 $html .= $processingresults . "<br />";
             } else {
-                 foreach ($processingresults as $line => $error) {
-                     $line = $line + 1;
-                     if ($error !== true) $html .= "Record " . $line . ": " . $error . "<br />";
-                 }
+                foreach ($processingresults as $line => $error) {
+                    $line = $line + 1;
+                    if ($error !== true) $html .= "Record " . $line . ": " . $error . "<br />";
+                }
             }
             $html .= html_writer::end_tag('p');
         } else {
