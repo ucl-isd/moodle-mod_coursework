@@ -613,7 +613,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                     }
                     $tablehtml .= $stage->allocation_table_header() . ' ' . $no;
                 } else if ($allocationtable->get_coursework()->moderation_agreement_enabled()) {
-                    //moderator header
+                    // Moderator header
                     if ($stage->stage_has_allocation() ) {// has any pins
                         $tablehtml .= '<input type="checkbox" name="" id="selectall_mod" title = "' . $checkboxtitle . '">';
                     }

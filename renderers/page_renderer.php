@@ -574,7 +574,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $reportoptions['page'] = $page;
         $reportoptions['group'] = $group;
         $reportoptions['perpage'] = $perpage;
-        $reportoptions['mode'] = 2; //load first number of records specified by perpage first
+        $reportoptions['mode'] = 2; // Load first number of records specified by perpage first
         $reportoptions['sortby'] = $sortby;
         $reportoptions['sorthow'] = $sorthow;
         $reportoptions['showsubmissiongrade'] = false;

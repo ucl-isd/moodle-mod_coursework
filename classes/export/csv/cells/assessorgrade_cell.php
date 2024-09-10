@@ -161,7 +161,7 @@ class assessorgrade_cell extends cell_base {
                             // Get the current criteria
                             $criteria = array_shift($criterias);
 
-                            //lets check if the value given is valid for the current rubric criteria
+                            // Lets check if the value given is valid for the current rubric criteria
                             if (!$this->value_in_rubric($criteria, $data)) {
                                 // if scale is numeric get max allowed scale
                                 $errormsg .= ' ' . get_string('rubric_invalid_value', 'coursework') . ' ' . $data;
@@ -202,7 +202,7 @@ class assessorgrade_cell extends cell_base {
 
             $ability = new ability(user::find($USER), $this->coursework);
 
-            //does a feedback exist for this stage
+            // Does a feedback exist for this stage
             if (!empty($feedback)) {
                 // This is a new feedback check it against the new ability checks
                 if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('new', $feedback)) {

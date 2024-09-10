@@ -265,7 +265,7 @@ class submission extends table_base implements \renderable {
                     // Check if extension is valid
                     $extension = $submission->submission_extension();
                     if ($extension->extended_deadline > time()) {
-                        //unset as it doesn't need to be autofinalise yet
+                        // Unset as it doesn't need to be autofinalise yet
                         unset($submissions[$submission->id]);
                     }
                 }

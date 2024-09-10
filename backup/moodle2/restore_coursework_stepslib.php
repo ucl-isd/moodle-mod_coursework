@@ -494,7 +494,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $fs = get_file_storage();
         $ctx = context::instance_by_id($this->task->get_contextid());
 
-        $files = $fs->get_area_files($ctx->id, 'mod_coursework', 'submission'); //Array of stored_file
+        $files = $fs->get_area_files($ctx->id, 'mod_coursework', 'submission'); // Array of stored_file
 
         foreach ($files as $file) {
             if (!$file->is_directory()) {

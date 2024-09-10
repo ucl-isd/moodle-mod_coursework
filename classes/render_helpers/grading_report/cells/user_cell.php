@@ -78,7 +78,7 @@ class user_cell extends cell_base implements allocatable_cell {
 
         $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->coursework->get_context());
 
-        //adding this line so that the sortable heading function will make a sortable link unique to the table
+        // Adding this line so that the sortable heading function will make a sortable link unique to the table
         // If tablename is set
         $tablename = (!empty($options['tablename'])) ? $options['tablename'] : '';
 

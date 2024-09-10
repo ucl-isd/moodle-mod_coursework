@@ -245,7 +245,7 @@ class feedback_controller extends controller_base {
                 if ($coursework instanceof coursework_groups_decorator) {
                     $coursework = $coursework->wrapped_object();
                 }
-                //feedback::$pool[$coursework->id] = null;
+                // feedback::$pool[$coursework->id] = null;
                 $participant = $submission->get_allocatable();
                 $cellclass = $this->params['cell_type'];
                 $stage = new assessor($coursework, $teacherfeedback->stage_identifier);
@@ -375,7 +375,7 @@ class feedback_controller extends controller_base {
                     if ($coursework instanceof coursework_groups_decorator) {
                         $coursework = $coursework->wrapped_object();
                     }
-                    //feedback::$pool[$coursework->id] = null;
+                    // feedback::$pool[$coursework->id] = null;
                     $submission = $teacherfeedback->get_submission();
                     $participant = $submission->get_allocatable();
                     $cellclass = $this->params['cell_type'];
@@ -433,7 +433,7 @@ class feedback_controller extends controller_base {
             if ($coursework instanceof coursework_groups_decorator) {
                 $coursework = $coursework->wrapped_object();
             }
-            //feedback::$pool[$coursework->id] = null;
+            // feedback::$pool[$coursework->id] = null;
             $submission = $teacherfeedback->get_submission();
             $participant = $submission->get_allocatable();
             $cellclass = $this->params['cell_type'];

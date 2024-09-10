@@ -71,7 +71,7 @@ class outstanding_marking {
 
         $agreedsubmissions = [];
 
-            //AGREED GRADE INFORMATION
+            // AGREED GRADE INFORMATION
 
         if ($this->should_get_to_mark_agreed_grade_info($coursework->id, $userid) && $coursework->has_multiple_markers()) {
             if (!$coursework->sampling_enabled()) {

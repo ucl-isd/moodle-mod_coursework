@@ -89,7 +89,7 @@ class feedbackcomments_cell extends cell_base {
             ];
             $feedback = feedback::find($feedbackparams);
 
-            //does a feedback exist for this stage
+            // Does a feedback exist for this stage
             if (empty($feedback)) {
 
                 $feedbackparams = [

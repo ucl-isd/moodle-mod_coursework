@@ -976,7 +976,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->setType('submission_exists', PARAM_INT);
         $moodleform->disabledIf('blindmarking', 'submission_exists', 'eq', 1);
 
-        //disable blindmarking if forceblindmarking is enabled, process data for DB in get_data()
+        // Disable blindmarking if forceblindmarking is enabled, process data for DB in get_data()
         if ($this->forceblindmarking() == 1) {
             $moodleform->addElement('hidden', 'forceblindmarking', $this->forceblindmarking());
             $moodleform->setType('forceblindmarking', PARAM_INT);

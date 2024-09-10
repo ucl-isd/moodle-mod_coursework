@@ -118,7 +118,7 @@ class assessorfeedback_cell extends cell_base {
 
             $ability = new ability(user::find($USER), $this->coursework);
 
-            //does a feedback exist for this stage
+            // Does a feedback exist for this stage
             if (!empty($feedback)) {
                 // This is a new feedback check it against the new ability checks
                 if (!has_capability('mod/coursework:administergrades', $modulecontext) && !$ability->can('new', $feedback)) {

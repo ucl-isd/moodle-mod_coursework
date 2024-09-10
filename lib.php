@@ -531,7 +531,7 @@ function coursework_update_events($coursework, $eventtype) {
     if ($eventtype == 'due') {
         $data = \mod_coursework\calendar::coursework_event($coursework, $eventtype, $coursework->deadline);
         if ($event) {
-            $event->update($data); //update if event exists
+            $event->update($data); // Update if event exists
         } else {
             calendar_event::create($data); // Create new event as it doesn't exist
         }
@@ -541,7 +541,7 @@ function coursework_update_events($coursework, $eventtype) {
     if ($eventtype == 'initialgradingdue') {
         $data = \mod_coursework\calendar::coursework_event($coursework, $eventtype, $coursework->initialmarkingdeadline);
         if ($event) {
-            $event->update($data); //update if event exists
+            $event->update($data); // Update if event exists
         } else {
             calendar_event::create($data); // Create new event as it doesn't exist
         }
@@ -551,7 +551,7 @@ function coursework_update_events($coursework, $eventtype) {
     if ($eventtype == 'agreedgradingdue') {
         $data = \mod_coursework\calendar::coursework_event($coursework, $eventtype, $coursework->agreedgrademarkingdeadline);
         if ($event) {
-            $event->update($data); //update if event exists
+            $event->update($data); // Update if event exists
         } else {
             calendar_event::create($data); // Create new event as it doesn't exist
         }
