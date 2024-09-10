@@ -821,7 +821,7 @@ class submission extends table_base implements \renderable {
 
             case self::SUBMITTED:
                 $allowearlyfinalisation = $this->get_coursework()->allowearlyfinalisation;
-                $statustext = ($allowearlyfinalisation) ?get_string('statusnotfinalised', 'coursework') : get_string('submitted', 'coursework');
+                $statustext = ($allowearlyfinalisation) ? get_string('statusnotfinalised', 'coursework') : get_string('submitted', 'coursework');
 
                 break;
 
@@ -1331,7 +1331,7 @@ class submission extends table_base implements \renderable {
             if ($gradeeditingtime != 0) {
                 $time = time();
                 $finalized_feedbacks = isset(feedback::$pool[$coursework->id]['submissionid-finalised'][$this->id . '-1']) ?
-                    feedback::$pool[$coursework->id]['submissionid-finalised'][$this->id . '-1']: [];
+                    feedback::$pool[$coursework->id]['submissionid-finalised'][$this->id . '-1'] : [];
                 foreach ($finalized_feedbacks as $feedback) {
                     if ($feedback->timecreated + $gradeeditingtime > $time) {
                         $editablefeedbacks[] = $feedback;

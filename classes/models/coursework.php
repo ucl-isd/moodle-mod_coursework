@@ -1906,7 +1906,7 @@ class coursework extends table_base {
     public function due_to_send_first_reminders($deadline) {
         global $CFG;
 
-        return ($deadline - $CFG->coursework_day_reminder *86400) < time();
+        return ($deadline - $CFG->coursework_day_reminder * 86400) < time();
     }
 
     /**
@@ -1916,7 +1916,7 @@ class coursework extends table_base {
     public function due_to_send_second_reminders($deadline) {
         global $CFG;
 
-        return ($deadline - $CFG->coursework_day_second_reminder*86400) < time();
+        return ($deadline - $CFG->coursework_day_second_reminder * 86400) < time();
     }
 
     /**

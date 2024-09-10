@@ -343,7 +343,7 @@ class feedback extends table_base {
     public function get_feedback_files() {
 
         $this->set_feedback_files($this->get_context_id());
-        if ($this->feedbackfiles !=null) {
+        if ($this->feedbackfiles != null) {
             $this->feedback_files = new feedback_files($this->feedbackfiles, $this);
             return $this->feedback_files;
         }
