@@ -1,4 +1,3 @@
-
 /**
 Coursework
 **/
@@ -10,10 +9,10 @@ table.allocations,
 table.plagiarism_flag,
 table.grading-details,
 table.moderating-details,
-table.personal-deadline-details{
+table.personal-deadline-details {
     width: 100%;
     border-collapse: collapse;
-	margin-bottom: 1em;
+    margin-bottom: 1em;
 }
 table.submissions td,
 table.deadlines td,
@@ -32,7 +31,7 @@ table.personal_deadline th,
 table.plagiarism_flag th,
 table.grading-details th,
 table.moderating-details th,
-table.personal-deadline-details th{
+table.personal-deadline-details th {
     padding: 1em;
 }
 
@@ -41,31 +40,31 @@ table.personal_deadline th,
 table.plagiarism_flag th,
 table.grading-details th,
 table.moderating-details th,
-table.personal-deadline-details th{
+table.personal-deadline-details th {
     background: #e5eef6 !important;
 }
 
 /**
 Deadline table
 **/
-table.deadlines th{
+table.deadlines th {
     background: transparent !important;
     width: 40%;
-    font-weight:normal;
+    font-weight: normal;
     vertical-align: top;
 }
 table.deadlines tbody tr:nth-of-type(odd){
     background: #f9f9f9;
 }
-table.deadlines tr:last-of-type{
+table.deadlines tr:last-of-type {
     border-bottom: 1px solid #ddd;
 }
 table.deadlines td,
-table.deadlines th{
+table.deadlines th {
      border-top: 1px solid #ddd;
      border-bottom: 1px solid #ddd;
 }
-table.deadlines .autofinalise_info{
+table.deadlines .autofinalise_info {
     background-color: #fcf8e3;
     border: 1px solid #fbeed5;
     border-radius: 4px;
@@ -80,24 +79,24 @@ table.deadlines .autofinalise_info{
 Grading Summary table
  */
 
-table.gradingsummary th{
+table.gradingsummary th {
     background: transparent !important;
     width: 40%;
-    font-weight:normal;
+    font-weight: normal;
     vertical-align: top;
 }
 table.gradingsummary tbody tr:nth-of-type(odd){
     background: #f9f9f9;
 }
-table.gradingsummary tr:last-of-type{
+table.gradingsummary tr:last-of-type {
     border-bottom: 1px solid #ddd;
 }
 table.gradingsummary td,
-table.gradingsummary th{
+table.gradingsummary th {
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd !important;
 }
-table.gradingsummary .autofinalise_info{
+table.gradingsummary .autofinalise_info {
     background-color: #fcf8e3;
     border: 1px solid #fbeed5;
     border-radius: 4px;
@@ -114,29 +113,29 @@ Submissions tables
 **/
 
 .jumpmenu {
-    float:right;
+    float: right;
 }
 .jumpmenu label {
     font-weight: bold;
-    display:inline;
+    display: inline;
     padding-right: 10px;
 }
-.paging{
-    text-align:center;
+.paging {
+    text-align: center;
 }
-#page-mod-coursework-view .urlselect div{
-    float:left;
+#page-mod-coursework-view .urlselect div {
+    float: left;
 }
-#page-mod-coursework-view .urlselect div label{
-    display:inline;
+#page-mod-coursework-view .urlselect div label {
+    display: inline;
     font-weight: bold;
     padding-right:.5em;
 }
 table.submissions .provisionalgrade,
-table.submissions .agreedgrade{
+table.submissions .agreedgrade {
     width: 10%;
 }
-table.submissions tr.submissionrowmulti{
+table.submissions tr.submissionrowmulti {
     border-bottom: 3px solid #fff;
 }
 
@@ -203,17 +202,17 @@ table.plagiarism_flag tr:nth-child(2n){
 
 /**Submission tables with allocated assessors tables**/
 
-table.submissions td.assessors{
-    vertical-align:right;
+table.submissions td.assessors {
+    vertical-align: right;
     padding-right: 0 !important;
-    background:url([[pix:coursework|connector]]) no-repeat left top !important;
+    background: url([[pix:coursework|connector]]) no-repeat left top !important;
 }
 table.submissions td.assessors > table.assessors {
-    border:none !important;
+    border: none !important;
     width:70%;
     margin-left: 1%;
 }
-table.submissions td.assessors > table.assessors th{
+table.submissions td.assessors > table.assessors th {
     background: #fff !important;
     border-bottom: 1px solid #ddd;
 }
@@ -235,89 +234,89 @@ table.submissions td.assessors > table.assessors td {
 .show_feedback,
 .show_moderation,
 .new_plagiarism_flag,
-.new_deadline_extension{
+.new_deadline_extension {
     padding:5px 5px 5px 25px;
     border: 1px solid #b3b3b3 ;
     border-radius: 4px;
     color: #333 !important;
-    display:inline-block;
+    display: inline-block;
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-    white-space:nowrap;
+    white-space: nowrap;
 }
-.show-students-btn{
+.show-students-btn {
     background: #f3f3f3 url([[pix:coursework|show]]) no-repeat 5px center;
 }
-.hide-students-btn{
+.hide-students-btn {
     background: #f3f3f3 url([[pix:coursework|hide]]) no-repeat 5px center;
 }
-.new_submission{
+.new_submission {
     background: #f3f3f3 url([[pix:coursework|submit]]) no-repeat 5px center;
 }
-.new_feedback{
+.new_feedback {
     background: #f3f3f3 url([[pix:coursework|add-feedback]]) no-repeat 5px center;
 }
-.new_final_feedback{
+.new_final_feedback {
      background: #f3f3f3 url([[pix:coursework|add-feedback]]) no-repeat 5px center;
 }
-.new_moderation{
+.new_moderation {
     background: #f3f3f3 url([[pix:coursework|moderate]]) no-repeat 5px center;
 }
-.new_plagiarism_flag{
+.new_plagiarism_flag {
     background: #f3f3f3 url([[pix:coursework|add-item]]) no-repeat 5px center;
 }
-.show_feedback{
+.show_feedback {
     background: #f3f3f3 url([[pix:coursework|view]]) no-repeat 5px center;
 }
-.show_moderation{
+.show_moderation {
     background: #f3f3f3 url([[pix:coursework|view]]) no-repeat 5px center;
 }
-.new_deadline_extension{
+.new_deadline_extension {
     background: #f3f3f3 url([[pix:coursework|new-deadline]]) no-repeat 5px center;
 }
-.show-students-btn:hover{
+.show-students-btn:hover {
     background: #f3f3f3 url([[pix:coursework|show]]) no-repeat 5px center;
-    text-decoration:none;
+    text-decoration: none;
 }
-.hide-students-btn:hover{
+.hide-students-btn:hover {
     background: #f3f3f3 url([[pix:coursework|hide]]) no-repeat 5px center;
-    text-decoration:none;
+    text-decoration: none;
 }
-.new_submission:hover{
+.new_submission:hover {
     background: #e6e6e6 url([[pix:coursework|submit]]) no-repeat 5px center;
-    text-decoration:none;
+    text-decoration: none;
 }
-.new_feedback:hover{
+.new_feedback:hover {
     background: #e6e6e6 url([[pix:coursework|add-feedback]]) no-repeat 5px center;
-    text-decoration:none;
+    text-decoration: none;
 }
-.new_final_feedback:hover{
+.new_final_feedback:hover {
     background: #e6e6e6 url([[pix:coursework|add-feedback]]) no-repeat 5px center;
-    text-decoration:none;
+    text-decoration: none;
 }
-.new_moderation:hover{
+.new_moderation:hover {
     background: #e6e6e6 url([[pix:coursework|moderate]]) no-repeat 5px center;
-    text-decoration:none;
+    text-decoration: none;
 }
-.new_plagiarism_flag:hover{
+.new_plagiarism_flag:hover {
     background: #e6e6e6 url([[pix:coursework|add-item]]) no-repeat 5px center;
-    text-decoration:none;
+    text-decoration: none;
 }
-.show_feedback:hover{
+.show_feedback:hover {
     background: #e6e6e6 url([[pix:coursework|view]]) no-repeat 5px center;
-    text-decoration:none;
+    text-decoration: none;
 }
-.show_moderation:hover{
+.show_moderation:hover {
     background: #e6e6e6 url([[pix:coursework|view]]) no-repeat 5px center;
-    text-decoration:none;
+    text-decoration: none;
 }
-.new_deadline_extension:hover{
+.new_deadline_extension:hover {
     background: #e6e6e6 url([[pix:coursework|new-deadline]]) no-repeat 5px center;
-    text-decoration:none;
+    text-decoration: none;
 }
 
 /* buttons */
 
-.edit-btn{
+.edit-btn {
     padding:7px 5px 7px 25px;
     border: 1px solid #ddd ;
     background: #f3f3f3 url([[pix:coursework|edit]]) no-repeat 5px center;
@@ -332,7 +331,7 @@ a.edit-btn,
 a.download-btn {
     color: #222 !important;
 }
-.add-general_feedback-btn{
+.add-general_feedback-btn {
     padding:7px 5px 7px 30px;
     border: 1px solid #b3b3b3 ;
     border-radius: 4px;
@@ -347,52 +346,52 @@ a.download-btn {
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
     vertical-align: middle;
 }
-.add-general_feedback-btn:hover{
+.add-general_feedback-btn:hover {
     background: #e6e6e6 url([[pix:coursework|add-feedback]]) no-repeat 5px center;
     text-decoration: none;
     color: #333;
 }
 
 /* Notification buttons  */
-#notification_buttons{
+#notification_buttons {
     display: flex;
     justify-content: center;
 }
 
-#fitem_id_queuetoplagiarismbutton{
+#fitem_id_queuetoplagiarismbutton {
     margin: 1em;
 }
-#fitem_id_queuetoplagiarismbutton input[type="submit"]{
+#fitem_id_queuetoplagiarismbutton input[type="submit"] {
     background: #0070a8;
     color:#fff;
 }
-#fitem_id_publishbutton{
+#fitem_id_publishbutton {
     margin: 1em;
 }
-#fitem_id_publishbutton input[type="submit"]{
+#fitem_id_publishbutton input[type="submit"] {
     background: #0070a8;
     color:#fff;
 }
 
-#id_displayallstudentbutton{
+#id_displayallstudentbutton {
     margin: 2em;
 }
 
 /* Submission date TD  */
 
-table.submissions .ontime_submission{
+table.submissions .ontime_submission {
     padding: 0 0 .5em 0;
     display:block;
     text-transform:uppercase;
 }
-table.submissions .late_submission{
+table.submissions .late_submission {
     padding: 0 0 .5em 0;
     display:block;
 }
-table.submissions .late_submission{
+table.submissions .late_submission {
     color:#cc0000;
 }
-table.submissions .ontime_submission{
+table.submissions .ontime_submission {
     color: #669900;
 }
 
@@ -415,7 +414,7 @@ table.submissions .ontime_submission{
     border-bottom: 1px solid #ddd;
 }
 .sampling-select,
-.allocation-strategy{
+.allocation-strategy {
     background: #f3f3f3;
     padding: 1em;
 }
@@ -424,7 +423,7 @@ table.sampling tbody td:nth-of-type(odd),
     background:#e5eef6;
     width: 33%;
 }
-table.sampling{
+table.sampling {
     background:#fff;
     margin-bottom: 1em;
  }
@@ -441,21 +440,21 @@ table.sampling td.c2{
     vertical-align: top;
 }
 table.sampling td,
-table.sampling th{
+table.sampling th {
     padding: 1em;
 }
-.samples_strategy{
+.samples_strategy {
     border-bottom:1px solid #ddd;
     border-top:1px solid #ddd;
     padding:.5em 0 0 0;
 }
-.samples_strategy label{
+.samples_strategy label {
     display:inline;
     padding-right:.5em;
 }
 .assessor_2_grade_rules label,
 .assessor_3_grade_rules label,
-.sampletotal label{
+.sampletotal label {
     display:inline;
     padding: 0 .3em 0 .3em;
 }
@@ -472,7 +471,7 @@ table.sampling th{
     border-bottom:1px solid #ddd;
 }
 .addgradderule,
-.removegradderule{
+.removegradderule {
     display:block;
     padding: .3em .3em .3em 1.3em;
     margin: .5em 0;
@@ -491,7 +490,7 @@ table.sampling th{
     background: #f5f5f5 url([[pix:coursework|delete]]) no-repeat .3em !important;
     float:right;
 }
-.sampletotal{
+.sampletotal {
     display:inline-block;
     padding:  1em 0 .5em 0;
     background: #f3f3f3;
@@ -499,7 +498,7 @@ table.sampling th{
     border-top:1px solid #ddd;
     border-bottom:1px solid #ddd;
 }
-.sampletotal input[type="checkbox"]{
+.sampletotal input[type="checkbox"] {
     margin-left: .5em !important;
 }
 table.allocations td,
@@ -524,37 +523,37 @@ table.plagiarism_flag td
     white-space:nowrap;
 }
 
-.largelink a:hover{
-    text-decoration:none;
+.largelink a:hover {
+    text-decoration: none;
     background: #e6e6e6;
 }
 
-.return_to_page,.personal_deadline_upload_url{
+.return_to_page,.personal_deadline_upload_url {
     margin: 15px 5px 20px 5px;
 }
 
 /* Student view - Feedback tables
 Moderation table*/
 
-table.feedback, table.moderation{
+table.feedback, table.moderation {
     width: 100%;
     margin-bottom: 1em;
 }
 table.feedback td,table.moderation td,
-table.feedback th, table.moderation th{
+table.feedback th, table.moderation th {
     padding:1em;
 }
-table.feedback  th, table.moderation th{
+table.feedback  th, table.moderation th {
     border-bottom:3px solid #ddd;
 }
 table.feedback tbody tr:nth-of-type(2n+1), table.moderation tbody tr:nth-of-type(2n+1){
     background: #f9f9f9 ;
 }
-table.feedback td.cleft, table.moderation td.cleft{
+table.feedback td.cleft, table.moderation td.cleft {
     width: 40%;
 }
 /*  Groupings */
-.group{
+.group {
     font-weight: bold;
 }
 .group_style {
@@ -586,27 +585,27 @@ table.feedback td.cleft, table.moderation td.cleft{
 }
 #page-mod-coursework-actions-feedbacks-edit .row-fluid .span4,
 #page-mod-coursework-actions-feedbacks-new .row-fluid .span4{
-    display:none
+    display: none
 }
 #page-mod-coursework-actions-feedbacks-edit .row-fluid .span8,
 #page-mod-coursework-actions-feedbacks-new .row-fluid .span8{
     width:99.812% !important;
 }
 #page-mod-coursework-actions-feedbacks-edit .mform .fitem div.fitemtitle,
-#page-mod-coursework-actions-feedbacks-new .mform .fitem div.fitemtitle{
+#page-mod-coursework-actions-feedbacks-new .mform .fitem div.fitemtitle {
     text-align:left;
-    float:none;
+    float: none;
 }
 #page-mod-coursework-actions-feedbacks-edit .mform label,
 #page-mod-coursework-actions-feedbacks-new .mform label {
     display: block;
 }
 #page-mod-coursework-actions-feedbacks-edit .mform .felement,
-#page-mod-coursework-actions-feedbacks-new .mform .felement{
+#page-mod-coursework-actions-feedbacks-new .mform .felement {
     margin-left: 0 !important;
 }
 #page-mod-coursework-actions-feedbacks-edit .mform,
-#page-mod-coursework-actions-feedbacks-new .mform{
+#page-mod-coursework-actions-feedbacks-new .mform {
     padding: 1em !important;
 }
 table.grading-details th, table.moderating-details th table.personal-deadline-details th,
@@ -614,29 +613,29 @@ table.grading-details td, table.moderating-details td, table.personal-deadline-d
     border-bottom: 1px solid #fff;
     padding: .5em;
 }
-table.grading-details th, table.moderating-details th, table.personal-deadline-details th{
+table.grading-details th, table.moderating-details th, table.personal-deadline-details th {
     background: #ccdfee !important;
     width: 150px;
 }
 
 /* settings page */
 
-#courseworkmodformfeedback th{
+#courseworkmodformfeedback th {
     background: #f1f1f1;
     padding:1em;
 }
-#courseworkmodformfeedback td{
+#courseworkmodformfeedback td {
     padding: 1em;
 }
-#page-mod-coursework-mod #courseworkmodformfeedback .fitemtitle{
+#page-mod-coursework-mod #courseworkmodformfeedback .fitemtitle {
     width:auto !important;
 }
-#page-mod-coursework-mod #courseworkmodformfeedback .felement{
+#page-mod-coursework-mod #courseworkmodformfeedback .felement {
     margin-left:1em !important;
 }
 
 
-.plagiarism_tii_version{
+.plagiarism_tii_version {
     background-color: #F6CECE;
     border: 1px solid #cc0000;
     color:#cc0000;
@@ -653,7 +652,7 @@ table.grading-details th, table.moderating-details th, table.personal-deadline-d
     top: 50%;
 }
 
-.pininfo{
+.pininfo {
     padding: 4px 10px 10px 35px;
 }
 
@@ -1032,23 +1031,23 @@ div.dtsp-searchPanes div.dataTables_scrollBody tbody tr.selected td {
     display:table;
     height: 100%;
     width: 100%;
-    pointer-events:none;
+    pointer-events: none;
 }
 .vertical-align-center {
     /* To center vertically */
     display: table-cell;
     vertical-align: middle;
-    pointer-events:none;
+    pointer-events: none;
 }
 .modal-content {
     /* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
-    width:inherit;
-    max-width:inherit; /* For Bootstrap 4 - to avoid the modal window stretching
+    width: inherit;
+    max-width: inherit; /* For Bootstrap 4 - to avoid the modal window stretching
     full width */
-    height:inherit;
+    height: inherit;
     /* To center horizontally */
     margin: 0 auto;
-    pointer-events:all;
+    pointer-events: all;
 }
 /* END FIX BOOTSTRAP MODAL NOT AlIGNING CENTER */
 
@@ -1063,13 +1062,13 @@ div.dtsp-searchPanes div.dataTables_scrollBody tbody tr.selected td {
 }
 
 /* Feedback notes toggle*/
-.feedbacknotestoggle{
-    display:inline-block;
+.feedbacknotestoggle {
+    display: inline-block;
     height:20px;
     width:25px;
     background: url([[pix:coursework|details_open]]) no-repeat;
 
 }
-.feedbacknotestoggle.expanded{
+.feedbacknotestoggle.expanded {
     background: url([[pix:coursework|details_close]]) no-repeat;
 }
