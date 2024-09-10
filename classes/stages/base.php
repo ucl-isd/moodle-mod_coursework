@@ -83,7 +83,7 @@ abstract class base {
      */
     private function get_allocation_strategy() {
         $strategyname = $this->strategy_name();
-        $classname = "\\modcoursework\\allocation\\strategy\\{$strategyname}";
+        $classname = "\\mod_coursework\\allocation\\strategy\\{$strategyname}";
         return new $classname($this->get_coursework(), $this);
     }
 
