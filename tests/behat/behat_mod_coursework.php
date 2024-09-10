@@ -1169,7 +1169,7 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Given /^I should see the deadline reason in the deadline extension form$/
      */
-    public function i_should_see_the_dealine_reason_in_the_student_row() {
+    public function i_should_see_the_deadline_reason_in_the_student_row() {
         /**
          * @var mod_coursework_behat_edit_extension_page $edit_extension_page
          */
