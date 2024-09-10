@@ -1240,7 +1240,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $html .= get_string('noallocationerrorsfound', 'mod_coursework');
         }
 
-        $html .= html_writer::tag('p',html_writer::link('/mod/coursework/view.php?id='.$this->page->cm->id, get_string('continuetocoursework', 'coursework')));
+        $html .= html_writer::tag('p', html_writer::link('/mod/coursework/view.php?id='.$this->page->cm->id, get_string('continuetocoursework', 'coursework')));
 
         $html .= $this->output->footer();
 
@@ -1298,7 +1298,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $html .= get_string('nofilesfound', 'mod_coursework');
         }
 
-        $html .= html_writer::tag('p',html_writer::link('/mod/coursework/view.php?id='.$this->page->cm->id, get_string('continuetocoursework', 'coursework')));
+        $html .= html_writer::tag('p', html_writer::link('/mod/coursework/view.php?id='.$this->page->cm->id, get_string('continuetocoursework', 'coursework')));
 
         $html .= $this->output->footer();
 
