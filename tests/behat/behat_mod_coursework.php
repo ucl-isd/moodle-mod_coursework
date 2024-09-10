@@ -2992,7 +2992,7 @@ class behat_mod_coursework extends behat_base {
      * @Given /^I click show all students button$/
      */
     public function i_click_on_show_all_students_button() {
-        //$this->find('id', "id_displayallstudentbutton")->click();
+        // $this->find('id', "id_displayallstudentbutton")->click();
         $page = $this->get_page('coursework page');
         // $page->clickLink("Show submissions for other students");
 

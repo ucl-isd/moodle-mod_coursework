@@ -88,7 +88,7 @@ class personal_deadlines_controller extends controller_base {
                 foreach ($allocatables as $allocatableid) {
                     $data->allocatableid = $allocatableid;
                     $data->id = '';
-                    //$data->id = '';
+                    // $data->id = '';
                     $findparams = [
                         'allocatableid' => $allocatableid,
                         'allocatabletype' => $data->allocatabletype,
@@ -214,7 +214,7 @@ class personal_deadlines_controller extends controller_base {
             foreach ($allocatables as $allocatableid) {
                 $data->allocatableid = $allocatableid;
                 $data->id = '';
-                //$data->id = '';
+                // $data->id = '';
                 $findparams = [
                     'allocatableid' => $allocatableid,
                     'allocatabletype' => $data->allocatabletype,

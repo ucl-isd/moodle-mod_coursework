@@ -781,7 +781,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= $this->output->box_end();
 
         $filesstring =
-            'yoursubmissionstatus';//$files->has_multiple_files() ? 'yoursubmissionfiles' : 'yoursubmissionfile';
+            'yoursubmissionstatus';// $files->has_multiple_files() ? 'yoursubmissionfiles' : 'yoursubmissionfile';
 
         $html .= html_writer::start_tag('h3');
         $html .= get_string($filesstring, 'coursework');

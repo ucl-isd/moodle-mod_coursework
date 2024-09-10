@@ -382,7 +382,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->addHelpButton('personaldeadlineenabled', 'personaldeadlineenabled', 'mod_coursework');
 
         $moodleform->setDefault('personaldeadlineenabled', 0);
-        //$moodle_form->disabledIf('personaldeadlineenabled', 'deadline[enabled]', 'notchecked');
+        // $moodle_form->disabledIf('personaldeadlineenabled', 'deadline[enabled]', 'notchecked');
 
     }
 
@@ -720,7 +720,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform =& $this->_form;
 
         $choices = get_max_upload_sizes($CFG->maxbytes, $COURSE->maxbytes);
-        //$choices[0] = get_string('maximumupload') . ' (' . display_size($COURSE->maxbytes) . ')';
+        // $choices[0] = get_string('maximumupload') . ' (' . display_size($COURSE->maxbytes) . ')';
         $choices[0] = get_string('maximumupload'). ' set in course';
         $moodleform->addElement('select',
                                  'maxbytes',

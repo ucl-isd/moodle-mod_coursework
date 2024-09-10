@@ -47,7 +47,7 @@ class outstanding_marking {
             if (!$coursework->has_multiple_markers()) {
                 $initialsubmissions = $this->get_single_marker_initial_grade_submissions_to_mark($coursework->id, $userid, $coursework->allocation_enabled());
 
-            } else if ($coursework->sampling_enabled() && !$coursework->allocation_enabled()) { //
+            } else if ($coursework->sampling_enabled() && !$coursework->allocation_enabled()) {
 
                 $initialsubmissions = $this->get_multiple_to_mark_sampled_initial_grade_submissions($coursework->id, $userid);
 

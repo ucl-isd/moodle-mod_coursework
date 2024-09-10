@@ -34,7 +34,7 @@ class grading_controller extends controller_base {
 
         global $DB, $PAGE;
         $courseworkrecord = $DB->get_record('coursework', ['id' => $options['courseworkid']], '*', MUST_EXIST);
-        //$coursework = mod_coursework\models\coursework::find($coursework_record);
+        // $coursework = mod_coursework\models\coursework::find($coursework_record);
         $coursework = coursework::find($courseworkrecord, false);
 
         $coursework->coursemodule = get_coursemodule_from_instance('coursework', $coursework->id, $coursework->course, false, MUST_EXIST);

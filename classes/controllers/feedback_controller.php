@@ -270,7 +270,7 @@ class feedback_controller extends controller_base {
                             $assessorfeedbackrow = new assessor_feedback_row($stage, $feedbackrow->get_allocatable(), $coursework);
 
                             $assessortwocell = $cellobject->get_grade_cell_content($assessorfeedbackrow, $coursework, $ability);
-                            //$jsonarray['assessortwo'] =$assessortwocell;
+                            // $jsonarray['assessortwo'] =$assessortwocell;
                             if (strpos($assessortwocell, 'new_feedback') !== false) {
                                 $jsonarray['assessortwo'] = $assessortwocell;
                             }
@@ -359,7 +359,7 @@ class feedback_controller extends controller_base {
                 $renderer = $this->get_page_renderer();
                 return  $renderer->confirm_feedback_removal_page($teacherfeedback, $confirmurl, $cancelurl);
 
-                 //$OUTPUT->confirm(get_string('confirmremovefeedback', 'mod_coursework'), $confirmurl, $PAGE->url);
+                 // $OUTPUT->confirm(get_string('confirmremovefeedback', 'mod_coursework'), $confirmurl, $PAGE->url);
 
             } else {
                 $teacherfeedback->destroy();
@@ -457,7 +457,7 @@ class feedback_controller extends controller_base {
                         $assessorfeedbackrow = new assessor_feedback_row($stage, $feedbackrow->get_allocatable(), $coursework);
 
                         $assessortwocell = $cellobject->get_grade_cell_content($assessorfeedbackrow, $coursework, $ability);
-                        //$jsonarray['assessortwo'] =$assessortwocell;
+                        // $jsonarray['assessortwo'] =$assessortwocell;
                         if (strpos($assessortwocell, 'new_feedback') !== false) {
                             $jsonarray['assessortwo'] = $assessortwocell;
                         }

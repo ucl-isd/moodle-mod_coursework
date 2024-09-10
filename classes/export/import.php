@@ -305,7 +305,7 @@ class import extends grading_sheet {
 
             $csv = $this->remove_other_assessors_grade($csvcells, $line);
             // Gets the headers that should be being used in the uploaded csv
-            //$cells = $this->get_rubric_headers($csv);
+            // $cells = $this->get_rubric_headers($csv);
             $cells = $csv;
             $i = 0;
 
@@ -778,7 +778,7 @@ class import extends grading_sheet {
         if ($this->coursework->get_max_markers() > 1 && ($cellidentifier != 'singlegrade' && $cellidentifier != 'feedbackcomments')) {
             if (substr($cellidentifier, 0, 8) == 'assessor') {
                 $stageidentifier = 'assessor_' . (substr($cellidentifier, -1));
-                //$cells[$i] = substr($cells[$i], 0, -1);
+                // $cells[$i] = substr($cells[$i], 0, -1);
             } else if (substr($cellidentifier, 0, 6) == 'agreed') {
                 $stageidentifier = 'final_agreed_1';
             }

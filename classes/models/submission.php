@@ -269,7 +269,7 @@ class submission extends table_base implements \renderable {
                         unset($submissions[$submission->id]);
                     }
                 }
-            } else {//unset as it doesn't need to be autofinalise yet
+            } else { // Unset as it doesn't need to be autofinalise yet.
                 unset($submissions[$submission->id]);
             }
         }
@@ -356,7 +356,7 @@ class submission extends table_base implements \renderable {
         ];
 
         $event = \mod_coursework\event\assessable_uploaded::create($params);
-        //$event->set_legacy_files($files);
+        // $event->set_legacy_files($files);
         $event->trigger();
 
     }

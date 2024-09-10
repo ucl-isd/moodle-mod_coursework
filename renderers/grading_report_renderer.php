@@ -123,7 +123,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      */
     protected function make_row_for_allocatable($rowobject, $cellhelpers, $subrowhelper) {
 
-        //$class = (!$row_object->get_coursework()->has_multiple_markers()) ? "submissionrowsingle": "submissionrowmulti";
+        // $class = (!$row_object->get_coursework()->has_multiple_markers()) ? "submissionrowsingle": "submissionrowmulti";
         $class = $this->rowclass;
 
         $submission = $rowobject->get_submission();

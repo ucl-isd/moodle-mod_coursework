@@ -698,7 +698,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $html .= html_writer::start_tag('h3', ['id' => 'assessor_allocation_settings_header']);
         $html .= get_string('assessorallocationstrategy', 'mod_coursework');
-        //$html .= $this->output->help_icon('allocationstrategy', 'mod_coursework');
+        // $html .= $this->output->help_icon('allocationstrategy', 'mod_coursework');
         $html .= html_writer::end_tag('h3');
 
         $html .= '<div class="allocation-strategy"';
@@ -1100,7 +1100,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $sampleplugins = $DB->get_records('coursework_sample_set_plugin', null, 'pluginorder');
 
-        //$fullclasspaths = glob($classdir . '/*.php');
+        // $fullclasspaths = glob($classdir . '/*.php');
         foreach ($sampleplugins as $plugin) {
             /*    if (strpos($fullclassname, 'base') !== false) {
                 continue;
@@ -1455,7 +1455,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             'courseworkid' => $personaldeadlinerow->get_coursework()->id,
         ];
 
-        //$personal_deadline = \mod_coursework\models\personal_deadline::find($new_personal_deadline_params);
+        // $personal_deadline = \mod_coursework\models\personal_deadline::find($new_personal_deadline_params);
 
         $personaldeadline =
             \mod_coursework\models\personal_deadline::get_personal_deadline_for_student(user::find($personaldeadlinerow->get_allocatable()->id()), $coursework);

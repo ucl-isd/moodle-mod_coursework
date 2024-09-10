@@ -214,7 +214,7 @@ class feedback extends table_base {
     public function get_assesor_username() {
 
         if (!$this->firstname && !empty($this->lasteditedbyuser)) {
-            //$this->assessor = core_user::get_user($this->lasteditedbyuser);
+            // $this->assessor = core_user::get_user($this->lasteditedbyuser);
             $this->assessor = user::get_object($this->lasteditedbyuser);
         }
 
