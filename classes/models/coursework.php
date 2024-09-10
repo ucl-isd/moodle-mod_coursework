@@ -2241,7 +2241,7 @@ class coursework extends table_base {
      * @param $image_name
      * @return string
      */
-    public final static function get_image($text, $image_name) {
+    final public static function get_image($text, $image_name) {
         global $CFG;
         $url = $CFG->wwwroot . '/theme/image.php?image=t/' . $image_name;
         return html_writer::empty_tag('img',

@@ -266,7 +266,7 @@ abstract class table_base {
      * @param bool $sneakily If true, do not update the timemodified stamp. Useful for cron.
      * @return int|bool
      */
-    public final function save($sneakily = false) {
+    final public function save($sneakily = false) {
 
         global $DB;
 
@@ -292,7 +292,7 @@ abstract class table_base {
      * @throws \coding_exception
      * @return string
      */
-    public static final function get_table_name() {
+    final public static function get_table_name() {
 
         if (empty(static::$table_name)) {
             $class_name = get_called_class(); // 'mod_coursework\models\deadline_extension'
@@ -340,7 +340,7 @@ abstract class table_base {
      *
      * @return mixed
      */
-    public static final function last() {
+    final public static function last() {
         global $DB;
 
         $tablename = static::get_table_name();
@@ -358,7 +358,7 @@ abstract class table_base {
      *
      * @return mixed
      */
-    public static final function first() {
+    final public static function first() {
         global $DB;
 
         $tablename = static::get_table_name();
