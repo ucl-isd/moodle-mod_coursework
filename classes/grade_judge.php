@@ -168,7 +168,7 @@ class grade_judge {
      * @param allocatable $allocatable
      * @return bool
      */
-    public function allocatable_needs_more_than_one_feedback ($allocatable) {
+    public function allocatable_needs_more_than_one_feedback($allocatable) {
 
         if ($this->coursework->sampling_enabled()) {
             assessment_set_membership::fill_pool_coursework($this->coursework->id);
