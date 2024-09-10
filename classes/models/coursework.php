@@ -456,6 +456,11 @@ class coursework extends table_base {
         return $this->coursemodule;
     }
 
+    /**
+     * @param $coursemodule
+     * @return \cm_info
+     * @throws moodle_exception
+     */
     public function cm_object($coursemodule) {
 
         $modinfo = get_fast_modinfo($this->get_course_id());
@@ -493,7 +498,6 @@ class coursework extends table_base {
     /**
      * Getter function for the coursework's course object.
      *
-     * @global \moodle_database $DB
      * @return object
      */
     public function get_course() {
@@ -503,7 +507,6 @@ class coursework extends table_base {
     /**
      * Getter function for the coursework's course object.
      *
-     * @global \moodle_database $DB
      * @return \context
      */
     public function get_course_context() {
@@ -534,7 +537,6 @@ class coursework extends table_base {
     /**
      * Gets all the feedbacks for this coursework as DB rows.
      *
-     * @global \moodle_database $DB
      * @internal param array $userids visible users (paged results) only
      * @return array
      */
@@ -597,7 +599,6 @@ class coursework extends table_base {
      * issues.
      *
      * @param array $groups array of group ids
-     * @global \moodle_database $DB
      * @internal param int $page
      * @internal param int $perpage
      * @internal param string $sortby
@@ -653,7 +654,7 @@ class coursework extends table_base {
         return $this->get_context()->id;
     }
 
-    function get_grade_editing_time() {
+    public function get_grade_editing_time() {
         return $this->gradeeditingtime;
     }
 
@@ -662,7 +663,7 @@ class coursework extends table_base {
      *
      * @return int
      */
-    function get_initial_marking_deadline() {
+    public function get_initial_marking_deadline() {
         return  (!empty($this->initialmarkingdeadline)) ? $this->initialmarkingdeadline : 0;
     }
 
@@ -671,7 +672,7 @@ class coursework extends table_base {
      *
      * @return int
      */
-    function get_agreed_grade_marking_deadline() {
+    public function get_agreed_grade_marking_deadline() {
           return  (!empty($this->agreedgrademarkingdeadline)) ? $this->agreedgrademarkingdeadline : 0;
     }
 
@@ -879,7 +880,6 @@ class coursework extends table_base {
     /**
      * Pushes all grades form the coursework into the gradebook. Will overwrite any older grades.
      *
-     * @global \moodle_database $DB
      * @return void
      */
     public function publish_grades() {
@@ -1383,7 +1383,7 @@ class coursework extends table_base {
      * @param int $userid
      * @return string
      */
-    static function get_name_hash($id, $userid, $time=1440000609) {
+    public static function get_name_hash($id, $userid, $time=1440000609) {
         if ($id < 1) {
             return '';
         }
@@ -1668,7 +1668,7 @@ class coursework extends table_base {
      * @param $userid
      * @return bool
      */
-    function user_grade_is_published($userid) {
+    public function user_grade_is_published($userid) {
         // Get the gradebook grade.
 
         /**
@@ -2788,7 +2788,7 @@ class coursework extends table_base {
      *
      * @return submissions
      */
-    function retrieve_submissions_by_coursework() {
+    public function retrieve_submissions_by_coursework() {
         global $DB;
         return $DB->get_records('coursework_submissions', ['courseworkid' => $this->id, 'allocatabletype' => 'user']);
     }
