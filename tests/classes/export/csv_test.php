@@ -77,14 +77,14 @@ final class csv_test extends advanced_testcase {
         $student = $this->student;
         $assessor = $this->teacher;
         $submission = $this->submission;
-        $feedback_data = new stdClass();
-        $feedback_data->submissionid = $submission->id;
-        $feedback_data->grade = 54;
-        $feedback_data->assessorid = $assessor->id;
-        $feedback_data->stage_identifier = 'assessor_1';
-        $feedback = $generator->create_feedback($feedback_data);
+        $feedbackdata = new stdClass();
+        $feedbackdata->submissionid = $submission->id;
+        $feedbackdata->grade = 54;
+        $feedbackdata->assessorid = $assessor->id;
+        $feedbackdata->stage_identifier = 'assessor_1';
+        $feedback = $generator->create_feedback($feedbackdata);
 
-        $extendion_deadline = time();
+        $extendiondeadline = time();
         $params = ['allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
             'courseworkid' => $this->coursework->id,
@@ -92,48 +92,48 @@ final class csv_test extends advanced_testcase {
             'createdbyid' => 4,
             'extra_information_text' => '<p>extra information</p>',
             'extra_information_format' => 1,
-            'extended_deadline' => $extendion_deadline];
+            'extended_deadline' => $extendiondeadline];
 
         $extension = deadline_extension::create($params);
 
-        $extension_reasons = $this->coursework->extension_reasons();
+        $extensionreasons = $this->coursework->extension_reasons();
 
-        if (empty($extension_reasons)) {
+        if (empty($extensionreasons)) {
 
             set_config('coursework_extension_reasons_list', "coursework extension \n sick leave");
-            $extension_reasons = $this->coursework->extension_reasons();
+            $extensionreasons = $this->coursework->extension_reasons();
 
         }
 
         // headers and data for csv
-        $csv_cells = ['name', 'username', 'submissiondate', 'submissiontime',
+        $csvcells = ['name', 'username', 'submissiondate', 'submissiontime',
             'submissionfileid'];
 
         if ($this->coursework->extensions_enabled()) {
-            $csv_cells[] = 'extensiondeadline';
-            $csv_cells[] = 'extensionreason';
-            $csv_cells[] = 'extensionextrainfo';
+            $csvcells[] = 'extensiondeadline';
+            $csvcells[] = 'extensionreason';
+            $csvcells[] = 'extensionextrainfo';
         }
-        $csv_cells[] = 'stages';
-        $csv_cells[] = 'finalgrade';
+        $csvcells[] = 'stages';
+        $csvcells[] = 'finalgrade';
 
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('finalgradesfor', 'coursework'). $this->coursework->name .' '.$timestamp;
-        $csv = new \mod_coursework\export\csv($this->coursework, $csv_cells, $filename);
-        $csv_grades = $csv->add_cells_to_array($submission, $student, $csv_cells);
+        $csv = new \mod_coursework\export\csv($this->coursework, $csvcells, $filename);
+        $csvgrades = $csv->add_cells_to_array($submission, $student, $csvcells);
 
         // build an array
         $studentname = $student->lastname .' '.$student->firstname;
         $assessorname = $assessor->lastname .' '. $assessor->firstname;
         $assessorusername = $assessor->username;
 
-        $one_assessor_grades = ['0' => $studentname,
+        $oneassessorgrades = ['0' => $studentname,
                                      '1' => $student->username,
                                      '2' => userdate(time(), $dateformat),
                                      '3' => 'On time',
                                      '4' => $this->coursework->get_username_hash($submission->allocatableid),
                                      '5' => userdate($extension->extended_deadline, $dateformat),
-                                     '6' => $extension_reasons[1],
+                                     '6' => $extensionreasons[1],
                                      '7' => 'extra information',
                                      '8' => $feedback->grade,
                                      '9' => $assessorname,
@@ -141,7 +141,7 @@ final class csv_test extends advanced_testcase {
                                      '11' => userdate(time(), $dateformat),
                                      '12' => $feedback->grade];
 
-        $this->assertEquals($one_assessor_grades, $csv_grades);
+        $this->assertEquals($oneassessorgrades, $csvgrades);
     }
 
     /**
@@ -167,46 +167,46 @@ final class csv_test extends advanced_testcase {
         $submission = $this->submission;
 
         // Assessor one feedback
-        $feedback_data1 = new stdClass();
-        $feedback_data1->submissionid = $submission->id;
-        $feedback_data1->grade = 54;
-        $feedback_data1->assessorid = $assessor1->id;
-        $feedback_data1->stage_identifier = 'assessor_1';
-        $feedback1 = $generator->create_feedback($feedback_data1);
+        $feedbackdata1 = new stdClass();
+        $feedbackdata1->submissionid = $submission->id;
+        $feedbackdata1->grade = 54;
+        $feedbackdata1->assessorid = $assessor1->id;
+        $feedbackdata1->stage_identifier = 'assessor_1';
+        $feedback1 = $generator->create_feedback($feedbackdata1);
 
         // Assessor two feedback
-        $feedback_data2 = new stdClass();
-        $feedback_data2->submissionid = $submission->id;
-        $feedback_data2->grade = 60;
-        $feedback_data2->assessorid = $assessor2->id;
-        $feedback_data2->stage_identifier = 'assessor_2';
-        $feedback2 = $generator->create_feedback($feedback_data2);
+        $feedbackdata2 = new stdClass();
+        $feedbackdata2->submissionid = $submission->id;
+        $feedbackdata2->grade = 60;
+        $feedbackdata2->assessorid = $assessor2->id;
+        $feedbackdata2->stage_identifier = 'assessor_2';
+        $feedback2 = $generator->create_feedback($feedbackdata2);
 
         // Agreed grade feedback
-        $feedback_data3 = new stdClass();
-        $feedback_data3->submissionid = $submission->id;
-        $feedback_data3->grade = 58;
-        $feedback_data3->assessorid = $assessor1->id;
-        $feedback_data3->stage_identifier = 'final_agreed_1';
-        $feedback_data3->lasteditedbyuser = $assessor1->id;
-        $feedback3 = $generator->create_feedback($feedback_data3);
+        $feedbackdata3 = new stdClass();
+        $feedbackdata3->submissionid = $submission->id;
+        $feedbackdata3->grade = 58;
+        $feedbackdata3->assessorid = $assessor1->id;
+        $feedbackdata3->stage_identifier = 'final_agreed_1';
+        $feedbackdata3->lasteditedbyuser = $assessor1->id;
+        $feedback3 = $generator->create_feedback($feedbackdata3);
 
         // headers and data for csv
-        $csv_cells = ['name', 'username', 'submissiondate', 'submissiontime',
+        $csvcells = ['name', 'username', 'submissiondate', 'submissiontime',
             'submissionfileid'];
 
         if ($this->coursework->extensions_enabled()) {
-            $csv_cells[] = 'extensiondeadline';
-            $csv_cells[] = 'extensionreason';
-            $csv_cells[] = 'extensionextrainfo';
+            $csvcells[] = 'extensiondeadline';
+            $csvcells[] = 'extensionreason';
+            $csvcells[] = 'extensionextrainfo';
         }
-        $csv_cells[] = 'stages';
-        $csv_cells[] = 'finalgrade';
+        $csvcells[] = 'stages';
+        $csvcells[] = 'finalgrade';
 
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('finalgradesfor', 'coursework'). $this->coursework->name .' '.$timestamp;
-        $csv = new \mod_coursework\export\csv($this->coursework, $csv_cells, $filename);
-        $csv_grades = $csv->add_cells_to_array($submission, $student, $csv_cells);
+        $csv = new \mod_coursework\export\csv($this->coursework, $csvcells, $filename);
+        $csvgrades = $csv->add_cells_to_array($submission, $student, $csvcells);
 
         // build an array
         $studentname = $student->lastname .' '.$student->firstname;
@@ -216,7 +216,7 @@ final class csv_test extends advanced_testcase {
         $assessorusername1 = $assessor1->username;
         $assessorusername2 = $assessor2->username;
 
-        $two_assessors_grades = ['0' => $studentname,
+        $twoassessorsgrades = ['0' => $studentname,
                                       '1' => $student->username,
                                       '2' => userdate(time(), $dateformat),
                                       '3' => 'Late',
@@ -235,7 +235,7 @@ final class csv_test extends advanced_testcase {
                                       '16' => userdate(time(), $dateformat),
                                       '17' => $feedback3->grade];
 
-        $this->assertEquals($two_assessors_grades, $csv_grades);
+        $this->assertEquals($twoassessorsgrades, $csvgrades);
     }
 
     /**
@@ -261,29 +261,29 @@ final class csv_test extends advanced_testcase {
         $submission = $this->submission;
 
         // Assessor one feedback
-        $feedback_data = new stdClass();
-        $feedback_data->submissionid = $submission->id;
-        $feedback_data->grade = 54;
-        $feedback_data->assessorid = $assessor1->id;
-        $feedback_data->stage_identifier = 'assessor_1';
-        $feedback = $generator->create_feedback($feedback_data);
+        $feedbackdata = new stdClass();
+        $feedbackdata->submissionid = $submission->id;
+        $feedbackdata->grade = 54;
+        $feedbackdata->assessorid = $assessor1->id;
+        $feedbackdata->stage_identifier = 'assessor_1';
+        $feedback = $generator->create_feedback($feedbackdata);
 
         // headers and data for csv
-        $csv_cells = ['name', 'username', 'submissiondate', 'submissiontime',
+        $csvcells = ['name', 'username', 'submissiondate', 'submissiontime',
             'submissionfileid'];
 
         if ($this->coursework->extensions_enabled()) {
-            $csv_cells[] = 'extensiondeadline';
-            $csv_cells[] = 'extensionreason';
-            $csv_cells[] = 'extensionextrainfo';
+            $csvcells[] = 'extensiondeadline';
+            $csvcells[] = 'extensionreason';
+            $csvcells[] = 'extensionextrainfo';
         }
-        $csv_cells[] = 'stages';
-        $csv_cells[] = 'finalgrade';
+        $csvcells[] = 'stages';
+        $csvcells[] = 'finalgrade';
 
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('finalgradesfor', 'coursework'). $this->coursework->name .' '.$timestamp;
-        $csv = new \mod_coursework\export\csv($this->coursework, $csv_cells, $filename);
-        $csv_grades = $csv->add_cells_to_array($submission, $student, $csv_cells);
+        $csv = new \mod_coursework\export\csv($this->coursework, $csvcells, $filename);
+        $csvgrades = $csv->add_cells_to_array($submission, $student, $csvcells);
 
         // build an array
         $studentname = $student->lastname .' '.$student->firstname;
@@ -310,7 +310,7 @@ final class csv_test extends advanced_testcase {
                         '16' => '',
                         '17' => $feedback->grade];
 
-        $this->assertEquals($grades, $csv_grades);
+        $this->assertEquals($grades, $csvgrades);
     }
 
     /**
@@ -342,66 +342,66 @@ final class csv_test extends advanced_testcase {
         $submission2 = $generator->create_submission($submission2, $this->coursework);
 
         // student 2 manual sampling enabled
-        $set_members_data = new stdClass();
-        $set_members_data->courseworkid = $this->coursework->id;
-        $set_members_data->allocatableid = $submission2->allocatableid;
-        $set_members_data->allocatabletype = 'user';
-        $set_members_data->stage_identifier = 'assessor_2';
+        $setmembersdata = new stdClass();
+        $setmembersdata->courseworkid = $this->coursework->id;
+        $setmembersdata->allocatableid = $submission2->allocatableid;
+        $setmembersdata->allocatabletype = 'user';
+        $setmembersdata->stage_identifier = 'assessor_2';
 
-        $DB->insert_record('coursework_sample_set_mbrs', $set_members_data);
+        $DB->insert_record('coursework_sample_set_mbrs', $setmembersdata);
 
         // Assessor one feedback for student 1
-        $feedback_data1 = new stdClass();
-        $feedback_data1->submissionid = $submission1->id;
-        $feedback_data1->grade = 54;
-        $feedback_data1->assessorid = $assessor1->id;
-        $feedback_data1->stage_identifier = 'assessor_1';
-        $feedback1 = $generator->create_feedback($feedback_data1);
+        $feedbackdata1 = new stdClass();
+        $feedbackdata1->submissionid = $submission1->id;
+        $feedbackdata1->grade = 54;
+        $feedbackdata1->assessorid = $assessor1->id;
+        $feedbackdata1->stage_identifier = 'assessor_1';
+        $feedback1 = $generator->create_feedback($feedbackdata1);
 
         // Assessor one feedback for student 2
-        $feedback_data2 = new stdClass();
-        $feedback_data2->submissionid = $submission2->id;
-        $feedback_data2->grade = 60;
-        $feedback_data2->assessorid = $assessor1->id;
-        $feedback_data2->stage_identifier = 'assessor_1';
-        $feedback2 = $generator->create_feedback($feedback_data2);
+        $feedbackdata2 = new stdClass();
+        $feedbackdata2->submissionid = $submission2->id;
+        $feedbackdata2->grade = 60;
+        $feedbackdata2->assessorid = $assessor1->id;
+        $feedbackdata2->stage_identifier = 'assessor_1';
+        $feedback2 = $generator->create_feedback($feedbackdata2);
 
         // Assessor two feedback for student 2
-        $feedback_data3 = new stdClass();
-        $feedback_data3->submissionid = $submission2->id;
-        $feedback_data3->grade = 50;
-        $feedback_data3->assessorid = $assessor2->id;
-        $feedback_data3->stage_identifier = 'assessor_2';
-        $feedback3 = $generator->create_feedback($feedback_data3);
+        $feedbackdata3 = new stdClass();
+        $feedbackdata3->submissionid = $submission2->id;
+        $feedbackdata3->grade = 50;
+        $feedbackdata3->assessorid = $assessor2->id;
+        $feedbackdata3->stage_identifier = 'assessor_2';
+        $feedback3 = $generator->create_feedback($feedbackdata3);
 
         // Agreed grade feedback
-        $feedback_data4 = new stdClass();
-        $feedback_data4->submissionid = $submission2->id;
-        $feedback_data4->grade = 58;
-        $feedback_data4->assessorid = $assessor2->id;
-        $feedback_data4->stage_identifier = 'final_agreed_1';
-        $feedback_data4->lasteditedbyuser = $assessor2->id;
-        $feedback4 = $generator->create_feedback($feedback_data4);
+        $feedbackdata4 = new stdClass();
+        $feedbackdata4->submissionid = $submission2->id;
+        $feedbackdata4->grade = 58;
+        $feedbackdata4->assessorid = $assessor2->id;
+        $feedbackdata4->stage_identifier = 'final_agreed_1';
+        $feedbackdata4->lasteditedbyuser = $assessor2->id;
+        $feedback4 = $generator->create_feedback($feedbackdata4);
 
         // headers and data for csv
-        $csv_cells = ['name', 'username', 'submissiondate', 'submissiontime',
+        $csvcells = ['name', 'username', 'submissiondate', 'submissiontime',
             'submissionfileid'];
 
         if ($this->coursework->extensions_enabled()) {
-            $csv_cells[] = 'extensiondeadline';
-            $csv_cells[] = 'extensionreason';
-            $csv_cells[] = 'extensionextrainfo';
+            $csvcells[] = 'extensiondeadline';
+            $csvcells[] = 'extensionreason';
+            $csvcells[] = 'extensionextrainfo';
         }
-        $csv_cells[] = 'stages';
-        $csv_cells[] = 'finalgrade';
+        $csvcells[] = 'stages';
+        $csvcells[] = 'finalgrade';
 
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('finalgradesfor', 'coursework'). $this->coursework->name .' '.$timestamp;
-        $csv = new \mod_coursework\export\csv($this->coursework, $csv_cells, $filename);
-        $array1 = $csv->add_cells_to_array($submission1, $student1, $csv_cells);
-        $array2 = $csv->add_cells_to_array($submission2, $student2, $csv_cells);
+        $csv = new \mod_coursework\export\csv($this->coursework, $csvcells, $filename);
+        $array1 = $csv->add_cells_to_array($submission1, $student1, $csvcells);
+        $array2 = $csv->add_cells_to_array($submission2, $student2, $csvcells);
 
-        $csv_grades = array_merge($array1, $array2);
+        $csvgrades = array_merge($array1, $array2);
 
         // build an array
         $studentname1 = $student1->lastname .' '.$student1->firstname;
@@ -412,7 +412,7 @@ final class csv_test extends advanced_testcase {
         $assessorusername1 = $assessor1->username;
         $assessorusername2 = $assessor2->username;
 
-        $assessors_grades = ['0' => $studentname1,
+        $assessorsgrades = ['0' => $studentname1,
                                   '1' => $student1->username,
                                   '2' => userdate(time(), $dateformat),
                                   '3' => 'On time',
@@ -449,7 +449,7 @@ final class csv_test extends advanced_testcase {
                                   '34' => userdate(time(), $dateformat),
                                   '35' => $feedback4->grade];
 
-        $this->assertEquals($assessors_grades, $csv_grades);
+        $this->assertEquals($assessorsgrades, $csvgrades);
     }
 }
 

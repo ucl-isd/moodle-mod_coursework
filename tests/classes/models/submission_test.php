@@ -148,38 +148,38 @@ final class coursework_submission_test extends advanced_testcase {
         /**
          * @var submission $submission
          */
-        $submission_data = ['allocatableid' => $student->id,
+        $submissiondata = ['allocatableid' => $student->id,
                                               'allocatabletype' => 'user'];
-        $submission = $generator->create_submission($submission_data, $this->coursework);
+        $submission = $generator->create_submission($submissiondata, $this->coursework);
         $this->coursework->update_attribute('numberofmarkers', 1);
-        $feedback_data = new stdClass();
-        $feedback_data->submissionid = $submission->id;
-        $feedback_data->grade = 54;
-        $feedback_data->assessorid = 4566;
-        $feedback_data->stage_identifier = 'assessor_1';
+        $feedbackdata = new stdClass();
+        $feedbackdata->submissionid = $submission->id;
+        $feedbackdata->grade = 54;
+        $feedbackdata->assessorid = 4566;
+        $feedbackdata->stage_identifier = 'assessor_1';
 
         /**
          * @var feedback $feedback
          */
-        $feedback = $generator->create_feedback($feedback_data);
+        $feedback = $generator->create_feedback($feedbackdata);
 
         sleep(1);
         $submission->publish();
 
-        $initial_time = $feedback->timemodified;
+        $initialtime = $feedback->timemodified;
 
         sleep(1);
         $feedback->update_attribute('grade', 67);
 
-        $this->assertNotEquals($initial_time, $feedback->timemodified);
+        $this->assertNotEquals($initialtime, $feedback->timemodified);
 
         $submission->publish();
 
-        $grade_item = $DB->get_record('grade_items', ['itemtype' => 'mod', 'itemmodule' => 'coursework', 'iteminstance' => $this->coursework->id]);
-        $grade = $DB->get_record('grade_grades', ['itemid' => $grade_item->id, 'userid' => $student->id]);
-        $grade_time_modified = $grade->timemodified;
+        $gradeitem = $DB->get_record('grade_items', ['itemtype' => 'mod', 'itemmodule' => 'coursework', 'iteminstance' => $this->coursework->id]);
+        $grade = $DB->get_record('grade_grades', ['itemid' => $gradeitem->id, 'userid' => $student->id]);
+        $gradetimemodified = $grade->timemodified;
 
-        $this->assertNotEquals($initial_time, $grade_time_modified);
+        $this->assertNotEquals($initialtime, $gradetimemodified);
 
     }
 
@@ -192,31 +192,31 @@ final class coursework_submission_test extends advanced_testcase {
         /**
          * @var submission $submission
          */
-        $submission_data = ['allocatableid' => $student->id,
+        $submissiondata = ['allocatableid' => $student->id,
                                  'allocatabletype' => 'user'];
-        $submission = $generator->create_submission($submission_data, $this->coursework);
+        $submission = $generator->create_submission($submissiondata, $this->coursework);
         $this->coursework->update_attribute('numberofmarkers', 1);
-        $feedback_data = new stdClass();
-        $feedback_data->submissionid = $submission->id;
-        $feedback_data->grade = 54;
-        $feedback_data->assessorid = 4566;
-        $feedback_data->stage_identifier = 'assessor_1';
+        $feedbackdata = new stdClass();
+        $feedbackdata->submissionid = $submission->id;
+        $feedbackdata->grade = 54;
+        $feedbackdata->assessorid = 4566;
+        $feedbackdata->stage_identifier = 'assessor_1';
 
         /**
          * @var feedback $feedback
          */
-        $feedback = $generator->create_feedback($feedback_data);
+        $feedback = $generator->create_feedback($feedbackdata);
 
         $submission->publish();
         $feedback->update_attribute('grade', 67);
         $submission->publish();
 
-        $grade_item = $DB->get_record('grade_items',
+        $gradeitem = $DB->get_record('grade_items',
                                       ['itemtype' => 'mod',
                                             'itemmodule' => 'coursework',
                                             'iteminstance' => $this->coursework->id]);
         $grade = $DB->get_record('grade_grades',
-                                 ['itemid' => $grade_item->id,
+                                 ['itemid' => $gradeitem->id,
                                        'userid' => $student->id]);
 
         $this->assertEquals(67, $grade->rawgrade);
@@ -232,31 +232,31 @@ final class coursework_submission_test extends advanced_testcase {
         /**
          * @var submission $submission
          */
-        $submission_data = ['allocatableid' => $student->id,
+        $submissiondata = ['allocatableid' => $student->id,
                                  'allocatabletype' => 'user'];
-        $submission = $generator->create_submission($submission_data, $this->coursework);
+        $submission = $generator->create_submission($submissiondata, $this->coursework);
         $this->coursework->update_attribute('numberofmarkers', 1);
-        $feedback_data = new stdClass();
-        $feedback_data->submissionid = $submission->id;
-        $feedback_data->grade = 54;
-        $feedback_data->assessorid = 4566;
-        $feedback_data->stage_identifier = 'assessor_1';
+        $feedbackdata = new stdClass();
+        $feedbackdata->submissionid = $submission->id;
+        $feedbackdata->grade = 54;
+        $feedbackdata->assessorid = 4566;
+        $feedbackdata->stage_identifier = 'assessor_1';
 
-        $feedback = $generator->create_feedback($feedback_data);
+        $feedback = $generator->create_feedback($feedbackdata);
 
         sleep(1); // Make sure we do not just have the same timestamp everywhere.
         $submission->publish();
 
-        $grade_item = $DB->get_record('grade_items',
+        $gradeitem = $DB->get_record('grade_items',
                                       ['itemtype' => 'mod',
                                             'itemmodule' => 'coursework',
                                             'iteminstance' => $this->coursework->id]);
         $grade = $DB->get_record('grade_grades',
-                                 ['itemid' => $grade_item->id,
+                                 ['itemid' => $gradeitem->id,
                                        'userid' => $student->id]);
-        $time_modified = $grade->timemodified;
+        $timemodified = $grade->timemodified;
 
-        $this->assertEquals($feedback->timemodified, $time_modified);
+        $this->assertEquals($feedback->timemodified, $timemodified);
     }
 
 }

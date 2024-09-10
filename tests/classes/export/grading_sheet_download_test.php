@@ -72,17 +72,17 @@ final class grading_sheet_download_test extends advanced_testcase {
         $submission = $this->submission;
 
         // headers and data for csv
-        $csv_cells = ['submissionid', 'submissionfileid', 'name', 'username', 'submissiontime', 'singlegrade', 'feedbackcomments'];
+        $csvcells = ['submissionid', 'submissionfileid', 'name', 'username', 'submissiontime', 'singlegrade', 'feedbackcomments'];
 
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('gradingsheetfor', 'coursework'). $this->coursework->name .' '.$timestamp;
-        $grading_sheet = new \mod_coursework\export\grading_sheet($this->coursework, $csv_cells, $filename);
-        $actual_submission = $grading_sheet->add_cells_to_array($submission, $student, $csv_cells);
+        $gradingsheet = new \mod_coursework\export\grading_sheet($this->coursework, $csvcells, $filename);
+        $actualsubmission = $gradingsheet->add_cells_to_array($submission, $student, $csvcells);
 
         $studentname = $student->lastname .' '.$student->firstname;
 
         // build an array
-        $expected_submission = ['0' => $submission->id,
+        $expectedsubmission = ['0' => $submission->id,
                                      '1' => $this->coursework->get_username_hash($student->id),
                                      '2' => $studentname,
                                      '3' => $student->username,
@@ -90,7 +90,7 @@ final class grading_sheet_download_test extends advanced_testcase {
                                      '5' => '',
                                      '6' => ''];
 
-        $this->assertEquals($expected_submission, $actual_submission);
+        $this->assertEquals($expectedsubmission, $actualsubmission);
     }
 
     /**
@@ -127,52 +127,52 @@ final class grading_sheet_download_test extends advanced_testcase {
         $submission2 = $generator->create_submission($submission2, $this->coursework);
 
         // Assessor2 feedback for student1
-        $feedback_data1 = new stdClass();
-        $feedback_data1->submissionid = $submission1->id;
-        $feedback_data1->grade = 54;
-        $feedback_data1->feedbackcomment = 'abc';
-        $feedback_data1->assessorid = $assessor2->id;
-        $feedback_data1->stage_identifier = 'assessor_2';
-        $feedback1 = $generator->create_feedback($feedback_data1);
+        $feedbackdata1 = new stdClass();
+        $feedbackdata1->submissionid = $submission1->id;
+        $feedbackdata1->grade = 54;
+        $feedbackdata1->feedbackcomment = 'abc';
+        $feedbackdata1->assessorid = $assessor2->id;
+        $feedbackdata1->stage_identifier = 'assessor_2';
+        $feedback1 = $generator->create_feedback($feedbackdata1);
 
         // Assessor1 feedback for studen2
-        $feedback_data2 = new stdClass();
-        $feedback_data2->submissionid = $submission2->id;
-        $feedback_data2->grade = 60;
-        $feedback_data2->feedbackcomment = 'abc';
-        $feedback_data2->assessorid = $assessor1->id;
-        $feedback_data2->stage_identifier = 'assessor_1';
-        $feedback2 = $generator->create_feedback($feedback_data2);
+        $feedbackdata2 = new stdClass();
+        $feedbackdata2->submissionid = $submission2->id;
+        $feedbackdata2->grade = 60;
+        $feedbackdata2->feedbackcomment = 'abc';
+        $feedbackdata2->assessorid = $assessor1->id;
+        $feedbackdata2->stage_identifier = 'assessor_1';
+        $feedback2 = $generator->create_feedback($feedbackdata2);
 
         // Assessor2 feedback for studen2
-        $feedback_data3 = new stdClass();
-        $feedback_data3->submissionid = $submission2->id;
-        $feedback_data3->grade = 65;
-        $feedback_data3->feedbackcomment = 'abc';
-        $feedback_data3->assessorid = $assessor2->id;
-        $feedback_data3->stage_identifier = 'assessor_2';
-        $feedback3 = $generator->create_feedback($feedback_data3);
+        $feedbackdata3 = new stdClass();
+        $feedbackdata3->submissionid = $submission2->id;
+        $feedbackdata3->grade = 65;
+        $feedbackdata3->feedbackcomment = 'abc';
+        $feedbackdata3->assessorid = $assessor2->id;
+        $feedbackdata3->stage_identifier = 'assessor_2';
+        $feedback3 = $generator->create_feedback($feedbackdata3);
 
         // Agreed grade feedback
-        $feedback_data4 = new stdClass();
-        $feedback_data4->submissionid = $submission2->id;
-        $feedback_data4->grade = 62;
-        $feedback_data4->feedbackcomment = 'abc';
-        $feedback_data4->assessorid = $assessor2->id;
-        $feedback_data4->stage_identifier = 'final_agreed_1';
-        $feedback4 = $generator->create_feedback($feedback_data4);
+        $feedbackdata4 = new stdClass();
+        $feedbackdata4->submissionid = $submission2->id;
+        $feedbackdata4->grade = 62;
+        $feedbackdata4->feedbackcomment = 'abc';
+        $feedbackdata4->assessorid = $assessor2->id;
+        $feedbackdata4->stage_identifier = 'final_agreed_1';
+        $feedback4 = $generator->create_feedback($feedbackdata4);
 
         // headers and data for csv
-        $csv_cells = ['submissionid', 'submissionfileid', 'name', 'username', 'submissiontime',
+        $csvcells = ['submissionid', 'submissionfileid', 'name', 'username', 'submissiontime',
                            'assessor1', 'assessorgrade1', 'assessorfeedback1', 'assessor2', 'assessorgrade2', 'assessorfeedback2',
                            'agreedgrade', 'agreedfeedback'];
 
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('gradingsheetfor', 'coursework'). $this->coursework->name .' '.$timestamp;
-        $grading_sheet = new \mod_coursework\export\grading_sheet($this->coursework, $csv_cells, $filename);
-        $actual_submission1 = $grading_sheet->add_cells_to_array($submission1, $student1, $csv_cells);
-        $actual_submission2 = $grading_sheet->add_cells_to_array($submission2, $student2, $csv_cells);
-        $actual_submission = array_merge($actual_submission1, $actual_submission2);
+        $gradingsheet = new \mod_coursework\export\grading_sheet($this->coursework, $csvcells, $filename);
+        $actualsubmission1 = $gradingsheet->add_cells_to_array($submission1, $student1, $csvcells);
+        $actualsubmission2 = $gradingsheet->add_cells_to_array($submission2, $student2, $csvcells);
+        $actualsubmission = array_merge($actualsubmission1, $actualsubmission2);
 
         $studentname1 = $student1->lastname .' '.$student1->firstname;
         $studentname2 = $student2->lastname .' '.$student2->firstname;
@@ -181,7 +181,7 @@ final class grading_sheet_download_test extends advanced_testcase {
         $assessor2name = $assessor2->lastname .' '. $assessor2->firstname;
 
         // build an array
-        $expected_submission = ['0' => $submission1->id,
+        $expectedsubmission = ['0' => $submission1->id,
                                      '1' => $this->coursework->get_username_hash($student1->id),
                                      '2' => $studentname1,
                                      '3' => $student1->username,
@@ -190,8 +190,8 @@ final class grading_sheet_download_test extends advanced_testcase {
                                      '6' => '',
                                      '7' => '',
                                      '8' => $assessor2name,
-                                     '9' => $feedback_data1->grade,
-                                     '10' => $feedback_data1->feedbackcomment,
+                                     '9' => $feedbackdata1->grade,
+                                     '10' => $feedbackdata1->feedbackcomment,
                                      '11' => '',
                                      '12' => '',
                                      '13' => $submission2->id,
@@ -200,15 +200,15 @@ final class grading_sheet_download_test extends advanced_testcase {
                                      '16' => $student2->username,
                                      '17' => 'On time',
                                      '18' => $assessor2name,
-                                     '19' => $feedback_data2->grade,
-                                     '20' => $feedback_data2->feedbackcomment,
+                                     '19' => $feedbackdata2->grade,
+                                     '20' => $feedbackdata2->feedbackcomment,
                                      '21' => $assessor1name,
-                                     '22' => $feedback_data3->grade,
-                                     '23' => $feedback_data3->feedbackcomment,
-                                     '24' => $feedback_data4->grade,
-                                     '25' => $feedback_data4->feedbackcomment ];
+                                     '22' => $feedbackdata3->grade,
+                                     '23' => $feedbackdata3->feedbackcomment,
+                                     '24' => $feedbackdata4->grade,
+                                     '25' => $feedbackdata4->feedbackcomment ];
 
-        $this->assertEquals($expected_submission, $actual_submission);
+        $this->assertEquals($expectedsubmission, $actualsubmission);
 
     }
 }

@@ -84,15 +84,15 @@ final class percentage_distance_test extends \advanced_testcase {
             ->with($this->get_coursework())
             ->will($this->returnValue(true));
 
-        $feedback_one = $this->createMock('\mod_coursework\models\feedback');
-        $feedback_one->expects($this->any())->method('get_grade')->will($this->returnValue(50));
+        $feedbackone = $this->createMock('\mod_coursework\models\feedback');
+        $feedbackone->expects($this->any())->method('get_grade')->will($this->returnValue(50));
 
-        $feedback_two = $this->createMock('\mod_coursework\models\feedback');
-        $feedback_two->expects($this->any())->method('get_grade')->will($this->returnValue(55));
+        $feedbacktwo = $this->createMock('\mod_coursework\models\feedback');
+        $feedbacktwo->expects($this->any())->method('get_grade')->will($this->returnValue(55));
 
         $user->expects($this->any())->method('get_initial_feedbacks')
             ->with($this->get_coursework())
-            ->will($this->returnValue([$feedback_one, $feedback_two]));
+            ->will($this->returnValue([$feedbackone, $feedbacktwo]));
 
         $submission = $this->createMock('\mod_coursework\models\submission');
         $submission->expects($this->any())->method('id')->will($this->returnValue(234234));
@@ -117,16 +117,16 @@ final class percentage_distance_test extends \advanced_testcase {
             ->with($this->get_coursework())
             ->will($this->returnValue(true));
 
-        $feedback_one = $this->createMock('\mod_coursework\models\feedback');
-        $feedback_one->expects($this->any())->method('get_grade')->will($this->returnValue(50));
+        $feedbackone = $this->createMock('\mod_coursework\models\feedback');
+        $feedbackone->expects($this->any())->method('get_grade')->will($this->returnValue(50));
 
-        $feedback_two = $this->createMock('\mod_coursework\models\feedback');
-        $feedback_two->expects($this->any())->method('get_grade')->will($this->returnValue(55));
+        $feedbacktwo = $this->createMock('\mod_coursework\models\feedback');
+        $feedbacktwo->expects($this->any())->method('get_grade')->will($this->returnValue(55));
 
         $user->expects($this->any())->method('get_initial_feedbacks')
             ->with($this->get_coursework())
-            ->will($this->returnValue([$feedback_one,
-                                            $feedback_two]));
+            ->will($this->returnValue([$feedbackone,
+                                            $feedbacktwo]));
 
         $submission = $this->createMock('\mod_coursework\models\submission');
         $submission->expects($this->any())->method('id')->will($this->returnValue(234234));
@@ -137,11 +137,11 @@ final class percentage_distance_test extends \advanced_testcase {
 
         $object->create_auto_grade_if_rules_match($user);
 
-        $created_feedback = $DB->get_record('coursework_feedbacks', []);
+        $createdfeedback = $DB->get_record('coursework_feedbacks', []);
 
-        $this->assertEquals($created_feedback->grade ?? null, 55); // Right grade
-        $this->assertEquals($created_feedback->submissionid ?? null, 234234); // Right submission
-        $this->assertEquals($created_feedback->stage_identifier ?? null, 'final_agreed_1'); // Right stage
+        $this->assertEquals($createdfeedback->grade ?? null, 55); // Right grade
+        $this->assertEquals($createdfeedback->submissionid ?? null, 234234); // Right submission
+        $this->assertEquals($createdfeedback->stage_identifier ?? null, 'final_agreed_1'); // Right stage
     }
 
 }

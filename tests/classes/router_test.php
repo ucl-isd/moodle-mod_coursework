@@ -42,7 +42,7 @@ final class router_test extends advanced_testcase {
     /**
      * @var string
      */
-    protected $moodle_location = 'https://www.example.com/moodle';
+    protected $moodlelocation = 'https://www.example.com/moodle';
 
     public function setUp(): void {
         $this->router = router::instance();

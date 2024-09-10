@@ -44,7 +44,7 @@ class feedback extends table_base {
     /**
      * @var string
      */
-    protected static $table_name = 'coursework_feedbacks';
+    protected static $tablename = 'coursework_feedbacks';
 
     /**
      * @var int
@@ -120,7 +120,7 @@ class feedback extends table_base {
      * @var stdClass hold all of the custom form data associated with this feedback.
      * Needs further processing. {@see feedback->set_feedback_data()}
      */
-    public $form_data;
+    public $formdata;
 
     /**
      * @var stdClass
@@ -145,7 +145,7 @@ class feedback extends table_base {
     /**
      * @var int the id of the entry (in the ULCC form library) attached to this feedback
      */
-    public $entry_id;
+    public $entryid;
 
     /**
      * @var int tells us what number this feedback was so we can easily link the feedback table to submissions for
@@ -199,12 +199,12 @@ class feedback extends table_base {
 
         // check if assessor's name in this CW is set to hidden
         if ($this->is_assessor_anonymity_enabled()) {
-            $assessor_name = get_string('hidden', 'mod_coursework');
+            $assessorname = get_string('hidden', 'mod_coursework');
         } else {
-            $assessor_name = $this->get_assesor_username();
+            $assessorname = $this->get_assesor_username();
         }
 
-        return $assessor_name;
+        return $assessorname;
     }
 
     /**
@@ -320,18 +320,18 @@ class feedback extends table_base {
      * @param $context_id
      * @return void
      */
-    public function set_feedback_files($context_id) {
+    public function set_feedback_files($contextid) {
 
         if (is_array($this->feedbackfiles)) {
             return;
         }
 
-        if (!$context_id) {
+        if (!$contextid) {
             return;
         }
 
         $fs = get_file_storage();
-        $this->feedbackfiles = $fs->get_area_files($context_id, 'mod_coursework',
+        $this->feedbackfiles = $fs->get_area_files($contextid, 'mod_coursework',
                                                    'feedback', $this->id, "id", false);
     }
 
@@ -476,12 +476,12 @@ class feedback extends table_base {
 
         if (!isset($this->submission) && !empty($this->submissionid)) {
             global $DB;
-            $coursework_id = $this->courseworkid
-                ?? $DB->get_field(submission::$table_name, 'courseworkid', ['id' => $this->submissionid], MUST_EXIST);
-            if (!isset(submission::$pool[$coursework_id])) {
-                submission::fill_pool_coursework($coursework_id);
+            $courseworkid = $this->courseworkid
+                ?? $DB->get_field(submission::$tablename, 'courseworkid', ['id' => $this->submissionid], MUST_EXIST);
+            if (!isset(submission::$pool[$courseworkid])) {
+                submission::fill_pool_coursework($courseworkid);
             }
-            $this->submission = submission::$pool[$coursework_id]['id'][$this->submissionid] ?? false;
+            $this->submission = submission::$pool[$courseworkid]['id'][$this->submissionid] ?? false;
         }
 
         return $this->submission;
@@ -588,32 +588,32 @@ class feedback extends table_base {
      * @param $coursework_id
      * @throws \dml_exception
      */
-    public static function fill_pool_coursework($coursework_id) {
+    public static function fill_pool_coursework($courseworkid) {
         global $DB;
-        if (isset(self::$pool[$coursework_id])) {
+        if (isset(self::$pool[$courseworkid])) {
             return;
         }
-        if (submission::$pool[$coursework_id] ?? null) {
-            $submission_ids = submission::$pool[$coursework_id]['id'];
+        if (submission::$pool[$courseworkid] ?? null) {
+            $submissionids = submission::$pool[$courseworkid]['id'];
         } else {
-            $submission_ids = $DB->get_records(submission::$table_name, ['courseworkid' => $coursework_id], '', 'id');
+            $submissionids = $DB->get_records(submission::$tablename, ['courseworkid' => $courseworkid], '', 'id');
         }
-        self::fill_pool_submissions($coursework_id, array_keys($submission_ids));
+        self::fill_pool_submissions($courseworkid, array_keys($submissionids));
     }
 
     /**
      * @param $coursework_id
      * @param $submission_ids
      */
-    public static function fill_pool_submissions($coursework_id, $submission_ids) {
+    public static function fill_pool_submissions($courseworkid, $submissionids) {
         global $DB;
 
-        if (isset(self::$pool[$coursework_id])) {
+        if (isset(self::$pool[$courseworkid])) {
             return;
         }
 
-        $key = self::$table_name;
-        $cache = \cache::make('mod_coursework', 'courseworkdata', ['id' => $coursework_id]);
+        $key = self::$tablename;
+        $cache = \cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
 
         $data = $cache->get($key);
         if ($data === false) {
@@ -626,25 +626,25 @@ class feedback extends table_base {
                 'submissionid-assessorid' => [],
                 'submissionid' => [],
             ];
-            if ($submission_ids) {
-                list($submission_id_sql, $submission_id_params) = $DB->get_in_or_equal($submission_ids, SQL_PARAMS_NAMED);
-                $feedbacks = $DB->get_records_sql("SELECT * FROM {coursework_feedbacks} WHERE submissionid $submission_id_sql", $submission_id_params);
+            if ($submissionids) {
+                list($submissionidsql, $submissionidparams) = $DB->get_in_or_equal($submissionids, SQL_PARAMS_NAMED);
+                $feedbacks = $DB->get_records_sql("SELECT * FROM {courseworkfeedbacks} WHERE submissionid $submissionidsql", $submissionidparams);
                 foreach ($feedbacks as $record) {
                     $object = new self($record);
-                    $stage_identifier = $record->stage_identifier;
-                    $stage_identifier_index = ($stage_identifier == 'final_agreed_1') ? $stage_identifier : 'others';
+                    $stageidentifier = $record->stage_identifier;
+                    $stageidentifierindex = ($stageidentifier == 'final_agreed_1') ? $stageidentifier : 'others';
                     $data['id'][$record->id] = $object;
-                    $data['submissionid-stage_identifier'][$record->submissionid . '-' . $stage_identifier][] = $object;
-                    $data['submissionid-stage_identifier_index'][$record->submissionid . '-' . $stage_identifier_index][] = $object;
+                    $data['submissionid-stage_identifier'][$record->submissionid . '-' . $stageidentifier][] = $object;
+                    $data['submissionid-stage_identifier_index'][$record->submissionid . '-' . $stageidentifierindex][] = $object;
                     $data['submissionid-finalised'][$record->submissionid . '-' . $record->finalised][] = $object;
-                    $data['submissionid-ismoderation-isfinalgrade-stage_identifier'][$record->submissionid . '-' . $record->ismoderation . '-' . $record->isfinalgrade . '-' . $stage_identifier][] = $object;
+                    $data['submissionid-ismoderation-isfinalgrade-stage_identifier'][$record->submissionid . '-' . $record->ismoderation . '-' . $record->isfinalgrade . '-' . $stageidentifier][] = $object;
                     $data['submissionid-assessorid'][$record->submissionid . '-' . $record->assessorid][] = $object;
                     $data['submissionid'][$record->submissionid][] = $object;
                 }
             }
             $cache->set($key, $data);
         }
-        self::$pool[$coursework_id] = $data;
+        self::$pool[$courseworkid] = $data;
     }
 
     /**
@@ -654,12 +654,12 @@ class feedback extends table_base {
      * @param $params
      * @return self|bool
      */
-    public static function get_object($coursework_id, $key, $params) {
-        if (!isset(self::$pool[$coursework_id])) {
-            self::fill_pool_coursework($coursework_id);
+    public static function get_object($courseworkid, $key, $params) {
+        if (!isset(self::$pool[$courseworkid])) {
+            self::fill_pool_coursework($courseworkid);
         }
-        $value_key = implode('-', $params);
-        return self::$pool[$coursework_id][$key][$value_key][0] ?? false;
+        $valuekey = implode('-', $params);
+        return self::$pool[$courseworkid][$key][$valuekey][0] ?? false;
     }
 
     /**

@@ -51,8 +51,8 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @throws Behat\Mink\Exception\ElementNotFoundException
      */
     public function user_allocated_assessor($user, $stageidentifier): string {
-        $cell_span = $this->getPage()->find('css', '#user_'.$user->id.' .'.$stageidentifier.' .existing-assessor');
-        return $cell_span ? $cell_span->getText() : '';
+        $cellspan = $this->getPage()->find('css', '#user_'.$user->id.' .'.$stageidentifier.' .existing-assessor');
+        return $cellspan ? $cellspan->getText() : '';
     }
 
     /**
@@ -60,26 +60,26 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param user $assessor
      * @param string $stage_identifier
      */
-    public function manually_allocate($allocatable, $assessor, $stage_identifier) {
+    public function manually_allocate($allocatable, $assessor, $stageidentifier) {
 
         // Identify the allocation dropdown.
-        $dropdown_id = $allocatable->type().'_' . $allocatable->id . '_'.$stage_identifier;
-        $node = $this->getContext()->find_field($dropdown_id);
+        $dropdownid = $allocatable->type().'_' . $allocatable->id . '_'.$stageidentifier;
+        $node = $this->getContext()->find_field($dropdownid);
 
         // We delegate to behat_form_field class, it will
         // guess the type properly as it is a select tag.
         $field = behat_field_manager::get_form_field($node, $this->getSession());
         $field->set_value($assessor->id());
 
-        $this->pin_allocation($allocatable, $stage_identifier);
+        $this->pin_allocation($allocatable, $stageidentifier);
     }
 
     /**
      * @param allocatable $student
      * @param string $stage_identifier
      */
-    public function select_for_sample($student, $stage_identifier) {
-        $elementid = $this->sampling_checkbox_id($student, $stage_identifier);
+    public function select_for_sample($student, $stageidentifier) {
+        $elementid = $this->sampling_checkbox_id($student, $stageidentifier);
         $node = $this->getPage()->find('css', $elementid);
         $node->check();
     }
@@ -88,8 +88,8 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param allocatable $allocatable
      * @param string $stage_identifier
      */
-    private function pin_allocation($allocatable, $stage_identifier) {
-        $name = "//input[@name='allocatables[".$allocatable->id()."][".$stage_identifier."][pinned]']";
+    private function pin_allocation($allocatable, $stageidentifier) {
+        $name = "//input[@name='allocatables[".$allocatable->id()."][".$stageidentifier."][pinned]']";
         $nodes = $this->getPage()->findAll('xpath', $name);
 
         // We delegate to behat_form_field class, it will
@@ -127,8 +127,8 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param $stage_identifier
      * @throws \Behat\Mink\Exception\ElementException
      */
-    public function deselect_for_sample($student, $stage_identifier) {
-        $elementid = $this->sampling_checkbox_id($student, $stage_identifier);
+    public function deselect_for_sample($student, $stageidentifier) {
+        $elementid = $this->sampling_checkbox_id($student, $stageidentifier);
         $node = $this->getPage()->find('css', $elementid);
         $node->uncheck();
     }
@@ -138,8 +138,8 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param $stage_identifier
      * @return string
      */
-    public function sampling_checkbox_id($student, $stage_identifier) {
-        $elementid = '#' . $student->type() . '_' . $student->id . '_' . $stage_identifier . '_samplecheckbox';
+    public function sampling_checkbox_id($student, $stageidentifier) {
+        $elementid = '#' . $student->type() . '_' . $student->id . '_' . $stageidentifier . '_samplecheckbox';
         return $elementid;
     }
 

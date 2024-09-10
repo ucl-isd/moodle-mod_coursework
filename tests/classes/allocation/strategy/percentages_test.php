@@ -54,8 +54,8 @@ final class mod_coursework_allocation_strategy_percentages_test extends advanced
 
         $this->set_to_100_percent_for_other_teacher();
 
-        $next_teacher = $strategy->next_assessor_from_list($this->list_of_teachers(), $this->student);
-        $this->assertEquals($this->other_teacher->id, $next_teacher->id);
+        $nextteacher = $strategy->next_assessor_from_list($this->list_of_teachers(), $this->student);
+        $this->assertEquals($this->other_teacher->id, $nextteacher->id);
 
     }
 
@@ -66,8 +66,8 @@ final class mod_coursework_allocation_strategy_percentages_test extends advanced
         $this->set_to_100_percent_for_other_teacher();
         $this->allocate_the_student_to_the_other_teacer();
 
-        $next_teacher = $strategy->next_assessor_from_list($this->list_of_teachers(), $this->student);
-        $this->assertFalse($next_teacher);
+        $nextteacher = $strategy->next_assessor_from_list($this->list_of_teachers(), $this->student);
+        $this->assertFalse($nextteacher);
     }
 
     public function test_when_at_100_percent_for_one_teacher_and_the_other_student_is_already_allocated(): void {
@@ -77,8 +77,8 @@ final class mod_coursework_allocation_strategy_percentages_test extends advanced
         $this->set_to_100_percent_for_other_teacher();
         $this->allocate_the_student_to_the_other_teacer();
 
-        $next_teacher = $strategy->next_assessor_from_list($this->list_of_teachers(), $this->other_student);
-        $this->assertEquals($this->other_teacher->id, $next_teacher->id);
+        $nextteacher = $strategy->next_assessor_from_list($this->list_of_teachers(), $this->other_student);
+        $this->assertEquals($this->other_teacher->id, $nextteacher->id);
     }
 
     /**
@@ -94,8 +94,8 @@ final class mod_coursework_allocation_strategy_percentages_test extends advanced
         $this->allocate_the_student_to_the_other_teacer();
 
         $strategy = $this->assessor_strategy();
-        $next_teacher = $strategy->next_assessor_from_list($this->list_of_teachers(), $this->other_student);
-        $this->assertEquals($this->other_teacher->id, $next_teacher->id);
+        $nextteacher = $strategy->next_assessor_from_list($this->list_of_teachers(), $this->other_student);
+        $this->assertEquals($this->other_teacher->id, $nextteacher->id);
     }
 
     /**

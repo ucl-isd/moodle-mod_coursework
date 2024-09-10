@@ -40,12 +40,12 @@ final class assessor_test extends advanced_testcase {
         $this->coursework->update_attribute('moderatorallocationstrategy', 'none');
 
         $stages = $this->coursework->get_assessor_marking_stages();
-        $first_stage = reset($stages);
+        $firststage = reset($stages);
 
         $student = $this->create_a_student();
         $this->create_a_submission_for_the_student();
 
-        $this->assertTrue($first_stage->prerequisite_stages_have_feedback($student));
+        $this->assertTrue($firststage->prerequisite_stages_have_feedback($student));
 
     }
 
@@ -56,15 +56,15 @@ final class assessor_test extends advanced_testcase {
 
         $stages = $this->coursework->get_assessor_marking_stages();
         array_shift($stages);
-        $second_stage = reset($stages);
-        $this->assertEquals('assessor_2', $second_stage->identifier());
+        $secondstage = reset($stages);
+        $this->assertEquals('assessor_2', $secondstage->identifier());
 
         $student = $this->create_a_student();
         $this->create_a_submission_for_the_student();
         $this->create_a_teacher();
         $this->create_an_assessor_feedback_for_the_submisison($this->teacher);
 
-        $this->assertTrue($second_stage->prerequisite_stages_have_feedback($student));
+        $this->assertTrue($secondstage->prerequisite_stages_have_feedback($student));
     }
 
     public function test_type(): void {

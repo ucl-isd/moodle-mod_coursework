@@ -112,10 +112,10 @@ class grade_judge {
      */
     private function get_submission_grade_to_use($submission) {
 
-        $gradebook_feedback = $this->get_feedback_that_is_promoted_to_gradebook($submission);
+        $gradebookfeedback = $this->get_feedback_that_is_promoted_to_gradebook($submission);
 
-        if ($gradebook_feedback && ($submission->ready_to_publish()) || $submission->already_published()) {
-            return $gradebook_feedback->get_grade();
+        if ($gradebookfeedback && ($submission->ready_to_publish()) || $submission->already_published()) {
+            return $gradebookfeedback->get_grade();
         }
         return null;
     }
@@ -160,8 +160,8 @@ class grade_judge {
      * @return bool
      */
     public function is_feedback_that_is_promoted_to_gradebook(feedback $feedback) {
-        $gradebook_feedback = $this->get_feedback_that_is_promoted_to_gradebook($feedback->get_submission());
-        return $gradebook_feedback && $gradebook_feedback->id == $feedback->id;
+        $gradebookfeedback = $this->get_feedback_that_is_promoted_to_gradebook($feedback->get_submission());
+        return $gradebookfeedback && $gradebookfeedback->id == $feedback->id;
     }
 
     /**

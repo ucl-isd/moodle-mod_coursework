@@ -41,8 +41,8 @@ final class mod_coursework_models_deadline_extension_test extends advanced_testc
                         'allocatabletype' => 'user',
                         'courseworkid' => 4,
                         'extended_deadline' => time()];
-        $new_thing = deadline_extension::create($params);
-        $this->assertInstanceOf('mod_coursework\models\deadline_extension', $new_thing);
+        $newthing = deadline_extension::create($params);
+        $this->assertInstanceOf('mod_coursework\models\deadline_extension', $newthing);
     }
 
     public function test_user_extension_allows_submission_when_active(): void {

@@ -35,7 +35,7 @@ class module extends table_base {
     /**
      * @var string
      */
-    protected static $table_name = 'modules';
+    protected static $tablename = 'modules';
 
     /**
      * @var int

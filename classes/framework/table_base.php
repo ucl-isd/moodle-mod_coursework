@@ -37,21 +37,21 @@ abstract class table_base {
     /**
      * @var string
      */
-    protected static $table_name;
+    protected static $tablename;
 
     /**
      * Cache for the column names.
      *
      * @var array tablename => array(of column names)
      */
-    protected static $column_names;
+    protected static $columnnames;
 
     /**
      * Tells us whether the data has been loaded at least once since instantiation.
      *
      * @var bool
      */
-    private $data_loaded = false;
+    private $dataloaded = false;
 
     /**
      * @var int
@@ -67,18 +67,18 @@ abstract class table_base {
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public static function find($db_record, $reload = true) {
+    public static function find($dbrecord, $reload = true) {
 
         global $DB;
 
-        if (empty($db_record)) {
+        if (empty($dbrecord)) {
             return false;
         }
 
         $klass = get_called_class();
 
-        if (is_numeric($db_record) && $db_record > 0) {
-            $data = $DB->get_record(self::get_table_name(), ['id' => $db_record]);
+        if (is_numeric($dbrecord) && $dbrecord > 0) {
+            $data = $DB->get_record(self::get_table_name(), ['id' => $dbrecord]);
             if (!$data) {
                 return false;
             }
@@ -86,19 +86,19 @@ abstract class table_base {
             return $record;
         }
 
-        $db_record = (array)$db_record;
+        $dbrecord = (array)$dbrecord;
 
         // Supplied a partial DB stdClass record
-        if (!array_key_exists('id', $db_record)) {
-            $db_record = $DB->get_record(static::get_table_name(), $db_record);
-            if (!$db_record) {
+        if (!array_key_exists('id', $dbrecord)) {
+            $dbrecord = $DB->get_record(static::get_table_name(), $dbrecord);
+            if (!$dbrecord) {
                 return false;
             }
-            return new $klass($db_record);
+            return new $klass($dbrecord);
         }
 
-        if ($db_record) {
-            $record = new $klass($db_record);
+        if ($dbrecord) {
+            $record = new $klass($dbrecord);
             if ($reload) {
                 $record->reload();
             }
@@ -159,17 +159,17 @@ abstract class table_base {
      *
      * @param object|bool $db_record
      */
-    public function __construct($db_record = false) {
+    public function __construct($dbrecord = false) {
 
         // Allow the option to supply an id if this is not being generated as part of a massive list
         // of courseworks. If the id isn't there, throw an error. Weirdly, everything comes through
         // as a string here.
-        if (!empty($db_record) && is_numeric($db_record)) {
-            $this->id = $db_record;
+        if (!empty($dbrecord) && is_numeric($dbrecord)) {
+            $this->id = $dbrecord;
             $this->reload();
-        } else if (is_object($db_record) || is_array($db_record)) {
+        } else if (is_object($dbrecord) || is_array($dbrecord)) {
             // Add all of the DB row fields to this object (if the object has a matching property).
-            $this->apply_data($db_record);
+            $this->apply_data($dbrecord);
             $this->data_loaded = true;
         }
     }
@@ -181,11 +181,11 @@ abstract class table_base {
     protected static function instantiate_objects($params) {
         global $DB;
 
-        $raw_records = $DB->get_records(static::get_table_name(), $params);
+        $rawrecords = $DB->get_records(static::get_table_name(), $params);
         $objects = [];
         $klass = get_called_class();
-        foreach ($raw_records as $raw_record) {
-            $objects[$raw_record->id] = new $klass($raw_record);
+        foreach ($rawrecords as $rawrecord) {
+            $objects[$rawrecord->id] = new $klass($rawrecord);
         }
         return $objects;
     }
@@ -194,9 +194,9 @@ abstract class table_base {
      * @param $params
      */
     protected static function remove_non_existant_columns($params) {
-        foreach ($params as $column_name => $value) {
-            if (!static::column_exists($column_name)) {
-                unset($params[$column_name]);
+        foreach ($params as $columnname => $value) {
+            if (!static::column_exists($columnname)) {
+                unset($params[$columnname]);
             }
         }
     }
@@ -234,14 +234,14 @@ abstract class table_base {
      * @throws \coding_exception
      * @return mixed
      */
-    public function __get($requested_property_name) {
-        static::ensure_column_exists($requested_property_name);
+    public function __get($requestedpropertyname) {
+        static::ensure_column_exists($requestedpropertyname);
 
         if (!$this->data_loaded) {
             $this->reload(); // Will not set the variable if we have not saved the object yet
         }
 
-        return empty($this->$requested_property_name) ? null : $this->$requested_property_name;
+        return empty($this->$requestedpropertyname) ? null : $this->$requestedpropertyname;
     }
 
     /**
@@ -250,11 +250,11 @@ abstract class table_base {
      * @param array|stdClass $data_object
      * @return void
      */
-    protected function apply_data($data_object) {
-        $data = (array)$data_object;
-        foreach (static::get_column_names() as $column_name) {
-            if (isset($data[$column_name])) {
-                $this->{$column_name} = $data[$column_name];
+    protected function apply_data($dataobject) {
+        $data = (array)$dataobject;
+        foreach (static::get_column_names() as $columnname) {
+            if (isset($data[$columnname])) {
+                $this->{$columnname} = $data[$columnname];
             }
         }
     }
@@ -272,13 +272,13 @@ abstract class table_base {
 
         $this->pre_save_hook();
 
-        $save_data = $this->build_data_object_to_save($sneakily);
+        $savedata = $this->build_data_object_to_save($sneakily);
 
         // Update if there's an id, otherwise make a new one. Check first for an id?
         if ($this->persisted()) {
-            $DB->update_record(static::get_table_name(), $save_data);
+            $DB->update_record(static::get_table_name(), $savedata);
         } else {
-            $this->id = $DB->insert_record(static::get_table_name(), $save_data);
+            $this->id = $DB->insert_record(static::get_table_name(), $savedata);
         }
 
         // Possibly we just saved only some fields and some were created as defaults. Update with the missing ones.
@@ -294,22 +294,22 @@ abstract class table_base {
      */
     final public static function get_table_name() {
 
-        if (empty(static::$table_name)) {
-            $class_name = get_called_class(); // 'mod_coursework\models\deadline_extension'
-            $pieces = explode('\\', $class_name); // 'mod_coursework', 'models', 'deadline_extension'
-            $table_name = end($pieces); // 'deadline_extension'
+        if (empty(static::$tablename)) {
+            $classname = get_called_class(); // 'mod_coursework\models\deadline_extension'
+            $pieces = explode('\\', $classname); // 'mod_coursework', 'models', 'deadline_extension'
+            $tablename = end($pieces); // 'deadline_extension'
             //todo this may need further attention but fixing the one issue identified so far.
-            if ($table_name == 'personal_deadline') {
+            if ($tablename == 'personal_deadline') {
                 // Table personal_deadline does not exist but coursework_person_deadline does.
-                $table_name = 'coursework_person_deadline';
+                $tablename = 'coursework_person_deadline';
             } else {
-                $table_name .= 's'; // 'deadline_extensions'
+                $tablename .= 's'; // 'deadline_extensions'
             }
         } else {
-            $table_name = static::$table_name;
+            $tablename = static::$tablename;
         }
 
-        return $table_name;
+        return $tablename;
     }
 
     /**
@@ -332,7 +332,7 @@ abstract class table_base {
     public function persisted() {
         global $DB;
 
-        return !empty($this->id) && $DB->record_exists(static::$table_name, ['id' => $this->id]);
+        return !empty($this->id) && $DB->record_exists(static::$tablename, ['id' => $this->id]);
     }
 
     /**
@@ -378,15 +378,15 @@ abstract class table_base {
 
         $tablename = static::get_table_name();
 
-        if (isset(static::$column_names[$tablename])) {
-            return static::$column_names[$tablename];
+        if (isset(static::$columnnames[$tablename])) {
+            return static::$columnnames[$tablename];
         }
 
         $columns = $DB->get_columns($tablename);
 
-        static::$column_names[$tablename] = array_keys($columns);
+        static::$columnnames[$tablename] = array_keys($columns);
 
-        return static::$column_names[$tablename];
+        return static::$columnnames[$tablename];
     }
 
     /**
@@ -395,8 +395,8 @@ abstract class table_base {
      * @param string $requested_property_name
      * @return bool
      */
-    private static function column_exists($requested_property_name) {
-        return in_array($requested_property_name, static::get_column_names());
+    private static function column_exists($requestedpropertyname) {
+        return in_array($requestedpropertyname, static::get_column_names());
     }
 
     /**
@@ -405,18 +405,18 @@ abstract class table_base {
      * @return $this
      * @throws \coding_exception
      */
-    public function reload($complain_if_not_found = true) {
+    public function reload($complainifnotfound = true) {
         global $DB;
 
         if (empty($this->id)) {
             return $this;
         }
 
-        $strictness = $complain_if_not_found ? MUST_EXIST : IGNORE_MISSING;
-        $db_record = $DB->get_record(static::get_table_name(), ['id' => $this->id], '*', $strictness);
+        $strictness = $complainifnotfound ? MUST_EXIST : IGNORE_MISSING;
+        $dbrecord = $DB->get_record(static::get_table_name(), ['id' => $this->id], '*', $strictness);
 
-        if ($db_record) {
-            $this->apply_data($db_record);
+        if ($dbrecord) {
+            $this->apply_data($dbrecord);
             $this->data_loaded = true;
         }
 
@@ -479,8 +479,8 @@ abstract class table_base {
      * @param bool $with_errors_for_missing_columns
      * @throws \coding_exception
      */
-    private function apply_column_value_to_self($col, $val, $with_errors_for_missing_columns = true) {
-        if ($with_errors_for_missing_columns) {
+    private function apply_column_value_to_self($col, $val, $witherrorsformissingcolumns = true) {
+        if ($witherrorsformissingcolumns) {
             static::ensure_column_exists($col);
         }
         if ($this->column_exists($col)) {
@@ -495,24 +495,24 @@ abstract class table_base {
     private function build_data_object_to_save($sneakily = false) {
         // Don't just use $this as it will try to save any missing value as null. We may only want.
         // to update  some fields e.g. leaving timecreated alone.
-        $save_data = new stdClass();
+        $savedata = new stdClass();
 
         // Only save the non-null fields.
-        foreach (static::get_column_names() as $column_name) {
-            if (!is_null($this->$column_name)) {
-                $save_data->$column_name = $this->$column_name;
+        foreach (static::get_column_names() as $columnname) {
+            if (!is_null($this->$columnname)) {
+                $savedata->$columnname = $this->$columnname;
             }
         }
 
         if (static::column_exists('timecreated') && !$this->persisted()) {
-            $save_data->timecreated = time();
+            $savedata->timecreated = time();
         }
 
         if (!$sneakily && static::column_exists('timemodified')) {
-            $save_data->timemodified = time();
+            $savedata->timemodified = time();
         }
 
-        return $save_data;
+        return $savedata;
     }
 
     /**
@@ -606,9 +606,9 @@ abstract class table_base {
         $data = [];
 
         // Only save the non-null fields.
-        foreach (static::get_column_names() as $column_name) {
-            if (!is_null($this->$column_name)) {
-                $data[$column_name] = $this->$column_name;
+        foreach (static::get_column_names() as $columnname) {
+            if (!is_null($this->$columnname)) {
+                $data[$columnname] = $this->$columnname;
             }
         }
         return $data;
@@ -637,34 +637,34 @@ abstract class table_base {
      * @param $coursework_id
      * @throws \dml_exception
      */
-    public static function fill_pool_coursework($coursework_id) {
-        if (isset(static::$pool[$coursework_id])) {
+    public static function fill_pool_coursework($courseworkid) {
+        if (isset(static::$pool[$courseworkid])) {
             return;
         }
-        $key = static::$table_name;
-        $cache = \cache::make('mod_coursework', 'courseworkdata', ['id' => $coursework_id]);
+        $key = static::$tablename;
+        $cache = \cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
 
         $data = $cache->get($key);
         if ($data === false) {
             // no cache found
-            $data = static::get_cache_array($coursework_id);
+            $data = static::get_cache_array($courseworkid);
             $cache->set($key, $data);
         }
 
-        static::$pool[$coursework_id] = $data;
+        static::$pool[$courseworkid] = $data;
     }
 
     /**
      * @param $coursework_id
      */
-    public static function remove_cache($coursework_id) {
+    public static function remove_cache($courseworkid) {
         global $SESSION;
         if (!empty($SESSION->keep_cache_data)) {
             return;
         }
-        static::$pool[$coursework_id] = null;
-        $cache = \cache::make('mod_coursework', 'courseworkdata', ['id' => $coursework_id]);
-        $cache->delete(static::$table_name);
+        static::$pool[$courseworkid] = null;
+        $cache = \cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
+        $cache->delete(static::$tablename);
     }
 
 }

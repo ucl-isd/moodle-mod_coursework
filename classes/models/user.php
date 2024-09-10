@@ -45,7 +45,7 @@ class user extends table_base implements allocatable, moderatable {
     /**
      * @var string
      */
-    protected static $table_name = 'user';
+    protected static $tablename = 'user';
 
     /**
      * @param bool $data
@@ -85,11 +85,11 @@ class user extends table_base implements allocatable, moderatable {
      * @param bool $with_picture
      * @return string
      */
-    public function profile_link($with_picture = false) {
+    public function profile_link($withpicture = false) {
         global $OUTPUT;
 
         $output = '';
-        if ($with_picture) {
+        if ($withpicture) {
             $output .= $OUTPUT->user_picture($this->get_raw_record(), ['link' => false]);
             $output .= ' ';
         }
@@ -103,8 +103,8 @@ class user extends table_base implements allocatable, moderatable {
      * @return mixed
      */
     public function is_valid_for_course($course) {
-        $course_context = \context_course::instance($course->id);
-        return is_enrolled($course_context, $this->id(), 'mod/coursework:submit');
+        $coursecontext = \context_course::instance($course->id);
+        return is_enrolled($coursecontext, $this->id(), 'mod/coursework:submit');
     }
 
     /**
@@ -112,11 +112,11 @@ class user extends table_base implements allocatable, moderatable {
      * @param int $reminder_number
      * @return bool
      */
-    public function has_not_been_sent_reminder($coursework, $reminder_number, $extension=0) {
+    public function has_not_been_sent_reminder($coursework, $remindernumber, $extension=0) {
         $conditions = [
             'coursework_id' => $coursework->id,
             'userid' => $this->id(),
-            'remindernumber' => $reminder_number,
+            'remindernumber' => $remindernumber,
             'extension' => $extension,
         ];
         return !reminder::exists($conditions);
@@ -204,7 +204,7 @@ class user extends table_base implements allocatable, moderatable {
     public static function get_object($id) {
         if (!isset(self::$pool['id'][$id])) {
             global $DB;
-            $user = $DB->get_record(self::$table_name, ['id' => $id]);
+            $user = $DB->get_record(self::$tablename, ['id' => $id]);
             self::$pool['id'][$id] = new self($user);
         }
         return self::$pool['id'][$id];

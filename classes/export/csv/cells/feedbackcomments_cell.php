@@ -38,11 +38,11 @@ class feedbackcomments_cell extends cell_base {
      * @param $stage_identifier
      * @return string
      */
-    public function get_cell($submission, $student, $stage_identifier) {
+    public function get_cell($submission, $student, $stageidentifier) {
 
-        $stage_identifier = ($this->coursework->get_max_markers() == 1)
+        $stageidentifier = ($this->coursework->get_max_markers() == 1)
             ? "assessor_1" : $this->get_stage_identifier_for_assessor($submission, $student);
-        $grade = $submission->get_assessor_feedback_by_stage($stage_identifier);
+        $grade = $submission->get_assessor_feedback_by_stage($stageidentifier);
         return (!$grade || !isset($grade->feedbackcomment)) ? '' : strip_tags($grade->feedbackcomment);
     }
 
@@ -55,7 +55,7 @@ class feedbackcomments_cell extends cell_base {
         return  get_string('feedbackcomment', 'coursework');
     }
 
-    public function validate_cell($value, $submissionid, $stage_identifier='', $uploadedgradecells  = []) {
+    public function validate_cell($value, $submissionid, $stageidentifier='', $uploadedgradecells  = []) {
 
         global $PAGE, $DB, $USER;
 
@@ -83,24 +83,24 @@ class feedbackcomments_cell extends cell_base {
 
             $ability = new ability(user::find($USER), $this->coursework);
 
-            $feedback_params = [
+            $feedbackparams = [
                 'submissionid' => $submission->id,
-                'stage_identifier' => $stage_identifier,
+                'stage_identifier' => $stageidentifier,
             ];
-            $feedback = feedback::find($feedback_params);
+            $feedback = feedback::find($feedbackparams);
 
             //does a feedback exist for this stage
             if (empty($feedback)) {
 
-                $feedback_params = [
+                $feedbackparams = [
                     'submissionid' => $submissionid,
                     'assessorid' => $USER->id,
-                    'stage_identifier' => $stage_identifier,
+                    'stage_identifier' => $stageidentifier,
                 ];
-                $new_feedback = feedback::build($feedback_params);
+                $newfeedback = feedback::build($feedbackparams);
 
                 // This is a new feedback check it against the new ability checks
-                if (!$ability->can('new', $new_feedback)) {
+                if (!$ability->can('new', $newfeedback)) {
                     return get_string('nopermissiontogradesubmission', 'coursework');
                 }
             } else {

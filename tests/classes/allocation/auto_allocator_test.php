@@ -43,7 +43,7 @@ final class auto_allocator_test extends advanced_testcase {
         /**
          * @var mod_coursework_generator $coursework_generator
          */
-        $coursework_generator = $generator->get_plugin_generator('mod_coursework');
+        $courseworkgenerator = $generator->get_plugin_generator('mod_coursework');
 
         $this->course = $generator->create_course();
 
@@ -53,7 +53,7 @@ final class auto_allocator_test extends advanced_testcase {
         $coursework->allocationenabled = 1;
         $coursework->assessorallocationstrategy = 'equal';
         $coursework->moderatorallocationstrategy = 'equal';
-        $this->coursework = $coursework_generator->create_instance($coursework);
+        $this->coursework = $courseworkgenerator->create_instance($coursework);
 
         $this->create_a_student();
         $this->create_a_teacher();
@@ -87,8 +87,8 @@ final class auto_allocator_test extends advanced_testcase {
             'allocatabletype' => 'user',
             'assessorid' => 555,
         ];
-        $other_allocation = \mod_coursework\models\allocation::build($params);
-        $other_allocation->save();
+        $otherallocation = \mod_coursework\models\allocation::build($params);
+        $otherallocation->save();
 
         $allocator = new \mod_coursework\allocation\auto_allocator($this->coursework);
         $allocator->process_allocations();
@@ -104,8 +104,8 @@ final class auto_allocator_test extends advanced_testcase {
             'assessorid' => 555,
             'manual' => 1,
         ];
-        $other_allocation = \mod_coursework\models\allocation::build($params);
-        $other_allocation->save();
+        $otherallocation = \mod_coursework\models\allocation::build($params);
+        $otherallocation->save();
 
         $allocator = new \mod_coursework\allocation\auto_allocator($this->coursework);
         $allocator->process_allocations();
@@ -120,8 +120,8 @@ final class auto_allocator_test extends advanced_testcase {
             'allocatabletype' => 'user',
             'assessorid' => 555,
         ];
-        $other_allocation = \mod_coursework\models\allocation::build($params);
-        $other_allocation->save();
+        $otherallocation = \mod_coursework\models\allocation::build($params);
+        $otherallocation->save();
 
         $allocator = new \mod_coursework\allocation\auto_allocator($this->coursework);
         $allocator->process_allocations();
@@ -136,8 +136,8 @@ final class auto_allocator_test extends advanced_testcase {
             'allocatabletype' => 'user',
             'assessorid' => 555,
         ];
-        $other_allocation = \mod_coursework\models\allocation::build($params);
-        $other_allocation->save();
+        $otherallocation = \mod_coursework\models\allocation::build($params);
+        $otherallocation->save();
 
         $submission = new \mod_coursework\models\submission();
         $submission->courseworkid = $this->coursework->id;
@@ -152,15 +152,15 @@ final class auto_allocator_test extends advanced_testcase {
     }
 
     public function test_process_allocations_does_not_alter_non_manual_allocations_with_feedback(): void {
-        $allocation_params = [
+        $allocationparams = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
             'stage_identifier' => 'assessor_1',
             'assessorid' => 555,
         ];
-        $other_allocation = \mod_coursework\models\allocation::build($allocation_params);
-        $other_allocation->save();
+        $otherallocation = \mod_coursework\models\allocation::build($allocationparams);
+        $otherallocation->save();
 
         $submission = new \mod_coursework\models\submission();
         $submission->courseworkid = $this->coursework->id;
@@ -168,17 +168,17 @@ final class auto_allocator_test extends advanced_testcase {
         $submission->allocatabletype = 'user';
         $submission->save();
 
-        $feedback_params = [
+        $feedbackparams = [
             'submissionid' => $submission->id,
             'assessorid' => 555,
             'stage_identifier' => 'assessor_1',
         ];
-        \mod_coursework\models\feedback::create($feedback_params);
+        \mod_coursework\models\feedback::create($feedbackparams);
 
         $allocator = new \mod_coursework\allocation\auto_allocator($this->coursework);
         $allocator->process_allocations();
 
-        $this->assertTrue(\mod_coursework\models\allocation::exists($allocation_params));
+        $this->assertTrue(\mod_coursework\models\allocation::exists($allocationparams));
     }
 
     private function set_coursework_to_single_marker() {

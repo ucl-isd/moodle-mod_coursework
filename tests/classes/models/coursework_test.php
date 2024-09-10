@@ -183,9 +183,9 @@ final class coursework_test extends advanced_testcase {
         $coursework->update_attribute('numberofmarkers', 1);
         $this->assertEquals(1, count($coursework->marking_stages()));
         $stages = $coursework->marking_stages();
-        $first_stage = reset($stages);
-        $stage_identifier = $first_stage->identifier();
-        $this->assertEquals('assessor_1', $stage_identifier);
+        $firststage = reset($stages);
+        $stageidentifier = $firststage->identifier();
+        $this->assertEquals('assessor_1', $stageidentifier);
     }
 
     public function test_marking_stages_does_double_marker(): void {
@@ -260,8 +260,8 @@ final class coursework_test extends advanced_testcase {
 
         $allocatables = $coursework->get_allocatables();
         // print_r($allocatables);die;
-        $allocatable_ids = array_keys($allocatables);
-        $this->assertContains($group->id, $allocatable_ids, "Actual array keys: ".implode(', ', $allocatable_ids));
+        $allocatableids = array_keys($allocatables);
+        $this->assertContains($group->id, $allocatableids, "Actual array keys: ".implode(', ', $allocatableids));
 
     }
 

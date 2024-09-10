@@ -57,7 +57,7 @@ trait factory_mixin {
     /**
      * @var user
      */
-    protected $other_student;
+    protected $otherstudent;
 
     /**
      * @var user
@@ -72,7 +72,7 @@ trait factory_mixin {
     /**
      * @var user
      */
-    protected $other_teacher;
+    protected $otherteacher;
 
     /**
      * @var group
@@ -82,7 +82,7 @@ trait factory_mixin {
     /**
      * @var
      */
-    protected $final_feedback;
+    protected $finalfeedback;
 
     /**
      * @return user
@@ -92,8 +92,8 @@ trait factory_mixin {
 
         $user = new \stdClass();
         $user->firstname = 'Student';
-        $raw_student = $generator->create_user($user);
-        $this->student = user::find($raw_student);
+        $rawstudent = $generator->create_user($user);
+        $this->student = user::find($rawstudent);
         $this->enrol_as_student($this->student);
 
         return $this->student;
@@ -121,8 +121,8 @@ trait factory_mixin {
 
         $user = new stdClass();
         $user->firstname = 'Teacher';
-        $db_record = $generator->create_user($user);
-        $this->teacher = user::find($db_record);
+        $dbrecord = $generator->create_user($user);
+        $this->teacher = user::find($dbrecord);
         $this->enrol_as_teacher($this->teacher);
 
         return $this->teacher;

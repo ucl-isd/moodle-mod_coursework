@@ -51,13 +51,13 @@ final class table_processor_test extends advanced_testcase {
         /**
          * @var mod_coursework_generator $coursework_generator
          */
-        $coursework_generator = $generator->get_plugin_generator('mod_coursework');
+        $courseworkgenerator = $generator->get_plugin_generator('mod_coursework');
 
         $this->course = $generator->create_course();
         $coursework = new stdClass();
         $coursework->course = $this->course;
         $coursework->numberofmarkers = 2;
-        $this->coursework = $coursework_generator->create_instance($coursework);
+        $this->coursework = $courseworkgenerator->create_instance($coursework);
 
         $this->create_a_student();
         $this->create_a_teacher();
@@ -69,7 +69,7 @@ final class table_processor_test extends advanced_testcase {
 
         global $DB;
 
-        $test_rows = [
+        $testrows = [
             $this->student->id => [
                 'assessor_1' => [
                     'assessor_id' => $this->teacher->id,
@@ -81,7 +81,7 @@ final class table_processor_test extends advanced_testcase {
         ];
 
         $processor = new processor($this->coursework);
-        $processor->process_data($test_rows);
+        $processor->process_data($testrows);
 
         $params = [
             'courseworkid' => $this->coursework->id,
@@ -98,7 +98,7 @@ final class table_processor_test extends advanced_testcase {
 
         global $DB;
 
-        $test_rows = [
+        $testrows = [
             $this->student->id => [
                 'assessor_1' => [
                     'assessor_id' => $this->teacher->id,
@@ -110,7 +110,7 @@ final class table_processor_test extends advanced_testcase {
         ];
 
         $processor = new processor($this->coursework);
-        $processor->process_data($test_rows);
+        $processor->process_data($testrows);
 
         $params = [
             'courseworkid' => $this->coursework->id,
@@ -120,13 +120,13 @@ final class table_processor_test extends advanced_testcase {
             'assessorid' => $this->teacher->id,
             'stage_identifier' => 'assessor_1',
         ];
-        $first_allocation = $DB->get_record('coursework_allocation_pairs', $params);
+        $firstallocation = $DB->get_record('coursework_allocation_pairs', $params);
         $params['assessorid'] = $this->other_teacher->id;
         $params['stage_identifier'] = 'assessor_2';
-        $second_allocation = $DB->get_record('coursework_allocation_pairs', $params);
+        $secondallocation = $DB->get_record('coursework_allocation_pairs', $params);
 
-        $this->assertEquals('assessor_1', $first_allocation->stage_identifier);
-        $this->assertEquals('assessor_2', $second_allocation->stage_identifier);
+        $this->assertEquals('assessor_1', $firstallocation->stage_identifier);
+        $this->assertEquals('assessor_2', $secondallocation->stage_identifier);
     }
 
     public function test_process_rows_alters_an_existing_allocation(): void {
@@ -136,7 +136,7 @@ final class table_processor_test extends advanced_testcase {
         $this->set_coursework_to_single_marker();
         $allocation = $this->make_a_non_manual_allocation_for_teacher();
 
-        $test_rows = [
+        $testrows = [
             $this->student->id => [
                 'assessor_1' => [
                     'allocation_id' => $allocation->id,
@@ -146,7 +146,7 @@ final class table_processor_test extends advanced_testcase {
         ];
 
         $processor = new processor($this->coursework);
-        $processor->process_data($test_rows);
+        $processor->process_data($testrows);
 
         $params = [
             'courseworkid' => $this->coursework->id,
