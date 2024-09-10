@@ -55,7 +55,7 @@ class assessment_set_membership extends table_base implements moderatable {
 
     /**
      *
-     * @param $coursework_id
+     * @param int $courseworkid
      * @return array
      */
     protected static function get_cache_array($courseworkid) {
@@ -79,7 +79,7 @@ class assessment_set_membership extends table_base implements moderatable {
 
     /**
      *
-     * @param $coursework_id
+     * @param int $courseworkid
      * @param $key
      * @param $params
      * @return bool

@@ -31,7 +31,7 @@ class submissiondate_cell extends cell_base {
     /**
      * @param submission $submission
      * @param $student
-     * @param $stage_identifier
+     * @param $stageidentifier
      * @return string
      */
     public function get_cell($submission, $student, $stageidentifier) {

@@ -317,7 +317,7 @@ class grading_report {
     }
 
     /**
-     * @param $rows_strategy
+     * @param $rowsstrategy
      */
     public function add_sub_rows($rowsstrategy) {
         $this->subrows = $rowsstrategy;

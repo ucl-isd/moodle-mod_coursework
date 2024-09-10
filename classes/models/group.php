@@ -98,7 +98,7 @@ class group extends table_base implements allocatable, moderatable {
     }
 
     /**
-     * @param bool $with_picture
+     * @param bool $withpicture
      * @return string
      */
     public function profile_link($withpicture = false) {

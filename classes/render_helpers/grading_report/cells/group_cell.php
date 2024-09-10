@@ -33,7 +33,7 @@ use mod_coursework\models\user;
 class group_cell extends cell_base implements allocatable_cell {
 
     /**
-     * @param grading_table_row_base $row_object
+     * @param grading_table_row_base $rowobject
      * @throws coding_exception
      * @return string
      */
@@ -91,8 +91,8 @@ class group_cell extends cell_base implements allocatable_cell {
     }
 
     /**
-     * @param grading_table_row_base $row_object
-     * @param user $group_member
+     * @param grading_table_row_base $rowobject
+     * @param user $groupmember
      * @return string
      */
     protected function add_group_member_name($groupmember, $rowobject) {

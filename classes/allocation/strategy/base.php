@@ -191,7 +191,7 @@ abstract class base {
     }
 
     /**
-     * @param array $teacher_counts teacherid => number_of_allocations_so_far
+     * @param array $teachercounts teacherid => number_of_allocations_so_far
      * @return user|bool
      */
     protected function get_teacher_with_smallest_number_of_current_allocations($teachercounts) {

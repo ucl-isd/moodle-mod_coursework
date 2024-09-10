@@ -49,7 +49,7 @@ class mod_coursework_generator extends testing_module_generator {
      * @param array|stdClass $record represents the data that would normally come from mod creation form:
      *                               - course is essential
      *                               - all else is optional and defaults will be supplied
-     * @param array $options extra stuff for the coursemodule. idnumber, section, visible, etc.
+     * @param array|null $options extra stuff for the coursemodule. idnumber, section, visible, etc.
      * @throws coding_exception
      * @return \mod_coursework\models\coursework activity record with extra cmid field
      */

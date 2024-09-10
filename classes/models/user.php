@@ -82,7 +82,7 @@ class user extends table_base implements allocatable, moderatable {
     }
 
     /**
-     * @param bool $with_picture
+     * @param bool $withpicture
      * @return string
      */
     public function profile_link($withpicture = false) {
@@ -109,8 +109,10 @@ class user extends table_base implements allocatable, moderatable {
 
     /**
      * @param coursework $coursework
-     * @param int $reminder_number
+     * @param $remindernumber
+     * @param int $extension
      * @return bool
+     * @throws \coding_exception
      */
     public function has_not_been_sent_reminder($coursework, $remindernumber, $extension=0) {
         $conditions = [
@@ -141,7 +143,7 @@ class user extends table_base implements allocatable, moderatable {
 
     /**
      *
-     * @param $coursework_id
+     * @param int $courseworkid
      * @throws \dml_exception
      */
     /*
@@ -164,7 +166,7 @@ class user extends table_base implements allocatable, moderatable {
     */
 
     /**
-     * @param $coursework_id
+     * @param int $courseworkid
      */
     /*
     public static function remove_cache($coursework_id) {

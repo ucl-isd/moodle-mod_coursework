@@ -46,7 +46,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     protected $ismultiplemarkers;
 
     /**
-     * @param grading_report $grading_report
+     * @param grading_report $gradingreport
      * param $ismultiplemarkers
      * @return string
      */
@@ -100,7 +100,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param cell_interface $cell_helper
+     * @param cell_interface $cellhelper
      * @param array $options
      * @return string
      */
@@ -116,9 +116,9 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param grading_table_row_base $row_object
-     * @param cell_interface[] $cell_helpers
-     * @param sub_rows_interface $sub_row_helper
+     * @param grading_table_row_base $rowobject
+     * @param cell_interface[] $cellhelpers
+     * @param sub_rows_interface $subrowhelper
      * @return string
      */
     protected function make_row_for_allocatable($rowobject, $cellhelpers, $subrowhelper) {
@@ -167,9 +167,11 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param $cell_helpers
+     * @param $cellhelpers
      * @param $options
+     * @param $ismultiplemarkers
      * @return string
+     * @throws coding_exception
      */
     protected function make_table_headers($cellhelpers, $options, $ismultiplemarkers) {
 
@@ -214,8 +216,8 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
 
     /**
      * @param $tablerows
-     * @param $cell_helpers
-     * @param $sub_row_helper
+     * @param $cellhelpers
+     * @param $subrowhelper
      * @param $ismultiplemarkers
      * @return string
      */
@@ -234,8 +236,10 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     /**
      * Groupings for the header cells on the next row down.
      *
-     * @param cell_interface[] $cell_helpers
+     * @param $cellhelpers
+     * @param $ismultiplemarkers
      * @return string
+     * @throws coding_exception
      */
     private function make_upper_headers($cellhelpers, $ismultiplemarkers) {
         $html = '';
@@ -259,7 +263,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param cell_interface[] $cell_helpers
+     * @param cell_interface[] $cellhelpers
      * @return mixed
      */
     private function upper_header_names_and_colspans($cellhelpers) {

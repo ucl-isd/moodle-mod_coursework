@@ -58,7 +58,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
     /**
      * @param allocatable $allocatable
      * @param user $assessor
-     * @param string $stage_identifier
+     * @param string $stageidentifier
      */
     public function manually_allocate($allocatable, $assessor, $stageidentifier) {
 
@@ -76,7 +76,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
 
     /**
      * @param allocatable $student
-     * @param string $stage_identifier
+     * @param string $stageidentifier
      */
     public function select_for_sample($student, $stageidentifier) {
         $elementid = $this->sampling_checkbox_id($student, $stageidentifier);
@@ -86,7 +86,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
 
     /**
      * @param allocatable $allocatable
-     * @param string $stage_identifier
+     * @param string $stageidentifier
      */
     private function pin_allocation($allocatable, $stageidentifier) {
         $name = "//input[@name='allocatables[".$allocatable->id()."][".$stageidentifier."][pinned]']";
@@ -124,7 +124,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
 
     /**
      * @param allocatable $student
-     * @param $stage_identifier
+     * @param $stageidentifier
      * @throws \Behat\Mink\Exception\ElementException
      */
     public function deselect_for_sample($student, $stageidentifier) {
@@ -135,7 +135,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
 
     /**
      * @param allocatable $student
-     * @param $stage_identifier
+     * @param $stageidentifier
      * @return string
      */
     public function sampling_checkbox_id($student, $stageidentifier) {

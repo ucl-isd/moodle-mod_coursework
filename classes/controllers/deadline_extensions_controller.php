@@ -381,7 +381,7 @@ class deadline_extensions_controller extends controller_base {
 
     /**
      * function table_cell_response
-     * @param array $data_params
+     * @param array $dataparams
      *
      * Generate html cell base on time_submitted_cell
      * @return html_string $content

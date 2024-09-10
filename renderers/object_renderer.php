@@ -251,7 +251,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     /**
      * Renders a feedback as a table row. We may want an empty one for the user to add their own feedback.
      *
-     * @param mod_coursework_assessor_feedback_row|null $feedbackrow
+     * @param mod_coursework_assessor_feedback_row $feedbackrow
      * @return \html_table_row
      */
     protected function render_mod_coursework_assessor_feedback_row(mod_coursework_assessor_feedback_row $feedbackrow) {
@@ -410,7 +410,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * Outputs the files as a HTML list.
      *
      * @param mod_coursework_submission_files $files
-     * @param bool $with_resubmit_button
+     * @param bool $withresubmitbutton
      * @return string
      */
     public function render_submission_files_with_plagiarism_links(mod_coursework_submission_files $files, $withresubmitbutton = true) {
@@ -551,7 +551,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     /**
      * Makes the HTML table for allocating markers to students and returns it.
      *
-     * @param mod_coursework_allocation_table $allocation_table
+     * @param mod_coursework_allocation_table $allocationtable
      * @return string
      */
     protected function render_mod_coursework_allocation_table(mod_coursework_allocation_table $allocationtable) {
@@ -661,7 +661,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * to use the mforms library, we can't use the html_table library as we would have to hand code the
      * start and end of each table row in the form.
      *
-     * @param mod_coursework_allocation_table_row $allocation_row
+     * @param mod_coursework_allocation_table_row $allocationrow
      * @return \html_table_row
      */
     protected function render_mod_coursework_allocation_table_row(mod_coursework_allocation_table_row $allocationrow) {
@@ -1180,7 +1180,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     /**
      * @param mod_coursework_submission_files $files
      * @param stored_file $file
-     * @param string $class_name
+     * @param string $classname
      * @return string
      */
     protected function make_file_link($files, $file, $classname = 'submissionfile') {
@@ -1336,7 +1336,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param \mod_coursework\allocation\table\row\builder $allocation_row
+     * @param \mod_coursework\allocation\table\row\builder $allocationrow
      * @return string
      */
     private function render_allocation_table_row($allocationrow) {
@@ -1367,7 +1367,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     /**
      * Makes the HTML table for allocating markers to students and returns it.
      *
-     * @param mod_coursework_personal_deadlines_table $personal_deadlines_table
+     * @param mod_coursework_personal_deadlines_table $personaldeadlinestable
      * @return string
      */
     protected function render_mod_coursework_personal_deadlines_table(mod_coursework_personal_deadlines_table $personaldeadlinestable) {
@@ -1440,7 +1440,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param \mod_coursework\personal_deadline\table\row\builder $personal_deadline_row
+     * @param \mod_coursework\personal_deadline\table\row\builder $personaldeadlinerow
      * @return string
      */
     private function render_personal_deadline_table_row($personaldeadlinerow) {

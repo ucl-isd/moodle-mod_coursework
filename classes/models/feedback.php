@@ -278,11 +278,11 @@ class feedback extends table_base {
      * @todo get rid of this.
      *
      * @static
-     * @param $submission
+     * @param submission $submission
      * @param int $assessorid
      * @param int $isfinalgrade do we want the final grade (in case this assessor did a component
      * one and a final one
-     * @internal param $submissionid
+     * @internal param $assessorid
      * @return feedback|null
      */
     public static function get_teacher_feedback(submission $submission,
@@ -317,7 +317,7 @@ class feedback extends table_base {
     }
 
     /**
-     * @param $context_id
+     * @param $contextid
      * @return void
      */
     public function set_feedback_files($contextid) {
@@ -585,7 +585,7 @@ class feedback extends table_base {
 
     /**
      *
-     * @param $coursework_id
+     * @param int $courseworkid
      * @throws \dml_exception
      */
     public static function fill_pool_coursework($courseworkid) {
@@ -602,8 +602,8 @@ class feedback extends table_base {
     }
 
     /**
-     * @param $coursework_id
-     * @param $submission_ids
+     * @param int $courseworkid
+     * @param $submissionids
      */
     public static function fill_pool_submissions($courseworkid, $submissionids) {
         global $DB;
@@ -649,7 +649,7 @@ class feedback extends table_base {
 
     /**
      *
-     * @param $coursework_id
+     * @param int $courseworkid
      * @param $key
      * @param $params
      * @return self|bool

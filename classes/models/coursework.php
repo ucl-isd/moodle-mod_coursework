@@ -405,8 +405,11 @@ class coursework extends table_base {
     /**
      * Factory makes it renderable.
      *
-     * @param int|\stdClass $db_record
+     * @param $dbrecord
+     * @param bool $reload
      * @return mixed|\mod_coursework_coursework
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public static function find($dbrecord, $reload = true) {
         $courseworkobject = parent::find($dbrecord);
@@ -422,7 +425,7 @@ class coursework extends table_base {
      * Constructor: takes a DB row from the coursework table or an id. We don't always retrieve it
      * first as we may want to overwrite with submitted data or make a new one.
      *
-     * @param int|string|\stdClass|null $db_record a row from the DB coursework table or an id
+     * @param int|string|\stdClass|null $dbrecord a row from the DB coursework table or an id
      */
     public function __construct($dbrecord = null) {
 
@@ -548,7 +551,7 @@ class coursework extends table_base {
     }
 
     /**
-     * @param $can_grade bool
+     * @param $cangrade bool
      * @return int number of ungraded assessments, 0
      */
     public function get_ungraded_assessments_number($cangrade) {
@@ -1031,7 +1034,7 @@ class coursework extends table_base {
     }
 
     /**
-     * @param string $strategy_name
+     * @param $strategyname
      * @return bool|void
      */
     public function set_assessor_allocation_strategy($strategyname) {
@@ -1043,7 +1046,7 @@ class coursework extends table_base {
     }
 
     /**
-     * @param string $strategy_name
+     * @param string $strategyname
      * @return bool|void
      */
     public function set_moderator_allocation_strategy($strategyname) {
@@ -1057,7 +1060,7 @@ class coursework extends table_base {
     /**
      * Tests that the name of the supplied strategy is actually a real allocation strategy class.
      *
-     * @param string $strategy_name
+     * @param string $strategyname
      * @return bool
      */
     protected function allocation_strategy_is_valid($strategyname) {
@@ -1133,7 +1136,7 @@ class coursework extends table_base {
     /**
      * Will delegate the save operation to the strategy class.
      *
-     * @param string $short_name
+     * @param string $shortname
      * @return void
      */
     public function save_allocation_strategy_options($shortname) {
@@ -1305,7 +1308,7 @@ class coursework extends table_base {
     /**
      * Get all graded submissions for the specified marking stage
      *
-     * @param $stage_identifier
+     * @param $stageidentifier
      * @return array
      * @throws \dml_missing_record_exception
      * @throws \dml_multiple_records_exception
@@ -1438,8 +1441,10 @@ class coursework extends table_base {
     /**
      * Fetches the allocations for this submission so we know who is to mark it.
      *
-     * @param int $student_id
+     * @param $allocatable
+     * @param $stageidentifier
      * @return allocation $allocation
+     * @throws \dml_exception
      */
     public function get_assessor_allocation($allocatable, $stageidentifier) {
         global $DB;
@@ -1801,7 +1806,7 @@ class coursework extends table_base {
      * Uses the knowledge of the Coursework settings to compose the object which the renderer can deal with.
      * This is the messy wiring for the nice, reusable components in the grading report :)
      *
-     * @param array $report_options
+     * @param array $reportoptions
      * @return grading_report
      */
     public function renderable_grading_report_factory($reportoptions) {
@@ -2082,7 +2087,7 @@ class coursework extends table_base {
     }
 
     /**
-     * @param \stdClass $db_grade
+     * @param \stdClass $dbgrade
      */
     protected function update_feedback_timepublished($dbgrade) {
         global $DB;
@@ -2238,7 +2243,7 @@ class coursework extends table_base {
      * @todo This should be in the renderer.
      *
      * @param $text
-     * @param $image_name
+     * @param $imagename
      * @return string
      */
     final public static function get_image($text, $imagename) {
@@ -2694,7 +2699,7 @@ class coursework extends table_base {
     /**
      * This function adds the allocatables personal deadline in the current coursework to the allocatable record
      *
-     * @param int $allocatableid
+     * @param $allocatable
      *
      * @return array
      */
@@ -2795,7 +2800,7 @@ class coursework extends table_base {
     /**
      * Function to retrieve all submissions submitted by a user
      *
-     * @param $user_id
+     * @param $userid
      * @return submissions
      */
     public function retrieve_submissions_by_user($userid) {
@@ -2806,7 +2811,7 @@ class coursework extends table_base {
     /**
      * Function to retrieve all feedbacks by a submission
      *
-     * @param $submission_id
+     * @param $submissionid
      * @return feedbacks
      */
     public function retrieve_feedbacks_by_submission($submissionid) {
@@ -2817,7 +2822,7 @@ class coursework extends table_base {
     /**
      * Function to remove all submissions submitted by a user
      *
-     * @param $user_id
+     * @param $userid
      */
     public function remove_submissions_by_user($userid) {
         global $DB;
@@ -2835,8 +2840,8 @@ class coursework extends table_base {
     /**
      * Function to Remove the corresponding file by context, item-id and fielarea
      *
-     * @param $context_id
-     * @param $item_id
+     * @param $contextid
+     * @param $itemid
      * @param $filearea
      */
     public function remove_corresponding_file($contextid, $itemid, $filearea) {
@@ -2848,7 +2853,7 @@ class coursework extends table_base {
     /**
      * Function to Remove all feedbacks by a submission
      *
-     * @param $submission_id
+     * @param $submissionid
      */
     public function remove_feedbacks_by_submission($submissionid) {
         global $DB;
@@ -2857,7 +2862,7 @@ class coursework extends table_base {
     /**
      * Function to Remove all agreements by a feedback
      *
-     * @param $feedback_id
+     * @param $feedbackid
      */
     public function remove_agreements_by_feedback($feedbackid) {
         global $DB;
@@ -2866,7 +2871,7 @@ class coursework extends table_base {
     /**
      * Function to Remove all deadline extensions by user
      *
-     * @param $user_id
+     * @param $userid
      */
     public function remove_deadline_extensions_by_user($userid) {
         global $DB;
@@ -2967,7 +2972,7 @@ class coursework extends table_base {
     /**
      * Function to Remove all plagiarisms by a submission
      *
-     * @param $submission_id
+     * @param $submissionid
      */
     public function remove_plagiarisms_by_submission($submissionid) {
         global $DB;
@@ -3008,7 +3013,7 @@ class coursework extends table_base {
     }
 
     /**
-     * @param null $stage_index
+     * @param null $stageindex
      */
     public function clear_stage($stageindex = null) {
         if ($stageindex) {
@@ -3045,7 +3050,7 @@ class coursework extends table_base {
 
     /**
      *
-     * @param $coursework_id
+     * @param int $courseworkid
      * @throws \dml_exception
      */
     public static function fill_pool_coursework($courseworkid) {
@@ -3058,7 +3063,7 @@ class coursework extends table_base {
 
     /**
      *
-     * @param $coursework_id
+     * @param int $courseworkid
      * @return bool
      */
     public static function get_object($courseworkid) {

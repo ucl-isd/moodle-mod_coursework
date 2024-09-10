@@ -50,7 +50,7 @@ class processor {
     }
 
     /**
-     * @param array $table_data
+     * @param array $tabledata
      */
     public function process_data($tabledata  = []) {
         $cleandata = $this->clean_data($tabledata);
@@ -81,7 +81,7 @@ class processor {
      * Sanitises the data, mostly making sure that we have ony valid student ids and valid stage identifiers.
      * The stages will deal with sanitising the data for each cell.
      *
-     * @param array $raw_data
+     * @param array $rawdata
      * @return array
      */
     private function clean_data($rawdata) {
@@ -126,7 +126,7 @@ class processor {
     }
 
     /**
-     * @param int $student_id
+     * @param int $studentid
      * @return bool
      */
     private function allocatable_id_is_valid($studentid) {
@@ -135,7 +135,7 @@ class processor {
     }
 
     /**
-     * @param int $allocatable_id
+     * @param int $allocatableid
      * @return allocatable
      */
     private function get_allocatable_from_id($allocatableid) {

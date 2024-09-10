@@ -85,7 +85,7 @@ class outstanding_marking {
     }
 
     /**
-     * @param $courseworkid
+     * @param int $courseworkid
      * @param bool $userid
      * @param bool $allocationenabled
      * @return array
@@ -127,7 +127,7 @@ class outstanding_marking {
     }
 
     /**
-     * @param $courseworkid
+     * @param int $courseworkid
      * @param $userid
      * @return array
      */
@@ -165,7 +165,7 @@ class outstanding_marking {
     }
 
     /**
-     * @param $courseworkid
+     * @param int $courseworkid
      * @param $userid
      * @param $numberofmarkers
      * @param $allocationenabled
@@ -217,7 +217,7 @@ class outstanding_marking {
     }
 
     /**
-     * @param $courseworkid
+     * @param int $courseworkid
      * @param $numberofmarkers
      * @return array
      */
@@ -241,7 +241,7 @@ class outstanding_marking {
     }
 
     /**
-     * @param $courseworkid
+     * @param int $courseworkid
      * @return array
      */
     private function get_to_grade_agreed_grade_sampled_submissions($courseworkid) {
@@ -270,8 +270,8 @@ class outstanding_marking {
     }
 
     /**
-     * @param $course_id
-     * @param $user_id
+     * @param $courseid
+     * @param $userid
      * @return bool
      */
     private function has_agreed_grade($courseid, $userid) {
@@ -282,8 +282,8 @@ class outstanding_marking {
     }
 
     /**
-     * @param $course_id
-     * @param $user_id
+     * @param $courseid
+     * @param $userid
      * @return bool
      */
     private function has_initial_grade($courseid, $userid) {
@@ -294,7 +294,7 @@ class outstanding_marking {
     }
 
     /**
-     * @param $courseworkid
+     * @param int $courseworkid
      * @param $userid
      * @return bool
      */
@@ -309,7 +309,7 @@ class outstanding_marking {
     }
 
     /**
-     * @param $courseworkid
+     * @param int $courseworkid
      * @param $userid
      * @return bool
      */

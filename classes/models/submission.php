@@ -210,7 +210,7 @@ class submission extends table_base implements \renderable {
      * Constructor: takes a DB row from the coursework_submissions table. We don't retrieve it first
      * as we may want to overwrite with submitted data or make a new one.
      *
-     * @param string|int|stdClass|null $db_record
+     * @param string|int|stdClass|null $dbrecord
      */
     public function __construct($dbrecord = null) {
 
@@ -299,7 +299,7 @@ class submission extends table_base implements \renderable {
     /**
      * Setter for course id.
      *
-     * @param $course_id
+     * @param $courseid
      */
     public function set_course_id($courseid) {
         $this->course_id = $courseid;
@@ -465,9 +465,9 @@ class submission extends table_base implements \renderable {
 
     /**
      * Function to retrieve a grade for the specific stage
-     * @param $stage_identifier
-     * @throws \dml_missing_record_exception
-     * @throws \dml_multiple_records_exception
+     * @param $stageidentifier
+     * @return bool|feedback
+     * @throws \dml_exception
      */
     public function get_assessor_feedback_by_stage($stageidentifier) {
         $params = [
@@ -483,9 +483,10 @@ class submission extends table_base implements \renderable {
 
     /**
      * Function to retrieve a assessor allocated for the specific stage
-     * @param $stage_identifier
-     * @throws \dml_missing_record_exception
-     * @throws \dml_multiple_records_exception
+     * @param $stageidentifier
+     * @return bool
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function get_assessor_allocation_by_stage($stageidentifier) {
 
@@ -642,7 +643,7 @@ class submission extends table_base implements \renderable {
     /**
      * Returns the full name or a blank string if anonymous.
      *
-     * @param bool $as_link
+     * @param bool $aslink
      * @return string
      */
     public function get_allocatable_name($aslink = false) {
@@ -1051,7 +1052,7 @@ class submission extends table_base implements \renderable {
     }
 
     /**
-     * @param int $files_id
+     * @param int $filesid
      */
     public function save_files($filesid) {
 
@@ -1092,7 +1093,7 @@ class submission extends table_base implements \renderable {
     }
 
     /**
-     * @param string $file_name
+     * @param string $filename
      * @return string
      */
     public function extract_extension_from_file_name($filename) {
@@ -1474,7 +1475,7 @@ class submission extends table_base implements \renderable {
 
     /**
      *
-     * @param $coursework_id
+     * @param int $courseworkid
      * @return array
      */
     protected static function get_cache_array($courseworkid) {
@@ -1500,7 +1501,7 @@ class submission extends table_base implements \renderable {
 
     /**
      *
-     * @param $coursework_id
+     * @param int $courseworkid
      * @param $key
      * @param $params
      * @return bool

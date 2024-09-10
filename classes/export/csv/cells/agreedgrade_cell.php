@@ -34,7 +34,7 @@ class agreedgrade_cell extends cell_base {
     /**
      * @param $submission
      * @param $student
-     * @param $stage_identifier
+     * @param $stageidentifier
      * @return array|mixed|null|string
      */
 
@@ -243,7 +243,7 @@ class agreedgrade_cell extends cell_base {
      * makes use of rubrics
      *
      * @param $coursework
-     * @param $csv_cells
+     * @param $csvcells
      * @return array
      */
     function get_rubrics($coursework, $csvcells) {

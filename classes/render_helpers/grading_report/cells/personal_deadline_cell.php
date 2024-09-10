@@ -34,7 +34,7 @@ use pix_icon;
 class personal_deadline_cell extends cell_base {
 
     /**
-     * @param grading_table_row_base $row_object
+     * @param grading_table_row_base $rowobject
      * @throws coding_exception
      * @return string
      */

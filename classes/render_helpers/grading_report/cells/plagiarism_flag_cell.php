@@ -101,7 +101,7 @@ class plagiarism_flag_cell extends cell_base {
     }
 
     /**
-     * @param grading_table_row_base $row_object
+     * @param $rowobject
      * @return string
      * @throws \coding_exception
      */
@@ -124,7 +124,7 @@ class plagiarism_flag_cell extends cell_base {
     }
 
     /**
-     * @param grading_table_row_base $row_object
+     * @param $rowobject
      * @return string
      * @throws \coding_exception
      */

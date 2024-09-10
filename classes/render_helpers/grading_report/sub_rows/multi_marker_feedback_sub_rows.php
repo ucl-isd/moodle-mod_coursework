@@ -47,8 +47,8 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     protected $alreadyshownanewbuton = false;
 
     /**
-     * @param \mod_coursework\grading_table_row_base $row_object
-     * @param int $column_width
+     * @param \mod_coursework\grading_table_row_base $rowobject
+     * @param int $columnwidth
      * @return string
      */
     public function get_row_with_assessor_feedback_table($rowobject, $columnwidth) {
@@ -72,7 +72,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     }
 
     /**
-     * @param $feedback_row
+     * @param $feedbackrow
      * @param $coursework
      * @param null $ability
      * @return string
@@ -94,7 +94,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
      * Renders the table of feedbacks from assessors, which appears under each student's submission in the
      * grading report of the multiple marker courseworks.
      *
-     * @param assessor_feedback_table $assessor_feedback_table
+     * @param assessor_feedback_table $assessorfeedbacktable
      * @return html_table_row
      */
     protected function render_assessor_feedback_table(assessor_feedback_table $assessorfeedbacktable) {
@@ -206,7 +206,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     }
 
     /**
-     * @param assessor_feedback_row $feedback_row
+     * @param assessor_feedback_row $feedbackrow
      * @return string
      * @throws \coding_exception
      */
@@ -223,7 +223,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     }
 
     /**
-     * @param assessor_feedback_row $feedback_row
+     * @param assessor_feedback_row $feedbackrow
      * @param $submission
      * @return \mod_coursework\framework\table_base
      */
@@ -242,7 +242,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     }
 
     /**
-     * @param assessor_feedback_row $feedback_row
+     * @param assessor_feedback_row $feedbackrow
      * @return string
      * @throws \coding_exception
      */
@@ -261,7 +261,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     }
 
     /**
-     * @param assessor_feedback_row $feedback_row
+     * @param assessor_feedback_row $feedbackrow
      * @return string
      * @throws \coding_exception
      */
@@ -288,7 +288,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     }
 
     /**
-     * @param assessor_feedback_row $feedback_row
+     * @param assessor_feedback_row $feedbackrow
      * @return string
      */
     public function profile_link($feedbackrow) {
@@ -302,7 +302,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     }
 
     /**
-     * @param assessor_feedback_row $feedback_row
+     * @param assessor_feedback_row $feedbackrow
      * @return string
      */
     protected function row_class($feedbackrow) {
@@ -313,7 +313,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     }
 
     /**
-     * @param assessor_feedback_row $feedback_row
+     * @param assessor_feedback_row $feedbackrow
      * @return string
      */
     public function date_for_column($feedbackrow) {
@@ -324,7 +324,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     }
 
     /**
-     * @param assessor_feedback_row $feedback_row
+     * @param assessor_feedback_row $feedbackrow
      * @param ability $ability
      * @return string
      */

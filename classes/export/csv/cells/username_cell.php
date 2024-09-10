@@ -31,7 +31,7 @@ class username_cell extends cell_base {
     /**
      * @param submission $submission
      * @param $student
-     * @param $stage_identifier
+     * @param $stageidentifier
      * @return string
      * @throws \coding_exception
      */

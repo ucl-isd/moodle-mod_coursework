@@ -62,9 +62,9 @@ class router {
     }
 
     /**
-     * @param string $path_name e.g. 'edit feedback'
+     * @param string $pathname e.g. 'edit feedback'
      * @param array $items named array keys so we can construct meaningful paths.
-     * @param bool $as_url_object return the moodle_url or a string of the path?
+     * @param bool $asurlobject return the moodle_url or a string of the path?
      * @param bool $escaped
      * @throws \coding_exception
      * @return moodle_url|string url

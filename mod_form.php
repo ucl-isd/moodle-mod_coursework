@@ -147,7 +147,7 @@ class mod_coursework_mod_form extends moodleform_mod {
      * Adds all default data to the form elements.
      *
      * @global moodle_database $DB
-     * @param $default_values
+     * @param $defaultvalues
      * @return void
      */
     public function set_data($defaultvalues) {
@@ -824,7 +824,6 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     /**
-     * @param $moodle_form
      * @throws coding_exception
      */
     protected function add_number_of_initial_assessors_field() {
@@ -856,7 +855,6 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     /**
-     * @param $moodle_form
      * @throws coding_exception
      */
     protected function add_enable_moderation_agreement_field() {

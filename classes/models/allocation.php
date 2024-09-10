@@ -158,7 +158,7 @@ class allocation extends table_base {
 
     /**
      *
-     * @param $coursework_id
+     * @param int $courseworkid
      * @return array
      */
     protected static function get_cache_array($courseworkid) {
@@ -186,7 +186,7 @@ class allocation extends table_base {
 
     /**
      *
-     * @param $coursework_id
+     * @param int $courseworkid
      * @param $key
      * @param $params
      * @return bool

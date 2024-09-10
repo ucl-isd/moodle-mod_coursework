@@ -119,6 +119,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
     /**
      * @param allocatable $student
      * @param $grade
+     * @return bool
      */
     public function has_moderator_grade_for($student, $grade) {
         $identifier = $this->allocatable_row_id($student) . ' .moderation_cell';
@@ -137,8 +138,8 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
 
     /**
      * @param allocatable $allocatable
-     * @param int $assessor_number
-     * @param int $expected_grade
+     * @param int $assessornumber
+     * @param int $expectedgrade
      */
     public function assessor_grade_should_be_present($allocatable, $assessornumber, $expectedgrade) {
         $locator = $this->assessor_feedback_table_id($allocatable) . ' .assessor_'.$assessornumber.' '. $this->assessor_grade_cell_class();
@@ -154,8 +155,8 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
 
     /**
      * @param allocatable $allocatable
-     * @param int $assessor_number
-     * @param int $expected_grade
+     * @param int $assessornumber
+     * @param int $expectedgrade
      */
     public function assessor_grade_should_not_be_present($allocatable, $assessornumber, $expectedgrade) {
         $locator =
@@ -181,7 +182,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
     }
 
     /**
-     * @param int $assessor_number
+     * @param int $assessornumber
      * @param allocatable $allocatable
      */
     public function click_assessor_new_feedback_button($assessornumber, $allocatable) {
@@ -269,7 +270,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
     }
 
     /**
-     * @param $allocatable
+     * @param $studentid
      */
     public function should_not_have_add_button_for_final_feedback($studentid) {
         $identifier = '#new_final_feedback_'.$studentid;
@@ -277,7 +278,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
     }
 
     /**
-     * @param $allocatable
+     * @param $studentid
      */
     public function should_have_add_button_for_final_feedback($studentid) {
         $identifier = '#new_final_feedback_'.$studentid;
@@ -285,7 +286,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
     }
 
     /**
-     * @param feedback $feedback
+     * @param $allocatable
      */
     public function should_not_have_edit_link_for_final_feedback($allocatable) {
         $identifier = '#edit_final_feedback_' . $this->allocatable_identifier_hash($allocatable);
@@ -361,7 +362,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
 
     /**
      * @param allocatable $student
-     * @param int $deadline_extension
+     * @param int $deadlineextension
      */
     public function should_show_extension_for_allocatable($student, $deadlineextension) {
         $elementselector = $this->allocatable_row_id($student).' .time_submitted_cell';

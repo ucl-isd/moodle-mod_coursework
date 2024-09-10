@@ -61,7 +61,7 @@ abstract class table_base {
     /**
      * Makes a new instance. Can be overridden to provide a factory
      *
-     * @param \stdClass|int|array $db_record
+     * @param \stdClass|int|array $dbrecord
      * @param bool $reload
      * @return bool
      * @throws \coding_exception
@@ -157,7 +157,7 @@ abstract class table_base {
      * Takes the supplied DB record (one row of the table) and applies it to this object. If it's a
      * number, change it to a DB row and then do it.
      *
-     * @param object|bool $db_record
+     * @param object|bool $dbrecord
      */
     public function __construct($dbrecord = false) {
 
@@ -230,7 +230,7 @@ abstract class table_base {
     /**
      * Magic method to get data from the DB table columns dynamically.
      *
-     * @param string $requested_property_name
+     * @param string $requestedpropertyname
      * @throws \coding_exception
      * @return mixed
      */
@@ -247,7 +247,7 @@ abstract class table_base {
     /**
      * Takes an object representing a DB row and applies it to this instance
      *
-     * @param array|stdClass $data_object
+     * @param array|stdClass $dataobject
      * @return void
      */
     protected function apply_data($dataobject) {
@@ -386,7 +386,7 @@ abstract class table_base {
     /**
      * Tells us if the column is present in the Moodle database table.
      *
-     * @param string $requested_property_name
+     * @param string $requestedpropertyname
      * @return bool
      */
     private static function column_exists($requestedpropertyname) {
@@ -395,7 +395,7 @@ abstract class table_base {
 
     /**
      * Reloads the data from the DB columns.
-     * @param bool $complain_if_not_found
+     * @param bool $complainifnotfound
      * @return $this
      * @throws \coding_exception
      */
@@ -470,7 +470,7 @@ abstract class table_base {
     /**
      * @param $col
      * @param $val
-     * @param bool $with_errors_for_missing_columns
+     * @param bool $witherrorsformissingcolumns
      * @throws \coding_exception
      */
     private function apply_column_value_to_self($col, $val, $witherrorsformissingcolumns = true) {
@@ -628,7 +628,7 @@ abstract class table_base {
 
     /**
      *
-     * @param $coursework_id
+     * @param int $courseworkid
      * @throws \dml_exception
      */
     public static function fill_pool_coursework($courseworkid) {
@@ -649,7 +649,7 @@ abstract class table_base {
     }
 
     /**
-     * @param $coursework_id
+     * @param int $courseworkid
      */
     public static function remove_cache($courseworkid) {
         global $SESSION;

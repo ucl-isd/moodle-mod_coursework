@@ -420,7 +420,7 @@ class provider implements
     /**
      * Gets all the submissions at once for user.
      * @param $userid
-     * @param $courseworkid
+     * @param int $courseworkid
      * @return submissions[]
      */
     protected static function get_user_submissions($userid, $courseworkid) {

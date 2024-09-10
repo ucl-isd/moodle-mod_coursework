@@ -239,7 +239,7 @@ class manager {
     /**
      * We know a rule came in, so we save it by delegating to the class, which will know what the form submitted.
      *
-     * @param string $rule_name
+     * @param $assessornumber
      * @throws moodle_exception
      */
     public function save_sample_set_rule($assessornumber) {

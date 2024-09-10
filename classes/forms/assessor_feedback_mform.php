@@ -131,6 +131,8 @@ class assessor_feedback_mform extends moodleform {
 
     /**
      * @param $draftenabled
+     * @param $feedbackid
+     * @throws coding_exception
      */
     public function add_submit_buttons($draftenabled,  $feedbackid) {
 

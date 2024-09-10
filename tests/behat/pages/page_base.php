@@ -126,7 +126,7 @@ class mod_coursework_behat_page_base {
     }
 
     /**
-     * @param $thing_css
+     * @param $thingcss
      * @param string $text
      * @throws ExpectationException
      * @throws \Behat\Mink\Exception\ElementException
@@ -152,7 +152,7 @@ class mod_coursework_behat_page_base {
     }
 
     /**
-     * @param string $thing_css
+     * @param string $thingcss
      * @param string $text
      * @return bool
      */
@@ -181,7 +181,7 @@ class mod_coursework_behat_page_base {
     }
 
     /**
-     * @param string $field_name
+     * @param string $fieldname
      * @param int $timestamp
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */

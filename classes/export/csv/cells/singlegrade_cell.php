@@ -35,7 +35,7 @@ class singlegrade_cell extends cell_base {
     /**
      * @param $submission
      * @param $student
-     * @param $stage_identifier
+     * @param $stageidentifier
      * @return array|mixed|null|string
      */
     public function get_cell($submission, $student, $stageidentifier) {
@@ -248,8 +248,9 @@ class singlegrade_cell extends cell_base {
      * Takes the given cells and returns the cells with the singlegrade cell replaced by the rubric headers if the coursework instance
      * makes use of rubrics
      *
-     * @param $csv_cells
-     *
+     * @param $coursework
+     * @param $csvcells
+     * @return array
      */
     function get_rubrics($coursework, $csvcells) {
 

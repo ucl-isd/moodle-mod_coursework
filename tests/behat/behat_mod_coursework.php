@@ -98,7 +98,7 @@ class behat_mod_coursework extends behat_base {
      * Factory that makes an instance of the page class, passing in the session context, then caches it
      * and returns it when required.
      *
-     * @param string $page_name
+     * @param string $pagename
      * @throws coding_exception
      * @return mod_coursework_behat_page_base
      */
@@ -253,6 +253,9 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Then /^I (should|should not) see (the|another) student's name on the page$/
      * @param string $shouldornot
+     * @param string $studentrole
+     * @throws ExpectationException
+     * @throws coding_exception
      */
     public function i_should_see_the_students_name_on_the_page(string $shouldornot, string $studentrole) {
         $page = $this->get_page('coursework page');
@@ -299,7 +302,7 @@ class behat_mod_coursework extends behat_base {
     /**
      *
      *
-     * @param $role_name
+     * @param $rolename
      * @return string
      */
     private function make_role_name_into_variable_name($rolename) {
@@ -313,7 +316,7 @@ class behat_mod_coursework extends behat_base {
      * @param string $tagname div td
      * @param string $class
      * @param string $text
-     * @param bool $exact_text
+     * @param bool $exacttext
      * @throws coding_exception
      * @return string
      */
@@ -473,7 +476,7 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * @Given /^the coursework has (\d) assessor$/
-     * @param $number_of_assessors
+     * @param $numberofassessors
      */
     public function the_coursework_has_one_assessor($numberofassessors) {
         $this->coursework->update_attribute('numberofmarkers', $numberofassessors);
@@ -577,7 +580,7 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * @Given /^I click on the new feedback button for assessor (\d+)$/
-     * @param $assessor_number
+     * @param $assessornumber
      * @throws coding_exception
      */
     public function i_click_on_the_new_feedback_button_for_assessor($assessornumber) {
@@ -591,7 +594,7 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * @Given /^I click on the new feedback button for assessor (\d+) for another student$/
-     * @param $assessor_number
+     * @param $assessornumber
      * @throws coding_exception
      */
     public function i_click_on_the_new_feedback_button_for_assessor_for_another_student($assessornumber) {
@@ -1492,8 +1495,8 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * @Then /^the coursework "([\w]+)" setting should be "([\w]*)" in the database$/
-     * @param $setting_name
-     * @param $seting_value
+     * @param $settingname
+     * @param $setingvalue
      * @throws ExpectationException
      */
     public function the_coursework_setting_should_be($settingname, $setingvalue) {
@@ -1509,8 +1512,8 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * @Then /^the coursework "([\w]+)" setting is "([\w]*)" in the database$/
-     * @param $setting_name
-     * @param $setting_value
+     * @param $settingname
+     * @param $settingvalue
      */
     public function the_coursework_setting_is_in_the_database($settingname, $settingvalue) {
         $coursework = $this->get_coursework();
@@ -1523,7 +1526,7 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * @Then /^there should be ([\d]+) coursework$/
-     * @param $expected_count
+     * @param $expectedcount
      * @throws ExpectationException
      */
     public function there_should_only_be_one_coursework($expectedcount) {
@@ -1627,8 +1630,8 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * @Given /^the sitewide "([^"]*)" setting is "([^"]*)"$/
-     * @param $setting_name
-     * @param $setting_value
+     * @param $settingname
+     * @param $settingvalue
      */
     public function the_sitewide_setting_is($settingname, $settingvalue) {
         set_config($settingname, $settingvalue);
@@ -1898,8 +1901,8 @@ class behat_mod_coursework extends behat_base {
      * @Given /^(I|the ([\w ]+)) (?:has|have) graded the submission as assessor (\d+)$/
      *
      * @param $i
-     * @param string $role_name
-     * @param int $assessor_number
+     * @param string $rolename
+     * @param int $assessornumber
      * @throws coding_exception
      */
     public function the_other_teacher_has_graded_the_submission($i, $rolename = '', $assessornumber = 1) {
@@ -1931,7 +1934,7 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Then /^I should( not)? see the other teacher\'s grade as assessor (\d+)$/
      * @param bool $negate
-     * @param int $assessor_number
+     * @param int $assessornumber
      * @throws coding_exception
      */
     public function i_should_not_see_the_other_teacher_s_grade($negate = false, $assessornumber = 1) {
@@ -2481,7 +2484,7 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * @Given /^I visit the ([\w ]+) page$/
-     * @param $path_name
+     * @param $pathname
      */
     public function visit_page($pathname) {
         $this->getSession()->visit($this->locate_path($pathname, false));
@@ -2489,8 +2492,8 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * @Then /^I should be on the ([\w ]+) page(, ignoring parameters)?$/
-     * @param $page_name
-     * @param bool $ignore_params
+     * @param $pagename
+     * @param bool $ignoreparams
      */
     public function i_should_be_on_the_page($pagename, $ignoreparams = false) {
         $ignoreparams = !!$ignoreparams;
@@ -2524,7 +2527,7 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * @Then /^show me a screenshot$/
-     * @param string $file_name
+     * @param string $filename
      */
     public function show_me_a_screenshot($filename = 'behat_screenshot.jpg') {
         global $CFG;
@@ -2734,7 +2737,7 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * @Given /^I should see that the submission was made by the (.+)$/
-     * @param string $role_name
+     * @param string $rolename
      */
     public function i_should_see_that_the_submission_was_made_by_the_other_student($rolename) {
         $rolename = str_replace(' ', '_', $rolename);
@@ -2750,7 +2753,7 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * @Given /^I (?:am logged|log) in as (?:a|an|the) (?P<role_name_string>(?:[^"]|\\")*)$/
-     * @param $role_name
+     * @param $rolename
      * @throws coding_exception
      */
     public function i_am_logged_in_as_a($rolename) {
@@ -2774,7 +2777,7 @@ class behat_mod_coursework extends behat_base {
      * course and this one, within larger steps.
      *
      * @Given /^the ([\w]+) user has been kept for later$/
-     * @param $role_name
+     * @param $rolename
      */
     public function the_user_has_been_kept_for_later($rolename) {
         global $DB;
@@ -2788,7 +2791,7 @@ class behat_mod_coursework extends behat_base {
      *
      * @Given /^there is (a|another|an) (teacher|editing teacher|editingteacher|manager|student)$/
      * @param $other
-     * @param $role_name
+     * @param $rolename
      * @throws coding_exception
      */
     public function there_is_another_teacher($other, $rolename) {
@@ -2797,14 +2800,14 @@ class behat_mod_coursework extends behat_base {
 
         $rolename = str_replace(' ', '', $rolename);
 
-        $rolenametosave = $other ? 'other_' . $rolename : $rolename;
+        $rolenametosave = $other ? 'other' . $rolename : $rolename;
 
         $this->$rolenametosave = $this->create_user($rolename, $rolenametosave);
     }
 
     /**
-     * @param $role_name
-     * @param string $display_name
+     * @param $rolename
+     * @param string $displayname
      * @throws coding_exception
      * @return mixed|moodle_database|mysqli_native_moodle_database
      */
@@ -2971,7 +2974,7 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * @param string $filename
-     * @param string $file_path
+     * @param string $filepath
      */
     private function open_screenshot($filename, $filepath) {
         if (PHP_OS === "Darwin" && PHP_SAPI === "cli") {
@@ -2980,7 +2983,7 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @param string $file_and_path
+     * @param string $fileandpath
      */
     private function open_html_page($fileandpath) {
         if (PHP_OS === "Darwin" && PHP_SAPI === "cli") {
@@ -3090,7 +3093,11 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Then /^(a|another) student( or another student)? should( not)? be automatically included in sample for stage (\d+)$/
      *
+     * @param $other
+     * @param $another
+     * @param $negate
      * @param $stage
+     * @throws ExpectationException
      * @throws coding_exception
      */
     public function student_automatically_included_in_sample_for_stage($other, $another, $negate, $stage) {

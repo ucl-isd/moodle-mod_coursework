@@ -348,8 +348,8 @@ class warnings {
     }
 
     /**
-     * @param $student_sql
-     * @param $student_params
+     * @param $studentsql
+     * @param $studentparams
      * @return mixed
      */
     private function students_who_are_not_in_any_group($studentsql, $studentparams) {
@@ -378,8 +378,8 @@ class warnings {
     }
 
     /**
-     * @param $student_sql
-     * @param $student_params
+     * @param $studentsql
+     * @param $studentparams
      * @return mixed
      */
     private function students_who_are_not_in_any_grouping_group($studentsql, $studentparams) {

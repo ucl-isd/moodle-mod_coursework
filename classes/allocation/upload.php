@@ -162,7 +162,6 @@ class upload {
      * @param $content
      * @param $encoding
      * @param $delimiter
-     * @param $csv_cells
      * @param $processingresults
      * @return array|bool
      * @throws \moodle_exception
@@ -275,9 +274,8 @@ class upload {
      * Add allocation pair
      *
      * @param $assessorid
-     * @param $stage_identifier
-     * @param $allocatableid
-     * @param $allocatabletype
+     * @param $stageidentifier
+     * @param $allocatable
      * @return bool|int
      */
     public function add_allocation($assessorid, $stageidentifier, $allocatable) {

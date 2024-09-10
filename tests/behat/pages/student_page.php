@@ -49,7 +49,7 @@ class mod_coursework_behat_student_page extends mod_coursework_behat_page_base {
     }
 
     /**
-     * @param int $expected_number_of_files
+     * @param int $expectednumberoffiles
      * @throws ExpectationException
      */
     public function should_have_number_of_feedback_files($expectednumberoffiles) {
@@ -79,7 +79,7 @@ class mod_coursework_behat_student_page extends mod_coursework_behat_page_base {
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function get_visible_grade(): ?string {
         // final_feedback_grade

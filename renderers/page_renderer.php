@@ -76,9 +76,11 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     /**
      * Renders the HTML for the edit page
      *
-     * @param feedback $teacher_feedback
+     * @param feedback $teacherfeedback
      * @param $assessor
      * @param $editor
+     * @param bool $ajax
+     * @throws coding_exception
      */
     public function edit_feedback_page(feedback $teacherfeedback, $assessor, $editor, $ajax = false) {
 
@@ -169,7 +171,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     /**
      * Renders the HTML for the edit page
      *
-     * @param moderation $moderator_agreement
+     * @param moderation $moderatoragreement
      * @param $assessor
      * @param $editor
      */
@@ -334,7 +336,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param $new_feedback
+     * @param $newfeedback
      * @param bool $ajax
      * @throws coding_exception
      */
@@ -419,7 +421,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
     /**
      *
-     * @param $simple_form
+     * @param $simpleform
      * @return array
      */
     private function get_comment_options($simpleform) {
@@ -445,7 +447,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param moderation $new_moderation
+     * @param moderation $newmoderation
      * @throws coding_exception
      */
     public function new_moderation_page($newmoderation) {
@@ -477,7 +479,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param plagiarism_flag $new_plagiarism_flag
+     * @param plagiarism_flag $newplagiarismflag
      * @throws coding_exception
      */
     public function new_plagiarism_flag_page($newplagiarismflag) {
@@ -506,7 +508,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param plagiarism_flag $plagiarism_flag
+     * @param plagiarism_flag $plagiarismflag
+     * @param $creator
+     * @param $editor
      * @throws coding_exception
      */
     public function edit_plagiarism_flag_page(plagiarism_flag $plagiarismflag, $creator, $editor) {
@@ -687,10 +691,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
     /**
      * @param $coursework
-     * @param $viewallstudents_page
-     * @param $viewallstudents_perpage
-     * @param $viewallstudents_sortby
-     * @param $viewallstudents_sorthow
+     * @param $viewallstudentspage
+     * @param $viewallstudentsperpage
+     * @param $viewallstudentssortby
+     * @param $viewallstudentssorthow
      * @param $group
      * @param int $displayallstudents
      * @param $firstnamealpha
@@ -762,7 +766,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
     /**
      * @param submission $submission
-     * @param student_submission_form $submit_form
+     * @param student_submission_form $submitform
      * @return string
      * @throws coding_exception
      */
@@ -981,8 +985,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param student_submission_form $submit_form
-     * @param submission $own_submission
+     * @param student_submission_form $submitform
+     * @param submission $ownsubmission
      * @throws \coding_exception
      */
     public function new_submission_page($submitform, $ownsubmission) {
@@ -1009,7 +1013,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param student_submission_form $submit_form
+     * @param student_submission_form $submitform
      * @param submission $submission
      * @throws \coding_exception
      */
@@ -1150,7 +1154,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param submission $own_submission
+     * @param submission $ownsubmission
      * @return string
      * @throws coding_exception
      */

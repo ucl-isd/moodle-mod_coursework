@@ -30,7 +30,7 @@ interface cell_interface {
     /**
      * @param $submission
      * @param $student
-     * @param $stage_identifier
+     * @param $stageidentifier
      * @return mixed
      */
     public function get_cell($submission, $student, $stageidentifier);
@@ -44,7 +44,7 @@ interface cell_interface {
     /**
      * @param $value
      * @param $submissions
-     * @param $stage_dentifier
+     * @param $stageidentifier
      * @return mixed
      */
     public function validate_cell($value, $submissions, $stageidentifier='');

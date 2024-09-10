@@ -44,7 +44,7 @@ class import extends grading_sheet {
      * @param $content
      * @param $encoding
      * @param $delimeter
-     * @param $csv_cells
+     * @param $csvcells
      * @return array|bool
      * @throws \coding_exception
      * @throws \moodle_exception
@@ -262,7 +262,7 @@ class import extends grading_sheet {
      * @param $content
      * @param $encoding
      * @param $delimiter
-     * @param $csv_cells
+     * @param $csvcells
      * @param $processingresults
      * @return array|bool
      * @throws \moodle_exception
@@ -574,8 +574,10 @@ class import extends grading_sheet {
      * @param $submissionid
      * @param $grade
      * @param $feedback
-     * @param $stage_identifier
+     * @param $stageidentifier
+     * @param bool $usesrubric
      * @return bool|int
+     * @throws \dml_exception
      */
     public function add_grade($submissionid, $grade, $feedback, $stageidentifier, $usesrubric=false) {
         global $DB, $USER;
@@ -632,7 +634,7 @@ class import extends grading_sheet {
      * Get feedbackid of existing feedback
      *
      * @param $submissionid
-     * @param $stage_identifier
+     * @param $stageidentifier
      * @return mixed
      */
     public function get_coursework_feedback_id($submissionid, $stageidentifier) {
@@ -651,7 +653,9 @@ class import extends grading_sheet {
      * @param $cwfeedbackid
      * @param $grade
      * @param $feedback
+     * @param bool $usesrubric
      * @return bool]
+     * @throws \dml_exception
      */
     public function edit_grade($cwfeedbackid, $grade, $feedback, $usesrubric=false) {
         global $DB, $USER;
@@ -699,7 +703,7 @@ class import extends grading_sheet {
      * Get stage_identifier for the current submission
      *
      * @param $submissionid
-     * @param $cell_identifier
+     * @param $cellidentifier
      * @return string
      * @throws \dml_missing_record_exception
      * @throws \dml_multiple_records_exception

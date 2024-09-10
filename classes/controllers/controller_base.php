@@ -164,7 +164,7 @@ class controller_base {
     /**
      * Single accessible method that look for a private method and uses it if its there, after preparing the environment.
      *
-     * @param $method_name
+     * @param $methodname
      * @param $arguments
      * @throws coding_exception
      */
@@ -189,7 +189,7 @@ class controller_base {
     /**
      * This centralises the paths that we will use. It's the beginning of a router.
      *
-     * @param string $path_name
+     * @param string $pathname
      * @param $items
      * @return string
      */
@@ -226,7 +226,7 @@ class controller_base {
     }
 
     /**
-     * @param string $page_name
+     * @param string $pagename
      */
     protected function render_page($pagename) {
         $rendererclass = $this->renderer_class();

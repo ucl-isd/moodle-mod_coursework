@@ -60,7 +60,7 @@ class csv {
 
     /**
      * @param $coursework
-     * @param $csv_cells
+     * @param $csvcells
      * @param $filename
      */
     public function __construct($coursework, $csvcells, $filename) {
@@ -107,7 +107,7 @@ class csv {
      * Create CSV cells
      * @param $submission
      * @param $student
-     * @param $csv_cells
+     * @param $csvcells
      * @return array
      */
     public function add_cells_to_array($submission, $student, $csvcells) {
@@ -145,7 +145,7 @@ class csv {
 
     /**
      * create headers for CSV
-     * @param $csv_headers
+     * @param $csvheaders
      */
     public function add_headers($csvheaders) {
         $headers = [];
@@ -205,7 +205,7 @@ class csv {
     }
 
     /**
-     * @param array $csv_data
+     * @param array $csvdata
      */
     private function add_data_to_csv($csvdata) {
         foreach ($csvdata as $data) {
@@ -215,7 +215,7 @@ class csv {
 
     /**
      * @param null $groupid
-     * @param string $selected_submission_ids
+     * @param string $selectedsubmissionids
      * @return array
      * @throws \coding_exception
      */

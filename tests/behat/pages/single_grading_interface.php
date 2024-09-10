@@ -36,7 +36,8 @@ require_once($CFG->dirroot . '/mod/coursework/tests/behat/pages/page_base.php');
 class mod_coursework_behat_single_grading_interface extends mod_coursework_behat_page_base {
 
     /**
-     * @param $student_hash
+     * @param $studenthash
+     * @return bool
      */
     public function student_has_a_final_grade($studenthash): bool {
         $studentgradecell = $this->getPage()->find('css', '#submission_'. $studenthash.' .single_final_grade_cell');
