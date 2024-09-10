@@ -45,7 +45,7 @@ foreach ($files as $filename) {
 /**
  * Class behat_mod_coursework
  * @property mixed teacher
- * @property mixed other_teacher
+ * @property mixed otherteacher
  * @property submission submission
  * @property stdClass course
  * @property mixed form
@@ -54,8 +54,8 @@ foreach ($files as $filename) {
  * @property feedback feedback
  * @property mixed manager
  * @property mixed allocation
- * @property mixed final_feedback
- * @property mixed other_student
+ * @property mixed finalfeedback
+ * @property mixed otherstudent
  * @property mixed group
  */
 class behat_mod_coursework extends behat_base {
@@ -256,7 +256,7 @@ class behat_mod_coursework extends behat_base {
      */
     public function i_should_see_the_students_name_on_the_page(string $shouldornot, string $studentrole) {
         $page = $this->get_page('coursework page');
-        $student = ($studentrole == "another") ? $this->other_student : $this->student;
+        $student = ($studentrole == "another") ? $this->otherstudent : $this->student;
         // The var $student is a user object but we must pass stdClass to fullname() to avoid  core error.
         $studentname = fullname((object)(array)$student);
         $studentfound = $page->get_coursework_student_name($studentname);
@@ -370,8 +370,8 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('allocations page');
         $allocatedassessor = $page->user_allocated_assessor($this->student, 'assessor_1');
-        if ($allocatedassessor != $this->other_teacher->name()) {
-            $message = "Expected the allocated teacher name to be '{$this->other_teacher->name()}'"
+        if ($allocatedassessor != $this->otherteacher->name()) {
+            $message = "Expected the allocated teacher name to be '{$this->otherteacher->name()}'"
                 . " but got '$allocatedassessor' instead.";
             throw new ExpectationException($message, $this->getSession());
         }
@@ -516,7 +516,7 @@ class behat_mod_coursework extends behat_base {
     public function the_other_student_is_in_the_moderation_set() {
         $membership = new stdClass();
         $membership->allocatabletype = 'user';
-        $membership->allocatableid = $this->other_student->id;
+        $membership->allocatableid = $this->otherstudent->id;
         $membership->courseworkid = $this->coursework->id;
         \mod_coursework\models\assessment_set_membership::create($membership);
     }
@@ -599,7 +599,7 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_multiple_grading_interface $page
          */
         $page = $this->get_page('multiple grading interface');
-        $page->click_assessor_new_feedback_button($assessornumber, $this->other_student);
+        $page->click_assessor_new_feedback_button($assessornumber, $this->otherstudent);
     }
 
     /**
@@ -989,7 +989,7 @@ class behat_mod_coursework extends behat_base {
         /**
          * @var mod_coursework_behat_allocations_page $page
          */
-        $student = $other == 'another' ? 'other_student' : 'student';
+        $student = $other == 'another' ? 'otherstudent' : 'student';
         $page = $this->get_page('allocations page');
         if ($selectordeselect == 'deselect') {
             $page->deselect_for_sample($this->$student, 'assessor_2');
@@ -1051,7 +1051,7 @@ class behat_mod_coursework extends behat_base {
     public function there_is_feedback_for_the_submission_from_the_other_teacher() {
         $this->feedback = feedback::create([
             'submissionid' => $this->submission->id,
-            'assessorid' => $this->other_teacher->id,
+            'assessorid' => $this->otherteacher->id,
             'grade' => '78',
             'feedbackcomment' => 'Blah',
             'stage_identifier' => 'assessor_1',
@@ -1111,12 +1111,12 @@ class behat_mod_coursework extends behat_base {
      * @Given /^there is an extension for the student which has expired$/
      */
     public function there_is_an_extension_for_the_student_which_has_expired() {
-        $this->extension_deadline = strtotime('3:30pm', strtotime('-2 weeks ', $this->coursework->deadline));
+        $this->extensiondeadline = strtotime('3:30pm', strtotime('-2 weeks ', $this->coursework->deadline));
         \mod_coursework\models\deadline_extension::create([
                                                               'allocatableid' => $this->student->id(),
                                                               'allocatabletype' => 'user',
                                                               'courseworkid' => $this->coursework->id,
-                                                              'extended_deadline' => $this->extension_deadline,
+                                                              'extended_deadline' => $this->extensiondeadline,
                                                           ]);
     }
 
@@ -1134,8 +1134,8 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_new_extension_page $new_extension_page
          */
         $newextensionpage = $this->get_page('new extension page');
-        $this->extension_deadline = strtotime('3:30pm', strtotime('+1 week'));
-        $newextensionpage->add_active_extension($this->extension_deadline);
+        $this->extensiondeadline = strtotime('3:30pm', strtotime('+1 week'));
+        $newextensionpage->add_active_extension($this->extensiondeadline);
     }
 
     /**
@@ -1146,7 +1146,7 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_multiple_grading_interface $multigrader_page
          */
         $multigraderpage = $this->get_page('multiple grading interface');
-        $multigraderpage->should_show_extension_for_allocatable($this->student, $this->extension_deadline);
+        $multigraderpage->should_show_extension_for_allocatable($this->student, $this->extensiondeadline);
     }
 
     /**
@@ -1163,8 +1163,8 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_edit_extension_page $edit_extension_page
          */
         $editextensionpage = $this->get_page('edit extension page');
-        $this->extension_deadline = strtotime('3:30pm', strtotime('+4 weeks'));
-        $editextensionpage->edit_active_extension($this->extension_deadline);
+        $this->extensiondeadline = strtotime('3:30pm', strtotime('+4 weeks'));
+        $editextensionpage->edit_active_extension($this->extensiondeadline);
     }
 
     /**
@@ -1231,8 +1231,9 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_multiple_grading_interface $multigrader_page
          */
         $multigraderpage = $this->get_page('multiple grading interface');
-        $multigraderpage->should_show_extension_for_allocatable($this->student,
-                                                                 $this->extension_deadline);
+        $multigraderpage->should_show_extension_for_allocatable(
+            $this->student, $this->extensiondeadline
+        );
     }
 
     /**
@@ -1313,8 +1314,8 @@ class behat_mod_coursework extends behat_base {
 
         // Other teacher - assessor_2.
         $allocatedassessor = $page->user_allocated_assessor($this->student, 'assessor_2');
-        if ($allocatedassessor != $this->other_teacher->name()) {
-            $message = 'Expected the allocated teacher name to be ' . $this->other_teacher->name()
+        if ($allocatedassessor != $this->otherteacher->name()) {
+            $message = 'Expected the allocated teacher name to be ' . $this->otherteacher->name()
                 . ' but got ' . $allocatedassessor . ' instead.';
             throw new ExpectationException($message, $this->getSession());
         }
@@ -1338,7 +1339,7 @@ class behat_mod_coursework extends behat_base {
         }
 
         // Other student.
-        $allocatedassessor = $page->user_allocated_assessor($this->other_student, 'assessor_1');
+        $allocatedassessor = $page->user_allocated_assessor($this->otherstudent, 'assessor_1');
         if ($allocatedassessor != $this->teacher->name()) {
             $message = 'Expected the allocated teacher name to be ' . $this->teacher->name()
                 . ' but got ' . $allocatedassessor . ' instead.';
@@ -1647,7 +1648,7 @@ class behat_mod_coursework extends behat_base {
         // We delegate to behat_form_field class, it will
         // guess the type properly as it is a select tag.
         $field = behat_field_manager::get_form_field($node, $this->getSession());
-        $field->set_value($this->other_teacher->id);
+        $field->set_value($this->otherteacher->id);
 
         $this->find_button('save_manual_allocations_1')->click();
     }
@@ -1664,7 +1665,7 @@ class behat_mod_coursework extends behat_base {
         // We delegate to behat_form_field class, it will
         // guess the type properly as it is a select tag.
         $field = behat_field_manager::get_form_field($node, $this->getSession());
-        $field->set_value($this->other_teacher->id);
+        $field->set_value($this->otherteacher->id);
 
     }
 
@@ -1690,7 +1691,7 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_allocations_page $page
          */
         $page = $this->get_page('allocations page');
-        $page->manually_allocate($this->other_student, $this->teacher, 'assessor_1');
+        $page->manually_allocate($this->otherstudent, $this->teacher, 'assessor_1');
         $page->save_everything();
     }
 
@@ -1703,7 +1704,7 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_allocations_page $page
          */
         $page = $this->get_page('allocations page');
-        $page->manually_allocate($this->other_student, $this->other_teacher, 'assessor_1');
+        $page->manually_allocate($this->otherstudent, $this->otherteacher, 'assessor_1');
         $page->save_everything();
     }
 
@@ -1743,7 +1744,7 @@ class behat_mod_coursework extends behat_base {
             $page->show_assessor_allocation_settings();
         }
         $this->find('css', '#menuassessorallocationstrategy')->selectOption('percentages');
-        $this->getSession()->getPage()->fillField("assessorstrategypercentages[{$this->other_teacher->id}]", $percent);
+        $this->getSession()->getPage()->fillField("assessorstrategypercentages[{$this->otherteacher->id}]", $percent);
     }
 
     /**
@@ -2029,7 +2030,7 @@ class behat_mod_coursework extends behat_base {
         $feedback->assessorid = $this->manager->id;
         $feedback->stage_identifier = 'final_agreed_1';
 
-        $this->final_feedback = $generator->create_feedback($feedback);
+        $this->finalfeedback = $generator->create_feedback($feedback);
     }
 
     /**
@@ -2043,10 +2044,10 @@ class behat_mod_coursework extends behat_base {
         $feedback->feedbackcomment = 'blah';
         $feedback->isfinalgrade = 1;
         $feedback->submissionid = $this->submission->id;
-        $feedback->assessorid = $this->other_teacher->id;
+        $feedback->assessorid = $this->otherteacher->id;
         $feedback->stage_identifier = 'final_agreed_1';
 
-        $this->final_feedback = $generator->create_feedback($feedback);
+        $this->finalfeedback = $generator->create_feedback($feedback);
     }
 
     /**
@@ -2134,7 +2135,7 @@ class behat_mod_coursework extends behat_base {
         $generator->create_feedback($feedback);
 
         $feedback = new stdClass();
-        $feedback->assessorid = $this->other_teacher->id;
+        $feedback->assessorid = $this->otherteacher->id;
         $feedback->submissionid = $this->submission->id;
         $feedback->stage_identifier = 'assessor_2';
         $feedback->feedbackcomment = 'New comment here';
@@ -2163,7 +2164,7 @@ class behat_mod_coursework extends behat_base {
         $generator->create_feedback($feedback);
 
         $feedback = new stdClass();
-        $feedback->assessorid = $this->other_teacher->id;
+        $feedback->assessorid = $this->otherteacher->id;
         $feedback->submissionid = $this->submission->id;
         $feedback->stage_identifier = 'assessor_2';
         $feedback->feedbackcomment = 'New comment here';
@@ -2341,7 +2342,7 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_multiple_grading_interface $page
          */
         $page = $this->get_page('multiple grading interface');
-        if ($page->student_has_a_final_grade($this->other_student)) {
+        if ($page->student_has_a_final_grade($this->otherstudent)) {
             throw new ExpectationException(
                 $message = "Should be a grade in the student row final grade cell, but there's not",
                 $this->getSession()
@@ -2593,9 +2594,9 @@ class behat_mod_coursework extends behat_base {
         $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
 
         $submission = new stdClass();
-        $submission->allocatableid = $this->other_student->id();
-        $submission->allocatabletype = $this->other_student->type();
-        $this->other_submission = $generator->create_submission($submission, $this->coursework);
+        $submission->allocatableid = $this->otherstudent->id();
+        $submission->allocatabletype = $this->otherstudent->type();
+        $this->othersubmission = $generator->create_submission($submission, $this->coursework);
     }
 
     /**
@@ -2778,7 +2779,7 @@ class behat_mod_coursework extends behat_base {
     public function the_user_has_been_kept_for_later($rolename) {
         global $DB;
 
-        $this->$rolename = $DB->get_record('user', ['username' => "user{$this->user_suffix}"]);
+        $this->$rolename = $DB->get_record('user', ['username' => "user{$this->usersuffix}"]);
     }
 
     /**
@@ -2810,18 +2811,18 @@ class behat_mod_coursework extends behat_base {
     protected function create_user($rolename, $displayname = '') {
         global $DB;
 
-        $this->user_suffix++;
+        $this->usersuffix++;
 
         $generator = testing_util::get_data_generator();
 
         $user = new stdClass();
-        $user->username = 'user' . $this->user_suffix;
-        $user->password = 'user' . $this->user_suffix;
-        $user->firstname = $displayname ? $displayname : $rolename . $this->user_suffix;
-        $user->lastname = $rolename . $this->user_suffix;
+        $user->username = 'user' . $this->usersuffix;
+        $user->password = 'user' . $this->usersuffix;
+        $user->firstname = $displayname ? $displayname : $rolename . $this->usersuffix;
+        $user->lastname = $rolename . $this->usersuffix;
         $user = $generator->create_user($user);
         $user = \mod_coursework\models\user::find($user);
-        $user->password = 'user' . $this->user_suffix;
+        $user->password = 'user' . $this->usersuffix;
 
         $roleid = $DB->get_field('role', 'id', ['shortname' => $rolename], MUST_EXIST);
 
@@ -2864,7 +2865,7 @@ class behat_mod_coursework extends behat_base {
 
         $membership = new stdClass();
         $membership->groupid = $this->group->id;
-        $membership->userid = $this->other_student->id;
+        $membership->userid = $this->otherstudent->id;
         $generator->create_group_member($membership);
     }
 
@@ -3094,9 +3095,9 @@ class behat_mod_coursework extends behat_base {
      */
     public function student_automatically_included_in_sample_for_stage($other, $another, $negate, $stage) {
         $page = $this->get_page('allocations page');
-        $another = (!empty($another)) ? $this->other_student : '';
+        $another = (!empty($another)) ? $this->otherstudent : '';
         $other = ($other == 'another');
-        $student = $other ? 'other_student' : 'student';
+        $student = $other ? 'otherstudent' : 'student';
 
         $included = $page->automatically_included_in_sample($this->coursework, $this->$student, $another, $stage);
         if ($included && $negate) {

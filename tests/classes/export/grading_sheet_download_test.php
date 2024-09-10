@@ -44,9 +44,9 @@ final class grading_sheet_download_test extends advanced_testcase {
         $this->setAdminUser();
 
         $this->student = $this->create_a_student();
-        $this->other_student = $this->create_another_student();
+        $this->otherstudent = $this->create_another_student();
         $this->teacher = $this->create_a_teacher();
-        $this->other_teacher = $this->create_another_teacher();
+        $this->otherteacher = $this->create_another_teacher();
 
     }
 
@@ -110,10 +110,10 @@ final class grading_sheet_download_test extends advanced_testcase {
 
         // 2 assessors
         $assessor1 = $this->teacher;
-        $assessor2 = $this->other_teacher;
+        $assessor2 = $this->otherteacher;
         // 2students
         $student1 = $this->student;
-        $student2 = $this->other_student;
+        $student2 = $this->otherstudent;
 
         // submissions
         $submission1 = new stdClass();

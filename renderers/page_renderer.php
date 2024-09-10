@@ -810,7 +810,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                                 $fileoptions);
 
         // Load that area into the form.
-        $submission->submission_files = $draftitemid;
+        $submission->submissionfiles = $draftitemid;
 
         $submitform->set_data($submission);
 

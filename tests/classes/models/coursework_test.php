@@ -36,7 +36,7 @@ global $CFG;
  * @property mixed group
  * @property mixed grouping
  * @property mixed student
- * @property mixed other_student
+ * @property mixed otherstudent
  * @group mod_coursework
  */
 #[\AllowDynamicProperties]

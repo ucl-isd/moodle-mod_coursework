@@ -369,8 +369,8 @@ class submission extends table_base implements \renderable {
      */
     public function get_submission_files($reset = false) {
 
-        if (!$reset && $this->submission_files instanceof submission_files) {
-            return $this->submission_files;
+        if (!$reset && $this->submissionfiles instanceof submission_files) {
+            return $this->submissionfiles;
         }
 
         if ($this->id < 1 || $this->get_context_id() < 1) {
@@ -380,9 +380,9 @@ class submission extends table_base implements \renderable {
         $submissionfiles = $this->get_files();
 
         if ($submissionfiles) {
-            $this->submission_files = new submission_files($submissionfiles, $this);
+            $this->submissionfiles = new submission_files($submissionfiles, $this);
 
-            return $this->submission_files;
+            return $this->submissionfiles;
         }
 
         $files = new submission_files([], $this);

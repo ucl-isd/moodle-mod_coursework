@@ -73,7 +73,7 @@ final class final_agreed_test extends advanced_testcase {
         $this->create_a_teacher();
         $this->create_another_teacher();
         $this->create_an_assessor_feedback_for_the_submisison($this->teacher);
-        $this->create_an_assessor_feedback_for_the_submisison($this->other_teacher);
+        $this->create_an_assessor_feedback_for_the_submisison($this->otherteacher);
 
         // Need to student to be in the sample.
 

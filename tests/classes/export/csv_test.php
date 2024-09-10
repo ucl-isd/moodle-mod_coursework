@@ -50,7 +50,7 @@ final class csv_test extends advanced_testcase {
 
         $this->student = $this->create_a_student();
         $this->teacher = $this->create_a_teacher();
-        $this->other_teacher = $this->create_another_teacher();
+        $this->otherteacher = $this->create_another_teacher();
 
     }
 
@@ -163,7 +163,7 @@ final class csv_test extends advanced_testcase {
 
         $student = $this->student;
         $assessor1 = $this->teacher;
-        $assessor2 = $this->other_teacher;
+        $assessor2 = $this->otherteacher;
         $submission = $this->submission;
 
         // Assessor one feedback
@@ -329,7 +329,7 @@ final class csv_test extends advanced_testcase {
                                                               'deadline' => time() + 86400]);
         $student1 = $this->student;
         $assessor1 = $this->teacher;
-        $assessor2 = $this->other_teacher;
+        $assessor2 = $this->otherteacher;
         $submission1 = new stdClass();
         $submission1->userid = $student1->id;
         $submission1->allocatableid = $student1->id;

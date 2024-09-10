@@ -75,7 +75,7 @@ final class table_processor_test extends advanced_testcase {
                     'assessor_id' => $this->teacher->id,
                 ],
                 'assessor_2' => [
-                    'assessor_id' => $this->other_teacher->id,
+                    'assessor_id' => $this->otherteacher->id,
                 ],
             ],
         ];
@@ -104,7 +104,7 @@ final class table_processor_test extends advanced_testcase {
                     'assessor_id' => $this->teacher->id,
                 ],
                 'assessor_2' => [
-                    'assessor_id' => $this->other_teacher->id,
+                    'assessor_id' => $this->otherteacher->id,
                 ],
             ],
         ];
@@ -121,7 +121,7 @@ final class table_processor_test extends advanced_testcase {
             'stage_identifier' => 'assessor_1',
         ];
         $firstallocation = $DB->get_record('coursework_allocation_pairs', $params);
-        $params['assessorid'] = $this->other_teacher->id;
+        $params['assessorid'] = $this->otherteacher->id;
         $params['stage_identifier'] = 'assessor_2';
         $secondallocation = $DB->get_record('coursework_allocation_pairs', $params);
 
@@ -157,7 +157,7 @@ final class table_processor_test extends advanced_testcase {
         $records = $DB->get_records('coursework_allocation_pairs', $params);
         $this->assertEquals(1, $DB->count_records('coursework_allocation_pairs'), 'Too many allocations.');
 
-        $this->assertEquals($this->other_teacher->id, reset($records)->assessorid, 'Wrong teacher id');
+        $this->assertEquals($this->otherteacher->id, reset($records)->assessorid, 'Wrong teacher id');
 
     }
 

@@ -170,7 +170,7 @@ abstract class table_base {
         } else if (is_object($dbrecord) || is_array($dbrecord)) {
             // Add all of the DB row fields to this object (if the object has a matching property).
             $this->apply_data($dbrecord);
-            $this->data_loaded = true;
+            $this->dataloaded = true;
         }
     }
 
@@ -237,7 +237,7 @@ abstract class table_base {
     public function __get($requestedpropertyname) {
         static::ensure_column_exists($requestedpropertyname);
 
-        if (!$this->data_loaded) {
+        if (!$this->dataloaded) {
             $this->reload(); // Will not set the variable if we have not saved the object yet
         }
 
@@ -411,7 +411,7 @@ abstract class table_base {
 
         if ($dbrecord) {
             $this->apply_data($dbrecord);
-            $this->data_loaded = true;
+            $this->dataloaded = true;
         }
 
         return $this;

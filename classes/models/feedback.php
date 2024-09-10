@@ -628,7 +628,7 @@ class feedback extends table_base {
             ];
             if ($submissionids) {
                 list($submissionidsql, $submissionidparams) = $DB->get_in_or_equal($submissionids, SQL_PARAMS_NAMED);
-                $feedbacks = $DB->get_records_sql("SELECT * FROM {courseworkfeedbacks} WHERE submissionid $submissionidsql", $submissionidparams);
+                $feedbacks = $DB->get_records_sql("SELECT * FROM {coursework_feedbacks} WHERE submissionid $submissionidsql", $submissionidparams);
                 foreach ($feedbacks as $record) {
                     $object = new self($record);
                     $stageidentifier = $record->stage_identifier;
