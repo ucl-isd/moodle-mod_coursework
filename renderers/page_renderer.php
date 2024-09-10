@@ -1232,7 +1232,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             } else {
                 foreach ($processingresults as $line => $error) {
                     $line = $line + 1;
-                    if ($error !== true) $html .= "Record " . $line . ": " . $error . "<br />";
+                    if ($error !== true) {
+                        $html .= "Record " . $line . ": " . $error . "<br />";
+                    }
                 }
             }
             $html .= html_writer::end_tag('p');

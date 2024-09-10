@@ -771,7 +771,9 @@ class submission extends table_base implements \renderable {
 
                 if ($this->get_coursework()->plagiarism_enbled()) {
                     $groupmember = $this->get_tii_group_member_with_eula($this->allocatableid);
-                    if (!empty($groupmember)) $id = $groupmember->id;
+                    if (!empty($groupmember)) {
+                        $id = $groupmember->id;
+                    }
                 }
             } else {
                 $id = $this->allocatableid;

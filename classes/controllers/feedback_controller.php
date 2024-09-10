@@ -271,7 +271,9 @@ class feedback_controller extends controller_base {
 
                             $assessortwocell = $cell_object->get_grade_cell_content($assessor_feedback_row, $coursework, $ability);
                             //$jsonarray['assessortwo'] =$assessortwocell;
-                            if (strpos($assessortwocell, 'new_feedback') !== false)   $jsonarray['assessortwo'] = $assessortwocell;
+                            if (strpos($assessortwocell, 'new_feedback') !== false) {
+                                $jsonarray['assessortwo'] = $assessortwocell;
+                            }
 
                         }
 
@@ -456,7 +458,9 @@ class feedback_controller extends controller_base {
 
                         $assessortwocell = $cell_object->get_grade_cell_content($assessor_feedback_row, $coursework, $ability);
                         //$jsonarray['assessortwo'] =$assessortwocell;
-                        if (strpos($assessortwocell, 'new_feedback') !== false)   $jsonarray['assessortwo'] = $assessortwocell;
+                        if (strpos($assessortwocell, 'new_feedback') !== false) {
+                            $jsonarray['assessortwo'] = $assessortwocell;
+                        }
 
                     }
 

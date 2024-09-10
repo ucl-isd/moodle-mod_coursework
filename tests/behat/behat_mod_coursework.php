@@ -611,13 +611,19 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
 
-        if ($this->running_javascript())$this->wait_for_seconds(10);
+        if ($this->running_javascript()) {
+            $this->wait_for_seconds(10);
+        }
 
         $page->press_publish_button();
 
-        if ($this->running_javascript())$this->wait_for_seconds(10);
+        if ($this->running_javascript()) {
+            $this->wait_for_seconds(10);
+        }
         $page->confirm_publish_action();
-        if ($this->running_javascript())$this->wait_for_seconds(10);
+        if ($this->running_javascript()) {
+            $this->wait_for_seconds(10);
+        }
 
     }
 
@@ -816,7 +822,9 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('student page');
 
-        if ($this->running_javascript()) $this->wait_for_seconds(10);
+        if ($this->running_javascript()) {
+            $this->wait_for_seconds(10);
+        }
 
         $page->should_have_number_of_feedback_files(2);
     }
@@ -2233,11 +2241,15 @@ class behat_mod_coursework extends behat_base {
      */
     public function i_click_on_the_edit_feedback_icon() {
 
-        if ($this->running_javascript())$this->wait_for_seconds(10);
+        if ($this->running_javascript()) {
+            $this->wait_for_seconds(10);
+        }
 
         $this->find('css', "#edit_feedback_{$this->get_feedback()->id}")->click();
 
-        if ($this->running_javascript())$this->wait_for_seconds(10);
+        if ($this->running_javascript()) {
+            $this->wait_for_seconds(10);
+        }
     }
 
     /**
@@ -2480,7 +2492,9 @@ class behat_mod_coursework extends behat_base {
     public function i_should_be_on_the_page($page_name, $ignore_params = false) {
         $ignore_params = !!$ignore_params;
 
-        if ($this->running_javascript())$this->wait_for_seconds(10);
+        if ($this->running_javascript()) {
+            $this->wait_for_seconds(10);
+        }
 
         $currentUrl = $this->getSession()->getCurrentUrl();
         $current_anchor = parse_url($currentUrl, PHP_URL_FRAGMENT);
