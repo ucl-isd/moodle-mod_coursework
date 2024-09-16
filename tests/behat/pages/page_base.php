@@ -187,11 +187,11 @@ class mod_coursework_behat_page_base {
      */
     protected function fill_in_date_field($fieldname, $timestamp) {
         // Select the date from the dropdown
-        $minutedropdownselector = "id{$fieldname}minute";
-        $hourdropdownselector = "id{$fieldname}hour";
-        $daydropdownselector = "id{$fieldname}day";
-        $monthdropdownselector = "id{$fieldname}month";
-        $yeardropdownselector = "id{$fieldname}year";
+        $minutedropdownselector = "id_{$fieldname}_minute";
+        $hourdropdownselector = "id_{$fieldname}_hour";
+        $daydropdownselector = "id_{$fieldname}_day";
+        $monthdropdownselector = "id_{$fieldname}_month";
+        $yeardropdownselector = "id_{$fieldname}_year";
 
         $minute = date('i', $timestamp);
         $hour = date('H', $timestamp);
