@@ -42,11 +42,6 @@ use pix_icon;
 class multi_marker_feedback_sub_rows implements sub_rows_interface {
 
     /**
-     * @var bool
-     */
-    protected $alreadyshownanewbuton = false;
-
-    /**
      * @param \mod_coursework\grading_table_row_base $rowobject
      * @param int $columnwidth
      * @return string
