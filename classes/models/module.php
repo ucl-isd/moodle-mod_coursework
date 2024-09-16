@@ -35,7 +35,7 @@ class module extends table_base {
     /**
      * @var string
      */
-    protected static $table_name = 'modules';
+    protected static $tablename = 'modules';
 
     /**
      * @var int
@@ -57,7 +57,7 @@ class module extends table_base {
     public static function fill_pool($array) {
         self::$pool = [
             'id' => [],
-            'name' => []
+            'name' => [],
         ];
         foreach ($array as $record) {
             $object = new self($record);

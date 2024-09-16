@@ -32,7 +32,6 @@ class none implements auto_grader {
     /**
      * @param $coursework
      * @param $allocatable
-     * @param $percentage
      */
     public function __construct($coursework, $allocatable) {
     }

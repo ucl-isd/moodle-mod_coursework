@@ -39,7 +39,7 @@ global $CFG;
  * @property stdClass other_teacher
  * @group mod_coursework
  */
-class table_processor_test extends advanced_testcase {
+final class table_processor_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
 
@@ -51,13 +51,13 @@ class table_processor_test extends advanced_testcase {
         /**
          * @var mod_coursework_generator $coursework_generator
          */
-        $coursework_generator = $generator->get_plugin_generator('mod_coursework');
+        $courseworkgenerator = $generator->get_plugin_generator('mod_coursework');
 
         $this->course = $generator->create_course();
         $coursework = new stdClass();
         $coursework->course = $this->course;
         $coursework->numberofmarkers = 2;
-        $this->coursework = $coursework_generator->create_instance($coursework);
+        $this->coursework = $courseworkgenerator->create_instance($coursework);
 
         $this->create_a_student();
         $this->create_a_teacher();
@@ -65,108 +65,108 @@ class table_processor_test extends advanced_testcase {
         $this->delete_all_auto_allocations_caused_by_enrol_hooks();
     }
 
-    public function test_process_rows_makes_a_new_assessor_allocation() {
+    public function test_process_rows_makes_a_new_assessor_allocation(): void {
 
         global $DB;
 
-        $test_rows = array(
-            $this->student->id => array(
-                'assessor_1' => array(
+        $testrows = [
+            $this->student->id => [
+                'assessor_1' => [
                     'assessor_id' => $this->teacher->id,
-                ),
-                'assessor_2' => array(
-                    'assessor_id' => $this->other_teacher->id,
-                ),
-            ),
-        );
+                ],
+                'assessor_2' => [
+                    'assessor_id' => $this->otherteacher->id,
+                ],
+            ],
+        ];
 
         $processor = new processor($this->coursework);
-        $processor->process_data($test_rows);
+        $processor->process_data($testrows);
 
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
             'manual' => 1,
-        );
+        ];
         $allocations = $DB->get_records('coursework_allocation_pairs', $params);
         $this->assertEquals(2, count($allocations));
 
     }
 
-    public function test_process_rows_sets_the_stage_identifiers_for_new_assessor_allocation() {
+    public function test_process_rows_sets_the_stage_identifiers_for_new_assessor_allocation(): void {
 
         global $DB;
 
-        $test_rows = array(
-            $this->student->id => array(
-                'assessor_1' => array(
+        $testrows = [
+            $this->student->id => [
+                'assessor_1' => [
                     'assessor_id' => $this->teacher->id,
-                ),
-                'assessor_2' => array(
-                    'assessor_id' => $this->other_teacher->id,
-                ),
-            ),
-        );
+                ],
+                'assessor_2' => [
+                    'assessor_id' => $this->otherteacher->id,
+                ],
+            ],
+        ];
 
         $processor = new processor($this->coursework);
-        $processor->process_data($test_rows);
+        $processor->process_data($testrows);
 
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
             'manual' => 1,
             'assessorid' => $this->teacher->id,
             'stage_identifier' => 'assessor_1',
-        );
-        $first_allocation = $DB->get_record('coursework_allocation_pairs', $params);
-        $params['assessorid'] = $this->other_teacher->id;
+        ];
+        $firstallocation = $DB->get_record('coursework_allocation_pairs', $params);
+        $params['assessorid'] = $this->otherteacher->id;
         $params['stage_identifier'] = 'assessor_2';
-        $second_allocation = $DB->get_record('coursework_allocation_pairs', $params);
+        $secondallocation = $DB->get_record('coursework_allocation_pairs', $params);
 
-        $this->assertEquals('assessor_1', $first_allocation->stage_identifier);
-        $this->assertEquals('assessor_2', $second_allocation->stage_identifier);
+        $this->assertEquals('assessor_1', $firstallocation->stage_identifier);
+        $this->assertEquals('assessor_2', $secondallocation->stage_identifier);
     }
 
-    public function test_process_rows_alters_an_existing_allocation() {
+    public function test_process_rows_alters_an_existing_allocation(): void {
 
         global $DB;
 
         $this->set_coursework_to_single_marker();
         $allocation = $this->make_a_non_manual_allocation_for_teacher();
 
-        $test_rows = array(
-            $this->student->id => array(
-                'assessor_1' => array(
+        $testrows = [
+            $this->student->id => [
+                'assessor_1' => [
                     'allocation_id' => $allocation->id,
-                    'assessor_id' => $this->other_teacher->id,
-                ),
-            ),
-        );
+                    'assessor_id' => $this->otherteacher->id,
+                ],
+            ],
+        ];
 
         $processor = new processor($this->coursework);
-        $processor->process_data($test_rows);
+        $processor->process_data($testrows);
 
-        $params = array(
+        $params = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
             'stage_identifier' => 'assessor_1',
-        );
+        ];
         $records = $DB->get_records('coursework_allocation_pairs', $params);
         $this->assertEquals(1, $DB->count_records('coursework_allocation_pairs'), 'Too many allocations.');
 
-        $this->assertEquals($this->other_teacher->id, reset($records)->assessorid, 'Wrong teacher id');
+        $this->assertEquals($this->otherteacher->id, reset($records)->assessorid, 'Wrong teacher id');
 
     }
 
-    public function test_that_missing_columns_dont_mess_it_up() {
+    public function test_that_missing_columns_dont_mess_it_up(): void {
         $processor = new processor($this->coursework);
-        $processor->process_data(array($this->student->id => []));
+        $processor->process_data([$this->student->id => []]);
     }
 
-    public function test_that_missing_rows_dont_mess_it_up() {
+    public function test_that_missing_rows_dont_mess_it_up(): void {
         $processor = new processor($this->coursework);
         $processor->process_data();
     }

@@ -119,7 +119,7 @@ abstract class moderation_set_rule extends table_base implements renderable {
      *
      * @abstract
      * @param array $moderationset
-     * @param array $potential_allocatables
+     * @param array $potentialallocatables
      * @param stage_base $stage
      * @return mixed
      */

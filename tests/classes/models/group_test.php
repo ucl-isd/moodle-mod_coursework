@@ -26,13 +26,13 @@ use mod_coursework\models\group;
  * Class coursework_user_test
  * @group mod_coursework
  */
-class coursework_group_test extends advanced_testcase {
+final class coursework_group_test extends advanced_testcase {
 
     public function setUp(): void {
         $this->resetAfterTest();
     }
 
-    public function test_find() {
+    public function test_find(): void {
 
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();

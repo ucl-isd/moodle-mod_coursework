@@ -39,26 +39,26 @@ class mod_coursework_behat_student_page extends mod_coursework_behat_page_base {
     public function should_have_two_submission_files() {
 
         $files = $this->getPage()->findAll('css', '.submissionfile');
-        $number_of_files = count($files);
+        $numberoffiles = count($files);
 
-        $expected_number_of_files = 2;
-        if (!$number_of_files == $expected_number_of_files) {
-            $message = 'Expected 2 submission files but there were ' . $number_of_files;
+        $expectednumberoffiles = 2;
+        if (!$numberoffiles == $expectednumberoffiles) {
+            $message = 'Expected 2 submission files but there were ' . $numberoffiles;
             throw new ExpectationException($message, $this->getSession());
         }
     }
 
     /**
-     * @param int $expected_number_of_files
+     * @param int $expectednumberoffiles
      * @throws ExpectationException
      */
-    public function should_have_number_of_feedback_files($expected_number_of_files) {
+    public function should_have_number_of_feedback_files($expectednumberoffiles) {
 
         $files = $this->getPage()->findAll('css', '.feedbackfile');
-        $number_of_files = count($files);
+        $numberoffiles = count($files);
 
-        if (!$number_of_files == $expected_number_of_files) {
-            $message = 'Expected '.$expected_number_of_files.' feedback files but there were ' . $number_of_files;
+        if (!$numberoffiles == $expectednumberoffiles) {
+            $message = 'Expected '.$expectednumberoffiles.' feedback files but there were ' . $numberoffiles;
             throw new ExpectationException($message, $this->getSession());
         }
     }
@@ -67,24 +67,24 @@ class mod_coursework_behat_student_page extends mod_coursework_behat_page_base {
      * @param $rolename
      */
     public function should_show_the_submitter_as($rolename) {
-        $submission_user_cell = $this->getPage()->find('css', 'td.submission-user');
-        $cell_contents = $submission_user_cell->getText();
-        $student_name = fullname((object)(array)$this->getContext()->$rolename);
-        if (!str_contains($cell_contents, $student_name)) {
+        $submissionusercell = $this->getPage()->find('css', 'td.submission-user');
+        $cellcontents = $submissionusercell->getText();
+        $studentname = fullname((object)(array)$this->getContext()->$rolename);
+        if (!str_contains($cellcontents, $studentname)) {
             throw new ExpectationException(
-                "Expected the submission to have been made by {$student_name}, but got {$cell_contents}",
+                "Expected the submission to have been made by {$studentname}, but got {$cellcontents}",
                 $this->getSession()
             );
         }
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function get_visible_grade(): ?string {
         // final_feedback_grade
-        $final_grade_cell = $this->getPage()->find('css', '#final_feedback_grade');
-        return $final_grade_cell ? $final_grade_cell->getText() : null;
+        $finalgradecell = $this->getPage()->find('css', '#final_feedback_grade');
+        return $finalgradecell ? $finalgradecell->getText() : null;
     }
 
     /**
@@ -92,8 +92,8 @@ class mod_coursework_behat_student_page extends mod_coursework_behat_page_base {
      */
     public function get_visible_feedback() {
         // final_feedback_grade
-        $final_grade_cell = $this->getPage()->find('css', '#final_feedback_comment');
-        return $final_grade_cell->getText();
+        $finalgradecell = $this->getPage()->find('css', '#final_feedback_comment');
+        return $finalgradecell->getText();
     }
 
     public function has_finalise_button(): bool {

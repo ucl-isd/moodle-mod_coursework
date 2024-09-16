@@ -28,7 +28,7 @@ global $CFG;
  * Unit tests for the base allocation strategy class.
  * @group mod_coursework
  */
-class coursework_allocation_strategy_test extends advanced_testcase {
+final class coursework_allocation_strategy_test extends advanced_testcase {
 
     /**
      * @var \mod_coursework\models\coursework
@@ -47,13 +47,13 @@ class coursework_allocation_strategy_test extends advanced_testcase {
         /* @var mod_coursework_generator $courseworkgenerator */
         $courseworkgenerator = $generator->get_plugin_generator('mod_coursework');
         $this->setAdminUser();
-        $this->coursework = $courseworkgenerator->create_instance(array('course' => $course->id, 'grade' => 0));
+        $this->coursework = $courseworkgenerator->create_instance(['course' => $course->id, 'grade' => 0]);
     }
 
     /**
      * See whether this works to create all allocations
      */
-    public function test_allocate_all_ungraded() {
+    public function test_allocate_all_ungraded(): void {
 
         $generator = $this->getDataGenerator();
         /* @var mod_coursework_generator $courseworkgenerator */

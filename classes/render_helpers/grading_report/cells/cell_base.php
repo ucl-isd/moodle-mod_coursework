@@ -47,11 +47,13 @@ abstract class cell_base implements cell_interface {
     /**
      * Makes the links to go in the top of a sortable column.
      *
-     * @param string $display_name
+     * @param $displayname
      * @param string $field
-     * @param string $sort_how ASC or DESC.
+     * @param $sorthow
      * @param string $sortby The current sort from the URL.
+     * @param string $tablename
      * @return string
+     * @throws \coding_exception
      */
     protected function helper_sortable_heading($displayname, $field, $sorthow, $sortby = '', $tablename='') {
 

@@ -54,7 +54,7 @@ class processor {
      * @param coursework $coursework
      * @param allocatable $allocatable
      * @param stage_base $stage
-     * @param array $data_array incoming data from the allocation form
+     * @param array $dataarray incoming data from the allocation form
      */
     public function __construct($coursework, $allocatable, $stage, $dataarray  = []) {
         $this->coursework = $coursework;
@@ -63,7 +63,7 @@ class processor {
     }
 
     /**
-     * @param data $cell_data
+     * @param data $celldata
      */
     public function process($celldata) {
 
@@ -151,7 +151,7 @@ class processor {
     }
 
     /**
-     * @param data $cell_data
+     * @param data $celldata
      */
     private function process_pin($celldata) {
         $allocation = $this->get_allocation();

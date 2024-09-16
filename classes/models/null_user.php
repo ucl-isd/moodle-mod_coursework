@@ -56,7 +56,7 @@ class null_user implements \mod_coursework\allocation\allocatable {
     }
 
     /**
-     * @param bool $with_picture
+     * @param bool $withpicture
      * @return string
      */
     public function profile_link($withpicture = false) {

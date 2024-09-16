@@ -27,7 +27,7 @@ use mod_coursework\models\deadline_extension;
  * the deadline_extension model class.
  * @group mod_coursework
  */
-class mod_coursework_models_deadline_extension_test extends advanced_testcase {
+final class mod_coursework_models_deadline_extension_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
 
@@ -36,43 +36,43 @@ class mod_coursework_models_deadline_extension_test extends advanced_testcase {
         $this->setAdminUser();
     }
 
-    public function test_create() {
-        $params = array('allocatableid' => 3,
+    public function test_create(): void {
+        $params = ['allocatableid' => 3,
                         'allocatabletype' => 'user',
                         'courseworkid' => 4,
-                        'extended_deadline' => time());
-        $new_thing = deadline_extension::create($params);
-        $this->assertInstanceOf('mod_coursework\models\deadline_extension', $new_thing);
+                        'extended_deadline' => time()];
+        $newthing = deadline_extension::create($params);
+        $this->assertInstanceOf('mod_coursework\models\deadline_extension', $newthing);
     }
 
-    public function test_user_extension_allows_submission_when_active() {
+    public function test_user_extension_allows_submission_when_active(): void {
         $coursework = $this->create_a_coursework();
         $user = $this->create_a_student();
-        $params = array('allocatableid' => $user->id(),
+        $params = ['allocatableid' => $user->id(),
                         'allocatabletype' => 'user',
                         'courseworkid' => $coursework->id,
-                        'extended_deadline' => strtotime('+ 1 week'));
+                        'extended_deadline' => strtotime('+ 1 week')];
         deadline_extension::create($params);
         $this->assertTrue(deadline_extension::allocatable_extension_allows_submission($user, $coursework));
     }
 
-    public function test_user_extension_allows_submission_when_passed() {
+    public function test_user_extension_allows_submission_when_passed(): void {
         $coursework = $this->create_a_coursework();
         $user = $this->create_a_student();
-        $params = array('allocatableid' => $user->id(),
+        $params = ['allocatableid' => $user->id(),
                         'allocatabletype' => 'user',
                         'courseworkid' => $coursework->id,
-                        'extended_deadline' => strtotime('- 1 week'));
+                        'extended_deadline' => strtotime('- 1 week')];
         deadline_extension::create($params);
         $this->assertFalse(deadline_extension::allocatable_extension_allows_submission($user, $coursework));
     }
 
-    public function test_get_coursework() {
+    public function test_get_coursework(): void {
         $coursework = $this->create_a_coursework();
-        $params = array('allocatableid' => 3,
+        $params = ['allocatableid' => 3,
                         'allocatabletype' => 'user',
                         'courseworkid' => $coursework->id,
-                        'extended_deadline' => strtotime('- 1 week'));
+                        'extended_deadline' => strtotime('- 1 week')];
         $extension = deadline_extension::create($params);
         $this->assertEquals($extension->get_coursework(), $coursework);
     }

@@ -111,7 +111,7 @@ abstract class sample_base {
      *
      * @abstract
      * @param array $moderationset
-     * @param array $potential_allocatables
+     * @param array $potentialallocatables
      * @param stage_base $stage
      * @return mixed
      */

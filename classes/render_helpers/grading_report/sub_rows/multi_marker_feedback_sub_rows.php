@@ -42,24 +42,19 @@ use pix_icon;
 class multi_marker_feedback_sub_rows implements sub_rows_interface {
 
     /**
-     * @var bool
-     */
-    protected $already_shown_a_new_buton = false;
-
-    /**
-     * @param \mod_coursework\grading_table_row_base $row_object
-     * @param int $column_width
+     * @param \mod_coursework\grading_table_row_base $rowobject
+     * @param int $columnwidth
      * @return string
      */
-    public function get_row_with_assessor_feedback_table($row_object, $column_width) {
+    public function get_row_with_assessor_feedback_table($rowobject, $columnwidth) {
 
         /* @var assessor_feedback_table $assessor_feedback_table */
-        $assessor_feedback_table = $row_object->get_assessor_feedback_table();
+        $assessorfeedbacktable = $rowobject->get_assessor_feedback_table();
 
         // The number of columns will vary according to what permissions the user has.
-        $assessor_feedback_table->set_column_width($column_width);
+        $assessorfeedbacktable->set_column_width($columnwidth);
 
-        return $this->render_assessor_feedback_table($assessor_feedback_table);
+        return $this->render_assessor_feedback_table($assessorfeedbacktable);
 
     }
 
@@ -72,21 +67,25 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     }
 
     /**
-     * @param $feedback_row
+     * @param $feedbackrow
      * @param $coursework
      * @param null $ability
      * @return string
      */
-    public function get_grade_cell_content($feedback_row, $coursework, $ability = null) {
+    public function get_grade_cell_content($feedbackrow, $coursework, $ability = null) {
         global $USER;
 
         if (empty($ability)) {
             $ability = new ability(user::find($USER), $coursework);
         }
-        $gradedby = ($coursework->allocation_enabled() && $feedback_row->has_feedback() && $feedback_row->get_graded_by() != $feedback_row->get_assessor()) ?
-            ' (Graded by: '. $feedback_row->get_graders_name().')' : '';
-        $editable = (!$feedback_row->has_feedback() || $feedback_row->get_feedback()->finalised) ? '' : '</br>'.get_string('notfinalised', 'coursework');
-        $result = $this->comment_for_row($feedback_row, $ability) . $gradedby . $editable;
+        $needsgradedby = $coursework->allocation_enabled() && $feedbackrow->has_feedback()
+            && $feedbackrow->get_graded_by() != $feedbackrow->get_assessor();
+        $gradedby = $needsgradedby
+            ? get_string('gradedbyname', 'mod_coursework', $feedbackrow->get_graders_name())
+            : '';
+        $editable = (!$feedbackrow->has_feedback() || $feedbackrow->get_feedback()->finalised)
+            ? '' : '</br>'.get_string('notfinalised', 'coursework');
+        $result = $this->comment_for_row($feedbackrow, $ability) . $gradedby . $editable;
         return $result;
     }
 
@@ -94,63 +93,63 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
      * Renders the table of feedbacks from assessors, which appears under each student's submission in the
      * grading report of the multiple marker courseworks.
      *
-     * @param assessor_feedback_table $assessor_feedback_table
+     * @param assessor_feedback_table $assessorfeedbacktable
      * @return html_table_row
      */
-    protected function render_assessor_feedback_table(assessor_feedback_table $assessor_feedback_table) {
+    protected function render_assessor_feedback_table(assessor_feedback_table $assessorfeedbacktable) {
 
         global $USER, $PAGE;
 
-        $coursework = $assessor_feedback_table->get_coursework();
+        $coursework = $assessorfeedbacktable->get_coursework();
         $ability = new ability(user::find($USER, false), $coursework);
-        $feedbackrows = $assessor_feedback_table->get_renderable_feedback_rows();
+        $feedbackrows = $assessorfeedbacktable->get_renderable_feedback_rows();
 
-        $allocatable = $assessor_feedback_table->get_allocatable();
+        $allocatable = $assessorfeedbacktable->get_allocatable();
 
-        $output_rows = '';
-        $table_html = '';
+        $outputrows = '';
+        $tablehtml = '';
 
         $this->already_shown_a_new_buton = false;
         /* @var $feedback_row assessor_feedback_row */
-        foreach ($feedbackrows as $feedback_row) {
+        foreach ($feedbackrows as $feedbackrow) {
 
-            $stage = $feedback_row->get_stage();
+            $stage = $feedbackrow->get_stage();
 
             // Don't show empty rows with nothing in them
             // As a part of Release 1 we decided to show all rows to apply styling correctly,
             // this is expected to be rewritten for Release 2
-           /* if (!$feedback_row->get_assessor()->id() && (!$feedback_row->get_submission() ||
+            /* if (!$feedback_row->get_assessor()->id() && (!$feedback_row->get_submission() ||
                                                          !$feedback_row->get_submission()->ready_to_grade() ||
                                                           $this->already_shown_a_new_buton)) {
                 continue;
             }*/
 
-            $output_rows .= ' <tr class="' . $this->row_class($feedback_row) . '">';
+            $outputrows .= ' <tr class="' . $this->row_class($feedbackrow) . '">';
 
             if ($coursework->sampling_enabled() && $stage->uses_sampling() && !$stage->allocatable_is_in_sample($allocatable)) {
 
-                $output_rows .= '
+                $outputrows .= '
                         <td class = "not_included_in_sample" colspan =3>'.get_string('notincludedinsample', 'mod_coursework').'</td>
                         </tr >';
             } else {
 
-                $assessor_details = (empty($feedback_row->get_assessor()->id()) && $coursework->allocation_enabled()) ?
-                     get_string('assessornotallocated', 'mod_coursework') : $this->profile_link($feedback_row);
-                 $output_rows .=
-                     '<td>' . $assessor_details. ' </td>
+                $assessordetails = (empty($feedbackrow->get_assessor()->id()) && $coursework->allocation_enabled()) ?
+                     get_string('assessornotallocated', 'mod_coursework') : $this->profile_link($feedbackrow);
+                 $outputrows .=
+                     '<td>' . $assessordetails. ' </td>
                      <td class="assessor_feedback_grade" data-class-name="' . get_class($this) . '">' .
-                     $this->get_grade_cell_content($feedback_row, $coursework, $ability) .
+                     $this->get_grade_cell_content($feedbackrow, $coursework, $ability) .
                      '</td>
-                     <td >' . $this->date_for_column($feedback_row) . '</td ></tr >';
+                     <td >' . $this->date_for_column($feedbackrow) . '</td ></tr >';
             }
         }
 
-        if (!empty($output_rows)) {
+        if (!empty($outputrows)) {
 
-            $allocation_string = ($coursework->allocation_enabled())
+            $allocationstring = ($coursework->allocation_enabled())
                 ? get_string('allocatedtoassessor', 'mod_coursework')
                 : get_string('assessor', 'mod_coursework');
-/*
+            /*
             $table_html = '
                 <tr class = "submissionrowmultisub">
 
@@ -169,32 +168,32 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
                     </table>
                   </td>
                 </tr>';
-*/
-            $table_html = '<table class="assessors" id="assessorfeedbacktable_' . $assessor_feedback_table->get_coursework()
-                        ->get_allocatable_identifier_hash($assessor_feedback_table->get_allocatable()) . '" style="display: none;">
+            */
+            $tablehtml = '<table class="assessors" id="assessorfeedbacktable_' . $assessorfeedbacktable->get_coursework()
+                ->get_allocatable_identifier_hash($assessorfeedbacktable->get_allocatable()) . '" style="display: none;">
                         <tr>
-                          <th>' . $allocation_string . '</th>
+                          <th>' . $allocationstring . '</th>
                           <th>' . get_string('grade', 'mod_coursework') . '</th>
                           <th>' . get_string('tableheaddate', 'mod_coursework') . '</th>
                         </tr>';
 
-                $table_html .= $output_rows;
+                $tablehtml .= $outputrows;
 
-                $table_html .= '
+                $tablehtml .= '
                         </table>';
 
-            return $table_html;
+            return $tablehtml;
         } else {
 
-            if ($assessor_feedback_table->get_submission() &&
-                    ($assessor_feedback_table->get_coursework()->deadline_has_passed() &&
-                    $assessor_feedback_table->get_submission()->finalised)) {
+            if ($assessorfeedbacktable->get_submission() &&
+                    ($assessorfeedbacktable->get_coursework()->deadline_has_passed() &&
+                    $assessorfeedbacktable->get_submission()->finalised)) {
 
-                $table_html = '<tr><td colspan = "11" class="nograde" ><table class="nograde">';
-                $table_html .= '<tr>' . get_string('nogradescomments', 'mod_coursework') . '</tr>';
-                $table_html .= '</table></td></tr>';
+                $tablehtml = '<tr><td colspan = "11" class="nograde" ><table class="nograde">';
+                $tablehtml .= '<tr>' . get_string('nogradescomments', 'mod_coursework') . '</tr>';
+                $tablehtml .= '</table></td></tr>';
             }
-            return $table_html;
+            return $tablehtml;
         }
     }
 
@@ -206,161 +205,161 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     }
 
     /**
-     * @param assessor_feedback_row $feedback_row
+     * @param assessor_feedback_row $feedbackrow
      * @return string
      * @throws \coding_exception
      */
-    protected function edit_existing_feedback_link($feedback_row) {
+    protected function edit_existing_feedback_link($feedbackrow) {
         global $OUTPUT;
 
         $linktitle = get_string('editgrade', 'coursework');
         $icon = new pix_icon('edit', $linktitle, 'coursework');
-        $link_id = "edit_feedback_" . $feedback_row->get_feedback()->id;
+        $linkid = "edit_feedback_" . $feedbackrow->get_feedback()->id;
         $link = $this->get_router()
-            ->get_path('ajax edit feedback', array('feedback' => $feedback_row->get_feedback()));
-        $iconlink = $OUTPUT->action_icon($link, $icon, null, array('id' => $link_id, 'class' => 'edit_feedback'));
+            ->get_path('ajax edit feedback', ['feedback' => $feedbackrow->get_feedback()]);
+        $iconlink = $OUTPUT->action_icon($link, $icon, null, ['id' => $linkid, 'class' => 'edit_feedback']);
         return $iconlink;
     }
 
     /**
-     * @param assessor_feedback_row $feedback_row
+     * @param assessor_feedback_row $feedbackrow
      * @param $submission
      * @return \mod_coursework\framework\table_base
      */
-    protected function build_new_feedback($feedback_row, $submission) {
+    protected function build_new_feedback($feedbackrow, $submission) {
         global $USER;
 
-        $params = array(
+        $params = [
             'assessorid' => $USER->id,
-            'stage_identifier' => $feedback_row->get_stage()->identifier(),
-        );
+            'stage_identifier' => $feedbackrow->get_stage()->identifier(),
+        ];
         if ($submission) {
             $params['submissionid'] = $submission->id;
         }
-        $new_feedback = feedback::build($params);
-        return $new_feedback;
+        $newfeedback = feedback::build($params);
+        return $newfeedback;
     }
 
     /**
-     * @param assessor_feedback_row $feedback_row
+     * @param assessor_feedback_row $feedbackrow
      * @return string
      * @throws \coding_exception
      */
-    private function show_feedback_link($feedback_row) {
+    private function show_feedback_link($feedbackrow) {
         global $OUTPUT;
 
         $linktitle = get_string('viewfeedback', 'mod_coursework');
-        $link_id = "show_feedback_" . $feedback_row->get_feedback()->id;
+        $linkid = "show_feedback_" . $feedbackrow->get_feedback()->id;
         $link = $this->get_router()
-            ->get_path('show feedback', array('feedback' => $feedback_row->get_feedback()));
+            ->get_path('show feedback', ['feedback' => $feedbackrow->get_feedback()]);
         $iconlink = $OUTPUT->action_link($link,
                                          $linktitle,
                                          null,
-                                         array('class' => 'show_feedback', 'id' => $link_id));
+                                         ['class' => 'show_feedback', 'id' => $linkid]);
         return $iconlink;
     }
 
     /**
-     * @param assessor_feedback_row $feedback_row
+     * @param assessor_feedback_row $feedbackrow
      * @return string
      * @throws \coding_exception
      */
-    protected function new_feedaback_link($feedback_row) {
+    protected function new_feedaback_link($feedbackrow) {
         global $USER, $OUTPUT;
 
         $this->already_shown_a_new_buton = true;
-//        $this->displaytable = true; //todo this is deprecated and causes behat exception - was it doing anything useful?
+        //        $this->displaytable = true; //todo this is deprecated and causes behat exception - was it doing anything useful?
 
         // New
         $linktitle = get_string('newfeedback', 'coursework');
 
-        $new_feedback_params = array(
-            'submission' => $feedback_row->get_submission(),
+        $newfeedbackparams = [
+            'submission' => $feedbackrow->get_submission(),
             'assessor' => user::find($USER, false),
-            'stage' => $feedback_row->get_stage()
-        );
-        $link = $this->get_router()->get_path('ajax new feedback', $new_feedback_params);
+            'stage' => $feedbackrow->get_stage(),
+        ];
+        $link = $this->get_router()->get_path('ajax new feedback', $newfeedbackparams);
         $iconlink = $OUTPUT->action_link($link,
                                          $linktitle,
                                          null,
-                                         array('class' => 'new_feedback'));
+                                         ['class' => 'new_feedback']);
         return $iconlink;
     }
 
     /**
-     * @param assessor_feedback_row $feedback_row
+     * @param assessor_feedback_row $feedbackrow
      * @return string
      */
-    public function profile_link($feedback_row) {
+    public function profile_link($feedbackrow) {
         global $COURSE;
 
-        $assessor = $feedback_row->get_assessor();
+        $assessor = $feedbackrow->get_assessor();
 
-        $profilelinkurl = new moodle_url('/user/profile.php', array('id' => $assessor->id(),
-                                                                    'course' => $COURSE->id));
+        $profilelinkurl = new moodle_url('/user/profile.php', ['id' => $assessor->id(),
+                                                                    'course' => $COURSE->id]);
         return html_writer::link($profilelinkurl, $assessor->name());
     }
 
     /**
-     * @param assessor_feedback_row $feedback_row
+     * @param assessor_feedback_row $feedbackrow
      * @return string
      */
-    protected function row_class($feedback_row) {
-        $assessor = $feedback_row->get_assessor();
-        $row_class = 'feedback-' . $assessor->id() . '-' . $feedback_row->get_allocatable()
-                ->id() . ' ' . $feedback_row->get_stage()->identifier();
-        return $row_class;
+    protected function row_class($feedbackrow) {
+        $assessor = $feedbackrow->get_assessor();
+        $rowclass = 'feedback-' . $assessor->id() . '-' . $feedbackrow->get_allocatable()
+            ->id() . ' ' . $feedbackrow->get_stage()->identifier();
+        return $rowclass;
     }
 
     /**
-     * @param assessor_feedback_row $feedback_row
+     * @param assessor_feedback_row $feedbackrow
      * @return string
      */
-    public function date_for_column($feedback_row) {
-        if ($feedback_row->has_feedback()) {
-            return userdate($feedback_row->get_feedback()->timecreated, '%a, %d %b %Y, %H:%M ');
+    public function date_for_column($feedbackrow) {
+        if ($feedbackrow->has_feedback()) {
+            return userdate($feedbackrow->get_feedback()->timecreated, '%a, %d %b %Y, %H:%M ');
         }
         return '';
     }
 
     /**
-     * @param assessor_feedback_row $feedback_row
+     * @param assessor_feedback_row $feedbackrow
      * @param ability $ability
      * @return string
      */
-    protected function comment_for_row($feedback_row, $ability) {
+    protected function comment_for_row($feedbackrow, $ability) {
         global $USER;
 
-        $submission = $feedback_row->get_submission();
+        $submission = $feedbackrow->get_submission();
 
         $html = '';
 
-        if ($feedback_row->has_feedback()) {
+        if ($feedbackrow->has_feedback()) {
 
-            if ($ability->can('show', $feedback_row->get_feedback()) || is_siteadmin($USER->id)) {
-                $grade_judge = new grade_judge($feedback_row->get_coursework());
-                $html .= $grade_judge->grade_to_display($feedback_row->get_feedback()->get_grade());
+            if ($ability->can('show', $feedbackrow->get_feedback()) || is_siteadmin($USER->id)) {
+                $gradejudge = new grade_judge($feedbackrow->get_coursework());
+                $html .= $gradejudge->grade_to_display($feedbackrow->get_feedback()->get_grade());
             } else {
-                if (has_capability('mod/coursework:addagreedgrade', $feedback_row->get_coursework()->get_context())
-                     || has_capability('mod/coursework:addallocatedagreedgrade', $feedback_row->get_coursework()->get_context())) {
+                if (has_capability('mod/coursework:addagreedgrade', $feedbackrow->get_coursework()->get_context())
+                     || has_capability('mod/coursework:addallocatedagreedgrade', $feedbackrow->get_coursework()->get_context())) {
                     $html .= get_string('grade_hidden_manager', 'mod_coursework');
                 } else {
                     $html .= get_string('grade_hidden_teacher', 'mod_coursework');
                 }
             }
 
-            $grade_editing = get_config('mod_coursework', 'coursework_grade_editing');
+            $gradeediting = get_config('mod_coursework', 'coursework_grade_editing');
 
-            if ($ability->can('edit', $feedback_row->get_feedback()) && !$submission->already_published()) {
-                $html .= $this->edit_existing_feedback_link($feedback_row);
-            } else if ($ability->can('show', $feedback_row->get_feedback())) {
-                $html .= $this->show_feedback_link($feedback_row);
+            if ($ability->can('edit', $feedbackrow->get_feedback()) && !$submission->already_published()) {
+                $html .= $this->edit_existing_feedback_link($feedbackrow);
+            } else if ($ability->can('show', $feedbackrow->get_feedback())) {
+                $html .= $this->show_feedback_link($feedbackrow);
             }
         } else {
 
-            $new_feedback = $this->build_new_feedback($feedback_row, $submission);
-            if ($ability->can('new', $new_feedback) && !$this->already_shown_a_new_buton) {
-                $html .= $this->new_feedaback_link($feedback_row);
+            $newfeedback = $this->build_new_feedback($feedbackrow, $submission);
+            if ($ability->can('new', $newfeedback) && !$this->already_shown_a_new_buton) {
+                $html .= $this->new_feedaback_link($feedbackrow);
             }
         }
 

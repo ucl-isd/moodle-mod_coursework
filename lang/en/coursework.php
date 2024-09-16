@@ -386,6 +386,7 @@ $string['grades_table_header_help'] = 'All grades are provisional until finalise
 $string['gradealreadyexists'] = 'Grade already exists';
 $string['gradingsheetfile'] = 'Grading sheet file';
 $string['gradedby'] = 'Graded by';
+$string['gradedbyname'] = '(Graded by: {$a})';
 $string['gradeforgradebook'] = 'Grade for gradebook';
 $string['gradelink'] = 'Grade link';
 $string['gradereleasedtostudent'] = 'The grade has been already released and is visible to student(s)';

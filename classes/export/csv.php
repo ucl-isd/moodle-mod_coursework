@@ -60,7 +60,7 @@ class csv {
 
     /**
      * @param $coursework
-     * @param $csv_cells
+     * @param $csvcells
      * @param $filename
      */
     public function __construct($coursework, $csvcells, $filename) {
@@ -107,20 +107,20 @@ class csv {
      * Create CSV cells
      * @param $submission
      * @param $student
-     * @param $csv_cells
+     * @param $csvcells
      * @return array
      */
     public function add_cells_to_array($submission, $student, $csvcells) {
         $row = [];
         foreach ($csvcells as $csvcell) {
             if (substr($csvcell, 0, 8) == 'assessor') {
-                $stagedentifier = 'assessor_'.(substr($csvcell, -1));
+                $stageidentifier = 'assessor_'.(substr($csvcell, -1));
                 $csvcell = substr($csvcell, 0, -1);
             }
             $class = "mod_coursework\\export\\csv\\cells\\".$csvcell."_cell";
             $cell = new $class($this->coursework);
             if (substr($csvcell, 0, 8) == 'assessor') {
-                $cell = $cell->get_cell($submission, $student, $stagedentifier);
+                $cell = $cell->get_cell($submission, $student, $stageidentifier);
                 if (is_array($cell)) {
                     $row = array_merge($row, $cell);
                 } else {
@@ -145,7 +145,7 @@ class csv {
 
     /**
      * create headers for CSV
-     * @param $csv_headers
+     * @param $csvheaders
      */
     public function add_headers($csvheaders) {
         $headers = [];
@@ -205,7 +205,7 @@ class csv {
     }
 
     /**
-     * @param array $csv_data
+     * @param array $csvdata
      */
     private function add_data_to_csv($csvdata) {
         foreach ($csvdata as $data) {
@@ -215,7 +215,7 @@ class csv {
 
     /**
      * @param null $groupid
-     * @param string $selected_submission_ids
+     * @param string $selectedsubmissionids
      * @return array
      * @throws \coding_exception
      */

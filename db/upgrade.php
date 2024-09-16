@@ -2045,7 +2045,7 @@ function xmldb_coursework_upgrade($oldversion) {
 
     if ($oldversion < 2015110303) {
         $fields = [];
-        //Add fields to assist backup annotation
+        // Add fields to assist backup annotation
         $fielduser = new xmldb_field('allocatableuser', XMLDB_TYPE_INTEGER, '10', true, XMLDB_NOTNULL, null, '0', 'allocatabletype');
         $fieldgroup = new xmldb_field('allocatablegroup', XMLDB_TYPE_INTEGER, '10', true, XMLDB_NOTNULL, null, '0', 'allocatableuser');
 
@@ -2068,7 +2068,7 @@ function xmldb_coursework_upgrade($oldversion) {
 
     if ($oldversion < 2015121401) {
         $fields = [];
-        //Add fields to assist backup annotation
+        // Add fields to assist backup annotation
         $fieldeditingtime = new xmldb_field('gradeeditingtime', XMLDB_TYPE_INTEGER, '10', true, XMLDB_NOTNULL, null, '0', null);
 
         $fieldeditingtime->setNotNull(true);
@@ -2098,7 +2098,7 @@ function xmldb_coursework_upgrade($oldversion) {
 
     if ($oldversion < 2016110100) {
         $fields = [];
-        //Add fields to hold marking deadline enabled
+        // Add fields to hold marking deadline enabled
         $upgradefield = new xmldb_field('markingdeadlineenabled', XMLDB_TYPE_INTEGER, '1', true, XMLDB_NOTNULL, null, '0', null);
 
         $upgradefield->setNotNull(true);
@@ -2114,7 +2114,7 @@ function xmldb_coursework_upgrade($oldversion) {
 
     if ($oldversion < 2016110101) {
         $fields = [];
-        //Add fields to hold intial marking deadline
+        // Add fields to hold intial marking deadline
         $upgradefield = new xmldb_field('initialmarkingdeadline', XMLDB_TYPE_INTEGER, '10', true, XMLDB_NOTNULL, null, '0', null);
 
         $upgradefield->setNotNull(true);
@@ -2125,7 +2125,7 @@ function xmldb_coursework_upgrade($oldversion) {
             $dbman->add_field($table, $upgradefield);
         }
 
-        //Add fields to hold agreed grade marking deadline
+        // Add fields to hold agreed grade marking deadline
         $upgradefield = new xmldb_field('agreedgrademarkingdeadline', XMLDB_TYPE_INTEGER, '10', true, XMLDB_NOTNULL, null, '0', null);
 
         $upgradefield->setNotNull(true);
@@ -2141,7 +2141,7 @@ function xmldb_coursework_upgrade($oldversion) {
 
     if ($oldversion < 2016110102) {
         $fields = [];
-        //Add fields to hold intial marking deadline
+        // Add fields to hold intial marking deadline
         $upgradefield = new xmldb_field('markingreminderenabled', XMLDB_TYPE_INTEGER, '1', true, XMLDB_NOTNULL, null, '0', null);
 
         $upgradefield->setNotNull(true);
@@ -2156,7 +2156,7 @@ function xmldb_coursework_upgrade($oldversion) {
     }
 
     if ($oldversion < 2016112300) {
-        //Add a field to hold extension value if granted
+        // Add a field to hold extension value if granted
         $fieldextension = new xmldb_field('extension', XMLDB_TYPE_INTEGER, '10', true, XMLDB_NOTNULL, null, '0', null);
 
         $fieldextension->setNotNull(true);
@@ -2171,7 +2171,7 @@ function xmldb_coursework_upgrade($oldversion) {
     }
 
     if ($oldversion < 2016121500) {
-        //Add fields to hold personal deadline enabled
+        // Add fields to hold personal deadline enabled
         $upgradefield = new xmldb_field('personaldeadlineenabled', XMLDB_TYPE_INTEGER, '1', true, XMLDB_NOTNULL, null, '0', null);
 
         $upgradefield->setNotNull(true);
@@ -2420,7 +2420,7 @@ function xmldb_coursework_upgrade($oldversion) {
 
     if ($oldversion < 2019071100) {
 
-        //Add fields for finalstagegrading
+        // Add fields for finalstagegrading
         $fieldfinalstagegrading = new xmldb_field('finalstagegrading', XMLDB_TYPE_INTEGER, '1', true, XMLDB_NOTNULL, null, '0', 'numberofmarkers');
 
         $table = new xmldb_table('coursework');

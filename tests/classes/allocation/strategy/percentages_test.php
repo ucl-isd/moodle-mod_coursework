@@ -24,11 +24,11 @@ global $CFG;
 
 /**
  * Class mod_coursework_allocation_strategy_percentages_test
- * @property mixed other_teacher
+ * @property mixed otherteacher
  * @property mixed teacher
  * @group mod_coursework
  */
-class mod_coursework_allocation_strategy_percentages_test extends advanced_testcase {
+final class mod_coursework_allocation_strategy_percentages_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
 
@@ -48,44 +48,44 @@ class mod_coursework_allocation_strategy_percentages_test extends advanced_testc
         $this->create_another_teacher();
     }
 
-    public function test_next_assessor_from_list_chooses_when_at_100_percent_for_one_teacher_and_no_other_allocations() {
+    public function test_next_assessor_from_list_chooses_when_at_100_percent_for_one_teacher_and_no_other_allocations(): void {
 
         $strategy = $this->assessor_strategy();
 
         $this->set_to_100_percent_for_other_teacher();
 
-        $next_teacher = $strategy->next_assessor_from_list($this->list_of_teachers(), $this->student);
-        $this->assertEquals($this->other_teacher->id, $next_teacher->id);
+        $nextteacher = $strategy->next_assessor_from_list($this->list_of_teachers(), $this->student);
+        $this->assertEquals($this->otherteacher->id, $nextteacher->id);
 
     }
 
-    public function test_next_assessor_from_list_fails_when_at_100_percent_for_one_teacher_and_already_allocated() {
+    public function test_next_assessor_from_list_fails_when_at_100_percent_for_one_teacher_and_already_allocated(): void {
 
         $strategy = $this->assessor_strategy();
 
         $this->set_to_100_percent_for_other_teacher();
         $this->allocate_the_student_to_the_other_teacer();
 
-        $next_teacher = $strategy->next_assessor_from_list($this->list_of_teachers(), $this->student);
-        $this->assertFalse($next_teacher);
+        $nextteacher = $strategy->next_assessor_from_list($this->list_of_teachers(), $this->student);
+        $this->assertFalse($nextteacher);
     }
 
-    public function test_when_at_100_percent_for_one_teacher_and_the_other_student_is_already_allocated() {
+    public function test_when_at_100_percent_for_one_teacher_and_the_other_student_is_already_allocated(): void {
 
         $strategy = $this->assessor_strategy();
 
         $this->set_to_100_percent_for_other_teacher();
         $this->allocate_the_student_to_the_other_teacer();
 
-        $next_teacher = $strategy->next_assessor_from_list($this->list_of_teachers(), $this->other_student);
-        $this->assertEquals($this->other_teacher->id, $next_teacher->id);
+        $nextteacher = $strategy->next_assessor_from_list($this->list_of_teachers(), $this->otherstudent);
+        $this->assertEquals($this->otherteacher->id, $nextteacher->id);
     }
 
     /**
      * Theory here is that we want to not allocate when the percentage is below that which would represent
      * a whole person. However, we sill need all of the allocations to be made without missing any.
      */
-    public function test_weird_percentages_work() {
+    public function test_weird_percentages_work(): void {
         $this->delete_all_allocations();
 
         $this->coursework->update_attribute('numberofmarkers', 1);
@@ -94,8 +94,8 @@ class mod_coursework_allocation_strategy_percentages_test extends advanced_testc
         $this->allocate_the_student_to_the_other_teacer();
 
         $strategy = $this->assessor_strategy();
-        $next_teacher = $strategy->next_assessor_from_list($this->list_of_teachers(), $this->other_student);
-        $this->assertEquals($this->other_teacher->id, $next_teacher->id);
+        $nextteacher = $strategy->next_assessor_from_list($this->list_of_teachers(), $this->otherstudent);
+        $this->assertEquals($this->otherteacher->id, $nextteacher->id);
     }
 
     /**
@@ -106,7 +106,7 @@ class mod_coursework_allocation_strategy_percentages_test extends advanced_testc
         $setting = new stdClass();
         $setting->courseworkid = $this->coursework->id;
         $setting->allocationstrategy = 'percentages';
-        $setting->assessorid = $this->other_teacher->id;
+        $setting->assessorid = $this->otherteacher->id;
         $setting->value = 100;
         $setting->purpose = 'assessor';
         $DB->insert_record('coursework_allocation_config', $setting);
@@ -120,7 +120,7 @@ class mod_coursework_allocation_strategy_percentages_test extends advanced_testc
         $setting = new stdClass();
         $setting->courseworkid = $this->coursework->id;
         $setting->allocationstrategy = 'percentages';
-        $setting->assessorid = $this->other_teacher->id;
+        $setting->assessorid = $this->otherteacher->id;
         $setting->value = 80;
         $setting->purpose = 'assessor';
         $DB->insert_record('coursework_allocation_config', $setting);
@@ -132,7 +132,7 @@ class mod_coursework_allocation_strategy_percentages_test extends advanced_testc
 
     private function allocate_the_student_to_the_other_teacer() {
         $allocation = new \mod_coursework\models\allocation();
-        $allocation->assessorid = $this->other_teacher->id;
+        $allocation->assessorid = $this->otherteacher->id;
         $allocation->allocatableid = $this->student->id;
         $allocation->allocatabletype = 'user';
         $allocation->courseworkid = $this->coursework->id;
@@ -143,10 +143,10 @@ class mod_coursework_allocation_strategy_percentages_test extends advanced_testc
      * @return array
      */
     private function list_of_teachers() {
-        return array(
+        return [
             $this->teacher,
-            $this->other_teacher,
-        );
+            $this->otherteacher,
+        ];
     }
 
     /**

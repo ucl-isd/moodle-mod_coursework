@@ -31,7 +31,7 @@ class assessor_cell extends cell_base {
     /**
      * @param $submission
      * @param $student
-     * @param $stage_identifier
+     * @param $stageidentifier
      * @return string
      */
 

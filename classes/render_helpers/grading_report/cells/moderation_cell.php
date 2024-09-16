@@ -49,7 +49,7 @@ class moderation_cell extends cell_base {
     }
 
     /**
-     * @param grading_table_row_base $row_object
+     * @param grading_table_row_base $rowobject
      * @throws coding_exception
      * @return string
      */
@@ -85,7 +85,7 @@ class moderation_cell extends cell_base {
      */
     public function get_table_header($options  = []) {
 
-        //adding this line so that the sortable heading function will make a sortable link unique to the table
+        // Adding this line so that the sortable heading function will make a sortable link unique to the table
         // If tablename is set
         $tablename = (!empty($options['tablename'])) ? $options['tablename'] : '';
 
@@ -104,7 +104,7 @@ class moderation_cell extends cell_base {
     }
 
     /**
-     * @param grading_table_row_base $row_object
+     * @param grading_table_row_base $rowobject
      * @return string
      */
     protected function add_existing_moderator_feedback_details_to_cell($rowobject) {
@@ -117,7 +117,7 @@ class moderation_cell extends cell_base {
     }
 
     /**
-     * @param grading_table_row_base $row_object
+     * @param grading_table_row_base $rowobject
      * @param feedback $feedback
      * @return string
      * @throws \coding_exception
@@ -142,7 +142,7 @@ class moderation_cell extends cell_base {
     }
 
     /**
-     * @param grading_table_row_base $row_object
+     * @param grading_table_row_base $rowobject
      * @return string
      * @throws \coding_exception
      */

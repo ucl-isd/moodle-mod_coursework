@@ -45,8 +45,8 @@ class minimum_range_grade_raw extends moderation_set_rule {
      * This will take the current set and the list of students who could potentially be added
      * and adjust them.
      *
-     * @param allocatable[] $moderation_set
-     * @param allocatable[] $potential_allocatables
+     * @param allocatable[] $moderationset
+     * @param allocatable[] $potentialallocatables
      * @param \mod_coursework\stages\base $stage
      * @return mixed
      */

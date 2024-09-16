@@ -29,9 +29,9 @@ defined('MOODLE_INTERNAL') || die();
  * Checks that parts of the renderer are doing what they should. Mostly for helper functions as
  * we will use Selenium for most of it.
  */
-class renderer_test extends \basic_testcase {
+final class renderer_test extends \basic_testcase {
 
-    public function test_equals() {
+    public function test_equals(): void {
         $this->assertEquals(1, 1);
     }
 

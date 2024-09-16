@@ -100,7 +100,7 @@ abstract class sample_set_rule extends table_base implements renderable {
     ];
 
     /**
-     * @param bool|int|stdClass $dbrecord
+     * @param $coursework
      */
     public function __construct($coursework) {
 
@@ -122,7 +122,7 @@ abstract class sample_set_rule extends table_base implements renderable {
      *
      * @abstract
      * @param array $moderationset
-     * @param array $potential_allocatables
+     * @param array $potentialallocatables
      * @param stage_base $stage
      * @return mixed
      */

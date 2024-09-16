@@ -79,8 +79,8 @@ class mod_coursework_behat_page_base {
      */
     public function should_have_text($text) {
 
-        $page_text = $this->getPage()->getText();
-        if (substr_count($page_text, $text) == 0) {
+        $pagetext = $this->getPage()->getText();
+        if (substr_count($pagetext, $text) == 0) {
             throw new ExpectationException('Page did not have text "'.$text.'"', $this->getSession());
         }
 
@@ -98,8 +98,8 @@ class mod_coursework_behat_page_base {
             throw new ExpectationException($message, $this->getSession());
         }
         if ($text) {
-            $actual_text = reset($elements)->getText();
-            if (!str_contains($actual_text, $text)) {
+            $actualtext = reset($elements)->getText();
+            if (!str_contains($actualtext, $text)) {
                 throw new ExpectationException($message, $this->getSession());
             }
         }
@@ -113,8 +113,8 @@ class mod_coursework_behat_page_base {
         $elements = $this->getPage()->findAll('css', $css);
         if ($text) {
             foreach ($elements as $element) {
-                $actual_text = $element->getText();
-                if (str_contains($actual_text, $text)) {
+                $actualtext = $element->getText();
+                if (str_contains($actualtext, $text)) {
                     throw new ExpectationException("Should not have CSS $css", $this->getSession());
                 }
             }
@@ -126,17 +126,17 @@ class mod_coursework_behat_page_base {
     }
 
     /**
-     * @param $thing_css
+     * @param $thingcss
      * @param string $text
      * @throws ExpectationException
      * @throws \Behat\Mink\Exception\ElementException
      */
-    protected function click_that_thing($thing_css, $text = '') {
+    protected function click_that_thing($thingcss, $text = '') {
         $ok = false;
         /**
          * @var $things NodeElement[]
          */
-        $things = $this->getPage()->findAll('css', $thing_css);
+        $things = $this->getPage()->findAll('css', $thingcss);
         foreach ($things as $thing) {
             if (empty($text) || $thing->getText() == $text || $thing->getValue() == $text) {
                 $thing->click();
@@ -146,30 +146,30 @@ class mod_coursework_behat_page_base {
         }
 
         if (empty($ok)) {
-            $message = 'Tried to click a thing that is not there: ' . $thing_css. ' '. $text;
+            $message = 'Tried to click a thing that is not there: ' . $thingcss. ' '. $text;
             throw new ExpectationException($message, $this->getSession());
         }
     }
 
     /**
-     * @param string $thing_css
+     * @param string $thingcss
      * @param string $text
      * @return bool
      */
-    protected function has_that_thing($thing_css, $text = '') {
-        $found_it = false;
+    protected function has_that_thing($thingcss, $text = '') {
+        $foundit = false;
         /**
          * @var $things NodeElement[]
          */
-        $things = $this->getPage()->findAll('css', $thing_css);
+        $things = $this->getPage()->findAll('css', $thingcss);
         foreach ($things as $thing) {
             if (empty($text) || $thing->getText() == $text || $thing->getValue() == $text) {
-                $found_it = true;
+                $foundit = true;
                 break;
             }
         }
 
-        return $found_it;
+        return $foundit;
     }
 
     /**
@@ -181,17 +181,17 @@ class mod_coursework_behat_page_base {
     }
 
     /**
-     * @param string $field_name
+     * @param string $fieldname
      * @param int $timestamp
      * @throws \Behat\Mink\Exception\ElementNotFoundException
      */
-    protected function fill_in_date_field($field_name, $timestamp) {
+    protected function fill_in_date_field($fieldname, $timestamp) {
         // Select the date from the dropdown
-        $minute_dropdown_selector = "id_{$field_name}_minute";
-        $hour_dropdown_selector = "id_{$field_name}_hour";
-        $day_dropdown_selector = "id_{$field_name}_day";
-        $month_dropdown_selector = "id_{$field_name}_month";
-        $year_dropdown_selector = "id_{$field_name}_year";
+        $minutedropdownselector = "id_{$fieldname}_minute";
+        $hourdropdownselector = "id_{$fieldname}_hour";
+        $daydropdownselector = "id_{$fieldname}_day";
+        $monthdropdownselector = "id_{$fieldname}_month";
+        $yeardropdownselector = "id_{$fieldname}_year";
 
         $minute = date('i', $timestamp);
         $hour = date('H', $timestamp);
@@ -199,10 +199,10 @@ class mod_coursework_behat_page_base {
         $month = date('n', $timestamp);
         $year = date('Y', $timestamp);
 
-        $this->getPage()->fillField($minute_dropdown_selector, $minute);
-        $this->getPage()->fillField($hour_dropdown_selector, $hour);
-        $this->getPage()->fillField($day_dropdown_selector, $day);
-        $this->getPage()->fillField($month_dropdown_selector, $month);
-        $this->getPage()->fillField($year_dropdown_selector, $year);
+        $this->getPage()->fillField($minutedropdownselector, $minute);
+        $this->getPage()->fillField($hourdropdownselector, $hour);
+        $this->getPage()->fillField($daydropdownselector, $day);
+        $this->getPage()->fillField($monthdropdownselector, $month);
+        $this->getPage()->fillField($yeardropdownselector, $year);
     }
 }

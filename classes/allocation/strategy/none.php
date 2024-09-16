@@ -59,7 +59,6 @@ class none extends base {
     /**
      * Saves the form data associated with the instance of this strategy.
      *
-     * @param $type
      * @return mixed
      */
     public function save_allocation_strategy_options() {

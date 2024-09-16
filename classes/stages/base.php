@@ -71,7 +71,7 @@ abstract class base {
 
     /**
      * @param coursework $coursework
-     * @param int $stage_identifier
+     * @param int $stageidentifier
      */
     public function __construct($coursework, $stageidentifier) {
         $this->coursework = $coursework;
@@ -99,7 +99,7 @@ abstract class base {
         if ($this->get_coursework()->assessorallocationstrategy == 'group_assessor' &&  $this->identifier() == 'assessor_1' ) {
             // get teacher form the group
             $teacher = $this->get_assessor_from_moodle_course_group($allocatable);
-            //$teacher = user::find(12);
+            // $teacher = user::find(12);
         } else {
             $teacher = $this->get_next_teacher($allocatable);
         }
@@ -357,7 +357,7 @@ abstract class base {
     }
 
     /**
-     * @param $moderation
+     * @param $submission
      * @return bool|moderation
      */
     public function get_moderation($submission) {
@@ -465,7 +465,7 @@ abstract class base {
 
     /**
      * @param allocatable $allocatable
-     * @param array $row_data
+     * @param array $rowdata
      * @return void
      */
     public function process_allocation_form_row_data($allocatable, $rowdata) {
@@ -475,7 +475,7 @@ abstract class base {
     }
 
     /**
-     * @param array $row_data
+     * @param array $rowdata
      * @return mixed
      */
     private function get_cell_data($rowdata) {
@@ -573,7 +573,7 @@ abstract class base {
     }
 
     /**
-     * @param $assessor
+     * @param $moderator
      * @return bool
      */
     public function user_is_moderator($moderator) {
@@ -904,6 +904,8 @@ abstract class base {
 
     /**
      * @param $allocatable
+     * @return bool
+     * @throws \dml_exception
      */
     private function in_editable_period($allocatable) {
 

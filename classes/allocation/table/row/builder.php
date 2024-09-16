@@ -51,7 +51,7 @@ class builder implements user_row {
     /**
      * Constructor makes new instance.
      *
-     * @param table_builder $allocation_table
+     * @param table_builder $allocationtable
      * @param allocatable $allocatable
      */
     public function __construct($allocationtable, $allocatable) {

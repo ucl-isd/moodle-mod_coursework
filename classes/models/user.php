@@ -45,7 +45,7 @@ class user extends table_base implements allocatable, moderatable {
     /**
      * @var string
      */
-    protected static $table_name = 'user';
+    protected static $tablename = 'user';
 
     /**
      * @param bool $data
@@ -82,20 +82,20 @@ class user extends table_base implements allocatable, moderatable {
     }
 
     /**
-     * @param bool $with_picture
+     * @param bool $withpicture
      * @return string
      */
-    public function profile_link($with_picture = false) {
+    public function profile_link($withpicture = false) {
         global $OUTPUT;
 
         $output = '';
-        if ($with_picture) {
-            $output .= $OUTPUT->user_picture($this->get_raw_record(), array('link' => false));
+        if ($withpicture) {
+            $output .= $OUTPUT->user_picture($this->get_raw_record(), ['link' => false]);
             $output .= ' ';
         }
         $output .= ' ' . $this->name();
 
-        return \html_writer::link(new \moodle_url('/user/view.php', array('id' => $this->id())), $output, array('data-assessorid' => $this->id()));
+        return \html_writer::link(new \moodle_url('/user/view.php', ['id' => $this->id()]), $output, ['data-assessorid' => $this->id()]);
     }
 
     /**
@@ -103,22 +103,24 @@ class user extends table_base implements allocatable, moderatable {
      * @return mixed
      */
     public function is_valid_for_course($course) {
-        $course_context = \context_course::instance($course->id);
-        return is_enrolled($course_context, $this->id(), 'mod/coursework:submit');
+        $coursecontext = \context_course::instance($course->id);
+        return is_enrolled($coursecontext, $this->id(), 'mod/coursework:submit');
     }
 
     /**
      * @param coursework $coursework
-     * @param int $reminder_number
+     * @param $remindernumber
+     * @param int $extension
      * @return bool
+     * @throws \coding_exception
      */
-    public function has_not_been_sent_reminder($coursework, $reminder_number, $extension=0) {
-        $conditions = array(
+    public function has_not_been_sent_reminder($coursework, $remindernumber, $extension=0) {
+        $conditions = [
             'coursework_id' => $coursework->id,
             'userid' => $this->id(),
-            'remindernumber' => $reminder_number,
-            'extension' => $extension
-        );
+            'remindernumber' => $remindernumber,
+            'extension' => $extension,
+        ];
         return !reminder::exists($conditions);
 
     }
@@ -141,7 +143,7 @@ class user extends table_base implements allocatable, moderatable {
 
     /**
      *
-     * @param $coursework_id
+     * @param int $courseworkid
      * @throws \dml_exception
      */
     /*
@@ -164,7 +166,7 @@ class user extends table_base implements allocatable, moderatable {
     */
 
     /**
-     * @param $coursework_id
+     * @param int $courseworkid
      */
     /*
     public static function remove_cache($coursework_id) {
@@ -204,7 +206,7 @@ class user extends table_base implements allocatable, moderatable {
     public static function get_object($id) {
         if (!isset(self::$pool['id'][$id])) {
             global $DB;
-            $user = $DB->get_record(self::$table_name, ['id' => $id]);
+            $user = $DB->get_record(self::$tablename, ['id' => $id]);
             self::$pool['id'][$id] = new self($user);
         }
         return self::$pool['id'][$id];

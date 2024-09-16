@@ -43,8 +43,8 @@ class range_grade_percent extends moderation_set_rule {
      * calculate what 40% is, then move any below it from the $potentialstudents array to
      * the $moderationset array.
      *
-     * @param allocatable[] $moderation_set
-     * @param allocatable[] $potential_allocatables
+     * @param allocatable[] $moderationset
+     * @param allocatable[] $potentialallocatables
      * @param \mod_coursework\stages\base $stage
      * @return mixed
      */

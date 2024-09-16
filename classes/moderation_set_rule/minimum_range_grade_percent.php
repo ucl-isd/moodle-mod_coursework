@@ -46,8 +46,8 @@ class minimum_range_grade_percent extends moderation_set_rule {
      * This will take the current set and the list of students who could potentially be added
      * and adjust them.
      *
-     * @param array $moderation_set
-     * @param array $potential_allocatables
+     * @param array $moderationset
+     * @param array $potentialallocatables
      * @param \mod_coursework\stages\base $stage
      * @return mixed
      */

@@ -76,11 +76,11 @@ class builder {
         }
         // Sort the rows.
         $sorting = new mod_coursework\grading_report($this->options, $this->coursework);
-        $method_name = 'sort_by_' . $this->options['sortby'];
-        if (method_exists($sorting, $method_name)) {
+        $methodname = 'sort_by_' . $this->options['sortby'];
+        if (method_exists($sorting, $methodname)) {
             usort($rows,
-                array($sorting,
-                    $method_name));
+                [$sorting,
+                    $methodname]);
         }
 
         return $rows;
@@ -114,11 +114,11 @@ class builder {
 
         // Sort the rows.
         $sorting = new mod_coursework\grading_report($this->options, $this->coursework);
-        $method_name = 'sort_by_' . $this->options['sortby'];
-        if (method_exists($sorting, $method_name)) {
+        $methodname = 'sort_by_' . $this->options['sortby'];
+        if (method_exists($sorting, $methodname)) {
             usort($rows,
-                array($sorting,
-                    $method_name));
+                [$sorting,
+                    $methodname]);
         }
 
         // Now, we remove the ones who should not be visible on this page. Must happen AFTER the sort!
@@ -131,12 +131,12 @@ class builder {
 
         $end = (empty($end)) ? count($rows) : $end;
         $counter = 0; // Begin from the first one that the user could see.
-        foreach ($rows as $allocatable_id => $row) {
+        foreach ($rows as $allocatableid => $row) {
 
             $counter++;
 
             if ($counter <= $start || $counter > $end) { // Taking care not to include the same ones in two pages.
-                unset($rows[$allocatable_id]);
+                unset($rows[$allocatableid]);
             }
         }
 
@@ -176,9 +176,9 @@ class builder {
      * @return allocatable_cell
      */
     public function get_allocatable_cell() {
-        $items = array(
-            'coursework' => $this->coursework
-        );
+        $items = [
+            'coursework' => $this->coursework,
+        ];
 
         if ($this->coursework->is_configured_to_have_group_submissions()) {
             return new group_cell($items);

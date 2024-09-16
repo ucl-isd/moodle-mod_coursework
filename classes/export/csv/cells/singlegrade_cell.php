@@ -35,7 +35,7 @@ class singlegrade_cell extends cell_base {
     /**
      * @param $submission
      * @param $student
-     * @param $stage_identifier
+     * @param $stageidentifier
      * @return array|mixed|null|string
      */
     public function get_cell($submission, $student, $stageidentifier) {
@@ -120,7 +120,7 @@ class singlegrade_cell extends cell_base {
                             // Get the current criteria
                             $criteria = array_shift($criterias);
 
-                            //lets check if the value given is valid for the current rubric criteria
+                            // Lets check if the value given is valid for the current rubric criteria
                             if (!$this->value_in_rubric($criteria, $data)) {
                                 // if scale is numeric get max allowed scale
                                 $errormsg .= ' ' . get_string('rubric_invalid_value', 'coursework') . ' ' . $data;
@@ -184,9 +184,9 @@ class singlegrade_cell extends cell_base {
             ];
             $feedback = feedback::find($feedbackparams);
 
-            //if (!$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade', 'coursework');
+            // if (!$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade', 'coursework');
 
-            //does a feedback exist for this stage
+            // Does a feedback exist for this stage
             if (empty($feedback)) {
 
                 $feedbackparams = [
@@ -248,8 +248,9 @@ class singlegrade_cell extends cell_base {
      * Takes the given cells and returns the cells with the singlegrade cell replaced by the rubric headers if the coursework instance
      * makes use of rubrics
      *
-     * @param $csv_cells
-     *
+     * @param $coursework
+     * @param $csvcells
+     * @return array
      */
     function get_rubrics($coursework, $csvcells) {
 

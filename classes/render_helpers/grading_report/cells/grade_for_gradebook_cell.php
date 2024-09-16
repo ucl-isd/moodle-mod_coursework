@@ -34,7 +34,7 @@ use mod_coursework\models\user;
 class grade_for_gradebook_cell extends cell_base {
 
     /**
-     * @param grading_table_row_base $row_object
+     * @param grading_table_row_base $rowobject
      * @return string
      */
     public function get_table_cell($rowobject) {

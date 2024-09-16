@@ -30,7 +30,7 @@ class group_cell extends cell_base {
     /**
      * @param $submission
      * @param $group
-     * @param $stage_identifier
+     * @param $stageidentifier
      * @return mixed
      */
     public function get_cell($submission, $group, $stageidentifier) {

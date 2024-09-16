@@ -48,7 +48,7 @@ class group extends table_base implements allocatable, moderatable {
     /**
      * @var string
      */
-    protected static $table_name = 'groups';
+    protected static $tablename = 'groups';
 
     /**
      * @return string
@@ -87,21 +87,21 @@ class group extends table_base implements allocatable, moderatable {
         $info = new \core_availability\info_module(\cm_info::create($cm));
         $members = $info->filter_user_list($members);
 
-        $member_objects = [];
+        $memberobjects = [];
         foreach ($members as $member) {
             // check is member has capability to submit in this coursework (to get rid of assessors if they are placed in the group)
             if (has_capability('mod/coursework:submit', $context, $member)) {
-                $member_objects[] = user::find($member);
+                $memberobjects[] = user::find($member);
             }
         }
-        return $member_objects;
+        return $memberobjects;
     }
 
     /**
-     * @param bool $with_picture
+     * @param bool $withpicture
      * @return string
      */
-    public function profile_link($with_picture = false) {
+    public function profile_link($withpicture = false) {
         // TODO: Implement profle_link() method.
     }
 
@@ -139,7 +139,7 @@ class group extends table_base implements allocatable, moderatable {
     public static function get_object($id) {
         if (!isset(self::$pool['id'][$id])) {
             global $DB;
-            $user = $DB->get_record(self::$table_name, ['id' => $id]);
+            $user = $DB->get_record(self::$tablename, ['id' => $id]);
             self::$pool['id'][$id] = new self($user);
         }
         return self::$pool['id'][$id];

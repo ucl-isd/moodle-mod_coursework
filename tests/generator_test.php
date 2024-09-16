@@ -39,7 +39,7 @@ require_once($CFG->dirroot . '/mod/coursework/lib.php');
  * @copyright  2012 ULCC {@link http://ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class generator_test extends \advanced_testcase {
+final class generator_test extends \advanced_testcase {
 
     /**
      * Sets things up for every test. We want all to clean up after themselves.
@@ -52,7 +52,7 @@ class generator_test extends \advanced_testcase {
      * Checks that the data generator for making coursework instances in the PHPUnit DB is working.
      * Mostly pinched from the same file in the assignment module.
      */
-    public function test_create_instance() {
+    public function test_create_instance(): void {
         global $DB;
         $this->assertEquals(0, $DB->count_records('coursework'));
         $course = $this->getDataGenerator()->create_course();
@@ -65,12 +65,12 @@ class generator_test extends \advanced_testcase {
         // Calendar event creation will fail if we have no user.
         $this->setAdminUser();
 
-        $generator->create_instance(array('course' => $course->id,
-                                          'grade' => 0));
-        $generator->create_instance(array('course' => $course->id,
-                                          'grade' => 0));
-        $coursework = $generator->create_instance(array('course' => $course->id,
-                                                        'grade' => 100));
+        $generator->create_instance(['course' => $course->id,
+                                          'grade' => 0]);
+        $generator->create_instance(['course' => $course->id,
+                                          'grade' => 0]);
+        $coursework = $generator->create_instance(['course' => $course->id,
+                                                        'grade' => 100]);
         $this->assertEquals(3, $DB->count_records('coursework'));
 
         $cm = get_coursemodule_from_instance('coursework', $coursework->id);
@@ -83,10 +83,10 @@ class generator_test extends \advanced_testcase {
 
         // Test gradebook integration using low level DB access - DO NOT USE IN PLUGIN CODE!
         $gitem = $DB->get_record('grade_items',
-                                 array('courseid' => $course->id,
+                                 ['courseid' => $course->id,
                                        'itemtype' => 'mod',
                                        'itemmodule' => 'coursework',
-                                       'iteminstance' => $coursework->id));
+                                       'iteminstance' => $coursework->id]);
         $this->assertNotEmpty($gitem);
         $this->assertEquals(100, $gitem->grademax);
         $this->assertEquals(0, $gitem->grademin);
@@ -94,15 +94,15 @@ class generator_test extends \advanced_testcase {
 
         // Test eventslib integration.
         // TODO doesn't seem to do anything.
-        $generator->create_instance(array('course' => $course->id,
-                                          'timedue' => strtotime('+1 day')));
+        $generator->create_instance(['course' => $course->id,
+                                          'timedue' => strtotime('+1 day')]);
         $this->setUser(null);
     }
 
     /**
      * Makes sure we can make allocations OK.
      */
-    public function test_create_allocation_default_assessor() {
+    public function test_create_allocation_default_assessor(): void {
         global $DB;
 
         $data = new \stdClass();
@@ -118,7 +118,7 @@ class generator_test extends \advanced_testcase {
 
         // Should fail because we have no assessorid and we have no logged ourselves in.
         $allocation = $generator->create_allocation($data);
-        $allocation = $DB->get_record('coursework_allocation_pairs', array('id' => $allocation->id));
+        $allocation = $DB->get_record('coursework_allocation_pairs', ['id' => $allocation->id]);
 
         $this->assertNotEmpty($allocation);
 
@@ -132,7 +132,7 @@ class generator_test extends \advanced_testcase {
     /**
      * Makes sure we can make feedbacks OK.
      */
-    public function test_create_feedback() {
+    public function test_create_feedback(): void {
         global $DB;
 
         $data = new \stdClass();
@@ -147,7 +147,7 @@ class generator_test extends \advanced_testcase {
         // Otherwise we get PHPUnit exception.
         try {
             $feedback = $generator->create_feedback($data);
-            $feedback = $DB->get_record('coursework_feedbacks', array('id' => $feedback->id));
+            $feedback = $DB->get_record('coursework_feedbacks', ['id' => $feedback->id]);
 
             $this->assertNotEmpty($feedback);
 
@@ -161,7 +161,7 @@ class generator_test extends \advanced_testcase {
     /**
      * Makes sure we can make fake submissions.
      */
-    public function test_create_submission() {
+    public function test_create_submission(): void {
         global $DB;
 
         $user = $this->getDataGenerator()->create_user();
@@ -180,7 +180,7 @@ class generator_test extends \advanced_testcase {
 
         // Should fail because we have no assessorid and we have no logged ourselves in.
         $submission = $generator->create_submission($data, $coursework);
-        $submission = $DB->get_record('coursework_submissions', array('id' => $submission->id));
+        $submission = $DB->get_record('coursework_submissions', ['id' => $submission->id]);
 
         $this->assertNotEmpty($submission);
 

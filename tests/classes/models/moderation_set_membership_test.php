@@ -24,13 +24,13 @@
  * Class coursework_user_test
  * @group mod_coursework
  */
-class coursework_moderation_set_membership_test extends advanced_testcase {
+final class coursework_moderation_set_membership_test extends advanced_testcase {
 
     public function setUp(): void {
         $this->resetAfterTest();
     }
 
-    public function test_find() {
+    public function test_find(): void {
         global $DB;
 
         $record = new stdClass();

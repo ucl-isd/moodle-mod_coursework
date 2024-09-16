@@ -23,7 +23,7 @@
 /**
  * @group mod_coursework
  */
-class assessor_test extends advanced_testcase {
+final class assessor_test extends advanced_testcase {
 
     use mod_coursework\test_helpers\factory_mixin;
 
@@ -34,40 +34,40 @@ class assessor_test extends advanced_testcase {
         $this->create_a_coursework();
     }
 
-    public function test_prerequisite_stages_is_ok_with_no_feedbacks() {
+    public function test_prerequisite_stages_is_ok_with_no_feedbacks(): void {
         $this->coursework->update_attribute('numberofmarkers', 2);
         $this->coursework->update_attribute('moderationenabled', 1);
         $this->coursework->update_attribute('moderatorallocationstrategy', 'none');
 
         $stages = $this->coursework->get_assessor_marking_stages();
-        $first_stage = reset($stages);
+        $firststage = reset($stages);
 
         $student = $this->create_a_student();
         $this->create_a_submission_for_the_student();
 
-        $this->assertTrue($first_stage->prerequisite_stages_have_feedback($student));
+        $this->assertTrue($firststage->prerequisite_stages_have_feedback($student));
 
     }
 
-    public function test_prerequisite_stages_is_ok_with_one_assessor_feedback() {
+    public function test_prerequisite_stages_is_ok_with_one_assessor_feedback(): void {
         $this->coursework->update_attribute('numberofmarkers', 2);
         $this->coursework->update_attribute('moderationenabled', 1);
         $this->coursework->update_attribute('moderatorallocationstrategy', 'none');
 
         $stages = $this->coursework->get_assessor_marking_stages();
         array_shift($stages);
-        $second_stage = reset($stages);
-        $this->assertEquals('assessor_2', $second_stage->identifier());
+        $secondstage = reset($stages);
+        $this->assertEquals('assessor_2', $secondstage->identifier());
 
         $student = $this->create_a_student();
         $this->create_a_submission_for_the_student();
         $this->create_a_teacher();
         $this->create_an_assessor_feedback_for_the_submisison($this->teacher);
 
-        $this->assertTrue($second_stage->prerequisite_stages_have_feedback($student));
+        $this->assertTrue($secondstage->prerequisite_stages_have_feedback($student));
     }
 
-    public function test_type() {
+    public function test_type(): void {
         $stage = new \mod_coursework\stages\assessor($this->coursework, 'assessor_1');
         $this->assertEquals('assessor', $stage->type());
     }

@@ -91,7 +91,7 @@ class grade_judge {
             return null;
         } else if ($this->coursework->grade <= -1) {
             // Scale
-            $scale = \grade_scale::fetch(array('id' => abs($this->coursework->grade)));
+            $scale = \grade_scale::fetch(['id' => abs($this->coursework->grade)]);
             return $scale->get_nearest_item($grade);
         }
     }
@@ -112,10 +112,10 @@ class grade_judge {
      */
     private function get_submission_grade_to_use($submission) {
 
-        $gradebook_feedback = $this->get_feedback_that_is_promoted_to_gradebook($submission);
+        $gradebookfeedback = $this->get_feedback_that_is_promoted_to_gradebook($submission);
 
-        if ($gradebook_feedback && ($submission->ready_to_publish()) || $submission->already_published()) {
-            return $gradebook_feedback->get_grade();
+        if ($gradebookfeedback && ($submission->ready_to_publish()) || $submission->already_published()) {
+            return $gradebookfeedback->get_grade();
         }
         return null;
     }
@@ -131,9 +131,9 @@ class grade_judge {
         }
 
         if ($this->allocatable_needs_more_than_one_feedback($submission->get_allocatable())) {
-            $feedback = feedback::find(array('submissionid' => $submission->id, 'stage_identifier' => 'final_agreed_1'));
+            $feedback = feedback::find(['submissionid' => $submission->id, 'stage_identifier' => 'final_agreed_1']);
         } else {
-            $feedback = feedback::find(array('submissionid' => $submission->id, 'stage_identifier' => 'assessor_1'));
+            $feedback = feedback::find(['submissionid' => $submission->id, 'stage_identifier' => 'assessor_1']);
         }
 
         return $feedback ? $feedback : new null_feedback();
@@ -160,15 +160,15 @@ class grade_judge {
      * @return bool
      */
     public function is_feedback_that_is_promoted_to_gradebook(feedback $feedback) {
-        $gradebook_feedback = $this->get_feedback_that_is_promoted_to_gradebook($feedback->get_submission());
-        return $gradebook_feedback && $gradebook_feedback->id == $feedback->id;
+        $gradebookfeedback = $this->get_feedback_that_is_promoted_to_gradebook($feedback->get_submission());
+        return $gradebookfeedback && $gradebookfeedback->id == $feedback->id;
     }
 
     /**
      * @param allocatable $allocatable
      * @return bool
      */
-    public function allocatable_needs_more_than_one_feedback ($allocatable) {
+    public function allocatable_needs_more_than_one_feedback($allocatable) {
 
         if ($this->coursework->sampling_enabled()) {
             assessment_set_membership::fill_pool_coursework($this->coursework->id);
@@ -191,7 +191,7 @@ class grade_judge {
             return true;
         } else if ($this->coursework->grade <= -1) {
             // Scale
-            $scale = \grade_scale::fetch(array('id' => abs($this->coursework->grade)));
+            $scale = \grade_scale::fetch(['id' => abs($this->coursework->grade)]);
             $scale->load_items();
             return in_array($value, $scale->scale_items);
         }
@@ -207,7 +207,7 @@ class grade_judge {
 
         if ($this->coursework->grade <= -1) {
             // Scale
-            $scale = \grade_scale::fetch(array('id' => abs($this->coursework->grade)));
+            $scale = \grade_scale::fetch(['id' => abs($this->coursework->grade)]);
             $scale->load_items();
             return array_search($value, $scale->scale_items) + 1;
         } else {

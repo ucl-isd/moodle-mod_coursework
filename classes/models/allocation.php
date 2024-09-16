@@ -41,7 +41,7 @@ class allocation extends table_base {
     /**
      * @var string
      */
-    protected static $table_name = 'coursework_allocation_pairs';
+    protected static $tablename = 'coursework_allocation_pairs';
 
     /**
      * @var int
@@ -82,14 +82,14 @@ class allocation extends table_base {
     /**
      * @var array
      */
-    protected $fields = array(
+    protected $fields = [
         'id',
         'courseworkid',
         'assessorid',
         'studentid',
         'manual',
-        'timelocked'
-    );
+        'timelocked',
+    ];
 
     /**
      * @return coursework|mixed
@@ -158,18 +158,18 @@ class allocation extends table_base {
 
     /**
      *
-     * @param $coursework_id
+     * @param int $courseworkid
      * @return array
      */
-    protected static function get_cache_array($coursework_id) {
+    protected static function get_cache_array($courseworkid) {
         global $DB;
-        $records = $DB->get_records(static::$table_name, ['courseworkid' => $coursework_id]);
+        $records = $DB->get_records(static::$tablename, ['courseworkid' => $courseworkid]);
         $result = [
             'id' => [],
             'stage_identifier' => [],
             'allocatableid-allocatabletype-stage_identifier' => [],
             'allocatableid-allocatabletype-assessorid' => [],
-            'assessorid-allocatabletype' => []
+            'assessorid-allocatabletype' => [],
         ];
         if ($records) {
             foreach ($records as $record) {
@@ -186,17 +186,17 @@ class allocation extends table_base {
 
     /**
      *
-     * @param $coursework_id
+     * @param int $courseworkid
      * @param $key
      * @param $params
      * @return bool
      */
-    public static function get_object($coursework_id, $key, $params) {
-        if (!isset(self::$pool[$coursework_id])) {
-            self::fill_pool_coursework($coursework_id);
+    public static function get_object($courseworkid, $key, $params) {
+        if (!isset(self::$pool[$courseworkid])) {
+            self::fill_pool_coursework($courseworkid);
         }
-        $value_key = implode('-', $params);
-        return self::$pool[$coursework_id][$key][$value_key][0] ?? false;
+        $valuekey = implode('-', $params);
+        return self::$pool[$courseworkid][$key][$valuekey][0] ?? false;
     }
 
     /**

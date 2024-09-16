@@ -516,6 +516,10 @@ function coursework_update_instance($coursework) {
  * Update coursework deadline and name in the event table
  *
  * @param $coursework
+ * @param $eventtype
+ * @throws coding_exception
+ * @throws dml_exception
+ * @throws moodle_exception
  */
 function coursework_update_events($coursework, $eventtype) {
     global $DB;
@@ -531,7 +535,7 @@ function coursework_update_events($coursework, $eventtype) {
     if ($eventtype == 'due') {
         $data = \mod_coursework\calendar::coursework_event($coursework, $eventtype, $coursework->deadline);
         if ($event) {
-            $event->update($data); //update if event exists
+            $event->update($data); // Update if event exists
         } else {
             calendar_event::create($data); // Create new event as it doesn't exist
         }
@@ -541,7 +545,7 @@ function coursework_update_events($coursework, $eventtype) {
     if ($eventtype == 'initialgradingdue') {
         $data = \mod_coursework\calendar::coursework_event($coursework, $eventtype, $coursework->initialmarkingdeadline);
         if ($event) {
-            $event->update($data); //update if event exists
+            $event->update($data); // Update if event exists
         } else {
             calendar_event::create($data); // Create new event as it doesn't exist
         }
@@ -551,7 +555,7 @@ function coursework_update_events($coursework, $eventtype) {
     if ($eventtype == 'agreedgradingdue') {
         $data = \mod_coursework\calendar::coursework_event($coursework, $eventtype, $coursework->agreedgrademarkingdeadline);
         if ($event) {
-            $event->update($data); //update if event exists
+            $event->update($data); // Update if event exists
         } else {
             calendar_event::create($data); // Create new event as it doesn't exist
         }
@@ -1166,7 +1170,7 @@ function mod_coursework_supports($feature) {
 }
 
 /**
- * @param $event_data
+ * @param $eventdata
  * @return bool
  */
 function coursework_mod_updated($eventdata) {
@@ -1189,7 +1193,7 @@ function coursework_mod_updated($eventdata) {
  *
  *  * Function to process allocation of new group members (student/group - assign to a group assessor or assessor - assign to students/group) - when a user is added to a group
 
- * @param $event_data
+ * @param $eventdata
  * @return bool
  * @throws coding_exception
  * @throws dml_exception
@@ -1254,7 +1258,7 @@ function course_group_member_added($eventdata) {
 /**
  * * Function to process allocation of new group members (student/group - assign to a group assessor or assessor - assign to students/group) when a group member is deleted
  *
- * @param $event_data
+ * @param $eventdata
  * @return bool
  * @throws coding_exception
  * @throws dml_exception
@@ -1354,7 +1358,7 @@ function course_group_member_removed($eventdata) {
 /**
  * Function to check the allocation if it is not pinned or its submission has not been marked yet
  *
- * @param $courseworkid
+ * @param int $courseworkid
  * @param $allocatableid
  * @return mixed
  * @throws dml_exception
@@ -1382,7 +1386,7 @@ function can_delete_allocation($courseworkid, $allocatableid) {
 }
 
 /**
- * @param $course_module_id
+ * @param $coursemodule
  * @return string
  */
 function plagiarism_similarity_information($coursemodule) {
@@ -1398,7 +1402,7 @@ function plagiarism_similarity_information($coursemodule) {
 /**
  * @return bool
  */
-function has_user_seen_tii_EULA_agreement() {
+function has_user_seen_tii_eula_agreement() {
     global $CFG, $DB, $USER;
 
     // if TII plagiarism enabled check if user agreed/disagreed EULA
@@ -1440,7 +1444,7 @@ function coursework_is_ulcc_digest_coursework_plugin_installed() {
 }
 
 /**
- * @param $courseworkid
+ * @param int $courseworkid
  * @return bool
  */
 function coursework_personal_deadline_passed($courseworkid) {
@@ -1458,7 +1462,7 @@ function coursework_personal_deadline_passed($courseworkid) {
 /**
  * Purge coursework cache if a role with specific capability passed
  *
- * @param $event_data
+ * @param $eventdata
  * @return bool
  */
 function teacher_allocation_cache_purge($eventdata) {
@@ -1479,7 +1483,7 @@ function teacher_allocation_cache_purge($eventdata) {
 /**
  * Function to remove teacher allocation (also if pinned), don't remove if teacher already graded
  *
- * @param $event_data
+ * @param $eventdata
  * @return bool
  * @throws dml_exception
  */

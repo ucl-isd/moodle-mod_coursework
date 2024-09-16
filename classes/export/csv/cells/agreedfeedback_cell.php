@@ -34,7 +34,7 @@ class agreedfeedback_cell extends cell_base {
     /**
      * @param submission$submission
      * @param $student
-     * @param $stage_identifier
+     * @param $stageidentifier
      * @return string
      */
 
@@ -90,7 +90,7 @@ class agreedfeedback_cell extends cell_base {
 
             $ability = new ability(user::find($USER), $this->coursework);
 
-            //does a feedback exist for this stage
+            // Does a feedback exist for this stage
             if (empty($feedback)) {
                 $feedbackparams = [
                     'submissionid' => $submissionid,

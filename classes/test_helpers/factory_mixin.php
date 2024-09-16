@@ -57,7 +57,7 @@ trait factory_mixin {
     /**
      * @var user
      */
-    protected $other_student;
+    protected $otherstudent;
 
     /**
      * @var user
@@ -72,7 +72,7 @@ trait factory_mixin {
     /**
      * @var user
      */
-    protected $other_teacher;
+    protected $otherteacher;
 
     /**
      * @var group
@@ -82,7 +82,7 @@ trait factory_mixin {
     /**
      * @var
      */
-    protected $final_feedback;
+    protected $finalfeedback;
 
     /**
      * @return user
@@ -92,8 +92,8 @@ trait factory_mixin {
 
         $user = new \stdClass();
         $user->firstname = 'Student';
-        $raw_student = $generator->create_user($user);
-        $this->student = user::find($raw_student);
+        $rawstudent = $generator->create_user($user);
+        $this->student = user::find($rawstudent);
         $this->enrol_as_student($this->student);
 
         return $this->student;
@@ -107,10 +107,10 @@ trait factory_mixin {
 
         $user = new stdClass();
         $user->firstname = 'Other Student';
-        $this->other_student = user::find($generator->create_user($user));
-        $this->enrol_as_student($this->other_student);
+        $this->otherstudent = user::find($generator->create_user($user));
+        $this->enrol_as_student($this->otherstudent);
 
-        return $this->other_student;
+        return $this->otherstudent;
     }
 
     /**
@@ -121,8 +121,8 @@ trait factory_mixin {
 
         $user = new stdClass();
         $user->firstname = 'Teacher';
-        $db_record = $generator->create_user($user);
-        $this->teacher = user::find($db_record);
+        $dbrecord = $generator->create_user($user);
+        $this->teacher = user::find($dbrecord);
         $this->enrol_as_teacher($this->teacher);
 
         return $this->teacher;
@@ -136,10 +136,10 @@ trait factory_mixin {
 
         $user = new stdClass();
         $user->firstname = 'Other Teacher';
-        $this->other_teacher = user::find($generator->create_user($user));
-        $this->enrol_as_teacher($this->other_teacher);
+        $this->otherteacher = user::find($generator->create_user($user));
+        $this->enrol_as_teacher($this->otherteacher);
 
-        return $this->other_teacher;
+        return $this->otherteacher;
     }
 
     /**
@@ -189,7 +189,7 @@ trait factory_mixin {
 
         $membership = new stdClass();
         $membership->groupid = $this->get_group()->id;
-        $membership->userid = $this->other_student->id;
+        $membership->userid = $this->otherstudent->id;
         $generator->create_group_member($membership);
     }
 
@@ -208,7 +208,7 @@ trait factory_mixin {
      */
     protected function create_a_coursework() {
         $generator = $this->get_coursework_generator();
-        $this->coursework = $generator->create_instance(array('course' => $this->get_course()->id));
+        $this->coursework = $generator->create_instance(['course' => $this->get_course()->id]);
         return $this->coursework;
     }
 
@@ -259,9 +259,9 @@ trait factory_mixin {
         $feedback->assessorid = 11; // Dummy
         $feedback->stage_identifier = 'final_agreed_1';
         $feedback->grade = 45;
-        $this->final_feedback = $generator->create_feedback($feedback);
+        $this->finalfeedback = $generator->create_feedback($feedback);
 
-        return $this->final_feedback;
+        return $this->finalfeedback;
     }
 
     /**
@@ -287,7 +287,7 @@ trait factory_mixin {
     private function get_teacher_role_id() {
         global $DB;
 
-        return $DB->get_field('role', 'id', array('shortname' => 'teacher'));
+        return $DB->get_field('role', 'id', ['shortname' => 'teacher']);
     }
 
     /**
@@ -296,7 +296,7 @@ trait factory_mixin {
     private function get_student_role_id() {
         global $DB;
 
-        return $DB->get_field('role', 'id', array('shortname' => 'student'));
+        return $DB->get_field('role', 'id', ['shortname' => 'student']);
     }
 
     /**
@@ -305,7 +305,7 @@ trait factory_mixin {
     private function get_manager_role_id() {
         global $DB;
 
-        return $DB->get_field('role', 'id', array('shortname' => 'manager'));
+        return $DB->get_field('role', 'id', ['shortname' => 'manager']);
     }
 
     /**
@@ -336,7 +336,7 @@ trait factory_mixin {
     }
 
     protected function enrol_the_other_teacher_as_a_manager() {
-        $this->enrol_as_manager($this->other_teacher);
+        $this->enrol_as_manager($this->otherteacher);
     }
 
     /**
@@ -345,8 +345,8 @@ trait factory_mixin {
     protected function number_of_assessor_feedbacks() {
         $count = 0;
         for ($i = 1; $i <= 3; $i++) {
-            $params = array('submissionid' => $this->get_submission()->id,
-                            'stage_identifier' => 'assessor_' . $i);
+            $params = ['submissionid' => $this->get_submission()->id,
+                            'stage_identifier' => 'assessor_' . $i];
             if (feedback::exists($params)) {
                 $count++;
             }

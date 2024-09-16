@@ -57,7 +57,7 @@ class student_submission_form extends moodleform {
         $this->add_hidden_elements_to_form();
 
         // if TII plagiarism enabled check if user agreed/disagreed EULA
-        if (!$this->get_coursework()->plagiarism_enbled() || has_user_seen_tii_EULA_agreement()) {
+        if (!$this->get_coursework()->plagiarism_enbled() || has_user_seen_tii_eula_agreement()) {
 
             $this->add_header_to_form();
 
@@ -116,7 +116,7 @@ class student_submission_form extends moodleform {
             $submission->courseworkid = $coursework->id;
             $submission->createdby = $USER->id;
             $submission->lastupdatedby = $USER->id;
-            $submission->submission_files = $data->submission_manager;
+            $submission->submissionfiles = $data->submission_manager;
             $submission->manualsrscode = isset($data->manualsrscode) ? $data->manualsrscode : '';
             $submission->save(); // Get an id.
 
@@ -170,7 +170,7 @@ class student_submission_form extends moodleform {
                     $DB->update_record('files', $fileinformation);
 
                     // Force submission to update file record.
-                    $submission->submission_files = null;
+                    $submission->submissionfiles = null;
                     $submission->get_submission_files(true);
 
                     if (!$submission->get_coursework()->has_deadline()) {

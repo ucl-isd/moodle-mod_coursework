@@ -46,7 +46,7 @@ class mod_coursework_behat_gradebook_page extends mod_coursework_behat_page_base
         } else {
             $locator = '//th[a[contains(text(), "' . $coursework->name . '")]]/following-sibling::td[1]';
         }
-        $grade_cell = $this->getPage()->find('xpath', $locator);
-        return $grade_cell ? $grade_cell->getText() : '';
+        $gradecell = $this->getPage()->find('xpath', $locator);
+        return $gradecell ? $gradecell->getText() : '';
     }
 }

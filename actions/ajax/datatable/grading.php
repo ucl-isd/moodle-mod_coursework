@@ -49,7 +49,7 @@ $reportoptions['showgradinggrade'] = false;
 $reportoptions['courseworkid'] = $courseworkid;
 $reportoptions['mode'] = \mod_coursework\grading_report::MODE_GET_REMAIN_RECORDS;
 
-//$controller = new mod_coursework\controllers\grading_controller(['courseworkid' => $report_options, 'allocatableid' => $USER->id, 'allocatabletype' => $USER->id]);
+// $controller = new mod_coursework\controllers\grading_controller(['courseworkid' => $report_options, 'allocatableid' => $USER->id, 'allocatabletype' => $USER->id]);
 $controller = new mod_coursework\controllers\grading_controller([]);
 sleep(10);
 $tablehtml = $controller->get_remain_rows_grading_table($reportoptions);

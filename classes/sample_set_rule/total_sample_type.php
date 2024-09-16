@@ -176,7 +176,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             // If the resultant number isnt greater than 0 then no automatic sample allocatables will be used
             if ($totaltoreturn > 0) {
 
-                //use array chunk to split auto sample set into chunks we will only use the first chunk
+                // Use array chunk to split auto sample set into chunks we will only use the first chunk
                 if ($chunkedarray = array_chunk($autosampleset, $totaltoreturn, true)) {
                     $autosampleset = $chunkedarray[0];
                 }
@@ -225,11 +225,11 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                         $arraykeys = array_rand($allocatablesampleset, $totaltoreturn - count($autosampleset));
 
-                        if (!is_array($arraykeys)) {
-                            $arraykeys = [$arraykeys];
-                        }
+                    if (!is_array($arraykeys)) {
+                        $arraykeys = [$arraykeys];
+                    }
 
-                        //use the allocatables array to get other ungraded allocatables
+                        // Use the allocatables array to get other ungraded allocatables
                     foreach ($arraykeys as $id) {
 
                         if (!isset($published[$id]) && !isset($finalised[$id])

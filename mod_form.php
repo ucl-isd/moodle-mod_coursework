@@ -147,7 +147,7 @@ class mod_coursework_mod_form extends moodleform_mod {
      * Adds all default data to the form elements.
      *
      * @global moodle_database $DB
-     * @param $default_values
+     * @param $defaultvalues
      * @return void
      */
     public function set_data($defaultvalues) {
@@ -382,7 +382,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->addHelpButton('personaldeadlineenabled', 'personaldeadlineenabled', 'mod_coursework');
 
         $moodleform->setDefault('personaldeadlineenabled', 0);
-        //$moodle_form->disabledIf('personaldeadlineenabled', 'deadline[enabled]', 'notchecked');
+        // $moodle_form->disabledIf('personaldeadlineenabled', 'deadline[enabled]', 'notchecked');
 
     }
 
@@ -720,7 +720,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform =& $this->_form;
 
         $choices = get_max_upload_sizes($CFG->maxbytes, $COURSE->maxbytes);
-        //$choices[0] = get_string('maximumupload') . ' (' . display_size($COURSE->maxbytes) . ')';
+        // $choices[0] = get_string('maximumupload') . ' (' . display_size($COURSE->maxbytes) . ')';
         $choices[0] = get_string('maximumupload'). ' set in course';
         $moodleform->addElement('select',
                                  'maxbytes',
@@ -824,7 +824,6 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     /**
-     * @param $moodle_form
      * @throws coding_exception
      */
     protected function add_number_of_initial_assessors_field() {
@@ -856,7 +855,6 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     /**
-     * @param $moodle_form
      * @throws coding_exception
      */
     protected function add_enable_moderation_agreement_field() {
@@ -976,7 +974,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->setType('submission_exists', PARAM_INT);
         $moodleform->disabledIf('blindmarking', 'submission_exists', 'eq', 1);
 
-        //disable blindmarking if forceblindmarking is enabled, process data for DB in get_data()
+        // Disable blindmarking if forceblindmarking is enabled, process data for DB in get_data()
         if ($this->forceblindmarking() == 1) {
             $moodleform->addElement('hidden', 'forceblindmarking', $this->forceblindmarking());
             $moodleform->setType('forceblindmarking', PARAM_INT);
