@@ -826,7 +826,7 @@ class coursework extends table_base {
         $enabledplagiarismplugins = array_keys(\core_component::get_plugin_list('plagiarism'));
         $objects = [];
         foreach ($enabledplagiarismplugins as $pluginname) {
-            $classname = "\\modcoursework\\plagiarismhelpers\\{$pluginname}";
+            $classname = "\\mod_coursework\\plagiarism_helpers\\{$pluginname}";
             if (class_exists($classname)) {
                 /**
                  * @var plagiarism_base $helper
