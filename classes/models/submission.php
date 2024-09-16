@@ -329,7 +329,6 @@ class submission extends table_base implements \renderable {
      * plugins can pick them up.
      *
      * @param null $type
-     * @global stdClass $USER
      * @return void
      */
     public function submit_plagiarism($type = null) {
@@ -355,11 +354,8 @@ class submission extends table_base implements \renderable {
                 'pathnamehashes' => array_keys($files),
             ],
         ];
-
         $event = \mod_coursework\event\assessable_uploaded::create($params);
-        // $event->set_legacy_files($files);
         $event->trigger();
-
     }
 
     /**
