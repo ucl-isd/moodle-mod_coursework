@@ -78,9 +78,13 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         if (empty($ability)) {
             $ability = new ability(user::find($USER), $coursework);
         }
-        $gradedby = ($coursework->allocation_enabled() && $feedbackrow->has_feedback() && $feedbackrow->get_graded_by() != $feedbackrow->get_assessor()) ?
-            ' (Graded by: '. $feedbackrow->get_graders_name().')' : '';
-        $editable = (!$feedbackrow->has_feedback() || $feedbackrow->get_feedback()->finalised) ? '' : '</br>'.get_string('notfinalised', 'coursework');
+        $needsgradedby = $coursework->allocation_enabled() && $feedbackrow->has_feedback()
+            && $feedbackrow->get_graded_by() != $feedbackrow->get_assessor();
+        $gradedby = $needsgradedby
+            ? get_string('gradedbyname', 'mod_coursework', $feedbackrow->get_graders_name())
+            : '';
+        $editable = (!$feedbackrow->has_feedback() || $feedbackrow->get_feedback()->finalised)
+            ? '' : '</br>'.get_string('notfinalised', 'coursework');
         $result = $this->comment_for_row($feedbackrow, $ability) . $gradedby . $editable;
         return $result;
     }
