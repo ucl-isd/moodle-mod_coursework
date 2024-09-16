@@ -1496,17 +1496,20 @@ class behat_mod_coursework extends behat_base {
     /**
      * @Then /^the coursework "([\w]+)" setting should be "([\w]*)" in the database$/
      * @param $settingname
-     * @param $setingvalue
+     * @param $settingvalue
      * @throws ExpectationException
      */
-    public function the_coursework_setting_should_be($settingname, $setingvalue) {
-        if ($setingvalue == 'NULL') {
-            $setingvalue = null;
+    public function the_coursework_setting_should_be($settingname, $settingvalue) {
+        if ($settingvalue == 'NULL') {
+            $settingvalue = null;
         }
 
-        if ($this->get_coursework()->$settingname !== $setingvalue) {
-            throw new ExpectationException("The coursework {$settingname} setting should have been {$setingvalue} but was {$this->getcoursework()->$settingname}",
-                                           $this->getSession());
+        if ($this->get_coursework()->$settingname !== $settingvalue) {
+            throw new ExpectationException(
+                "The coursework {$settingname} setting should have been {$settingvalue}"
+                . "but was {$this->getcoursework()->$settingname}",
+                $this->getSession()
+            );
         }
     }
 
@@ -2506,20 +2509,19 @@ class behat_mod_coursework extends behat_base {
         $currentanchor = parse_url($currenturl, PHP_URL_FRAGMENT);
         $currenturlwithoutanchor = str_replace('#' . $currentanchor, '', $currenturl);
 
-        $desirtedurl = $this->locate_path($pagename, false);
+        $desiredurl = $this->locate_path($pagename, false);
 
         // Strip the params if we need to. Can be handy if we have unpredictable landing page e.g. after create there will
         // possibly be a new id in there.
         if ($ignoreparams) {
             $currentpath = parse_url($currenturl, PHP_URL_PATH);
-            // $desired_path = parse_url($desirtedUrl, PHP_URL_PATH);
-            $message = "Should be on the " . $desirtedurl . " page but instead the url is " . $currentpath;
-            if ($currentpath != $desirtedurl) {
+            $message = "Should be on the " . $desiredurl . " page but instead the url is " . $currentpath;
+            if ($currentpath != $desiredurl) {
                 throw new ExpectationException($message, $this->getSession());
             }
         } else {
-            $message = "Should be on the " . $desirtedurl . " page but instead the url is " . $currenturlwithoutanchor;
-            if ($currenturlwithoutanchor != $desirtedurl) {
+            $message = "Should be on the " . $desiredurl . " page but instead the url is " . $currenturlwithoutanchor;
+            if ($currenturlwithoutanchor != $desiredurl) {
                 throw new ExpectationException($message, $this->getSession());
             }
         }
