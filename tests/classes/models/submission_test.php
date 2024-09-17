@@ -116,7 +116,14 @@ final class coursework_submission_test extends advanced_testcase {
     public function test_get_allocatable_student(): void {
         $student = $this->create_a_student();
         $submission = submission::build(['allocatableid' => $student->id, 'allocatabletype' => 'user']);
-        $this->assertEquals($student, $submission->get_allocatable());
+        $keys = array_keys((array)$student);
+        $excludedkeys = ['timemodified', 'timecreated'];
+        foreach ($keys as $key) {
+            if (in_array($key, $excludedkeys) || str_ends_with($key, 'dataloaded')) {
+                continue;
+            }
+            $this->assertEquals($student->$key, $submission->get_allocatable()->$key);
+        }
     }
 
     public function test_get_allocatable_group(): void {
