@@ -63,7 +63,7 @@ abstract class table_base {
      *
      * @param \stdClass|int|array $dbrecord
      * @param bool $reload
-     * @return bool
+     * @return bool|object
      * @throws \coding_exception
      * @throws \dml_exception
      */

@@ -36,18 +36,20 @@ final class cron_test extends advanced_testcase {
         $this->setAdminUser();
         $this->preventResetByRollback();
         $this->redirectMessages();
+        // If we don't do this, we end up using the same cached objects for all tests and they may have wrong/missing properties.
+        \mod_coursework\models\coursework::$pool = null;
     }
 
     public function test_cron_auto_finalises_after_deadline(): void {
-        // Given there is a student
+        // Given there is a student.
         $this->create_a_course();
         $student = $this->create_a_student();
 
-        // And the submission deadline has passed
+        // And the submission deadline has passed.
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('deadline', strtotime('1 week ago'));
 
-        // And the student has a submission
+        // And the student has a submission.
         $submissionparams = [
             'allocatableid' => $student->id,
             'allocatabletype' => 'user',
@@ -55,23 +57,23 @@ final class cron_test extends advanced_testcase {
         ];
         $submission = submission::create($submissionparams);
 
-        // When the cron runs
+        // When the cron runs.
         \mod_coursework\cron::run();
 
-        // Then the submission should be finalised
+        // Then the submission should be finalised.
         $submission->reload();
         $this->assertEquals(1, $submission->finalised);
     }
 
     public function test_cron_does_not_auto_finalise_before_deadline(): void {
-        // Given there is a student
+        // Given there is a student.
         $this->create_a_course();
         $student = $this->create_a_student();
 
-        // And the submission deadline has passed
+        // And the submission deadline has passed.
         $coursework = $this->create_a_coursework();
 
-        // And the student has a submission
+        // And the student has a submission.
         $submissionparams = [
             'allocatableid' => $student->id,
             'allocatabletype' => 'user',
@@ -79,10 +81,10 @@ final class cron_test extends advanced_testcase {
         ];
         $submission = submission::create($submissionparams);
 
-        // When the cron runs
+        // When the cron runs.
         \mod_coursework\cron::run();
 
-        // Then the submission should be finalised
+        // Then the submission should be finalised.
         $submission->reload();
         $this->assertEquals(0, $submission->finalised);
     }
@@ -107,7 +109,7 @@ final class cron_test extends advanced_testcase {
 
         \mod_coursework\cron::run();
 
-        $this->assertEquals($submission->reload()->timesubmitted, 5555);
+        $this->assertEquals(5555, $submission->reload()->timesubmitted);
     }
 
     public function test_auto_releasing_does_not_alter_time_submitted(): void {
@@ -122,7 +124,7 @@ final class cron_test extends advanced_testcase {
 
         \mod_coursework\cron::run();
 
-        $this->assertEquals($submission->reload()->timesubmitted, 5555);
+        $this->assertEquals(5555, $submission->reload()->timesubmitted);
     }
 
     public function test_auto_releasing_does_not_happen_before_deadline(): void {
@@ -148,8 +150,8 @@ final class cron_test extends advanced_testcase {
         $coursework->update_attribute('individualfeedback', strtotime('-1 week'));
 
         \mod_coursework\cron::run();
-
-        $this->assertNotEmpty($submission->reload()->firstpublished);
+        $submission = $submission->reload();
+        $this->assertNotEmpty($submission->firstpublished);
     }
 
     /**
@@ -164,7 +166,8 @@ final class cron_test extends advanced_testcase {
         $this->create_a_final_feedback_for_the_submisison();
         $coursework->update_attribute('individualfeedback', strtotime('-1 week'));
 
-        $submission->update_attribute('allocatableid', 34523452345234);
+        $invaliduserid = 34523452345234;
+        $submission->update_attribute('allocatableid', $invaliduserid);
 
         \mod_coursework\cron::run();
 
