@@ -22,8 +22,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-global $CFG;
-
 /**
  * Unit tests for the base allocation strategy class.
  * @group mod_coursework

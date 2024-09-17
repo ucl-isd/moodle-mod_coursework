@@ -27,8 +27,6 @@ use mod_coursework\models\submission;
 
 defined('MOODLE_INTERNAL') || die();
 
-global $CFG;
-
 /**
  * Class that will make sure the allocation_manager works.
  * @group mod_coursework

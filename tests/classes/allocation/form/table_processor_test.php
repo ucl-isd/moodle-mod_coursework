@@ -23,7 +23,6 @@
 use mod_coursework\allocation\table\processor;
 use mod_coursework\models\coursework;
 
-global $CFG;
 
 /**
  * This class takes the manual data about the teachers who should be allocated to various
