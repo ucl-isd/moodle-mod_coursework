@@ -34,6 +34,11 @@ final class mod_coursework_models_deadline_extension_test extends advanced_testc
     public function setUp(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
+
+        // If we don't do this, we end up with the same cached objects for all tests and they may have incorrect/missing properties.
+        \mod_coursework\models\coursework::$pool = null;
+        \mod_coursework\models\submission::$pool = null;
+        \mod_coursework\models\feedback::$pool = null;
     }
 
     public function test_create(): void {
@@ -69,10 +74,12 @@ final class mod_coursework_models_deadline_extension_test extends advanced_testc
 
     public function test_get_coursework(): void {
         $coursework = $this->create_a_coursework();
-        $params = ['allocatableid' => 3,
-                        'allocatabletype' => 'user',
-                        'courseworkid' => $coursework->id,
-                        'extended_deadline' => strtotime('- 1 week')];
+        $params = [
+            'allocatableid' => 3,
+            'allocatabletype' => 'user',
+            'courseworkid' => $coursework->id,
+            'extended_deadline' => strtotime('- 1 week'),
+        ];
         $extension = deadline_extension::create($params);
         $this->assertEquals($extension->get_coursework(), $coursework);
     }
