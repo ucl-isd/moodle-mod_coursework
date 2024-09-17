@@ -44,13 +44,11 @@ final class table_processor_test extends advanced_testcase {
     use mod_coursework\test_helpers\factory_mixin;
 
     public function setUp(): void {
+        global $DB;
         $this->resetAfterTest();
         $this->setAdminUser();
 
         $generator = $this->getDataGenerator();
-        /**
-         * @var mod_coursework_generator $coursework_generator
-         */
         $courseworkgenerator = $generator->get_plugin_generator('mod_coursework');
 
         $this->course = $generator->create_course();
@@ -62,7 +60,9 @@ final class table_processor_test extends advanced_testcase {
         $this->create_a_student();
         $this->create_a_teacher();
         $this->create_another_teacher();
-        $this->delete_all_auto_allocations_caused_by_enrol_hooks();
+
+        // Delete all auto allocations caused by enrol hooks.
+        $DB->delete_records('coursework_allocation_pairs');
     }
 
     public function test_process_rows_makes_a_new_assessor_allocation(): void {
@@ -132,9 +132,18 @@ final class table_processor_test extends advanced_testcase {
     public function test_process_rows_alters_an_existing_allocation(): void {
 
         global $DB;
+        $this->coursework->update_attribute('numberofmarkers', 1);
 
-        $this->set_coursework_to_single_marker();
-        $allocation = $this->make_a_non_manual_allocation_for_teacher();
+        // Make a non manual allocation for teacher.
+        $allocation = \mod_coursework\models\allocation::build([
+            'courseworkid' => $this->coursework->id,
+            'allocatableid' => $this->student->id,
+            'allocatabletype' => 'user',
+            'assessorid' => $this->teacher->id,
+            'stage_identifier' => 'assessor_1',
+        ]);
+        $allocation->save();
+        $this->assertEquals($allocation->assessorid, $this->teacher->id);
 
         $testrows = [
             $this->student->id => [
@@ -144,9 +153,11 @@ final class table_processor_test extends advanced_testcase {
                 ],
             ],
         ];
-
         $processor = new processor($this->coursework);
         $processor->process_data($testrows);
+
+        $allocation->reload();
+        $this->assertEquals($allocation->assessorid, $this->otherteacher->id);
 
         $params = [
             'courseworkid' => $this->coursework->id,
@@ -155,10 +166,11 @@ final class table_processor_test extends advanced_testcase {
             'stage_identifier' => 'assessor_1',
         ];
         $records = $DB->get_records('coursework_allocation_pairs', $params);
-        $this->assertEquals(1, $DB->count_records('coursework_allocation_pairs'), 'Too many allocations.');
-
+        $this->assertEquals(
+            1, count($records),
+            'Too many allocations ' . json_encode($records)
+        );
         $this->assertEquals($this->otherteacher->id, reset($records)->assessorid, 'Wrong teacher id');
-
     }
 
     public function test_that_missing_columns_dont_mess_it_up(): void {
@@ -169,50 +181,5 @@ final class table_processor_test extends advanced_testcase {
     public function test_that_missing_rows_dont_mess_it_up(): void {
         $processor = new processor($this->coursework);
         $processor->process_data();
-    }
-
-    private function set_coursework_to_single_marker() {
-        $this->coursework->update_attribute('numberofmarkers', 1);
-    }
-
-    /**
-     */
-    private function make_a_non_manual_allocation_for_teacher() {
-        global $DB;
-
-        $allocation = new stdClass();
-        $allocation->assessorid = $this->teacher->id;
-        $allocation->courseworkid = $this->coursework->id;
-        $allocation->allocatableid = $this->student->id;
-        $allocation->allocatabletype = 'user';
-        $allocation->stage_identifier = 'assessor_1';
-
-        $allocation->id = $DB->insert_record('coursework_allocation_pairs', $allocation);
-
-        return $allocation;
-    }
-
-    /**
-     */
-    private function make_a_non_manual_moderator_allocation_for_teacher() {
-        global $DB;
-
-        $allocation = new stdClass();
-        $allocation->allocatableid = $this->student->id;
-        $allocation->allocatabletype = 'user';
-        $allocation->assessorid = $this->teacher->id;
-        $allocation->courseworkid = $this->coursework->id;
-        $allocation->stage_identifier = 'moderator_1';
-        $allocation->moderator = 1;
-
-        $allocation->id = $DB->insert_record('coursework_allocation_pairs', $allocation);
-
-        return $allocation;
-    }
-
-    private function delete_all_auto_allocations_caused_by_enrol_hooks() {
-        global $DB;
-
-        $DB->delete_records('coursework_allocation_pairs');
     }
 }
