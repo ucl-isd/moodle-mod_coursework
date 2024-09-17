@@ -262,9 +262,8 @@ abstract class table_base {
     /**
      * Saves the record or creates a new one if needed. Allow subclasses to add bits if needed, before calling.
      *
-     * @global moodle_database $DB
      * @param bool $sneakily If true, do not update the timemodified stamp. Useful for cron.
-     * @return int|bool
+     * @return void
      */
     final public function save($sneakily = false) {
 
@@ -423,24 +422,24 @@ abstract class table_base {
      * @param string $name
      * @param mixed $value
      * @param bool $sneakily If true, do not update the timemodified stamp. Useful for cron.
-     * @return bool|int
+     * @return void
      */
     public function update_attribute($name, $value, $sneakily = false) {
         $this->apply_column_value_to_self($name, $value);
-        return $this->save($sneakily);
+        $this->save($sneakily);
     }
 
     /**
      * Updates a single attribute and saves the model.
      *
      * @param mixed $values key-value pairs
-     * @return bool|int
+     * @return void
      */
     public function update_attributes($values) {
         foreach ($values as $col => $val) {
             $this->apply_column_value_to_self($col, $val, false);
         }
-        return $this->save();
+        $this->save();
     }
 
     /**

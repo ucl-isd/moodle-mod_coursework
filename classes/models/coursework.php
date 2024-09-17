@@ -1028,7 +1028,8 @@ class coursework extends table_base {
 
         if ($this->allocation_strategy_is_valid($allocationstrategy)) {
             $this->assessorallocationstrategy = $allocationstrategy;
-            return $this->save();
+            $this->save();
+            return true;
         }
         return false;
     }
