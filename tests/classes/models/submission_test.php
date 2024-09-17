@@ -122,7 +122,7 @@ final class coursework_submission_test extends advanced_testcase {
             if (in_array($key, $excludedkeys) || str_ends_with($key, 'dataloaded')) {
                 continue;
             }
-            $this->assertEquals($student->$key, $submission->get_allocatable()->$key);
+            $this->assertEquals($student->$key, $submission->get_allocatable()->$key, "Field '$key' differs");
         }
     }
 
