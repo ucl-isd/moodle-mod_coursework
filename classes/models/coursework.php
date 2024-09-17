@@ -876,8 +876,8 @@ class coursework extends table_base {
     /**
      * @return bool
      */
-    public function early_finalisation_allowed() {
-        return !!$this->allowearlyfinalisation;
+    public function early_finalisation_allowed(): bool {
+        return (bool)$this->allowearlyfinalisation;
     }
 
     /**
@@ -1762,8 +1762,8 @@ class coursework extends table_base {
      * @param user $user
      * @return bool
      */
-    public function has_user_submission($user) {
-        return !!$this->get_user_submission($user);
+    public function has_user_submission($user): bool {
+        return (bool)$this->get_user_submission($user);
     }
 
     /**
@@ -1882,8 +1882,8 @@ class coursework extends table_base {
     /**
      * @return bool
      */
-    public function is_configured_to_have_group_submissions() {
-        return !!$this->use_groups;
+    public function is_configured_to_have_group_submissions(): bool {
+        return (bool)$this->use_groups;
     }
 
     /**
@@ -2105,10 +2105,10 @@ class coursework extends table_base {
     /**
      * @return bool
      */
-    public function is_using_advanced_grading() {
+    public function is_using_advanced_grading(): bool {
         $gradingmanager = $this->get_advanced_grading_manager();
         if ($gradingmanager) {
-            return !!$gradingmanager->get_active_controller();
+            return (bool)$gradingmanager->get_active_controller();
         }
         return false;
     }
@@ -2119,9 +2119,6 @@ class coursework extends table_base {
     public function get_advanced_grading_active_controller() {
         $gradingmanager = $this->get_advanced_grading_manager();
         if ($gradingmanager) {
-            /**
-             * @var gradingform_controller $controller
-             */
             $controller = $gradingmanager->get_active_controller();
             $menu = make_grades_menu($this->grade);
             $controller->set_grade_range($menu, $this->grade > 0);

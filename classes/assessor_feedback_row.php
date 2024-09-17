@@ -171,8 +171,8 @@ class assessor_feedback_row {
      *
      * @return bool
      */
-    public function has_feedback() {
-        return !!$this->get_feedback();
+    public function has_feedback(): bool {
+        return (bool)$this->get_feedback();
     }
 
     /**
@@ -206,8 +206,8 @@ class assessor_feedback_row {
     /**
      * @return bool
      */
-    private function has_submission() {
-        return !!$this->get_submission();
+    private function has_submission(): bool {
+        return (bool)$this->get_submission();
     }
 
     /**
@@ -234,8 +234,8 @@ class assessor_feedback_row {
     /**
      * @return bool
      */
-    private function has_allocation() {
-        return !!$this->get_allocation();
+    private function has_allocation(): bool {
+        return (bool)$this->get_allocation();
     }
 }
 

@@ -87,17 +87,17 @@ class data {
     /**
      * @return bool
      */
-    public function allocatable_should_be_in_sampling() {
+    public function allocatable_should_be_in_sampling(): bool {
         $key = $this->moderation_set_key();
-        return array_key_exists($key, $this->data) && !!$this->data[$key];
+        return array_key_exists($key, $this->data) && $this->data[$key];
     }
 
     /**
      * @return bool
      */
-    public function is_pinned() {
+    public function is_pinned(): bool {
         $key = $this->pinned_key();
-        return array_key_exists($key, $this->data) && !!$this->data[$key];
+        return array_key_exists($key, $this->data) && $this->data[$key];
     }
 
     /**
