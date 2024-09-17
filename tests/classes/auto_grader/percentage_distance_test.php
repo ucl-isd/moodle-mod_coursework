@@ -73,7 +73,6 @@ final class percentage_distance_test extends \advanced_testcase {
     }
 
     public function test_that_a_new_record_is_created_when_all_initial_feedbacks_are_close_enough(): void {
-        $this->resetAfterTest();
         global $DB;
 
         $user = $this->createMock('\mod_coursework\models\user');
@@ -100,9 +99,8 @@ final class percentage_distance_test extends \advanced_testcase {
 
         $user->expects($this->any())->method('get_submission')->will($this->returnValue($submission));
 
-        // Constructor percentage_distance no longer accepts percentage param since commit c1132f6, so set 10 to coursework.
-        $this->coursework->automaticagreementrange = 10;
         $object = new percentage_distance($this->get_coursework(), $user);
+        // Constructor percentage_distance no longer accepts percentage param since commit c1132f6, so set 10.
         $object->set_percentage(10);
         $object->create_auto_grade_if_rules_match();
 
@@ -111,7 +109,6 @@ final class percentage_distance_test extends \advanced_testcase {
 
     public function test_that_a_new_record_is_not_created_when_all_initial_feedbacks_are_far_apart(): void {
         global $DB;
-        $this->resetAfterTest();
         $user = $this->createMock('\mod_coursework\models\user');
         $user->expects($this->any())->method('has_agreed_feedback')
             ->with($this->get_coursework())
