@@ -334,11 +334,7 @@ class behat_mod_coursework extends behat_base {
         }
 
         if ($text) {
-            if ($exacttext) {
-                $xpath .= "[contains(., '{$text}')]";
-            } else {
-                $xpath .= "[contains(., '{$text}')]";
-            }
+            $xpath .= "[contains(., '{$text}')]";
         }
 
         return $xpath;
