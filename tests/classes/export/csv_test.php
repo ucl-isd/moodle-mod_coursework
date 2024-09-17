@@ -47,7 +47,7 @@ final class csv_test extends advanced_testcase {
         $this->teacher = $this->create_a_teacher();
         $this->otherteacher = $this->create_another_teacher();
 
-        // If we don't do this, we end up using the same object for test 2 as for test 1, which has numberofmarkers = 1.
+        // If we don't do this, we end up with the same cached objects for all tests and they may have incorrect/missing properties. has numberofmarkers = 1.
         // In that case we fail the test - the agreed mark for test 2 is not picked up as we only appear to have one marker.
         \mod_coursework\models\coursework::$pool = null;
     }

@@ -36,7 +36,7 @@ final class cron_test extends advanced_testcase {
         $this->setAdminUser();
         $this->preventResetByRollback();
         $this->redirectMessages();
-        // If we don't do this, we end up using the same cached objects for all tests and they may have wrong/missing properties.
+        // If we don't do this, we end up with the same cached objects for all tests and they may have incorrect/missing properties.
         \mod_coursework\models\coursework::$pool = null;
     }
 

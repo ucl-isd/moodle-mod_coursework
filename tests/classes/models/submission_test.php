@@ -51,7 +51,7 @@ final class coursework_submission_test extends advanced_testcase {
         $this->redirectMessages();
         $this->preventResetByRollback();
 
-        // If we don't do this, we end up using the same cached objects for all tests they it may have wrong/missing properties.
+        // If we don't do this, we end up with the same cached objects for all tests and they may have incorrect/missing properties.
         \mod_coursework\models\coursework::$pool = null;
     }
 
