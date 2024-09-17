@@ -477,7 +477,10 @@ class feedback extends table_base {
         if (!isset($this->submission) && !empty($this->submissionid)) {
             global $DB;
             $courseworkid = $this->courseworkid
-                ?? $DB->get_field(submission::$tablename, 'courseworkid', ['id' => $this->submissionid], MUST_EXIST);
+                ?? $DB->get_field(submission::$tablename, 'courseworkid', ['id' => $this->submissionid]);
+            if (!$courseworkid) {
+                return false;
+            }
             if (!isset(submission::$pool[$courseworkid])) {
                 submission::fill_pool_coursework($courseworkid);
             }
@@ -666,8 +669,10 @@ class feedback extends table_base {
      *
      */
     protected function post_save_hook() {
-        $courseworkid = $this->get_submission()->courseworkid;
-        self::remove_cache($courseworkid);
+        $submission = $this->get_submission();
+        if ($submission && $submission->courseworkid ?? false) {
+            self::remove_cache($submission->courseworkid);
+        }
     }
 
     /**

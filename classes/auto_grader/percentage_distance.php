@@ -129,12 +129,13 @@ class percentage_distance implements auto_grader {
      *
      */
     private function create_final_feedback() {
-        feedback::create([
-                             'stage_identifier' => 'final_agreed_1',
-                             'submissionid' => $this->get_allocatable()->get_submission($this->get_coursework())->id(),
-                             'grade' => $this->automatic_grade(),
-
-                         ]);
+        feedback::create(
+            [
+                'stage_identifier' => 'final_agreed_1',
+                'submissionid' => $this->get_allocatable()->get_submission($this->get_coursework())->id(),
+                'grade' => $this->automatic_grade(),
+            ]
+        );
     }
 
     /**
@@ -162,5 +163,14 @@ class percentage_distance implements auto_grader {
         },
             $initialfeedbacks);
         return $grades;
+    }
+
+    /**
+     * Set percentage.
+     * @param int $percentage
+     * @return void
+     */
+    public function set_percentage(int $percentage) {
+        $this->percentage = $percentage;
     }
 }
