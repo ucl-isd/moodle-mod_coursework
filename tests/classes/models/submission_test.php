@@ -45,12 +45,14 @@ final class coursework_submission_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $this->course = $this->getDataGenerator()->create_course();
-        /* @var mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $this->setAdminUser();
         $this->coursework = $generator->create_instance(['course' => $this->course->id, 'grade' => 0]);
         $this->redirectMessages();
         $this->preventResetByRollback();
+
+        // If we don't do this, we end up using the same cached objects for all tests they it may have wrong/missing properties.
+        \mod_coursework\models\coursework::$pool = null;
     }
 
     /**
@@ -99,7 +101,6 @@ final class coursework_submission_test extends advanced_testcase {
     }
 
     public function test_group_decorator_is_not_added(): void {
-        /* @var mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $coursework = $generator->create_instance(['course' => $this->course->id,
                                                         'grade' => 0]);
@@ -113,23 +114,14 @@ final class coursework_submission_test extends advanced_testcase {
     }
 
     public function test_get_allocatable_student(): void {
-
         $student = $this->create_a_student();
-        /**
-         * @var submission $submission
-         */
         $submission = submission::build(['allocatableid' => $student->id, 'allocatabletype' => 'user']);
         $this->assertEquals($student, $submission->get_allocatable());
     }
 
     public function test_get_allocatable_group(): void {
-
         $group = $this->create_a_group();
-        /**
-         * @var submission $submission
-         */
-        $submission = submission::build(['allocatableid' => $group->id,
-                                              'allocatabletype' => 'group']);
+        $submission = submission::build(['allocatableid' => $group->id, 'allocatabletype' => 'group']);
         $this->assertEquals($group, $submission->get_allocatable());
     }
 
@@ -141,15 +133,9 @@ final class coursework_submission_test extends advanced_testcase {
 
     public function test_publish_updates_grade_timemodified(): void {
         global $DB;
-
-        /* @var mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $student = $this->create_a_student();
-        /**
-         * @var submission $submission
-         */
-        $submissiondata = ['allocatableid' => $student->id,
-                                              'allocatabletype' => 'user'];
+        $submissiondata = ['allocatableid' => $student->id, 'allocatabletype' => 'user'];
         $submission = $generator->create_submission($submissiondata, $this->coursework);
         $this->coursework->update_attribute('numberofmarkers', 1);
         $feedbackdata = new stdClass();
@@ -157,10 +143,6 @@ final class coursework_submission_test extends advanced_testcase {
         $feedbackdata->grade = 54;
         $feedbackdata->assessorid = 4566;
         $feedbackdata->stage_identifier = 'assessor_1';
-
-        /**
-         * @var feedback $feedback
-         */
         $feedback = $generator->create_feedback($feedbackdata);
 
         sleep(1);
@@ -175,7 +157,9 @@ final class coursework_submission_test extends advanced_testcase {
 
         $submission->publish();
 
-        $gradeitem = $DB->get_record('grade_items', ['itemtype' => 'mod', 'itemmodule' => 'coursework', 'iteminstance' => $this->coursework->id]);
+        $gradeitem = $DB->get_record(
+            'grade_items', ['itemtype' => 'mod', 'itemmodule' => 'coursework', 'iteminstance' => $this->coursework->id]
+        );
         $grade = $DB->get_record('grade_grades', ['itemid' => $gradeitem->id, 'userid' => $student->id]);
         $gradetimemodified = $grade->timemodified;
 
@@ -186,14 +170,9 @@ final class coursework_submission_test extends advanced_testcase {
     public function test_publish_updates_grade_rawgrade(): void {
         global $DB;
 
-        /* @var mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $student = $this->create_a_student();
-        /**
-         * @var submission $submission
-         */
-        $submissiondata = ['allocatableid' => $student->id,
-                                 'allocatabletype' => 'user'];
+        $submissiondata = ['allocatableid' => $student->id, 'allocatabletype' => 'user'];
         $submission = $generator->create_submission($submissiondata, $this->coursework);
         $this->coursework->update_attribute('numberofmarkers', 1);
         $feedbackdata = new stdClass();
@@ -201,39 +180,28 @@ final class coursework_submission_test extends advanced_testcase {
         $feedbackdata->grade = 54;
         $feedbackdata->assessorid = 4566;
         $feedbackdata->stage_identifier = 'assessor_1';
-
-        /**
-         * @var feedback $feedback
-         */
         $feedback = $generator->create_feedback($feedbackdata);
 
         $submission->publish();
         $feedback->update_attribute('grade', 67);
         $submission->publish();
 
-        $gradeitem = $DB->get_record('grade_items',
-                                      ['itemtype' => 'mod',
-                                            'itemmodule' => 'coursework',
-                                            'iteminstance' => $this->coursework->id]);
-        $grade = $DB->get_record('grade_grades',
-                                 ['itemid' => $gradeitem->id,
-                                       'userid' => $student->id]);
+        $gradeitem = $DB->get_record(
+            'grade_items',
+                  ['itemtype' => 'mod', 'itemmodule' => 'coursework', 'iteminstance' => $this->coursework->id]
+        );
+        $grade = $DB->get_record(
+            'grade_grades',
+            ['itemid' => $gradeitem->id, 'userid' => $student->id]);
 
         $this->assertEquals(67, $grade->rawgrade);
-
     }
 
     public function test_publish_sets_grade_timemodified(): void {
         global $DB;
-
-        /* @var mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $student = $this->create_a_student();
-        /**
-         * @var submission $submission
-         */
-        $submissiondata = ['allocatableid' => $student->id,
-                                 'allocatabletype' => 'user'];
+        $submissiondata = ['allocatableid' => $student->id, 'allocatabletype' => 'user'];
         $submission = $generator->create_submission($submissiondata, $this->coursework);
         $this->coursework->update_attribute('numberofmarkers', 1);
         $feedbackdata = new stdClass();
@@ -247,16 +215,12 @@ final class coursework_submission_test extends advanced_testcase {
         sleep(1); // Make sure we do not just have the same timestamp everywhere.
         $submission->publish();
 
-        $gradeitem = $DB->get_record('grade_items',
-                                      ['itemtype' => 'mod',
-                                            'itemmodule' => 'coursework',
-                                            'iteminstance' => $this->coursework->id]);
-        $grade = $DB->get_record('grade_grades',
-                                 ['itemid' => $gradeitem->id,
-                                       'userid' => $student->id]);
+        $gradeitem = $DB->get_record(
+        'grade_items',
+              ['itemtype' => 'mod', 'itemmodule' => 'coursework', 'iteminstance' => $this->coursework->id]
+        );
+        $grade = $DB->get_record('grade_grades', ['itemid' => $gradeitem->id, 'userid' => $student->id]);
         $timemodified = $grade->timemodified;
-
         $this->assertEquals($feedback->timemodified, $timemodified);
     }
-
 }
