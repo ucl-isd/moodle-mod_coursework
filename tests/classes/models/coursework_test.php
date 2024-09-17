@@ -48,11 +48,8 @@ final class coursework_test extends advanced_testcase {
      * Makes us a blank coursework and allocation manager.
      */
     public function setUp(): void {
-
         $this->resetAfterTest();
-
         $this->course = $this->getDataGenerator()->create_course();
-        /* @var mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $this->setAdminUser();
         $this->coursework = $generator->create_instance(['course' => $this->course->id, 'grade' => 0]);
@@ -97,7 +94,6 @@ final class coursework_test extends advanced_testcase {
 
         // Now make a new coursework with a duff class name.
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
-        /* @var mod_coursework_generator $generator */
         $this->coursework = $generator->create_instance(['course' => $this->course->id, 'grade' => 0]);
         $this->coursework->assessorallocationstrategy = 'duffclass';
         $this->coursework->save();
@@ -107,7 +103,6 @@ final class coursework_test extends advanced_testcase {
     }
 
     public function test_group_decorator_is_added(): void {
-        /* @var mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $coursework = $generator->create_instance(['course' => $this->course->id,
                                                         'grade' => 0,
@@ -116,7 +111,6 @@ final class coursework_test extends advanced_testcase {
     }
 
     public function test_group_decorator_is_not_added(): void {
-        /* @var mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $coursework = $generator->create_instance(['course' => $this->course->id,
                                                         'grade' => 0]);
@@ -158,10 +152,6 @@ final class coursework_test extends advanced_testcase {
     }
 
     public function test_get_user_group_with_wrong_grouping(): void {
-
-        /**
-         * @var mod_coursework_generator
-         */
         $generator = $this->get_coursework_generator();
 
         $this->create_a_student();
@@ -174,7 +164,7 @@ final class coursework_test extends advanced_testcase {
                                                         'use_groups' => true,
                                                         'grouping_id' => 543]);
 
-        $this->assertEquals(false, $coursework->get_student_group($this->student));
+        $this->assertFalse($coursework->get_student_group($this->student));
     }
 
     public function test_marking_stages_does_single_marker(): void {
@@ -242,7 +232,7 @@ final class coursework_test extends advanced_testcase {
                             $coursework->get_file_options()['accepted_types']);
     }
 
-    public function test_groupings_appear_in_allocatabeles(): void {
+    public function test_groupings_appear_in_allocatables(): void {
 
         $this->create_a_course();
 
@@ -259,9 +249,9 @@ final class coursework_test extends advanced_testcase {
         $coursework->update_attribute('use_groups', 1);
 
         $allocatables = $coursework->get_allocatables();
-        $ispresent = is_numeric($group->id) && in_array($group->id, array_keys($allocatables));
+        $ispresent = is_numeric($group->id) && in_array((string)$group->id, array_keys($allocatables));
         $this->assertTrue(
-            $ispresent, "Actual array keys: ".implode(', ', array_keys($allocatables))
+            $ispresent, "Actual array keys: " . implode(', ', array_keys($allocatables))
         );
     }
 
