@@ -301,7 +301,7 @@ if ($download && $zipfile = $coursework->pack_files()) {
 
 if ($exportgrades) {
 
-    // Headers and data for csv
+    // Headers and data for csv.
     $csvcells = ['name', 'username', 'idnumber', 'email'];
 
     if ($coursework->personal_deadlines_enabled()) {
