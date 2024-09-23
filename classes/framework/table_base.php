@@ -485,7 +485,7 @@ abstract class table_base {
      * @param bool $sneakily If true, do not update the timemodified stamp. Useful for cron.
      * @return stdClass
      */
-    private function build_data_object_to_save($sneakily = false) {
+    final public function build_data_object_to_save($sneakily = false): stdClass {
         // Don't just use $this as it will try to save any missing value as null. We may only want.
         // to update  some fields e.g. leaving timecreated alone.
         $savedata = new stdClass();
