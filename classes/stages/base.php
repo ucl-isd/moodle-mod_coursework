@@ -156,9 +156,7 @@ abstract class base {
      * @throws \coding_exception
      * @return string
      */
-    protected function strategy_name() {
-        throw new \coding_exception('No strategy name specified in class '.get_called_class());
-    }
+    abstract protected function strategy_name(): string;
 
     /**
      * @return string 'assessor_1'
