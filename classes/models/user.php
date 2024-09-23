@@ -201,17 +201,15 @@ class user extends table_base implements allocatable, moderatable {
 
     /**
      * @param $id
-     * @return self|null
+     * @return self
      */
     public static function get_object($id) {
         if (!isset(self::$pool['id'][$id])) {
             global $DB;
             $user = $DB->get_record(self::$tablename, ['id' => $id]);
-            if ($user) {
-                self::$pool['id'][$id] = new self($user);
-            }
+            self::$pool['id'][$id] = new self($user);
         }
-        return self::$pool['id'][$id] ?? null;
+        return self::$pool['id'][$id];
     }
 
 }

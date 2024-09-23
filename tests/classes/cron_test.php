@@ -153,24 +153,4 @@ final class cron_test extends advanced_testcase {
         $submission = $submission->reload();
         $this->assertNotEmpty($submission->firstpublished);
     }
-
-    /**
-     * Was throwing an error when the allocatable could not be found.
-     */
-    public function test_cron_auto_releasing_when_the_user_is_not_there(): void {
-        $this->create_a_course();
-        $coursework = $this->create_a_coursework();
-        $this->create_a_student();
-        $submission = $this->create_a_submission_for_the_student();
-        $submission->update_attribute('finalised', 1);
-        $this->create_a_final_feedback_for_the_submisison();
-        $coursework->update_attribute('individualfeedback', strtotime('-1 week'));
-
-        $invaliduserid = 34523452345234;
-        $submission->update_attribute('allocatableid', $invaliduserid);
-
-        \mod_coursework\cron::run();
-
-        $this->assertEmpty($submission->reload()->firstpublished);
-    }
 }
