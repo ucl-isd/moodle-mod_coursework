@@ -48,7 +48,7 @@ class cron {
      * @return bool
      */
     public static function run() {
-        if (!defined('PHPUNIT_TEST')) {
+        if (!self::in_test_environment()) {
             echo "Starting coursework cron functions...\n";
         }
         self::finalise_any_submissions_where_the_deadline_has_passed();
@@ -346,7 +346,7 @@ class cron {
      * Updates all DB columns where the deadline was before now, so that finalised = 1
      */
     private static function finalise_any_submissions_where_the_deadline_has_passed() {
-        if (!defined('PHPUNIT_TEST')) {
+        if (!self::in_test_environment()) {
             echo 'Finalising submissions for courseworks where the deadlines have passed...';
         }
 
@@ -385,7 +385,7 @@ class cron {
 
     private static function autorelease_feedbacks_where_the_release_date_has_passed() {
         global $DB;
-        if (!defined('PHPUNIT_TEST')) {
+        if (!self::in_test_environment()) {
             echo 'Auto releasing feedbacks for courseworks where the release date have passed...';
         }
 
