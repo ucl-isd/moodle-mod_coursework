@@ -358,7 +358,7 @@ function mod_coursework_core_calendar_event_action_shows_item_count(calendar_eve
 
 /**
  * Create grade item for given coursework
- * @param \mod_coursework\models\coursework $coursework object with extra cmid number
+ * @param \mod_coursework\models\coursework|stdClass $coursework object with extra cmid number
  * @param null|array $grades array/object of grade(s); 'reset' means reset grades in gradebook
  * @return int 0 if ok, error code otherwise
  */
@@ -367,10 +367,22 @@ function coursework_grade_item_update($coursework, $grades = null) {
 
     require_once($CFG->dirroot.'/lib/gradelib.php');
 
+    $paramtype = gettype($coursework);
+    if ($paramtype != 'object') {
+        throw new invalid_parameter_exception("Invalid type '$paramtype' for coursework");
+    }
+
+    if (get_class($coursework) != 'mod_coursework\models\coursework') {
+        // On activity rename, core will pass in stdClass object here, not a coursework.
+        $coursework = \mod_coursework\models\coursework::find($coursework);
+    }
+
     $courseid = $coursework->get_course_id();
 
-    $params = ['itemname' => $coursework->name,
-                    'idnumber' => $coursework->get_coursemodule_idnumber()];
+    $params = [
+        'itemname' => $coursework->name,
+        'idnumber' => $coursework->get_coursemodule_idnumber(),
+    ];
 
     if ($coursework->grade > 0) {
         $params['gradetype'] = GRADE_TYPE_VALUE;
@@ -390,8 +402,60 @@ function coursework_grade_item_update($coursework, $grades = null) {
         $grades = null;
     }
 
-    return grade_update('mod/coursework', $courseid, 'mod', 'coursework', $coursework->id, 0,
-                        $grades, $params);
+    return grade_update(
+        'mod/coursework', $courseid, 'mod', 'coursework',
+        $coursework->id, 0, $grades, $params
+    );
+}
+
+/**
+ * Update coursework grades in the gradebook.
+ * This will be called to rename the grade item when {@link core_courseformat\local\cmactions::rename()} is used.
+ * Needed by {@link grade_update_mod_grades()} (Force full update of module grades in central gradebook).
+ *
+ * @param stdClass $moduleinstance Instance object with extra cmidnumber and modname property.
+ * @param int $userid Update grade of specific user only, 0 means all participants.
+ * @param bool $nullifnone If true and the user has no grade then a grade item with rawgrade == null
+ */
+function coursework_update_grades(stdClass $moduleinstance, int $userid = 0, $nullifnone = true) {
+    // Code adapted from mod_assign.
+    global $CFG;
+    require_once($CFG->libdir.'/gradelib.php');
+
+    if ($moduleinstance->grade == 0) {
+        coursework_grade_item_update($moduleinstance);
+
+    } else if ($grades = coursework_get_user_grades($moduleinstance, $userid)) {
+        foreach ($grades as $k => $v) {
+            if ($v->rawgrade == -1) {
+                $grades[$k]->rawgrade = null;
+            }
+        }
+        coursework_grade_item_update($moduleinstance, $grades);
+
+    } else {
+        coursework_grade_item_update($moduleinstance);
+    }
+}
+
+/**
+ * Return gradebook grade for given user or all users.
+ *
+ * @param object $moduleinstance
+ * @param int $userid user ID.
+ * @return array array of grades
+ */
+function coursework_get_user_grades(object $moduleinstance, int $userid): array {
+
+    // If no user ID supplied, this returns information about grade_item only.
+    $grades = grade_get_grades(
+        $moduleinstance->course,
+        'mod',
+        'coursework',
+        $moduleinstance->id,
+        $userid != 0 ? $userid : null
+    );
+    return reset($grades->items)->grades ?? [];
 }
 
 /**
