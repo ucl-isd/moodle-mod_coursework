@@ -161,7 +161,7 @@ class import extends grading_sheet {
         return (!empty($errors)) ? $errors : false;
     }
 
-    function rubric_count_correct($csvheader, $linefromimportedcsv) {
+    public function rubric_count_correct($csvheader, $linefromimportedcsv) {
 
         // get criteria of rubrics and match it to grade cells
         if ($this->coursework->is_using_rubric()) {
@@ -229,7 +229,7 @@ class import extends grading_sheet {
         }
     }
 
-    function get_rubric_headers($csvheader) {
+    public function get_rubric_headers($csvheader) {
 
         // get criteria of rubrics and match it to grade cells
         if ($this->coursework->is_using_rubric()) {
@@ -545,7 +545,7 @@ class import extends grading_sheet {
      * @param $value the value that we will retrieve the levelid for
      * @return bool
      */
-    function get_value_rubric_levelid($criteria,    $value) {
+    public function get_value_rubric_levelid($criteria,    $value) {
 
         global  $DB;
 
