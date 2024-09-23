@@ -4763,7 +4763,7 @@
 	
 					_fnProcessingDisplay( settings, false );
 					_fnInitComplete( settings, json );
-				}, settings );
+				});
 			}
 			else {
 				_fnProcessingDisplay( settings, false );
