@@ -443,8 +443,7 @@ function coursework_update_grades(stdClass $moduleinstance, int $userid = 0, $nu
  *
  * @param object $moduleinstance
  * @param int $userid user ID.
- * @return array array of grades, false if none
- * @return stdClass
+ * @return array array of grades
  */
 function coursework_get_user_grades(object $moduleinstance, int $userid): array {
 
