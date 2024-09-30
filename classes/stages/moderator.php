@@ -48,7 +48,7 @@ class moderator extends base {
     /**
      * @return string
      */
-    protected function strategy_name() {
+    protected function strategy_name(): string {
         return 'none';
     }
 

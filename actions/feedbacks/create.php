@@ -32,7 +32,7 @@ $submissionid = required_param('submissionid', PARAM_INT);
 $isfinalgrade = optional_param('isfinalgrade', 0, PARAM_INT);
 $assessorid = optional_param('assessorid', $USER->id, PARAM_INT);
 $stageidentifier = optional_param('stage_identifier', '', PARAM_ALPHANUMEXT);
-$finalised = !!optional_param('submitbutton', 0, PARAM_TEXT);
+$finalised = (bool)optional_param('submitbutton', 0, PARAM_TEXT);
 $ajax = optional_param('ajax', 0, PARAM_INT);
 
 $params = [

@@ -39,17 +39,16 @@ class singlegrade_cell extends cell_base {
      * @return array|mixed|null|string
      */
     public function get_cell($submission, $student, $stageidentifier) {
+        $stageident = ($this->coursework->get_max_markers() == 1)
+            ? "assessor_1" : $this->get_stage_identifier_for_assessor($submission, $student);
 
-        $stageidentifier = ($this->coursework->get_max_markers() == 1) ? "assessor_1" : $this->get_stage_identifier_for_assessor($submission, $student);
-
-        $grade = $submission->get_assessor_feedback_by_stage($stageidentifier);
+        $grade = $submission->get_assessor_feedback_by_stage($stageident);
         if ($this->coursework->is_using_rubric()) {
             $gradedata = [];
-            $this->get_rubric_scores_gradedata($grade, $gradedata); // multiple parts are handled here
+            $this->get_rubric_scores_gradedata($grade, $gradedata); // Multiple parts are handled here.
         } else {
             $gradedata = (!$grade) ? '' : $this->get_actual_grade($grade->grade);
         }
-
         return   $gradedata;
     }
 
@@ -221,7 +220,7 @@ class singlegrade_cell extends cell_base {
      * @param $value the value that should be checked to see if it is valid
      * @return bool
      */
-    function value_in_rubric($criteria,    $value) {
+    public function value_in_rubric($criteria,    $value) {
 
         global  $DB;
 
@@ -252,7 +251,7 @@ class singlegrade_cell extends cell_base {
      * @param $csvcells
      * @return array
      */
-    function get_rubrics($coursework, $csvcells) {
+    public function get_rubrics($coursework, $csvcells) {
 
         if ($coursework->is_using_rubric()) {
 

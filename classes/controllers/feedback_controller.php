@@ -230,10 +230,8 @@ class feedback_controller extends controller_base {
                 $submission->publish();
             }
 
-            // Only implement auto feedback (automatic agreement) if the settings is set to disabled otherwise
-            // We will do this in the cron
-            // Only implement auto feedback (automatic agreement) if the settings is set to disabled otherwise
-            // We will do this in the cron
+            // Only implement auto feedback (automatic agreement) if the settings is set to disabled.
+            // Otherwise, we will do this in the cron.
             $gradeeditingtime = $teacherfeedback->get_coursework()->get_grade_editing_time();
 
             if (empty($gradeeditingtime) || time() > $teacherfeedback->timecreated + $gradeeditingtime) {
@@ -417,6 +415,7 @@ class feedback_controller extends controller_base {
         $teacherfeedback->save();
         $form->save_feedback_files($teacherfeedback);
 
+        $gradeeditingtime = $teacherfeedback->get_coursework()->get_grade_editing_time();
         if (empty($gradeeditingtime) || time() > $teacherfeedback->timecreated + $gradeeditingtime) {
             $this->try_auto_feedback_creation($teacherfeedback->get_submission());
         }

@@ -120,8 +120,8 @@ class allocation extends table_base {
     /**
      * @return bool
      */
-    public function is_pinned() {
-        return !!$this->manual;
+    public function is_pinned(): bool {
+        return (bool)$this->manual;
     }
 
     /**

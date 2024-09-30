@@ -90,7 +90,7 @@ abstract class sample_base {
         'minimum',
     ];
 
-    function __construct($coursework) {
+    public function __construct($coursework) {
         $this->coursework = $coursework;
     }
 

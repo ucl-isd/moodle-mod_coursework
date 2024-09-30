@@ -32,7 +32,7 @@ $courseworkid = required_param('courseworkid', PARAM_INT);
 $allocatableid = required_param('allocatableid', PARAM_INT);
 $allocatabletype = required_param('allocatabletype', PARAM_ALPHANUMEXT);
 $submissionid = optional_param('submissionid', 0, PARAM_INT);
-$finalised = !!optional_param('finalisebutton', 0, PARAM_TEXT);
+$finalised = (bool)optional_param('finalisebutton', 0, PARAM_TEXT);
 
 if (!in_array($allocatabletype, ['user', 'group'])) {
     throw new \mod_coursework\exceptions\access_denied(\mod_coursework\models\coursework::find($courseworkid),

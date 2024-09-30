@@ -281,7 +281,7 @@ class assessorgrade_cell extends cell_base {
      * @param $value the value that should be checked to see if it is valid
      * @return bool
      */
-    function value_in_rubric($criteria,    $value) {
+    public function value_in_rubric($criteria,    $value) {
 
         global  $DB;
 
@@ -312,7 +312,7 @@ class assessorgrade_cell extends cell_base {
      * @param $csvcells
      * @return array
      */
-    function get_rubrics($coursework, $csvcells) {
+    public function get_rubrics($coursework, $csvcells) {
 
         if ($coursework->is_using_rubric()) {
 

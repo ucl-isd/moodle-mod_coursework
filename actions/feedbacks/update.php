@@ -29,7 +29,7 @@ require_once(dirname(__FILE__) . '/../../../../config.php');
 global $CFG, $USER;
 
 $feedbackid = required_param('feedbackid', PARAM_INT);
-$finalised = !!optional_param('submitbutton', 0, PARAM_TEXT);
+$finalised = (bool)optional_param('submitbutton', 0, PARAM_TEXT);
 $ajax = optional_param('ajax', 0, PARAM_INT);
 $remove = !!optional_param('removefeedbackbutton', 0, PARAM_TEXT);
 $confirm = optional_param('confirm', 0, PARAM_INT);

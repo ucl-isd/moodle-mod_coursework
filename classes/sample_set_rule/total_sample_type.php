@@ -115,7 +115,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
     }
 
-    function save_form_data($assessornumber = 0, &$order = 0) {
+    public function save_form_data($assessornumber = 0, &$order = 0) {
         global $DB;
 
         $totalcheckbox = optional_param("assessor_{$assessornumber}_sampletotal_checkbox", false, PARAM_INT);

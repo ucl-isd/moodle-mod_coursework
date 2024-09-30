@@ -37,7 +37,7 @@ class assessor extends base {
      * @throws \coding_exception
      * @return string
      */
-    protected function strategy_name() {
+    protected function strategy_name(): string {
         if (empty($this->get_coursework()->assessorallocationstrategy)) {
             return 'none';
         }

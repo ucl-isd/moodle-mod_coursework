@@ -1405,7 +1405,7 @@ class submission extends table_base implements \renderable {
     /*
     * Determines whether the current user is able to add a turnitin grademark to this submission
     */
-    function can_add_tii_grademark() {
+    public function can_add_tii_grademark() {
         $canadd = false;
 
         if ($this->get_coursework()->get_max_markers() == 1) {
@@ -1422,7 +1422,7 @@ class submission extends table_base implements \renderable {
      *
      * @return bool
      */
-    function any_editable_feedback_exists() {
+    public function any_editable_feedback_exists() {
 
         return count($this->get_assessor_feedbacks()) >= $this->max_number_of_feedbacks() && $this->editable_feedbacks_exist();
     }
@@ -1432,7 +1432,7 @@ class submission extends table_base implements \renderable {
      *
      * @return bool
      */
-    function has_valid_extension() {
+    public function has_valid_extension() {
         deadline_extension::fill_pool_coursework($this->courseworkid);
         $extension = deadline_extension::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$this->allocatableid, $this->allocatabletype]);
 
@@ -1444,7 +1444,7 @@ class submission extends table_base implements \renderable {
         return $validextension;
     }
 
-    function can_be_unfinalised() {
+    public function can_be_unfinalised() {
         return  ($this->get_state() == self::FINALISED);
     }
 
@@ -1455,7 +1455,7 @@ class submission extends table_base implements \renderable {
      * @return bool|false|mixed|stdClass
      * @throws \dml_exception
      */
-    function has_specific_assessor_feedback($assessorid) {
+    public function has_specific_assessor_feedback($assessorid) {
         global $DB;
 
         $feedback = $DB->get_record('coursework_feedbacks', ['submissionid' => $this->id,

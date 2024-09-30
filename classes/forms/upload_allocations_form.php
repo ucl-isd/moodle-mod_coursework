@@ -26,13 +26,13 @@ class upload_allocations_form extends moodleform {
 
     private $cmid;
 
-    function __construct($cmid) {
+    public function __construct($cmid) {
         $this->cmid = $cmid;
 
         parent::__construct();
     }
 
-    function definition() {
+    public function definition() {
         $mform =& $this->_form;
 
         $mform->addElement('filepicker', 'allocationsdata', get_string('allocationsfile', 'coursework'), null, [ 'accepted_types' => '*.csv']);
@@ -60,7 +60,7 @@ class upload_allocations_form extends moodleform {
         $this->add_action_buttons(true, get_string('uploadallocations', 'coursework'));
     }
 
-    function display() {
+    public function display() {
         return $this->_form->toHtml();
     }
 

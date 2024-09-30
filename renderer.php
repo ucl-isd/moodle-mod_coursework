@@ -36,7 +36,7 @@ global $CFG, $OUTPUT;
 foreach (scandir($CFG->dirroot . '/mod/coursework/renderers') as $filename) {
     $path = $CFG->dirroot . '/mod/coursework/renderers' . '/' . $filename;
     if (is_file($path)) {
-        require($path);
+        require_once($path);
     }
 }
 

@@ -334,11 +334,7 @@ class behat_mod_coursework extends behat_base {
         }
 
         if ($text) {
-            if ($exacttext) {
-                $xpath .= "[contains(., '{$text}')]";
-            } else {
-                $xpath .= "[contains(., '{$text}')]";
-            }
+            $xpath .= "[contains(., '{$text}')]";
         }
 
         return $xpath;
@@ -2017,7 +2013,8 @@ class behat_mod_coursework extends behat_base {
     public function i_should_see_the_other_teachers_grade_in_the_form_on_the_page() {
         $commentfield = $this->find('css', '#feedback_grade');
         $expectedvalue = 58;
-        if ($commentfield->getValue() != $expectedvalue) {
+        $text = $commentfield->getValue();
+        if ($text != $expectedvalue) {
             throw new ExpectationException("Expected final grade $expectedvalue got $text", $this->getSession());
         }
     }

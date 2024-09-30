@@ -253,7 +253,7 @@ class mod_coursework_mod_form extends moodleform_mod {
      * Get data from the form and manipulate it
      * @return bool|object
      */
-    function get_data() {
+    public function get_data() {
         global $CFG;
         $data = parent::get_data();
 
