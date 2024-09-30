@@ -2496,7 +2496,7 @@ class behat_mod_coursework extends behat_base {
      * @param bool $ignoreparams
      */
     public function i_should_be_on_the_page($pagename, $ignoreparams = false) {
-        $ignoreparams = !!$ignoreparams;
+        $ignoreparams = (bool)$ignoreparams;
 
         if ($this->running_javascript()) {
             $this->wait_for_seconds(10);

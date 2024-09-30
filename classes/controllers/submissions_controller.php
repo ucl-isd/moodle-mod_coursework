@@ -382,7 +382,7 @@ class submissions_controller extends controller_base {
      * @throws \coding_exception
      */
     private function terms_were_agreed_to() {
-        return !!optional_param('termsagreed', false, PARAM_INT);
+        return (bool)optional_param('termsagreed', 0, PARAM_INT);
     }
 
     /**
