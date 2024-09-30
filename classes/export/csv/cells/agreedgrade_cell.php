@@ -72,13 +72,13 @@ class agreedgrade_cell extends cell_base {
         return $strings;
     }
 
-    public function validate_cell($value, $submissionid, $stageidentifier='', $uploadedgradecells  = []) {
+    public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells  = []) {
 
         global $DB, $PAGE, $USER;
 
-        $stageidentifier = 'final_agreed_1';
+        $stageident = 'final_agreed_1';
         $agreedgradecap = ['mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade',
-                                     'mod/coursework:addallocatedagreedgrade', 'mod/coursework:editallocatedagreedgrade'];
+            'mod/coursework:addallocatedagreedgrade', 'mod/coursework:editallocatedagreedgrade'];
 
         if (empty($value)) {
             return true;
@@ -172,7 +172,7 @@ class agreedgrade_cell extends cell_base {
             // Has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
             $feedbackparams = [
                 'submissionid' => $submission->id,
-                'stage_identifier' => $stageidentifier,
+                'stage_identifier' => $stageident,
             ];
 
             $feedback = feedback::find($feedbackparams);
@@ -185,7 +185,7 @@ class agreedgrade_cell extends cell_base {
                 $feedbackparams = [
                     'submissionid' => $submissionid,
                     'assessorid' => $USER->id,
-                    'stage_identifier' => $stageidentifier,
+                    'stage_identifier' => $stageident,
                 ];
                 $newfeedback = feedback::build($feedbackparams);
 

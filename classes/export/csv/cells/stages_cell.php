@@ -49,11 +49,11 @@ class stages_cell extends cell_base {
         $gradedata = [];
         // go through each stage and get a grade, if grade not present then put  a placeholder
         for ($i = 1; $i <= $this->stages; $i++) {
-            $stageidentifier = 'assessor_'.$i;
-            $grade = $submission->get_assessor_feedback_by_stage($stageidentifier);
+            $stageident = 'assessor_'.$i;
+            $grade = $submission->get_assessor_feedback_by_stage($stageident);
 
             if ($this->coursework->allocation_enabled()) {
-                $allocation = $submission->get_assessor_allocation_by_stage($stageidentifier);
+                $allocation = $submission->get_assessor_allocation_by_stage($stageident);
                 if ($allocation) {
                     $gradedata[] = $this->get_assessor_name($allocation->assessorid);
                     $gradedata[] = $this->get_assessor_username($allocation->assessorid);

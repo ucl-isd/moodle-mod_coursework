@@ -253,7 +253,7 @@ class controller_base {
      * @throws \coding_exception
      */
     protected function cancel_button_was_pressed() {
-        return !!optional_param('cancel', false, PARAM_ALPHA);
+        return (bool)optional_param('cancel', false, PARAM_ALPHA);
     }
 
     /**

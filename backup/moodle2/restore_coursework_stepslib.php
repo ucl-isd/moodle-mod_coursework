@@ -24,15 +24,6 @@ defined('MOODLE_INTERNAL') || die();
 
 class restore_coursework_activity_structure_step extends restore_activity_structure_step {
 
-    // Just a handy way to spit out debugging info while in the bowels of restore
-    static function cheaplog($thing, $append = true) {
-        if ($append) {
-            $append = FILE_APPEND;
-        }
-
-        file_put_contents('/tmp/cheap.log', print_r($thing, true)."\n---------------\n", $append);
-    }
-
     /**
      * Define the structure of the restore workflow.
      *
