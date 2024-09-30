@@ -48,10 +48,11 @@ class cron {
      * @return bool
      */
     public static function run() {
-        echo "Starting coursework cron functions...\n";
+        if (!self::in_test_environment()) {
+            echo "Starting coursework cron functions...\n";
+        }
         self::finalise_any_submissions_where_the_deadline_has_passed();
         self::send_reminders_to_students();
-        // self::send_first_reminders_to_admins(); #90211934
         self::autorelease_feedbacks_where_the_release_date_has_passed();
         return true;
     }
@@ -149,7 +150,7 @@ class cron {
 
         self::send_email_reminders_to_students($userswhoneedreminding, $counts, self::EMAIL_TYPE_USER);
 
-        if (self::in_test_environment()) {
+        if (self::in_test_environment() && !defined('PHPUNIT_TEST')) {
             mtrace("cron coursework, sent {$counts['emails']} emails to {$counts['users']} users");
         }
         return true;
@@ -262,7 +263,7 @@ class cron {
 
         $numberofcourseworks = count($courseworks);
 
-        if (self::in_test_environment()) {
+        if (self::in_test_environment() && !defined('PHPUNIT_TEST')) {
             mtrace("cron coursework, sent {$emailssent} reminder emails to the teachers and managers of {$numberofcourseworks}");
         }
 
@@ -345,8 +346,9 @@ class cron {
      * Updates all DB columns where the deadline was before now, so that finalised = 1
      */
     private static function finalise_any_submissions_where_the_deadline_has_passed() {
-
-        echo 'Finalising submissions for courseworks where the deadlines have passed...';
+        if (!self::in_test_environment()) {
+            echo 'Finalising submissions for courseworks where the deadlines have passed...';
+        }
 
         $submissions = submission::unfinalised_past_deadline();
         foreach ($submissions as $submission) {
@@ -382,9 +384,10 @@ class cron {
      */
 
     private static function autorelease_feedbacks_where_the_release_date_has_passed() {
-
         global $DB;
-        echo 'Auto releasing feedbacks for courseworks where the release date have passed...';
+        if (!self::in_test_environment()) {
+            echo 'Auto releasing feedbacks for courseworks where the release date have passed...';
+        }
 
         $sql = "SELECT *
                  FROM {coursework} c

@@ -20,8 +20,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-global $CFG;
-
 /**
  * Class mod_coursework_allocation_strategy_percentages_test
  * @property mixed otherteacher

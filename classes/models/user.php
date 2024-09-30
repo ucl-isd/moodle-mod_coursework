@@ -48,7 +48,7 @@ class user extends table_base implements allocatable, moderatable {
     protected static $tablename = 'user';
 
     /**
-     * @param bool $data
+     * @param array|object|bool $data
      */
     public function __construct($data = false) {
         $allnames = \core_user\fields::get_name_fields();
@@ -201,7 +201,7 @@ class user extends table_base implements allocatable, moderatable {
 
     /**
      * @param $id
-     * @return mixed
+     * @return self
      */
     public static function get_object($id) {
         if (!isset(self::$pool['id'][$id])) {

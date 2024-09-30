@@ -158,9 +158,8 @@ function coursework_add_instance($formdata) {
     $formdata->timecreated = time();
 
     // You may have to add extra stuff in here.
-
-    // We have to check to see if this coursework has a deadline ifm it doesn't we need to set the
-    // Deadline to zero
+    // We have to check to see if this coursework has a deadline.
+    // If it doesn't we need to set the deadline to zero.
 
     $formdata->deadline = empty($formdata->deadline) ? 0 : $formdata->deadline;
     $subnotify = '';
@@ -173,7 +172,7 @@ function coursework_add_instance($formdata) {
     }
     $formdata->submissionnotification = $subnotify;
 
-    // If blindmarking is set we will rename files
+    // If blind marking is set we will rename files.
     if ($formdata->blindmarking == 1) {
 
         $formdata->renamefiles = 1;

@@ -997,7 +997,7 @@ class submission extends table_base implements \renderable {
         if (coursework_grade_item_update($this->get_coursework(), $studentgradestoupdate) == GRADE_UPDATE_OK) {
             if (!$this->is_published()) {
                 $this->update_attribute('firstpublished', time());
-                // send feedback released notification only when first published
+                // Send feedback released notification only when first published.
                 $mailer = new mailer($this->get_coursework());
                 $mailer->send_feedback_notification($this);
             }
@@ -1164,17 +1164,20 @@ class submission extends table_base implements \renderable {
     }
 
     /**
-     * @return array|bool
+     * @return array
      * @throws \coding_exception
      */
-    public function students_for_gradebook() {
+    public function students_for_gradebook(): array {
         if ($this->get_coursework()->is_configured_to_have_group_submissions()) {
             $students = groups_get_members($this->allocatableid);
             return $students;
         } else {
-            $students = [$this->get_allocatable()->id() => $this->get_allocatable()];
-            return $students;
+            $allocatable = $this->get_allocatable();
+            if ($allocatable) {
+                return [$allocatable->id() => $allocatable];
+            }
         }
+        return [];
     }
 
     /**

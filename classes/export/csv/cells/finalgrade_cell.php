@@ -35,8 +35,9 @@ class finalgrade_cell extends cell_base {
      * @return null|string
      */
     public function get_cell($submission, $student, $stageidentifier) {
-
-        return $submission->get_final_grade() == false || $submission->editable_final_feedback_exist() ? '' : $this->get_actual_grade($submission->get_final_grade());
+        return $submission->get_final_grade() == false || $submission->editable_final_feedback_exist()
+            ? ''
+            : $this->get_actual_grade($submission->get_final_grade());
 
     }
 
