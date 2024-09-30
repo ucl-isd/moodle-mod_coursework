@@ -300,17 +300,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     *
-     *
-     * @param $rolename
-     * @return string
-     */
-    private function make_role_name_into_variable_name($rolename) {
-        $rolename = str_replace('other ', 'other_', $rolename);
-        return str_replace(' ', '', $rolename);
-    }
-
-    /**
      * Returns an xpath string to find a tag that has a class and contains some text.
      *
      * @param string $tagname div td
@@ -1897,40 +1886,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^(I|the ([\w ]+)) (?:has|have) graded the submission as assessor (\d+)$/
-     *
-     * @param $i
-     * @param string $rolename
-     * @param int $assessornumber
-     * @throws coding_exception
-     */
-    public function the_other_teacher_has_graded_the_submission($i, $rolename = '', $assessornumber = 1) {
-
-        if ($i == 'I') {
-            $rolename = 'teacher';
-        } else {
-            // other editing teacher => other_editingteacher
-            $rolename = $this->make_role_name_into_variable_name($rolename);
-        }
-
-        if (empty($this->$rolename)) {
-            throw new coding_exception('no ' . $rolename . ' user was found');
-        }
-
-        /**
-         * @var $generator mod_coursework_generator
-         */
-        $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
-
-        $feedback = new stdClass();
-        $feedback->submissionid = $this->submission->id;
-        $feedback->assessorid = $this->$rolename->id;
-        $feedback->stage_identifier = 'assessor_'.$assessornumber;
-        $feedback->grade = 50;
-        $generator->create_feedback($feedback);
-    }
-
-    /**
      * @Then /^I should( not)? see the other teacher\'s grade as assessor (\d+)$/
      * @param bool $negate
      * @param int $assessornumber
@@ -2756,8 +2711,7 @@ class behat_mod_coursework extends behat_base {
      * @throws coding_exception
      */
     public function i_am_logged_in_as_a($rolename) {
-
-        $rolename = $this->make_role_name_into_variable_name($rolename);
+        $rolename = str_replace(' ', '', $rolename);
 
         if (empty($this->$rolename)) {
             $this->$rolename = $this->create_user($rolename);
@@ -2826,8 +2780,13 @@ class behat_mod_coursework extends behat_base {
         $user = \mod_coursework\models\user::find($user);
         $user->password = 'user' . $this->usersuffix;
 
-        $roleid = $DB->get_field('role', 'id', ['shortname' => $rolename], MUST_EXIST);
+        // If the role name starts with 'other_' here (e.g. 'other_teacher') we need to remove it.
+        $rolename = str_replace('other_', '', $rolename);
+        $roleid = $DB->get_field('role', 'id', ['shortname' => $rolename]);
 
+        if (!$roleid) {
+            throw new coding_exception("Cannot find role shortname '$rolename' in role table");
+        }
         if (empty($this->course)) {
             throw new coding_exception('Must have a course to enrol the user onto');
         }
