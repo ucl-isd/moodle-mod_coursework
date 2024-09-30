@@ -137,7 +137,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
     }
 
-    static function compare_key($a, $b) {
+    private static function compare_key($a, $b) {
         if ($a === $b) {
             return 0;
         }

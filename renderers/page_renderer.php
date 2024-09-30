@@ -1184,7 +1184,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @return string
      * @throws coding_exception
      */
-    function csv_upload($uploadform, $csvtype) {
+    public function csv_upload($uploadform, $csvtype) {
 
         $html = '';
 
@@ -1212,7 +1212,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @return string
      * @throws coding_exception
      */
-    function process_csv_upload($processingresults, $csvcontent, $csvtype) {
+    public function process_csv_upload($processingresults, $csvcontent, $csvtype) {
 
         $html = '';
 
@@ -1254,7 +1254,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
     }
 
-    function feedback_upload($form) {
+    public function feedback_upload($form) {
 
         $html = '';
 
@@ -1273,7 +1273,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
     }
 
-    function process_feedback_upload($processingresults) {
+    public function process_feedback_upload($processingresults) {
         $title = get_string('feedbackuploadresults', 'mod_coursework');
 
         $this->page->set_pagelayout('standard');
@@ -1316,7 +1316,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      *
      * @return string
      */
-    function view_course_index($courseid) {
+    public function view_course_index($courseid) {
         global $CFG, $DB, $USER;
         $o = '';
         $course = $DB->get_record('course', ['id' => $courseid]);
