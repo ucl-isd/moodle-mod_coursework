@@ -1041,7 +1041,8 @@ class coursework extends table_base {
     public function set_assessor_allocation_strategy($strategyname) {
 
         if ($this->allocation_strategy_is_valid($strategyname)) {
-            return $this->update_attribute('assessorallocationstrategy', $strategyname);
+            $this->update_attribute('assessorallocationstrategy', $strategyname);
+            return;
         }
         return false;
     }
@@ -1053,7 +1054,8 @@ class coursework extends table_base {
     public function set_moderator_allocation_strategy($strategyname) {
 
         if ($this->allocation_strategy_is_valid($strategyname)) {
-            return $this->update_attribute('moderatorallocationstrategy', $strategyname);
+            $this->update_attribute('moderatorallocationstrategy', $strategyname);
+            return;
         }
         return false;
     }

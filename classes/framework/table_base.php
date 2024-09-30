@@ -424,7 +424,7 @@ abstract class table_base {
      * @param bool $sneakily If true, do not update the timemodified stamp. Useful for cron.
      * @return void
      */
-    public function update_attribute($name, $value, $sneakily = false) {
+    public function update_attribute($name, $value, $sneakily = false): void {
         $this->apply_column_value_to_self($name, $value);
         $this->save($sneakily);
     }
