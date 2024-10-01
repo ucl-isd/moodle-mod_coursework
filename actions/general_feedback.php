@@ -16,7 +16,7 @@
 
 /**
  * @package    mod_coursework
- * @copyright  2011 University of London computer Centre {@link ulcc.ac.uk}
+ * @copyright  2011 University of London computer Centre {@link http://ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

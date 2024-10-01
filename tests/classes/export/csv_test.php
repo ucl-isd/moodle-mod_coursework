@@ -18,7 +18,7 @@
  * Unit tests for the csv class
  *
  * @package    mod_coursework
- * @copyright  2012 University of London Computer Centre {@link ulcc.ac.uk}
+ * @copyright  2012 University of London Computer Centre {@link http://ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

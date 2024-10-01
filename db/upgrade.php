@@ -25,7 +25,7 @@
  * here will all be database-neutral, using the functions defined in DLL libraries.
  *
  * @package    mod_coursework
- * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
+ * @copyright  2011 University of London Computer Centre {@link http://ulcc.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
