@@ -18,7 +18,7 @@
  * File for a sampling rule that will include X students from between an upper and lower limit.
  *
  * @package    mod_coursework
- * @copyright  2015 University of London Computer Centre {@link ulcc.ac.uk}
+ * @copyright  2015 University of London Computer Centre {@link https://www.cosector.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

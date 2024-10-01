@@ -20,7 +20,7 @@ namespace mod_coursework\allocation\strategy;
  * Class file for the Group assessor allocation strategy.
  *
  * @package    mod_coursework
- * @copyright  2018 University of London Computer Centre {@link ulcc.ac.uk}
+ * @copyright  2018 University of London Computer Centre {@link https://www.cosector.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

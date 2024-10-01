@@ -17,7 +17,7 @@
 /**
  *
  * @package   mod_coursework
- * @copyright  2012 ULCC {@link http://ulcc.ac.uk}
+ * @copyright  2012 ULCC {@link https://www.cosector.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

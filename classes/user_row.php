@@ -20,7 +20,7 @@ namespace mod_coursework;
  * Class file for the renderable object that makes a single row int he marker allocation table.
  *
  * @package    mod_coursework
- * @copyright  2012 University of London Computer Centre {@link ulcc.ac.uk}
+ * @copyright  2012 University of London Computer Centre {@link https://www.cosector.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 use mod_coursework\allocation\allocatable;

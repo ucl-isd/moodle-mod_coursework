@@ -20,7 +20,7 @@ use mod_coursework\models;
 
 /**
  * @package    mod_coursework
- * @copyright  2016 University of London Computer Centre {@link ulcc.ac.uk}
+ * @copyright  2016 University of London Computer Centre {@link https://www.cosector.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

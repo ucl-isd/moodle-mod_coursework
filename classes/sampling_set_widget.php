@@ -21,7 +21,7 @@ namespace mod_coursework;
  * etc can be allocated manually or automatically.
  *
  * @package    mod_coursework
- * @copyright  2012 University of London Computer Centre {@link ulcc.ac.uk}
+ * @copyright  2012 University of London Computer Centre {@link https://www.cosector.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

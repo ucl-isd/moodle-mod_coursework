@@ -18,7 +18,7 @@
  * Renderer for the coursework module.
  *
  * @package    mod_coursework
- * @copyright  2011 University of London Computer Centre {@link ulcc.ac.uk}
+ * @copyright  2011 University of London Computer Centre {@link https://www.cosector.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
