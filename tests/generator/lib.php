@@ -19,7 +19,7 @@
  *
  * @package    mod_coursework
  * @category   phpunit
- * @copyright  2012 University of London Computer Centre {@link http://ulcc.ac.uk}
+ * @copyright  2012 University of London Computer Centre {@link https://www.cosector.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

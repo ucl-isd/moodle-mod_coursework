@@ -19,7 +19,7 @@
  *
  * @package    mod_coursework
  * @category   phpunit
- * @copyright  2011 University of London Computer Centre {@link http://ulcc.ac.uk}
+ * @copyright  2011 University of London Computer Centre {@link https://www.cosector.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -36,7 +36,7 @@ require_once($CFG->dirroot . '/mod/coursework/lib.php');
  *
  * @package    mod_coursework
  * @category   phpunit
- * @copyright  2012 ULCC {@link http://ulcc.ac.uk}
+ * @copyright  2012 ULCC {@link https://www.cosector.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class generator_test extends \advanced_testcase {
