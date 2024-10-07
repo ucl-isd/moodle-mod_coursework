@@ -152,7 +152,7 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="assessorid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="manual" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If set to 1, this is an allocation expressly made by an admin, so we might want the auto-allocations to work around it."/>
+        <FIELD NAME="ismanual" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If set to 1, this is an allocation expressly made by an admin, so we might want the auto-allocations to work around it."/>
         <FIELD NAME="moderator" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Is this amoderator allocation?"/>
         <FIELD NAME="timelocked" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="When someone starts to grade a piece of work, we want to lock their allocation so that automatic re-allocations will not remove it. This field holds a timestamp, which will prevent re-allocation if it's recent enough."/>
         <FIELD NAME="stage_identifier" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>

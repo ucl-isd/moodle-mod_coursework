@@ -180,7 +180,7 @@ abstract class base {
      */
     public function make_manual_allocation($allocatable, $teacher) {
         $allocation = $this->prepare_allocation_to_save($allocatable, $teacher);
-        $allocation->manual = 1;
+        $allocation->ismanual = 1;
         $allocation->save();
 
         allocation::fill_pool_coursework($this->get_coursework()->id());
@@ -280,7 +280,7 @@ abstract class base {
             'allocatableid-allocatabletype-stage_identifier',
             [$allocatable->id(), $allocatable->type(), $this->identifier()]
         );
-        if ($record && $record->manual == 1) {
+        if ($record && $record->ismanual == 1) {
             return true;
         }
         return false;

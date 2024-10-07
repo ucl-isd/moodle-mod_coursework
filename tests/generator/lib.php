@@ -139,7 +139,7 @@ class mod_coursework_generator extends testing_module_generator {
                 throw new coding_exception('Coursework generator needs an assessorid for a new allocation');
             }
         }
-        $allocation->manual = !empty($allocation->manual) ? 1 : 0;
+        $allocation->ismanual = !empty($allocation->ismanual) ? 1 : 0;
         if (empty($allocation->allocatabletype)) {
             $allocation->allocatabletype = 'user';
         }
