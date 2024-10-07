@@ -109,7 +109,7 @@ class auto_allocator {
             SELECT *
             FROM {coursework_allocation_pairs} p
             WHERE courseworkid = ?
-            AND p.manual = 0
+            AND p.ismanual = 0
             AND NOT EXISTS (
                 SELECT 1
                 FROM {coursework_submissions} s

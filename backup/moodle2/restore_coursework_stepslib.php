@@ -169,22 +169,32 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
     }
 
     protected function process_coursework_allocation_pair($data) {
+        global $DB;
         $data = (object)$data;
         $oldid = $data->id;
 
         $data->courseworkid = $this->get_new_parentid('coursework');
         $data->assessorid = $this->get_mappingid('user', $data->assessorid);
+
+        // The "manual" field was renamed to "ismanual" - old backup may contain old name.
+        if (isset($data->manual)) {
+            $data->ismanual = $data->manual;
+            unset($data->manual);
+        }
+
         $this->updatedate(['timelocked'], $data);
 
         $this->fixallocatable($data);
 
-        $this->set_defaults(['assessorid' => 0,
-                                  'manual' => 0,
-                                  'moderator' => 0,
-                                  'timelocked' => time(),
-                                  'stage_identifier' => ''], $data);
-
-        global $DB;
+        $this->set_defaults([
+            'assessorid' => 0,
+            'ismanual' => 0,
+            'moderator' => 0,
+            'timelocked' => time(),
+            'stage_identifier' => '',
+            ],
+        $data
+        );
         $newitemid = $DB->insert_record('coursework_allocation_pairs', $data);
     }
 

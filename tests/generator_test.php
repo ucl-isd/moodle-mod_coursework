@@ -125,7 +125,7 @@ final class generator_test extends \advanced_testcase {
         $this->assertEquals(2, $allocation->assessorid);
         $this->assertEquals(5, $allocation->allocatableid);
         $this->assertEquals(65, $allocation->courseworkid);
-        $this->assertEquals(0, $allocation->manual);
+        $this->assertEquals(0, $allocation->ismanual);
 
     }
 

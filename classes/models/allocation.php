@@ -71,7 +71,7 @@ class allocation extends table_base {
     /**
      * @var int
      */
-    public $manual;
+    public $ismanual;
 
     /**
      * @var int UNIX timestamp for the point at which this started to be marked. If it's within a set timeframe, we prevent
@@ -87,7 +87,7 @@ class allocation extends table_base {
         'courseworkid',
         'assessorid',
         'studentid',
-        'manual',
+        'ismanual',
         'timelocked',
     ];
 
@@ -121,7 +121,7 @@ class allocation extends table_base {
      * @return bool
      */
     public function is_pinned(): bool {
-        return (bool)$this->manual;
+        return (bool)$this->ismanual;
     }
 
     /**
@@ -135,8 +135,8 @@ class allocation extends table_base {
      *
      */
     public function pin() {
-        if (empty($this->manual)) {
-            $this->update_attribute('manual', 1);
+        if (empty($this->ismanual)) {
+            $this->update_attribute('ismanual', 1);
         }
     }
 
@@ -144,8 +144,8 @@ class allocation extends table_base {
      *
      */
     public function unpin() {
-        if ($this->manual) {
-            $this->update_attribute('manual', 0);
+        if ($this->ismanual) {
+            $this->update_attribute('ismanual', 0);
         }
     }
 

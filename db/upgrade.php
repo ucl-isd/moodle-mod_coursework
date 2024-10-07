@@ -2524,6 +2524,20 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2020111602, 'coursework');
     }
 
+    if ($oldversion < 2024100700) {
+        // CTP-3869 rename field manual on table coursework_allocation_pairs to ismanual.
+        $table = new xmldb_table('coursework_allocation_pairs');
+        $field = new xmldb_field(
+            'manual', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0, 'assessorid'
+        );
+
+        // Launch rename field sourceid.
+        $dbman->rename_field($table, $field, 'ismanual');
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2024100700, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }
