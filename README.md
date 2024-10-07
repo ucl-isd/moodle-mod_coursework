@@ -5,7 +5,7 @@ Copyright University of London.
 Any queries, please email coursework@london.ac.uk
 
 The Coursework Activity has been written to provide a way to receive coursework and have it marked without teachers knowing which student the work belongs to. Multiple markers are also supported where a final grade can be agreed based on several options. It does not replace the standard assignment activity and is intended to work alongside it.
-Special thanks to Royal Veterinary College and @aspark21, Plymouth University, London School of Tropical Medicine and University of London International Programmes for funding parts of the development and documentation. 
+Special thanks to Royal Veterinary College and [@aspark21](https://github.com/aspark21), Plymouth University, London School of Tropical Medicine and University of London International Programmes for funding parts of the development and documentation. 
 
 Current Coursework plugin includes following features as well as features added in Releases below:
 
@@ -41,6 +41,17 @@ Current Coursework plugin includes following features as well as features added 
 
 Releases 
 =================
+
+**October 2024** - Maintenance for Moodle 4.4/4.5 by [University College London](https://blogs.ucl.ac.uk/digital-education/)
+- uses TinyMCE 6 instead of old TinyMCE or Atto
+- brought up to Moodle Coding Standards
+- PHPUnit and Behat tests working in moodle-plugin-ci on this repository
+- permissions checked at activity context level allowing marker roles to be given at activity rather than course level
+
+**November 2023** - Maintenance by [Catalyst NZ](https://github.com/catalyst)
+- Moodle 3.11 compatibility
+- Postgres compatibility
+- bug fixes
 
 **November 2019** - Features funded by UoLIA
 
@@ -164,51 +175,25 @@ Documentation
 
 The documentation can be found in https://docs.moodle.org/31/en/Coursework_module
 
-Installation
-============
-Place the plugin under Moodle root/mod folder. 
-This version of Coursework does not require local/ulcc_framework
-
-Reliability
+Compatibility
 ===========
 
-University of London tests its developments on its own systems that run on a standard LAMP stack. Any issues resulting from running on other infrastructure is not supported. 
+This plugin should now work across mysql & postgres environments.
+
 Bug Reports:
-Please report bugs using the GitHub issues tab. When reporting a bug please outline the exact steps you took that resulted in the bug so it is easier to identify and potentially fix. 
+Please report bugs using the GitHub issues tab. 
+When reporting a bug please outline the exact steps you took that resulted in the bug so it is easier to identify and potentially fix. 
 
 Defining roles
 ===============
 
-Coursework allows institutions to define their permissions unique to their institution. If you wish for help setting these up please contact moodle@rvc.ac.uk 
+Coursework allows institutions to define their permissions unique to their institution. 
+These roles can now be allocated at activity level.
 
 Configuration
 =============
 
 Be aware that you will need to prevent teachers from viewing logs in your courses/site in order for the anonymity to be effective.
 
-Running Behat tests
-=================
-
-Follow the steps to install both PHPUnit and Behat on your Moodle instance:
-
-http://docs.moodle.org/dev/PHPUnit#Installation_of_PHPUnit_via_Composer
-http://docs.moodle.org/dev/Acceptance_testing#Installation
-
-PHPUnit
-
-* In PHPStorm, go to settings --> PHP --> PHPUnit
-* Make a new configuration if there's not one there already
-* Choose 'use custom loader'
-* Set the path to the loader to be "/path/to/your/docroot/vendor/autoload.php"
-* Set a keyboard shortcut for the Main menu/Navigate/Test action (Settings --> keymap)
-* Go to the /tests folder, open the generator_test.php file, place the cursor inside the class and press the shortcut.
-
-Behat
-
-* In PHPStorm, go to Settings --> PHP --> Behat
-* Make a new configuration if there's not one there already
-* Set the path to the Behat directory to be "/path/to/your/docroot/vendor/behat/behat"
-* Set the deafult configuration file to be "/path/to/your/behat_moodledata/behat/behat.yml"
-* Go to the /tests/behat folder, open the factory.feature file, place the cursor inside one of the scenarios and press the shortcut.
 
 
