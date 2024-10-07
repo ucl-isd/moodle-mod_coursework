@@ -87,14 +87,14 @@ class warnings {
                                  groupings.groupingid,
                                  u.firstname,
                                  u.lastname
-                           FROM {groups} groups
+                           FROM {groups} g
                      INNER JOIN {groups_members} gm
-                             ON groups.id = gm.groupid
+                             ON g.id = gm.groupid
                      INNER JOIN {groupings_groups} groupings
-                             ON groups.id=groupings.groupid
+                             ON g.id=groupings.groupid
                      INNER JOIN {user} u
                              ON u.id = gm.userid
-                          WHERE groups.courseid = :courseid
+                          WHERE g.courseid = :courseid
                             AND groupings.groupingid = :groupingid
                        GROUP BY gm.userid, groupings.groupingid, u.firstname, u.lastname)a
                           WHERE noofgroups > 1";
@@ -107,12 +107,12 @@ class warnings {
                                    count(gm.userid) as noofgroups,
                                    u.firstname,
                                    u.lastname
-                              FROM {groups} groups
+                              FROM {groups} g
                         INNER JOIN {groups_members} gm
-                                ON gm.groupid = groups.id
+                                ON gm.groupid = g.id
                         INNER JOIN {user} u
                                 ON u.id = gm.userid
-                             WHERE groups.courseid = :courseid
+                             WHERE g.courseid = :courseid
                           GROUP BY gm.userid, u.firstname, u.lastname) a
                     WHERE noofgroups > 1";
 
@@ -132,13 +132,13 @@ class warnings {
                     // Get group ids of these students
                     if ($this->coursework->grouping_id) {
 
-                        $sql = "SELECT groups.id,groups.name
-                               FROM {groups} groups
+                        $sql = "SELECT g.id, g.name
+                               FROM {groups} g
                          INNER JOIN {groupings_groups} groupings
-                                 ON groups.id = groupings.groupid
+                                 ON g.id = groupings.groupid
                          INNER JOIN {groups_members} gm
-                                 ON gm.groupid = groups.id
-                              WHERE groups.courseid = :courseid
+                                 ON gm.groupid = g.id
+                              WHERE g.courseid = :courseid
                                 AND gm.userid = :userid
                                 AND groupings.groupingid =:grouping_id";
 
@@ -148,11 +148,11 @@ class warnings {
                             'userid' => $student->userid];
                     } else {
 
-                        $sql = "SELECT groups.id,groups.name
-                                FROM {groups} groups
+                        $sql = "SELECT g.id, g.name
+                                FROM {groups} g
                           INNER JOIN {groups_members} gm
-                                  ON gm.groupid = groups.id
-                               WHERE groups.courseid = :courseid
+                                  ON gm.groupid = g.id
+                               WHERE g.courseid = :courseid
 		                         AND gm.userid = :userid";
 
                         $params = [

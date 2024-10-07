@@ -1708,14 +1708,14 @@ class coursework extends table_base {
 
         if ($this->grouping_id) {
                 $sql = "
-                SELECT groups.*
-                  FROM {groups} groups
+                SELECT g.*
+                  FROM {groups} g
             INNER JOIN {groupings_groups} groupings
-                    ON groups.id = groupings.groupid
+                    ON g.id = groupings.groupid
             INNER JOIN {groups_members} gm
-                    ON gm.groupid = groups.id
+                    ON gm.groupid = g.id
                  WHERE gm.userid = :userid
-                   AND groups.courseid = :courseid
+                   AND g.courseid = :courseid
                    AND groupings.groupingid = :grouping_id
 
                  LIMIT 1
@@ -1726,20 +1726,18 @@ class coursework extends table_base {
                 'userid' => $student->id()];
         } else {
             $sql = "
-                SELECT groups.*
-                  FROM {groups} groups
+                SELECT g.*
+                  FROM {groups} g
             INNER JOIN {groups_members} gm
-                    ON gm.groupid = groups.id
+                    ON gm.groupid = g.id
                  WHERE gm.userid = :userid
-                   AND groups.courseid = :courseid
-                 LIMIT 1
-            ";
+                   AND g.courseid = :courseid
+                 LIMIT 1";
             $params = [
                 'userid' => $student->id(),
                 'courseid' => $this->get_course()->id,
             ];
         }
-
         $group = $DB->get_record_sql($sql, $params);
         return group::find($group);
 
@@ -2266,11 +2264,11 @@ class coursework extends table_base {
         if ($this->is_configured_to_have_group_submissions()) {
             if ($this->grouping_id) {
                 $sql = "
-                SELECT groups.*
-                  FROM {groups} groups
+                SELECT g.*
+                  FROM {groups} g
             INNER JOIN {groupings_groups} groupings
-                    ON groups.id = groupings.groupid
-                 WHERE groups.courseid = :courseid
+                    ON g.id = groupings.groupid
+                 WHERE g.courseid = :courseid
                    AND groupings.groupingid = :grouping_id
             ";
                 $params = [
@@ -2278,11 +2276,7 @@ class coursework extends table_base {
                     'courseid' => $this->get_course()->id,
                 ];
             } else {
-                $sql = "
-                SELECT groups.*
-                  FROM {groups} groups
-                 WHERE groups.courseid = :courseid
-            ";
+                $sql = "SELECT * FROM {groups} WHERE courseid = :courseid";
                 $params = [
                     'courseid' => $this->get_course()->id,
                 ];

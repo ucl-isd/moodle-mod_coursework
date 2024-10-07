@@ -371,8 +371,9 @@ function coursework_grade_item_update($coursework, $grades = null) {
         throw new invalid_parameter_exception("Invalid type '$paramtype' for coursework");
     }
 
-    if (get_class($coursework) != 'mod_coursework\models\coursework') {
-        // On activity rename, core will pass in stdClass object here, not a coursework.
+    if (get_class($coursework) == 'stdClass') {
+        // On activity rename, core will pass in stdClass object here.
+        // Otherwise expect coursework or coursework_groups_decorator to be passed.
         $coursework = \mod_coursework\models\coursework::find($coursework);
     }
 
