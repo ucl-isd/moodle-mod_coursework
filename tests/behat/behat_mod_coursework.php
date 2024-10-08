@@ -1496,7 +1496,7 @@ class behat_mod_coursework extends behat_base {
         $page = $this->get_page('coursework page');
 
         if (!$page->get_coursework_name($this->coursework->name)) {
-            throw new ExpectationException('Coursework title not seen', $this->getSession());
+            throw new ExpectationException("Coursework title '{$this->coursework->name}' not seen", $this->getSession());
         }
     }
 
