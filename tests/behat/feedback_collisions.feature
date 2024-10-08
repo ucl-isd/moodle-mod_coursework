@@ -33,7 +33,7 @@ Feature: Collisions: two people try to create feedback at the same time
     And I have an assessor feedback at grade 67
     And I visit the coursework page
     And I expand the coursework grading row
-    And I click on "New feedback" "link"
+    And I click on the only interactable link with title "New feedback"
     And I grade the submission as 56 using the ajax form
 
   @javascript
@@ -47,8 +47,7 @@ Feature: Collisions: two people try to create feedback at the same time
     And there is final feedback from the other teacher with grade 45
     And I expand the coursework grading row
     And I wait until the page is ready
-    And I wait "2" seconds
-    And I click on "New feedback" "link"
+    And I click on the only interactable link with title "New feedback"
     And I wait until the page is ready
     And I wait "2" seconds
     And I should see "Allocatable already has feedback for this stage"

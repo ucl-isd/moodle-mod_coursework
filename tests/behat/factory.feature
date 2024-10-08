@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_factory
 Feature: Testing that the factories for behat steps work. If any tests fail, fix this FIRST.
 
     As a developer maintaining the coursework module
@@ -11,7 +11,7 @@ Feature: Testing that the factories for behat steps work. If any tests fail, fix
     And I am logged in as a teacher
     And there is a coursework
     When I visit the coursework page
-    Then I should see the title of the coursework on the page
+    Then I should see "Coursework 1" in the "#page-header" "css_element"
 
   Scenario: the submission factory works properly and shows the file on the page
     Given there is a course
