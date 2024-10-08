@@ -24,13 +24,6 @@ namespace mod_coursework\models;
 
 class outstanding_marking {
 
-    private $dayinsecs;
-
-    public function __construct() {
-
-        $this->day_in_secs = 86400;
-    }
-
     /**
      * @param $cwkrecord
      * @param $userid

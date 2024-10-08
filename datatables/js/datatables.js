@@ -252,7 +252,7 @@ $( document ).ready(function() {
             }
             else {
                 $('<tr class = "submissionrowmultisub row_assessors">'+
-                    '<td class="assessors" colspan = "11"><table class="assessors" style="width:95%">' + $('#' + table_id).clone().html() + '</table></td>' +
+                    '<td class="assessors" colspan = "11"><table class="assessors assessors_expanded" style="width:95%">' + $('#' + table_id).clone().html() + '</table></td>' +
                     '</tr>').insertAfter($(tr));
             }
 
@@ -285,7 +285,7 @@ $( document ).ready(function() {
                         // row.child( format(row.data()) ).show();
                         row.child($(
                             '<table class="assessors" width="100%"><tr class = "submissionrowmultisub">'+
-                            '<td class="assessors" colspan = "11"><table class="assessors">' + $('#' + table_id).clone().html() + '</table></td>' +
+                            '<td class="assessors" colspan = "11"><table class="assessors assessors_expanded">' + $('#' + table_id).clone().html() + '</table></td>' +
                             '</tr></table>'
                         )).show();
                         tr.addClass('shown');

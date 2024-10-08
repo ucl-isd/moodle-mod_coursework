@@ -116,8 +116,14 @@ class feedback_controller extends controller_base {
         }
 
         $ability = new ability(user::find($USER), $this->coursework);
-        $ability->require_can('new', $teacherfeedback);
-
+        if (!$ability->can('new', $teacherfeedback)) {
+            if ($this->params['ajax']) {
+                echo json_encode(['success' => false, 'message' => $ability->get_last_message()]);
+                die();
+            } else {
+                throw new access_denied($this->coursework, $ability->get_last_message());
+            }
+        }
         $this->check_stage_permissions($this->params['stage_identifier']);
 
         $urlparams = [];
