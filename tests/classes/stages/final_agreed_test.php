@@ -58,7 +58,7 @@ final class final_agreed_test extends advanced_testcase {
         $student = $this->create_a_student();
         $this->create_a_submission_for_the_student();
         $this->create_a_teacher();
-        $this->create_an_assessor_feedback_for_the_submisison($this->teacher);
+        $this->create_an_assessor_feedback_for_the_submission($this->teacher);
 
         $this->assertFalse($stage->prerequisite_stages_have_feedback($student));
     }
@@ -72,8 +72,8 @@ final class final_agreed_test extends advanced_testcase {
         $this->create_a_submission_for_the_student();
         $this->create_a_teacher();
         $this->create_another_teacher();
-        $this->create_an_assessor_feedback_for_the_submisison($this->teacher);
-        $this->create_an_assessor_feedback_for_the_submisison($this->otherteacher);
+        $this->create_an_assessor_feedback_for_the_submission($this->teacher);
+        $this->create_an_assessor_feedback_for_the_submission($this->otherteacher);
 
         // Need to student to be in the sample.
 

@@ -252,7 +252,7 @@ trait factory_mixin {
      * @return feedback
      * @throws coding_exception
      */
-    public function create_a_final_feedback_for_the_submisison() {
+    public function create_a_final_feedback_for_the_submission() {
         $generator = $this->get_coursework_generator();
         $feedback = new stdClass();
         $feedback->submissionid = $this->get_submission()->id;
@@ -269,7 +269,7 @@ trait factory_mixin {
      * @return stdClass
      * @throws \coding_exception
      */
-    public function create_an_assessor_feedback_for_the_submisison($assessor) {
+    public function create_an_assessor_feedback_for_the_submission($assessor) {
         $count = $this->number_of_assessor_feedbacks();
 
         $generator = $this->get_coursework_generator();
