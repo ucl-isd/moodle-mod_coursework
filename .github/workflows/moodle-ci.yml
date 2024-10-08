@@ -44,6 +44,9 @@ jobs:
             moodle-branch: 'main'
             database: 'pgsql'
           - php: '8.1'
+            moodle-branch: 'MOODLE_405_STABLE'
+            database: 'mariadb'
+          - php: '8.1'
             moodle-branch: 'MOODLE_404_STABLE'
             database: 'mariadb'
 
