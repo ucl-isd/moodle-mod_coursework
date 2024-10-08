@@ -1,4 +1,4 @@
-@_file_upload
+@mod @mod_coursework @_file_upload
 Feature: Adding feedback files
 
     As a teacher

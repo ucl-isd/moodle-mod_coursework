@@ -727,41 +727,44 @@ $(document).ready(function () {
             }).done(function(response) {
                 response = $.parseJSON(response);
                 var modalbody = $('#modal-grading').find('.modal-body');
-                modalbody.html(response.formhtml);
-                var filemanager = modalbody.find('.filemanager');
-                if (response.filemanageroptions && filemanager.length) {
-                    var elementid = filemanager.attr('id');
-                    var clientid = elementid.substr(12);
-                    if (clientid) {
-                        response.filemanageroptions.client_id = clientid;
-                        M.form_filemanager.init(Y, response.filemanageroptions);
+                // Careful as not all requests return a response.success value.  Only if it's false, show error.
+                if ((response.success ?? true) === false && (response.message ?? null)) {
+                    modalbody.html(response.message);
+                } else {
+                    modalbody.html(response.formhtml);
+                    var filemanager = modalbody.find('.filemanager');
+                    if (response.filemanageroptions && filemanager.length) {
+                        var elementid = filemanager.attr('id');
+                        var clientid = elementid.substr(12);
+                        if (clientid) {
+                            response.filemanageroptions.client_id = clientid;
+                            M.form_filemanager.init(Y, response.filemanageroptions);
+                        }
                     }
-                }
-                if (response.editoroptions) {
-                    require(['editor_tiny/editor'], (Tiny) => {
-                        Tiny.setupForElementId({
-                            elementId: 'id_feedbackcomment',
-                            options: JSON.parse(response.editoroptions),
+                    if (response.editoroptions) {
+                        require(['editor_tiny/editor'], (Tiny) => {
+                            Tiny.setupForElementId({
+                                elementId: 'id_feedbackcomment',
+                                options: JSON.parse(response.editoroptions),
+                            });
                         });
-                    });
-                }
+                    }
 
-                if (response.commentoptions) {
-                    M.util.js_pending('gradingform_guide/comment_chooser');
-                    require(['gradingform_guide/comment_chooser'], function(amd) {
-                        $(".remark").each( function (i,ele)  {
-                            buttonele  =  $(ele).find(".commentchooser");
-                            textele    =  $(ele).find(".markingguideremark");
+                    if (response.commentoptions) {
+                        M.util.js_pending('gradingform_guide/comment_chooser');
+                        require(['gradingform_guide/comment_chooser'], function(amd) {
+                            $(".remark").each( function (i,ele)  {
+                                buttonele = $(ele).find(".commentchooser");
+                                textele = $(ele).find(".markingguideremark");
+                                buttonid = $(buttonele).attr("id");
+                                textid = $(textele).attr("id");
+                                amd.initialise(1, buttonid, textid, response.commentoptions);
+                                M.util.js_complete('gradingform_guide/comment_chooser');
 
-                            buttonid   =  $(buttonele).attr("id");
-                            textid    =  $(textele).attr("id");
+                            })
 
-                            amd.initialise(1, buttonid, textid, response.commentoptions) ;
-                            M.util.js_complete('gradingform_guide/comment_chooser');
-
-                        })
-
-                    });
+                        });
+                    }
                 }
             });
             var cell_td = $(this).closest('td');

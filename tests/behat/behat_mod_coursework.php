@@ -578,6 +578,28 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * The UI may contain multiple "New feedback" buttons some of which are not interactable
+     * @Given /^I click on the only interactable link with title "(?P<linktitle_string>(?:[^"]|\\")*)"$/
+     * @param string $linktitle
+     */
+    public function i_click_on_the_only_interactable_link_with_title(string $linktitle) {
+        $nodes = $this->find_all('link', $linktitle);
+        $visible = [];
+        foreach ($nodes as $node) {
+            if ($node->isVisible()) {
+                $visible[] = $node;
+            }
+        }
+        $countvisible = count($visible);
+        if ($countvisible !== 1) {
+            throw new ExpectationException(
+                "Expected one '$linktitle' visible link but found $countvisible", $this->getSession()
+            );
+        }
+        reset($visible)->click();
+    }
+
+    /**
      * @Given /^I click on the new feedback button for assessor (\d+) for another student$/
      * @param $assessornumber
      * @throws coding_exception
@@ -1992,7 +2014,7 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^there is final feedback from the other teacher$/
+     * @Given /^there is final feedback from the other teacher with grade 45$/
      */
     public function there_is_final_feedback_from_the_other_teacher() {
         $generator = $this->get_coursework_generator();
@@ -2169,7 +2191,7 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I have an assessor feedback$/
+     * @Given /^I have an assessor feedback at grade 67$/
      */
     public function i_have_an_assessor_feedback() {
         /**
@@ -2265,6 +2287,46 @@ class behat_mod_coursework extends behat_base {
         $this->getSession()->getPage()->findButton('submitbutton')->press();
 
         $this->feedback = feedback::last();
+    }
+
+    /**
+     * Launch the grade submission modal and complete with grade/comment.
+     * @When /^I grade the submission(?: as )?(\d+)? using the ajax form$/
+     *
+     * @param int $grade
+     * @param bool $withoutcomments
+     * @throws Behat\Mink\Exception\ElementException
+     * @throws Behat\Mink\Exception\ElementNotFoundException
+     */
+    public function i_grade_the_submission_using_the_ajax_form($grade = 56) {
+        // Form loaded and sent by AJAX now so wait for it to load.
+        $this->wait_for_pending_js();
+        $this->wait_for_seconds(1);
+        $this->execute('behat_forms::i_set_the_field_to', [$this->escape("Grade"), $grade]);
+        $this->execute(
+            'behat_forms::i_set_the_field_to', [$this->escape("Comment"), "New comment here"]
+        );
+        $this->wait_for_pending_js();
+        $this->execute(
+            'behat_general::i_click_on', [get_string('saveandfinalise', 'coursework'), 'button']
+        );
+        $this->wait_for_pending_js();
+        $this->wait_for_seconds(2);
+        $this->assertSession()->pageTextContains(get_string('alert_feedback_save_successful', 'coursework'));
+        $this->feedback = feedback::last();
+    }
+
+    /**
+     * Expand the row in the grading form to expose feedback button.
+     * @When /^I expand the coursework grading row$/
+     * @return void
+     */
+    public function i_expand_the_grading_row() {
+        $this->execute(
+            'behat_general::i_click_on', ['.details-control', 'css_element']
+        );
+        $this->wait_for_pending_js();
+        $this->wait_for_seconds(1);
     }
 
     /**
