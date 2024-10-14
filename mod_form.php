@@ -39,52 +39,23 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     /**
+     * Form definition.
      */
     public function definition() {
-
-        global $PAGE, $CFG;
-
-        $PAGE->requires->jquery();
-
-        $module = [
-            'name' => 'mod_coursework',
-            'fullpath' => '/mod/coursework/mod_form.js',
-            'requires' => [
-                'node',
-                'ajax',
-            ]];
-
-        $PAGE->requires->js_init_call('M.mod_coursework.init', [], true, $module);
-
         $this->set_form_attributes();
 
         $this->add_general_header();
 
-        $this->add_name_field();
-        $this->standard_intro_elements(get_string('description', 'coursework'));
-
-        $this->add_availability_header();
-
-        $this->add_start_date_field();
-        $this->add_submission_deadline_field();
-        $this->add_personal_deadline_field();
-
-        // if (coursework_is_ulcc_digest_coursework_plugin_installed()) {
-            $this->add_marking_deadline_field();
-            $this->add_initial_marking_deadline_field();
-            $this->add_agreed_grade_marking_deadline_field();
-            $this->add_relative_initial_marking_deadline_field();
-            $this->add_relative_agreed_grade_marking_deadline_field();
-        // }
-
-        $this->add_allow_early_finalisation_field();
-        $this->add_allow_late_submissions_field();
+        self::add_name_field($this->_form);
+        self::add_intro_elements(
+            $this->_form, $this->context, $this->_features->showdescription, $this->courseformat->has_view_page()
+        );
+        self::add_availability_fields($this->_form);
 
         if (coursework_is_ulcc_digest_coursework_plugin_installed()) {
             $this->add_digest_header();
             $this->add_marking_reminder_warning();
             $this->add_marking_reminder_field();
-
         }
 
         $this->add_submissions_header();
@@ -112,24 +83,17 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->add_auto_populate_agreed_feedback_comments();
 
         $this->add_blind_marking_header();
-
         $this->add_enable_blind_marking_field();
-
         $this->add_assessor_anonymity_header();
-
         $this->add_enable_assessor_anonymity_field();
-
         $this->add_feedback_header();
-
         $this->add_general_feedback_release_date_field();
         $this->add_individual_feedback_release_date_field();
         $this->add_email_individual_feedback_notification_field();
         $this->add_all_feedbacks_field();
 
         $this->add_extensions_header();
-
         $this->add_enable_extensions_field();
-
         $this->add_group_submission_header();
 
         $this->add_use_groups_field();
@@ -140,13 +104,11 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $this->standard_coursemodule_elements();
         $this->add_action_buttons();
-
     }
 
     /**
      * Adds all default data to the form elements.
      *
-     * @global moodle_database $DB
      * @param $defaultvalues
      * @return void
      */
@@ -179,16 +141,13 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     /**
-     * We can't do this with $mform->addRule() because the compare function works with the raw form values, which is
-     * an array of date components. Here, Moodle's internals have processed those values into a Unix timestamp, so the
-     * comparison works.
-     *
+     * Validate the availability data from the form.
+     * (This is public static so that mod_templater can call it when building a coursework object from template).
      * @param array $data
-     * @param array $files
      * @return array
+     * @throws coding_exception
      */
-    public function validation($data, $files) {
-
+    public static function validate_availability_section_data(array $data): array {
         $errors = [];
 
         if ($data['startdate'] != 0 && !empty($data['deadline']) && $data['startdate'] > $data['deadline']) {
@@ -203,36 +162,61 @@ class mod_coursework_mod_form extends moodleform_mod {
             $errors['generalfeedback'] = get_string('must_be_after_dealdine', 'mod_coursework');
         }
 
-        if (isset($data['initialmarkingdeadline']) && $data['initialmarkingdeadline'] != 0 && !empty($data['deadline']) && $data['initialmarkingdeadline'] < $data['deadline']) {
+        if (isset($data['initialmarkingdeadline']) && $data['initialmarkingdeadline'] != 0
+            && !empty($data['deadline']) && $data['initialmarkingdeadline'] < $data['deadline']) {
             $errors['initialmarkingdeadline'] = get_string('must_be_after_dealdine', 'mod_coursework');
         }
 
-        if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0 && !empty($data['deadline']) && $data['agreedgrademarkingdeadline'] < $data['deadline']) {
+        if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0
+            && !empty($data['deadline']) && $data['agreedgrademarkingdeadline'] < $data['deadline']) {
             $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_dealdine', 'mod_coursework');
         }
 
-        if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0 &&  $data['agreedgrademarkingdeadline'] < $data['initialmarkingdeadline'] ) {
+        if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0
+            &&  $data['agreedgrademarkingdeadline'] < $data['initialmarkingdeadline'] ) {
             $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_initial_grade_dealdine', 'mod_coursework');
         }
 
-        if (isset($data['initialmarkingdeadline']) && $data['initialmarkingdeadline'] != 0 && !empty($data['deadline']) && $data['deadline'] && $data['initialmarkingdeadline'] < $data['deadline']) {
+        if (isset($data['initialmarkingdeadline']) && $data['initialmarkingdeadline'] != 0
+            && !empty($data['deadline']) && $data['deadline'] && $data['initialmarkingdeadline'] < $data['deadline']) {
             $errors['initialmarkingdeadline'] = get_string('must_be_after_dealdine', 'mod_coursework');
         }
 
-        if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0 && !empty($data['deadline']) && $data['agreedgrademarkingdeadline'] < $data['deadline']) {
+        if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0
+            && !empty($data['deadline']) && $data['agreedgrademarkingdeadline'] < $data['deadline']) {
             $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_dealdine', 'mod_coursework');
         }
 
-        if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0 &&  $data['agreedgrademarkingdeadline'] < $data['initialmarkingdeadline'] ) {
+        if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0
+            &&  $data['agreedgrademarkingdeadline'] < $data['initialmarkingdeadline'] ) {
             $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_initial_grade_dealdine', 'mod_coursework');
         }
 
-        if (isset($data['relativeagreedmarkingdeadline']) && $data['relativeagreedmarkingdeadline'] != 0 && $data['relativeagreedmarkingdeadline'] < $data['relativeinitialmarkingdeadline'] ) {
-            $errors['relativeagreedmarkingdeadline'] = get_string('must_be_after_or_equal_to_relative_initial_grade_dealdine', 'mod_coursework');
+        if (isset($data['relativeagreedmarkingdeadline']) && $data['relativeagreedmarkingdeadline'] != 0
+            && $data['relativeagreedmarkingdeadline'] < $data['relativeinitialmarkingdeadline'] ) {
+            $errors['relativeagreedmarkingdeadline'] = get_string(
+                'must_be_after_or_equal_to_relative_initial_grade_dealdine', 'mod_coursework'
+            );
 
         }
 
-        $courseworkid = $this->get_coursework_id();
+        return $errors;
+    }
+
+    /**
+     * We can't do this with $mform->addRule() because the compare function works with the raw form values, which is
+     * an array of date components. Here, Moodle's internals have processed those values into a Unix timestamp, so the
+     * comparison works.
+     *
+     * @param array $data
+     * @param array $files
+     * @return array
+     */
+    public function validation($data, $files) {
+
+        $errors = self::validate_availability_section_data($data);
+
+        $courseworkid = self::get_coursework_id();
         if ($courseworkid) {
             $coursework = mod_coursework\models\coursework::find($courseworkid);
             if ($coursework->has_samples() && isset($data['samplingenabled']) && $data['samplingenabled'] == 0) {
@@ -240,7 +224,8 @@ class mod_coursework_mod_form extends moodleform_mod {
             }
         }
 
-        if ( isset($data['numberofmarkers']) && $data['numberofmarkers'] == 1 && isset($data['samplingenabled']) && $data['samplingenabled'] == 1) {
+        if ( isset($data['numberofmarkers']) && $data['numberofmarkers'] == 1
+            && isset($data['samplingenabled']) && $data['samplingenabled'] == 1) {
             $errors['numberofmarkers'] = get_string('not_enough_assessors_for_sampling', 'mod_coursework');
         }
 
@@ -279,47 +264,116 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform =& $this->_form;
 
         $moodleform->addElement('header', 'submissions', get_string('submissions', 'mod_coursework'));
-        // We want it expanded by default
+        // We want it expanded by default.
         $moodleform->setExpanded('submissions');
     }
 
     /**
+     * Add availability header.
      * @throws coding_exception
      */
-    protected function add_availability_header() {
-        $moodleform =& $this->_form;
-
+    public static function add_availability_header(\MoodleQuickForm $moodleform): void {
         $moodleform->addElement('header', 'availability', get_string('availability', 'mod_coursework'));
-        // We want it expanded by default
+        // We want it expanded by default.
         $moodleform->setExpanded('availability');
     }
 
     /**
+     * Add the name field to the form.
+     * (This is public static so that mod_templater can call it when building a coursework object from template).
+     * @param \MoodleQuickForm $moodleform
      * @throws coding_exception
      */
-    protected function add_name_field() {
-        $moodleform =& $this->_form;
-
-        $moodleform->addElement('text',
-                                 'name',
-                                 get_string('courseworkname', 'coursework'),
-                                 ['size' => '64']);
+    public static function add_name_field(\MoodleQuickForm $moodleform): void {
+        $moodleform->addElement(
+            'text', 'name', get_string('courseworkname', 'coursework'), ['size' => '64']
+        );
         $moodleform->addRule('name', null, 'required', null, 'client');
-        $moodleform->addRule('name',
-                              get_string('maximumchars', '', 255),
-                              'maxlength',
-                              255,
-                              'client');
+        $moodleform->addRule(
+            'name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client'
+        );
         $moodleform->setType('name', PARAM_TEXT);
     }
 
     /**
+     * Add the Introduction fields to the form.
+     * (This is public static so that mod_templater can call it when building a coursework object from template).
+     * @param MoodleQuickForm $mform
+     * @param context $context
+     * @param bool $showdescription
+     * @param bool $hasviewpage
+     * @return void
      * @throws coding_exception
      */
-    protected function add_submission_deadline_field() {
+    public static function add_intro_elements(\MoodleQuickForm $mform, context $context, bool $showdescription, bool $hasviewpage) {
         global $CFG;
+        $required = $CFG->requiremodintro;
+        $label = get_string('description', 'coursework');
 
-        $moodleform =& $this->_form;
+        $mform->addElement(
+            'editor', 'introeditor', $label, ['rows' => 10],
+            ['maxfiles' => EDITOR_UNLIMITED_FILES, 'noclean' => true, 'context' => $context, 'subdirs' => true]
+        );
+        $mform->setType('introeditor', PARAM_RAW); // No XSS prevention here, users must be trusted.
+        if ($required) {
+            $mform->addRule('introeditor', get_string('required'), 'required', null, 'client');
+        }
+
+        // If the 'show description' feature is enabled, this checkbox appears below the intro.
+        // We want to hide that when using the singleactivity course format because it is confusing.
+        if ($showdescription && $hasviewpage) {
+            $mform->addElement('advcheckbox', 'showdescription', get_string('showdescription'));
+            $mform->addHelpButton('showdescription', 'showdescription');
+        }
+    }
+
+    /**
+     * Add availability fields to the form.
+     * (This is public static so that mod_templater can call it when building a coursework object from template).
+     * @param MoodleQuickForm $mform
+     * @return void
+     */
+    public static function add_availability_fields(\MoodleQuickForm $mform) {
+        self::add_availability_header($mform);
+        self::add_start_date_field($mform);
+
+        self::add_submission_deadline_field($mform);
+        self::add_personal_deadline_field($mform);
+
+        self::add_marking_deadline_field($mform);
+        self::add_initial_marking_deadline_field($mform);
+        self::add_agreed_grade_marking_deadline_field($mform);
+        self::add_relative_initial_marking_deadline_field($mform);
+        self::add_relative_agreed_grade_marking_deadline_field($mform);
+
+        self::add_allow_early_finalisation_field($mform);
+        self::add_allow_late_submissions_field($mform);
+    }
+
+    /**
+     * Initialise the JS needed by this form.
+     * @return void
+     */
+    public static function require_form_js(): void {
+        global $PAGE;
+        $PAGE->requires->jquery();
+
+        $module = [
+            'name' => 'mod_coursework',
+            'fullpath' => '/mod/coursework/mod_form.js',
+            'requires' => ['node', 'ajax'],
+        ];
+        $PAGE->requires->js_init_call('M.mod_coursework.init', [], true, $module);
+    }
+
+    /**
+     * Add submission deadline field to the form.
+     * @param MoodleQuickForm $moodleform
+     * @throws coding_exception
+     * @throws dml_exception
+     */
+    public static function add_submission_deadline_field(\MoodleQuickForm $moodleform): void {
+        global $CFG;
 
         $defaulttimestamp = strtotime('+2 weeks');
         $disabled = true;
@@ -336,9 +390,8 @@ class mod_coursework_mod_form extends moodleform_mod {
                 $defaulttimestamp = strtotime('+1 month');
             }
         }
-
         $optional = true;
-        $courseworkid = $this->get_coursework_id();
+        $courseworkid = self::get_coursework_id();
         if ($courseworkid) {
             $coursework = mod_coursework\models\coursework::find($courseworkid);
             if ($coursework->extension_exists()) {
@@ -346,14 +399,16 @@ class mod_coursework_mod_form extends moodleform_mod {
             }
         }
 
-        $moodleform->addElement('date_time_selector',
-                                 'deadline',
-                                 get_string('deadline', 'coursework'),
-                                 ['optional' => $optional, 'disabled' => $disabled]);
+        $moodleform->addElement(
+            'date_time_selector',
+            'deadline',
+            get_string('deadline', 'coursework'),
+            ['optional' => $optional, 'disabled' => $disabled]
+        );
 
-         $moodleform->addElement('html', '<div class ="submission_deadline_info alert">');
-         $moodleform->addElement('html', get_string('submissionsdeadlineinfo', 'mod_coursework'));
-         $moodleform->addElement('html', '</div>');
+        $moodleform->addElement('html', '<div class ="submission_deadline_info alert">');
+        $moodleform->addElement('html', get_string('submissionsdeadlineinfo', 'mod_coursework'));
+        $moodleform->addElement('html', '</div>');
 
         if (!empty($CFG->coursework_submission_deadline)) {
             $moodleform->setDefault('deadline', $defaulttimestamp);
@@ -362,38 +417,39 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     /**
+     * Add the personal deadline field to the form.
+     * @param MoodleQuickForm $moodleform
      * @throws coding_exception
      */
-    protected function add_personal_deadline_field() {
-
-        $moodleform =& $this->_form;
+    public static function add_personal_deadline_field(\MoodleQuickForm $moodleform): void {
         $options = [0 => get_string('no'), 1 => get_string('yes')];
 
-        $courseworkid = $this->get_coursework_id();
+        $courseworkid = self::get_coursework_id();
         $disabled = [];
         if (coursework_personal_deadline_passed($courseworkid)) {
             $moodleform->disabledIf('personaldeadlineenabled', 'deadline[enabled]', 'notchecked');
             $disabled = ['disabled' => true];
         }
-        $moodleform->addElement('select',
-                                 'personaldeadlineenabled',
-                                  get_string('usepersonaldeadline', 'mod_coursework'), $options, $disabled);
+        $moodleform->addElement(
+            'select',
+            'personaldeadlineenabled',
+            get_string('usepersonaldeadline', 'mod_coursework'),
+            $options,
+            $disabled
+        );
         $moodleform->setType('personaldeadlineenabled', PARAM_INT);
         $moodleform->addHelpButton('personaldeadlineenabled', 'personaldeadlineenabled', 'mod_coursework');
 
         $moodleform->setDefault('personaldeadlineenabled', 0);
-        // $moodle_form->disabledIf('personaldeadlineenabled', 'deadline[enabled]', 'notchecked');
-
     }
 
     /**
+     * Add start date field to the form.
+     * @param MoodleQuickForm $moodleform
      * @throws coding_exception
      */
-    protected function add_start_date_field() {
+    public static function add_start_date_field(\MoodleQuickForm $moodleform): void {
         global $CFG;
-
-        $moodleform =& $this->_form;
-
         $defaulttimestamp = strtotime('+2 weeks');
         $disabled = true;
 
@@ -402,10 +458,11 @@ class mod_coursework_mod_form extends moodleform_mod {
             $defaulttimestamp = strtotime('today');
         }
 
-        $moodleform->addElement('date_time_selector',
-                                 'startdate',
-                                 get_string('startdate', 'coursework'),
-                                 ['optional' => true, 'disabled' => $disabled]
+        $moodleform->addElement(
+            'date_time_selector',
+            'startdate',
+            get_string('startdate', 'coursework'),
+            ['optional' => true, 'disabled' => $disabled]
         );
 
         if (!empty($CFG->coursework_start_date)) {
@@ -414,9 +471,14 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->addHelpButton('startdate', 'startdate', 'mod_coursework');
     }
 
-    private function add_marking_deadline_field() {
+    /**
+     * Add marking deadline field.
+     * @param MoodleQuickForm $moodleform
+     * @return void
+     * @throws coding_exception
+     */
+    public static function add_marking_deadline_field(\MoodleQuickForm $moodleform): void {
         global $CFG;
-        $moodleform =& $this->_form;
         $options = [0 => get_string('no'), 1 => get_string('yes')];
         $moodleform->addElement('select',
             'markingdeadlineenabled',
@@ -428,12 +490,11 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     /**
+     * Add initial marking deadline field.
      * @throws coding_exception
      */
-    protected function add_initial_marking_deadline_field() {
+    public static function add_initial_marking_deadline_field(\MoodleQuickForm $moodleform): void {
         global $CFG;
-
-        $moodleform =& $this->_form;
 
         $defaulttimestamp = strtotime('today');
         $disabled = true;
@@ -483,12 +544,12 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     /**
+     * Add agreed marking deadline to the form.
+     * @param MoodleQuickForm $moodleform
      * @throws coding_exception
      */
-    protected function add_agreed_grade_marking_deadline_field() {
+    public static function add_agreed_grade_marking_deadline_field(\MoodleQuickForm $moodleform): void {
         global $CFG;
-
-        $moodleform =& $this->_form;
 
         $defaulttimestamp = strtotime('today');
         $disabled = true;
@@ -528,21 +589,19 @@ class mod_coursework_mod_form extends moodleform_mod {
             ['optional' => true, 'disabled' => $disabled]
         );
 
-        // $moodle_form->disabledIf('agreedgrademarkingdeadline', 'numberofmarkers', 'eq', '1');
-
         if (!empty($CFG->coursework_agreed_marking_deadline)) {
             $moodleform->setDefault('agreedgrademarkingdeadline', $defaulttimestamp);
         }
         $moodleform->addHelpButton('agreedgrademarkingdeadline', 'agreedgrademarkingdeadline', 'mod_coursework');
     }
 
-    /********
-     *  Adds the relative initial marking deadline fields to the settings
+    /**
+     * Adds the relative initial marking deadline fields to the settings
+     * @param MoodleQuickForm $moodleform
+     * @throws coding_exception
      */
-    protected function add_relative_initial_marking_deadline_field() {
+    public static function add_relative_initial_marking_deadline_field(\MoodleQuickForm $moodleform): void {
         global $CFG;
-
-        $moodleform =&  $this->_form;
 
         $options = ['0' => get_string('disabled', 'mod_coursework')];
         $options['7'] = get_string('oneweekoption', 'mod_coursework');
@@ -560,16 +619,15 @@ class mod_coursework_mod_form extends moodleform_mod {
             $moodleform->setDefault('relativeinitialmarkingdeadline', $CFG->coursework_marking_deadline);
         }
         $moodleform->addHelpButton('relativeinitialmarkingdeadline', 'agreedgrademarkingdeadline', 'mod_coursework');
-
     }
 
-    /********
-     *  Adds the relative agreed grade marking deadline fields to the settings
+    /**
+     * Adds the relative agreed grade marking deadline fields to the settings
+     * @param MoodleQuickForm $moodleform
+     * @throws coding_exception
      */
-    protected function add_relative_agreed_grade_marking_deadline_field() {
+    public static function add_relative_agreed_grade_marking_deadline_field(\MoodleQuickForm $moodleform): void {
         global $CFG;
-
-        $moodleform =&  $this->_form;
 
         $options = ['0' => get_string('disabled', 'mod_coursework')];
         $options['7'] = get_string('oneweekoption', 'mod_coursework');
@@ -623,10 +681,10 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     /**
+     * Add allow early finalisation field.
      * @throws coding_exception
      */
-    protected function add_allow_early_finalisation_field() {
-        $moodleform =& $this->_form;
+    public static function add_allow_early_finalisation_field(\MoodleQuickForm $moodleform): void {
         $options = [ 0 => get_string('no'), 1 => get_string('yes')];
         $moodleform->addElement('select',
                                  'allowearlyfinalisation',
@@ -639,11 +697,9 @@ class mod_coursework_mod_form extends moodleform_mod {
      * @throws coding_exception
      */
     protected function add_group_submission_header() {
-
         $moodleform =& $this->_form;
-
         $moodleform->addElement('header', 'group_submission', get_string('groupsubmissionsettings', 'mod_coursework'));
-        // We want it expanded by default
+        // We want it expanded by default.
         $moodleform->setExpanded('group_submission');
 
     }
@@ -720,17 +776,12 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform =& $this->_form;
 
         $choices = get_max_upload_sizes($CFG->maxbytes, $COURSE->maxbytes);
-        // $choices[0] = get_string('maximumupload') . ' (' . display_size($COURSE->maxbytes) . ')';
         $choices[0] = get_string('maximumupload'). ' set in course';
         $moodleform->addElement('select',
                                  'maxbytes',
                                  get_string('maximumsize', 'coursework'),
                                  $choices);
         $moodleform->setDefault('maxbytes', $CFG->coursework_maxbytes);
-        /* $moodle_form->addElement('static',
-                                 'maxbyteslabel',
-                                 '',
-                                 get_string('maximumsizelabel', 'coursework'));*/
         $moodleform->addHelpButton('maxbytes', 'maximumsize', 'mod_coursework');
         $moodleform->disabledIf('maxbytes', 'use_turnitin', 'eq', '1');
 
@@ -745,17 +796,11 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodleform =& $this->_form;
 
-        // Maximum number of files:
-        $choices = [1 => 1,
-                         2 => 2,
-                         3 => 3,
-                         4 => 4,
-                         5 => 5,
-                         6 => 6,
-                         7 => 7,
-                         8 => 8,
-                         9 => 9,
-                         10 => 10];
+        // Maximum number of files.
+        $choices = [
+            1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5,
+            6 => 6, 7 => 7, 8 => 8, 9 => 9, 10 => 10,
+        ];
         $moodleform->addElement('select',
                                  'maxfiles',
                                  get_string('maxfiles', 'coursework'),
@@ -773,7 +818,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform =& $this->_form;
 
         $choices = ['0' => get_string('no'), '1' => get_string('yes')];
-        $courseworkid = $this->get_coursework_id();
+        $courseworkid = self::get_coursework_id();
         $courseworkhassubmissions = !empty($courseworkid)
             && $DB->record_exists('coursework_submissions', ['courseworkid' => $courseworkid]);
 
@@ -829,7 +874,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     protected function add_number_of_initial_assessors_field() {
 
         $moodleform =& $this->_form;
-        $courseworkid = $this->get_coursework_id();
+        $courseworkid = self::get_coursework_id();
 
         $multioptions = [
             // Don't want to give the option for 0!
@@ -871,7 +916,7 @@ class mod_coursework_mod_form extends moodleform_mod {
      * @return int
      * @throws coding_exception
      */
-    protected function get_coursework_id() {
+    protected static function get_coursework_id(): int {
         $upcmid = optional_param('update', -1, PARAM_INT);
         $cm = get_coursemodule_from_id('coursework', $upcmid);
         $courseworkid = 0;
@@ -965,7 +1010,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $submissionexists = 0;
         // disable the setting if at least one submission exists
-        $courseworkid = $this->get_coursework_id();
+        $courseworkid = self::get_coursework_id();
         if ($courseworkid && mod_coursework\models\coursework::find($courseworkid)->has_any_submission()) {
             $submissionexists = 1;
         }
@@ -1112,7 +1157,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $feedbackexists = 0;
         // disable the setting if at least one feedback exists
-        $courseworkid = $this->get_coursework_id();
+        $courseworkid = self::get_coursework_id();
         if ($courseworkid && mod_coursework\models\coursework::find($courseworkid)->has_any_final_feedback()) {
             $feedbackexists = 1;
         }
@@ -1150,9 +1195,14 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->_form->addElement('html', '</div>');
     }
 
-    private function add_allow_late_submissions_field() {
+    /**
+     * Add allow late submissions field.
+     * @param MoodleQuickForm $moodleform
+     * @return void
+     * @throws coding_exception
+     */
+    public static function add_allow_late_submissions_field(\MoodleQuickForm $moodleform): void {
         global $CFG;
-        $moodleform =& $this->_form;
         $options = [ 0 => get_string('no'), 1 => get_string('yes')];
         $moodleform->addElement('select',
                                  'allowlatesubmissions',
@@ -1185,7 +1235,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->addElement('selectyesno', 'samplingenabled', get_string('samplingenabled', 'mod_coursework'));
         $moodleform->addHelpButton('samplingenabled', 'samplingenabled', 'mod_coursework');
 
-        $courseworkid = $this->get_coursework_id();
+        $courseworkid = self::get_coursework_id();
         if (!$courseworkid ||  ($courseworkid && !mod_coursework\models\coursework::find($courseworkid)->has_samples()) ) {
             $moodleform->disabledIf('samplingenabled', 'numberofmarkers', 'eq', 1);
 
