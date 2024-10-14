@@ -520,10 +520,10 @@ $string['modulename'] = 'Coursework';
 $string['modulename_help'] = 'The coursework module allows students to upload a file or files to be assessed by assessors as part of a grading process that may include single or multiple assessors, blind marking, moderations, allocation of marking to specific teachers, restricting marking/moderations to a subset of students, or any combination of these. The marking process is highly configurable and has been designed to satisfy the requirements of UK university departments. Integration with Turnitin is available if you have a Turnitin subscription and there is the option to get students to resubmit repeatedly and/or extend the deadlines on a per-student basis.';
 $string['modulenameplural'] = 'Courseworks';
 $string['multipleusers'] = 'Multiple users';
-$string['must_be_after_dealdine'] = 'Must be after the submission deadline';
-$string['must_be_before_dealdine'] = 'Must be before the submission deadline';
-$string['must_be_after_initial_grade_dealdine'] = 'Must be after the initial grade deadline';
-$string['must_be_after_or_equal_to_relative_initial_grade_dealdine'] = 'Must be after or equal to the relative initial grade deadline';
+$string['must_be_after_deadline'] = 'Must be after the submission deadline';
+$string['must_be_before_deadline'] = 'Must be before the submission deadline';
+$string['must_be_after_initial_grade_deadline'] = 'Must be after the initial grade deadline';
+$string['must_be_after_or_equal_to_relative_initial_grade_deadline'] = 'Must be after or equal to the relative initial grade deadline';
 
 $string['namefilternon'] = 'Name filter applied.';
 $string['needsfeedbackform'] = "You need to set up a feedback form for this coursework. Click on ". "'Update this coursework' and link an existing form with this coursework.";
