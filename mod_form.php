@@ -151,51 +151,51 @@ class mod_coursework_mod_form extends moodleform_mod {
         $errors = [];
 
         if ($data['startdate'] != 0 && !empty($data['deadline']) && $data['startdate'] > $data['deadline']) {
-            $errors['startdate'] = get_string('must_be_before_dealdine', 'mod_coursework');
+            $errors['startdate'] = get_string('must_be_before_deadline', 'mod_coursework');
         }
 
         if ($data['individualfeedback'] != 0 && !empty($data['deadline']) && $data['individualfeedback'] < $data['deadline']) {
-            $errors['individualfeedback'] = get_string('must_be_after_dealdine', 'mod_coursework');
+            $errors['individualfeedback'] = get_string('must_be_after_deadline', 'mod_coursework');
         }
 
         if ($data['generalfeedback'] != 0 && !empty($data['deadline']) && $data['generalfeedback'] < $data['deadline']) {
-            $errors['generalfeedback'] = get_string('must_be_after_dealdine', 'mod_coursework');
+            $errors['generalfeedback'] = get_string('must_be_after_deadline', 'mod_coursework');
         }
 
         if (isset($data['initialmarkingdeadline']) && $data['initialmarkingdeadline'] != 0
             && !empty($data['deadline']) && $data['initialmarkingdeadline'] < $data['deadline']) {
-            $errors['initialmarkingdeadline'] = get_string('must_be_after_dealdine', 'mod_coursework');
+            $errors['initialmarkingdeadline'] = get_string('must_be_after_deadline', 'mod_coursework');
         }
 
         if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0
             && !empty($data['deadline']) && $data['agreedgrademarkingdeadline'] < $data['deadline']) {
-            $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_dealdine', 'mod_coursework');
+            $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_deadline', 'mod_coursework');
         }
 
         if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0
             &&  $data['agreedgrademarkingdeadline'] < $data['initialmarkingdeadline'] ) {
-            $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_initial_grade_dealdine', 'mod_coursework');
+            $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_initial_grade_deadline', 'mod_coursework');
         }
 
         if (isset($data['initialmarkingdeadline']) && $data['initialmarkingdeadline'] != 0
             && !empty($data['deadline']) && $data['deadline'] && $data['initialmarkingdeadline'] < $data['deadline']) {
-            $errors['initialmarkingdeadline'] = get_string('must_be_after_dealdine', 'mod_coursework');
+            $errors['initialmarkingdeadline'] = get_string('must_be_after_deadline', 'mod_coursework');
         }
 
         if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0
             && !empty($data['deadline']) && $data['agreedgrademarkingdeadline'] < $data['deadline']) {
-            $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_dealdine', 'mod_coursework');
+            $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_deadline', 'mod_coursework');
         }
 
         if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0
             &&  $data['agreedgrademarkingdeadline'] < $data['initialmarkingdeadline'] ) {
-            $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_initial_grade_dealdine', 'mod_coursework');
+            $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_initial_grade_deadline', 'mod_coursework');
         }
 
         if (isset($data['relativeagreedmarkingdeadline']) && $data['relativeagreedmarkingdeadline'] != 0
             && $data['relativeagreedmarkingdeadline'] < $data['relativeinitialmarkingdeadline'] ) {
             $errors['relativeagreedmarkingdeadline'] = get_string(
-                'must_be_after_or_equal_to_relative_initial_grade_dealdine', 'mod_coursework'
+                'must_be_after_or_equal_to_relative_initial_grade_deadline', 'mod_coursework'
             );
 
         }
@@ -1094,7 +1094,7 @@ class mod_coursework_mod_form extends moodleform_mod {
             $moodleform->disabledIf('individualfeedback', 'forceautorelease', 'eq', 1);
         }
         $moodleform->disabledIf('individualfeedback', 'deadline[enabled]', 'notchecked');
-        // $moodle_form->addRule(array('individualfeedback', 'deadline'), get_string('must_be_after_dealdine', 'mod_coursework'), 'compare', 'gt');
+        // $moodle_form->addRule(array('individualfeedback', 'deadline'), get_string('must_be_after_deadline', 'mod_coursework'), 'compare', 'gt');
     }
 
     /**
