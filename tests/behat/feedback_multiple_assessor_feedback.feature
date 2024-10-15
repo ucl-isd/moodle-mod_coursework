@@ -118,4 +118,6 @@ Feature: Multiple assessors simple grading form
     And I expand the coursework grading row
     And I click on the only interactable link with title "New feedback"
     When I grade the submission using the ajax form
+    And I visit the coursework page
+    And I expand the coursework grading row
     Then I should see the grade on the page
