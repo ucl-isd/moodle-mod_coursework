@@ -2318,12 +2318,12 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * Expand the row in the grading form to expose feedback button.
-     * @When /^I expand the coursework grading row$/
+     * @When /^I expand the coursework grading row ?(\d+)?$/
      * @return void
      */
-    public function i_expand_the_grading_row() {
+    public function i_expand_the_grading_row(int $rownumber = 1) {
         $this->execute(
-            'behat_general::i_click_on', ['.details-control', 'css_element']
+            'behat_general::i_click_on', [".details-control.row-$rownumber", 'css_element']
         );
         $this->wait_for_pending_js();
         $this->wait_for_seconds(1);

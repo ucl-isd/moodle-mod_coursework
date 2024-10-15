@@ -119,9 +119,10 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @param grading_table_row_base $rowobject
      * @param cell_interface[] $cellhelpers
      * @param sub_rows_interface $subrowhelper
+     * @param int $rownumber
      * @return string
      */
-    protected function make_row_for_allocatable($rowobject, $cellhelpers, $subrowhelper) {
+    protected function make_row_for_allocatable($rowobject, $cellhelpers, $subrowhelper, int $rownumber) {
 
         // $class = (!$row_object->get_coursework()->has_multiple_markers()) ? "submissionrowsingle": "submissionrowmulti";
         $class = $this->rowclass;
@@ -133,7 +134,8 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         $ismultiplemarkers = $this->ismultiplemarkers;
         $tblassessorfeedbacks = $subrowhelper->get_row_with_assessor_feedback_table($rowobject, count($cellhelpers));
         if ($ismultiplemarkers) {
-            $tablehtml .= '<td class="details-control"></td>';
+            $rowclass = "row-$rownumber";
+            $tablehtml .= '<td class="details-control ' . $rowclass . '"></td>';
         }
 
         foreach ($cellhelpers as $cellhelper) {
@@ -227,8 +229,10 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         $this->rowclass = $ismultiplemarkers ? 'submissionrowmulti' : 'submissionrowsingle';
         $this->ismultiplemarkers = $ismultiplemarkers;
 
+        $rownumber = 1;
         foreach ($tablerows as $rowobject) {
-            $tablehtml .= $this->make_row_for_allocatable($rowobject, $cellhelpers, $subrowhelper);
+            $tablehtml .= $this->make_row_for_allocatable($rowobject, $cellhelpers, $subrowhelper, $rownumber);
+            $rownumber++;
         }
         return $tablehtml;
     }
