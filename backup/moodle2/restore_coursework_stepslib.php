@@ -176,7 +176,9 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $data->courseworkid = $this->get_new_parentid('coursework');
         $data->assessorid = $this->get_mappingid('user', $data->assessorid);
 
-        // The "manual" field was renamed to "ismanual" - old backup may contain old name.
+        // The "manual" field was renamed to "ismanual" - in theory, old backup may contain old name.
+        // In reality, the backup process seems not to be processing pairs anyway.
+        // So backups will contain no pair information and this is likely redundant.
         if (isset($data->manual)) {
             $data->ismanual = $data->manual;
             unset($data->manual);
