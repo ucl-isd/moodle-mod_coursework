@@ -133,7 +133,8 @@ $( document ).ready(function() {
         $(".datatabletest").each(function () {
             // Class that determines whether all data for the databale has been full loaded.
             var fullloaded = $(this).hasClass('full-loaded');
-            $(this).DataTable({
+
+            table_obj_list[$(this).attr('id')] = $(this).DataTable( {
                 'order': [],
                 stateSave: true,
                 language: {
@@ -195,8 +196,6 @@ $( document ).ready(function() {
                 }
 
             });
-
-            table_obj_list[$(this).attr('id')] = table;
 
             if (!fullloaded) {
                 background_load_table($(this).attr('id'));
