@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_submissions_group_submissions
 Feature: Students are able to submit one piece of work on behalf of the group
 
     As a student
