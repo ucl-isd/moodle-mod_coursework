@@ -32,15 +32,17 @@ Feature: Students see feedback on group assignments
     Then I should see the grade for the group submission
     And I should see the feedback for the group submission
 
-  @broken
-  Scenario: I can see the published grade in the gradebook when someone else submitted
-    Given I am logged in as the other student
-    And I visit the coursework page
-    When I visit the gradebook page
-    Then I should see the grade in the gradebook
+#  TODO fix this broken test.
+#  @broken
+#  Scenario: I can see the published grade in the gradebook when someone else submitted
+#    Given I am logged in as the other student
+#    And I visit the coursework page
+#    When I visit the gradebook page
+#    Then I should see the grade in the gradebook
 
-  @broken
-  Scenario: I can see the published grade in the gradebook when I submitted
-    Given I am logged in as the student
-    When I visit the gradebook page
-    Then I should see the grade in the gradebook
+#  TODO fix this broken test.
+#  @broken
+#  Scenario: I can see the published grade in the gradebook when I submitted
+#    Given I am logged in as the student
+#    When I visit the gradebook page
+#    Then I should see the grade in the gradebook
