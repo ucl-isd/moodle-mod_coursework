@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_feedback_edit_specified_time
 Feature: Allow markers to edit their marking but only during specific marking stages
 
   As an initial marker
@@ -17,10 +17,13 @@ Feature: Allow markers to edit their marking but only during specific marking st
     And the student has a submission
     And the submission is finalised
 
+  @javascript
   Scenario: Edit own initial feedback before delayed time
     Given there are feedbacks from both teachers
     And I log in as the teacher
     And I visit the coursework page
+    And I expand the coursework grading row
+#    todo This is a problem because JS is duplicating the table so we get multiple rows e.g. for #edit_feedback_212000
     Then I should see the edit feedback button for the teacher's feedback
 
   @javascript
@@ -29,20 +32,25 @@ Feature: Allow markers to edit their marking but only during specific marking st
     And I wait "35" seconds
     And I log in as the teacher
     And I visit the coursework page
+    And I expand the coursework grading row
     Then I should not see the edit feedback button for the teacher's feedback
 
+  @javascript
   Scenario: Automatic agreement before delayed time
     Given the coursework "automaticagreementstrategy" setting is "percentage_distance" in the database
     And the coursework "automaticagreementrange" setting is "10" in the database
     And I am logged in as a teacher
     And I visit the coursework page
-    And I click on the new feedback button for assessor 1
-    And I grade the submission as 67 without comments using the simple form
+    And I expand the coursework grading row
+    And I click on the only interactable link with title "New feedback"
+    And I grade the submission as 67 using the ajax form
     And I log out
+
     And I log in as the other teacher
     And I visit the coursework page
-    And I click on the new feedback button for assessor 2
-    And I grade the submission as 63 without comments using the simple form
+    And I expand the coursework grading row
+    And I click on the only interactable link with title "New feedback"
+    And I grade the submission as 63 using the ajax form
     And I visit the coursework page
     Then I should not see the final grade on the multiple marker page
 
@@ -52,13 +60,14 @@ Feature: Allow markers to edit their marking but only during specific marking st
     And the coursework "automaticagreementrange" setting is "10" in the database
     And I am logged in as a teacher
     And I visit the coursework page
-    And I click on the new feedback button for assessor 1
-    And I grade the submission as 67 without comments using the simple form
+    And I click on the only interactable link with title "New feedback"
+    And I grade the submission as 67 using the ajax form
     And I log out
+
     And I log in as the other teacher
     And I visit the coursework page
-    And I click on the new feedback button for assessor 2
-    And I grade the submission as 63 without comments using the simple form
+    And I click on the only interactable link with title "New feedback"
+    And I grade the submission as 63 using the ajax form
     And I wait "50" seconds
     And I visit the coursework page
     Then I should see the final grade as 67 on the multiple marker page
