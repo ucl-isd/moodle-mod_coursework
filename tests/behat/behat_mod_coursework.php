@@ -2345,16 +2345,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @When /^I fill in the rest of the form after the rubric and submit it$/
-     */
-    public function i_fill_in_the_rest_of_the_form_ater_the_rubric() {
-        $this->find('css', '#feedback_comment')->setValue('New comment here');
-        $this->getSession()->getPage()->findButton('submitbutton')->press();
-
-        $this->feedback = feedback::last();
-    }
-
-    /**
      * @Given /^I should see the group grade assigned to the other student$/
      */
     public function i_should_see_the_group_grade_assigned_to_the_other_student() {
