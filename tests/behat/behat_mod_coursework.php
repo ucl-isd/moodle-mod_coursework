@@ -1775,7 +1775,7 @@ class behat_mod_coursework extends behat_base {
         $allocation->stage_identifier = 'assessor_1';
         $allocation->courseworkid = $this->get_coursework()->id;
         if ($manual) {
-            $allocation->manual = 1;
+            $allocation->ismanual = 1;
         }
         $generator->create_allocation($allocation);
     }
@@ -1785,7 +1785,7 @@ class behat_mod_coursework extends behat_base {
      */
     public function the_manager_is_allocated_as_the_moderator_for_the_student() {
         $allocation = new stdClass();
-        $allocation->manual = 1;
+        $allocation->ismanual = 1;
         $allocation->courseworkid = $this->coursework->id;
         $allocation->assessorid = $this->manager->id;
         $allocation->allocatableid = $this->student->id();
@@ -1800,7 +1800,7 @@ class behat_mod_coursework extends behat_base {
      */
     public function the_manager_is_automatically_allocated_as_the_moderator_for_the_student() {
         $allocation = new stdClass();
-        $allocation->manual = 0;
+        $allocation->ismanual = 0;
         $allocation->courseworkid = $this->coursework->id;
         $allocation->assessorid = $this->manager->id;
         $allocation->allocatableid = $this->student->id();

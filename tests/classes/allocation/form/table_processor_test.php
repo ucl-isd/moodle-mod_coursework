@@ -86,7 +86,7 @@ final class table_processor_test extends advanced_testcase {
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
-            'manual' => 1,
+            'ismanual' => 1,
         ];
         $allocations = $DB->get_records('coursework_allocation_pairs', $params);
         $this->assertEquals(2, count($allocations));
@@ -115,7 +115,7 @@ final class table_processor_test extends advanced_testcase {
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
-            'manual' => 1,
+            'ismanual' => 1,
             'assessorid' => $this->teacher->id,
             'stage_identifier' => 'assessor_1',
         ];

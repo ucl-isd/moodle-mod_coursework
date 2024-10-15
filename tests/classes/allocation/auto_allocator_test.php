@@ -102,7 +102,7 @@ final class auto_allocator_test extends advanced_testcase {
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
             'assessorid' => 555,
-            'manual' => 1,
+            'ismanual' => 1,
         ];
         $otherallocation = \mod_coursework\models\allocation::build($params);
         $otherallocation->save();

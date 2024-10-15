@@ -285,7 +285,7 @@ class upload {
         $addallocation->id = '';
         $addallocation->courseworkid = $this->coursework->id;
         $addallocation->assessorid = $assessorid;
-        $addallocation->manual = 1;
+        $addallocation->ismanual = 1;
         $addallocation->stage_identifier = $stageidentifier;
         $addallocation->allocatableid = $allocatable->id();
         $addallocation->allocatabletype = $allocatable->type();
@@ -308,7 +308,7 @@ class upload {
 
         $updateallocation = new \stdClass();
         $updateallocation->id = $allocationid;
-        $updateallocation->manual = 1;
+        $updateallocation->ismanual = 1;
         $updateallocation->assessorid = $assessorid;
 
         $update = $DB->update_record('coursework_allocation_pairs', $updateallocation);
