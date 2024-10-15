@@ -29,7 +29,6 @@ Feature: Multiple assessors simple grading form
     And I wait "2" seconds
     Then I should see "56" in the "table.assessors_expanded tr.assessor_1 td.assessor_feedback_grade" "css_element"
 
-
   @javascript
   Scenario: Grade comments can be saved
     Given I am logged in as a teacher
@@ -70,6 +69,7 @@ Feature: Multiple assessors simple grading form
     And I wait until the page is ready
     And the field "Comment" matches value "New comment here"
 
+  @javascript
   Scenario: Grades can not be edited by other teachers
     Given there is a teacher
     And there is another teacher
@@ -96,16 +96,18 @@ Feature: Multiple assessors simple grading form
     And I wait "2" seconds
     And I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
     Then I should see "2" elements in "Upload a file" filemanager
-
     When I press "Save and finalise"
     And I visit the coursework page
+    And I expand the coursework grading row
     And I click on the only interactable link with title "Edit feedback"
     And I wait "1" seconds
     Then I should see "2" elements in "Upload a file" filemanager
 
+  @javascript
   Scenario: I should not see the feedback icon when the submission has not been finalised
     Given I am logged in as a teacher
     And I visit the coursework page
+    And I expand the coursework grading row
     Then I should not see a link to add feedback
 
   @javascript
