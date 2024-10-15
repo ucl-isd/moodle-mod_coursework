@@ -20,10 +20,9 @@ Feature: Adding feedback using the built in Moodle rubrics
     Given there is a rubric defined for the coursework
     Given I visit the coursework page
     When I click the new single final feedback button for the student
-#    And I wait "300" seconds
-    And I grade by filling the rubric with:
-            | first criterion | 1 | Very good                  |
+    And I click on "//td[contains(concat(' ', normalize-space(@class), ' '), ' level ')][./descendant::span[@class='scorevalue'][text()='1']]" "xpath_element"
     And I set the field "Comment" to "New comment here"
+    And I wait "300" seconds
     And I press "Save and finalise"
     And I wait "1" seconds
     And I should see "Your data has been saved."
