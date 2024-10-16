@@ -1,4 +1,4 @@
-@mod @mod_coursework @mod_coursework_multiple_assessors
+@mod @mod_coursework @mod_coursework_feedback_multiple_assessors
 Feature: Multiple assessors simple grading form
 
     As a teacher
@@ -17,28 +17,19 @@ Feature: Multiple assessors simple grading form
     And the student has a submission
 
   @javascript
-  Scenario: Grades can be saved
+  Scenario: Grade and comments can be saved
     Given I am logged in as a teacher
     And the submission is finalised
     And I visit the coursework page
     And I expand the coursework grading row
     And I click on the only interactable link with title "New feedback"
-    When I grade the submission using the ajax form
-    And I visit the coursework page
-    And I expand the coursework grading row
-    And I wait "2" seconds
-    Then I should see "56" in the "table.assessors_expanded tr.assessor_1 td.assessor_feedback_grade" "css_element"
-
-  @javascript
-  Scenario: Grade comments can be saved
-    Given I am logged in as a teacher
-    And the submission is finalised
-    And I visit the coursework page
-    And I expand the coursework grading row
-    And I click on the only interactable link with title "New feedback"
-    When I grade the submission using the ajax form
+    And I set the field "Grade" to "52"
+    And I set the feedback comment to "Some new comment 3"
+    And I click on "Save and finalise" "button"
+    And I wait "1" seconds
     And I visit the edit feedback page
-    And the field "Comment" matches value "New comment here"
+    And the field "Grade" matches value "52"
+    And the field "Comment" matches value "Some new comment 3"
 
   @javascript @_file_upload
   Scenario: Grade files can be saved
@@ -117,7 +108,8 @@ Feature: Multiple assessors simple grading form
     And I visit the coursework page
     And I expand the coursework grading row
     And I click on the only interactable link with title "New feedback"
-    When I grade the submission using the ajax form
+    When I grade the submission as 56 using the ajax form with comment "A test comment 9"
     And I visit the coursework page
+    And I wait "1" seconds
     And I expand the coursework grading row
     Then I should see the grade on the page

@@ -2291,21 +2291,20 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * Launch the grade submission modal and complete with grade/comment.
-     * @When /^I grade the submission(?: as )?(\d+)? using the ajax form$/
+     * @When /^I grade the submission(?: as )?(\d+)? using the ajax form( with comment "(?P<comment_string>(?:[^"]|\\")*)")?$/
      *
      * @param int $grade
-     * @param bool $withoutcomments
+     * @param string $withcomment
+     * @param string $comment
      * @throws Behat\Mink\Exception\ElementException
      * @throws Behat\Mink\Exception\ElementNotFoundException
      */
-    public function i_grade_the_submission_using_the_ajax_form($grade = 56) {
+    public function i_grade_the_submission_using_the_ajax_form($grade = 56, $withcomment, $comment = "New comment") {
         // Form loaded and sent by AJAX now so wait for it to load.
         $this->wait_for_pending_js();
         $this->wait_for_seconds(1);
         $this->execute('behat_forms::i_set_the_field_to', [$this->escape("Grade"), $grade]);
-        $this->execute(
-            'behat_forms::i_set_the_field_to', [$this->escape("Comment"), "New comment here"]
-        );
+        self::i_set_the_feedback_comment_to($comment);
         $this->wait_for_pending_js();
         $this->execute(
             'behat_general::i_click_on', [get_string('saveandfinalise', 'coursework'), 'button']
@@ -2314,6 +2313,17 @@ class behat_mod_coursework extends behat_base {
         $this->wait_for_seconds(2);
         $this->assertSession()->pageTextContains(get_string('alert_feedback_save_successful', 'coursework'));
         $this->feedback = feedback::last();
+    }
+
+    /**
+     * @Given /^I set the feedback comment to "(?P<comment_string>(?:[^"]|\\")*)"$/
+     * @param string $comment
+     * @throws coding_exception
+     */
+    public function i_set_the_feedback_comment_to(string $comment) {
+        $script = '$("textarea#id_feedbackcomment").val("' . $comment . '");';
+        echo "\nscript $script";
+        behat_base::execute_script_in_session($this->getSession(), $script);
     }
 
     /**
