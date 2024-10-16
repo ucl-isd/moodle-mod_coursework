@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_feedback_group_feedback_for_students
 Feature: Students see feedback on group assignments
 
     As a student
