@@ -1430,21 +1430,24 @@ function course_group_member_removed($eventdata) {
 function can_delete_allocation($courseworkid, $allocatableid) {
     global $DB;
 
-    // check if allocation is pinned or already graded by an assessor / 1st stage only!
-    $ungradedallocations = $DB->get_record_sql("SELECT *
-                                                    FROM {coursework_allocation_pairs} p
-                                                    WHERE courseworkid = :courseworkid
-                                                    AND p.manual = 0
-                                                    AND stage_identifier = 'assessor_1'
-                                                    AND allocatableid = :allocatableid
-                                                    AND NOT EXISTS (SELECT 1
-                                                                    FROM {coursework_submissions} s
-                                                                    INNER JOIN {coursework_feedbacks} f ON f.submissionid = s.id
-                                                                    WHERE s.allocatableid = p.allocatableid
-                                                                    AND s.allocatabletype = p.allocatabletype
-                                                                    AND s.courseworkid = p.courseworkid
-                                                                    AND f.stage_identifier = p.stage_identifier)",
-                            ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid]);
+    // Check if allocation is pinned or already graded by an assessor / 1st stage only!
+    $sql = "SELECT *
+        FROM {coursework_allocation_pairs} p
+        WHERE courseworkid = :courseworkid
+        AND p.ismanual = 0
+        AND stage_identifier = 'assessor_1'
+        AND allocatableid = :allocatableid
+        AND NOT EXISTS (
+            SELECT 1
+            FROM {coursework_submissions} s
+            INNER JOIN {coursework_feedbacks} f ON f.submissionid = s.id
+            WHERE s.allocatableid = p.allocatableid
+            AND s.allocatabletype = p.allocatabletype
+            AND s.courseworkid = p.courseworkid
+            AND f.stage_identifier = p.stage_identifier
+        )";
+
+    $ungradedallocations = $DB->get_record_sql($sql, ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid]);
 
     return $ungradedallocations;
 }
