@@ -105,7 +105,8 @@ function mod_coursework_pluginfile($course, $cm, $context, $filearea, $args, $fo
         $fullpath = "/{$context->id}/mod_coursework/submission/{$submission->id}/{$relativepath}";
 
         $fs = get_file_storage();
-        if (!$file = $fs->get_file_by_hash(sha1($fullpath)) || $file->is_directory()) {
+        $file = $fs->get_file_by_hash(sha1($fullpath));
+        if (!$file || $file->is_directory()) {
             return false;
         }
         send_stored_file($file, 0, 0, true); // Download MUST be forced - security!
@@ -132,7 +133,8 @@ function mod_coursework_pluginfile($course, $cm, $context, $filearea, $args, $fo
                 "{$feedback->id}/{$relativepath}";
 
             $fs = get_file_storage();
-            if (!$file = $fs->get_file_by_hash(sha1($fullpath)) || $file->is_directory()) {
+            $file = $fs->get_file_by_hash(sha1($fullpath));
+            if (!$file || $file->is_directory()) {
                 return false;
             }
             send_stored_file($file, 0, 0, true);
