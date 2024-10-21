@@ -2209,13 +2209,14 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Then /^I should see the grade comment (?:as ")?(\w+)?(?:" )?in the form on the page$/
+     * @Then /^the grade comment textarea field matches "(?P<comment_string>(?:[^"]|\\")*)"$/
      * @param string $expectedvalue
      */
-    public function i_should_see_the_grade_comment_in_the_form_on_the_page($expectedvalue = 'New comment here') {
-        $commentfield = $this->find('css', '#feedback_comment');
-        if ($commentfield->getValue() != $expectedvalue) {
-            throw new ExpectationException("Expected comment $expectedvalue got " . $commentfield->getValue(), $this->getSession());
+    public function the_grade_comment_textarea_field_matches($expectedvalue) {
+        $script = "document.querySelector('textarea#id_feedbackcomment').value;";
+        $actual = strip_tags(behat_base::evaluate_script_in_session($this->getSession(), $script));
+        if ($actual != $expectedvalue) {
+            throw new ExpectationException("Expected comment '$expectedvalue' got '$actual'", $this->getSession());
         }
     }
 
@@ -2291,15 +2292,14 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * Launch the grade submission modal and complete with grade/comment.
-     * @When /^I grade the submission(?: as )?(\d+)? using the ajax form( with comment "(?P<comment_string>(?:[^"]|\\")*)")?$/
+     * @When /^I grade the submission(?: as )?(\d+)? using the ajax form(?: with comment "(?P<comment_string>(?:[^"]|\\")*)")?$/
      *
      * @param int $grade
-     * @param string $withcomment
      * @param string $comment
      * @throws Behat\Mink\Exception\ElementException
      * @throws Behat\Mink\Exception\ElementNotFoundException
      */
-    public function i_grade_the_submission_using_the_ajax_form($grade = 56, $withcomment, $comment = "New comment") {
+    public function i_grade_the_submission_using_the_ajax_form($grade = 56, $comment = "New comment") {
         // Form loaded and sent by AJAX now so wait for it to load.
         $this->wait_for_pending_js();
         $this->wait_for_seconds(1);
@@ -2321,8 +2321,7 @@ class behat_mod_coursework extends behat_base {
      * @throws coding_exception
      */
     public function i_set_the_feedback_comment_to(string $comment) {
-        $script = '$("textarea#id_feedbackcomment").val("' . $comment . '");';
-        echo "\nscript $script";
+        $script ="document.querySelector('textarea#id_feedbackcomment').value = '$comment'";
         behat_base::execute_script_in_session($this->getSession(), $script);
     }
 

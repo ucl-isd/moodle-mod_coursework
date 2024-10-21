@@ -58,7 +58,7 @@ Feature: Multiple assessors simple grading form
     And I expand the coursework grading row
     And I click on the only interactable link with title "Edit feedback"
     And I wait until the page is ready
-    And the field "Comment" matches value "New comment here"
+    And the grade comment textarea field matches "New comment here"
 
   @javascript
   Scenario: Grades can not be edited by other teachers

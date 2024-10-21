@@ -37,7 +37,7 @@ Feature: Adding and editing final feedback
     And I wait until the page is ready
     And I wait "1" seconds
     And the field "Grade" matches value "58"
-    And the field "Comment" matches value "New comment here"
+    And the grade comment textarea field matches "New comment"
 
   @javascript
   Scenario: I can be both an initial assessor and the manager who agrees grades

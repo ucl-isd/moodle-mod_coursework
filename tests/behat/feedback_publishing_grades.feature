@@ -30,7 +30,7 @@ Feature: publishing grades to the students
     And I wait until the page is ready
     And I wait "1" seconds
     And the field "Grade" matches value "56"
-    And the field "Comment" matches value "New comment here"
+    And the grade comment textarea field matches "New comment"
     And I log out
 
     And I log in as the student

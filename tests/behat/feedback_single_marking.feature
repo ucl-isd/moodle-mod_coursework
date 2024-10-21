@@ -28,7 +28,7 @@ Feature: Adding and editing single feedback
     And I wait until the page is ready
     And I wait "1" seconds
     And the field "Grade" matches value "56"
-    And the field "Comment" matches value "New comment here"
+    And the grade comment textarea field matches "New comment"
 
   Scenario: I should not see the feedback icon when the submission has not been finalised
     And I visit the coursework page
