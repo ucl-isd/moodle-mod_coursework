@@ -228,7 +228,6 @@ $( document ).ready(function() {
     else {
         // Add event listener for opening and closing details.
         $('.datatabletest tbody').on('click', 'td.details-control', function () {
-            console.log('clicking button');
             var tr = $(this).closest("tr");
             var table_key = $(this).closest('.datatabletest').attr('id');
             var table = table_obj_list[table_key];
@@ -239,23 +238,40 @@ $( document ).ready(function() {
                 var table_id = 'assessorfeedbacktable_' + row_id;
                 const oldTable = $('#' + table_id);
                 if (oldTable.length) {
-                    if ( row.child.isShown() ) {
-                        // This row is already open - close it.
-                        row.child.hide();
-                        tr.removeClass('shown');
-                    }
-                    else {
-                        // Open this row.
+                    const subRow = $('#sub-row-' + tr.data('allocatable'));
+                    if (subRow.length === 0) {
+                        // Open this row - create as sub-row.
                         // CTP-3783 As originally written this code cloned the old table and added its HTML again to the new row.
                         // This meant that we had 2 x tables do duplicate IDs, with the old table hidden and new one visible.
-                        // The multiple behat tests failed when trying to click the hidden feedback button not visible one.
+                        // Then multiple behat tests failed when trying to click the hidden feedback button not visible one.
                         const newRow = $(
-                            '<tr class = "submissionrowmultisub"><td class="assessors" colspan = "11"></td></tr>'
+                            '<tr class = "submissionrowmultisub" id="sub-row-' + tr.data('allocatable')
+                                + '"><td class="assessors" colspan = "11"></td></tr>'
                         );
                         oldTable.addClass('assessors_expanded').css('width', '95%').appendTo(newRow.find('td'));
                         oldTable.show();
                         row.child(newRow).show();
                         tr.addClass('shown');
+                    } else {
+                        // Sub-row already exists.
+                        if (subRow.css('display') === 'none') {
+                            subRow.show();
+                            tr.addClass('shown');
+                        } else {
+                            // This row is already open - close it.
+                            tr.removeClass('shown');
+                            subRow.hide();
+                        }
+                    }
+                } else {
+                    // No need to move table - just open/close.
+                    if (subRow.css('display') === 'none') {
+                        subRow.show();
+                        tr.addClass('shown');
+                    } else {
+                        // This row is already open - close it.
+                        subRow.hide();
+                        tr.removeClass('shown');
                     }
                 }
             }

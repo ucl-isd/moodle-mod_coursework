@@ -129,8 +129,8 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
 
         $submission = $rowobject->get_submission();
         $allocatable = $rowobject->get_allocatable();
-
-        $tablehtml = '<tr class="'.$class.'" id="' . $this->grading_table_row_id($rowobject->get_allocatable(), $rowobject->get_coursework()) . '">';
+        $rowid = $this->grading_table_row_id($allocatable, $rowobject->get_coursework());
+        $tablehtml = "<tr class=\"$class\" id=\"$rowid\" data-allocatable=\"$allocatable->id\">";
         $ismultiplemarkers = $this->ismultiplemarkers;
         $tblassessorfeedbacks = $subrowhelper->get_row_with_assessor_feedback_table($rowobject, count($cellhelpers));
         if ($ismultiplemarkers) {

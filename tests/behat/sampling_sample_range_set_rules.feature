@@ -21,6 +21,7 @@ Feature: Automatic sample based on range set grades using marking of students in
     And I am logged in as a teacher
     And I visit the coursework page
     And I expand the coursework grading row 1
+    And I wait "1" seconds
     And I click on the new feedback button for assessor 1
     And I grade the submission as 56 using the ajax form
     And I wait "1" seconds
@@ -32,14 +33,12 @@ Feature: Automatic sample based on range set grades using marking of students in
     And I grade the submission as 45 using the ajax form
     And I log out
 
+  @javascript
   Scenario: Automatically allocating a set of students within specified grade rule range in stage 2 based on stage 1 grades
     Given I am logged in as a manager
     And I visit the allocations page
+    And I wait "1" seconds
     And I enable automatic sampling for stage 2
-#    line above causes this
-#  javascript error: {"status":11,"value":"Element is not currently visible and may not be manipulated"}
-#  (Session info: chrome=129.0.6668.58) (Facebook\WebDriver\Exception\JavascriptErrorException)
-
     And show me the page
     And I enable grade range rule 1 for stage 2
     And I select limit type for grade range rule 1 in stage 2 as "grade"
@@ -59,6 +58,7 @@ Feature: Automatic sample based on range set grades using marking of students in
     #Then a student should be automatically included in sample for stage 2
     #And another student should be automatically included in sample for stage 2
 
+  @javascript
   Scenario: Automatically allocating a set of students within specified percentage rule range in stage 3 based on stage 2 grades
     Given I am logged in as a manager
     And I visit the allocations page
@@ -68,6 +68,7 @@ Feature: Automatic sample based on range set grades using marking of students in
     And I save sampling strategy
     And I visit the coursework page
     And I expand the coursework grading row 1
+    And I wait "1" seconds
     And I click on the new feedback button for assessor 2
     And I grade the submission as 60 using the simple form
     And I expand the coursework grading row 2

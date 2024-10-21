@@ -148,10 +148,18 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
     }
 
     /**
+     * Enable automatic sampling.
      * @param $stage
      * @throws ElementNotFoundException
      */
     public function enable_atomatic_sampling_for($stage) {
+        $heading = "#sampling_strategy_settings_header";
+        $node = $this->getPage()->find('css', $heading);
+        if ($node) {
+            // Expand the heading.
+            $node->click();
+            $this->getSession()->wait(1);
+        }
         $elementid = '#assessor_'.$stage.'_samplingstrategy';
         $node = $this->getPage()->find('css', $elementid);
 
