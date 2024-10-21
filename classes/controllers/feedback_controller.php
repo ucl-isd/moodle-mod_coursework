@@ -316,7 +316,11 @@ class feedback_controller extends controller_base {
             }
         } else {
             if ($ajax) {
-                echo json_encode(['success' => false, 'message' => get_string('guidenotcompleted', 'gradingform_guide')]);
+                echo json_encode([
+                    'success' => false,
+                    'message' => get_string('guidenotcompleted', 'gradingform_guide'),
+                    'code' => 'guidenotcompleted',
+                ]);
             } else {
                 $renderer = $this->get_page_renderer();
                 $renderer->new_feedback_page($teacherfeedback);

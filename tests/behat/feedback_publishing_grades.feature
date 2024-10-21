@@ -57,5 +57,5 @@ Feature: publishing grades to the students
     And I visit the coursework page
     And I wait "2" seconds
     Then I should see the final grade on the student page
-    And I wait "100" seconds
+    And I wait "1" seconds
     And I should see the grade comment on the student page

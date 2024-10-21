@@ -22,8 +22,9 @@ Feature: Adding feedback using the built in Moodle rubrics
     When I click the new single final feedback button for the student
     And I click on "//td[contains(concat(' ', normalize-space(@class), ' '), ' level ')][./descendant::span[@class='scorevalue'][text()='1']]" "xpath_element"
     And I set the field "Comment" to "New comment here"
-    And I wait "300" seconds
+    And I wait "1" seconds
     And I press "Save and finalise"
+    # TODO line above causes this:  "Please provide a valid grade for each criterion"
     And I wait "1" seconds
     And I should see "Your data has been saved."
     And I log out
