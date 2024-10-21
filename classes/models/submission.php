@@ -415,7 +415,6 @@ class submission extends table_base implements \renderable {
     /**
      * Gets all attached feedbacks, fetching from DB if not already there.
      *
-     * @global moodle_database $DB
      * @return feedback[] array of raw db records
      */
     public function get_feedbacks() {
@@ -428,16 +427,6 @@ class submission extends table_base implements \renderable {
         }
 
         return $this->feedbacks;
-    }
-
-    /**
-     * Gets the first feedback that was submitted chronologically for this submission.
-     *
-     * @return mixed
-     */
-    public function get_first_feedback() {
-        $feedback = reset($this->get_feedbacks());
-        return $feedback;
     }
 
     /**
