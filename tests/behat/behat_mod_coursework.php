@@ -2267,13 +2267,24 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * Check rubric comment on student page.
+     * @Then /^I should see the rubric comment "(?P<comment_string>(?:[^"]|\\")*)"$/
+     */
+    public function i_should_see_the_rubric_comment_on_the_page(string $comment) {
+        $celltext = $this->find('css', '#rubric-rubric0 td.remark')->getText();
+        if ($comment !== $celltext) {
+            throw new ExpectationException("Expected commennt '$comment' got '$celltext'", $this->getSession());
+        }
+    }
+
+    /**
      * @When /^I grade the submission(?: as )?(\d+)?( without comments)? using the simple form$/
      *
      * @param int $grade
      * @throws Behat\Mink\Exception\ElementException
      * @throws Behat\Mink\Exception\ElementNotFoundException
      */
-    public function i_grade_the_submission_using_the_simple_form($grade = 56, $withoutcomments=false) {
+    public function i_grade_the_submission_using_the_simple_form($grade = 56, $withoutcomments = false) {
         $nodeelement = $this->getSession()->getPage()->findById('feedback_grade');
         if ($nodeelement) {
             $nodeelement->selectOption($grade);
@@ -2323,6 +2334,21 @@ class behat_mod_coursework extends behat_base {
      */
     public function i_set_the_feedback_comment_to(string $comment) {
         $script ="document.querySelector('textarea#id_feedbackcomment').value = '$comment'";
+        behat_base::execute_script_in_session($this->getSession(), $script);
+    }
+
+    /**
+     * Complete a rubric form.
+     * @Given /^I click the rubric score box "(\d+)?" and add the comment "(?P<comment_string>(?:[^"]|\\")*)"$/
+     * @param string $boxnumber
+     * @param string $comment
+     * @throws coding_exception
+     */
+    public function i_click_the_rubric_box_and_set_comment($boxnumber, $comment) {
+        $script ="document.querySelectorAll('#rubric-advancedgrading input[type=\"radio\"]')[" . $boxnumber . "].click();";
+        behat_base::execute_script_in_session($this->getSession(), $script);
+
+        $script ="(document.querySelector('td.remark textarea')).value = '" . $comment . "';";
         behat_base::execute_script_in_session($this->getSession(), $script);
     }
 
@@ -2417,16 +2443,16 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Then /^I should see the rubric grade in the gradebook$/
+     * @Then /^I should see the rubric grade "(\d+)" in the gradebook$/
      */
-    public function i_should_see_the_rubric_grade_in_the_gradebook() {
+    public function i_should_see_the_rubric_grade_in_the_gradebook(string $grade) {
         /**
          * @var mod_coursework_behat_gradebook_page $page
          */
         $page = $this->get_page('gradebook page');
-        $grade = $page->get_coursework_grade_for_student($this->coursework);
-        if ($grade != 50) {
-            throw new ExpectationException("Expected grade '50' found '$grade'", $this->getSession());
+        $actual = $page->get_coursework_grade_for_student($this->coursework);
+        if ($actual != $grade) {
+            throw new ExpectationException("Expected grade '$grade' found '$actual'", $this->getSession());
         }
     }
 

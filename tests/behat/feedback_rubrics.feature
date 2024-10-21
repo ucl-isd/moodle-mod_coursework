@@ -20,11 +20,8 @@ Feature: Adding feedback using the built in Moodle rubrics
     Given there is a rubric defined for the coursework
     Given I visit the coursework page
     When I click the new single final feedback button for the student
-    And I click on "//td[contains(concat(' ', normalize-space(@class), ' '), ' level ')][./descendant::span[@class='scorevalue'][text()='1']]" "xpath_element"
-    And I set the field "Comment" to "New comment here"
-    And I wait "1" seconds
+    And I click the rubric score box "1" and add the comment "New comment here"
     And I press "Save and finalise"
-    # TODO line above causes this:  "Please provide a valid grade for each criterion"
     And I wait "1" seconds
     And I should see "Your data has been saved."
     And I log out
@@ -36,24 +33,25 @@ Feature: Adding feedback using the built in Moodle rubrics
     And I log in as a student
     And I visit the coursework page
     Then I should see the rubric grade on the page
-    And I should see the grade comment on the student page
+    And I should see the rubric comment "New comment here"
 
-#  TODO fix this broken test.
-#  @broken @javascript
-#  Scenario: I should see the rubric grade show up in the gradebook
-#    Given there is a rubric defined for the coursework
-#    Given I visit the coursework page
-#    When I click the new single final feedback button for the student
-#    And I grade by filling the rubric with:
-#            | first criterion | 1 | Very good |
-#    And I fill in the rest of the form after the rubric and submit it
-#    And I log out
-#    And I log in as a manager
-#    And I visit the coursework page
-#    And I publish the grades
-#    And I log out
-#    And I log in as a student
-#    When I visit the gradebook page
-#    Then I should see the rubric grade in the gradebook
-#    When I visit the coursework page
-#    And I should see the grade comment on the student page
+ @javascript
+  Scenario: I should see the rubric grade show up in the gradebook
+    Given there is a rubric defined for the coursework
+    Given I visit the coursework page
+    When I click the new single final feedback button for the student
+    # Box 2 is very good so 100%, Box 0 is bad so zero.
+    And I click the rubric score box "2" and add the comment "Very good"
+    And I press "Save and finalise"
+    And I log out
+    And I log in as a manager
+    And I visit the coursework page
+    And I publish the grades
+    And I log out
+    And I log in as a student
+    When I visit the gradebook page
+    And I wait until the page is ready
+    And I wait "1" seconds
+    Then I should see the rubric grade "100" in the gradebook
+    When I visit the coursework page
+    And I should see the rubric comment "Very good"

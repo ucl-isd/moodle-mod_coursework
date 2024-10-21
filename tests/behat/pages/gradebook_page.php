@@ -34,19 +34,15 @@ require_once($CFG->dirroot . '/mod/coursework/tests/behat/pages/page_base.php');
 class mod_coursework_behat_gradebook_page extends mod_coursework_behat_page_base {
 
     /**
+     * Get coursework grade shown in gradebook page.
      * @param object $coursework
      * @return string
      */
     public function get_coursework_grade_for_student($coursework) {
-        global $CFG;
-
-        // This changed in 2.8, so we need a different selector
-        if ((float)substr($CFG->release, 0, 5) > 2.6) { // 2.8 > 2.6
-            $locator = '//th[a[contains(text(), "' . $coursework->name . '")]]/following-sibling::td[2]';
-        } else {
-            $locator = '//th[a[contains(text(), "' . $coursework->name . '")]]/following-sibling::td[1]';
-        }
-        $gradecell = $this->getPage()->find('xpath', $locator);
-        return $gradecell ? $gradecell->getText() : '';
+        // Get the second column in the row of the grades table which contains our coursework.
+        $columnnumber = 2;
+        $script = "Array.from(document.querySelectorAll('table.user-grade th a')).find(el => el.textContent === '"
+            . $coursework->name . "').closest('tr').children[" . $columnnumber . "].innerHTML;";
+        return \behat_base::evaluate_script_in_session($this->getSession(), $script);
     }
 }
