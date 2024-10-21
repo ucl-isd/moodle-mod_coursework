@@ -88,6 +88,7 @@ class upload {
         }
 
         while ($line = $csvreader->next()) {
+            $allocatable = null;
 
             $cells = $csvcells;
             $assessorsinfile = [];
@@ -140,11 +141,17 @@ class upload {
                         $errors[$s] = get_string('assessornotincoursework', 'coursework', $keynum ); continue;
                     }
 
-                    // check if current assessor is not already allocated for this allocatable in different stage
-                    // or is not already in the file in previous stage
-                    if ($assessor && ($this->coursework->assessor_has_allocation_for_student_not_in_current_stage($allocatable, $assessor->id, $cells[$keynum])
-                        || in_array($assessor->id, $assessorsinfile))) {
-                        $errors[$s] = get_string('assessoralreadyallocated', 'coursework', $keynum); continue;
+                    // Check if current assessor is not already allocated for this allocatable in different stage.
+                    // Or is not already in the file in previous stage.
+                    if ($assessor) {
+                        $iserror = ($allocatable
+                            && $this->coursework->assessor_has_allocation_for_student_not_in_current_stage(
+                                $allocatable, $assessor->id, $cells[$keynum])
+                            )
+                            || in_array($assessor->id, $assessorsinfile);
+                        if ($iserror) {
+                            $errors[$s] = get_string('assessoralreadyallocated', 'coursework', $keynum); continue;
+                        }
                     }
                     $assessorsinfile[] = $assessor->id;
 
@@ -216,6 +223,7 @@ class upload {
             }
 
             foreach ($line as $keynum => $value) {
+                $allocatable = null;
 
                 // create record in coursework_allocation_pairs
                 // or update it
@@ -233,7 +241,7 @@ class upload {
                         $allocatable = ($suballocatable) ? \mod_coursework\models\group::find($suballocatable->id) : '';
                     }
                 }
-                if (substr($cells[$keynum], 0, 8) == 'assessor' && !(empty($value))) {
+                if ($allocatable && substr($cells[$keynum], 0, 8) == 'assessor' && !(empty($value))) {
 
                     $assessor = $DB->get_record('user', [$assessoridentifier => $value]);
 
