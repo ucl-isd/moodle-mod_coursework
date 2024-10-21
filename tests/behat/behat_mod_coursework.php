@@ -1883,18 +1883,19 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I should( not)? see the grade comment on the student page$/
-     * @param bool $negate
+     * @Given /^I (should|should not) see the grade comment( "(?P<comment_string>(?:[^"]|\\")*)")? on the student page$/
+     * @param string $shouldornot
+     * @param string $comment
      */
-    public function i_should_see_the_grade_comment_on_the_student_page($negate = false) {
+    public function i_should_see_the_grade_comment_on_the_student_page(string $shouldornot, string $comment = 'New comment') {
 
-        if ($negate) {
+        if ($shouldornot == 'should not') {
             $this->ensure_element_does_not_exist('#final_feedback_comment', 'css_element');
         } else {
             $commentfield = $this->find('css', '#final_feedback_comment');
             $text = $commentfield->getText();
-            if ($text != 'New comment here') {
-                throw new ExpectationException("Unexpected comment '$text'", $this->getSession());
+            if ($text != $comment) {
+                throw new ExpectationException("Got comment '$text' expected '$comment'", $this->getSession());
             }
         }
     }
