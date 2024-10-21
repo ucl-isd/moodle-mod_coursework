@@ -153,17 +153,25 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @throws ElementNotFoundException
      */
     public function enable_atomatic_sampling_for($stage) {
-        $heading = "#sampling_strategy_settings_header";
-        $node = $this->getPage()->find('css', $heading);
-        if ($node) {
-            // Expand the heading.
-            $node->click();
-            $this->getSession()->wait(1);
-        }
         $elementid = '#assessor_'.$stage.'_samplingstrategy';
         $node = $this->getPage()->find('css', $elementid);
-
-        $node->selectOption('Automatic');
+        if (!$node->isVisible()) {
+            $heading = "#sampling_strategy_settings_header";
+            $headingnode = $this->getPage()->find('css', $heading);
+            $this->getSession()->wait(1);
+            if ($headingnode && $headingnode->isVisible()) {
+                // Expand the heading.
+                $headingnode->click();
+                $this->getSession()->wait(1);
+            }
+            if (!$node->isVisible()) {
+                throw new \Behat\Mink\Exception\ElementNotFoundException(
+                    $this->getSession(), "Could not click menu to set sampling strategy"
+                );
+            } else {
+                $node->selectOption('Automatic');
+            }
+        }
     }
 
     /**
