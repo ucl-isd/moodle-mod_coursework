@@ -36,6 +36,10 @@ Feature: Automatic sample based on range set grades using marking of students in
     Given I am logged in as a manager
     And I visit the allocations page
     And I enable automatic sampling for stage 2
+#    line above causes this
+#  javascript error: {"status":11,"value":"Element is not currently visible and may not be manipulated"}
+#  (Session info: chrome=129.0.6668.58) (Facebook\WebDriver\Exception\JavascriptErrorException)
+
     And show me the page
     And I enable grade range rule 1 for stage 2
     And I select limit type for grade range rule 1 in stage 2 as "grade"
