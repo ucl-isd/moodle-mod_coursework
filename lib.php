@@ -816,30 +816,6 @@ function coursework_supports($feature) {
 }
 
 /**
- * Puts items in order of their configured display order within forms data, so that responses are
- * always displayed the same way the form was when the respondents filled it in.
- *
- * @param $data
- * @return array
- */
-function sortdata($data) {
-
-    for ($i = 0; $i < count($data); $i++) {
-        if (isset($data[$i - 1]->display_order) &&
-            $data[$i]->display_order < $data[$i - 1]->display_order
-        ) {
-
-            $currentobject = $data[$i];
-            $data[$i] = $data[$i - 1];
-            $data[$i - 1] = $currentobject;
-
-            $data = sortdata($data);
-        }
-    }
-    return $data;
-}
-
-/**
  * Returns submission details for a plagiarism file submission.
  *
  * @param int $cmid
