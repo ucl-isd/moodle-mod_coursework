@@ -117,7 +117,8 @@ class single_assessor_feedback_cell extends cell_base {
             $content .= 'by: ' . $feedback->get_assesor_username();
             $content .= html_writer::empty_tag('br');
             if ($this->coursework->allocation_enabled() && !empty($allocation) && $allocation->assessor()->id != $feedback->get_assessor_id()) {
-                $content .= '(Allocated to ' . fullname($allocation->assessor()) . ')';
+                $fullname = \core_user::get_fullname((object)(array)$allocation->assessor());
+                $content .= '(Allocated to ' . $fullname . ')';
             }
 
         } else if ($this->coursework->allocation_enabled()) {

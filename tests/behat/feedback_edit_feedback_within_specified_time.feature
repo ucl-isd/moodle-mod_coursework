@@ -5,6 +5,7 @@ Feature: Allow markers to edit their marking but only during specific marking st
   I want to be able to edit my initial marking if I have made a mistake.
   So that if the marking stage is at final agreed grading there is a time window for initial marks edition to happen
 
+
   Background:
     Given there is a course
     And there is a coursework
@@ -14,6 +15,7 @@ Feature: Allow markers to edit their marking but only during specific marking st
     And there is a teacher
     And there is another teacher
     And there is a student
+    And there is a manager
     And the student has a submission
     And the submission is finalised
 
@@ -34,38 +36,57 @@ Feature: Allow markers to edit their marking but only during specific marking st
     And I expand the coursework grading row
     Then I should not see the edit feedback button for the teacher's feedback
 
-#    // todo this test is not working as the students are not shown as allocated to the teachers
-#  @javascript
-#  Scenario: Automatic agreement before delayed time
-#    Given the coursework "automaticagreementstrategy" setting is "percentage_distance" in the database
-#    And the coursework "automaticagreementrange" setting is "10" in the database
-#    And I am logged in as a teacher
-#    And I visit the coursework page
-#    And I expand the coursework grading row
-#    And I click on the only interactable link with title "New feedback"
-#    And I grade the submission as 67 using the ajax form
-#    And I log out
-#
-#    And I log in as the other teacher
-#    And I visit the coursework page
-#    And I expand the coursework grading row
-#    And I click on the only interactable link with title "New feedback"
-#    And I grade the submission as 63 using the ajax form
-#    And I visit the coursework page
-#    Then I should not see the final grade on the multiple marker page
-
   @javascript
-  Scenario: Automatic agreement after delayed time
+  Scenario: Automatic agreement before delayed time
     Given the coursework "automaticagreementstrategy" setting is "percentage_distance" in the database
     And the coursework "automaticagreementrange" setting is "10" in the database
+
+    And there are no allocations in the db
+    And I log in as a manager
+    And I visit the allocations page
+    And I manually allocate the student to the teacher
+    And I manually allocate the student to the other teacher for the second assessment
+    And I save everything
+    And I log out
+
     And I am logged in as a teacher
     And I visit the coursework page
+    And I expand the coursework grading row
     And I click on the only interactable link with title "New feedback"
     And I grade the submission as 67 using the ajax form
     And I log out
 
     And I log in as the other teacher
     And I visit the coursework page
+    And I expand the coursework grading row
+    And I click on the only interactable link with title "New feedback"
+    And I grade the submission as 63 using the ajax form
+    And I visit the coursework page
+    Then I should not see the final grade on the multiple marker page
+
+  @javascript
+  Scenario: Automatic agreement after delayed time
+    Given the coursework "automaticagreementstrategy" setting is "percentage_distance" in the database
+    And the coursework "automaticagreementrange" setting is "10" in the database
+
+    And there are no allocations in the db
+    And I log in as a manager
+    And I visit the allocations page
+    And I manually allocate the student to the teacher
+    And I manually allocate the student to the other teacher for the second assessment
+    And I save everything
+    And I log out
+
+    And I log in as a teacher
+    And I visit the coursework page
+    And I expand the coursework grading row 1
+    And I click on the only interactable link with title "New feedback"
+    And I grade the submission as 67 using the ajax form
+    And I log out
+
+    And I log in as the other teacher
+    And I visit the coursework page
+    And I expand the coursework grading row 1
     And I click on the only interactable link with title "New feedback"
     And I grade the submission as 63 using the ajax form
     And I wait "50" seconds

@@ -104,7 +104,8 @@ class moderation_agreement_cell extends cell_base {
             $content .= 'by: ' . $moderation->get_moderator_username();
             $content .= html_writer::empty_tag('br');
             if ($this->coursework->allocation_enabled() && !empty($allocation) && $allocation->assessor()->id != $moderation->get_moderator_id()) {
-                $content .= '(Allocated to ' . fullname($allocation->assessor()) . ')';
+                $fullname = \core_user::get_fullname((object)(array)$allocation->assessor());
+                $content .= '(Allocated to ' . fullname($fullname) . ')';
             }
 
         } else if ($this->coursework->allocation_enabled()) {
