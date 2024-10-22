@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_feedback_multiple_assessors
 Feature: Multiple assessors simple grading form
 
     As a teacher
@@ -16,43 +16,51 @@ Feature: Multiple assessors simple grading form
     And there is a student
     And the student has a submission
 
-  Scenario: Grades can be saved
-    Given I am logged in as a teacher
-    And the submission is finalised
-    And I visit the coursework page
-    And I click on the new feedback button for assessor 1
-    When I grade the submission using the simple form
-    Then I should see the grade on the page
-
-  Scenario: Grade comments can be saved
-    Given I am logged in as a teacher
-    And the submission is finalised
-    And I visit the coursework page
-    And I click on the new feedback button for assessor 1
-    When I grade the submission using the simple form
-    And I visit the edit feedback page
-    Then I should see the grade comment in the form on the page
-
   @javascript
+  Scenario: Grade and comments can be saved
+    Given I am logged in as a teacher
+    And the submission is finalised
+    And I visit the coursework page
+    And I expand the coursework grading row
+    And I click on the only interactable link with title "New feedback"
+    And I set the field "Grade" to "52"
+    And I set the feedback comment to "Some new comment 3"
+    And I click on "Save and finalise" "button"
+    And I wait "1" seconds
+    And I visit the edit feedback page
+    And the field "Grade" matches value "52"
+    And the field "Comment" matches value "Some new comment 3"
+
+  @javascript @_file_upload
   Scenario: Grade files can be saved
     Given I am logged in as a teacher
     And the submission is finalised
     And I visit the coursework page
-    And I click on the new feedback button for assessor 1
+    And I expand the coursework grading row
+    And I wait "1" seconds
+    And I click on the only interactable link with title "New feedback"
     When I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I press "Save and finalise"
-    And I click on the edit feedback icon
-    Then I should be on the edit feedback page
+    And I wait until the page is ready
+    And I visit the coursework page
+    And I expand the coursework grading row
+    And I wait "1" seconds
+    And I click on the only interactable link with title "Edit feedback"
+    And I wait "1" seconds
     Then I should see "1" elements in "Upload a file" filemanager
 
+  @javascript
   Scenario: Grade comments can be edited
     Given I am logged in as a teacher
     And the submission is finalised
-    And I have an assessor feedback
+    And I have an assessor feedback at grade 67
     And I visit the coursework page
-    And I click on the edit feedback icon
-    Then I should see the grade comment in the form on the page
+    And I expand the coursework grading row
+    And I click on the only interactable link with title "Edit feedback"
+    And I wait until the page is ready
+    And the grade comment textarea field matches "New comment here"
 
+  @javascript
   Scenario: Grades can not be edited by other teachers
     Given there is a teacher
     And there is another teacher
@@ -68,29 +76,40 @@ Feature: Multiple assessors simple grading form
     Given I am logged in as a teacher
     And the submission is finalised
     And I visit the coursework page
-    And I click on the new feedback button for assessor 1
+    And I expand the coursework grading row
+    And I click on the only interactable link with title "New feedback"
     And I wait "1" seconds
     When I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I press "Save and finalise"
-    And I click on the edit feedback icon
+    And I visit the coursework page
+    And I expand the coursework grading row
+    And I click on the only interactable link with title "Edit feedback"
     And I wait "2" seconds
     And I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
     Then I should see "2" elements in "Upload a file" filemanager
-
     When I press "Save and finalise"
-    And I click on the edit feedback icon
+    And I visit the coursework page
+    And I expand the coursework grading row
+    And I click on the only interactable link with title "Edit feedback"
     And I wait "1" seconds
     Then I should see "2" elements in "Upload a file" filemanager
 
-  Scenario: I should not see the feedback icon when the submisison has not been finalised
+  @javascript
+  Scenario: I should not see the feedback icon when the submission has not been finalised
     Given I am logged in as a teacher
     And I visit the coursework page
+    And I expand the coursework grading row
     Then I should not see a link to add feedback
 
+  @javascript
   Scenario: managers can grade the initial stages
     Given I am logged in as a manager
     And the submission is finalised
     And I visit the coursework page
-    And I click on the new feedback button for assessor 1
-    When I grade the submission using the simple form
+    And I expand the coursework grading row
+    And I click on the only interactable link with title "New feedback"
+    When I grade the submission as 56 using the ajax form with comment "A test comment 9"
+    And I visit the coursework page
+    And I wait "1" seconds
+    And I expand the coursework grading row
     Then I should see the grade on the page

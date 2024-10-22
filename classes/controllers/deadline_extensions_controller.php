@@ -39,13 +39,14 @@ use mod_coursework\models\user;
  * @property deadline_extension_form form
  * @package mod_coursework\controllers
  */
+#[\AllowDynamicProperties]
 class deadline_extensions_controller extends controller_base {
 
     protected function show_deadline_extension() {
         global $USER, $PAGE;
 
         $ability = new ability(user::find($USER), $this->coursework);
-        $ability->require_can('show', $this->deadline_extension);
+        $ability->require_can('show', $this->deadlineextension);
 
         $PAGE->set_url('/mod/coursework/actions/deadline_extensions/show.php', $this->params);
 
@@ -58,13 +59,13 @@ class deadline_extensions_controller extends controller_base {
         $params = $this->set_default_current_deadline();
 
         $ability = new ability(user::find($USER), $this->coursework);
-        $ability->require_can('new', $this->deadline_extension);
+        $ability->require_can('new', $this->deadlineextension);
 
         $PAGE->set_url('/mod/coursework/actions/deadline_extensions/new.php', $params);
         $createurl = $this->get_router()->get_path('create deadline extension');
 
         $this->form = new deadline_extension_form($createurl, ['coursework' => $this->coursework]);
-        $this->form->set_data($this->deadline_extension);
+        $this->form->set_data($this->deadlineextension);
 
         $this->render_page('new');
 
@@ -86,12 +87,12 @@ class deadline_extensions_controller extends controller_base {
             $data = $this->form->get_data();
             $data->extra_information_text = $data->extra_information['text'];
             $data->extra_information_format = $data->extra_information['format'];
-            $this->deadline_extension = deadline_extension::build($data);
+            $this->deadlineextension = deadline_extension::build($data);
 
             $ability = new ability(user::find($USER), $this->coursework);
-            $ability->require_can('create', $this->deadline_extension);
+            $ability->require_can('create', $this->deadlineextension);
 
-            $this->deadline_extension->save();
+            $this->deadlineextension->save();
             redirect($courseworkpageurl);
         } else {
             $this->set_default_current_deadline();
@@ -106,20 +107,20 @@ class deadline_extensions_controller extends controller_base {
         $params = [
             'id' => $this->params['id'],
         ];
-        $this->deadline_extension = deadline_extension::find($params);
+        $this->deadlineextension = deadline_extension::find($params);
 
         $ability = new ability(user::find($USER), $this->coursework);
-        $ability->require_can('edit', $this->deadline_extension);
+        $ability->require_can('edit', $this->deadlineextension);
 
         $PAGE->set_url('/mod/coursework/actions/deadline_extensions/edit.php', $params);
         $updateurl = $this->get_router()->get_path('update deadline extension');
 
         $this->form = new deadline_extension_form($updateurl, ['coursework' => $this->coursework]);
-        $this->deadline_extension->extra_information = [
-            'text' => $this->deadline_extension->extra_information_text,
-            'format' => $this->deadline_extension->extra_information_format,
+        $this->deadlineextension->extra_information = [
+            'text' => $this->deadlineextension->extra_information_text,
+            'format' => $this->deadlineextension->extra_information_format,
         ];
-        $this->form->set_data($this->deadline_extension);
+        $this->form->set_data($this->deadlineextension);
 
         $this->render_page('edit');
     }
@@ -138,13 +139,13 @@ class deadline_extensions_controller extends controller_base {
          */
 
         $ability = new ability(user::find($USER), $this->coursework);
-        $ability->require_can('update', $this->deadline_extension);
+        $ability->require_can('update', $this->deadlineextension);
 
         $values = $this->form->get_data();
         if ($this->form->is_validated()) {
             $values->extra_information_text = $values->extra_information['text'];
             $values->extra_information_format = $values->extra_information['format'];
-            $this->deadline_extension->update_attributes($values);
+            $this->deadlineextension->update_attributes($values);
             redirect($courseworkpageurl);
         } else {
             $this->render_page('edit');
@@ -163,7 +164,7 @@ class deadline_extensions_controller extends controller_base {
             'allocatabletype' => $this->params['allocatabletype'],
             'courseworkid' => $this->params['courseworkid'],
         ];
-        $this->deadline_extension = deadline_extension::build($params);
+        $this->deadlineextension = deadline_extension::build($params);
         // Default to current deadline
         // check for personal deadline first o
         if ($this->coursework->personaldeadlineenabled) {
@@ -172,7 +173,7 @@ class deadline_extensions_controller extends controller_base {
                 $this->coursework->deadline = $personaldeadline->personal_deadline;
             }
         }
-        $this->deadline_extension->extended_deadline = $this->coursework->deadline;
+        $this->deadlineextension->extended_deadline = $this->coursework->deadline;
         return $params;
     }
 
@@ -194,15 +195,15 @@ class deadline_extensions_controller extends controller_base {
         $data = (object) $dataparams;
         if (!$errors) {
             if ($data->id > 0) {
-                $this->deadline_extension = deadline_extension::find(['id' => $data->id]);
-                $ability->require_can('edit', $this->deadline_extension);
+                $this->deadlineextension = deadline_extension::find(['id' => $data->id]);
+                $ability->require_can('edit', $this->deadlineextension);
                 $data->createdbyid = $USER->id;
-                $this->deadline_extension->update_attributes($data);
+                $this->deadlineextension->update_attributes($data);
             } else {
-                $this->deadline_extension = deadline_extension::build($data);
-                $ability->require_can('new', $this->deadline_extension);
-                $this->deadline_extension->save();
-                $dataparams['id'] = $this->deadline_extension->id;
+                $this->deadlineextension = deadline_extension::build($data);
+                $ability->require_can('new', $this->deadlineextension);
+                $this->deadlineextension->save();
+                $dataparams['id'] = $this->deadlineextension->id;
             }
 
             $content = $this->table_cell_response($dataparams);

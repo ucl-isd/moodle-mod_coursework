@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_feedback_group_marking
 Feature: Marking the group submissions applies the grades to the whole group
 
     As a teacher
@@ -22,10 +22,11 @@ Feature: Marking the group submissions applies the grades to the whole group
     And there are feedbacks from both teachers
     And I am logged in as a manager
 
+  @javascript
   Scenario: grading the submission makes the grades show up for both students in the interface
     Given I visit the coursework page
     When I click the new final feedback button for the group
-    And show me the page
-    And I grade the submission using the simple form
-    Then I should be on the coursework page
+    And I grade the submission as 56 using the ajax form
+    Then I visit the coursework page
+    And I wait "2" seconds
     And I should see the final grade for the group in the grading interface

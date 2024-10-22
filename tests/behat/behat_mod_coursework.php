@@ -578,6 +578,28 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * The UI may contain multiple "New feedback" buttons some of which are not interactable
+     * @Given /^I click on the only interactable link with title "(?P<linktitle_string>(?:[^"]|\\")*)"$/
+     * @param string $linktitle
+     */
+    public function i_click_on_the_only_interactable_link_with_title(string $linktitle) {
+        $nodes = $this->find_all('link', $linktitle);
+        $visible = [];
+        foreach ($nodes as $node) {
+            if ($node->isVisible()) {
+                $visible[] = $node;
+            }
+        }
+        $countvisible = count($visible);
+        if ($countvisible !== 1) {
+            throw new ExpectationException(
+                "Expected one '$linktitle' visible link but found $countvisible", $this->getSession()
+            );
+        }
+        reset($visible)->click();
+    }
+
+    /**
      * @Given /^I click on the new feedback button for assessor (\d+) for another student$/
      * @param $assessornumber
      * @throws coding_exception
@@ -1109,32 +1131,72 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @When /^I add a new extension for the student$/
+     * I enter an extension in the form
+     * @When /^I enter an extension "(?P<time_string>(?:[^"]|\\")*)" in the form(?: with reason code "(?P<reasoncode_string>(?:[^"]|\\")*)")?$/
      */
-    public function i_add_a_new_extension_for_the_student() {
-        /**
-         * @var mod_coursework_behat_multiple_grading_interface $multigrader_page
-         */
-        $multigraderpage = $this->get_page('multiple grading interface');
-        $multigraderpage->click_new_extension_button_for($this->student);
+    public function i_enter_an_extension_in_the_form(string $timeextension, string $reasoncode = '') {
+        $newtime = strtotime('3:30pm', strtotime($timeextension));
+        // Put into format 30-09-2024 15:47.
+        $newtimestring = date('d-m-Y H:i', $newtime);
+        $script = "const e = document.querySelector('input#extension-extend-deadline');"
+            . "e.value = '$newtimestring'; e.dispatchEvent(new Event('change'));";
+        behat_base::execute_script_in_session($this->getSession(), $script);
+        // The change event is to enable save button.
 
-        /**
-         * @var mod_coursework_behat_new_extension_page $new_extension_page
-         */
-        $newextensionpage = $this->get_page('new extension page');
-        $this->extensiondeadline = strtotime('3:30pm', strtotime('+1 week'));
-        $newextensionpage->add_active_extension($this->extensiondeadline);
+        if ($reasoncode) {
+            $reason = '0'; // 0 is "first reason" in the select menu
+            $script = "document.querySelector('select#extension-reason-select').value = '$reason'; ";
+            behat_base::execute_script_in_session($this->getSession(), $script);
+        }
+
+        $extrainfo = 'Some extra information';
+        $script = "document.querySelector('textarea#id_extra_information').value = '$extrainfo'";
+        behat_base::execute_script_in_session($this->getSession(), $script);
     }
 
     /**
-     * @Given /^I should see the extended deadline in the student row$/
+     * I should see the extension in the form
+     * @When /^I should see the extension "(?P<time_string>(?:[^"]|\\")*)" in the form(?: with reason code "(?P<reason_string>(?:[^"]|\\")*)")?$/
      */
-    public function i_should_see_the_extended_deadline_in_the_student_row() {
-        /**
-         * @var mod_coursework_behat_multiple_grading_interface $multigrader_page
-         */
-        $multigraderpage = $this->get_page('multiple grading interface');
-        $multigraderpage->should_show_extension_for_allocatable($this->student, $this->extensiondeadline);
+    public function i_should_see_the_extension_in_the_form(string $timeextension, string $reasoncode = '') {
+        $newtime = strtotime('3:30pm', strtotime($timeextension));
+        // Put into format 30-09-2024 15:47.
+        $newtimestring = date('d-m-Y H:i', $newtime);
+        $script = "document.querySelector('input#extension-extend-deadline').value";
+        $result = behat_base::evaluate_script_in_session($this->getSession(), $script);
+        if ($result != $newtimestring) {
+            throw new ExpectationException("Expected time '$newtimestring' got '$result'", $this->getSession());
+        }
+
+        if ($reasoncode) {
+            // Reason code 0 is "first reason" in the select menu.
+            $script = "document.querySelector('select#extension-reason-select').value === '$reasoncode';";
+            if (!$resulttwo = behat_base::evaluate_script_in_session($this->getSession(), $script)) {
+                throw new ExpectationException("Expected reason code '$reasoncode' got '$resulttwo'", $this->getSession());
+            }
+        }
+
+        $extrainfo = 'Some extra information';
+        $script = "document.querySelector('textarea#id_extra_information').value === '$extrainfo'";
+        if (!$resultthree = behat_base::evaluate_script_in_session($this->getSession(), $script)) {
+            throw new ExpectationException("Expected time '$newtimestring' got '$resultthree'", $this->getSession());
+        }
+    }
+
+    /**
+     * @Given /^I should see the extended deadline "(?P<time_string>(?:[^"]|\\")*)" in the student row$/
+     */
+    public function i_should_see_the_extended_deadline_in_the_student_row(string $timestring) {
+        $newtime = strtotime('3:30pm', strtotime($timestring));
+        // Put into format shown in UI.
+        $expectedtimestring = userdate($newtime, '%a, %d %b %Y, %H:%M');
+        $node = $this->find('css', '.extension-submission');
+        $text = $node->getText();
+        if (!str_contains($text, $expectedtimestring)) {
+            throw new ExpectationException(
+                "Expected to see extension '$expectedtimestring' got '$text'", $this->getSession()
+            );
+        }
     }
 
     /**
@@ -1474,7 +1536,7 @@ class behat_mod_coursework extends behat_base {
         $page = $this->get_page('coursework page');
 
         if (!$page->get_coursework_name($this->coursework->name)) {
-            throw new ExpectationException('Coursework title not seen', $this->getSession());
+            throw new ExpectationException("Coursework title '{$this->coursework->name}' not seen", $this->getSession());
         }
     }
 
@@ -1602,7 +1664,8 @@ class behat_mod_coursework extends behat_base {
                     $submission->publish();
                 } catch (\Exception $e) {
                     throw new ExpectationException(
-                        "Could not publish submission ID $submission->id for User ID $submission->userid",
+                        "Could not publish submission ID $submission->id for User ID $submission->userid."
+                        . " Reason: " . $e->getMessage() . " | " . $e->getTraceAsString(),
                         $this->getSession()
                     );
                 }
@@ -1861,18 +1924,19 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I should( not)? see the grade comment on the student page$/
-     * @param bool $negate
+     * @Given /^I (should|should not) see the grade comment( "(?P<comment_string>(?:[^"]|\\")*)")? on the student page$/
+     * @param string $shouldornot
+     * @param string $comment
      */
-    public function i_should_see_the_grade_comment_on_the_student_page($negate = false) {
+    public function i_should_see_the_grade_comment_on_the_student_page(string $shouldornot, string $comment = 'New comment') {
 
-        if ($negate) {
+        if ($shouldornot == 'should not') {
             $this->ensure_element_does_not_exist('#final_feedback_comment', 'css_element');
         } else {
             $commentfield = $this->find('css', '#final_feedback_comment');
             $text = $commentfield->getText();
-            if ($text != 'New comment here') {
-                throw new ExpectationException("Unexpected comment '$text'", $this->getSession());
+            if ($text != $comment) {
+                throw new ExpectationException("Got comment '$text' expected '$comment'", $this->getSession());
             }
         }
     }
@@ -1992,7 +2056,7 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^there is final feedback from the other teacher$/
+     * @Given /^there is final feedback from the other teacher with grade 45$/
      */
     public function there_is_final_feedback_from_the_other_teacher() {
         $generator = $this->get_coursework_generator();
@@ -2169,7 +2233,7 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I have an assessor feedback$/
+     * @Given /^I have an assessor feedback at grade 67$/
      */
     public function i_have_an_assessor_feedback() {
         /**
@@ -2187,13 +2251,14 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Then /^I should see the grade comment (?:as ")?(\w+)?(?:" )?in the form on the page$/
+     * @Then /^the grade comment textarea field matches "(?P<comment_string>(?:[^"]|\\")*)"$/
      * @param string $expectedvalue
      */
-    public function i_should_see_the_grade_comment_in_the_form_on_the_page($expectedvalue = 'New comment here') {
-        $commentfield = $this->find('css', '#feedback_comment');
-        if ($commentfield->getValue() != $expectedvalue) {
-            throw new ExpectationException("Expected comment $expectedvalue got " . $commentfield->getValue(), $this->getSession());
+    public function the_grade_comment_textarea_field_matches($expectedvalue) {
+        $script = "document.querySelector('textarea#id_feedbackcomment').value;";
+        $actual = strip_tags(behat_base::evaluate_script_in_session($this->getSession(), $script));
+        if ($actual != $expectedvalue) {
+            throw new ExpectationException("Expected comment '$expectedvalue' got '$actual'", $this->getSession());
         }
     }
 
@@ -2243,13 +2308,24 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * Check rubric comment on student page.
+     * @Then /^I should see the rubric comment "(?P<comment_string>(?:[^"]|\\")*)"$/
+     */
+    public function i_should_see_the_rubric_comment_on_the_page(string $comment) {
+        $celltext = $this->find('css', '#rubric-rubric0 td.remark')->getText();
+        if ($comment !== $celltext) {
+            throw new ExpectationException("Expected commennt '$comment' got '$celltext'", $this->getSession());
+        }
+    }
+
+    /**
      * @When /^I grade the submission(?: as )?(\d+)?( without comments)? using the simple form$/
      *
      * @param int $grade
      * @throws Behat\Mink\Exception\ElementException
      * @throws Behat\Mink\Exception\ElementNotFoundException
      */
-    public function i_grade_the_submission_using_the_simple_form($grade = 56, $withoutcomments=false) {
+    public function i_grade_the_submission_using_the_simple_form($grade = 56, $withoutcomments = false) {
         $nodeelement = $this->getSession()->getPage()->findById('feedback_grade');
         if ($nodeelement) {
             $nodeelement->selectOption($grade);
@@ -2268,6 +2344,69 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * Launch the grade submission modal and complete with grade/comment.
+     * @When /^I grade the submission(?: as )?(\d+)? using the ajax form(?: with comment "(?P<comment_string>(?:[^"]|\\")*)")?$/
+     *
+     * @param int $grade
+     * @param string $comment
+     * @throws Behat\Mink\Exception\ElementException
+     * @throws Behat\Mink\Exception\ElementNotFoundException
+     */
+    public function i_grade_the_submission_using_the_ajax_form($grade = 56, $comment = "New comment") {
+        // Form loaded and sent by AJAX now so wait for it to load.
+        $this->wait_for_pending_js();
+        $this->wait_for_seconds(1);
+        $this->execute('behat_forms::i_set_the_field_to', [$this->escape("Grade"), $grade]);
+        self::i_set_the_feedback_comment_to($comment);
+        $this->wait_for_pending_js();
+        $this->execute(
+            'behat_general::i_click_on', [get_string('saveandfinalise', 'coursework'), 'button']
+        );
+        $this->wait_for_pending_js();
+        $this->wait_for_seconds(2);
+        $this->assertSession()->pageTextContains(get_string('alert_feedback_save_successful', 'coursework'));
+        $this->feedback = feedback::last();
+    }
+
+    /**
+     * @Given /^I set the feedback comment to "(?P<comment_string>(?:[^"]|\\")*)"$/
+     * @param string $comment
+     * @throws coding_exception
+     */
+    public function i_set_the_feedback_comment_to(string $comment) {
+        $script = "document.querySelector('textarea#id_feedbackcomment').value = '$comment'";
+        behat_base::execute_script_in_session($this->getSession(), $script);
+    }
+
+    /**
+     * Complete a rubric form.
+     * @Given /^I click the rubric score box "(\d+)?" and add the comment "(?P<comment_string>(?:[^"]|\\")*)"$/
+     * @param string $boxnumber
+     * @param string $comment
+     * @throws coding_exception
+     */
+    public function i_click_the_rubric_box_and_set_comment($boxnumber, $comment) {
+        $script = "document.querySelectorAll('#rubric-advancedgrading input[type=\"radio\"]')[" . $boxnumber . "].click();";
+        behat_base::execute_script_in_session($this->getSession(), $script);
+
+        $script = "(document.querySelector('td.remark textarea')).value = '" . $comment . "';";
+        behat_base::execute_script_in_session($this->getSession(), $script);
+    }
+
+    /**
+     * Expand the row in the grading form to expose feedback button.
+     * @When /^I expand the coursework grading row ?(\d+)?$/
+     * @return void
+     */
+    public function i_expand_the_grading_row(int $rownumber = 1) {
+        $this->execute(
+            'behat_general::i_click_on', [".details-control.row-$rownumber", 'css_element']
+        );
+        $this->wait_for_pending_js();
+        $this->wait_for_seconds(1);
+    }
+
+    /**
      * @Then /^I should see the final grade for the group in the grading interface$/
      *
      */
@@ -2280,16 +2419,6 @@ class behat_mod_coursework extends behat_base {
             $message = "Should be a grade in the student row final grade cell, but there's not";
             throw new ExpectationException($message, $this->getSession());
         };
-    }
-
-    /**
-     * @When /^I fill in the rest of the form after the rubric and submit it$/
-     */
-    public function i_fill_in_the_rest_of_the_form_ater_the_rubric() {
-        $this->find('css', '#feedback_comment')->setValue('New comment here');
-        $this->getSession()->getPage()->findButton('submitbutton')->press();
-
-        $this->feedback = feedback::last();
     }
 
     /**
@@ -2355,16 +2484,16 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Then /^I should see the rubric grade in the gradebook$/
+     * @Then /^I should see the rubric grade "(\d+)" in the gradebook$/
      */
-    public function i_should_see_the_rubric_grade_in_the_gradebook() {
+    public function i_should_see_the_rubric_grade_in_the_gradebook(string $grade) {
         /**
          * @var mod_coursework_behat_gradebook_page $page
          */
         $page = $this->get_page('gradebook page');
-        $grade = $page->get_coursework_grade_for_student($this->coursework);
-        if ($grade != 50) {
-            throw new ExpectationException("Expected grade '50' found '$grade'", $this->getSession());
+        $actual = $page->get_coursework_grade_for_student($this->coursework);
+        if ($actual != $grade) {
+            throw new ExpectationException("Expected grade '$grade' found '$actual'", $this->getSession());
         }
     }
 
@@ -2969,7 +3098,29 @@ class behat_mod_coursework extends behat_base {
     public function i_enable_automatic_sampling_for_stage($stage) {
 
         $page = $this->get_page('allocations page');
+        self::expand_sampling_strategy_div();
         $page->enable_atomatic_sampling_for($stage);
+    }
+
+    /**
+     * Expand sampling strategy div.
+     * I.e. if div is hidden, click the heading to expand it.
+     * @return void
+     */
+    private function expand_sampling_strategy_div() {
+        $hiddendiv = $this->find('css', '.sampling-rules');
+        if ($hiddendiv->getAttribute('style') == 'display: none;') {
+            $heading = "#sampling_strategy_settings_header";
+            $headingnode = $this->find('css', $heading);
+            behat_general::wait_for_pending_js_in_session($this->getSession());
+            $this->wait_for_seconds(1);
+            if ($headingnode) {
+                // Expand the div by clicking heading.
+                $headingnode->click();
+                behat_general::wait_for_pending_js_in_session($this->getSession());
+                $this->wait_for_seconds(2);
+            }
+        }
     }
 
     /**
@@ -2980,6 +3131,7 @@ class behat_mod_coursework extends behat_base {
      */
     public function i_enable_total_rule_for_stage($stage) {
         $page = $this->get_page('allocations page');
+        self::expand_sampling_strategy_div();
         $page->enable_total_rule_for_stage($stage);
     }
 
@@ -3045,6 +3197,7 @@ class behat_mod_coursework extends behat_base {
      */
     public function i_select_total_submissions_in_stage($percentage, $stage) {
         $page = $this->get_page('allocations page');
+        self::expand_sampling_strategy_div();
         $page->select_total_percentage_for_stage($percentage, $stage);
     }
 

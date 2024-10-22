@@ -1,4 +1,4 @@
-@_file_upload
+@mod @mod_coursework @_file_upload @mod_coursework_feedback_files
 Feature: Adding feedback files
 
     As a teacher
@@ -29,9 +29,12 @@ Feature: Adding feedback files
     And I click the new single final feedback button for the student
     And I upload "mod/coursework/tests/files_for_uploading/Test_image.png" file to "Upload a file" filemanager
     When I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
-    And I press "Save changes"
+    And I press "Save and finalise"
+
+    And I visit the coursework page
     And I publish the grades
     And I log out
+
     And I log in as a student
     And I visit the coursework page
     Then I should see two feedback files on the page

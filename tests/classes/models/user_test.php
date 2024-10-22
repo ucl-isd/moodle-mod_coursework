@@ -43,7 +43,7 @@ final class coursework_user_test extends advanced_testcase {
     // has_agreed_feedback()
 
     public function test_has_final_agreed_grade_returns_true_when_present(): void {
-        $this->create_a_final_feedback_for_the_submisison();
+        $this->create_a_final_feedback_for_the_submission();
 
         $this->assertTrue($this->get_student()->has_agreed_feedback($this->get_coursework()));
     }
@@ -55,7 +55,7 @@ final class coursework_user_test extends advanced_testcase {
 
     public function test_has_final_agreed_grade_returns_false_when_present_for_different_coursework(): void {
         $this->create_a_student();
-        $this->create_a_final_feedback_for_the_submisison();
+        $this->create_a_final_feedback_for_the_submission();
         $coursework = $this->getMockBuilder('\mod_coursework\coursework')->setMethods(['id'])->getMock();
         $coursework->expects($this->any())
             ->method('id')
@@ -66,7 +66,7 @@ final class coursework_user_test extends advanced_testcase {
     public function test_has_final_agreed_grade_returns_false_when_initial_feedback_is_present(): void {
         $this->create_a_student();
         $teacher = $this->create_a_teacher();
-        $this->create_an_assessor_feedback_for_the_submisison($teacher);
+        $this->create_an_assessor_feedback_for_the_submission($teacher);
         $this->assertFalse($this->get_student()->has_agreed_feedback($this->get_coursework()));
     }
 
@@ -77,7 +77,7 @@ final class coursework_user_test extends advanced_testcase {
         $this->create_a_coursework();
         $this->coursework->update_attribute('numberofmarkers', 2);
         $teacher = $this->create_a_teacher();
-        $this->create_an_assessor_feedback_for_the_submisison($teacher);
+        $this->create_an_assessor_feedback_for_the_submission($teacher);
         $this->assertFalse($this->get_student()->has_all_initial_feedbacks($this->get_coursework()));
     }
 
@@ -86,7 +86,7 @@ final class coursework_user_test extends advanced_testcase {
         $this->create_a_coursework();
         $this->coursework->update_attribute('numberofmarkers', 1);
         $teacher = $this->create_a_teacher();
-        $this->create_a_final_feedback_for_the_submisison($teacher);
+        $this->create_a_final_feedback_for_the_submission($teacher);
         $this->assertFalse($this->get_student()->has_all_initial_feedbacks($this->get_coursework()));
     }
 
@@ -95,7 +95,7 @@ final class coursework_user_test extends advanced_testcase {
         $this->create_a_coursework();
         $this->coursework->update_attribute('numberofmarkers', 1);
         $teacher = $this->create_a_teacher();
-        $this->create_an_assessor_feedback_for_the_submisison($teacher);
+        $this->create_an_assessor_feedback_for_the_submission($teacher);
         $this->assertTrue($this->get_student()->has_all_initial_feedbacks($this->get_coursework()));
     }
 

@@ -13,39 +13,41 @@ Feature: Collisions: two people try to create feedback at the same time
     And the student has a submission
     And the submission is finalised
 
-  Scenario: Single marker: If I submit feedback and it's already been given then the form should reload with a warning
+  @javascript
+  Scenario: Single marker: If I submit feedback and it's already been given then the form should show a warning
     Given there is a teacher
     And there is another teacher
     And I am logged in as the other teacher
     And the coursework is set to single marker
     When I visit the coursework page
+    And I have an assessor feedback at grade 67
     And I click the new single final feedback button for the student
-    And I have an assessor feedback
-    When I grade the submission using the simple form
-    Then I should be on the create feedback page
-    And I should see "has already submitted"
-    Then I should see the grade comment in the form on the page
-    And I should see the grade in the form on the page
+    And I should see "Allocatable already has feedback for this stage"
 
+  @javascript
   Scenario: Multiple marker: If I submit feedback and it's already been given then it should be given a new stage_identifier
     Given there is a teacher
     And there is another teacher
     And I am logged in as the other teacher
     And the coursework is set to double marker
-    When I visit the coursework page
-    And I click on the new feedback button for assessor 1
-    And I have an assessor feedback
-    When I grade the submission using the simple form
-    Then I should be on the coursework page
+    And I have an assessor feedback at grade 67
+    And I visit the coursework page
+    And I expand the coursework grading row
+    And I click on the only interactable link with title "New feedback"
+    And I grade the submission as 56 using the ajax form
 
+  @javascript
   Scenario: Multiple marker: If I submit feedback and it's already been given by all teachers then it should fail
     Given there is a teacher
     And there is another teacher
     And I am logged in as a manager
     And the coursework is set to double marker
     When I visit the coursework page
-    And I click on the new feedback button for assessor 1
-    And I have an assessor feedback
-    And there is final feedback from the other teacher
-    When I grade the submission using the simple form
-    Then I should be on the create feedback page
+    And I have an assessor feedback at grade 67
+    And there is final feedback from the other teacher with grade 45
+    And I expand the coursework grading row
+    And I wait until the page is ready
+    And I click on the only interactable link with title "New feedback"
+    And I wait until the page is ready
+    And I wait "2" seconds
+    And I should see "Allocatable already has feedback for this stage"

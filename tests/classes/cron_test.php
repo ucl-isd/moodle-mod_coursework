@@ -146,7 +146,7 @@ final class cron_test extends advanced_testcase {
         $this->create_a_student();
         $submission = $this->create_a_submission_for_the_student();
         $submission->update_attribute('finalised', 1);
-        $this->create_a_final_feedback_for_the_submisison();
+        $this->create_a_final_feedback_for_the_submission();
         $coursework->update_attribute('individualfeedback', strtotime('-1 week'));
 
         \mod_coursework\cron::run();
