@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_sampling_automatic
 Feature: Automatic sampling using total number of students in stage 1 and 2
 
   As a course administrator setting up a coursework instance for a large group of students
@@ -15,6 +15,7 @@ Feature: Automatic sampling using total number of students in stage 1 and 2
     And there is a teacher
     And there is another teacher
 
+  @javascript
   Scenario: Automatically allocating a total for stage 2 based on stage 1
     Given the coursework "numberofmarkers" setting is "2" in the database
     And the coursework "samplingenabled" setting is "1" in the database
@@ -25,6 +26,7 @@ Feature: Automatic sampling using total number of students in stage 1 and 2
     And I save sampling strategy
     Then a student or another student should be automatically included in sample for stage 2
 
+  @javascript
   Scenario: Automatically allocating a total for stage 3 based on stage 2
     Given the coursework "numberofmarkers" setting is "3" in the database
     And the coursework "samplingenabled" setting is "1" in the database
@@ -38,12 +40,14 @@ Feature: Automatic sampling using total number of students in stage 1 and 2
     And I save sampling strategy
     Then a student or another student should be automatically included in sample for stage 3
 
+  @javascript
   Scenario: Automatically allocating a total for stage 3 based on stage 1
     Given the coursework "numberofmarkers" setting is "3" in the database
     And the coursework "samplingenabled" setting is "1" in the database
     And I visit the allocations page
     When I enable automatic sampling for stage 3
     And I enable total rule for stage 3
+    When I enable automatic sampling for stage 2
     And I select 50% of total students in stage 1
     And I save sampling strategy
     Then a student or another student should be automatically included in sample for stage 3

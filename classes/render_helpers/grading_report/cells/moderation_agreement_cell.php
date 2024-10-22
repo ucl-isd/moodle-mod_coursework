@@ -103,8 +103,10 @@ class moderation_agreement_cell extends cell_base {
             $content .= html_writer::empty_tag('br');
             $content .= 'by: ' . $moderation->get_moderator_username();
             $content .= html_writer::empty_tag('br');
-            if ($this->coursework->allocation_enabled() && !empty($allocation) && $allocation->assessor()->id != $moderation->get_moderator_id()) {
-                $content .= '(Allocated to ' . fullname($allocation->assessor()) . ')';
+            if ($this->coursework->allocation_enabled() && !empty($allocation)
+                && $allocation->assessor()->id != $moderation->get_moderator_id()) {
+                    $fullname = \core_user::get_fullname((object)(array)$allocation->assessor());
+                    $content .= '(' . get_string('allocatedtoname', 'coursework', $fullname) . ')';
             }
 
         } else if ($this->coursework->allocation_enabled()) {
@@ -112,9 +114,9 @@ class moderation_agreement_cell extends cell_base {
             $allocation = $this->stage->get_allocation($rowobject->get_allocatable());
             if ($allocation) {
                 if ($ability->can('show', $allocation)) {
-                    $content .= 'Allocated to ' . $allocation->assessor()->profile_link();
+                    get_string('allocatedtoname', 'coursework', $allocation->assessor()->profile_link());
                 } else {
-                    $content .= 'Allocated to moderator';
+                    $content .= get_string('allocatedtomoderator', 'coursework');
                 }
             }
         }

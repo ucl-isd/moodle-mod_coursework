@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_allocation_auto_interact_manual
 Feature: Automatically allocations interacting with manually allocated students
 
     As a manager
@@ -31,6 +31,9 @@ Feature: Automatically allocations interacting with manually allocated students
     And there is another teacher
     When I visit the allocations page
     And I set the allocation strategy to 100 percent for the other teacher
-    And I press "Apply"
-    When I visit the allocations page
+    And I wait until the page is ready
+    And I click on "Apply" "button"
+    # Apply button will reload page via module.js when call to /mod/coursework/actions/processallocation.php returns.
+    And I wait until the page is ready
+    And I wait "3" seconds
     Then I should see the student allocated to the other teacher for the first assessor

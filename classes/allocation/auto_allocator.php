@@ -129,6 +129,8 @@ class auto_allocator {
             $allocationobject = allocation::find($allocation);
             $allocationobject->destroy();
         }
+        // Behat test @mod_coursework_allocation_auto_interact_manual fails without this.
+        allocation::remove_cache($this->coursework->id);
     }
 
     /**

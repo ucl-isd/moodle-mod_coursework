@@ -24,17 +24,12 @@ window.addEventListener('beforeunload', (event) => {
 });
 $(document).ready(function () {
     require(['jquery', 'datatables/js/jquery.datetimepicker.js'], function ($, datetimepicker) {
-
-
-
         function log_datatable_navigate(tr) {
             var row_id = tr.attr('id');
             var tableid = tr.closest('table').attr('id');
             var key = 'datatable_navigate_' + window.location.href + tableid;
             localStorage.setItem(key, row_id);
         }
-
-
 
         /* plagiarism flag */
         $('.datatabletest').on('click', '.new_plagiarism_flag', function (e) {
@@ -88,12 +83,10 @@ $(document).ready(function () {
         // Prepare Message
         var datatables_lang_messages = JSON.parse($('#datatables_lang_messages').attr('data-lang'));
 
-        /******
-     * Personal Dealine
+    /**
+     * Personal Deadline
      */
-
-    $('.datatabletest').on('click', '.edit_personal_deadline',function (e)
-    {
+        $('.datatabletest').on('click', '.edit_personal_deadline',function (e) {
             e.preventDefault();
             var parent = $(this).closest('.personal_deadline_cell');
             parent.children('.show_personal_dealine').addClass('display-none');
@@ -727,41 +720,44 @@ $(document).ready(function () {
             }).done(function(response) {
                 response = $.parseJSON(response);
                 var modalbody = $('#modal-grading').find('.modal-body');
-                modalbody.html(response.formhtml);
-                var filemanager = modalbody.find('.filemanager');
-                if (response.filemanageroptions && filemanager.length) {
-                    var elementid = filemanager.attr('id');
-                    var clientid = elementid.substr(12);
-                    if (clientid) {
-                        response.filemanageroptions.client_id = clientid;
-                        M.form_filemanager.init(Y, response.filemanageroptions);
+                // Careful as not all requests return a response.success value.  Only if it's false, show error.
+                if ((response.success ?? true) === false && (response.message ?? null)) {
+                    modalbody.html(response.message);
+                } else {
+                    modalbody.html(response.formhtml);
+                    var filemanager = modalbody.find('.filemanager');
+                    if (response.filemanageroptions && filemanager.length) {
+                        var elementid = filemanager.attr('id');
+                        var clientid = elementid.substr(12);
+                        if (clientid) {
+                            response.filemanageroptions.client_id = clientid;
+                            M.form_filemanager.init(Y, response.filemanageroptions);
+                        }
                     }
-                }
-                if (response.editoroptions) {
-                    require(['editor_tiny/editor'], (Tiny) => {
-                        Tiny.setupForElementId({
-                            elementId: 'id_feedbackcomment',
-                            options: JSON.parse(response.editoroptions),
+                    if (response.editoroptions) {
+                        require(['editor_tiny/editor'], (Tiny) => {
+                            Tiny.setupForElementId({
+                                elementId: 'id_feedbackcomment',
+                                options: JSON.parse(response.editoroptions),
+                            });
                         });
-                    });
-                }
+                    }
 
-                if (response.commentoptions) {
-                    M.util.js_pending('gradingform_guide/comment_chooser');
-                    require(['gradingform_guide/comment_chooser'], function(amd) {
-                        $(".remark").each( function (i,ele)  {
-                            buttonele  =  $(ele).find(".commentchooser");
-                            textele    =  $(ele).find(".markingguideremark");
+                    if (response.commentoptions) {
+                        M.util.js_pending('gradingform_guide/comment_chooser');
+                        require(['gradingform_guide/comment_chooser'], function(amd) {
+                            $(".remark").each( function (i,ele)  {
+                                buttonele = $(ele).find(".commentchooser");
+                                textele = $(ele).find(".markingguideremark");
+                                buttonid = $(buttonele).attr("id");
+                                textid = $(textele).attr("id");
+                                amd.initialise(1, buttonid, textid, response.commentoptions);
+                                M.util.js_complete('gradingform_guide/comment_chooser');
 
-                            buttonid   =  $(buttonele).attr("id");
-                            textid    =  $(textele).attr("id");
+                            })
 
-                            amd.initialise(1, buttonid, textid, response.commentoptions) ;
-                            M.util.js_complete('gradingform_guide/comment_chooser');
-
-                        })
-
-                    });
+                        });
+                    }
                 }
             });
             var cell_td = $(this).closest('td');
@@ -792,8 +788,7 @@ $(document).ready(function () {
          * @param cell_type
          */
         function show_loading_modal_grading(cell_selector, cell_type) {
-            // set row id
-
+            // Set row id.
             var modal = $('#modal-grading');
             modal.find('#cell_selector').val(cell_selector);
             modal.find('#cell_type').val(cell_type);
@@ -801,12 +796,6 @@ $(document).ready(function () {
             $('#modal-grading').modal('show');
         }
 
-
-
-
-        /**
-         *
-         */
         $('#modal-grading').on('click', '#id_submitfeedbackbutton, #id_submitbutton', function (e) {
             e.preventDefault();
             var button = $(this);
@@ -854,19 +843,11 @@ $(document).ready(function () {
             });*/
         });
 
-
-
-        /**
-         *
-         */
         $('#modal-grading').on('click', '#id_cancel', function (e) {
             e.preventDefault();
             $('#modal-grading').modal('hide');
         });
 
-        /**
-         *
-         */
         $('#modal-grading').on('click', '#id_removefeedbackbutton', function (e) {
             e.preventDefault();
             var button = $(this);
@@ -881,125 +862,95 @@ $(document).ready(function () {
                 var cell_type = modal.find('#cell_type').val();
                 update_feedback(form_data, url, cell_type, submitbutton, removefeedbackbutton, submitfeedbackbutton,1, button);
             }
-
-
         });
 
+        function update_feedback(form_data,url,celltype,submitbutton,removefeedbackbutton,submitfeedbackbutton,confirm,button) {
+            $.noConflict();
+            console.log('no conflict');
+            form_data = form_data.concat({name: 'ajax', value: 1},
+                {name: 'cell_type', value: celltype},
+                {name: 'submitbutton', value: submitbutton},
+                {name: 'submitfeedbackbutton', value: submitfeedbackbutton},
+                {name: 'removefeedbackbutton', value: removefeedbackbutton},
+                {name: 'confirm', value: confirm});
 
-function update_feedback(form_data,url,celltype,submitbutton,removefeedbackbutton,submitfeedbackbutton,confirm,button)      {
+            $.ajax({
+                type: 'POST',
+                data: form_data,
+                url: url,
+                dataType: 'json'
+            }).done(function(response) {
+                if ((response.success ?? true) === false && (response.message ?? null)) {
+                    // Could be an error like "Please provide a valid grade for each criterion".
+                    $('#modal-grading').find('.modal-body').html(
+                        '<div class="alert alert-danger">' + response.message + '</div>'
+                    );
+                } else if (response.success) {
+                    var cell_selector = $('#modal-grading').find('#cell_selector').val();
+                    $(cell_selector).html(response.html);
 
-    $.noConflict();
+                    if (typeof response.extrahtml !== 'undefined' && response.extrahtml != '')  {
+                        $(cell_selector).next('td').html(response.extrahtml);
+                    }
+                    if (typeof response.assessdate !== 'undefined' && response.assessdate != '')  {
+                        $(cell_selector).next('td').html(response.assessdate);
+                    }
 
-    console.log('no conflict');
+                    if (typeof response.assessorname !== 'undefined' && response.assessorname != '')  {
+                        $(cell_selector).prev('td').html(response.assessorname);
+                    }
 
-    form_data = form_data.concat({name: 'ajax', value: 1},
-        {name: 'cell_type', value: celltype},
-        {name: 'submitbutton', value: submitbutton},
-        {name: 'submitfeedbackbutton', value: submitfeedbackbutton},
-        {name: 'removefeedbackbutton', value: removefeedbackbutton},
-        {name: 'confirm', value: confirm});
+                    if (typeof response.assessortwo !== 'undefined' && response.assessortwo != '')  {
+                        var tdcell = $(cell_selector).closest('tr').next().find('td')[1];
+                        $(tdcell).html(response.assessortwo);
+                    }
 
-//    var error_wrapper_element = $("#fitem_id_advancedgrading .align-items-start");
- //   error_wrapper_element.find(".gradingform_guide-error").remove();
+                    if (typeof response.finalhtml !== 'undefined' && response.assessortwo != '')  {
+                        var tablerowid = 'allocatable_' + response.allocatableid;
+                        var tdcell2  =   $('#' + tablerowid).find('.multiple_agreed_grade_cell')[0];
+                        $(tdcell2).html(response.finalhtml);
+                    }
 
+                    var datatables_lang_messages_two = JSON.parse($('#datatables_lang_messages').attr('data-lang'));
 
+                    console.log('call modal hide');
 
-    $.ajax({
-        type: 'POST',
-        data: form_data,
-        url: url,
-        dataType: 'json'
-    }).done(function(response) {
-        console.log(response);
-        if (response.success) {
-            var cell_selector = $('#modal-grading').find('#cell_selector').val();
-            $(cell_selector).html(response.html);
+                    $('#modal-grading').modal('hide');
 
-           if (typeof response.extrahtml !== 'undefined' && response.extrahtml != '')  {
-               $(cell_selector).next('td').html(response.extrahtml);
-            }
-            console.log(response.assessdate);
-            if (typeof response.assessdate !== 'undefined' && response.assessdate != '')  {
-                console.log(response.assessdate);
-                console.log($(cell_selector).next('td'));
-                $(cell_selector).next('td').html(response.assessdate);
-            }
+                    if (submitbutton == 1) {
+                       var notification = new M.core.alert({
+                            message: datatables_lang_messages_two.alert_feedback_save_successful.replace(/\_/g, ' '),
+                            title: datatables_lang_messages_two.notification_info,
+                        });
+                        notification.show();
 
-            if (typeof response.assessorname !== 'undefined' && response.assessorname != '')  {
-                console.log($(cell_selector).prev('td'));
-                $(cell_selector).prev('td').html(response.assessorname);
-            }
+                    } else if (submitfeedbackbutton == 1) {
+                        var notification = new M.core.alert({
+                            message: datatables_lang_messages_two.alert_feedback_draft_save_successful.replace(/\_/g, ' '),
+                            title: datatables_lang_messages_two.notification_info,
+                        });
+                        notification.show();
 
-            if (typeof response.assessortwo !== 'undefined' && response.assessortwo != '')  {
-                var tdcell  =   $(cell_selector).closest('tr').next().find('td')[1];
-                $(tdcell).html(response.assessortwo);
-            }
+                    } else {
+                        var notification = new M.core.alert({
+                            message: datatables_lang_messages_two.alert_feedback_remove_successful.replace(/\_/g, ' '),
+                            title: datatables_lang_messages_two.notification_info,
+                        });
+                        notification.show();
+                    }
+                } else {
+                    var notification = new M.core.alert({
+                        message: response.message,
+                        title: datatables_lang_messages_two.notification_info,
+                    });
+                    notification.show();
 
-            if (typeof response.finalhtml !== 'undefined' && response.assessortwo != '')  {
+                    error_wrapper_element.prepend('<div class="gradingform_guide-error">' + response.message + '<div>');
 
-                var tablerowid = 'allocatable_'+response.allocatableid;
-                var tdcell  =   $('#'+tablerowid).find('.multiple_agreed_grade_cell')[0];
-                $(tdcell).html(response.finalhtml);
-
-
-                console.log('table row cell');
-
-                console.log(response.allocatableid);
-
-
-                console.log(tablerowid);
-            }
-
-
-
-            var datatables_lang_messages_two = JSON.parse($('#datatables_lang_messages').attr('data-lang'));
-
-            console.log('call modal hide');
-
-            $('#modal-grading').modal('hide');
-
-            if (submitbutton == 1) {
-               var notification = new M.core.alert({
-                    message: datatables_lang_messages_two.alert_feedback_save_successful.replace(/\_/g, ' '),
-                    title: datatables_lang_messages_two.notification_info,
-                });
-                notification.show();
-
-            } else if (submitfeedbackbutton == 1) {
-                var notification = new M.core.alert({
-                    message: datatables_lang_messages_two.alert_feedback_draft_save_successful.replace(/\_/g, ' '),
-                    title: datatables_lang_messages_two.notification_info,
-                });
-                notification.show();
-
-
-            }else {
-               var notification = new M.core.alert({
-                    message: datatables_lang_messages_two.alert_feedback_remove_successful.replace(/\_/g, ' '),
-                    title: datatables_lang_messages_two.notification_info,
-                });
-                notification.show();
-
-
-            }
-        } else {
-            var notification = new M.core.alert({
-                message: response.message,
-                title: datatables_lang_messages_two.notification_info,
+                }
+            }).always(function(){
+                button.prop('disabled', false);
             });
-            notification.show();
-
-            error_wrapper_element.prepend('<div class="gradingform_guide-error">' + response.message + '<div>');
-
         }
-    }).always(function() {
-        button.prop('disabled', false);
-    });
-
-
-}
-
     });
 })
-
-

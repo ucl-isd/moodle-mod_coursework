@@ -43,7 +43,7 @@ class deadline_extension_renderer {
         /**
          * @var allocatable $allocatable
          */
-        $allocatable = $vars['deadline_extension']->get_allocatable();
+        $allocatable = $vars['deadlineextension']->get_allocatable();
 
         $PAGE->set_pagelayout('standard');
         $heading = 'Deadline extension for ' . $allocatable->name();
@@ -70,7 +70,7 @@ class deadline_extension_renderer {
         $PAGE->set_title($SITE->fullname);
         $PAGE->set_heading($SITE->fullname);
 
-        $allocatable = $vars['deadline_extension']->get_allocatable();
+        $allocatable = $vars['deadlineextension']->get_allocatable();
 
         $html = '<h1>Adding a new extension to the deadline for '.$allocatable->name().'</h1>';
 
@@ -88,7 +88,7 @@ class deadline_extension_renderer {
     public function edit_page($vars) {
         global $PAGE, $SITE, $OUTPUT;
 
-        $allocatable = $vars['deadline_extension']->get_allocatable();
+        $allocatable = $vars['deadlineextension']->get_allocatable();
 
         $PAGE->set_pagelayout('standard');
         $PAGE->navbar->add('Edit deadline extension for '.$allocatable->name());

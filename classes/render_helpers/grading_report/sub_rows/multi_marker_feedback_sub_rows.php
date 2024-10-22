@@ -42,6 +42,12 @@ use pix_icon;
 class multi_marker_feedback_sub_rows implements sub_rows_interface {
 
     /**
+     * Has a new button already been shown?
+     * @var bool
+     */
+    private bool $alreadyshownanewbutton = false;
+
+    /**
      * @param \mod_coursework\grading_table_row_base $rowobject
      * @param int $columnwidth
      * @return string
@@ -109,7 +115,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         $outputrows = '';
         $tablehtml = '';
 
-        $this->already_shown_a_new_buton = false;
+        $this->alreadyshownanewbutton = false;
         /* @var $feedback_row assessor_feedback_row */
         foreach ($feedbackrows as $feedbackrow) {
 
@@ -120,7 +126,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
             // this is expected to be rewritten for Release 2
             /* if (!$feedback_row->get_assessor()->id() && (!$feedback_row->get_submission() ||
                                                          !$feedback_row->get_submission()->ready_to_grade() ||
-                                                          $this->already_shown_a_new_buton)) {
+                                                          $this->alreadyshownanewbutton)) {
                 continue;
             }*/
 
@@ -267,7 +273,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     protected function new_feedaback_link($feedbackrow) {
         global $USER, $OUTPUT;
 
-        $this->already_shown_a_new_buton = true;
+        $this->alreadyshownanewbutton = true;
         //        $this->displaytable = true; //todo this is deprecated and causes behat exception - was it doing anything useful?
 
         // New
@@ -358,7 +364,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         } else {
 
             $newfeedback = $this->build_new_feedback($feedbackrow, $submission);
-            if ($ability->can('new', $newfeedback) && !$this->already_shown_a_new_buton) {
+            if ($ability->can('new', $newfeedback) && !$this->alreadyshownanewbutton) {
                 $html .= $this->new_feedaback_link($feedbackrow);
             }
         }
