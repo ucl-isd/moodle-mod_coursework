@@ -938,7 +938,7 @@ function coursework_get_coursework_ids_from_context_id($contextid) {
             $coursemodule = get_coursemodule_from_id('coursework', $context->instanceid);
             $courseworkmoduleid = $DB->get_field('modules', 'id', ['name' => 'coursework']);
 
-            if ($coursemodule->module == $courseworkmoduleid) {
+            if ($coursemodule && $coursemodule->module == $courseworkmoduleid) {
                 $courseworkids[] = $coursemodule->instance;
             }
             break;
