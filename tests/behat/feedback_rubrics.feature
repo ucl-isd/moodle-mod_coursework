@@ -35,7 +35,7 @@ Feature: Adding feedback using the built in Moodle rubrics
     Then I should see the rubric grade on the page
     And I should see the rubric comment "New comment here"
 
- @javascript
+  @javascript
   Scenario: I should see the rubric grade show up in the gradebook
     Given there is a rubric defined for the coursework
     Given I visit the coursework page
