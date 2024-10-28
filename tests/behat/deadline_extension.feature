@@ -1,4 +1,4 @@
-@mod @mod_coursework @RVC_PT_83106618
+@mod @mod_coursework @RVC_PT_83106618 @mod_coursework_deadline_extension
 Feature: Deadlines extensions for submissions
 
   As an OCM admin
@@ -18,6 +18,7 @@ Feature: Deadlines extensions for submissions
     And I visit the coursework page
     Then I should see the new submission button
 
+  @javascript
   Scenario: The student can not submit when the start date is in the future
     Given the coursework deadline has passed
     And there is an extension for the student which has expired
@@ -25,19 +26,31 @@ Feature: Deadlines extensions for submissions
     And I visit the coursework page
     Then I should not see the new submission button
 
+  @javascript
   Scenario: The teacher can add a deadline extension to an individual submission
     Given the coursework deadline has passed
     And I log in as a manager
     And I visit the coursework page
-    When I add a new extension for the student
-    Then I should be on the coursework page
-    And I should see the extended deadline in the student row
+    And I click on "New extension" "link"
+    And I enter an extension "+1 week" in the form
+    And I click on "Save" "button"
+    And I wait until the page is ready
+    And I wait "1" seconds
+    And I should see "Extension saved successfully"
+    Then I visit the coursework page
+    And I should see the extended deadline "+1 week" in the student row
 
+  @javascript
   Scenario: The teacher can edit a deadline extension to an individual submission
     Given the coursework deadline has passed
     And there is an extension for the student which has expired
     And I log in as a manager
     And I visit the coursework page
-    When I edit the extension for the student
-    Then I should be on the coursework page
-    And I should see the extended deadline in the student row
+    And I click on "Edit extension" "link"
+    And I enter an extension "+4 weeks" in the form
+    And I click on "Save" "button"
+    And I wait until the page is ready
+    And I wait "1" seconds
+    And I should see "Extension saved successfully"
+    Then I visit the coursework page
+    And I should see the extended deadline "+4 weeks" in the student row

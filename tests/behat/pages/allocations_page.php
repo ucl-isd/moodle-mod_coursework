@@ -148,6 +148,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
     }
 
     /**
+     * Enable automatic sampling.
      * @param $stage
      * @throws ElementNotFoundException
      */

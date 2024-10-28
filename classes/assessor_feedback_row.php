@@ -206,7 +206,7 @@ class assessor_feedback_row {
     /**
      * @return bool
      */
-    private function has_submission(): bool {
+    public function has_submission(): bool {
         return (bool)$this->get_submission();
     }
 

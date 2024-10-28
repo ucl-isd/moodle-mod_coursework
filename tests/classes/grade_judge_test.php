@@ -43,7 +43,7 @@ final class grade_judge_test extends advanced_testcase {
 
         $submission = $this->create_a_submission_for_the_student();
         $assessor = $this->create_a_teacher();
-        $feedback = $this->create_an_assessor_feedback_for_the_submisison($assessor);
+        $feedback = $this->create_an_assessor_feedback_for_the_submission($assessor);
 
         $this->assertEquals($feedback->id, $gradejudge->get_feedback_that_is_promoted_to_gradebook($submission)->id);
     }
@@ -57,7 +57,7 @@ final class grade_judge_test extends advanced_testcase {
 
         $submission = $this->create_a_submission_for_the_student();
         $assessor = $this->create_a_teacher();
-        $feedback = $this->create_an_assessor_feedback_for_the_submisison($assessor);
+        $feedback = $this->create_an_assessor_feedback_for_the_submission($assessor);
 
         $this->assertEquals($feedback->id, $gradejudge->get_feedback_that_is_promoted_to_gradebook($submission)->id);
     }

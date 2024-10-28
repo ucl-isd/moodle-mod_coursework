@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_feedback_final_feedback_double_marking
 Feature: Adding and editing final feedback
 
     In order to provide students with a fair final grade that combines the component grades
@@ -15,42 +15,48 @@ Feature: Adding and editing final feedback
     And the student has a submission
     And the submission is finalised
 
+  @javascript
   Scenario: Setting the final feedback grade
     Given there are feedbacks from both teachers
     And I am logged in as a manager
     And I visit the coursework page
-    When I click the new multiple final feedback button for the student
-    When I grade the submission using the simple form
-    Then I should be on the coursework page
-    And I should see the final grade on the multiple marker page
+    And I click the new multiple final feedback button for the student
+    And I grade the submission as 57 using the ajax form
+    Then I visit the coursework page
+    And I should see the final grade as 57 on the multiple marker page
 
+  @javascript
   Scenario: Setting the final feedback comment
     Given there are feedbacks from both teachers
     And I am logged in as a manager
     And I visit the coursework page
-    When I click the new multiple final feedback button for the student
-    When I grade the submission using the simple form
-    Then I should be on the coursework page
+    And I click the new multiple final feedback button for the student
+    And I grade the submission as 58 using the ajax form
+    Then I visit the coursework page
     When I click the edit final feedback button
-    Then I should see the grade comment in the form on the page
-    And I should see the grade in the form on the page
+    And I wait until the page is ready
+    And I wait "1" seconds
+    And the field "Grade" matches value "58"
+    And the grade comment textarea field matches "New comment"
 
+  @javascript
   Scenario: I can be both an initial assessor and the manager who agrees grades
     And managers do not have the manage capability
     Given I am logged in as a manager
     And there are feedbacks from both me and another teacher
     And I visit the coursework page
     When I click the new multiple final feedback button for the student
-    And I grade the submission using the simple form
-    Then I should be on the coursework page
+    And I grade the submission as 59 using the ajax form
 
+  @javascript
   Scenario: Editing final feedback from others
     And managers do not have the manage capability
     Given I am logged in as a manager
     And there are feedbacks from both me and another teacher
-    And there is final feedback from the other teacher
+    And there is final feedback from the other teacher with grade 45
     When I visit the coursework page
     When I click the edit final feedback button
-    And I should see the other teacher's final grade in the form on the page
-    And I grade the submission using the simple form
-    Then I should be on the coursework page
+    And I wait until the page is ready
+    And I wait "2" seconds
+    And I wait until the page is ready
+    And the field "Grade" matches value "45"

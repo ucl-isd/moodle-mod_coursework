@@ -116,23 +116,22 @@ class single_assessor_feedback_cell extends cell_base {
             $content .= html_writer::empty_tag('br');
             $content .= 'by: ' . $feedback->get_assesor_username();
             $content .= html_writer::empty_tag('br');
-            if ($this->coursework->allocation_enabled() && !empty($allocation) && $allocation->assessor()->id != $feedback->get_assessor_id()) {
-                $content .= '(Allocated to ' . fullname($allocation->assessor()) . ')';
+            if ($this->coursework->allocation_enabled() && !empty($allocation)
+                && $allocation->assessor()->id != $feedback->get_assessor_id()) {
+                    $fullname = \core_user::get_fullname((object)(array)$allocation->assessor());
+                    $content .= '(' . get_string('allocatedtoname', 'coursework', $fullname) . ')';
             }
-
         } else if ($this->coursework->allocation_enabled()) {
             // Show allocated person if there is one.
             $allocation = $this->stage->get_allocation($rowobject->get_allocatable());
             if ($allocation) {
                 if ($ability->can('show', $allocation)) {
-                    $content .= 'Allocated to '.$allocation->assessor()->profile_link();
+                    $content .= get_string('allocatedtoname', 'coursework', $allocation->assessor()->profile_link());
                 } else {
-                    $content .= 'Allocated to someone else';
+                    $content .= get_string('allocatedtosomeoneelse', 'coursework');
                 }
             }
-
         }
-
         return $content;
     }
 
