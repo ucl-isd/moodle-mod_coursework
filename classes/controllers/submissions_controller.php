@@ -386,13 +386,14 @@ class submissions_controller extends controller_base {
     }
 
     /**
+     * Is the coursework open?
      * @param coursework $coursework
      * @throws \coding_exception
      * @throws access_denied
      */
     protected function check_coursework_is_open($coursework) {
         if (!$coursework->start_date_has_passed()) {
-            throw new access_denied($coursework, get_string('notstartedyet', 'mod_coursework', userdate($coursework->startdate)));
+            throw new \Exception(get_string('notstartedyet', 'mod_coursework', userdate($coursework->startdate)));
         }
     }
 

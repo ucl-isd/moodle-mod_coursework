@@ -47,6 +47,26 @@ class data {
     private $stage;
 
     /**
+     * Key in form data for allocation ID.
+     */
+    const ALLOCATION_ID_KEY = 'allocation_id';
+
+    /**
+     * Key in form data for assessor ID.
+     */
+    const ASSESSOR_ID_KEY = 'assessor_id';
+
+    /**
+     * Key in form data for "in set" status.
+     */
+    const MODERATION_SET_KEY = 'in_set';
+
+    /**
+     *  Key in form data for "pinned" status.
+     */
+    const PINNED_KEY = 'pinned';
+
+    /**
      * @param stage_base $stage
      * @param array $data
      */
@@ -60,10 +80,8 @@ class data {
      * @return mixed
      */
     protected function preprocess_data() {
-
-        $key = $this->assessor_id_key_name();
-        if (array_key_exists($key, $this->data) && !empty($this->data[$key])) {
-            $assessor = user::find($this->data[$key]);
+        if (array_key_exists(self::ASSESSOR_ID_KEY, $this->data) && !empty($this->data[self::ASSESSOR_ID_KEY])) {
+            $assessor = user::find($this->data[self::ASSESSOR_ID_KEY]);
             if ($assessor && $this->stage->user_is_assessor($assessor)) {
                 $this->assessor = $assessor;
             }
@@ -88,36 +106,14 @@ class data {
      * @return bool
      */
     public function allocatable_should_be_in_sampling(): bool {
-        $key = $this->moderation_set_key();
-        return array_key_exists($key, $this->data) && $this->data[$key];
+        return array_key_exists(self::MODERATION_SET_KEY, $this->data)
+            && $this->data[self::MODERATION_SET_KEY];
     }
 
     /**
      * @return bool
      */
     public function is_pinned(): bool {
-        $key = $this->pinned_key();
-        return array_key_exists($key, $this->data) && $this->data[$key];
-    }
-
-    /**
-     * @return string
-     */
-    private function assessor_id_key_name() {
-        return 'assessor_id';
-    }
-
-    /**
-     * @return string
-     */
-    private function moderation_set_key() {
-        return 'in_set';
-    }
-
-    /**
-     * @return string
-     */
-    private function pinned_key() {
-        return 'pinned';
+        return array_key_exists(self::PINNED_KEY, $this->data) && $this->data[self::PINNED_KEY];
     }
 }

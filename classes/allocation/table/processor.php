@@ -50,10 +50,11 @@ class processor {
     }
 
     /**
-     * @param array $tabledata
+     * Process form data received from /actions/allocate.php form.
+     * @param array $dirtyformdata
      */
-    public function process_data($tabledata  = []) {
-        $cleandata = $this->clean_data($tabledata);
+    public function process_data($dirtyformdata  = []) {
+        $cleandata = $this->clean_data($dirtyformdata);
         $allocatables = $this->coursework->get_allocatables();
 
         foreach ($allocatables as $allocatable) {
@@ -79,57 +80,65 @@ class processor {
 
     /**
      * Sanitises the data, mostly making sure that we have ony valid student ids and valid stage identifiers.
-     * The stages will deal with sanitising the data for each cell.
+     * The stages will further deal with sanitising the data for each cell.
      *
-     * @param array $rawdata
+     * @param array $dirtyformdata
      * @return array
      */
-    private function clean_data($rawdata) {
-
-        // Data looks like this:
-        // $example_data = array(
-        // 4543 => array( // Student id
-        // 'assessor_1' => array(
-        // 'allocation_id' => 43,
-        // 'assessor_id' => 232,
-        // ),
-        // 'moderator_1' => array(
-        // 'allocation_id' => 46,
-        // 'assessor_id' => 235,
-        // 'in_set' => 1,
-        // )
-        // )
-        // );
+    private function clean_data(array $dirtyformdata): array {
+        // Raw data looks like this - 4543 is student ID.
+        // $exampledata = [
+        //      4543 => [
+        //          'assessor_1' => ['allocation_id' => 43, 'assessor_id' => 232],
+        //          'moderator_1' => ['allocation_id' => 46, 'assessor_id' => 235, 'in_set' => 1],
+        //      ],
+        // ];
+        $allowedrowkeys = [
+            \mod_coursework\allocation\table\cell\data::ALLOCATION_ID_KEY,
+            \mod_coursework\allocation\table\cell\data::ASSESSOR_ID_KEY,
+            \mod_coursework\allocation\table\cell\data::MODERATION_SET_KEY,
+            \mod_coursework\allocation\table\cell\data::PINNED_KEY,
+        ];
 
         $cleandata = [];
-        foreach ($rawdata as $allocatableid => $datarrays) {
+        foreach ($dirtyformdata as $allocatableid => $dirtyrowsforuser) {
 
-            if (!$this->allocatable_id_is_valid($allocatableid)) { // Should be the id of a student.
+            // Should be the id of a student.
+            if (!$this->allocatable_id_is_valid(clean_param($allocatableid, PARAM_INT))) {
                 continue;
             }
 
-            $cleandata[$allocatableid] = [];
-
-            foreach ($this->coursework->marking_stages() as $stage) {
-
-                if (array_key_exists($stage->identifier(), $datarrays)) {
-                    $stagedata = $datarrays[$stage->identifier()];
-                    $cleandata[$allocatableid][$stage->identifier()] = $stagedata;
+            // Variable $rawdataforuser is expected to be an array of arrays.
+            $validstageindentifiers = array_keys($this->coursework->marking_stages());
+            foreach ($dirtyrowsforuser as $stageidentifier => $dirtyrowforuser) {
+                if (!isset($validstageindentifiers, $stageidentifier)) {
+                    throw new \invalid_parameter_exception("Invalid stage identifier $stageidentifier");
                 }
+
+                // Finally, check the keys and values in the cleaned row individually.
+                $keys = array_keys($dirtyrowforuser);
+                foreach ($keys as $key) {
+                    if (!in_array($key, $allowedrowkeys)) {
+                        throw new \invalid_parameter_exception("Invalid key $key");
+                    }
+                    if ($dirtyrowforuser[$key] && !filter_var($dirtyrowforuser[$key], FILTER_SANITIZE_NUMBER_INT)) {
+                        throw new \invalid_parameter_exception(
+                            "Invalid value type for key '$key' - expected integer"
+                        );
+                    }
+                }
+                $cleandata[$allocatableid][$stageidentifier] = clean_param_array($dirtyrowforuser, PARAM_INT);
             }
-            /* if (array_key_exists('moderator', $datarrays)) {
-                $moderator_data = $datarrays['moderator'];
-                $clean_data[$allocatable_id]['moderator'] = $moderator_data;
-            }*/
         }
         return $cleandata;
     }
 
     /**
+     * Is this a valid allocatable ID?
      * @param int $studentid
      * @return bool
      */
-    private function allocatable_id_is_valid($studentid) {
+    private function allocatable_id_is_valid(int $studentid): bool {
         $allocatable = $this->get_allocatable_from_id($studentid);
         return $allocatable && $allocatable->is_valid_for_course($this->coursework->get_course());
     }
