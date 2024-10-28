@@ -34,7 +34,7 @@ use mod_coursework\models\user;
  * Class deadline_extensions_controller is responsible for handling restful requests related
  * to the deadline_extensions.
  *
- * @property \mod_coursework\framework\table_base deadline_extension
+ * @property \mod_coursework\framework\table_base deadlineextension
  * @property allocatable allocatable
  * @property deadline_extension_form form
  * @package mod_coursework\controllers
