@@ -170,9 +170,10 @@ class submissions_controller extends controller_base {
         if ($submission->finalised) {
             if (!$submission->get_coursework()->has_deadline()) {
 
-                $userids = explode(',', $submission->get_coursework()->get_submission_notification_users());
+                $useridcommaseparatedlist = $submission->get_coursework()->get_submission_notification_users();
 
-                if (!empty($userids)) {
+                if (!empty($useridcommaseparatedlist)) {
+                    $userids = explode(',', $useridcommaseparatedlist);
                     foreach ($userids as $u) {
                         $notifyuser = $DB->get_record('user', ['id' => trim($u)]);
 
