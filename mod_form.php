@@ -42,6 +42,9 @@ class mod_coursework_mod_form extends moodleform_mod {
      * Form definition.
      */
     public function definition() {
+        // Some fields are enabled/disabled by JS.
+        self::require_form_js();
+
         $this->set_form_attributes();
 
         $this->add_general_header();

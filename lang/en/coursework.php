@@ -65,7 +65,6 @@ $string['alert_personaldeadline_save_successful'] = 'Personal deadline saved suc
 $string['alert_request_error'] = 'Sorry! There was an error with your request.';
 $string['alert_validate_deadline'] = 'The new deadline you chose has already passed. Please select appropriate deadline';
 $string['all'] = 'ALL';
-
 $string['allocateall'] = 'Auto-allocate all';
 $string['allocateassessors'] = 'Allocate assessors';
 $string['allocateassessorsandmoderators'] = 'Allocate assessors and moderators';
@@ -379,7 +378,6 @@ $string['grade'] = 'Grade';
 $string['grade_editing'] = 'Grade editing time';
 $string['grade_editing_enabled'] = "Grade editing time";
 $string['grade_editing_enabled_desc'] = "Select the amount of time that a user has to edit an initial grade after entering it";
-
 $string['grade_editing_header'] = 'Grades';
 $string['grade_help'] = 'Select the grade scale on which this coursework will be marked';
 $string['grade_hidden_manager'] = 'Hidden until all initial grades are complete';
@@ -411,7 +409,6 @@ $string['gradingsheetfile'] = 'Grading sheet file';
 $string['gradingsheetfor'] = 'Grading sheet for ';
 $string['gradingsheetupload'] = 'Grading sheet upload';
 $string['gradingsummary'] = 'Grading Summary';
-
 $string['group'] = 'Group';
 $string['grouping_id'] = 'Grouping';
 $string['grouping_id_help'] = 'Grouping containing the groups wich are allowed to submit.';
@@ -800,9 +797,6 @@ $string['submissionnotallocatedtoassessor'] = 'Submissions for students not allo
 $string['submissionnotfound'] = 'Submission not found';
 $string['submissionnotfoundincoursework'] = 'Submission not found in coursework';
 $string['submissionnotification'] = 'User to receive submission notification';
-
-
-
 $string['submissionnotneeded'] = 'Remove the requirement for this student to provide an online submission.';
 $string['submissionnotreadyforagreedgrade'] = 'The submission is not ready for agreed grade';
 $string['submissionnotreadytograde'] = 'The submission is not ready to be graded';
@@ -895,6 +889,3 @@ $string['yoursubmissionfile_renamed'] = '(this will be automatically renamed)';
 $string['yoursubmissionfile_upload'] = 'Your submission file (this will be automatically renamed)';
 $string['yoursubmissionfiles'] = 'Your submission files ';
 $string['yoursubmissionstatus'] = 'Your submission status ';
-
-
-
