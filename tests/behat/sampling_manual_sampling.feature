@@ -30,6 +30,7 @@ Feature: Manual sampling
     And I log out
     And I log in as the teacher
     And I visit the coursework page
+    And I expand the coursework grading row 1
     And I wait "1" seconds
     Then I should be able to add the second grade for this student
 
