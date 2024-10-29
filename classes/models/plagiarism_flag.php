@@ -34,6 +34,7 @@ use  mod_coursework\framework\table_base;
  * @property mixed allocatableid
  * @package mod_coursework\models
  */
+#[\AllowDynamicProperties]
 class plagiarism_flag extends table_base {
 
     /**

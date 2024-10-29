@@ -90,8 +90,8 @@ class plagiarism_flagging_mform extends moodleform {
         $formdata = $this->get_data();
 
         $plagiarismflag->status = $formdata->status;
-        $plagiarismflag->comment = $formdata->plagiarismcomment['text'];
-        $plagiarismflag->comment_format = $formdata->plagiarismcomment['format'];
+        $plagiarismflag->comment = $formdata->plagiarismcomment['text'] ?? '';
+        $plagiarismflag->comment_format = $formdata->plagiarismcomment['format'] ?? FORMAT_PLAIN;
 
         return $plagiarismflag;
     }
