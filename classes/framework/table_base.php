@@ -22,7 +22,6 @@
 
 namespace mod_coursework\framework;
 
-use moodle_database;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
@@ -457,6 +456,9 @@ abstract class table_base {
         $this->before_destroy();
 
         $DB->delete_records(static::get_table_name(), ['id' => $this->id]);
+        // Clear cache.
+        \mod_coursework\models\feedback::remove_cache($this->submission->courseworkid);
+        \mod_coursework\models\submission::remove_cache($this->submission->courseworkid);
     }
 
     /**
