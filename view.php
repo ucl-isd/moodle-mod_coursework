@@ -97,7 +97,7 @@ if (isset($SESSION->perpage[$coursemoduleid]) && optional_param('per_page', 0, P
 // (Grab default value from plugin setting).
 if (!(isset($SESSION->perpage[$coursemoduleid]))) {
     $perpage = optional_param('per_page', 0, PARAM_INT);
-    $perpage = $perpage ?: (get_config('coursework', 'coursework_per_page') ?? 10);
+    $perpage = $perpage ?: ($CFG->coursework_per_page ?? 10);
     $SESSION->perpage[$coursemoduleid] = $perpage;
 } else {
     $perpage = optional_param('per_page', $SESSION->perpage[$coursemoduleid], PARAM_INT);
