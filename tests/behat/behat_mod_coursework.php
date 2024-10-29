@@ -1136,7 +1136,7 @@ class behat_mod_coursework extends behat_base {
      */
     public function i_enter_an_extension_in_the_form(string $timeextension, string $reasoncode = '') {
         $newtime = strtotime('3:30pm', strtotime($timeextension));
-        // Put into ISO08601 format.
+        // Put into ISO-8601 format.
         $newtimestring = date('Y-m-d\TH:i', $newtime);
         $script = "const e = document.querySelector('input#extension-extend-deadline');"
             . "e.value = '$newtimestring'; e.dispatchEvent(new Event('change'));";
@@ -1160,8 +1160,8 @@ class behat_mod_coursework extends behat_base {
      */
     public function i_should_see_the_extension_in_the_form(string $timeextension, string $reasoncode = '') {
         $newtime = strtotime('3:30pm', strtotime($timeextension));
-        // Put into format 30-09-2024 15:47.
-        $newtimestring = date('d-m-Y H:i', $newtime);
+        // Put into ISO-8601 format.
+        $newtimestring = date('Y-m-d\TH:i', $newtime);
         $script = "document.querySelector('input#extension-extend-deadline').value";
         $result = behat_base::evaluate_script_in_session($this->getSession(), $script);
         if ($result != $newtimestring) {
