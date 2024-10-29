@@ -14,7 +14,6 @@ $( document ).ready(function() {
             'datatables.buttons':       base_url + 'datatables.buttons',
             'datatables.select':        base_url + 'datatables.select',
             'datatables.responsive':    base_url + 'datatables.responsive.min',
-            'jquery-mousewheel': base_url + 'jquery.mousewheel',
         }
     });
 
