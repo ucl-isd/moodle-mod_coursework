@@ -371,6 +371,10 @@ class feedback_controller extends controller_base {
 
             } else {
                 $teacherfeedback->destroy();
+                // Clear cache.
+                \mod_coursework\models\feedback::remove_cache($this->submission->courseworkid);
+                \mod_coursework\models\submission::remove_cache($this->submission->courseworkid);
+
                 // Remove associated files
                 $fs = get_file_storage();
                 $fs->delete_area_files($teacherfeedback->get_coursework()->get_context()->id, 'mod_coursework', 'feedback', $teacherfeedback->id());
