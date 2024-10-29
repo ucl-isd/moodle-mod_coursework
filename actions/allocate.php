@@ -93,8 +93,6 @@ $PAGE->set_heading($title);
 
 $PAGE->requires->jquery();
 
-$PAGE->requires->js('/mod/coursework/loadingoverlay.min.js');
-
 // Will set off the function that adds listeners for onclick/onchange etc.
 $jsmodule = [
     'name' => 'mod_coursework',
