@@ -527,10 +527,13 @@ $PAGE->requires->jquery();
 $PAGE->requires->css(new moodle_url('/mod/coursework/datatables/css/datatables.bootstrap.min.css'));
 
 // Require JS files.
-// Note that 'jquery.datatables.js' and 'php-date-formatter.min.js' are not included as called by other files.
-$jsfiles = ['datatables.js',  'edit_datatables.js'];
-foreach ($jsfiles as $jsfile) {
-    $PAGE->requires->js(new moodle_url("/mod/coursework/datatables/js/$jsfile"));
+// Note that jquery datatables files not included as called by coursework.js.
+if ($cangrade || $canviewstudents) {
+    // TODO make these into AMD modules.
+    $jsfiles = ['coursework.js',  'coursework_edit.js'];
+    foreach ($jsfiles as $jsfile) {
+        $PAGE->requires->js(new moodle_url("/mod/coursework/$jsfile"));
+    }
 }
 
 echo $OUTPUT->header();
