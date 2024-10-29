@@ -46,7 +46,7 @@ $( document ).ready(function() {
             // Return row object.
             return this;
         });
-        require(['datatables.searchpanes', 'datatables.select', 'datatables.buttons', 'datatables.responsive'], function($) {
+        require(['datatables.searchpanes', 'datatables.select', 'datatables.buttons', 'datatables.responsive'], function() {
             if(isMobileDevice() && $(window).width() < 768) {
                 is_responsive = true;
                 initDatatable(is_responsive);
