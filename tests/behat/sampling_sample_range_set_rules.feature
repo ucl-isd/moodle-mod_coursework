@@ -71,11 +71,11 @@ Feature: Automatic sample based on range set grades using marking of students in
     And I expand the coursework grading row 1
     And I wait "1" seconds
     And I click on the new feedback button for assessor 2
-    # TODO The line above fails because the row for assessor 2 is not shown.  Instead it says "Not included in sample".
-    And I grade the submission as 60 using the simple form
+    And I grade the submission as 60 using the ajax form
+    And I visit the coursework page
     And I expand the coursework grading row 2
     And I click on the new feedback button for assessor 2 for another student
-    And I grade the submission as 40 using the simple form
+    And I grade the submission as 40 using the ajax form
     And I log out
     And I am logged in as a manager
     And I visit the allocations page

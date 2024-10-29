@@ -5,7 +5,6 @@ Feature: Allow markers to edit their marking but only during specific marking st
   I want to be able to edit my initial marking if I have made a mistake.
   So that if the marking stage is at final agreed grading there is a time window for initial marks edition to happen
 
-
   Background:
     Given there is a course
     And there is a coursework
