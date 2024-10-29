@@ -29,7 +29,7 @@ global $CFG, $PAGE, $DB, $OUTPUT;
 $cmid = required_param('cmid', PARAM_INT);
 $ajax = optional_param('ajax', false, PARAM_BOOL);
 
-$cm = get_coursemodule_from_instance('coursework', $cmid);
+$cm = get_coursemodule_from_id('coursework', $cmid, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', ['id' => $cm->course]);
 require_login($course, false, $cm);
 
