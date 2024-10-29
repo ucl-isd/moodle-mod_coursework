@@ -1486,7 +1486,15 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
             $contentextendeddeadline = html_writer::tag('label', get_string('extended_deadline', 'mod_coursework'));
             $contentextendeddeadlinediv = html_writer::div($contentextendeddeadline, 'col-md-3');
-            $input = '<input type="text" class="form-control" id="extension-extend-deadline" placeholder="" disabled readonly>';
+            $minnutesstep = 5;
+            $input = \html_writer::tag(
+                'input', '', [
+                    'type' => "datetime-local",
+                    'step' => $minnutesstep * 60,
+                    'id' => "extension-extend-deadline",
+                    'name' => "extension-extend-deadline",
+                ]
+            );
             $contentextendeddeadlinediv .= html_writer::div($input, 'col-md-6');
             $modalbody .= html_writer::div($contentextendeddeadlinediv, 'form-group row fitem');
 

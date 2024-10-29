@@ -9,19 +9,16 @@ $( document ).ready(function() {
 
     require.config({
         paths: {
-            'jquery':                   base_url + 'jquery-3.3.1.min',
             'datatables.net':           base_url + 'jquery.datatables',
             'datatables.searchpanes':   base_url + 'datatables.searchpanes',
             'datatables.buttons':       base_url + 'datatables.buttons',
             'datatables.select':        base_url + 'datatables.select',
             'datatables.responsive':    base_url + 'datatables.responsive.min',
             'jquery-mousewheel': base_url + 'jquery.mousewheel',
-            'datetimepicker':    base_url + 'jquery.datetimepicker',
-
         }
     });
 
-    require(['jquery', 'datatables.net'], function ($, DataTable) {
+    require(['datatables.net'], function (DataTable) {
 
         $.fn.DataTable = DataTable;
         $.fn.DataTableSettings = DataTable.settings;
@@ -50,24 +47,18 @@ $( document ).ready(function() {
             // Return row object.
             return this;
         });
-        require(['jquery', 'datatables.searchpanes'], function($) {
-            require(['jquery', 'datatables.select'], function($) {
-                require(['jquery', 'datatables.buttons'], function($) {
-                    require(['jquery', 'datatables.responsive'], function($) {
-                        if(isMobileDevice() && $(window).width() < 768) {
-                            is_responsive = true;
-                            initDatatable(is_responsive);
+        require(['datatables.searchpanes', 'datatables.select', 'datatables.buttons', 'datatables.responsive'], function($) {
+            if(isMobileDevice() && $(window).width() < 768) {
+                is_responsive = true;
+                initDatatable(is_responsive);
 
-                            $('.datatabletest').on('order.dt', function(e) {
-                                $('.submissionrowmulti').removeClass("shown");
-                            });
-                        }
-                        else {
-                            initDatatable(is_responsive);
-                        }
-                    });
+                $('.datatabletest').on('order.dt', function(e) {
+                    $('.submissionrowmulti').removeClass("shown");
                 });
-            });
+            }
+            else {
+                initDatatable(is_responsive);
+            }
         });
     });
 

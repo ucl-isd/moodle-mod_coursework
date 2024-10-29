@@ -320,6 +320,7 @@ class deadline_extensions_controller extends controller_base {
                     'courseworkid' => $deadlineextension->courseworkid,
                     'id' => $deadlineextension->id,
                     'pre_defined_reason' => $deadlineextension->pre_defined_reason,
+                    'time_iso_8601' => date(\DateTime::ATOM, $deadlineextension->extended_deadline),
                 ];
                 $response = [
                     'error' => 0,
@@ -370,6 +371,7 @@ class deadline_extensions_controller extends controller_base {
         $deadlineextensiontransform = [
             'time_content' => $timecontent,
             'time' => $time,
+            'time_iso_8601' => date(\DateTime::ATOM, $this->coursework->deadline),
         ];
 
         $response = [

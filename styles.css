@@ -1005,9 +1005,11 @@ div.dtsp-searchPanes div.dataTables_scrollBody tbody tr.selected td {
 
 #extension-extend-deadline {
     background-color: #fff !important;
-    background-image: url(/mod/coursework/pix/calendar-icon.png);
     background-repeat: no-repeat;
     background-position: right 10px center;
+    border: 1px solid lightgrey;
+    border-radius: 8px;
+    padding: 5px;
 }
 
 #extension-extend-deadline:disabled {
