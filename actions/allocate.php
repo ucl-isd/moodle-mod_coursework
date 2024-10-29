@@ -63,8 +63,9 @@ if (isset($SESSION->allocate_perpage[$coursemoduleid]) && (isset($SESSION->perpa
 
 // If a session variable holding perpage preference for the specific coursework is not set, set default value (10).
 if (!(isset($SESSION->allocate_perpage[$coursemoduleid]))) {
-    $SESSION->allocate_perpage[$coursemoduleid] = optional_param('per_page', $CFG->coursework_per_page, PARAM_INT);
-    $perpage = $SESSION->allocate_perpage[$coursemoduleid];
+    $perpage = optional_param('per_page', 0, PARAM_INT);
+    $perpage = $perpage ?: (get_config('coursework', 'coursework_per_page') ?? 10);
+    $SESSION->allocate_perpage[$coursemoduleid] = $perpage;
 } else {
     $perpage = optional_param('per_page', $SESSION->allocate_perpage[$coursemoduleid], PARAM_INT);
     $SESSION->allocate_perpage[$coursemoduleid] = $perpage;
@@ -75,8 +76,9 @@ $sortby = optional_param('sortby', '', PARAM_ALPHA);
 $sorthow = optional_param('sorthow', '', PARAM_ALPHA);
 $options = compact('sortby', 'sorthow', 'perpage', 'page');
 
-// $_POST['allocatables'] comes as array of arrays which is not supported by optional_param_array, however we clean this later in process_data() function
-$formdataarray = isset($_POST['allocatables']) ? $_POST['allocatables'] : [];
+// Variable $_POST['allocatables'] comes as array of arrays which is not supported by optional_param_array.
+// However, we clean this later in process_data() function.
+$dirtyformdata = isset($_POST['allocatables']) ? $_POST['allocatables'] : [];
 
 require_login($course, true, $coursemodule);
 
@@ -149,7 +151,7 @@ if ($deletemodsetrule) {
 // Did we just get the form submitted to us?
 if ($formsavebutton) {
     $processor = new \mod_coursework\allocation\table\processor($coursework);
-    $processor->process_data($formdataarray);
+    $processor->process_data($dirtyformdata);
 
     $allocationsmanager->auto_generate_sample_set();
 }
