@@ -116,11 +116,10 @@ $(document).ready(function () {
         var value = $(deadline).closest('.show_edit_personal_dealine').children('.input-personal-deadline').val();
         var input_date = new Date(value);
         if (input_date <= Date.parse(now)) {
-            var notification = new M.core.alert({
+            (new M.core.alert({
                 message: datatables_lang_messages.alert_validate_deadline.replace(/\_/g, ' '),
                 title: datatables_lang_messages.notification_info,
-            });
-            notification.show();
+            })).show();
             return 0;
         }
 
@@ -140,11 +139,10 @@ $(document).ready(function () {
                 $('html, body').css("cursor", "auto");
                 data_response = JSON.parse(response);
                 if (data_response.error == 1) {
-                    var notification = new M.core.alert({
+                    (new M.core.alert({
                         message: data_response.message,
                         title: datatables_lang_messages.notification_info,
-                    });
-                    notification.show();
+                    })).show();
                 } else {
                     var parent = $(deadline).closest('.personal_deadline_cell');
                     $(parent).attr('data-order', data_response.timestamp);
@@ -154,11 +152,10 @@ $(document).ready(function () {
                     $(parent).children('.show_personal_dealine').children('.content_personal_deadline').html(data_response.time);
                     $(parent).children('.show_edit_personal_dealine').addClass('display-none');
                     $(parent).children('.show_personal_dealine').removeClass('display-none');
-                    var notification = new M.core.alert({
+                    (new M.core.alert({
                         message: datatables_lang_messages.alert_personaldeadline_save_successful.replace(/\_/g, ' '),
                         title: datatables_lang_messages.notification_info,
-                    });
-                    notification.show();
+                    })).show();
                 }
             },
             error: function () {
@@ -233,11 +230,10 @@ $(document).ready(function () {
                 $('html, body').css("cursor", "auto");
                 $('.modal-footer').children('img').css('visibility', 'hidden');
                 if (data_response.error == 1) {
-                    var notification = new M.core.alert({
+                    (new M.core.alert({
                         message: data_response.messages,
                         title: datatables_lang_messages.notification_info,
-                    });
-                    notification.show();
+                    })).show();
                 } else {
                     if (Object.keys(table_obj_list).length > 0) {
                         // Get the first datatable object.
@@ -258,11 +254,10 @@ $(document).ready(function () {
                     change__status_extension_submit_button(true);
                     save_extension_form_data();
 
-                    var notification = new M.core.alert({
+                    (new M.core.alert({
                         message: datatables_lang_messages.alert_extension_save_successful.replace(/\_/g, ' '),
                         title: datatables_lang_messages.notification_info,
-                    });
-                    notification.show();
+                    })).show();
                 }
             },
             error: function () {
@@ -363,11 +358,10 @@ $(document).ready(function () {
                         }
                         else {
                             $('#extension-next').prop('disabled', true);
-                            var notification = new M.core.alert({
+                            (new M.core.alert({
                                 message: datatables_lang_messages.alert_no_extension.replace(/\_/g, ' '),
                                 title: datatables_lang_messages.notification_info,
-                            });
-                            notification.show();
+                            })).show();
                         }
                     }
                 }
@@ -421,11 +415,10 @@ $(document).ready(function () {
                     }
                     else {
                         $('#extension-next').prop('disabled', true);
-                        var notification = new M.core.alert({
+                        (new M.core.alert({
                             message: datatables_lang_messages.alert_no_mitigation.replace(/\_/g, ' '),
                             title: datatables_lang_messages.notification_info,
-                        });
-                        notification.show();
+                        })).show();
                     }
                 }
             }
@@ -489,11 +482,10 @@ $(document).ready(function () {
                         }
                         else {
                             $('#extension-back').prop('disabled', true);
-                            var notification = new M.core.alert({
+                            (new M.core.alert({
                                 message: datatables_lang_messages.alert_no_mitigation.replace(/\_/g, ' '),
                                 title: datatables_lang_messages.notification_info,
-                            });
-                            notification.show();
+                            })).show();
                         }
                     }
                 }
@@ -546,11 +538,10 @@ $(document).ready(function () {
                     }
                     else {
                         $('#extension-back').prop('disabled', true);
-                        var notification = new M.core.alert({
+                        (new M.core.alert({
                             message: datatables_lang_messages.alert_no_mitigation.replace(/\_/g, ' '),
                             title: datatables_lang_messages.notification_info,
-                        });
-                        notification.show();
+                        })).show();
                     }
                 }
             }
@@ -584,11 +575,10 @@ $(document).ready(function () {
                 $('html, body').css("cursor", "auto");
                 $('.modal-footer').children('img').css('visibility', 'hidden');
                 if (data_response.error == 1) {
-                    var notification = new M.core.alert({
+                    (new M.core.alert({
                         message: data_response.message + ' .Please reload the page!',
                         title: datatables_lang_messages.notification_info,
-                    });
-                    notification.show();
+                    })).show();
                 } else {
                     var extension = data_response.data;
                     if (extension.time_content) {
@@ -845,8 +835,7 @@ $(document).ready(function () {
     });
 
     function update_feedback(form_data,url,celltype,submitbutton,removefeedbackbutton,submitfeedbackbutton,confirm,button) {
-        $.noConflict();
-        console.log('no conflict');
+
         form_data = form_data.concat({name: 'ajax', value: 1},
             {name: 'cell_type', value: celltype},
             {name: 'submitbutton', value: submitbutton},
@@ -890,40 +879,31 @@ $(document).ready(function () {
                     var tdcell2  =   $('#' + tablerowid).find('.multiple_agreed_grade_cell')[0];
                     $(tdcell2).html(response.finalhtml);
                 }
-
                 var datatables_lang_messages_two = JSON.parse($('#datatables_lang_messages').attr('data-lang'));
-
-                console.log('call modal hide');
-
-                $('#modal-grading').modal('hide');
-
-                if (submitbutton == 1) {
-                   var notification = new M.core.alert({
+                $('#modal-grading').modal('hide')
+                if (submitbutton === 1) {
+                    (new M.core.alert({
                         message: datatables_lang_messages_two.alert_feedback_save_successful.replace(/\_/g, ' '),
                         title: datatables_lang_messages_two.notification_info,
-                    });
-                    notification.show();
+                    })).show();
 
-                } else if (submitfeedbackbutton == 1) {
-                    var notification = new M.core.alert({
+                } else if (submitfeedbackbutton === 1) {
+                    (new M.core.alert({
                         message: datatables_lang_messages_two.alert_feedback_draft_save_successful.replace(/\_/g, ' '),
                         title: datatables_lang_messages_two.notification_info,
-                    });
-                    notification.show();
+                    })).show();
 
                 } else {
-                    var notification = new M.core.alert({
+                    (new M.core.alert({
                         message: datatables_lang_messages_two.alert_feedback_remove_successful.replace(/\_/g, ' '),
                         title: datatables_lang_messages_two.notification_info,
-                    });
-                    notification.show();
+                    })).show();
                 }
             } else {
-                var notification = new M.core.alert({
+                (new M.core.alert({
                     message: response.message,
                     title: datatables_lang_messages_two.notification_info,
-                });
-                notification.show();
+                })).show();
 
                 error_wrapper_element.prepend('<div class="gradingform_guide-error">' + response.message + '<div>');
 
