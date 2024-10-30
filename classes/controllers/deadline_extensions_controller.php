@@ -226,8 +226,6 @@ class deadline_extensions_controller extends controller_base {
 
     public function validation($data) {
         global $CFG;
-        $maxdeadline = $CFG->coursework_max_extension_deadline;
-
         if ($this->coursework->personaldeadlineenabled && $personaldeadline = $this->personal_deadline()) {
             $deadline = $personaldeadline->personal_deadline;
         } else {
@@ -235,7 +233,7 @@ class deadline_extensions_controller extends controller_base {
         }
 
         if ( $data['extended_deadline'] <= $deadline) {
-            return $errors = 'The new deadline must be later than the current deadline';
+            return 'The new deadline must be later than the current deadline';
         }
 
         return false;
@@ -320,6 +318,7 @@ class deadline_extensions_controller extends controller_base {
                     'courseworkid' => $deadlineextension->courseworkid,
                     'id' => $deadlineextension->id,
                     'pre_defined_reason' => $deadlineextension->pre_defined_reason,
+                    'time_iso_8601' => date(\DateTime::ATOM, $deadlineextension->extended_deadline),
                 ];
                 $response = [
                     'error' => 0,
@@ -370,6 +369,7 @@ class deadline_extensions_controller extends controller_base {
         $deadlineextensiontransform = [
             'time_content' => $timecontent,
             'time' => $time,
+            'time_iso_8601' => date(\DateTime::ATOM, $this->coursework->deadline),
         ];
 
         $response = [

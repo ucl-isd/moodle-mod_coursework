@@ -64,7 +64,7 @@ if (isset($SESSION->allocate_perpage[$coursemoduleid]) && (isset($SESSION->perpa
 // If a session variable holding perpage preference for the specific coursework is not set, set default value (10).
 if (!(isset($SESSION->allocate_perpage[$coursemoduleid]))) {
     $perpage = optional_param('per_page', 0, PARAM_INT);
-    $perpage = $perpage ?: (get_config('coursework', 'coursework_per_page') ?? 10);
+    $perpage = $perpage ?: ($CFG->coursework_per_page ?? 10);
     $SESSION->allocate_perpage[$coursemoduleid] = $perpage;
 } else {
     $perpage = optional_param('per_page', $SESSION->allocate_perpage[$coursemoduleid], PARAM_INT);
@@ -92,8 +92,6 @@ $PAGE->set_title($title);
 $PAGE->set_heading($title);
 
 $PAGE->requires->jquery();
-
-$PAGE->requires->js('/mod/coursework/loadingoverlay.min.js');
 
 // Will set off the function that adds listeners for onclick/onchange etc.
 $jsmodule = [

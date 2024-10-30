@@ -97,7 +97,7 @@ if (isset($SESSION->perpage[$coursemoduleid]) && optional_param('per_page', 0, P
 // (Grab default value from plugin setting).
 if (!(isset($SESSION->perpage[$coursemoduleid]))) {
     $perpage = optional_param('per_page', 0, PARAM_INT);
-    $perpage = $perpage ?: (get_config('coursework', 'coursework_per_page') ?? 10);
+    $perpage = $perpage ?: ($CFG->coursework_per_page ?? 10);
     $SESSION->perpage[$coursemoduleid] = $perpage;
 } else {
     $perpage = optional_param('per_page', $SESSION->perpage[$coursemoduleid], PARAM_INT);
@@ -523,19 +523,21 @@ if ($canviewstudents) {
     }
 }
 
+$PAGE->requires->jquery();
+$PAGE->requires->css(new moodle_url('/mod/coursework/datatables/css/datatables.bootstrap.min.css'));
+
+// Require JS files.
+// Note that jquery datatables files not included as called by coursework.js.
+if ($cangrade || $canviewstudents) {
+    // TODO make these into AMD modules.
+    $jsfiles = ['coursework.js',  'coursework_edit.js'];
+    foreach ($jsfiles as $jsfile) {
+        $PAGE->requires->js(new moodle_url("/mod/coursework/$jsfile"));
+    }
+}
+
 echo $OUTPUT->header();
 echo $html;
-echo '<script src="'.$CFG->wwwroot.'/mod/coursework/datatables/js/jquery-3.3.1.min.js"></script>
-<link rel="stylesheet" type="text/css" href="'. $CFG->wwwroot .'/mod/coursework/datatables/css/datatables.bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="'. $CFG->wwwroot .'/mod/coursework/datatables/css/jquery.datetimepicker.css"/>
-<script src="'.$CFG->wwwroot.'/mod/coursework/datatables/js/jquery.datatables.js"></script>
-<script src="'.$CFG->wwwroot.'/mod/coursework/datatables/js/datatables.js"></script>
-<script src="'.$CFG->wwwroot.'/mod/coursework/datatables/js/php-date-formatter.min.js"></script>
-<script src="'.$CFG->wwwroot.'/mod/coursework/datatables/js/edit_datatables.js"></script>
-';
-
-// $PAGE->requires->js('/mod/coursework/datatables/js/jquery-3.3.1.min.js');
-// $PAGE->requires->js('/mod/coursework/datatables/js/jquery.datatables.js');
-// Finish the page.
+// Provide wwwroot to JS.
+echo html_writer::div('', '', ['id' => 'mod-coursework-config', 'data-wwwroot' => $CFG->wwwroot]);
 echo $OUTPUT->footer();
-

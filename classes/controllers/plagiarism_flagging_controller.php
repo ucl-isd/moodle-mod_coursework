@@ -46,6 +46,7 @@ require_once($CFG->dirroot . '/mod/coursework/renderer.php');
  * It is the beginning of the process of tidying things up to make them a bit more MVC where possible.
  *
  */
+#[\AllowDynamicProperties]
 class plagiarism_flagging_controller extends controller_base {
 
     /**

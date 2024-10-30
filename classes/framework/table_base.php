@@ -22,7 +22,6 @@
 
 namespace mod_coursework\framework;
 
-use moodle_database;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();

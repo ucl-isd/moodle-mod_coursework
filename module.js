@@ -390,9 +390,6 @@ M.mod_coursework = {
                 },
                 text: 'The allocation strategy is being applied this may take some time please wait'
             });
-            // $("#coursework_input_buttons").first().LoadingOverlay("show", {
-            //     custom: customElement
-            // });
             $("#coursework_input_buttons").append(customElement);
             $("#coursework_input_buttons").toggleClass('my_overlay');
 
@@ -408,7 +405,6 @@ M.mod_coursework = {
                     }
                 },
                 success: function (text) {
-                    // $(".allocation-strategy").first().LoadingOverlay("hide");
                     $("#coursework_input_buttons").toggleClass('my_overlay');
 
                     location.reload(true);
@@ -434,10 +430,6 @@ M.mod_coursework = {
                 },
                 text: 'The allocation strategy is being saved the page will exit shortly. Depending on the number of participants on this course you may not see the results of the allocations straight away in this event refresh the page'
             });
-
-            // $("#coursework_input_buttons").first().LoadingOverlay("show", {
-            //     custom: customElement
-            // });
             $("#coursework_input_buttons").append(customElement);
             $("#coursework_input_buttons").toggleClass('my_overlay');
 
