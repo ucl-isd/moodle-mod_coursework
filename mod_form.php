@@ -44,17 +44,21 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         global $PAGE, $CFG;
 
-        $PAGE->requires->jquery();
+        // Don't include jQuery when not on this module's settings page, for
+        // example, if on the default activity completion page.  See MDL-78528.
+        if ($PAGE->pagetype === 'mod-coursework-mod') {
+            $PAGE->requires->jquery();
 
-        $module = [
-            'name' => 'mod_coursework',
-            'fullpath' => '/mod/coursework/mod_form.js',
-            'requires' => [
-                'node',
-                'ajax',
-            ]];
+            $module = [
+                'name' => 'mod_coursework',
+                'fullpath' => '/mod/coursework/mod_form.js',
+                'requires' => [
+                    'node',
+                    'ajax',
+                ]];
 
-        $PAGE->requires->js_init_call('M.mod_coursework.init', [], true, $module);
+            $PAGE->requires->js_init_call('M.mod_coursework.init', [], true, $module);
+        }
 
         $this->set_form_attributes();
 
