@@ -48,9 +48,8 @@ final class coursework_test extends advanced_testcase {
     public function setUp(): void {
         $this->resetAfterTest();
         $this->course = $this->getDataGenerator()->create_course();
-        $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $this->setAdminUser();
-        $this->coursework = $generator->create_instance(['course' => $this->course->id, 'grade' => 0]);
+        $this->coursework = $this->create_a_coursework(['grade' => 0]);
     }
 
     /**
@@ -91,8 +90,7 @@ final class coursework_test extends advanced_testcase {
         $this->assertInstanceOf('\mod_coursework\allocation\manager', $allocationmanager);
 
         // Now make a new coursework with a duff class name.
-        $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
-        $this->coursework = $generator->create_instance(['course' => $this->course->id, 'grade' => 0]);
+        $this->coursework = $this->create_a_coursework(['grade' => 0]);
         $this->coursework->assessorallocationstrategy = 'duffclass';
         $this->coursework->save();
 
@@ -101,67 +99,61 @@ final class coursework_test extends advanced_testcase {
     }
 
     public function test_group_decorator_is_added(): void {
-        $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
-        $coursework = $generator->create_instance(['course' => $this->course->id,
-                                                        'grade' => 0,
-                                                        'use_groups' => true]);
+        $params = [
+            'grade' => 0,
+            'use_groups' => true,
+        ];
+        $coursework = $this->create_a_coursework($params);
         $this->assertInstanceOf('\mod_coursework\decorators\coursework_groups_decorator', coursework::find($coursework->id));
     }
 
     public function test_group_decorator_is_not_added(): void {
-        $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
-        $coursework = $generator->create_instance(['course' => $this->course->id,
-                                                        'grade' => 0]);
+        $coursework = $this->create_a_coursework(['grade' => 0]);
         $this->assertInstanceOf('\mod_coursework\models\coursework',
                                 coursework::find($coursework->id));
     }
 
     public function test_get_user_group_no_grouping(): void {
-
-        $generator = $this->get_coursework_generator();
-
         $this->create_a_student();
         $this->create_a_group();
         $this->add_student_to_the_group();
 
-        $coursework = $generator->create_instance(['course' => $this->course->id,
-                                                        'grade' => 0,
-                                                        'use_groups' => true]);
-
+        $params = [
+            'grade' => 0,
+            'use_groups' => true,
+        ];
+        $coursework = $this->create_a_coursework($params);
         $this->assertEquals($this->group->id, $coursework->get_student_group($this->student)->id);
 
     }
 
     public function test_get_user_group_with_grouping(): void {
-
-        $generator = $this->get_coursework_generator();
-
         $this->create_a_student();
         $this->create_a_group();
         $this->create_a_grouping_and_add_the_group_to_it();
         $this->add_student_to_the_group();
 
-        $coursework = $generator->create_instance(['course' => $this->course->id,
-                                                        'grade' => 0,
-                                                        'use_groups' => true,
-                                                        'grouping_id' => $this->grouping->id]);
-
+        $params = [
+            'grade' => 0,
+            'use_groups' => true,
+            'grouping_id' => $this->grouping->id,
+        ];
+        $coursework = $this->create_a_coursework($params);
         $this->assertEquals($this->group->id, $coursework->get_student_group($this->student)->id);
     }
 
     public function test_get_user_group_with_wrong_grouping(): void {
-        $generator = $this->get_coursework_generator();
-
         $this->create_a_student();
         $this->create_a_group();
         $this->create_a_grouping_and_add_the_group_to_it();
         $this->add_student_to_the_group();
 
-        $coursework = $generator->create_instance(['course' => $this->course->id,
-                                                        'grade' => 0,
-                                                        'use_groups' => true,
-                                                        'grouping_id' => 543]);
-
+        $params = [
+            'grade' => 0,
+            'use_groups' => true,
+            'grouping_id' => 543,
+        ];
+        $coursework = $this->create_a_coursework($params);
         $this->assertFalse($coursework->get_student_group($this->student));
     }
 

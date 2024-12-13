@@ -57,15 +57,13 @@ final class csv_test extends advanced_testcase {
         $dateformat = '%a, %d %b %Y, %H:%M';
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
 
-        $coursework = $generator->create_instance(
-            [
-                'course' => $this->course->id,
-                'grade' => 100,
-                'numberofmarkers' => 1,
-                'deadline' => time() + 86400,
-                'extensionsenabled' => 1,
-            ]
-        );
+        $params = [
+            'grade' => 100,
+            'numberofmarkers' => 1,
+            'deadline' => time() + 86400,
+            'extensionsenabled' => 1,
+        ];
+        $coursework = $this->create_a_coursework($params);
         $submission = new stdClass();
         $submission->userid = $this->student->id;
         $submission->allocatableid = $this->student->id;
@@ -152,14 +150,12 @@ final class csv_test extends advanced_testcase {
         $dateformat = '%a, %d %b %Y, %H:%M';
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
 
-        $coursework = $generator->create_instance(
-            [
-                'course' => $this->course->id,
-                'grade' => 100,
-                'numberofmarkers' => 2,
-                'deadline' => strtotime('-1 day', $timenow), // This means that the submissions will be late.
-            ]
-        );
+        $params = [
+            'grade' => 100,
+            'numberofmarkers' => 2,
+            'deadline' => strtotime('-1 day', $timenow), // This means that the submissions will be late.
+        ];
+        $coursework = $this->create_a_coursework($params);
 
         $submission = new stdClass();
         $submission->userid = $this->student->id;
@@ -251,15 +247,13 @@ final class csv_test extends advanced_testcase {
         $dateformat = '%a, %d %b %Y, %H:%M';
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
 
-        $coursework = $generator->create_instance(
-            [
-                'course' => $this->course->id,
-                'grade' => 100,
-                'numberofmarkers' => 2,
-                'samplingenabled' => 1,
-                'deadline' => time() + 86400,
-            ]
-        );
+        $params = [
+            'grade' => 100,
+            'numberofmarkers' => 2,
+            'samplingenabled' => 1,
+            'deadline' => time() + 86400,
+        ];
+        $coursework = $this->create_a_coursework($params);
         $submission = new stdClass();
         $submission->userid = $this->student->id;
         $submission = $generator->create_submission($submission, $coursework);
@@ -330,15 +324,13 @@ final class csv_test extends advanced_testcase {
         $dateformat = '%a, %d %b %Y, %H:%M';
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
 
-        $coursework = $generator->create_instance(
-            [
-                'course' => $this->course->id,
-                'grade' => 100,
-                'numberofmarkers' => 2,
-                'samplingenabled' => 1,
-                'deadline' => time() + 86400,
-            ]
-        );
+        $params = [
+            'grade' => 100,
+            'numberofmarkers' => 2,
+            'samplingenabled' => 1,
+            'deadline' => time() + 86400,
+        ];
+        $coursework = $this->create_a_coursework($params);
         $student1 = $this->student;
         $assessor1 = $this->teacher;
         $assessor2 = $this->otherteacher;
