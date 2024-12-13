@@ -40,20 +40,16 @@ final class auto_allocator_test extends advanced_testcase {
         $this->setAdminUser();
 
         $generator = $this->getDataGenerator();
-        /**
-         * @var mod_coursework_generator $coursework_generator
-         */
-        $courseworkgenerator = $generator->get_plugin_generator('mod_coursework');
 
         $this->course = $generator->create_course();
 
-        $coursework = new stdClass();
-        $coursework->course = $this->course;
-        $coursework->moderationenabled = 1;
-        $coursework->allocationenabled = 1;
-        $coursework->assessorallocationstrategy = 'equal';
-        $coursework->moderatorallocationstrategy = 'equal';
-        $this->coursework = $courseworkgenerator->create_instance($coursework);
+        $params = [
+            'moderationenabled' => 1,
+            'allocationenabled' => 1,
+            'assessorallocationstrategy' => 'equal',
+            'moderatorallocationstrategy' => 'equal',
+        ];
+        $this->coursework = $this->create_a_coursework($params);
 
         $this->create_a_student();
         $this->create_a_teacher();

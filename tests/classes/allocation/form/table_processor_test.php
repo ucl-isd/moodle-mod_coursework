@@ -47,14 +47,7 @@ final class table_processor_test extends advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        $generator = $this->getDataGenerator();
-        $courseworkgenerator = $generator->get_plugin_generator('mod_coursework');
-
-        $this->course = $generator->create_course();
-        $coursework = new stdClass();
-        $coursework->course = $this->course;
-        $coursework->numberofmarkers = 2;
-        $this->coursework = $courseworkgenerator->create_instance($coursework);
+        $this->coursework = $this->create_a_coursework(['numberofmarkers' => 2]);
 
         $this->create_a_student();
         $this->create_a_teacher();

@@ -107,8 +107,7 @@ class mod_coursework_generator extends testing_module_generator {
             $record->moderatorallocationstrategy = 'none';
         }
 
-        return coursework::find(parent::create_instance($record, $options)->id);
-
+        return parent::create_instance($record, $options);
     }
 
     /**

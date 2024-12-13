@@ -59,10 +59,12 @@ final class grading_sheet_download_test extends advanced_testcase {
     public function test_one_stage_no_allocations(): void {
 
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
-        $coursework = $generator->create_instance(['course' => $this->course->id,
-                                                             'grade' => 100,
-                                                             'numberofmarkers' => 1,
-                                                             'deadline' => time() + 86400]);
+        $params = [
+             'grade' => 100,
+             'numberofmarkers' => 1,
+             'deadline' => time() + 86400,
+        ];
+        $coursework = $this->create_a_coursework($params);
         $submission = new stdClass();
         $submission->userid = $this->student->id;
         $submission->allocatableid = $this->student->id;
@@ -101,16 +103,13 @@ final class grading_sheet_download_test extends advanced_testcase {
      */
     public function test_two_stages_with_allocations(): void {
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
-
-        $coursework = $generator->create_instance(
-            [
-                'course' => $this->course->id,
-                'grade' => 100,
-                'numberofmarkers' => 2,
-                'allocationenabled' => 1,
-                'deadline' => time() + 86400,
-            ]
-        );
+        $params = [
+            'grade' => 100,
+            'numberofmarkers' => 2,
+            'allocationenabled' => 1,
+            'deadline' => time() + 86400,
+        ];
+        $coursework = $this->create_a_coursework($params);
 
         // 2 assessors
         $assessor1 = $this->teacher;
