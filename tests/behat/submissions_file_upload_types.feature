@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_submissions_file_upload_types
 Feature: Restricting the types of files that students can upload
 
     As a teacher

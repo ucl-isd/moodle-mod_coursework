@@ -50,8 +50,6 @@ $jsmodule = [
     'strings' => [],
 ];
 
-$PAGE->requires->yui_module('moodle-core-notification', 'notification_init');
-
 // Course_module ID, or coursework instance ID - it should be named as the first character of the module.
 $coursemoduleid = optional_param('id', 0, PARAM_INT);
 $courseworkid = optional_param('e', 0, PARAM_INT);
@@ -529,11 +527,8 @@ $PAGE->requires->css(new moodle_url('/mod/coursework/datatables/css/datatables.b
 // Require JS files.
 // Note that jquery datatables files not included as called by coursework.js.
 if ($cangrade || $canviewstudents) {
-    // TODO make these into AMD modules.
-    $jsfiles = ['coursework.js',  'coursework_edit.js'];
-    foreach ($jsfiles as $jsfile) {
-        $PAGE->requires->js(new moodle_url("/mod/coursework/$jsfile"));
-    }
+    $PAGE->requires->js_call_amd('mod_coursework/coursework', 'init');
+    $PAGE->requires->js_call_amd('mod_coursework/coursework_edit', 'init');
 }
 
 echo $OUTPUT->header();
