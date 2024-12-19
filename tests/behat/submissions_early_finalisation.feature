@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_submissions_early_finalisation
 Feature: Early finalisation of student submissions
 
     As a teacher

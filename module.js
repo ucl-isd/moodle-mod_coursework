@@ -30,7 +30,6 @@ M.mod_coursework = {
     init_allocate_page: function (e, wwwroot, coursemoduleid) {
         "use strict";
 
-
         // Make the changes to the moderations set dropdowns set the 'in moderations set'
         // checkboxes automatically.
         $('.assessor_id_dropdown').change(function () {
