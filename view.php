@@ -526,6 +526,21 @@ if ($canviewstudents) {
 $PAGE->requires->jquery();
 $PAGE->requires->css(new moodle_url('/mod/coursework/datatables/css/datatables.bootstrap.min.css'));
 
+// Add DataTables CSS files.
+$PAGE->requires->css(new moodle_url('/mod/coursework/datatables/css/buttons.datatables.min.css'));
+$PAGE->requires->css(new moodle_url('/mod/coursework/datatables/css/datatables.bootstrap.min.css'));
+$PAGE->requires->css(new moodle_url('/mod/coursework/datatables/css/responsive.bootstrap.min.css'));
+$PAGE->requires->css(new moodle_url('/mod/coursework/datatables/css/searchpanes.datatables.min.css'));
+$PAGE->requires->css(new moodle_url('/mod/coursework/datatables/css/select.bootstrap.min.css'));
+$PAGE->requires->css(new moodle_url('/mod/coursework/datatables/css/select.dataTables.min.css'));
+
+// Add DataTables JS files.
+$PAGE->requires->js(new moodle_url('/mod/coursework/datatables/js/jquery.datatables.js'), true);
+$PAGE->requires->js(new moodle_url('/mod/coursework/datatables/js/datatables.buttons.js'), true);
+$PAGE->requires->js(new moodle_url('/mod/coursework/datatables/js/datatables.responsive.min.js'), true);
+$PAGE->requires->js(new moodle_url('/mod/coursework/datatables/js/datatables.searchpanes.js'), true);
+$PAGE->requires->js(new moodle_url('/mod/coursework/datatables/js/datatables.select.js'), true);
+
 // Require JS files.
 // Note that jquery datatables files not included as called by coursework.js.
 if ($cangrade || $canviewstudents) {
