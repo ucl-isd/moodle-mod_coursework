@@ -5,61 +5,18 @@ var tableobject = 0;
 
 $( document ).ready(function() {
     var langmessage = JSON.parse($('#element_lang_messages').attr('data-lang'));
-    var base_url = window.location.origin + '/mod/coursework/datatables/js/';
 
-    require.config({
-        paths: {
-            'datatables.net':           base_url + 'jquery.datatables',
-            'datatables.searchpanes':   base_url + 'datatables.searchpanes',
-            'datatables.buttons':       base_url + 'datatables.buttons',
-            'datatables.select':        base_url + 'datatables.select',
-            'datatables.responsive':    base_url + 'datatables.responsive.min',
-        }
-    });
+    // Initialize DataTables
+    if(isMobileDevice() && $(window).width() < 768) {
+        is_responsive = true;
+        initDatatable(is_responsive);
 
-    require(['datatables.net'], function (DataTable) {
-
-        $.fn.DataTable = DataTable;
-        $.fn.DataTableSettings = DataTable.settings;
-        $.fn.dataTableExt = DataTable.ext;
-        DataTable.$ = $;
-        $.fn.DataTable = function ( opts ) {
-            return $(this).dataTable( opts ).api();
-        };
-        $.fn.dataTable.Api.register('row().show()', function() {
-            var page_info = this.table().page.info();
-            // Get row index.
-            var new_row_index = this.index();
-            // Row position.
-            var row_position = this.table()
-                .rows({ search: 'applied' })[0]
-                .indexOf(new_row_index);
-            // Already on right page ?
-            if ((row_position >= page_info.start && row_position < page_info.end) || row_position < 0) {
-                // Return row object.
-                return this;
-            }
-            // Find page number.
-            var page_to_display = Math.floor(row_position / this.table().page.len());
-            // Go to that page.
-            this.table().page(page_to_display);
-            // Return row object.
-            return this;
+        $('.datatabletest').on('order.dt', function(e) {
+            $('.submissionrowmulti').removeClass("shown");
         });
-        require(['datatables.searchpanes', 'datatables.select', 'datatables.buttons', 'datatables.responsive'], function() {
-            if(isMobileDevice() && $(window).width() < 768) {
-                is_responsive = true;
-                initDatatable(is_responsive);
-
-                $('.datatabletest').on('order.dt', function(e) {
-                    $('.submissionrowmulti').removeClass("shown");
-                });
-            }
-            else {
-                initDatatable(is_responsive);
-            }
-        });
-    });
+    } else {
+        initDatatable(is_responsive);
+    }
 
     /**
      *
