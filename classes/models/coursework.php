@@ -2463,6 +2463,7 @@ class coursework extends table_base {
         $DB->execute("UPDATE {coursework_submissions}
                          SET finalised = 1
                        WHERE courseworkid = ? $excludesql", [$this->id]);
+        \mod_coursework\models\submission::remove_cache($this->id);
     }
 
     /**
