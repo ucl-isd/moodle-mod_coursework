@@ -520,8 +520,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $allowedtoaddgeneralfeedback = has_capability('mod/coursework:addgeneralfeedback', $coursework->get_context());
         $canaddgeneralfeedback = has_capability('mod/coursework:addgeneralfeedback', $this->page->context);
 
-        $out .= html_writer::tag('h3', get_string('gradingsummary', 'coursework'));
-        $out .= $this->coursework_grading_summary_table($coursework);
+        if ($cangrade || $canpublish) {
+            $out .= html_writer::tag('h3', get_string('gradingsummary', 'coursework'));
+            $out .= $this->coursework_grading_summary_table($coursework);
+        }
 
         // Show general feedback if it's there and the deadline has passed or general feedback's date is not enabled which means it should be displayed automatically
         if (($coursework->is_general_feedback_enabled() && $allowedtoaddgeneralfeedback && (time() > $coursework->generalfeedback || $cangrade || $canpublish || $ispublished)) || !$coursework->is_general_feedback_enabled()) {
