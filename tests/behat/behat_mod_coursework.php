@@ -1526,7 +1526,7 @@ class behat_mod_coursework extends behat_base {
 
         $coursework = new stdClass();
         $coursework->course = $this->course;
-        $this->coursework = $generator->create_instance($coursework);
+        $this->coursework = coursework::find($generator->create_instance($coursework)->id);
     }
 
     /**

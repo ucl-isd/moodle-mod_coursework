@@ -43,9 +43,8 @@ final class coursework_submission_test extends advanced_testcase {
         $this->resetAfterTest();
 
         $this->course = $this->getDataGenerator()->create_course();
-        $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $this->setAdminUser();
-        $this->coursework = $generator->create_instance(['course' => $this->course->id, 'grade' => 0]);
+        $this->coursework = $this->create_a_coursework(['grade' => 0]);
         $this->redirectMessages();
         $this->preventResetByRollback();
 
@@ -101,8 +100,7 @@ final class coursework_submission_test extends advanced_testcase {
 
     public function test_group_decorator_is_not_added(): void {
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
-        $coursework = $generator->create_instance(['course' => $this->course->id,
-                                                        'grade' => 0]);
+        $coursework = $this->create_a_coursework(['grade' => 0]);
 
         $submission = new stdClass();
         $submission->userid = 2;

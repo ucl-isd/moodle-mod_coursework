@@ -203,12 +203,14 @@ trait factory_mixin {
     /**
      * Makes a coursework and saves it as $this->coursework
      *
-     * @throws coding_exception
+     * @param array $params
      * @return coursework
      */
-    protected function create_a_coursework() {
+    protected function create_a_coursework(array $params = []) {
         $generator = $this->get_coursework_generator();
-        $this->coursework = $generator->create_instance(['course' => $this->get_course()->id]);
+        $params['course'] = $this->get_course()->id;
+        $module = $generator->create_instance($params);
+        $this->coursework = coursework::find($module->id);
         return $this->coursework;
     }
 
