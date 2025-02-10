@@ -26,7 +26,7 @@ Feature: Multiple assessors simple grading form
     And I set the field "Grade" to "52"
     And I set the feedback comment to "Some new comment 3"
     And I click on "Save and finalise" "button"
-    And I wait "1" seconds
+    And I wait until "OK" "button" exists
     And I visit the edit feedback page
     And the field "Grade" matches value "52"
     And the field "Comment" matches value "Some new comment 3"
