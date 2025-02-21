@@ -1,4 +1,4 @@
-@mod @mod_coursework@mod @mod_coursework
+@mod @mod_coursework
 Feature: warnings when settings are not right
 
     As a manager

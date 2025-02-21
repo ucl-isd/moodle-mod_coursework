@@ -32,6 +32,7 @@ $string['all'] = 'ALL';
 
 $string['aday'] = 'A day';
 $string['add_rule'] = 'Add rule';
+$string['addassessors'] = 'Add assessors';
 $string['addgraderule'] = 'Add rule';
 $string['addcomponent'] = 'Add component';
 $string['addcomponentto'] = 'Add new component to';

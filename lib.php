@@ -872,6 +872,12 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
         $navref->add(get_string('setpersonaldeadlines', 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
     }
 
+    // Link to the locally assigned roles screen.
+    if (has_capability('moodle/role:assign', $context)
+            && has_capability('mod/coursework:allocate', $context)) {
+        $link = new moodle_url('/admin/roles/assign.php', ['contextid' => $context->id]);
+        $navref->add(get_string('addassessors', 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
+    }
 }
 
 /**
