@@ -561,21 +561,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         global $SESSION;
 
         $tablehtml = $allocationtable->get_hidden_elements();
-
-        $tablehtml .= '
-
-            <table class="allocations display">
-                <thead>
-                <tr>
-
-        ';
-
+        $all = count($allocationtable->get_coursework()->get_allocatables());
         $options = $allocationtable->get_options();
 
-        $pagingbar = new paging_bar($allocationtable->get_participant_count(), $options['page'], $options['perpage'],
-            $this->page->url, 'page');
-
-        $all = count($allocationtable->get_coursework()->get_allocatables());
+        $tablehtml .= '<div class="table-and-jumptos">';
 
         $recordsperpage = [3 => 3,
             10 => 10,
@@ -592,8 +581,20 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $select = new single_select($this->page->url, 'per_page', $recordsperpage, $options['perpage'], null);
         $select->label = get_string('records_per_page', 'coursework');
         $select->class = 'jumpmenu';
-        $select->formid = 'sectionmenu';
+        $select->formid = 'sectionmenutop';
         $tablehtml .= $this->output->render($select);
+        $tablehtml .= \html_writer::start_tag('form', ['method' => 'post']);
+
+        $tablehtml .= '
+
+            <table class="allocations display">
+                <thead>
+                <tr>
+
+        ';
+
+        $pagingbar = new paging_bar($allocationtable->get_participant_count(), $options['page'], $options['perpage'],
+            $this->page->url, 'page');
 
         // Get the hidden elements used for assessors and moderators selected on other pages;
 
@@ -650,8 +651,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             'id' => 'save_manual_allocations_1',
             'value' => get_string('save', 'mod_coursework')];
         $tablehtml .= html_writer::empty_tag('input', $attributes);
+        $tablehtml .= html_writer::end_tag('form');
 
+        $select->formid = 'sectionmenubottom';
         $tablehtml .= $this->output->render($select);
+        $tablehtml .= '</div>';
 
         $tablehtml .= $this->page->get_renderer('mod_coursework', 'object')->render($pagingbar);
 
@@ -703,7 +707,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // $html .= $this->output->help_icon('allocationstrategy', 'mod_coursework');
         $html .= html_writer::end_tag('h3');
 
-        $html .= '<div class="allocation-strategy"';
+        $html .= '<div class="allocation-strategy">';
+        $html .= \html_writer::start_tag('form',
+            ['id' => 'allocation_form', 'method' => 'post']);
         // Allow allocation method to be changed.
         $html .= html_writer::label(get_string('allocationstrategy', 'mod_coursework'), 'assessorallocationstrategy');
 
@@ -740,6 +746,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             'value' => get_string('save_and_exit', 'mod_coursework')];
         $html .= html_writer::empty_tag('input', $attributes);
         $html .= html_writer::end_tag('div');
+        $html .= html_writer::end_tag('form');
         $html .= '</div>';
         $html .= '</div>';
 
