@@ -1086,3 +1086,15 @@ div.dtsp-searchPanes div.dataTables_scrollBody tbody tr.selected td {
 .feedbacknotestoggle.expanded {
     background: url([[pix:coursework|details_close]]) no-repeat;
 }
+
+/* Container to help position lower "Showing:" jumpto */
+body#page-mod-coursework-actions-allocate div.table-and-jumptos {
+    position: relative;
+}
+
+/* Vertically align lower "Showing:" jumpto with the "Save" button */
+body#page-mod-coursework-actions-allocate div.table-and-jumptos form + div.jumpmenu {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}

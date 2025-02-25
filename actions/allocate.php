@@ -205,11 +205,6 @@ if ($coursework->sampling_enabled()) { // Do not delete yet - refactoring...
     echo html_writer::end_tag('form');
 }
 
-// Start form. The page has now been broken into two forms sampling section and allocation section
-// Open form tag.
-echo \html_writer::start_tag('form', ['id' => 'allocation_form',
-    'method' => 'post']);
-
 if ($coursework->allocation_enabled()) {
     echo $objectrenderer->render($allocationwidget);
 }
@@ -234,7 +229,5 @@ echo html_writer::empty_tag('input', $attributes);
 echo $OUTPUT->help_icon('savemanualallocations', 'mod_coursework');
 */
 echo $objectrenderer->render($allocationtable);
-
-echo html_writer::end_tag('form');
 
 echo $OUTPUT->footer();
