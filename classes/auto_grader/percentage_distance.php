@@ -25,6 +25,7 @@ namespace mod_coursework\auto_grader;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
+use mod_coursework\traits\autoagreement_functions;
 
 /**
  * Class percentage_distance is responsible for calculating and applying the automatically agreed grade if the initial
@@ -33,6 +34,7 @@ use mod_coursework\models\feedback;
  * @package mod_coursework\auto_grader
  */
 class percentage_distance implements auto_grader {
+    use autoagreement_functions;
 
     /**
      * @var coursework
@@ -129,13 +131,18 @@ class percentage_distance implements auto_grader {
      *
      */
     private function create_final_feedback() {
-        feedback::create(
+        $feedback =
             [
                 'stage_identifier' => 'final_agreed_1',
                 'submissionid' => $this->get_allocatable()->get_submission($this->get_coursework())->id(),
                 'grade' => $this->automatic_grade(),
-            ]
-        );
+            ];
+
+        if ($this->coursework->autopopulatefeedbackcomment_enabled()) {
+            $feedback['feedbackcomment'] = $this->feedback_comments();
+        }
+
+        feedback::create($feedback);
     }
 
     /**
@@ -148,6 +155,10 @@ class percentage_distance implements auto_grader {
         $updatedfeedback->id = $feedback->id;
         $updatedfeedback->grade = $this->automatic_grade();
         $updatedfeedback->lasteditedbyuser = 0;
+
+        if ($this->coursework->autopopulatefeedbackcomment_enabled()) {
+            $updatedfeedback->feedbackcomment = $this->feedback_comments();
+        }
 
         $DB->update_record('coursework_feedbacks', $updatedfeedback);
 
