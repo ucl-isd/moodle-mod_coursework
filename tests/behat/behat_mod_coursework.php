@@ -2178,7 +2178,6 @@ class behat_mod_coursework extends behat_base {
         $feedback = new stdClass();
         $feedback->assessorid = $this->teacher->id;
         $feedback->submissionid = $this->submission->id;
-        $feedback->feedbackcomment = 'New comment here';
         $feedback->stage_identifier = 'assessor_1';
         $feedback->feedbackcomment = 'New comment here';
         $feedback->grade = 67;

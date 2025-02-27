@@ -44,3 +44,15 @@ Feature: Automatic agreement for simple grades
     When I grade the submission as 63 using the ajax form
     And I visit the coursework page
     Then I should see the final grade as 67 on the multiple marker page
+
+  @javascript
+  Scenario: If "Auto-populate agreed feedback comment" is enabled then the final grade should contain the combined feedback of markers
+    Given the coursework "automaticagreementstrategy" setting is "percentage_distance" in the database
+    Given the coursework "automaticagreementrange" setting is "10" in the database
+    Given the coursework "autopopulatefeedbackcomment" setting is "1" in the database
+    Given there are feedbacks from both teachers
+    And I am logged in as a manager
+    And I visit the coursework page
+    When I click the edit final feedback button
+    And I wait until the page is ready
+    Then the grade comment textarea field matches "Assessor 1 comment:New comment hereAssessor 2 comment:New comment here"
