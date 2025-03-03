@@ -81,6 +81,11 @@ class moderation extends table_base {
     public $modcommentformat;
 
     /**
+     * @var mod_coursework\models\submission
+     */
+    private $submission;
+
+    /**
      * Chained getter for loose coupling.
      *
      * @return coursework
