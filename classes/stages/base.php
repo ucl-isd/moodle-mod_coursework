@@ -63,6 +63,11 @@ abstract class base {
     protected $allocatableswithmoderation;
 
     /**
+     * @var array|null
+     */
+    protected $allocatableswithallocations;
+
+    /**
      * @var array
      */
     private static $selfcache = [
@@ -398,15 +403,15 @@ abstract class base {
      * @return bool
      */
     public function has_allocation($allocatable) {
-        if (!isset($this->allocatables_with_allocations)) {
+        if (!isset($this->allocatableswithallocations)) {
             $courseworkid = $this->get_coursework()->id;
             if (!isset(allocation::$pool[$courseworkid]['stage_identifier'])) {
                 allocation::fill_pool_coursework($courseworkid);
             }
-            $this->allocatables_with_allocations = array_column(allocation::$pool[$courseworkid]['stage_identifier'][$this->stageidentifier] ?? [], 'allocatableid');
+            $this->allocatableswithallocations = array_column(allocation::$pool[$courseworkid]['stage_identifier'][$this->stageidentifier] ?? [], 'allocatableid');
         }
 
-        return in_array($allocatable->id, $this->allocatables_with_allocations);
+        return in_array($allocatable->id, $this->allocatableswithallocations);
     }
 
     /**
@@ -575,7 +580,7 @@ abstract class base {
      * @return bool
      */
     public function user_is_moderator($moderator) {
-        $enrolled = is_enrolled($this->coursework->get_course_context(), $moderator, 'mod/coursework:moderate');
+        $enrolled = is_enrolled($this->coursework->get_context(), $moderator, 'mod/coursework:moderate');
         return $enrolled || is_primary_admin($moderator->id);
     }
 
@@ -844,7 +849,7 @@ abstract class base {
      * @return array
      */
     private function potential_moderators_as_options_array() {
-        $potentialmoderators = get_enrolled_users($this->coursework->get_course_context(), 'mod/coursework:moderate');
+        $potentialmoderators = get_enrolled_users($this->coursework->get_context(), 'mod/coursework:moderate');
         $options = [];
         foreach ($potentialmoderators as $moderator) {
             $options[$moderator->id] = fullname($moderator);
