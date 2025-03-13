@@ -24,12 +24,15 @@ use mod_coursework\models;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Class to manage assessor allocations upload
  */
 class upload {
+
+    /**
+     * @var coursework
+     */
+    private $coursework;
 
     public function __construct($coursework) {
         $this->coursework = $coursework;
@@ -209,6 +212,7 @@ class upload {
         }
 
         while ($line = $csvreader->next()) {
+            $allocatable = null;
 
             // We will not process the content of any line that has been flagged up with an error
             if ( is_array($processingresults) && array_key_exists($s, $processingresults) ) {
@@ -223,7 +227,6 @@ class upload {
             }
 
             foreach ($line as $keynum => $value) {
-                $allocatable = null;
 
                 // create record in coursework_allocation_pairs
                 // or update it
@@ -241,7 +244,7 @@ class upload {
                         $allocatable = ($suballocatable) ? \mod_coursework\models\group::find($suballocatable->id) : '';
                     }
                 }
-                if ($allocatable && substr($cells[$keynum], 0, 8) == 'assessor' && !(empty($value))) {
+                if ($allocatable && substr($cells[$keynum], 0, 8) == 'assessor' && !empty($value)) {
 
                     $assessor = $DB->get_record('user', [$assessoridentifier => $value]);
 
