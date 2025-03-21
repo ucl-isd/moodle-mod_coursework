@@ -615,8 +615,7 @@ table.grading-details th,
 table.moderating-details th table.personal-deadline-details th,
 table.grading-details td,
 table.moderating-details td,
-table.personal-deadline-details,
-td {
+table.personal-deadline-details td {
     border-bottom: 1px solid #fff;
     padding: .5em;
 }
