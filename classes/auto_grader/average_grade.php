@@ -110,7 +110,7 @@ class average_grade implements auto_grader {
         // round it according to the chosen rule
         switch ($this->roundingrule) {
             case 'mid':
-                $avggrade = round($avggrade);
+                $avggrade = round($avggrade, $this->coursework->get_grade_item()->get_decimals());
                 break;
             case 'up':
                 $avggrade = ceil($avggrade);

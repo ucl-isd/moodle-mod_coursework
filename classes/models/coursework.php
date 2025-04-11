@@ -73,6 +73,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+require_once($CFG->libdir . '/gradelib.php');
 require_once($CFG->dirroot.'/grade/grading/lib.php');
 
 /**
@@ -3085,5 +3086,25 @@ class coursework extends table_base {
         if (\core_plugin_manager::instance()->get_plugin_info('local_uolw_sits_data_import')) {
             user::fill_candidate_number_data($this);
         }
+    }
+
+    /**
+     * Get the primary grade item for this coursework instance.
+     *
+     * @return grade_item The grade_item record
+     */
+    public function get_grade_item() {
+        $params = ['itemtype' => 'mod',
+                        'itemmodule' => 'coursework',
+                        'iteminstance' => $this->id,
+                        'courseid' => $this->get_course_id(),
+                        'itemnumber' => 0];
+        $gradeitem = \grade_item::fetch($params);
+
+        if (!$gradeitem) {
+            throw new coding_exception('Cannot load the grade item.');
+        }
+
+        return $gradeitem;
     }
 }

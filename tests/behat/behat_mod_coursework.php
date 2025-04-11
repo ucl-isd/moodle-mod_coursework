@@ -2195,9 +2195,9 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Then /^I should( not)? see the final grade(?: as )?(\d+)? on the multiple marker page$/
+     * @Then /^I should( not)? see the final grade(?: as )?(\d*\.?\d+)? on the multiple marker page$/
      * @param bool $negate
-     * @param int $grade
+     * @param float $grade
      * @throws ExpectationException
      * @throws coding_exception
      */
@@ -2344,9 +2344,9 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * Launch the grade submission modal and complete with grade/comment.
-     * @When /^I grade the submission(?: as )?(\d+)? using the ajax form(?: with comment "(?P<comment_string>(?:[^"]|\\")*)")?$/
+     * @When /^I grade the submission(?: as )?(\d*\.?\d+)? using the ajax form(?: with comment "(?P<comment_string>(?:[^"]|\\")*)")?$/
      *
-     * @param int $grade
+     * @param float $grade
      * @param string $comment
      * @throws Behat\Mink\Exception\ElementException
      * @throws Behat\Mink\Exception\ElementNotFoundException

@@ -164,6 +164,7 @@ class feedback_controller extends controller_base {
             $editor = $assessor;
         }
 
+        $teacherfeedback->grade = format_float($teacherfeedback->grade, $this->coursework->get_grade_item()->get_decimals());
         $renderer = $this->get_page_renderer();
         $renderer->edit_feedback_page($teacherfeedback, $assessor, $editor, $this->params['ajax']);
     }
