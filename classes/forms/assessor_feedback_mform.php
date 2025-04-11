@@ -92,6 +92,9 @@ class assessor_feedback_mform extends moodleform {
             $this->_grading_controller = $coursework->get_advanced_grading_active_controller();
             $this->_grading_instance = $this->_grading_controller->get_or_create_instance(0, $feedback->assessorid, $feedback->id);
             $mform->addElement('grading', 'advancedgrading', get_string('grade', 'mod_coursework'), ['gradinginstance' => $this->_grading_instance]);
+        } else if ($feedback->stage_identifier == 'final_agreed_1') {
+            $mform->addElement('text', 'grade', get_string('grade', 'mod_coursework'));
+            $mform->setType('grade', PARAM_RAW);
         } else {
             $mform->addElement('select',
                                'grade',
@@ -189,6 +192,8 @@ class assessor_feedback_mform extends moodleform {
              * @var gradingform_rubric_instance $grade
              */
             $feedback->grade = $gradinginstance->submit_and_get_grade($formdata->advancedgrading, $feedback->id);
+        } else if ($feedback->stage_identifier == 'final_agreed_1') {
+            $feedback->grade = format_float($formdata->grade, $coursework->get_grade_item()->get_decimals());
         } else {
             $feedback->grade = $formdata->grade;
         }
