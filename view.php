@@ -439,13 +439,7 @@ $html .= $objectrenderer->render(new mod_coursework_coursework($coursework));
 // Allow tutors to upload files as part of the coursework task? Easily done via the main
 // course thing, so not necessary.
 
-// If this is a student, show the submission form, or their existing submission, or both
-// There is scope for an arbitrary number of files to be added here, before the deadline.
-if ($cansubmit && !$cangrade) {
-    $html .= $pagerenderer->student_view_page($coursework, \mod_coursework\models\user::find($USER));
-}
-
-// Display the submissions table of all the students instead.
+// Display the submissions table of all the students.
 if ($canviewstudents) {
 
     // If the resubmit button was pressed (for plagiarism), we need to fire a new event.

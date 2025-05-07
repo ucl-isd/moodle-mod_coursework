@@ -1,0 +1,92 @@
+
+{{!
+    This file is part the Feedback tracker report plugin for Moodle
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coursework/marking_summary
+
+    Template for displaying marking overview.
+
+    Example context (json):
+    {
+        "submitted": 25,
+        "participants": 100,
+        "needsmarking": 5,
+        "things": [
+            {
+                "key": "Assigned to me",
+                "value": 3
+            },
+            {
+                "key": "Graded by me",
+                "value": 10
+            }
+        ],
+        "published": 15
+    }
+}}
+<div class="bg-light p-3">
+    <h3 class="h5" id="marking-summary-title">Marking summary</h3>
+
+    <ul class="w-100 list-unstyled" aria-labelledby="marking-summary-title">
+        <li class="d-flex py-1">
+            Submitted
+            <span class="ml-auto">{{submitted}}/{{participants}}</span>
+        </li>
+        <li class="d-flex py-1 border-top">
+            Need marking
+            <span class="ml-auto">{{needsmarking}}</span>
+        </li>
+
+        {{! TODO - Assessor data. }}
+        {{#things}}
+            <li class="d-flex py-1">
+                {{key}}
+                <span class="ml-auto">{{value}}</span>
+            </li>
+        {{/things}}
+
+        <li class="d-flex py-1 border-top">
+            Marked and published
+            <span class="ml-auto">{{published}}</span>
+        </li>
+    </ul>
+
+    {{! TODO - Move to own template. }}
+    {{! TODO - Import/export dropdowns. }}
+    <div class="d-inline-block mr-2">
+        <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="download" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa-solid fa-download mr-2"></i>Download
+        </button>
+        <div class="dropdown-menu" aria-labelledby="download">
+            <a class="dropdown-item" href="#">Downlaod submitted files</a>
+            <a class="dropdown-item" href="#">File marks</a>
+            <a class="dropdown-item" href="#">Something else</a>
+        </div>
+    </div>
+
+    <div class="d-inline-block">
+        <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="upload" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa-solid fa-upload mr-2"></i>Upload
+        </button>
+        <div class="dropdown-menu" aria-labelledby="upload">
+            <a class="dropdown-item" href="#">Upload zip</a>
+            <a class="dropdown-item" href="#">Upload something else marks</a>
+        </div>
+    </div>
+</div>
+
+{{! Test data output. }}
+{{{table}}}
