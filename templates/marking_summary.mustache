@@ -24,14 +24,15 @@
         "submitted": 25,
         "participants": 100,
         "needsmarking": 5,
-        "things": [
+        "assessor": [
             {
-                "key": "Assigned to me",
-                "value": 3
+                "name": "Assigned to me",
+                "count": 3,
+                "border": true
             },
             {
-                "key": "Graded by me",
-                "value": 10
+                "name": "Graded by me",
+                "count": 10
             }
         ],
         "published": 15
@@ -69,70 +70,10 @@
         </li>
     </ul>
 
-    {{! TODO - Move to own template. }}
-    {{! TODO - Import/export dropdowns. }}
-    {{#exportlinks}}
-        {{#download_submitted_files_url}}
-        <div class="d-inline-block mr-2">
-            <a class="btn btn-outline-primary btn-sm" href="{{download_submitted_files_url}}">
-                <i class="fa-solid fa-download mr-2"></i>{{download_submitted_files_text}}
-            </a>
-        </div>
-        {{/download_submitted_files_url}}
-
-        {{#export_final_grades_url}}
-        <div class="d-inline-block mr-2">
-            <a class="btn btn-outline-primary btn-sm" href="{{export_final_grades_url}}">
-                <i class="fa-solid fa-download mr-2"></i>{{export_final_grades_text}}
-            </a>
-        </div>
-        {{/export_final_grades_url}}
-
-        {{#export_grading_sheet_url}}
-        <div class="d-inline-block mr-2">
-            <a class="btn btn-outline-primary btn-sm" href="{{export_grading_sheet_url}}">
-                <i class="fa-solid fa-download mr-2"></i>{{export_grading_sheet_text}}
-            </a>
-        </div>
-        {{/export_grading_sheet_url}}
-
-        {{#upload_grading_sheet_url}}
-        <div class="d-inline-block mr-2">
-            <a class="btn btn-outline-primary btn-sm" href="{{upload_grading_sheet_url}}">
-                <i class="fa-solid fa-upload mr-2"></i>{{upload_grading_sheet_text}}
-            </a>
-        </div>
-        {{/upload_grading_sheet_url}}
-
-        {{#upload_feedback_url}}
-        <div class="d-inline-block">
-            <a class="btn btn-outline-primary btn-sm" href="{{upload_feedback_url}}">
-                <i class="fa-solid fa-upload mr-2"></i>{{upload_feedback_text}}
-            </a>
-        </div>
-        {{/upload_feedback_url}}
-    {{/exportlinks}}
-
-    <div class="d-inline-block mr-2">
-        <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="download" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa-solid fa-download mr-2"></i>Download
-        </button>
-        <div class="dropdown-menu" aria-labelledby="download">
-            <a class="dropdown-item" href="#">Downlaod submitted files</a>
-            <a class="dropdown-item" href="#">File marks</a>
-            <a class="dropdown-item" href="#">Something else</a>
-        </div>
-    </div>
-
-    <div class="d-inline-block">
-        <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="upload" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa-solid fa-upload mr-2"></i>Upload
-        </button>
-        <div class="dropdown-menu" aria-labelledby="upload">
-            <a class="dropdown-item" href="#">Upload zip</a>
-            <a class="dropdown-item" href="#">Upload something else marks</a>
-        </div>
-    </div>
+    {{! WIP - Import/export dropdowns. }}
+    {{#dropdown}}
+        {{> mod_coursework/dropdown }}
+    {{/dropdown}}
 
     {{/canmark}}
 </div>
