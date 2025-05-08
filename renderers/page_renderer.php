@@ -658,12 +658,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $links[$url] = get_string('uploadfeedbackfiles', 'mod_coursework');
         }
 
-        // don't show dropdown if there are no submissions
-        if (!empty($submissions) && !empty($links)) {
-            $gradingactions = new url_select($links);
-            $gradingactions->set_label(get_string('gradingaction', 'coursework'));
-            $html .= $this->render($gradingactions);;
-        }
 
         if ($firstnamealpha || $lastnamealpha || $groupnamealpha || $group != -1) {
             $html .= $warnings->filters_warning();
