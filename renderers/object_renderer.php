@@ -1532,15 +1532,16 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         return $rowhtml;
     }
 
+
     /**
-     * Provide a summary of the marking progress for a coursework activity.
+     * Provides a summary of the marking progress for a coursework activity.
      *
      * This function generates the HTML for a marking summary, including counts of
      * submitted, needing marking, and published submissions, as well as details
      * for assessors and dropdown menus for export and upload actions.
      *
      * @param mod_coursework_coursework $coursework The coursework activity object.
-     * @return string The HTML from mustache templates for the marking summary.
+     * @return string The HTML for the marking summary.
      */
     protected function coursework_marking_summary(mod_coursework_coursework $coursework): string {
         global $USER, $PAGE;
@@ -1549,7 +1550,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             ['mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade', 'mod/coursework:administergrades'],
             $coursework->get_context()
         );
-        // Set to false under specific condition.
+        // Set to false under specific conditions.
         if (!$coursework->has_multiple_markers() && !$coursework->allocation_enabled() && !has_capability('mod/coursework:addinitialgrade', $coursework->get_context())
             && has_capability('mod/coursework:addagreedgrade', $coursework->get_context())) {
             $canmark = false;
@@ -1572,7 +1573,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $gradedcount = count($finalgradedsubs);
 
             $needsmarking = 0;
-            $allocatedsubsforgrading = $allocatedsubs; // Create a working copy.
+            $allocatedsubsforgrading = $allocatedsubs;
 
             // For users who can add agreed grades or administer grades (or a combination).
             if (has_any_capability(['mod/coursework:addagreedgrade', 'mod/coursework:administergrades'], $coursework->get_context())
@@ -1608,6 +1609,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 $links['downloadsubmittedfilestext'] = get_string('download_submitted_files', 'coursework');
             }
 
+            // Export.
             if (has_capability('mod/coursework:viewallgradesatalltimes', $PAGE->context) &&
                 has_capability('mod/coursework:canexportfinalgrades', $PAGE->context) &&
                 $coursework->get_finalised_submissions()) {
@@ -1615,12 +1617,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 $links['exportfinalgradestext'] = get_string('exportfinalgrades', 'mod_coursework');
             }
 
-            if (!empty($allsubs) &&
-                (has_capability('mod/coursework:addinitialgrade', $PAGE->context) ||
-                 has_capability('mod/coursework:addagreedgrade', $PAGE->context) ||
-                 has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) ||
-                 has_capability('mod/coursework:administergrades', $PAGE->context)) &&
-                $coursework->get_finalised_submissions()) {
+            // Export & Upload.
+            if (!empty($allsubs) && $coursework->get_finalised_submissions()) {
                 $links['exportgradingsheeturl'] = $pageurl . '&export_grading_sheet=1';
                 $links['exportgradingsheettext'] = get_string('exportgradingsheets', 'mod_coursework');
 
