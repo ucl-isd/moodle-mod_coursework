@@ -40,6 +40,11 @@
 <div class="bg-light p-3">
     <h3 class="h5" id="marking-summary-title">Marking summary</h3>
 
+    {{^canmark}}
+    <p>You don't have a capability to mark anyone in this activity.</p>
+    {{/canmark}}
+
+    {{#canmark}}
     <ul class="w-100 list-unstyled" aria-labelledby="marking-summary-title">
         <li class="d-flex py-1">
             Submitted
@@ -50,13 +55,13 @@
             <span class="ml-auto">{{needsmarking}}</span>
         </li>
 
-        {{! TODO - Assessor data. }}
-        {{#things}}
-            <li class="d-flex py-1">
-                {{key}}
-                <span class="ml-auto">{{value}}</span>
+        {{! WIP - Assessor data. }}
+        {{#assessor}}
+            <li class="d-flex py-1 {{#border}} border-top {{/border}}">
+                {{name}}
+                <span class="ml-auto">{{count}}</span>
             </li>
-        {{/things}}
+        {{/assessor}}
 
         <li class="d-flex py-1 border-top">
             Marked and published
@@ -66,6 +71,48 @@
 
     {{! TODO - Move to own template. }}
     {{! TODO - Import/export dropdowns. }}
+    {{#exportlinks}}
+        {{#download_submitted_files_url}}
+        <div class="d-inline-block mr-2">
+            <a class="btn btn-outline-primary btn-sm" href="{{download_submitted_files_url}}">
+                <i class="fa-solid fa-download mr-2"></i>{{download_submitted_files_text}}
+            </a>
+        </div>
+        {{/download_submitted_files_url}}
+
+        {{#export_final_grades_url}}
+        <div class="d-inline-block mr-2">
+            <a class="btn btn-outline-primary btn-sm" href="{{export_final_grades_url}}">
+                <i class="fa-solid fa-download mr-2"></i>{{export_final_grades_text}}
+            </a>
+        </div>
+        {{/export_final_grades_url}}
+
+        {{#export_grading_sheet_url}}
+        <div class="d-inline-block mr-2">
+            <a class="btn btn-outline-primary btn-sm" href="{{export_grading_sheet_url}}">
+                <i class="fa-solid fa-download mr-2"></i>{{export_grading_sheet_text}}
+            </a>
+        </div>
+        {{/export_grading_sheet_url}}
+
+        {{#upload_grading_sheet_url}}
+        <div class="d-inline-block mr-2">
+            <a class="btn btn-outline-primary btn-sm" href="{{upload_grading_sheet_url}}">
+                <i class="fa-solid fa-upload mr-2"></i>{{upload_grading_sheet_text}}
+            </a>
+        </div>
+        {{/upload_grading_sheet_url}}
+
+        {{#upload_feedback_url}}
+        <div class="d-inline-block">
+            <a class="btn btn-outline-primary btn-sm" href="{{upload_feedback_url}}">
+                <i class="fa-solid fa-upload mr-2"></i>{{upload_feedback_text}}
+            </a>
+        </div>
+        {{/upload_feedback_url}}
+    {{/exportlinks}}
+
     <div class="d-inline-block mr-2">
         <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="download" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa-solid fa-download mr-2"></i>Download
@@ -86,6 +133,8 @@
             <a class="dropdown-item" href="#">Upload something else marks</a>
         </div>
     </div>
+
+    {{/canmark}}
 </div>
 
 {{! Test data output. }}

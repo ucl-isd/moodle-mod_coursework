@@ -532,7 +532,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // Little col.
         $out .= "<div class='col-md-4'>";
         if ($cangrade || $canpublish) {
-            $out .= $this->coursework_grading_summary_table($coursework);
+            $out .= $this->coursework_marking_summary($coursework);
         }
         // TODO - output student view overview data here.
         if (!$cangrade) {
@@ -1532,13 +1532,144 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         return $rowhtml;
     }
 
+    protected function coursework_marking_summary(mod_coursework_coursework $coursework): string {
+        global $USER, $PAGE;
+
+        $canmark = has_any_capability(
+            ['mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade', 'mod/coursework:administergrades'],
+            $coursework->get_context()
+        );
+        // Set to false under specific condition.
+        if (!$coursework->has_multiple_markers() && !$coursework->allocation_enabled() && !has_capability('mod/coursework:addinitialgrade', $coursework->get_context())
+            && has_capability('mod/coursework:addagreedgrade', $coursework->get_context())) {
+            $canmark = false;
+        }
+
+        $template = new stdClass();
+        $template->canmark = $canmark;
+        $template->assessor = []; // Initialize the assessor array
+
+        if ($canmark) {
+            $participants = $this->get_allocatables_count_per_assessor($coursework);
+            $allsubmissions = $coursework->get_all_submissions();
+            $submitted = count($allsubmissions);
+
+            $assessablesubmittedsubmissions = $this->get_submissions_for_assessor($coursework, $allsubmissions);
+            $assessablesubmittedsubmissions = $this->remove_unfinalised_submissions($assessablesubmittedsubmissions);
+            $assessablesubmittedsubmissions = $this->remove_ungradable_submissions($assessablesubmittedsubmissions);
+            $finalgradedsubmissions = $this->removed_final_graded_submissions($assessablesubmittedsubmissions);
+            $gradedcount = count($finalgradedsubmissions);
+
+            $needsmarking = 0;
+            $assessablesubmittedsubmissionsforgrading = $assessablesubmittedsubmissions; // Create a working copy
+
+            // For users who can add agreed grades or administer grades (or a combination)
+            if (has_any_capability(['mod/coursework:addagreedgrade', 'mod/coursework:administergrades'], $coursework->get_context())
+                || (has_capability('mod/coursework:addinitialgrade', $coursework->get_context()) && has_capability('mod/coursework:addallocatedagreedgrade', $coursework->get_context()))) {
+
+                $numberofassessable = count($assessablesubmittedsubmissionsforgrading);
+                $assessablesubmittedsubmissionsforgrading = $this->remove_final_gradable_submissions($assessablesubmittedsubmissionsforgrading);
+                $needsmarking = $numberofassessable - count($assessablesubmittedsubmissionsforgrading);
+            }
+
+            // For users who can add initial grades or administer grades
+            if (has_any_capability(['mod/coursework:addinitialgrade', 'mod/coursework:administergrades'], $coursework->get_context())) {
+                $assessablesubmittedsubmissionsforinitial = $assessablesubmittedsubmissions; // Use the original set
+                $assessablesubmittedsubmissionsforinitial = $this->remove_final_gradable_submissions($assessablesubmittedsubmissionsforinitial);
+                $needsmarking += count($this->get_assessor_initial_graded_submissions($assessablesubmittedsubmissionsforinitial));
+            }
+
+            $publishedsubmissions = $coursework->get_published_submissions();
+            $published = count($this->get_submissions_for_assessor($coursework, $publishedsubmissions));
+
+            $links = [];
+            $pageurl = $PAGE->url;
+
+            $finalisedsubmissions = submission::$pool[$coursework->id]['finalised'][1] ?? [];
+
+            if ($finalisedsubmissions && !empty($allsubmissions)) {
+                $url = $pageurl . '&download=1';
+                $links['download_submitted_files_url'] = $url;
+                $links['download_submitted_files_text'] = get_string('download_submitted_files', 'coursework');
+            }
+
+            if (has_capability('mod/coursework:viewallgradesatalltimes', $PAGE->context) &&
+                has_capability('mod/coursework:canexportfinalgrades', $PAGE->context) &&
+                $coursework->get_finalised_submissions()) {
+                $url = $pageurl . '&export=1';
+                $links['export_final_grades_url'] = $url;
+                $links['export_final_grades_text'] = get_string('exportfinalgrades', 'mod_coursework');
+            }
+
+            if (!empty($allsubmissions) &&
+                (has_capability('mod/coursework:addinitialgrade', $PAGE->context) ||
+                 has_capability('mod/coursework:addagreedgrade', $PAGE->context) ||
+                 has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) ||
+                 has_capability('mod/coursework:administergrades', $PAGE->context)) &&
+                $coursework->get_finalised_submissions()) {
+                $url = $pageurl . '&export_grading_sheet=1';
+                $links['export_grading_sheet_url'] = $url;
+                $links['export_grading_sheet_text'] = get_string('exportgradingsheets', 'mod_coursework');
+
+                $url = '/mod/coursework/actions/upload_grading_sheet.php?cmid=' . $PAGE->cm->id;
+                $links['upload_grading_sheet_url'] = $url;
+                $links['upload_grading_sheet_text'] = get_string('uploadgradingworksheet', 'mod_coursework');
+
+                $url = '/mod/coursework/actions/upload_feedback.php?cmid=' . $PAGE->cm->id;
+                $links['upload_feedback_url'] = $url;
+                $links['upload_feedback_text'] = get_string('uploadfeedbackfiles', 'mod_coursework');
+            }
+
+            $template->participants = $participants;
+            $template->submitted = $submitted;
+            $template->needsmarking = $needsmarking;
+            $template->published = $published;
+            $template->exportlinks = $links;
+
+            // Assessors and Agreed Mark.
+            if ($coursework->has_multiple_markers() && has_capability('mod/coursework:administergrades', $coursework->get_context())) {
+                // Agreed Mark count - Moved to the beginning.
+                $agreedstage = 'final_agreed_1';
+                $agreedsubmissions = $coursework->get_graded_submissions_by_stage($agreedstage);
+                $agreedmarkcount = count($this->get_submissions_for_assessor($coursework, $agreedsubmissions));
+                $template->assessor[] = [
+                    'name' => get_string('markedagreemark', 'mod_coursework'),
+                    'count' => $agreedmarkcount,
+                ];
+
+                $stages = $coursework->marking_stages();
+                foreach ($stages as $stage => $s) {
+                    if ($stage != 'final_agreed_1') {
+                        $initialassessorno = substr("$stage", -1);
+                        $gradedsubmissions = $coursework->get_graded_submissions_by_stage($stage);
+                        $count = count($this->get_submissions_for_assessor($coursework, $gradedsubmissions));
+                        $template->assessor[] = [
+                            'name' => get_string('initialassessorno', 'mod_coursework', $initialassessorno),
+                            'count' => $count,
+                        ];
+                    }
+                }
+            } else {
+                // If no multiple markers, the 'graded' count essentially represents the 'marked' count.
+                $gradedsubmissions = $this->get_submissions_with_final_grade($this->get_submissions_for_assessor($coursework, $allsubmissions));
+                $template->assessor[] = [
+                    'border' => true,
+                    'name' => get_string('marked', 'mod_coursework'),
+                    'count' => count($gradedsubmissions),
+                ];
+            }
+        }
+
+        return $this->render_from_template('mod_coursework/marking_summary', $template);
+    }
+
     /**
      * @param mod_coursework_coursework $coursework
      * @return string
      * @throws coding_exception
      */
     protected function coursework_grading_summary_table(mod_coursework_coursework $coursework) {
-        global $USER;
+        global $USER, $PAGE;
 
         $gradedheader = "";
 
@@ -1634,12 +1765,53 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $tablehtml .= '</tbody></table>';
 
+        // WIP - import/export links.
+        $links = [];
+        $pageurl = $PAGE->url; // Assuming $PAGE is accessible here
+
+        $finalisedsubmissions = submission::$pool[$coursework->id]['finalised'][1] ?? [];
+        $allsubmissions = $coursework->get_all_submissions(); // Ensure this is available
+
+        if ($finalisedsubmissions && !empty($allsubmissions)) {
+            $url = $pageurl . '&download=1';
+            $links['download_submitted_files_url'] = $url;
+            $links['download_submitted_files_text'] = get_string('download_submitted_files', 'coursework');
+        }
+
+        if (has_capability('mod/coursework:viewallgradesatalltimes', $PAGE->context) &&
+            has_capability('mod/coursework:canexportfinalgrades', $PAGE->context) &&
+            $coursework->get_finalised_submissions()) {
+            $url = $pageurl . '&export=1';
+            $links['export_final_grades_url'] = $url;
+            $links['export_final_grades_text'] = get_string('exportfinalgrades', 'mod_coursework');
+        }
+
+        if (!empty($allsubmissions) &&
+            (has_capability('mod/coursework:addinitialgrade', $PAGE->context) ||
+            has_capability('mod/coursework:addagreedgrade', $PAGE->context) ||
+            has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) ||
+            has_capability('mod/coursework:administergrades', $PAGE->context)) &&
+            $coursework->get_finalised_submissions()) {
+            $url = $pageurl . '&export_grading_sheet=1';
+            $links['export_grading_sheet_url'] = $url;
+            $links['export_grading_sheet_text'] = get_string('exportgradingsheets', 'mod_coursework');
+
+            $url = '/mod/coursework/actions/upload_grading_sheet.php?cmid=' . $PAGE->cm->id;
+            $links['upload_grading_sheet_url'] = $url;
+            $links['upload_grading_sheet_text'] = get_string('uploadgradingworksheet', 'mod_coursework');
+
+            $url = '/mod/coursework/actions/upload_feedback.php?cmid=' . $PAGE->cm->id;
+            $links['upload_feedback_url'] = $url;
+            $links['upload_feedback_text'] = get_string('uploadfeedbackfiles', 'mod_coursework');
+        }
+
         // WIP - Template marking summary data.
         $template = new stdClass();
         $template->participants = $participants;
         $template->submitted = $submitted;
         $template->needsmarking = $needsgrading;
         $template->published = $published;
+        $template->exportlinks = $links;
         // Test data.
         // $template->table = $tablehtml;
         return $this->render_from_template('mod_coursework/marking_summary', $template);
