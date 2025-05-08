@@ -1,0 +1,62 @@
+{{!
+    This file is part the Feedback tracker report plugin for Moodle
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coursework/submission
+
+    Template for displaying submission overview to learner.
+
+    Example context (json):
+    {
+        "default": true,
+        "date": "24th Dec 3:00pm",
+        "mark": "33%"
+    }
+}}
+<div class="bg-light p-3">
+    <h3 class="h5" id="submission-title">Submission</h3>
+
+     <ul class="w-100 list-unstyled" aria-labelledby="submission-title">
+        <li class="d-flex py-1">
+            Status
+            <span class="ml-auto">
+            {{! TODO - These are just example status values. }}
+            {{#default}}
+                Not submitted
+            {{/default}}
+            {{#success}}
+                <span class="badge badge-success">Success</span>
+            {{/success}}
+            {{#warning}}
+                <span class="badge badge-warning">Warning</span>
+            {{/warning}}
+            {{#danger}}
+                <span class="badge badge-danger">Danger</span>
+            {{/danger}}
+            </span>
+        </li>
+        <li class="d-flex py-1">
+            Submitted
+            <span class="ml-auto">{{date}}</span>
+        </li>
+         <li class="d-flex py-1">
+            Mark
+            <span class="ml-auto">{{mark}}</span>
+        </li>
+    </ul>
+
+    {{! TODO - upload assignment button. }}
+    <a href="{{{submiturl}}}" class="btn btn-primary btn-block"><i class="fa-solid fa-upload mr-2"></i>Add/Edit submission</a>
+</div>

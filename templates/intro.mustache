@@ -1,0 +1,66 @@
+{{!
+    This file is part the Feedback tracker report plugin for Moodle
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coursework/intro
+
+    Template for displaying coursework intro.
+
+    Example context (json):
+    {
+        "description": "<p>This assignment requires you to write an essay of approximately 1500 words on the impact of social media on political discourse. Please refer to the marking guide for specific criteria.</p>\n<ul>\n<li>Ensure you cite your sources correctly using APA style.</li>\n<li>The deadline for submission is clearly indicated below.</li>\n</ul>",
+        "markingguideurl": "https://example.moodle.org/pluginfile.php/123/mod_resource/content/0/marking_guide.pdf",
+        "duedate": "14th May 11:00am",
+        "late": true,
+        "deadlinewarning": true
+    }
+}}
+
+{{#description}}
+<h3 class="h5 pt-3">Description</h3>
+{{{.}}}
+{{/description}}
+
+{{#markingguideurl}}
+    <a href="{{{.}}}" target="_blank"><i class="fa-solid fa-circle-right mr-2"></i>Marking guide</a>
+{{/markingguideurl}}
+<hr>
+
+{{#duedate}}
+    <h4 class="h6">Due</h4>
+    {{duedate}}
+{{/duedate}}
+
+{{#late}}
+    <br>
+    <span class="badge badge-dark">Late submissions allowed</span>
+{{/late}}
+
+{{#deadlinewarning}}
+    <br>
+    <small>After the deadline your current submission will autofinalise and no edits can be made.</small>
+{{/deadlinewarning}}
+<hr>
+
+{{! Test data output. }}
+{{{table}}}
+
+
+{{! Random css, will need moving. }}
+<style>
+.activity-header {
+    display: none !important;
+}
+</style>
