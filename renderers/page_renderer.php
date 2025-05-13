@@ -253,30 +253,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
             $submission->publish();
         }
-
-        // http://moodle26.dev/grade/grading/form/rubric/preview.php?areaid=16
-        if ($coursework->is_using_advanced_grading()) {
-
-            $controller = $coursework->get_advanced_grading_active_controller();
-
-            if ($controller->is_form_defined() && ($options = $controller->get_options()) && !empty($options['alwaysshowdefinition'])) {
-
-                // Because the get_method_name() is protected.
-                if (preg_match('/^gradingform_([a-z][a-z0-9_]*[a-z0-9])_controller$/', get_class($controller), $matches)) {
-                    $methodname = $matches[1];
-                } else {
-                    throw new coding_exception('Invalid class name');
-                }
-
-                $html .= '<h4>' . get_string('marking_guide_preview', 'mod_coursework') . '</h4>';
-
-                $url = new moodle_url('/grade/grading/form/' . $methodname . '/preview.php',
-                                          ['areaid' => $controller->get_areaid()]);
-                $html .= '<p><a href="' . $url->out() . '">' . get_string('marking_guide_preview',
-                                                                          'mod_coursework') . '</a></p>';
-            }
-        }
-        $html .= $this->submission_as_readonly_table($submission);
+        // WIP - output as mustache.
+        $html .= $this->coursework_student_overview($submission);
 
         // New bit - different page for new/edit.
         $ability = new ability($student, $coursework);
@@ -862,120 +840,48 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     /**
      * @param submission $submission
      * @return string
-     * @throws coding_exception
      */
-    protected function submission_as_readonly_table($submission) {
-
+    protected function coursework_student_overview($submission): string {
         global $USER;
-
-        $html = '';
 
         $coursework = $submission->get_coursework();
         $files = $submission->get_submission_files();
 
-        if ($coursework->is_configured_to_have_group_submissions()) {
-            $filestitle = 'groupsubmissionstatus';
-        } else {
-            $filestitle = 'yoursubmissionstatus';
-        }
+        // WIP - submission output for mustache.
+        $template = new stdClass();
+        $template->file = $this->get_object_renderer()
+        ->render_submission_files_with_plagiarism_links(new mod_coursework_submission_files($files));
+        $template->status = $submission->get_status_text(); // TODO - make better.
 
-        $html .= html_writer::start_tag('h3');
-        $html .= get_string($filestitle, 'coursework');
-        $html .= html_writer::end_tag('h3');
-
-        $table = new html_table();
-
-        // Submission status
-        $row = new html_table_row();
-        $row->cells[] = get_string('tableheadstatus', 'coursework');
-        $statuscell = new html_table_cell();
-        $statuscell->text = $submission->get_status_text();
-        $row->cells[] = $statuscell;
-        $table->data[] = $row;
-
-        // If it's a group submission, show who submitted it.
-        if ($coursework->is_configured_to_have_group_submissions()) {
-            $row = new html_table_row();
-            $row->cells[] = get_string('submittedby', 'coursework');
-            $cell = new \html_table_cell();
-            if ($submission->persisted()) {
-                $submitter = $submission->get_last_updated_by_user();
-                $celltext = $submitter->name();
-                if ($USER->id == $submitter->id()) {
-                    $celltext .= ' ' . get_string('itsyou', 'mod_coursework');
-                }
-                $cell->text = $celltext;
-                $cell->attributes['class'] = 'submission-user';
-            }
-            $row->cells[] = $cell;
-            $table->data[] = $row;
-        }
-
-        // Submitted at time
-        $row = new html_table_row();
-        $row->cells[] = get_string('tableheadtime', 'coursework');
-        $submittedtimecell = new html_table_cell();
+        // Date.
         if ($submission->persisted() && $submission->time_submitted()) {
-            $submittedtimecell->text = userdate($submission->time_submitted(), '%a, %d %b %Y, %H:%M');
-        }
-        $row->cells[] = $submittedtimecell;
-        $table->data[] = $row;
-
-        if ($submission->is_late() && (!$submission->has_extension() || !$submission->submitted_within_extension())) { // It was late.
-
-            // check if submission has personal deadline
-            if ($coursework->personaldeadlineenabled ) {
-                $deadline = $submission->submission_personal_deadline();
-            } else { // if not, use coursework default deadline
-                $deadline = $coursework->deadline;
-            }
-
-            $deadline = ($submission->has_extension()) ? $submission->extension_deadline() : $deadline;
-
-            $lateseconds = $submission->time_submitted() - $deadline;
-
-            $days = floor($lateseconds / 86400);
-            $hours = floor($lateseconds / 3600) % 24;
-            $minutes = floor($lateseconds / 60) % 60;
-            $seconds = $lateseconds % 60;
-
-            $row = new html_table_row();
-            $row->cells[] = get_string('latetitle', 'coursework');
-
-            $text = $days . get_string('timedays', 'coursework') . ', ';
-            $text .= $hours . get_string('timehours', 'coursework') . ', ';
-            $text .= $minutes . get_string('timeminutes', 'coursework') . ', ';
-            $text .= $seconds . get_string('timeseconds', 'coursework');
-
-            $row->cells[] = $text;
-            $table->data[] = $row;
+            $template->date = date('jS M g:ia', $submission->time_submitted());
         }
 
-        $row = new html_table_row();
-        $row->cells[] = get_string('submissionfile', 'coursework');
-        $row->cells[] = $this->get_object_renderer()
-            ->render_submission_files_with_plagiarism_links(new mod_coursework_submission_files($files));
-        $table->data[] = $row;
+        // Late.
+        if ($submission->is_late() && (!$submission->has_extension() || !$submission->submitted_within_extension())) {
+            $template->late = true;
+        }
 
-        $row = new html_table_row();
-        $row->cells[] = get_string('provisionalgrade', 'coursework');
-
+        // Mark.
         if ($submission && $submission->is_published()) {
             $judge = new \mod_coursework\grade_judge($coursework);
             $gradeforgradebook = $judge->get_grade_capped_by_submission_time($submission);
-            $row->cells[] = $judge->grade_to_display($gradeforgradebook);
+            $template->mark = $judge->grade_to_display($gradeforgradebook);
         } else if ($submission->get_state() >= submission::PARTIALLY_GRADED) {
-            $row->cells[] = get_string('notpublishedyet', 'mod_coursework');
-        } else {
-            $row->cells[] = new html_table_cell();
+            $template->mark = get_string('notpublishedyet', 'mod_coursework');
         }
 
-        $table->data[] = $row;
+        // Group submission.
+        if ($coursework->is_configured_to_have_group_submissions()) {
+            $template->group = true;
+            if ($submission->persisted()) {
+                $submitter = $submission->get_last_updated_by_user();
+                $template->submitter = $submitter->name();
+            }
+        }
 
-        $html .= html_writer::table($table);
-
-        return $html;
-
+        return $this->render_from_template('mod_coursework/submission', $template);
     }
 
     /**

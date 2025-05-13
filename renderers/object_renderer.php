@@ -510,7 +510,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $out .= "<div class='col-md-8'>";
         $out .= $this->coursework_deadlines_table($coursework);
 
-
         // Show general feedback if it's there and the deadline has passed or general feedback's date is not enabled which means it should be displayed automatically
         if (($coursework->is_general_feedback_enabled() && $allowedtoaddgeneralfeedback && (time() > $coursework->generalfeedback || $cangrade || $canpublish || $ispublished)) || !$coursework->is_general_feedback_enabled()) {
             // Edit url.
@@ -534,15 +533,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         if ($cangrade || $canpublish) {
             $out .= $this->coursework_marking_summary($coursework);
         }
-        // TODO - output student view overview data here.
-        if (!$cangrade) {
-            // $out .= $pagerenderer->student_view_page($coursework, $USER);
-            $template = new stdClass();
-            // $template->status = $thing->get_status_text();
-            $template->default = true;
-            $template->date = "24th Dec 3:00pm";
-            $template->mark = '33%';
-            $out .= $this->render_from_template('mod_coursework/submission', $template);
+        // WIP - student view overview data here.
+        $cansubmit = has_capability('mod/coursework:submit', $PAGE->context);
+        if ($cansubmit && !$cangrade) {
+            $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
+            $out .= $pagerenderer->student_view_page($coursework, \mod_coursework\models\user::find($USER));
         }
         $out .= "</div>";
         // Close row.
@@ -1690,7 +1685,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             ],
         ];
 
-        // Check user capability, and build actions.
+        // Check user capability, and build download/upload dropdown menu actions.
         $dropdown = [];
         foreach ($menuoptions as $id => $option) {
             $actions = [];

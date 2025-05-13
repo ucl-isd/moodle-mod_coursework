@@ -27,31 +27,34 @@
 }}
 <div class="bg-light p-3">
     <h3 class="h5" id="submission-title">Submission</h3>
-
+{{{file}}}
      <ul class="w-100 list-unstyled" aria-labelledby="submission-title">
         <li class="d-flex py-1">
             Status
             <span class="ml-auto">
-            {{! TODO - These are just example status values. }}
-            {{#default}}
-                Not submitted
-            {{/default}}
-            {{#success}}
-                <span class="badge badge-success">Success</span>
-            {{/success}}
-            {{#warning}}
-                <span class="badge badge-warning">Warning</span>
-            {{/warning}}
-            {{#danger}}
-                <span class="badge badge-danger">Danger</span>
-            {{/danger}}
+                {{status}}
             </span>
         </li>
+
+        {{#group}}
         <li class="d-flex py-1">
-            Submitted
-            <span class="ml-auto">{{date}}</span>
+            Submitted by
+            <span class="ml-auto">
+                {{{submitter}}}
+            </span>
         </li>
-         <li class="d-flex py-1">
+        {{/group}}
+
+        <li class="d-flex py-1 border-top">
+            Submitted
+            <span class="ml-auto">
+                {{date}}
+                {{#late}}
+                <span class="badge badge-warning">Late</span>
+                {{/late}}
+            </span>
+        </li>
+         <li class="d-flex py-1 border-top">
             Mark
             <span class="ml-auto">{{mark}}</span>
         </li>
