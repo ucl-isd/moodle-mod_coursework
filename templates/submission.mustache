@@ -60,11 +60,18 @@
         </li>
     </ul>
 
-    {{! TODO - upload assignment button. }}
+    {{! Submissions open at future date. }}
     {{#notopen}}
-    <p>Submisions start on {{opendate}}.<p>
+    <p>Submissions open on {{opendate}}.<p>
     {{/notopen}}
+
+    {{! Add/Edit submission. }}
     {{#editurl}}
     <a href="{{{editurl}}}" class="btn btn-primary btn-block"><i class="fa-solid fa-upload mr-2"></i>Add/Edit submission</a>
     {{/editurl}}
 </div>
+
+{{! Finalise submission. }}
+    {{#final}}
+        {{{.}}}
+    {{/final}}

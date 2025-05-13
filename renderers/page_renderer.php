@@ -262,26 +262,32 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         // Buttons.
         $ability = new ability($student, $coursework);
 
-        if (!$coursework->start_date_has_passed()) {
-            // Coursework has not started yet.
-            $template->notopen = true;
-            $template->opendate = userdate($coursework->startdate);
-        } else {
-            // Coursework has started.
+        if ($coursework->start_date_has_passed()) {
+            // Add/Edit links.
             if ($ability->can('new', $submission)) {
                 $template->editurl = $this->get_router()->get_path('new submission', ['submission' => $submission], true);
             } else if ($submission && $ability->can('edit', $submission)) {
                 $template->editurl = $this->get_router()->get_path('edit submission', ['submission' => $submission], true);
-                // TODO - Question
+                // TODO - Question.
                 // Why router and not just new moodle_url('/mod/coursework/actions/submissions/edit.php', ['submissionid' => $submission->id]); ?
             }
+        } else {
+            // Coursework has not started yet.
+            $template->notopen = true;
+            $template->opendate = userdate($coursework->startdate);
         }
 
-        $$template->plagdisclosure = plagiarism_similarity_information($coursemodule);
+        // TODO - what should this look like? Where should it go?
+        $template->plagdisclosure = plagiarism_similarity_information($coursemodule);
+
+        // Finalise.
+        if ($submission && $submission->id && $ability->can('finalise', $submission)) {
+            $template->final = $this->finalise_submission_button($coursework, $submission);
+        }
 
         $html .= $this->render_from_template('mod_coursework/submission', $template);
         // var_dump($template);
-
+        return $html;
 
 
         // if TII plagiarism enabled check if user agreed/disagreed EULA
@@ -299,6 +305,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         if ($submission && $submission->id && $ability->can('finalise', $submission)) {
             $html .= $this->finalise_submission_button($coursework, $submission);
+
         }
 
         if ($submission && $submission->is_published()) {
@@ -1017,16 +1024,14 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      */
     protected function finalise_submission_button($coursework, $submission) {
 
-        $html = '<div>';
+        $html = '<div class="py-3">';
         $stringname = $coursework->is_configured_to_have_group_submissions() ? 'finalisegroupsubmission' : 'finaliseyoursubmission';
         $finalisesubmissionpath =
             $this->get_router()->get_path('finalise submission', ['submission' => $submission], true);
-        $button = new \single_button($finalisesubmissionpath, get_string($stringname, 'mod_coursework'));
-        $button->class = 'finalisesubmissionbutton';
+        $button = new \single_button($finalisesubmissionpath, get_string($stringname, 'mod_coursework'), 'post',single_button::BUTTON_PRIMARY);
         $button->add_confirm_action(get_string('finalise_button_confirm', 'mod_coursework'));
         $html .= $this->output->render($button);
         $html .= $this->finalise_warning();
-
         $html .= '</div>';
 
         return $html;
@@ -1038,7 +1043,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws coding_exception
      */
     public function finalise_warning() {
-        return '<div class="alert">' . get_string('finalise_button_info', 'mod_coursework') . '</div>';
+        return '<p class="small">' . get_string('finalise_button_info', 'mod_coursework') . '</small>';
     }
 
     /**
@@ -1052,8 +1057,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $stringname = $coursework->is_configured_to_have_group_submissions() ? 'editgroupsubmission' : 'edityoursubmission';
         $button = new \single_button($this->get_router()
             ->get_path('edit submission', ['submission' => $submission], true),
-                                     get_string($stringname, 'mod_coursework'), 'get' ,  '', ['class' => 'btn btn-primary']);
-        $button->class = 'btn btn-primary btn-block';
+                                     get_string($stringname, 'mod_coursework'), 'get');
         $html .= $this->output->render($button);
         return $html;
     }
@@ -1070,7 +1074,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $url = $this->get_router()->get_path('new submission', ['submission' => $submission], true);
         $label = get_string($stringname, 'mod_coursework');
         $button = new \single_button($url, $label, 'get');
-        $button->class = 'btn btn-primary btn-block';
         $html .= $this->output->render($button);
         return $html;
     }
