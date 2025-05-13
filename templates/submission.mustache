@@ -61,5 +61,10 @@
     </ul>
 
     {{! TODO - upload assignment button. }}
-    <a href="{{{submiturl}}}" class="btn btn-primary btn-block"><i class="fa-solid fa-upload mr-2"></i>Add/Edit submission</a>
+    {{#notopen}}
+    <p>Submisions start on {{opendate}}.<p>
+    {{/notopen}}
+    {{#editurl}}
+    <a href="{{{editurl}}}" class="btn btn-primary btn-block"><i class="fa-solid fa-upload mr-2"></i>Add/Edit submission</a>
+    {{/editurl}}
 </div>

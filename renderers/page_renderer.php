@@ -253,14 +253,36 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
             $submission->publish();
         }
-        // WIP - output as mustache.
-        $html .= $this->coursework_student_overview($submission);
 
-        // New bit - different page for new/edit.
+        // WIP - student overview, and initialise template.
+        // TODO - feels odd. Why is this a seperate function?
+        // Probably single function with data and buttons would be better?
+        $template = $this->coursework_student_overview($submission);
+
+        // Buttons.
         $ability = new ability($student, $coursework);
 
-        $plagdisclosure = plagiarism_similarity_information($coursemodule);
-        $html .= $plagdisclosure;
+        if (!$coursework->start_date_has_passed()) {
+            // Coursework has not started yet.
+            $template->notopen = true;
+            $template->opendate = userdate($coursework->startdate);
+        } else {
+            // Coursework has started.
+            if ($ability->can('new', $submission)) {
+                $template->editurl = $this->get_router()->get_path('new submission', ['submission' => $submission], true);
+            } else if ($submission && $ability->can('edit', $submission)) {
+                $template->editurl = $this->get_router()->get_path('edit submission', ['submission' => $submission], true);
+                // TODO - Question
+                // Why router and not just new moodle_url('/mod/coursework/actions/submissions/edit.php', ['submissionid' => $submission->id]); ?
+            }
+        }
+
+        $$template->plagdisclosure = plagiarism_similarity_information($coursemodule);
+
+        $html .= $this->render_from_template('mod_coursework/submission', $template);
+        // var_dump($template);
+
+
 
         // if TII plagiarism enabled check if user agreed/disagreed EULA
         $shouldseeeula = has_user_seen_tii_eula_agreement();
@@ -839,15 +861,15 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
     /**
      * @param submission $submission
-     * @return string
+     * @return stdClass
      */
-    protected function coursework_student_overview($submission): string {
+    protected function coursework_student_overview($submission): stdClass {
         global $USER;
 
         $coursework = $submission->get_coursework();
         $files = $submission->get_submission_files();
 
-        // WIP - submission output for mustache.
+        // WIP - return submission output for mustache.
         $template = new stdClass();
         $template->file = $this->get_object_renderer()
         ->render_submission_files_with_plagiarism_links(new mod_coursework_submission_files($files));
@@ -881,7 +903,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             }
         }
 
-        return $this->render_from_template('mod_coursework/submission', $template);
+        return $template;
     }
 
     /**
@@ -1030,8 +1052,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $stringname = $coursework->is_configured_to_have_group_submissions() ? 'editgroupsubmission' : 'edityoursubmission';
         $button = new \single_button($this->get_router()
             ->get_path('edit submission', ['submission' => $submission], true),
-                                     get_string($stringname, 'mod_coursework'), 'get');
-        $button->class = 'editsubmissionbutton';
+                                     get_string($stringname, 'mod_coursework'), 'get' ,  '', ['class' => 'btn btn-primary']);
+        $button->class = 'btn btn-primary btn-block';
         $html .= $this->output->render($button);
         return $html;
     }
@@ -1048,7 +1070,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $url = $this->get_router()->get_path('new submission', ['submission' => $submission], true);
         $label = get_string($stringname, 'mod_coursework');
         $button = new \single_button($url, $label, 'get');
-        $button->class = 'newsubmissionbutton';
+        $button->class = 'btn btn-primary btn-block';
         $html .= $this->output->render($button);
         return $html;
     }
