@@ -69,9 +69,22 @@
     {{#editurl}}
     <a href="{{{editurl}}}" class="btn btn-primary btn-block"><i class="fa-solid fa-upload mr-2"></i>Add/Edit submission</a>
     {{/editurl}}
+
+    {{! Finalise submission. }}
+    {{#final}}
+        <hr>
+        <div id="coursework-finalise-submission">
+        <h3 class="h5">Finalise submission</h3>
+            {{{.}}}
+        </div>
+    {{/final}}
 </div>
 
-{{! Finalise submission. }}
-    {{#final}}
-        {{{.}}}
-    {{/final}}
+
+{{! Random css, will need moving. }}
+<style>
+#coursework-finalise-submission .btn {
+    display: block !important;
+    width: 100%;
+}
+</style>
