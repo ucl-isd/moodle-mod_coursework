@@ -27,8 +27,25 @@
 }}
 <div class="bg-light p-3">
     <h3 class="h5" id="submission-title">Submission</h3>
-{{{file}}}
-     <ul class="w-100 list-unstyled" aria-labelledby="submission-title">
+
+    {{#nogroup}}
+    <p>{{#str}} not_in_any_group_student_warning, mod_coursework {{/str}}</p>
+    {{/nogroup}}
+
+    {{! Submission is not open till startdate. }}
+    {{#startdate}}
+    <p>Submissions open on {{startdate}}.<p>
+    {{/startdate}}
+
+    {{#cansubmit}}
+
+    {{! TODO - plagarism stuff - whats does it output? }}
+    {{{plagdisclosure}}}
+
+    {{! Submiison file. }}
+    {{{file}}}
+
+    <ul class="w-100 list-unstyled" aria-labelledby="submission-title">
         <li class="d-flex py-1">
             Status
             <span class="ml-auto">
@@ -60,10 +77,7 @@
         </li>
     </ul>
 
-    {{! Submissions open at future date. }}
-    {{#notopen}}
-    <p>Submissions open on {{opendate}}.<p>
-    {{/notopen}}
+
 
     {{! Add/Edit submission. }}
     {{#editurl}}
@@ -84,6 +98,7 @@
         <hr>
         <h1>What is this?</h1>
         {{{.}}}
-
     {{/feedback}}
+
+    {{/cansubmit}}
 </div>

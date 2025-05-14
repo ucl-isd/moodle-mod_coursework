@@ -221,24 +221,17 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @return string
      */
     public function student_view_page($coursework, $student) {
-
-        $html = '';
-
-        // If the coursework has been configured to use groups and the student is not in any
-        // groups, then we need to show an error message.
+        // If coursework groups and the student is not in any group.
         if ($coursework->is_configured_to_have_group_submissions() && !$coursework->student_is_in_any_group($student)) {
-            $html .= '<div class= "alert">'.get_string('not_in_any_group_student_warning', 'mod_coursework').'</div>';
-            return $html;
+            $template = new stdClass();
+            $template->cansubmit = false;
+            $template->nogroup = true;
+            return $this->render_from_template('mod_coursework/submission', $template);
         }
-
-        $coursemodule = $coursework->get_course_module();
 
         // $submission here means the existing stuff. Might be the group of the student. The only place where
         // it matters in in pre-populating the form, where it should be empty if this student did not submit
         // the files.
-        /**
-         * @var \mod_coursework\models\submission $submission
-         */
         $submission = $coursework->get_user_submission($student);
         $newsubmission = $coursework->build_own_submission($student);
         if (!$submission) {
@@ -254,49 +247,54 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $submission->publish();
         }
 
-        // WIP - student overview, and initialise template.
-        // TODO - feels odd. Why is this a seperate function?
-        // Probably single function with data and buttons would be better?
-        $template = $this->coursework_student_overview($submission);
-
-        // Buttons.
+        // WIP - student overview.
         $ability = new ability($student, $coursework);
 
         if ($coursework->start_date_has_passed()) {
+            // Main data.
+            // TODO - feels odd. Why is this a seperate function?
+            // Probably single function with data and buttons would be better?
+            $template = $this->coursework_student_overview($submission);
+            $template->cansubmit = true;
+
+            // TODO - what is this? what does this look like? Where should it go?
+            $coursemodule = $coursework->get_course_module();
+            $template->plagdisclosure = plagiarism_similarity_information($coursemodule);
+
+            // Buttons from here on down.
             // Add/Edit links.
             if ($ability->can('new', $submission)) {
                 $template->editurl = $this->get_router()->get_path('new submission', ['submission' => $submission], true);
             } else if ($submission && $ability->can('edit', $submission)) {
                 $template->editurl = $this->get_router()->get_path('edit submission', ['submission' => $submission], true);
             }
+
+            // Finalise.
+            if ($submission && $submission->id && $ability->can('finalise', $submission)) {
+                $template->final = $this->finalise_submission_button($coursework, $submission);
+            }
+
+            // TODO - where should this go? Probably not here...
+            // Feedback.
+            if ($submission && $submission->is_published()) {
+                $template->feedback = $this->existing_feedback_from_teachers($submission);
+            }
+
+            return $this->render_from_template('mod_coursework/submission', $template);
+
         } else {
             // Coursework submission has not started yet.
-            $template->notopen = true;
-            $template->opendate = userdate($coursework->startdate);
+            $template = new stdClass();
+            $template->cansubmit = false;
+            $template->startdate = userdate($coursework->startdate);
+            return $this->render_from_template('mod_coursework/submission', $template);
         }
-
-        // Finalise.
-        if ($submission && $submission->id && $ability->can('finalise', $submission)) {
-            $template->final = $this->finalise_submission_button($coursework, $submission);
-        }
-
-        // TODO - where shoudl this go?
-        // Feedback.
-        if ($submission && $submission->is_published()) {
-            $template->feedback = $this->existing_feedback_from_teachers($submission);
-        }
-
-        // TODO - what should this look like? Where should it go?
-        $template->plagdisclosure = plagiarism_similarity_information($coursemodule);
-
-
-        $html .= $this->render_from_template('mod_coursework/submission', $template);
-        // var_dump($template);
-        return $html;
 
         // TODO - how does this fit in?
         // if TII plagiarism enabled check if user agreed/disagreed EULA
         $shouldseeeula = has_user_seen_tii_eula_agreement();
+        $html = '';
+
 
         if ($ability->can('new', $submission) && (!$coursework->tii_enabled() || $shouldseeeula)) {
             if ($coursework->start_date_has_passed()) {
@@ -307,17 +305,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         } else if ($submission && $ability->can('edit', $submission)) {
             $html .= $this->edit_submission_button($coursework, $submission);
         }
-
-        if ($submission && $submission->id && $ability->can('finalise', $submission)) {
-            $html .= $this->finalise_submission_button($coursework, $submission);
-
-        }
-
-        if ($submission && $submission->is_published()) {
-            $html .= $this->existing_feedback_from_teachers($submission);
-        }
-
-        return $html;
     }
 
     /**
