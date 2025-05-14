@@ -78,13 +78,14 @@
             {{{.}}}
         </div>
     {{/final}}
+
+    {{! TODO - Feedback - probably goes somewhere else? }}
+    {{#feedback}}
+        <hr>
+        <h1>What is this?</h1>
+        {{{.}}}
+
+    {{/feedback}}
 </div>
 
 
-{{! Random css, will need moving. }}
-<style>
-#coursework-finalise-submission .btn {
-    display: block !important;
-    width: 100%;
-}
-</style>

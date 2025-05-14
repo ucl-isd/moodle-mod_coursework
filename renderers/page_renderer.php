@@ -268,28 +268,33 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $template->editurl = $this->get_router()->get_path('new submission', ['submission' => $submission], true);
             } else if ($submission && $ability->can('edit', $submission)) {
                 $template->editurl = $this->get_router()->get_path('edit submission', ['submission' => $submission], true);
-                // TODO - Question.
-                // Why router and not just new moodle_url('/mod/coursework/actions/submissions/edit.php', ['submissionid' => $submission->id]); ?
             }
         } else {
-            // Coursework has not started yet.
+            // Coursework submission has not started yet.
             $template->notopen = true;
             $template->opendate = userdate($coursework->startdate);
         }
-
-        // TODO - what should this look like? Where should it go?
-        $template->plagdisclosure = plagiarism_similarity_information($coursemodule);
 
         // Finalise.
         if ($submission && $submission->id && $ability->can('finalise', $submission)) {
             $template->final = $this->finalise_submission_button($coursework, $submission);
         }
 
+        // TODO - where shoudl this go?
+        // Feedback.
+        if ($submission && $submission->is_published()) {
+            $template->feedback = $this->existing_feedback_from_teachers($submission);
+        }
+
+        // TODO - what should this look like? Where should it go?
+        $template->plagdisclosure = plagiarism_similarity_information($coursemodule);
+
+
         $html .= $this->render_from_template('mod_coursework/submission', $template);
         // var_dump($template);
         return $html;
 
-
+        // TODO - how does this fit in?
         // if TII plagiarism enabled check if user agreed/disagreed EULA
         $shouldseeeula = has_user_seen_tii_eula_agreement();
 

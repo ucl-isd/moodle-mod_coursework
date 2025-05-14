@@ -1,4 +1,23 @@
 /**
+Coursework.
+**/
+
+.path-mod-coursework {
+    /* Hide activity header - date and description displayed differently. */
+    .activity-header {
+        display: none !important;
+    }
+
+    /* SHAME - not able to add btn-block in php. */
+    #coursework-finalise-submission .btn {
+        display: block !important;
+        width: 100%;
+    }
+}
+
+/* TODO - review, can we just remove all this? */
+
+/**
 Coursework
 **/
 
