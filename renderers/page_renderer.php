@@ -260,6 +260,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             // TODO - what is this? what does this look like? Where should it go?
             $coursemodule = $coursework->get_course_module();
             $template->plagdisclosure = plagiarism_similarity_information($coursemodule);
+            $template->shouldseeeula = has_user_seen_tii_eula_agreement();
+            $template->tiienabled = $coursework->tii_enabled();
 
             // Buttons from here on down.
             // Add/Edit links.
