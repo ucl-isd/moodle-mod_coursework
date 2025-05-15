@@ -28,18 +28,10 @@
     }
 }}
 
-{{#description}}
-<h3 class="h5 pt-3">Description</h3>
-{{{.}}}
-{{/description}}
 
-{{#markingguideurl}}
-    <a href="{{{.}}}" target="_blank"><i class="fa-solid fa-circle-right mr-2"></i>Marking guide</a>
-{{/markingguideurl}}
-<hr>
 
 {{#duedate}}
-    <h4 class="h6">Due</h4>
+    <h3 class="h6 d-inline">Due:</h4>
     {{duedate}}
 {{/duedate}}
 
@@ -49,9 +41,19 @@
 {{/late}}
 
 {{#deadlinewarning}}
-    <br>
-    <small>After the deadline your current submission will autofinalise and no edits can be made.</small>
+    <p class="small py-1">After the deadline your current submission will autofinalise and no edits can be made.</p>
 {{/deadlinewarning}}
+
+{{#description}}
+    <h3 class="h5">Description</h3>
+    {{{.}}}
+{{/description}}
+
+
+{{#markingguideurl}}
+    <a href="{{{.}}}" target="_blank"><i class="fa-solid fa-circle-right mr-2"></i>Marking guide</a>
+{{/markingguideurl}}
+
 <hr>
 
 {{! Test data output. }}
