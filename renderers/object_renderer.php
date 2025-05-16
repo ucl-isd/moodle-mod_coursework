@@ -506,6 +506,19 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         // WIP - grid output.
         $out .= "<div class='row'>";
+        // Little col.
+        $out .= "<div class='col-md-4'>";
+        if ($cangrade || $canpublish) {
+            $out .= $this->coursework_marking_summary($coursework);
+        }
+        // WIP - student view overview data here.
+        $cansubmit = has_capability('mod/coursework:submit', $PAGE->context);
+        if ($cansubmit && !$cangrade) {
+            $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
+            $out .= $pagerenderer->student_view_page($coursework, \mod_coursework\models\user::find($USER));
+        }
+        $out .= "</div>";
+
         // Big col.
         $out .= "<div class='col-md-8'>";
         $out .= $this->coursework_deadlines_table($coursework);
@@ -525,21 +538,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 $out .= $this->render_from_template('mod_coursework/general_feedback', $template);
             }
         }
-
         $out .= "</div>";
 
-        // Little col.
-        $out .= "<div class='col-md-4'>";
-        if ($cangrade || $canpublish) {
-            $out .= $this->coursework_marking_summary($coursework);
-        }
-        // WIP - student view overview data here.
-        $cansubmit = has_capability('mod/coursework:submit', $PAGE->context);
-        if ($cansubmit && !$cangrade) {
-            $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
-            $out .= $pagerenderer->student_view_page($coursework, \mod_coursework\models\user::find($USER));
-        }
-        $out .= "</div>";
         // Close row.
         $out .= "</div>";
 
