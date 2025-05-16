@@ -1599,6 +1599,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                     $agreedsubs = $coursework->get_graded_submissions_by_stage($agreedstage);
                     $agreedmarkcount = count($this->get_submissions_for_assessor($coursework, $agreedsubs));
                     $template->assessor[] = [
+                        'border' => true,
                         'name' => get_string('markedagreemark', 'mod_coursework'),
                         'count' => $agreedmarkcount,
                     ];
