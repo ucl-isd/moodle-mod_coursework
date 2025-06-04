@@ -281,15 +281,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             if ($submission && $submission->is_published()) {
                 $template->feedback = $this->existing_feedback_from_teachers($submission);
             }
-
-            return $this->render_from_template('mod_coursework/submission', $template);
-
-        } else {
-            // Coursework submission has not started yet.
-            $template = new stdClass();
-            $template->cansubmit = false;
-            $template->startdate = userdate($coursework->startdate);
-            return $this->render_from_template('mod_coursework/submission', $template);
         }
 
         // TODO - how does this fit in?
@@ -300,13 +291,16 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         if ($ability->can('new', $submission) && (!$coursework->tii_enabled() || $shouldseeeula)) {
             if ($coursework->start_date_has_passed()) {
-                $html .= $this->new_submission_button($submission);
+                $template->submissionbutton = $this->new_submission_button($submission);
             } else {
-                $html .= '<div class="alert">' . get_string('notstartedyet', 'mod_coursework', userdate($coursework->startdate)) . '</div>';
+                $template = new stdClass();
+                $template->startdate = $coursework->startdate;
             }
         } else if ($submission && $ability->can('edit', $submission)) {
-            $html .= $this->edit_submission_button($coursework, $submission);
+            $template->submissionbutton = $this->edit_submission_button($submission);
         }
+
+        return $this->render_from_template('mod_coursework/submission', $template);
     }
 
     /**
@@ -1043,35 +1037,37 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
+     * Return an object suitable for rendering in a Mustache template.
+     *
      * @param coursework $coursework
      * @param submission $submission
-     * @return string
-     * @throws coding_exception
+     * @return stdClass with 'label' and 'url' properties.
      */
     protected function edit_submission_button($coursework, $submission) {
-        $html = '';
-        $stringname = $coursework->is_configured_to_have_group_submissions() ? 'editgroupsubmission' : 'edityoursubmission';
-        $button = new \single_button($this->get_router()
-            ->get_path('edit submission', ['submission' => $submission], true),
-                                     get_string($stringname, 'mod_coursework'), 'get');
-        $html .= $this->output->render($button);
-        return $html;
+        $submissionbutton = new stdClass();
+
+        $submissionbutton->label = get_string(
+            $coursework->is_configured_to_have_group_submissions() ? 'editgroupsubmission' : 'edityoursubmission',
+            'mod_coursework'
+        );
+        $submissionbutton->url = $this->get_router()->get_path('edit submission', ['submission' => $submission], true);
+        return $submissionbutton;
     }
 
     /**
+     * Return an object suitable for rendering in a Mustache template.
+     *
      * @param submission $submission
-     * @return string
-     * @throws coding_exception
+     * @return stdClass with 'label' and 'url' properties.
      */
-    protected function new_submission_button($submission) {
-        $html = '';
-        $stringname = $submission->get_coursework()->is_configured_to_have_group_submissions() ? 'addgroupsubmission' : 'addyoursubmission';
-
-        $url = $this->get_router()->get_path('new submission', ['submission' => $submission], true);
-        $label = get_string($stringname, 'mod_coursework');
-        $button = new \single_button($url, $label, 'get');
-        $html .= $this->output->render($button);
-        return $html;
+    protected function new_submission_button($submission): stdClass {
+        $submissionbutton = new stdClass();
+        $submissionbutton->label = get_string(
+            $submission->get_coursework()->is_configured_to_have_group_submissions() ? 'addgroupsubmission' : 'addyoursubmission',
+            'mod_coursework'
+        );
+        $submissionbutton->url = $this->get_router()->get_path('new submission', ['submission' => $submission], true);
+        return $submissionbutton;
     }
 
     /**

@@ -34,12 +34,12 @@
 
     {{! Submission is not open till startdate. }}
     {{#startdate}}
-    <p>Submissions open on {{startdate}}.<p>
+        <p>{{#str}} notstartedyet, mod_coursework, {{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}{{/str}}</p>
     {{/startdate}}
 
     {{#cansubmit}}
 
-    {{! Submiison file. }}
+    {{! Submission file. }}
     {{{file}}}
 
     <ul class="w-100 list-unstyled" aria-labelledby="submission-title">
@@ -78,9 +78,9 @@
 
 
     {{! Add/Edit submission. }}
-    {{#editurl}}
-    <a href="{{{editurl}}}" class="btn btn-primary btn-block"><i class="fa-solid fa-upload mr-2"></i>Add/Edit submission</a>
-    {{/editurl}}
+    {{#submissionbutton}}
+        <a href="{{{url}}}" class="btn btn-primary btn-block"><i class="fa-solid fa-upload mr-2"></i>{{label}}</a>
+    {{/submissionbutton}}
 
     {{! Finalise submission. }}
     {{#final}}
