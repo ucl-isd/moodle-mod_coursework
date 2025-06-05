@@ -297,7 +297,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $template->startdate = $coursework->startdate;
             }
         } else if ($submission && $ability->can('edit', $submission)) {
-            $template->submissionbutton = $this->edit_submission_button($submission);
+            $template->submissionbutton = $this->edit_submission_button($coursework, $submission);
         }
 
         return $this->render_from_template('mod_coursework/submission', $template);

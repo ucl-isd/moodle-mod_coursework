@@ -28,7 +28,7 @@ Feature: Testing that the factories for behat steps work. If any tests fail, fix
     And I am logged in as a student
     And I have a submission
     When I visit the coursework page
-    And I click on the edit submission button
+    And I click on "Edit your submission" "link"
     Then I should see "1" elements in "Upload a file" filemanager
 
   Scenario: Making a coursework sets the defaults correctly
