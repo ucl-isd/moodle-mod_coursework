@@ -221,24 +221,17 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @return string
      */
     public function student_view_page($coursework, $student) {
-
-        $html = '';
-
-        // If the coursework has been configured to use groups and the student is not in any
-        // groups, then we need to show an error message.
+        // If coursework groups and the student is not in any group.
         if ($coursework->is_configured_to_have_group_submissions() && !$coursework->student_is_in_any_group($student)) {
-            $html .= '<div class= "alert">'.get_string('not_in_any_group_student_warning', 'mod_coursework').'</div>';
-            return $html;
+            $template = new stdClass();
+            $template->cansubmit = false;
+            $template->nogroup = true;
+            return $this->render_from_template('mod_coursework/submission', $template);
         }
-
-        $coursemodule = $coursework->get_course_module();
 
         // $submission here means the existing stuff. Might be the group of the student. The only place where
         // it matters in in pre-populating the form, where it should be empty if this student did not submit
         // the files.
-        /**
-         * @var \mod_coursework\models\submission $submission
-         */
         $submission = $coursework->get_user_submission($student);
         $newsubmission = $coursework->build_own_submission($student);
         if (!$submission) {
@@ -254,58 +247,60 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $submission->publish();
         }
 
-        // http://moodle26.dev/grade/grading/form/rubric/preview.php?areaid=16
-        if ($coursework->is_using_advanced_grading()) {
-
-            $controller = $coursework->get_advanced_grading_active_controller();
-
-            if ($controller->is_form_defined() && ($options = $controller->get_options()) && !empty($options['alwaysshowdefinition'])) {
-
-                // Because the get_method_name() is protected.
-                if (preg_match('/^gradingform_([a-z][a-z0-9_]*[a-z0-9])_controller$/', get_class($controller), $matches)) {
-                    $methodname = $matches[1];
-                } else {
-                    throw new coding_exception('Invalid class name');
-                }
-
-                $html .= '<h4>' . get_string('marking_guide_preview', 'mod_coursework') . '</h4>';
-
-                $url = new moodle_url('/grade/grading/form/' . $methodname . '/preview.php',
-                                          ['areaid' => $controller->get_areaid()]);
-                $html .= '<p><a href="' . $url->out() . '">' . get_string('marking_guide_preview',
-                                                                          'mod_coursework') . '</a></p>';
-            }
-        }
-        $html .= $this->submission_as_readonly_table($submission);
-
-        // New bit - different page for new/edit.
+        // WIP - student overview.
         $ability = new ability($student, $coursework);
 
-        $plagdisclosure = plagiarism_similarity_information($coursemodule);
-        $html .= $plagdisclosure;
+        if ($coursework->start_date_has_passed()) {
+            // Main data.
+            // TODO - feels odd. Why is this a seperate function?
+            // Probably single function with data and buttons would be better?
+            $template = $this->coursework_student_overview($submission);
+            $template->cansubmit = true;
 
+            // TODO - what is this? what does this look like? Where should it go?
+            $coursemodule = $coursework->get_course_module();
+            $template->plagdisclosure = plagiarism_similarity_information($coursemodule);
+            $template->shouldseeeula = has_user_seen_tii_eula_agreement();
+            $template->tiienabled = $coursework->tii_enabled();
+
+            // Buttons from here on down.
+            // Add/Edit links.
+            if ($ability->can('new', $submission)) {
+                $template->editurl = $this->get_router()->get_path('new submission', ['submission' => $submission], true);
+            } else if ($submission && $ability->can('edit', $submission)) {
+                $template->editurl = $this->get_router()->get_path('edit submission', ['submission' => $submission], true);
+            }
+
+            // Finalise.
+            if ($submission && $submission->id && $ability->can('finalise', $submission)) {
+                $template->final = $this->finalise_submission_button($coursework, $submission);
+            }
+
+            // TODO - where should this go? Probably not here...
+            // Feedback.
+            if ($submission && $submission->is_published()) {
+                $template->feedback = $this->existing_feedback_from_teachers($submission);
+            }
+        }
+
+        // TODO - how does this fit in?
         // if TII plagiarism enabled check if user agreed/disagreed EULA
         $shouldseeeula = has_user_seen_tii_eula_agreement();
+        $html = '';
+
 
         if ($ability->can('new', $submission) && (!$coursework->tii_enabled() || $shouldseeeula)) {
             if ($coursework->start_date_has_passed()) {
-                $html .= $this->new_submission_button($submission);
+                $template->submissionbutton = $this->new_submission_button($submission);
             } else {
-                $html .= '<div class="alert">' . get_string('notstartedyet', 'mod_coursework', userdate($coursework->startdate)) . '</div>';
+                $template = new stdClass();
+                $template->startdate = $coursework->startdate;
             }
         } else if ($submission && $ability->can('edit', $submission)) {
-            $html .= $this->edit_submission_button($coursework, $submission);
+            $template->submissionbutton = $this->edit_submission_button($coursework, $submission);
         }
 
-        if ($submission && $submission->id && $ability->can('finalise', $submission)) {
-            $html .= $this->finalise_submission_button($coursework, $submission);
-        }
-
-        if ($submission && $submission->is_published()) {
-            $html .= $this->existing_feedback_from_teachers($submission);
-        }
-
-        return $html;
+        return $this->render_from_template('mod_coursework/submission', $template);
     }
 
     /**
@@ -658,12 +653,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $links[$url] = get_string('uploadfeedbackfiles', 'mod_coursework');
         }
 
-        // don't show dropdown if there are no submissions
-        if (!empty($submissions) && !empty($links)) {
-            $gradingactions = new url_select($links);
-            $gradingactions->set_label(get_string('gradingaction', 'coursework'));
-            $html .= $this->render($gradingactions);;
-        }
 
         if ($firstnamealpha || $lastnamealpha || $groupnamealpha || $group != -1) {
             $html .= $warnings->filters_warning();
@@ -867,68 +856,27 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
     /**
      * @param submission $submission
-     * @return string
-     * @throws coding_exception
+     * @return stdClass
      */
-    protected function submission_as_readonly_table($submission) {
-
+    protected function coursework_student_overview($submission): stdClass {
         global $USER;
-
-        $html = '';
 
         $coursework = $submission->get_coursework();
         $files = $submission->get_submission_files();
 
-        if ($coursework->is_configured_to_have_group_submissions()) {
-            $filestitle = 'groupsubmissionstatus';
-        } else {
-            $filestitle = 'yoursubmissionstatus';
-        }
+        // WIP - return submission output for mustache.
+        $template = new stdClass();
+        $template->file = $this->get_object_renderer()
+        ->render_submission_files_with_plagiarism_links(new mod_coursework_submission_files($files));
+        $template->status = $submission->get_status_text(); // TODO - make better.
 
-        $html .= html_writer::start_tag('h3');
-        $html .= get_string($filestitle, 'coursework');
-        $html .= html_writer::end_tag('h3');
-
-        $table = new html_table();
-
-        // Submission status
-        $row = new html_table_row();
-        $row->cells[] = get_string('tableheadstatus', 'coursework');
-        $statuscell = new html_table_cell();
-        $statuscell->text = $submission->get_status_text();
-        $row->cells[] = $statuscell;
-        $table->data[] = $row;
-
-        // If it's a group submission, show who submitted it.
-        if ($coursework->is_configured_to_have_group_submissions()) {
-            $row = new html_table_row();
-            $row->cells[] = get_string('submittedby', 'coursework');
-            $cell = new \html_table_cell();
-            if ($submission->persisted()) {
-                $submitter = $submission->get_last_updated_by_user();
-                $celltext = $submitter->name();
-                if ($USER->id == $submitter->id()) {
-                    $celltext .= ' ' . get_string('itsyou', 'mod_coursework');
-                }
-                $cell->text = $celltext;
-                $cell->attributes['class'] = 'submission-user';
-            }
-            $row->cells[] = $cell;
-            $table->data[] = $row;
-        }
-
-        // Submitted at time
-        $row = new html_table_row();
-        $row->cells[] = get_string('tableheadtime', 'coursework');
-        $submittedtimecell = new html_table_cell();
+        // Date.
         if ($submission->persisted() && $submission->time_submitted()) {
-            $submittedtimecell->text = userdate($submission->time_submitted(), '%a, %d %b %Y, %H:%M');
+            $template->date = $submission->time_submitted();
         }
-        $row->cells[] = $submittedtimecell;
-        $table->data[] = $row;
 
-        if ($submission->is_late() && (!$submission->has_extension() || !$submission->submitted_within_extension())) { // It was late.
-
+        // Was the submission late?
+        if ($submission->is_late() && (!$submission->has_extension() || !$submission->submitted_within_extension())) {
             // check if submission has personal deadline
             if ($coursework->personaldeadlineenabled ) {
                 $deadline = $submission->submission_personal_deadline();
@@ -945,43 +893,33 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $minutes = floor($lateseconds / 60) % 60;
             $seconds = $lateseconds % 60;
 
-            $row = new html_table_row();
-            $row->cells[] = get_string('latetitle', 'coursework');
-
             $text = $days . get_string('timedays', 'coursework') . ', ';
             $text .= $hours . get_string('timehours', 'coursework') . ', ';
             $text .= $minutes . get_string('timeminutes', 'coursework') . ', ';
             $text .= $seconds . get_string('timeseconds', 'coursework');
 
-            $row->cells[] = $text;
-            $table->data[] = $row;
+            $template->late = $text;
         }
 
-        $row = new html_table_row();
-        $row->cells[] = get_string('submissionfile', 'coursework');
-        $row->cells[] = $this->get_object_renderer()
-            ->render_submission_files_with_plagiarism_links(new mod_coursework_submission_files($files));
-        $table->data[] = $row;
-
-        $row = new html_table_row();
-        $row->cells[] = get_string('provisionalgrade', 'coursework');
-
+        // Mark.
         if ($submission && $submission->is_published()) {
             $judge = new \mod_coursework\grade_judge($coursework);
             $gradeforgradebook = $judge->get_grade_capped_by_submission_time($submission);
-            $row->cells[] = $judge->grade_to_display($gradeforgradebook);
+            $template->mark = $judge->grade_to_display($gradeforgradebook);
         } else if ($submission->get_state() >= submission::PARTIALLY_GRADED) {
-            $row->cells[] = get_string('notpublishedyet', 'mod_coursework');
-        } else {
-            $row->cells[] = new html_table_cell();
+            $template->mark = get_string('notpublishedyet', 'mod_coursework');
         }
 
-        $table->data[] = $row;
+        // Group submission.
+        if ($coursework->is_configured_to_have_group_submissions()) {
+            $template->group = true;
+            if ($submission->persisted()) {
+                $submitter = $submission->get_last_updated_by_user();
+                $template->submitter = $submitter->name();
+            }
+        }
 
-        $html .= html_writer::table($table);
-
-        return $html;
-
+        return $template;
     }
 
     /**
@@ -1096,14 +1034,14 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     protected function finalise_submission_button($coursework, $submission) {
 
         $html = '<div>';
+        $html .= $this->finalise_warning();
         $stringname = $coursework->is_configured_to_have_group_submissions() ? 'finalisegroupsubmission' : 'finaliseyoursubmission';
         $finalisesubmissionpath =
             $this->get_router()->get_path('finalise submission', ['submission' => $submission], true);
-        $button = new \single_button($finalisesubmissionpath, get_string($stringname, 'mod_coursework'));
-        $button->class = 'finalisesubmissionbutton';
+        $button = new \single_button($finalisesubmissionpath, get_string($stringname, 'mod_coursework'), 'post',single_button::BUTTON_SUCCESS);
         $button->add_confirm_action(get_string('finalise_button_confirm', 'mod_coursework'));
+        $button->class = 'd-block';
         $html .= $this->output->render($button);
-        $html .= $this->finalise_warning();
 
         $html .= '</div>';
 
@@ -1116,41 +1054,41 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws coding_exception
      */
     public function finalise_warning() {
-        return '<div class="alert">' . get_string('finalise_button_info', 'mod_coursework') . '</div>';
+        return '<p class="small">' . get_string('finalise_button_info', 'mod_coursework') . '</small>';
     }
 
     /**
+     * Return an object suitable for rendering in a Mustache template.
+     *
      * @param coursework $coursework
      * @param submission $submission
-     * @return string
-     * @throws coding_exception
+     * @return stdClass with 'label' and 'url' properties.
      */
     protected function edit_submission_button($coursework, $submission) {
-        $html = '';
-        $stringname = $coursework->is_configured_to_have_group_submissions() ? 'editgroupsubmission' : 'edityoursubmission';
-        $button = new \single_button($this->get_router()
-            ->get_path('edit submission', ['submission' => $submission], true),
-                                     get_string($stringname, 'mod_coursework'), 'get');
-        $button->class = 'editsubmissionbutton';
-        $html .= $this->output->render($button);
-        return $html;
+        $submissionbutton = new stdClass();
+
+        $submissionbutton->label = get_string(
+            $coursework->is_configured_to_have_group_submissions() ? 'editgroupsubmission' : 'edityoursubmission',
+            'mod_coursework'
+        );
+        $submissionbutton->url = $this->get_router()->get_path('edit submission', ['submission' => $submission], true);
+        return $submissionbutton;
     }
 
     /**
+     * Return an object suitable for rendering in a Mustache template.
+     *
      * @param submission $submission
-     * @return string
-     * @throws coding_exception
+     * @return stdClass with 'label' and 'url' properties.
      */
-    protected function new_submission_button($submission) {
-        $html = '';
-        $stringname = $submission->get_coursework()->is_configured_to_have_group_submissions() ? 'addgroupsubmission' : 'addyoursubmission';
-
-        $url = $this->get_router()->get_path('new submission', ['submission' => $submission], true);
-        $label = get_string($stringname, 'mod_coursework');
-        $button = new \single_button($url, $label, 'get');
-        $button->class = 'newsubmissionbutton';
-        $html .= $this->output->render($button);
-        return $html;
+    protected function new_submission_button($submission): stdClass {
+        $submissionbutton = new stdClass();
+        $submissionbutton->label = get_string(
+            $submission->get_coursework()->is_configured_to_have_group_submissions() ? 'addgroupsubmission' : 'addyoursubmission',
+            'mod_coursework'
+        );
+        $submissionbutton->url = $this->get_router()->get_path('new submission', ['submission' => $submission], true);
+        return $submissionbutton;
     }
 
     /**

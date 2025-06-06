@@ -16,7 +16,7 @@ Feature: Deadlines extensions for submissions
     And there is an extension for the student that allows them to submit
     When I log in as a student
     And I visit the coursework page
-    Then I should see the new submission button
+    Then "Upload your submission" "link" should exist
 
   @javascript
   Scenario: The student can not submit when the start date is in the future
