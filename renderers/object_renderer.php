@@ -525,18 +525,16 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         // Show general feedback if it's there and the deadline has passed or general feedback's date is not enabled which means it should be displayed automatically
         if (($coursework->is_general_feedback_enabled() && $allowedtoaddgeneralfeedback && (time() > $coursework->generalfeedback || $cangrade || $canpublish || $ispublished)) || !$coursework->is_general_feedback_enabled()) {
-            // Edit url.
-            $link = '';
-            if ($canaddgeneralfeedback) {
-                $link = new moodle_url('/mod/coursework/actions/general_feedback.php', ['cmid' => $coursework->get_coursemodule_id()]);
-            }
-
             $template = new stdClass();
             $template->feedback = $coursework->feedbackcomment;
-            $template->editurl = $link;
-            if($template->feedback || $template->editurl) {
-                $out .= $this->render_from_template('mod_coursework/general_feedback', $template);
+
+            if ($canaddgeneralfeedback) { // Add/edit general feedback button.
+                $template->button = new stdClass();
+                $template->button->url = new moodle_url('/mod/coursework/actions/general_feedback.php', ['cmid' => $coursework->get_coursemodule_id()]);
+                $template->button->label =  get_string($coursework->feedbackcomment ? 'editgeneralfeedback' : 'addgeneralfeedback', 'coursework');
             }
+
+            $out .= $this->render_from_template('mod_coursework/general_feedback', $template);
         }
         $out .= "</div>";
 
@@ -1229,6 +1227,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     protected function coursework_deadlines_table(mod_coursework_coursework $coursework) {
         global $USER;
 
+        $template = new stdClass();
+
         $deadlineextension =
             \mod_coursework\models\deadline_extension::get_extension_for_student(user::find($USER), $coursework);
 
@@ -1247,72 +1247,40 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $deadlinedate = '';
 
         if ($deadlineextension) {
-            $deadlinedate .= '<span class="crossed-out">';
-            $deadlinedate .= userdate($normaldeadline, '%a, %d %b %Y, %H:%M');
-            $deadlinedate .= '</span>';
         } else if ($coursework->has_deadline()) {
-            $deadlinedate .= userdate($normaldeadline, '%a, %d %b %Y, %H:%M');
-        } else {
-            $deadlinedate .= get_string('nocourseworkdeadline', 'mod_coursework');
+            $template->duedate = $normaldeadline;
         }
 
         $deadlinemessage = '';
         if ($coursework->has_deadline()) {
             if ($coursework->allow_late_submissions()) {
-                $latemessage = get_string('latesubmissionsallowed', 'mod_coursework');
-                $lateclass = 'text-success';
+                $template->latesubmissionsallowed = true;
             } else {
-                $latemessage = get_string('nolatesubmissions', 'mod_coursework');
-                $lateclass = $coursework->deadline_has_passed() ? 'text-error' : 'text-warning';
+                $template->deadlinehaspassed = true;
             }
-            $latemessage .= ' ';
-            $deadlinemessage = html_writer::start_tag('span', ['class' => $lateclass]);
-            $deadlinemessage .= $latemessage;
-            $deadlinemessage .= html_writer::end_tag('span');
         }
 
         // Does the user have an extension?
 
         $deadlineextensionmessage = '';
+
         if ($deadlineextension) {
-            $deadlineextensionmessage .= html_writer::start_tag('div');
-            $deadlineextensionmessage .= '<span class="text-success">You have an extension!</span><br> Your deadine is: '
-                . userdate($deadlineextension->extended_deadline);
-            $deadlineextensionmessage .= html_writer::end_tag('div');
+            $template->deadlineextension = $deadlineextension->extended_deadline;
         }
 
         if ($coursework->has_deadline()) {
-            $deadlinemessage .= html_writer::start_tag('div', ['class' => 'autofinalise_info']);
-            $deadlinemessage .= ($coursework->personal_deadlines_enabled() && (!has_capability('mod/coursework:submit', $this->page->context) || is_siteadmin($USER)))
-                ? get_string('personal_deadline_warning', 'mod_coursework') : get_string('deadline_warning', 'mod_coursework');
-            $deadlinemessage .= html_writer::end_tag('div');
+            if ($coursework->personal_deadlines_enabled() && (!has_capability('mod/coursework:submit', $this->page->context) || is_siteadmin($USER))) {
+                $template->deadlinemessage = get_string('personal_deadline_warning', 'mod_coursework');
+            } else {
+                $template->deadlinemessage = get_string('deadline_warning', 'mod_coursework');
+            }
         }
 
-        $tablehtml = '
-        <table class="deadlines display">
-          <tbody>
-            <tr class="r0">
-              <th >'.$deadlineheadertext.'</th>
-              <td >'. $deadlinedate.'<br />
-                '.$deadlineextensionmessage.'
-                '. $deadlinemessage.'</td>
-            </tr>
-        ';
-
         if ($coursework->is_general_feedback_enabled() && $coursework->generalfeedback) {
-            $generalfeedbackheader = get_string('generalfeedbackdeadline', 'coursework') . ': ';
             $generalfeedbackdeadline = $coursework->get_general_feedback_deadline();
-            $generalfeedbackdeadlinemessage = $generalfeedbackdeadline
-                ? userdate($generalfeedbackdeadline, '%a, %d %b %Y, %H:%M')
+            $template->generalfeedbackdeadline = $generalfeedbackdeadline
+                ? userdate($generalfeedbackdeadline, get_string('strftimedatetime', 'langconfig'))
                 : get_string('notset', 'coursework');
-
-            $tablehtml .= '
-                <tr class="r1">
-                  <th>'. $generalfeedbackheader.'</th>
-                  <td class="cell c1">'. $generalfeedbackdeadlinemessage.'</td>
-                </tr>
-
-            ';
         }
 
         if ($coursework->individualfeedback) {
@@ -1322,23 +1290,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $indivisualfeedbackmessage = $individualfeedbackdeadline
                 ? userdate($individualfeedbackdeadline, '%a, %d %b %Y, %H:%M')
                 : get_string('notset', 'coursework');
-
-            $tablehtml .= '
-                <tr class="r1">
-                  <th>'. $individualfeedbackheader.'</th>
-                  <td class="cell c1">'. $indivisualfeedbackmessage.'</td>
-                </tr>
-
-            ';
         }
 
-        $tablehtml .= '
-            </tbody>
-        </table>
-        ';
-
-        // WIP - copied to get marking guide url.
-        $markingguideurl = 'foo';
         if ($coursework->is_using_advanced_grading()) {
 
             $controller = $coursework->get_advanced_grading_active_controller();
@@ -1352,23 +1305,16 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                     throw new coding_exception('Invalid class name');
                 }
 
-                $markingguideurl = new moodle_url('/grade/grading/form/' . $methodname . '/preview.php',
-                                          ['areaid' => $controller->get_areaid()]);
+                $template->markingguideurl = new moodle_url('/grade/grading/form/' . $methodname . '/preview.php',
+                    ['areaid' => $controller->get_areaid()]);
             }
         }
 
         // WIP - Template date data.
-        $template = new stdClass();
         $template->description = format_module_intro('coursework', $coursework, $coursework->get_coursemodule_id());
-        $template->markingguideurl = $markingguideurl;
-        $template->duedate = date('jS M g:ia', $normaldeadline);
-        $template->late = $coursework->allow_late_submissions();
         $template->deadlinewarning = $coursework->has_deadline();
-        // Test data.
-        // $template->table = $tablehtml;
-        return $this->render_from_template('mod_coursework/intro', $template);
 
-        // return $tablehtml;
+        return $this->render_from_template('mod_coursework/intro', $template);
     }
 
     /**

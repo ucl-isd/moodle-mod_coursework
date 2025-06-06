@@ -59,15 +59,19 @@
         </li>
         {{/group}}
 
+        {{! Time submitted. }}
+        {{#date}}
         <li class="d-flex py-1 border-top">
-            Submitted
+            {{#str}} tableheadtime, mod_coursework {{/str}}
             <span class="ml-auto">
-                {{date}}
+                {{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
                 {{#late}}
-                <span class="badge badge-warning">Late</span>
+                <span class="badge badge-warning" title="{{.}}">{{#str}} late, mod_coursework {{/str}}</span>
                 {{/late}}
             </span>
         </li>
+        {{/date}}
+
         {{#mark}}
          <li class="d-flex py-1 border-top">
             Mark

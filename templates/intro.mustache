@@ -28,26 +28,57 @@
     }
 }}
 
-
+{{#description}}
+    <h3 class="h5">Description</h3>
+    {{{.}}}
+{{/description}}
 
 {{#duedate}}
-    <h3 class="h6 d-inline">Due:</h4>
-    {{duedate}}
+    <div>
+    <h3 class="h6 d-inline">{{#str}} deadline, mod_coursework {{/str}}</h3>
+    {{#deadlineextension}}
+        <span class="crossed-out">
+    {{/deadlineextension}}
+    {{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
+    {{#deadlineextension}}
+        </span>
+    {{/deadlineextension}}
+    {{#latesubmissionsallowed}}
+        <p class="small py-1">{{#str}} latesubmissionsallowed, mod_coursework {{/str}}</p>
+    {{/latesubmissionsallowed}}
+    {{#deadlinehaspassed}}
+        <p class="small py-1 text-warning">{{#str}} latesubmissionsnotallowed, mod_coursework {{/str}}</p>
+    {{/deadlinehaspassed}}
+    </div>
 {{/duedate}}
+{{^duedate}}
+    <div>
+    <h3 class="h6 d-inline">{{#str}} deadline, mod_coursework {{/str}}</h3>
+    {{#str}} nocourseworkdeadline, mod_coursework {{/str}}
+    </div>
+{{/duedate}}
+{{#deadlineextension}}
+    <div>
+    <h3 class="h6 d-inline">{{#str}} extended_deadline, mod_coursework {{/str}}</h3>
+    {{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
+    </div>
+{{/deadlineextension}}
 
 {{#late}}
     <br>
     <span class="badge badge-dark">Late submissions allowed</span>
 {{/late}}
 
-{{#deadlinewarning}}
-    <p class="small py-1">After the deadline your current submission will autofinalise and no edits can be made.</p>
-{{/deadlinewarning}}
+{{#deadlinemessage}}
+    <p class="small py-1">{{{.}}}</p>
+{{/deadlinemessage}}
 
-{{#description}}
-    <h3 class="h5">Description</h3>
-    {{{.}}}
-{{/description}}
+{{#generalfeedbackdeadline}}
+    <div>
+    <h3 class="h6 d-inline">{{#str}} generalfeedbackdeadline, mod_coursework {{/str}}</h3>
+    {{.}}
+    </div>
+{{/generalfeedbackdeadline}}
 
 
 {{#markingguideurl}}

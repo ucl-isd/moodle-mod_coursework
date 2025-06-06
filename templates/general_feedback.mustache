@@ -20,23 +20,26 @@
 
     Example context (json):
     {
-        "editurl": "https://example.moodle.org/edit.php?id=134",
+        "button" {
+            "url": "https://example.moodle.org/edit.php?id=134",
+            "label": "Add <span class="sr-only">general feedback</span>"
+        },
         "feedback": "<div><p>This is the feedback</p></div>"
     }
 }}
 <div class="d-flex">
-    <h4 class="h5">General feedback</h4>
-    {{#editurl}}
+    <h4 class="h5">{{#str}} generalfeedback, mod_coursework {{/str}}</h4>
+    {{#button}}
         <div class="ml-auto">
-            <a href="{{editurl}}" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-pen-to-square mr-2"></i>Edit <span class="sr-only">general feedback</span></a>
+            <a href="{{url}}" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-pen-to-square mr-2"></i>{{{label}}}</a>
         </div>
-    {{/editurl}}
+    {{/button}}
 </div>
 
 {{{feedback}}}
 
 {{^feedback}}
-<p>No general feedback</p>
+<p>{{#str}} nofeedbackyet, mod_coursework {{/str}}</p>
 {{/feedback}}
 
 <hr>

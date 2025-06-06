@@ -872,12 +872,33 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         // Date.
         if ($submission->persisted() && $submission->time_submitted()) {
-            $template->date = date('jS M g:ia', $submission->time_submitted());
+            $template->date = $submission->time_submitted();
         }
 
-        // Late.
+        // Was the submission late?
         if ($submission->is_late() && (!$submission->has_extension() || !$submission->submitted_within_extension())) {
-            $template->late = true;
+            // check if submission has personal deadline
+            if ($coursework->personaldeadlineenabled ) {
+                $deadline = $submission->submission_personal_deadline();
+            } else { // if not, use coursework default deadline
+                $deadline = $coursework->deadline;
+            }
+
+            $deadline = ($submission->has_extension()) ? $submission->extension_deadline() : $deadline;
+
+            $lateseconds = $submission->time_submitted() - $deadline;
+
+            $days = floor($lateseconds / 86400);
+            $hours = floor($lateseconds / 3600) % 24;
+            $minutes = floor($lateseconds / 60) % 60;
+            $seconds = $lateseconds % 60;
+
+            $text = $days . get_string('timedays', 'coursework') . ', ';
+            $text .= $hours . get_string('timehours', 'coursework') . ', ';
+            $text .= $minutes . get_string('timeminutes', 'coursework') . ', ';
+            $text .= $seconds . get_string('timeseconds', 'coursework');
+
+            $template->late = $text;
         }
 
         // Mark.
