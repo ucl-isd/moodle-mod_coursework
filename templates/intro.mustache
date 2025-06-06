@@ -80,6 +80,13 @@
     </div>
 {{/generalfeedbackdeadline}}
 
+{{#individualfeedbackmessage }}
+    <div>
+    <h3 class="h6 d-inline">{{#str}} individualfeedback, mod_coursework {{/str}}</h3>
+    {{.}}
+    </div>
+{{/individualfeedbackmessage }}
+
 
 {{#markingguideurl}}
     <a href="{{{.}}}" target="_blank"><i class="fa-solid fa-circle-right mr-2"></i>Marking guide</a>

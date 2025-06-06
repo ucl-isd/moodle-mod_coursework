@@ -1284,11 +1284,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
 
         if ($coursework->individualfeedback) {
-
-            $individualfeedbackheader = get_string('individualfeedback', 'coursework');
             $individualfeedbackdeadline = $coursework->get_individual_feedback_deadline();
-            $indivisualfeedbackmessage = $individualfeedbackdeadline
-                ? userdate($individualfeedbackdeadline, '%a, %d %b %Y, %H:%M')
+            $template->individualfeedbackmessage = $individualfeedbackdeadline
+                ? userdate($individualfeedbackdeadline, get_string('strftimedatetime', 'langconfig'))
                 : get_string('notset', 'coursework');
         }
 
