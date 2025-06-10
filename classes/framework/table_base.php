@@ -33,6 +33,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 abstract class table_base {
 
+
     /**
      * @var string
      */
@@ -56,6 +57,26 @@ abstract class table_base {
      * @var int
      */
     public $id;
+
+    /**
+     * @var int
+     */
+    public $timecreated;
+
+    /**
+     * @var int
+     */
+    public $timemodified;
+
+    /**
+     * @var int
+     */
+    public $lasteditedby;
+
+    /**
+     * @var stdClass
+     */
+    public $moderator;
 
     /**
      * Makes a new instance. Can be overridden to provide a factory
@@ -205,7 +226,7 @@ abstract class table_base {
      * without having to juggle build and find elsewhere.
      *
      * @param array $params
-     * @return table_base
+     * @return table_base|object
      */
     public static function find_or_build($params) {
         $object = self::find($params);
