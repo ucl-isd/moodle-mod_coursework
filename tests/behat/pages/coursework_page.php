@@ -55,7 +55,7 @@ class mod_coursework_behat_coursework_page extends mod_coursework_behat_page_bas
     }
 
     public function confirm() {
-        if ($this->has_that_thing('input', 'Yes')) {
+        if ($this->has_that_thing("input[type='submit']", 'Yes')) {
             $this->click_that_thing('input', 'Yes');
         } else if ($this->has_that_thing('button', 'Yes')) {
             $this->click_that_thing('button', 'Yes');
