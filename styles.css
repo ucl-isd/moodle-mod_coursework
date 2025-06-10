@@ -13,7 +13,44 @@ Coursework.
         display: block !important;
         width: 100%;
     }
+
+    /* Marking form. */
+    #modal-grading,
+    #coursework-markingform {
+        /* Full width cols. */
+        div.col-md-3,
+        div.col-md-9 {
+            max-width: 100%;
+            flex: 0 0 100%;
+        }
+        .col-form-label {
+            font-weight: bold;
+        }
+
+        /* Grading table. */
+        .gradingform_guide {
+            .criterion.even {
+                background-color: transparent;
+            }
+            .criteria {
+                height: auto;
+            }
+        }
+        /* Ugly checkbox. */
+        .showmarkerdesc,
+        .showstudentdesc {
+            display: block;
+            width: 100%;
+
+            label {
+                display: block;
+            }
+        }
+    }
 }
+
+
+
 
 /* TODO - review, can we just remove all this? */
 

@@ -95,23 +95,26 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $this->page->set_heading($SITE->fullname);
 
         $html = '';
+        $html .= $this->output->heading($gradingtitle);
 
-        $gradedby = ($teacherfeedback->assessorid == 0) ? get_string('automaticagreement', 'mod_coursework') : fullname($assessor);
-        $lasteditedby = ((!$teacherfeedback->get_coursework()->sampling_enabled() || $teacherfeedback->get_submission()->sampled_feedback_exists())
+        // Template grading details.
+        $template = new stdClass();
+        // Marker.
+        $template->marker = ($teacherfeedback->assessorid == 0) ? get_string('automaticagreement', 'mod_coursework') : fullname($assessor);
+
+        // Submission.
+        $files = $submission->get_submission_files();
+        $objectrenderer = $this->get_object_renderer();
+        $template->submission = $objectrenderer->render_submission_files_with_plagiarism_links(new \mod_coursework_submission_files($files), false);
+
+        // Last edit.
+        $lastmarked = ((!$teacherfeedback->get_coursework()->sampling_enabled() || $teacherfeedback->get_submission()->sampled_feedback_exists())
             && $teacherfeedback->assessorid == 0 && $teacherfeedback->timecreated == $teacherfeedback->timemodified )
             ? get_string('automaticagreement', 'mod_coursework') : fullname($editor);
+        $template->lasteditedby = $lasteditedby . userdate($teacherfeedback->timemodified, '%a, %d %b %Y, %H:%M');
 
-        $html .= $this->output->heading($gradingtitle);
-        $html .= '<table class = "grading-details">';
-        $html .= '<tr><th>' . get_string('gradedby', 'coursework') . '</th><td>' . $gradedby . '</td></tr>';
-        $html .= '<tr><th>' . get_string('lasteditedby', 'coursework') . '</th><td>' . $lasteditedby . ' on ' .
-            userdate($teacherfeedback->timemodified, '%a, %d %b %Y, %H:%M') . '</td></tr>';
-        $files = $teacherfeedback->get_submission()->get_submission_files();
-        $filesstring = count($files) > 1 ? 'submissionfiles' : 'submissionfile';
-
-        $html .= '<tr><th>' . get_string($filesstring, 'coursework') . '</th><td>' . $this->get_object_renderer()
-            ->render_submission_files_with_plagiarism_links(new mod_coursework_submission_files($files)) . '</td></tr>';
-        $html .= '</table>';
+        // Mustache.
+        $html .= $this->render_from_template('mod_coursework/marking_details', $template);
 
         $submiturl = $this->get_router()->get_path('update feedback', ['feedback' => $teacherfeedback]);
         $simpleform = new assessor_feedback_mform($submiturl, ['feedback' => $teacherfeedback]);
@@ -147,7 +150,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $this->page->set_heading($SITE->fullname);
             echo $this->output->header();
             echo $html;
+            // SHAME - Can we add an id to the form.
+            echo "<div id='coursework-markingform'>";
             $simpleform->display();
+            echo "</div>";
             echo $this->output->footer();
         }
     }
@@ -356,17 +362,20 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         $html .= $this->output->heading($gradingtitle);
-        $html .= '<table class = "grading-details">';
-        $assessor = $DB->get_record('user', ['id' => $newfeedback->assessorid]);
-        $html .= '<tr><th>' . get_string('assessor', 'coursework') . '</th><td>' . fullname($assessor) . '</td></tr>';
 
+        // Template grading details.
+        $template = new stdClass();
+        // Marker.
+        $marker = $DB->get_record('user', ['id' => $newfeedback->assessorid]);
+        $template->marker = fullname($marker);
+
+        // Submission.
         $files = $submission->get_submission_files();
-        $filesstring = count($files) > 1 ? 'submissionfiles' : 'submissionfile';
         $objectrenderer = $this->get_object_renderer();
-        $html .= '<tr><th>' . get_string($filesstring,
-                                         'coursework') . '</th><td>' . $objectrenderer->render_submission_files_with_plagiarism_links(new \mod_coursework_submission_files($files),
-                                                                                                                                       false) . '</td></tr>';
-        $html .= '</table>';
+        $template->submission = $objectrenderer->render_submission_files_with_plagiarism_links(new \mod_coursework_submission_files($files), false);
+
+        // Mustache.
+        $html .= $this->render_from_template('mod_coursework/marking_details', $template);
 
         $submiturl = $this->get_router()->get_path('create feedback', ['feedback' => $newfeedback]);
         $simpleform = new assessor_feedback_mform($submiturl, ['feedback' => $newfeedback]);
@@ -409,7 +418,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $this->page->set_heading($SITE->fullname);
             echo $this->output->header();
             echo $html;
+            // SHAME - Can we add an id to the form.
+            echo "<div id='coursework-markingform'>";
             $simpleform->display();
+            echo "</div>";
             echo $this->output->footer();
         }
     }
