@@ -47,7 +47,7 @@
         <p class="small py-1">{{#str}} latesubmissionsallowed, mod_coursework {{/str}}</p>
     {{/latesubmissionsallowed}}
     {{#deadlinehaspassed}}
-        <p class="small py-1 text-warning">{{#str}} latesubmissionsnotallowed, mod_coursework {{/str}}</p>
+        <p class="small py-1">{{#str}} latesubmissionsnotallowed, mod_coursework {{/str}}</p>
     {{/deadlinehaspassed}}
     </div>
 {{/duedate}}
@@ -89,7 +89,12 @@
 
 
 {{#markingguideurl}}
-    <a href="{{{.}}}" target="_blank"><i class="fa-solid fa-circle-right mr-2"></i>Marking guide</a>
+    <p class="pt-3">
+        <a href="{{{.}}}" target="_blank">
+            <i class="fa-solid fa-circle-right mr-2"></i>
+            Marking guide
+        </a>
+    </p>
 {{/markingguideurl}}
 
 <hr>
