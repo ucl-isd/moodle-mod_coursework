@@ -103,6 +103,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template->marker = ($teacherfeedback->assessorid == 0) ? get_string('automaticagreement', 'mod_coursework') : fullname($assessor);
 
         // Submission.
+        $submission = $teacherfeedback->get_submission();
         $files = $submission->get_submission_files();
         $objectrenderer = $this->get_object_renderer();
         $template->submission = $objectrenderer->render_submission_files_with_plagiarism_links(new \mod_coursework_submission_files($files), false);
