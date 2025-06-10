@@ -68,8 +68,8 @@ class moderator_agreement_mform extends moodleform {
         $mform->addElement('hidden', 'moderatorid', $moderation->moderatorid);
         $mform->setType('moderatorid', PARAM_INT);
 
-        $mform->addElement('hidden', 'stage_identifier', $moderation->stage_identifier);
-        $mform->setType('stage_identifier', PARAM_ALPHANUMEXT);
+        $mform->addElement('hidden', 'stageidentifier', $moderation->stageidentifier);
+        $mform->setType('stageidentifier', PARAM_ALPHANUMEXT);
 
         $mform->addElement('hidden', 'feedbackid', $feedback->id);
         $mform->setType('feedbackid', PARAM_INT);
@@ -112,4 +112,3 @@ class moderator_agreement_mform extends moodleform {
         return $moderation;
     }
 }
-
