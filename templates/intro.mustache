@@ -35,10 +35,10 @@
         {{#duedate}}
             <h3 class="h6">{{#str}} due, mod_coursework {{/str}}</h3>
 
-            {{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
+            <p>{{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>
 
             {{#latesubmissionsallowed}}
-            <p class="small py-2">
+            <p class="small">
                 <i class="fa-solid fa-clock fa-lg text-success"></i>
                 {{#str}} latesubmissionsallowed, mod_coursework {{/str}}
             </p>
@@ -48,7 +48,7 @@
         {{! Extended due date. }}
         {{#deadlineextension}}
             <h3 class="h6">{{#str}} extended_deadline, mod_coursework {{/str}}</h3>
-            {{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
+            <p>{{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>
         {{/deadlineextension}}
 
     </div>
@@ -57,7 +57,7 @@
     {{#individualfeedbackmessage}}
         <div class="col-6">
             <h3 class="h6">{{#str}} individualfeedback, mod_coursework {{/str}}</h3>
-            {{.}}
+            <p>{{.}}</p>
         </div>
     {{/individualfeedbackmessage }}
 
@@ -65,7 +65,7 @@
     <!-- {{#generalfeedbackdeadline}}
         <div>
             <h3 class="h6">{{#str}} generalfeedbackdeadline, mod_coursework {{/str}}</h3>
-            {{.}}
+            <p>{{.}}</p>
         </div>
     {{/generalfeedbackdeadline}}
     -->
