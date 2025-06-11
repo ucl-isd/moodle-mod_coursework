@@ -1246,24 +1246,17 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
         $deadlinedate = '';
 
-        if ($deadlineextension) {
-        } else if ($coursework->has_deadline()) {
-            $template->duedate = $normaldeadline;
-        }
-
-        $deadlinemessage = '';
         if ($coursework->has_deadline()) {
+            $template->duedate = $normaldeadline;
+
             if ($coursework->allow_late_submissions()) {
                 $template->latesubmissionsallowed = true;
-            } else {
+            } else if ($coursework->deadline_has_passed()) {
                 $template->deadlinehaspassed = true;
             }
         }
 
         // Does the user have an extension?
-
-        $deadlineextensionmessage = '';
-
         if ($deadlineextension) {
             $template->deadlineextension = $deadlineextension->extended_deadline;
         }
