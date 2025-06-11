@@ -27,74 +27,66 @@
         "deadlinewarning": true
     }
 }}
+<div class="row">
 
+    {{! Due data. }}
+    <div class="col">
+        {{! Standard due date. }}
+        {{#duedate}}
+            <h3 class="h6">{{#str}} due, mod_coursework {{/str}}</h3>
+
+            {{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
+
+            {{#latesubmissionsallowed}}
+            <p class="small py-2">
+                <i class="fa-solid fa-clock fa-lg text-success"></i>
+                {{#str}} latesubmissionsallowed, mod_coursework {{/str}}
+            </p>
+            {{/latesubmissionsallowed}}
+        {{/duedate}}
+
+        {{! Extended due date. }}
+        {{#deadlineextension}}
+            <h3 class="h6">{{#str}} extended_deadline, mod_coursework {{/str}}</h3>
+            {{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
+        {{/deadlineextension}}
+
+    </div>
+
+    {{! Release data. }}
+    {{#individualfeedbackmessage}}
+        <div class="col-6">
+            <h3 class="h6">{{#str}} individualfeedback, mod_coursework {{/str}}</h3>
+            {{.}}
+        </div>
+    {{/individualfeedbackmessage }}
+
+    {{! TODO - move to the general feedback element. }}
+    <!-- {{#generalfeedbackdeadline}}
+        <div>
+            <h3 class="h6">{{#str}} generalfeedbackdeadline, mod_coursework {{/str}}</h3>
+            {{.}}
+        </div>
+    {{/generalfeedbackdeadline}}
+    -->
+
+</div>
+
+{{! Description. }}
+<hr>
 {{#description}}
-    <h3 class="h5">Description</h3>
-    {{{.}}}
+<h3 class="h5">Description</h3>
+{{{.}}}
 {{/description}}
 
-{{#duedate}}
-    <div>
-    <h3 class="h6 d-inline">{{#str}} deadline, mod_coursework {{/str}}</h3>
-    {{#deadlineextension}}
-        <span class="crossed-out">
-    {{/deadlineextension}}
-    {{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
-    {{#deadlineextension}}
-        </span>
-    {{/deadlineextension}}
-    {{#latesubmissionsallowed}}
-        <p class="small py-1">{{#str}} latesubmissionsallowed, mod_coursework {{/str}}</p>
-    {{/latesubmissionsallowed}}
-    {{#deadlinehaspassed}}
-        <p class="small py-1">{{#str}} latesubmissionsnotallowed, mod_coursework {{/str}}</p>
-    {{/deadlinehaspassed}}
-    </div>
-{{/duedate}}
-{{^duedate}}
-    <div>
-    <h3 class="h6 d-inline">{{#str}} deadline, mod_coursework {{/str}}</h3>
-    {{#str}} nocourseworkdeadline, mod_coursework {{/str}}
-    </div>
-{{/duedate}}
-{{#deadlineextension}}
-    <div>
-    <h3 class="h6 d-inline">{{#str}} extended_deadline, mod_coursework {{/str}}</h3>
-    {{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
-    </div>
-{{/deadlineextension}}
-
-{{#late}}
-    <br>
-    <span class="badge badge-dark">Late submissions allowed</span>
-{{/late}}
-
-{{#deadlinemessage}}
-    <p class="small py-1">{{{.}}}</p>
-{{/deadlinemessage}}
-
-{{#generalfeedbackdeadline}}
-    <div>
-    <h3 class="h6 d-inline">{{#str}} generalfeedbackdeadline, mod_coursework {{/str}}</h3>
-    {{.}}
-    </div>
-{{/generalfeedbackdeadline}}
-
-{{#individualfeedbackmessage }}
-    <div>
-    <h3 class="h6 d-inline">{{#str}} individualfeedback, mod_coursework {{/str}}</h3>
-    {{.}}
-    </div>
-{{/individualfeedbackmessage }}
-
-
+{{! Marking guide. }}
 {{#markingguideurl}}
-    <p class="pt-3">
-        <a href="{{{.}}}" target="_blank">
-            <i class="fa-solid fa-circle-right mr-2"></i>
-            Marking guide
-        </a>
-    </p>
+<p class="pt-3">
+    <a href="{{{.}}}" target="_blank">
+        <i class="fa-solid fa-circle-right mr-2"></i>
+        Marking guide
+    </a>
+</p>
 {{/markingguideurl}}
 
 <hr>
