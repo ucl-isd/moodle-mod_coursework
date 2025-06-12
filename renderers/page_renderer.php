@@ -282,12 +282,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             if ($submission && $submission->id && $ability->can('finalise', $submission)) {
                 $template->final = $this->finalise_submission_button($coursework, $submission);
             }
-
-            // TODO - where should this go? Probably not here...
-            // Feedback.
-            if ($submission && $submission->is_published()) {
-                $template->feedback = $this->existing_feedback_from_teachers($submission);
-            }
         }
 
         // TODO - how does this fit in?
@@ -824,45 +818,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         ob_start();
         $submitform->display();
         $html .= ob_get_clean();
-
-        return $html;
-    }
-
-    /**
-     * @param submission $submission
-     * @return string
-     * @throws coding_exception
-     */
-    protected function existing_feedback_from_teachers($submission) {
-
-        global $USER;
-
-        $coursework = $submission->get_coursework();
-
-        $html = '';
-
-        // Start with final feedback. Use moderated grade?
-
-        $finalfeedback = $submission->get_final_feedback();
-
-        $ability = new ability(user::find($USER), $submission->get_coursework());
-
-        if ($finalfeedback && $ability->can('show', $finalfeedback)) {
-            $html .= $this->get_object_renderer()->render_feedback($finalfeedback);
-        }
-
-        if ($submission->has_multiple_markers() && $coursework->students_can_view_all_feedbacks()) {
-            $assessorfeedbacks = $submission->get_assessor_feedbacks();
-            foreach ($assessorfeedbacks as $feedback) {
-                if ($ability->can('show', $feedback)) {
-                    $html .= $this->get_object_renderer()->render_feedback($feedback);
-                }
-            }
-        }
-
-        if ($html) {
-            $html = html_writer::tag('h3', get_string('feedback', 'coursework')) . $html;
-        }
 
         return $html;
     }

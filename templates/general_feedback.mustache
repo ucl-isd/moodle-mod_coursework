@@ -36,6 +36,13 @@
     {{/button}}
 </div>
 
+{{#duedate}}
+    <p>
+        <b>{{#str}} due, mod_coursework {{/str}}</b>
+        {{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
+    </p>
+{{/duedate}}
+
 {{{feedback}}}
 
 {{^feedback}}

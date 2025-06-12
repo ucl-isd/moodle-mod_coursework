@@ -33,6 +33,8 @@ use mod_coursework\router;
 use mod_coursework\warnings;
 use mod_coursework\models\personal_deadline;
 use mod_coursework\render_helpers\grading_report\cells;
+
+use mod_coursework\page_renderer as foo;
 global $CFG;
 
 require_once($CFG->dirroot . '/lib/plagiarismlib.php');
@@ -59,7 +61,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $coursework = $feedback->get_coursework();
 
         $table = new html_table();
-        $table->attributes['class'] = 'feedback';
+        $table->attributes['class'] = 'table';
         $table->id = 'feedback_'. $feedback->id;
 
         // Header should say what sort of feedback it is.
@@ -521,11 +523,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         // Big col.
         $out .= "<div class='col-md-8'>";
-        $out .= $this->coursework_deadlines_table($coursework);
-
+        $out .= $this->coursework_intro($coursework);
         // Show general feedback if it's there and the deadline has passed or general feedback's date is not enabled which means it should be displayed automatically
         if (($coursework->is_general_feedback_enabled() && $allowedtoaddgeneralfeedback && (time() > $coursework->generalfeedback || $cangrade || $canpublish || $ispublished)) || !$coursework->is_general_feedback_enabled()) {
             $template = new stdClass();
+            $template->duedate = $coursework->generalfeedback;
             $template->feedback = $coursework->feedbackcomment;
 
             if ($canaddgeneralfeedback) { // Add/edit general feedback button.
@@ -1224,58 +1226,37 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string
      * @throws coding_exception
      */
-    protected function coursework_deadlines_table(mod_coursework_coursework $coursework) {
+    protected function coursework_intro(mod_coursework_coursework $coursework) {
         global $USER;
 
         $template = new stdClass();
 
-        $deadlineextension =
-            \mod_coursework\models\deadline_extension::get_extension_for_student(user::find($USER), $coursework);
+        // Fetch student and deadline information.
+        $currentuser = user::find($USER);
+        $deadlineextension = \mod_coursework\models\deadline_extension::get_extension_for_student($currentuser, $coursework);
+        $personaldeadline = \mod_coursework\models\personal_deadline::get_personal_deadline_for_student($currentuser, $coursework);
 
-        $personaldeadline =
-            \mod_coursework\models\personal_deadline::get_personal_deadline_for_student(user::find($USER), $coursework);
-
-        $normaldeadline = $coursework->deadline;
-
+        // Determine the effective deadline.
+        $effectivedeadline = $coursework->deadline;
         if ($personaldeadline) {
-            $normaldeadline = $personaldeadline->personal_deadline;
+            $effectivedeadline = $personaldeadline->personal_deadline;
         }
-        $deadlineheadertext = get_string('deadline', 'coursework');
-        if ($coursework->personal_deadlines_enabled() && (!has_capability('mod/coursework:submit', $this->page->context) || is_siteadmin($USER))) {
-            $deadlineheadertext .= "<br>". get_string('default_deadline', 'coursework');
-        }
-        $deadlinedate = '';
 
+        // Handle coursework deadline details.
         if ($coursework->has_deadline()) {
-            $template->duedate = $normaldeadline;
+            $template->duedate = $effectivedeadline;
 
             if ($coursework->allow_late_submissions()) {
                 $template->latesubmissionsallowed = true;
-            } else if ($coursework->deadline_has_passed()) {
-                $template->deadlinehaspassed = true;
             }
         }
 
-        // Does the user have an extension?
+        // Add extension if it exists.
         if ($deadlineextension) {
             $template->deadlineextension = $deadlineextension->extended_deadline;
         }
 
-        if ($coursework->has_deadline()) {
-            if ($coursework->personal_deadlines_enabled() && (!has_capability('mod/coursework:submit', $this->page->context) || is_siteadmin($USER))) {
-                $template->deadlinemessage = get_string('personal_deadline_warning', 'mod_coursework');
-            } else {
-                $template->deadlinemessage = get_string('deadline_warning', 'mod_coursework');
-            }
-        }
-
-        if ($coursework->is_general_feedback_enabled() && $coursework->generalfeedback) {
-            $generalfeedbackdeadline = $coursework->get_general_feedback_deadline();
-            $template->generalfeedbackdeadline = $generalfeedbackdeadline
-                ? userdate($generalfeedbackdeadline, get_string('strftimedatetime', 'langconfig'))
-                : get_string('notset', 'coursework');
-        }
-
+        // Handle individual feedback deadline.
         if ($coursework->individualfeedback) {
             $individualfeedbackdeadline = $coursework->get_individual_feedback_deadline();
             $template->individualfeedbackmessage = $individualfeedbackdeadline
@@ -1283,29 +1264,73 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 : get_string('notset', 'coursework');
         }
 
+        // Handle advanced grading.
         if ($coursework->is_using_advanced_grading()) {
-
             $controller = $coursework->get_advanced_grading_active_controller();
 
             if ($controller->is_form_defined() && ($options = $controller->get_options()) && !empty($options['alwaysshowdefinition'])) {
-
-                // Because the get_method_name() is protected.
-                if (preg_match('/^gradingform_([a-z][a-z0-9_]*[a-z0-9])_controller$/', get_class($controller), $matches)) {
-                    $methodname = $matches[1];
-                } else {
-                    throw new coding_exception('Invalid class name');
-                }
+                // Extract method name using reflection for protected method access.
+                $reflectionclass = new ReflectionClass($controller);
+                $getmethodname = $reflectionclass->getMethod('get_method_name');
+                $getmethodname->setAccessible(true);
+                $methodname = $getmethodname->invoke($controller);
 
                 $template->markingguideurl = new moodle_url('/grade/grading/form/' . $methodname . '/preview.php',
                     ['areaid' => $controller->get_areaid()]);
             }
         }
 
-        // WIP - Template date data.
+        // Add description.
         $template->description = format_module_intro('coursework', $coursework, $coursework->get_coursemodule_id());
-        $template->deadlinewarning = $coursework->has_deadline();
+
+        // Add feedback if available.
+        $student = user::find($USER);
+        if ($submission = $coursework->get_user_submission($student)) {
+            if ($submission->is_published()) {
+                $template->feedback = $this->existing_feedback_from_teachers($submission);
+            }
+        }
 
         return $this->render_from_template('mod_coursework/intro', $template);
+    }
+
+    /**
+     * @param submission $submission
+     * @return string
+     * @throws coding_exception
+     */
+    protected function existing_feedback_from_teachers($submission) {
+
+        global $USER;
+
+        $coursework = $submission->get_coursework();
+
+        $html = '';
+
+        // Start with final feedback. Use moderated grade?
+
+        $finalfeedback = $submission->get_final_feedback();
+
+        $ability = new ability(user::find($USER), $submission->get_coursework());
+
+        if ($finalfeedback && $ability->can('show', $finalfeedback)) {
+            $html .= $this->render_feedback($finalfeedback);
+        }
+
+        if ($submission->has_multiple_markers() && $coursework->students_can_view_all_feedbacks()) {
+            $assessorfeedbacks = $submission->get_assessor_feedbacks();
+            foreach ($assessorfeedbacks as $feedback) {
+                if ($ability->can('show', $feedback)) {
+                    $html .= $this->render_feedback($feedback);
+                }
+            }
+        }
+
+        if ($html) {
+            $html = html_writer::tag('h3', get_string('feedback', 'coursework')) . $html;
+        }
+
+        return $html;
     }
 
     /**

@@ -23,18 +23,14 @@
         "description": "<p>This assignment requires you to write an essay of approximately 1500 words on the impact of social media on political discourse. Please refer to the marking guide for specific criteria.</p>\n<ul>\n<li>Ensure you cite your sources correctly using APA style.</li>\n<li>The deadline for submission is clearly indicated below.</li>\n</ul>",
         "markingguideurl": "https://example.moodle.org/pluginfile.php/123/mod_resource/content/0/marking_guide.pdf",
         "duedate": "14th May 11:00am",
-        "late": true,
-        "deadlinewarning": true
+        "late": true
     }
 }}
 <div class="row">
 
-    {{! Due data. }}
     <div class="col">
-        {{! Standard due date. }}
         {{#duedate}}
             <h3 class="h6">{{#str}} due, mod_coursework {{/str}}</h3>
-
             <p>{{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>
 
             {{#latesubmissionsallowed}}
@@ -45,7 +41,6 @@
             {{/latesubmissionsallowed}}
         {{/duedate}}
 
-        {{! Extended due date. }}
         {{#deadlineextension}}
             <h3 class="h6">{{#str}} extended_deadline, mod_coursework {{/str}}</h3>
             <p>{{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>
@@ -53,7 +48,6 @@
 
     </div>
 
-    {{! Release data. }}
     {{#individualfeedbackmessage}}
         <div class="col-6">
             <h3 class="h6">{{#str}} individualfeedback, mod_coursework {{/str}}</h3>
@@ -61,27 +55,18 @@
         </div>
     {{/individualfeedbackmessage }}
 
-    {{! TODO - move to the general feedback element. }}
-    <!-- {{#generalfeedbackdeadline}}
-        <div>
-            <h3 class="h6">{{#str}} generalfeedbackdeadline, mod_coursework {{/str}}</h3>
-            <p>{{.}}</p>
-        </div>
-    {{/generalfeedbackdeadline}}
-    -->
-
 </div>
 
-{{! Description. }}
 <hr>
+
 {{#description}}
 <h3 class="h5">Description</h3>
 {{{.}}}
 {{/description}}
 
-{{! Marking guide. }}
+
 {{#markingguideurl}}
-<p class="pt-3">
+<p class="py-3">
     <a href="{{{.}}}" target="_blank">
         <i class="fa-solid fa-circle-right mr-2"></i>
         Marking guide
@@ -91,5 +76,6 @@
 
 <hr>
 
-{{! Test data output. }}
-{{{table}}}
+{{#feedback}}
+    {{{.}}}
+{{/feedback}}
