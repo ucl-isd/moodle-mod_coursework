@@ -57,13 +57,16 @@
 
 </div>
 
+<hr>
+
 {{#description}}
 <h3 class="h5">Description</h3>
 {{{.}}}
 {{/description}}
 
+
 {{#markingguideurl}}
-<p class="p-3">
+<p class="py-3">
     <a href="{{{.}}}" target="_blank">
         <i class="fa-solid fa-circle-right mr-2"></i>
         Marking guide
@@ -71,9 +74,8 @@
 </p>
 {{/markingguideurl}}
 
+<hr>
+
 {{#feedback}}
     {{{.}}}
 {{/feedback}}
-
-{{! Test data output. }}
-{{{table}}}
