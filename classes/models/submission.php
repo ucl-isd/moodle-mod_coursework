@@ -832,13 +832,10 @@ class submission extends table_base implements \renderable {
                 break;
 
             case self::FINAL_GRADED:
-                $spanfinalgraded = html_writer::tag('span',
-                                                    get_string('statusfinalgraded', 'coursework'),
-                                                    ['class' => 'highlight']);
-                $spanfinalgradedsingle =
-                    html_writer::tag('span',
-                                     get_string('statusfinalgradedsingle', 'coursework'),
-                                     ['class' => 'highlight']);
+                $spanfinalgraded =  $statustext = '<span class="badge badge-warning">' . get_string('statusfinalgraded', 'coursework') . '</span>';
+
+                $spanfinalgradedsingle = $statustext = '<span class="badge badge-warning">' . get_string('statusfinalgradedsingle', 'coursework') . '</span>';
+
                 $statustext = $this->has_multiple_markers() && $this->sampled_feedback_exists() ? $spanfinalgraded : $spanfinalgradedsingle;
                 if ($this->editable_final_feedback_exist()) {
                     $statustext .= "<br>". get_string('finalgradestilleditable', 'coursework');
