@@ -33,6 +33,8 @@ use mod_coursework\router;
 use mod_coursework\warnings;
 use mod_coursework\models\personal_deadline;
 use mod_coursework\render_helpers\grading_report\cells;
+
+use mod_coursework\page_renderer as foo;
 global $CFG;
 
 require_once($CFG->dirroot . '/lib/plagiarismlib.php');
@@ -1289,7 +1291,55 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // WIP - Template date data.
         $template->description = format_module_intro('coursework', $coursework, $coursework->get_coursemodule_id());
 
+        // Feedback.
+        $student = user::find($USER);
+        if($submission = $coursework->get_user_submission($student)) {
+            if ($submission && $submission->is_published()) {
+                $template->feedback = $this->existing_feedback_from_teachers($submission);
+            }
+        }
+
+
         return $this->render_from_template('mod_coursework/intro', $template);
+    }
+
+    /**
+     * @param submission $submission
+     * @return string
+     * @throws coding_exception
+     */
+    protected function existing_feedback_from_teachers($submission) {
+
+        global $USER;
+
+        $coursework = $submission->get_coursework();
+
+        $html = '';
+
+        // Start with final feedback. Use moderated grade?
+
+        $finalfeedback = $submission->get_final_feedback();
+
+        $ability = new ability(user::find($USER), $submission->get_coursework());
+
+        if ($finalfeedback && $ability->can('show', $finalfeedback)) {
+            $html .= $this->render_feedback($finalfeedback);
+        }
+
+        if ($submission->has_multiple_markers() && $coursework->students_can_view_all_feedbacks()) {
+            $assessorfeedbacks = $submission->get_assessor_feedbacks();
+            foreach ($assessorfeedbacks as $feedback) {
+                if ($ability->can('show', $feedback)) {
+                    $html .= $this->render_feedback($feedback);
+                }
+            }
+        }
+
+        if ($html) {
+            $html = html_writer::tag('h3', get_string('feedback', 'coursework')) . $html;
+        }
+
+        return $html;
     }
 
     /**
