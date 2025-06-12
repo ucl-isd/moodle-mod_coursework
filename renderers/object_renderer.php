@@ -522,10 +522,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // Big col.
         $out .= "<div class='col-md-8'>";
         $out .= $this->coursework_deadlines_table($coursework);
-
         // Show general feedback if it's there and the deadline has passed or general feedback's date is not enabled which means it should be displayed automatically
         if (($coursework->is_general_feedback_enabled() && $allowedtoaddgeneralfeedback && (time() > $coursework->generalfeedback || $cangrade || $canpublish || $ispublished)) || !$coursework->is_general_feedback_enabled()) {
             $template = new stdClass();
+            $template->duedate = $coursework->generalfeedback;
             $template->feedback = $coursework->feedbackcomment;
 
             if ($canaddgeneralfeedback) { // Add/edit general feedback button.
@@ -1261,21 +1261,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $template->deadlineextension = $deadlineextension->extended_deadline;
         }
 
-        if ($coursework->has_deadline()) {
-            if ($coursework->personal_deadlines_enabled() && (!has_capability('mod/coursework:submit', $this->page->context) || is_siteadmin($USER))) {
-                $template->deadlinemessage = get_string('personal_deadline_warning', 'mod_coursework');
-            } else {
-                $template->deadlinemessage = get_string('deadline_warning', 'mod_coursework');
-            }
-        }
-
-        if ($coursework->is_general_feedback_enabled() && $coursework->generalfeedback) {
-            $generalfeedbackdeadline = $coursework->get_general_feedback_deadline();
-            $template->generalfeedbackdeadline = $generalfeedbackdeadline
-                ? userdate($generalfeedbackdeadline, get_string('strftimedatetime', 'langconfig'))
-                : get_string('notset', 'coursework');
-        }
-
         if ($coursework->individualfeedback) {
             $individualfeedbackdeadline = $coursework->get_individual_feedback_deadline();
             $template->individualfeedbackmessage = $individualfeedbackdeadline
@@ -1303,7 +1288,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         // WIP - Template date data.
         $template->description = format_module_intro('coursework', $coursework, $coursework->get_coursemodule_id());
-        $template->deadlinewarning = $coursework->has_deadline();
 
         return $this->render_from_template('mod_coursework/intro', $template);
     }
