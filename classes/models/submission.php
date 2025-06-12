@@ -846,10 +846,7 @@ class submission extends table_base implements \renderable {
                 break;
 
             case self::PUBLISHED:
-                $statustext = get_string('statuspublished', 'coursework');
-                if (!$this->coursework->deadline_has_passed()) {
-                    $statustext .= ' '.get_string('released_early', 'mod_coursework');
-                }
+                $statustext = '<span class="badge badge-success">' .get_string('statusreleased', 'coursework') . '</span>';
                 break;
         }
 

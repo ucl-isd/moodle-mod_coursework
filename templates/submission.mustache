@@ -43,22 +43,6 @@
     {{{file}}}
 
     <ul class="w-100 list-unstyled" aria-labelledby="submission-title">
-        <li class="d-flex py-1">
-            Status
-            <span class="ml-auto">
-                {{{status}}}
-            </span>
-        </li>
-
-        {{#group}}
-        <li class="d-flex py-1">
-            Submitted by
-            <span class="ml-auto">
-                {{{submitter}}}
-            </span>
-        </li>
-        {{/group}}
-
         {{! Time submitted. }}
         {{#date}}
         <li class="d-flex py-1 border-top">
@@ -71,6 +55,22 @@
             </span>
         </li>
         {{/date}}
+
+        {{#group}}
+        <li class="d-flex py-1">
+            Submitted by
+            <span class="ml-auto">
+                {{{submitter}}}
+            </span>
+        </li>
+        {{/group}}
+
+        <li class="d-flex py-1">
+            Status
+            <span class="ml-auto">
+                {{{status}}}
+            </span>
+        </li>
 
         {{#mark}}
          <li class="d-flex py-1 border-top">
