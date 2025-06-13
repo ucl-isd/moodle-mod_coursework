@@ -58,6 +58,26 @@ abstract class table_base {
     public $id;
 
     /**
+     * @var int
+     */
+    public $timecreated;
+
+    /**
+     * @var int
+     */
+    public $timemodified;
+
+    /**
+     * @var int
+     */
+    public $lasteditedby;
+
+    /**
+     * @var stdClass
+     */
+    public $moderator;
+
+    /**
      * Makes a new instance. Can be overridden to provide a factory
      *
      * @param \stdClass|int|array $dbrecord
