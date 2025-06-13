@@ -66,7 +66,7 @@ class moderation extends table_base {
     public $lasteditedby;
 
     /**
-     * @var int
+     * @var string
      */
     public $stageidentifier = 'moderator';
 
