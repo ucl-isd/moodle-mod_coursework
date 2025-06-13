@@ -45,37 +45,34 @@
             <h3 class="h6">{{#str}} extended_deadline, mod_coursework {{/str}}</h3>
             <p>{{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>
         {{/deadlineextension}}
-
     </div>
 
     {{#individualfeedbackmessage}}
-        <div class="col-6">
-            <h3 class="h6">{{#str}} individualfeedback, mod_coursework {{/str}}</h3>
-            <p>{{.}}</p>
-        </div>
+    <div class="col-6">
+        <h3 class="h6">{{#str}} individualfeedback, mod_coursework {{/str}}</h3>
+        <p>{{.}}</p>
+    </div>
     {{/individualfeedbackmessage }}
 
 </div>
 
-<hr>
-
 {{#description}}
-<h3 class="h5">Description</h3>
+<hr>
+<h3 class="h5">{{#str}} description, mod_coursework {{/str}}</h3>
 {{{.}}}
 {{/description}}
 
 
 {{#markingguideurl}}
-<p class="py-3">
-    <a href="{{{.}}}" target="_blank">
-        <i class="fa-solid fa-circle-right mr-2"></i>
-        Marking guide
-    </a>
-</p>
+<hr>
+<a href="{{{.}}}" target="_blank">
+    <i class="fa-solid fa-circle-right mr-2"></i>
+    {{#str}} marking_guide_preview, mod_coursework {{/str}}
+</a>
 {{/markingguideurl}}
 
-<hr>
-
+{{! WIP from here down. }}
 {{#feedback}}
-    {{{.}}}
+<hr>
+{{{.}}}
 {{/feedback}}
