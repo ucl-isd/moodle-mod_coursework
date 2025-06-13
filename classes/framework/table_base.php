@@ -225,7 +225,7 @@ abstract class table_base {
      * without having to juggle build and find elsewhere.
      *
      * @param array $params
-     * @return table_base
+     * @return object
      */
     public static function find_or_build($params) {
         $object = self::find($params);
