@@ -27,15 +27,18 @@ Coursework.
             font-weight: bold;
         }
 
-        /* Grading table. */
-        .gradingform_guide {
-            .criterion.even {
+        /* Grading tables. */
+        .gradingform_guide,
+        .gradingform_rubric {
+            .criterion.even,
+            .criterion.even td {
                 background-color: transparent;
             }
             .criteria {
                 height: auto;
             }
         }
+
         /* Ugly checkbox. */
         .showmarkerdesc,
         .showstudentdesc {
