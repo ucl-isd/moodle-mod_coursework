@@ -433,15 +433,17 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Then /^I should not see the save and finalise button$/
+     * @Then /^I should( not)? see the save and finalise button$/
      */
-    public function i_should_not_see_the_save_and_finalise_button() {
+    public function i_should_see_the_save_and_finalise_button($negate = false) {
         /**
          * @var mod_coursework_behat_student_submission_form $page
          */
         $page = $this->get_page('student submission form');
-        if ($page->has_the_save_and_finalise_button()) {
-            throw new ExpectationException("Should not have save and finalise button");
+        if ($negate && $page->has_the_save_and_finalise_button()) {
+            throw new ExpectationException("Should not have save and finalise button", $this->getSession());
+        } else if (!$negate && !$page->has_the_save_and_finalise_button()) {
+            throw new ExpectationException("Should have save and finalise button", $this->getSession());
         }
     }
 
@@ -2791,12 +2793,13 @@ class behat_mod_coursework extends behat_base {
      * @param string $action
      */
     public function i_should_not_see_the_edit_submission_button($negate = false, $action = 'new') {
-        // behat generates button type submit whereas code does input
-        $input = $this->getSession()->getPage()
-            ->findAll('xpath', "//div[@class='{$action}submissionbutton']//input[@type='submit']");
+        $link = $this->getSession()->getPage()
+            ->findAll('xpath', "//a[@class='btn btn-primary btn-block'][text()='" . ucfirst($action) . " your submission']");
         $button = $this->getSession()->getPage()
-            ->findAll('xpath', "//div[@class='{$action}submissionbutton']//button[@type='submit']");
-        $buttons = ($input) ? $input : $button;// check how element was created and use it to find the button
+            ->findAll('xpath', "//button[text()='" . ucfirst($action) . " your submission']");
+        $buttons = ($link) ? $link : $button;// check how element was created and use it to find the button
+        $countbuttons = count($buttons);
+
         $countbuttons = count($buttons);
         if ($countbuttons > 0 && $negate) {
             throw new ExpectationException('I see the button when I should not', $this->getSession());
