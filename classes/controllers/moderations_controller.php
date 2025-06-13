@@ -54,6 +54,11 @@ class moderations_controller extends controller_base {
     protected $moderation;
 
     /**
+     * @var feedback
+     */
+    protected $feedback;
+
+    /**
      * This deals with the page that the assessors see when they want to add component feedbacks.
      *
      * @throws \moodle_exception

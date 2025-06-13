@@ -86,6 +86,16 @@ class moderation extends table_base {
     private $submission;
 
     /**
+     * @var submissionid
+     */
+    public $submissionid;
+
+    /**
+     * @var courseworkid
+     */
+    public $courseworkid;
+
+    /**
      * Chained getter for loose coupling.
      *
      * @return coursework
