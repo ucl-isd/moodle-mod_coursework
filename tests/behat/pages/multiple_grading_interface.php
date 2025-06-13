@@ -137,6 +137,15 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
     }
 
     /**
+     * @param allocatable $student
+     * @throws Behat\Mink\Exception\ElementException
+     */
+    public function click_edit_moderation_agreement_link($student) {
+        $identifier = $this->allocatable_row_id($student) . ' .moderation_agreement_cell .action-icon';
+        $this->getPage()->find('css', $identifier)->click();
+    }
+
+    /**
      * @param allocatable $allocatable
      * @param int $assessornumber
      * @param int $expectedgrade

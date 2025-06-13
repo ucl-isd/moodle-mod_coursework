@@ -54,6 +54,11 @@ class moderations_controller extends controller_base {
     protected $moderation;
 
     /**
+     * @var feedback
+     */
+    protected $feedback;
+
+    /**
      * This deals with the page that the assessors see when they want to add component feedbacks.
      *
      * @throws \moodle_exception
@@ -65,7 +70,7 @@ class moderations_controller extends controller_base {
         $moderatoragreement = new moderation();
         $moderatoragreement->submissionid = $this->params['submissionid'];
         $moderatoragreement->moderatorid = $this->params['moderatorid'];
-        $moderatoragreement->stage_identifier = $this->params['stage_identifier'];
+        $moderatoragreement->stageidentifier = $this->params['stage_identifier'];
         $moderatoragreement->courseworkid = $this->params['courseworkid'];
         $moderatoragreement->feedbackid = $this->params['feedbackid'];
 
@@ -77,7 +82,7 @@ class moderations_controller extends controller_base {
         $urlparams = [];
         $urlparams['submissionid'] = $moderatoragreement->submissionid;
         $urlparams['moderatorid'] = $moderatoragreement->moderatorid;
-        $urlparams['stage_identifier'] = $moderatoragreement->stage_identifier;
+        $urlparams['s'] = $moderatoragreement->stageidentifier;
         $urlparams['feedbackid'] = $moderatoragreement->feedbackid;
         $PAGE->set_url('/mod/coursework/actions/moderations/new.php', $urlparams);
 
@@ -96,7 +101,7 @@ class moderations_controller extends controller_base {
         global $DB, $PAGE, $USER;
 
         $moderation = new moderation($this->params['moderationid']);
-        $this->check_stage_permissions($moderation->stage_identifier);
+        $this->check_stage_permissions($moderation->stageidentifier);
 
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('edit', $moderation);
@@ -127,7 +132,7 @@ class moderations_controller extends controller_base {
         $moderatoragreement = new moderation();
         $moderatoragreement->submissionid = $this->params['submissionid'];
         $moderatoragreement->moderatorid = $this->params['moderatorid'];
-        $moderatoragreement->stage_identifier = $this->params['stage_identifier'];
+        $moderatoragreement->stageidentifier = $this->params['stage_identifier'];
         $moderatoragreement->lasteditedby = $USER->id;
         $moderatoragreement->feedbackid = $this->params['feedbackid'];
 
@@ -176,7 +181,7 @@ class moderations_controller extends controller_base {
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('edit', $moderatoragreement);
 
-        $this->check_stage_permissions($moderatoragreement->stage_identifier);
+        $this->check_stage_permissions($moderatoragreement->stageidentifier);
 
         $form = new moderator_agreement_mform(null, ['moderation' => $moderatoragreement]);
 
