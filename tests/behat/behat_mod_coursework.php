@@ -2098,6 +2098,17 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * @When /^I click the edit moderation agreement link$/
+     */
+    public function i_click_the_edit_moderation_agreement_link() {
+        /**
+         * @var mod_coursework_behat_multiple_grading_interface $page
+         */
+        $page = $this->get_page('multiple grading interface');
+        $page->click_edit_moderation_agreement_link($this->student);
+    }
+
+    /**
      * @Given /^I should see the moderator grade on the page$/
      */
     public function i_should_see_the_moderator_grade_on_the_page() {
