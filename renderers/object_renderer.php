@@ -147,8 +147,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             get_string('moderationfor', 'coursework', $moderation->get_submission()->get_allocatable_name());
 
         $out = '';
-        $moderatedby = fullname(user::find($moderation->moderatorid));
-        $lasteditedby = fullname(user::find($moderation->lasteditedby));
+        $moderatedby = \core_user::get_fullname(\core_user::get_user($moderation->moderatorid));
+        $lasteditedby = \core_user::get_fullname(\core_user::get_user($moderation->lasteditedby));
 
         $table = new html_table();
         $table->attributes['class'] = 'moderation';
