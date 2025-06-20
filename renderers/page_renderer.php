@@ -856,17 +856,36 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
             $lateseconds = $submission->time_submitted() - $deadline;
 
-            $days = floor($lateseconds / 86400);
-            $hours = floor($lateseconds / 3600) % 24;
-            $minutes = floor($lateseconds / 60) % 60;
-            $seconds = $lateseconds % 60;
+            // Format $lateseconds as "1 day, 5 hours".
+            if ($lateseconds >= DAYSECS) {
+                $value1 = intdiv($lateseconds, DAYSECS);
+                $unit1 = 'day';
+                $value2 = intdiv($lateseconds % DAYSECS, HOURSECS);
+                $unit2 = 'hour';
+            } else if ($lateseconds >= HOURSECS) {
+                $value1 = intdiv($lateseconds, HOURSECS);
+                $unit1 = 'hour';
+                $value2 = intdiv($lateseconds % HOURSECS, MINSECS);
+                $unit2 = 'minute';
+            } else if ($lateseconds >= MINSECS) {
+                $value1 = intdiv($lateseconds, MINSECS);
+                $unit1 = 'minute';
+                $value2 = $lateseconds % MINSECS;
+                $unit2 = 'second';
+            } else {
+                $value1 = $lateseconds;
+                $unit1 = 'second';
+                $value2 = 0;
+                $unit2 = '';
+            }
 
-            $text = $days . get_string('timedays', 'coursework') . ', ';
-            $text .= $hours . get_string('timehours', 'coursework') . ', ';
-            $text .= $minutes . get_string('timeminutes', 'coursework') . ', ';
-            $text .= $seconds . get_string('timeseconds', 'coursework');
+            $text = "$value1 " . get_string($value1 > 1 ? "{$unit1}s" : $unit1, 'coursework');
 
-            $template->late = $text;
+            if ($value2 > 0) {
+                $text .= ", $value2 " . get_string($value2 > 1 ? "{$unit2}s" : $unit2, 'coursework');
+            }
+
+            $template->late = strtolower($text . " " . get_string('late', 'mod_coursework'));
         }
 
         // Mark.

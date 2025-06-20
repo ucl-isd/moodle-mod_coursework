@@ -49,9 +49,7 @@
             {{#str}} tableheadtime, mod_coursework {{/str}}
             <span class="ml-auto">
                 {{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
-                {{#late}}
-                <span class="badge badge-warning" title="{{.}}">{{#str}} late, mod_coursework {{/str}}</span>
-                {{/late}}
+                {{#late}}<br />{{.}}{{/late}}
             </span>
         </li>
         {{/date}}
