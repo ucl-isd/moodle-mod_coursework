@@ -855,37 +855,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $deadline = ($submission->has_extension()) ? $submission->extension_deadline() : $deadline;
 
             $lateseconds = $submission->time_submitted() - $deadline;
-
-            // Format $lateseconds as "1 day, 5 hours".
-            if ($lateseconds >= DAYSECS) {
-                $value1 = intdiv($lateseconds, DAYSECS);
-                $unit1 = 'day';
-                $value2 = intdiv($lateseconds % DAYSECS, HOURSECS);
-                $unit2 = 'hour';
-            } else if ($lateseconds >= HOURSECS) {
-                $value1 = intdiv($lateseconds, HOURSECS);
-                $unit1 = 'hour';
-                $value2 = intdiv($lateseconds % HOURSECS, MINSECS);
-                $unit2 = 'minute';
-            } else if ($lateseconds >= MINSECS) {
-                $value1 = intdiv($lateseconds, MINSECS);
-                $unit1 = 'minute';
-                $value2 = $lateseconds % MINSECS;
-                $unit2 = 'second';
-            } else {
-                $value1 = $lateseconds;
-                $unit1 = 'second';
-                $value2 = 0;
-                $unit2 = '';
-            }
-
-            $text = "$value1 " . get_string($value1 > 1 ? "{$unit1}s" : $unit1, 'coursework');
-
-            if ($value2 > 0) {
-                $text .= ", $value2 " . get_string($value2 > 1 ? "{$unit2}s" : $unit2, 'coursework');
-            }
-
-            $template->late = strtolower($text . " " . get_string('late', 'mod_coursework'));
+            $template->late = format_time($lateseconds) . " " . strtolower(get_string('late', 'mod_coursework'));
         }
 
         // Mark.
