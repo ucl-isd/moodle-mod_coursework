@@ -33,7 +33,6 @@ defined('MOODLE_INTERNAL') || die();
  */
 abstract class table_base {
 
-
     /**
      * @var string
      */
@@ -226,7 +225,7 @@ abstract class table_base {
      * without having to juggle build and find elsewhere.
      *
      * @param array $params
-     * @return table_base|object
+     * @return object
      */
     public static function find_or_build($params) {
         $object = self::find($params);

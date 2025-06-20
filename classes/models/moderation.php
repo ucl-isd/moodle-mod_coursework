@@ -56,13 +56,23 @@ class moderation extends table_base {
     public $moderatorid;
 
     /**
+     * @var object
+     */
+    public $moderator;
+
+    /**
      * @var int
      */
-    public $stage_identifier = 'moderator';
+    public $lasteditedby;
+
+    /**
+     * @var int
+     */
+    public $stageidentifier = 'moderator';
+
     /**
      * @var string
      */
-
     public $agreement;
 
     /**
@@ -84,6 +94,31 @@ class moderation extends table_base {
      * @var mod_coursework\models\submission
      */
     private $submission;
+
+    /**
+     * @var int
+     */
+    public $submissionid;
+
+    /**
+     * @var string
+     */
+    public $stage_identifier;
+
+    /**
+     * @var int
+     */
+    public $courseworkid;
+
+    /**
+     * @var int
+     */
+    public $timecreated;
+
+    /**
+     * @var int
+     */
+    public $timemodified;
 
     /**
      * Chained getter for loose coupling.
