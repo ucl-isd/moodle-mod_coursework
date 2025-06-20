@@ -14,7 +14,7 @@ Feature: Students must agree to terms before submitting anything
     Given the sitewide "coursework_agree_terms" setting is "1"
     And the sitewide "coursework_agree_terms_text" setting is "Some text"
     When I visit the coursework page
-    And I click on the new submission button
+    And I click on "Upload your submission" "link"
     Then I should be on the new submission page
     And I should see "Some text"
 
@@ -22,7 +22,7 @@ Feature: Students must agree to terms before submitting anything
     Given the sitewide "coursework_agree_terms" setting is "0"
     And the sitewide "coursework_agree_terms_text" setting is "Some text"
     When I visit the coursework page
-    And I click on the new submission button
+    And I click on "Upload your submission" "link"
     Then I should be on the new submission page
     And I should not see "Some text"
 
@@ -31,7 +31,7 @@ Feature: Students must agree to terms before submitting anything
     Given the sitewide "coursework_agree_terms" setting is "1"
     And the sitewide "coursework_agree_terms_text" setting is "Some text"
     When I visit the coursework page
-    And I click on the new submission button
+    And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I set the field "termsagreed" to "1"
     And I press "Submit"
@@ -42,7 +42,7 @@ Feature: Students must agree to terms before submitting anything
     Given the sitewide "coursework_agree_terms" setting is "1"
     And the sitewide "coursework_agree_terms_text" setting is "Some text"
     When I visit the coursework page
-    And I click on the new submission button
+    And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I press "Submit"
     Then I should be on the create submission page
@@ -53,7 +53,7 @@ Feature: Students must agree to terms before submitting anything
     And the sitewide "coursework_agree_terms_text" setting is "Some text"
     And the student has a submission
     When I visit the coursework page
-    And I click on the edit submission button
+    And I click on "Edit your submission" "link"
     And I set the field "termsagreed" to "1"
     And I press "Submit"
     Then I should be on the coursework page
@@ -64,7 +64,7 @@ Feature: Students must agree to terms before submitting anything
     And the sitewide "coursework_agree_terms_text" setting is "Some text"
     And the student has a submission
     When I visit the coursework page
-    And I click on the edit submission button
+    And I click on "Edit your submission" "link"
     And I press "Submit"
     Then I should be on the update submission page
 
@@ -73,7 +73,7 @@ Feature: Students must agree to terms before submitting anything
     Given the sitewide "coursework_agree_terms" setting is "1"
     And the sitewide "coursework_agree_terms_text" setting is "Some text"
     When I visit the coursework page
-    And I click on the new submission button
+    And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I press "Submit"
     Then I should be on the create submission page
@@ -87,7 +87,7 @@ Feature: Students must agree to terms before submitting anything
     And the coursework "maxfiles" setting is "2" in the database
     And the student has a submission
     When I visit the coursework page
-    And I click on the edit submission button
+    And I click on "Edit your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I press "Submit"
     Then I should be on the update submission page
