@@ -855,18 +855,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $deadline = ($submission->has_extension()) ? $submission->extension_deadline() : $deadline;
 
             $lateseconds = $submission->time_submitted() - $deadline;
-
-            $days = floor($lateseconds / 86400);
-            $hours = floor($lateseconds / 3600) % 24;
-            $minutes = floor($lateseconds / 60) % 60;
-            $seconds = $lateseconds % 60;
-
-            $text = $days . get_string('timedays', 'coursework') . ', ';
-            $text .= $hours . get_string('timehours', 'coursework') . ', ';
-            $text .= $minutes . get_string('timeminutes', 'coursework') . ', ';
-            $text .= $seconds . get_string('timeseconds', 'coursework');
-
-            $template->late = $text;
+            $template->late = format_time($lateseconds) . " " . strtolower(get_string('late', 'mod_coursework'));
         }
 
         // Mark.
