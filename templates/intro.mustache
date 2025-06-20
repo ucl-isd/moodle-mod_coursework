@@ -26,6 +26,7 @@
         "late": true
     }
 }}
+
 <div class="row">
 
     <div class="col">
@@ -47,12 +48,12 @@
         {{/deadlineextension}}
     </div>
 
-    {{#individualfeedbackmessage}}
+    {{#individualfeedbackdeadline}}
     <div class="col-6">
         <h3 class="h6">{{#str}} individualfeedback, mod_coursework {{/str}}</h3>
-        <p>{{.}}</p>
+        <p>{{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>
     </div>
-    {{/individualfeedbackmessage }}
+    {{/individualfeedbackdeadline }}
 
 </div>
 
@@ -64,11 +65,11 @@
 
 
 {{#markingguideurl}}
-<hr>
 <a href="{{{.}}}" target="_blank">
     <i class="fa-solid fa-circle-right mr-2"></i>
     {{#str}} marking_guide_preview, mod_coursework {{/str}}
 </a>
+<hr>
 {{/markingguideurl}}
 
 {{! WIP from here down. }}
@@ -76,3 +77,4 @@
 <hr>
 {{{.}}}
 {{/feedback}}
+
