@@ -38,6 +38,10 @@ Coursework.
             .criteria {
                 height: auto;
             }
+            .criterionshortname,
+            label {
+                font-weight: normal;
+            }
         }
 
         /* Ugly checkbox. */

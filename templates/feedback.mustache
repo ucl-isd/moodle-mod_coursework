@@ -1,81 +1,82 @@
-<small>In feedback mustache...</small>
+{{!
+    This file is part the Feedback tracker report plugin for Moodle
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coursework/feedback
+
+    Template for displaying student feedback.
+
+    Example context (json):
+    {
+        "title": "Feedback for Jan Černý",
+        "feedbackcomment": "<div><p>This is the feedback</p></div>",
+        "hasfeedbackfiles": true,
+        "feedbackfileshtml": "<a href="foo">Feedbackfile.doc</a>",
+        "hasadvancedgrading": true,
+        "advancedgradinghtml": "<div>stuff from grading plugin - tables and kitchen sink html</div>",
+        "markerimg": "https://randomuser.me/api/portraits/women/22.jpg",
+        "markername": "Denise Soto"
+
+
+
+    }
+}}
 <div class="coursework-feedback">
-    <h3>{{title}}</h3>
+    <h3 class="h5">{{title}}</h3>
 
-    {{! Feedback Comment }}
-    {{#feedbackcomment}}
-    <div>
-        {{{feedbackcomment}}}
+    <div class="py-3">
+
+        {{#markername}}
+        <div class="d-flex">
+            {{#markerimg}}
+                <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{markerimg}}'); height: 4rem; width: 4rem;"></div>
+            {{/markerimg}}
+            <div>
+                <b>{{markername}}</b>
+                <br>
+                {{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
+            </div>
+        </div>
+        <hr>
+        {{/markername}}
+
+        {{! Feedback Comment }}
+        {{#feedbackcomment}}
+        <div>
+            {{{feedbackcomment}}}
+        </div>
+        {{/feedbackcomment}}
+
+        {{! Feedback Files }}
+        {{#hasfeedbackfiles}}
+        <div>
+            {{{feedbackfileshtml}}}
+        </div>
+        {{/hasfeedbackfiles}}
     </div>
-    {{/feedbackcomment}}
 
-    {{! Feedback Files }}
-    {{#hasfeedbackfiles}}
-    <div>
-        <strong>Files:</strong>
-        {{{feedbackfileshtml}}}
-    </div>
-    {{/hasfeedbackfiles}}
 
-    {{! Advanced Grading }}
+     {{! Advanced Grading }}
     {{#hasadvancedgrading}}
     <div class="py-3">
+        <h3 class="h5">Marking critera feedback</h3>
         <div>
             {{{advancedgradinghtml}}}
         </div>
     </div>
     {{/hasadvancedgrading}}
-
-    {{! Marker Information }}
-    <div>
-        <strong class="d-block mb-1">Marker</strong>
-        <div class="d-flex align-items-center">
-            {{#markerimg}}
-            <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{markerimg}}'); height: 3rem; width: 3rem;"></div>
-            {{/markerimg}}
-            <span>{{markername}}</span>
-        </div>
-    </div>
-    <hr>
 </div>
-
-<!--
-<h3>Feedback for Stuart</h3>
-<div>
-    <b>Marker:</b>
-    <div class="d-flex align-items-center">
-        <div class="mr-3 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('http://localhost:8888/moodle45/theme/image.php?theme=ucl&amp;component=core&amp;image=u%2Ff1'); height: 3rem; width: 3rem;"></div>
-        Thomas Bullock
-        </div>
-    </div>
-<div>
-
-Feedback comment
-<div class="py-3">
-				<p><strong>Pellentesque habitant morbi tristique</strong> senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, <code>commodo vitae</code>, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. <a href="#">Donec non enim</a> in turpis pulvinar facilisis. Ut felis.</p>
-
-
-				<ol>
-				   <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
-				   <li>Aliquam tincidunt mauris eu risus.</li>
-				</ol>
-
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus magna. Cras in mi at felis aliquet congue. Ut a est eget ligula molestie gravida. Curabitur massa. Donec eleifend, libero at sagittis mollis, tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretium ornare est.</p>
-
-
-				<ul>
-				   <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
-				   <li>Aliquam tincidunt mauris eu risus.</li>
-				</ul>
-
 <hr>
-<p><b>Feedback files:</b> <a href=""><img class="icon submissionfileicon mr-1" alt="research report.jpg" title="research report.jpg" src="http://localhost:8888/moodle45/theme/image.php?theme=ucl&amp;component=core&amp;image=f%2Fimage">filename.pdf</a></p>
-<hr>
-</div>
 
-{{#advancedgrading}}
-<h4>Advanced grading</h4>
-{{{.}}}
-{{/advancedgrading}}
-
--->

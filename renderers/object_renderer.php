@@ -61,9 +61,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $submission = $feedback->get_submission();
         $coursework = $feedback->get_coursework();
-        $context = $coursework->get_context();
-        $issiteadmin = is_siteadmin($USER->id);
-        $hassubmitcapability = has_capability('mod/coursework:submit', $context);
+
+        $template->studentname = $submission->get_allocatable_name();
 
         // Determine the feedback title.
         if ($feedback->is_agreed_grade()) {
@@ -78,32 +77,26 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // Append student name to title.
         $template->title .= ' for ' . $submission->get_allocatable_name();
 
-        // Marker who gave this feedback.
-        if (!$hassubmitcapability || $issiteadmin) {
-            $template->markername = $feedback->get_assesor_username();
+        // Marker name.
+        // TODO - this feels like a lot! varlidate this logic - is it all needed?
+        $issamplingenabled = $submission->get_coursework()->sampling_enabled();
+        $sampledfeedbackexists = $submission->sampled_feedback_exists();
+        $assessoriszero = ($feedback->assessorid == 0);
+        $timeequal = ($feedback->timecreated == $feedback->timemodified);
+        $isautomaticagreement = ((!$issamplingenabled || $sampledfeedbackexists) && $assessoriszero && $timeequal);
+
+        if (!$isautomaticagreement && $feedback->assessorid != 0) {
+            $template->markername = $feedback->display_assessor_name();
             $template->markerid = $feedback->get_assessor_id();
-        } else {
-            $issamplingenabled = $submission->get_coursework()->sampling_enabled();
-            $sampledfeedbackexists = $submission->sampled_feedback_exists();
-            $assessoriszero = ($feedback->assessorid == 0);
-            $timeequal = ($feedback->timecreated == $feedback->timemodified);
+            $template->date = $feedback->timemodified;
 
-            if ((!$issamplingenabled || $sampledfeedbackexists) && $assessoriszero && $timeequal) {
-                $template->markername = get_string('automaticagreement', 'mod_coursework');
-            } else {
-                $template->markername = $feedback->display_assessor_name();
-                $template->markerid = $feedback->get_assessor_id();
-            }
-
-        }
-
-        // Marker image.
-        if($template->markerid) {
+            // Marker image.
             $user = core_user::get_user($template->markerid);
             $userpicture = new user_picture($user);
             $userpicture->size = 100;
             $image = $userpicture->get_url($this->page)->out(false);
             $template->markerimg = $image;
+
         }
 
         // Feedback comment.
@@ -129,7 +122,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $template->advancedgradinghtml = $controller->render_grade($this->page, $feedback->id, null, '', false);
         }
 
-        // return $template;
+        // Return html from template.
         return $this->render_from_template('mod_coursework/feedback', $template);
     }
 
