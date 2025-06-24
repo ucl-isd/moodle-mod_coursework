@@ -33,11 +33,50 @@
 
     }
 }}
-<div class="coursework-feedback">
+<style>
+/* General bubble styles (same as before, but added a top-left class for clarity) */
+.chat-bubble-bordered {
+  position: relative;
+  background-color: white;
+  border: 2px solid var(--primary);
+  box-shadow: .3em .3em 0 0 var(--primary);
+  padding: 1.5rem;
+  margin-top: 25px; /* Added space at the top for the arrow */
+
+}
+
+/* Specific styles for the top-left arrow */
+.chat-bubble-bordered::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 1rem solid transparent;  /* Base of the outer triangle */
+  border-right: 1rem solid transparent; /* Base of the outer triangle */
+  border-bottom: 1.1rem solid var(--primary); /* Color of the border, pointing up */
+  top: -18px; /* Position above the bubble, accounting for border and triangle height */
+  left: 1rem; /* Horizontal position from the left */
+  z-index: 1;
+}
+
+.chat-bubble-bordered::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 1rem solid transparent;  /* Slightly smaller base for inner triangle */
+  border-right: 1rem solid transparent; /* Slightly smaller base for inner triangle */
+  border-bottom: 1.1rem solid white; /* Match the body background to "cut out" */
+  top: -15px; /* Position relative to the outer triangle */
+  left: 1rem; /* Horizontal position, slightly offset to match outer */
+  z-index: 2;
+}
+</style>
+
+<div class="coursework-feedback py-3">
     <h3 class="h5">{{title}}</h3>
 
     <div class="py-3">
-
         {{#markername}}
         <div class="d-flex">
             {{#markerimg}}
@@ -49,22 +88,23 @@
                 {{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
             </div>
         </div>
-        <hr>
         {{/markername}}
 
-        {{! Feedback Comment }}
-        {{#feedbackcomment}}
-        <div>
-            {{{feedbackcomment}}}
-        </div>
-        {{/feedbackcomment}}
+        <div class="chat-bubble-bordered">
+            {{! Feedback Comment }}
+            {{#feedbackcomment}}
+            <div>
+                {{{feedbackcomment}}}
+            </div>
+            {{/feedbackcomment}}
 
-        {{! Feedback Files }}
-        {{#hasfeedbackfiles}}
-        <div>
-            {{{feedbackfileshtml}}}
+            {{! Feedback Files }}
+            {{#hasfeedbackfiles}}
+            <div>
+                {{{feedbackfileshtml}}}
+            </div>
+            {{/hasfeedbackfiles}}
         </div>
-        {{/hasfeedbackfiles}}
     </div>
 
 

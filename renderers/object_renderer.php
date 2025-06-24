@@ -52,7 +52,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param feedback $feedback
      * @return string
      */
-    protected function render_feedback(feedback $feedback) {
+    public function render_feedback(feedback $feedback) {
         // WIP - feedback view.
 
         global $USER;
@@ -100,7 +100,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
 
         // Feedback comment.
-        $template->commentlabel = get_string('feedbackcomment', 'mod_coursework');
         $template->feedbackcomment = $feedback->feedbackcomment;
 
         // Feedback files.
