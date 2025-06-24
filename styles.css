@@ -42,6 +42,9 @@ Coursework.
             label {
                 font-weight: normal;
             }
+            .score {
+                text-align: right;
+            }
         }
 
         /* Ugly checkbox. */
