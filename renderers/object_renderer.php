@@ -119,9 +119,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $stagetrue = ($coursework->finalstagegrading == 0 || ($finalstagegrading == 1 && $feedback->stage_identifier != 'final_agreed_1'));
 
         if ($isusingadvancedgrading && $stagetrue) {
-            $template->hasadvancedgrading = true;
             $controller = $coursework->get_advanced_grading_active_controller();
             $template->advancedgradinghtml = $controller->render_grade($this->page, $feedback->id, null, '', false);
+            if ($template->advancedgradinghtml) {
+                $template->hasadvancedgrading = true;
+            }
         }
 
         // Return html from template.
