@@ -26,7 +26,7 @@
     }
 }}
 <div class="bg-light p-3">
-    <h3 class="h5" id="submission-title">Submission</h3>
+    <h3 id="submission-title">Submission</h3>
 
     {{#nogroup}}
     <p>{{#str}} not_in_any_group_student_warning, mod_coursework {{/str}}</p>
@@ -42,7 +42,7 @@
     {{! Submission file. }}
     {{{file}}}
 
-    <ul class="w-100 list-unstyled" aria-labelledby="submission-title">
+    <ul class="pt-3 mb-0 w-100 list-unstyled" aria-labelledby="submission-title">
         {{! Time submitted. }}
         {{#date}}
         <li class="d-flex py-1 border-top">
@@ -56,7 +56,7 @@
         {{/date}}
 
         {{#group}}
-        <li class="d-flex py-1">
+        <li class="d-flex py-1 border-top">
             Submitted by
             <span class="ml-auto">
                 {{{submitter}}}
@@ -64,7 +64,7 @@
         </li>
         {{/group}}
 
-        <li class="d-flex py-1">
+        <li class="d-flex py-1 border-top">
             Status
             <span class="ml-auto">
                 {{{status}}}

@@ -77,6 +77,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // Append student name to title.
         $template->title .= ' for ' . $submission->get_allocatable_name();
 
+        $gradejudge = new grade_judge($coursework);
+        $template->mark = $gradejudge->grade_to_display($feedback->get_grade());
+
         // Marker name.
         // TODO - this feels like a lot! varlidate this logic - is it all needed?
         $issamplingenabled = $submission->get_coursework()->sampling_enabled();

@@ -46,7 +46,7 @@
 }
 
 /* Specific styles for the top-left arrow */
-.chat-bubble-bordered::before {
+.chat-bubble-bordered.arrow::before {
   content: '';
   position: absolute;
   width: 0;
@@ -59,7 +59,7 @@
   z-index: 1;
 }
 
-.chat-bubble-bordered::after {
+.chat-bubble-bordered.arrow::after {
   content: '';
   position: absolute;
   width: 0;
@@ -90,7 +90,7 @@
         </div>
         {{/markername}}
 
-        <div class="chat-bubble-bordered">
+        <div class="chat-bubble-bordered {{#markername}} arrow {{/markername}}">
             {{! Feedback Comment }}
             {{#feedbackcomment}}
             <div>
@@ -104,6 +104,14 @@
                 {{{feedbackfileshtml}}}
             </div>
             {{/hasfeedbackfiles}}
+
+            {{#mark}}
+                <hr>
+                <div>
+                    Mark
+                    <br><span class="h4">{{{.}}}</span>
+                </div>
+            {{/mark}}
         </div>
     </div>
 
