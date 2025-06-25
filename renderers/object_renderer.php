@@ -90,14 +90,13 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         if (!$isautomaticagreement && $feedback->assessorid != 0) {
             $template->markername = $feedback->display_assessor_name();
-            $template->markerid = $feedback->get_assessor_id();
             $template->date = $feedback->timemodified;
 
-            // TODO - $feedback->assessorid and $feedback->get_assessor_id() return different things...
-            // TODO - it would be good to understand this, and might cut out some code, but for now checking $feedback->get_assessor_id() to stop error.
+            // TODO - $feedback->assessorid and $feedback->assessor->id return different things...
+            // TODO - it would be good to understand this, and might cut out some code, but for now checking $feedback->assessor->id to stop error.
             // Marker image.
-            if($template->markerid) {
-                $user = core_user::get_user($template->markerid);
+            if ($feedback->assessor) {
+                $user = core_user::get_user($feedback->assessor->id);
                 $userpicture = new user_picture($user);
                 $userpicture->size = 100;
                 $image = $userpicture->get_url($this->page)->out(false);
