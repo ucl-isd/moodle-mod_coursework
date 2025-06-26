@@ -26,7 +26,7 @@
     }
 }}
 <div class="bg-light p-3">
-    <h3 id="submission-title">Submission</h3>
+    <h3 id="submission-title">{{#str}} submission, mod_coursework {{/str}}</h3>
 
     {{#nogroup}}
     <p>{{#str}} not_in_any_group_student_warning, mod_coursework {{/str}}</p>
@@ -46,18 +46,13 @@
         {{! Time submitted. }}
         {{#date}}
         <li class="d-flex py-1 border-top">
-            {{#str}} tableheadtime, mod_coursework {{/str}}
-            <span class="ml-auto text-right">
-                {{#late}}<span class="badge badge-warning">Late</span>{{/late}}
-                {{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
-                {{#late}}<br> {{.}}{{/late}}
-            </span>
+            {{#str}} tableheadtime, mod_coursework {{/str}} <span class="ml-auto text-right">{{#late}}<span class="badge badge-warning">Late</span>{{/late}}{{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}{{#late}}<br> {{.}}{{/late}}</span>
         </li>
         {{/date}}
 
         {{#group}}
         <li class="d-flex py-1 border-top">
-            Submitted by
+            {{#str}} submittedby, mod_coursework {{/str}}
             <span class="ml-auto">
                 {{{submitter}}}
             </span>
@@ -65,15 +60,12 @@
         {{/group}}
 
         <li class="d-flex py-1 border-top">
-            Status
-            <span class="ml-auto">
-                {{{status}}}
-            </span>
+            {{#str}} status, mod_coursework {{/str}} <span class="ml-auto">{{{status}}}</span>
         </li>
 
         {{#mark}}
          <li class="d-flex py-1 border-top">
-            Mark
+            {{#str}} mark, mod_coursework {{/str}}
             <span class="ml-auto h2">{{mark}}</span>
         </li>
         {{/mark}}
@@ -89,7 +81,7 @@
     {{#final}}
         <hr>
         <div id="coursework-finalise-submission">
-        <h3 class="h5">Finalise submission</h3>
+        <h3 class="h5">{{#str}} finalise_button, mod_coursework {{/str}}</h3>
             {{{.}}}
         </div>
     {{/final}}
