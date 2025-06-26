@@ -49,7 +49,15 @@ Coursework.
 
         /* Rubric specific. */
         .gradingform_rubric {
+            td,
+            tr {
+                border: 0 !important;
+            }
             .criterion {
+                .description {
+                    font-size: 1.3rem;
+                    padding: 1rem 0;
+                }
                 /* Full width td. */
                 .description,
                 .levels {
