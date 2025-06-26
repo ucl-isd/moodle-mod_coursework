@@ -62,11 +62,16 @@ Coursework.
                         table-layout: fixed;
                         td.level {
                             width: auto !important;
-                            &.checked {
-                                border: none;
-                                padding: .5rem;
+                            transition: all 1s;
+                            &.checked,
+                            &:hover {
+                                border-color: var(--primary) !important;
                                 background-color: var(--primary) !important;
                                 color: white;
+                            }
+                            &.currentchecked {
+                                color: var(--dark);
+                                background-color: color-mix(in srgb, var(--primary) 10%, white 90%);
                             }
                         }
                     }
