@@ -47,7 +47,34 @@ Coursework.
             }
         }
 
-        /* Ugly checkbox. */
+        /* Rubric specific. */
+        .gradingform_rubric {
+            .criterion {
+                /* Full width td. */
+                .description,
+                .levels {
+                    width: 100%;
+                    display: block;
+                    max-width: none;
+                    /* Inner table of rubric text. */
+                    table {
+                        width: 100%;
+                        table-layout: fixed;
+                        td.level {
+                            width: auto !important;
+                            &.checked {
+                                border: none;
+                                padding: .5rem;
+                                background-color: var(--primary) !important;
+                                color: white;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /* Ugly checkbox in marking form. */
         .showmarkerdesc,
         .showstudentdesc {
             display: block;
