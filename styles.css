@@ -72,12 +72,13 @@ Coursework.
                         td.level {
                             width: auto !important;
                             transition: all 1s;
-                            &.checked,
-                            &:hover {
+                            /* Selected rebric option. */
+                            &.checked{
                                 border-color: var(--primary) !important;
                                 background-color: var(--primary) !important;
                                 color: white;
                             }
+                            /* Previously selected rubric option. */
                             &.currentchecked {
                                 color: var(--dark);
                                 background-color: color-mix(in srgb, var(--primary) 10%, white 90%);
@@ -85,6 +86,16 @@ Coursework.
                         }
                     }
                 }
+            }
+        }
+
+        /* Editing rubric. */
+        .gradingform_rubric.editable {
+
+            td.level:hover {
+                border-color: var(--primary) !important;
+                background-color: var(--primary) !important;
+                color: white;
             }
         }
 

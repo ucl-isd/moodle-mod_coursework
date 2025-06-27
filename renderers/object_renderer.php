@@ -88,6 +88,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $assessoriszero = ($feedback->assessorid == 0);
         $timeequal = ($feedback->timecreated == $feedback->timemodified);
         $isautomaticagreement = ((!$issamplingenabled || $sampledfeedbackexists) && $assessoriszero && $timeequal);
+        // $hidemarker = $coursework->assessoranonymity;
 
         if (!$isautomaticagreement && $feedback->assessorid != 0) {
             $template->markername = $feedback->display_assessor_name();
@@ -1189,6 +1190,16 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     protected function coursework_intro(mod_coursework_coursework $coursework) {
         global $USER, $PAGE;
 
+        // Display feedback if available.
+        $student = user::find($USER);
+        $cangrade = has_capability('mod/coursework:addinitialgrade', $PAGE->context);
+        if (!$cangrade && $submission = $coursework->get_user_submission($student)) {
+            if ($submission->is_published()) {
+                return $this->existing_feedback_from_teachers($submission);
+            }
+        }
+
+        // Else, output the intro data.
         // Start template with dates.
         $template = $this->render_intro_dates($coursework);
 
@@ -1208,16 +1219,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
                 $template->markingguideurl = new moodle_url('/grade/grading/form/' . $methodname . '/preview.php',
                     ['areaid' => $controller->get_areaid()]);
-            }
-        }
-
-        // TODO - when feedback, just output it and not anything else?
-        // Add feedback if available.
-        $student = user::find($USER);
-        $cangrade = has_capability('mod/coursework:addinitialgrade', $PAGE->context);
-        if (!$cangrade && $submission = $coursework->get_user_submission($student)) {
-            if ($submission->is_published()) {
-                $template->feedback = $this->existing_feedback_from_teachers($submission);
             }
         }
 
