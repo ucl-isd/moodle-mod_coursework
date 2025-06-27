@@ -40,6 +40,10 @@
                 {{#str}} latesubmissionsallowed, mod_coursework {{/str}}
             </p>
             {{/latesubmissionsallowed}}
+
+            {{#personaldeadlines}}
+                <p class="small">{{#str}} default_deadline, mod_coursework {{/str}}</p>
+            {{/personaldeadlines}}
         {{/duedate}}
 
         {{#deadlineextension}}

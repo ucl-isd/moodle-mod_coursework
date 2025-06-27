@@ -3252,6 +3252,48 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * Check "Due" and "Extended deadline" dates at top of page.
+     * @Given /^I should see (due|extension) date "(?P<text>(?:[^"]|\\")*)"$/
+     */
+    public function i_should_see_duedate($date, $value) {
+        if ($date === "due") {
+            $date = "Due";
+        } else if ($date === "extension") {
+            $date = "Extended deadline";
+        }
+
+        $page = $this->getSession()->getPage();
+        $due = $page->find('xpath', "//h3[text() = '$date']/following-sibling::p[starts-with(text(), '$value')]");
+
+        if (!$due) {
+            throw new ExpectationException('Should have seen due date, but it was not there',
+            $this->getSession());
+        }
+    }
+
+    /**
+     * For example, the coursework deadline can be set with:
+     *   And the coursework deadline date is "##+1 week##"
+     * @Given /^the coursework ([\w]+) date is "(?P<text>(?:[^"]|\\")*)"$/
+     */
+    public function the_coursework_date_is($settingname, $settingvalue) {
+        $this->the_coursework_setting_is_in_the_database($settingname, $settingvalue);
+    }
+
+    /**
+     * @Given /^the student personaldeadline is "(?P<text>(?:[^"]|\\")*)"$/
+     */
+    public function the_student_personaldeadline_is($settingvalue) {
+        \mod_coursework\models\personal_deadline::create([
+           'allocatableid' => $this->student->id(),
+           'allocatabletype' => 'user',
+           'courseworkid' => $this->coursework->id,
+           'personal_deadline' => $settingvalue,
+           'createdbyid' => get_admin()->id,
+        ]);
+    }
+
+    /**
      * Take screenshot when step fails. Works only with Selenium2Driver.
      *
      * Screenshot is saved at [Date]/[Feature]/[Scenario]/[Step].jpg .

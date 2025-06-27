@@ -32,6 +32,7 @@ use mod_coursework\models\submission;
 use mod_coursework\router;
 use mod_coursework\warnings;
 use mod_coursework\models\personal_deadline;
+use mod_coursework\models\deadline_extension;
 use mod_coursework\render_helpers\grading_report\cells;
 
 use mod_coursework\page_renderer as foo;
@@ -1234,33 +1235,34 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         // Fetch student and deadline information.
         $user = user::find($USER);
-        $deadlineextension = \mod_coursework\models\deadline_extension::get_extension_for_student($user, $coursework);
-        // TODO - what is this?
-        $personaldeadline = \mod_coursework\models\personal_deadline::get_personal_deadline_for_student($user, $coursework);
-
-        // Determine the effective deadline.
-        $effectivedeadline = $coursework->deadline;
-        if ($personaldeadline) {
-            $effectivedeadline = $personaldeadline->personal_deadline;
-        }
 
         // Handle coursework deadline details.
         if ($coursework->has_deadline()) {
-            $template->duedate = $effectivedeadline;
+            // Determine the effective deadline.
+            if ($personaldeadline = personal_deadline::get_personal_deadline_for_student($user, $coursework)) {
+                $template->duedate = $personaldeadline->personal_deadline;
+            } else {
+                $template->duedate = $coursework->deadline;
+            }
+
 
             if ($coursework->allow_late_submissions()) {
                 $template->latesubmissionsallowed = true;
             }
-        }
 
-        // Add extension if it exists.
-        if ($deadlineextension) {
-            $template->deadlineextension = $deadlineextension->extended_deadline;
-        }
+            if ($coursework->personal_deadlines_enabled() && (!has_capability('mod/coursework:submit', $this->page->context) || is_siteadmin($user))) {
+                $template->personaldeadlines = true;
+            }
 
-        // Handle individual feedback deadline.
-        if ($coursework->individualfeedback) {
-            $template->individualfeedbackdeadline = $coursework->get_individual_feedback_deadline();
+            // Add extension if it exists.
+            if ($deadlineextension = deadline_extension::get_extension_for_student($user, $coursework)) {
+                $template->deadlineextension = $deadlineextension->extended_deadline;
+            }
+
+            // Handle individual feedback deadline.
+            if ($coursework->individualfeedback) {
+                $template->individualfeedbackdeadline = $coursework->get_individual_feedback_deadline();
+            }
         }
 
         return $template;

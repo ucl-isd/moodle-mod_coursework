@@ -17,6 +17,7 @@ Feature: Deadlines extensions for submissions
     When I log in as a student
     And I visit the coursework page
     Then "Upload your submission" "link" should exist
+    And I should see extension date "##+1 week##%d %B %Y##"
 
   @javascript
   Scenario: The student can not submit when the start date is in the future
