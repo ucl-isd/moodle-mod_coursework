@@ -57,6 +57,9 @@ Coursework.
 
         /* Rubric specific. */
         .gradingform_rubric {
+            .radio {
+                display: block !important;
+            }
             td,
             tr {
                 border: 0 !important;
