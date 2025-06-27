@@ -197,9 +197,9 @@ class feedback extends table_base {
      */
     public function display_assessor_name() {
 
-        // check if assessor's name in this CW is set to hidden
+        // check if assessor's name in this CW is set to hidden.
         if ($this->is_assessor_anonymity_enabled()) {
-            $assessorname = get_string('hidden', 'mod_coursework');
+            $assessorname = '';
         } else {
             $assessorname = $this->get_assesor_username();
         }
