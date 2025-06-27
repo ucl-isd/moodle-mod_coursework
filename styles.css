@@ -31,6 +31,14 @@ Coursework.
         /* Grading tables. */
         .gradingform_guide,
         .gradingform_rubric {
+
+            /* SHAME - overwrite rubric table paddings. */
+            table {
+                th,
+                td {
+                    padding: .75rem !important
+                }
+            }
             .criterion.even,
             .criterion.even td {
                 background-color: transparent;
@@ -68,20 +76,20 @@ Coursework.
                     table {
                         width: 100%;
                         table-layout: fixed;
-                        font-size: 14px;
                         td.level {
                             width: auto !important;
                             transition: all 1s;
-                            /* Selected rebric option. */
-                            &.checked{
-                                border-color: var(--primary) !important;
-                                background-color: var(--primary) !important;
-                                color: white;
-                            }
                             /* Previously selected rubric option. */
                             &.currentchecked {
                                 color: var(--dark);
                                 background-color: color-mix(in srgb, var(--primary) 10%, white 90%);
+                            }
+                            /* Selected rubric option. */
+                            &.checked{
+                                color: white;
+                                border-color: var(--primary) !important;
+                                background-color: var(--primary) !important;
+
                             }
                         }
                     }
@@ -91,7 +99,7 @@ Coursework.
 
         /* Editing rubric. */
         .gradingform_rubric.editable {
-
+            /* Hover state. */
             td.level:hover {
                 border-color: var(--primary) !important;
                 background-color: var(--primary) !important;
