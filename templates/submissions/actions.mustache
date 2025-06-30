@@ -1,0 +1,38 @@
+<div class="dropdown">
+    <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Edit</button>
+
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#">Submission extension
+        {{#extensiondate}}
+        <small class="d-block">
+            <i class="fa-solid fa-circle-check text-success mr-2"></i>
+            <span class="sr-only">Extension granted date </span>
+            {{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
+        </small>
+        {{/extensiondate}}
+        </a>
+
+        <div class="dropdown-divider"></div>
+
+        <a class="dropdown-item" href="#">Submit on behalf of</a>
+        <a class="dropdown-item" href="#">Finalise submission</a>
+        <!-- <a class="dropdown-item" href="#">Unfinalise submission</a> -->
+
+        <div class="dropdown-divider"></div>
+
+        <a class="dropdown-item" href="#">Plagarism
+        {{#plagarismstatus}}
+        <small class="d-block">
+            <i class="fa-solid fa-triangle-exclamation text-danger mr-2"></i>
+            <span class="sr-only">Flagged for plagarism status </span>
+            {{.}}
+        </small>
+        {{/plagarismstatus}}
+        </a>
+
+        <div class="dropdown-divider"></div>
+
+        <a class="dropdown-item" href="#">Release mark</a>
+
+    </div>
+</div>
