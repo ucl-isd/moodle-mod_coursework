@@ -1,0 +1,110 @@
+<tr data-status="needs-agreement,marked"
+    data-marker="{{#markers}} {{{markerfilter}}}, {{/markers}}
+    ">
+        {{! User. }}
+        <td>
+            <div class="d-flex align-items-center">
+            <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{studentimg}}'); height: 2rem; width: 2rem;"></div>
+            {{{student}}}
+            </div>
+        </td>
+
+        {{! Submission. }}
+        <td>
+        {{#submission}}
+            <span class="sr-only">Date submitted</span>
+            <p>{{{datemodified}}}</p>
+            {{! TODO }}
+            <span class="sr-only">File submitted</span> <a href=""><i class="fa-regular fa-file-lines mr-2"></i>CPH9538.pdf</a><br>
+            <a href=""><i class="fa-regular fa-file-code mr-2"></i>plagarism report</a>
+        {{/submission}}
+        </td>
+
+        {{! Marking. }}
+        <td>
+            <ol class="list-unstyled p-0 m-0" aria-label="Markers and agreed mark">
+                {{#markers}}
+                <li class="d-flex mb-2">
+                    <div>
+                        <span class="sr-only">Marker </span>
+                        <a href="{{{markerurl}}}" class="d-flex align-items-center">
+                        {{#markerimg}}
+                        <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{markerimg}}'); height: 2rem; width: 2rem;"></div>
+                        {{/markerimg}}
+                        {{markername}}
+                        </a>
+                    </div>
+
+                    {{#mark}}
+                    <div class="text-right ml-auto">
+                        <span class="sr-only">Mark </span>
+
+                        {{#draft}}
+                        <span class="badge badge-secondary">Draft</span>
+                        {{/draft}}
+
+                        {{! Finalised. }}
+                        {{^draft}}
+                            {{#timemodified}}
+                                <small>
+                                {{#userdate}}
+                                    {{.}},{{#str}}strftimedatetime, langconfig{{/str}}
+                                {{/userdate}}
+                                </small>
+                            {{/timemodified}}
+                        {{/draft}}
+
+                        <a href="{{{markurl}}}" class="font-weight-bold pl-1">{{.}}</a>
+                    </div>
+                    {{/mark}}
+
+                    {{#addfeedback}}
+                    <div class="text-right ml-auto">
+                        <a href="{{{markurl}}}" class="btn btn-primary btn-sm">Add feedback</a>
+                    </div>
+                    {{/addfeedback}}
+                </li>
+                {{/markers}}
+
+                {{#agreedmark}}
+                <li class="d-flex mb-2">
+                    <div>Agreed mark</div>
+                    <div class="text-right ml-auto">
+                    {{#mark}}
+                        {{#draft}}
+                            <span class="badge badge-secondary">Draft</span>
+                        {{/draft}}
+
+                        {{#readyforrelease}}
+                            <span class="badge badge-warning">Ready for release</span>
+                        {{/readyforrelease}}
+
+                        {{! Released. }}
+                        {{#released}}
+                            {{#timemodified}}
+                                <small>
+                                {{#userdate}}
+                                    {{.}},{{#str}}strftimedatetime, langconfig{{/str}}
+                                {{/userdate}}
+                                </small>
+                            {{/timemodified}}
+                            <span class="badge badge-success">Released</span>
+                        {{/released}}
+
+                        <a href="{{{url}}}" class="font-weight-bold pl-1">{{mark}}</a>
+                    {{/mark}}
+
+                    {{#addfedback}}
+                    <a href="{{{url}}}" class="btn btn-sm btn-success">Add agreed feedback</a>
+                    {{/addfedback}}
+                </div>
+                </li>
+                {{/agreedmark}}
+            </ol>
+        </td>
+
+        {{! Actions. }}
+        <td class="text-right">
+          {{> mod_coursework/submissions/actions }}
+        </td>
+</tr>
