@@ -21,6 +21,7 @@
  */
 
 use mod_coursework\ability;
+use mod_coursework\models\user;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\grading_report;
 use mod_coursework\grading_table_row_base;
@@ -65,56 +66,31 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         $template = new stdClass();
         $template->tr = [];
 
+        /** @var grading_table_row_base $rowobject */
         foreach ($tablerows as $rowobject) {
             $trdata = new stdClass();
-
-            $student = $rowobject->get_allocatable();
-            /*
-            print_r($student);
-            print_r('<hr>');
-            */
-
-            // User.
-            // TODO - id, name, email etc based on settings and permissions.
-            $trdata->student = \core_user::get_fullname(\core_user::get_user($student->id));
-            if ($student->id) {
-                    $user = core_user::get_user($student->id);
-                    $userpicture = new user_picture($user);
-                    $userpicture->size = 100;
-                    $image = $userpicture->get_url($this->page)->out(false);
-                    $trdata->studentimg = $image;
-            }
-
-            // Submission.
-            $submission = $rowobject->get_submission();
-            if ($submission) {
-                /*
-                print_r($submission);
-                print_r('<hr>');
-                */
-                $trdata->submission = new stdClass();
-                $trdata->submission->datemodified = userdate($submission->timemodified);
-                // TODO - submission related data (filename, fileurl, finalised, late, plagarism, extension etc.)
-                // $trdata->submission->filename = ...
-                // $trdata->submission->fileurl = ...
-
-            }
-
-            // Markers.
-            // TODO - check this has multiple markers, or output something else?
-            $assessorfeedbacktable = $rowobject->get_assessor_feedback_table();
-            $trdata->markers = $this->render_markers($assessorfeedbacktable);
-
-            // Agreed mark.
-            $coursework = $assessorfeedbacktable->get_coursework();
-            $allocatable = $rowobject->get_allocatable();
-            $trdata->agreedmark = $this->render_agreed_mark($coursework, $rowobject);
-
-
+            // Student cell.
+            $this->prepare_student_cell_data($gradingreport, $rowobject, $trdata);
             $template->tr[] = $trdata;
         }
 
         return $this->render_from_template('mod_coursework/submissions/table', $template);
+    }
+
+    /**
+     * Prepare student cell data
+     *
+     * @param grading_report $gradingreport
+     * @param grading_table_row_base $rowobject
+     * @param stdClass $trdata
+     * @return void
+     * @throws coding_exception
+     */
+    protected function prepare_student_cell_data(grading_report $gradingreport, grading_table_row_base $rowobject, stdClass $trdata) {
+        $usercell = $gradingreport->get_cells_helpers(\mod_coursework\render_helpers\grading_report\cells\user_cell::class);
+        $userdata = $usercell->get_table_cell_data($rowobject);
+        $trdata->student = $userdata->name;
+        $trdata->studentimg = $userdata->picture;
     }
 
 
@@ -254,7 +230,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         $tablehtml .= $this->make_table_headers($cellhelpers, $options, $ismultiplemarkers);
         $tablehtml .= '</thead>';
         $tablehtml .= '<tbody>';
-        $tablehtml .= $this->make_rows($tablerows, $cellhelpers, $subrowhelper, $ismultiplemarkers, );
+        $tablehtml .= $this->make_rows($tablerows, $cellhelpers, $subrowhelper, $ismultiplemarkers);
         $tablehtml .= '</tbody>';
         $tablehtml .= $this->end_table();
 

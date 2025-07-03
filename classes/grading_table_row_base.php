@@ -371,6 +371,22 @@ abstract class grading_table_row_base implements user_row {
     }
 
     /**
+     * Returns the user picture
+     *
+     * @return string
+     * @throws \core\exception\coding_exception
+     * @throws \dml_exception
+     */
+    public function get_user_picture(int $size = 100) {
+        global $PAGE;
+        $user = \core_user::get_user($this->get_allocatable()->id);
+        $userpicture = new \core\output\user_picture($user);
+        $userpicture->size = $size;
+
+        return $userpicture->get_url($PAGE)->out(false);
+    }
+
+    /**
      * @return allocatable
      */
     public function get_allocatable() {

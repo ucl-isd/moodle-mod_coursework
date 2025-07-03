@@ -23,7 +23,9 @@
 namespace mod_coursework\render_helpers\grading_report\cells;
 
 use html_writer;
+use mod_coursework\ability;
 use mod_coursework\models\coursework;
+use mod_coursework\models\user;
 use mod_coursework\router;
 
 /**
@@ -37,10 +39,17 @@ abstract class cell_base implements cell_interface {
     protected $coursework;
 
     /**
+     * @var ability
+     */
+    protected ability $ability;
+
+    /**
      * @param array $items
      */
     public function __construct($items  = []) {
+        global $USER;
         $this->coursework = $items['coursework'];
+        $this->ability = new ability(user::find($USER), $this->coursework);
         $this->after_initialisation($items);
     }
 

@@ -594,7 +594,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         // get only submissions that user can grade
         $submissions = $gradingsheet->get_submissions();
         /**
-         * @var mod_coursework_grading_report_renderer $grading_report_renderer
+         * @var mod_coursework_grading_report_renderer $gradingreportrenderer
          */
         $gradingreportrenderer = $this->page->get_renderer('mod_coursework', 'grading_report');
         $html .= $gradingreportrenderer->submissions_header();
@@ -666,7 +666,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         /**
-         * @var mod_coursework_grading_report_renderer $grading_report_renderer
+         * @var mod_coursework_grading_report_renderer $gradingreportrenderer
          */
 
         $html .= html_writer::start_tag('div', ['class' => 'wrapper_table_submissions']);

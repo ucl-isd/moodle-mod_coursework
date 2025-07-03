@@ -303,10 +303,21 @@ class grading_report {
     }
 
     /**
-     * @return cell_interface[]
+     * @return cell_interface[]|cell_interface
+     * @throws \coding_exception
      */
-    public function get_cells_helpers() {
-        return $this->cells;
+    public function get_cells_helpers(?string $cellclassname = null): array|cell_interface {
+        if (is_null($cellclassname)) {
+            return $this->cells;
+        }
+
+        foreach ($this->cells as $cellhelper) {
+            if ($cellhelper instanceof $cellclassname) {
+                return $cellhelper;
+            }
+        }
+
+        throw new \coding_exception('Cell ' . $cellclassname . ' not found.');
     }
 
     /**

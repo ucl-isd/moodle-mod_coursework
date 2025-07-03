@@ -71,6 +71,24 @@ class user_cell extends cell_base implements allocatable_cell {
     }
 
     /**
+     * Get the data for the table cell
+     *
+     * @param grading_table_row_base $rowobject
+     * @return stdClass
+     * @throws \coding_exception
+     */
+    public function get_table_cell_data(grading_table_row_base $rowobject): stdClass {
+        $user = new stdClass();
+        $user->name = $rowobject->get_user_name(true);
+        $user->picture = '';
+        if ($rowobject->can_view_username() || $rowobject->is_published()) {
+            $user->picture = $rowobject->get_user_picture();
+        }
+
+        return $user;
+    }
+
+    /**
      * @param array $options
      * @return string
      */
