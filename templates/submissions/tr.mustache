@@ -1,4 +1,4 @@
-<tr data-status="needs-agreement,marked"
+<tr data-status="{{status}}"
     data-marker="{{#markers}} {{{markerfilter}}}, {{/markers}}
     ">
         {{! User. }}
@@ -11,13 +11,34 @@
 
         {{! Submission. }}
         <td>
-        {{#submission}}
-            <span class="sr-only">Date submitted</span>
-            <p>{{{datemodified}}}</p>
-            {{! TODO }}
-            <span class="sr-only">File submitted</span> <a href=""><i class="fa-regular fa-file-lines mr-2"></i>CPH9538.pdf</a><br>
-            <a href=""><i class="fa-regular fa-file-code mr-2"></i>plagarism report</a>
-        {{/submission}}
+            {{#submission}}
+                {{#submissiondata}}
+                    {{#flaggedplagiarism}}
+                        <span class="badge badge-danger">Flagged for plagiarism</span><br>
+                    {{/flaggedplagiarism}}
+                    {{#submittedlate}}
+                        <span class="badge badge-warning">Submitted late</span><br>
+                    {{/submittedlate}}
+                    <span class="sr-only">Date submitted</span><small>{{{datemodified}}}</small><br>
+                    {{#files}}
+                        <span class="sr-only">File submitted</span><a href="{{{url}}}"><i class="fa-regular fa-file-lines mr-2"></i>{{filename}}</a><br>
+                        {{#plagiarismlinks}}
+                            <span class="sr-only">Plagiarism report</span>{{{plagiarismlinks}}}<br>
+                        {{/plagiarismlinks}}
+                    {{/files}}
+                {{/submissiondata}}
+                {{^submissiondata}}
+                    {{#extensiongranted}}
+                        <span class="badge badge-success">Extension granted</span><br>
+                        <span class="sr-only">Due date</span><small>Due: {{{extensiondeadline}}}</small>
+                    {{/extensiongranted}}
+                    {{^extensiongranted}}
+                        {{#duedate}}
+                            <span class="sr-only">Due date</span><small>Due: {{{duedate}}}</small>
+                        {{/duedate}}
+                    {{/extensiongranted}}
+                {{/submissiondata}}
+            {{/submission}}
         </td>
 
         {{! Marking. }}
