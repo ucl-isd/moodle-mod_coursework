@@ -29,6 +29,7 @@ use mod_coursework\models\feedback;
 use mod_coursework\render_helpers\grading_report\cells\cell_interface;
 use mod_coursework\render_helpers\grading_report\cells\user_cell;
 use mod_coursework\render_helpers\grading_report\data\student_cell_data;
+use mod_coursework\render_helpers\grading_report\data\submission_cell_data;
 use mod_coursework\render_helpers\grading_report\sub_rows\sub_rows_interface;
 
 /**
@@ -73,6 +74,12 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
             // Student cell.
             $this->prepare_student_cell_data($gradingreport, $rowobject, $trdata);
 
+            // Submission cell.
+            $this->prepare_submission_cell_data($gradingreport, $rowobject, $trdata);
+
+            // Mark tr status.
+            $this->mark_tr_status($trdata);
+
             $template->tr[] = $trdata;
         }
 
@@ -92,6 +99,46 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         $userdata = $dataprovider->get_table_cell_data($rowobject);
         $trdata->student = $userdata->name;
         $trdata->studentimg = $userdata->picture;
+    }
+
+    /**
+     * Prepare submission cell data
+     *
+     * @param grading_report $gradingreport
+     * @param grading_table_row_base $rowobject
+     * @param stdClass $trdata
+     * @return void
+     */
+    protected function prepare_submission_cell_data(grading_report $gradingreport, grading_table_row_base $rowobject, stdClass $trdata) {
+        $dataprovider = new submission_cell_data($gradingreport->get_coursework());
+        $trdata->submission = $dataprovider->get_table_cell_data($rowobject);
+    }
+
+    /**
+     * Mark tr status.
+     *
+     * @param stdClass $trdata
+     * @return void
+     */
+    protected function mark_tr_status(stdClass $trdata): void {
+        $status = [];
+        if (!empty($trdata->submission->extensiongranted)) {
+            $status[] = 'extension-granted';
+        }
+
+        if (!empty($trdata->submission->submissiondata->flaggedplagiarism)) {
+            $status[] = 'flagged-for-plagiarism';
+        }
+
+        if (!empty($trdata->submission->submissiondata->submittedlate)) {
+            $status[] = 'late';
+        }
+
+        if (empty($trdata->submission->submissiondata)) {
+            $status[] = 'not-submitted';
+        }
+
+        $trdata->status = implode(', ', $status);
     }
 
     protected function render_agreed_mark($coursework, $rowobject) {
