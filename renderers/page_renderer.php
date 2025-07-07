@@ -223,8 +223,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     /**
      * @param \mod_coursework\models\coursework $coursework
      * @param user $student
-     * @throws \coding_exception
-     * @throws \moodle_exception
      * @return string
      */
     public function student_view_page($coursework, $student) {
@@ -232,7 +230,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         if ($coursework->is_configured_to_have_group_submissions() && !$coursework->student_is_in_any_group($student)) {
             $template = new stdClass();
             $template->cansubmit = false;
-            $template->nogroup = true;
+            $template->notingroup = true;
             return $this->render_from_template('mod_coursework/submission', $template);
         }
 
@@ -240,9 +238,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         // it matters in in pre-populating the form, where it should be empty if this student did not submit
         // the files.
         $submission = $coursework->get_user_submission($student);
-        $newsubmission = $coursework->build_own_submission($student);
         if (!$submission) {
-            $submission = $newsubmission;
+            $submission = $coursework->build_own_submission($student);
         }
 
         // This should probably not be in the renderer.
@@ -250,7 +247,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $coursework->individual_feedback_deadline_has_passed() &&
             !$submission->is_published() && $submission->ready_to_publish()
         ) {
-
             $submission->publish();
         }
 
@@ -287,8 +283,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         // TODO - how does this fit in?
         // if TII plagiarism enabled check if user agreed/disagreed EULA
         $shouldseeeula = has_user_seen_tii_eula_agreement();
-        $html = '';
-
 
         if ($ability->can('new', $submission) && (!$coursework->tii_enabled() || $shouldseeeula)) {
             if ($coursework->start_date_has_passed()) {
@@ -823,57 +817,43 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
+     * Return submission output data for Mustache.
+     *
      * @param submission $submission
      * @return stdClass
      */
     protected function coursework_student_overview($submission): stdClass {
-        global $USER;
-
-        $coursework = $submission->get_coursework();
-        $files = $submission->get_submission_files();
-
-        // WIP - return submission output for mustache.
         $template = new stdClass();
+        $this->add_submission_status($template, $submission);
+        $coursework = $submission->get_coursework();
+
+        $files = $submission->get_submission_files();
         $template->file = $this->get_object_renderer()
-        ->render_submission_files_with_plagiarism_links(new mod_coursework_submission_files($files));
-        $template->status = $submission->get_status_text(); // TODO - make better.
+            ->render_submission_files_with_plagiarism_links(new mod_coursework_submission_files($files));
 
         // Date.
-        if ($submission->persisted() && $submission->time_submitted()) {
+        if ($submission->persisted()) {
             $template->date = $submission->time_submitted();
         }
 
         // Was the submission late?
         if ($submission->is_late() && (!$submission->has_extension() || !$submission->submitted_within_extension())) {
-            // check if submission has personal deadline
-            if ($coursework->personaldeadlineenabled ) {
-                $deadline = $submission->submission_personal_deadline();
-            } else { // if not, use coursework default deadline
-                $deadline = $coursework->deadline;
-            }
-
-            $deadline = ($submission->has_extension()) ? $submission->extension_deadline() : $deadline;
-
+            $deadline = $coursework->personaldeadlineenabled ? $submission->submission_personal_deadline() : $coursework->deadline;
+            $deadline = $submission->has_extension() ? $submission->extension_deadline() : $deadline;
             $lateseconds = $submission->time_submitted() - $deadline;
             $template->late = format_time($lateseconds) . " " . strtolower(get_string('late', 'mod_coursework'));
         }
 
         // Mark.
-        if ($submission && $submission->is_published()) {
+        if ($submission->is_published()) {
             $judge = new \mod_coursework\grade_judge($coursework);
             $gradeforgradebook = $judge->get_grade_capped_by_submission_time($submission);
             $template->mark = $judge->grade_to_display($gradeforgradebook);
-        } else if ($submission->get_state() >= submission::PARTIALLY_GRADED) {
-            $template->mark = get_string('notpublishedyet', 'mod_coursework');
         }
 
         // Group submission.
-        if ($coursework->is_configured_to_have_group_submissions()) {
-            $template->group = true;
-            if ($submission->persisted()) {
-                $submitter = $submission->get_last_updated_by_user();
-                $template->submitter = $submitter->name();
-            }
+        if ($coursework->is_configured_to_have_group_submissions() && $submission->persisted()) {
+            $template->groupsubmitter = $submission->get_last_updated_by_user()->name();
         }
 
         return $template;
@@ -1510,4 +1490,72 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         return $html;
     }
 
+    /**
+     * Populate properties with values for this submission suitable for
+     * rendering with a Mustache template.
+     * @param stdClass $template Existing data object to be rendered.
+     * @param submission $submission Submission instance whose status is to be
+     * displayed.
+     */
+    private function add_submission_status(stdClass $template, submission $submission): void {
+        $template->submission = new stdClass();
+
+        switch ($submission->get_state()) {
+
+            case submission::NOT_SUBMITTED:
+                $template->submission->status = get_string('statusnotsubmitted', 'mod_coursework');
+                break;
+
+            case submission::SUBMITTED:
+                if ($submission->get_coursework()->allowearlyfinalisation) {
+                    $template->submission->status = get_string('statusnotfinalised', 'mod_coursework');
+                } else {
+                    $template->submission->status = get_string('submitted', 'mod_coursework');
+                }
+
+                break;
+
+            case submission::FINALISED:
+                $template->submission->status = get_string('statussubmittedfinalised', 'mod_coursework');
+
+                break;
+
+            case submission::PARTIALLY_GRADED:
+                if ($submission->any_editable_feedback_exists()) {
+                    $template->submission->status = get_string('statusfullygraded', 'mod_coursework');
+                    $template->submission->stilleditable = true;
+                } else {
+                    $template->submission->status = get_string('statuspartiallygraded', 'mod_coursework');
+                }
+
+                $template->marknotpublished = true;
+                break;
+
+            case submission::FULLY_GRADED:
+                $template->submission->status = get_string('statusfullygraded', 'mod_coursework');
+                $template->marknotpublished = true;
+                break;
+
+            case submission::FINAL_GRADED:
+                $template->submission->badge = 'warning';
+
+                if ($submission->has_multiple_markers() && $submission->sampled_feedback_exists()) {
+                    $template->submission->status = get_string('statusfinalgraded', 'mod_coursework');
+                } else {
+                    $template->submission->status = get_string('statusfinalgradedsingle', 'mod_coursework');
+                }
+
+                if ($submission->editable_final_feedback_exist()) {
+                    $template->submission->finalgradestilleditable = true;
+                }
+
+                $template->marknotpublished = true;
+                break;
+
+            case submission::PUBLISHED:
+                $template->submission->badge = 'success';
+                $template->submission->status = get_string('statusreleased', 'mod_coursework');
+                break;
+        }
+    }
 }

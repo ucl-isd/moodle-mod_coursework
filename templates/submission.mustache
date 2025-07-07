@@ -28,9 +28,9 @@
 <div class="bg-light p-3">
     <h3 id="submission-title">{{#str}} submission, mod_coursework {{/str}}</h3>
 
-    {{#nogroup}}
+    {{#notingroup}}
     <p>{{#str}} not_in_any_group_student_warning, mod_coursework {{/str}}</p>
-    {{/nogroup}}
+    {{/notingroup}}
 
     {{! Submission is not open till startdate. }}
     {{#startdate}}
@@ -46,25 +46,48 @@
         {{! Time submitted. }}
         {{#date}}
         <li class="d-flex py-1 border-top">
-            {{#str}} tableheadtime, mod_coursework {{/str}} <span class="ml-auto text-right">{{#late}}<span class="badge badge-warning">Late</span>{{/late}}{{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}{{#late}}<br> {{.}}{{/late}}</span>
+            {{#str}} tableheadtime, mod_coursework {{/str}} <span class="ml-auto text-right">{{#late}}<span class="badge badge-warning">{{#str}} late, mod_coursework {{/str}}</span>{{/late}}{{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}{{#late}}<br> {{.}}{{/late}}</span>
         </li>
         {{/date}}
 
-        {{#group}}
+        {{#groupsubmitter}}
         <li class="d-flex py-1 border-top">
             {{#str}} submittedby, mod_coursework {{/str}}
             <span class="ml-auto">
-                {{{submitter}}}
+                {{{.}}}
             </span>
         </li>
-        {{/group}}
+        {{/groupsubmitter}}
 
+        {{#submission}}
+            <li class="d-flex py-1 border-top">
+                {{#str}} status, mod_coursework {{/str}}
+                <span class="ml-auto text-right">
+                    {{#badge}}
+                        <span class="badge badge-{{badge}}">{{status}}</span>
+                    {{/badge}}
+                    {{^badge}}
+                        {{status}}
+                    {{/badge}}
+                    {{#stilleditable}}
+                        <br />{{#str}} stilleditable, mod_coursework {{/str}}
+                    {{/stilleditable}}
+                    {{#finalgradestilleditable}}
+                        <br />{{#str}} finalgradestilleditable, mod_coursework {{/str}}
+                    {{/finalgradestilleditable}}
+                </span>
+            </li>
+        {{/submission}}
+
+        {{#marknotpublished}}
         <li class="d-flex py-1 border-top">
-            {{#str}} status, mod_coursework {{/str}} <span class="ml-auto">{{{status}}}</span>
+            {{#str}} mark, mod_coursework {{/str}}
+            <span class="ml-auto text-right">{{#str}} notpublishedyet, mod_coursework {{/str}}</span>
         </li>
+        {{/marknotpublished}}
 
         {{#mark}}
-         <li class="d-flex py-1 border-top">
+        <li class="d-flex py-1 border-top">
             {{#str}} mark, mod_coursework {{/str}}
             <span class="ml-auto h2">{{mark}}</span>
         </li>

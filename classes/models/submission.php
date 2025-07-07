@@ -820,10 +820,11 @@ class submission extends table_base implements \renderable {
                 break;
 
             case self::PARTIALLY_GRADED:
-                $statustext = get_string('statuspartiallygraded', 'coursework');
                 if ($this->any_editable_feedback_exists()) {
                     $statustext = get_string('statusfullygraded', 'coursework'). "<br>";
                     $statustext .= get_string('stilleditable', 'coursework');
+                } else {
+                    $statustext = get_string('statuspartiallygraded', 'coursework');
                 }
                 break;
 
@@ -832,9 +833,9 @@ class submission extends table_base implements \renderable {
                 break;
 
             case self::FINAL_GRADED:
-                $spanfinalgraded =  $statustext = '<span class="badge badge-warning">' . get_string('statusfinalgraded', 'coursework') . '</span>';
+                $spanfinalgraded = '<span class="badge badge-warning">' . get_string('statusfinalgraded', 'coursework') . '</span>';
 
-                $spanfinalgradedsingle = $statustext = '<span class="badge badge-warning">' . get_string('statusfinalgradedsingle', 'coursework') . '</span>';
+                $spanfinalgradedsingle = '<span class="badge badge-warning">' . get_string('statusfinalgradedsingle', 'coursework') . '</span>';
 
                 $statustext = $this->has_multiple_markers() && $this->sampled_feedback_exists() ? $spanfinalgraded : $spanfinalgradedsingle;
                 if ($this->editable_final_feedback_exist()) {

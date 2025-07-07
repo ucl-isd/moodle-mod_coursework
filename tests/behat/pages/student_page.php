@@ -67,16 +67,16 @@ class mod_coursework_behat_student_page extends mod_coursework_behat_page_base {
      * @param $rolename
      */
     public function should_show_the_submitter_as($rolename) {
-        $submissionusercell = $this->getPage()->find('css', 'td.submission-user');
-        $cellcontents = $submissionusercell->getText();
-
         // If the rolename has an underscore in it then we need to remove it as instance vars no longer have underscores.
         // E.g. other_student => otherstudent
         $rolename = str_replace('_', '', $rolename);
         $studentname = fullname((object)(array)$this->getContext()->$rolename);
-        if (!str_contains($cellcontents, $studentname)) {
+
+        $node = $this->getPage()->find('xpath', "//li[normalize-space(string()) = 'Submitted by $studentname']");
+
+        if (!$node) {
             throw new ExpectationException(
-                "Expected the submission to have been made by {$studentname}, but got {$cellcontents}",
+                "Expected the submission to have been made by {$studentname}",
                 $this->getSession()
             );
         }

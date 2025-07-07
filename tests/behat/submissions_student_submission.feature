@@ -13,14 +13,14 @@ Feature: Students can submit files
   @javascript @_file_upload
   Scenario: I upload a file and see it on the coursework page as read only
     When I visit the coursework page
-    And I should see "Status Not submitted yet"
+    And I should see submission status "Not submitted yet"
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I save the submission
     Then I should be on the coursework page
     And I should see the file on the page
     And I should see the edit submission button
-    And I should see "Status Submitted"
+    And I should see submission status "Submitted"
     And I should see "##today##Submitted %d %B %Y##"
 
   @javascript @_file_upload

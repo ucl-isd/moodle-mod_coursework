@@ -453,7 +453,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      */
     protected function render_mod_coursework_coursework(mod_coursework_coursework $coursework) {
 
-        global $CFG, $USER, $PAGE;
+        global $USER;
 
         $out = '';
 
@@ -476,9 +476,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $out .= $this->coursework_marking_summary($coursework);
         }
         // WIP - student view overview data here.
-        $cansubmit = has_capability('mod/coursework:submit', $PAGE->context);
+        $cansubmit = has_capability('mod/coursework:submit', $this->page->context);
         if ($cansubmit && !$cangrade) {
-            $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
+            $pagerenderer = $this->page->get_renderer('mod_coursework', 'page');
             $out .= $pagerenderer->student_view_page($coursework, \mod_coursework\models\user::find($USER));
         }
         $out .= "</div>";

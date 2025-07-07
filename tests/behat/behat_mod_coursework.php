@@ -2041,9 +2041,9 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^there is final feedback$/
+     * @Given /^there is( draft)? final feedback$/
      */
-    public function there_is_final_feedback() {
+    public function there_is_final_feedback($draft = false) {
         $generator = $this->get_coursework_generator();
 
         $feedback = new stdClass();
@@ -2053,6 +2053,7 @@ class behat_mod_coursework extends behat_base {
         $feedback->submissionid = $this->submission->id;
         $feedback->assessorid = $this->manager->id;
         $feedback->stage_identifier = 'final_agreed_1';
+        $feedback->finalised = $draft ? 0 : 1;
 
         $this->finalfeedback = $generator->create_feedback($feedback);
     }
@@ -2180,9 +2181,9 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^there are feedbacks from both teachers$/
+     * @Given /^there are( draft)? feedbacks from both teachers$/
      */
-    public function there_are_feedbacks_from_both_teachers() {
+    public function there_are_feedbacks_from_both_teachers($draft = false) {
         /**
          * @var $generator mod_coursework_generator
          */
@@ -2194,6 +2195,7 @@ class behat_mod_coursework extends behat_base {
         $feedback->stage_identifier = 'assessor_1';
         $feedback->feedbackcomment = 'New comment here';
         $feedback->grade = 67;
+        $feedback->finalised = $draft ? 0 : 1;
 
         $generator->create_feedback($feedback);
 
@@ -2203,6 +2205,7 @@ class behat_mod_coursework extends behat_base {
         $feedback->stage_identifier = 'assessor_2';
         $feedback->feedbackcomment = 'New comment here';
         $feedback->grade = 63;
+        $feedback->finalised = $draft ? 0 : 1;
 
         $generator->create_feedback($feedback);
     }
@@ -3264,7 +3267,7 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * Check "Due" and "Extended deadline" dates at top of page.
-     * @Given /^I should see (due|extension) date "(?P<text>(?:[^"]|\\")*)"$/
+     * @Given /^I should see (due|extension) date "(?P<value>(?:[^"]|\\")*)"$/
      */
     public function i_should_see_duedate($date, $value) {
         if ($date === "due") {
@@ -3285,22 +3288,70 @@ class behat_mod_coursework extends behat_base {
     /**
      * For example, the coursework deadline can be set with:
      *   And the coursework deadline date is "##+1 week##"
-     * @Given /^the coursework ([\w]+) date is "(?P<text>(?:[^"]|\\")*)"$/
+     * @Given /^the coursework ([\w]+) date is "(?P<value>(?:[^"]|\\")*)"$/
      */
-    public function the_coursework_date_is($settingname, $settingvalue) {
-        $this->the_coursework_setting_is_in_the_database($settingname, $settingvalue);
+    public function the_coursework_date_is($name, $value) {
+        $this->the_coursework_setting_is_in_the_database($name, $value);
     }
 
     /**
-     * @Given /^the student personaldeadline is "(?P<text>(?:[^"]|\\")*)"$/
+     * @Given /^the student personaldeadline is "(?P<value>(?:[^"]|\\")*)"$/
      */
-    public function the_student_personaldeadline_is($settingvalue) {
+    public function the_student_personaldeadline_is($value) {
         \mod_coursework\models\personal_deadline::create([
            'allocatableid' => $this->student->id(),
            'allocatabletype' => 'user',
            'courseworkid' => $this->coursework->id,
-           'personal_deadline' => $settingvalue,
+           'personal_deadline' => $value,
            'createdbyid' => get_admin()->id,
+        ]);
+    }
+
+    /**
+     * For example:
+     *   I should see submission status "Submitted, but not finalised"
+     *
+     * @Given /^I should see submission status "(?P<status>(?:[^"]|\\")*)"$/
+     */
+    public function i_should_see_submission_status($status) {
+        $page = $this->getSession()->getPage();
+        $match = $page->find('xpath', "//li[normalize-space(string()) = 'Status $status']");
+
+        if (!$match) {
+            throw new ExpectationException('Should have seen expected submission status, but it was not there',
+            $this->getSession());
+        }
+    }
+
+    /**
+     * @Given /^grades have been released$/
+     */
+    public function grades_have_been_released() {
+        $this->coursework->publish_grades();
+    }
+
+    /**
+     * @Given /^I should see mark (\d+)$/
+     */
+    public function i_should_see_mark($mark) {
+        $page = $this->getSession()->getPage();
+        $match = $page->find('xpath', "//li[normalize-space(string()) = 'Mark $mark']");
+
+        if (!$match) {
+            throw new ExpectationException('Should have seen expected mark, but it was not there',
+            $this->getSession());
+        }
+    }
+
+    /**
+     * @Given /^sample marking includes student for stage (\d)$/
+     */
+    public function sample_marking_includes_student_for_stage($stage) {
+        \mod_coursework\models\assessment_set_membership::create([
+           'allocatableid' => $this->student->id(),
+           'allocatabletype' => 'user',
+           'courseworkid' => $this->coursework->id,
+           'stage_identifier' => "assessor_$stage",
         ]);
     }
 
