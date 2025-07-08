@@ -46,7 +46,12 @@
         {{! Time submitted. }}
         {{#date}}
         <li class="d-flex py-1 border-top">
-            {{#str}} tableheadtime, mod_coursework {{/str}} <span class="ml-auto text-right">{{#late}}<span class="badge badge-warning">{{#str}} late, mod_coursework {{/str}}</span>{{/late}}{{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}{{#late}}<br> {{.}}{{/late}}</span>
+            {{#str}} tableheadtime, mod_coursework {{/str}}
+            <span class="ml-auto text-right">
+                {{#late}}<span class="badge badge-warning">{{#str}} late, mod_coursework {{/str}}</span>{{/late}}
+                {{#userdate}} {{date}}, {{#str}} strftimedatetime, langconfig {{/str}} {{/userdate}}
+                {{#late}}<br>{{.}}{{/late}}
+            </span>
         </li>
         {{/date}}
 
@@ -70,10 +75,10 @@
                         {{status}}
                     {{/badge}}
                     {{#stilleditable}}
-                        <br />{{#str}} stilleditable, mod_coursework {{/str}}
+                        <br>{{#str}} stilleditable, mod_coursework {{/str}}
                     {{/stilleditable}}
                     {{#finalgradestilleditable}}
-                        <br />{{#str}} finalgradestilleditable, mod_coursework {{/str}}
+                        <br>{{#str}} finalgradestilleditable, mod_coursework {{/str}}
                     {{/finalgradestilleditable}}
                 </span>
             </li>

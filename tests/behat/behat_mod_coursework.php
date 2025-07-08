@@ -3344,6 +3344,22 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * For matching the submitted date ignoring the time part, for example,
+     *   I should see submitted date 4 July 2025
+     *
+     * @Given /^I should see submitted date "(?P<date>(?:[^"]|\\")*)"$/
+     */
+    public function i_should_see_submitted_date($date) {
+        $page = $this->getSession()->getPage();
+        $match = $page->find('xpath', "//li[starts-with(normalize-space(string()), 'Submitted $date')]");
+
+        if (!$match) {
+            throw new ExpectationException("Should have seen expected submitted date $date, but it was not there",
+            $this->getSession());
+        }
+    }
+
+    /**
      * @Given /^sample marking includes student for stage (\d)$/
      */
     public function sample_marking_includes_student_for_stage($stage) {

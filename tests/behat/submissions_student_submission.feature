@@ -21,7 +21,7 @@ Feature: Students can submit files
     And I should see the file on the page
     And I should see the edit submission button
     And I should see submission status "Submitted"
-    And I should see "##today##Submitted %d %B %Y##"
+    And I should see submitted date "##today##%d %B %Y##"
 
   @javascript @_file_upload
   Scenario: I upload a file and save it and I see it when I come back
