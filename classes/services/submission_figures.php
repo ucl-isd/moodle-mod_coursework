@@ -40,50 +40,57 @@ class submission_figures {
     public static function get_submissions_for_assessor($coursework): array {
         global $USER;
 
-        $gradeblesub = [];
+        $assessorsubmissions = [];
         $context = $coursework->get_context();
         $submissions = $coursework->get_all_submissions();
 
         if (!$coursework->has_multiple_markers()
-            && has_capability('mod/coursework:addagreedgrade', $coursework->get_context())
+            && has_capability('mod/coursework:addagreedgrade', $context)
             && !has_capability('mod/coursework:addinitialgrade', $context)) {
 
             foreach ($submissions as $sub) {
                 $submission = submission::find($sub);
-                if ( $submission->final_grade_agreed()) {
+                if ($submission->final_grade_agreed()) {
+                    $submission->submissiondatetime = $submission->timesubmitted; // We need that for the feedback tracker.
                     continue;
                 } else if (count($submission->get_assessor_feedbacks()) < $submission->max_number_of_feedbacks()) {
                     unset($submissions[$submission->id]);
                 }
             }
 
-            $gradeblesub = $submissions;
+            $assessorsubmissions = $submissions;
 
         } else if (is_siteadmin($USER) ||
             !$coursework->allocation_enabled() ||
-            has_any_capability(['mod/coursework:administergrades'], $context)) {
+            has_capability('mod/coursework:administergrades', $context)) {
             foreach ($submissions as $sub) {
                 $submission = submission::find($sub);
-                $gradeblesub[$submission->id] = $submission;
+                $assessorsubmissions[$submission->id] = $submission;
             }
 
         } else {
             foreach ($submissions as $sub) {
                 $submission = submission::find($sub);
-                if ($coursework->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable()) ||
-                    (has_capability('mod/coursework:addagreedgrade', $context))
-                    && !empty($submission)
-                    && (($submission->all_inital_graded()
-                            && !$submission->get_coursework()->sampling_enabled())
-                        || ($submission->get_coursework()->sampling_enabled()
-                            && $submission->all_inital_graded()
-                            && $submission->max_number_of_feedbacks() > 1))) {
-                    $gradeblesub[$submission->id] = $submission;
+                if (empty($submission)) {
+                    continue;
+                }
+
+                if ($coursework->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable())
+                    || (has_capability('mod/coursework:addagreedgrade', $context)
+                        && (($submission->all_inital_graded() && !$submission->get_coursework()->sampling_enabled())
+                            || ($submission->get_coursework()->sampling_enabled()
+                                && $submission->all_inital_graded()
+                                && ($submission->max_number_of_feedbacks() > 1)
+                            )
+                        )
+                    )
+                ) {
+                    $assessorsubmissions[$submission->id] = $submission;
                 }
             }
         }
 
-        return $gradeblesub;
+        return $assessorsubmissions;
     }
 
     /**
@@ -106,9 +113,7 @@ class submission_figures {
         $submissions = self::get_submissions_for_assessor($coursework);
 
         // Remove unwanted submissions.
-        $submissions = self::remove_unfinalised_submissions($submissions);
         $submissions = self::remove_ungradable_submissions($submissions);
-        $submissions = self::removed_final_graded_submissions($submissions);
 
         $canfinalgrade = has_any_capability([
                 'mod/coursework:addagreedgrade',
@@ -119,9 +124,8 @@ class submission_figures {
             );
 
         if ($canfinalgrade) {
-            $total = count($submissions);
             $remaining = self::remove_final_gradable_submissions($submissions);
-            $needsgrading += ($total - count($remaining));
+            $needsgrading = count($submissions) - count($remaining);
         }
 
         $caninitialgrade = has_any_capability([
@@ -138,24 +142,7 @@ class submission_figures {
     }
 
     /**
-     * Remove final unfinalised submissions from an array of submissions.
-     *
-     * @param array $submissions
-     * @return array
-     */
-    private static function remove_unfinalised_submissions(array $submissions): array {
-        foreach ($submissions as $sub) {
-            $submission = submission::find($sub);
-
-            if (empty($submission->finalised)) {
-                unset($submissions[$sub->id]);
-            }
-        }
-        return $submissions;
-    }
-
-    /**
-     * Remove final ungradable submissions from an array of submissions.
+     * Remove final unfinalised, ungradeable and graded submissions from an array of submissions.
      *
      * @param array $submissions
      * @return array
@@ -164,25 +151,10 @@ class submission_figures {
         foreach ($submissions as $sub) {
             $submission = submission::find($sub);
 
-            if (has_capability('mod/coursework:addallocatedagreedgrade', $submission->get_coursework()->get_context())
-                && !$submission->is_assessor_initial_grader() && $submission->all_inital_graded()) {
-                unset($submissions[$sub->id]);
-            }
-        }
-        return $submissions;
-    }
-
-    /**
-     * Remove final graded submissions from an array of submissions.
-     *
-     * @param array $submissions
-     * @return array
-     */
-    private static function removed_final_graded_submissions(array $submissions): array {
-        foreach ($submissions as $sub) {
-            $submission = submission::find($sub);
-
-            if (!empty($submission->get_final_grade() )) {
+            if (empty($submission->finalised)
+                || !empty($submission->get_final_grade())
+                || (has_capability('mod/coursework:addallocatedagreedgrade', $submission->get_coursework()->get_context())
+                    && !$submission->is_assessor_initial_grader() && $submission->all_inital_graded())) {
                 unset($submissions[$sub->id]);
             }
         }
@@ -207,7 +179,7 @@ class submission_figures {
     }
 
     /**
-     * Get the initial graded submissions dor the assessor.
+     * Get the initial graded submissions for the assessor.
      *
      * @param array $submissions
      * @return array
@@ -218,13 +190,13 @@ class submission_figures {
         foreach ($submissions as $sub) {
             $submission = submission::find($sub);
 
-            if (count($submission->get_assessor_feedbacks()) >= $submission->max_number_of_feedbacks()
-                    || $submission->is_assessor_initial_grader()
-                    && (!has_capability('mod/coursework:administergrades',
-                            $submission->get_coursework()->get_context())
-                        && !is_siteadmin($USER->id))) {
+            $hasallfeedbacks = count($submission->get_assessor_feedbacks()) >= $submission->max_number_of_feedbacks();
+            $isinitialgrader = $submission->is_assessor_initial_grader();
+            $context = $submission->get_coursework()->get_context();
+            $isadmin = has_capability('mod/coursework:administergrades', $context) || is_siteadmin($USER->id);
 
-                // Is this submission assessable by this user at an initial grading stage.
+            // Remove submissions that are not assessable by the current user at this stage.
+            if ($hasallfeedbacks || ($isinitialgrader && !$isadmin)) {
                 unset($submissions[$sub->id]);
             }
         }
