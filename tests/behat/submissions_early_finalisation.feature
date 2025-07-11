@@ -44,12 +44,12 @@ Feature: Early finalisation of student submissions
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I save the submission
     And I visit the coursework page
-    And I should see submission status "Submitted, but not finalised"
+    And I should see submission status "Not submitted"
     And I should see "Finalise your submission"
     And I click on "Finalise your submission" "button"
     And I agree to the confirm message
     Then I should be on the coursework page
-    And I should see submission status "Ready to grade"
+    And I should see submission status "Submitted"
     But I should not see the finalise submission button
 
   @javascript @_file_upload

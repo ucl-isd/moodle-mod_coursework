@@ -15,21 +15,21 @@ Feature: When a coursework has multiple markers
     Given I have an assessor feedback at grade 67
     And I log in as a student
     When I visit the coursework page
-    Then I should see submission status "Graded by some of the initial assessors"
+    Then I should see submission status "In marking"
 
   Scenario: Both markers have added draft feedback but not finalised their markers
     Given there is another teacher
     And there are draft feedbacks from both teachers
     And I log in as a student
     When I visit the coursework page
-    Then I should see submission status "Graded by all of the initial assessors (One or more grades still editable)"
+    Then I should see submission status "In marking"
 
   Scenario: Both markers have added final feedback but there is no agreed mark
     Given there is another teacher
     And there are feedbacks from both teachers
     And I log in as a student
     When I visit the coursework page
-    Then I should see submission status "Graded by all of the initial assessors"
+    Then I should see submission status "In marking"
 
   Scenario: The submission is included in sample marking and there is a final mark
     Given the coursework has sampling enabled
@@ -40,7 +40,7 @@ Feature: When a coursework has multiple markers
     And there is final feedback
     And I log in as a student
     When I visit the coursework page
-    Then I should see submission status "Final grade has been agreed between assessors"
+    Then I should see submission status "In marking"
 
   Scenario: There is a final mark
     Given there is another teacher
@@ -49,7 +49,7 @@ Feature: When a coursework has multiple markers
     And there is final feedback
     And I log in as a student
     When I visit the coursework page
-    Then I should see submission status "Graded"
+    Then I should see submission status "In marking"
 
   Scenario: The submission is included in sample marking but the final mark is not finalised
     Given the coursework has sampling enabled
@@ -60,7 +60,7 @@ Feature: When a coursework has multiple markers
     And there is draft final feedback
     And I log in as a student
     When I visit the coursework page
-    Then I should see submission status "Final grade has been agreed between assessors (Final grade still editable)"
+    Then I should see submission status "In marking"
 
   Scenario: There is a final mark but this is not finalised
     Given there is another teacher
@@ -69,7 +69,7 @@ Feature: When a coursework has multiple markers
     And there is draft final feedback
     And I log in as a student
     When I visit the coursework page
-    Then I should see submission status "Graded (Final grade still editable)"
+    Then I should see submission status "In marking"
 
   Scenario: Mark is finalised and has been released
     Given there is another teacher
