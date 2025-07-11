@@ -266,12 +266,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $template = $this->coursework_student_overview($submission);
             $template->cansubmit = true;
 
-            // TODO - what is this? what does this look like? Where should it go?
-            $coursemodule = $coursework->get_course_module();
-            $template->plagdisclosure = plagiarism_similarity_information($coursemodule);
-            $template->shouldseeeula = has_user_seen_tii_eula_agreement();
-            $template->tiienabled = $coursework->tii_enabled();
-
             // Buttons from here on down.
             // Add/Edit links.
             if ($ability->can('new', $submission)) {
@@ -286,11 +280,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             }
         }
 
-        // TODO - how does this fit in?
-        // if TII plagiarism enabled check if user agreed/disagreed EULA
-        $shouldseeeula = has_user_seen_tii_eula_agreement();
-
-        if ($ability->can('new', $submission) && (!$coursework->tii_enabled() || $shouldseeeula)) {
+        if ($ability->can('new', $submission)) {
             if ($coursework->start_date_has_passed()) {
                 $template->submissionbutton = $this->new_submission_button($submission);
             }
