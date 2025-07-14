@@ -42,54 +42,48 @@ class submission_figures {
         global $USER;
 
         $coursework = coursework::find($instance);
-        $assessorsubmissions = [];
         $context = $coursework->get_context();
         $submissions = $coursework->get_all_submissions();
 
-        if (!$coursework->has_multiple_markers()
-                && has_capability('mod/coursework:addagreedgrade', $context)
-                && !has_capability('mod/coursework:addinitialgrade', $context)) {
+        $assessorsubmissions = [];
 
-            foreach ($submissions as $sub) {
-                $submission = submission::find($sub);
+        $singlemarker = !$coursework->has_multiple_markers();
+        $canaddagreed = has_capability('mod/coursework:addagreedgrade', $context);
+        $canaddinitial = has_capability('mod/coursework:addinitialgrade', $context);
+        $isadmin = is_siteadmin($USER);
+        $allocationdisabled = !$coursework->allocation_enabled();
+        $canoverride = has_capability('mod/coursework:administergrades', $context);
 
+        foreach ($submissions as $submission) {
+            if (empty($submission)) {
+                continue;
+            }
+
+            $submission->submissiondatetime = $submission->timesubmitted;
+
+            // Case 1: Agreed grade only, and not all markers done yet.
+            if ($singlemarker && $canaddagreed && !$canaddinitial) {
                 if (count($submission->get_assessor_feedbacks()) < $submission->max_number_of_feedbacks()) {
                     continue;
                 }
-
-                if ($submission->final_grade_agreed()) {
-                    $submission->submissiondatetime = $submission->timesubmitted; // We need that for the feedback tracker.
-                }
-
                 $assessorsubmissions[] = $submission;
+                continue;
             }
-        } else if (is_siteadmin($USER) ||
-            !$coursework->allocation_enabled() ||
-            has_capability('mod/coursework:administergrades', $context)) {
-            foreach ($submissions as $sub) {
-                $submission = submission::find($sub);
+
+            // Case 2: Admin or no allocation or grading override.
+            if ($isadmin || $allocationdisabled || $canoverride) {
                 $assessorsubmissions[$submission->id] = $submission;
+                continue;
             }
 
-        } else {
-            foreach ($submissions as $sub) {
-                $submission = submission::find($sub);
-                if (empty($submission)) {
-                    continue;
-                }
+            // Case 3: Allocated assessor or allowed to add agreed grade after initial grading (and sampling if enabled).
+            $allocated = $coursework->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable());
+            $sampled = $submission->get_coursework()->sampling_enabled();
+            $initialgraded = $submission->all_inital_graded();
+            $requiresamplingcheck = $sampled && ($submission->max_number_of_feedbacks() > 1);
 
-                if ($coursework->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable())
-                    || (has_capability('mod/coursework:addagreedgrade', $context)
-                        && (($submission->all_inital_graded() && !$submission->get_coursework()->sampling_enabled())
-                            || ($submission->get_coursework()->sampling_enabled()
-                                && $submission->all_inital_graded()
-                                && ($submission->max_number_of_feedbacks() > 1)
-                            )
-                        )
-                    )
-                ) {
-                    $assessorsubmissions[$submission->id] = $submission;
-                }
+            if ($allocated || ($canaddagreed && $initialgraded && (!$sampled || $requiresamplingcheck))) {
+                $assessorsubmissions[$submission->id] = $submission;
             }
         }
 
