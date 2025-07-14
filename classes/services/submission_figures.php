@@ -45,14 +45,13 @@ class submission_figures {
         $context = $coursework->get_context();
         $submissions = $coursework->get_all_submissions();
 
-        $assessorsubmissions = [];
-
         $singlemarker = !$coursework->has_multiple_markers();
         $canaddagreed = has_capability('mod/coursework:addagreedgrade', $context);
         $canaddinitial = has_capability('mod/coursework:addinitialgrade', $context);
-        $isadmin = is_siteadmin($USER);
         $allocationdisabled = !$coursework->allocation_enabled();
         $canoverride = has_capability('mod/coursework:administergrades', $context);
+
+        $assessorsubmissions = [];
 
         foreach ($submissions as $submission) {
             if (empty($submission)) {
@@ -63,27 +62,24 @@ class submission_figures {
 
             // Case 1: Agreed grade only, and not all markers done yet.
             if ($singlemarker && $canaddagreed && !$canaddinitial) {
-                if (count($submission->get_assessor_feedbacks()) < $submission->max_number_of_feedbacks()) {
-                    continue;
+                if (count($submission->get_assessor_feedbacks()) === $submission->max_number_of_feedbacks()) {
+                    $assessorsubmissions[$submission->id] = $submission;
                 }
-                $assessorsubmissions[] = $submission;
-                continue;
-            }
 
             // Case 2: Admin or no allocation or grading override.
-            if ($isadmin || $allocationdisabled || $canoverride) {
+            } else if ($allocationdisabled || $canoverride) {
                 $assessorsubmissions[$submission->id] = $submission;
-                continue;
-            }
 
             // Case 3: Allocated assessor or allowed to add agreed grade after initial grading (and sampling if enabled).
-            $allocated = $coursework->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable());
-            $sampled = $submission->get_coursework()->sampling_enabled();
-            $initialgraded = $submission->all_inital_graded();
-            $requiresamplingcheck = $sampled && ($submission->max_number_of_feedbacks() > 1);
+            } else {
+                $allocated = $coursework->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable());
+                $sampled = $submission->get_coursework()->sampling_enabled();
+                $initialgraded = $submission->all_inital_graded();
+                $requiresamplingcheck = $sampled && ($submission->max_number_of_feedbacks() > 1);
 
-            if ($allocated || ($canaddagreed && $initialgraded && (!$sampled || $requiresamplingcheck))) {
-                $assessorsubmissions[$submission->id] = $submission;
+                if ($allocated || ($canaddagreed && $initialgraded && (!$sampled || $requiresamplingcheck))) {
+                    $assessorsubmissions[$submission->id] = $submission;
+                }
             }
         }
 
@@ -186,7 +182,7 @@ class submission_figures {
             $hasallfeedbacks = count($submission->get_assessor_feedbacks()) >= $submission->max_number_of_feedbacks();
             $isinitialgrader = $submission->is_assessor_initial_grader();
             $context = $submission->get_coursework()->get_context();
-            $isadmin = has_capability('mod/coursework:administergrades', $context) || is_siteadmin($USER->id);
+            $isadmin = has_capability('mod/coursework:administergrades', $context);
 
             // Remove submissions that are not assessable by the current user at this stage.
             if ($hasallfeedbacks || ($isinitialgrader && !$isadmin)) {
