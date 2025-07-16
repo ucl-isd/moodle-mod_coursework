@@ -123,14 +123,39 @@ Coursework.
     }
 }
 
+/* Moving parts needed while in dev here... */
 
+/* Icon to show markers. */
+td.details-control {
+    background: url([[pix:coursework|details_open]]) no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url([[pix:coursework|details_close]]) no-repeat center center;
+}
 
+/* Hide some th.  */
+table.datatabletest  th.firstname_cell,
+table.datatabletest  th.lastname_cell,
+table.datatabletest  td.first_name_cell,
+table.datatabletest  td.last_name_cell,
+table.datatabletest  th.email_cell,
+table.datatabletest  td.email_cell,
+table.datatabletest  th.firstname_letter_cell,
+table.datatabletest  th.lastname_letter_cell,
+table.datatabletest  td.first_name_letter_cell,
+table.datatabletest  td.last_name_letter_cell {
+    display: none;
+}
 
 /* TODO - review, can we just remove all this? */
 
 /**
 Coursework
 **/
+
+/* Wrap in a class so its all not used to see what happens.... */
+.path-mod-foo {
 
 table.submissions,
 table.deadlines,
@@ -829,13 +854,7 @@ table.personal-deadline-details th {
     position: relative;
 }
 
-td.details-control {
-    background: url([[pix:coursework|details_open]]) no-repeat center center;
-    cursor: pointer;
-}
-tr.shown td.details-control {
-    background: url([[pix:coursework|details_close]]) no-repeat center center;
-}
+
 
 a.paginate_button {
     margin-right: 5px;
@@ -937,18 +956,7 @@ table.dataTable thead .data-table-splitter {
     white-space: nowrap;
 }
 
-table.datatabletest  th.firstname_cell,
-table.datatabletest  th.lastname_cell,
-table.datatabletest  td.first_name_cell,
-table.datatabletest  td.last_name_cell,
-table.datatabletest  th.email_cell,
-table.datatabletest  td.email_cell,
-table.datatabletest  th.firstname_letter_cell,
-table.datatabletest  th.lastname_letter_cell,
-table.datatabletest  td.first_name_letter_cell,
-table.datatabletest  td.last_name_letter_cell {
-    display: none;
-}
+
 
 @media (min-width: 768px) {
     .dataTables_wrapper > .dataTables_length,
@@ -1209,4 +1217,6 @@ body#page-mod-coursework-actions-allocate div.table-and-jumptos form + div.jumpm
     position: absolute;
     bottom: 0;
     right: 0;
+}
+
 }
