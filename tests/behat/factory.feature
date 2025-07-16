@@ -5,13 +5,13 @@ Feature: Testing that the factories for behat steps work. If any tests fail, fix
     I want to be able to use a factory to generate the scenario context
     So that my tests are easier to write and run faster
 
-  @javascript
   Scenario: Making a coursework
     Given there is a course
     And I am logged in as a teacher
     And there is a coursework
     When I visit the coursework page
-    Then I should see "Coursework 1" in the "#page-header" "css_element"
+    Then I should see the title of the coursework on the page
+    And I should see the description of the coursework on the page
 
   Scenario: the submission factory works properly and shows the file on the page
     Given there is a course

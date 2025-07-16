@@ -1543,6 +1543,24 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * Custom step because the standard Moodle module header containing the
+     * description is hidden on page but "I should see" will find that instead.
+     *
+     * @Then /^I should see the description of the coursework on the page$/
+     */
+    public function i_should_see_the_description_of_the_coursework_on_the_page() {
+        $page = $this->getSession()->getPage();
+
+        // "Test coursework 1" set by data generator.
+        $match = $page->find('xpath', "//h3[text() = 'Description']/following-sibling::*[1][text() = 'Test coursework 1']");
+
+        if (!$match) {
+            throw new ExpectationException("Should have seen expected description 'Test coursework 1', but it was not there",
+            $this->getSession());
+        }
+    }
+
+    /**
      * @Then /^the coursework "([\w]+)" setting should be "([\w]*)" in the database$/
      * @param $settingname
      * @param $settingvalue

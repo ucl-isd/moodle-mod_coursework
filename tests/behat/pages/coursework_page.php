@@ -81,7 +81,7 @@ class mod_coursework_behat_coursework_page extends mod_coursework_behat_page_bas
     }
 
     public function get_coursework_name($courseworkname) {
-        $courseworkheading = $this->getPage()->find('css', 'h2');
+        $courseworkheading = $this->getPage()->find('css', '#page-header');
         $courseworkheadingpresent = strpos($courseworkheading->getText(), $courseworkname);
 
         return $courseworkheadingpresent !== false;
