@@ -39,7 +39,6 @@ class submission_figures {
      * @return array
      */
     public static function get_submissions_for_assessor(int $instance): array {
-        global $USER;
 
         $coursework = coursework::find($instance);
         $context = $coursework->get_context();
@@ -176,7 +175,6 @@ class submission_figures {
      * @return array
      */
     private static function get_assessor_initial_graded_submissions(array $submissions): array {
-        global $USER;
 
         foreach ($submissions as $submission) {
             $hasallfeedbacks = count($submission->get_assessor_feedbacks()) >= $submission->max_number_of_feedbacks();
