@@ -126,7 +126,7 @@ jobs:
 
       - name: Behat features
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci behat --profile firefox
+        run: moodle-plugin-ci behat --profile headlessfirefox
 
       - name: Mark cancelled jobs as failed.
         if: ${{ cancelled() }}
