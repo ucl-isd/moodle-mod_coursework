@@ -91,12 +91,8 @@ M.mod_coursework.initialGradeDisable  =   function(disabled) {
         disabled = true;
     }
 
-    $('#id_initialmarkingdeadline_day').prop('disabled',disabled);
-    $('#id_initialmarkingdeadline_month').prop('disabled',disabled);
-    $('#id_initialmarkingdeadline_year').prop('disabled',disabled);
-    $('#id_initialmarkingdeadline_hour').prop('disabled',disabled);
-    $('#id_initialmarkingdeadline_minute').prop('disabled',disabled);
-    $('#id_initialmarkingdeadline_enabled').prop('disabled',disabled);
+    $('#fitem_id_initialmarkingdeadline').addClass('d-none');
+
 }
 
 
@@ -107,12 +103,7 @@ M.mod_coursework.agreedGradeDisable  =   function(disabled) {
         disabled = true;
     }
 
-    $('#id_agreedgrademarkingdeadline_day').prop('disabled',disabled);
-    $('#id_agreedgrademarkingdeadline_month').prop('disabled',disabled);
-    $('#id_agreedgrademarkingdeadline_year').prop('disabled',disabled);
-    $('#id_agreedgrademarkingdeadline_hour').prop('disabled',disabled);
-    $('#id_agreedgrademarkingdeadline_minute').prop('disabled',disabled);
-    $('#id_agreedgrademarkingdeadline_enabled').prop('disabled',disabled);
+    $('#fitem_id_agreedgrademarkingdeadline').addClass('d-none');
 }
 
 M.mod_coursework.personalDeadlineDisable  =   function(disabled) {
@@ -121,7 +112,7 @@ M.mod_coursework.personalDeadlineDisable  =   function(disabled) {
         disabled = true;
     }
 
-    $('#id_personaldeadlineenabled').prop('disabled',disabled);
+    $('#fitem_id_personaldeadlineenabled').addClass('d-none');
 
 }
 
@@ -133,7 +124,7 @@ M.mod_coursework.relativeInitalGradeDisable  =   function(disabled) {
         disabled = true;
     }
 
-    $('#id_relativeinitialmarkingdeadline').prop('disabled',disabled);
+    $('#fitem_id_relativeinitialmarkingdeadline').addClass('d-none');
 
 }
 
@@ -143,6 +134,6 @@ M.mod_coursework.relativeAgreedGradeDisable  =   function(disabled) {
         disabled = true;
     }
 
-    $('#id_relativeagreedmarkingdeadline').prop('disabled',disabled);
+    $('#fitem_id_relativeagreedmarkingdeadline').addClass('d-none');
 
 }
