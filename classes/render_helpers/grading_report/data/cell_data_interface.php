@@ -35,8 +35,8 @@ interface cell_data_interface {
     /**
      * Get the data for the table cell.
      *
-     * @param grading_table_row_base $rowobject
+     * @param grading_table_row_base $rowsbase
      * @return stdClass|null The data object for template rendering.
      */
-    public function get_table_cell_data(grading_table_row_base $rowobject): ?stdClass;
+    public function get_table_cell_data(grading_table_row_base $rowsbase): ?stdClass;
 }

@@ -1,10 +1,10 @@
-<tr data-status="{{status}}"
-    data-marker="{{#markers}} {{{markerfilter}}}, {{/markers}}
-    ">
+<tr data-status="{{status}}" data-marker="{{{markerfilter}}}">
         {{! User. }}
         <td>
             <div class="d-flex align-items-center">
-            <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{studentimg}}'); height: 2rem; width: 2rem;"></div>
+                {{#studentimg}}
+                    <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{studentimg}}'); height: 2rem; width: 2rem;"></div>
+                {{/studentimg}}
             {{{student}}}
             </div>
         </td>
@@ -19,7 +19,14 @@
                     {{#submittedlate}}
                         <span class="badge badge-warning">Submitted late</span><br>
                     {{/submittedlate}}
-                    <span class="sr-only">Date submitted</span><small>{{{datemodified}}}</small><br>
+                    {{#datemodified}}
+                    <span class="sr-only">Date submitted</span>
+                        <small>
+                            {{#userdate}}
+                                {{.}},{{#str}}strftimedatetime, langconfig{{/str}}
+                            {{/userdate}}
+                        </small><br>
+                    {{/datemodified}}
                     {{#files}}
                         <span class="sr-only">File submitted</span><a href="{{{url}}}"><i class="fa-regular fa-file-lines mr-2"></i>{{filename}}</a><br>
                         {{#plagiarismlinks}}
@@ -30,11 +37,23 @@
                 {{^submissiondata}}
                     {{#extensiongranted}}
                         <span class="badge badge-success">Extension granted</span><br>
-                        <span class="sr-only">Due date</span><small>Due: {{{extensiondeadline}}}</small>
+                        {{#extensiondeadline}}
+                            <span class="sr-only">Due date</span>
+                            <small>Due:
+                                {{#userdate}}
+                                    {{.}},{{#str}}strftimedatetime, langconfig{{/str}}
+                                {{/userdate}}
+                            </small><br>
+                        {{/extensiondeadline}}
                     {{/extensiongranted}}
                     {{^extensiongranted}}
                         {{#duedate}}
-                            <span class="sr-only">Due date</span><small>Due: {{{duedate}}}</small>
+                            <span class="sr-only">Due date</span>
+                            <small>Due:
+                                {{#userdate}}
+                                    {{.}},{{#str}}strftimedatetime, langconfig{{/str}}
+                                {{/userdate}}
+                            </small>
                         {{/duedate}}
                     {{/extensiongranted}}
                 {{/submissiondata}}
@@ -42,7 +61,7 @@
         </td>
 
         {{! Marking. }}
-        <td>
+        <td class="marking-col">
             <ol class="list-unstyled p-0 m-0" aria-label="Markers and agreed mark">
                 {{#markers}}
                 <li class="d-flex mb-2">
@@ -86,6 +105,19 @@
                     {{/addfeedback}}
                 </li>
                 {{/markers}}
+                <!-- No allocated markers. -->
+                {{^markers}}
+                <li class="d-flex mb-2">
+                    <div>
+                        hello
+                    </div>
+                    {{#addfeedback}}
+                        <div class="text-right ml-auto">
+                            <a href="{{{url}}}" class="btn btn-primary btn-sm">Add feedback</a>
+                        </div>
+                    {{/addfeedback}}
+                </li>
+                {{/markers}}
 
                 {{#agreedmark}}
                 <li class="d-flex mb-2">
@@ -115,9 +147,9 @@
                         <a href="{{{url}}}" class="font-weight-bold pl-1">{{mark}}</a>
                     {{/mark}}
 
-                    {{#addfedback}}
+                    {{#addfinalfeedback}}
                     <a href="{{{url}}}" class="btn btn-sm btn-success">Add agreed feedback</a>
-                    {{/addfedback}}
+                    {{/addfinalfeedback}}
                 </div>
                 </li>
                 {{/agreedmark}}

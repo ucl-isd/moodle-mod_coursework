@@ -36,15 +36,15 @@ class student_cell_data extends cell_data_base {
     /**
      * Get the data for the student cell.
      *
-     * @param grading_table_row_base $rowobject
+     * @param grading_table_row_base $rowsbase
      * @return stdClass|null The data object for template rendering.
      */
-    public function get_table_cell_data(grading_table_row_base $rowobject): ?stdClass {
+    public function get_table_cell_data(grading_table_row_base $rowsbase): ?stdClass {
         $user = new stdClass();
-        $user->name = $rowobject->get_user_name(true);
+        $user->name = $rowsbase->get_user_name(true);
         $user->picture = '';
-        if ($rowobject->can_view_username() || $rowobject->is_published()) {
-            $user->picture = $rowobject->get_user_picture();
+        if ($rowsbase->can_view_username() || $rowsbase->is_published()) {
+            $user->picture = $rowsbase->get_user_picture();
         }
 
         return $user;

@@ -1881,6 +1881,20 @@ class coursework extends table_base {
         return $report;
     }
 
+    public function get_currentstage() {
+        $stage = null;
+        if ($this->has_multiple_markers()) {
+            $stage = $this->get_final_grade_stage();
+        } else {
+            $assessorstages = $this->get_assessor_marking_stages();
+            $stage = reset($assessorstages);
+        }
+        if ($this->moderation_agreement_enabled()) {
+            $stage = $this->get_moderator_grade_stage();
+        }
+        return $stage;
+    }
+
     /**
      * @return bool
      */

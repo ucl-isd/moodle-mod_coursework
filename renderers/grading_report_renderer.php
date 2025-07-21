@@ -27,7 +27,7 @@ use mod_coursework\grading_table_row_base;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\render_helpers\grading_report\cells\cell_interface;
-use mod_coursework\render_helpers\grading_report\cells\user_cell;
+use mod_coursework\render_helpers\grading_report\data\marking_cell_data;
 use mod_coursework\render_helpers\grading_report\data\student_cell_data;
 use mod_coursework\render_helpers\grading_report\data\submission_cell_data;
 use mod_coursework\render_helpers\grading_report\sub_rows\sub_rows_interface;
@@ -67,6 +67,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
 
         $template = new stdClass();
         $template->tr = [];
+        $template->markerfilter = [];
 
         /** @var grading_table_row_base $rowobject */
         foreach ($tablerows as $rowobject) {
@@ -77,11 +78,26 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
             // Submission cell.
             $this->prepare_submission_cell_data($gradingreport, $rowobject, $trdata);
 
+            // Marking cell.
+            $this->prepare_marking_cell_data($gradingreport, $rowobject, $trdata);
+
             // Mark tr status.
             $this->mark_tr_status($trdata);
 
+            $this->mark_tr_marker_filter($trdata);
+
             $template->tr[] = $trdata;
+
+            if (!empty($trdata->markers)) {
+                // Add valid markers to filter, preserving only first occurrence.
+                foreach (array_filter($trdata->markers, fn($m) => isset($m->markerid)) as $marker) {
+                    if (!array_key_exists($marker->markerid, $template->markerfilter)) {
+                        $template->markerfilter[$marker->markerid] = $marker;
+                    }
+                }
+            }
         }
+        $template->markerfilter = array_values($template->markerfilter);
 
         return $this->render_from_template('mod_coursework/submissions/table', $template);
     }
@@ -114,6 +130,13 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         $trdata->submission = $dataprovider->get_table_cell_data($rowobject);
     }
 
+    protected function prepare_marking_cell_data(grading_report $gradingreport, grading_table_row_base $rowobject, stdClass $trdata) {
+        $dataprovider = new marking_cell_data($gradingreport->get_coursework());
+        $markingcelldata = $dataprovider->get_table_cell_data($rowobject);
+        $trdata->markers = $markingcelldata->markers;
+        $trdata->agreedmark = !empty($markingcelldata->agreedmark) ? $markingcelldata->agreedmark : null;
+    }
+
     /**
      * Mark tr status.
      *
@@ -139,6 +162,19 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         }
 
         $trdata->status = implode(', ', $status);
+    }
+
+    /**
+     * Set marker filter data for table row.
+     *
+     * @param stdClass $trdata Table row data
+     */
+    protected function mark_tr_marker_filter(stdClass $trdata): void {
+        if (empty($trdata->markers)) {
+            return;
+        }
+
+        $trdata->markerfilter = implode(', ', array_column((array)$trdata->markers, 'markeridentifier'));
     }
 
     protected function render_agreed_mark($coursework, $rowobject) {

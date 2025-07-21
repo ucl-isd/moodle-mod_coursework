@@ -46,30 +46,12 @@
                         </div>
                         <div class="col-6">
                             <h4 class="badge badge-dark">Marker</h4>
+                            {{#markerfilter}}
                             <div class="pb-1 custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="filter-joanna-russ" data-filter-type="marker" data-filter-value="joanna-russ">
-                                <label class="custom-control-label" for="filter-joanna-russ">Joanna Russ</label>
+                                <input type="checkbox" class="custom-control-input" id="filter-{{markeridentifier}}" data-filter-type="marker" data-filter-value="{{markeridentifier}}">
+                                <label class="custom-control-label" for="filter-{{markeridentifier}}">{{markername}}</label>
                             </div>
-                            <div class="pb-1 custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="filter-margaret-atwood" data-filter-type="marker" data-filter-value="margaret-atwood">
-                                <label class="custom-control-label" for="filter-margaret-atwood">Margaret Atwood</label>
-                            </div>
-                            <div class="pb-1 custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="filter-mary-shelley" data-filter-type="marker" data-filter-value="mary-shelley">
-                                <label class="custom-control-label" for="filter-mary-shelley">Mary Shelley</label>
-                            </div>
-                            <div class="pb-1 custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="filter-n-k-jemisin" data-filter-type="marker" data-filter-value="n-k-jemisin">
-                                <label class="custom-control-label" for="filter-n-k-jemisin">N.K. Jemisin</label>
-                            </div>
-                            <div class="pb-1 custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="filter-octavia-butler" data-filter-type="marker" data-filter-value="octavia-butler">
-                                <label class="custom-control-label" for="filter-octavia-butler">Octavia E. Butler</label>
-                            </div>
-                            <div class="pb-1 custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="filter-ursula-le-guin" data-filter-type="marker" data-filter-value="ursula-le-guin">
-                                <label class="custom-control-label" for="filter-ursula-le-guin">Ursula K. Le Guin</label>
-                            </div>
+                            {{/markerfilter}}
                         </div>
                     </div>
                 </div>
