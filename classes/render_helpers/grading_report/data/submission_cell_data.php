@@ -38,32 +38,22 @@ use stdClass;
  */
 class submission_cell_data extends cell_data_base {
     /**
-     * Date format used throughout the class.
-     * %d - Day of month (1-31)
-     * %b - Abbreviated month name in lowercase
-     * %I - Hour in 12-hour format (01-12)
-     * %M - Minutes (00-59)
-     * %P - am/pm indicator in lowercase
-     */
-    private const DATE_FORMAT = '%d %b %I:%M%P';
-
-    /**
      * Get the data for the submission cell.
      *
-     * @param grading_table_row_base $rowobject
+     * @param grading_table_row_base $rowsbase
      * @return stdClass|null The data object for template rendering.
      */
-    public function get_table_cell_data(grading_table_row_base $rowobject): ?stdClass {
+    public function get_table_cell_data(grading_table_row_base $rowsbase): ?stdClass {
         $data = new stdClass();
 
-        if ($rowobject->has_submission() && $this->ability->can('show', $rowobject->get_submission())) {
-            $this->add_submission_data($data, $rowobject);
+        if ($rowsbase->has_submission() && $this->ability->can('show', $rowsbase->get_submission())) {
+            $this->add_submission_data($data, $rowsbase);
         }
 
-        $this->add_extension_data($data, $rowobject);
+        $this->add_extension_data($data, $rowsbase);
         $data->duedate = null;
-        if ($rowobject->get_coursework()->get_deadline()) {
-            $data->duedate = userdate($rowobject->get_coursework()->get_deadline(), self::DATE_FORMAT);
+        if ($rowsbase->get_coursework()->get_deadline()) {
+            $data->duedate = $rowsbase->get_coursework()->get_deadline();
         }
 
         return $data;
@@ -77,7 +67,7 @@ class submission_cell_data extends cell_data_base {
      */
     protected function add_submission_data(stdClass $data, grading_table_row_base $rowobject): void {
         $submission = $rowobject->get_submission();
-        $data->datemodified = userdate($submission->time_submitted(), self::DATE_FORMAT);
+        $data->datemodified = $submission->time_submitted();
         $data->submissiondata = new stdClass();
         $data->submissiondata->files = $this->get_submission_files_data($rowobject);
 
@@ -88,17 +78,17 @@ class submission_cell_data extends cell_data_base {
     /**
      * Get data for submission files.
      *
-     * @param grading_table_row_base $rowobject Row object containing submission files.
+     * @param grading_table_row_base $rowsbase Row object containing submission files.
      * @return array Array of file data objects.
      */
-    protected function get_submission_files_data(grading_table_row_base $rowobject): array {
+    protected function get_submission_files_data(grading_table_row_base $rowsbase): array {
         $files = [];
-        $submissionfiles = $rowobject->get_submission_files();
+        $submissionfiles = $rowsbase->get_submission_files();
 
         if ($submissionfiles) {
-            $coursework = $rowobject->get_coursework();
+            $coursework = $rowsbase->get_coursework();
             foreach ($submissionfiles->get_files() as $file) {
-                $files[] = $this->prepare_file_data($file, $coursework, $rowobject->get_submission()->id);
+                $files[] = $this->prepare_file_data($file, $coursework, $rowsbase->get_submission()->id);
             }
         }
 
@@ -188,7 +178,7 @@ class submission_cell_data extends cell_data_base {
 
         if ($extension->persisted()) {
             $data->extensiongranted = true;
-            $data->extensiondeadline = userdate($extension->extended_deadline, self::DATE_FORMAT);
+            $data->extensiondeadline = $extension->extended_deadline;
         }
     }
 }

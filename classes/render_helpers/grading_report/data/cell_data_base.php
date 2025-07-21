@@ -56,12 +56,4 @@ abstract class cell_data_base implements cell_data_interface {
         $this->coursework = $coursework;
         $this->ability = new ability(user::find($USER), $this->coursework);
     }
-
-    /**
-     * Get the data for the table cell.
-     *
-     * @param grading_table_row_base $rowobject
-     * @return stdClass|null The data object for template rendering.
-     */
-    abstract public function get_table_cell_data(grading_table_row_base $rowobject): ?stdClass;
 }

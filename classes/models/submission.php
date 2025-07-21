@@ -930,6 +930,7 @@ class submission extends table_base implements \renderable {
 
     /**
      * @return bool
+     * @throws \coding_exception
      */
     public function ready_to_publish() {
 
@@ -1372,13 +1373,13 @@ class submission extends table_base implements \renderable {
 					        {coursework_submissions} cs,
 					        {coursework_feedbacks} cf
 			         WHERE 	c.id = cs.courseworkid
-			         AND	cs.id = cf.submissionid
-			         AND	c.numberofmarkers > 1
-			         AND 	cs.finalised = 1
-			         AND	c.gradeeditingtime != 0
-			         AND	cf.stage_identifier NOT LIKE 'final_agreed%'
-			         AND	cs.id = :submissionid
-			         AND    cf.timecreated + c.gradeeditingtime > :time
+323             AND	cs.id = cf.submissionid
+323             AND	c.numberofmarkers > 1
+323             AND 	cs.finalised = 1
+323             AND	c.gradeeditingtime != 0
+323             AND	cf.stage_identifier NOT LIKE 'final_agreed%'
+323             AND	cs.id = :submissionid
+323             AND    cf.timecreated + c.gradeeditingtime > :time
         ";
 
         $editablefeedbacks = $DB->get_records_sql($sql, ['submissionid' => $this->id, 'time' => time()]);
