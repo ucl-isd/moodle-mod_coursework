@@ -126,7 +126,7 @@ class grading_sheet extends csv {
         // groups
         if ($this->coursework->is_configured_to_have_group_submissions()) {
             $group = \mod_coursework\models\group::find($submission->allocatableid);
-            $csvdata[] = $this->add_cells_to_array($submission, $group, $this->csv_cells);
+            $csvdata[] = $this->add_cells_to_array($submission, $group, $this->csvcells);
 
         } else {
             // students
@@ -134,7 +134,7 @@ class grading_sheet extends csv {
 
             foreach ($students as $student) {
                 $student = \mod_coursework\models\user::find($student);
-                $csvdata[] = $this->add_cells_to_array($submission, $student, $this->csv_cells);
+                $csvdata[] = $this->add_cells_to_array($submission, $student, $this->csvcells);
             }
         }
 

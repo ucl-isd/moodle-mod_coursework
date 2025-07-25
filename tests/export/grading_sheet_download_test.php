@@ -22,18 +22,23 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace mod_coursework\export;
+
+use stdClass;
 
 /**
+ * Unit test for downloading grading sheet.
+ *
  * @property mixed feedback_data
  * @property mixed csv
  * @group mod_coursework
  */
-final class grading_sheet_download_test extends advanced_testcase {
+final class grading_sheet_download_test extends \advanced_testcase {
 
-    use mod_coursework\test_helpers\factory_mixin;
+    use \mod_coursework\test_helpers\factory_mixin;
 
     public function setUp(): void {
+        parent::setUp();
 
         $this->resetAfterTest();
 
@@ -78,7 +83,7 @@ final class grading_sheet_download_test extends advanced_testcase {
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('gradingsheetfor', 'coursework'). $coursework->name .' '.$timestamp;
         $gradingsheet = new \mod_coursework\export\grading_sheet($coursework, $csvcells, $filename);
-        $actualsubmission = $gradingsheet->add_cells_to_array($submission, $student, $csvcells);
+        $actualsubmission = $gradingsheet->add_csv_data($submission);
 
         $studentname = $student->lastname .' '.$student->firstname;
 
@@ -93,7 +98,7 @@ final class grading_sheet_download_test extends advanced_testcase {
             '6' => '',
         ];
 
-        $this->assertEquals($expectedsubmission, $actualsubmission);
+        $this->assertEquals($expectedsubmission, $actualsubmission[0]);
     }
 
     /**
@@ -173,8 +178,8 @@ final class grading_sheet_download_test extends advanced_testcase {
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('gradingsheetfor', 'coursework'). $coursework->name .' '.$timestamp;
         $gradingsheet = new \mod_coursework\export\grading_sheet($coursework, $csvcells, $filename);
-        $actualsubmission1 = $gradingsheet->add_cells_to_array($submission1, $student1, $csvcells);
-        $actualsubmission2 = $gradingsheet->add_cells_to_array($submission2, $student2, $csvcells);
+        $actualsubmission1 = $gradingsheet->add_csv_data($submission1);
+        $actualsubmission2 = $gradingsheet->add_csv_data($submission2);
         $actualsubmission = array_merge($actualsubmission1, $actualsubmission2);
 
         $studentname1 = $student1->lastname .' '.$student1->firstname;
@@ -185,34 +190,38 @@ final class grading_sheet_download_test extends advanced_testcase {
 
         // Build an array.
         $expectedsubmission = [
-            '0' => $submission1->id,
-            '1' => $coursework->get_username_hash($student1->id),
-            '2' => $studentname1,
-            '3' => $student1->username,
-            '4' => 'On time',
-            '5' => $assessor1name,
-            '6' => '',
-            '7' => '',
-            '8' => $assessor2name,
-            '9' => $feedbackdata1->grade,
-            '10' => $feedbackdata1->feedbackcomment,
-            '11' => '',
-            '12' => '',
-            '13' => $submission2->id,
-            '14' => $coursework->get_username_hash($student2->id),
-            '15' => $studentname2,
-            '16' => $student2->username,
-            '17' => 'On time',
-            '18' => $assessor2name,
-            '19' => $feedbackdata2->grade,
-            '20' => $feedbackdata2->feedbackcomment,
-            '21' => $assessor1name,
-            '22' => $feedbackdata3->grade,
-            '23' => $feedbackdata3->feedbackcomment,
-            '24' => $feedbackdata4->grade,
-            '25' => $feedbackdata4->feedbackcomment,
+            [
+                $submission1->id,
+                $coursework->get_username_hash($student1->id),
+                $studentname1,
+                $student1->username,
+                'On time',
+                $assessor1name,
+                '',
+                '',
+                $assessor2name,
+                $feedbackdata1->grade,
+                $feedbackdata1->feedbackcomment,
+                '',
+                '',
+            ],
+            [
+                $submission2->id,
+                $coursework->get_username_hash($student2->id),
+                $studentname2,
+                $student2->username,
+                'On time',
+                $assessor2name,
+                $feedbackdata2->grade,
+                $feedbackdata2->feedbackcomment,
+                $assessor1name,
+                $feedbackdata3->grade,
+                $feedbackdata3->feedbackcomment,
+                $feedbackdata4->grade,
+                $feedbackdata4->feedbackcomment,
+            ],
         ];
+
         $this->assertEquals($expectedsubmission, $actualsubmission);
     }
 }
-
