@@ -594,10 +594,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= $warnings->percentage_allocations_not_complete();
         $html .= $warnings->student_in_no_group();
 
-        $pageurl = $this->page->url;
-        $params = $this->page->url->params();
-        $links = [];
-
         // display 'Group mode' with the relevant groups
         $currenturl = new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]);
         $html .= groups_print_activity_menu($coursework->get_course_module(), $currenturl->out(), true);
@@ -613,40 +609,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $html .= html_writer::link($url, get_string('resettable'));
             $html .= html_writer::end_div();
         }
-
-        $finalisedsubmissions = submission::$pool[$coursework->id]['finalised'][1] ?? [];
-        if ($finalisedsubmissions && !empty($gradingreport->get_table_rows_for_page())
-            && !empty($submissions)) {
-
-            $url = $pageurl.'&download=1';
-            $links[$url] = get_string('download_submitted_files', 'coursework');
-        }
-        // export final grades button
-        if (has_capability('mod/coursework:viewallgradesatalltimes',
-                           $this->page->context) && has_capability('mod/coursework:canexportfinalgrades', $this->page->context)
-            && $coursework->get_finalised_submissions()
-        ) {
-            $url = $pageurl.'&export=1';
-            $links[$url] = get_string('exportfinalgrades', 'mod_coursework');
-        }
-
-        if (!empty($gradingreport->get_table_rows_for_page()) && !empty($submissions)
-            &&(has_capability('mod/coursework:addinitialgrade', $this->page->context)
-            || has_capability('mod/coursework:addagreedgrade', $this->page->context)
-            || has_capability('mod/coursework:addallocatedagreedgrade', $this->page->context)
-            || has_capability('mod/coursework:administergrades', $this->page->context))
-            && $coursework->get_finalised_submissions()) {
-            // Export grading sheet
-            $url = $pageurl.'&export_grading_sheet=1';
-            $links[$url] = get_string('exportgradingsheets', 'mod_coursework');
-            // Import grading sheet
-            $url = '/mod/coursework/actions/upload_grading_sheet.php?cmid='.$this->page->cm->id;
-            $links[$url] = get_string('uploadgradingworksheet', 'mod_coursework');
-            // Import annotated submissions
-            $url = '/mod/coursework/actions/upload_feedback.php?cmid='.$this->page->cm->id;
-            $links[$url] = get_string('uploadfeedbackfiles', 'mod_coursework');
-        }
-
 
         if ($firstnamealpha || $lastnamealpha || $groupnamealpha || $group != -1) {
             $html .= $warnings->filters_warning();

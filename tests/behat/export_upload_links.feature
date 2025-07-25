@@ -34,8 +34,8 @@ Feature: Download and upload buttons on submissions page
     And I visit the coursework page
     And I click on "Download" "button"
     Then I should see "Download submitted files"
-    And I should see "Export grading sheet"
-    But I should not see "Export grades"
+    And I should see "Download grading sheet"
+    But I should not see "Download grades"
 
   @javascript
   Scenario: An admin should see the expected download menu items
@@ -45,8 +45,8 @@ Feature: Download and upload buttons on submissions page
     And I visit the coursework page
     And I click on "Download" "button"
     Then I should see "Download submitted files"
-    And I should see "Export grades"
-    And I should see "Export grading sheet"
+    And I should see "Download grades"
+    And I should see "Download grading sheet"
 
   @javascript
   Scenario: A teacher should see the expect upload menu items
