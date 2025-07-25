@@ -40,22 +40,34 @@ class mod_coursework_behat_coursework_page extends mod_coursework_behat_page_bas
      * @return bool
      */
     public function individual_feedback_date_present() {
-        $table = $this->getPage()->find('css', 'table.deadlines');
-        $tableheaderpresent = strpos($table->getText(), 'utomatically release individual feedback') !== false;
-        return $tableheaderpresent;
+        $things = $this->getPage()->findAll('css', 'h3');
+
+        foreach ($things as $thing) {
+            if ($thing->getText() == 'Automatically release individual feedback after:') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
      * @return bool
      */
     public function general_feedback_date_present() {
-        $table = $this->getPage()->find('css', 'table.deadlines');
-        $tableheaderpresent = strpos($table->getText(), 'General feedback deadline');
-        return $tableheaderpresent !== false;
+        $things = $this->getPage()->findAll('css', 'h3');
+
+        foreach ($things as $thing) {
+            if ($thing->getText() == 'General feedback deadline:') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function confirm() {
-        if ($this->has_that_thing('input', 'Yes')) {
+        if ($this->has_that_thing("input[type='submit']", 'Yes')) {
             $this->click_that_thing('input', 'Yes');
         } else if ($this->has_that_thing('button', 'Yes')) {
             $this->click_that_thing('button', 'Yes');
@@ -69,7 +81,7 @@ class mod_coursework_behat_coursework_page extends mod_coursework_behat_page_bas
     }
 
     public function get_coursework_name($courseworkname) {
-        $courseworkheading = $this->getPage()->find('css', 'h2');
+        $courseworkheading = $this->getPage()->find('css', '#page-header');
         $courseworkheadingpresent = strpos($courseworkheading->getText(), $courseworkname);
 
         return $courseworkheadingpresent !== false;
