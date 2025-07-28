@@ -51,8 +51,6 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @return string
      */
     public function render_grading_report($gradingreport, $ismultiplemarkers) {
-        $langelement = $this->generate_lang_element();
-
         $options = $gradingreport->get_options();
         $tablerows = $gradingreport->get_table_rows_for_page();
         $cellhelpers = $gradingreport->get_cells_helpers();
@@ -63,7 +61,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         $this->rowclass = $ismultiplemarkers ? 'submissionrowmulti' : 'submissionrowsingle';
 
         if (empty($tablerows)) {
-            return $langelement . '<div class="no-users">'.get_string('nousers', 'coursework').'</div><br>';
+            return '<div class="no-users">'.get_string('nousers', 'coursework').'</div><br>';
         }
 
         $tablehtml = $this->start_table($options);
@@ -74,29 +72,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         $tablehtml .= '</tbody>';
         $tablehtml .= $this->end_table();
 
-        return  $langelement . $tablehtml;
-    }
-
-    /**
-     *
-     * @return mixed
-     */
-    private function generate_lang_element() {
-        $langmessages = [
-            'download_submitted_files' => get_string('download_submitted_files', 'mod_coursework'),
-            'exportfinalgrades' => get_string('exportfinalgrades', 'mod_coursework'),
-            'exportgradingsheets' => get_string('exportgradingsheets', 'mod_coursework'),
-            'loadingpagination' => get_string('loadingpagination', 'mod_coursework'),
-        ];
-        $result = html_writer::empty_tag('input', [
-            'name' => '',
-            'type' => 'hidden',
-            'data-lang' => json_encode($langmessages),
-            'id' => 'element_lang_messages',
-        ]);
-        $result = html_writer::div($result);
-
-        return $result;
+        return  $tablehtml;
     }
 
     /**

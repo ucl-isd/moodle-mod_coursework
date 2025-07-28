@@ -1587,12 +1587,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                     ],
                     [
                         'url' => new moodle_url($viewurl, ['id' => $cmid, 'export' => 1]),
-                        'lang' => 'exportfinalgrades',
+                        'lang' => 'downloadgrades',
                         'cap' => ($can('mod/coursework:viewallgradesatalltimes') && $can('mod/coursework:canexportfinalgrades') && $hasfinalised),
                     ],
                     [
                         'url' => new moodle_url($viewurl, ['id' => $cmid, 'export_grading_sheet' => 1]),
-                        'lang' => 'exportgradingsheets',
+                        'lang' => 'downloadgradingsheets',
                         'cap' => $canmark,
                     ],
                 ],
@@ -1602,7 +1602,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 'actions' => [
                     [
                         'url' => new moodle_url('/mod/coursework/actions/upload_grading_sheet.php', ['cmid' => $cmid]),
-                        'lang' => 'uploadgradingworksheet',
+                        'lang' => 'uploadgradingsheet',
                         'cap' => $canmark,
                     ],
                     [
