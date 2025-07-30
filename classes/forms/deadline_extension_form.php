@@ -126,5 +126,4 @@ class deadline_extension_form extends \moodleform {
 
         return  $personaldeadline = $DB->get_record('coursework_person_deadlines', $params);
     }
-
 }

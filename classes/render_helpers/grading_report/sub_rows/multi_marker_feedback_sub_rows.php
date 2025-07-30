@@ -86,7 +86,6 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         }
         $needsgradedby = $coursework->allocation_enabled() && $feedbackrow->has_feedback()
             && $feedbackrow->get_graded_by() != $feedbackrow->get_assessor();
-
         $gradedby = $needsgradedby
             ? get_string('gradedbyname', 'mod_coursework', $feedbackrow->get_graders_name())
             : '';

@@ -1,5 +1,5 @@
 define('mod_coursework/coursework_edit',
-    ['jquery', 'core/notification', 'core/modal'], function($, Notification, Modal) {
+    ['jquery', 'core/notification', 'core/modal', 'core/str'], function($, Notification, Modal, str) {
     return {
         init: function() {
 // Add the init function:
@@ -184,10 +184,7 @@ define('mod_coursework/coursework_edit',
                  * Extensions
                  */
 
-                /**
-                 * Add new extension
-                 */
-                $('.datatabletest').on('click', '.new_deadline_extension', function(e) {
+                $('.coursework-actions').on('click', '.new_deadline_extension', function(e) {
                     e.preventDefault();
                     var data_name = $(this).attr('data-name');
                     var data_params = JSON.parse($(this).attr('data-params'));
@@ -197,11 +194,7 @@ define('mod_coursework/coursework_edit',
                     $('#modal-ajax').modal('show');
                 });
 
-                /**
-                 * Edit extensions
-                 */
-                $('.datatabletest').on('click', '.edit_deadline_extension', function(e) {
-
+                $('.coursework-actions').on('click', '.edit_deadline_extension', function(e) {
                     e.preventDefault();
                     var data_name = $(this).attr('data-name');
                     var data_params = JSON.parse($(this).attr('data-params'));
@@ -237,7 +230,7 @@ define('mod_coursework/coursework_edit',
                             $('html, body').css("cursor", "wait");
                             $('.modal-footer').children('img').css('visibility', 'visible');
                         },
-                        success: function(response, table_obj_list) {
+                        success: function(response) {
                             var data_response = JSON.parse(response);
                             $('html, body').css("cursor", "auto");
                             $('.modal-footer').children('img').css('visibility', 'hidden');
@@ -249,25 +242,8 @@ define('mod_coursework/coursework_edit',
                                     removeOnClose: true,
                                 });
                             } else {
-                                if (Object.keys(table_obj_list).length > 0) {
-                                    // Get the first datatable object.
-                                    var table = table_obj_list[Object.keys(table_obj_list)[0]];
-                                    if (table.row) {
-                                        var current_row_data = table.row('#' + current_rowid).data();
-                                        var submissiondateindex = table.column('.tableheaddate').index();
-                                        var current_moderation_cell_data = data_response.content;
-                                        current_row_data[submissiondateindex] = current_moderation_cell_data;
-                                        var table_row = table.row('#' + current_rowid);
-                                        table_row.data(current_row_data);
-                                        var dom_row = $('#' + current_rowid);
-                                        dom_row.find('.time_submitted_cell').attr('data-order',
-                                            current_moderation_cell_data['@data-order']);
-                                        dom_row.find('.edit_personal_deadline').remove();
-                                        table_row.invalidate();
-                                        $('#extension-id').val(data_response.data.id);
-                                    }
-                                }
-
+                                // Update extension row data.
+                                update_extension_row_data(current_rowid, data_response);
                                 change__status_extension_submit_button(true);
                                 save_extension_form_data();
 
@@ -277,7 +253,6 @@ define('mod_coursework/coursework_edit',
                                     show: true,
                                     removeOnClose: true,
                                 });
-
                             }
                         },
                         error: function() {
@@ -289,6 +264,36 @@ define('mod_coursework/coursework_edit',
                     });
                 });
 
+                /**
+                 * Update extension row data
+                 *
+                 * @param {string} rowid
+                 * @param {object} response
+                 */
+                function update_extension_row_data(rowid, response) {
+                    const row = $('#' + rowid);
+                    const datastatus = row.attr('data-status');
+
+                    // Update row's filter status.
+                    if (datastatus && datastatus.length > 0) {
+                        row.attr('data-status', datastatus + ',extension-granted');
+                    } else {
+                        row.attr('data-status', 'extension-granted');
+                    }
+
+                    // Get translation and update row's data.
+                    str.getString('due', 'mod_coursework').then(function(duestr) {
+                        const deadline = duestr + ': ' + response.data.extended_deadline_formatted;
+                        row.find('.extensiongranted-container').removeClass('d-none').end()
+                           .find('.actions-extension-date-container').addClass('d-block').removeClass('d-none').end()
+                           .find('.extensiongranteddate, .actions-extension-date').html(deadline).end()
+                           .find('.duedate-container').addClass('d-none').end()
+                           .find('.new_deadline_extension').attr('data-params', JSON.stringify(response.data))
+                           .removeClass('new_deadline_extension').addClass('edit_deadline_extension');
+                    }).catch(function(error) {
+                        window.console.log('Error getting translation:', error);
+                    });
+                }
 
                 /**
                  * Function close button
@@ -988,4 +993,3 @@ define('mod_coursework/coursework_edit',
         }
     };
 });
-

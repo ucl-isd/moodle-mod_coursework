@@ -6,46 +6,46 @@
             {{! Filter options. }}
             <div class="dropdown mr-2">
                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filter-submissions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Filter submissions">
-                <i class="fa-solid fa-sliders"></i> <span id="filter-button-text-display">Filter</span>
+                <i class="fa-solid fa-sliders"></i> <span id="filter-button-text-display">{{#str}}filter, mod_coursework{{/str}}</span>
                 </button>
 
                 <div class="dropdown-menu p-4" aria-labelledby="filter-submissions" style="width: 600px;">
                     <div class="row">
                         <div class="col-6">
-                            <h4 class="badge badge-dark">Marking</h4>
+                            <h4 class="badge badge-dark">{{#str}}marking, mod_coursework{{/str}}</h4>
                             <div class="pb-1 custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="filter-need-marking" data-filter-type="status" data-filter-value="need-marking">
-                                <label class="custom-control-label" for="filter-need-marking">Need marking</label>
+                                <label class="custom-control-label" for="filter-need-marking">{{#str}}need_marking, mod_coursework{{/str}}</label>
                             </div>
                             <div class="pb-1 custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="filter-need-agreement" data-filter-type="status" data-filter-value="need-agreement">
-                                <label class="custom-control-label" for="filter-need-agreement">Need agreed mark</label>
+                                <label class="custom-control-label" for="filter-need-agreement">{{#str}}need_agreed_mark, mod_coursework{{/str}}</label>
                             </div>
                             <div class="pb-1 custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="filter-ready-for-release" data-filter-type="status" data-filter-value="ready-for-release">
-                                <label class="custom-control-label" for="filter-ready-for-release">Ready for release</label>
+                                <label class="custom-control-label" for="filter-ready-for-release">{{#str}}ready_release, mod_coursework{{/str}}</label>
                             </div>
 
-                            <h4 class="badge badge-dark">Submission</h4>
+                            <h4 class="badge badge-dark">{{#str}}submission, mod_coursework{{/str}}</h4>
                             <div class="pb-1 custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="filter-extension-granted" data-filter-type="status" data-filter-value="extension-granted">
-                                <label class="custom-control-label" for="filter-extension-granted">Extension granted</label>
+                                <label class="custom-control-label" for="filter-extension-granted">{{#str}}extension_granted, mod_coursework{{/str}}</label>
                             </div>
                             <div class="pb-1 custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="filter-flagged-plagiarism" data-filter-type="status" data-filter-value="flagged-for-plagiarism">
-                                <label class="custom-control-label" for="filter-flagged-plagiarism">Flagged for plagiarism</label>
+                                <label class="custom-control-label" for="filter-flagged-plagiarism">{{#str}}flagged_plagiarism, mod_coursework{{/str}}</label>
                             </div>
                             <div class="pb-1 custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="filter-late" data-filter-type="status" data-filter-value="late">
-                                <label class="custom-control-label" for="filter-late">Submitted late</label>
+                                <label class="custom-control-label" for="filter-late">{{#str}}submitted_late, mod_coursework{{/str}}</label>
                             </div>
                             <div class="pb-1 custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="filter-not-submitted" data-filter-type="status" data-filter-value="not-submitted">
-                                <label class="custom-control-label" for="filter-not-submitted">Not submitted</label>
+                                <label class="custom-control-label" for="filter-not-submitted">{{#str}}statusnotsubmitted, mod_coursework{{/str}}</label>
                             </div>
                         </div>
                         <div class="col-6">
-                            <h4 class="badge badge-dark">Marker</h4>
+                            <h4 class="badge badge-dark">{{#str}}assessor, mod_coursework{{/str}}</h4>
                             {{#markerfilter}}
                             <div class="pb-1 custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="filter-{{markeridentifier}}" data-filter-type="marker" data-filter-value="{{markeridentifier}}">
@@ -59,24 +59,24 @@
 
             {{! Search. }}
             <div class="input-group mr-2" style="width: 250px;">
-                <label for="user-search" class="sr-only">Search for a student</label>
+                <label for="user-search" class="sr-only">{{#str}}search_for_student, mod_coursework{{/str}}</label>
                 <input type="search" name="search_query"
                     id="user-search" class="form-control"
                     aria-controls="filter-display-area table-body-rows"
                     aria-describedby="search-instructions"
-                    placeholder="Search for student..."
+                    placeholder="{{#str}}search_for_student_placeholder, mod_coursework{{/str}}"
                 />
                 <button class="btn btn-secondary" type="button" id="search-button">
                     <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                    <span class="sr-only">Search</span>
+                    <span class="sr-only">{{#str}}search, mod_coursework{{/str}}</span>
                 </button>
                 <p id="search-instructions" class="sr-only">
-                    Type to search for a student by name or ID. Searching will clear any active filters.
+                    {{#str}}search_instructions, mod_coursework{{/str}}
                 </p>
             </div>
 
             {{! TODO - release grades. }}
-            <a href="" class="btn btn-primary ml-auto">Release the marks!</a>
+            <a href="" class="btn btn-primary ml-auto">{{#str}}release_marks, mod_coursework{{/str}}</a>
         </div>
 
         {{! Filter display. }}
@@ -84,7 +84,7 @@
             <div id="record-count-display">
                 <strong>0 records</strong>
                 <span class="sr-only">
-                    Filters applied, you can click to remove them individually, or reset all filters.
+                    {{#str}}filters_applied_sr, mod_coursework{{/str}}
                 </span>
             </div>
             <ul id="active-filters-list" class="list-inline ml-3 mb-0">
@@ -93,13 +93,13 @@
     </form>
 
     <table class="table w-100">
-        <caption class="sr-only">Submissions table</caption>
+        <caption class="sr-only">{{#str}}submissions_table, mod_coursework{{/str}}</caption>
         <thead>
             <tr class="table-light">
-                <th scope="col">Student</th>
-                <th scope="col">Submission</th>
-                <th scope="col" class="w-50">Marking</th>
-                <th scope="col" class="text-right">Actions</th>
+                <th scope="col">{{#str}}student, mod_coursework{{/str}}</th>
+                <th scope="col">{{#str}}submission, mod_coursework{{/str}}</th>
+                <th scope="col" class="w-50">{{#str}}marking, mod_coursework{{/str}}</th>
+                <th scope="col" class="text-right">{{#str}}actions, mod_coursework{{/str}}</th>
             </tr>
         </thead>
 
@@ -109,9 +109,7 @@
         {{/tr}}
         </tbody>
     </table>
-
 </div>
-
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -172,16 +170,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (total_active_filters > 0) {
-            filter_button_text_display.textContent = `Filter (${total_active_filters} active)`;
+            filter_button_text_display.textContent = `{{#str}}filter_active_count, mod_coursework, ${total_active_filters}{{/str}}`;
             // filter_dropdown_button.setAttribute('aria-expanded', 'true'); // Dropdown handles this internally
         } else {
-            filter_button_text_display.textContent = 'Filter';
+            filter_button_text_display.textContent = '{{#str}}filter, mod_coursework{{/str}}';
             // filter_dropdown_button.setAttribute('aria-expanded', 'false'); // Dropdown handles this internally
         }
     }
 
     function update_record_count() {
-        record_count_display.textContent = `${get_visible_row_count()} records`;
+        record_count_display.textContent = `{{#str}}records_count, mod_coursework, ${get_visible_row_count()}{{/str}}`;
     }
 
     function update_filter_tags_display() {
@@ -203,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 button.textContent = filter_info.label;
                 button.innerHTML += ' <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>';
 
-                button.setAttribute('aria-label', `Remove filter: ${filter_info.label}`);
+                button.setAttribute('aria-label', `{{#str}}remove_filter, mod_coursework, ${filter_info.label}{{/str}}`);
 
                 button.addEventListener('click', function() {
                     // Logic to remove filter from active_filters
@@ -241,8 +239,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const reset_button = document.createElement('input');
             reset_button.setAttribute('type', 'reset');
             reset_button.classList.add('btn', 'btn-sm', 'btn-warning');
-            reset_button.setAttribute('value', 'Reset filters');
-            reset_button.setAttribute('aria-label', 'Reset all applied filters');
+            reset_button.setAttribute('value', '{{#str}}reset_filters, mod_coursework{{/str}}');
+            reset_button.setAttribute('aria-label', '{{#str}}reset_all_filters, mod_coursework{{/str}}');
 
             reset_list_item.appendChild(reset_button);
             active_filters_list.appendChild(reset_list_item);
@@ -296,22 +294,23 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        record_count_display.textContent = `${visible_rows_count} records`;
+        record_count_display.textContent = `{{#str}}records_count, mod_coursework, ${visible_rows_count}{{/str}}`;
 
         const announcement_text = query_lower !== ''
-            ? `${visible_rows_count} records found for "${current_search_query}".`
+            ? `{{#str}}search_results_found, mod_coursework{{/str}}`.replace('{$a->count}', visible_rows_count.toString()).replace('{$a->query}', current_search_query)
             : (visible_rows_count === table_rows.length && Object.keys(active_filters).length === 0
-                ? 'All records displayed.'
-                : `${visible_rows_count} records displayed with current filters.`);
+                ? '{{#str}}all_records_displayed, mod_coursework{{/str}}'
+                : `{{#str}}records_displayed_with_filters, mod_coursework, ${visible_rows_count}{{/str}}`);
 
         const live_region_div = document.getElementById('filter-display-area');
         let existing_sr_only_announcement = live_region_div.querySelector('.sr-only.results-announcement');
 
         if (!existing_sr_only_announcement) {
-            existing_sr_only_announcement = document.createElement('span');
+            existing_sr_only_announcement = document.createElement('div');
             existing_sr_only_announcement.classList.add('sr-only', 'results-announcement');
             live_region_div.appendChild(existing_sr_only_announcement);
         }
+
         existing_sr_only_announcement.textContent = announcement_text;
 
         setTimeout(() => {
@@ -396,11 +395,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const live_region_div = document.getElementById('filter-display-area');
         let existing_sr_only_announcement = live_region_div.querySelector('.sr-only.results-announcement');
         if (!existing_sr_only_announcement) {
-            existing_sr_only_announcement = document.createElement('span');
+            existing_sr_only_announcement = document.createElement('div');
             existing_sr_only_announcement.classList.add('sr-only', 'results-announcement');
             live_region_div.appendChild(existing_sr_only_announcement);
         }
-        existing_sr_only_announcement.textContent = 'All filters and search have been reset. Displaying all records.';
+        existing_sr_only_announcement.textContent = '{{#str}}all_filters_and_search_reset, mod_coursework{{/str}}';
 
         setTimeout(() => {
             if (existing_sr_only_announcement) {

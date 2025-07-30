@@ -146,10 +146,10 @@ class submission_cell_data extends cell_data_base {
      * @param submission $submission The submission to check.
      */
     protected function add_plagiarism_data(stdClass $submissiondata, submission $submission): void {
-        $plagiarismflag = plagiarism_flag::get_plagiarism_flag($submission);
-        $submissiondata->flaggedplagiarism = $plagiarismflag &&
-            ($plagiarismflag->status == plagiarism_flag::INVESTIGATION ||
-                $plagiarismflag->status == plagiarism_flag::NOTCLEARED);
+        if (!$this->coursework->plagiarism_flagging_enbled()) {
+            return;
+        }
+        $submissiondata->flaggedplagiarism = $this->get_flagged_plagiarism_status($submission);
     }
 
     /**
@@ -170,15 +170,16 @@ class submission_cell_data extends cell_data_base {
      * @param grading_table_row_base $rowobject Row object to get extension from.
      */
     protected function add_extension_data(stdClass $data, grading_table_row_base $rowobject): void {
-        $extension = deadline_extension::find_or_build([
-            'allocatableid' => $rowobject->get_allocatable()->id(),
-            'allocatabletype' => $rowobject->get_allocatable()->type(),
-            'courseworkid' => $rowobject->get_coursework()->id,
-        ]);
-
-        if ($extension->persisted()) {
-            $data->extensiongranted = true;
-            $data->extensiondeadline = $extension->extended_deadline;
+        $extension = $rowobject->get_extension();
+        // No extension to show.
+        if (!$extension) {
+            return;
         }
+        // User does not have permission to view extension.
+        if (!$this->ability->can('show', deadline_extension::find(['id' => $extension->id]))) {
+            return;
+        }
+        $data->extensiongranted = true;
+        $data->extensiondeadline = $extension->extended_deadline;
     }
 }
