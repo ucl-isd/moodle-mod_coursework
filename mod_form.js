@@ -85,55 +85,29 @@ M.mod_coursework.elementEnable      =   function()      {
 
 }
 
-M.mod_coursework.initialGradeDisable  =   function(disabled) {
-
+M.mod_coursework.toggleElementVisibility = function(elementId, disabled) {
     if(disabled === undefined) {
         disabled = true;
     }
-
-    $('#fitem_id_initialmarkingdeadline').addClass('d-none');
-
+    $('#' + elementId)[disabled ? 'addClass' : 'removeClass']('d-none');
 }
 
-
-
-M.mod_coursework.agreedGradeDisable  =   function(disabled) {
-
-    if(disabled === undefined) {
-        disabled = true;
-    }
-
-    $('#fitem_id_agreedgrademarkingdeadline').addClass('d-none');
+M.mod_coursework.initialGradeDisable = function(disabled) {
+    M.mod_coursework.toggleElementVisibility('fitem_id_initialmarkingdeadline', disabled);
 }
 
-M.mod_coursework.personalDeadlineDisable  =   function(disabled) {
-
-    if(disabled === undefined) {
-        disabled = true;
-    }
-
-    $('#fitem_id_personaldeadlineenabled').addClass('d-none');
-
+M.mod_coursework.agreedGradeDisable = function(disabled) {
+    M.mod_coursework.toggleElementVisibility('fitem_id_agreedgrademarkingdeadline', disabled);
 }
 
-
-
-M.mod_coursework.relativeInitalGradeDisable  =   function(disabled) {
-
-    if(disabled === undefined) {
-        disabled = true;
-    }
-
-    $('#fitem_id_relativeinitialmarkingdeadline').addClass('d-none');
-
+M.mod_coursework.personalDeadlineDisable = function(disabled) {
+    M.mod_coursework.toggleElementVisibility('fitem_id_personaldeadlineenabled', disabled);
 }
 
-M.mod_coursework.relativeAgreedGradeDisable  =   function(disabled) {
+M.mod_coursework.relativeInitalGradeDisable = function(disabled) {
+    M.mod_coursework.toggleElementVisibility('fitem_id_relativeinitialmarkingdeadline', disabled);
+}
 
-    if(disabled === undefined) {
-        disabled = true;
-    }
-
-    $('#fitem_id_relativeagreedmarkingdeadline').addClass('d-none');
-
+M.mod_coursework.relativeAgreedGradeDisable = function(disabled) {
+    M.mod_coursework.toggleElementVisibility('fitem_id_relativeagreedmarkingdeadline', disabled);
 }

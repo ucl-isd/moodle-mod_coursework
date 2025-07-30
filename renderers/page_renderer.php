@@ -584,7 +584,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
          * @var mod_coursework_grading_report_renderer $grading_report_renderer
          */
         $gradingreportrenderer = $this->page->get_renderer('mod_coursework', 'grading_report');
-        $html .= $gradingreportrenderer->submissions_header();
 
         $warnings = new warnings($coursework);
         // Show any warnings that may need to be here
@@ -619,7 +618,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
          */
 
         $html .= html_writer::start_tag('div', ['class' => 'wrapper_table_submissions']);
-        $html .= $gradingreportrenderer->render_grading_report($gradingreport, $coursework->has_multiple_markers());
+        $html .= $gradingreportrenderer->render_grading_report($gradingreport);
         $html .= html_writer::end_tag('div');
 
         // Publish button if appropriate.
@@ -1372,16 +1371,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             'type' => 'button',
             'class' => 'btn btn-secondary btn-extension-close',
             'data-dismiss' => 'modal',
-        ]);
-        $modalfooter .= html_writer::tag('button', 'Back', [
-            'type' => 'button',
-            'class' => 'btn btn-secondary',
-            'id' => 'extension-back',
-        ]);
-        $modalfooter .= html_writer::tag('button', 'Next', [
-            'type' => 'button',
-            'class' => 'btn btn-secondary',
-            'id' => 'extension-next',
         ]);
 
         $html = html_writer::div($modalheader, 'modal-header');

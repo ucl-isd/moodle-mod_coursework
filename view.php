@@ -509,7 +509,7 @@ if ($canviewstudents) {
         }
 
         $html .= $pagerenderer->teacher_grading_page($coursework, $page, $perpage, $sortby, $sorthow, $group, $courseworkfirstnamealpha, $courseworklastnamealpha, $courseworkgroupnamealpha, $resettable);
-        $html .= $pagerenderer->non_teacher_allocated_grading_page($coursework, $viewallstudentspage, $viewallstudentsperpage, $viewallstudentssortby, $viewallstudentssorthow, $group, $displayallstudents, $viewallstudentsfirstnamealpha, $viewallstudentslastnamealpha, $viewallstudentsgroupnamealpha);
+//        $html .= $pagerenderer->non_teacher_allocated_grading_page($coursework, $viewallstudentspage, $viewallstudentsperpage, $viewallstudentssortby, $viewallstudentssorthow, $group, $displayallstudents, $viewallstudentsfirstnamealpha, $viewallstudentslastnamealpha, $viewallstudentsgroupnamealpha);
         $html .= $pagerenderer->datatables_render($coursework);
         $html .= $pagerenderer->render_modal();
     }

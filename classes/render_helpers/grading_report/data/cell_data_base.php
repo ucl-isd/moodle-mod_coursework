@@ -25,25 +25,26 @@
 
 namespace mod_coursework\render_helpers\grading_report\data;
 
+use core\clock;
+use core\di;
 use mod_coursework\ability;
 use mod_coursework\models\coursework;
+use mod_coursework\models\plagiarism_flag;
+use mod_coursework\models\submission;
 use mod_coursework\models\user;
-use mod_coursework\grading_table_row_base;
-use stdClass;
 
 /**
  * Abstract base class for cell data providers.
  */
 abstract class cell_data_base implements cell_data_interface {
-    /**
-     * @var coursework
-     */
+    /** @var coursework */
     protected coursework $coursework;
 
-    /**
-     * @var ability
-     */
+    /** @var ability */
     protected ability $ability;
+
+    /** @var clock Clock instance. */
+    protected readonly clock $clock;
 
     /**
      * Constructor.
@@ -55,5 +56,20 @@ abstract class cell_data_base implements cell_data_interface {
 
         $this->coursework = $coursework;
         $this->ability = new ability(user::find($USER), $this->coursework);
+        $this->clock = di::get(clock::class);
+    }
+
+    /**
+     * Check if the submission should be flagged for plagiarism.
+     *
+     * @param submission $submission
+     * @return string|bool
+     */
+    protected function get_flagged_plagiarism_status(submission $submission): string|bool {
+        $flag = plagiarism_flag::get_plagiarism_flag($submission);
+        if (!$flag || !($flag->status == plagiarism_flag::INVESTIGATION || $flag->status == plagiarism_flag::NOTCLEARED)) {
+            return false;
+        }
+        return get_string('plagiarism_'.$flag->status, 'mod_coursework');
     }
 }

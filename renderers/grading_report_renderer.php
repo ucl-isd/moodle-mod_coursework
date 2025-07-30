@@ -20,13 +20,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\grading_report;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\coursework;
-use mod_coursework\models\feedback;
 use mod_coursework\render_helpers\grading_report\cells\cell_interface;
+use mod_coursework\render_helpers\grading_report\data\actions_cell_data;
 use mod_coursework\render_helpers\grading_report\data\marking_cell_data;
 use mod_coursework\render_helpers\grading_report\data\student_cell_data;
 use mod_coursework\render_helpers\grading_report\data\submission_cell_data;
@@ -38,8 +37,14 @@ use mod_coursework\render_helpers\grading_report\sub_rows\sub_rows_interface;
  */
 class mod_coursework_grading_report_renderer extends plugin_renderer_base {
 
-    // WIP - data for table rows.
-    public function render_grading_report_new($gradingreport, $ismultiplemarkers) {
+    /**
+     * Renders the grading report.
+     *
+     * @param $gradingreport
+     * @return bool|string
+     * @throws \core\exception\moodle_exception
+     */
+    public function render_grading_report($gradingreport) {
 
         $tablerows = $gradingreport->get_table_rows_for_page();
 
@@ -72,22 +77,19 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         /** @var grading_table_row_base $rowobject */
         foreach ($tablerows as $rowobject) {
             $trdata = new stdClass();
-            // Student cell.
+
+            // Prepare data for table cells.
             $this->prepare_student_cell_data($gradingreport, $rowobject, $trdata);
-
-            // Submission cell.
             $this->prepare_submission_cell_data($gradingreport, $rowobject, $trdata);
-
-            // Marking cell.
             $this->prepare_marking_cell_data($gradingreport, $rowobject, $trdata);
+            $this->prepare_actions_cell_data($gradingreport, $rowobject, $trdata);
 
-            // Mark tr status.
-            $this->mark_tr_status($trdata);
-
-            $this->mark_tr_marker_filter($trdata);
-
+            // Set tr status and marker filter.
+            $this->set_tr_status($trdata);
+            $this->set_tr_marker_filter($trdata);
             $template->tr[] = $trdata;
 
+            // Collect markers for filter.
             if (!empty($trdata->markers)) {
                 // Add valid markers to filter, preserving only first occurrence.
                 foreach (array_filter($trdata->markers, fn($m) => isset($m->markerid)) as $marker) {
@@ -98,6 +100,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
             }
         }
         $template->markerfilter = array_values($template->markerfilter);
+        $template->defaultduedate = $gradingreport->get_coursework()->get_deadline();
 
         return $this->render_from_template('mod_coursework/submissions/table', $template);
     }
@@ -130,6 +133,14 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         $trdata->submission = $dataprovider->get_table_cell_data($rowobject);
     }
 
+    /**
+     * Prepare marking cell data
+     *
+     * @param grading_report $gradingreport
+     * @param grading_table_row_base $rowobject
+     * @param stdClass $trdata
+     * @return void
+     */
     protected function prepare_marking_cell_data(grading_report $gradingreport, grading_table_row_base $rowobject, stdClass $trdata) {
         $dataprovider = new marking_cell_data($gradingreport->get_coursework());
         $markingcelldata = $dataprovider->get_table_cell_data($rowobject);
@@ -138,12 +149,26 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Mark tr status.
+     * Prepare actions cell data
+     *
+     * @param grading_report $gradingreport
+     * @param grading_table_row_base $rowobject
+     * @param stdClass $trdata
+     * @return void
+     */
+    protected function prepare_actions_cell_data(grading_report $gradingreport, grading_table_row_base $rowobject, stdClass $trdata) {
+        $dataprovider = new actions_cell_data($gradingreport->get_coursework());
+        $actions = $dataprovider->get_table_cell_data($rowobject);
+        $trdata->actions = $actions;
+    }
+
+    /**
+     * Set tr status.
      *
      * @param stdClass $trdata
      * @return void
      */
-    protected function mark_tr_status(stdClass $trdata): void {
+    protected function set_tr_status(stdClass $trdata): void {
         $status = [];
         if (!empty($trdata->submission->extensiongranted)) {
             $status[] = 'extension-granted';
@@ -161,6 +186,20 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
             $status[] = 'not-submitted';
         }
 
+        if (!empty($trdata->agreedmark->addfinalfeedback)) {
+            $status[] = 'need-agreement';
+        }
+
+        if (!empty($trdata->agreedmark->mark->readyforrelease)) {
+            $status[] = 'ready-for-release';
+        }
+
+        foreach ($trdata->markers as $marker) {
+            if (!empty($marker->addfeedback)) {
+                $status[] = 'need-marking';
+            }
+        }
+
         $trdata->status = implode(', ', $status);
     }
 
@@ -169,152 +208,12 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      *
      * @param stdClass $trdata Table row data
      */
-    protected function mark_tr_marker_filter(stdClass $trdata): void {
+    protected function set_tr_marker_filter(stdClass $trdata): void {
         if (empty($trdata->markers)) {
             return;
         }
 
         $trdata->markerfilter = implode(', ', array_column((array)$trdata->markers, 'markeridentifier'));
-    }
-
-    protected function render_agreed_mark($coursework, $rowobject) {
-        global $USER;
-
-        // TODO - weird user model thing, why?
-        $user = \mod_coursework\models\user::find($USER);
-        $ability = new ability($user, $coursework);
-        $stage = $coursework->get_final_agreed_marking_stage();
-        $feedback = $stage->get_feedback_for_allocatable($rowobject->get_allocatable());
-
-        $template = new stdClass();
-
-        // Edit.
-        if ($feedback && $ability->can('edit', $feedback)) {
-            $template->editfeedback = true;
-            $template->url = new moodle_url('/mod/coursework/actions/feedbacks/edit.php', ['feedbackid' => $feedback->id]);
-            $template->mark = number_format($feedback->grade, 1);
-            // TODO - draft, ready for release, released & timemodified.
-            return $template;
-        }
-
-        // Add.
-        $submission = $rowobject->get_submission();
-        if ($submission) {
-            $newfeedback = feedback::build(['submissionid' => $submission->id(),
-                                            'assessorid' => $USER->id,
-                                            'stage_identifier' => 'final_agreed_1',
-                                            ]);
-            if ($ability->can('new', $newfeedback) || is_siteadmin()) {
-                $template->addfedback = true;
-                $template->url = new moodle_url('/mod/coursework/actions/feedbacks/new.php',
-                [
-                    'isfinalgrade' => '1',
-                    'stage_identifier' => 'final_agreed_1',
-                    'submissionid' => $submission->id()
-                ]
-                );
-                return $template;
-            }
-        }
-
-        return $template;
-    }
-
-    protected function render_markers($assessorfeedbacktable) {
-        global $USER, $PAGE;
-
-        $template = new stdClass();
-        $template->markers = []; // Array to hold data for each marker.
-
-        $coursework = $assessorfeedbacktable->get_coursework();
-        // $ability = new ability(user::find($USER, false), $coursework);
-        $feedbackrows = $assessorfeedbacktable->get_renderable_feedback_rows();
-        $allocatable = $assessorfeedbacktable->get_allocatable();
-
-        // Iterate through feedback rows to gather marker data.
-        foreach ($feedbackrows as $feedbackrow) {
-
-            $markerdata = new stdClass();
-            $marker = $feedbackrow->get_assessor();
-            $submission = $feedbackrow->get_submission();
-            $mark = $feedbackrow->get_grade();
-
-
-            // Marker name.
-            if (empty($marker->id()) && $coursework->allocation_enabled()) {
-                $markerdata->markername = get_string('assessornotallocated', 'mod_coursework');
-            } else {
-                $markerdata->markername = \core_user::get_fullname(\core_user::get_user($marker->id));
-                $markerdata->markerurl = new moodle_url('/user/profile.php', ['id' => $marker->id(), 'course' => $coursework->get_course_id()]);
-                if ($marker->id()) {
-                    $user = core_user::get_user($marker->id());
-                    $userpicture = new user_picture($user);
-                    $userpicture->size = 100;
-                    $image = $userpicture->get_url($this->page)->out(false);
-                    $markerdata->markerimg = $image;
-                }
-                // Filter data.
-                $markerdata->markerfilter = str_replace(' ', '-', strtolower($markerdata->markername));
-            }
-
-            // Mark.
-            if (!is_null($mark)) {
-                $markerdata->mark = number_format($mark, 1);
-                $feedbackobject = $feedbackrow->get_feedback();
-                $markerdata->markurl = new moodle_url('/mod/coursework/actions/feedbacks/edit.php', [
-                    'feedbackid' => $feedbackobject->id()
-                ]);
-                $markerdata->timemodified = $feedbackobject->timemodified;
-                $markerdata->draft = !$feedbackobject->finalised;
-            }
-            elseif($submission) {
-                $markerdata->addfeedback = true;
-                // TODO - what is stage_identifier? Mocked for the moment.
-                // Outputs the link, but some odd behaviour when adding/saving.
-                // https://workflows.preview-moodle.ucl.ac.uk/mod/coursework/actions/feedbacks/new.php?submissionid=48&stage_identifier=assessor_1&assessorid=675041
-                $markerdata->markurl = new moodle_url('/mod/coursework/actions/feedbacks/new.php', [
-                    'submissionid' => $submission->id(),
-                    'assessorid' => $marker->id(),
-                    'stage_identifier' => 'assessor_'.$marker->id()
-                ]);
-            }
-
-
-
-            $template->markers[] = $markerdata;
-        }
-
-        return $template->markers;
-    }
-
-    /**
-     * @param grading_report $gradingreport
-     * param $ismultiplemarkers
-     * @return string
-     */
-    public function render_grading_report($gradingreport, $ismultiplemarkers) {
-        $options = $gradingreport->get_options();
-        $tablerows = $gradingreport->get_table_rows_for_page();
-        $cellhelpers = $gradingreport->get_cells_helpers();
-        $subrowhelper = $gradingreport->get_sub_row_helper();
-        if (count($tablerows) == $gradingreport->realtotalrows) {
-            $options['class'] = 'full-loaded';
-        }
-        $this->rowclass = $ismultiplemarkers ? 'submissionrowmulti' : 'submissionrowsingle';
-
-        if (empty($tablerows)) {
-            return '<div class="no-users">'.get_string('nousers', 'coursework').'</div><br>';
-        }
-        $tablehtml = $this->render_grading_report_new($gradingreport, $ismultiplemarkers);
-        $tablehtml .= $this->start_table($options);
-        $tablehtml .= $this->make_table_headers($cellhelpers, $options, $ismultiplemarkers);
-        $tablehtml .= '</thead>';
-        $tablehtml .= '<tbody>';
-        $tablehtml .= $this->make_rows($tablerows, $cellhelpers, $subrowhelper, $ismultiplemarkers, );
-        $tablehtml .= '</tbody>';
-        $tablehtml .= $this->end_table();
-
-        return  $tablehtml;
     }
 
     /**

@@ -323,7 +323,7 @@ class submissions_controller extends controller_base {
             $mailer->send_submission_receipt($student, true);
         }
 
-        redirect($courseworkpageurl);
+        redirect($courseworkpageurl, get_string('changessaved'));
     }
 
     protected function unfinalise_submission() {
