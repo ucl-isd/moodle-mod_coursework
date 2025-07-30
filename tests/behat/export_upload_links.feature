@@ -55,5 +55,5 @@ Feature: Download and upload buttons on submissions page
     And I log in as a teacher
     And I visit the coursework page
     And I click on "Upload" "button"
-    Then I should see "Upload grading worksheet"
+    Then I should see "Upload grading sheet"
     And I should see "Upload feedback files in a zip"
