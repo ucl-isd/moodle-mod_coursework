@@ -1,11 +1,10 @@
-define('mod_coursework/coursework', ['jquery', 'core/log'], function($) {
+define('mod_coursework/coursework', ['jquery', 'core/str', 'core/notification'], function($, str, notification) {
     return {
         init: function() {
             var table_obj_list = [];
             var tableobject = 0;
 
             $(document).ready(function() {
-                var langmessage = JSON.parse($('#element_lang_messages').attr('data-lang'));
                 var base_url = window.location.origin + '/mod/coursework/datatables/js/';
 
                 require.config({
@@ -93,13 +92,16 @@ define('mod_coursework/coursework', ['jquery', 'core/log'], function($) {
                     });
                     window.console.log(submissionswrapper);
 
-                    $('<div id="datatable_top_loading_message" class="text-center submission-loading">' +
-                        '<i class="fa fa-spinner fa-spin"></i> ' + langmessage.loadingpagination + '</div>').
-                        insertBefore(submissionswrapper);
-                    $('<div class="text-center pagination-loading"><i class="fa fa-spinner fa-spin"></i> ' +
-                        langmessage.loadingpagination + '</div>').insertAfter(paginationelement);
-                    $('<i class="fa fa-spinner fa-spin pagination-loading"></i>').insertBefore(wrapperelement.
-                        find('.dt-button > span'));
+                    str.get_string('loadingpagination', 'mod_coursework').done(
+                        function(message) {
+                            $('<div id="datatable_top_loading_message" class="text-center submission-loading">' +
+                                '<i class="fa fa-spinner fa-spin"></i> ' + message + '</div>').
+                                insertBefore(submissionswrapper);
+                            $('<div class="text-center pagination-loading"><i class="fa fa-spinner fa-spin"></i> ' +
+                                message + '</div>').insertAfter(paginationelement);
+                            $('<i class="fa fa-spinner fa-spin pagination-loading"></i>').insertBefore(wrapperelement.
+                                find('.dt-button > span'));
+                    }).catch(notification.exception);
 
                     // Prepare params for ajax request.
                     var params = {

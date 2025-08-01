@@ -1,0 +1,56 @@
+{{! Marking cell template }}
+
+{{#cangrade}}
+    <a href="{{{addfeedbackurl}}}" class="btn btn-primary btn-sm">
+        <i class="fa fa-plus mr-2"></i>Add feedback
+    </a>
+    <br>
+{{/cangrade}}
+
+{{#hasfeedback}}
+    <div class="feedback-info">
+        <div class="grade mb-2">{{feedback.grade}}</div>
+        
+        {{#feedback.canedit}}
+            <a href="{{{feedback.actionurl}}}" class="btn btn-secondary btn-sm">
+                <i class="fa fa-edit mr-2"></i>Edit feedback
+            </a>
+        {{/feedback.canedit}}
+        
+        {{#feedback.canview}}
+            <a href="{{{feedback.actionurl}}}" class="btn btn-secondary btn-sm">
+                <i class="fa fa-eye mr-2"></i>View feedback
+            </a>
+        {{/feedback.canview}}
+
+        <div class="assessor-info mt-2">
+            <div class="d-flex align-items-center">
+                <div class="mr-2">{{{feedback.assessor.picture}}}</div>
+                <div>
+                    by: <a href="{{{feedback.assessor.profileurl}}}">{{feedback.assessor.name}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{{/hasfeedback}}
+
+{{#allocation}}
+    {{#assessor}}
+        <div class="allocation-info mt-2">
+            <small>Allocated to:</small>
+            <div class="d-flex align-items-center">
+                <div class="mr-2">{{{assessor.picture}}}</div>
+                <div>
+                    <a href="{{{assessor.profileurl}}}">{{assessor.name}}</a>
+                </div>
+            </div>
+        </div>
+    {{/assessor}}
+    {{^assessor}}
+        {{#allocated}}
+            <div class="allocation-info mt-2">
+                <small>Allocated to someone else</small>
+            </div>
+        {{/allocated}}
+    {{/assessor}}
+{{/allocation}}
