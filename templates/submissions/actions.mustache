@@ -28,14 +28,14 @@
             <a class="dropdown-item submit-on-behalf" href="{{submission.url}}">{{submission.label}}</a>
             <div class="dropdown-divider"></div>
         {{/submission.url}}
-        {{#finalise.url}}
-            <a class="dropdown-item" href="{{finalise.url}}">Finalise submission</a>
+        {{#finalise}}
+            <a class="dropdown-item submission-finalisation" data-action="finalise" data-student="{{studentname}}" href="{{finalise.url}}">Finalise submission</a>
             <div class="dropdown-divider"></div>
-        {{/finalise.url}}
-        {{#unfinalise.url}}
-             <a class="dropdown-item" href="{{unfinalise.url}}">Unfinalise submission</a>
+        {{/finalise}}
+        {{#unfinalise}}
+             <a class="dropdown-item submission-finalisation" data-action="unfinalise" data-student="{{studentname}}" href="{{unfinalise.url}}">Unfinalise submission</a>
             <div class="dropdown-divider"></div>
-        {{/unfinalise.url}}
+        {{/unfinalise}}
         {{#plagarism.url}}
             <a class="dropdown-item" href="{{plagarism.url}}">Plagarism
                 {{#plagarismstatus}}

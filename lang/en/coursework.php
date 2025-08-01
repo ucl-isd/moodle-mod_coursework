@@ -185,6 +185,7 @@ $string['configforceplagiarism'] = 'These will be set once when the coursework i
 $string['configgeneralfeedback'] = 'Sets the number of weeks after the deadline that general '. 'feedback should be completed.';
 $string['configindividualfeedback'] = 'Sets the number of weeks after the deadline that individual '. 'feedback should be provided to the student.';
 $string['configmaxbytes'] = 'Default maximum assignment size for all assignments on the site '. '(subject to course limits and other local settings)';
+$string['confirm_finalise'] = 'Are you sure you want to {$a->action} the submission for {$a->studentname}?';
 $string['confirmpublish'] = 'Are you sure you want to release all grades? This action cannot be undone.';
 $string['confirmremovefeedback'] = 'Are you sure you want to remove this feedback? This action cannot be undone';
 $string['continuetocoursework'] = 'Continue to coursework';

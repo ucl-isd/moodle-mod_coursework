@@ -309,7 +309,9 @@ class marking_cell_data extends cell_data_base {
             'mark' => (object)[
                 'mark' => $finalgrade,
                 'url' => $this->get_mark_url($action, $rowsbase->get_submission(), $finalstage, $finalfeedback),
-                'draft' => !$finalfeedback->finalised,
+                // Only show draft label if final feedback is not finalised and submission is not ready for release.
+                // Final feedback is still unfinalised if it is agreed automatically.
+                'draft' => !$finalfeedback->finalised && !$rowsbase->get_submission()->ready_to_publish(),
                 'readyforrelease' => !$rowsbase->get_submission()->is_published() &&
                     $rowsbase->get_submission()->ready_to_publish(),
                 'released' => $rowsbase->get_submission()->is_published(),

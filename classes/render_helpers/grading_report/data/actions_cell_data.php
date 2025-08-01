@@ -160,6 +160,7 @@ class actions_cell_data extends cell_data_base {
             $data->finalise = new stdClass();
             $data->finalise->url = router::instance()
                 ->get_path('finalise submission', ['submission' => $rowsbase->get_submission()], false, false);
+            $data->finalise->studentname = $rowsbase->get_user_name();
         }
     }
 
@@ -182,6 +183,7 @@ class actions_cell_data extends cell_data_base {
                 ]);
             $data->unfinalise = new stdClass();
             $data->unfinalise->url = $url->out(false);
+            $data->unfinalise->studentname = $rowsbase->get_user_name();
         }
     }
 
