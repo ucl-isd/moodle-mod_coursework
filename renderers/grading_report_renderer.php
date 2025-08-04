@@ -71,6 +71,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         });
 
         $template = new stdClass();
+        $template->isgroupsubmission = $gradingreport->get_coursework()->is_configured_to_have_group_submissions();
         $template->tr = [];
         $template->markerfilter = [];
 
@@ -115,9 +116,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      */
     protected function prepare_student_cell_data(grading_report $gradingreport, grading_table_row_base $rowobject, stdClass $trdata) {
         $dataprovider = new student_cell_data($gradingreport->get_coursework());
-        $userdata = $dataprovider->get_table_cell_data($rowobject);
-        $trdata->student = $userdata->name;
-        $trdata->studentimg = $userdata->picture;
+        $trdata->submissiontype = $dataprovider->get_table_cell_data($rowobject);;
     }
 
     /**
