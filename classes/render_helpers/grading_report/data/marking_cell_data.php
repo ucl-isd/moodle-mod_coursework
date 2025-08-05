@@ -222,11 +222,7 @@ class marking_cell_data extends cell_data_base {
             'stage_identifier' => $feedbackrow->get_stage()->identifier(),
         ];
 
-        $newfeedback = feedback::build($feedbackparams);
-
-        return $this->coursework->has_multiple_markers() ?
-            $this->ability->can('new', $newfeedback) && $feedbackrow->get_assessor()->id == $USER->id :
-            $this->ability->can('new', $newfeedback);
+        return $this->ability->can('new', feedback::build($feedbackparams));
     }
 
     /**
