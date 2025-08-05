@@ -28,6 +28,7 @@ use Behat\Behat\Context\Step\Given as Given;
 use Behat\Behat\Context\Step\When as When;
 use Behat\Behat\Context\Step\Then as Then;
 use Behat\Mink\Exception\ExpectationException as ExpectationException;
+use Behat\Gherkin\Node\TableNode;
 use mod_coursework\models\group;
 use mod_coursework\router;
 use mod_coursework\models\coursework;
@@ -2067,7 +2068,6 @@ class behat_mod_coursework extends behat_base {
         $feedback = new stdClass();
         $feedback->grade = 45;
         $feedback->feedbackcomment = 'blah';
-        $feedback->isfinalgrade = 1;
         $feedback->submissionid = $this->submission->id;
         $feedback->assessorid = $this->manager->id;
         $feedback->stage_identifier = 'final_agreed_1';
@@ -3387,6 +3387,31 @@ class behat_mod_coursework extends behat_base {
            'courseworkid' => $this->coursework->id,
            'stage_identifier' => "assessor_$stage",
         ]);
+    }
+
+    /**
+     * @Given /^I should see marking summary:$/
+     * @param TableNode $data The marking summary field and value pairs.
+     */
+    public function i_should_see_marking_summary(TableNode $table) {
+        $page = $this->getSession()->getPage();
+        $match = $page->find('xpath', "//h3[text() = 'Marking summary']");
+
+        if (!$match) {
+            throw new ExpectationException("Should have seen expected \"Marking summary\" heading, but it was not there",
+            $this->getSession());
+        }
+
+        $datahash = $table->getRowsHash();
+
+        foreach ($datahash as $locator => $value) {
+            $match = $page->find('xpath', "//li[normalize-space(string()) = '$locator $value']");
+
+            if (!$match) {
+                throw new ExpectationException("Should have seen expected value for $locator, but it was not there",
+                $this->getSession());
+            }
+        }
     }
 
     /**

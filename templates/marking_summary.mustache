@@ -42,17 +42,17 @@
     <h3 class="h5" id="marking-summary-title">Marking summary</h3>
 
     {{^canmark}}
-    <p>You don't have a capability to mark anyone in this activity.</p>
+    <p>{{#str}} nomarkercap, mod_coursework {{/str}}</p>
     {{/canmark}}
 
     {{#canmark}}
     <ul class="w-100 list-unstyled" aria-labelledby="marking-summary-title">
         <li class="d-flex py-1">
-            Submitted
+            {{#str}} submitted, mod_coursework {{/str}}
             <span class="ml-auto">{{submitted}}/{{participants}}</span>
         </li>
         <li class="d-flex py-1 border-top">
-            Need marking
+            {{#str}} needsmarking, mod_coursework {{/str}}
             <span class="ml-auto">{{needsmarking}}</span>
         </li>
 
@@ -65,18 +65,14 @@
         {{/assessor}}
 
         <li class="d-flex py-1 border-top">
-            Marked and released
+            {{#str}} markedandreleased, mod_coursework {{/str}}
             <span class="ml-auto">{{published}}</span>
         </li>
     </ul>
 
-    {{! WIP - Import/export dropdowns. }}
     {{#dropdown}}
         {{> mod_coursework/dropdown }}
     {{/dropdown}}
 
     {{/canmark}}
 </div>
-
-{{! Test data output. }}
-{{{table}}}
