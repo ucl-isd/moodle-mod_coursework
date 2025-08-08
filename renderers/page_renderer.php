@@ -621,15 +621,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= $gradingreportrenderer->render_grading_report($gradingreport);
         $html .= html_writer::end_tag('div');
 
-        // Publish button if appropriate.
-        if ($coursework->has_stuff_to_publish() && has_capability('mod/coursework:publish', $this->page->context)) {
-            $customdata = ['cmid' => $coursework->get_course_module()->id,
-                                'gradingreport' => $gradingreport,
-                                'coursework' => $coursework];
-            $publishform = new mod_coursework\forms\publish_form(null, $customdata);
-            $html .= $publishform->display();
-        }
-
         return $html;
     }
 

@@ -75,8 +75,18 @@
                 </p>
             </div>
 
-            {{! TODO - release grades. }}
-            <a href="" class="btn btn-primary ml-auto">{{#str}}release_marks, mod_coursework{{/str}}</a>
+            {{! Release marks. }}
+            {{#releasemarks}}
+            <a id="release-marks-button" href="{{releasemarks.url}}"
+                    class="btn btn-primary ml-auto"
+                    data-confirmation="modal"
+                    data-confirmation-title-str='["confirm"]'
+                    data-confirmation-content-str='["confirmpublish", "mod_coursework", {"warning": "{{releasemarks.warning}}"}]'
+                    data-confirmation-yes-button-str='["confirm"]'
+                    data-confirmation-destination="{{releasemarks.url}}"
+            >{{#str}}release_marks, mod_coursework{{/str}}
+            </a>
+            {{/releasemarks}}
         </div>
 
         {{! Filter display. }}

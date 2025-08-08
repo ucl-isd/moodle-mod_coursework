@@ -25,6 +25,7 @@
 
 namespace mod_coursework\render_helpers\grading_report\data;
 
+use mod_coursework\allocation\allocatable;
 use mod_coursework\assessor_feedback_row;
 use mod_coursework\assessor_feedback_table;
 use mod_coursework\grade_judge;
@@ -41,6 +42,9 @@ use stdClass;
  * Class marking_cell_data provides data for marking cell templates.
  */
 class marking_cell_data extends cell_data_base {
+    /** @var string|null */
+    protected ?string $allocatablehash;
+
     /**
      * Get the data for the marking cell.
      *
@@ -100,6 +104,7 @@ class marking_cell_data extends cell_data_base {
 
         // Get mark and set draft flag if feedback is not finalised.
         $marker->mark = $this->get_mark_for_feedback($feedback);
+        $marker->allocatablehash = $this->get_allocatable_hash($rowsbase->get_allocatable());
         $marker->draft = !$feedback->finalised;
         $marker->readyforrelease = $rowsbase->get_submission()->ready_to_publish();
         $marker->timemodified = $feedback->timemodified;
@@ -148,7 +153,8 @@ class marking_cell_data extends cell_data_base {
                         $row->get_stage(),
                         null,
                         !$ismultiple
-                    )
+                    ),
+                    'allocatablehash' => $this->get_allocatable_hash($rowsbase->get_allocatable()),
                 ];
             }
 
@@ -291,7 +297,8 @@ class marking_cell_data extends cell_data_base {
             // Handle case when no feedback exists yet.
             return $this->can_add_new_final_feedback($finalstage, $rowsbase) ?
                 (object)['addfinalfeedback' => (object)[
-                    'url' => $this->get_mark_url('new', $rowsbase->get_submission(), $finalstage, null, true)
+                    'url' => $this->get_mark_url('new', $rowsbase->get_submission(), $finalstage, null, true),
+                    'allocatablehash' => $this->get_allocatable_hash($rowsbase->get_allocatable()),
                 ]] :
                 null;
         }
@@ -304,6 +311,7 @@ class marking_cell_data extends cell_data_base {
         return $action ? (object)[
             'mark' => (object)[
                 'mark' => $finalgrade,
+                'allocatablehash' => $this->get_allocatable_hash($rowsbase->get_allocatable()),
                 'url' => $this->get_mark_url($action, $rowsbase->get_submission(), $finalstage, $finalfeedback),
                 // Only show draft label if final feedback is not finalised and submission is not ready for release.
                 // Final feedback is still unfinalised if it is agreed automatically.
@@ -314,5 +322,18 @@ class marking_cell_data extends cell_data_base {
                 'timemodified' => $rowsbase->get_submission()->lastpublished
             ]
         ] : null;
+    }
+
+    /**
+     * Get the allocatable hash.
+     *
+     * @param allocatable $allocatable
+     * @return string
+     */
+    protected function get_allocatable_hash($allocatable) {
+        if (empty($this->allocatablehash)) {
+            $this->allocatablehash = $this->coursework->get_allocatable_identifier_hash($allocatable);
+        }
+        return $this->allocatablehash;
     }
 }

@@ -93,7 +93,7 @@
         <div class="{{#markername}} chat-bubble-bordered {{/markername}}">
             {{! Feedback Comment }}
             {{#feedbackcomment}}
-            <div>
+            <div id="final_feedback_comment">
                 {{{feedbackcomment}}}
             </div>
             {{/feedbackcomment}}
@@ -109,7 +109,7 @@
                 <hr>
                 <div>
                     Mark
-                    <br><span class="h4">{{{.}}}</span>
+                    <br><span id="final_feedback_grade" class="h4">{{{.}}}</span>
                 </div>
             {{/mark}}
         </div>

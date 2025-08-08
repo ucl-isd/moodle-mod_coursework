@@ -932,7 +932,6 @@ class submission extends table_base implements \renderable {
      * @return bool
      */
     public function ready_to_publish() {
-
         if ($this->get_coursework()->plagiarism_flagging_enbled()) {
             // check if not stopped by plagiarism flag
             plagiarism_flag::fill_pool_coursework($this->courseworkid);
@@ -942,14 +941,14 @@ class submission extends table_base implements \renderable {
             }
         }
 
-        $gradejudge = new grade_judge($this->get_coursework());
-        if ($gradejudge->has_feedback_that_is_promoted_to_gradebook($this) && $this->final_grade_agreed() && !$this->editable_final_feedback_exist()) {
-            return true;
-        }
-
         // Already published. Nothing has changed.
         if (!empty($this->lastpublished) && $this->timemodified <= $this->lastpublished) {
             return false;
+        }
+
+        $gradejudge = new grade_judge($this->get_coursework());
+        if ($gradejudge->has_feedback_that_is_promoted_to_gradebook($this) && $this->final_grade_agreed() && !$this->editable_final_feedback_exist()) {
+            return true;
         }
 
         return false;

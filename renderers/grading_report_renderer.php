@@ -72,6 +72,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
 
         $template = new stdClass();
         $template->isgroupsubmission = $gradingreport->get_coursework()->is_configured_to_have_group_submissions();
+        $template->releasemarks = $this->prepare_release_marks_button($gradingreport->get_coursework());
         $template->tr = [];
         $template->markerfilter = [];
 
@@ -80,10 +81,10 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
             $trdata = new stdClass();
 
             // Prepare data for table cells.
-            $this->prepare_student_cell_data($gradingreport, $rowobject, $trdata);
-            $this->prepare_submission_cell_data($gradingreport, $rowobject, $trdata);
-            $this->prepare_marking_cell_data($gradingreport, $rowobject, $trdata);
-            $this->prepare_actions_cell_data($gradingreport, $rowobject, $trdata);
+            $this->prepare_student_cell_data($gradingreport->get_coursework(), $rowobject, $trdata);
+            $this->prepare_submission_cell_data($gradingreport->get_coursework(), $rowobject, $trdata);
+            $this->prepare_marking_cell_data($gradingreport->get_coursework(), $rowobject, $trdata);
+            $this->prepare_actions_cell_data($gradingreport->get_coursework(), $rowobject, $trdata);
 
             // Set tr status and marker filter.
             $this->set_tr_status($trdata);
@@ -109,39 +110,39 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     /**
      * Prepare student cell data
      *
-     * @param grading_report $gradingreport
+     * @param coursework $coursework
      * @param grading_table_row_base $rowobject
      * @param stdClass $trdata
      * @return void
      */
-    protected function prepare_student_cell_data(grading_report $gradingreport, grading_table_row_base $rowobject, stdClass $trdata) {
-        $dataprovider = new student_cell_data($gradingreport->get_coursework());
+    protected function prepare_student_cell_data(coursework $coursework, grading_table_row_base $rowobject, stdClass $trdata) {
+        $dataprovider = new student_cell_data($coursework);
         $trdata->submissiontype = $dataprovider->get_table_cell_data($rowobject);;
     }
 
     /**
      * Prepare submission cell data
      *
-     * @param grading_report $gradingreport
+     * @param coursework $coursework
      * @param grading_table_row_base $rowobject
      * @param stdClass $trdata
      * @return void
      */
-    protected function prepare_submission_cell_data(grading_report $gradingreport, grading_table_row_base $rowobject, stdClass $trdata) {
-        $dataprovider = new submission_cell_data($gradingreport->get_coursework());
+    protected function prepare_submission_cell_data(coursework $coursework, grading_table_row_base $rowobject, stdClass $trdata) {
+        $dataprovider = new submission_cell_data($coursework);
         $trdata->submission = $dataprovider->get_table_cell_data($rowobject);
     }
 
     /**
      * Prepare marking cell data
      *
-     * @param grading_report $gradingreport
+     * @param coursework $coursework
      * @param grading_table_row_base $rowobject
      * @param stdClass $trdata
      * @return void
      */
-    protected function prepare_marking_cell_data(grading_report $gradingreport, grading_table_row_base $rowobject, stdClass $trdata) {
-        $dataprovider = new marking_cell_data($gradingreport->get_coursework());
+    protected function prepare_marking_cell_data(coursework $coursework, grading_table_row_base $rowobject, stdClass $trdata) {
+        $dataprovider = new marking_cell_data($coursework);
         $markingcelldata = $dataprovider->get_table_cell_data($rowobject);
         $trdata->markers = $markingcelldata->markers;
         $trdata->agreedmark = !empty($markingcelldata->agreedmark) ? $markingcelldata->agreedmark : null;
@@ -150,15 +151,48 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
     /**
      * Prepare actions cell data
      *
-     * @param grading_report $gradingreport
+     * @param coursework $coursework
      * @param grading_table_row_base $rowobject
      * @param stdClass $trdata
      * @return void
      */
-    protected function prepare_actions_cell_data(grading_report $gradingreport, grading_table_row_base $rowobject, stdClass $trdata) {
-        $dataprovider = new actions_cell_data($gradingreport->get_coursework());
+    protected function prepare_actions_cell_data(
+        coursework $coursework,
+        grading_table_row_base $rowobject,
+        stdClass $trdata
+    ): void {
+        $dataprovider = new actions_cell_data($coursework);
         $actions = $dataprovider->get_table_cell_data($rowobject);
         $trdata->actions = $actions;
+    }
+
+    /**
+     * Prepare release marks button.
+     *
+     * @param coursework $coursework
+     * @return stdClass|null
+     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
+     */
+    protected function prepare_release_marks_button(coursework $coursework): ?stdClass {
+        [$canrelease] = $coursework->can_release_marks();
+        if (!$canrelease) {
+            return null;
+        }
+
+        $releasemarks = new stdClass();
+        $releasemarks->warning = '';
+        $releasemarks->url = new moodle_url(
+            '/mod/coursework/actions/releasemarks.php',
+            ['cmid' => $coursework->get_coursemodule_id()]
+        );
+
+        if ($coursework->blindmarking_enabled()) {
+            $submissiontype = $coursework->is_configured_to_have_group_submissions() ? 'group' : 'user';
+            $releasemarks->warning = get_string('anonymity_warning_' . $submissiontype, 'mod_coursework');
+        }
+
+        return $releasemarks;
     }
 
     /**

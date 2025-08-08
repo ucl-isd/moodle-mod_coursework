@@ -48,7 +48,7 @@ Feature: When a coursework uses single marking the marking summary table should 
     And there is feedback for the submission from the teacher
     And I log in as the manager
     And I visit the coursework page
-    And I press the publish button
+    And I press the release marks button
     Then I should see marking summary:
       | Submitted           | 1/1 |
       | Needs marking       | 0   |

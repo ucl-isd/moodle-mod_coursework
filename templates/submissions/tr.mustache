@@ -127,13 +127,13 @@
                             {{/timemodified}}
                         {{/draft}}
 
-                        <a href="{{{markurl}}}" class="font-weight-bold pl-1">{{.}}</a>
+                        <a id="edit-feedback-{{allocatablehash}}" href="{{{markurl}}}" class="font-weight-bold pl-1">{{.}}</a>
                     </div>
                     {{/mark}}
 
                     {{#addfeedback}}
                     <div class="text-right ml-auto">
-                        <a href="{{{markurl}}}" class="btn btn-primary btn-sm">{{#str}} add_feedback, mod_coursework {{/str}}</a>
+                        <a id="add-feedback-{{allocatablehash}}" href="{{{markurl}}}" class="btn btn-primary btn-sm">{{#str}} add_feedback, mod_coursework {{/str}}</a>
                     </div>
                     {{/addfeedback}}
                 </li>
@@ -146,7 +146,7 @@
                     </div>
                     {{#addfeedback}}
                         <div class="text-right ml-auto">
-                            <a href="{{{url}}}" class="btn btn-primary btn-sm">{{#str}} add_feedback, mod_coursework {{/str}}</a>
+                            <a id="add-feedback-{{allocatablehash}}" href="{{{url}}}" class="btn btn-primary btn-sm">{{#str}} add_feedback, mod_coursework {{/str}}</a>
                         </div>
                     {{/addfeedback}}
                 </li>
@@ -177,11 +177,11 @@
                             <span class="badge badge-success">{{#str}} statusreleased, mod_coursework {{/str}}</span>
                         {{/released}}
 
-                        <a href="{{{url}}}" class="font-weight-bold pl-1">{{mark}}</a>
+                        <a id="edit-agreed-feedback-{{allocatablehash}}" href="{{{url}}}" class="font-weight-bold pl-1">{{mark}}</a>
                     {{/mark}}
 
                     {{#addfinalfeedback}}
-                    <a href="{{{url}}}" class="btn btn-sm btn-success">{{#str}} add_agreed_feedback, mod_coursework {{/str}}</a>
+                    <a id="add-agreed-feedback-{{allocatablehash}}" href="{{{url}}}" class="btn btn-sm btn-success">{{#str}} add_agreed_feedback, mod_coursework {{/str}}</a>
                     {{/addfinalfeedback}}
                 </div>
                 </li>

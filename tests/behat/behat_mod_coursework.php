@@ -1643,12 +1643,12 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I press the publish button$/
+     * @Given /^I press the release marks button$/
      */
-    public function i_press_the_publish_button() {
-        $this->find('css', '#id_publishbutton')->press();
-        $this->find_button('Continue')->press();
-        $this->getSession()->visit($this->locate_path('coursework')); // Quicker than waiting for a redirect
+    public function i_press_the_release_marks_button() {
+        $this->find('css', '#release-marks-button')->press();
+        $this->find_button(get_string('confirm'))->press();
+        $this->getSession()->visit($this->locate_path('coursework')); // Quicker than waiting for a redirect.
     }
 
     /**
@@ -2359,16 +2359,15 @@ class behat_mod_coursework extends behat_base {
      * @throws Behat\Mink\Exception\ElementNotFoundException
      */
     public function i_grade_the_submission_using_the_simple_form($grade = 56, $withoutcomments = false) {
-        $nodeelement = $this->getSession()->getPage()->findById('feedback_grade');
+        $nodeelement = $this->getSession()->getPage()->findById('id_grade');
         if ($nodeelement) {
-            $nodeelement->selectOption($grade);
+            $nodeelement->setValue($grade);
         }
 
         if (empty($withoutcomments)) {
-            $nodeelement1 = $this->find('css', '#feedback_comment');
-            if ($nodeelement1) {
-                $nodeelement1->setValue('New comment here');
-            }
+            $this->getSession()->executeScript(
+                "tinyMCE.get('id_feedbackcomment').setContent('New comment');"
+            );
         }
 
         $this->getSession()->getPage()->findButton('submitbutton')->press();

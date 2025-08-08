@@ -24,7 +24,7 @@ Feature: publishing grades to the students
     And I am logged in as a manager
     When I visit the coursework page
     And I click the new multiple final feedback button for the student
-    And I grade the submission as 56 using the ajax form
+    And I grade the submission as 56 using the simple form
     Then I visit the coursework page
     And I click the edit final feedback button
     And I wait until the page is ready
@@ -48,9 +48,9 @@ Feature: publishing grades to the students
 
     When I visit the coursework page
     And I click the new multiple final feedback button for the student
-    And I grade the submission as 56 using the ajax form
+    And I grade the submission as 56 using the simple form
     And I visit the coursework page
-    And I press the publish button
+    And I press the release marks button
     And I log out
 
     And I log in as the student
