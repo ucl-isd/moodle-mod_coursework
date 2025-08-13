@@ -2386,10 +2386,18 @@ class coursework extends table_base {
     }
 
     /**
-     * @return bool
+     * Is there general feedback available to students?
+     *
+     * @return bool True if there's general feedback and "General feedback
+     * release date" is not enabled or it is enabled and the date has passed,
+     * false otherwise.
      */
-    public function is_general_feedback_enabled() {
-        return ($this->generalfeedback != 0);
+    public function is_general_feedback_released() {
+        if ($this->feedbackcomment && ($this->generalfeedback == 0 || time() > $this->generalfeedback)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

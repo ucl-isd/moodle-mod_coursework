@@ -391,7 +391,6 @@ $string['fourteendays'] = '14 days';
 $string['from'] = 'from';
 $string['generalfeedback'] = 'General feedback';
 $string['generalfeedback_help'] = 'Please confirm the date that general feedback on this assignment'. ' will be available to all students. If not enabled, any general feedback will be visible to all students as soon as it is added.';
-$string['generalfeedbackdeadline'] = 'General feedback deadline:';
 $string['generalfeedbackform'] = 'General Feedback Form';
 $string['generalfeedbackreleasedate'] = 'General feedback release date';
 $string['generalsettings'] = 'General settings';

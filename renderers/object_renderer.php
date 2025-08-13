@@ -452,7 +452,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string html
      */
     protected function render_mod_coursework_coursework(mod_coursework_coursework $coursework) {
-
         global $USER;
 
         $out = '';
@@ -464,9 +463,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $cangrade = has_capability('mod/coursework:addinitialgrade', $this->page->context);
         $canpublish = has_capability('mod/coursework:publish', $this->page->context);
-        $ispublished = $coursework->user_grade_is_published($USER->id);
-        $allowedtoaddgeneralfeedback = has_capability('mod/coursework:addgeneralfeedback', $coursework->get_context());
         $canaddgeneralfeedback = has_capability('mod/coursework:addgeneralfeedback', $this->page->context);
+        $student = user::find($USER);
 
         // WIP - grid output.
         $out .= "<div class='row'>";
@@ -479,28 +477,61 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $cansubmit = has_capability('mod/coursework:submit', $this->page->context);
         if ($cansubmit && !$cangrade) {
             $pagerenderer = $this->page->get_renderer('mod_coursework', 'page');
-            $out .= $pagerenderer->student_view_page($coursework, \mod_coursework\models\user::find($USER));
+            $out .= $pagerenderer->student_view_page($coursework, $student);
         }
         $out .= "</div>";
 
-        // Big col.
-        $out .= "<div class='col-md-8'>";
-        $out .= $this->coursework_intro($coursework);
-        // Show general feedback if it's there and the deadline has passed or general feedback's date is not enabled which means it should be displayed automatically
-        if (($coursework->is_general_feedback_enabled() && $allowedtoaddgeneralfeedback && (time() > $coursework->generalfeedback || $cangrade || $canpublish || $ispublished)) || !$coursework->is_general_feedback_enabled()) {
-            $template = new stdClass();
-            $template->duedate = $coursework->generalfeedback;
-            $template->feedback = $coursework->feedbackcomment;
+        $template = new stdClass();
+        $template->description = null;
+        $template->markingguideurl = null;
 
-            if ($canaddgeneralfeedback) { // Add/edit general feedback button.
-                $template->button = new stdClass();
-                $template->button->url = new moodle_url('/mod/coursework/actions/general_feedback.php', ['cmid' => $coursework->get_coursemodule_id()]);
-                $template->button->label =  get_string($coursework->feedbackcomment ? 'editgeneralfeedback' : 'addgeneralfeedback', 'coursework');
+        // Display feedback if available.
+        if (!$cangrade && ($submission = $coursework->get_user_submission($student)) && $submission->is_published()) {
+            $template->feedbackfromteachers = $this->existing_feedback_from_teachers($submission);
+            $template->introdates = null;
+        } else { // Else, output the intro data.
+            $template->introdates = $this->add_intro_dates($coursework, $template);
+            $template->feedbackfromteachers = null;
+
+            if ($description = format_module_intro('coursework', $coursework, $coursework->get_coursemodule_id())) {
+                $template->description = $description;
             }
 
-            $out .= $this->render_from_template('mod_coursework/general_feedback', $template);
+            // Marking guide - from advanced grading.
+            if ($coursework->is_using_advanced_grading()) {
+                $template->markingguideurl = $this->get_marking_guide_url($coursework);
+            }
         }
-        $out .= "</div>";
+
+        $template->generalfeedback = null;
+
+        // Show general feedback if it's there and the deadline has passed or general feedback's date is not enabled which means it should be displayed automatically
+        if ($cangrade || $canpublish || $canaddgeneralfeedback || $coursework->is_general_feedback_released()) {
+            $feedback = new stdClass();
+            $feedback->feedback = $coursework->feedbackcomment;
+
+            if ($cangrade || $canpublish || $canaddgeneralfeedback) {
+                $feedback->duedate = $coursework->generalfeedback;
+            }
+
+            if ($canaddgeneralfeedback) { // Add/edit general feedback button.
+                $feedback->button = new stdClass();
+                $feedback->button->url = new moodle_url('/mod/coursework/actions/general_feedback.php', ['cmid' => $coursework->get_coursemodule_id()]);
+                $feedback->button->label = get_string($coursework->feedbackcomment ? 'editgeneralfeedback' : 'addgeneralfeedback', 'coursework');
+            }
+
+            $template->generalfeedback = $feedback;
+        }
+
+        // Only show <hr> if there's content above and below it to be separated.
+        if (($template->feedbackfromteachers || $template->introdates) && ($template->description || $template->markingguideurl || $template->generalfeedback)) {
+            $template->separator1 = true;
+        }
+        if (($template->description || $template->markingguideurl) && $template->generalfeedback) {
+            $template->separator2 = true;
+        }
+
+        $out .= $this->render_from_template('mod_coursework/intro', $template);
 
         // Close row.
         $out .= "</div>";
@@ -1184,52 +1215,33 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
     /**
+     * Get marking guide URL when advanced marking is in use.
+     *
      * @param mod_coursework_coursework $coursework
-     * @return string
+     * @return moodle_url|null Null if there's no advanced grading form set up.
      */
-    protected function coursework_intro(mod_coursework_coursework $coursework) {
-        global $USER, $PAGE;
+    private function get_marking_guide_url(mod_coursework_coursework $coursework): ?moodle_url {
+        $controller = $coursework->get_advanced_grading_active_controller();
 
-        // Display feedback if available.
-        $student = user::find($USER);
-        $cangrade = has_capability('mod/coursework:addinitialgrade', $PAGE->context);
-        if (!$cangrade && $submission = $coursework->get_user_submission($student)) {
-            if ($submission->is_published()) {
-                return $this->existing_feedback_from_teachers($submission);
-            }
-        }
+        if ($controller->is_form_defined() && ($options = $controller->get_options()) && !empty($options['alwaysshowdefinition'])) {
+            // Extract method name using reflection for protected method access.
+            $reflectionclass = new ReflectionClass($controller);
+            $getmethodname = $reflectionclass->getMethod('get_method_name');
+            $getmethodname->setAccessible(true);
+            $methodname = $getmethodname->invoke($controller);
 
-        // Else, output the intro data.
-        // Start template with dates.
-        $template = $this->render_intro_dates($coursework);
-
-        // Add description.
-        $template->description = format_module_intro('coursework', $coursework, $coursework->get_coursemodule_id());
-
-        // Marking guide - from advanced grading.
-        if ($coursework->is_using_advanced_grading()) {
-            $controller = $coursework->get_advanced_grading_active_controller();
-
-            if ($controller->is_form_defined() && ($options = $controller->get_options()) && !empty($options['alwaysshowdefinition'])) {
-                // Extract method name using reflection for protected method access.
-                $reflectionclass = new ReflectionClass($controller);
-                $getmethodname = $reflectionclass->getMethod('get_method_name');
-                $getmethodname->setAccessible(true);
-                $methodname = $getmethodname->invoke($controller);
-
-                $template->markingguideurl = new moodle_url('/grade/grading/form/' . $methodname . '/preview.php',
+            return new moodle_url('/grade/grading/form/' . $methodname . '/preview.php',
                     ['areaid' => $controller->get_areaid()]);
-            }
         }
 
-        return $this->render_from_template('mod_coursework/intro', $template);
+        return null;
     }
 
     /**
      * @param mod_coursework_coursework $coursework
      * @return stdClass
      */
-    public function render_intro_dates(mod_coursework_coursework $coursework) {
+    private function add_intro_dates(mod_coursework_coursework $coursework) {
         global $USER;
 
         $template = new stdClass();
@@ -1266,7 +1278,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             }
         }
 
-        return $template;
+        return empty((array) $template) ? null : $template;
     }
 
 

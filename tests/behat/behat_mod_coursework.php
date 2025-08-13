@@ -1966,8 +1966,30 @@ class behat_mod_coursework extends behat_base {
      * @Given /^there is some general feedback$/
      */
     public function there_is_some_general_feedback() {
-        $this->get_coursework()->feedbackcomment = 'Some comments';
+        $this->get_coursework()->feedbackcomment = '<p>Some comments</p>';
         $this->get_coursework()->save();
+    }
+
+    /**
+     * @Given /^I should see the general feedback$/
+     */
+    public function i_should_see_the_general_feedback() {
+        $page = $this->getSession()->getPage();
+
+        /*
+         * Matches:
+         * <div class="d-flex">
+         *     <h4 class="h5">General feedback</h4>
+         * </div>
+         *
+         * <p>Some comments</p>
+         */
+        $xpath = "//div/h4[text()='General feedback']/../../p[text()='Some comments']";
+
+        if (!$page->find('xpath', $xpath)) {
+            throw new ExpectationException("Should have seen expected general feedback, but it was not there",
+            $this->getSession());
+        }
     }
 
     /**

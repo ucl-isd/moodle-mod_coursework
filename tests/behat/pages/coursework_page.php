@@ -43,7 +43,7 @@ class mod_coursework_behat_coursework_page extends mod_coursework_behat_page_bas
         $things = $this->getPage()->findAll('css', 'h3');
 
         foreach ($things as $thing) {
-            if ($thing->getText() == 'Automatically release individual feedback after:') {
+            if ($thing->getText() == 'Auto-release feedback') {
                 return true;
             }
         }
@@ -55,12 +55,21 @@ class mod_coursework_behat_coursework_page extends mod_coursework_behat_page_bas
      * @return bool
      */
     public function general_feedback_date_present() {
-        $things = $this->getPage()->findAll('css', 'h3');
+        /*
+         * Matches:
+         * <div class="d-flex">
+         *     <h4 class="h5">General feedback</h4>
+         * </div>
+         *
+         * <p>
+         *     <b>Due</b>
+         *     ...
+         * </p>
+         */
+        $xpath = "//div/h4[text()='General feedback']/../../p[starts-with(normalize-space(string()),'Due')]";
 
-        foreach ($things as $thing) {
-            if ($thing->getText() == 'General feedback deadline:') {
-                return true;
-            }
+        if ($this->getPage()->find('xpath', $xpath)) {
+            return true;
         }
 
         return false;
