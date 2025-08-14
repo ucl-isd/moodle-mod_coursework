@@ -323,6 +323,7 @@ class feedback_controller extends controller_base {
                     'code' => 'guidenotcompleted',
                 ]);
             } else {
+                \core\notification::error(get_string('pleasecorrecterrors', 'mod_coursework'));
                 $renderer = $this->get_page_renderer();
                 $renderer->new_feedback_page($teacherfeedback);
             }
@@ -331,7 +332,7 @@ class feedback_controller extends controller_base {
     }
 
     /**
-     * Saves the new feedback form for the first time.
+     * Saves feedback form when updated from /actions/feedbacks/update.php.
      */
     protected function update_feedback() {
 
@@ -372,9 +373,11 @@ class feedback_controller extends controller_base {
 
             } else {
                 $teacherfeedback->destroy();
-                // Clear cache.
-                \mod_coursework\models\feedback::remove_cache($this->submission->courseworkid);
-                \mod_coursework\models\submission::remove_cache($this->submission->courseworkid);
+                if ($this->submission) {
+                    // Clear cache.
+                    \mod_coursework\models\feedback::remove_cache($this->submission->courseworkid);
+                    \mod_coursework\models\submission::remove_cache($this->submission->courseworkid);
+                }
 
                 // Remove associated files
                 $fs = get_file_storage();
@@ -424,12 +427,19 @@ class feedback_controller extends controller_base {
         if ($form->is_cancelled()) {
             redirect($courseworkpageurl);
         }
-
-        $teacherfeedback = $form->process_data($teacherfeedback);
-
-        $teacherfeedback->save();
-        $form->save_feedback_files($teacherfeedback);
-
+        $submittedgrade = optional_param('grade', '', PARAM_RAW);
+        if ($form->grade_in_range($submittedgrade)) {
+            $teacherfeedback = $form->process_data($teacherfeedback);
+            $teacherfeedback->save();
+            $form->save_feedback_files($teacherfeedback);
+        } else {
+            \core\notification::error(get_string('pleasecorrecterrors', 'mod_coursework'));
+            global $OUTPUT;
+            echo $OUTPUT->header();
+            $form->display();
+            echo $OUTPUT->footer();
+            die();
+        }
         $gradeeditingtime = $teacherfeedback->get_coursework()->get_grade_editing_time();
         if (empty($gradeeditingtime) || time() > $teacherfeedback->timecreated + $gradeeditingtime) {
             $this->try_auto_feedback_creation($teacherfeedback->get_submission());

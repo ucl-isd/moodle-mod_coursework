@@ -25,8 +25,10 @@
  */
 
 require_once(dirname(__FILE__) . '/../../../../config.php');
+require_login();
+require_sesskey();
 
-global $CFG, $USER;
+global $CFG, $USER, $PAGE;
 
 $feedbackid = required_param('feedbackid', PARAM_INT);
 $finalised = (bool)optional_param('submitbutton', 0, PARAM_TEXT);
@@ -45,6 +47,8 @@ $params = [
 if ($ajax) {
     $params['cell_type'] = required_param('cell_type', PARAM_TEXT);
 }
+
+$PAGE->set_url(new moodle_url('/mod/coursework/actions/feedbacks/update.php', $params));
 
 $controller = new mod_coursework\controllers\feedback_controller($params);
 $controller->update_feedback();
