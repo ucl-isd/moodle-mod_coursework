@@ -462,6 +462,7 @@ $string['initialmarkingdeadline'] = 'Initial marking deadline';
 $string['initialmarkingdeadline_help'] = 'Set the date that initial grading should be completed by';
 $string['item'] = 'Item';
 $string['itsyou'] = '(you)';
+$string['pleasecorrecterrors'] = 'Please correct errors and re-submit';
 $string['lastedited'] = 'Last edited by {$a->name} on {$a->time}';
 $string['lasteditedby'] = 'Last edited by';
 $string['lastmoderatedby'] = 'Last moderated by';
