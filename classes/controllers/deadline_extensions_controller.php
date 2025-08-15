@@ -71,6 +71,10 @@ class deadline_extensions_controller extends controller_base {
 
     }
 
+    /**
+     * Create a new deadline extension.
+     * @return void
+     */
     protected function create_deadline_extension() {
         global $USER;
 
@@ -80,9 +84,6 @@ class deadline_extensions_controller extends controller_base {
         if ($this->cancel_button_was_pressed()) {
             redirect($courseworkpageurl);
         }
-        /**
-         * @var deadline_extension $deadline_extension
-         */
         if ($this->form->is_validated()) {
             $data = $this->form->get_data();
             $data->extra_information_text = $data->extra_information['text'];
@@ -93,6 +94,9 @@ class deadline_extensions_controller extends controller_base {
             $ability->require_can('create', $this->deadlineextension);
 
             $this->deadlineextension->save();
+            if ($this->params['allocatabletype'] == 'user') {
+                $this->update_user_calendar_event($this->params['allocatableid'], $this->deadlineextension->extended_deadline);
+            }
             redirect($courseworkpageurl);
         } else {
             $this->set_default_current_deadline();
@@ -125,19 +129,18 @@ class deadline_extensions_controller extends controller_base {
         $this->render_page('edit');
     }
 
+    /**
+     * Update an existing extension.
+     * @return void
+     */
     protected function update_deadline_extension() {
         global $USER;
-
         $updateurl = $this->get_router()->get_path('update deadline extension');
         $this->form = new deadline_extension_form($updateurl, ['coursework' => $this->coursework]);
         $courseworkpageurl = $this->get_path('coursework', ['coursework' => $this->coursework]);
         if ($this->cancel_button_was_pressed()) {
             redirect($courseworkpageurl);
         }
-        /**
-         * @var deadline_extension $deadline_extension
-         */
-
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('update', $this->deadlineextension);
 
@@ -146,11 +149,61 @@ class deadline_extensions_controller extends controller_base {
             $values->extra_information_text = $values->extra_information['text'];
             $values->extra_information_format = $values->extra_information['format'];
             $this->deadlineextension->update_attributes($values);
+
+            if ($this->params['allocatabletype'] == 'user') {
+                $this->update_user_calendar_event($this->params['allocatableid'], $this->deadlineextension->extended_deadline);
+            }
             redirect($courseworkpageurl);
         } else {
             $this->render_page('edit');
         }
 
+    }
+
+    /**
+     * User needs to see updated deadline in timeline block on dashboard.
+     * Adapted from save_user_extension()in mod/assign/locallib.php.
+     * @return void
+     */
+    protected function update_user_calendar_event(int $userid, int $extensionduedate): bool {
+        global $DB;
+        if (!$extensionduedate) {
+            return false;
+        }
+        $instance = $this->coursework;
+        $cm = $instance->get_course_module();
+
+        $eventtype = 'due';
+
+        $event = $DB->get_record('event', [
+            'userid' => $userid,
+            'eventtype' => $eventtype,
+            'modulename' => 'coursework',
+            'instance' => $instance->id,
+        ]);
+
+        if ($event) {
+            $event->timestart = $extensionduedate;
+            return $DB->update_record('event', $event);
+        } else {
+            $event = new \stdClass();
+            $event->type = CALENDAR_EVENT_TYPE_ACTION;
+            $event->name = get_string('calendarextension', 'assign', $instance->name);
+            $event->description = format_module_intro('coursework', $instance, $cm->id);
+            $event->format = FORMAT_HTML;
+            $event->courseid = 0;
+            $event->groupid = 0;
+            $event->userid = $userid;
+            $event->modulename = 'coursework';
+            $event->instance = $instance->id;
+            $event->timestart = $extensionduedate;
+            $event->timeduration = 0;
+            $event->visible = instance_is_visible('coursework', $instance);
+            $event->eventtype = $eventtype;
+            $event->priority = null;
+
+            return (bool)\calendar_event::create($event, false);
+        }
     }
 
     /**
