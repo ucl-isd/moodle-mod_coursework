@@ -44,3 +44,21 @@ Feature: For the final grade the mark should be to the decimal point
     And I click the new multiple final feedback button for the student
     And I grade the submission as 56.12 using the ajax form
     Then I should see the final grade as 56.12 on the multiple marker page
+
+  Scenario: If I enter non-numeric characters for the grade I should see an error
+    Given there are feedbacks from both teachers
+    And I log in as a manager
+    And I visit the coursework page
+    And I click on "Add agreed feedback" "link"
+    And I set the field "Grade" to "abc"
+    And I wait "1" seconds
+    Then I should see "- Error"
+
+  Scenario: If I enter a grade which is out of range I should see an error
+    Given there are feedbacks from both teachers
+    And I log in as a manager
+    And I visit the coursework page
+    And I click on "Add agreed feedback" "link"
+    And I set the field "Grade" to "1234"
+    And I press "Save and finalise"
+    Then I should see "Please correct errors and re-submit"
