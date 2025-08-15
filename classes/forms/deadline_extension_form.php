@@ -67,8 +67,34 @@ class deadline_extension_form extends \moodleform {
         $this->_form->addElement('editor', 'extra_information', get_string('extra_information', 'mod_coursework'));
         $this->_form->setType('extra_information', PARAM_RAW);
 
-        // Submit button
-        $this->add_action_buttons();
+        // Submit buttons.
+        // Only use uniqueid if the form defines it needs to be used.
+        $forceuniqueid = false;
+        if (is_array($this->_customdata)) {
+            $forceuniqueid = $this->_customdata['forceuniqueid'] ?? false;
+        }
+        $buttonarray = [
+            $this->_form->createElement('submit', 'submitbutton', get_string('savechanges')),
+            $this->_form->createElement('cancel'),
+        ];
+        $hasextension = (bool)($this->_customdata['extensionid'] ?? false);
+        if ($hasextension) {
+            $buttonarray[] = $this->_form->createElement(
+                'html',
+                \html_writer::link(
+                    new \moodle_url(
+                        '/mod/coursework/actions/deadline_extensions/delete.php',
+                        ['id' => $this->_customdata['extensionid'], 'sesskey' => sesskey()]
+                    ),
+                    get_string('delete'),
+                    ['class' => 'btn btn-danger']
+                )
+            );
+        }
+
+        $buttonarname = $forceuniqueid && $this::$uniqueid > 0 ? 'buttonar_' . $this::$uniqueid : 'buttonar';
+        $this->_form->addGroup($buttonarray, $buttonarname, '', [' '], false);
+        $this->_form->closeHeaderBefore('buttonar');
     }
 
     private function get_coursework() {
@@ -91,11 +117,15 @@ class deadline_extension_form extends \moodleform {
         }
 
         $errors = [];
-        if ($data['extended_deadline'] <= $deadline) {
-            $errors['extended_deadline'] = 'The new deadline must be later than the current deadline';
-        }
-        if ($data['extended_deadline'] >= strtotime("+$maxdeadline months", $deadline)) {
-            $errors['extended_deadline'] = "The new deadline must not be later than $maxdeadline months after the current deadline";
+        // Deleting an existing deadline extension is allowed, in which case extended_deadline will be falsey.
+        if ($data['extended_deadline']) {
+            if ($data['extended_deadline'] <= $deadline) {
+                $errors['extended_deadline'] = 'The new deadline must be later than the current deadline';
+            }
+            if ($data['extended_deadline'] >= strtotime("+$maxdeadline months", $deadline)) {
+                $errors['extended_deadline'] =
+                    "The new deadline must not be later than $maxdeadline months after the current deadline";
+            }
         }
         return $errors;
     }

@@ -115,7 +115,9 @@ class deadline_extensions_controller extends controller_base {
         $PAGE->set_url('/mod/coursework/actions/deadline_extensions/edit.php', $params);
         $updateurl = $this->get_router()->get_path('update deadline extension');
 
-        $this->form = new deadline_extension_form($updateurl, ['coursework' => $this->coursework]);
+        $this->form = new deadline_extension_form(
+            $updateurl, ['coursework' => $this->coursework, 'extensionid' => $this->params['id']]
+        );
         $this->deadlineextension->extra_information = [
             'text' => $this->deadlineextension->extra_information_text,
             'format' => $this->deadlineextension->extra_information_format,
@@ -125,11 +127,31 @@ class deadline_extensions_controller extends controller_base {
         $this->render_page('edit');
     }
 
+    /**
+     * Delete a deadline extension from the database.
+     * @return bool
+     */
+    public function delete_deadline_extension(): bool {
+        global $USER;
+        $extensionid = $this->params['id'];
+        $ability = new ability(user::find($USER), $this->coursework);
+        $deadlineextension = deadline_extension::find(['id' => $extensionid]);
+        if ($deadlineextension) {
+            $ability->require_can('edit', $deadlineextension);
+            $deadlineextension->delete();
+            return true;
+        }
+        return false;
+    }
+
     protected function update_deadline_extension() {
         global $USER;
 
         $updateurl = $this->get_router()->get_path('update deadline extension');
-        $this->form = new deadline_extension_form($updateurl, ['coursework' => $this->coursework]);
+        $this->form = new deadline_extension_form(
+            $updateurl,
+            ['coursework' => $this->coursework, 'extensionid' => $this->params['id']]
+        );
         $courseworkpageurl = $this->get_path('coursework', ['coursework' => $this->coursework]);
         if ($this->cancel_button_was_pressed()) {
             redirect($courseworkpageurl);
@@ -139,9 +161,11 @@ class deadline_extensions_controller extends controller_base {
          */
 
         $ability = new ability(user::find($USER), $this->coursework);
+        $values = $this->form->get_data();
+        $this->deadlineextension = deadline_extension::find(['id' => $this->params['id']]);
+
         $ability->require_can('update', $this->deadlineextension);
 
-        $values = $this->form->get_data();
         if ($this->form->is_validated()) {
             $values->extra_information_text = $values->extra_information['text'];
             $values->extra_information_format = $values->extra_information['format'];
@@ -230,6 +254,11 @@ class deadline_extensions_controller extends controller_base {
             $deadline = $personaldeadline->personal_deadline;
         } else {
             $deadline = $this->coursework->deadline;
+        }
+
+        // Deleting the extension date is allowed.
+        if ($deadline && !$data['extended_deadline']) {
+            return get_string('extended_deadline_deleted', 'mod_coursework');
         }
 
         if ( $data['extended_deadline'] <= $deadline) {

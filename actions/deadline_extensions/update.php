@@ -29,7 +29,7 @@ $id = required_param('id', PARAM_INT);
 $params = [
     'id' => $id,
 ];
-$url = '/mod/coursework/actions/deadline_extensions/create.php';
+$url = '/mod/coursework/actions/deadline_extensions/update.php';
 $link = new \moodle_url($url, $params);
 $PAGE->set_url($link);
 

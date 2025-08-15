@@ -99,10 +99,11 @@ class actions_cell_data extends cell_data_base {
         $data->extension->class = $extension ? 'edit_deadline_extension' : 'new_deadline_extension';
         $data->extension->stdname = $rowsbase->get_user_name();
         $data->extension->url = $extension ? router::instance()->get_path('edit deadline extension', ['id' => $extension->id]) :
-            router::instance()->get_path('new deadline extension', $extensionparams);
+            htmlspecialchars_decode(router::instance()->get_path('new deadline extension', $extensionparams));
         $data->extension->datatime = json_encode([
             'time' => userdate($this->coursework->get_deadline(), '%d-%m-%Y %I:%M', fixday: false),
-            'time_content' => userdate($this->coursework->get_deadline(), get_string('strftimedaydatetime', 'langconfig'), fixday: false),
+            'time_content' =>
+                userdate($this->coursework->get_deadline(), get_string('strftimedaydatetime', 'langconfig'), fixday: false),
             'is_have_deadline' => $this->coursework->get_deadline() > 0 ? 1 : 0,
         ]);
     }

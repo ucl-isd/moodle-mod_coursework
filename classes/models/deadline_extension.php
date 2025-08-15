@@ -24,6 +24,7 @@ namespace mod_coursework\models;
 
 use mod_coursework\framework\table_base;
 use mod_coursework\allocation\allocatable;
+use mod_coursework\event\extension_deleted;
 
 /**
  * Class deadline_extension is responsible for representing one row of the deadline_extensions table.
@@ -95,6 +96,15 @@ class deadline_extension extends table_base {
         return $classname::find($this->allocatableid);
     }
 
+    /**
+     * Get the user name who is granted the extension.
+     * @return mixed
+     */
+    public function get_grantee_user_name() {
+        $allocatable = self::get_allocatable();
+        return $allocatable->name();
+    }
+
     protected function pre_save_hook() {
         global $USER;
 
@@ -157,6 +167,31 @@ class deadline_extension extends table_base {
      */
     protected function after_destroy() {
         self::remove_cache($this->courseworkid);
+    }
+
+    /**
+     * Delete an extension.
+     * @return void
+     */
+    public function delete() {
+        global $DB;
+        $record = $DB->get_record(self::$tablename, ['id' => $this->id]);
+        if ($record) {
+            $cm = get_coursemodule_from_instance(
+                'coursework', $this->coursework->id, 0, false, MUST_EXIST
+            );
+            $DB->delete_records(self::$tablename, ['id' => $this->id]);
+            self::after_destroy();
+
+            // Keep a record of what's deleted in the log table for audit purposes.
+            $event = extension_deleted::create([
+                'objectid' => $this->id,
+                'context' => \context_module::instance($cm->id),
+                'other' => ['record' => json_encode($record)],
+            ]);
+
+            $event->trigger();
+        }
     }
 
 }
