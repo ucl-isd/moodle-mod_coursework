@@ -201,53 +201,6 @@ class deadline_extensions_controller extends controller_base {
         return $params;
     }
 
-    /**
-     * Begin Ajax functions
-     */
-    public function ajax_submit_mitigation($dataparams) {
-        global $USER, $OUTPUT;
-        $extendeddeadline = false;
-        $response = [];
-        $this->coursework = coursework::find(['id' => $this->params['courseworkid']]);
-        $cm = get_coursemodule_from_instance(
-            'coursework', $this->coursework->id, 0, false, MUST_EXIST
-        );
-        require_login($this->coursework->course, false, $cm);
-        $params = $this->set_default_current_deadline();
-        $ability = new ability(user::find($USER), $this->coursework);
-        $errors = $this->validation($dataparams);
-        $data = (object) $dataparams;
-        if (!$errors) {
-            if ($data->id > 0) {
-                $this->deadlineextension = deadline_extension::find(['id' => $data->id]);
-                $ability->require_can('edit', $this->deadlineextension);
-                $data->createdbyid = $USER->id;
-                $this->deadlineextension->update_attributes($data);
-            } else {
-                $this->deadlineextension = deadline_extension::build($data);
-                $ability->require_can('new', $this->deadlineextension);
-                $this->deadlineextension->save();
-                $dataparams['id'] = $this->deadlineextension->id;
-            }
-            $dataparams['extended_deadline_formatted'] = userdate($dataparams['extended_deadline'], get_string('strftimedatetime', 'langconfig'));
-            $content = $this->table_cell_response($dataparams);
-
-            $response = [
-                'error' => 0,
-                'data' => $dataparams,
-                'content' => $content,
-            ];
-            echo json_encode($response);
-        } else {
-            $response = [
-                'error' => 1,
-                'messages' => $errors,
-            ];
-
-            echo json_encode($response);
-        }
-    }
-
     public function validation($data) {
         global $CFG;
         if ($this->coursework->personaldeadlineenabled && $personaldeadline = $this->personal_deadline()) {
@@ -266,16 +219,6 @@ class deadline_extensions_controller extends controller_base {
         }
 
         return false;
-    }
-
-    public function submission_exists($data) {
-        global $DB;
-
-        return  $DB->record_exists('coursework_submissions', [
-                            'courseworkid' => $data['courseworkid'],
-                            'allocatableid' => $data['allocatableid'],
-                            'allocatabletype' => $data['allocatabletype'],
-        ]);
     }
 
     public function personal_deadline() {
@@ -302,111 +245,6 @@ class deadline_extensions_controller extends controller_base {
         ];
 
         return  $personaldeadline = $DB->get_record('coursework_person_deadlines', $params);
-    }
-
-    public function ajax_edit_mitigation($dataparams) {
-        global $USER;
-        $response = [];
-        if ($dataparams['id'] > 0) {
-            $this->coursework = coursework::find(['id' => $this->params['courseworkid']]);
-            $cm = get_coursemodule_from_instance(
-                'coursework', $this->coursework->id, 0, false, MUST_EXIST
-            );
-            require_login($this->coursework->course, false, $cm);
-
-            $ability = new ability(user::find($USER), $this->coursework);
-            $deadlineextension = deadline_extension::find(['id' => $dataparams['id']]);
-            if (empty($deadlineextension)) {
-                $response = [
-                    'error' => 1,
-                    'message' => 'This Deadline Extension does not exist!',
-                ];
-            } else {
-                $ability->require_can('edit', $deadlineextension);
-                $timecontent = '';
-                $time = '';
-                if ($this->coursework->personaldeadlineenabled &&  $personaldeadline = $this->personal_deadline()) {
-                    $timecontent = 'Personal deadline: ' . userdate($personaldeadline->personal_deadline);
-                    $time = date('d-m-Y H:i', $personaldeadline->personal_deadline);
-                } else if ($this->coursework->deadline) {
-                    // Current deadline for comparison
-                    $timecontent = 'Default deadline: ' . userdate($this->coursework->deadline);
-                    $time = date('d-m-Y H:i', $this->coursework->deadline);
-                }
-
-                if (!empty($deadlineextension->extended_deadline) && $deadlineextension->extended_deadline > 0) {
-                    $time = date('d-m-Y H:i', $deadlineextension->extended_deadline);
-                }
-
-                $deadlineextensiontransform = [
-                    'time_content' => $timecontent,
-                    'time' => $time,
-                    'text' => $deadlineextension->extra_information_text,
-                    'allocatableid' => $deadlineextension->allocatableid,
-                    'allocatabletype' => $deadlineextension->allocatabletype,
-                    'courseworkid' => $deadlineextension->courseworkid,
-                    'id' => $deadlineextension->id,
-                    'pre_defined_reason' => $deadlineextension->pre_defined_reason,
-                    'time_iso_8601' => date(\DateTime::ATOM, $deadlineextension->extended_deadline),
-                ];
-                $response = [
-                    'error' => 0,
-                    'data' => $deadlineextensiontransform,
-                ];
-            }
-        } else {
-            $response = [
-                'error' => 1,
-                'message' => 'ID can not be lower than 1!',
-            ];
-        }
-        echo json_encode($response);
-    }
-
-    public function ajax_new_mitigation($dataparams) {
-        global $USER, $DB;
-        $response = [];
-        $this->coursework = coursework::find(['id' => $this->params['courseworkid']]);
-        $cm = get_coursemodule_from_instance(
-            'coursework', $this->coursework->id, 0, false, MUST_EXIST
-        );
-        require_login($this->coursework->course, false, $cm);
-
-        $params = [
-            'allocatableid' => $this->params['allocatableid'],
-            'allocatabletype' => $this->params['allocatabletype'],
-            'courseworkid' => $this->params['courseworkid'],
-        ];
-
-        $ability = new ability(user::find($USER), $this->coursework);
-        $deadlineextension = deadline_extension::build($params);
-        $ability->require_can('new', $deadlineextension);
-        $timecontent = '';
-        $time = '';
-        if ($this->coursework->deadline) {
-            $personaldeadline = $DB->get_record('coursework_person_deadlines', $params);
-            if ($personaldeadline) {
-                $timecontent = 'Personal deadline: ' . userdate($personaldeadline->personal_deadline);
-                // $this->coursework->deadline = $personal_deadline->personal_deadline;
-                $time = date('d-m-Y H:i', $personaldeadline->personal_deadline);
-            } else {
-                $timecontent = 'Default deadline: ' . userdate($this->coursework->deadline);
-                $time = date('d-m-Y H:i', $this->coursework->deadline);
-            }
-        }
-
-        $deadlineextensiontransform = [
-            'time_content' => $timecontent,
-            'time' => $time,
-            'time_iso_8601' => date(\DateTime::ATOM, $this->coursework->deadline),
-        ];
-
-        $response = [
-            'error' => 0,
-            'data' => $deadlineextensiontransform,
-        ];
-
-        echo json_encode($response);
     }
 
     /**
