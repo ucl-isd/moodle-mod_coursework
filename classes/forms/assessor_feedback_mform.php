@@ -272,7 +272,8 @@ class assessor_feedback_mform extends moodleform {
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
-        if (isset($data['stage_identifier']) && $data['stage_identifier'] == 'final_agreed_1') {
+        $hasadvancedgrading = !empty($data['advancedgrading']);
+        if (!$hasadvancedgrading && isset($data['stage_identifier']) && $data['stage_identifier'] == 'final_agreed_1') {
             if (!$this->grade_in_range($data['grade'])) {
                 $errors['grade'] = get_string('err_numeric', 'form');
             }
