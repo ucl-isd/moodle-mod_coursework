@@ -323,7 +323,7 @@ class feedback_controller extends controller_base {
                     'code' => 'guidenotcompleted',
                 ]);
             } else {
-                \core\notification::error(get_string('pleasecorrecterrors', 'mod_coursework'));
+                \core\notification::error(get_string('guidenotcompleted', 'gradingform_guide'));
                 $renderer = $this->get_page_renderer();
                 $renderer->new_feedback_page($teacherfeedback);
             }
@@ -427,8 +427,9 @@ class feedback_controller extends controller_base {
         if ($form->is_cancelled()) {
             redirect($courseworkpageurl);
         }
-        $submittedgrade = optional_param('grade', '', PARAM_RAW);
-        if ($form->grade_in_range($submittedgrade)) {
+        $formdata = $form->get_data();
+        $hasadvancedgrading = !empty($formdata->advancedgrading);
+        if ($hasadvancedgrading || (isset($formdata->grade) && $form->grade_in_range($formdata->grade))) {
             $teacherfeedback = $form->process_data($teacherfeedback);
             $teacherfeedback->save();
             $form->save_feedback_files($teacherfeedback);
