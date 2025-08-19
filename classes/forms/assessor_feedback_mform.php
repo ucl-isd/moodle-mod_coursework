@@ -95,7 +95,9 @@ class assessor_feedback_mform extends moodleform {
         } else if ($feedback->stage_identifier == 'final_agreed_1') {
             $mform->addElement('text', 'grade', get_string('grade', 'mod_coursework'));
             $mform->setType('grade', PARAM_RAW);
-            $mform->addRule('grade', get_string('error'), 'numeric', null, 'client');
+            $mform->addRule(
+                'grade', get_string('err_valueoutofrange', 'mod_coursework'), 'numeric', null, 'client'
+            );
         } else {
             $mform->addElement('select',
                                'grade',
@@ -114,6 +116,7 @@ class assessor_feedback_mform extends moodleform {
             'accepted_types' => '*',
             'return_types' => FILE_INTERNAL,
         ];
+
 
         $uploadfilestring = get_string('uploadafile');
         $this->_form->addElement('filemanager',
@@ -167,12 +170,16 @@ class assessor_feedback_mform extends moodleform {
      * @param $data
      * @return bool
      */
-    public function validate_grade($data) {
-        $result = true;
+    public function validate_grade($data): bool {
         if (!empty($this->_grading_instance) && property_exists($data, 'advancedgrading')) {
-            $result = $this->_grading_instance->validate_grading_element($data->advancedgrading);
+            return $this->_grading_instance->validate_grading_element($data->advancedgrading);
+        } else {
+            $errors = self::validation($data, []);
+            if (!empty($errors)) {
+                return false;
+            }
         }
-        return $result;
+        return true;
     }
 
     /**
@@ -275,7 +282,7 @@ class assessor_feedback_mform extends moodleform {
         $hasadvancedgrading = !empty($data['advancedgrading']);
         if (!$hasadvancedgrading && isset($data['stage_identifier']) && $data['stage_identifier'] == 'final_agreed_1') {
             if (!$this->grade_in_range($data['grade'])) {
-                $errors['grade'] = get_string('err_numeric', 'form');
+                $errors['grade'] = get_string('err_valueoutofrange', 'coursework');
             }
         }
         return $errors;
