@@ -120,9 +120,10 @@ class feedback_controller extends controller_base {
         $urlparams['ismoderation'] = $teacherfeedback->ismoderation;
         $urlparams['stage_identifier'] = $teacherfeedback->stage_identifier;
         $PAGE->set_url('/mod/coursework/actions/feedbacks/new.php', $urlparams);
-
+        $submiturl = $this->get_router()->get_path('create feedback', ['feedback' => $teacherfeedback]);
+        $simpleform = new assessor_feedback_mform($submiturl, ['feedback' => $teacherfeedback]);
         $renderer = $this->get_page_renderer();
-        $renderer->new_feedback_page($teacherfeedback);
+        $renderer->new_feedback_page($teacherfeedback, $simpleform);
 
     }
 
@@ -133,7 +134,7 @@ class feedback_controller extends controller_base {
      */
     protected function edit_feedback() {
 
-        global $DB, $PAGE, $USER;
+        global $PAGE, $USER;
 
         $teacherfeedback = new feedback($this->params['feedbackid']);
         $this->check_stage_permissions($teacherfeedback->stage_identifier);
@@ -144,16 +145,11 @@ class feedback_controller extends controller_base {
         $urlparams = ['feedbackid' => $this->params['feedbackid']];
         $PAGE->set_url('/mod/coursework/actions/feedbacks/edit.php', $urlparams);
 
-        $assessor = $DB->get_record('user', ['id' => $teacherfeedback->assessorid]);
-        if (!empty($teacherfeedback->lasteditedbyuser)) {
-            $editor = $DB->get_record('user', ['id' => $teacherfeedback->lasteditedbyuser]);
-        } else {
-            $editor = $assessor;
-        }
-
         $teacherfeedback->grade = format_float($teacherfeedback->grade, $this->coursework->get_grade_item()->get_decimals());
         $renderer = $this->get_page_renderer();
-        $renderer->edit_feedback_page($teacherfeedback, $assessor, $editor);
+        $submiturl = $this->get_router()->get_path('update feedback', ['feedback' => $teacherfeedback]);
+        $form = new assessor_feedback_mform($submiturl, ['feedback' => $teacherfeedback]);
+        $renderer->edit_feedback_page($teacherfeedback, $form);
     }
 
     /**
@@ -191,8 +187,10 @@ class feedback_controller extends controller_base {
             if ($this->space_for_another_feedback($teacherfeedback)) {
                 $teacherfeedback->stage_identifier = $this->next_available_stage($teacherfeedback);
             } else {
+                $submiturl = $this->get_router()->get_path('create feedback', ['feedback' => $teacherfeedback]);
+                $form = new assessor_feedback_mform($submiturl, ['feedback' => $teacherfeedback]);
                 $renderer = $this->get_page_renderer();
-                $renderer->new_feedback_page($teacherfeedback);
+                $renderer->new_feedback_page($teacherfeedback, $form);
                 return;
             }
         }
@@ -232,10 +230,7 @@ class feedback_controller extends controller_base {
         } else {
             // Grade validation failure - redisplay form and allow Moodle to explain what error is for user.
             $renderer = $this->get_page_renderer();
-            $renderer->redisplay_form(
-                $teacherfeedback->get_submission(),
-                $form
-            );
+            $renderer->new_feedback_page($teacherfeedback, $form);
         }
     }
 
@@ -320,10 +315,7 @@ class feedback_controller extends controller_base {
             redirect($courseworkpageurl);
         } else {
             $renderer = $this->get_page_renderer();
-            $renderer->redisplay_form(
-                $teacherfeedback->get_submission(),
-                $form
-            );
+            $renderer->edit_feedback_page($teacherfeedback, $form);
         }
     }
 
