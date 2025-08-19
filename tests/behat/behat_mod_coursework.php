@@ -2229,15 +2229,38 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * Check expected final agreed grade appears on page.
+     * @Then /^I should see the final agreed grade(?: as )?(\d*\.?\d+)? on the page$/
+     * @param float $grade
+     * @throws ExpectationException
+     */
+    public function i_should_see_the_final_agreed_grade_on_the_page($grade) {
+        try {
+            $grade = count(
+                $this->find_all(
+                    'xpath', $this->xpath_tag_class_contains_text('a', 'agreed-feedback-grade', $grade)
+                )
+            );
+        } catch (Exception $e) {
+            $grade = false;
+        }
+        if (!$grade) {
+            throw new ExpectationException('Could not find the final grade', $this->getSession());
+        }
+    }
+
+    /**
      * @Then /^I should( not)? see the final grade(?: as )?(\d*\.?\d+)? on the multiple marker page$/
      * @param bool $negate
      * @param float $grade
      * @throws ExpectationException
-     * @throws coding_exception
+     * @throws \coding_exception
      */
     public function i_should_see_the_final_multiple_grade_on_the_page($negate = false, $grade = 56) {
         try {
-            $grade = count($this->find_all('xpath', $this->xpath_tag_class_contains_text('td', 'multiple_agreed_grade_cell', $grade)));
+            $grade = count(
+                $this->find_all('xpath', $this->xpath_tag_class_contains_text('td', 'edit-agreed-feedback-4', $grade))
+            );
         } catch(Exception $e) {
             $grade = false;
         }
