@@ -795,6 +795,7 @@ $string['submissionreceipt'] = 'Submission receipt';
 $string['submission_table_header'] = 'Coursework submissions';
 $string['submission_table_header_help'] = 'Coursework submissions';
 $string['submissiondate'] = 'Submission date';
+$string['submissionextension'] = 'Submission extension';
 $string['submissionfile'] = 'Submission file';
 $string['submissionfiles'] = 'Submission files';
 $string['submissionfileid'] = 'Submission file id';

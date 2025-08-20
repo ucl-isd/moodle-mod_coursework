@@ -202,28 +202,21 @@ abstract class grading_table_row_base implements user_row {
     /**
      * Getter for personal deadline time
      *
-     * @return int|mixed|string
+     * @return int
      */
-    public function get_personal_deadlines() {
+    public function get_personal_deadlines(): ?int {
         global $DB;
-
         $allocatable = $this->get_allocatable();
-
         if (!$allocatable) {
-            return '';
+            return null;
         }
-
-        $personaldeadline = $DB->get_record('coursework_person_deadlines',
-                                            ['courseworkid' => $this->get_coursework()->id,
-                                                  'allocatableid' => $allocatable->id(),
-                                                  'allocatabletype' => $allocatable->type()]);
-        if ($personaldeadline) {
-            $personaldeadline = $personaldeadline->personal_deadline;
-        } else {
-            $personaldeadline = $this->get_coursework()->deadline;
-        }
-
-        return  $personaldeadline;
+        $params = [
+            'courseworkid' => $this->get_coursework()->id,
+            'allocatableid' => $allocatable->id(),
+            'allocatabletype' => $allocatable->type(),
+        ];
+        $result = $DB->get_field('coursework_person_deadlines', 'personal_deadline', $params);
+        return $result ? (int)$result : null;
     }
 
     /**

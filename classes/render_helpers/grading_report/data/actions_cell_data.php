@@ -61,6 +61,8 @@ class actions_cell_data extends cell_data_base {
         // Set plagiarism parameters.
         $this->set_plagiarism_data($data, $rowsbase);
 
+        $this->set_personal_deadline_data($data, $rowsbase);
+
         return $data;
     }
 
@@ -240,6 +242,25 @@ class actions_cell_data extends cell_data_base {
     }
 
     /**
+     * Set extension parameters.
+     *
+     * @param stdClass $data
+     * @param grading_table_row_base $rowsbase
+     * @return void
+     */
+    protected function set_personal_deadline_data(stdClass $data, grading_table_row_base $rowsbase): void {
+        $personaldeadline = $rowsbase->get_personal_deadlines();
+        if ($personaldeadline) {
+            $data->personaldeadline = (object)[
+                'date' => $personaldeadline,
+                'time' => userdate($personaldeadline, '%d-%m-%Y %I:%M', fixday: false),
+                'time_content' => userdate($personaldeadline, get_string('strftimedaydatetime', 'langconfig'), fixday: false),
+                'is_have_deadline' => $personaldeadline > 0 ? 1 : 0,
+            ];
+        }
+    }
+
+    /**
      * Check if a new submission can be made
      *
      * @param grading_table_row_base $rowsbase
@@ -267,7 +288,7 @@ class actions_cell_data extends cell_data_base {
             return true;
         }
 
-        if ($rowsbase->get_personal_deadlines() >= $this->clock->time()) {
+        if (($rowsbase->get_personal_deadlines() ?? $rowsbase->get_coursework()->get_deadline()) >= $this->clock->time()) {
             return true;
         }
 

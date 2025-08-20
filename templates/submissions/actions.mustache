@@ -10,7 +10,7 @@
                    data-name="{{extension.stdname}}"
                    data-time="{{extension.datatime}}"
                    data-params="{{extension.extensionparams}}"
-                >Submission extension
+                >{{#str}}submissionextension, coursework{{/str}}
                     <small class="actions-extension-date-container {{#extension.date}}d-block{{/extension.date}} {{^extension.date}}d-none{{/extension.date}}">
                         <i class="fa-solid fa-circle-check text-success mr-2"></i>
                         <span class="sr-only">Extension granted date </span>
@@ -49,5 +49,18 @@
             <div class="dropdown-divider"></div>
         {{/plagarism.url}}
         <a class="dropdown-item" href="#">Release mark</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{{config.wwwroot}}/mod/coursework/actions/personal_deadline.php?allocatableid={{allocatableid}}&allocatabletype=user&courseworkid={{coursework.id}}">
+            {{#str}}personal_deadline, coursework{{/str}}
+            <small class="actions-extension-date-container {{#personaldeadline.date}}d-block{{/personaldeadline.date}} {{^personaldeadline.date}}d-none{{/personaldeadline.date}}">
+                <i class="fa-solid fa-circle-check text-success mr-2"></i>
+                <span class="sr-only">Extension granted date </span>
+                <span class="actions-extension-date">
+                    {{#personaldeadline.date}}
+                        {{#userdate}}{{personaldeadline.date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
+                    {{/personaldeadline.date}}
+                </span>
+            </small>
+        </a>
     </div>
 </div>

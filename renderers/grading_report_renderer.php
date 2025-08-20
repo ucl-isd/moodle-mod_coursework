@@ -70,21 +70,27 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
             return $submissiona->timemodified <=> $submissionb->timemodified;
         });
 
+        $coursework = $gradingreport->get_coursework();
         $template = new stdClass();
-        $template->isgroupsubmission = $gradingreport->get_coursework()->is_configured_to_have_group_submissions();
-        $template->releasemarks = $this->prepare_release_marks_button($gradingreport->get_coursework());
+        $template->isgroupsubmission = $coursework->is_configured_to_have_group_submissions();
+        $template->releasemarks = $this->prepare_release_marks_button($coursework);
         $template->tr = [];
         $template->markerfilter = [];
+        $template->coursework = [
+            'id' => $coursework->id,
+            'name' => $coursework->name,
+        ];
 
         /** @var grading_table_row_base $rowobject */
         foreach ($tablerows as $rowobject) {
             $trdata = new stdClass();
+            $trdata->allocatableid = $rowobject->get_allocatable()->id;
 
             // Prepare data for table cells.
-            $this->prepare_student_cell_data($gradingreport->get_coursework(), $rowobject, $trdata);
-            $this->prepare_submission_cell_data($gradingreport->get_coursework(), $rowobject, $trdata);
-            $this->prepare_marking_cell_data($gradingreport->get_coursework(), $rowobject, $trdata);
-            $this->prepare_actions_cell_data($gradingreport->get_coursework(), $rowobject, $trdata);
+            $this->prepare_student_cell_data($coursework, $rowobject, $trdata);
+            $this->prepare_submission_cell_data($coursework, $rowobject, $trdata);
+            $this->prepare_marking_cell_data($coursework, $rowobject, $trdata);
+            $this->prepare_actions_cell_data($coursework, $rowobject, $trdata);
 
             // Set tr status and marker filter.
             $this->set_tr_status($trdata);
@@ -102,7 +108,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
             }
         }
         $template->markerfilter = array_values($template->markerfilter);
-        $template->defaultduedate = $gradingreport->get_coursework()->get_deadline();
+        $template->defaultduedate = $coursework->get_deadline();
 
         return $this->render_from_template('mod_coursework/submissions/table', $template);
     }

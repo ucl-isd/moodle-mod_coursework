@@ -1,4 +1,4 @@
-<tr data-status="{{status}}" data-marker="{{{markerfilter}}}">
+ST{{submissiontype.group.name}}|{{submissiontype.user.name}}<tr data-status="{{status}}" data-marker="{{{markerfilter}}}">
         {{! User. }}
         <td>
             {{#submissiontype}}
@@ -53,6 +53,11 @@
                                 {{/userdate}}
                             {{/extensiondeadline}}
                         </small><br>
+                </div>
+                <div class="personaldeadline-container {{^personaldeadline}}d-none{{/personaldeadline}}">
+                    <span class="badge badge-success">{{#str}} personal_deadline, mod_coursework {{/str}}</span><br>
+                    <span class="sr-only">{{#str}} due_date, mod_coursework {{/str}}</span>
+                    <small class="personaldeadlinedate">Due:{{{personaldeadline.time_content}}}</small><br>
                 </div>
                 {{#submissiondata}}
                     {{#flaggedplagiarism}}

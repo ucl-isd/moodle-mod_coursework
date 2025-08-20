@@ -46,9 +46,11 @@ class personal_deadline_renderer {
 
         // If page has been accessed via the set personal deadline page then we dont want to say who set the last personal deadline
         if (empty($vars['params']['multipleuserdeadlines'])) {
-            $allocatable = $vars['personal_deadline']->get_allocatable();
-            $createdby = $DB->get_record('user', ['id' => $vars['personal_deadline']->createdbyid]);
-            $lasteditedby = $DB->get_record('user', ['id' => $vars['personal_deadline']->lastmodifiedbyid]);
+
+            $personaldeadline = $vars['personaldeadline'];
+            $allocatable = $personaldeadline->get_allocatable();
+            $createdby = $DB->get_record('user', ['id' => $personaldeadline->createdbyid]);
+            $lasteditedby = $DB->get_record('user', ['id' => $personaldeadline->lastmodifiedbyid]);
 
             $html = '<h1> Edit personal deadline for ' . $allocatable->name() . '</h1>';
 
@@ -57,7 +59,7 @@ class personal_deadline_renderer {
                 $html .= '<tr><th>' . get_string('createdby', 'coursework') . '</th><td>' . fullname($createdby) . '</td></tr>';
                 if ($lasteditedby) {
                     $html .= '<tr><th>' . get_string('lasteditedby', 'coursework') . '</th><td>' . fullname($lasteditedby) . ' on ' .
-                        userdate($vars['personal_deadline']->timemodified) . '</td></tr>';
+                        userdate($personaldeadline->timemodified) . '</td></tr>';
                 }
                 $html .= '</table>';
             }
