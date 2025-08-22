@@ -59,13 +59,14 @@ class assessor_feedback_mform extends moodleform {
      * Makes the form elements.
      */
     public function definition() {
-
+        global $DB, $PAGE;
         $mform =& $this->_form;
 
         /**
          * @var $feedback feedback
          */
         $feedback = $this->_customdata['feedback'];
+
         $coursework = $feedback->get_coursework();
 
         $mform->addElement('hidden', 'submissionid', $feedback->submissionid ?? 0);
@@ -87,14 +88,12 @@ class assessor_feedback_mform extends moodleform {
         $mform->setType('stage_identifier', PARAM_ALPHANUMEXT);
 
         $grademenu = make_grades_menu($coursework->grade);
-
         if (($coursework->is_using_advanced_grading() && $coursework->finalstagegrading == 0 ) || ($coursework->is_using_advanced_grading() && $coursework->finalstagegrading == 1 &&  $feedback->stage_identifier != 'final_agreed_1')) {
+
             $this->_grading_controller = $coursework->get_advanced_grading_active_controller();
             $this->_grading_instance = $this->_grading_controller->get_or_create_instance(0, $feedback->assessorid, $feedback->id);
-            $mform->addElement('grading', 'advancedgrading', get_string('grade', 'mod_coursework'), ['gradinginstance' => $this->_grading_instance]);
-        } else if ($feedback->stage_identifier == 'final_agreed_1') {
-            $mform->addElement('text', 'grade', get_string('grade', 'mod_coursework'));
-            $mform->setType('grade', PARAM_RAW);
+
+            $mform->addElement('grading', 'advancedgrading', get_string('grade', 'mod_coursework'), array('gradinginstance' => $this->_grading_instance));
         } else {
             $mform->addElement('select',
                                'grade',

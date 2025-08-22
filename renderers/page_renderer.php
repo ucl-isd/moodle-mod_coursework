@@ -340,9 +340,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param bool $ajax
      * @throws coding_exception
      */
-    public function new_feedback_page($newfeedback, $ajax = false) {
-        global $SITE, $DB;
-
+    public function new_feedback_page($newfeedback , $ajax = false) {
+        global $PAGE, $OUTPUT, $SITE, $DB;
+        $gdata = [];
         $submission = $newfeedback->get_submission();
         $gradingtitle = get_string('gradingfor', 'coursework', $submission->get_allocatable_name());
 
@@ -398,21 +398,25 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             // popululate the form with initial feedbacks
             $simpleform->set_data($teacherfeedback);
         }
-
+        // Autopopulate average grade from initial assessors.
+        if ($newfeedback->stage_identifier == 'final_agreed_1' && $newfeedback->id == 0) {
+            $gdata = $coursework->get_advanced_grading_average_grade_range_rubric($newfeedback->submissionid);
+        }
         if ($ajax) {
             $formhtml = $simpleform->render();
             $filemanageroptions = $simpleform->get_file_options();
             $editoroptions = $simpleform->get_editor_options();
 
             $commentoptions = $this->get_comment_options($simpleform);
-            echo json_encode(['formhtml' => $html . $formhtml, 'filemanageroptions' => $filemanageroptions, 'editoroptions' => $editoroptions, 'commentoptions' => $commentoptions]);
+            echo json_encode(['formhtml' => $html . $formhtml, 'filemanageroptions' => $filemanageroptions, 'editoroptions' => $editoroptions, 'commentoptions' => $commentoptions, 'gdata' => $gdata]);
 
         } else {
-            $this->page->set_pagelayout('standard');
-            $this->page->navbar->add($gradingtitle);
-            $this->page->set_title($SITE->fullname);
-            $this->page->set_heading($SITE->fullname);
-            echo $this->output->header();
+            $PAGE->requires->js_call_amd('mod_coursework/rubric_ranges', 'init', [$gdata]);
+            $PAGE->set_pagelayout('standard');
+            $PAGE->navbar->add($gradingtitle);
+            $PAGE->set_title($SITE->fullname);
+            $PAGE->set_heading($SITE->fullname);
+            echo $OUTPUT->header();
             echo $html;
             $simpleform->display();
             echo $this->output->footer();
