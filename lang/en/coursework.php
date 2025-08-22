@@ -29,6 +29,7 @@ global $CFG;
 $string['access_denied'] = 'Access denied';
 $string['accesserror'] = 'Access error';
 $string['actions'] = 'Actions';
+$string['activitydate:submissionsclosed'] = 'Closed: ';
 $string['all'] = 'ALL';
 $string['aday'] = 'A day';
 $string['add_agreed_feedback'] = 'Add agreed feedback';
