@@ -491,6 +491,9 @@ class ability extends \mod_coursework\framework\ability {
                 $oktosubmitlate = $submission->get_coursework()->allow_late_submissions();
                 $coursework = $submission->get_coursework();
                 $submittingallocatable = $coursework->submiting_allocatable_for_student($this->get_user());
+                if (empty($submittingallocatable)) {
+                    return false;
+                }
                 if ($deadlinepassed && !deadline_extension::allocatable_extension_allows_submission($submittingallocatable, $coursework)) {
                     if (!$oktosubmitlate) {
                         $this->set_message('Cannot submit past the deadline');
