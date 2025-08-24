@@ -2130,6 +2130,22 @@ class coursework extends table_base {
     }
 
     /**
+     * @return bool|gradingform_controller|null
+     */
+    public function get_advanced_grading_average_grade_range_rubric($submissionid) {
+        global $DB;
+        if ($submissionid) {
+            $sql = "SELECT rr.criterionid, ROUND(AVG(rr.levelid)) as avglevel, ROUND(AVG(rr.grade)) as avggrade
+            FROM {coursework_feedbacks} cf
+            LEFT JOIN {grading_instances} gi ON cf.id = gi.itemid
+            LEFT JOIN {gradingform_rubric_ranges_f} rr ON gi.id = rr.instanceid
+            WHERE cf.submissionid = :submissionid AND cf.stage_identifier NOT LIKE 'final_agreed_1' AND cf.finalised = 1 AND gi.status = 1
+            GROUP BY rr.criterionid ORDER  BY rr.criterionid ";
+            return $DB->get_records_sql($sql, ['submissionid' => $submissionid]);
+        }
+    }
+
+    /**
      * @return \grading_manager
      */
     protected function get_advanced_grading_manager() {

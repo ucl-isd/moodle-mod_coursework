@@ -765,7 +765,19 @@ define('mod_coursework/coursework_edit',
                                     });
                                 });
                             }
-
+                            if (response.gdata) {
+                                const gdata = response.gdata;
+                                const rows = Object.values(gdata);
+                                rows.forEach(function(row) {
+                                    const elementName = "advancedgrading-criteria-" + row.criterionid ;
+                                    const elementLevel = document.getElementById(elementName + "-levels-" + row.avglevel).classList;
+                                    if (elementLevel) {
+                                        elementLevel.add('currentchecked');
+                                    }
+                                    document.getElementById(elementName + "-levels-" + row.avglevel + "-definition").checked = true;
+                                    document.getElementById(elementName + "-grade").value = row.avggrade;
+                                });
+                            }
                             if (response.commentoptions) {
                                 M.util.js_pending('gradingform_guide/comment_chooser');
                                 require(['gradingform_guide/comment_chooser'], function(amd) {
