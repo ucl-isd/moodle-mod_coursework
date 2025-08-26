@@ -35,7 +35,6 @@ use mod_coursework\models\personal_deadline;
 use mod_coursework\models\deadline_extension;
 use mod_coursework\render_helpers\grading_report\cells;
 
-use mod_coursework\page_renderer as foo;
 global $CFG;
 
 require_once($CFG->dirroot . '/lib/plagiarismlib.php');
@@ -62,21 +61,17 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $submission = $feedback->get_submission();
         $coursework = $feedback->get_coursework();
-
-        $template->studentname = $submission->get_allocatable_name();
+        $studentname = $submission->get_allocatable_name();
 
         // Determine the feedback title.
         if ($feedback->is_agreed_grade()) {
-            $template->title = get_string('finalfeedback', 'mod_coursework');
+            $template->title = get_string('finalfeedback', 'mod_coursework', $studentname);
         } elseif ($feedback->is_moderation()) {
-            $template->title = get_string('moderatorfeedback', 'mod_coursework');
+            $template->title = get_string('moderatorfeedback', 'mod_coursework', $studentname);
         } else {
             $stage = $feedback->get_assessor_stage_no();
-            $template->title = get_string('componentfeedback', 'mod_coursework', $stage);
+            $template->title = get_string('componentfeedback', 'mod_coursework', ['stage' => $stage, 'student' => $studentname]);
         }
-
-        // Append student name to title.
-        $template->title .= ' for ' . $submission->get_allocatable_name();
 
         $gradejudge = new grade_judge($coursework);
         $template->mark = $gradejudge->grade_to_display($feedback->get_grade());
@@ -88,21 +83,14 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $assessoriszero = ($feedback->assessorid == 0);
         $timeequal = ($feedback->timecreated == $feedback->timemodified);
         $isautomaticagreement = ((!$issamplingenabled || $sampledfeedbackexists) && $assessoriszero && $timeequal);
-        // $hidemarker = $coursework->assessoranonymity;
 
         if (!$isautomaticagreement && $feedback->assessorid != 0) {
             $template->markername = $feedback->display_assessor_name();
             $template->date = $feedback->timemodified;
 
-            // TODO - $feedback->assessorid and $feedback->assessor->id return different things...
-            // TODO - it would be good to understand this, and might cut out some code, but for now checking $feedback->assessor->id to stop error.
             // Marker image.
             if ($feedback->assessor) {
-                $user = core_user::get_user($feedback->assessor->id);
-                $userpicture = new user_picture($user);
-                $userpicture->size = 100;
-                $image = $userpicture->get_url($this->page)->out(false);
-                $template->markerimg = $image;
+                $template->markerimg = $feedback->get_assessor_user_picture()->get_url($this->page)->out(false);
             }
         }
 
@@ -110,24 +98,18 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $template->feedbackcomment = $feedback->feedbackcomment;
 
         // Feedback files.
-        $files = $feedback->get_feedback_files();
-        if ($files) {
-            $template->hasfeedbackfiles = true;
-            $template->feedbackfileslabel = get_string('feedbackfiles', 'mod_coursework');
+        if ($files = $feedback->get_feedback_files()) {
             $template->feedbackfileshtml = $this->render_feedback_files(new mod_coursework_feedback_files($files));
         }
 
         // Rubric/Advanced grading stuff if it's there.
-        $isusingadvancedgrading = $coursework->is_using_advanced_grading();
-        $finalstagegrading = $coursework->finalstagegrading;
-        $stagetrue = ($coursework->finalstagegrading == 0 || ($finalstagegrading == 1 && $feedback->stage_identifier != 'final_agreed_1'));
-
-        if ($isusingadvancedgrading && $stagetrue) {
+        if ($feedback->is_stage_using_advanced_grading()) {
             $controller = $coursework->get_advanced_grading_active_controller();
             $template->advancedgradinghtml = $controller->render_grade($this->page, $feedback->id, null, '', false);
-            if ($template->advancedgradinghtml) {
-                $template->hasadvancedgrading = true;
-            }
+        }
+
+        if ($template->feedbackcomment || isset($template->feedbackfileshtml)) {
+            $template->separator = true;
         }
 
         // Return html from template.
@@ -356,11 +338,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string
      */
 
-    public function render_feedback_files(mod_coursework_feedback_files $files) {
+    private function render_feedback_files(mod_coursework_feedback_files $files) {
 
         $filesarray = [];
-        $submissionfiles = $files->get_files();
-        foreach ($submissionfiles as $file) {
+        $feedbackfiles = $files->get_files();
+        foreach ($feedbackfiles as $file) {
             $filesarray[] = $this->make_file_link($files, $file, 'feedbackfile');
         }
 

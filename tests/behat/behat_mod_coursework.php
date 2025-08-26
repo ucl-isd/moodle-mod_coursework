@@ -624,20 +624,8 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
 
-        if ($this->running_javascript()) {
-            $this->wait_for_seconds(10);
-        }
-
         $page->press_publish_button();
-
-        if ($this->running_javascript()) {
-            $this->wait_for_seconds(10);
-        }
         $page->confirm_publish_action();
-        if ($this->running_javascript()) {
-            $this->wait_for_seconds(10);
-        }
-
     }
 
     /**
@@ -2281,7 +2269,7 @@ class behat_mod_coursework extends behat_base {
      * @throws coding_exception
      */
     public function i_should_see_the_final_single_grade_on_the_page($grade = 56) {
-        $actualgrade = $this->find('css', 'td.single_assessor_feedback_cell')->getText();
+        $actualgrade = $this->find('css', '#edit-feedback-' . $this->student->id)->getText();
         if (strpos($actualgrade, (string)$grade) === false) {
             throw new ExpectationException('Could not find the final grade. Got '.$actualgrade.' instead', $this->getSession());
         }
@@ -2318,19 +2306,10 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I click on the edit feedback icon$/
+     * @Given /^I click on the edit feedback link$/
      */
-    public function i_click_on_the_edit_feedback_icon() {
-
-        if ($this->running_javascript()) {
-            $this->wait_for_seconds(10);
-        }
-
-        $this->find('css', "#edit_feedback_{$this->get_feedback()->id}")->click();
-
-        if ($this->running_javascript()) {
-            $this->wait_for_seconds(10);
-        }
+    public function i_click_on_the_edit_feedback_link() {
+        $this->find('css', "#edit-feedback-{$this->student->id}")->click();
     }
 
     /**
@@ -2374,51 +2353,27 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @When /^I grade the submission(?: as )?(\d+)?( without comments)? using the simple form$/
+     * @When /^I grade the submission(?: as )?(\d*\.?\d+)? using the simple form(?: with comment "(?P<comment_string>(?:[^"]|\\")*)")?$/
      *
      * @param int $grade
      * @throws Behat\Mink\Exception\ElementException
      * @throws Behat\Mink\Exception\ElementNotFoundException
      */
-    public function i_grade_the_submission_using_the_simple_form($grade = 56, $withoutcomments = false) {
-        $nodeelement = $this->getSession()->getPage()->findById('id_grade');
+    public function i_grade_the_submission_using_the_simple_form($grade = 56, $comment = "New comment") {
+        // Markers' form Grade field is <select id="feedback_grade">.
+        // Assessors' form Grade field is <input type="text" id="id_grade">.
+        $nodeelement = $this->getSession()->getPage()->findById('feedback_grade') ?: $this->getSession()->getPage()->findById('id_grade');
+
         if ($nodeelement) {
             $nodeelement->setValue($grade);
         }
 
-        if (empty($withoutcomments)) {
-            $this->getSession()->executeScript(
-                "tinyMCE.get('id_feedbackcomment').setContent('New comment');"
-            );
-        }
+        $this->getSession()->executeScript(
+            "tinyMCE.get('id_feedbackcomment').setContent('$comment');"
+        );
 
         $this->getSession()->getPage()->findButton('submitbutton')->press();
 
-        $this->feedback = feedback::last();
-    }
-
-    /**
-     * Launch the grade submission modal and complete with grade/comment.
-     * @When /^I grade the submission(?: as )?(\d*\.?\d+)? using the ajax form(?: with comment "(?P<comment_string>(?:[^"]|\\")*)")?$/
-     *
-     * @param float $grade
-     * @param string $comment
-     * @throws Behat\Mink\Exception\ElementException
-     * @throws Behat\Mink\Exception\ElementNotFoundException
-     */
-    public function i_grade_the_submission_using_the_ajax_form($grade = 56, $comment = "New comment") {
-        // Form loaded and sent by AJAX now so wait for it to load.
-        $this->wait_for_pending_js();
-        $this->wait_for_seconds(1);
-        $this->execute('behat_forms::i_set_the_field_to', [$this->escape("Grade"), $grade]);
-        self::i_set_the_feedback_comment_to($comment);
-        $this->wait_for_pending_js();
-        $this->execute(
-            'behat_general::i_click_on', [get_string('saveandfinalise', 'coursework'), 'button']
-        );
-        $this->wait_for_pending_js();
-        $this->wait_for_seconds(2);
-        $this->assertSession()->pageTextContains(get_string('alert_feedback_save_successful', 'coursework'));
         $this->feedback = feedback::last();
     }
 
@@ -2445,19 +2400,6 @@ class behat_mod_coursework extends behat_base {
 
         $script = "(document.querySelector('td.remark textarea')).value = '" . $comment . "';";
         behat_base::execute_script_in_session($this->getSession(), $script);
-    }
-
-    /**
-     * Expand the row in the grading form to expose feedback button.
-     * @When /^I expand the coursework grading row ?(\d+)?$/
-     * @return void
-     */
-    public function i_expand_the_grading_row(int $rownumber = 1) {
-        $this->execute(
-            'behat_general::i_click_on', [".details-control.row-$rownumber", 'css_element']
-        );
-        $this->wait_for_pending_js();
-        $this->wait_for_seconds(1);
     }
 
     /**
@@ -2613,7 +2555,10 @@ class behat_mod_coursework extends behat_base {
         } else {
             $gradinginterface = $this->get_page('single grading interface');
         }
-        if ($gradinginterface->there_is_a_feedback_icon($this->student)) {
+
+        $count = count($this->getSession()->getPage()->findAll('css', '#add-feedback-' . $this->student->id()));
+
+        if ($count !== 0) {
             throw new ExpectationException('Feedback link is present', $this->getSession());
         };
     }

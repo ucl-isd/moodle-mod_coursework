@@ -242,16 +242,17 @@ class feedback extends table_base {
     /**
      * Gets the HTML user picture for the assessor.
      *
-     * @return string
+     * @return \core\output\user_picture
      */
-    public function get_assesor_user_picture() {
+    public function get_assessor_user_picture() {
+        global $DB;
 
-        global $DB, $OUTPUT;
-
-        $user = $DB->get_record('user', ['id' => $this->assessorid]);
-        if ($user) {
-            return $OUTPUT->user_picture($user);
+        if ($user = $DB->get_record('user', ['id' => $this->assessorid])) {
+            $userpicture = new \core\output\user_picture($user);
+            $userpicture->size = 100;
+            return $userpicture;
         }
+
         return '';
     }
 
@@ -577,6 +578,18 @@ class feedback extends table_base {
 
     public function is_assessor_anonymity_enabled() {
         return $this->get_coursework()->assessoranonymity;
+    }
+
+    /**
+     * Does the current grading stage for this feedback use advanced grading or
+     * simple grading?
+     *
+     * @return bool False if the current stage for this feedback uses simple
+     * grading (for example, 55/100), true if it uses a grading form or rubric.
+     */
+    public function is_stage_using_advanced_grading() {
+        $coursework = $this->get_coursework();
+        return $coursework->is_using_advanced_grading() && ($coursework->finalstagegrading == 0 || ($coursework->finalstagegrading == 1 && $this->stage_identifier != 'final_agreed_1'));
     }
 
     /**

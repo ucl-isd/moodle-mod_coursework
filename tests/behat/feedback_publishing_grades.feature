@@ -27,8 +27,6 @@ Feature: publishing grades to the students
     And I grade the submission as 56 using the simple form
     Then I visit the coursework page
     And I click the edit final feedback button
-    And I wait until the page is ready
-    And I wait "1" seconds
     And the field "Grade" matches value "56"
     And the grade comment textarea field matches "New comment"
     And I log out
@@ -55,7 +53,5 @@ Feature: publishing grades to the students
 
     And I log in as the student
     And I visit the coursework page
-    And I wait "2" seconds
     Then I should see the final grade on the student page
-    And I wait "1" seconds
     And I should see the grade comment on the student page

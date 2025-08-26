@@ -22,57 +22,12 @@
     {
         "title": "Feedback for Jan Černý",
         "feedbackcomment": "<div><p>This is the feedback</p></div>",
-        "hasfeedbackfiles": true,
         "feedbackfileshtml": "<a href="foo">Feedbackfile.doc</a>",
-        "hasadvancedgrading": true,
         "advancedgradinghtml": "<div>stuff from grading plugin - tables and kitchen sink html</div>",
         "markerimg": "https://randomuser.me/api/portraits/women/22.jpg",
         "markername": "Denise Soto"
-
-
-
     }
 }}
-<style>
-/* General bubble styles (same as before, but added a top-left class for clarity) */
-.chat-bubble-bordered {
-  position: relative;
-  background-color: white;
-  border: 2px solid var(--primary);
-  box-shadow: .3em .3em 0 0 var(--primary);
-  padding: 1.5rem;
-  margin-top: 25px; /* Added space at the top for the arrow */
-
-}
-
-/* Specific styles for the top-left arrow */
-.chat-bubble-bordered::before {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-left: 1rem solid transparent;  /* Base of the outer triangle */
-  border-right: 1rem solid transparent; /* Base of the outer triangle */
-  border-bottom: 1.1rem solid var(--primary); /* Color of the border, pointing up */
-  top: -18px; /* Position above the bubble, accounting for border and triangle height */
-  left: 1rem; /* Horizontal position from the left */
-  z-index: 1;
-}
-
-.chat-bubble-bordered::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-left: 1rem solid transparent;  /* Slightly smaller base for inner triangle */
-  border-right: 1rem solid transparent; /* Slightly smaller base for inner triangle */
-  border-bottom: 1.1rem solid white; /* Match the body background to "cut out" */
-  top: -15px; /* Position relative to the outer triangle */
-  left: 1rem; /* Horizontal position, slightly offset to match outer */
-  z-index: 2;
-}
-</style>
-
 <div class="coursework-feedback py-3">
     <h3 class="h5">{{title}}</h3>
 
@@ -89,40 +44,45 @@
             </div>
         </div>
         {{/markername}}
+        {{^markername}}
+            <p>{{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>
+        {{/markername}}
 
         <div class="{{#markername}} chat-bubble-bordered {{/markername}}">
-            {{! Feedback Comment }}
+            {{! Feedback comment }}
             {{#feedbackcomment}}
             <div id="final_feedback_comment">
                 {{{feedbackcomment}}}
             </div>
             {{/feedbackcomment}}
 
-            {{! Feedback Files }}
-            {{#hasfeedbackfiles}}
+            {{! Feedback files }}
+            {{#feedbackfileshtml}}
             <div>
-                {{{feedbackfileshtml}}}
+                {{{.}}}
             </div>
-            {{/hasfeedbackfiles}}
+            {{/feedbackfileshtml}}
+
+            {{#separator}}
+                <hr>
+            {{/separator}}
 
             {{#mark}}
-                <hr>
                 <div>
-                    Mark
+                    {{#str}} mark, mod_coursework {{/str}}
                     <br><span id="final_feedback_grade" class="h4">{{{.}}}</span>
                 </div>
             {{/mark}}
         </div>
     </div>
 
-
-     {{! Advanced Grading }}
-    {{#hasadvancedgrading}}
+    {{! Advanced grading }}
+    {{#advancedgradinghtml}}
     <div class="py-3">
-        <h3 class="h5">Marking critera feedback</h3>
+        <h3 class="h5">{{#str}} markingcriteriafeedback, mod_coursework {{/str}}</h3>
         <div>
-            {{{advancedgradinghtml}}}
+            {{{.}}}
         </div>
     </div>
-    {{/hasadvancedgrading}}
+    {{/advancedgradinghtml}}
 </div>

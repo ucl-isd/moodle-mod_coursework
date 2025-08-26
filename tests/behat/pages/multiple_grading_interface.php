@@ -43,16 +43,6 @@ require_once($CFG->dirroot . '/mod/coursework/tests/behat/pages/single_grading_i
 class mod_coursework_behat_multiple_grading_interface extends mod_coursework_behat_single_grading_interface {
 
     /**
-     * @param allocatable $allocatable
-     * @return bool is there an icon?
-     */
-    public function there_is_a_feedback_icon($allocatable): bool {
-        $this->getContext()->show_me_the_page();
-        $feedbackicon = $this->getPage()->findAll('css', '.cfeedbackcomment .smallicon');
-        return !empty($feedbackicon);
-    }
-
-    /**
      * @param user $allocatable
      */
     public function student_has_a_final_grade($allocatable): bool {
@@ -65,9 +55,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
      * @param group $allocatable
      */
     public function group_has_a_final_multiple_grade($allocatable): bool {
-        $grouprowid = $this->allocatable_row_id($allocatable);
-        $locator = $grouprowid . ' .multiple_agreed_grade_cell';
-        $gradecell = $this->getPage()->find('css', $locator);
+        $gradecell = $this->getPage()->find('css', '#edit-agreed-feedback-' . $allocatable->id());
         $actualtext = $gradecell ? $gradecell->getText() : '';
         return !empty($actualtext);
     }
@@ -87,7 +75,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
      * @param allocatable $allocatable
      */
     public function get_edit_final_feedback_button($allocatable) {
-        $identifier = '#edit-agreed-feedback-' . $this->allocatable_identifier_hash($allocatable);
+        $identifier = '#edit-agreed-feedback-' . $allocatable->id();
         return $this->getPage()->find('css', $identifier);
     }
 
@@ -151,8 +139,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
      * @param int $expectedgrade
      */
     public function assessor_grade_should_be_present($allocatable, $assessornumber, $expectedgrade) {
-        $locator = $this->assessor_feedback_table_id($allocatable) . ' .assessor_'.$assessornumber.' '. $this->assessor_grade_cell_class();
-        $gradecontainer = $this->getPage()->find('css', $locator);
+        $gradecontainer = $this->getPage()->find('css', '#edit-feedback-' . $allocatable->id());
         $text = $gradecontainer ? $gradecontainer->getText() : '';
         if (!str_contains($text, (string)$expectedgrade)) {
             throw new \Behat\Mink\Exception\ExpectationException(
@@ -201,13 +188,14 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
     }
 
     public function press_publish_button() {
-        $this->getPage()->pressButton('id_publishbutton');
+        $linkid = "release-marks-button";
+        $this->getPage()->clickLink($linkid);
     }
 
     public function confirm_publish_action() {
 
-        if ($this->getPage()->hasButton('Continue')) {
-            $this->getPage()->pressButton('Continue');
+        if ($this->getPage()->hasButton('Confirm')) {
+            $this->getPage()->pressButton('Confirm');
         } else {
             echo "failed";
         }

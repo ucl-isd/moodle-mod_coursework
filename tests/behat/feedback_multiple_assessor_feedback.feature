@@ -21,10 +21,9 @@ Feature: Multiple assessors simple grading form
     Given I am logged in as a teacher
     And the submission is finalised
     And I visit the coursework page
-    And I expand the coursework grading row
-    And I click on the only interactable link with title "New feedback"
+    And I click on "Add feedback" "link"
     And I set the field "Grade" to "52"
-    And I set the feedback comment to "Some new comment 3"
+    And I set the field "Comment" to "Some new comment 3"
     And I click on "Save and finalise" "button"
     And I wait until "OK" "button" exists
     And I visit the edit feedback page
@@ -36,17 +35,11 @@ Feature: Multiple assessors simple grading form
     Given I am logged in as a teacher
     And the submission is finalised
     And I visit the coursework page
-    And I expand the coursework grading row
-    And I wait "1" seconds
-    And I click on the only interactable link with title "New feedback"
+    And I click on "Add feedback" "link"
     When I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I press "Save and finalise"
-    And I wait until the page is ready
     And I visit the coursework page
-    And I expand the coursework grading row
-    And I wait "1" seconds
-    And I click on the only interactable link with title "Edit feedback"
-    And I wait "1" seconds
+    And I click on the edit feedback link
     Then I should see "1" elements in "Upload a file" filemanager
 
   @javascript
@@ -55,9 +48,7 @@ Feature: Multiple assessors simple grading form
     And the submission is finalised
     And I have an assessor feedback at grade 67
     And I visit the coursework page
-    And I expand the coursework grading row
-    And I click on the only interactable link with title "Edit feedback"
-    And I wait until the page is ready
+    And I click on the edit feedback link
     And the grade comment textarea field matches "New comment here"
 
   @javascript
@@ -76,29 +67,22 @@ Feature: Multiple assessors simple grading form
     Given I am logged in as a teacher
     And the submission is finalised
     And I visit the coursework page
-    And I expand the coursework grading row
-    And I click on the only interactable link with title "New feedback"
-    And I wait "1" seconds
+    And I click on "Add feedback" "link"
     When I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I press "Save and finalise"
     And I visit the coursework page
-    And I expand the coursework grading row
-    And I click on the only interactable link with title "Edit feedback"
-    And I wait "2" seconds
+    And I click on the edit feedback link
     And I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
     Then I should see "2" elements in "Upload a file" filemanager
     When I press "Save and finalise"
     And I visit the coursework page
-    And I expand the coursework grading row
-    And I click on the only interactable link with title "Edit feedback"
-    And I wait "1" seconds
+    And I click on the edit feedback link
     Then I should see "2" elements in "Upload a file" filemanager
 
   @javascript
   Scenario: I should not see the feedback icon when the submission has not been finalised
     Given I am logged in as a teacher
     And I visit the coursework page
-    And I expand the coursework grading row
     Then I should not see a link to add feedback
 
   @javascript
@@ -106,10 +90,7 @@ Feature: Multiple assessors simple grading form
     Given I am logged in as a manager
     And the submission is finalised
     And I visit the coursework page
-    And I expand the coursework grading row
-    And I click on the only interactable link with title "New feedback"
-    When I grade the submission as 56 using the ajax form with comment "A test comment 9"
+    And I click on "Add feedback" "link"
+    When I grade the submission as 56 using the simple form with comment "A test comment 9"
     And I visit the coursework page
-    And I wait "1" seconds
-    And I expand the coursework grading row
     Then I should see the grade on the page
