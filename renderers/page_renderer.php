@@ -567,7 +567,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $reportoptions['page'] = $page;
         $reportoptions['group'] = $group;
         $reportoptions['perpage'] = $perpage;
-        $reportoptions['mode'] = 2; // Load first number of records specified by perpage first
+        $reportoptions['mode'] = \mod_coursework\grading_report::MODE_GET_ALL; // Load all students as pagination is removed for now.
         $reportoptions['sortby'] = $sortby;
         $reportoptions['sorthow'] = $sorthow;
         $reportoptions['showsubmissiongrade'] = false;

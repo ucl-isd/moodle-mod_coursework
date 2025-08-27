@@ -2538,6 +2538,20 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2024100700, 'coursework');
     }
 
+    if ($oldversion < 2025082800) {
+        // Add usecandidate field to coursework table.
+        $table = new xmldb_table('coursework');
+        $field = new xmldb_field('usecandidate', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0, 'renamefiles');
+
+        // Conditionally launch add field usecandidate.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2025082800, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }
