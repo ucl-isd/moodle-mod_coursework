@@ -26,6 +26,12 @@ M.mod_coursework.init   =   function()      {
 
         M.mod_coursework.elementEnable();
     });
+
+    // Candidate number setting toggle
+    M.mod_coursework.toggleCandidateNumberSetting();
+    $('#id_renamefiles, #id_blindmarking').on('change', function() {
+        M.mod_coursework.toggleCandidateNumberSetting();
+    });
 }
 
 
@@ -111,3 +117,17 @@ M.mod_coursework.relativeInitalGradeDisable = function(disabled) {
 M.mod_coursework.relativeAgreedGradeDisable = function(disabled) {
     M.mod_coursework.toggleElementVisibility('fitem_id_relativeagreedmarkingdeadline', disabled);
 }
+
+M.mod_coursework.toggleCandidateNumberSetting = function() {
+    let blindMarking = $('#id_blindmarking').val();
+
+    // Show when blindmarking=1.
+    if (blindMarking === '1') {
+        M.mod_coursework.toggleElementVisibility('fitem_id_usecandidate', false);
+        M.mod_coursework.toggleElementVisibility('fitem_id_usecandidaterequires', false);
+    } else {
+        $('#id_usecandidate').val(0);
+        M.mod_coursework.toggleElementVisibility('fitem_id_usecandidate', true);
+        M.mod_coursework.toggleElementVisibility('fitem_id_usecandidaterequires', true);
+    }
+};

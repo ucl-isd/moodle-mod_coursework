@@ -23,6 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_coursework\candidateprovider_manager;
+use mod_coursework\models\coursework;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -246,6 +249,21 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         if ( isset($data['numberofmarkers']) && $data['numberofmarkers'] == 1 && isset($data['samplingenabled']) && $data['samplingenabled'] == 1) {
             $errors['numberofmarkers'] = get_string('not_enough_assessors_for_sampling', 'mod_coursework');
+        }
+
+        // Validate candidate number setting changes.
+        if (!empty($this->_customdata['courseworkid'])) {
+            $coursework = coursework::find($this->_customdata['courseworkid']);
+
+            if ($coursework && !$coursework->can_change_candidate_number_setting()) {
+                $currentvalue = $coursework->usecandidate ?? 0;
+
+                // Check if trying to change the setting.
+                if ((!empty($data['usecandidate']) && !$currentvalue) ||
+                    (empty($data['usecandidate']) && $currentvalue)) {
+                    $errors['usecandidate'] = get_string('cannot_change_candidate', 'mod_coursework');
+                }
+            }
         }
 
         $parenterrors = parent::validation($data, $files);
@@ -815,7 +833,6 @@ class mod_coursework_mod_form extends moodleform_mod {
             $moodleform->addElement('static', 'renamefilesdescription', get_string('renamefiles', 'mod_coursework'),
                 $settingvalue);
         }
-
     }
 
     /**
@@ -985,6 +1002,9 @@ class mod_coursework_mod_form extends moodleform_mod {
             $moodleform->hideif('blindmarking', 'forceblindmarking', 'eq', 1);
             $moodleform->addElement('static', 'forceblindmarking_explanation', '', get_string('forcedglobalsetting', 'mod_coursework'));
         }
+
+        // Add candidate number file naming setting.
+        $this->add_candidate_number_setting();
     }
 
     /**
@@ -1354,4 +1374,37 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->setDefault('plagiarismflagenabled', $CFG->coursework_plagiarismflag);
     }
 
+    /**
+     * Add candidate number file naming setting.
+     *
+     * @throws coding_exception
+     * @throws dml_exception
+     */
+    protected function add_candidate_number_setting(): void {
+        $moodleform =& $this->_form;
+        $coursework = $this->get_coursework_id() ? coursework::find($this->get_coursework_id()) : null;
+
+        // If new coursework, or can change setting, show as editable.
+        if (!$coursework || $coursework->can_change_candidate_number_setting()) {
+            // Only show if candidate number provider is available.
+            if (candidateprovider_manager::instance()->is_provider_available()) {
+                $moodleform->addElement('select', 'usecandidate', get_string('use_candidate', 'mod_coursework'),
+                    [0 => get_string('no'), 1 => get_string('yes')]);
+                $moodleform->setDefault('usecandidate', $coursework->usecandidate ?? 0);
+                $moodleform->addHelpButton('usecandidate', 'use_candidate', 'mod_coursework');
+            }
+        } else {
+            // Show as immutable.
+            $currentvalue = $coursework->usecandidate ?? 0;
+            $statustext = $currentvalue ?
+                get_string('use_candidate_enabled', 'mod_coursework') :
+                get_string('use_candidate_disabled', 'mod_coursework');
+
+            $moodleform->addElement('static', 'usecandidatestatus',
+                get_string('use_candidate', 'mod_coursework'),
+                $statustext . '<br>' . get_string('use_candidate_immutable', 'mod_coursework'));
+            $moodleform->addElement('hidden', 'usecandidate', $currentvalue);
+            $moodleform->setType('usecandidate', PARAM_INT);
+        }
+    }
 }

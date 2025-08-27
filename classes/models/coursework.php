@@ -27,6 +27,7 @@ namespace mod_coursework\models;
 
 use coding_exception;
 use context_course;
+use mod_coursework\candidateprovider_manager;
 
 use gradingform_controller;
 use html_writer;
@@ -344,6 +345,11 @@ class coursework extends table_base {
      * @var int
      */
     public $renamefiles;
+
+    /**
+     * @var int
+     */
+    public int $usecandidate;
 
     /**
      * @var string
@@ -3145,5 +3151,91 @@ class coursework extends table_base {
         }
 
         return [true, ''];
+    }
+
+    /**
+     * Check if coursework has any submissions with actual files.
+     * This determines if the candidate number setting can be changed.
+     *
+     * @return bool
+     */
+    public function has_submissions_with_files(): bool {
+        global $DB;
+
+        if (!$this->has_any_submission()) {
+            return false; // No submissions at all.
+        }
+
+        // Get all submissions for this coursework.
+        $submissions = $DB->get_records('coursework_submissions', ['courseworkid' => $this->id]);
+
+        foreach ($submissions as $submissionrecord) {
+            $submission = new submission($submissionrecord);
+            $submissionfiles = $submission->get_submission_files();
+
+            if ($submissionfiles->has_files()) {
+                return true; // Found at least one submission with files.
+            }
+        }
+
+        return false; // No submissions have files.
+    }
+
+    /**
+     * Check if the candidate number setting can be changed.
+     * Setting can only be changed when there are no file submissions.
+     *
+     * @return bool
+     */
+    public function can_change_candidate_number_setting(): bool {
+        return !$this->has_submissions_with_files();
+    }
+
+    /**
+     * Validate candidate number settings.
+     * Throws exception if prerequisites are not met but setting is enabled.
+     *
+     * @return void
+     * @throws moodle_exception
+     */
+    public function validate_candidate_number_settings(): void {
+        if (!$this->usecandidate) {
+            return; // No validation needed if feature disabled.
+        }
+
+        // Check if a provider is available.
+        // Use candidate number setting is enabled but no provider available, throw exception.
+        if (!candidateprovider_manager::instance()->is_provider_available()) {
+            throw new moodle_exception('no_candidate_provider_available', 'mod_coursework');
+        }
+    }
+
+    /**
+     * Get file identifier for user (candidate number or fallback to hash).
+     *
+     * @param int $userid
+     * @return string
+     */
+    public function get_file_identifier_for_user(int $userid): string {
+        // If candidate number feature is not enabled for this coursework or blind marking not enabled, use hash.
+        if (!$this->usecandidate || !$this->blindmarking_enabled()) {
+            return $this->get_username_hash($userid);
+        }
+
+        // Validate prerequisites.
+        $this->validate_candidate_number_settings();
+
+        // Try to get candidate number using the manager.
+        $candidatenumber = candidateprovider_manager::instance()->get_candidate_number(
+            $this->get_course_id(),
+            $userid
+        );
+
+        if (!empty($candidatenumber)) {
+            return $candidatenumber; // Return candidate number (ABCD123) if found.
+        }
+
+        // Cannot get candidate number from provider, fallback to hash.
+        return $this->get_username_hash($userid);
     }
 }

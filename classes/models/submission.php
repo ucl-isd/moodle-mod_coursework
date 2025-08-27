@@ -1090,7 +1090,7 @@ class submission extends table_base implements \renderable {
      */
     private function rename_file($file, $counter) {
 
-        // if a submission was made of behalf of student/group, we need to use owner's id, not the person who submitted it
+        // If a submission was made on behalf of student/group, we need to use owner's id, not the person who submitted it.
         if ($this->is_submission_on_behalf()) {
             $userid = $this->allocatableid;
         } else {
@@ -1102,7 +1102,11 @@ class submission extends table_base implements \renderable {
         if (empty($fileextension)) {
             $fileextension = $this->extract_extension_from_file_name($file->get_source());
         }
-        $filename = $this->coursework->get_username_hash($userid) . '_' . $counter . '.' . $fileextension;
+        
+        // Get the file identifier (candidate number or username hash).
+        $identifier = $this->coursework->get_file_identifier_for_user($userid);
+        
+        $filename = $identifier . '_' . $counter . '.' . $fileextension;
         if ($filename !== $file->get_filename()) {
             $file->rename($filepath, $filename);
         }
