@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Creates an mform for final grade
+ * Creates an mform for final grade.
  *
  * @package    mod_coursework
  * @copyright  2012 University of London Computer Centre {@link https://www.cosector.com}
@@ -24,16 +24,13 @@
 
 namespace mod_coursework\forms;
 
-global $CFG;
-
-use coding_exception;
-use gradingform_rubric_instance;
+use core\exception\coding_exception;
+use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
+use mod_coursework\models\submission;
 use mod_coursework\utils\cs_editor;
 use moodleform;
 use stdClass;
-
-require_once($CFG->libdir.'/formslib.php');
 
 /**
  * Simple form providing a grade and comment area that will feed straight into the feedback table so
@@ -51,10 +48,30 @@ class assessor_feedback_mform extends moodleform {
      */
     public $assessorid;
 
+    /**
+     * @var bool|\gradingform_controller|null $_grading_controller
+     */
     private $_grading_controller;
 
+    /**
+     * @var \gradingform_instance $_grading_instance
+     */
     private $_grading_instance;
 
+    /**
+     * @var feedback $feedback
+     */
+    private feedback $feedback;
+
+    /**
+     * @var coursework $coursework
+     */
+    private coursework $coursework;
+
+    /**
+     * @var submission $submission
+     */
+    private submission $submission;
     /**
      * Makes the form elements.
      */
@@ -62,37 +79,39 @@ class assessor_feedback_mform extends moodleform {
 
         $mform =& $this->_form;
 
-        /**
-         * @var $feedback feedback
-         */
-        $feedback = $this->_customdata['feedback'];
-        $coursework = $feedback->get_coursework();
+        $this->feedback = $this->_customdata['feedback'];
+        $this->coursework = $this->feedback->get_coursework();
+        $this->submission = $this->feedback->get_submission();
 
-        $mform->addElement('hidden', 'submissionid', $feedback->submissionid ?? 0);
+        $mform->addElement('hidden', 'submissionid', $this->submission->id ?? 0);
         $mform->setType('submissionid', PARAM_INT);
 
-        $mform->addElement('hidden', 'isfinalgrade', $feedback->isfinalgrade ?? 0);
+        $mform->addElement('hidden', 'isfinalgrade', $this->feedback->isfinalgrade ?? 0);
         $mform->setType('isfinalgrade', PARAM_INT);
 
-        $mform->addElement('hidden', 'ismoderation', $feedback->ismoderation ?? 0);
+        $mform->addElement('hidden', 'ismoderation', $this->feedback->ismoderation ?? 0);
         $mform->setType('ismoderation', PARAM_INT);
 
-        $mform->addElement('hidden', 'assessorid', $feedback->assessorid ?? 0);
+        $mform->addElement('hidden', 'assessorid', $this->feedback->assessorid ?? 0);
         $mform->setType('assessorid', PARAM_INT);
 
-        $mform->addElement('hidden', 'feedbackid', $feedback->id ?? 0);
+        $mform->addElement('hidden', 'feedbackid', $this->feedback->id ?? 0);
         $mform->setType('feedbackid', PARAM_INT);
 
-        $mform->addElement('hidden', 'stage_identifier', $feedback->stage_identifier ?? '');
+        $mform->addElement('hidden', 'stage_identifier', $this->feedback->stage_identifier ?? '');
         $mform->setType('stage_identifier', PARAM_ALPHANUMEXT);
 
-        $grademenu = make_grades_menu($coursework->grade);
+        $grademenu = make_grades_menu($this->coursework->grade);
 
-        if (($coursework->is_using_advanced_grading() && $coursework->finalstagegrading == 0 ) || ($coursework->is_using_advanced_grading() && $coursework->finalstagegrading == 1 &&  $feedback->stage_identifier != 'final_agreed_1')) {
-            $this->_grading_controller = $coursework->get_advanced_grading_active_controller();
-            $this->_grading_instance = $this->_grading_controller->get_or_create_instance(0, $feedback->assessorid, $feedback->id);
-            $mform->addElement('grading', 'advancedgrading', get_string('grade', 'mod_coursework'), ['gradinginstance' => $this->_grading_instance]);
-        } else if ($feedback->stage_identifier == 'final_agreed_1') {
+        if (($this->coursework->is_using_advanced_grading() && $this->coursework->finalstagegrading == 0 ) || ($this->coursework->is_using_advanced_grading() && $this->coursework->finalstagegrading == 1 &&  $this->feedback->stage_identifier != 'final_agreed_1')) {
+            $this->_grading_controller = $this->coursework->get_advanced_grading_active_controller();
+            $this->_grading_instance = $this->_grading_controller->get_or_create_instance(
+                0, $this->feedback->assessorid, $this->feedback->id
+            );
+            $mform->addElement(
+                'grading', 'advancedgrading', get_string('grade', 'mod_coursework'), ['gradinginstance' => $this->_grading_instance]
+            );
+        } else if ($this->feedback->stage_identifier == 'final_agreed_1') {
             $mform->addElement('text', 'grade', get_string('grade', 'mod_coursework'));
             $mform->setType('grade', PARAM_RAW);
         } else {
@@ -121,7 +140,7 @@ class assessor_feedback_mform extends moodleform {
                                  null,
                                  $filemanageroptions);
 
-        $this->add_submit_buttons($coursework->draft_feedback_enabled(), $feedback->id);
+        $this->add_submit_buttons($this->coursework->draft_feedback_enabled(), $this->feedback->id);
 
     }
     /**
@@ -133,6 +152,7 @@ class assessor_feedback_mform extends moodleform {
     }
 
     /**
+     * Add submit buttons.
      * @param $draftenabled
      * @param $feedbackid
      * @throws coding_exception
@@ -148,12 +168,14 @@ class assessor_feedback_mform extends moodleform {
             $buttonarray[] =
                 $this->_form->createElement('submit', 'submitbutton', get_string('saveandfinalise', 'coursework'));
 
-        $feedback = $this->_customdata['feedback'];
+        $this->feedback = $this->_customdata['feedback'];
 
-        $ispublished = $feedback->get_submission()->is_published();
+        $ispublished = $this->feedback->get_submission()->is_published();
 
         if ($feedbackid &&  !$ispublished) {
-            $buttonarray[] = $this->_form->createElement('submit', 'removefeedbackbutton', get_string('removefeedback', 'coursework'));
+            $buttonarray[] = $this->_form->createElement(
+                'submit', 'removefeedbackbutton', get_string('removefeedback', 'coursework')
+            );
         }
         $buttonarray[] = $this->_form->createElement('cancel');
         $this->_form->addGroup($buttonarray, 'buttonar', '', [' '], false);
@@ -177,53 +199,50 @@ class assessor_feedback_mform extends moodleform {
     /**
      * This is just to grab the data and add it to the feedback object.
      *
-     * @param feedback $feedback
      * @return feedback
      */
-    public function process_data(feedback $feedback) {
+    public function process_data() {
 
         $formdata = $this->get_data();
-        $coursework = $feedback->get_coursework();
 
-        if (($coursework->is_using_advanced_grading() && $coursework->finalstagegrading == 0 ) || ($coursework->is_using_advanced_grading() && $coursework->finalstagegrading == 1 &&  $feedback->stage_identifier != 'final_agreed_1')) {
-            $controller = $coursework->get_advanced_grading_active_controller();
-            $gradinginstance = $controller->get_or_create_instance(0, $feedback->assessorid, $feedback->id);
-            /**
-             * @var gradingform_rubric_instance $grade
-             */
-            $feedback->grade = $gradinginstance->submit_and_get_grade($formdata->advancedgrading, $feedback->id);
-        } else if ($feedback->stage_identifier == 'final_agreed_1') {
-            $feedback->grade = format_float($formdata->grade, $coursework->get_grade_item()->get_decimals());
+        if (($this->coursework->is_using_advanced_grading() && $this->coursework->finalstagegrading == 0 ) || ($this->coursework->is_using_advanced_grading() && $this->coursework->finalstagegrading == 1 &&  $this->feedback->stage_identifier != 'final_agreed_1')) {
+            $controller = $this->coursework->get_advanced_grading_active_controller();
+            $gradinginstance = $controller->get_or_create_instance(0, $this->feedback->assessorid, $this->feedback->id);
+            $this->feedback->grade = $gradinginstance->submit_and_get_grade(
+                $formdata->advancedgrading, $this->feedback->id
+            );
+
+        } else if ($this->feedback->stage_identifier == 'final_agreed_1') {
+            $this->feedback->grade = format_float($formdata->grade, $this->coursework->get_grade_item()->get_decimals());
         } else {
-            $feedback->grade = $formdata->grade;
+            $this->feedback->grade = $formdata->grade;
         }
 
-        $feedback->feedbackcomment = $formdata->feedbackcomment['text'];
-        $feedback->feedbackcommentformat = $formdata->feedbackcomment['format'];
+        $this->feedback->feedbackcomment = $formdata->feedbackcomment['text'];
+        $this->feedback->feedbackcommentformat = $formdata->feedbackcomment['format'];
 
-        return $feedback;
+        return $this->feedback;
     }
 
     /**
      * Saves any of the files that may have been attached. Needs a feedback that has an id.
      *
-     * @param feedback $feedback
      * @throws coding_exception
      * @return bool|void
      */
-    public function save_feedback_files(feedback $feedback) {
+    public function save_feedback_files() {
 
-        if (!$feedback->persisted()) {
+        if (!$this->feedback->persisted()) {
             throw new coding_exception('Must supply a feedback that has been persisted so we have an itemid to use');
         }
 
         $formdata = $this->get_data();
 
         file_save_draft_area_files($formdata->feedback_manager,
-                                   $feedback->get_coursework()->get_context()->id,
+                                   $this->feedback->get_coursework()->get_context()->id,
                                    'mod_coursework',
                                    'feedback',
-                                   $feedback->id);
+                                   $this->feedback->id);
     }
 
     /**
@@ -252,12 +271,40 @@ class assessor_feedback_mform extends moodleform {
 
     /**
      *
-     * @return stdClass|null
+     * @return array
      */
     public function get_editor_options() {
         $editor = new cs_editor();
-        $options = $editor->get_options();
-        return $options;
+        return $editor->get_options();
+    }
+
+    /**
+     * Override the form display in specific circumstances.
+     * @return void
+     */
+    public function display() {
+        global $OUTPUT;
+        // We only use the custom override if using a marking guide for a final agreed feedback.
+        // Otherwise use the parent method.
+
+        $ismarkingguidegrading = $this->coursework->is_using_advanced_grading()
+            && $this->coursework->is_using_marking_guide();
+        if (!$ismarkingguidegrading) {
+            parent::display();
+            return;
+        }
+        $isexistingagreedfeedback = $this->feedback->is_agreed_grade() ?? false;
+        $isnewagreedfeedback = !$isexistingagreedfeedback
+            && optional_param('stage_identifier', '', PARAM_TEXT) == 'final_agreed_1';
+
+        if ($isnewagreedfeedback || $isexistingagreedfeedback) {
+            $data = (new \mod_coursework\output\grading_guide_agreed_grades(
+                $this->_form->getAttributes(), $this->_form->_elements, $this->_grading_controller, $this->submission
+                ))->export_for_template($OUTPUT);
+            echo $OUTPUT->render_from_template('coursework/marking_guide_agree_grades_form', $data);
+            return;
+        }
+        parent::display();
     }
 }
 

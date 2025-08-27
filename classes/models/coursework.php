@@ -403,6 +403,8 @@ class coursework extends table_base {
      */
     public $personaldeadlineenabled;
 
+
+
     /**
      * Factory makes it renderable.
      *
@@ -2137,18 +2139,31 @@ class coursework extends table_base {
     }
 
     /**
-     * Function to check if rubric is used in the current coursework
+     * Check if rubric is used in the current coursework.
      *
      * @return bool
      */
-    public function is_using_rubric() {
-        $gradingmanager = $this->get_advanced_grading_manager();
-        $method = $gradingmanager->get_active_method();
+    public function is_using_rubric(): bool {
+        return self::get_advanced_grading_method() === 'rubric';
+    }
 
-        if ($method == 'rubric') {
-            return true;
-        }
-        return false;
+    /**
+     * Check if marking guide is used in the current coursework.
+     *
+     * @return bool
+     */
+    public function is_using_marking_guide(): bool {
+        return self::get_advanced_grading_method() === 'guide';
+    }
+
+    /**
+     * Get advanced grading method used in the current coursework.
+     *
+     * @return bool
+     */
+    public function get_advanced_grading_method(): ?string {
+        $gradingmanager = $this->get_advanced_grading_manager();
+        return $gradingmanager ? $gradingmanager->get_active_method() : null;
     }
 
     /**

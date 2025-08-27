@@ -1,0 +1,127 @@
+{{! See also core form at grade/grading/form/guide/templates/grades/grader/gradingpanel.mustache }}
+<div class="container py-5">
+    <form id="mod_coursework_guide_agreed_grades" autocomplete="{{autocomplete}}" action="{{action}}" method="{{method}}" accept-charset="{{accept-charset}}" class="{{formclass}}" >
+        {{#hidden_elements}}
+            <input name="{{elementname}}" type="hidden" value="{{elementvalue}}">
+        {{/hidden_elements}}
+        <table class="table w-100" id="advancedgrading-criteria">
+            <thead>
+            <tr>
+                <th scope="col"></th>
+                {{#marker_columns}}
+                    <th scope="col" id="marker-col={{markernumber}}" data-feedback-id="{{feedbackid}}" data-stage="{{stage_identifier}}" data-grade="{{grade}}">{{#str}}markernumber, mod_coursework, {{markernumber}}{{/str}}</th>
+                {{/marker_columns}}
+                <th scope="col" class="w-50">{{#str}}agreed, mod_coursework{{/str}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#criteria_rows}}
+                <tr class="bg-light mod_coursework_criterion" id="advancedgrading-criterion-{{id}}">
+                    <th scope="row">
+                        <div>{{shortname}}</div>
+                        <div><small>{{{descriptionmarkers}}}</small></div>
+                    </th>
+                    {{#criterion_grades}}
+                        <td id="grade_criterion_{{id}}_{{stage_identifier}}"><strong>{{score}}</strong></td>
+                    {{/criterion_grades}}
+                    <td>
+                        <div class="form-inline">
+                            <input class="form-control" type="number" id="agreed_grade_criterion_{{id}}" name="advancedgrading[criteria][{{id}}][score]" min="0" max="{{maxscore}}" step=".01"{{#existing_agreed_feedback.score}} value="{{existing_agreed_feedback.score}}"{{/existing_agreed_feedback.score}}>
+                            <label class="ml-2" for="agreed_grade_criterion_{{id}}">{{#str}}guidemaxmark, mod_coursework, {{maxscore}}{{/str}}</label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">{{#str}}feedback, mod_coursework{{/str}}</th>
+                    {{#criterion_grades}}
+                        <td id="comment_criterion_{{id}}_{{stage_identifier}}">{{remark}}</td>
+                    {{/criterion_grades}}
+                    <td>
+
+                        <label for="agreed_feedback_select_criterion_{{id}}">{{#str}}feedback, mod_coursework{{/str}}:</label>
+                        {{#hasfrequentcomments}}
+                            <div class="form-group">
+                                <select class="form-control mod_coursework_custom_comment_select" advancedgrading[criteria][{{id}}][select] style="height: auto;" id="agreed_feedback_select_criterion_{{id}}">
+                                    <button><div><selectedcontent></selectedcontent></div></button>
+                                    <option disabled selected value="0">=== {{#str}}select{{/str}} ===</option>
+                                    {{#dropdownoptions}}
+                                        <option value="{{id}}"{{#selected}} selected{{/selected}} data-extra="{{extrea}}">{{description}}</option>
+                                    {{/dropdownoptions}}
+                                </select>
+                                <div class="form-group mt-2 mod_coursework_custom_comment_field" data-criterion="{{id}}" id="agreed_feedback_custom_textarea_criterion_{{id}}">
+                                    <textarea class="form-control" rows="4" id="agreed_feedback_criterion_{{id}}" name="advancedgrading[criteria][{{id}}][remark]" placeholder="{{#str}}customentertext, mod_coursework{{/str}}" {{^customisselected}} style="display: none;"{{/customisselected}}>{{{existing_agreed_feedback.remark}}}</textarea>
+                                </div>
+                            </div>
+                        {{/hasfrequentcomments}}
+
+                    </td>
+                </tr>
+            {{/criteria_rows}}
+            </tbody>
+        </table>
+
+        {{! General comment textarea field}}
+        {{#general_comment_field}}
+            <div id="fitem_id_feedbackcomment" class="mb-3 row fitem">
+                <div class="col-md-3 col-form-label d-flex pb-0 pe-md-0">
+                    <label id="{{id}}_label" class="d-inline word-break" for="{{id}}">
+                        {{label}}
+                    </label>
+                    <div class="form-label-addon d-flex align-items-center align-self-start"></div>
+                </div>
+                <div class="col-md-9 d-flex flex-wrap align-items-start felement" data-fieldtype=" {{label}}">
+                    <div>
+                        <div>
+                            {{{textareahtml}}}
+                        </div>
+                        <div>
+                            <input name="{{name}}[format]" id="menu{{name}}format" type="hidden" value="1">
+                        </div>
+                    </div>
+                    <div class="form-control-feedback invalid-feedback" id="id_error_{{name}}">
+                    </div>
+                </div>
+            </div>
+        {{/general_comment_field}}
+
+        {{! Upload a file filemanager }}
+        {{#file_upload_field}}
+            <div id="{{id}}" class="mt-3"><strong>{{label}}</strong></div>
+            <div>{{{html}}}</div>
+        {{/file_upload_field}}
+
+        <div class="d-flex flex-wrap align-items-center mt-3">
+            {{#button_elements}}
+                <span data-fieldtype="{{type}}">
+                    <input type="{{type}}" class="mr-1 btn {{btn-class}}" name="{{name}}" id="{{id}}" value="{{value}}" data-skip-validation="{{data-skip-validation}}" data-cancel="{{data-cancel}}" onclick="{{onclick}}">
+                </span>
+            {{/button_elements}}
+        </div>
+    </form>
+</div>
+{{#js}}
+    const form = document.getElementById('mod_coursework_guide_agreed_grades');
+
+    // If user selects "custom" feedback, show the related text area (and hide otherwise).
+    const selects = document.querySelectorAll("select.mod_coursework_custom_comment_select");
+    selects.forEach((select) => {
+        select.addEventListener('change', () => {
+            const criterionId = select.id.replace('agreed_feedback_select_criterion_', '');
+            const textAreaId = 'agreed_feedback_custom_textarea_criterion_' + criterionId;
+            const textArea = document.getElementById('agreed_feedback_criterion_' + criterionId)
+            if (textArea) {
+                const selectedOption = select.options[select.selectedIndex].text;
+                if (select.value === 'custom') {
+                    // Remove inline style from markup if present.
+                    textArea.style.removeProperty('display');
+                    textArea.style.display = 'block';
+                    textArea.value = '';
+                } else {
+                    textArea.style.display = 'none';
+                    textArea.value = selectedOption;
+                }
+            }
+
+        });
+    })
+{{/js}}

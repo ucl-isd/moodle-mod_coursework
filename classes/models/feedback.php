@@ -696,4 +696,3 @@ class feedback extends table_base {
         self::remove_cache($courseworkid);
     }
 }
-

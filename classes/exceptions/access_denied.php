@@ -33,17 +33,15 @@ use mod_coursework\router;
  *
  * @package mod_coursework
  */
-class access_denied extends \moodle_exception {
+class access_denied extends \core\exception\moodle_exception {
 
     /**
+     * Constructor.
      * @param coursework $coursework
      * @param string $message
-     * @throws \coding_exception
      */
     public function __construct($coursework, $message = null) {
-
         $link = router::instance()->get_path('coursework', ['coursework' => $coursework]);
-
         parent::__construct('access_denied', 'mod_coursework', $link, null, $message);
     }
 

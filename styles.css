@@ -185,3 +185,18 @@ table.datatabletest  td.first_name_letter_cell,
 table.datatabletest  td.last_name_letter_cell {
     display: none;
 }
+form#mod_coursework_guide_agreed_grades {
+    tr {
+        font-size: 14px;
+    }
+    .dropdown-item {
+        display: block;
+        max-width: 600px;
+    }
+
+    select {
+        &, &::picker(select) {
+            appearance: base-select;
+        }
+    }
+}
