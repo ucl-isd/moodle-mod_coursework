@@ -103,7 +103,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
 
         // Rubric/Advanced grading stuff if it's there.
-        if ($feedback->is_stage_using_advanced_grading()) {
+        if (feedback::is_stage_using_advanced_grading($coursework, $feedback)) {
             $controller = $coursework->get_advanced_grading_active_controller();
             $template->advancedgradinghtml = $controller->render_grade($this->page, $feedback->id, null, '', false);
         }

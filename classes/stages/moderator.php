@@ -33,6 +33,11 @@ use mod_coursework\models\user;
 class moderator extends base {
 
     /**
+     * Value for mdl_coursework_feedbacks.stage_identifier for feedback from moderator 1.
+     */
+    const STAGE_MODERATOR_1 = 'moderator_1';
+
+    /**
      * @return string
      */
     public function allocation_table_header() {

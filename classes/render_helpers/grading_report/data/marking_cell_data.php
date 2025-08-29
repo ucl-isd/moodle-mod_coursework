@@ -261,7 +261,7 @@ class marking_cell_data extends cell_data_base {
      * @return string
      * @throws \coding_exception
      */
-    public function get_mark_for_feedback(feedback $feedback): string {
+    public function get_mark_for_feedback(feedback $feedback): ?string {
         global $USER;
 
         $judge = new grade_judge($this->coursework);
