@@ -28,6 +28,7 @@ use core\exception\coding_exception;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
+use mod_coursework\stages\final_agreed;
 use mod_coursework\utils\cs_editor;
 use moodleform;
 use stdClass;
@@ -103,7 +104,7 @@ class assessor_feedback_mform extends moodleform {
 
         $grademenu = make_grades_menu($this->coursework->grade);
 
-        if (($this->coursework->is_using_advanced_grading() && $this->coursework->finalstagegrading == 0 ) || ($this->coursework->is_using_advanced_grading() && $this->coursework->finalstagegrading == 1 &&  $this->feedback->stage_identifier != 'final_agreed_1')) {
+        if (feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)) {
             $this->_grading_controller = $this->coursework->get_advanced_grading_active_controller();
             $this->_grading_instance = $this->_grading_controller->get_or_create_instance(
                 0, $this->feedback->assessorid, $this->feedback->id
@@ -111,7 +112,7 @@ class assessor_feedback_mform extends moodleform {
             $mform->addElement(
                 'grading', 'advancedgrading', get_string('grade', 'mod_coursework'), ['gradinginstance' => $this->_grading_instance]
             );
-        } else if ($this->feedback->stage_identifier == 'final_agreed_1') {
+        } else if ($this->feedback->stage_identifier == final_agreed::STAGE_FINAL_AGREED_1) {
             $mform->addElement('text', 'grade', get_string('grade', 'mod_coursework'));
             $mform->setType('grade', PARAM_RAW);
         } else {
@@ -205,14 +206,14 @@ class assessor_feedback_mform extends moodleform {
 
         $formdata = $this->get_data();
 
-        if (($this->coursework->is_using_advanced_grading() && $this->coursework->finalstagegrading == 0 ) || ($this->coursework->is_using_advanced_grading() && $this->coursework->finalstagegrading == 1 &&  $this->feedback->stage_identifier != 'final_agreed_1')) {
+        if (feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)) {
             $controller = $this->coursework->get_advanced_grading_active_controller();
             $gradinginstance = $controller->get_or_create_instance(0, $this->feedback->assessorid, $this->feedback->id);
             $this->feedback->grade = $gradinginstance->submit_and_get_grade(
                 $formdata->advancedgrading, $this->feedback->id
             );
 
-        } else if ($this->feedback->stage_identifier == 'final_agreed_1') {
+        } else if ($this->feedback->stage_identifier == final_agreed::STAGE_FINAL_AGREED_1) {
             $this->feedback->grade = format_float($formdata->grade, $this->coursework->get_grade_item()->get_decimals());
         } else {
             $this->feedback->grade = $formdata->grade;
@@ -295,7 +296,7 @@ class assessor_feedback_mform extends moodleform {
         }
         $isexistingagreedfeedback = $this->feedback->is_agreed_grade() ?? false;
         $isnewagreedfeedback = !$isexistingagreedfeedback
-            && optional_param('stage_identifier', '', PARAM_TEXT) == 'final_agreed_1';
+            && optional_param('stage_identifier', '', PARAM_TEXT) == final_agreed::STAGE_FINAL_AGREED_1;
 
         if ($isnewagreedfeedback || $isexistingagreedfeedback) {
             $data = (new \mod_coursework\output\grading_guide_agreed_grades(

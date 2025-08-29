@@ -34,6 +34,21 @@ use mod_coursework\models\user;
 class assessor extends base {
 
     /**
+     * Value for mdl_coursework_feedbacks.stage_identifier for feedback from assessor 1.
+     */
+    const STAGE_ASSESSOR_1 = 'assessor_1';
+
+    /**
+     * Value for mdl_coursework_feedbacks.stage_identifier for feedback from assessor 2.
+     */
+    const STAGE_ASSESSOR_2 = 'assessor_2';
+
+    /**
+     * Value for mdl_coursework_feedbacks.stage_identifier for feedback from assessor 3.
+     */
+    const STAGE_ASSESSOR_3 = 'assessor_3';
+
+    /**
      * @throws \coding_exception
      * @return string
      */
@@ -102,7 +117,7 @@ class assessor extends base {
      * @return bool
      */
     public function uses_sampling() {
-        if ($this->identifier() == 'assessor_1') {
+        if ($this->identifier() == self::STAGE_ASSESSOR_1) {
             return false;
         } else {
             return parent::uses_sampling();
