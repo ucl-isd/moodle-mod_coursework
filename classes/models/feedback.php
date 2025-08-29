@@ -587,13 +587,14 @@ class feedback extends table_base {
      *
      * @param coursework $coursework
      * @param ?feedback $feedback may be null if a new feedback object is being created.
-     * @return bool False if the current stage for the supplied coursework and feedback uses simple.
+     * @return bool False if the current stage for the supplied coursework and feedback uses simple
      * grading (for example, 55/100), true if it uses a grading form or rubric.
      */
     public static function is_stage_using_advanced_grading(coursework $coursework, ?feedback $feedback) {
         return $coursework->is_using_advanced_grading()
             && (
                 $coursework->finalstagegrading == 0 ||
+                // If $coursework->finalstagegrading == 1 then $feedback must now be initialised.
                 ($coursework->finalstagegrading == 1 && $feedback->stage_identifier != final_agreed::STAGE_FINAL_AGREED_1)
             );
     }
