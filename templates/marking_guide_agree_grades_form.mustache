@@ -43,7 +43,7 @@
                             <div class="form-group">
                                 <select class="form-control mod_coursework_custom_comment_select" advancedgrading[criteria][{{id}}][select] style="height: auto;" id="agreed_feedback_select_criterion_{{id}}">
                                     <button><div><selectedcontent></selectedcontent></div></button>
-                                    <option disabled selected value="0">=== {{#str}}select{{/str}} ===</option>
+                                    <option disabled selected value="0">{{#str}}choosedots{{/str}}</option>
                                     {{#dropdownoptions}}
                                         <option value="{{id}}"{{#selected}} selected{{/selected}} data-extra="{{extrea}}">{{description}}</option>
                                     {{/dropdownoptions}}
