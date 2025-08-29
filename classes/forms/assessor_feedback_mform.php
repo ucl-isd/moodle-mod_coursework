@@ -95,6 +95,9 @@ class assessor_feedback_mform extends moodleform {
         } else if ($feedback->stage_identifier == 'final_agreed_1') {
             $mform->addElement('text', 'grade', get_string('grade', 'mod_coursework'));
             $mform->setType('grade', PARAM_RAW);
+            $mform->addRule(
+                'grade', get_string('err_valueoutofrange', 'mod_coursework'), 'numeric', null, 'client'
+            );
         } else {
             $mform->addElement('select',
                                'grade',
@@ -166,12 +169,16 @@ class assessor_feedback_mform extends moodleform {
      * @param $data
      * @return bool
      */
-    public function validate_grade($data) {
-        $result = true;
+    public function validate_grade($data): bool {
         if (!empty($this->_grading_instance) && property_exists($data, 'advancedgrading')) {
-            $result = $this->_grading_instance->validate_grading_element($data->advancedgrading);
+            return $this->_grading_instance->validate_grading_element($data->advancedgrading);
+        } else {
+            $errors = self::validation($data, []);
+            if (!empty($errors)) {
+                return false;
+            }
         }
-        return $result;
+        return true;
     }
 
     /**
@@ -181,7 +188,6 @@ class assessor_feedback_mform extends moodleform {
      * @return feedback
      */
     public function process_data(feedback $feedback) {
-
         $formdata = $this->get_data();
         $coursework = $feedback->get_coursework();
 
@@ -258,6 +264,37 @@ class assessor_feedback_mform extends moodleform {
         $editor = new cs_editor();
         $options = $editor->get_options();
         return $options;
+    }
+
+    /**
+     * If there are errors return array of errors ("fieldname" => "error message").
+     *
+     * Server side rules do not work for uploaded files, implement serverside rules here if needed.
+     *
+     * @param array $data array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     *         or an empty array if everything is OK (true allowed for backwards compatibility too).
+     */
+    public function validation($data, $files) {
+        $errors = parent::validation($data, $files);
+        $hasadvancedgrading = !empty($data['advancedgrading']);
+        if (!$hasadvancedgrading && isset($data['stage_identifier']) && $data['stage_identifier'] == 'final_agreed_1') {
+            if (!$this->grade_in_range($data['grade'])) {
+                $errors['grade'] = get_string('err_valueoutofrange', 'coursework');
+            }
+        }
+        return $errors;
+    }
+
+    /**
+     * Agreed grade can be entered as text field (float or int) so need to validate it.
+     */
+    public function grade_in_range(string $grade): bool {
+        $feedback = $this->_customdata['feedback'];
+        $coursework = $feedback->get_coursework();
+        $gradeoptions = array_keys(make_grades_menu($coursework->grade));
+        return is_numeric($grade) && $grade >= min($gradeoptions) && $grade <= max($gradeoptions);
     }
 }
 

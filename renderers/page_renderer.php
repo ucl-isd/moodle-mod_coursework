@@ -75,50 +75,54 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
     /**
      * Renders the HTML for the edit page
-     *
      * @param feedback $teacherfeedback
+     * @param assessor_feedback_mform $simpleform
      * @param $assessor
      * @param $editor
-     * @param bool $ajax
-     * @throws coding_exception
+     * @param $ajax
+     * @return void
      */
-    public function edit_feedback_page(feedback $teacherfeedback, $assessor, $editor, $ajax = false) {
+    public function edit_feedback_page(feedback $teacherfeedback, assessor_feedback_mform $form) {
+        global $SITE, $DB;
 
-        global $SITE;
-
-        $gradingtitle =
-            get_string('gradingfor', 'coursework', $teacherfeedback->get_submission()->get_allocatable_name());
+        $assessor = $DB->get_record('user', ['id' => $teacherfeedback->assessorid]);
+        if (!empty($teacherfeedback->lasteditedbyuser)) {
+            $editor = $DB->get_record('user', ['id' => $teacherfeedback->lasteditedbyuser]);
+        } else {
+            $editor = $assessor;
+        }
+        $gradingtitle = get_string(
+            'gradingfor', 'coursework', $teacherfeedback->get_submission()->get_allocatable_name()
+        );
 
         $this->page->set_pagelayout('standard');
         $this->page->navbar->add($gradingtitle);
         $this->page->set_title($SITE->fullname);
         $this->page->set_heading($SITE->fullname);
 
-        $html = '';
-        $html .= $this->output->heading($gradingtitle);
 
         // Template grading details.
         $template = new stdClass();
+        $template->title = $gradingtitle;
+
         // Marker.
-        $template->marker = ($teacherfeedback->assessorid == 0) ? get_string('automaticagreement', 'mod_coursework') : fullname($assessor);
+        $template->marker = ($teacherfeedback->assessorid == 0)
+            ? get_string('automaticagreement', 'mod_coursework')
+            : fullname($assessor);
 
         // Submission.
         $submission = $teacherfeedback->get_submission();
         $files = $submission->get_submission_files();
         $objectrenderer = $this->get_object_renderer();
-        $template->submission = $objectrenderer->render_submission_files_with_plagiarism_links(new \mod_coursework_submission_files($files), false);
+        $template->submission = $objectrenderer->render_submission_files_with_plagiarism_links(
+            new \mod_coursework_submission_files($files), false
+        );
 
         // Last edit.
         $lastmarked = ((!$teacherfeedback->get_coursework()->sampling_enabled() || $teacherfeedback->get_submission()->sampled_feedback_exists())
             && $teacherfeedback->assessorid == 0 && $teacherfeedback->timecreated == $teacherfeedback->timemodified )
             ? get_string('automaticagreement', 'mod_coursework') : fullname($editor);
         $template->lasteditedby = $lastmarked . userdate($teacherfeedback->timemodified, '%a, %d %b %Y, %H:%M');
-
-        // Mustache.
-        $html .= $this->render_from_template('mod_coursework/marking_details', $template);
-
-        $submiturl = $this->get_router()->get_path('update feedback', ['feedback' => $teacherfeedback]);
-        $simpleform = new assessor_feedback_mform($submiturl, ['feedback' => $teacherfeedback]);
 
         $teacherfeedback->feedbackcomment = [
             'text' => $teacherfeedback->feedbackcomment,
@@ -134,29 +138,19 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                                 $teacherfeedback->id);
         $teacherfeedback->feedback_manager = $draftitemid;
 
-        $simpleform->set_data($teacherfeedback);
+        $form->set_data($teacherfeedback);
 
-        if ($ajax) {
-            $formhtml = $simpleform->render();
-            $filemanageroptions = $simpleform->get_file_options();
-            $editoroptions = $simpleform->get_editor_options();
-
-            $commentoptions = $this->get_comment_options($simpleform);
-            echo json_encode(['formhtml' => $html . $formhtml, 'filemanageroptions' => $filemanageroptions, 'editoroptions' => $editoroptions, 'commentoptions' => $commentoptions]);
-
-        } else {
-            $this->page->set_pagelayout('standard');
-            $this->page->navbar->add($gradingtitle);
-            $this->page->set_title($SITE->fullname);
-            $this->page->set_heading($SITE->fullname);
-            echo $this->output->header();
-            echo $html;
-            // SHAME - Can we add an id to the form.
-            echo "<div id='coursework-markingform'>";
-            $simpleform->display();
-            echo "</div>";
-            echo $this->output->footer();
-        }
+        $this->page->set_pagelayout('standard');
+        $this->page->navbar->add($gradingtitle);
+        $this->page->set_title($SITE->fullname);
+        $this->page->set_heading($SITE->fullname);
+        echo $this->output->header();
+        echo $this->render_from_template('mod_coursework/marking_details', $template);
+        // SHAME - Can we add an id to the form.
+        echo "<div id='coursework-markingform'>";
+        $form->display();
+        echo "</div>";
+        echo $this->output->footer();
     }
 
     public function confirm_feedback_removal_page(feedback $teacherfeedback, $confirmurl) {
@@ -319,11 +313,12 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param $newfeedback
-     * @param bool $ajax
-     * @throws coding_exception
+     * Render a create feedback page with form.
+     * @param feedback $newfeedback
+     * @param assessor_feedback_mform $form
+     * @return void
      */
-    public function new_feedback_page($newfeedback, $ajax = false) {
+    public function new_feedback_page(feedback $newfeedback, assessor_feedback_mform $form) {
         global $SITE, $DB;
 
         $submission = $newfeedback->get_submission();
@@ -334,19 +329,16 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $this->page->set_title($SITE->fullname);
         $this->page->set_heading($SITE->fullname);
 
-        $html = '';
-
-        // Warning in case there is already some feedback from another teacher
+        // Template grading details.
+        $template = new stdClass();
+        $template->title = $gradingtitle;
+        // Warning in case there is already some feedback from another teacher.
         $conditions = ['submissionid' => $newfeedback->submissionid,
                             'stage_identifier' => $newfeedback->stage_identifier];
         if (feedback::exists($conditions)) {
-            $html .= '<div class="alert">Another user has already submitted feedback for this student. Your changes will not be saved.</div>';
+            $template->alert = 'Another user has already submitted feedback for this student. Your changes will not be saved.';
         }
 
-        $html .= $this->output->heading($gradingtitle);
-
-        // Template grading details.
-        $template = new stdClass();
         // Marker.
         $marker = $DB->get_record('user', ['id' => $newfeedback->assessorid]);
         $template->marker = fullname($marker);
@@ -354,13 +346,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         // Submission.
         $files = $submission->get_submission_files();
         $objectrenderer = $this->get_object_renderer();
-        $template->submission = $objectrenderer->render_submission_files_with_plagiarism_links(new \mod_coursework_submission_files($files), false);
-
-        // Mustache.
-        $html .= $this->render_from_template('mod_coursework/marking_details', $template);
-
-        $submiturl = $this->get_router()->get_path('create feedback', ['feedback' => $newfeedback]);
-        $simpleform = new assessor_feedback_mform($submiturl, ['feedback' => $newfeedback]);
+        $template->submission = $objectrenderer->render_submission_files_with_plagiarism_links(
+            new \mod_coursework_submission_files($files), false
+        );
 
         $coursework = coursework::find($newfeedback->courseworkid);
 
@@ -382,30 +370,20 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
             $teacherfeedback->feedbackcomment = ['text' => $feedbackcomment];
             // popululate the form with initial feedbacks
-            $simpleform->set_data($teacherfeedback);
+            $form->set_data($teacherfeedback);
         }
 
-        if ($ajax) {
-            $formhtml = $simpleform->render();
-            $filemanageroptions = $simpleform->get_file_options();
-            $editoroptions = $simpleform->get_editor_options();
-
-            $commentoptions = $this->get_comment_options($simpleform);
-            echo json_encode(['formhtml' => $html . $formhtml, 'filemanageroptions' => $filemanageroptions, 'editoroptions' => $editoroptions, 'commentoptions' => $commentoptions]);
-
-        } else {
-            $this->page->set_pagelayout('standard');
-            $this->page->navbar->add($gradingtitle);
-            $this->page->set_title($SITE->fullname);
-            $this->page->set_heading($SITE->fullname);
-            echo $this->output->header();
-            echo $html;
-            // SHAME - Can we add an id to the form.
-            echo "<div id='coursework-markingform'>";
-            $simpleform->display();
-            echo "</div>";
-            echo $this->output->footer();
-        }
+        $this->page->set_pagelayout('standard');
+        $this->page->navbar->add($gradingtitle);
+        $this->page->set_title($SITE->fullname);
+        $this->page->set_heading($SITE->fullname);
+        echo $this->output->header();
+        echo $this->render_from_template('mod_coursework/marking_details', $template);
+        // SHAME - Can we add an id to the form.
+        echo "<div id='coursework-markingform'>";
+        $form->display();
+        echo "</div>";
+        echo $this->output->footer();
     }
 
     /**
@@ -1220,180 +1198,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         return $o;
     }
 
-    public function datatables_render($coursework) {
-        global $CFG;
-
-        $langmessages = [
-            'notification_yes_label' => get_string('notification_yes_label', 'mod_coursework'),
-            'notification_no_label' => get_string('notification_no_label', 'mod_coursework'),
-            'notification_confirm_label' => get_string('notification_confirm_label', 'mod_coursework'),
-            'notification_info' => str_replace(' ', '_', get_string('notification_info', 'mod_coursework')),
-            'notification_leave_form_message' => str_replace(' ', '_', get_string('notification_leave_form_message', 'mod_coursework')),
-            'notification_leave_form_title' => str_replace(' ', '_', get_string('notification_leave_form_title', 'mod_coursework')),
-            'alert_extension_save_successful' => str_replace(' ', '_', get_string('alert_extension_save_successful', 'mod_coursework')),
-            'alert_no_extension' => str_replace(' ', '_', get_string('alert_no_extension', 'mod_coursework')),
-            'alert_personaldeadline_save_successful' => str_replace(' ', '_', get_string('alert_personaldeadline_save_successful', 'mod_coursework')),
-            'alert_validate_deadline' => str_replace(' ', '_', get_string('alert_validate_deadline', 'mod_coursework')),
-            'url_root' => $CFG->wwwroot,
-            'alert_feedback_save_successful' => str_replace(' ', '_', get_string('alert_feedback_save_successful', 'mod_coursework')),
-            'alert_feedback_remove_successful' => str_replace(' ', '_', get_string('alert_feedback_remove_successful', 'mod_coursework')),
-            'alert_request_error' => str_replace(' ', '_', get_string('alert_request_error', 'mod_coursework')),
-            'alert_feedback_draft_save_successful' => str_replace(' ', '_', get_string('alert_feedback_draft_save_successful', 'mod_coursework')),
-        ];
-
-        $modalheader = html_writer::tag('h5', 'new Extension', [
-            'class' => 'modal-title',
-            'id' => 'extension-modal-title',
-        ]);
-        $modalheader .= html_writer::start_tag('button', [
-            'type' => 'button',
-            'class' => 'close btn-extension-close',
-            'aria-label' => 'Close',
-            'data-dismiss' => 'modal',
-        ]);
-        $modalheader .= html_writer::span('&times;', '', ['aria-hidden' => 'true']);
-        $modalheader .= html_writer::end_tag('button');
-
-        $modalbody = html_writer::start_tag('form', ['id' => 'form-extension']);
-        $content = html_writer::empty_tag('input', [
-            'name' => 'allocatabletype',
-            'type' => 'hidden',
-            'value' => '',
-            'id' => 'extension-allocatabletype',
-        ]);
-        $content .= html_writer::empty_tag('input', [
-            'name' => 'allocatableid',
-            'type' => 'hidden',
-            'value' => '',
-            'id' => 'extension-allocatableid',
-        ]);
-        $content .= html_writer::empty_tag('input', [
-            'name' => 'courseworkid',
-            'type' => 'hidden',
-            'value' => '',
-            'id' => 'extension-courseworkid',
-        ]);
-        $content .= html_writer::empty_tag('input', [
-            'name' => 'id',
-            'type' => 'hidden',
-            'value' => '',
-            'id' => 'extension-id',
-        ]);
-        $content .= html_writer::empty_tag('input', [
-            'name' => 'submissionid',
-            'type' => 'hidden',
-            'value' => '',
-            'id' => 'extension-submissionid',
-        ]);
-        $content .= html_writer::empty_tag('input', [
-            'name' => 'name',
-            'type' => 'hidden',
-            'id' => 'extension-name',
-            'value' => '',
-        ]);
-        $content .= html_writer::empty_tag('input', [
-            'name' => 'aid',
-            'type' => 'hidden',
-            'value' => '',
-            'id' => 'button-id',
-        ]);
-        $modalbody .= html_writer::div($content, 'display-none');
-
-        if ($coursework->deadline) {
-            $contentdefaultdeadline = 'Default deadline: ' . userdate($coursework->deadline);
-            $contentdefaultdeadline = html_writer::div($contentdefaultdeadline, 'col-md-12', ['id' => 'extension-time-content']);
-            $modalbody .= html_writer::div($contentdefaultdeadline, 'form-group row fitem');
-
-            $contentextendeddeadline = html_writer::tag('label', get_string('extended_deadline', 'mod_coursework'));
-            $contentextendeddeadlinediv = html_writer::div($contentextendeddeadline, 'col-md-3');
-            $minnutesstep = 5;
-            $input = \html_writer::tag(
-                'input', '', [
-                    'type' => "datetime-local",
-                    'step' => $minnutesstep * 60,
-                    'id' => "extension-extend-deadline",
-                    'name' => "extension-extend-deadline",
-                ]
-            );
-            $contentextendeddeadlinediv .= html_writer::div($input, 'col-md-6');
-            $modalbody .= html_writer::div($contentextendeddeadlinediv, 'form-group row fitem');
-
-            $extensionreasons = coursework::extension_reasons();
-            if (!empty($extensionreasons)) {
-                $selectextensionreasons = html_writer::tag('label', get_string('extension_reason', 'mod_coursework'));
-                $selectextensionreasonsdiv = html_writer::div($selectextensionreasons, 'col-md-3');
-                $selectextensionreasons = html_writer::select($extensionreasons, '', '', false, [
-                    'id' => 'extension-reason-select',
-                    'class' => 'form-control',
-                ]);
-                $selectextensionreasonsdiv .= html_writer::div($selectextensionreasons, 'col-md-9 form-inline felement', ['data-fieldtype' => 'select']);
-                $modalbody .= html_writer::div($selectextensionreasonsdiv, 'form-group row fitem');
-            }
-
-            $contentextrainformation = html_writer::tag('label', get_string('extra_information', 'mod_coursework'), [
-                'class' => 'col-form-label d-inline', 'for' => 'id_extra_information',
-            ]);
-            $contentextrainformationdiv = html_writer::div($contentextrainformation, 'col-md-3');
-            $contentextrainformation = html_writer::tag('textarea', '', [
-                'class' => 'form-control',
-                'rows' => '8',
-                'spellcheck' => 'true',
-                'id' => 'id_extra_information',
-            ]);
-            $contentextrainformationdiv .= html_writer::div($contentextrainformation, 'col-md-9 form-inline felement', ['data-fieldtype' => 'editor']);
-            $modalbody .= html_writer::div($contentextrainformationdiv, 'form-group row fitem', ['id' => 'fitem_id_extra_information']);
-        }
-
-        $modalbody .= html_writer::end_tag('form');
-
-        $modalfooter = html_writer::empty_tag('img', [
-            'src' => $CFG->wwwroot . '/mod/coursework/pix/loadding.gif',
-            'alt' => 'Load...',
-            'width' => '25',
-            'class' => 'loading_moderation icon',
-            'style' => 'visibility: hidden;',
-        ]);
-        $modalfooter .= html_writer::tag('button', 'Save', [
-            'type' => 'button',
-            'class' => 'btn btn-primary',
-            'id' => 'extension-submit',
-        ]);
-        $modalfooter .= html_writer::tag('button', 'Close', [
-            'type' => 'button',
-            'class' => 'btn btn-secondary btn-extension-close',
-            'data-dismiss' => 'modal',
-        ]);
-
-        $html = html_writer::div($modalheader, 'modal-header');
-        $html .= html_writer::div($modalbody, 'modal-body');
-        $html .= html_writer::div($modalfooter, 'modal-footer');
-        $html = html_writer::div($html, 'modal-content');
-        $html = html_writer::div($html, 'modal-dialog modal-lg vertical-align-center', ['role' => 'document']);
-        $html = html_writer::div($html, 'vertical-alignment-helper');
-        $html = html_writer::div($html, 'modal fade', [
-            'id' => 'modal-ajax',
-            'tabindex' => '-1',
-            'role' => 'dialog',
-            'aria-labelledby' => 'modelTitleId',
-            'aria-hidden' => 'true',
-        ]);
-        $html .= html_writer::empty_tag('input', [
-            'name' => '',
-            'type' => 'hidden',
-            'data-lang' => json_encode($langmessages),
-            'id' => 'datatables_lang_messages',
-        ]);
-        $html = html_writer::div($html);
-
-        return $html;
-    }
-
-    public function render_modal() {
-        $result = $this->render_advance_plugins_form();
-        $result .= $this->modal_grading_render();
-        return $result;
-    }
-
     protected function render_advance_plugins_form() {
         $form = new \mod_coursework\forms\advance_plugins_form();
         $result = '<div class="hide">' . $form->render() . '</div>';
@@ -1471,5 +1275,35 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $template->submission->status = get_string('statusreleased', 'mod_coursework');
                 break;
         }
+    }
+
+    /**
+     * Where there is a validation failure, redisplay form and allow Moodle to explain what error is for user.
+     * @param submission $submission
+     * @param assessor_feedback_mform $form
+     * @param string $allocablename
+     * @return void
+     */
+    public function redisplay_form(submission $submission, assessor_feedback_mform $form) {
+        $coursework = $submission->get_coursework();
+        $files = $submission->get_submission_files();
+        $objectrenderer = $this->get_object_renderer();
+
+        $this->page->set_context($coursework->get_context());
+        $this->page->set_pagelayout('standard');
+        echo $this->output->header();
+        echo html_writer::tag('h3',
+            get_string(
+                'gradingfor',
+                'coursework',
+                $submission->get_allocatable_name()
+            )
+        );
+        echo $objectrenderer->render_submission_files_with_plagiarism_links(
+            new \mod_coursework_submission_files($files), false
+        );
+        $form->display();
+        echo $this->output->footer();
+        die();
     }
 }
