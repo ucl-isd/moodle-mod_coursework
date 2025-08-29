@@ -21,20 +21,26 @@
                         </span>
                     </small>
                 </a>
-                <div class="dropdown-divider"></div>
+                {{#submission.url}}<div class="dropdown-divider"></div>{{/submission.url}}
+                {{#finalise}}<div class="dropdown-divider"></div>{{/finalise}}
+                {{#unfinalise}}<div class="dropdown-divider"></div>{{/unfinalise}}
+                {{#plagarism.url}}<div class="dropdown-divider"></div>{{/plagarism.url}}
             {{/extension.show}}
         {{/defaultduedate}}
         {{#submission.url}}
             <a class="dropdown-item submit-on-behalf" href="{{submission.url}}">{{submission.label}}</a>
-            <div class="dropdown-divider"></div>
+            {{#finalise}}<div class="dropdown-divider"></div>{{/finalise}}
+            {{#unfinalise}}<div class="dropdown-divider"></div>{{/unfinalise}}
+            {{#plagarism.url}}<div class="dropdown-divider"></div>{{/plagarism.url}}
         {{/submission.url}}
         {{#finalise}}
             <a class="dropdown-item submission-finalisation" data-action="finalise" data-student="{{studentname}}" href="{{finalise.url}}">Finalise submission</a>
-            <div class="dropdown-divider"></div>
+            {{#unfinalise}}<div class="dropdown-divider"></div>{{/unfinalise}}
+            {{#plagarism.url}}<div class="dropdown-divider"></div>{{/plagarism.url}}
         {{/finalise}}
         {{#unfinalise}}
              <a class="dropdown-item submission-finalisation" data-action="unfinalise" data-student="{{studentname}}" href="{{unfinalise.url}}">Unfinalise submission</a>
-            <div class="dropdown-divider"></div>
+            {{#plagarism.url}}<div class="dropdown-divider"></div>{{/plagarism.url}}
         {{/unfinalise}}
         {{#plagarism.url}}
             <a class="dropdown-item" href="{{plagarism.url}}">Plagarism
@@ -46,8 +52,7 @@
                     </small>
                 {{/plagarismstatus}}
             </a>
-            <div class="dropdown-divider"></div>
         {{/plagarism.url}}
-        <a class="dropdown-item" href="#">Release mark</a>
+<!--        <a class="dropdown-item" href="#">Release mark</a>-->
     </div>
 </div>

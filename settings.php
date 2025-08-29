@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_coursework\candidateprovider_manager;
+
 defined('MOODLE_INTERNAL') || die;
 
 global $CFG, $DB, $PAGE;
@@ -73,6 +75,44 @@ if ($ADMIN->fulltree) {
     $options = [ 0 => get_string('no'), 1 => get_string('yes')];
     $settings->add(new admin_setting_configselect('coursework_blindmarking', $blindmarkingname, $blindmarkingdescription, 0, $options));
     $settings->add(new admin_setting_configcheckbox('coursework_forceblindmarking', get_string('forceblindmarking', 'mod_coursework'), get_string('forceblindmarking_desc', 'mod_coursework'), 0));
+
+    // Candidate number provider
+    $candidateproviderheader = new admin_setting_heading('candidateprovider_header', get_string('candidate_number_provider', 'mod_coursework'), '');
+    $settings->add($candidateproviderheader);
+
+    // Get available providers
+    $provideroptions = ['' => get_string('no_provider_selected', 'mod_coursework')];
+    $availableproviders = candidateprovider_manager::instance()->get_available_providers();
+    foreach ($availableproviders as $component => $name) {
+        $provideroptions[$component] = $name;
+    }
+
+    if (count($availableproviders) > 0) {
+        $candidateprovidername = get_string('candidate_number_provider', 'mod_coursework');
+        $candidateproviderdescription = get_string('candidate_number_provider_desc', 'mod_coursework');
+        $settings->add(new admin_setting_configselect('mod_coursework/candidate_provider',
+                                                      $candidateprovidername,
+                                                      $candidateproviderdescription,
+                                                      '',
+                                                      $provideroptions));
+
+        $usecandidatenumbersname = get_string('use_candidate_numbers_for_hidden_name', 'mod_coursework');
+        $usecandidatenumbersdescription = get_string('use_candidate_numbers_for_hidden_name_desc', 'mod_coursework');
+        $currentprovider = get_config('mod_coursework', 'candidate_provider');
+        if (empty($currentprovider)) {
+            $usecandidatenumbersdescription .= ' ' . get_string('use_candidate_numbers_requires_provider', 'mod_coursework');
+        }
+        $settings->add(new admin_setting_configcheckbox('mod_coursework/use_candidate_numbers_for_hidden_name',
+                                                        $usecandidatenumbersname,
+                                                        $usecandidatenumbersdescription,
+                                                        '0'));
+    } else {
+        // Show a message when no providers are available
+        $noprovidersetting = new admin_setting_description('coursework_candidate_provider_none',
+                                                          get_string('candidate_number_provider', 'mod_coursework'),
+                                                          get_string('no_candidate_provider_available', 'mod_coursework'));
+        $settings->add($noprovidersetting);
+    }
 
     // Assessor anonymity
     $assessoranonymityheader = new admin_setting_heading('assessoranonymity_header', get_string('assessoranonymity', 'mod_coursework'), '');

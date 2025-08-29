@@ -660,6 +660,7 @@ class behat_mod_coursework extends behat_base {
      */
     public function blind_marking_is_enabled() {
         $this->get_coursework()->update_attribute('blindmarking', 1);
+        $this->get_coursework()->update_attribute('renamefiles', 1);
     }
 
     /**
@@ -3411,4 +3412,196 @@ class behat_mod_coursework extends behat_base {
     // }
     // }
     // }
+
+    // File renaming test step definitions.
+
+    /**
+     * Verify that the uploaded file has been renamed to match the expected pattern.
+     *
+     * @Then /^the uploaded file should be renamed with pattern "([^"]*)"$/
+     */
+    public function the_uploaded_file_should_be_renamed_with_pattern($pattern) {
+        // Find the student's submission.
+        $submission = $this->find_student_submission();
+
+        $files = $submission->get_submission_files();
+        $file = $files->get_first_submitted_file();
+
+        if (!$file) {
+            throw new ExpectationException('No submission files found', $this->getSession());
+        }
+
+        $actualfilename = $file->get_filename();
+
+        // Convert pattern to regex - the pattern already contains valid regex syntax.
+        $regex = '/^' . $pattern . '$/';
+
+        if (!preg_match($regex, $actualfilename)) {
+            throw new ExpectationException(
+                "File name '$actualfilename' does not match pattern '$pattern'",
+                $this->getSession()
+            );
+        }
+    }
+
+    /**
+     * Verify that the uploaded file has kept its original name.
+     *
+     * @Then /^the uploaded file should keep original name "([^"]*)"$/
+     */
+    public function the_uploaded_file_should_keep_original_name($expectedname) {
+        // Find the student's submission.
+        $submission = $this->find_student_submission();
+
+        $files = $submission->get_submission_files();
+        $file = $files->get_first_submitted_file();
+
+        if (!$file) {
+            throw new ExpectationException('No submission files found', $this->getSession());
+        }
+
+        $actualname = $file->get_filename();
+
+        if ($actualname !== $expectedname) {
+            throw new ExpectationException(
+                "Expected filename '$expectedname', got '$actualname'",
+                $this->getSession()
+            );
+        }
+    }
+
+    /**
+     * Verify that the uploaded files have been renamed to match the expected sequential patterns.
+     *
+     * @Then /^the uploaded files should be renamed with sequential patterns:$/
+     */
+    public function the_uploaded_files_should_be_renamed_with_sequential_patterns(TableNode $table): void {
+        // Find the student's submission.
+        $submission = $this->find_student_submission();
+
+        $files = $submission->get_submission_files();
+        $patterns = $table->getHash();
+
+        if (count($files) !== count($patterns)) {
+            throw new ExpectationException(
+                'Number of files (' . count($files) . ') does not match number of patterns (' . count($patterns) . ')',
+                $this->getSession()
+            );
+        }
+
+        $filenumber = 0;
+        foreach ($files as $file) {
+            $actualfilename = $file->get_filename();
+            $pattern = $patterns[$filenumber]['pattern'];
+
+            // Convert pattern to regex - the pattern already contains valid regex syntax.
+            $regex = '/^' . $pattern . '$/';
+
+            if (!preg_match($regex, $actualfilename)) {
+                throw new ExpectationException(
+                    "File " . ($filenumber + 1) . " name '$actualfilename' does not match pattern '$pattern'",
+                    $this->getSession()
+                );
+            }
+            $filenumber++;
+        }
+    }
+
+    /**
+     * Find the student's submission for testing.
+     *
+     * @throws ExpectationException
+     */
+    private function find_student_submission(): submission {
+        global $DB;
+
+        // Get the submission record.
+        $submissionrecord = $DB->get_record('coursework_submissions', [
+            'courseworkid' => $this->coursework->id,
+            'userid' => $this->student->id
+        ]);
+
+        if (!$submissionrecord) {
+            throw new ExpectationException('No submission found for student', $this->getSession());
+        }
+
+        return submission::find($submissionrecord->id);
+    }
+
+    /**
+     * @Given /^the candidate number for the student is "([^"]*)"$/
+     */
+    public function the_candidate_number_for_the_student_is(string $candidatenumber): void {
+        global $CFG;
+        // Specify the mock provider file and candidate number for the manager to use.
+        set_config('behat_mock_provider_filepath', $CFG->dirroot . '/mod/coursework/tests/behat/fixtures/mock_candidate_provider.php');
+        set_config('behat_mock_provider_class', '\\mod_coursework\\behat\\fixtures\\mock_candidate_provider');
+        set_config('behat_mock_candidate_number', $candidatenumber);
+    }
+
+    /**
+     * Verify that the uploaded file has been renamed to the expected filename.
+     *
+     * @Then /^the uploaded file should be renamed to "([^"]*)"$/
+     */
+    public function the_uploaded_file_should_be_renamed_to(string $expectedname): void {
+        // Find the student's submission.
+        $submission = $this->find_student_submission();
+        $files = $submission->get_submission_files();
+        $file = $files->get_first_submitted_file();
+
+        if (!$file) {
+            throw new ExpectationException('No submission files found', $this->getSession());
+        }
+
+        $actualname = $file->get_filename();
+
+        if ($actualname !== $expectedname) {
+            throw new ExpectationException(
+                "Expected filename '$expectedname', got '$actualname'",
+                $this->getSession()
+            );
+        }
+    }
+
+    /**
+     * Verify that the uploaded files have been renamed to the expected filenames.
+     *
+     * @Then /^the uploaded files should be renamed to:$/
+     */
+    public function the_uploaded_files_should_be_renamed_to(TableNode $table): void {
+        // Find the student's submission.
+        $submission = $this->find_student_submission();
+        $files = $submission->get_submission_files();
+        $expectedfilenames = $table->getHash();
+
+        if (count($files) !== count($expectedfilenames)) {
+            throw new ExpectationException(
+                'Number of files (' . count($files) . ') does not match number of expected filenames (' . count($expectedfilenames) . ')',
+                $this->getSession()
+            );
+        }
+
+        $actualfilenames = [];
+        foreach ($files as $file) {
+            $actualfilenames[] = $file->get_filename();
+        }
+
+        $expected = [];
+        foreach ($expectedfilenames as $row) {
+            $expected[] = $row['filename'];
+        }
+
+        sort($actualfilenames);
+        sort($expected);
+
+        for ($i = 0; $i < count($actualfilenames); $i++) {
+            if ($actualfilenames[$i] !== $expected[$i]) {
+                throw new ExpectationException(
+                    "Expected filename '{$expected[$i]}', got '{$actualfilenames[$i]}'",
+                    $this->getSession()
+                );
+            }
+        }
+    }
 }

@@ -25,6 +25,7 @@
 
 namespace mod_coursework\render_helpers\grading_report\data;
 
+use mod_coursework\candidateprovider_manager;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\group;
 use mod_coursework\models\user;
@@ -45,7 +46,7 @@ class student_cell_data extends cell_data_base {
     public function get_table_cell_data(grading_table_row_base $rowsbase): ?stdClass {
         $submissiontype = new stdClass();
         $allocatable = $rowsbase->get_allocatable();
-        $hidden = $this->should_hide_identity($rowsbase);
+        $hidden = $this->should_hide_identity();
 
         if ($allocatable instanceof group) {
             $submissiontype->group = $this->get_group_data($allocatable, $hidden);
@@ -83,10 +84,12 @@ class student_cell_data extends cell_data_base {
         $members = [];
         $cm = $this->coursework->get_course_module();
         foreach ($group->get_members($this->coursework->get_context(), $cm) as $member) {
-            $members[] = (object)[
-                'name' => $hidden ? get_string('membershidden', 'coursework') : $member->name() . ' ('. $member->email.')',
-                'url' => $hidden ? '#' : $member->get_user_profile_url()
-            ];
+            $members[] = $hidden
+                ? (object)['name' => $this->get_candidate_or_fallback($member->id(), 'membershidden'), 'url' => '#']
+                : (object)[
+                    'name' => $this->get_enhanced_name_with_candidate_number($member->id(), $member->name()),
+                    'url' => $member->get_user_profile_url(),
+                ];
         }
         return $members;
     }
@@ -100,23 +103,69 @@ class student_cell_data extends cell_data_base {
      * @return stdClass
      */
     private function get_user_data(user $user, grading_table_row_base $rowsbase, bool $hidden): stdClass {
+        if ($hidden) {
+            return (object)[
+                'name' => $this->get_candidate_or_fallback($rowsbase->get_allocatable_id(), 'hidden'),
+                'url' => '',
+                'picture' => ''
+            ];
+        }
+
         return (object)[
-            'name' => $rowsbase->get_user_name(),
-            'url' => $hidden ? '' : $user->get_user_profile_url(),
-            'picture' => $hidden ? '' : $user->get_user_picture_url()
+            'name' => $this->get_enhanced_name_with_candidate_number($user->id(), $rowsbase->get_user_name()),
+            'url' => $user->get_user_profile_url(),
+            'picture' => $user->get_user_picture_url()
         ];
+    }
+
+    /**
+     * Get candidate number or fallback string if not available.
+     *
+     * @param int $userid The user ID
+     * @param string $fallbackstring The fallback string identifier
+     * @return string
+     */
+    private function get_candidate_or_fallback(int $userid, string $fallbackstring): string {
+        if (!get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')) {
+            return get_string($fallbackstring, 'mod_coursework');
+        }
+
+        $candidatenumber = $this->get_candidate_number($userid);
+        return $candidatenumber ?: get_string($fallbackstring, 'mod_coursework');
     }
 
     /**
      * Determine if the identity should be hidden.
      *
-     * @param grading_table_row_base $rowsbase
      * @return bool
      * @throws \coding_exception
      */
-    private function should_hide_identity(grading_table_row_base $rowsbase) {
+    private function should_hide_identity() {
         return $this->coursework->blindmarking_enabled() &&
-            !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context())
-            && !$rowsbase->is_published();
+            !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context());
+    }
+
+    /**
+     * Get enhanced name with candidate number if applicable.
+     *
+     * @param int $userid The user ID
+     * @param string $realname The real name of the user
+     * @return string
+     */
+    private function get_enhanced_name_with_candidate_number(int $userid, string $realname): string {
+        if (!get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')) {
+            return $realname;
+        }
+
+        $candidatenumber = $this->get_candidate_number($userid);
+        return $candidatenumber ? $candidatenumber . ' (' . $realname . ')' : $realname;
+    }
+
+    private function get_candidate_number(int $userid): ?string {
+        $candidateprovidermanager = candidateprovider_manager::instance();
+        if (!$candidateprovidermanager->is_provider_available()) {
+            return null;
+        }
+        return $candidateprovidermanager->get_candidate_number($this->coursework->get_course_id(), $userid) ?: null;
     }
 }
