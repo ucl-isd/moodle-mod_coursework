@@ -308,12 +308,10 @@ class grading_guide_agreed_grades implements \renderable, \templatable {
     private static function mark_dropdown_option_as_selected(array $options, string $comment, int $customoptionindex): array {
         $hasselected = false;
         foreach ($options as $index => $option) {
-            $selected = $option['description'] == $comment
-                && $option['id'] != 'custom';
-            if ($selected) {
+            if ($option['description'] == $comment && $option['id'] != 'custom') {
+                $options[$index]['selected'] = true;
                 $hasselected = true;
             }
-            $options[$index]['selected'] = $selected;
         }
         if (!$hasselected) {
             // If nothing matched, the "custom" option is selected.
