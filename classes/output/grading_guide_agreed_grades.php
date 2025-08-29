@@ -227,13 +227,13 @@ class grading_guide_agreed_grades implements \renderable, \templatable {
             'markernumber' => $existingagreedfeedback->markernumber,
             'feedbackid' => $existingagreedfeedback->id,
             'assessorid' => $existingagreedfeedback->assessorid,
-            'grade' => self::float_to_string($existingagreedfeedback->grade),
+            'grade' => format_float($existingagreedfeedback->grade, 2, false, true),
             'stage_identifier' => $existingagreedfeedback->stage_identifier,
             'finalised' => $existingagreedfeedback->finalised,
             'criterion_grades' => array_values(
                 array_map(
                     function($item) use ($existingagreedfeedback, $frequentcommentoptions, $customoptionindex) {
-                        $item['score'] = self::float_to_string($item['score']);
+                        $item['score'] = format_float($item['score'], 2, false, true);
                         $item['stage_identifier'] = $existingagreedfeedback->stage_identifier ?? 'final_agreed_1';
                         return $item;
                     },
@@ -271,7 +271,7 @@ class grading_guide_agreed_grades implements \renderable, \templatable {
             foreach ($templatedata->marker_columns as $feedback) {
                 foreach ($feedback->criterion_grades as $criteriongrade) {
                     if ($criteriongrade['criterionid'] == $criterion->id) {
-                        $criteriongrade['score'] = self::float_to_string($criteriongrade['score']);
+                        $criteriongrade['score'] = format_float($criteriongrade['score'], 2, false, true);
                         $criteriongrade['sortorder'] = $criterion->sortorder;
                         $criteriongrade['assessorid'] = $feedback->assessorid;
                         $criteriongrade['stage_identifier'] = $feedback->stage_identifier;
@@ -320,16 +320,5 @@ class grading_guide_agreed_grades implements \renderable, \templatable {
             $options[$customoptionindex]['selected'] = true;
         }
         return $options;
-    }
-
-    /**
-     * For the template, if the score is 1.01 show it as "1.01", bit if it's 1.00 show it as "1".
-     * @param float $float
-     * @return string
-     */
-    private function float_to_string(float $float): string {
-        return number_format(
-            $float, (floor($float) - $float == 0) ? 0 : 2
-        );
     }
 }
