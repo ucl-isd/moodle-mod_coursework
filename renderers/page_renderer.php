@@ -346,7 +346,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $submiturl = $this->get_router()->get_path('create feedback', ['feedback' => $newfeedback]);
         $simpleform = new assessor_feedback_mform($submiturl, ['feedback' => $newfeedback]);
 
-        $coursework = coursework::find($newfeedback->courseworkid);
+        $coursework = coursework::find($newfeedback->get_submission()->get_coursework()->id());
 
         // auto-populate Agreed Feedback with comments from initial marking
         if ($coursework && $coursework->autopopulatefeedbackcomment_enabled() && $newfeedback->stage_identifier == 'final_agreed_1') {
