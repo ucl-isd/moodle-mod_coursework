@@ -117,7 +117,6 @@ class assessor_feedback_mform extends moodleform {
             'return_types' => FILE_INTERNAL,
         ];
 
-
         $uploadfilestring = get_string('uploadafile');
         $this->_form->addElement('filemanager',
                                  'feedback_manager',

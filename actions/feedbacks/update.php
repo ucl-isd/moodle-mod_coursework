@@ -28,7 +28,7 @@ require_once(dirname(__FILE__) . '/../../../../config.php');
 require_login();
 require_sesskey();
 
-global $CFG, $USER, $PAGE;
+global $PAGE;
 
 $feedbackid = required_param('feedbackid', PARAM_INT);
 $finalised = (bool)optional_param('submitbutton', 0, PARAM_TEXT);
