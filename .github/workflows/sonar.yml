@@ -6,7 +6,7 @@ on:
 
 jobs:
   CI:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, cloud-only]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
