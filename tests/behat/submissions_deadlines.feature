@@ -2,7 +2,7 @@
 Feature: Deadlines for submissions
 
     As a teacher
-    I want to set deadlines that are viible to the student
+    I want to set deadlines that are visible to the student
     So that they know when they are expected to submut, and can be sent automatic reminders
 
   Background:
@@ -11,8 +11,7 @@ Feature: Deadlines for submissions
     And there is a coursework
 
   Scenario: the general feedback deadline should be visible if enabled and set
-    Given the coursework "generalfeedback" setting is "777777" in the database
-    And the coursework general feedback is enabled
+    Given the coursework general feedback is enabled
     When I visit the coursework page
     Then I should see the date when the general feedback will be released
 

@@ -57,7 +57,7 @@ class upload_grading_sheet_form extends moodleform {
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
         $mform->setDefault('encoding', 'UTF-8');
 
-        $this->add_action_buttons(true, get_string('uploadgradingworksheet', 'coursework'));
+        $this->add_action_buttons(true, get_string('uploadgradingsheet', 'coursework'));
     }
 
     public function display() {

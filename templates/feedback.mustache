@@ -1,0 +1,88 @@
+{{!
+    This file is part the Feedback tracker report plugin for Moodle
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coursework/feedback
+
+    Template for displaying student feedback.
+
+    Example context (json):
+    {
+        "title": "Feedback for Jan Černý",
+        "feedbackcomment": "<div><p>This is the feedback</p></div>",
+        "feedbackfileshtml": "<a href="foo">Feedbackfile.doc</a>",
+        "advancedgradinghtml": "<div>stuff from grading plugin - tables and kitchen sink html</div>",
+        "markerimg": "https://randomuser.me/api/portraits/women/22.jpg",
+        "markername": "Denise Soto"
+    }
+}}
+<div class="coursework-feedback py-3">
+    <h3 class="h5">{{title}}</h3>
+
+    <div class="py-3">
+        {{#markername}}
+        <div class="d-flex">
+            {{#markerimg}}
+                <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{markerimg}}'); height: 4rem; width: 4rem;"></div>
+            {{/markerimg}}
+            <div>
+                <b>{{markername}}</b>
+                <br>
+                {{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
+            </div>
+        </div>
+        {{/markername}}
+        {{^markername}}
+            <p>{{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>
+        {{/markername}}
+
+        <div class="{{#markername}} chat-bubble-bordered {{/markername}}">
+            {{! Feedback comment }}
+            {{#feedbackcomment}}
+            <div id="final_feedback_comment">
+                {{{feedbackcomment}}}
+            </div>
+            {{/feedbackcomment}}
+
+            {{! Feedback files }}
+            {{#feedbackfileshtml}}
+            <div>
+                {{{.}}}
+            </div>
+            {{/feedbackfileshtml}}
+
+            {{#separator}}
+                <hr>
+            {{/separator}}
+
+            {{#mark}}
+                <div>
+                    {{#str}} mark, mod_coursework {{/str}}
+                    <br><span id="final_feedback_grade" class="h4">{{{.}}}</span>
+                </div>
+            {{/mark}}
+        </div>
+    </div>
+
+    {{! Advanced grading }}
+    {{#advancedgradinghtml}}
+    <div class="py-3">
+        <h3 class="h5">{{#str}} markingcriteriafeedback, mod_coursework {{/str}}</h3>
+        <div>
+            {{{.}}}
+        </div>
+    </div>
+    {{/advancedgradinghtml}}
+</div>

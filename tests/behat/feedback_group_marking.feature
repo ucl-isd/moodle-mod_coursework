@@ -26,7 +26,6 @@ Feature: Marking the group submissions applies the grades to the whole group
   Scenario: grading the submission makes the grades show up for both students in the interface
     Given I visit the coursework page
     When I click the new final feedback button for the group
-    And I grade the submission as 56 using the ajax form
+    And I grade the submission as 56 using the simple form
     Then I visit the coursework page
-    And I wait "2" seconds
     And I should see the final grade for the group in the grading interface

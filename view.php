@@ -439,13 +439,7 @@ $html .= $objectrenderer->render(new mod_coursework_coursework($coursework));
 // Allow tutors to upload files as part of the coursework task? Easily done via the main
 // course thing, so not necessary.
 
-// If this is a student, show the submission form, or their existing submission, or both
-// There is scope for an arbitrary number of files to be added here, before the deadline.
-if ($cansubmit && !$cangrade) {
-    $html .= $pagerenderer->student_view_page($coursework, \mod_coursework\models\user::find($USER));
-}
-
-// Display the submissions table of all the students instead.
+// Display the submissions table of all the students.
 if ($canviewstudents) {
 
     // If the resubmit button was pressed (for plagiarism), we need to fire a new event.
@@ -482,43 +476,22 @@ if ($canviewstudents) {
         redirect($PAGE->url, get_string('resubmitted', 'coursework', $submission->get_allocatable_name()));
     }
 
-    // If publish button was pressed, update the gradebook after confirmation.
-    if ($publish && has_capability('mod/coursework:publish', $PAGE->context)) {
-
-        if (!$confirm) {
-
-            // Ask the user for confirmation.
-            $confirmurl = clone $PAGE->url;
-            $confirmurl->param('confirm', 1);
-            $confirmurl->param('publishbutton', 'true');
-            $html = $OUTPUT->confirm(get_string('confirmpublish', 'mod_coursework'), $confirmurl, $PAGE->url);
-        } else {
-            // Already confirmed. Publish and redirect.
-            $coursework->publish_grades();
-            $url = clone($PAGE->url);
-            $url->remove_params(['confirm',
-                                      'publishbutton']);
-            redirect($url, get_string('gradespublished', 'mod_coursework'));
-        }
-    } else {
-
-        if ($resettable) {
-            $courseworkfirstnamealpha = $SESSION->coursework_firstname_alpha[$coursemoduleid] = "";
-            $courseworklastnamealpha = $SESSION->coursework_lastname_alpha[$coursemoduleid] = "";
-            $courseworkgroupnamealpha = $SESSION->coursework_groupname_alpha[$coursemoduleid] = "";
-        }
-
-        if ($allresettable) {
-            $viewallstudentsfirstnamealpha = $SESSION->viewallstudents_firstname_alpha[$coursemoduleid] = "";
-            $viewallstudentslastnamealpha = $SESSION->viewallstudents_lastname_alpha[$coursemoduleid] = "";
-            $viewallstudentsgroupnamealpha = $SESSION->viewallstudents_groupname_alpha[$coursemoduleid] = "";
-        }
-
-        $html .= $pagerenderer->teacher_grading_page($coursework, $page, $perpage, $sortby, $sorthow, $group, $courseworkfirstnamealpha, $courseworklastnamealpha, $courseworkgroupnamealpha, $resettable);
-        $html .= $pagerenderer->non_teacher_allocated_grading_page($coursework, $viewallstudentspage, $viewallstudentsperpage, $viewallstudentssortby, $viewallstudentssorthow, $group, $displayallstudents, $viewallstudentsfirstnamealpha, $viewallstudentslastnamealpha, $viewallstudentsgroupnamealpha);
-        $html .= $pagerenderer->datatables_render($coursework);
-        $html .= $pagerenderer->render_modal();
+    if ($resettable) {
+        $courseworkfirstnamealpha = $SESSION->coursework_firstname_alpha[$coursemoduleid] = "";
+        $courseworklastnamealpha = $SESSION->coursework_lastname_alpha[$coursemoduleid] = "";
+        $courseworkgroupnamealpha = $SESSION->coursework_groupname_alpha[$coursemoduleid] = "";
     }
+
+    if ($allresettable) {
+        $viewallstudentsfirstnamealpha = $SESSION->viewallstudents_firstname_alpha[$coursemoduleid] = "";
+        $viewallstudentslastnamealpha = $SESSION->viewallstudents_lastname_alpha[$coursemoduleid] = "";
+        $viewallstudentsgroupnamealpha = $SESSION->viewallstudents_groupname_alpha[$coursemoduleid] = "";
+    }
+
+    $html .= $pagerenderer->teacher_grading_page($coursework, $page, $perpage, $sortby, $sorthow, $group, $courseworkfirstnamealpha, $courseworklastnamealpha, $courseworkgroupnamealpha, $resettable);
+//        $html .= $pagerenderer->non_teacher_allocated_grading_page($coursework, $viewallstudentspage, $viewallstudentsperpage, $viewallstudentssortby, $viewallstudentssorthow, $group, $displayallstudents, $viewallstudentsfirstnamealpha, $viewallstudentslastnamealpha, $viewallstudentsgroupnamealpha);
+    $html .= $pagerenderer->datatables_render($coursework);
+    $html .= $pagerenderer->render_modal();
 }
 
 $PAGE->requires->jquery();

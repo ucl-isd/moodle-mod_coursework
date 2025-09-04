@@ -820,10 +820,11 @@ class submission extends table_base implements \renderable {
                 break;
 
             case self::PARTIALLY_GRADED:
-                $statustext = get_string('statuspartiallygraded', 'coursework');
                 if ($this->any_editable_feedback_exists()) {
                     $statustext = get_string('statusfullygraded', 'coursework'). "<br>";
                     $statustext .= get_string('stilleditable', 'coursework');
+                } else {
+                    $statustext = get_string('statuspartiallygraded', 'coursework');
                 }
                 break;
 
@@ -832,13 +833,10 @@ class submission extends table_base implements \renderable {
                 break;
 
             case self::FINAL_GRADED:
-                $spanfinalgraded = html_writer::tag('span',
-                                                    get_string('statusfinalgraded', 'coursework'),
-                                                    ['class' => 'highlight']);
-                $spanfinalgradedsingle =
-                    html_writer::tag('span',
-                                     get_string('statusfinalgradedsingle', 'coursework'),
-                                     ['class' => 'highlight']);
+                $spanfinalgraded = '<span class="badge badge-warning">' . get_string('statusfinalgraded', 'coursework') . '</span>';
+
+                $spanfinalgradedsingle = '<span class="badge badge-warning">' . get_string('statusfinalgradedsingle', 'coursework') . '</span>';
+
                 $statustext = $this->has_multiple_markers() && $this->sampled_feedback_exists() ? $spanfinalgraded : $spanfinalgradedsingle;
                 if ($this->editable_final_feedback_exist()) {
                     $statustext .= "<br>". get_string('finalgradestilleditable', 'coursework');
@@ -846,10 +844,7 @@ class submission extends table_base implements \renderable {
                 break;
 
             case self::PUBLISHED:
-                $statustext = get_string('statuspublished', 'coursework');
-                if (!$this->coursework->deadline_has_passed()) {
-                    $statustext .= ' '.get_string('released_early', 'mod_coursework');
-                }
+                $statustext = '<span class="badge badge-success">' .get_string('statusreleased', 'coursework') . '</span>';
                 break;
         }
 
@@ -937,7 +932,6 @@ class submission extends table_base implements \renderable {
      * @return bool
      */
     public function ready_to_publish() {
-
         if ($this->get_coursework()->plagiarism_flagging_enbled()) {
             // check if not stopped by plagiarism flag
             plagiarism_flag::fill_pool_coursework($this->courseworkid);
@@ -947,14 +941,14 @@ class submission extends table_base implements \renderable {
             }
         }
 
-        $gradejudge = new grade_judge($this->get_coursework());
-        if ($gradejudge->has_feedback_that_is_promoted_to_gradebook($this) && $this->final_grade_agreed() && !$this->editable_final_feedback_exist()) {
-            return true;
-        }
-
         // Already published. Nothing has changed.
         if (!empty($this->lastpublished) && $this->timemodified <= $this->lastpublished) {
             return false;
+        }
+
+        $gradejudge = new grade_judge($this->get_coursework());
+        if ($gradejudge->has_feedback_that_is_promoted_to_gradebook($this) && $this->final_grade_agreed() && !$this->editable_final_feedback_exist()) {
+            return true;
         }
 
         return false;

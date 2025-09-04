@@ -21,15 +21,6 @@ Feature: general feedback
     When I visit the coursework page
     Then I should see "Add general feedback"
 
-  Scenario: enabling general feedback shows students the feedback deadline
-    Given there is a course
-    And there is a coursework
-    And the coursework general feedback is enabled
-    And I am logged in as a student
-    And I have a submission
-    When I visit the coursework page
-    And I should see "General feedback deadline"
-
   Scenario: enabling general feedback shows students the feedback when the deadline has passed
     Given there is a course
     And there is a coursework
@@ -39,7 +30,17 @@ Feature: general feedback
     And I am logged in as a student
     And I have a submission
     When I visit the coursework page
-    Then I should see "General feedback"
+    Then I should see the general feedback
+
+  Scenario: no general feedback release date shows students the feedback immediately
+    Given there is a course
+    And there is a coursework
+    And the coursework general feedback is disabled
+    And there is some general feedback
+    And I am logged in as a student
+    And I have a submission
+    When I visit the coursework page
+    Then I should see the general feedback
 
   Scenario: disabling general feedback hides the feedback from students
     Given there is a course
@@ -47,8 +48,7 @@ Feature: general feedback
     And the coursework general feedback is disabled
     And I am logged in as a student
     When I visit the coursework page
-    Then I should not see "General feedback:"
-    And I should not see "General feedback deadline"
+    Then I should not see "General feedback"
 
   Scenario: Users without permission cannot add or edit general feedback
     Given there is a course

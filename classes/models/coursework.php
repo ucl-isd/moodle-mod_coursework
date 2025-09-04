@@ -2386,10 +2386,18 @@ class coursework extends table_base {
     }
 
     /**
-     * @return bool
+     * Is there general feedback available to students?
+     *
+     * @return bool True if there's general feedback and "General feedback
+     * release date" is not enabled or it is enabled and the date has passed,
+     * false otherwise.
      */
-    public function is_general_feedback_enabled() {
-        return ($this->generalfeedback != 0);
+    public function is_general_feedback_released() {
+        if ($this->feedbackcomment && ($this->generalfeedback == 0 || time() > $this->generalfeedback)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -3106,5 +3114,36 @@ class coursework extends table_base {
         }
 
         return $gradeitem;
+    }
+
+    /**
+     * Check if we can release marks for this coursework instance.
+     *
+     * @return array
+     * @throws coding_exception
+     */
+    public function can_release_marks() {
+        if (!has_capability('mod/coursework:publish', $this->get_context())) {
+            return [
+                false,
+                get_string('no_permission_to_release_marks', 'mod_coursework'),
+            ];
+        }
+
+        if (!$this->has_stuff_to_publish()) {
+            return [
+                false,
+                get_string('nofinalgradedworkyet', 'mod_coursework'),
+            ];
+        }
+
+        if ($this->blindmarking_enabled() && $this->moderation_enabled() && $this->unmoderated_work_exists()) {
+            return [
+                false,
+                get_string('unmoderatedworkexists', 'mod_coursework'),
+            ];
+        }
+
+        return [true, ''];
     }
 }

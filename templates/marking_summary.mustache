@@ -1,0 +1,78 @@
+
+{{!
+    This file is part the Feedback tracker report plugin for Moodle
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coursework/marking_summary
+
+    Template for displaying marking overview.
+
+    Example context (json):
+    {
+        "submitted": 25,
+        "participants": 100,
+        "needsmarking": 5,
+        "assessor": [
+            {
+                "name": "Assigned to me",
+                "count": 3,
+                "border": true
+            },
+            {
+                "name": "Graded by me",
+                "count": 10
+            }
+        ],
+        "published": 15
+    }
+}}
+<div class="bg-light p-3">
+    <h3 class="h5" id="marking-summary-title">Marking summary</h3>
+
+    {{^canmark}}
+    <p>{{#str}} nomarkercap, mod_coursework {{/str}}</p>
+    {{/canmark}}
+
+    {{#canmark}}
+    <ul class="w-100 list-unstyled" aria-labelledby="marking-summary-title">
+        <li class="d-flex py-1">
+            {{#str}} submitted, mod_coursework {{/str}}
+            <span class="ml-auto">{{submitted}}/{{participants}}</span>
+        </li>
+        <li class="d-flex py-1 border-top">
+            {{#str}} needsmarking, mod_coursework {{/str}}
+            <span class="ml-auto">{{needsmarking}}</span>
+        </li>
+
+        {{! WIP - Assessor data. }}
+        {{#assessor}}
+            <li class="d-flex py-1 {{#border}} border-top {{/border}}">
+                {{name}}
+                <span class="ml-auto">{{count}}</span>
+            </li>
+        {{/assessor}}
+
+        <li class="d-flex py-1 border-top">
+            {{#str}} markedandreleased, mod_coursework {{/str}}
+            <span class="ml-auto">{{published}}</span>
+        </li>
+    </ul>
+
+    {{#dropdown}}
+        {{> mod_coursework/dropdown }}
+    {{/dropdown}}
+
+    {{/canmark}}
+</div>

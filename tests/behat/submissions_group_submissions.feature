@@ -17,7 +17,7 @@ Feature: Students are able to submit one piece of work on behalf of the group
   @javascript @_file_upload
   Scenario: I can submit a file and it appears for the others to see
     When I visit the coursework page
-    And I click on the new submission button
+    And I click on "Upload a submission for your group" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I press "Submit"
     And I log out
@@ -29,7 +29,7 @@ Feature: Students are able to submit one piece of work on behalf of the group
   Scenario: I can resubmit the work when someone else has submitted it
     Given the coursework "maxfiles" setting is "2" in the database
     And I visit the coursework page
-    And I click on the new submission button
+    And I click on "Upload a submission for your group" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I press "Submit"
     And I log out
@@ -37,7 +37,7 @@ Feature: Students are able to submit one piece of work on behalf of the group
     And I visit the coursework page
     Then I should see that the submission was made by the student
 
-    When I click on the edit submission button
+    When I click on "Edit the submission for your group" "link"
     Then I should see "1" elements in "Upload a file" filemanager
 
     When I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager

@@ -40,22 +40,43 @@ class mod_coursework_behat_coursework_page extends mod_coursework_behat_page_bas
      * @return bool
      */
     public function individual_feedback_date_present() {
-        $table = $this->getPage()->find('css', 'table.deadlines');
-        $tableheaderpresent = strpos($table->getText(), 'utomatically release individual feedback') !== false;
-        return $tableheaderpresent;
+        $things = $this->getPage()->findAll('css', 'h3');
+
+        foreach ($things as $thing) {
+            if ($thing->getText() == 'Auto-release feedback') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
      * @return bool
      */
     public function general_feedback_date_present() {
-        $table = $this->getPage()->find('css', 'table.deadlines');
-        $tableheaderpresent = strpos($table->getText(), 'General feedback deadline');
-        return $tableheaderpresent !== false;
+        /*
+         * Matches:
+         * <div class="d-flex">
+         *     <h4 class="h5">General feedback</h4>
+         * </div>
+         *
+         * <p>
+         *     <b>Due</b>
+         *     ...
+         * </p>
+         */
+        $xpath = "//div/h4[text()='General feedback']/../../p[starts-with(normalize-space(string()),'Due')]";
+
+        if ($this->getPage()->find('xpath', $xpath)) {
+            return true;
+        }
+
+        return false;
     }
 
     public function confirm() {
-        if ($this->has_that_thing('input', 'Yes')) {
+        if ($this->has_that_thing("input[type='submit']", 'Yes')) {
             $this->click_that_thing('input', 'Yes');
         } else if ($this->has_that_thing('button', 'Yes')) {
             $this->click_that_thing('button', 'Yes');
@@ -69,7 +90,7 @@ class mod_coursework_behat_coursework_page extends mod_coursework_behat_page_bas
     }
 
     public function get_coursework_name($courseworkname) {
-        $courseworkheading = $this->getPage()->find('css', 'h2');
+        $courseworkheading = $this->getPage()->find('css', '#page-header');
         $courseworkheadingpresent = strpos($courseworkheading->getText(), $courseworkname);
 
         return $courseworkheadingpresent !== false;

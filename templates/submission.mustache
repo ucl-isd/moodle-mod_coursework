@@ -1,0 +1,109 @@
+{{!
+    This file is part the Feedback tracker report plugin for Moodle
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coursework/submission
+
+    Template for displaying submission overview to learner.
+
+    Example context (json):
+    {
+        "default": true,
+        "date": "24th Dec 3:00pm",
+        "mark": "33%"
+    }
+}}
+<div class="bg-light p-3">
+    <h3 id="submission-title">{{#str}} submission, mod_coursework {{/str}}</h3>
+
+    {{#notingroup}}
+    <p>{{#str}} not_in_any_group_student_warning, mod_coursework {{/str}}</p>
+    {{/notingroup}}
+
+    {{! Submission is not open till startdate. }}
+    {{#startdate}}
+        <p>{{#str}} notstartedyet, mod_coursework, {{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}{{/str}}</p>
+    {{/startdate}}
+
+    {{#cansubmit}}
+
+    {{! Submission file. }}
+    {{{file}}}
+
+    <ul class="pt-3 mb-0 w-100 list-unstyled" aria-labelledby="submission-title">
+        {{! Time submitted. }}
+        {{#date}}
+        <li class="d-flex py-1 border-top">
+            {{#str}} tableheadtime, mod_coursework {{/str}}
+            <span class="ml-auto text-right">
+                {{#late}}<span class="badge badge-warning">{{#str}} late, mod_coursework {{/str}}</span>{{/late}}
+                {{#userdate}} {{date}}, {{#str}} strftimedatetime, langconfig {{/str}} {{/userdate}}
+                {{#late}}<br>{{.}}{{/late}}
+            </span>
+        </li>
+        {{/date}}
+
+        {{#groupsubmitter}}
+        <li class="d-flex py-1 border-top">
+            {{#str}} submittedby, mod_coursework {{/str}}
+            <span class="ml-auto">
+                {{{.}}}
+            </span>
+        </li>
+        {{/groupsubmitter}}
+
+        {{#submission}}
+            <li class="d-flex py-1 border-top">
+                {{#str}} status, mod_coursework {{/str}}
+                <span class="ml-auto text-right">
+                    {{#badge}}
+                        <span class="badge badge-{{badge}}">{{status}}</span>
+                    {{/badge}}
+                </span>
+            </li>
+        {{/submission}}
+
+        {{#marknotpublished}}
+        <li class="d-flex py-1 border-top">
+            {{#str}} mark, mod_coursework {{/str}}
+            <span class="ml-auto text-right">{{#str}} notpublishedyet, mod_coursework {{/str}}</span>
+        </li>
+        {{/marknotpublished}}
+
+        {{#mark}}
+        <li class="d-flex py-1 border-top">
+            {{#str}} mark, mod_coursework {{/str}}
+            <span class="ml-auto h2">{{mark}}</span>
+        </li>
+        {{/mark}}
+    </ul>
+
+
+    {{! Add/Edit submission. }}
+    {{#submissionbutton}}
+        <a href="{{{url}}}" class="btn btn-primary btn-block"><i class="fa-solid fa-upload mr-2"></i>{{label}}</a>
+    {{/submissionbutton}}
+
+    {{! Finalise submission. }}
+    {{#final}}
+        <hr>
+        <div id="coursework-finalise-submission">
+        <h3 class="h5">{{#str}} finalise_button, mod_coursework {{/str}}</h3>
+            {{{.}}}
+        </div>
+    {{/final}}
+
+    {{/cansubmit}}
+</div>
