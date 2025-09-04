@@ -1,6 +1,7 @@
 name: Moodle Plugin CI
 
-on: [workflow_dispatch]
+on: 
+  workflow_dispatch:
 
 jobs:
   test:
