@@ -24,6 +24,7 @@ namespace mod_coursework\controllers;
 
 use coding_exception;
 use context;
+use core\exception\invalid_parameter_exception;
 use mod_coursework\framework\table_base;
 use mod_coursework\router;
 use mod_coursework\models\coursework;
@@ -107,9 +108,11 @@ class controller_base {
             $modelclass = $this->model_class();
             $modelname = $this->model_name();
             $this->$modelname = $modelclass::find($this->params['id']);
+            if (!$this->$modelname) {
+                throw new invalid_parameter_exception("Cannot find $modelclass ID " . $this->params['id']);
+            }
             $this->coursework = $this->$modelname->get_coursework();
         }
-
         if (!empty($this->params['courseworkid'])) {
             $coursework = $DB->get_record('coursework', ['id' => $this->params['courseworkid']], '*', MUST_EXIST);
             $this->coursework = coursework::find($coursework);

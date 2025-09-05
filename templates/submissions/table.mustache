@@ -1,4 +1,4 @@
-<div class="container py-3">
+<div class="container py-3" id="mod-coursework-submissions-table-container-{{coursework.id}}">
     <h3>Submissions</h3>
 
     <form id="filter-form" action="#" method="get">
@@ -102,7 +102,7 @@
         </div>
     </form>
 
-    <table class="table w-100">
+    <table class="table w-100 mod-coursework-submissions-table" id="mod-coursework-submissions-table-{{coursework.id}}">
         <caption class="sr-only">{{#str}}submissions_table, mod_coursework{{/str}}</caption>
         <thead>
             <tr class="table-light">

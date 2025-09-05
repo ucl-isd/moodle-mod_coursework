@@ -24,6 +24,7 @@ namespace mod_coursework\models;
 
 use mod_coursework\framework\table_base;
 use mod_coursework\allocation\allocatable;
+use mod_coursework\event\extension_deleted;
 
 /**
  * Class deadline_extension is responsible for representing one row of the deadline_extensions table.
@@ -62,6 +63,7 @@ class deadline_extension extends table_base {
     }
 
     /**
+     * Get extension for student.
      * @param user $student
      * @param coursework $coursework
      * @return deadline_extension|bool
@@ -93,6 +95,15 @@ class deadline_extension extends table_base {
     public function get_allocatable() {
         $classname = "\\mod_coursework\\models\\{$this->allocatabletype}";
         return $classname::find($this->allocatableid);
+    }
+
+    /**
+     * Get the user name who is granted/holds the extension.
+     * @return mixed
+     */
+    public function get_grantee_user_name() {
+        $allocatable = self::get_allocatable();
+        return $allocatable->name();
     }
 
     protected function pre_save_hook() {
@@ -157,6 +168,54 @@ class deadline_extension extends table_base {
      */
     protected function after_destroy() {
         self::remove_cache($this->courseworkid);
+    }
+
+    /**
+     * Check if the current extension is already in use - if yes, block deletion.
+     * @return bool
+     */
+    public function can_be_deleted(): bool {
+        global $DB;
+        if (!$this->get_coursework()->deadline_has_passed()) {
+            // User is not yet using the extension.
+            return true;
+        }
+        $allocatable = $this->get_allocatable();
+        $params = [
+            'allocatableid' => $allocatable->id(),
+            'allocatabletype' => $allocatable->type(),
+            'courseworkid' => $this->coursework->id(),
+        ];
+        $personaldeadline = personal_deadline::find($DB->get_record('coursework_person_deadlines', $params)) ?? null;
+        if ($personaldeadline) {
+            return $personaldeadline->personal_deadline > time();
+        }
+        return false;
+    }
+
+    /**
+     * Delete an extension.
+     * @return void
+     */
+    public function delete() {
+        global $DB;
+        $record = $DB->get_record(self::$tablename, ['id' => $this->id]);
+        if ($record) {
+            $cm = get_coursemodule_from_instance(
+                'coursework', $this->coursework->id, 0, false, MUST_EXIST
+            );
+            $DB->delete_records(self::$tablename, ['id' => $this->id]);
+            self::after_destroy();
+
+            // Keep a record of what's deleted in the log table for audit purposes.
+            $event = extension_deleted::create([
+                'objectid' => $this->id,
+                'context' => \context_module::instance($cm->id),
+                'other' => ['record' => json_encode($record)],
+            ]);
+
+            $event->trigger();
+        }
     }
 
 }

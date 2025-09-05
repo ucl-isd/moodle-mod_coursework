@@ -556,9 +556,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         // get only submissions that user can grade
         $submissions = $gradingsheet->get_submissions();
         /**
-         * @var mod_coursework_grading_report_renderer $grading_report_renderer
+         * @var \mod_coursework\renderers\grading_report_renderer $grading_report_renderer
          */
-        $gradingreportrenderer = $this->page->get_renderer('mod_coursework', 'grading_report');
+        $gradingreportrenderer = new \mod_coursework\renderers\grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
 
         $warnings = new warnings($coursework);
         // Show any warnings that may need to be here
@@ -589,13 +589,14 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         /**
-         * @var mod_coursework_grading_report_renderer $grading_report_renderer
+         * @var \mod_coursework\renderers\grading_report_renderer $grading_report_renderer
          */
 
         $html .= html_writer::start_tag('div', ['class' => 'wrapper_table_submissions']);
         $html .= $gradingreportrenderer->render_grading_report($gradingreport);
         $html .= html_writer::end_tag('div');
 
+        $this->page->requires->js_call_amd('mod_coursework/modal_handler_extensions', 'init', ['courseworkId' => $coursework->id]);
         return $html;
     }
 
@@ -652,13 +653,13 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
             if (!empty($displayallstudents) && !empty($anyunallocatedstudents)) {
                 /**
-                 * @var mod_coursework_grading_report_renderer $grading_report_renderer
+                 * @var \mod_coursework\renderers\grading_report_renderer $grading_report_renderer
                  */
                 $gradingreportrenderer = $this->page->get_renderer('mod_coursework', 'grading_report');
                 $html .= $gradingreportrenderer->submissions_header(get_string('submissionnotallocatedtoassessor', 'coursework'));
 
                 /**
-                 * @var mod_coursework_grading_report_renderer $grading_report_renderer
+                 * @var \mod_coursework\renderers\grading_report_renderer $grading_report_renderer
                  */
 
                 $html .= html_writer::start_tag('div', ['class' => 'wrapper_table_submissions']);
@@ -666,7 +667,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $html .= html_writer::end_tag('div');
 
                 /**
-                 * @var mod_coursework_grading_report_renderer $grading_report_renderer
+                 * @var \mod_coursework\renderers\grading_report_renderer $grading_report_renderer
                  */
             }
         }
@@ -1193,174 +1194,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
         $o = html_writer::table($table);
         return $o;
-    }
-
-    public function datatables_render($coursework) {
-        global $CFG;
-
-        $langmessages = [
-            'notification_yes_label' => get_string('notification_yes_label', 'mod_coursework'),
-            'notification_no_label' => get_string('notification_no_label', 'mod_coursework'),
-            'notification_confirm_label' => get_string('notification_confirm_label', 'mod_coursework'),
-            'notification_info' => str_replace(' ', '_', get_string('notification_info', 'mod_coursework')),
-            'notification_leave_form_message' => str_replace(' ', '_', get_string('notification_leave_form_message', 'mod_coursework')),
-            'notification_leave_form_title' => str_replace(' ', '_', get_string('notification_leave_form_title', 'mod_coursework')),
-            'alert_extension_save_successful' => str_replace(' ', '_', get_string('alert_extension_save_successful', 'mod_coursework')),
-            'alert_no_extension' => str_replace(' ', '_', get_string('alert_no_extension', 'mod_coursework')),
-            'alert_personaldeadline_save_successful' => str_replace(' ', '_', get_string('alert_personaldeadline_save_successful', 'mod_coursework')),
-            'alert_validate_deadline' => str_replace(' ', '_', get_string('alert_validate_deadline', 'mod_coursework')),
-            'url_root' => $CFG->wwwroot,
-            'alert_feedback_save_successful' => str_replace(' ', '_', get_string('alert_feedback_save_successful', 'mod_coursework')),
-            'alert_feedback_remove_successful' => str_replace(' ', '_', get_string('alert_feedback_remove_successful', 'mod_coursework')),
-            'alert_request_error' => str_replace(' ', '_', get_string('alert_request_error', 'mod_coursework')),
-            'alert_feedback_draft_save_successful' => str_replace(' ', '_', get_string('alert_feedback_draft_save_successful', 'mod_coursework')),
-        ];
-
-        $modalheader = html_writer::tag('h5', 'new Extension', [
-            'class' => 'modal-title',
-            'id' => 'extension-modal-title',
-        ]);
-        $modalheader .= html_writer::start_tag('button', [
-            'type' => 'button',
-            'class' => 'close btn-extension-close',
-            'aria-label' => 'Close',
-            'data-dismiss' => 'modal',
-        ]);
-        $modalheader .= html_writer::span('&times;', '', ['aria-hidden' => 'true']);
-        $modalheader .= html_writer::end_tag('button');
-
-        $modalbody = html_writer::start_tag('form', ['id' => 'form-extension']);
-        $content = html_writer::empty_tag('input', [
-            'name' => 'allocatabletype',
-            'type' => 'hidden',
-            'value' => '',
-            'id' => 'extension-allocatabletype',
-        ]);
-        $content .= html_writer::empty_tag('input', [
-            'name' => 'allocatableid',
-            'type' => 'hidden',
-            'value' => '',
-            'id' => 'extension-allocatableid',
-        ]);
-        $content .= html_writer::empty_tag('input', [
-            'name' => 'courseworkid',
-            'type' => 'hidden',
-            'value' => '',
-            'id' => 'extension-courseworkid',
-        ]);
-        $content .= html_writer::empty_tag('input', [
-            'name' => 'id',
-            'type' => 'hidden',
-            'value' => '',
-            'id' => 'extension-id',
-        ]);
-        $content .= html_writer::empty_tag('input', [
-            'name' => 'submissionid',
-            'type' => 'hidden',
-            'value' => '',
-            'id' => 'extension-submissionid',
-        ]);
-        $content .= html_writer::empty_tag('input', [
-            'name' => 'name',
-            'type' => 'hidden',
-            'id' => 'extension-name',
-            'value' => '',
-        ]);
-        $content .= html_writer::empty_tag('input', [
-            'name' => 'aid',
-            'type' => 'hidden',
-            'value' => '',
-            'id' => 'button-id',
-        ]);
-        $modalbody .= html_writer::div($content, 'display-none');
-
-        if ($coursework->deadline) {
-            $contentdefaultdeadline = 'Default deadline: ' . userdate($coursework->deadline);
-            $contentdefaultdeadline = html_writer::div($contentdefaultdeadline, 'col-md-12', ['id' => 'extension-time-content']);
-            $modalbody .= html_writer::div($contentdefaultdeadline, 'form-group row fitem');
-
-            $contentextendeddeadline = html_writer::tag('label', get_string('extended_deadline', 'mod_coursework'));
-            $contentextendeddeadlinediv = html_writer::div($contentextendeddeadline, 'col-md-3');
-            $minnutesstep = 5;
-            $input = \html_writer::tag(
-                'input', '', [
-                    'type' => "datetime-local",
-                    'step' => $minnutesstep * 60,
-                    'id' => "extension-extend-deadline",
-                    'name' => "extension-extend-deadline",
-                ]
-            );
-            $contentextendeddeadlinediv .= html_writer::div($input, 'col-md-6');
-            $modalbody .= html_writer::div($contentextendeddeadlinediv, 'form-group row fitem');
-
-            $extensionreasons = coursework::extension_reasons();
-            if (!empty($extensionreasons)) {
-                $selectextensionreasons = html_writer::tag('label', get_string('extension_reason', 'mod_coursework'));
-                $selectextensionreasonsdiv = html_writer::div($selectextensionreasons, 'col-md-3');
-                $selectextensionreasons = html_writer::select($extensionreasons, '', '', false, [
-                    'id' => 'extension-reason-select',
-                    'class' => 'form-control',
-                ]);
-                $selectextensionreasonsdiv .= html_writer::div($selectextensionreasons, 'col-md-9 form-inline felement', ['data-fieldtype' => 'select']);
-                $modalbody .= html_writer::div($selectextensionreasonsdiv, 'form-group row fitem');
-            }
-
-            $contentextrainformation = html_writer::tag('label', get_string('extra_information', 'mod_coursework'), [
-                'class' => 'col-form-label d-inline', 'for' => 'id_extra_information',
-            ]);
-            $contentextrainformationdiv = html_writer::div($contentextrainformation, 'col-md-3');
-            $contentextrainformation = html_writer::tag('textarea', '', [
-                'class' => 'form-control',
-                'rows' => '8',
-                'spellcheck' => 'true',
-                'id' => 'id_extra_information',
-            ]);
-            $contentextrainformationdiv .= html_writer::div($contentextrainformation, 'col-md-9 form-inline felement', ['data-fieldtype' => 'editor']);
-            $modalbody .= html_writer::div($contentextrainformationdiv, 'form-group row fitem', ['id' => 'fitem_id_extra_information']);
-        }
-
-        $modalbody .= html_writer::end_tag('form');
-
-        $modalfooter = html_writer::empty_tag('img', [
-            'src' => $CFG->wwwroot . '/mod/coursework/pix/loadding.gif',
-            'alt' => 'Load...',
-            'width' => '25',
-            'class' => 'loading_moderation icon',
-            'style' => 'visibility: hidden;',
-        ]);
-        $modalfooter .= html_writer::tag('button', 'Save', [
-            'type' => 'button',
-            'class' => 'btn btn-primary',
-            'id' => 'extension-submit',
-        ]);
-        $modalfooter .= html_writer::tag('button', 'Close', [
-            'type' => 'button',
-            'class' => 'btn btn-secondary btn-extension-close',
-            'data-dismiss' => 'modal',
-        ]);
-
-        $html = html_writer::div($modalheader, 'modal-header');
-        $html .= html_writer::div($modalbody, 'modal-body');
-        $html .= html_writer::div($modalfooter, 'modal-footer');
-        $html = html_writer::div($html, 'modal-content');
-        $html = html_writer::div($html, 'modal-dialog modal-lg vertical-align-center', ['role' => 'document']);
-        $html = html_writer::div($html, 'vertical-alignment-helper');
-        $html = html_writer::div($html, 'modal fade', [
-            'id' => 'modal-ajax',
-            'tabindex' => '-1',
-            'role' => 'dialog',
-            'aria-labelledby' => 'modelTitleId',
-            'aria-hidden' => 'true',
-        ]);
-        $html .= html_writer::empty_tag('input', [
-            'name' => '',
-            'type' => 'hidden',
-            'data-lang' => json_encode($langmessages),
-            'id' => 'datatables_lang_messages',
-        ]);
-        $html = html_writer::div($html);
-
-        return $html;
     }
 
     public function render_modal() {
