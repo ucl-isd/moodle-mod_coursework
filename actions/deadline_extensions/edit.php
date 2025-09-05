@@ -26,8 +26,8 @@ global $CFG, $USER;
 
 $id = required_param('id', PARAM_INT);
 
-$params = [
-    'id' => $id,
-];
+// Both id and extensionid refer to the same thing and are both used in code.
+// Extension ID is clearer and we should switch id to that over time.
+$params = ['id' => $id, 'extensionid' => $id];
 $controller = new mod_coursework\controllers\deadline_extensions_controller($params);
 $controller->edit_deadline_extension();
