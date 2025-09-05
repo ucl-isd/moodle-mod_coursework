@@ -1,3 +1,4 @@
+{{! called from templates/submissions/tr }}
 <div class="dropdown coursework-actions">
     <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Edit
@@ -7,10 +8,12 @@
             {{#extension.show}}
                 <a class="dropdown-item {{extension.class}}"
                    href="{{extension.url}}"
-                   data-name="{{extension.stdname}}"
-                   data-time="{{extension.datatime}}"
-                   data-params="{{extension.extensionparams}}"
-                >Submission extension
+                   data-action="mod-coursework-launch-extension-modal"
+                   data-coursework-id="{{coursework.id}}"
+                   {{#extension.id}}data-extension-id="{{extension.id}}"{{/extension.id}}
+                   data-allocatable-id="{{extension.extensionparams.allocatableid}}"
+                   data-allocatable-type="{{extension.extensionparams.allocatabletype}}"
+                >{{#str}}submissionextension, mod_coursework{{/str}}
                     <small class="actions-extension-date-container {{#extension.date}}d-block{{/extension.date}} {{^extension.date}}d-none{{/extension.date}}">
                         <i class="fa-solid fa-circle-check text-success mr-2"></i>
                         <span class="sr-only">Extension granted date </span>

@@ -31,7 +31,6 @@ use mod_coursework\grade_judge;
 use mod_coursework\models\feedback;
 use mod_coursework\models\user;
 use mod_coursework\router;
-use mod_coursework_grading_report_renderer;
 use moodle_url;
 use pix_icon;
 

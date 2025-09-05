@@ -1,4 +1,4 @@
-<tr data-status="{{status}}" data-marker="{{{markerfilter}}}">
+<tr class="mod-coursework-submissions-row" data-status="{{status}}" data-marker="{{{markerfilter}}}" data-allocateble-id="{{#submissiontype.user}}{{submissiontype.user.id}}{{/submissiontype.user}}{{#group}}{{group.id}}{{/group}}" data-allocatable-type="{{#submissiontype.user}}user{{/submissiontype.user}}{{#group}}group{{/group}}">
         {{! User. }}
         <td>
             {{#submissiontype}}

@@ -88,6 +88,7 @@ class actions_cell_data extends cell_data_base {
         if ($extension) {
             $extensionparams['id'] = $extension->id;
             $data->extension->date = $extension->extended_deadline;
+            $data->extension->id = $extension->id;
             $canedit = $this->ability->can('edit', deadline_extension::find(['id' => $extension->id]));
         } else {
             $data->extension->date = null;
@@ -95,16 +96,11 @@ class actions_cell_data extends cell_data_base {
         }
 
         $data->extension->show = $canedit || $cannew;
-        $data->extension->extensionparams = json_encode($extensionparams);
+        $data->extension->extensionparams = $extensionparams;
         $data->extension->class = $extension ? 'edit_deadline_extension' : 'new_deadline_extension';
         $data->extension->stdname = $rowsbase->get_user_name();
         $data->extension->url = $extension ? router::instance()->get_path('edit deadline extension', ['id' => $extension->id]) :
-            router::instance()->get_path('new deadline extension', $extensionparams);
-        $data->extension->datatime = json_encode([
-            'time' => userdate($this->coursework->get_deadline(), '%d-%m-%Y %I:%M', fixday: false),
-            'time_content' => userdate($this->coursework->get_deadline(), get_string('strftimedaydatetime', 'langconfig'), fixday: false),
-            'is_have_deadline' => $this->coursework->get_deadline() > 0 ? 1 : 0,
-        ]);
+            htmlspecialchars_decode(router::instance()->get_path('new deadline extension', $extensionparams));
     }
 
     /**
