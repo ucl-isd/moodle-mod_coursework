@@ -22,18 +22,17 @@
 
 use mod_coursework\ability;
 use mod_coursework\forms\assessor_feedback_mform;
-use mod_coursework\forms\student_submission_form;
 use mod_coursework\forms\moderator_agreement_mform;
 use mod_coursework\forms\plagiarism_flagging_mform;
+use mod_coursework\forms\student_submission_form;
 use mod_coursework\models\coursework;
-use mod_coursework\models\user;
 use mod_coursework\models\feedback;
-use mod_coursework\models\submission;
 use mod_coursework\models\moderation;
 use mod_coursework\models\plagiarism_flag;
+use mod_coursework\models\submission;
+use mod_coursework\models\user;
 use mod_coursework\router;
 use mod_coursework\warnings;
-use mod_coursework\models\group;
 
 /**
  * Makes the pages
@@ -43,19 +42,12 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     /**
      * @param feedback $feedback
      */
-    public function show_feedback_page($feedback, bool $ajax) {
+    public function show_feedback_page($feedback) {
         $html = '';
-
         $objectrenderer = $this->get_object_renderer();
-
-        if (!$ajax) {
-            $html .= $this->output->header();
-        }
+        $html .= $this->output->header();
         $html .= $objectrenderer->render_feedback($feedback);
-        if (!$ajax)  {
-            $html .= $this->output->footer();
-        }
-
+        $html .= $this->output->footer();
         return $html;
     }
 
@@ -79,26 +71,24 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param feedback $teacherfeedback
      * @param $assessor
      * @param $editor
-     * @param bool $ajax
      * @throws coding_exception
      */
-    public function edit_feedback_page(feedback $teacherfeedback, $assessor, $editor, $ajax = false) {
+    public function edit_feedback_page(feedback $teacherfeedback, $assessor, $editor) {
 
         global $SITE;
 
-        $gradingtitle =
-            get_string('gradingfor', 'coursework', $teacherfeedback->get_submission()->get_allocatable_name());
+        $areagreeing = $teacherfeedback->stage_identifier == 'final_agreed_1';
+        $gradingtitle = $areagreeing
+            ? get_string('gradingforagree', 'coursework', $teacherfeedback->get_submission()->get_allocatable_name())
+            : get_string('gradingfor', 'coursework', $teacherfeedback->get_submission()->get_allocatable_name());
 
-        $this->page->set_pagelayout('standard');
         $this->page->navbar->add($gradingtitle);
         $this->page->set_title($SITE->fullname);
         $this->page->set_heading($SITE->fullname);
 
-        $html = '';
-        $html .= $this->output->heading($gradingtitle);
-
         // Template grading details.
         $template = new stdClass();
+        $template->title = $gradingtitle;
         // Marker.
         $template->marker = ($teacherfeedback->assessorid == 0) ? get_string('automaticagreement', 'mod_coursework') : fullname($assessor);
 
@@ -115,10 +105,12 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template->lasteditedby = $lastmarked . userdate($teacherfeedback->timemodified, '%a, %d %b %Y, %H:%M');
 
         // Mustache.
-        $html .= $this->render_from_template('mod_coursework/marking_details', $template);
+        $html = $this->render_from_template('mod_coursework/marking_details', $template);
 
         $submiturl = $this->get_router()->get_path('update feedback', ['feedback' => $teacherfeedback]);
-        $simpleform = new assessor_feedback_mform($submiturl, ['feedback' => $teacherfeedback]);
+        $simpleform = new assessor_feedback_mform(
+            $submiturl, ['feedback' => $teacherfeedback]
+        );
 
         $teacherfeedback->feedbackcomment = [
             'text' => $teacherfeedback->feedbackcomment,
@@ -136,27 +128,19 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $simpleform->set_data($teacherfeedback);
 
-        if ($ajax) {
-            $formhtml = $simpleform->render();
-            $filemanageroptions = $simpleform->get_file_options();
-            $editoroptions = $simpleform->get_editor_options();
+        $isusingmarkingguide = $teacherfeedback->get_coursework()->is_using_marking_guide();
+        // Set page to wide for marking guide.
+        $this->page->set_pagelayout($isusingmarkingguide ? 'incourse' : 'standard');
 
-            $commentoptions = $this->get_comment_options($simpleform);
-            echo json_encode(['formhtml' => $html . $formhtml, 'filemanageroptions' => $filemanageroptions, 'editoroptions' => $editoroptions, 'commentoptions' => $commentoptions]);
-
-        } else {
-            $this->page->set_pagelayout('standard');
-            $this->page->navbar->add($gradingtitle);
-            $this->page->set_title($SITE->fullname);
-            $this->page->set_heading($SITE->fullname);
-            echo $this->output->header();
-            echo $html;
-            // SHAME - Can we add an id to the form.
-            echo "<div id='coursework-markingform'>";
-            $simpleform->display();
-            echo "</div>";
-            echo $this->output->footer();
-        }
+        $this->page->set_title($SITE->fullname);
+        $this->page->set_heading($SITE->fullname);
+        echo $this->output->header();
+        echo $html;
+        // SHAME - Can we add an id to the form.
+        echo "<div id='coursework-markingform'>";
+        $simpleform->display();
+        echo "</div>";
+        echo $this->output->footer();
     }
 
     public function confirm_feedback_removal_page(feedback $teacherfeedback, $confirmurl) {
@@ -320,33 +304,33 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
     /**
      * @param $newfeedback
-     * @param bool $ajax
      * @throws coding_exception
      */
-    public function new_feedback_page($newfeedback, $ajax = false) {
+    public function new_feedback_page(feedback $newfeedback) {
         global $SITE, $DB;
 
         $submission = $newfeedback->get_submission();
-        $gradingtitle = get_string('gradingfor', 'coursework', $submission->get_allocatable_name());
+        $areagreeing = optional_param('stage_identifier', '', PARAM_TEXT) == 'final_agreed_1';
+        $gradingtitle = $areagreeing
+            ? get_string('gradingforagree', 'coursework', $submission->get_allocatable_name())
+            : get_string('gradingfor', 'coursework', $submission->get_allocatable_name());
 
-        $this->page->set_pagelayout('standard');
         $this->page->navbar->add($gradingtitle);
         $this->page->set_title($SITE->fullname);
         $this->page->set_heading($SITE->fullname);
 
         $html = '';
 
-        // Warning in case there is already some feedback from another teacher
+        // Warning in case there is already some feedback from another teacher.
         $conditions = ['submissionid' => $newfeedback->submissionid,
                             'stage_identifier' => $newfeedback->stage_identifier];
         if (feedback::exists($conditions)) {
             $html .= '<div class="alert">Another user has already submitted feedback for this student. Your changes will not be saved.</div>';
         }
 
-        $html .= $this->output->heading($gradingtitle);
-
         // Template grading details.
         $template = new stdClass();
+        $template->title = $gradingtitle;
         // Marker.
         $marker = $DB->get_record('user', ['id' => $newfeedback->assessorid]);
         $template->marker = fullname($marker);
@@ -362,7 +346,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $submiturl = $this->get_router()->get_path('create feedback', ['feedback' => $newfeedback]);
         $simpleform = new assessor_feedback_mform($submiturl, ['feedback' => $newfeedback]);
 
-        $coursework = coursework::find($newfeedback->courseworkid);
+        $coursework = coursework::find($newfeedback->get_submission()->get_coursework()->id());
 
         // auto-populate Agreed Feedback with comments from initial marking
         if ($coursework && $coursework->autopopulatefeedbackcomment_enabled() && $newfeedback->stage_identifier == 'final_agreed_1') {
@@ -385,27 +369,18 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $simpleform->set_data($teacherfeedback);
         }
 
-        if ($ajax) {
-            $formhtml = $simpleform->render();
-            $filemanageroptions = $simpleform->get_file_options();
-            $editoroptions = $simpleform->get_editor_options();
-
-            $commentoptions = $this->get_comment_options($simpleform);
-            echo json_encode(['formhtml' => $html . $formhtml, 'filemanageroptions' => $filemanageroptions, 'editoroptions' => $editoroptions, 'commentoptions' => $commentoptions]);
-
-        } else {
-            $this->page->set_pagelayout('standard');
-            $this->page->navbar->add($gradingtitle);
-            $this->page->set_title($SITE->fullname);
-            $this->page->set_heading($SITE->fullname);
-            echo $this->output->header();
-            echo $html;
-            // SHAME - Can we add an id to the form.
-            echo "<div id='coursework-markingform'>";
-            $simpleform->display();
-            echo "</div>";
-            echo $this->output->footer();
-        }
+        $needswidepage = $coursework->is_using_marking_guide();
+        $this->page->set_pagelayout($needswidepage ? 'incourse' : 'standard');
+        $this->page->navbar->add($gradingtitle);
+        $this->page->set_title($SITE->fullname);
+        $this->page->set_heading($SITE->fullname);
+        echo $this->output->header();
+        echo $html;
+        // SHAME - Can we add an id to the form.
+        echo "<div id='coursework-markingform'>";
+        $simpleform->display();
+        echo "</div>";
+        echo $this->output->footer();
     }
 
     /**

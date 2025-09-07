@@ -34,6 +34,11 @@ use mod_coursework\models\user;
 class final_agreed extends base {
 
     /**
+     * Value for mdl_coursework_feedbacks.stage_identifier for feedback from final agreed mark.
+     */
+    const STAGE_FINAL_AGREED_1 = 'final_agreed_1';
+
+    /**
      * Tells us whether the allocation table needs to deal with this one.
      *
      * @return bool

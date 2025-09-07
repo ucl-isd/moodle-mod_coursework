@@ -27,6 +27,7 @@ use core_user;
 use mod_coursework\framework\table_base;
 use mod_coursework\ability;
 use mod_coursework\stages\base as stage_base;
+use mod_coursework\stages\final_agreed;
 use stdClass;
 use mod_coursework\feedback_files;
 
@@ -410,9 +411,9 @@ class feedback extends table_base {
     public function is_agreed_grade() {
         $identifier = $this->get_stage()->identifier();
         if ($this->get_coursework()->has_multiple_markers()) {
-            return $identifier == 'final_agreed_1';
+            return $identifier == final_agreed::STAGE_FINAL_AGREED_1;
         } else {
-            return $identifier == 'assessor_1';
+            return $identifier == \mod_coursework\stages\assessor::STAGE_ASSESSOR_1;
         }
     }
 
@@ -581,15 +582,21 @@ class feedback extends table_base {
     }
 
     /**
-     * Does the current grading stage for this feedback use advanced grading or
-     * simple grading?
+     * Does the current grading stage for the supplied coursework and feedback (may be null)
+     * use advanced grading or simple grading?
      *
-     * @return bool False if the current stage for this feedback uses simple
+     * @param coursework $coursework
+     * @param ?feedback $feedback may be null if a new feedback object is being created.
+     * @return bool False if the current stage for the supplied coursework and feedback uses simple
      * grading (for example, 55/100), true if it uses a grading form or rubric.
      */
-    public function is_stage_using_advanced_grading() {
-        $coursework = $this->get_coursework();
-        return $coursework->is_using_advanced_grading() && ($coursework->finalstagegrading == 0 || ($coursework->finalstagegrading == 1 && $this->stage_identifier != 'final_agreed_1'));
+    public static function is_stage_using_advanced_grading(coursework $coursework, ?feedback $feedback) {
+        return $coursework->is_using_advanced_grading()
+            && (
+                $coursework->finalstagegrading == 0 ||
+                // If $coursework->finalstagegrading == 1 then $feedback must now be initialised.
+                ($coursework->finalstagegrading == 1 && $feedback->stage_identifier != final_agreed::STAGE_FINAL_AGREED_1)
+            );
     }
 
     /**
@@ -648,7 +655,7 @@ class feedback extends table_base {
                 foreach ($feedbacks as $record) {
                     $object = new self($record);
                     $stageidentifier = $record->stage_identifier;
-                    $stageidentifierindex = ($stageidentifier == 'final_agreed_1') ? $stageidentifier : 'others';
+                    $stageidentifierindex = ($stageidentifier == final_agreed::STAGE_FINAL_AGREED_1) ? $stageidentifier : 'others';
                     $data['id'][$record->id] = $object;
                     $data['submissionid-stage_identifier'][$record->submissionid . '-' . $stageidentifier][] = $object;
                     $data['submissionid-stage_identifier_index'][$record->submissionid . '-' . $stageidentifierindex][] = $object;
@@ -696,4 +703,3 @@ class feedback extends table_base {
         self::remove_cache($courseworkid);
     }
 }
-
