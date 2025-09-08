@@ -234,7 +234,7 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
 
         $releasemarks = new stdClass();
         $releasemarks->warning = '';
-        $releasemarks->url = new moodle_url(
+        $releasemarks->url = new \moodle_url(
             '/mod/coursework/actions/releasemarks.php',
             ['cmid' => $coursework->get_coursemodule_id()]
         );
