@@ -270,7 +270,7 @@ class marking_cell_data extends cell_data_base {
      * Get the mark for a particular feedback.
      *
      * @param feedback $feedback
-     * @return string
+     * @return ?string
      * @throws \coding_exception
      */
     public function get_mark_for_feedback(feedback $feedback): ?string {
@@ -322,7 +322,7 @@ class marking_cell_data extends cell_data_base {
 
         return $action ? (object)[
             'mark' => (object)[
-                'mark' => $finalgrade,
+                'markvalue' => $finalgrade,
                 'allocatablehash' => $this->get_allocatable_hash($rowsbase->get_allocatable()),
                 'url' => $this->get_mark_url($action, $rowsbase->get_submission(), $finalstage, $finalfeedback),
                 // Only show draft label if final feedback is not finalised and submission is not ready for release.
@@ -331,8 +331,8 @@ class marking_cell_data extends cell_data_base {
                 'readyforrelease' => !$rowsbase->get_submission()->is_published() &&
                     $rowsbase->get_submission()->ready_to_publish(),
                 'released' => $rowsbase->get_submission()->is_published(),
-                'timemodified' => $rowsbase->get_submission()->lastpublished
-            ]
+                'timemodified' => $rowsbase->get_submission()->lastpublished,
+            ],
         ] : null;
     }
 

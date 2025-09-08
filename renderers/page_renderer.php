@@ -104,9 +104,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             ? get_string('automaticagreement', 'mod_coursework') : fullname($editor);
         $template->lasteditedby = $lastmarked . userdate($teacherfeedback->timemodified, '%a, %d %b %Y, %H:%M');
 
-        // Mustache.
-        $html = $this->render_from_template('mod_coursework/marking_details', $template);
-
         $submiturl = $this->get_router()->get_path('update feedback', ['feedback' => $teacherfeedback]);
         $simpleform = new assessor_feedback_mform(
             $submiturl, ['feedback' => $teacherfeedback]
@@ -135,7 +132,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $this->page->set_title($SITE->fullname);
         $this->page->set_heading($SITE->fullname);
         echo $this->output->header();
-        echo $html;
+        echo $this->render_from_template('mod_coursework/marking_details', $template);
         // SHAME - Can we add an id to the form.
         echo "<div id='coursework-markingform'>";
         $simpleform->display();
@@ -319,18 +316,16 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $this->page->set_title($SITE->fullname);
         $this->page->set_heading($SITE->fullname);
 
-        $html = '';
-
+        // Template grading details.
+        $template = new stdClass();
+        $template->title = $gradingtitle;
         // Warning in case there is already some feedback from another teacher.
         $conditions = ['submissionid' => $newfeedback->submissionid,
                             'stage_identifier' => $newfeedback->stage_identifier];
         if (feedback::exists($conditions)) {
-            $html .= '<div class="alert">Another user has already submitted feedback for this student. Your changes will not be saved.</div>';
+            $template->alert = 'Another user has already submitted feedback for this student. Your changes will not be saved.';
         }
 
-        // Template grading details.
-        $template = new stdClass();
-        $template->title = $gradingtitle;
         // Marker.
         $marker = $DB->get_record('user', ['id' => $newfeedback->assessorid]);
         $template->marker = fullname($marker);
@@ -338,10 +333,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         // Submission.
         $files = $submission->get_submission_files();
         $objectrenderer = $this->get_object_renderer();
-        $template->submission = $objectrenderer->render_submission_files_with_plagiarism_links(new \mod_coursework_submission_files($files), false);
-
-        // Mustache.
-        $html .= $this->render_from_template('mod_coursework/marking_details', $template);
+        $template->submission = $objectrenderer->render_submission_files_with_plagiarism_links(
+            new \mod_coursework_submission_files($files), false
+        );
 
         $submiturl = $this->get_router()->get_path('create feedback', ['feedback' => $newfeedback]);
         $simpleform = new assessor_feedback_mform($submiturl, ['feedback' => $newfeedback]);
@@ -375,7 +369,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $this->page->set_title($SITE->fullname);
         $this->page->set_heading($SITE->fullname);
         echo $this->output->header();
-        echo $html;
+        echo $this->render_from_template('mod_coursework/marking_details', $template);
         // SHAME - Can we add an id to the form.
         echo "<div id='coursework-markingform'>";
         $simpleform->display();
@@ -1085,5 +1079,35 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $template->submission->status = get_string('statusreleased', 'mod_coursework');
                 break;
         }
+    }
+
+    /**
+     * Where there is a validation failure, redisplay form and allow Moodle to explain what error is for user.
+     * @param submission $submission
+     * @param assessor_feedback_mform $form
+     * @param string $allocablename
+     * @return void
+     */
+    public function redisplay_form(submission $submission, assessor_feedback_mform $form) {
+        $coursework = $submission->get_coursework();
+        $files = $submission->get_submission_files();
+        $objectrenderer = $this->get_object_renderer();
+
+        $this->page->set_context($coursework->get_context());
+        $this->page->set_pagelayout('standard');
+        echo $this->output->header();
+        echo html_writer::tag('h3',
+            get_string(
+                'gradingfor',
+                'coursework',
+                $submission->get_allocatable_name()
+            )
+        );
+        echo $objectrenderer->render_submission_files_with_plagiarism_links(
+            new \mod_coursework_submission_files($files), false
+        );
+        $form->display();
+        echo $this->output->footer();
+        die();
     }
 }
