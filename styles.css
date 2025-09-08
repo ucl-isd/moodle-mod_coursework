@@ -120,6 +120,11 @@ Coursework.
                 display: block;
             }
         }
+        #id_removefeedbackbutton {
+            color: #fff;
+            background-color: #ca3120;
+            border-color: #ca3120;
+        }
     }
     .coursework-feedback {
         /* General bubble styles (same as before, but added a top-left class for clarity) */
