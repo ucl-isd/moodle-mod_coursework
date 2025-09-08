@@ -28,6 +28,7 @@ use Behat\Behat\Context\Step\Given as Given;
 use Behat\Behat\Context\Step\When as When;
 use Behat\Behat\Context\Step\Then as Then;
 use Behat\Mink\Exception\ExpectationException as ExpectationException;
+use Behat\Gherkin\Node\TableNode;
 use mod_coursework\models\group;
 use mod_coursework\router;
 use mod_coursework\models\coursework;
@@ -433,15 +434,17 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Then /^I should not see the save and finalise button$/
+     * @Then /^I should( not)? see the save and finalise button$/
      */
-    public function i_should_not_see_the_save_and_finalise_button() {
+    public function i_should_see_the_save_and_finalise_button($negate = false) {
         /**
          * @var mod_coursework_behat_student_submission_form $page
          */
         $page = $this->get_page('student submission form');
-        if ($page->has_the_save_and_finalise_button()) {
-            throw new ExpectationException("Should not have save and finalise button");
+        if ($negate && $page->has_the_save_and_finalise_button()) {
+            throw new ExpectationException("Should not have save and finalise button", $this->getSession());
+        } else if (!$negate && !$page->has_the_save_and_finalise_button()) {
+            throw new ExpectationException("Should have save and finalise button", $this->getSession());
         }
     }
 
@@ -621,20 +624,8 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
 
-        if ($this->running_javascript()) {
-            $this->wait_for_seconds(10);
-        }
-
         $page->press_publish_button();
-
-        if ($this->running_javascript()) {
-            $this->wait_for_seconds(10);
-        }
         $page->confirm_publish_action();
-        if ($this->running_javascript()) {
-            $this->wait_for_seconds(10);
-        }
-
     }
 
     /**
@@ -669,6 +660,7 @@ class behat_mod_coursework extends behat_base {
      */
     public function blind_marking_is_enabled() {
         $this->get_coursework()->update_attribute('blindmarking', 1);
+        $this->get_coursework()->update_attribute('renamefiles', 1);
     }
 
     /**
@@ -1541,6 +1533,24 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * Custom step because the standard Moodle module header containing the
+     * description is hidden on page but "I should see" will find that instead.
+     *
+     * @Then /^I should see the description of the coursework on the page$/
+     */
+    public function i_should_see_the_description_of_the_coursework_on_the_page() {
+        $page = $this->getSession()->getPage();
+
+        // "Test coursework 1" set by data generator.
+        $match = $page->find('xpath', "//h3[text() = 'Description']/following-sibling::*[1][text() = 'Test coursework 1']");
+
+        if (!$match) {
+            throw new ExpectationException("Should have seen expected description 'Test coursework 1', but it was not there",
+            $this->getSession());
+        }
+    }
+
+    /**
      * @Then /^the coursework "([\w]+)" setting should be "([\w]*)" in the database$/
      * @param $settingname
      * @param $settingvalue
@@ -1622,12 +1632,12 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I press the publish button$/
+     * @Given /^I press the release marks button$/
      */
-    public function i_press_the_publish_button() {
-        $this->find('css', '#id_publishbutton')->press();
-        $this->find_button('Continue')->press();
-        $this->getSession()->visit($this->locate_path('coursework')); // Quicker than waiting for a redirect
+    public function i_press_the_release_marks_button() {
+        $this->find('css', '#release-marks-button')->press();
+        $this->find_button(get_string('confirm'))->press();
+        $this->getSession()->visit($this->locate_path('coursework')); // Quicker than waiting for a redirect.
     }
 
     /**
@@ -1945,8 +1955,30 @@ class behat_mod_coursework extends behat_base {
      * @Given /^there is some general feedback$/
      */
     public function there_is_some_general_feedback() {
-        $this->get_coursework()->feedbackcomment = 'Some comments';
+        $this->get_coursework()->feedbackcomment = '<p>Some comments</p>';
         $this->get_coursework()->save();
+    }
+
+    /**
+     * @Given /^I should see the general feedback$/
+     */
+    public function i_should_see_the_general_feedback() {
+        $page = $this->getSession()->getPage();
+
+        /*
+         * Matches:
+         * <div class="d-flex">
+         *     <h4 class="h5">General feedback</h4>
+         * </div>
+         *
+         * <p>Some comments</p>
+         */
+        $xpath = "//div/h4[text()='General feedback']/../../p[text()='Some comments']";
+
+        if (!$page->find('xpath', $xpath)) {
+            throw new ExpectationException("Should have seen expected general feedback, but it was not there",
+            $this->getSession());
+        }
     }
 
     /**
@@ -2039,18 +2071,18 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^there is final feedback$/
+     * @Given /^there is( draft)? final feedback$/
      */
-    public function there_is_final_feedback() {
+    public function there_is_final_feedback($draft = false) {
         $generator = $this->get_coursework_generator();
 
         $feedback = new stdClass();
         $feedback->grade = 45;
         $feedback->feedbackcomment = 'blah';
-        $feedback->isfinalgrade = 1;
         $feedback->submissionid = $this->submission->id;
         $feedback->assessorid = $this->manager->id;
         $feedback->stage_identifier = 'final_agreed_1';
+        $feedback->finalised = $draft ? 0 : 1;
 
         $this->finalfeedback = $generator->create_feedback($feedback);
     }
@@ -2178,9 +2210,9 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^there are feedbacks from both teachers$/
+     * @Given /^there are( draft)? feedbacks from both teachers$/
      */
-    public function there_are_feedbacks_from_both_teachers() {
+    public function there_are_feedbacks_from_both_teachers($draft = false) {
         /**
          * @var $generator mod_coursework_generator
          */
@@ -2192,6 +2224,7 @@ class behat_mod_coursework extends behat_base {
         $feedback->stage_identifier = 'assessor_1';
         $feedback->feedbackcomment = 'New comment here';
         $feedback->grade = 67;
+        $feedback->finalised = $draft ? 0 : 1;
 
         $generator->create_feedback($feedback);
 
@@ -2201,6 +2234,7 @@ class behat_mod_coursework extends behat_base {
         $feedback->stage_identifier = 'assessor_2';
         $feedback->feedbackcomment = 'New comment here';
         $feedback->grade = 63;
+        $feedback->finalised = $draft ? 0 : 1;
 
         $generator->create_feedback($feedback);
     }
@@ -2236,7 +2270,7 @@ class behat_mod_coursework extends behat_base {
      * @throws coding_exception
      */
     public function i_should_see_the_final_single_grade_on_the_page($grade = 56) {
-        $actualgrade = $this->find('css', 'td.single_assessor_feedback_cell')->getText();
+        $actualgrade = $this->find('css', '#edit-feedback-' . $this->student->id)->getText();
         if (strpos($actualgrade, (string)$grade) === false) {
             throw new ExpectationException('Could not find the final grade. Got '.$actualgrade.' instead', $this->getSession());
         }
@@ -2273,19 +2307,10 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I click on the edit feedback icon$/
+     * @Given /^I click on the edit feedback link$/
      */
-    public function i_click_on_the_edit_feedback_icon() {
-
-        if ($this->running_javascript()) {
-            $this->wait_for_seconds(10);
-        }
-
-        $this->find('css', "#edit_feedback_{$this->get_feedback()->id}")->click();
-
-        if ($this->running_javascript()) {
-            $this->wait_for_seconds(10);
-        }
+    public function i_click_on_the_edit_feedback_link() {
+        $this->find('css', "#edit-feedback-{$this->student->id}")->click();
     }
 
     /**
@@ -2329,52 +2354,27 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @When /^I grade the submission(?: as )?(\d+)?( without comments)? using the simple form$/
+     * @When /^I grade the submission(?: as )?(\d*\.?\d+)? using the simple form(?: with comment "(?P<comment_string>(?:[^"]|\\")*)")?$/
      *
      * @param int $grade
      * @throws Behat\Mink\Exception\ElementException
      * @throws Behat\Mink\Exception\ElementNotFoundException
      */
-    public function i_grade_the_submission_using_the_simple_form($grade = 56, $withoutcomments = false) {
-        $nodeelement = $this->getSession()->getPage()->findById('feedback_grade');
+    public function i_grade_the_submission_using_the_simple_form($grade = 56, $comment = "New comment") {
+        // Markers' form Grade field is <select id="feedback_grade">.
+        // Assessors' form Grade field is <input type="text" id="id_grade">.
+        $nodeelement = $this->getSession()->getPage()->findById('feedback_grade') ?: $this->getSession()->getPage()->findById('id_grade');
+
         if ($nodeelement) {
-            $nodeelement->selectOption($grade);
+            $nodeelement->setValue($grade);
         }
 
-        if (empty($withoutcomments)) {
-            $nodeelement1 = $this->find('css', '#feedback_comment');
-            if ($nodeelement1) {
-                $nodeelement1->setValue('New comment here');
-            }
-        }
+        $this->getSession()->executeScript(
+            "tinyMCE.get('id_feedbackcomment').setContent('$comment');"
+        );
 
         $this->getSession()->getPage()->findButton('submitbutton')->press();
 
-        $this->feedback = feedback::last();
-    }
-
-    /**
-     * Launch the grade submission modal and complete with grade/comment.
-     * @When /^I grade the submission(?: as )?(\d*\.?\d+)? using the ajax form(?: with comment "(?P<comment_string>(?:[^"]|\\")*)")?$/
-     *
-     * @param float $grade
-     * @param string $comment
-     * @throws Behat\Mink\Exception\ElementException
-     * @throws Behat\Mink\Exception\ElementNotFoundException
-     */
-    public function i_grade_the_submission_using_the_ajax_form($grade = 56, $comment = "New comment") {
-        // Form loaded and sent by AJAX now so wait for it to load.
-        $this->wait_for_pending_js();
-        $this->wait_for_seconds(1);
-        $this->execute('behat_forms::i_set_the_field_to', [$this->escape("Grade"), $grade]);
-        self::i_set_the_feedback_comment_to($comment);
-        $this->wait_for_pending_js();
-        $this->execute(
-            'behat_general::i_click_on', [get_string('saveandfinalise', 'coursework'), 'button']
-        );
-        $this->wait_for_pending_js();
-        $this->wait_for_seconds(2);
-        $this->assertSession()->pageTextContains(get_string('alert_feedback_save_successful', 'coursework'));
         $this->feedback = feedback::last();
     }
 
@@ -2401,19 +2401,6 @@ class behat_mod_coursework extends behat_base {
 
         $script = "(document.querySelector('td.remark textarea')).value = '" . $comment . "';";
         behat_base::execute_script_in_session($this->getSession(), $script);
-    }
-
-    /**
-     * Expand the row in the grading form to expose feedback button.
-     * @When /^I expand the coursework grading row ?(\d+)?$/
-     * @return void
-     */
-    public function i_expand_the_grading_row(int $rownumber = 1) {
-        $this->execute(
-            'behat_general::i_click_on', [".details-control.row-$rownumber", 'css_element']
-        );
-        $this->wait_for_pending_js();
-        $this->wait_for_seconds(1);
     }
 
     /**
@@ -2569,7 +2556,10 @@ class behat_mod_coursework extends behat_base {
         } else {
             $gradinginterface = $this->get_page('single grading interface');
         }
-        if ($gradinginterface->there_is_a_feedback_icon($this->student)) {
+
+        $count = count($this->getSession()->getPage()->findAll('css', '#add-feedback-' . $this->student->id()));
+
+        if ($count !== 0) {
             throw new ExpectationException('Feedback link is present', $this->getSession());
         };
     }
@@ -2802,12 +2792,13 @@ class behat_mod_coursework extends behat_base {
      * @param string $action
      */
     public function i_should_not_see_the_edit_submission_button($negate = false, $action = 'new') {
-        // behat generates button type submit whereas code does input
-        $input = $this->getSession()->getPage()
-            ->findAll('xpath', "//div[@class='{$action}submissionbutton']//input[@type='submit']");
+        $link = $this->getSession()->getPage()
+            ->findAll('xpath', "//a[@class='btn btn-primary btn-block'][text()='" . ucfirst($action) . " your submission']");
         $button = $this->getSession()->getPage()
-            ->findAll('xpath', "//div[@class='{$action}submissionbutton']//button[@type='submit']");
-        $buttons = ($input) ? $input : $button;// check how element was created and use it to find the button
+            ->findAll('xpath', "//button[text()='" . ucfirst($action) . " your submission']");
+        $buttons = ($link) ? $link : $button;// check how element was created and use it to find the button
+        $countbuttons = count($buttons);
+
         $countbuttons = count($buttons);
         if ($countbuttons > 0 && $negate) {
             throw new ExpectationException('I see the button when I should not', $this->getSession());
@@ -3260,6 +3251,137 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * Check "Due" and "Extended deadline" dates at top of page.
+     * @Given /^I should see (due|extension) date "(?P<value>(?:[^"]|\\")*)"$/
+     */
+    public function i_should_see_duedate($date, $value) {
+        if ($date === "due") {
+            $date = "Due";
+        } else if ($date === "extension") {
+            $date = "Extended deadline";
+        }
+
+        $page = $this->getSession()->getPage();
+        $due = $page->find('xpath', "//h3[text() = '$date']/following-sibling::p[starts-with(text(), '$value')]");
+
+        if (!$due) {
+            throw new ExpectationException('Should have seen due date, but it was not there',
+            $this->getSession());
+        }
+    }
+
+    /**
+     * For example, the coursework deadline can be set with:
+     *   And the coursework deadline date is "##+1 week##"
+     * @Given /^the coursework ([\w]+) date is "(?P<value>(?:[^"]|\\")*)"$/
+     */
+    public function the_coursework_date_is($name, $value) {
+        $this->the_coursework_setting_is_in_the_database($name, $value);
+    }
+
+    /**
+     * @Given /^the student personaldeadline is "(?P<value>(?:[^"]|\\")*)"$/
+     */
+    public function the_student_personaldeadline_is($value) {
+        \mod_coursework\models\personal_deadline::create([
+           'allocatableid' => $this->student->id(),
+           'allocatabletype' => 'user',
+           'courseworkid' => $this->coursework->id,
+           'personal_deadline' => $value,
+           'createdbyid' => get_admin()->id,
+        ]);
+    }
+
+    /**
+     * For example:
+     *   I should see submission status "Submitted, but not finalised"
+     *
+     * @Given /^I should see submission status "(?P<status>(?:[^"]|\\")*)"$/
+     */
+    public function i_should_see_submission_status($status) {
+        $page = $this->getSession()->getPage();
+        $match = $page->find('xpath', "//li[normalize-space(string()) = 'Status $status']");
+
+        if (!$match) {
+            throw new ExpectationException('Should have seen expected submission status, but it was not there',
+            $this->getSession());
+        }
+    }
+
+    /**
+     * @Given /^grades have been released$/
+     */
+    public function grades_have_been_released() {
+        $this->coursework->publish_grades();
+    }
+
+    /**
+     * @Given /^I should see mark (\d+)$/
+     */
+    public function i_should_see_mark($mark) {
+        $page = $this->getSession()->getPage();
+        $match = $page->find('xpath', "//li[normalize-space(string()) = 'Mark $mark']");
+
+        if (!$match) {
+            throw new ExpectationException('Should have seen expected mark, but it was not there',
+            $this->getSession());
+        }
+    }
+
+    /**
+     * For matching the submitted date ignoring the time part, for example,
+     *   I should see submitted date 4 July 2025
+     *
+     * @Given /^I should see submitted date "(?P<date>(?:[^"]|\\")*)"$/
+     */
+    public function i_should_see_submitted_date($date) {
+        $page = $this->getSession()->getPage();
+        $match = $page->find('xpath', "//li[starts-with(normalize-space(string()), 'Submitted $date')]");
+
+        if (!$match) {
+            throw new ExpectationException("Should have seen expected submitted date $date, but it was not there",
+            $this->getSession());
+        }
+    }
+
+    /**
+     * @Given /^sample marking includes student for stage (\d)$/
+     */
+    public function sample_marking_includes_student_for_stage($stage) {
+        \mod_coursework\models\assessment_set_membership::create([
+           'allocatableid' => $this->student->id(),
+           'allocatabletype' => 'user',
+           'courseworkid' => $this->coursework->id,
+           'stage_identifier' => "assessor_$stage",
+        ]);
+    }
+
+    /**
+     * @Given /^I should see marking summary:$/
+     * @param TableNode $data The marking summary field and value pairs.
+     */
+    public function i_should_see_marking_summary(TableNode $table) {
+        $page = $this->getSession()->getPage();
+        $match = $page->find('xpath', "//h3[text() = 'Marking summary']");
+
+        if (!$match) {
+            throw new ExpectationException("Should have seen expected \"Marking summary\" heading, but it was not there",
+            $this->getSession());
+        }
+
+        $datahash = $table->getRowsHash();
+
+        foreach ($datahash as $locator => $value) {
+            $match = $page->find('xpath', "//li[normalize-space(string()) = '$locator $value']");
+
+            if (!$match) {
+                throw new ExpectationException("Should have seen expected value for $locator, but it was not there",
+                $this->getSession());
+            }
+        }
+    }
+
+    /**
      * Take screenshot when step fails. Works only with Selenium2Driver.
      *
      * Screenshot is saved at [Date]/[Feature]/[Scenario]/[Step].jpg .
@@ -3290,4 +3412,196 @@ class behat_mod_coursework extends behat_base {
     // }
     // }
     // }
+
+    // File renaming test step definitions.
+
+    /**
+     * Verify that the uploaded file has been renamed to match the expected pattern.
+     *
+     * @Then /^the uploaded file should be renamed with pattern "([^"]*)"$/
+     */
+    public function the_uploaded_file_should_be_renamed_with_pattern($pattern) {
+        // Find the student's submission.
+        $submission = $this->find_student_submission();
+
+        $files = $submission->get_submission_files();
+        $file = $files->get_first_submitted_file();
+
+        if (!$file) {
+            throw new ExpectationException('No submission files found', $this->getSession());
+        }
+
+        $actualfilename = $file->get_filename();
+
+        // Convert pattern to regex - the pattern already contains valid regex syntax.
+        $regex = '/^' . $pattern . '$/';
+
+        if (!preg_match($regex, $actualfilename)) {
+            throw new ExpectationException(
+                "File name '$actualfilename' does not match pattern '$pattern'",
+                $this->getSession()
+            );
+        }
+    }
+
+    /**
+     * Verify that the uploaded file has kept its original name.
+     *
+     * @Then /^the uploaded file should keep original name "([^"]*)"$/
+     */
+    public function the_uploaded_file_should_keep_original_name($expectedname) {
+        // Find the student's submission.
+        $submission = $this->find_student_submission();
+
+        $files = $submission->get_submission_files();
+        $file = $files->get_first_submitted_file();
+
+        if (!$file) {
+            throw new ExpectationException('No submission files found', $this->getSession());
+        }
+
+        $actualname = $file->get_filename();
+
+        if ($actualname !== $expectedname) {
+            throw new ExpectationException(
+                "Expected filename '$expectedname', got '$actualname'",
+                $this->getSession()
+            );
+        }
+    }
+
+    /**
+     * Verify that the uploaded files have been renamed to match the expected sequential patterns.
+     *
+     * @Then /^the uploaded files should be renamed with sequential patterns:$/
+     */
+    public function the_uploaded_files_should_be_renamed_with_sequential_patterns(TableNode $table): void {
+        // Find the student's submission.
+        $submission = $this->find_student_submission();
+
+        $files = $submission->get_submission_files();
+        $patterns = $table->getHash();
+
+        if (count($files) !== count($patterns)) {
+            throw new ExpectationException(
+                'Number of files (' . count($files) . ') does not match number of patterns (' . count($patterns) . ')',
+                $this->getSession()
+            );
+        }
+
+        $filenumber = 0;
+        foreach ($files as $file) {
+            $actualfilename = $file->get_filename();
+            $pattern = $patterns[$filenumber]['pattern'];
+
+            // Convert pattern to regex - the pattern already contains valid regex syntax.
+            $regex = '/^' . $pattern . '$/';
+
+            if (!preg_match($regex, $actualfilename)) {
+                throw new ExpectationException(
+                    "File " . ($filenumber + 1) . " name '$actualfilename' does not match pattern '$pattern'",
+                    $this->getSession()
+                );
+            }
+            $filenumber++;
+        }
+    }
+
+    /**
+     * Find the student's submission for testing.
+     *
+     * @throws ExpectationException
+     */
+    private function find_student_submission(): submission {
+        global $DB;
+
+        // Get the submission record.
+        $submissionrecord = $DB->get_record('coursework_submissions', [
+            'courseworkid' => $this->coursework->id,
+            'userid' => $this->student->id
+        ]);
+
+        if (!$submissionrecord) {
+            throw new ExpectationException('No submission found for student', $this->getSession());
+        }
+
+        return submission::find($submissionrecord->id);
+    }
+
+    /**
+     * @Given /^the candidate number for the student is "([^"]*)"$/
+     */
+    public function the_candidate_number_for_the_student_is(string $candidatenumber): void {
+        global $CFG;
+        // Specify the mock provider file and candidate number for the manager to use.
+        set_config('behat_mock_provider_filepath', $CFG->dirroot . '/mod/coursework/tests/behat/fixtures/mock_candidate_provider.php');
+        set_config('behat_mock_provider_class', '\\mod_coursework\\behat\\fixtures\\mock_candidate_provider');
+        set_config('behat_mock_candidate_number', $candidatenumber);
+    }
+
+    /**
+     * Verify that the uploaded file has been renamed to the expected filename.
+     *
+     * @Then /^the uploaded file should be renamed to "([^"]*)"$/
+     */
+    public function the_uploaded_file_should_be_renamed_to(string $expectedname): void {
+        // Find the student's submission.
+        $submission = $this->find_student_submission();
+        $files = $submission->get_submission_files();
+        $file = $files->get_first_submitted_file();
+
+        if (!$file) {
+            throw new ExpectationException('No submission files found', $this->getSession());
+        }
+
+        $actualname = $file->get_filename();
+
+        if ($actualname !== $expectedname) {
+            throw new ExpectationException(
+                "Expected filename '$expectedname', got '$actualname'",
+                $this->getSession()
+            );
+        }
+    }
+
+    /**
+     * Verify that the uploaded files have been renamed to the expected filenames.
+     *
+     * @Then /^the uploaded files should be renamed to:$/
+     */
+    public function the_uploaded_files_should_be_renamed_to(TableNode $table): void {
+        // Find the student's submission.
+        $submission = $this->find_student_submission();
+        $files = $submission->get_submission_files();
+        $expectedfilenames = $table->getHash();
+
+        if (count($files) !== count($expectedfilenames)) {
+            throw new ExpectationException(
+                'Number of files (' . count($files) . ') does not match number of expected filenames (' . count($expectedfilenames) . ')',
+                $this->getSession()
+            );
+        }
+
+        $actualfilenames = [];
+        foreach ($files as $file) {
+            $actualfilenames[] = $file->get_filename();
+        }
+
+        $expected = [];
+        foreach ($expectedfilenames as $row) {
+            $expected[] = $row['filename'];
+        }
+
+        sort($actualfilenames);
+        sort($expected);
+
+        for ($i = 0; $i < count($actualfilenames); $i++) {
+            if ($actualfilenames[$i] !== $expected[$i]) {
+                throw new ExpectationException(
+                    "Expected filename '{$expected[$i]}', got '{$actualfilenames[$i]}'",
+                    $this->getSession()
+                );
+            }
+        }
+    }
 }

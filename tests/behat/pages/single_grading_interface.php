@@ -46,19 +46,9 @@ class mod_coursework_behat_single_grading_interface extends mod_coursework_behat
 
     /**
      * @param allocatable $allocatable
-     * @return bool is there an icon?
-     */
-    public function there_is_a_feedback_icon($allocatable): bool {
-        $feedbackcell = $this->getPage()->find('css', $this->allocatable_row_id($allocatable).' .single_assessor_feedback_cell');
-        $feedbackicon = $feedbackcell->findAll('css', '.smallicon');
-        return !empty($feedbackicon);
-    }
-
-    /**
-     * @param allocatable $allocatable
      */
     public function click_new_final_feedback_button($allocatable) {
-        $identifier = '#new_final_feedback_' . $this->allocatable_identifier_hash($allocatable);
+        $identifier = '#add-feedback-' . $allocatable->id();
         $this->click_that_thing($identifier);
     }
 
@@ -67,7 +57,7 @@ class mod_coursework_behat_single_grading_interface extends mod_coursework_behat
      * @throws Behat\Mink\Exception\ElementException
      */
     public function click_edit_feedback_button($allocatable) {
-        $identifier = '#edit_final_feedback_' . $this->allocatable_identifier_hash($allocatable);
+        $identifier = '#edit-feedback-' . $allocatable->id();
         $this->getPage()->find('css', $identifier)->click();
     }
 

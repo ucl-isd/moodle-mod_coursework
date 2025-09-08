@@ -76,7 +76,7 @@ if ($gradeform->is_submitted()) {
         $formdata = $gradeform->get_data();
 
         // Process the data.
-        $success = $gradeform->process_data($formdata);
+        $success = $gradeform->process_data();
 
         // If saving the data was not successful.
         if (!$success) {

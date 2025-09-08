@@ -21,12 +21,10 @@ Feature: Adding and editing single feedback
     And the coursework deadline has passed
     And I visit the coursework page
     When I click the new single final feedback button for the student
-    And I grade the submission as 56 using the ajax form
+    And I grade the submission as 56 using the simple form
     Then I visit the coursework page
     And I should see the final grade as 56 on the single marker page
-    And I click the edit final feedback button
-    And I wait until the page is ready
-    And I wait "1" seconds
+    And I click the edit single assessor feedback button
     And the field "Grade" matches value "56"
     And the grade comment textarea field matches "New comment"
 
@@ -39,9 +37,6 @@ Feature: Adding and editing single feedback
     Given the submission is finalised
     And there is feedback for the submission from the teacher
     And I visit the coursework page
-    When I click the edit final feedback button
-    And I wait until the page is ready
-    And I wait "1" seconds
+    When I click the edit single assessor feedback button
     And the field "Grade" matches value "58"
-    And I wait "1" seconds
     And the field with xpath "//textarea[@id='id_feedbackcomment']" matches value "Blah"

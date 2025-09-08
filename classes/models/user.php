@@ -135,6 +135,29 @@ class user extends table_base implements allocatable, moderatable {
     }
 
     /**
+     * Get user picture.
+     *
+     * @param int $size
+     * @return string
+     */
+    public function get_user_picture_url(int $size = 100): string {
+        global $PAGE;
+        $userpicture = new \core\output\user_picture($this->get_raw_record());
+        $userpicture->size = $size;
+        return $userpicture->get_url($PAGE)->out(false);
+    }
+
+    /**
+     * Get user profile url.
+     *
+     * @return string
+     */
+    public function get_user_profile_url(): string {
+        $url = new \moodle_url('/user/profile.php', ['id' => $this->id()]);
+        return $url->out(false);
+    }
+
+    /**
      * cache array
      *
      * @var

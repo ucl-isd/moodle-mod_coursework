@@ -1,0 +1,49 @@
+{{!
+    This file is part the Feedback tracker report plugin for Moodle
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coursework/intro
+
+    Template for displaying coursework intro.
+
+    Example context (json):
+    {
+        "feedbackfromteachers": "<div class="chat-bubble-bordered">...</div>",
+        "introdates": {
+            "duedate": "1755029086"
+        },
+        "separator1": true,
+        "description": "<p>This assignment requires you to write an essay of approximately 1500 words on the impact of social media on political discourse. Please refer to the marking guide for specific criteria.</p>\n<ul>\n<li>Ensure you cite your sources correctly using APA style.</li>\n<li>The deadline for submission is clearly indicated below.</li>\n</ul>",
+        "markingguideurl": "https://moodle.example.com/pluginfile.php/123/mod_resource/content/0/marking_guide.pdf",
+        "separator2": false,
+        "generalfeedback": null
+    }
+}}
+<div class='col-md-8 coursework_intro'>
+    {{{feedbackfromteachers}}}
+    {{#introdates}}
+        {{> mod_coursework/intro_dates}}
+    {{/introdates}}
+    {{#separator1}}
+		<hr>
+	{{/separator1}}
+    {{> mod_coursework/description}}
+    {{#separator2}}
+		<hr>
+	{{/separator2}}
+    {{#generalfeedback}}
+        {{> mod_coursework/general_feedback}}
+    {{/generalfeedback}}
+</div>
