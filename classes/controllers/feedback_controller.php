@@ -137,7 +137,9 @@ class feedback_controller extends controller_base {
             $editor = $assessor;
         }
 
-        $teacherfeedback->grade = format_float($teacherfeedback->grade, $this->coursework->get_grade_item()->get_decimals());
+        $teacherfeedback->grade = is_numeric($teacherfeedback->grade)
+            ? format_float($teacherfeedback->grade, $this->coursework->get_grade_item()->get_decimals())
+            : null;
         $renderer = $this->get_page_renderer();
         $renderer->edit_feedback_page($teacherfeedback, $assessor, $editor);
     }
@@ -289,27 +291,33 @@ class feedback_controller extends controller_base {
         $courseworkpageurl = $this->get_path('coursework', ['coursework' => $teacherfeedback->get_coursework()]);
         if ($form->is_cancelled()) {
             redirect($courseworkpageurl, get_string('cancelled'), null, \core\output\notification::NOTIFY_SUCCESS);
-        }
-        $teacherfeedback = $form->process_data();
+        } else if ($form->get_data()) {
+            $teacherfeedback = $form->process_data();
 
-        $teacherfeedback->save();
-        $form->save_feedback_files();
+            $teacherfeedback->save();
+            $form->save_feedback_files();
 
-        $gradeeditingtime = $teacherfeedback->get_coursework()->get_grade_editing_time();
-        if (empty($gradeeditingtime) || time() > $teacherfeedback->timecreated + $gradeeditingtime) {
-            $this->try_auto_feedback_creation($teacherfeedback->get_submission());
-        }
+            $gradeeditingtime = $teacherfeedback->get_coursework()->get_grade_editing_time();
+            if (empty($gradeeditingtime) || time() > $teacherfeedback->timecreated + $gradeeditingtime) {
+                $this->try_auto_feedback_creation($teacherfeedback->get_submission());
+            }
 
-        if ($teacherfeedback->get_submission()->is_published()) { // Keep the gradebook updated
-            $this->coursework->grade_changed_event();
-            $teacherfeedback->get_submission()->publish();
+            if ($teacherfeedback->get_submission()->is_published()) { // Keep the gradebook updated
+                $this->coursework->grade_changed_event();
+                $teacherfeedback->get_submission()->publish();
+            }
+            redirect(
+                $courseworkpageurl,
+                get_string('changessaved', 'mod_coursework'),
+                null,
+                \core\output\notification::NOTIFY_SUCCESS
+            );
+        } else {
+            // Grade validation error - redisplay form with messages.
+            $renderer = $this->get_page_renderer();
+            $renderer->redisplay_form($teacherfeedback->get_submission(), $form);
+            die();
         }
-        redirect(
-            $courseworkpageurl,
-            get_string('changessaved', 'mod_coursework'),
-            null,
-            \core\output\notification::NOTIFY_SUCCESS
-        );
     }
 
     /**
