@@ -1085,7 +1085,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * Where there is a validation failure, redisplay form and allow Moodle to explain what error is for user.
      * @param submission $submission
      * @param assessor_feedback_mform $form
-     * @param string $allocablename
      * @return void
      */
     public function redisplay_form(submission $submission, assessor_feedback_mform $form) {
@@ -1095,17 +1094,14 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $this->page->set_context($coursework->get_context());
         $this->page->set_pagelayout('standard');
+        $templatedata = (object)[
+            'submission' => $objectrenderer->render_submission_files_with_plagiarism_links(
+                new \mod_coursework_submission_files($files), false
+            ),
+            'title' => get_string('gradingfor', 'coursework', $submission->get_allocatable_name()),
+        ];
         echo $this->output->header();
-        echo html_writer::tag('h3',
-            get_string(
-                'gradingfor',
-                'coursework',
-                $submission->get_allocatable_name()
-            )
-        );
-        echo $objectrenderer->render_submission_files_with_plagiarism_links(
-            new \mod_coursework_submission_files($files), false
-        );
+        echo $this->render_from_template('mod_coursework/marking_details', $templatedata);
         $form->display();
         echo $this->output->footer();
         die();

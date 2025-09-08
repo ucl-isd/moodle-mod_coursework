@@ -225,7 +225,7 @@ class feedback_controller extends controller_base {
             );
         } else {
             $renderer = $this->get_page_renderer();
-            $renderer->new_feedback_page($teacherfeedback);
+            $renderer->redisplay_form($teacherfeedback->get_submission(), $form);
         }
     }
 
