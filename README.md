@@ -2,7 +2,11 @@ Coursework Activity
 ======================================================================
 Copyright University of London.
 
-Any queries, please email coursework@london.ac.uk
+Part of the [Double Marking Project led by UCL](https://www.catalyst-eu.net/blog/2025/04/29/enhancing-assessment-in-moodle-the-double-marking-project)
+This is allowing us to take a blank slate approach about what the ideal marker experience should look like.
+We are also contributing some of this functionality into core Moodle Assignment, see:
+- https://moodle.atlassian.net/browse/MDL-86005
+- https://moodle.atlassian.net/browse/MDL-64118
 
 The Coursework Activity has been written to provide a way to receive coursework and have it marked without teachers knowing which student the work belongs to. Multiple markers are also supported where a final grade can be agreed based on several options. It does not replace the standard assignment activity and is intended to work alongside it.
 Special thanks to Royal Veterinary College and [@aspark21](https://github.com/aspark21), Plymouth University, London School of Tropical Medicine and University of London International Programmes for funding parts of the development and documentation. 
@@ -41,6 +45,11 @@ Current Coursework plugin includes following features as well as features added 
 
 Releases 
 =================
+**October 2025** - Full redesign of the user interfaces and refactoring using mustache templates by [University College London](https://blogs.ucl.ac.uk/digital-education/)
+- implements support for Candidate Numbers via subplugin framework allowing for alternative sources, out of the box works with https://github.com/ucl-isd/moodle-local_sitsgradepush
+- in reverse Coursework is now supported for Marks Transfer to SITS and automated deadline extensions via https://github.com/ucl-isd/moodle-local_sitsgradepush
+- many bug fixes
+- polished and ready for rollout at UCL
 
 **October 2024** - Maintenance for Moodle 4.4/4.5 by [University College London](https://blogs.ucl.ac.uk/digital-education/)
 - uses TinyMCE 6 instead of old TinyMCE or Atto
