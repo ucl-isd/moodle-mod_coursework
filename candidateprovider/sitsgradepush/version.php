@@ -33,5 +33,4 @@ $plugin->release   = '1.0';
 
 $plugin->dependencies = [
     'mod_coursework' => 2025082600,
-    'local_sitsgradepush' => 2025081500,
 ];
