@@ -27,6 +27,7 @@ use core_user;
 use mod_coursework\framework\table_base;
 use mod_coursework\ability;
 use mod_coursework\stages\base as stage_base;
+use mod_coursework\stages\final_agreed;
 use stdClass;
 use mod_coursework\feedback_files;
 
@@ -197,9 +198,9 @@ class feedback extends table_base {
      */
     public function display_assessor_name() {
 
-        // check if assessor's name in this CW is set to hidden
+        // check if assessor's name in this CW is set to hidden.
         if ($this->is_assessor_anonymity_enabled()) {
-            $assessorname = get_string('hidden', 'mod_coursework');
+            $assessorname = '';
         } else {
             $assessorname = $this->get_assesor_username();
         }
@@ -242,16 +243,17 @@ class feedback extends table_base {
     /**
      * Gets the HTML user picture for the assessor.
      *
-     * @return string
+     * @return \core\output\user_picture
      */
-    public function get_assesor_user_picture() {
+    public function get_assessor_user_picture() {
+        global $DB;
 
-        global $DB, $OUTPUT;
-
-        $user = $DB->get_record('user', ['id' => $this->assessorid]);
-        if ($user) {
-            return $OUTPUT->user_picture($user);
+        if ($user = $DB->get_record('user', ['id' => $this->assessorid])) {
+            $userpicture = new \core\output\user_picture($user);
+            $userpicture->size = 100;
+            return $userpicture;
         }
+
         return '';
     }
 
@@ -409,9 +411,9 @@ class feedback extends table_base {
     public function is_agreed_grade() {
         $identifier = $this->get_stage()->identifier();
         if ($this->get_coursework()->has_multiple_markers()) {
-            return $identifier == 'final_agreed_1';
+            return $identifier == final_agreed::STAGE_FINAL_AGREED_1;
         } else {
-            return $identifier == 'assessor_1';
+            return $identifier == \mod_coursework\stages\assessor::STAGE_ASSESSOR_1;
         }
     }
 
@@ -580,6 +582,24 @@ class feedback extends table_base {
     }
 
     /**
+     * Does the current grading stage for the supplied coursework and feedback (may be null)
+     * use advanced grading or simple grading?
+     *
+     * @param coursework $coursework
+     * @param ?feedback $feedback may be null if a new feedback object is being created.
+     * @return bool False if the current stage for the supplied coursework and feedback uses simple
+     * grading (for example, 55/100), true if it uses a grading form or rubric.
+     */
+    public static function is_stage_using_advanced_grading(coursework $coursework, ?feedback $feedback) {
+        return $coursework->is_using_advanced_grading()
+            && (
+                $coursework->finalstagegrading == 0 ||
+                // If $coursework->finalstagegrading == 1 then $feedback must now be initialised.
+                ($coursework->finalstagegrading == 1 && $feedback->stage_identifier != final_agreed::STAGE_FINAL_AGREED_1)
+            );
+    }
+
+    /**
      * cache array
      *
      * @var
@@ -635,7 +655,7 @@ class feedback extends table_base {
                 foreach ($feedbacks as $record) {
                     $object = new self($record);
                     $stageidentifier = $record->stage_identifier;
-                    $stageidentifierindex = ($stageidentifier == 'final_agreed_1') ? $stageidentifier : 'others';
+                    $stageidentifierindex = ($stageidentifier == final_agreed::STAGE_FINAL_AGREED_1) ? $stageidentifier : 'others';
                     $data['id'][$record->id] = $object;
                     $data['submissionid-stage_identifier'][$record->submissionid . '-' . $stageidentifier][] = $object;
                     $data['submissionid-stage_identifier_index'][$record->submissionid . '-' . $stageidentifierindex][] = $object;
@@ -683,4 +703,3 @@ class feedback extends table_base {
         self::remove_cache($courseworkid);
     }
 }
-

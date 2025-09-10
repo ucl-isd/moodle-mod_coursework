@@ -20,13 +20,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\grading_report;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\coursework;
-use mod_coursework\models\feedback;
 use mod_coursework\render_helpers\grading_report\cells\cell_interface;
+use mod_coursework\render_helpers\grading_report\data\actions_cell_data;
+use mod_coursework\render_helpers\grading_report\data\marking_cell_data;
+use mod_coursework\render_helpers\grading_report\data\student_cell_data;
+use mod_coursework\render_helpers\grading_report\data\submission_cell_data;
 use mod_coursework\render_helpers\grading_report\sub_rows\sub_rows_interface;
 
 /**
@@ -36,67 +38,215 @@ use mod_coursework\render_helpers\grading_report\sub_rows\sub_rows_interface;
 class mod_coursework_grading_report_renderer extends plugin_renderer_base {
 
     /**
-     * @var
+     * Renders the grading report.
+     *
+     * @param $gradingreport
+     * @return bool|string
+     * @throws \core\exception\moodle_exception
      */
-    protected $rowclass;
+    public function render_grading_report($gradingreport) {
 
-    /**
-     * @var
-     */
-    protected $ismultiplemarkers;
-
-    /**
-     * @param grading_report $gradingreport
-     * param $ismultiplemarkers
-     * @return string
-     */
-    public function render_grading_report($gradingreport, $ismultiplemarkers) {
-        $langelement = $this->generate_lang_element();
-
-        $options = $gradingreport->get_options();
         $tablerows = $gradingreport->get_table_rows_for_page();
-        $cellhelpers = $gradingreport->get_cells_helpers();
-        $subrowhelper = $gradingreport->get_sub_row_helper();
-        if (count($tablerows) == $gradingreport->realtotalrows) {
-            $options['class'] = 'full-loaded';
+
+        // Sort the table rows.
+        usort($tablerows, function($rowa, $rowb) {
+
+            $submissiona = $rowa->get_submission();
+            $submissionb = $rowb->get_submission();
+
+            // Check if submission is not an object (i.e., it's null or false).
+            $isnulloraa = !is_object($submissiona);
+            $isnullorab = !is_object($submissionb);
+
+            if ($isnulloraa && $isnullorab) {
+                return 0;
+            } elseif ($isnulloraa) {
+                return 1;
+            } elseif ($isnullorab) {
+                return -1;
+            }
+
+            // Both submissions are objects, compare by timemodified.
+            return $submissiona->timemodified <=> $submissionb->timemodified;
+        });
+
+        $template = new stdClass();
+        $template->isgroupsubmission = $gradingreport->get_coursework()->is_configured_to_have_group_submissions();
+        $template->releasemarks = $this->prepare_release_marks_button($gradingreport->get_coursework());
+        $template->tr = [];
+        $template->markerfilter = [];
+
+        /** @var grading_table_row_base $rowobject */
+        foreach ($tablerows as $rowobject) {
+            $trdata = new stdClass();
+
+            // Prepare data for table cells.
+            $this->prepare_student_cell_data($gradingreport->get_coursework(), $rowobject, $trdata);
+            $this->prepare_submission_cell_data($gradingreport->get_coursework(), $rowobject, $trdata);
+            $this->prepare_marking_cell_data($gradingreport->get_coursework(), $rowobject, $trdata);
+            $this->prepare_actions_cell_data($gradingreport->get_coursework(), $rowobject, $trdata);
+
+            // Set tr status and marker filter.
+            $this->set_tr_status($trdata);
+            $this->set_tr_marker_filter($trdata);
+            $template->tr[] = $trdata;
+
+            // Collect markers for filter.
+            if (!empty($trdata->markers)) {
+                // Add valid markers to filter, preserving only first occurrence.
+                foreach (array_filter($trdata->markers, fn($m) => isset($m->markerid)) as $marker) {
+                    if (!array_key_exists($marker->markerid, $template->markerfilter)) {
+                        $template->markerfilter[$marker->markerid] = $marker;
+                    }
+                }
+            }
         }
-        $this->rowclass = $ismultiplemarkers ? 'submissionrowmulti' : 'submissionrowsingle';
+        $template->markerfilter = array_values($template->markerfilter);
+        $template->defaultduedate = $gradingreport->get_coursework()->get_deadline();
 
-        if (empty($tablerows)) {
-            return $langelement . '<div class="no-users">'.get_string('nousers', 'coursework').'</div><br>';
-        }
-
-        $tablehtml = $this->start_table($options);
-        $tablehtml .= $this->make_table_headers($cellhelpers, $options, $ismultiplemarkers);
-        $tablehtml .= '</thead>';
-        $tablehtml .= '<tbody>';
-        $tablehtml .= $this->make_rows($tablerows, $cellhelpers, $subrowhelper, $ismultiplemarkers, );
-        $tablehtml .= '</tbody>';
-        $tablehtml .= $this->end_table();
-
-        return  $langelement . $tablehtml;
+        return $this->render_from_template('mod_coursework/submissions/table', $template);
     }
 
     /**
+     * Prepare student cell data
      *
-     * @return mixed
+     * @param coursework $coursework
+     * @param grading_table_row_base $rowobject
+     * @param stdClass $trdata
+     * @return void
      */
-    private function generate_lang_element() {
-        $langmessages = [
-            'download_submitted_files' => get_string('download_submitted_files', 'mod_coursework'),
-            'exportfinalgrades' => get_string('exportfinalgrades', 'mod_coursework'),
-            'exportgradingsheets' => get_string('exportgradingsheets', 'mod_coursework'),
-            'loadingpagination' => get_string('loadingpagination', 'mod_coursework'),
-        ];
-        $result = html_writer::empty_tag('input', [
-            'name' => '',
-            'type' => 'hidden',
-            'data-lang' => json_encode($langmessages),
-            'id' => 'element_lang_messages',
-        ]);
-        $result = html_writer::div($result);
+    protected function prepare_student_cell_data(coursework $coursework, grading_table_row_base $rowobject, stdClass $trdata) {
+        $dataprovider = new student_cell_data($coursework);
+        $trdata->submissiontype = $dataprovider->get_table_cell_data($rowobject);;
+    }
 
-        return $result;
+    /**
+     * Prepare submission cell data
+     *
+     * @param coursework $coursework
+     * @param grading_table_row_base $rowobject
+     * @param stdClass $trdata
+     * @return void
+     */
+    protected function prepare_submission_cell_data(coursework $coursework, grading_table_row_base $rowobject, stdClass $trdata) {
+        $dataprovider = new submission_cell_data($coursework);
+        $trdata->submission = $dataprovider->get_table_cell_data($rowobject);
+    }
+
+    /**
+     * Prepare marking cell data
+     *
+     * @param coursework $coursework
+     * @param grading_table_row_base $rowobject
+     * @param stdClass $trdata
+     * @return void
+     */
+    protected function prepare_marking_cell_data(coursework $coursework, grading_table_row_base $rowobject, stdClass $trdata) {
+        $dataprovider = new marking_cell_data($coursework);
+        $markingcelldata = $dataprovider->get_table_cell_data($rowobject);
+        $trdata->markers = $markingcelldata->markers;
+        $trdata->agreedmark = !empty($markingcelldata->agreedmark) ? $markingcelldata->agreedmark : null;
+    }
+
+    /**
+     * Prepare actions cell data
+     *
+     * @param coursework $coursework
+     * @param grading_table_row_base $rowobject
+     * @param stdClass $trdata
+     * @return void
+     */
+    protected function prepare_actions_cell_data(
+        coursework $coursework,
+        grading_table_row_base $rowobject,
+        stdClass $trdata
+    ): void {
+        $dataprovider = new actions_cell_data($coursework);
+        $actions = $dataprovider->get_table_cell_data($rowobject);
+        $trdata->actions = $actions;
+    }
+
+    /**
+     * Prepare release marks button.
+     *
+     * @param coursework $coursework
+     * @return stdClass|null
+     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
+     */
+    protected function prepare_release_marks_button(coursework $coursework): ?stdClass {
+        [$canrelease] = $coursework->can_release_marks();
+        if (!$canrelease) {
+            return null;
+        }
+
+        $releasemarks = new stdClass();
+        $releasemarks->warning = '';
+        $releasemarks->url = new moodle_url(
+            '/mod/coursework/actions/releasemarks.php',
+            ['cmid' => $coursework->get_coursemodule_id()]
+        );
+
+        if ($coursework->blindmarking_enabled()) {
+            $submissiontype = $coursework->is_configured_to_have_group_submissions() ? 'group' : 'user';
+            $releasemarks->warning = get_string('anonymity_warning_' . $submissiontype, 'mod_coursework');
+        }
+
+        return $releasemarks;
+    }
+
+    /**
+     * Set tr status.
+     *
+     * @param stdClass $trdata
+     * @return void
+     */
+    protected function set_tr_status(stdClass $trdata): void {
+        $status = [];
+        if (!empty($trdata->submission->extensiongranted)) {
+            $status[] = 'extension-granted';
+        }
+
+        if (!empty($trdata->submission->submissiondata->flaggedplagiarism)) {
+            $status[] = 'flagged-for-plagiarism';
+        }
+
+        if (!empty($trdata->submission->submissiondata->submittedlate)) {
+            $status[] = 'late';
+        }
+
+        if (empty($trdata->submission->submissiondata)) {
+            $status[] = 'not-submitted';
+        }
+
+        if (!empty($trdata->agreedmark->addfinalfeedback)) {
+            $status[] = 'need-agreement';
+        }
+
+        if (!empty($trdata->agreedmark->mark->readyforrelease)) {
+            $status[] = 'ready-for-release';
+        }
+
+        foreach ($trdata->markers as $marker) {
+            if (!empty($marker->addfeedback)) {
+                $status[] = 'need-marking';
+            }
+        }
+
+        $trdata->status = implode(', ', $status);
+    }
+
+    /**
+     * Set marker filter data for table row.
+     *
+     * @param stdClass $trdata Table row data
+     */
+    protected function set_tr_marker_filter(stdClass $trdata): void {
+        if (empty($trdata->markers)) {
+            return;
+        }
+
+        $trdata->markerfilter = implode(', ', array_column((array)$trdata->markers, 'markeridentifier'));
     }
 
     /**
@@ -133,6 +283,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
         $tablehtml = "<tr class=\"$class\" id=\"$rowid\" data-allocatable=\"$allocatable->id\">";
         $ismultiplemarkers = $this->ismultiplemarkers;
         $tblassessorfeedbacks = $subrowhelper->get_row_with_assessor_feedback_table($rowobject, count($cellhelpers));
+
         if ($ismultiplemarkers) {
             $rowclass = "row-$rownumber";
             $tablehtml .= '<td class="details-control ' . $rowclass . '"></td>';

@@ -1,0 +1,50 @@
+{{!
+    This file is part the Feedback tracker report plugin for Moodle
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coursework/general_feedback
+
+    Template for displaying general feedback section.
+
+    Example context (json):
+    {
+        "button" {
+            "url": "https://example.moodle.org/edit.php?id=134",
+            "label": "Add <span class="sr-only">general feedback</span>"
+        },
+        "feedback": "<div><p>This is the feedback</p></div>"
+    }
+}}
+<div class="d-flex">
+    <h4 class="h5">{{#str}} generalfeedback, mod_coursework {{/str}}</h4>
+    {{#button}}
+        <div class="ml-auto">
+            <a href="{{url}}" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-pen-to-square mr-2"></i>{{{label}}}</a>
+        </div>
+    {{/button}}
+</div>
+
+{{#duedate}}
+    <p>
+        <b>{{#str}} due, mod_coursework {{/str}}</b>
+        {{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
+    </p>
+{{/duedate}}
+
+{{{feedback}}}
+
+{{^feedback}}
+<p>{{#str}} nofeedbackyet, mod_coursework {{/str}}</p>
+{{/feedback}}

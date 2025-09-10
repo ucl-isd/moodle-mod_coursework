@@ -27,6 +27,7 @@ namespace mod_coursework\models;
 
 use coding_exception;
 use context_course;
+use mod_coursework\candidateprovider_manager;
 
 use gradingform_controller;
 use html_writer;
@@ -346,6 +347,11 @@ class coursework extends table_base {
     public $renamefiles;
 
     /**
+     * @var int
+     */
+    public int $usecandidate;
+
+    /**
      * @var string
      */
     public $filetypes;
@@ -402,6 +408,8 @@ class coursework extends table_base {
      * @var int 0 or 1
      */
     public $personaldeadlineenabled;
+
+
 
     /**
      * Factory makes it renderable.
@@ -2137,18 +2145,31 @@ class coursework extends table_base {
     }
 
     /**
-     * Function to check if rubric is used in the current coursework
+     * Check if rubric is used in the current coursework.
      *
      * @return bool
      */
-    public function is_using_rubric() {
-        $gradingmanager = $this->get_advanced_grading_manager();
-        $method = $gradingmanager->get_active_method();
+    public function is_using_rubric(): bool {
+        return self::get_advanced_grading_method() === 'rubric';
+    }
 
-        if ($method == 'rubric') {
-            return true;
-        }
-        return false;
+    /**
+     * Check if marking guide is used in the current coursework.
+     *
+     * @return bool
+     */
+    public function is_using_marking_guide(): bool {
+        return self::get_advanced_grading_method() === 'guide';
+    }
+
+    /**
+     * Get advanced grading method used in the current coursework.
+     *
+     * @return bool
+     */
+    public function get_advanced_grading_method(): ?string {
+        $gradingmanager = $this->get_advanced_grading_manager();
+        return $gradingmanager ? $gradingmanager->get_active_method() : null;
     }
 
     /**
@@ -2386,10 +2407,18 @@ class coursework extends table_base {
     }
 
     /**
-     * @return bool
+     * Is there general feedback available to students?
+     *
+     * @return bool True if there's general feedback and "General feedback
+     * release date" is not enabled or it is enabled and the date has passed,
+     * false otherwise.
      */
-    public function is_general_feedback_enabled() {
-        return ($this->generalfeedback != 0);
+    public function is_general_feedback_released() {
+        if ($this->feedbackcomment && ($this->generalfeedback == 0 || time() > $this->generalfeedback)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -3106,5 +3135,122 @@ class coursework extends table_base {
         }
 
         return $gradeitem;
+    }
+
+    /**
+     * Check if we can release marks for this coursework instance.
+     *
+     * @return array
+     * @throws coding_exception
+     */
+    public function can_release_marks() {
+        if (!has_capability('mod/coursework:publish', $this->get_context())) {
+            return [
+                false,
+                get_string('no_permission_to_release_marks', 'mod_coursework'),
+            ];
+        }
+
+        if (!$this->has_stuff_to_publish()) {
+            return [
+                false,
+                get_string('nofinalgradedworkyet', 'mod_coursework'),
+            ];
+        }
+
+        if ($this->blindmarking_enabled() && $this->moderation_enabled() && $this->unmoderated_work_exists()) {
+            return [
+                false,
+                get_string('unmoderatedworkexists', 'mod_coursework'),
+            ];
+        }
+
+        return [true, ''];
+    }
+
+    /**
+     * Check if coursework has any submissions with actual files.
+     * This determines if the candidate number setting can be changed.
+     *
+     * @return bool
+     */
+    public function has_submissions_with_files(): bool {
+        global $DB;
+
+        if (!$this->has_any_submission()) {
+            return false; // No submissions at all.
+        }
+
+        // Get all submissions for this coursework.
+        $submissions = $DB->get_records('coursework_submissions', ['courseworkid' => $this->id]);
+
+        foreach ($submissions as $submissionrecord) {
+            $submission = new submission($submissionrecord);
+            $submissionfiles = $submission->get_submission_files();
+
+            if ($submissionfiles->has_files()) {
+                return true; // Found at least one submission with files.
+            }
+        }
+
+        return false; // No submissions have files.
+    }
+
+    /**
+     * Check if the candidate number setting can be changed.
+     * Setting can only be changed when there are no file submissions.
+     *
+     * @return bool
+     */
+    public function can_change_candidate_number_setting(): bool {
+        return !$this->has_submissions_with_files();
+    }
+
+    /**
+     * Validate candidate number settings.
+     * Throws exception if prerequisites are not met but setting is enabled.
+     *
+     * @return void
+     * @throws moodle_exception
+     */
+    public function validate_candidate_number_settings(): void {
+        if (!$this->usecandidate) {
+            return; // No validation needed if feature disabled.
+        }
+
+        // Check if a provider is available.
+        // Use candidate number setting is enabled but no provider available, throw exception.
+        if (!candidateprovider_manager::instance()->is_provider_available()) {
+            throw new moodle_exception('no_candidate_provider_available', 'mod_coursework');
+        }
+    }
+
+    /**
+     * Get file identifier for user (candidate number or fallback to hash).
+     *
+     * @param int $userid
+     * @return string
+     */
+    public function get_file_identifier_for_user(int $userid): string {
+        // If candidate number feature is not enabled for this coursework or blind marking not enabled, use hash.
+        if (!$this->usecandidate || !$this->blindmarking_enabled()) {
+            return $this->get_username_hash($userid);
+        }
+
+        // Validate prerequisites.
+        $this->validate_candidate_number_settings();
+
+        // Try to get candidate number using the manager.
+        $candidatenumber = candidateprovider_manager::instance()->get_candidate_number(
+            $this->get_course_id(),
+            $userid
+        );
+
+        if (!empty($candidatenumber)) {
+            return $candidatenumber; // Return candidate number (ABCD123) if found.
+        }
+
+        // Cannot get candidate number from provider, fallback to hash.
+        return $this->get_username_hash($userid);
     }
 }
