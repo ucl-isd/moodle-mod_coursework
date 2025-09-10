@@ -1280,7 +1280,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $modalbody .= html_writer::div($contentdefaultdeadline, 'form-group row fitem');
 
             $contentextendeddeadline = html_writer::tag('label', get_string('extended_deadline', 'mod_coursework'));
-            $contentextendeddeadlinediv = html_writer::div($contentextendeddeadline, 'col-md-3');
+            $contentextendeddeadlinediv = html_writer::div($contentextendeddeadline, 'col-md-4');
             $minnutesstep = 5;
             $input = \html_writer::tag(
                 'input', '', [
@@ -1290,32 +1290,32 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                     'name' => "extension-extend-deadline",
                 ]
             );
-            $contentextendeddeadlinediv .= html_writer::div($input, 'col-md-6');
+            $contentextendeddeadlinediv .= html_writer::div($input, 'col-md-8');
             $modalbody .= html_writer::div($contentextendeddeadlinediv, 'form-group row fitem');
 
             $extensionreasons = coursework::extension_reasons();
             if (!empty($extensionreasons)) {
                 $selectextensionreasons = html_writer::tag('label', get_string('extension_reason', 'mod_coursework'));
-                $selectextensionreasonsdiv = html_writer::div($selectextensionreasons, 'col-md-3');
+                $selectextensionreasonsdiv = html_writer::div($selectextensionreasons, 'col-md-4');
                 $selectextensionreasons = html_writer::select($extensionreasons, '', '', false, [
                     'id' => 'extension-reason-select',
                     'class' => 'form-control',
                 ]);
-                $selectextensionreasonsdiv .= html_writer::div($selectextensionreasons, 'col-md-9 form-inline felement', ['data-fieldtype' => 'select']);
+                $selectextensionreasonsdiv .= html_writer::div($selectextensionreasons, 'col-md-8 form-inline felement', ['data-fieldtype' => 'select']);
                 $modalbody .= html_writer::div($selectextensionreasonsdiv, 'form-group row fitem');
             }
 
             $contentextrainformation = html_writer::tag('label', get_string('extra_information', 'mod_coursework'), [
                 'class' => 'col-form-label d-inline', 'for' => 'id_extra_information',
             ]);
-            $contentextrainformationdiv = html_writer::div($contentextrainformation, 'col-md-3');
+            $contentextrainformationdiv = html_writer::div($contentextrainformation, 'col-md-4');
             $contentextrainformation = html_writer::tag('textarea', '', [
                 'class' => 'form-control',
-                'rows' => '8',
+                'rows' => '2',
                 'spellcheck' => 'true',
                 'id' => 'id_extra_information',
             ]);
-            $contentextrainformationdiv .= html_writer::div($contentextrainformation, 'col-md-9 form-inline felement', ['data-fieldtype' => 'editor']);
+            $contentextrainformationdiv .= html_writer::div($contentextrainformation, 'col-md-8 form-inline felement', ['data-fieldtype' => 'editor']);
             $modalbody .= html_writer::div($contentextrainformationdiv, 'form-group row fitem', ['id' => 'fitem_id_extra_information']);
         }
 
@@ -1343,8 +1343,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= html_writer::div($modalbody, 'modal-body');
         $html .= html_writer::div($modalfooter, 'modal-footer');
         $html = html_writer::div($html, 'modal-content');
-        $html = html_writer::div($html, 'modal-dialog modal-lg vertical-align-center', ['role' => 'document']);
-        $html = html_writer::div($html, 'vertical-alignment-helper');
+        $html = html_writer::div($html, 'modal-dialog', ['role' => 'dialog']);
+        // $html = html_writer::div($html, 'vertical-alignment-helper');
         $html = html_writer::div($html, 'modal fade', [
             'id' => 'modal-ajax',
             'tabindex' => '-1',
