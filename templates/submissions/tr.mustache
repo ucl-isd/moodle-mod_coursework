@@ -25,7 +25,7 @@
                                 {{group.name}}
                             </div>
                             <div class="dropdown mt-1">
-                                <button class="btn btn-secondary btn-sm dropdown-toggle mt-1" type="button" data-toggle="dropdown" aria-expanded="false">
+                                <button class="btn btn-outline-primary btn-sm dropdown-toggle mt-1" type="button" data-toggle="dropdown" aria-expanded="false">
                                     {{#str}}viewmembers, mod_coursework{{/str}}
                                 </button>
                                 <ul class="dropdown-menu">
@@ -46,50 +46,54 @@
 
                 {{! Extension. }}
                 <div class="extensiongranted-container {{^extensiondeadline}}d-none{{/extensiondeadline}} small">
-                    <span class="badge badge-dark">{{#str}} extension_granted, mod_coursework {{/str}}</span>
-                        <span class="extensiongranteddate">
-                            {{#extensiondeadline}}
-                                {{#userdate}}
-                                    {{extensiondeadline}},{{#str}}strftimedatetime, langconfig{{/str}}
-                                {{/userdate}}
-                            {{/extensiondeadline}}
-                        </span>
+                    <span class="badge badge-dark">
+                        {{#str}} extension_granted, mod_coursework {{/str}}
+                    </span>
+                    <span class="extensiongranteddate">
+                        {{#extensiondeadline}}
+                            {{#userdate}}
+                                {{extensiondeadline}},{{#str}}strftimedatetime, langconfig{{/str}}
+                            {{/userdate}}
+                        {{/extensiondeadline}}
+                    </span>
                 </div>
 
                 {{#submissiondata}}
                     {{#datemodified}}
                         <small>
-                        {{#submittedlate}}
-                            <span class="badge badge-warning">
-                            {{#str}} submitted_late, mod_coursework {{/str}}
-                            </span>
-                        {{/submittedlate}}
+                            {{#submittedlate}}
+                                <span class="badge badge-warning">
+                                    {{#str}} submitted_late, mod_coursework {{/str}}
+                                </span>
+                            {{/submittedlate}}
 
-                        {{^submittedlate}}
-                            {{#str}} submitted, mod_coursework {{/str}}:
-                        {{/submittedlate}}
-                        {{#userdate}}
-                            {{.}},{{#str}}strftimedatetime, langconfig{{/str}}
-                        {{/userdate}}
-                        <br>
+                            {{^submittedlate}}
+                                {{#str}} submitted, mod_coursework {{/str}}:
+                            {{/submittedlate}}
+
+                            {{#userdate}}
+                                {{.}},{{#str}}strftimedatetime, langconfig{{/str}}
+                            {{/userdate}}
+                            <br>
                         </small>
                     {{/datemodified}}
 
                     {{#files}}
                         <span class="sr-only">
-                            {{#str}} file_submitted, mod_coursework {{/str}}</span>
+                            {{#str}} file_submitted, mod_coursework {{/str}}
+                        </span>
                         <a href="{{{url}}}" class="line-clamp-1" style="max-width:300px;">
                             <i class="fa-regular fa-file-lines mr-2"></i>{{filename}}
                         </a>
+
                         {{#flaggedplagiarism}}
-                        <span class="badge badge-danger">{{#str}} flagged_plagiarism, mod_coursework {{/str}}</span><br>
+                        <span class="badge badge-danger">{{#str}} flagged_plagiarism, mod_coursework {{/str}}</span>
+                        <br>
                         {{/flaggedplagiarism}}
 
                         {{#plagiarismlinks}}
                             <span class="sr-only">{{#str}} plagiarism_report, mod_coursework {{/str}}</span>
-
                             {{{plagiarismlinks}}}
-
                         {{/plagiarismlinks}}
                     {{/files}}
                 {{/submissiondata}}
@@ -98,7 +102,6 @@
                     {{^extensiongranted}}
                         {{#duedate}}
                             <div class="duedate-container">
-                                <span class="sr-only">{{#str}} due_date, mod_coursework {{/str}}</span>
                                 <small>Due:
                                     {{#userdate}}
                                         {{.}},{{#str}}strftimedatetime, langconfig{{/str}}
@@ -156,7 +159,9 @@
                     {{/addfeedback}}
                 </li>
                 {{/markers}}
+
                 <!-- No allocated markers. -->
+                <!-- TODO - what goes here?? -->
                 {{^markers}}
                 <li class="d-flex mb-2">
                     <div>
@@ -172,12 +177,16 @@
 
                 {{#agreedmark}}
                 <li class="d-flex mb-2">
-                    <div>Agreed mark</div>
+                    <div>{{#str}} agreedmark, mod_coursework {{/str}}</div>
                     <div class="text-right ml-auto">
                     {{#mark}}
-                        {{#draft}}
-                            <span class="badge badge-secondary">{{#str}} draft, mod_coursework {{/str}}</span>
-                        {{/draft}}
+                        {{^released}}
+                            {{#draft}}
+                                <span class="badge badge-secondary">
+                                    {{#str}} draft, mod_coursework {{/str}}
+                                </span>
+                            {{/draft}}
+                        {{/released}}
 
                         {{#readyforrelease}}
                             <span class="badge badge-warning">{{#str}} ready_release, mod_coursework {{/str}}</span>

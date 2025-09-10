@@ -51,6 +51,7 @@ $string['addyoursubmission'] = 'Upload your submission';
 $string['adeadlinehaschangedemailsubject'] = 'A deadline has changed for {$a}.';
 $string['agreed'] = 'Agreed';
 $string['agreedfeedback'] = 'Agreed feedback';
+$string['agreedmark'] = 'Agreed mark';
 $string['agreedgrade'] = 'Agreed grade';
 $string['agreedgradeby'] = 'Agreed grade by';
 $string['agreedgradeon'] = 'Agreed grade on';
