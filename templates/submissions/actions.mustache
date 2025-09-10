@@ -3,6 +3,7 @@
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <span class="sr-only">{{#str}} edit {{/str}}</span>
             <i class="fa-solid fa-ellipsis-vertical"></i>
+
     </button>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
         {{#defaultduedate}}
@@ -33,22 +34,22 @@
         {{/submission.url}}
 
         {{#finalise}}
-            <a class="dropdown-item submission-finalisation" data-action="finalise" data-student="{{studentname}}" href="{{finalise.url}}">Finalise submission</a>
+            <a class="dropdown-item submission-finalisation" data-action="finalise" data-student="{{studentname}}" href="{{finalise.url}}">{{#str}} finalisesubmission, mod_coursework {{/str}}</a>
             <div class="dropdown-divider"></div>
         {{/finalise}}
 
         {{#unfinalise}}
-            <a class="dropdown-item submission-finalisation" data-action="unfinalise" data-student="{{studentname}}" href="{{unfinalise.url}}">Unfinalise submission</a>
+            <a class="dropdown-item submission-finalisation" data-action="unfinalise" data-student="{{studentname}}" href="{{unfinalise.url}}">{{#str}} unfinalisesubmission, mod_coursework {{/str}}</a>
             <div class="dropdown-divider"></div>
         {{/unfinalise}}
 
         {{#plagarism.url}}
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="{{plagarism.url}}">Plagarism
+            <a class="dropdown-item" href="{{plagarism.url}}">{{#str}} plagiarism, mod_coursework {{/str}}
                 {{#plagarismstatus}}
                     <small class="d-block">
                         <i class="fa-solid fa-triangle-exclamation text-danger mr-2"></i>
-                        <span class="sr-only">Flagged for plagiarism status </span>
+                        <span class="sr-only">{{#str}} flagged_plagiarism, mod_coursework {{/str}}</span>
                         {{.}}
                     </small>
                 {{/plagarismstatus}}
