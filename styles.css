@@ -14,6 +14,14 @@ Coursework.
         width: 100%;
     }
 
+    /* Actions menu dropdown dividers. */
+    .coursework-actions .dropdown-menu {
+        /* Hide any dividers that are immediately preceded by another divider */
+        .dropdown-divider + .dropdown-divider {
+            display: none;
+        }
+    }
+
     /* Plagarism in table submissions col. */
     .core_plagiarism_links {
         display: block;
@@ -190,6 +198,8 @@ Coursework.
         }
     }
 }
+
+
 
 form#mod_coursework_guide_agreed_grades {
     tr {

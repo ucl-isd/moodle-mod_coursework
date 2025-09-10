@@ -1,6 +1,8 @@
 <div class="dropdown coursework-actions">
-    <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton"
-            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Edit
+    <button class="btn btn-outline-secondary btn-icon rounded-circle" type="button" id="dropdownMenuButton"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">{{#str}} edit {{/str}}</span>
+            <i class="fa-solid fa-ellipsis-vertical"></i>
     </button>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
         {{#defaultduedate}}
@@ -10,10 +12,10 @@
                    data-name="{{extension.stdname}}"
                    data-time="{{extension.datatime}}"
                    data-params="{{extension.extensionparams}}"
-                >Submission extension
+                >{{#str}} submissionextension, mod_coursework {{/str}}
                     <small class="actions-extension-date-container {{#extension.date}}d-block{{/extension.date}} {{^extension.date}}d-none{{/extension.date}}">
                         <i class="fa-solid fa-circle-check text-success mr-2"></i>
-                        <span class="sr-only">Extension granted date </span>
+                        <span class="sr-only">{{#str}} extensiongranteddate, mod_coursework {{/str}}</span>
                         <span class="actions-extension-date">
                             {{#extension.date}}
                                 {{#userdate}}{{extension.date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
@@ -21,28 +23,27 @@
                         </span>
                     </small>
                 </a>
-                {{#submission.url}}<div class="dropdown-divider"></div>{{/submission.url}}
-                {{#finalise}}<div class="dropdown-divider"></div>{{/finalise}}
-                {{#unfinalise}}<div class="dropdown-divider"></div>{{/unfinalise}}
-                {{#plagarism.url}}<div class="dropdown-divider"></div>{{/plagarism.url}}
+                <div class="dropdown-divider"></div>
             {{/extension.show}}
         {{/defaultduedate}}
+
         {{#submission.url}}
             <a class="dropdown-item submit-on-behalf" href="{{submission.url}}">{{submission.label}}</a>
-            {{#finalise}}<div class="dropdown-divider"></div>{{/finalise}}
-            {{#unfinalise}}<div class="dropdown-divider"></div>{{/unfinalise}}
-            {{#plagarism.url}}<div class="dropdown-divider"></div>{{/plagarism.url}}
+            <div class="dropdown-divider"></div>
         {{/submission.url}}
+
         {{#finalise}}
             <a class="dropdown-item submission-finalisation" data-action="finalise" data-student="{{studentname}}" href="{{finalise.url}}">Finalise submission</a>
-            {{#unfinalise}}<div class="dropdown-divider"></div>{{/unfinalise}}
-            {{#plagarism.url}}<div class="dropdown-divider"></div>{{/plagarism.url}}
+            <div class="dropdown-divider"></div>
         {{/finalise}}
+
         {{#unfinalise}}
-             <a class="dropdown-item submission-finalisation" data-action="unfinalise" data-student="{{studentname}}" href="{{unfinalise.url}}">Unfinalise submission</a>
-            {{#plagarism.url}}<div class="dropdown-divider"></div>{{/plagarism.url}}
+            <a class="dropdown-item submission-finalisation" data-action="unfinalise" data-student="{{studentname}}" href="{{unfinalise.url}}">Unfinalise submission</a>
+            <div class="dropdown-divider"></div>
         {{/unfinalise}}
+
         {{#plagarism.url}}
+            <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{{plagarism.url}}">Plagarism
                 {{#plagarismstatus}}
                     <small class="d-block">
