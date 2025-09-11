@@ -2799,15 +2799,15 @@ class coursework extends table_base {
      * @return bool
      * @throws \dml_exception
      */
-    public function student_in_group($studentid, $groupid) {
+    public function student_in_group($studentid, $groupid): bool {
         global $DB;
-        $sql = "SELECT groups.*
-                  FROM {groups} groups
+        $sql = "SELECT g.id
+                  FROM {groups} g
             INNER JOIN {groups_members} gm
-                    ON gm.groupid = groups.id
+                    ON gm.groupid = g.id
                  WHERE gm.userid = :userid
-                   AND groups.courseid = :courseid
-                   AND groups.id = :groupid";
+                   AND g.courseid = :courseid
+                   AND g.id = :groupid";
         $params = ['userid' => $studentid,
             'courseid' => $this->get_course()->id,
             'groupid' => $groupid];
