@@ -25,8 +25,8 @@ require_once(dirname(__FILE__) . '/../../../../config.php');
 global $CFG, $PAGE, $USER;
 
 $courseworkid = required_param('courseworkid', PARAM_INT);
-$allocatableid = optional_param('allocatableid', $USER->id, PARAM_INT);
-$allocatabletype = optional_param('allocatabletype', $USER->id, PARAM_ALPHANUMEXT);
+$allocatableid = optional_param('allocatableid', 0, PARAM_INT);
+$allocatabletype = optional_param('allocatabletype', '', PARAM_ALPHANUMEXT);
 
 $params = [
     'courseworkid' => $courseworkid,

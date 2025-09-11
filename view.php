@@ -385,7 +385,7 @@ $event->trigger();
 
 // Print the page header.
 
-// Sort group by groupname (default)
+// Sort group by groupname (default).
 if ($coursework->is_configured_to_have_group_submissions()) {
     $sortby = optional_param('sortby', 'groupname', PARAM_ALPHA);
     $viewallstudentssortby = optional_param('viewallstudents_sortby', 'groupname', PARAM_ALPHA);
@@ -407,7 +407,7 @@ $PAGE->set_url('/mod/coursework/view.php', $params);
 $PAGE->set_title($coursework->name);
 $PAGE->set_heading($course->shortname);
 
-// Auto publish after the deadline
+// Auto publish after the deadline.
 if ($coursework->has_individual_autorelease_feedback_enabled() &&
     $coursework->individual_feedback_deadline_has_passed() &&
     $coursework->has_stuff_to_publish()
@@ -416,7 +416,7 @@ if ($coursework->has_individual_autorelease_feedback_enabled() &&
     $coursework->publish_grades();
 }
 
-// Create automatic feedback
+// Create automatic feedback.
 if ($coursework->automaticagreement_enabled()) {
     $coursework->create_automatic_feedback();
 
@@ -488,14 +488,14 @@ if ($canviewstudents) {
         $viewallstudentsgroupnamealpha = $SESSION->viewallstudents_groupname_alpha[$coursemoduleid] = "";
     }
 
-    $html .= $pagerenderer->teacher_grading_page($coursework, $page, $perpage, $sortby, $sorthow, $group, $courseworkfirstnamealpha, $courseworklastnamealpha, $courseworkgroupnamealpha, $resettable);
-//        $html .= $pagerenderer->non_teacher_allocated_grading_page($coursework, $viewallstudentspage, $viewallstudentsperpage, $viewallstudentssortby, $viewallstudentssorthow, $group, $displayallstudents, $viewallstudentsfirstnamealpha, $viewallstudentslastnamealpha, $viewallstudentsgroupnamealpha);
-    $html .= $pagerenderer->datatables_render($coursework);
+    $html .= $pagerenderer->teacher_grading_page(
+        $coursework, $page, $perpage, $sortby, $sorthow, $group,
+        $courseworkfirstnamealpha, $courseworklastnamealpha, $courseworkgroupnamealpha, $resettable
+    );
     $html .= $pagerenderer->render_modal();
 }
 
 $PAGE->requires->jquery();
-$PAGE->requires->css(new moodle_url('/mod/coursework/datatables/css/datatables.bootstrap.min.css'));
 
 // Require JS files.
 // Note that jquery datatables files not included as called by coursework.js.

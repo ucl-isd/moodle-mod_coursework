@@ -66,6 +66,7 @@ class student_cell_data extends cell_data_base {
      */
     private function get_group_data(group $group, bool $hidden): stdClass {
         $data = new stdClass();
+        $data->id = $hidden ? '' : $group->id;
         $data->name = $group->name();
         $data->picture = $hidden ? '' :
             get_group_picture_url($group->get_object($group->id()), $this->coursework->get_course_id());
@@ -105,6 +106,7 @@ class student_cell_data extends cell_data_base {
     private function get_user_data(user $user, grading_table_row_base $rowsbase, bool $hidden): stdClass {
         if ($hidden) {
             return (object)[
+                'id' => '',
                 'name' => $this->get_candidate_or_fallback($rowsbase->get_allocatable_id(), 'hidden'),
                 'url' => '',
                 'picture' => ''
@@ -112,6 +114,7 @@ class student_cell_data extends cell_data_base {
         }
 
         return (object)[
+            'id' => $rowsbase->get_allocatable_id(),
             'name' => $this->get_enhanced_name_with_candidate_number($user->id(), $rowsbase->get_user_name()),
             'url' => $user->get_user_profile_url(),
             'picture' => $user->get_user_picture_url()

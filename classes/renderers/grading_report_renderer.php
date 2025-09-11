@@ -20,35 +20,75 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_coursework\renderers;
+
+use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\grading_report;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\coursework;
+use mod_coursework\models\user;
 use mod_coursework\render_helpers\grading_report\cells\cell_interface;
 use mod_coursework\render_helpers\grading_report\data\actions_cell_data;
 use mod_coursework\render_helpers\grading_report\data\marking_cell_data;
 use mod_coursework\render_helpers\grading_report\data\student_cell_data;
 use mod_coursework\render_helpers\grading_report\data\submission_cell_data;
 use mod_coursework\render_helpers\grading_report\sub_rows\sub_rows_interface;
+use stdClass;
 
 /**
- * Class mod_coursework_grading_report_renderer is responsible for
+ * Class to render the grading / submission table.
  *
  */
-class mod_coursework_grading_report_renderer extends plugin_renderer_base {
+class grading_report_renderer extends \core\output\plugin_renderer_base {
 
     /**
      * Renders the grading report.
      *
-     * @param $gradingreport
+     * @param grading_report $gradingreport
      * @return bool|string
      * @throws \core\exception\moodle_exception
      */
-    public function render_grading_report($gradingreport) {
+    public function render_grading_report(grading_report $gradingreport) {
 
         $tablerows = $gradingreport->get_table_rows_for_page();
 
         // Sort the table rows.
+        $this->sort_table_rows($tablerows);
+
+        $template = new stdClass();
+        $template->coursework = [
+            'id' => $gradingreport->get_coursework()->id,
+            'title' => $gradingreport->get_coursework()->name,
+        ];
+        $template->defaultduedate = $gradingreport->get_coursework()->get_deadline();
+        $template->isgroupsubmission = $gradingreport->get_coursework()->is_configured_to_have_group_submissions();
+        $template->releasemarks = $this->prepare_release_marks_button($gradingreport->get_coursework());
+        $template->tr = [];
+        $template->markerfilter = [];
+
+        /** @var grading_table_row_base $rowobject */
+        foreach ($tablerows as $rowobject) {
+            $trdata = $this->get_table_row_data($gradingreport->get_coursework(), $rowobject);
+            $this->set_tr_marker_filter($trdata);
+
+            // Collect markers for filter.
+            if (!empty($trdata->markers)) {
+                // Add valid markers to filter, preserving only first occurrence.
+                foreach (array_filter($trdata->markers, fn($m) => isset($m->markerid)) as $marker) {
+                    if (!array_key_exists($marker->markerid, $template->markerfilter)) {
+                        $template->markerfilter[$marker->markerid] = $marker;
+                    }
+                }
+            }
+            $template->tr[] = $trdata;
+        }
+        $template->markerfilter = array_values($template->markerfilter);
+
+        return $this->render_from_template('mod_coursework/submissions/table', $template);
+    }
+
+    protected function sort_table_rows($tablerows) {
         usort($tablerows, function($rowa, $rowb) {
 
             $submissiona = $rowa->get_submission();
@@ -69,42 +109,54 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
             // Both submissions are objects, compare by timemodified.
             return $submissiona->timemodified <=> $submissionb->timemodified;
         });
+    }
 
-        $template = new stdClass();
-        $template->isgroupsubmission = $gradingreport->get_coursework()->is_configured_to_have_group_submissions();
-        $template->releasemarks = $this->prepare_release_marks_button($gradingreport->get_coursework());
-        $template->tr = [];
-        $template->markerfilter = [];
+    /**
+     * Get the data for a single row in the table (representing one "allocatable").
+     * @param coursework $coursework
+     * @param grading_table_row_base $rowobject
+     * @return stdClass
+     */
+    public static function get_table_row_data(coursework $coursework, grading_table_row_base $rowobject): object {
+        $trdata = new stdClass();
+        // Prepare data for table cells.
+        self::prepare_student_cell_data($coursework, $rowobject, $trdata);
+        self::prepare_submission_cell_data($coursework, $rowobject, $trdata);
+        self::prepare_marking_cell_data($coursework, $rowobject, $trdata);
+        self::prepare_actions_cell_data($coursework, $rowobject, $trdata);
+        self::set_tr_status($trdata);
+        return $trdata;
+    }
 
-        /** @var grading_table_row_base $rowobject */
-        foreach ($tablerows as $rowobject) {
-            $trdata = new stdClass();
-
-            // Prepare data for table cells.
-            $this->prepare_student_cell_data($gradingreport->get_coursework(), $rowobject, $trdata);
-            $this->prepare_submission_cell_data($gradingreport->get_coursework(), $rowobject, $trdata);
-            $this->prepare_marking_cell_data($gradingreport->get_coursework(), $rowobject, $trdata);
-            $this->prepare_actions_cell_data($gradingreport->get_coursework(), $rowobject, $trdata);
-
-            // Set tr status and marker filter.
-            $this->set_tr_status($trdata);
-            $this->set_tr_marker_filter($trdata);
-            $template->tr[] = $trdata;
-
-            // Collect markers for filter.
-            if (!empty($trdata->markers)) {
-                // Add valid markers to filter, preserving only first occurrence.
-                foreach (array_filter($trdata->markers, fn($m) => isset($m->markerid)) as $marker) {
-                    if (!array_key_exists($marker->markerid, $template->markerfilter)) {
-                        $template->markerfilter[$marker->markerid] = $marker;
-                    }
-                }
-            }
+    /**
+     * Export the data for a single table row to make it accessible from JS.
+     * Enables a table row to be re-rendered from JS when updated via modal form.
+     * @param int $alloctableid
+     * @param string $allocatabletype
+     * @return ?object
+     */
+    public static function export_one_row_data(coursework $coursework, int $alloctableid, string $allocatabletype): ?object {
+        global $USER;
+        $classname = "\\mod_coursework\\models\\$allocatabletype";
+        $alloctable = $classname::get_object($alloctableid);
+        if (!$alloctable) {
+            return null;
         }
-        $template->markerfilter = array_values($template->markerfilter);
-        $template->defaultduedate = $gradingreport->get_coursework()->get_deadline();
+        $rowclass = $coursework->has_multiple_markers()
+            ? 'mod_coursework\grading_table_row_multi'
+            : 'mod_coursework\grading_table_row_single';
+        $ability = new ability(user::find($USER, false), $coursework);
+        $row = new $rowclass($coursework, $alloctable);
+        if (!$ability->can('show', $row)) {
+            return null;
+        }
+        $data = self::get_table_row_data($coursework, $row);
 
-        return $this->render_from_template('mod_coursework/submissions/table', $template);
+        // We need to add some to this because the tr and actions templates both use fields from parent as well as row.
+        // Otherwise some action menu elements may be incomplete.
+        $data->coursework = (object)['id' => $coursework->id()];
+        $data->defaultduedate = $coursework->get_deadline();
+        return $data;
     }
 
     /**
@@ -115,7 +167,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @param stdClass $trdata
      * @return void
      */
-    protected function prepare_student_cell_data(coursework $coursework, grading_table_row_base $rowobject, stdClass $trdata) {
+    protected static function prepare_student_cell_data(coursework $coursework, grading_table_row_base $rowobject, stdClass $trdata) {
         $dataprovider = new student_cell_data($coursework);
         $trdata->submissiontype = $dataprovider->get_table_cell_data($rowobject);;
     }
@@ -128,7 +180,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @param stdClass $trdata
      * @return void
      */
-    protected function prepare_submission_cell_data(coursework $coursework, grading_table_row_base $rowobject, stdClass $trdata) {
+    protected static function prepare_submission_cell_data(coursework $coursework, grading_table_row_base $rowobject, stdClass $trdata) {
         $dataprovider = new submission_cell_data($coursework);
         $trdata->submission = $dataprovider->get_table_cell_data($rowobject);
     }
@@ -141,7 +193,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @param stdClass $trdata
      * @return void
      */
-    protected function prepare_marking_cell_data(coursework $coursework, grading_table_row_base $rowobject, stdClass $trdata) {
+    protected static function prepare_marking_cell_data(coursework $coursework, grading_table_row_base $rowobject, stdClass $trdata) {
         $dataprovider = new marking_cell_data($coursework);
         $markingcelldata = $dataprovider->get_table_cell_data($rowobject);
         $trdata->markers = $markingcelldata->markers;
@@ -156,7 +208,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @param stdClass $trdata
      * @return void
      */
-    protected function prepare_actions_cell_data(
+    protected static function prepare_actions_cell_data(
         coursework $coursework,
         grading_table_row_base $rowobject,
         stdClass $trdata
@@ -182,7 +234,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
 
         $releasemarks = new stdClass();
         $releasemarks->warning = '';
-        $releasemarks->url = new moodle_url(
+        $releasemarks->url = new \moodle_url(
             '/mod/coursework/actions/releasemarks.php',
             ['cmid' => $coursework->get_coursemodule_id()]
         );
@@ -201,7 +253,7 @@ class mod_coursework_grading_report_renderer extends plugin_renderer_base {
      * @param stdClass $trdata
      * @return void
      */
-    protected function set_tr_status(stdClass $trdata): void {
+    protected static function set_tr_status(stdClass $trdata): void {
         $status = [];
         if (!empty($trdata->submission->extensiongranted)) {
             $status[] = 'extension-granted';

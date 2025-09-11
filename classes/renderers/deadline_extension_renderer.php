@@ -23,7 +23,6 @@
 namespace mod_coursework\renderers;
 
 use mod_coursework\allocation\allocatable;
-use mod_coursework\models\deadline_extension;
 
 /**
  * Class deadline_extension_renderer is responsible for rendering pages and objects to do with
@@ -70,12 +69,7 @@ class deadline_extension_renderer {
         $PAGE->set_title($SITE->fullname);
         $PAGE->set_heading($SITE->fullname);
 
-        $allocatable = $vars['deadlineextension']->get_allocatable();
-
-        $html = '<h1>Adding a new extension to the deadline for '.$allocatable->name().'</h1>';
-
         echo $OUTPUT->header();
-        echo $html;
         $vars['form']->display();
         echo $OUTPUT->footer();
 
@@ -88,17 +82,12 @@ class deadline_extension_renderer {
     public function edit_page($vars) {
         global $PAGE, $SITE, $OUTPUT;
 
-        $allocatable = $vars['deadlineextension']->get_allocatable();
-
         $PAGE->set_pagelayout('standard');
-        $PAGE->navbar->add('Edit deadline extension for '.$allocatable->name());
+        $PAGE->navbar->add($SITE->fullname);
         $PAGE->set_title($SITE->fullname);
         $PAGE->set_heading($SITE->fullname);
 
-        $html = '<h1>Editing the extension to the deadline for ' . $allocatable->name() . '</h1>';
-
         echo $OUTPUT->header();
-        echo $html;
         $vars['form']->display();
         echo $OUTPUT->footer();
     }
