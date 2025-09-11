@@ -127,6 +127,8 @@ class submission_cell_data extends cell_data_base {
      * @return string HTML of plagiarism links.
      */
     protected function get_plagiarism_links(\stored_file $file, coursework $coursework): string {
+        global $CFG;
+        require_once("$CFG->libdir/plagiarismlib.php");
         $params = [
             'userid' => $file->get_userid(),
             'file' => $file,
