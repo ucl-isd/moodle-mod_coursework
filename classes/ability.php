@@ -208,7 +208,6 @@ class ability extends \mod_coursework\framework\ability {
         $this->allow_show_grading_table_row_if_user_can_grant_extension_and_no_allocation();
         // CTP-4215 external examiner with capability mod/coursework:viewallgradesatalltimes needs to see all submissions.
         $this->allow_show_grading_table_row_if_user_can_view_grades_at_all_times();
-        $this->allow_show_grading_table_row_if_user_can_grant_extension_and_no_allocation();
         $this->allow_show_grading_table_row_if_user_can_submit_on_behalf_of();
         $this->allow_show_grading_table_row_if_user_can_export_final_grades();
 
