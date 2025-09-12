@@ -384,33 +384,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     *
-     * @param $simpleform
-     * @return array
-     */
-    private function get_comment_options($simpleform) {
-        $gradingformguidecontroller = $simpleform->get_grading_controller();
-
-        if (!$gradingformguidecontroller) {
-            return null;
-        }
-        $definition = $gradingformguidecontroller->get_definition();
-        if (!property_exists($definition, 'guide_comments')) {
-            return null;
-        }
-        $comments = $definition->guide_comments;
-
-        $commentoptions = [];
-        foreach ($comments as $id => $comment) {
-            $commentoption = new stdClass();
-            $commentoption->id = $id;
-            $commentoption->description = $comment['description'];
-            $commentoptions[] = $commentoption;
-        }
-        return $commentoptions;
-    }
-
-    /**
      * @param moderation $newmoderation
      * @throws coding_exception
      */
@@ -1201,43 +1174,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
         $o = html_writer::table($table);
         return $o;
-    }
-
-    public function render_modal() {
-        $result = $this->render_advance_plugins_form();
-        $result .= $this->modal_grading_render();
-        return $result;
-    }
-
-    protected function render_advance_plugins_form() {
-        $form = new \mod_coursework\forms\advance_plugins_form();
-        $result = '<div class="hide">' . $form->render() . '</div>';
-        return $result;
-    }
-
-    /**
-     * @return string
-     */
-    public function modal_grading_render() {
-        $this->page->requires->string_for_js('insertcomment', 'gradingform_guide');
-        $html = '<div class="modal fade" tabindex="-1" role="dialog" id="modal-grading">
-                  <div class="modal-dialog modal-lg modal-grading" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                      </div>
-                                            <div class="hide">
-                        <input id="cell_selector" type="hidden" />
-                        <input id="cell_type" type="hidden" />
-                      </div>
-                      <div class="modal-body">
-                        <i class="fa fa-spin fa-spinner"></i> loading
-                      </div>
-                       </div><!-- /.modal-content -->
-                  </div><!-- /.modal-dialog -->
-                </div><!-- /.modal -->
-         <style>.modal table.feedback {table-layout: fixed;} .modal .gradingform_rubric, .modal #guide-advancedgrading {width: 100%; overflow-x: scroll} .modal .form-inline>div {width: 100%}</style>';
-        return $html;
     }
 
     /**

@@ -116,27 +116,11 @@ class router {
 
             case 'assessor grading':
 
-            case 'ajax new feedback':
-                $url = new moodle_url('/mod/coursework/actions/feedbacks/new.php',
-                    ['submissionid' => $items['submission']->id,
-                        'stage_identifier' => $items['stage']->identifier(),
-                        'assessorid' => $items['assessor']->id,
-                        'ajax' => 1]);
-                break;
-
             case 'new feedback':
                 $url = new moodle_url('/mod/coursework/actions/feedbacks/new.php',
                                           ['submissionid' => $items['submission']->id,
                                                 'stage_identifier' => $items['stage']->identifier(),
                                                 'assessorid' => $items['assessor']->id]);
-                break;
-
-            case 'ajax new final feedback':
-                $params = ['submissionid' => $items['submission']->id,
-                    'stage_identifier' => $items['stage']->identifier(),
-                    'isfinalgrade' => 1,
-                    'ajax' => 1];
-                $url = new moodle_url('/mod/coursework/actions/feedbacks/new.php', $params);
                 break;
 
             case 'new final feedback':
@@ -162,19 +146,9 @@ class router {
                                       ]);
                 break;
 
-            case 'ajax edit feedback':
-                $url = new moodle_url('/mod/coursework/actions/feedbacks/edit.php',
-                    ['feedbackid' => $items['feedback']->id, 'ajax' => 1]);
-                break;
-
             case 'edit feedback':
                 $url = new moodle_url('/mod/coursework/actions/feedbacks/edit.php',
                                       ['feedbackid' => $items['feedback']->id]);
-                break;
-
-            case 'ajax update feedback':
-                $url = new moodle_url('/mod/coursework/actions/feedbacks/update.php',
-                    ['feedbackid' => $items['feedback']->id, 'ajax' => 1]);
                 break;
 
             case 'update feedback':

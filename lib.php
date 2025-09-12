@@ -1165,23 +1165,6 @@ function coursework_records_to_menu($records, $field1, $field2) {
 }
 
 /**
- * Custom error handler for ADODB used by the sits class. Came with no docs so not sure what it's for.
- * Set as error handler at top of sits class file. Suspect it suppresses errors.
- *
- * @param $dbms
- * @param $fn
- * @param $errno
- * @param $errmsg
- * @param $p1
- * @param $p2
- * @param $thisconnection
- * @internal param $thisConnection
- * @return void
- */
-function coursework_ajax_error($dbms, $fn, $errno, $errmsg, $p1, $p2, &$thisconnection) {
-}
-
-/**
  * @param $feature
  * @return bool|null
  */
