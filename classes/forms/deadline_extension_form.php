@@ -379,6 +379,9 @@ class deadline_extension_form extends dynamic_form {
         // If we reach this far with no errors, we can update the extension.
         if (empty($errors)) {
             $this->extension->update_attributes($data);
+            $this->extension->update_calendar_event(
+                $data->extended_deadline
+            );
         }
         return [
             'success' => empty($errors),

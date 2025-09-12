@@ -97,9 +97,6 @@ class deadline_extensions_controller extends controller_base {
         if ($this->cancel_button_was_pressed()) {
             redirect($courseworkpageurl);
         }
-        /**
-         * @var deadline_extension $deadline_extension
-         */
         if ($this->form->is_validated()) {
             $data = $this->form->get_data();
             $data->extra_information_text = $data->extra_information['text'];
@@ -110,6 +107,9 @@ class deadline_extensions_controller extends controller_base {
             $ability->require_can('create', $this->deadlineextension);
 
             $this->deadlineextension->save();
+            $this->deadlineextension->update_calendar_event(
+                $this->deadlineextension->extended_deadline
+            );
             redirect(
                 $courseworkpageurl,
                 get_string('extension_saved', 'mod_coursework', $allocatable->name()),
@@ -181,7 +181,6 @@ class deadline_extensions_controller extends controller_base {
      */
     protected function update_deadline_extension() {
         global $USER;
-
         $updateurl = $this->get_router()->get_path('update deadline extension');
         $this->form = new deadline_extension_form(
             $updateurl,
@@ -195,10 +194,6 @@ class deadline_extensions_controller extends controller_base {
         if ($this->cancel_button_was_pressed()) {
             redirect($courseworkpageurl);
         }
-        /**
-         * @var deadline_extension $deadline_extension
-         */
-
         $ability = new ability(user::find($USER), $this->coursework);
         $values = $this->form->get_data();
         $this->deadlineextension = deadline_extension::find(['id' => $this->params['id']]);
@@ -209,6 +204,9 @@ class deadline_extensions_controller extends controller_base {
             $values->extra_information_text = $values->extra_information['text'];
             $values->extra_information_format = $values->extra_information['format'];
             $this->deadlineextension->update_attributes($values);
+            $this->deadlineextension->update_calendar_event(
+                $this->deadlineextension->extended_deadline
+            );
             redirect($courseworkpageurl);
         } else {
             $this->render_page('edit');

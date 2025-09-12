@@ -41,6 +41,11 @@ use mod_coursework\event\extension_deleted;
 class deadline_extension extends table_base {
 
     /**
+     * Value of mdl_event.eventtype for extensions.
+     */
+    const COURSEWORK_EVENT_TYPE_EXTENSION = 'extension';
+
+    /**
      * @var coursework
      */
     protected $coursework;
@@ -206,7 +211,7 @@ class deadline_extension extends table_base {
             );
             $DB->delete_records(self::$tablename, ['id' => $this->id]);
             self::after_destroy();
-
+            $this->update_calendar_event(0);
             // Keep a record of what's deleted in the log table for audit purposes.
             $event = extension_deleted::create([
                 'objectid' => $this->id,
@@ -215,6 +220,62 @@ class deadline_extension extends table_base {
             ]);
 
             $event->trigger();
+        }
+    }
+    /**
+     * User needs to see updated deadline in timeline block on dashboard.
+     * Adapted from save_user_extension()in mod/assign/locallib.php.
+     * Event is only shown to user if mod_coursework_core_calendar_is_event_visible() returns true.
+     * @param int $extensionduedate
+     * @return void
+     */
+    public function update_calendar_event(int $extensionduedate): bool {
+        global $DB;
+        $modulename = 'coursework';
+        $cm = $this->coursework->get_course_module();
+
+        $sqlparams = [
+            'eventtype' => self::COURSEWORK_EVENT_TYPE_EXTENSION,
+            'modulename' => $modulename,
+            'instance' => $this->coursework->id,
+        ];
+        $allocatable = $this->get_allocatable();
+        if ($allocatable->type() == 'user') {
+            $sqlparams['userid'] = $allocatable->id();
+            $sqlparams['groupid'] = 0;
+        } else if ($allocatable->type() == 'group') {
+            $sqlparams['userid'] = 0;
+            $sqlparams['groupid'] = $allocatable->id();
+        } else {
+            throw new \Exception("Unexpected allocatable type");
+        }
+
+        if (!$extensionduedate) {
+            $DB->delete_records('event', $sqlparams);
+            return true;
+        }
+
+        $event = $DB->get_record('event', $sqlparams);
+
+        if ($event) {
+            $event->timestart = $extensionduedate;
+            return $DB->update_record('event', $event);
+        } else {
+            $event = (object)$sqlparams;
+            $event->type = CALENDAR_EVENT_TYPE_ACTION;
+            $event->name = get_string('calendarextension', $modulename, $this->coursework->name);
+            $event->description = format_module_intro($modulename, $this->coursework, $cm->id);
+            $event->format = FORMAT_HTML;
+            $event->courseid = 0;
+            $event->modulename = $modulename;
+            $event->instance = $this->coursework->id;
+            $event->timestart = $extensionduedate;
+            $event->timeduration = 0;
+            $event->visible = instance_is_visible($modulename, $this->coursework);
+            $event->priority = null;
+            $event->component = $modulename;
+
+            return (bool)\calendar_event::create($event, false);
         }
     }
 
