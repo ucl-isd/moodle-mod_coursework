@@ -26,14 +26,13 @@
 
 require_once(dirname(__FILE__) . '/../../../../config.php');
 
-global $CFG, $USER;
+global $USER;
 
 $submissionid = required_param('submissionid', PARAM_INT);
 $isfinalgrade = optional_param('isfinalgrade', 0, PARAM_INT);
 $assessorid = optional_param('assessorid', $USER->id, PARAM_INT);
 $stageidentifier = optional_param('stage_identifier', '', PARAM_ALPHANUMEXT);
 $finalised = (bool)optional_param('submitbutton', 0, PARAM_TEXT);
-$ajax = optional_param('ajax', 0, PARAM_INT);
 
 $params = [
     'submissionid' => $submissionid,
@@ -41,12 +40,7 @@ $params = [
     'assessorid' => $assessorid,
     'stage_identifier' => $stageidentifier,
     'finalised' => $finalised,
-    'ajax' => $ajax,
 ];
-
-if ($ajax) {
-    $params['cell_type'] = required_param('cell_type', PARAM_TEXT);
-}
 
 $controller = new mod_coursework\controllers\feedback_controller($params);
 $controller->create_feedback();
