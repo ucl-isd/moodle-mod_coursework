@@ -33,6 +33,7 @@ use mod_coursework\grading_table_row_base;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
+use mod_coursework\models\null_user;
 use mod_coursework\router;
 use mod_coursework\stages\base as stage;
 use mod_coursework\stages\final_agreed;
@@ -69,17 +70,25 @@ class marking_cell_data extends cell_data_base {
     /**
      * Creates marker data object with common properties.
      *
-     * @param user $assessor
+     * @param user|null_user $assessor
+     * @param int $markingstage
      * @return stdClass
      */
-    private function create_marker_data(user $assessor): stdClass {
+    private function create_marker_data($assessor, int $markingstage, bool $canaddfeedback): stdClass {
+        global $OUTPUT;
         $marker = new stdClass();
-        $marker->markerid = $assessor->id();
-        $marker->markername = $assessor->name();
-        $marker->markerimg = $assessor->get_user_picture_url();
-        $marker->markerurl = $assessor->get_user_profile_url();
-        $marker->markeridentifier = sprintf('marker-%d', $assessor->id());
-
+        $marker->markingstage = $markingstage;
+        if ($assessor instanceof user) {
+            $marker->markerid = $assessor->id();
+            $marker->markername = $assessor->name();
+            $marker->markerimg = $assessor->get_user_picture_url();
+            $marker->markerurl = $assessor->get_user_profile_url();
+            $marker->markeridentifier = sprintf('marker-%d', $assessor->id());
+        } else if ($canaddfeedback) {
+            // Just a placeholder to show "Marker 1" etc. until a marker is allocated.
+            $marker->markername = get_string('markerdefaultname', 'mod_coursework', $markingstage);
+            $marker->markerimg = $OUTPUT->image_url('u/f2');
+        }
         return $marker;
     }
 
@@ -137,15 +146,17 @@ class marking_cell_data extends cell_data_base {
         $rowdata = new stdClass();
         $rowdata->markers = [];
 
+        $markernumber = 1;
         foreach ($tablerows as $row) {
             $feedback = $row->get_feedback();
             // Get the assessor to last edit user if feedback exists, otherwise use the allocated assessor.
             $assessor = !empty($feedback) ? user::find($feedback->lasteditedbyuser) : $row->get_assessor();
 
-            $marker = $assessor instanceof user ? $this->create_marker_data($assessor) : new stdClass();
+            $canaddfeedback = $this->can_add_new_feedback($row, $rowsbase);
+            $marker = $this->create_marker_data($assessor, $markernumber, $canaddfeedback);
             $this->process_feedback_data($marker, $feedback, $rowsbase, $row);
 
-            if ($this->can_add_new_feedback($row, $rowsbase)) {
+            if ($canaddfeedback) {
                 $marker->addfeedback = (object)[
                     'markurl' => $this->get_mark_url(
                         'new',
@@ -159,6 +170,7 @@ class marking_cell_data extends cell_data_base {
             }
 
             $rowdata->markers[] = $marker;
+            $markernumber++;
         }
 
         // Set the agreed mark if this is for multiple markers.
