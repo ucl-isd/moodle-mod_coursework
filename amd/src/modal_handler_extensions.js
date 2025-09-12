@@ -134,9 +134,9 @@ export const init = (courseworkid) => {
 
 /**
  * Once a row has been changed via modal form, replace it in the UI with fresh data from server.
- * @param rowElement to replace
- * @param dataSet data we got from the original click
- * @param successMessage
+ * @param {Element} rowElement to replace
+ * @param {object} dataSet data we got from the original click
+ * @param {string} successMessage
  * @returns {Promise<void>}
  */
 const replaceRow = async (rowElement, dataSet, successMessage) => {

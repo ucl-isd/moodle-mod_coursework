@@ -492,20 +492,12 @@ if ($canviewstudents) {
         $coursework, $page, $perpage, $sortby, $sorthow, $group,
         $courseworkfirstnamealpha, $courseworklastnamealpha, $courseworkgroupnamealpha, $resettable
     );
-    $html .= $pagerenderer->render_modal();
 }
 
-$PAGE->requires->jquery();
-
-// Require JS files.
-// Note that jquery datatables files not included as called by coursework.js.
 if ($cangrade || $canviewstudents) {
-    $PAGE->requires->js_call_amd('mod_coursework/coursework', 'init');
     $PAGE->requires->js_call_amd('mod_coursework/coursework_edit', 'init');
 }
 
 echo $OUTPUT->header();
 echo $html;
-// Provide wwwroot to JS.
-echo html_writer::div('', '', ['id' => 'mod-coursework-config', 'data-wwwroot' => $CFG->wwwroot]);
 echo $OUTPUT->footer();
