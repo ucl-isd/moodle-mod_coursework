@@ -26,7 +26,7 @@
 
 require_once(dirname(__FILE__) . '/../../../../config.php');
 
-global $CFG, $USER;
+global $USER;
 
 $submissionid = required_param('submissionid', PARAM_INT);
 $isfinalgrade = optional_param('isfinalgrade', 0, PARAM_INT);

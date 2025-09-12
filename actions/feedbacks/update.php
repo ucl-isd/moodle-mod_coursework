@@ -26,8 +26,6 @@
 
 require_once(dirname(__FILE__) . '/../../../../config.php');
 
-global $CFG, $USER;
-
 $feedbackid = required_param('feedbackid', PARAM_INT);
 $finalised = (bool)optional_param('submitbutton', 0, PARAM_TEXT);
 $remove = (bool)optional_param('removefeedbackbutton', 0, PARAM_TEXT);

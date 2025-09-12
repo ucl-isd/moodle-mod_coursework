@@ -22,7 +22,7 @@
 
 require_once(dirname(__FILE__) . '/../../../../config.php');
 
-global $CFG, $USER;
+global $USER;
 
 $submissionid = required_param('submissionid', PARAM_INT);
 $cmid = optional_param('cmid', 0, PARAM_INT);
