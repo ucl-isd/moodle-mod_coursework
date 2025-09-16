@@ -231,6 +231,7 @@ $string['coursework_not_found'] = 'Coursework not found';
 $string['coursework_over_2_wks'] = 'Over 2 weeks mark.';
 $string['coursework_reminder'] = 'First reminder emailed to student (days)';
 $string['coursework_undergraduate_cap_2_weeks'] = 'Cap limit for undergraduates.';
+$string['courseworkisdue'] = '{$a} is due';
 $string['courseworkname'] = 'Coursework title';
 $string['courseworkname_help'] = 'This is the content of the help tooltip associated with the '. 'Coursework name field. Markdown syntax is supported.';
 $string['courseworknavlink'] = 'Coursework reports';

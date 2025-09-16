@@ -79,7 +79,8 @@ class personal_deadline extends table_base {
     }
 
     /**
-     * @param user $student
+     * Get any personal deadline for this student.
+     * @param \mod_coursework\allocation\allocatable|user $student
      * @param coursework $coursework
      * @return personal_deadline|bool
      */
