@@ -64,7 +64,7 @@ class deadline_extension extends table_base {
 
     /**
      * Get extension for student.
-     * @param user $student
+     * @param allocatable $student
      * @param coursework $coursework
      * @return deadline_extension|bool
      */
@@ -206,6 +206,14 @@ class deadline_extension extends table_base {
             );
             $DB->delete_records(self::$tablename, ['id' => $this->id]);
             self::after_destroy();
+            $personaldeadline = personal_deadline::get_personal_deadline_for_student($this->get_allocatable(), $this->coursework);
+            // Delete the calendar/timeline event, or set it to the existing personal deadline date if present.
+            $allocatable = $this->get_allocatable();
+            $this->coursework->update_user_calendar_event(
+                $allocatable->id(),
+                $allocatable->type(),
+                max(0, $personaldeadline->personal_deadline ?? 0)
+            );
 
             // Keep a record of what's deleted in the log table for audit purposes.
             $event = extension_deleted::create([
@@ -217,5 +225,4 @@ class deadline_extension extends table_base {
             $event->trigger();
         }
     }
-
 }
