@@ -102,12 +102,13 @@ class personal_deadlines_controller extends controller_base {
                     $data->createdbyid = $USER->id;
                     $this->personaldeadline = personal_deadline::build($data);
                     $this->personaldeadline->save();
-
+                    $this->personaldeadline->trigger_deadline_created_updated_event('create');
                 } else {
                     // Update.
                     $data->lastmodifiedbyid = $USER->id;
                     $data->timemodified = time();
                     $this->personaldeadline->update_attributes($data);
+                    $this->personaldeadline->trigger_deadline_created_updated_event('update');
                 }
                 \core\notification::success(
                     get_string(
@@ -136,13 +137,14 @@ class personal_deadlines_controller extends controller_base {
                         $data->createdbyid = $USER->id;
                         $this->personaldeadline = personal_deadline::build($data);
                         $this->personaldeadline->save();
-
+                        $this->personaldeadline->trigger_deadline_created_updated_event('create');
                     } else {
                         // Update.
                         $data->id = $this->personaldeadline->id;
                         $data->lastmodifiedbyid = $USER->id;
                         $data->timemodified = time();
                         $this->personaldeadline->update_attributes($data);
+                        $this->personaldeadline->trigger_deadline_created_updated_event('update');
                     }
                     \core\notification::success(
                         get_string(
