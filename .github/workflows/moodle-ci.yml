@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: [self-hosted, cloud-only]
+    runs-on: [self-hosted, on-premise-ltd]
 
     services:
       postgres:

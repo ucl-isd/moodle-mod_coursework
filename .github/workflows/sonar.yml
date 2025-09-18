@@ -6,7 +6,7 @@ on:
 
 jobs:
   CI:
-    runs-on: [self-hosted, cloud-only]
+    runs-on: [self-hosted, on-premise-ltd]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
