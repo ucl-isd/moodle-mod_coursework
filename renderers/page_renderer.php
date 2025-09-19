@@ -596,7 +596,14 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= $gradingreportrenderer->render_grading_report($gradingreport);
         $html .= html_writer::end_tag('div');
 
-        $this->page->requires->js_call_amd('mod_coursework/modal_handler_extensions', 'init', ['courseworkId' => $coursework->id]);
+        foreach (['modal_handler_extensions', 'modal_handler_personal_deadlines'] as $amd) {
+            $this->page->requires->js_call_amd(
+                "mod_coursework/$amd",
+                'init',
+                ['courseworkId' => $coursework->id]
+            );
+        }
+
         return $html;
     }
 

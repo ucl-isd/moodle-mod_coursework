@@ -71,6 +71,7 @@ class deadline_extension_form extends dynamic_form {
      * Form definition.
      */
     protected function definition() {
+        global $OUTPUT;
 
         $this->_form->addElement('hidden', 'allocatabletype');
         $this->_form->settype('allocatabletype', PARAM_ALPHANUMEXT);
@@ -87,15 +88,11 @@ class deadline_extension_form extends dynamic_form {
             throw new invalid_parameter_exception("Must supply coursework ID or existing feedback ID");
         }
 
-        if ($this->allocatable->name() ?? false) {
-            $titlestringkey = $this->extension->id ?? false ? 'editing' : 'adding';
-            $title = get_string(
-                "extension_$titlestringkey", 'mod_coursework', $this->allocatable->name()
-            );
-            $this->_form->addElement('html', \html_writer::tag('h2', $title));
-        }
-
-        $this->add_deadlines_badges();
+        $mustachedata = $this->get_header_mustache_data();
+        $this->_form->addElement(
+            'html',
+            $OUTPUT->render_from_template('coursework/form_header_extension', $mustachedata)
+        );
 
         // Date and time picker.
         $this->_form->addElement(
@@ -160,52 +157,45 @@ class deadline_extension_form extends dynamic_form {
     }
 
     /**
-     * Add a row of deadline badges to show existing deadlines applying to this user.
-     * @return void
+     * Add mustache data for form header template.
+     * @return object
      */
-    private function add_deadlines_badges() {
-        $badges = [
-            // Default deadline.
-            (object)[
-                'badgelabel' => get_string('default_deadline_short', 'mod_coursework'),
-                'mainlabel' => userdate($this->coursework->deadline),
-                'badgeclass' => 'light',
+    private function get_header_mustache_data(): object {
+        $data = (object)[
+            'deadlines' => [
+                // Default deadline.
+                (object)[
+                    'label' => get_string('default_deadline_short', 'mod_coursework'),
+                    'value' => userdate($this->coursework->deadline),
+                    'class' => 'light',
+                ],
             ],
         ];
 
         // User specific deadlines.
         if ($this->personaldeadline && $this->personaldeadline->personal_deadline ?? null) {
-            $badges[] = (object)[
-                'badgelabel' => get_string('personal_deadline', 'mod_coursework'),
-                'mainlabel' => userdate($this->personaldeadline->personal_deadline),
-                'badgeclass' => 'info',
+            $data->deadlines[] = (object)[
+                'label' => get_string('personal_deadline', 'mod_coursework'),
+                'value' => userdate($this->personaldeadline->personal_deadline),
+                'class' => 'info',
             ];
         }
 
         // Individual user deadline extension.
         if ($this->extension->extended_deadline ?? null) {
-            $badges[] = (object)[
-                'badgelabel' => get_string('extension_granted', 'mod_coursework'),
-                'mainlabel' => userdate($this->extension->extended_deadline),
-                'badgeclass' => 'success',
+            $data->deadlines[] = (object)[
+                'label' => get_string('extension_granted', 'mod_coursework'),
+                'value' => userdate($this->extension->extended_deadline),
+                'class' => 'success',
             ];
         }
-
-        $badgeshtml = implode('', array_map(
-            function($badge) {
-                return \html_writer::div(
-                    \html_writer::div($badge->badgelabel, "badge badge-$badge->badgeclass mr-1")
-                    . \html_writer::tag('small', $badge->mainlabel, ['class' => 'd-block']),
-                    'col-4 p-1'
-                );
-            },
-            $badges
-        ));
-
-        $this->_form->addElement(
-            'html',
-            \html_writer::div($badgeshtml, 'row mt-1 mb-3 ml-1 mr-1')
-        );
+        if ($this->allocatable->name() ?? false) {
+            $titlestringkey = $this->extension->id ?? false ? 'editing' : 'adding';
+            $data->title = get_string(
+                "extension_$titlestringkey", 'mod_coursework', $this->allocatable->name()
+            );
+        }
+        return $data;
     }
 
     /**

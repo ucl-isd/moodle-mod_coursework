@@ -27,6 +27,7 @@ namespace mod_coursework\render_helpers\grading_report\data;
 
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\deadline_extension;
+use mod_coursework\models\personal_deadline;
 use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
 use mod_coursework\router;
@@ -60,6 +61,8 @@ class actions_cell_data extends cell_data_base {
 
         // Set plagiarism parameters.
         $this->set_plagiarism_data($data, $rowsbase);
+
+        $this->set_personal_deadline_data($data, $rowsbase);
 
         return $data;
     }
@@ -236,6 +239,42 @@ class actions_cell_data extends cell_data_base {
     }
 
     /**
+     * Set extension parameters.
+     *
+     * @param stdClass $data
+     * @param grading_table_row_base $rowsbase
+     * @return void
+     */
+    protected function set_personal_deadline_data(stdClass $data, grading_table_row_base $rowsbase): void {
+        $personaldeadlinerecord = $rowsbase->get_personal_deadline_record();
+        $personaldeadline = $personaldeadlinerecord ? (int)$personaldeadlinerecord->personal_deadline : null;
+        $personaldeadlineobject = personal_deadline::find_or_build(
+            $personaldeadlinerecord ?? (object)[
+                'allocatableid' => $rowsbase->get_allocatable()->id(),
+                'allocatabletype' => $rowsbase->get_allocatable()->type(),
+                'courseworkid' => $rowsbase->get_coursework()->id(),
+            ]
+        );
+        if ($personaldeadlinerecord) {
+            $data->personaldeadline = (object)[
+                'date' => $personaldeadline,
+                'time' => userdate($personaldeadline, '%d-%m-%Y %I:%M', fixday: false),
+                'time_content' => userdate($personaldeadline, get_string('strftimedaydatetime', 'langconfig'), fixday: false),
+                'exists' => $personaldeadline > 0 ? 1 : 0,
+                // Careful when to allow edits (e.g. edit blocked if extension exists for this user).
+                'is_editable' => $this->ability->can('edit', $personaldeadlineobject),
+                'deadlineid' => $personaldeadlinerecord->id,
+            ];
+        } else {
+            // Allow user to create one.
+            $data->personaldeadline = (object)[
+                'exists' => false,
+                'is_editable' => $this->ability->can('edit', $personaldeadlineobject),
+            ];
+        }
+    }
+
+    /**
      * Check if a new submission can be made
      *
      * @param grading_table_row_base $rowsbase
@@ -263,7 +302,7 @@ class actions_cell_data extends cell_data_base {
             return true;
         }
 
-        if ($rowsbase->get_personal_deadlines() >= $this->clock->time()) {
+        if (($rowsbase->get_personal_deadlines() ?? $rowsbase->get_coursework()->get_deadline()) >= $this->clock->time()) {
             return true;
         }
 

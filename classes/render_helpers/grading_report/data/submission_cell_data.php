@@ -55,7 +55,9 @@ class submission_cell_data extends cell_data_base {
         if ($rowsbase->get_coursework()->get_deadline()) {
             $data->duedate = $rowsbase->get_coursework()->get_deadline();
         }
-
+        if ($rowsbase->get_coursework()->personal_deadlines_enabled()) {
+            $this->add_personal_deadline_data($data, $rowsbase);
+        }
         return $data;
     }
 
@@ -68,6 +70,7 @@ class submission_cell_data extends cell_data_base {
     protected function add_submission_data(stdClass $data, grading_table_row_base $rowobject): void {
         $submission = $rowobject->get_submission();
         $data->datemodified = $submission->time_submitted();
+        $data->datemodifiedstring = userdate($data->datemodified);
         $data->submissiondata = new stdClass();
         $data->submissiondata->files = $this->get_submission_files_data($rowobject);
 
@@ -183,5 +186,26 @@ class submission_cell_data extends cell_data_base {
         }
         $data->extensiongranted = true;
         $data->extensiondeadline = $extension->extended_deadline;
+        $data->extensiondeadlinestring = userdate($extension->extended_deadline);
+    }
+
+    /**
+     * Add extension data to the data object.
+     *
+     * @param stdClass $data Data object to add extension data to.
+     * @param grading_table_row_base $rowobject Row object to get extension from.
+     */
+    protected function add_personal_deadline_data(stdClass $data, grading_table_row_base $rowobject): void {
+        $personaldeadline = $rowobject->get_personal_deadlines();
+        // No deadline to show.
+        if (!$personaldeadline) {
+            return;
+        }
+        $data->personaldeadline = (object)[
+            'date' => $personaldeadline,
+            'time' => userdate($personaldeadline, '%d-%m-%Y %I:%M', fixday: false),
+            'time_content' => userdate($personaldeadline, get_string('strftimedaydatetime', 'langconfig'), fixday: false),
+            'exists' => $personaldeadline > 0 ? 1 : 0,
+        ];
     }
 }

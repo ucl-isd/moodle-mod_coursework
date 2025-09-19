@@ -1,0 +1,25 @@
+<h2>{{{title}}}</h2>
+{{#isbulkuserform}}
+    <ul>
+        {{#bulkusers}}
+            <li>{{{fullname}}}</li>
+        {{/bulkusers}}
+    </ul>
+{{/isbulkuserform}}
+
+<div class="row mt-1 mb-3 ml-1 mr-1">
+    <div class="col-md-3 p-1">{{#str}}deadlines, coursework{{/str}}</div>
+    {{#deadlines}}
+        <div class="col-md-4 p-1">
+            <div class="badge badge-{{class}} mr-1">{{{label}}}</div>
+            {{#value}}<small class="d-block">{{{value}}}</small>{{/value}}
+            {{#hasnotes}}
+                <ul>
+                    {{#notes}}
+                        <li><small class="d-block">{{{.}}}</small></li>
+                    {{/notes}}
+                </ul>
+            {{/hasnotes}}
+        </div>
+    {{/deadlines}}
+</div>
