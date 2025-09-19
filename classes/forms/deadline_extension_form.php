@@ -84,10 +84,6 @@ class deadline_extension_form extends dynamic_form {
 
         $this->set_instance_vars();
 
-        if (!$this->coursework) {
-            throw new invalid_parameter_exception("Must supply coursework ID or existing feedback ID");
-        }
-
         $mustachedata = $this->get_header_mustache_data();
         $this->_form->addElement(
             'html',
@@ -250,7 +246,7 @@ class deadline_extension_form extends dynamic_form {
      * @throws invalid_parameter_exception
      */
     private function set_instance_vars() {
-        $datasource = isset($this->_customdata) ? $this->_customdata : $this->_ajaxformdata;
+        $datasource = $this->_customdata ?? $this->_ajaxformdata;
         $extensionid = $datasource['extensionid'] ?? null;
         if ($extensionid && is_numeric($extensionid)) {
             // We are editing an existing extension.
@@ -263,7 +259,13 @@ class deadline_extension_form extends dynamic_form {
             $this->allocatable = $this->extension->get_allocatable();
             $this->coursework = $this->extension->get_coursework();
         } else {
-            $this->coursework = coursework::find($datasource['coursework']->id ?? $datasource['courseworkid']);
+            $coursework = coursework::find($datasource['coursework']->id ?? $datasource['courseworkid']);
+            if (get_class($coursework) == 'mod_coursework\decorators\coursework_groups_decorator') {
+                // If the coursework is in group mode, coursework::find returns a wrapped object so unwrap.
+                $this->coursework = $coursework->wrapped_object();
+            } else {
+                $this->coursework = $coursework;
+            }
             $allocatabletype = $datasource['allocatabletype'];
             $allocatableid = $datasource['allocatableid'];
             $classname = "\\mod_coursework\\models\\$allocatabletype";

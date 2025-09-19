@@ -50,7 +50,10 @@ class personal_deadline_form_bulk extends \moodleform {
         $this->_form->addElement('hidden', 'multipleuserdeadlines');
         $this->_form->settype('multipleuserdeadlines', PARAM_INT);
 
-        $mustachedata = $this->get_header_mustache_data(unserialize($this->_customdata['allocatableid']));
+        $mustachedata = $this->get_header_mustache_data(
+            unserialize($this->_customdata['allocatableid']),
+            $this->_customdata['allocatabletype']
+        );
         $this->_form->addElement(
             'html',
             $OUTPUT->render_from_template('coursework/form_header_personal_deadline', $mustachedata)
@@ -83,12 +86,15 @@ class personal_deadline_form_bulk extends \moodleform {
 
     /**
      * Add mustache data for form header template.
+     * @param $allocatableids[] the user IDs or group IDs.
+     * @param string $allocatabletype whethe user or group.
      * @return object
      */
-    private function get_header_mustache_data(array $userids): object {
+    private function get_header_mustache_data(array $allocatableids, string $allocatabletype): object {
         global $DB;
         $data = (object)[
-            'isbulkuserform' => true,
+            'isbulkform' => true,
+            'groupmode' => $allocatabletype == 'group',
             'deadlines' => [
                 // Default deadline.
                 (object)[
@@ -100,19 +106,28 @@ class personal_deadline_form_bulk extends \moodleform {
                 ],
             ],
         ];
-        if (!empty($userids)) {
-            [$insql, $params] = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
-            $users = $DB->get_records_sql("SELECT * FROM {user} WHERE id $insql", $params);
-            $data->bulkusers = array_values(array_map(
-                function ($user) {
-                    return (object)['id' => $user->id, 'fullname' => fullname($user)];
-                },
-                $users));
+        if (!empty($allocatableids)) {
+            [$insql, $params] = $DB->get_in_or_equal($allocatableids, SQL_PARAMS_NAMED);
+            if ($allocatabletype == 'user') {
+                $users = $DB->get_records_sql("SELECT * FROM {user} WHERE id $insql", $params);
+                $data->bulkallocatables = array_values(
+                    array_map(
+                        function ($user) {
+                            return (object)['id' => $user->id, 'allocatablename' => fullname($user)];
+                        },
+                        $users
+                    )
+                );
+            } else {
+                $groups = $DB->get_records_sql("SELECT id, name as allocatablename FROM {groups} WHERE id $insql", $params);
+                $data->bulkallocatables = array_values($groups);
+            }
         }
 
-
-
-        $data->title = get_string('new_personal_deadline_for_bulk', 'coursework');
+        $data->title = get_string(
+            $allocatabletype == 'user' ? 'new_personal_deadline_for_bulk_users' : 'new_personal_deadline_for_bulk_groups',
+            'coursework'
+        );
 
         return $data;
     }

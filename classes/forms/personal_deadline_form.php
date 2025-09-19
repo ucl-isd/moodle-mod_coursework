@@ -37,11 +37,23 @@ use mod_coursework\models\group;
  */
 class personal_deadline_form extends dynamic_form {
 
-    protected $coursework;
+    /**
+     * Coursework object.
+     * @var coursework|null
+     */
+    protected ?coursework $coursework = null;
 
-    protected $existingdeadline;
+    /**
+     * Coursework object.
+     * @var personal_deadline|null
+     */
+    protected ?personal_deadline $existingdeadline = null;
 
-    protected $allocatable;
+    /**
+     * Allocatable object.
+     * @var user|group
+     */
+    protected user|group|null $allocatable = null;
 
     /**
      * Form definition.
@@ -206,8 +218,16 @@ class personal_deadline_form extends dynamic_form {
      */
     protected function get_coursework(): coursework {
         $datasource = isset($this->_customdata) ? $this->_customdata : $this->_ajaxformdata;
-        if (!$this->coursework) {
-            $this->coursework = coursework::find($datasource['courseworkid']);
+        if ($this->coursework) {
+            return $this->coursework;
+        } else {
+            $coursework = coursework::find($datasource['courseworkid']);
+            if (get_class($coursework) == 'mod_coursework\decorators\coursework_groups_decorator') {
+                // If the coursework is in group mode, coursework::find returns a wrapped object so unwrap.
+                $this->coursework = $coursework->wrapped_object();
+            } else {
+                $this->coursework = $coursework;
+            }
         }
         return $this->coursework;
     }
