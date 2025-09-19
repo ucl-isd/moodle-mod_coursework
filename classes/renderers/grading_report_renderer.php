@@ -58,6 +58,8 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
 
         $template = new stdClass();
         $template->coursework = self::prepare_coursework_data($gradingreport->get_coursework());
+        $template->blindmarkingenabled = $gradingreport->get_coursework()->blindmarking_enabled() &&
+            !has_capability('mod/coursework:viewanonymous', $gradingreport->get_coursework()->get_context());
         $template->releasemarks = $this->prepare_release_marks_button($gradingreport->get_coursework());
         $template->tr = [];
         $template->markerfilter = [];

@@ -193,6 +193,7 @@
 
         {{! Actions. }}
         <td class="text-right">
+        {{! If user has no actions available, maybe coursework is set to blind marking so no menu. }}
           {{#actions}}
             {{> mod_coursework/submissions/actions }}
           {{/actions}}
