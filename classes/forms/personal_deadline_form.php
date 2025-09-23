@@ -182,9 +182,10 @@ class personal_deadline_form extends dynamic_form {
             $data->deadlines[] = $deadline;
         }
         if ($this->allocatable->name() ?? false) {
-            $titlestringkey = $this->existingdeadline
-                ? 'edit_personal_deadline_for' : 'new_personal_deadline_for';
-            $data->title = get_string($titlestringkey, 'coursework', $this->allocatable->name());
+            $data->title = get_string(
+                $this->existingdeadline ? 'edit_personal_deadline_for' : 'new_personal_deadline_for',
+                'coursework', $this->allocatable->name()
+            );
         }
         return $data;
     }
