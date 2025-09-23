@@ -84,7 +84,7 @@ class submission_cell extends cell_base {
 
             if ($ability->can('new', $submissiononbehalfofallocatable) && (!$rowobject->get_coursework()->has_deadline()
                     || $rowobject->get_coursework()->allow_late_submissions()
-                    || (($rowobject->get_personal_deadlines() ?? $this->coursework->get_deadline()) >= time()
+                    || (($rowobject->get_personal_deadline_time() ?? $this->coursework->get_deadline()) >= time()
                         || ($rowobject->has_extension() && $rowobject->get_extension()->extended_deadline > time())))) {
 
                 // New submission on behalf of button

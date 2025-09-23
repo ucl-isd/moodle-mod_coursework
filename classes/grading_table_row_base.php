@@ -24,6 +24,7 @@ namespace mod_coursework;
 
 use html_writer;
 use mod_coursework\allocation\allocatable;
+use mod_coursework\controllers\personal_deadlines_controller;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
@@ -204,12 +205,9 @@ abstract class grading_table_row_base implements user_row {
      *
      * @return int
      */
-    public function get_personal_deadlines(): ?int {
+    public function get_personal_deadline_time(): ?int {
         $record = $this->get_personal_deadline_record();
-        if (!$record) {
-            return null;
-        }
-        return (int)$record->personal_deadline;
+        return $record ? (int)$record->personal_deadline : null;
     }
 
     /**
@@ -217,17 +215,16 @@ abstract class grading_table_row_base implements user_row {
      * @return object|null
      */
     public function get_personal_deadline_record(): ?object {
-        global $DB;
         $allocatable = $this->get_allocatable();
         if (!$allocatable) {
             return null;
         }
-        $params = [
-            'courseworkid' => $this->get_coursework()->id,
-            'allocatableid' => $allocatable->id(),
-            'allocatabletype' => $allocatable->type(),
-        ];
-        return $DB->get_record('coursework_person_deadlines', $params) ?: null;
+        $record = personal_deadlines_controller::get_personal_deadline(
+            $allocatable->id(),
+            $allocatable->type(),
+            $this->get_coursework()->id,
+        );
+        return $record ?: null;
     }
 
     /**
