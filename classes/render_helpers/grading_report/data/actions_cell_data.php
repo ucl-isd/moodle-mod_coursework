@@ -310,7 +310,7 @@ class actions_cell_data extends cell_data_base {
             return true;
         }
 
-        if (($rowsbase->get_personal_deadlines() || $rowsbase->get_coursework()->get_deadline()) >= $this->clock->time()) {
+        if (($rowsbase->get_personal_deadline_time() || $rowsbase->get_coursework()->get_deadline()) >= $this->clock->time()) {
             return true;
         }
 

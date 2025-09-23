@@ -278,8 +278,8 @@ class grading_report {
     public function sort_by_personaldeadline($a, $b) {
         $courseworkdeadline = $this->get_coursework()->deadline;
         $sort = $this->sort_by_numberfield(
-            $a->get_personal_deadlines() ?? $courseworkdeadline,
-            $b->get_personal_deadlines() ?? $courseworkdeadline
+            $a->get_personal_deadline_time() ?? $courseworkdeadline,
+            $b->get_personal_deadline_time() ?? $courseworkdeadline
         );
         return $sort;
     }
