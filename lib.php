@@ -228,7 +228,7 @@ function coursework_add_instance($formdata) {
  * @param calendar_event $event
  * @return bool Returns true if the event is visible to the current user, false otherwise.
  */
-function mod_coursework_core_calendar_is_event_visible(calendar_event $event) {
+function mod_coursework_core_calendar_is_event_visible(calendar_event $event): bool {
     global $DB, $USER;
 
     $cm = get_fast_modinfo($event->courseid)->instances['coursework'][$event->instance];
@@ -237,13 +237,17 @@ function mod_coursework_core_calendar_is_event_visible(calendar_event $event) {
     $coursework = coursework::find($dbcoursework);
 
     $user = user::find($USER->id);
-    $student = $coursework->can_submit();
-    $marker = $coursework->is_assessor($user);
+    $cansubmit = $coursework->can_submit();
+    $ismarker = $coursework->is_assessor($user);
 
-    if (($event->eventtype == 'due' && $student) || (($event->eventtype == 'initialgradingdue' || $event->eventtype == 'agreedgradingdue') && $marker)) {
-        return true;
+    if ($ismarker) {
+        return in_array($event->eventtype, ['initialgradingdue', 'agreedgradingdue']);
+    } else {
+        if ($cansubmit &&
+            (in_array($event->eventtype, [\mod_coursework\models\coursework::COURSEWORK_EVENT_TYPE_DUE]))) {
+            return true;
+        }
     }
-
     return false;
 }
 

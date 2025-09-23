@@ -28,6 +28,7 @@ use mod_coursework\forms\deadline_extension_form;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
 use mod_coursework\models\group;
+use mod_coursework\models\personal_deadline;
 use mod_coursework\models\user;
 
 /**
@@ -75,6 +76,14 @@ class deadline_extensions_controller extends controller_base {
 
     }
 
+    /**
+     * This will only be called if the user is using the old HTML form and not the modal form.
+     * I.e. they are visiting /mod/coursework/actions/deadline_extensions/edit.php or new.php.
+     * If using the modal form, this is done by the form itself.
+     * @see \mod_coursework\forms\deadline_extension_form::process_dynamic_submission()
+     * @return void
+     * @throws \mod_coursework\exceptions\access_denied
+     */
     protected function create_deadline_extension() {
         global $USER;
 
@@ -97,9 +106,6 @@ class deadline_extensions_controller extends controller_base {
         if ($this->cancel_button_was_pressed()) {
             redirect($courseworkpageurl);
         }
-        /**
-         * @var deadline_extension $deadline_extension
-         */
         if ($this->form->is_validated()) {
             $data = $this->form->get_data();
             $data->extra_information_text = $data->extra_information['text'];
@@ -110,6 +116,13 @@ class deadline_extensions_controller extends controller_base {
             $ability->require_can('create', $this->deadlineextension);
 
             $this->deadlineextension->save();
+            $personaldeadline = personal_deadline::get_personal_deadline_for_student($this->allocatable, $this->coursework);
+            // Update calendar/timeline event to the latest of the new extension date or existing personal deadline.
+            $this->coursework->update_user_calendar_event(
+                $this->allocatable->id(),
+                $this->allocatable->type(),
+                max($this->deadlineextension->extended_deadline, $personaldeadline->personal_deadline ?? 0)
+            );
             redirect(
                 $courseworkpageurl,
                 get_string('extension_saved', 'mod_coursework', $allocatable->name()),
@@ -128,6 +141,11 @@ class deadline_extensions_controller extends controller_base {
      * I.e. actions/deadline_extensions/edit.php calls this and update.php calls the other.
      * Those pages in turn seem to be requested when the user is submitting form data or displaying it.
      * Not ideal and could do with refactoring.
+     *
+     * This will only be called if the user is using the old HTML form and not the modal form.
+     * I.e. they are visiting /mod/coursework/actions/deadline_extensions/edit.php or new.php.
+     * If using the modal form, this is done by the form itself.
+     * @see \mod_coursework\forms\deadline_extension_form::process_dynamic_submission()
      * @return void
      */
     protected function edit_deadline_extension() {
@@ -195,10 +213,6 @@ class deadline_extensions_controller extends controller_base {
         if ($this->cancel_button_was_pressed()) {
             redirect($courseworkpageurl);
         }
-        /**
-         * @var deadline_extension $deadline_extension
-         */
-
         $ability = new ability(user::find($USER), $this->coursework);
         $values = $this->form->get_data();
         $this->deadlineextension = deadline_extension::find(['id' => $this->params['id']]);
@@ -209,11 +223,18 @@ class deadline_extensions_controller extends controller_base {
             $values->extra_information_text = $values->extra_information['text'];
             $values->extra_information_format = $values->extra_information['format'];
             $this->deadlineextension->update_attributes($values);
+
+            $personaldeadline = personal_deadline::get_personal_deadline_for_student($this->allocatable, $this->coursework);
+            // Update calendar/timeline event to the latest of the new extension date or existing personal deadline.
+            $this->coursework->update_user_calendar_event(
+                $this->allocatable->id(),
+                $this->allocatable->type(),
+                max($this->deadlineextension->extended_deadline, $personaldeadline->personal_deadline ?? 0)
+            );
             redirect($courseworkpageurl);
         } else {
             $this->render_page('edit');
         }
-
     }
 
     /**
