@@ -86,7 +86,7 @@ export const init = (courseworkid) => {
             } else if (event.detail.errors) {
                 Notification.addNotification({
                     type: 'error',
-                    message: event.detail.errors.join('<br>')
+                    message: event.detail.message
                 });
             } else if (event.detail.warnings) {
                 const warningMessages = event.detail.warnings.map(warning => warning.message);

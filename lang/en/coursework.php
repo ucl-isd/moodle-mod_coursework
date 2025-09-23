@@ -66,6 +66,7 @@ $string['agreeterms'] = 'Students must agree to terms before submitting';
 $string['agreetermsdescription'] = 'Students will see the message below and must click "I agree" before being allowed to continue to the file manager.';
 $string['agreetermstext'] = 'Text of the terms that the student will agree to';;
 $string['alert_personaldeadline_save_successful'] = 'Personal deadline saved for \'{$a->name}\' of \'{$a->deadline}\'';
+$string['alert_personaldeadline_save_unsuccessful'] = 'Error: Personal deadline could not be saved for \'{$a->name}\' of \'{$a->deadline}\'';
 $string['alert_validate_deadline'] = 'The selected deadline has already passed. Please select a future deadline.';
 $string['alert_validate_deadline_months'] = 'The new deadline must not be later than {$a} months after the current deadline';
 $string['all_filters_and_search_reset'] = 'All filters and search have been reset. Displaying all records.';

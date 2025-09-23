@@ -21,10 +21,10 @@
  */
 
 namespace mod_coursework\forms;
-use core\exception\moodle_exception;
 use core_form\dynamic_form;
 use mod_coursework\ability;
 use mod_coursework\controllers\personal_deadlines_controller;
+use mod_coursework\exceptions\access_denied;
 use mod_coursework\models\coursework;
 use mod_coursework\models\personal_deadline;
 use mod_coursework\models\user;
@@ -241,10 +241,11 @@ class personal_deadline_form extends dynamic_form {
 
     /**
      * Checks if current user has access to this form, otherwise throws exception.
+     * @throws access_denied
      */
     protected function check_access_for_dynamic_submission(): void {
         if (!$this->can_edit()) {
-            throw new moodle_exception('nopermissiongeneral', 'coursework');
+            throw new access_denied($this->get_coursework(), 'No permission to edit personal deadline');
         }
     }
 
@@ -300,14 +301,14 @@ class personal_deadline_form extends dynamic_form {
         }
         return [
             'success' => empty($errors),
-            'resultcode' => 'saved',
+            'resultcode' => empty($errors) ? 'saved' : 'error',
             'message' => get_string(
-                'alert_personaldeadline_save_successful',
+                empty($errors) ? 'alert_personaldeadline_save_successful' : 'alert_personaldeadline_save_unsuccessful',
                 'coursework',
                 (object)[
-                    'name' => $this->existingdeadline->get_allocatable()->name(),
+                    'name' => $this->allocatable->name(),
                     'deadline' => userdate(
-                        $this->existingdeadline->personal_deadline,
+                        $data->personal_deadline,
                         get_string('strftimerecentfull', 'langconfig')
                     ),
                 ]
