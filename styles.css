@@ -14,6 +14,35 @@ Coursework.
         width: 100%;
     }
 
+    /* Plagarism in table submissions col. */
+    .mod-coursework-submissions-row .core_plagiarism_links {
+        display: block;
+        padding: .5rem;
+        margin-top: .5rem;
+        background-color: var(--light);
+
+        .tii_links_container {
+            padding: 0;
+
+            /* Hide icon. */
+            img[src*="turnitin-icon"] {
+                display: none;
+            }
+
+            .turnitin_status {
+                font-size: small;
+            }
+
+            /* Resubmit - style as link. */
+            [id^=pp_resubmit] {
+                color: var(--primary);
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+
     /* Marking form and student feedback. */
     #modal-grading,
     #coursework-markingform,
@@ -157,46 +186,6 @@ Coursework.
             top: -15px; /* Position relative to the outer triangle */
             left: 1rem; /* Horizontal position, slightly offset to match outer */
             z-index: 2;
-        }
-    }
-}
-
-/* Moving parts needed while in dev here... */
-
-/* Icon to show markers. */
-td.details-control {
-    background: url([[pix:coursework|details_open]]) no-repeat center center;
-    cursor: pointer;
-}
-tr.shown td.details-control {
-    background: url([[pix:coursework|details_close]]) no-repeat center center;
-}
-
-/* Hide some th.  */
-table.datatabletest  th.firstname_cell,
-table.datatabletest  th.lastname_cell,
-table.datatabletest  td.first_name_cell,
-table.datatabletest  td.last_name_cell,
-table.datatabletest  th.email_cell,
-table.datatabletest  td.email_cell,
-table.datatabletest  th.firstname_letter_cell,
-table.datatabletest  th.lastname_letter_cell,
-table.datatabletest  td.first_name_letter_cell,
-table.datatabletest  td.last_name_letter_cell {
-    display: none;
-}
-form#mod_coursework_guide_agreed_grades {
-    tr {
-        font-size: 14px;
-    }
-    .dropdown-item {
-        display: block;
-        max-width: 600px;
-    }
-
-    select {
-        &, &::picker(select) {
-            appearance: base-select;
         }
     }
 }
