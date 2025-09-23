@@ -111,8 +111,14 @@ class personal_deadline_form extends dynamic_form {
             $this->_form->setDefault('personal_deadline', time());
         }
         // Date and time picker.
+        $maxextensionmonths = $CFG->coursework_max_extension_deadline ?? 0;
+        $maxyear = (int)date("Y") + max(ceil($maxextensionmonths / 12), 2);
         $this->_form->addElement(
-            'date_time_selector', 'personal_deadline', get_string('personal_deadline', 'mod_coursework'));
+            'date_time_selector',
+            'personal_deadline',
+            get_string('personal_deadline', 'mod_coursework'),
+            ['startyear' => (int)date("Y"), 'stopyear'  => $maxyear]
+        );
 
         // Submit button.
         // Don't add these if AJAX submission as the modal has its own buttons to submit using JS.
@@ -191,7 +197,7 @@ class personal_deadline_form extends dynamic_form {
     public function validation($data, $files) {
         $errors = [];
         if ($data['personal_deadline'] <= time()) {
-            $errors['personal_deadline'] = 'The new deadline you chose has already passed. Please select appropriate deadline';
+            $errors['personal_deadline'] = get_string('alert_validate_deadline', 'coursework');
         }
 
         return $errors;
@@ -217,10 +223,10 @@ class personal_deadline_form extends dynamic_form {
      * @return coursework
      */
     protected function get_coursework(): coursework {
-        $datasource = isset($this->_customdata) ? $this->_customdata : $this->_ajaxformdata;
         if ($this->coursework) {
             return $this->coursework;
         } else {
+            $datasource = isset($this->_customdata) ? $this->_customdata : $this->_ajaxformdata;
             $coursework = coursework::find($datasource['courseworkid']);
             if (get_class($coursework) == 'mod_coursework\decorators\coursework_groups_decorator') {
                 // If the coursework is in group mode, coursework::find returns a wrapped object so unwrap.

@@ -71,7 +71,7 @@ class deadline_extension_form extends dynamic_form {
      * Form definition.
      */
     protected function definition() {
-        global $OUTPUT;
+        global $OUTPUT, $CFG;
 
         $this->_form->addElement('hidden', 'allocatabletype');
         $this->_form->settype('allocatabletype', PARAM_ALPHANUMEXT);
@@ -91,10 +91,13 @@ class deadline_extension_form extends dynamic_form {
         );
 
         // Date and time picker.
+        $maxextensionmonths = $CFG->coursework_max_extension_deadline ?? 0;
+        $maxyear = (int)date("Y") + max(ceil($maxextensionmonths / 12), 2);
         $this->_form->addElement(
             'date_time_selector',
             'extended_deadline',
-            get_string('extended_deadline', 'mod_coursework')
+            get_string('extended_deadline', 'mod_coursework'),
+            ['startyear' => (int)date("Y"), 'stopyear'  => $maxyear]
         );
 
         $this->_form->setDefault('extended_deadline', max($this->get_user_latest_deadline(), time()));
@@ -216,11 +219,10 @@ class deadline_extension_form extends dynamic_form {
 
         if ($data['extended_deadline']) {
             if ($data['extended_deadline'] <= $deadline) {
-                $errors['extended_deadline'] = 'The new deadline must be later than the current deadline';
+                $errors['extended_deadline'] = get_string('alert_validate_deadline', 'coursework');
             }
             if ($data['extended_deadline'] >= strtotime("+$maxdeadline months", $deadline)) {
-                $errors['extended_deadline'] =
-                    "The new deadline must not be later than $maxdeadline months after the current deadline";
+                $errors['extended_deadline'] = get_string('alert_validate_deadline_months', 'coursework', $maxdeadline);
             }
         }
         return $errors;

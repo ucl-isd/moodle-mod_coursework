@@ -16,13 +16,11 @@
 
 /**
  * @package    mod_coursework
- * @copyright  2017 University of London Computer Centre {@link https://www.cosector.com}
+ * @copyright  2025 University of London Computer Centre {@link https://www.cosector.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace mod_coursework\forms;
-
-use mod_coursework\models\coursework;
 
 /**
  * Class personal_deadline_form_bulk is responsible for new and edit actions related to the
@@ -59,10 +57,18 @@ class personal_deadline_form_bulk extends \moodleform {
             $OUTPUT->render_from_template('coursework/form_header_personal_deadline', $mustachedata)
         );
 
-        // Date and time picker
-        $this->_form->addElement('date_time_selector', 'personal_deadline', get_string('personal_deadline', 'mod_coursework'));
+        // Date and time picker.
+        $maxextensionmonths = $CFG->coursework_max_extension_deadline ?? 0;
+        $maxyear = (int)date("Y") + max(ceil($maxextensionmonths / 12), 2);
+        $this->_form->addElement(
+            'date_time_selector',
+            'personal_deadline',
+            get_string('personal_deadline', 'mod_coursework'),
+            ['startyear' => (int)date("Y"), 'stopyear'  => $maxyear]
+        );
+        $this->_form->setDefault('personal_deadline', time());
 
-        // Submit button
+        // Submit button.
         $this->add_action_buttons();
     }
 
@@ -77,9 +83,9 @@ class personal_deadline_form_bulk extends \moodleform {
      */
     public function validation($data, $files) {
         $errors = [];
-//        if ($data['personal_deadline'] <= time()) {
-//            $errors['personal_deadline'] = 'The new deadline you chose has already passed. Please select appropriate deadline';
-//        }
+        if ($data['personal_deadline'] <= time()) {
+            $errors['personal_deadline'] = get_string('alert_validate_deadline', 'coursework');
+        }
 
         return $errors;
     }
