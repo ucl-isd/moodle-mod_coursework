@@ -8,11 +8,12 @@
 {{/isbulkform}}
 
 <div class="row">
-    <h3>{{#str}} deadlines, coursework {{/str}}</h3>
     {{#deadlines}}
         <div class="col-md-4">
-            <small class="badge badge-{{class}}">
-                {{{label}}}
+            <small>
+                <span class="{{#class}} badge badge-{{.}} {{/class}}">
+                    {{{label}}}
+                <span>
                 <br>
                 {{{value}}}
             </small>
