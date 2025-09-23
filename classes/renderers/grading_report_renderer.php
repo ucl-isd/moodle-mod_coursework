@@ -54,7 +54,7 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         $tablerows = $gradingreport->get_table_rows_for_page();
 
         // Sort the table rows.
-        $this->sort_table_rows($tablerows);
+        $tablerows = $this->sort_table_rows($tablerows);
 
         $template = new stdClass();
         $template->coursework = [
@@ -88,7 +88,12 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         return $this->render_from_template('mod_coursework/submissions/table', $template);
     }
 
-    protected function sort_table_rows($tablerows) {
+    /**
+     * Sort the table rows - those with submissions first, then by submission time.
+     * @param grading_table_row_base[] $tablerows unsorted rows.
+     * @return grading_table_row_base[] sorted rows.
+     */
+    protected function sort_table_rows(array $tablerows): array {
         usort($tablerows, function($rowa, $rowb) {
 
             $submissiona = $rowa->get_submission();
@@ -100,15 +105,16 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
 
             if ($isnulloraa && $isnullorab) {
                 return 0;
-            } elseif ($isnulloraa) {
+            } else if ($isnulloraa) {
                 return 1;
-            } elseif ($isnullorab) {
+            } else if ($isnullorab) {
                 return -1;
             }
 
             // Both submissions are objects, compare by timemodified.
             return $submissiona->timemodified <=> $submissionb->timemodified;
         });
+        return $tablerows;
     }
 
     /**
