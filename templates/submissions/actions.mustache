@@ -20,7 +20,6 @@
                             {{#str}}personal_deadline, coursework{{/str}}
                             <small class="actions-extension-date-container {{#personaldeadline.date}}d-block{{/personaldeadline.date}} {{^personaldeadline.date}}d-none{{/personaldeadline.date}}">
                                 <i class="fa-solid fa-circle-check text-{{#is_editable}}primary{{/is_editable}}{{^is_editable}}secondary{{/is_editable}} mr-2"></i>
-                                <span class="sr-only">Extension granted date </span>
                                 <span class="actions-extension-date">
                                     {{#personaldeadline.date}}
                                         {{#userdate}}{{personaldeadline.date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
@@ -44,7 +43,6 @@
                 >{{#str}}submissionextension, mod_coursework{{/str}}
                     <small class="actions-extension-date-container {{#extension.date}}d-block{{/extension.date}} {{^extension.date}}d-none{{/extension.date}}">
                         <i class="fa-solid fa-circle-check text-success mr-2"></i>
-                        <span class="sr-only">Extension granted date </span>
                         <span class="actions-extension-date">
                             {{#extension.date}}
                                 {{#userdate}}{{extension.date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
