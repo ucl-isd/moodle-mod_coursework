@@ -7,12 +7,16 @@
     </ul>
 {{/isbulkform}}
 
-<div class="row mt-1 mb-3 ml-1 mr-1">
-    <div class="col-md-3 p-1">{{#str}}deadlines, coursework{{/str}}</div>
+<div class="row">
+    <h3>{{#str}} deadlines, coursework {{/str}}</h3>
     {{#deadlines}}
-        <div class="col-md-4 p-1">
-            <div class="badge badge-{{class}} mr-1">{{{label}}}</div>
-            {{#value}}<small class="d-block">{{{value}}}</small>{{/value}}
+        <div class="col-md-4">
+            <small class="badge badge-{{class}}">
+                {{{label}}}
+                <br>
+                {{{value}}}
+            </small>
+            <br>
             {{#hasnotes}}
                 <ul>
                     {{#notes}}

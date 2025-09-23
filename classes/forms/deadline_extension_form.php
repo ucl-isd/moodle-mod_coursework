@@ -166,7 +166,7 @@ class deadline_extension_form extends dynamic_form {
                 (object)[
                     'label' => get_string('default_deadline_short', 'mod_coursework'),
                     'value' => userdate($this->coursework->deadline),
-                    'class' => 'light',
+                    'class' => '',
                 ],
             ],
         ];
@@ -188,12 +188,14 @@ class deadline_extension_form extends dynamic_form {
                 'class' => 'success',
             ];
         }
+
         if ($this->allocatable->name() ?? false) {
             $titlestringkey = $this->extension->id ?? false ? 'editing' : 'adding';
             $data->title = get_string(
                 "extension_$titlestringkey", 'mod_coursework', $this->allocatable->name()
             );
         }
+
         return $data;
     }
 

@@ -107,7 +107,7 @@ class personal_deadline_form_bulk extends \moodleform {
                     'label' => get_string('default_deadline_short', 'mod_coursework'),
                     'value' => userdate($this->get_coursework()->deadline),
                     'notes' => [],
-                    'class' => 'light',
+                    'class' => '',
                     'hasnotes' => false,
                 ],
             ],
