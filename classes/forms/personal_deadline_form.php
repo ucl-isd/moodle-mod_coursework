@@ -138,7 +138,7 @@ class personal_deadline_form extends dynamic_form {
                 // Default deadline.
                 (object)[
                     'label' => get_string('default_deadline_short', 'mod_coursework'),
-                    'value' => userdate($this->coursework->deadline),
+                    'value' => userdate($this->coursework->deadline, get_string('strftimerecentfull', 'langconfig')),
                     'notes' => [],
                     'class' => 'light',
                     'hasnotes' => false,
@@ -150,7 +150,7 @@ class personal_deadline_form extends dynamic_form {
         if ($this->existingdeadline && $this->existingdeadline->personal_deadline ?? null) {
             $deadline = (object)[
                 'label' => get_string('personal_deadline', 'mod_coursework'),
-                'value' => userdate($this->existingdeadline->personal_deadline),
+                'value' => userdate($this->existingdeadline->personal_deadline, get_string('strftimerecentfull', 'langconfig')),
                 'notes' => [
                     get_string(
                         'createdbyname',
@@ -175,7 +175,7 @@ class personal_deadline_form extends dynamic_form {
                 'coursework',
                 userdate(
                     max($this->existingdeadline->timecreated, $this->existingdeadline->timemodified),
-                    '%a %d %b %Y, %I:%M'
+                    get_string('strftimerecentfull', 'langconfig')
                 )
             );
             $deadline->hasnotes = true;
@@ -306,7 +306,10 @@ class personal_deadline_form extends dynamic_form {
                 'coursework',
                 (object)[
                     'name' => $this->existingdeadline->get_allocatable()->name(),
-                    'deadline' => userdate($this->existingdeadline->personal_deadline),
+                    'deadline' => userdate(
+                        $this->existingdeadline->personal_deadline,
+                        get_string('strftimerecentfull', 'langconfig')
+                    ),
                 ]
             ),
             'errors' => $errors,
