@@ -244,7 +244,7 @@ function mod_coursework_core_calendar_is_event_visible(calendar_event $event): b
         return in_array($event->eventtype, ['initialgradingdue', 'agreedgradingdue']);
     } else {
         if ($cansubmit &&
-            (in_array($event->eventtype, [\mod_coursework\models\coursework::COURSEWORK_EVENT_TYPE_DUE]))) {
+            (in_array($event->eventtype, [coursework::COURSEWORK_EVENT_TYPE_DUE]))) {
             return true;
         }
     }
