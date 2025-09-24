@@ -3268,7 +3268,7 @@ class coursework extends table_base {
      * @param int $allocatableid
      * @param string $allocatabletype
      * @param int $newdate
-     * @return void
+     * @return bool
      */
     public function update_user_calendar_event(int $allocatableid, string $allocatabletype, int $newdate): bool {
         global $DB, $CFG;
@@ -3311,15 +3311,13 @@ class coursework extends table_base {
             $event->format = FORMAT_HTML;
             // Do not set course ID here otherwise this personal item will appear to other users in course.
             $event->courseid = 0;
-            $event->modulename = $modulename;
-            $event->instance = $this->id;
             $event->timestart = $newdate;
             $event->timesort = $newdate;
             $event->timeduration = 0;
             $event->visible = instance_is_visible($modulename, $this);
             // Priority set to override default deadline for this coursework in user calendar/timeline.
             $event->priority = CALENDAR_EVENT_USER_OVERRIDE_PRIORITY;
-            $event->component = $modulename;
+            $event->component = 'mod_coursework';
 
             return (bool)\calendar_event::create($event, false);
         }

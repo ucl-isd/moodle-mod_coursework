@@ -212,7 +212,7 @@ class deadline_extension extends table_base {
             $this->coursework->update_user_calendar_event(
                 $allocatable->id(),
                 $allocatable->type(),
-                max(0, $personaldeadline->personal_deadline ?? 0)
+                $personaldeadline->personal_deadline ?? 0
             );
 
             // Keep a record of what's deleted in the log table for audit purposes.
