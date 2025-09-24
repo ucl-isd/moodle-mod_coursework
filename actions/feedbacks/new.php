@@ -22,14 +22,13 @@
 
 require_once(dirname(__FILE__) . '/../../../../config.php');
 
-global $CFG, $USER;
+global $USER;
 
 $submissionid = required_param('submissionid', PARAM_INT);
 $cmid = optional_param('cmid', 0, PARAM_INT);
 $feedbackid = optional_param('feedbackid', 0, PARAM_INT);
 $assessorid = optional_param('assessorid', $USER->id, PARAM_INT);
 $stageidentifier = optional_param('stage_identifier', 'uh-oh',  PARAM_RAW);
-$ajax = optional_param('ajax', 0,  PARAM_INT);
 
 $params = [
     'submissionid' => $submissionid,
@@ -37,7 +36,6 @@ $params = [
     'feedbackid' => $feedbackid,
     'assessorid' => $assessorid,
     'stage_identifier' => $stageidentifier,
-    'ajax' => $ajax,
 ];
 $controller = new mod_coursework\controllers\feedback_controller($params);
 $controller->new_feedback();
