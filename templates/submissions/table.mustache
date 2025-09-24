@@ -106,12 +106,12 @@
         <caption class="sr-only">{{#str}}submissions_table, mod_coursework{{/str}}</caption>
         <thead>
             <tr class="table-light">
-                {{#isgroupsubmission}}
+                {{#coursework.isgroupsubmission}}
                     <th scope="col">{{#str}}group, mod_coursework{{/str}}</th>
-                {{/isgroupsubmission}}
-                {{^isgroupsubmission}}
+                {{/coursework.isgroupsubmission}}
+                {{^coursework.isgroupsubmission}}
                     <th scope="col">{{#str}}student, mod_coursework{{/str}}</th>
-                {{/isgroupsubmission}}
+                {{/coursework.isgroupsubmission}}
                 <th scope="col">{{#str}}submission, mod_coursework{{/str}}</th>
                 <th scope="col" class="w-50">{{#str}}marking, mod_coursework{{/str}}</th>
                 <th scope="col" class="text-right">{{#str}}actions, mod_coursework{{/str}}</th>

@@ -249,7 +249,7 @@ class deadline_extensions_controller extends controller_base {
         }
 
         if ( $data['extended_deadline'] <= $deadline) {
-            return 'The new deadline must be later than the current deadline';
+            return get_string('alert_validate_deadline', 'coursework');
         }
 
         return false;

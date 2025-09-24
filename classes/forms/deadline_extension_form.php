@@ -71,6 +71,7 @@ class deadline_extension_form extends dynamic_form {
      * Form definition.
      */
     protected function definition() {
+        global $OUTPUT, $CFG;
 
         $this->_form->addElement('hidden', 'allocatabletype');
         $this->_form->settype('allocatabletype', PARAM_ALPHANUMEXT);
@@ -83,25 +84,20 @@ class deadline_extension_form extends dynamic_form {
 
         $this->set_instance_vars();
 
-        if (!$this->coursework) {
-            throw new invalid_parameter_exception("Must supply coursework ID or existing feedback ID");
-        }
-
-        if ($this->allocatable->name() ?? false) {
-            $titlestringkey = $this->extension->id ?? false ? 'editing' : 'adding';
-            $title = get_string(
-                "extension_$titlestringkey", 'mod_coursework', $this->allocatable->name()
-            );
-            $this->_form->addElement('html', \html_writer::tag('h2', $title));
-        }
-
-        $this->add_deadlines_badges();
+        $mustachedata = $this->get_header_mustache_data();
+        $this->_form->addElement(
+            'html',
+            $OUTPUT->render_from_template('coursework/form_header_extension', $mustachedata)
+        );
 
         // Date and time picker.
+        $maxextensionmonths = $CFG->coursework_max_extension_deadline ?? 0;
+        $maxyear = (int)date("Y") + max(ceil($maxextensionmonths / 12), 2);
         $this->_form->addElement(
             'date_time_selector',
             'extended_deadline',
-            get_string('extended_deadline', 'mod_coursework')
+            get_string('extended_deadline', 'mod_coursework'),
+            ['startyear' => (int)date("Y"), 'stopyear'  => $maxyear]
         );
 
         $this->_form->setDefault('extended_deadline', max($this->get_user_latest_deadline(), time()));
@@ -160,52 +156,47 @@ class deadline_extension_form extends dynamic_form {
     }
 
     /**
-     * Add a row of deadline badges to show existing deadlines applying to this user.
-     * @return void
+     * Add mustache data for form header template.
+     * @return object
      */
-    private function add_deadlines_badges() {
-        $badges = [
-            // Default deadline.
-            (object)[
-                'badgelabel' => get_string('default_deadline_short', 'mod_coursework'),
-                'mainlabel' => userdate($this->coursework->deadline),
-                'badgeclass' => 'light',
+    private function get_header_mustache_data(): object {
+        $data = (object)[
+            'deadlines' => [
+                // Default deadline.
+                (object)[
+                    'label' => get_string('default_deadline_short', 'mod_coursework'),
+                    'value' => userdate($this->coursework->deadline, get_string('strftimerecentfull', 'langconfig')),
+                    'class' => '',
+                ],
             ],
         ];
 
         // User specific deadlines.
         if ($this->personaldeadline && $this->personaldeadline->personal_deadline ?? null) {
-            $badges[] = (object)[
-                'badgelabel' => get_string('personal_deadline', 'mod_coursework'),
-                'mainlabel' => userdate($this->personaldeadline->personal_deadline),
-                'badgeclass' => 'info',
+            $data->deadlines[] = (object)[
+                'label' => get_string('personal_deadline', 'mod_coursework'),
+                'value' => userdate($this->personaldeadline->personal_deadline, get_string('strftimerecentfull', 'langconfig')),
+                'class' => 'info',
             ];
         }
 
         // Individual user deadline extension.
         if ($this->extension->extended_deadline ?? null) {
-            $badges[] = (object)[
-                'badgelabel' => get_string('extension_granted', 'mod_coursework'),
-                'mainlabel' => userdate($this->extension->extended_deadline),
-                'badgeclass' => 'success',
+            $data->deadlines[] = (object)[
+                'label' => get_string('extension_granted', 'mod_coursework'),
+                'value' => userdate($this->extension->extended_deadline, get_string('strftimerecentfull', 'langconfig')),
+                'class' => 'success',
             ];
         }
 
-        $badgeshtml = implode('', array_map(
-            function($badge) {
-                return \html_writer::div(
-                    \html_writer::div($badge->badgelabel, "badge badge-$badge->badgeclass mr-1")
-                    . \html_writer::tag('small', $badge->mainlabel, ['class' => 'd-block']),
-                    'col-4 p-1'
-                );
-            },
-            $badges
-        ));
+        if ($this->allocatable->name() ?? false) {
+            $titlestringkey = $this->extension->id ?? false ? 'editing' : 'adding';
+            $data->title = get_string(
+                "extension_$titlestringkey", 'mod_coursework', $this->allocatable->name()
+            );
+        }
 
-        $this->_form->addElement(
-            'html',
-            \html_writer::div($badgeshtml, 'row mt-1 mb-3 ml-1 mr-1')
-        );
+        return $data;
     }
 
     /**
@@ -230,11 +221,10 @@ class deadline_extension_form extends dynamic_form {
 
         if ($data['extended_deadline']) {
             if ($data['extended_deadline'] <= $deadline) {
-                $errors['extended_deadline'] = 'The new deadline must be later than the current deadline';
+                $errors['extended_deadline'] = get_string('alert_validate_deadline', 'coursework');
             }
             if ($data['extended_deadline'] >= strtotime("+$maxdeadline months", $deadline)) {
-                $errors['extended_deadline'] =
-                    "The new deadline must not be later than $maxdeadline months after the current deadline";
+                $errors['extended_deadline'] = get_string('alert_validate_deadline_months', 'coursework', $maxdeadline);
             }
         }
         return $errors;
@@ -260,7 +250,7 @@ class deadline_extension_form extends dynamic_form {
      * @throws invalid_parameter_exception
      */
     private function set_instance_vars() {
-        $datasource = isset($this->_customdata) ? $this->_customdata : $this->_ajaxformdata;
+        $datasource = $this->_customdata ?? $this->_ajaxformdata;
         $extensionid = $datasource['extensionid'] ?? null;
         if ($extensionid && is_numeric($extensionid)) {
             // We are editing an existing extension.
@@ -273,7 +263,13 @@ class deadline_extension_form extends dynamic_form {
             $this->allocatable = $this->extension->get_allocatable();
             $this->coursework = $this->extension->get_coursework();
         } else {
-            $this->coursework = coursework::find($datasource['coursework']->id ?? $datasource['courseworkid']);
+            $coursework = coursework::find($datasource['coursework']->id ?? $datasource['courseworkid']);
+            if (get_class($coursework) == 'mod_coursework\decorators\coursework_groups_decorator') {
+                // If the coursework is in group mode, coursework::find returns a wrapped object so unwrap.
+                $this->coursework = $coursework->wrapped_object();
+            } else {
+                $this->coursework = $coursework;
+            }
             $allocatabletype = $datasource['allocatabletype'];
             $allocatableid = $datasource['allocatableid'];
             $classname = "\\mod_coursework\\models\\$allocatabletype";

@@ -1,0 +1,30 @@
+<h2>{{{title}}}</h2>
+{{#isbulkform}}
+    <ul>
+        {{#bulkallocatables}}
+            <li>{{{allocatablename}}}</li>
+        {{/bulkallocatables}}
+    </ul>
+{{/isbulkform}}
+
+<div class="row">
+    {{#deadlines}}
+        <div class="col-md-4">
+            <small>
+                <span class="{{#class}} badge badge-{{.}} {{/class}}">
+                    {{{label}}}
+                </span>
+                <br>
+                {{{value}}}
+            </small>
+            <br>
+            {{#hasnotes}}
+                <ul>
+                    {{#notes}}
+                        <li><small class="d-block">{{{.}}}</small></li>
+                    {{/notes}}
+                </ul>
+            {{/hasnotes}}
+        </div>
+    {{/deadlines}}
+</div>

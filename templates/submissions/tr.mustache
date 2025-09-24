@@ -44,6 +44,19 @@
         <td>
             {{#submission}}
 
+                {{#personaldeadline}}{{#exists}}
+                   <small>
+                        <span class="badge badge-dark">
+                            {{#str}} personal_deadline, mod_coursework {{/str}}
+                        </span>
+                        <span class="sr-only">
+                            {{#str}} due, mod_coursework {{/str}}
+                        </span>
+                        {{#str}} duewithdate, coursework, {{{personaldeadline.time_content}}}{{/str}}
+                    </small>
+                    <br>
+                {{/exists}}{{/personaldeadline}}
+
                 {{#extensiondeadline}}
                     <small>
                         <span class="badge badge-dark">
@@ -216,6 +229,7 @@
 
         {{! Actions. }}
         <td class="text-right">
+        {{! If user has no actions available, maybe coursework is set to blind marking so no menu. }}
           {{#actions}}
             {{> mod_coursework/submissions/actions }}
           {{/actions}}

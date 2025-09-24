@@ -14,20 +14,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Javascript module for handling deadline extension modal.
+ * Javascript module for handling personal extension modal.
  *
- * @module      mod_coursework/modal_handler_extensions
+ * @module      mod_coursework/modal_handler_personal_deadlines
  * @copyright   2025 UCL
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 import ModalForm from 'core_form/modalform';
 import Notification from 'core/notification';
-import {getString, getStrings} from 'core/str';
-import {add as addToast} from 'core/toast';
-import Ajax from 'core/ajax';
-import {replaceRow} from 'mod_coursework/modal_grading_table_ui';
+import {getString} from 'core/str';
 import Log from 'core/log';
+import {replaceRow} from 'mod_coursework/modal_grading_table_ui';
 
 let courseworkId;
 
@@ -40,7 +38,7 @@ export const init = (courseworkid) => {
     // Using table not rows as rows will be re-rendered.
     const tableSelector = `#mod-coursework-submissions-table-${courseworkId}`;
     const triggerElement = document.querySelector(tableSelector);
-    const actionSelector = '[data-action="mod-coursework-launch-modal-extension"]';
+    const actionSelector = '[data-action="mod-coursework-launch-modal-personal-deadline"]';
     triggerElement.addEventListener('click', event => {
         const actionMenu = event.srcElement.matches(actionSelector)
             ? event.srcElement
@@ -55,20 +53,20 @@ export const init = (courseworkid) => {
         const dataSet = actionMenu.dataset;
         if (!dataSet.courseworkId ?? null) {
             // For some reason we do not have the data we need for dynamic form.
-            Log.error('Insufficient data to process extension request.');
+            Log.error('Insufficient data to process personal deadline request.');
             return;
         }
         const args = {
             courseworkid: courseworkId,
             allocatableid: dataSet.allocatableId,
             allocatabletype: dataSet.allocatableType,
-            extensionid: dataSet.extensionId
+            deadlineid: dataSet.deadlineId
         };
         const modalForm = new ModalForm({
             modalConfig: {
                 title: getString('extended_deadline', 'mod_coursework'),
             },
-            formClass: 'mod_coursework\\forms\\deadline_extension_form',
+            formClass: 'mod_coursework\\forms\\personal_deadline_form',
             saveButtonText: getString('save', 'core'),
             returnFocus: triggerElement,
             args: args
@@ -78,36 +76,7 @@ export const init = (courseworkid) => {
         modalForm.addEventListener(modalForm.events.FORM_SUBMITTED, event => {
             if (event.detail.success) {
                 // Successful submission.
-                if (event.detail.resultcode === 'confirmdelete') {
-                    const strRequests = ['areyousure', 'delete', 'cancel'].map((k) => {
-                        return {key: k, component: 'core'};
-                    });
-                    getStrings(strRequests).then((strings) => {
-                        Notification.confirm(
-                            strings[0],
-                            event.detail.message,
-                            strings[1], // Delete.
-                            strings[2], // Cancel.
-                            async () => {
-                                try {
-                                    const deleteResult = await Ajax.call([{
-                                        methodname: 'mod_coursework_delete_extension',
-                                        args: {
-                                            extensionid: dataSet.extensionId
-                                        }
-                                    }])[0];
-                                    if (deleteResult.success) {
-                                        replaceRow(rowElement, dataSet, deleteResult.message);
-                                    } else if (deleteResult.exception ?? null) {
-                                        addToast(deleteResult.exception.message, {type: 'warning'});
-                                    }
-                                } catch (e) {
-                                    Notification.addNotification({type: 'error', message: e.message});
-                                }
-                            }
-                        );
-                    });
-                } else if (event.detail.resultcode === 'saved') {
+                if (event.detail.resultcode === 'saved') {
                     try {
                         replaceRow(rowElement, dataSet, event.detail.message);
                     } catch (e) {
@@ -117,7 +86,7 @@ export const init = (courseworkid) => {
             } else if (event.detail.errors) {
                 Notification.addNotification({
                     type: 'error',
-                    message: event.detail.errors.join('<br>')
+                    message: event.detail.message
                 });
             } else if (event.detail.warnings) {
                 const warningMessages = event.detail.warnings.map(warning => warning.message);

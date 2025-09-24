@@ -1,0 +1,10 @@
+<h2>{{{title}}}</h2>
+<div class="row">
+    {{#deadlines}}
+        <small class="col-4 py-3">
+            <span class="{{#class}} badge badge-{{.}} {{/class}}">{{{label}}}</span>
+            <br>
+            {{{value}}}
+        </small>
+    {{/deadlines}}
+</div>
