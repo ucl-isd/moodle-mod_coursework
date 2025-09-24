@@ -415,10 +415,14 @@ abstract class grading_table_row_base implements user_row {
 
     public function has_extension() {
         global $DB;
+
+        if (empty($this->coursework->extensions_enabled())) {
+            return false;
+        }
+
         return $DB->record_exists('coursework_extensions', ['courseworkid' => $this->get_coursework()->id,
                                                                       'allocatableid' => $this->get_allocatable()->id(),
                                                                       'allocatabletype' => $this->get_allocatable()->type()]);
-
     }
 
     /**
@@ -429,6 +433,11 @@ abstract class grading_table_row_base implements user_row {
      */
     public function get_extension() {
         global $DB;
+
+        if (empty($this->coursework->extensions_enabled())) {
+            return false;
+        }
+
         return $DB->get_record('coursework_extensions', ['courseworkid' => $this->get_coursework()->id,
                                                                    'allocatableid' => $this->get_allocatable()->id(),
                                                                    'allocatabletype' => $this->get_allocatable()->type()]);

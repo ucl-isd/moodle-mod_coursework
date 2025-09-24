@@ -1229,6 +1229,10 @@ class submission extends table_base implements \renderable {
      * @throws \coding_exception
      */
     public function has_extension() {
+        if (!$this->coursework->extensions_enabled()) {
+            return false;
+        }
+
         deadline_extension::fill_pool_coursework($this->courseworkid);
         $extension = deadline_extension::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$this->allocatableid, $this->allocatabletype]);
         return !empty($extension);
@@ -1241,6 +1245,10 @@ class submission extends table_base implements \renderable {
      * @throws \coding_exception
      */
     public function submission_extension() {
+        if (!$this->coursework->extensions_enabled()) {
+            return false;
+        }
+
         deadline_extension::fill_pool_coursework($this->courseworkid);
         $extension = deadline_extension::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$this->allocatableid, $this->allocatabletype]);
         return $extension;

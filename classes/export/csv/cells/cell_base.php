@@ -74,6 +74,9 @@ abstract class cell_base implements cell_interface {
      * @return bool
      */
     public function extension_exists($student) {
+        if (empty($this->coursework->extensions_enabled())) {
+            return false;
+        }
 
         $extension = $this->extension->get_extension_for_student($student, $this->coursework);
 
@@ -86,6 +89,9 @@ abstract class cell_base implements cell_interface {
      * @return string
      */
     public function get_extension_date_for_csv($student) {
+        if (empty($this->coursework->extensions_enabled())) {
+            return '';
+        }
 
         $extension = $this->extension->get_extension_for_student($student, $this->coursework);
 
@@ -98,6 +104,9 @@ abstract class cell_base implements cell_interface {
      * @return string
      */
     public function get_extension_extra_info_for_csv($student) {
+        if (empty($this->coursework->extensions_enabled())) {
+            return '';
+        }
 
         $extension = $this->extension->get_extension_for_student($student, $this->coursework);
 
@@ -110,6 +119,9 @@ abstract class cell_base implements cell_interface {
      * @return string
      */
     public function get_extension_reason_for_csv($student) {
+        if (empty($this->coursework->extensions_enabled())) {
+            return '';
+        }
 
         $extension = $this->extension->get_extension_for_student($student, $this->coursework);
         $extensionreasons = $this->get_extension_predefined_reasons();
@@ -123,6 +135,10 @@ abstract class cell_base implements cell_interface {
      * @return array
      */
     public function get_extension_predefined_reasons() {
+        if (empty($this->coursework->extensions_enabled())) {
+            return [];
+        }
+
         return $this->coursework->extension_reasons();
     }
 
