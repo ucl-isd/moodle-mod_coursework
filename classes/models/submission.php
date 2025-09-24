@@ -1100,10 +1100,10 @@ class submission extends table_base implements \renderable {
         if (empty($fileextension)) {
             $fileextension = $this->extract_extension_from_file_name($file->get_source());
         }
-        
+
         // Get the file identifier (candidate number or username hash).
         $identifier = $this->coursework->get_file_identifier_for_user($userid);
-        
+
         $filename = $identifier . '_' . $counter . '.' . $fileextension;
         if ($filename !== $file->get_filename()) {
             $file->rename($filepath, $filename);

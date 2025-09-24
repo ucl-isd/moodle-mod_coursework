@@ -24,7 +24,8 @@ namespace mod_coursework\allocation\strategy;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use html_writer;;
+use html_writer;
+
 /**
  * Assessor from the Moodle group assigned as 1st stage assessor to allocatables from their group
  */
