@@ -2459,6 +2459,14 @@ class coursework extends table_base {
 
     public function finalise_all() {
         global $DB;
+        if (
+            (!$this->has_deadline() && !$this->deadline_has_passed()) // There is no deadline or it is in the future.
+            &&
+            !$this->personal_deadlines_enabled() // Personal deadlines are disabled.
+        ) {
+            return;
+        }
+
         $excludesql = '';
          // check if any extensions granted for this coursework
         if ($this->extensions_enabled() && $this->extension_exists()) {

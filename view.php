@@ -286,9 +286,7 @@ if (($coursework->blindmarking && !$viewanonymous )) {
 }
 
 // Make sure we sort out any stuff that cron should have done, just in case it's not run yet.
-if (($coursework->has_deadline() && $coursework->deadline_has_passed()) || $coursework->personal_deadlines_enabled()) {
-    $coursework->finalise_all();
-}
+$coursework->finalise_all();
 
 // This will set $PAGE->context to the coursemodule's context.
 require_login($course, true, $coursemodule);
