@@ -583,51 +583,55 @@ function coursework_update_instance($coursework) {
 }
 
 /**
- * Update coursework deadline and name in the event table
+ *  Update coursework deadline and name in the event table
  *
  * @param $coursework
  * @param $eventtype
- * @throws coding_exception
- * @throws dml_exception
- * @throws moodle_exception
+ * @return void
  */
 function coursework_update_events($coursework, $eventtype) {
     global $DB;
 
-    $event = "";
-    $eventid = $DB->get_record('event', ['modulename' => 'coursework', 'instance' => $coursework->id, 'eventtype' => $eventtype]);
-
-    if ($eventid) {
-        $event = calendar_event::load($eventid->id);
+    $params = ['modulename' => 'coursework', 'instance' => $coursework->id, 'eventtype' => $eventtype];
+    if ($eventtype == coursework::COURSEWORK_EVENT_TYPE_DUE) {
+        // When getting the ID for the existing event, for 'due' events it's important to pass in course ID.
+        // The reason is that this distinguishes it as a course level event.
+        // Users with extensions or personal deadlines will have entries where courseid is 0.
+        // We want to make sure the users' personal deadlines are not picked up here.
+        $params['courseid'] = $coursework->course;
     }
 
-    // Update/create event for coursework deadline [due]
-    if ($eventtype == 'due') {
+    $eventid = $DB->get_field('event', 'id', $params);
+
+    $event = $eventid ? calendar_event::load($eventid) : null;
+
+    // Update/create event for coursework deadline [due].
+    if ($eventtype == coursework::COURSEWORK_EVENT_TYPE_DUE) {
         $data = \mod_coursework\calendar::coursework_event($coursework, $eventtype, $coursework->deadline);
         if ($event) {
-            $event->update($data); // Update if event exists
+            $event->update($data); // Update if event exists.
         } else {
-            calendar_event::create($data); // Create new event as it doesn't exist
+            calendar_event::create($data); // Create new event as it doesn't exist.
         }
     }
 
-    // Update/create event for coursework initialmarking deadline [initialgradingdue]
+    // Update/create event for coursework initialmarking deadline [initialgradingdue].
     if ($eventtype == 'initialgradingdue') {
         $data = \mod_coursework\calendar::coursework_event($coursework, $eventtype, $coursework->initialmarkingdeadline);
         if ($event) {
-            $event->update($data); // Update if event exists
+            $event->update($data); // Update if event exists.
         } else {
-            calendar_event::create($data); // Create new event as it doesn't exist
+            calendar_event::create($data); // Create new event as it doesn't exist.
         }
     }
 
-    // Update/create event for coursework agreedgrademarking deadline [agreedgradingdue]
+    // Update/create event for coursework agreedgrademarking deadline [agreedgradingdue].
     if ($eventtype == 'agreedgradingdue') {
         $data = \mod_coursework\calendar::coursework_event($coursework, $eventtype, $coursework->agreedgrademarkingdeadline);
         if ($event) {
-            $event->update($data); // Update if event exists
+            $event->update($data); // Update if event exists.
         } else {
-            calendar_event::create($data); // Create new event as it doesn't exist
+            calendar_event::create($data); // Create new event as it doesn't exist.
         }
     }
 }
