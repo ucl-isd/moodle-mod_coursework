@@ -303,6 +303,7 @@ $string['enroltask'] = 'Coursework process enrolment allocation task';
 $string['eventassessableuploaded'] = 'A file has been uploaded.';
 $string['downloadgrades'] = 'Download grades';
 $string['downloadgradingsheets'] = 'Download grading sheet';
+$string['extendbeforerevert'] = 'Unable to unfinalise the submission until a submission extension has been granted.';
 $string['extended_deadline'] = 'Extended deadline';
 $string['extensions'] = 'Extensions';
 $string['extension_adding'] = 'New deadline extension for \'{$a}\'';
