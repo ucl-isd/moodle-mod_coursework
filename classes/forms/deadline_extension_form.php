@@ -337,10 +337,10 @@ class deadline_extension_form extends dynamic_form {
             $errors[] = get_string('nopermissiongeneral', 'mod_coursework');
         }
         // Extension object expects different format for extra_information to match coursework_extensions DB table.
-        $data->extra_information_text = $data->extra_information['text'];
-        $data->extra_information_format = $data->extra_information['format'];
+        $data->extra_information_text = $data->extra_information['text'] ?? null;
+        $data->extra_information_format = $data->extra_information['format'] ?? null;
 
-        if ($data->deleteextension == 1) {
+        if ($data->deleteextension ?? null == 1) {
             if (!$this->extension->can_be_deleted()) {
                 $errors[] = get_string('extension_cannot_delete', 'mod_coursework');
                 return [
@@ -350,7 +350,7 @@ class deadline_extension_form extends dynamic_form {
                     'errors' => $errors,
                     'warnings' => $warnings,
                 ];
-            } else if ($data->suredelete) {
+            } else if ($data->suredelete ?? false) {
                 $ability->require_can('update', $this->extension);
                 $this->extension->delete();
                 return [
