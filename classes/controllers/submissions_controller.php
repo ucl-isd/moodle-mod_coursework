@@ -327,8 +327,7 @@ class submissions_controller extends controller_base {
     }
 
     protected function unfinalise_submission() {
-
-        global  $USER, $DB;
+        global $DB;
 
         $allocatableids = (!is_array($this->params['allocatableid'])) ? [$this->params['allocatableid']] : $this->params['allocatableid'];
 
@@ -339,7 +338,6 @@ class submissions_controller extends controller_base {
         $changedeadlines = false;
 
         foreach ($allocatableids as $aid) {
-
             $submissiondb = $DB->get_record('coursework_submissions',
                 ['courseworkid' => $this->params['courseworkid'], 'allocatableid' => $aid, 'allocatabletype' => $this->params['allocatabletype']]);
             if (!empty($submissiondb)) {
@@ -352,7 +350,6 @@ class submissions_controller extends controller_base {
                     $changedeadlines = true;
                 }
             }
-
         }
 
         if (!empty($changedeadlines)) {
@@ -362,11 +359,9 @@ class submissions_controller extends controller_base {
                 ['id' => $this->coursework->get_coursemodule_id()]);
             redirect($setpersonaldeadlinepageurl);
         }
-
     }
 
     protected function prepare_environment() {
-
         if (!empty($this->params['submissionid'])) {
             $this->submission = submission::find($this->params['submissionid']);
             $this->coursework = $this->submission->get_coursework();

@@ -114,7 +114,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         } else {
             $selectedtype = ['percentage' => get_string('percentage', 'mod_coursework')];
             $selectedto = ['100' => '100'];
-            $selectedfrom = ['0' => '0'];;
+            $selectedfrom = ['0' => '0'];
             $ruleschecked = false;
         }
 

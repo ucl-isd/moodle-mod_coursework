@@ -37,7 +37,7 @@ $submissionid = optional_param('submissionid', 0, PARAM_INT);
 $assessorid = optional_param('assessorid', $USER->id, PARAM_INT);
 $feedbackid = optional_param('feedbackid', 0, PARAM_INT);
 $cmid = optional_param('cmid', 0, PARAM_INT);
-$isfinalgrade = optional_param('isfinalgrade', 1, PARAM_INT);;
+$isfinalgrade = optional_param('isfinalgrade', 1, PARAM_INT);
 
 // Determines whether the current user is the owner of the grade.
 $gradeowner = true;
