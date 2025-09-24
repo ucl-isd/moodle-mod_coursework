@@ -222,7 +222,7 @@ abstract class cell_base implements cell_interface {
      */
     protected function submission_time($submission) {
 
-        if ($submission->is_late()) {
+        if ($submission->was_late()) {
             $time = get_string('late', 'coursework');
         } else {
             $time = get_string('ontime', 'mod_coursework');

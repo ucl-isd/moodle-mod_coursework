@@ -1015,10 +1015,10 @@ class submission extends table_base implements \renderable {
     }
 
     /**
-     * @return bool
+     * @return bool|int
      * @throws \coding_exception
      */
-    public function is_late() {
+    public function get_overall_deadline() {
         if (!$this->get_coursework()->has_deadline()) {
             return false;
         }
@@ -1034,7 +1034,40 @@ class submission extends table_base implements \renderable {
             $deadline = $this->extension_deadline();
         }
 
-        return $this->time_submitted() > $deadline;
+        return $deadline;
+    }
+
+    /**
+     * @return bool|int
+     * @throws \coding_exception
+     */
+    public function is_late() {
+        $deadline = $this->get_overall_deadline();
+        $now = time();
+
+        if (empty($deadline)) {
+            return false;
+        } else if ($now <= $deadline) {
+            return false;
+        } else {
+            return $now - $deadline;
+        }
+    }
+
+    /**
+     * @return bool|int
+     * @throws \coding_exception
+     */
+    public function was_late() {
+        $deadline = $this->get_overall_deadline();
+
+        if (empty($deadline)) {
+            return false;
+        } else if ($this->time_submitted() <= $deadline) {
+            return false;
+        } else {
+            return $this->time_submitted() - $deadline;
+        }
     }
 
     /**
@@ -1281,15 +1314,6 @@ class submission extends table_base implements \renderable {
 
         return  $personaldeadline;
 
-    }
-
-    /**
-     * Check if submission was submitted within the extension time
-     *
-     * @return bool
-     */
-    public function submitted_within_extension() {
-        return $this->time_submitted() < $this->extension_deadline();
     }
 
     /**

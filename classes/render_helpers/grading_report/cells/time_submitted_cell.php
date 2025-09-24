@@ -77,19 +77,7 @@ class time_submitted_cell extends cell_base {
             $content .= userdate($timesubmitted, '%a, %d %b %Y, %H:%M');
             $content .= html_writer::empty_tag('br');
 
-            if ($submission->is_late()) {
-
-                // check if submission has personal deadline
-                if ($coursework->personaldeadlineenabled ) {
-                    $deadline = $submission->submission_personal_deadline();
-                } else { // if not, use coursework default deadline
-                    $deadline = $coursework->deadline;
-                }
-
-                $deadline = ($submission->has_extension()) ? $submission->extension_deadline() : $deadline;
-
-                $lateseconds = $timesubmitted - $deadline;
-
+            if ($lateseconds = $submission->was_late()) {
                 $days = floor($lateseconds / 86400);
                 $hours = floor($lateseconds / 3600) % 24;
                 $minutes = floor($lateseconds / 60) % 60;
