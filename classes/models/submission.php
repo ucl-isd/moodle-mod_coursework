@@ -1019,6 +1019,10 @@ class submission extends table_base implements \renderable {
      * @throws \coding_exception
      */
     public function is_late() {
+        if (!$this->get_coursework()->has_deadline()) {
+            return false;
+        }
+
         // check if submission has personal deadline
         if ($this->get_coursework()->personaldeadlineenabled) {
             $deadline = $this->submission_personal_deadline();
@@ -1026,7 +1030,11 @@ class submission extends table_base implements \renderable {
             $deadline = $this->get_coursework()->get_deadline();
         }
 
-        return ($this->get_coursework()->has_deadline() && $this->time_submitted() > $deadline);
+        if ($this->has_extension()) {
+            $deadline = $this->extension_deadline();
+        }
+
+        return $this->time_submitted() > $deadline;
     }
 
     /**

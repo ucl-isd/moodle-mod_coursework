@@ -577,7 +577,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         // Was the submission late?
-        if ($submission->is_late() && (!$submission->has_extension() || !$submission->submitted_within_extension())) {
+        if ($submission->is_late()) {
             $deadline = $coursework->personaldeadlineenabled ? $submission->submission_personal_deadline() : $coursework->deadline;
             $deadline = $submission->has_extension() ? $submission->extension_deadline() : $deadline;
             $lateseconds = $submission->time_submitted() - $deadline;
