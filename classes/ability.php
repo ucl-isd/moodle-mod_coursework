@@ -201,12 +201,15 @@ class ability extends \mod_coursework\framework\ability {
 
         // Show grading table row
         $this->allow_show_grading_table_row_if_allocation_enabled_and_user_has_any_allocation();
-
         $this->allow_show_grading_table_row_if_allocation_enabled_and_all_initial_feedback_done_and_user_can_do_agreed_grades();
         $this->allow_show_grading_table_row_if_allocation_not_enabled_and_user_is_assessor_of_any_stage();
         $this->allow_show_grading_table_row_if_user_has_added_feedback_for_this_submission();
         $this->allow_show_grading_table_row_if_user_can_administer_grades();
         $this->allow_show_grading_table_row_if_user_can_grant_extension_and_no_allocation();
+        // CTP-4215 external examiner with capability mod/coursework:viewallgradesatalltimes needs to see all submissions.
+        $this->allow_show_grading_table_row_if_user_can_view_grades_at_all_times();
+        $this->allow_show_grading_table_row_if_user_can_submit_on_behalf_of();
+        $this->allow_show_grading_table_row_if_user_can_export_final_grades();
 
         // Deadline extension rules
 
