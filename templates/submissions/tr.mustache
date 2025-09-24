@@ -52,7 +52,7 @@
                         <span class="sr-only">
                             {{#str}} due, mod_coursework {{/str}}
                         </span>
-                        {{#str}} duewithdate, coursework, {{{personaldeadline.time_content}}}{{/str}}
+                        {{#str}} {{{personaldeadline.time_content}}} {{/str}}
                     </small>
                     <br>
                 {{/exists}}{{/personaldeadline}}
@@ -83,9 +83,11 @@
                                 {{#str}} submitted_late, mod_coursework {{/str}}
                             </span>
                         {{/submittedlate}}
-                            <span class="sr-only">
-                                {{#str}} date_submitted, mod_coursework {{/str}}
-                            </span>
+
+                        {{^submittedlate}}
+                            {{#str}} submitted, mod_coursework {{/str}}
+                        {{/submittedlate}}
+
                             {{#userdate}}
                                 {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
                             {{/userdate}}
