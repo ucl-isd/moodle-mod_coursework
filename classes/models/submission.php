@@ -1318,7 +1318,7 @@ class submission extends table_base implements \renderable {
 
         $editablefeedbacks = [];
         $coursework = $this->get_coursework();
-        if ($coursework->numberofmarkers > 1 && $this->finalised = 1) {
+        if ($coursework->numberofmarkers > 1 && $this->finalised == 1) {
             $this->get_coursework()->get_grade_editing_time();
             $gradeeditingtime = $coursework->get_grade_editing_time();
 
