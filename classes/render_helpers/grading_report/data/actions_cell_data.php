@@ -82,7 +82,7 @@ class actions_cell_data extends cell_data_base {
      * @return void
      */
     protected function set_extension_data(stdClass $data, grading_table_row_base $rowsbase): void {
-        if (!$this->coursework->get_deadline()) {
+        if (!$this->coursework->get_deadline() || !$this->coursework->extensions_enabled()) {
             return;
         }
         // Set parameters to add/update extension.
