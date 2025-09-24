@@ -340,7 +340,7 @@ class deadline_extension_form extends dynamic_form {
         $data->extra_information_text = $data->extra_information['text'];
         $data->extra_information_format = $data->extra_information['format'];
 
-        if ($data->deleteextension == 1) {
+        if ($data->deleteextension ?? null == 1) {
             if (!$this->extension->can_be_deleted()) {
                 $errors[] = get_string('extension_cannot_delete', 'mod_coursework');
                 return [
