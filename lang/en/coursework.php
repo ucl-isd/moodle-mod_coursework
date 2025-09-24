@@ -303,6 +303,7 @@ $string['err_valueoutofrange'] = 'You must enter a whole number or decimal withi
 $string['eventassessableuploaded'] = 'A file has been uploaded.';
 $string['downloadgrades'] = 'Download grades';
 $string['downloadgradingsheets'] = 'Download grading sheet';
+$string['extendbeforerevert'] = 'Unable to unfinalise the submission until a submission extension has been granted.';
 $string['extended_deadline'] = 'Extended deadline';
 $string['extension'] = 'Extension';
 $string['extensions'] = 'Extensions';
