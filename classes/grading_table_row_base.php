@@ -361,9 +361,6 @@ abstract class grading_table_row_base implements user_row {
      * @return string
      */
     public function get_student_firstname() {
-
-        global $DB;
-
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->firstname)) {
             $this->allocatable = user::find($allocatable);
@@ -376,9 +373,6 @@ abstract class grading_table_row_base implements user_row {
      * @return string
      */
     public function get_student_lastname() {
-
-        global $DB;
-
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->lastname)) {
             $this->allocatable = user::find($allocatable);
@@ -420,7 +414,6 @@ abstract class grading_table_row_base implements user_row {
      */
 
     public function has_extension() {
-
         global $DB;
         return $DB->record_exists('coursework_extensions', ['courseworkid' => $this->get_coursework()->id,
                                                                       'allocatableid' => $this->get_allocatable()->id(),
