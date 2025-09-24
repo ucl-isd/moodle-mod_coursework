@@ -43,17 +43,21 @@
         {{! Submission. }}
         <td>
             {{#submission}}
-                <div class="extensiongranted-container {{^extensiondeadline}}d-none{{/extensiondeadline}}">
-                    <span class="badge badge-success">{{#str}} extension_granted, mod_coursework {{/str}}</span><br>
+                {{#personaldeadline}}{{#exists}}
+                    <div class="personaldeadline-container">
+                        <span class="badge badge-primary">{{#str}} personal_deadline, mod_coursework {{/str}}</span><br>
                         <span class="sr-only">{{#str}} due_date, mod_coursework {{/str}}</span>
-                        <small class="extensiongranteddate">Due:
-                            {{#extensiondeadline}}
-                                {{#userdate}}
-                                    {{extensiondeadline}},{{#str}}strftimedatetime, langconfig{{/str}}
-                                {{/userdate}}
-                            {{/extensiondeadline}}
-                        </small><br>
-                </div>
+                        <small class="personaldeadlinedate">{{#str}}duewithdate, coursework, {{{personaldeadline.time_content}}}{{/str}}</small><br>
+                    </div>
+                {{/exists}}{{/personaldeadline}}
+                {{#extensiondeadline}}
+                    <div class="extensiongranted-container">
+                        <span class="badge badge-success">{{#str}} extension_granted, mod_coursework {{/str}}</span><br>
+                            <span class="sr-only">{{#str}} due_date, mod_coursework {{/str}}</span>
+                            <small class="extensiongranteddate">{{#str}}duewithdate, coursework, {{extensiondeadlinestring}}{{/str}}</small>
+                        <br>
+                    </div>
+                {{/extensiondeadline}}
                 {{#submissiondata}}
                     {{#flaggedplagiarism}}
                         <span class="badge badge-danger">{{#str}} flagged_plagiarism, mod_coursework {{/str}}</span><br>
@@ -62,12 +66,8 @@
                         <span class="badge badge-warning">{{#str}} submitted_late, mod_coursework {{/str}}</span><br>
                     {{/submittedlate}}
                     {{#datemodified}}
-                    <span class="sr-only">{{#str}} date_submitted, mod_coursework {{/str}}</span>
-                        <small>
-                            {{#userdate}}
-                                {{.}},{{#str}}strftimedatetime, langconfig{{/str}}
-                            {{/userdate}}
-                        </small><br>
+                        <span class="sr-only">{{#str}} date_submitted, mod_coursework {{/str}}</span>
+                        <small>{{#str}}submitteddatetime, coursework, {{datemodifiedstring}}{{/str}}</small><br>
                     {{/datemodified}}
                     {{#files}}
                         <span class="sr-only">{{#str}} file_submitted, mod_coursework {{/str}}</span><a href="{{{url}}}"><i class="fa-regular fa-file-lines mr-2"></i>{{filename}}</a><br>
@@ -78,16 +78,18 @@
                 {{/submissiondata}}
                 {{^submissiondata}}
                     {{^extensiongranted}}
-                        {{#duedate}}
-                            <div class="duedate-container">
-                                <span class="sr-only">{{#str}} due_date, mod_coursework {{/str}}</span>
-                                <small>Due:
-                                    {{#userdate}}
-                                        {{.}},{{#str}}strftimedatetime, langconfig{{/str}}
-                                    {{/userdate}}
-                                </small>
-                            </div>
-                        {{/duedate}}
+                        {{^personaldeadline}}
+                            {{#duedate}}
+                                <div class="duedate-container">
+                                    <span class="sr-only">{{#str}} due_date, mod_coursework {{/str}}</span>
+                                    <small>Due:
+                                        {{#userdate}}
+                                            {{.}},{{#str}}strftimerecentfull, langconfig{{/str}}
+                                        {{/userdate}}
+                                    </small>
+                                </div>
+                            {{/duedate}}
+                        {{/personaldeadline}}
                     {{/extensiongranted}}
                 {{/submissiondata}}
             {{/submission}}
@@ -191,6 +193,7 @@
 
         {{! Actions. }}
         <td class="text-right">
+        {{! If user has no actions available, maybe coursework is set to blind marking so no menu. }}
           {{#actions}}
             {{> mod_coursework/submissions/actions }}
           {{/actions}}

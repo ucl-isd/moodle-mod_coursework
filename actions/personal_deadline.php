@@ -31,9 +31,6 @@ $allocatabletype = optional_param('allocatabletype', $USER->id, PARAM_ALPHANUMEX
 $setpersonaldeadlinespage = optional_param('setpersonaldeadlinespage', 0, PARAM_INT);
 $multipleuserdeadlines = optional_param('multipleuserdeadlines', 0, PARAM_INT);
 $selectedtype = optional_param('selectedtype', 'date', PARAM_RAW);
-$personaldeadlinetime = optional_param('personal_deadline_time', null, PARAM_RAW);
-
-$allocatableid = (!empty($allocatableidarr)) ? $allocatableidarr : $allocatableid;
 
 $courseworkdb = $DB->get_record('coursework', ['id' => $courseworkid]);
 
@@ -49,15 +46,14 @@ $params = [
     'multipleuserdeadlines' => $multipleuserdeadlines,
 ];
 
+if (!empty($allocatableidarr)) {
+    $params['allocatableid_arr'] = $allocatableidarr;
+    $params['allocatableid'] = serialize($allocatableidarr);
+}
+
 if ($selectedtype != 'unfinalise') {
     $controller = new mod_coursework\controllers\personal_deadlines_controller($params);
-
-    if (!empty($personaldeadlinetime)) {
-        $result = $controller->insert_update($personaldeadlinetime);
-        echo json_encode($result);
-    } else {
-        $controller->new_personal_deadline();
-    }
+    $controller->new_personal_deadline();
 } else {
 
     if (!has_capability('mod/coursework:revertfinalised', $PAGE->context)) {
