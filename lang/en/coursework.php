@@ -508,6 +508,7 @@ $string['marking_deadline_default'] = 'Initial marking deadline';
 $string['marking_deadline_enabled_desc'] = 'Select the default initial marking deadline applied to coursework activities';
 $string['markerdefaultname'] = 'Marker {$a}';
 $string['markingcriteriafeedback'] = 'Marking criteria feedback';
+$string['markingsummary'] = 'Marking summary';
 $string['markingworkflow'] = 'Marking workflow';
 $string['marks_released'] = 'Marks released';
 $string['maxfeedbacks'] = '(Max: {$a} feedbacks)';
