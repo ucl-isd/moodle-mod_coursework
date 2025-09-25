@@ -68,15 +68,12 @@
                         </div>
 
                         {{#extensiondeadline}}
-                            <div class="pb-1 text-nowrap">
-                                <span class="badge badge-dark">
-                                    {{#str}} submissionextension, mod_coursework {{/str}}
-                                </span>
-                                <span class="sr-only">{{#str}} due, mod_coursework {{/str}}</span>
-                                {{#userdate}}
+                            <span class="badge badge-dark"
+                            title="{{#userdate}}
                                     {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
-                                {{/userdate}}
-                            </div>
+                                {{/userdate}}">
+                                    {{#str}} submissionextension, mod_coursework {{/str}}
+                            </span>
                         {{/extensiondeadline}}
 
                         {{#submittedlate}}
