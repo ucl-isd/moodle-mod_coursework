@@ -22,8 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_coursework\export;
+namespace phpunit\export;
 
+use mod_coursework\export\coding_exception;
 use stdClass;
 
 /**
