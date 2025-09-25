@@ -70,7 +70,6 @@ class submission_cell_data extends cell_data_base {
     protected function add_submission_data(stdClass $data, grading_table_row_base $rowobject): void {
         $submission = $rowobject->get_submission();
         $data->datemodified = $submission->time_submitted();
-        $data->datemodifiedstring = userdate($data->datemodified, get_string('strftimerecentfull', 'langconfig'));
         $data->submissiondata = new stdClass();
         $data->submissiondata->files = $this->get_submission_files_data($rowobject);
 
@@ -186,7 +185,6 @@ class submission_cell_data extends cell_data_base {
         }
         $data->extensiongranted = true;
         $data->extensiondeadline = $extension->extended_deadline;
-        $data->extensiondeadlinestring = userdate($extension->extended_deadline, get_string('strftimerecentfull', 'langconfig'));
     }
 
     /**
