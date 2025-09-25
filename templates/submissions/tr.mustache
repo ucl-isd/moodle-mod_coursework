@@ -43,96 +43,92 @@
         {{! Submission. }}
         <td>
             {{#submission}}
-
-                {{#personaldeadline}}{{#exists}}
-                   <small>
-                        <span class="badge badge-dark">
-                            {{#str}} personal_deadline, mod_coursework {{/str}}
-                        </span>
-                        <span class="sr-only">
-                            {{#str}} due, mod_coursework {{/str}}
-                        </span>
-                        {{#userdate}}
-                            {{personaldeadline.time_content}},{{#str}} strftimedatetime, langconfig {{/str}}
-                        {{/userdate}}
-                    </small>
-                    <br>
-                {{/exists}}{{/personaldeadline}}
-
-                {{#extensiondeadline}}
-                    <small>
-                        <span class="badge badge-dark">
-                            {{#str}} extension_granted, mod_coursework {{/str}}
-                        </span>
-                        <span class="sr-only">
-                            {{#str}} due, mod_coursework {{/str}}
-                        </span>
-                        {{#extensiondeadline}}
-                            {{#userdate}}
-                                {{extensiondeadline}},{{#str}} strftimedatetime, langconfig {{/str}}
-                            {{/userdate}}
-                        {{/extensiondeadline}}
-                    </small>
-                    <br>
-                {{/extensiondeadline}}
-
                 {{#submissiondata}}
+                    {{#files}}
+                        <div class="position-relative d-flex align-items-center pt-1 pb-2">
+                               <div class="rounded-circle border border-primary d-flex align-items-center justify-content-center flex-shrink-0 mr-2" style="height: 2rem; width: 2rem;">
+                                <i class="fa-regular fa-file-lines text-primary"></i>
+                                </div>
+                            <div>
+                                <a href="{{{url}}}" class="stretched-link line-clamp-1" title="{{filename}}" style="line-height: 1.25; width: 350px;">
+                                    {{filename}}
+                                </a>
 
-                    {{#datemodified}}
-                        <small>
+                            {{#datemodified}}
+                                <div class="small text-nowrap text-muted">
+                                    <span class="sr-only">
+                                        {{#str}} submitted, mod_coursework {{/str}}
+                                    </span>
+                                    {{#userdate}}
+                                        {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
+                                    {{/userdate}}
+                                </div>
+                            {{/datemodified}}
+                            </div>
+                        </div>
+                        {{#extensiondeadline}}
+                        <div class="pb-1">
+                            <span class="badge badge-dark">
+                                {{#str}} submissionextension, mod_coursework {{/str}}
+                            </span>
+                            <br>
+                            {{#str}} due, mod_coursework {{/str}}:
+                            {{#userdate}}
+                                {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
+                            {{/userdate}}
+
+                        </div>
+                    {{/extensiondeadline}}
+
                         {{#submittedlate}}
                             <span class="badge badge-warning">
                                 {{#str}} submitted_late, mod_coursework {{/str}}
                             </span>
                         {{/submittedlate}}
 
-                        {{^submittedlate}}
-                            {{#str}} submitted, mod_coursework {{/str}}
-                        {{/submittedlate}}
-
-                        {{#userdate}}
-                            {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
-                        {{/userdate}}
-                        </small>
-                        <br>
-                    {{/datemodified}}
-
-                    {{#files}}
-                        <span class="sr-only">
-                            {{#str}} file_submitted, mod_coursework {{/str}}
-                        </span>
-                        <a href="{{{url}}}" class="line-clamp-1" style="max-width:300px;">
-                            <i class="fa-regular fa-file-lines mr-2"></i>
-                            {{filename}}
-                        </a>
-
                         {{#flaggedplagiarism}}
                             <span class="badge badge-danger">
                                 {{#str}} flagged_plagiarism, mod_coursework {{/str}}
                             </span>
-                            <br>
                         {{/flaggedplagiarism}}
 
                         {{#plagiarismlinks}}
-                            <span class="sr-only">{{#str}} plagiarism_report, mod_coursework {{/str}}</span>
+                            <br>
+                            <span class="sr-only">
+                                {{#str}} plagiarism_report, mod_coursework {{/str}}
+                            </span>
                             {{{plagiarismlinks}}}
                             <br>
                         {{/plagiarismlinks}}
                     {{/files}}
-
                 {{/submissiondata}}
 
                 {{^submissiondata}}
                     {{^extensiongranted}}
-                        {{#duedate}}
-                            <small>
-                                {{#str}} due, mod_coursework {{/str}}
+                        {{#personaldeadline}}
+                            <div>
+                                {{#str}} personal_deadline, mod_coursework {{/str}}
+                                <br>
                                 {{#userdate}}
                                     {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
                                 {{/userdate}}
-                            </small>
-                        {{/duedate}}
+                            </div>
+                        {{/personaldeadline}}
                     {{/extensiongranted}}
+
+                    {{#extensiondeadline}}
+                        <div>
+                            <span class="badge badge-dark">
+                                {{#str}} submissionextension, mod_coursework {{/str}}
+                            </span>
+                            <br>
+                            {{#str}} due, mod_coursework {{/str}}:
+                            {{#userdate}}
+                                {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
+                            {{/userdate}}
+
+                        </div>
+                    {{/extensiondeadline}}
                 {{/submissiondata}}
             {{/submission}}
         </td>

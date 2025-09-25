@@ -199,11 +199,7 @@ class submission_cell_data extends cell_data_base {
         if (!$personaldeadline) {
             return;
         }
-        $data->personaldeadline = (object)[
-            'date' => $personaldeadline,
-            'time' => userdate($personaldeadline, '%d-%m-%Y %I:%M', fixday: false),
-            'time_content' => userdate($personaldeadline, get_string('strftimerecentfull', 'langconfig'), fixday: false),
-            'exists' => $personaldeadline > 0 ? 1 : 0,
-        ];
+
+        $data->personaldeadline = $personaldeadline;
     }
 }
