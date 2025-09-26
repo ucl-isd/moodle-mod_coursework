@@ -37,7 +37,9 @@
             <span class="sr-only">{{#str}} mark, mod_coursework {{/str}}</span>
 
             {{#draft}}
-            <span class="badge badge-secondary">{{#str}} draft, mod_coursework {{/str}}</span>
+            <span class="badge badge-pill badge-secondary">
+                {{#str}} draft, mod_coursework {{/str}}
+            </span>
             {{/draft}}
 
             <a id="edit-feedback-{{allocatablehash}}" href="{{{markurl}}}" class="font-weight-bold pl-1" data-mark="{{.}}">{{.}}</a>
@@ -54,25 +56,35 @@
 
     {{#agreedmark}}
     <li class="d-flex align-items-center my-2" data-mark-stage="final_agreed">
+        <div>
         <div>Agreed mark</div>
-        <div class="text-right ml-auto">
-        {{#mark}}
-            {{#draft}}
-                <span class="badge badge-secondary">{{#str}} draft, mod_coursework {{/str}}</span>
-            {{/draft}}
-
-            {{#readyforrelease}}
-                <span class="badge badge-warning">{{#str}} ready_release, mod_coursework {{/str}}</span>
-            {{/readyforrelease}}
-
-            {{! Released. }}
-            {{#released}}
+        {{#mark}}{{#released}}
+            <div class="small text-muted">
                 {{#timemodified}}
                     {{#userdate}}
                         {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
                     {{/userdate}}
                 {{/timemodified}}
-                <span class="ml-2 badge badge-success">
+            </div>
+        {{/released}}{{/mark}}
+        </div>
+
+        <div class="text-right ml-auto">
+        {{#mark}}
+            {{#draft}}
+                <span class="badge badge-pill badge-secondary">{{#str}} draft, mod_coursework {{/str}}</span>
+            {{/draft}}
+
+            {{#readyforrelease}}
+                <span class="badge badge-pill badge-warning">
+                <i class="fa-solid fa-circle-check m-1"></i>
+                {{#str}} ready_release, mod_coursework {{/str}}</span>
+            {{/readyforrelease}}
+
+            {{! Released. }}
+            {{#released}}
+                <span class=" badge badge-pill badge-success">
+                    <i class="fa-solid fa-circle-check m-1"></i>
                     {{#str}} statusreleased, mod_coursework {{/str}}
                 </span>
             {{/released}}
