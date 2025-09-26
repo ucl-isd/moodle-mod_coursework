@@ -50,7 +50,7 @@
                                 <i class="fa-regular fa-file-lines text-primary"></i>
                                 </div>
                             <div>
-                                <a href="{{{url}}}" class="stretched-link line-clamp-1" title="{{filename}}" style="line-height: 1.25; width: 350px;">
+                                <a href="{{{url}}}" class="stretched-link line-clamp-1" title="{{filename}}" style="line-height: 1.25; max-width: 300px;">
                                     {{filename}}
                                 </a>
 
@@ -68,12 +68,17 @@
                         </div>
 
                         {{#extensiondeadline}}
-                            <span class="badge badge-dark"
-                            title="{{#userdate}}
-                                    {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
-                                {{/userdate}}">
+                            <div class="py-1">
+                                <span class="badge badge-light">
                                     {{#str}} submissionextension, mod_coursework {{/str}}
-                            </span>
+                                </span>
+                                <br>
+                                <small>
+                                {{#userdate}}
+                                    {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
+                                {{/userdate}}
+                                </small>
+                            </div>
                         {{/extensiondeadline}}
 
                         {{#submittedlate}}
@@ -114,42 +119,55 @@
 
                     {{#extensiondeadline}}
                         <div>
-                            <span class="badge badge-dark">
+                            <span class="badge badge-light">
                                 {{#str}} submissionextension, mod_coursework {{/str}}
                             </span>
                             <br>
-                            {{#str}} due, mod_coursework {{/str}}:
                             {{#userdate}}
                                 {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
                             {{/userdate}}
-
                         </div>
                     {{/extensiondeadline}}
+
                 {{/submissiondata}}
+
             {{/submission}}
         </td>
 
         {{! Marking. }}
         <td class="marking-col">
             <ol class="list-unstyled p-0 m-0" aria-label="Markers and agreed mark">
+
                 {{#markers}}
-                <li class="d-flex mb-2" data-mark-stage="{{markingstage}}">
+                <li class="d-flex align-items-center mb-2" data-mark-stage="{{markingstage}}">
                     <div>
                         <span class="sr-only">{{#str}} assessor, mod_coursework {{/str}}</span>
+                        <div class="position-relative d-flex align-items-center">
+                            {{#markerimg}}
+                                <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{markerimg}}'); height: 2rem; width: 2rem;"></div>
+                            {{/markerimg}}
+                            <div>
+                                {{#markerurl}}
+                                    <a href="{{{.}}}" class="stretched-link" style="line-height: 1.25">
+                                {{/markerurl}}
 
-                        {{#markerurl}}
-                            <a href="{{{markerurl}}}" class="d-block">
-                        {{/markerurl}}
-                            <div class="d-flex align-items-center">
-                                {{#markerimg}}
-                                    <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{markerimg}}'); height: 2rem; width: 2rem;"></div>
-                                {{/markerimg}}
-                                {{markername}}
+                                    {{markername}}
+
+                                {{#markerurl}}
+                                    </a>
+                                {{/markerurl}}
+
+
+                                {{#timemodified}}
+                                <span class="sr-only">{{#str}} marked, mod_coursework {{/str}}</span>
+                                <div class="small text-nowrap text-muted">
+                                    {{#userdate}}
+                                        {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
+                                    {{/userdate}}
+                                </div>
+                                {{/timemodified}}
                             </div>
-                         {{#markerurl}}
-                            </a>
-                        {{/markerurl}}
-
+                        </div>
                     </div>
 
                     {{#mark}}
@@ -158,17 +176,6 @@
 
                         {{#draft}}
                         <span class="badge badge-secondary">{{#str}} draft, mod_coursework {{/str}}</span>
-                        {{/draft}}
-
-                        {{! Finalised. }}
-                        {{^draft}}
-                            {{#timemodified}}
-                                <small>
-                                {{#userdate}}
-                                    {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
-                                {{/userdate}}
-                                </small>
-                            {{/timemodified}}
                         {{/draft}}
 
                         <a id="edit-feedback-{{allocatablehash}}" href="{{{markurl}}}" class="font-weight-bold pl-1" data-mark="{{.}}">{{.}}</a>
@@ -184,7 +191,7 @@
                 {{/markers}}
 
                 {{#agreedmark}}
-                <li class="d-flex mb-2" data-mark-stage="final_agreed">
+                <li class="d-flex align-items-center my-2" data-mark-stage="final_agreed">
                     <div>Agreed mark</div>
                     <div class="text-right ml-auto">
                     {{#mark}}
@@ -199,13 +206,13 @@
                         {{! Released. }}
                         {{#released}}
                             {{#timemodified}}
-                                <small>
                                 {{#userdate}}
                                     {{.}},{{#str}}strftimedatetime, langconfig{{/str}}
                                 {{/userdate}}
-                                </small>
                             {{/timemodified}}
-                            <span class="badge badge-success">{{#str}} statusreleased, mod_coursework {{/str}}</span>
+                            <span class="ml-2 badge badge-success">
+                                {{#str}} statusreleased, mod_coursework {{/str}}
+                            </span>
                         {{/released}}
 
                         <a id="edit-agreed-feedback-{{allocatablehash}}" href="{{{url}}}" class="font-weight-bold pl-1" data-mark="{{mark}}">{{mark}}</a>
