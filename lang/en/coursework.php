@@ -304,6 +304,7 @@ $string['eventassessableuploaded'] = 'A file has been uploaded.';
 $string['downloadgrades'] = 'Download grades';
 $string['downloadgradingsheets'] = 'Download grading sheet';
 $string['extended_deadline'] = 'Extended deadline';
+$string['extension'] = 'Extension';
 $string['extensions'] = 'Extensions';
 $string['extension_adding'] = 'New deadline extension for \'{$a}\'';
 $string['extension_delete'] = 'Delete this extension';

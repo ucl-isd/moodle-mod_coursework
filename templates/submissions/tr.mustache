@@ -1,237 +1,28 @@
-<tr class="mod-coursework-submissions-row" data-status="{{status}}" data-marker="{{{markerfilter}}}" data-allocateble-id="{{#submissiontype.user}}{{submissiontype.user.id}}{{/submissiontype.user}}{{#group}}{{group.id}}{{/group}}" data-allocatable-type="{{#submissiontype.user}}user{{/submissiontype.user}}{{#group}}group{{/group}}">
+<tr class="mod-coursework-submissions-row"
+    data-status="{{status}}"
+    data-marker="{{{markerfilter}}}"
+    data-allocateble-id="{{#submissiontype.user}}{{submissiontype.user.id}}{{/submissiontype.user}}{{#group}}{{group.id}}{{/group}}"
+    data-allocatable-type="{{#submissiontype.user}}user{{/submissiontype.user}}{{#group}}group{{/group}}">
+
         {{! User. }}
-        <td>
-            {{#submissiontype}}
-                <div class="d-flex align-items-center">
-                    {{#user}}
-                        {{#user.picture}}
-                            <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{user.picture}}'); height: 2rem; width: 2rem;"></div>
-                        {{/user.picture}}
-                        {{#user.url}}
-                            <a href="{{{.}}}" class="d-flex align-items-center" target="_blank">
-                                {{{user.name}}}
-                            </a>
-                        {{/user.url}}
-                        {{^user.url}}
-                            {{user.name}}
-                        {{/user.url}}
-                    {{/user}}
-                    {{#group}}
-                        <div class="d-inline-block text-left">
-                            <div class="d-flex align-items-center">
-                                {{#group.picture}}
-                                    <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{group.picture}}'); height: 2rem; width: 2rem;"></div>
-                                {{/group.picture}}
-                                {{group.name}}
-                            </div>
-                            <div class="dropdown mt-1">
-                                <button class="btn btn-secondary btn-sm dropdown-toggle mt-1" type="button" data-toggle="dropdown" aria-expanded="false">
-                                    {{#str}} viewmembers, mod_coursework {{/str}}
-                                </button>
-                                <ul class="dropdown-menu">
-                                {{#members}}
-                                    <li><a class="dropdown-item" href="{{url}}" target="_blank">{{name}}</a></li>
-                                {{/members}}
-                                </ul>
-                            </div>
-                        </div>
-                    {{/group}}
-                </div>
-            {{/submissiontype}}
+        <td class="mod-coursework-submissions-user-col">
+            {{> mod_coursework/submissions/tr/user}}
         </td>
 
         {{! Submission. }}
-        <td>
-            {{#submission}}
-                {{#submissiondata}}
-                    {{#files}}
-                        <div class="position-relative d-flex align-items-center pt-1 pb-2">
-                               <div class="rounded-circle border border-primary d-flex align-items-center justify-content-center flex-shrink-0 mr-2" style="height: 2rem; width: 2rem;">
-                                <i class="fa-regular fa-file-lines text-primary"></i>
-                                </div>
-                            <div>
-                                <a href="{{{url}}}" class="stretched-link line-clamp-1" title="{{filename}}" style="line-height: 1.25; max-width: 300px;">
-                                    {{filename}}
-                                </a>
-
-                            {{#datemodified}}
-                                <div class="small text-nowrap text-muted">
-                                    <span class="sr-only">
-                                        {{#str}} submitted, mod_coursework {{/str}}
-                                    </span>
-                                    {{#userdate}}
-                                        {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
-                                    {{/userdate}}
-                                </div>
-                            {{/datemodified}}
-                            </div>
-                        </div>
-
-                        {{#extensiondeadline}}
-                            <div class="py-1">
-                                <span class="badge badge-light">
-                                    {{#str}} submissionextension, mod_coursework {{/str}}
-                                </span>
-                                <br>
-                                <small>
-                                {{#userdate}}
-                                    {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
-                                {{/userdate}}
-                                </small>
-                            </div>
-                        {{/extensiondeadline}}
-
-                        {{#submittedlate}}
-                            <span class="badge badge-warning">
-                                {{#str}} submitted_late, mod_coursework {{/str}}
-                            </span>
-                        {{/submittedlate}}
-
-                        {{#flaggedplagiarism}}
-                            <span class="badge badge-danger">
-                                {{#str}} flagged_plagiarism, mod_coursework {{/str}}
-                            </span>
-                        {{/flaggedplagiarism}}
-
-                        {{#plagiarismlinks}}
-                            <br>
-                            <span class="sr-only">
-                                {{#str}} plagiarism_report, mod_coursework {{/str}}
-                            </span>
-                            {{{plagiarismlinks}}}
-                            <br>
-                        {{/plagiarismlinks}}
-                    {{/files}}
-                {{/submissiondata}}
-
-                {{^submissiondata}}
-                    {{^extensiongranted}}
-                        {{#personaldeadline}}
-                            <div>
-                                {{#str}} personal_deadline, mod_coursework {{/str}}
-                                <br>
-                                {{#userdate}}
-                                    {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
-                                {{/userdate}}
-                            </div>
-                        {{/personaldeadline}}
-                    {{/extensiongranted}}
-
-                    {{#extensiondeadline}}
-                        <div>
-                            <span class="badge badge-light">
-                                {{#str}} submissionextension, mod_coursework {{/str}}
-                            </span>
-                            <br>
-                            {{#userdate}}
-                                {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
-                            {{/userdate}}
-                        </div>
-                    {{/extensiondeadline}}
-
-                {{/submissiondata}}
-
-            {{/submission}}
+        <td class="mod-coursework-submissions-submission-col">
+            {{> mod_coursework/submissions/tr/submissions}}
         </td>
 
         {{! Marking. }}
-        <td class="marking-col">
-            <ol class="list-unstyled p-0 m-0" aria-label="Markers and agreed mark">
-
-                {{#markers}}
-                <li class="d-flex align-items-center mb-2" data-mark-stage="{{markingstage}}">
-                    <div>
-                        <span class="sr-only">{{#str}} assessor, mod_coursework {{/str}}</span>
-                        <div class="position-relative d-flex align-items-center">
-                            {{#markerimg}}
-                                <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{markerimg}}'); height: 2rem; width: 2rem;"></div>
-                            {{/markerimg}}
-                            <div>
-                                {{#markerurl}}
-                                    <a href="{{{.}}}" class="stretched-link" style="line-height: 1.25">
-                                {{/markerurl}}
-
-                                    {{markername}}
-
-                                {{#markerurl}}
-                                    </a>
-                                {{/markerurl}}
-
-
-                                {{#timemodified}}
-                                <span class="sr-only">{{#str}} marked, mod_coursework {{/str}}</span>
-                                <div class="small text-nowrap text-muted">
-                                    {{#userdate}}
-                                        {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
-                                    {{/userdate}}
-                                </div>
-                                {{/timemodified}}
-                            </div>
-                        </div>
-                    </div>
-
-                    {{#mark}}
-                    <div class="text-right ml-auto">
-                        <span class="sr-only">{{#str}} mark, mod_coursework {{/str}}</span>
-
-                        {{#draft}}
-                        <span class="badge badge-secondary">{{#str}} draft, mod_coursework {{/str}}</span>
-                        {{/draft}}
-
-                        <a id="edit-feedback-{{allocatablehash}}" href="{{{markurl}}}" class="font-weight-bold pl-1" data-mark="{{.}}">{{.}}</a>
-                    </div>
-                    {{/mark}}
-
-                    {{#addfeedback}}
-                    <div class="text-right ml-auto">
-                        <a id="add-feedback-{{allocatablehash}}" href="{{{markurl}}}" class="btn btn-primary btn-sm">{{#str}} add_feedback, mod_coursework {{/str}}</a>
-                    </div>
-                    {{/addfeedback}}
-                </li>
-                {{/markers}}
-
-                {{#agreedmark}}
-                <li class="d-flex align-items-center my-2" data-mark-stage="final_agreed">
-                    <div>Agreed mark</div>
-                    <div class="text-right ml-auto">
-                    {{#mark}}
-                        {{#draft}}
-                            <span class="badge badge-secondary">{{#str}} draft, mod_coursework {{/str}}</span>
-                        {{/draft}}
-
-                        {{#readyforrelease}}
-                            <span class="badge badge-warning">{{#str}} ready_release, mod_coursework {{/str}}</span>
-                        {{/readyforrelease}}
-
-                        {{! Released. }}
-                        {{#released}}
-                            {{#timemodified}}
-                                {{#userdate}}
-                                    {{.}},{{#str}}strftimedatetime, langconfig{{/str}}
-                                {{/userdate}}
-                            {{/timemodified}}
-                            <span class="ml-2 badge badge-success">
-                                {{#str}} statusreleased, mod_coursework {{/str}}
-                            </span>
-                        {{/released}}
-
-                        <a id="edit-agreed-feedback-{{allocatablehash}}" href="{{{url}}}" class="font-weight-bold pl-1" data-mark="{{mark}}">{{mark}}</a>
-                    {{/mark}}
-
-                    {{#addfinalfeedback}}
-                    <a id="add-agreed-feedback-{{allocatablehash}}" href="{{{url}}}" class="btn btn-sm btn-success">{{#str}} add_agreed_feedback, mod_coursework {{/str}}</a>
-                    {{/addfinalfeedback}}
-                </div>
-                </li>
-                {{/agreedmark}}
-            </ol>
+        <td class="mod-coursework-submissions-marking-col">
+            {{> mod_coursework/submissions/tr/marking}}
         </td>
 
         {{! Actions. }}
-        <td class="text-right">
-        {{! If user has no actions available, maybe coursework is set to blind marking so no menu. }}
+        <td class="mod-coursework-submissions-action-col text-right">
             {{#actions}}
-            {{> mod_coursework/submissions/actions }}
+                {{> mod_coursework/submissions/actions }}
             {{/actions}}
         </td>
 </tr>

@@ -1,0 +1,89 @@
+    <ol class="list-unstyled p-0 m-0" aria-label="Markers and agreed mark">
+
+    {{#markers}}
+    <li class="d-flex align-items-center mb-2" data-mark-stage="{{markingstage}}">
+        <div>
+            <span class="sr-only">{{#str}} assessor, mod_coursework {{/str}}</span>
+            <div class="position-relative d-flex align-items-center">
+                {{#markerimg}}
+                    <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{markerimg}}'); height: 2rem; width: 2rem;"></div>
+                {{/markerimg}}
+                <div>
+                    {{#markerurl}}
+                        <a href="{{{.}}}" class="stretched-link" style="line-height: 1.25">
+                    {{/markerurl}}
+
+                        {{markername}}
+
+                    {{#markerurl}}
+                        </a>
+                    {{/markerurl}}
+
+
+                    {{#timemodified}}
+                    <span class="sr-only">{{#str}} marked, mod_coursework {{/str}}</span>
+                    <div class="small text-nowrap text-muted">
+                        {{#userdate}}
+                            {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
+                        {{/userdate}}
+                    </div>
+                    {{/timemodified}}
+                </div>
+            </div>
+        </div>
+
+        {{#mark}}
+        <div class="text-right ml-auto">
+            <span class="sr-only">{{#str}} mark, mod_coursework {{/str}}</span>
+
+            {{#draft}}
+            <span class="badge badge-secondary">{{#str}} draft, mod_coursework {{/str}}</span>
+            {{/draft}}
+
+            <a id="edit-feedback-{{allocatablehash}}" href="{{{markurl}}}" class="font-weight-bold pl-1" data-mark="{{.}}">{{.}}</a>
+        </div>
+        {{/mark}}
+
+        {{#addfeedback}}
+        <div class="text-right ml-auto">
+            <a id="add-feedback-{{allocatablehash}}" href="{{{markurl}}}" class="btn btn-primary btn-sm">{{#str}} add_feedback, mod_coursework {{/str}}</a>
+        </div>
+        {{/addfeedback}}
+    </li>
+    {{/markers}}
+
+    {{#agreedmark}}
+    <li class="d-flex align-items-center my-2" data-mark-stage="final_agreed">
+        <div>Agreed mark</div>
+        <div class="text-right ml-auto">
+        {{#mark}}
+            {{#draft}}
+                <span class="badge badge-secondary">{{#str}} draft, mod_coursework {{/str}}</span>
+            {{/draft}}
+
+            {{#readyforrelease}}
+                <span class="badge badge-warning">{{#str}} ready_release, mod_coursework {{/str}}</span>
+            {{/readyforrelease}}
+
+            {{! Released. }}
+            {{#released}}
+                {{#timemodified}}
+                    {{#userdate}}
+                        {{.}},{{#str}} strftimedatetime, langconfig {{/str}}
+                    {{/userdate}}
+                {{/timemodified}}
+                <span class="ml-2 badge badge-success">
+                    {{#str}} statusreleased, mod_coursework {{/str}}
+                </span>
+            {{/released}}
+
+            <a id="edit-agreed-feedback-{{allocatablehash}}" href="{{{url}}}" class="font-weight-bold pl-1" data-mark="{{mark}}">{{mark}}</a>
+        {{/mark}}
+
+        {{#addfinalfeedback}}
+        <a id="add-agreed-feedback-{{allocatablehash}}" href="{{{url}}}" class="btn btn-sm btn-success">{{#str}} add_agreed_feedback, mod_coursework {{/str}}</a>
+        {{/addfinalfeedback}}
+    </div>
+    </li>
+    {{/agreedmark}}
+    </ol>
