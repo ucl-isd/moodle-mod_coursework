@@ -196,7 +196,6 @@ class submission_cell_data extends cell_data_base {
      * @param grading_table_row_base $rowobject Row object to get extension from.
      */
     protected function add_personal_deadline_data(stdClass $data, grading_table_row_base $rowobject): void {
-        $personaldeadline = $rowobject->get_personal_deadline_time();
         if ($personaldeadline = $rowobject->get_personal_deadline_time()) {
             $data->personaldeadline = $personaldeadline;
         }
