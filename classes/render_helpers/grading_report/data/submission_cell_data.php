@@ -72,6 +72,8 @@ class submission_cell_data extends cell_data_base {
         $data->datemodified = $submission->time_submitted();
         $data->submissiondata = new stdClass();
         $data->submissiondata->files = $this->get_submission_files_data($rowobject);
+        // Finalised is string 0 when not finalised.
+        $data->submissiondata->finalised = $submission->finalised;
 
         $this->add_plagiarism_data($data->submissiondata, $submission);
         $this->add_late_submission_data($data->submissiondata, $submission);
@@ -194,16 +196,8 @@ class submission_cell_data extends cell_data_base {
      * @param grading_table_row_base $rowobject Row object to get extension from.
      */
     protected function add_personal_deadline_data(stdClass $data, grading_table_row_base $rowobject): void {
-        $personaldeadline = $rowobject->get_personal_deadline_time();
-        // No deadline to show.
-        if (!$personaldeadline) {
-            return;
+        if ($personaldeadline = $rowobject->get_personal_deadline_time()) {
+            $data->personaldeadline = $personaldeadline;
         }
-        $data->personaldeadline = (object)[
-            'date' => $personaldeadline,
-            'time' => userdate($personaldeadline, '%d-%m-%Y %I:%M', fixday: false),
-            'time_content' => userdate($personaldeadline, get_string('strftimerecentfull', 'langconfig'), fixday: false),
-            'exists' => $personaldeadline > 0 ? 1 : 0,
-        ];
     }
 }

@@ -1,0 +1,38 @@
+{{#submissiontype}}
+<div class="d-flex align-items-center">
+    {{#user}}
+        {{#user.picture}}
+            <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{user.picture}}'); height: 2rem; width: 2rem;"></div>
+        {{/user.picture}}
+        {{#user.url}}
+            <a href="{{{.}}}" class="d-flex align-items-center" target="_blank">
+                {{{user.name}}}
+            </a>
+        {{/user.url}}
+        {{^user.url}}
+            {{user.name}}
+        {{/user.url}}
+    {{/user}}
+
+    {{#group}}
+        <div class="d-inline-block text-left">
+            <div class="d-flex align-items-center">
+                {{#group.picture}}
+                    <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{group.picture}}'); height: 2rem; width: 2rem;"></div>
+                {{/group.picture}}
+                {{group.name}}
+            </div>
+            <div class="dropdown mt-1">
+                <button class="btn btn-secondary btn-sm dropdown-toggle mt-1" type="button" data-toggle="dropdown" aria-expanded="false">
+                    {{#str}} viewmembers, mod_coursework {{/str}}
+                </button>
+                <ul class="dropdown-menu">
+                {{#members}}
+                    <li><a class="dropdown-item" href="{{url}}" target="_blank">{{name}}</a></li>
+                {{/members}}
+                </ul>
+            </div>
+        </div>
+    {{/group}}
+</div>
+{{/submissiontype}}
