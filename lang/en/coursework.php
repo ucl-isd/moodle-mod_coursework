@@ -368,6 +368,7 @@ $string['fileuploadresult'] = '<strong>File {$a->filename} :</strong> {$a->resul
 $string['filter'] = 'Filter';
 $string['filter_active_count'] = 'Filter ({$a} active)';
 $string['filters_applied_sr'] = 'Filters applied, you can click to remove them individually, or reset all filters.';
+$string['filtersubmissions'] = 'Filter submissions';
 $string['filter_by'] = 'Filter by';
 $string['filteronwarning'] = 'You may have more submissions to grade. Filtering doesn\'t affect any actions such as offline grading, grade releasing etc. ';
 $string['finalcappedgrade'] = 'Final grade';
