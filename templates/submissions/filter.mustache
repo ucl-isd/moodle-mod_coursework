@@ -3,7 +3,10 @@
         {{! Filter options. }}
         <div class="dropdown mr-2">
             <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filter-submissions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa-solid fa-sliders mr-2"></i> <span id="filter-button-text-display">{{#str}}filter, mod_coursework{{/str}}</span>
+            <i class="fa-solid fa-sliders mr-2"></i>
+                <span id="filter-button-text-display">
+                {{#str}}filter, mod_coursework{{/str}}
+                </span>
             </button>
 
             <div class="dropdown-menu p-4" aria-labelledby="filter-submissions" style="width: 600px;">
@@ -159,16 +162,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (total_active_filters > 0) {
-            filter_button_text_display.textContent = `{{#str}}filter_active_count, mod_coursework, ${total_active_filters}{{/str}}`;
-            // filter_dropdown_button.setAttribute('aria-expanded', 'true'); // Dropdown handles this internally
+            filter_button_text_display.textContent = '{{#str}} active_filters, mod_coursework {{/str}}' + total_active_filters;
         } else {
-            filter_button_text_display.textContent = '{{#str}}filter, mod_coursework{{/str}}';
-            // filter_dropdown_button.setAttribute('aria-expanded', 'false'); // Dropdown handles this internally
+            filter_button_text_display.textContent = '{{#str}} filter, mod_coursework {{/str}}';
         }
     }
 
     function update_record_count() {
-        record_count_display.textContent = `{{#str}}records_count, mod_coursework, ${get_visible_row_count()}{{/str}}`;
+        record_count_display.textContent = `${get_visible_row_count()} {{#str}} records, mod_coursework {{/str}}`;
     }
 
     function update_filter_tags_display() {
@@ -189,8 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 button.classList.add('btn', 'btn-sm', 'btn-light');
                 button.textContent = filter_info.label;
                 button.innerHTML += ' <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>';
-
-                button.setAttribute('aria-label', `{{#str}}remove_filter, mod_coursework, ${filter_info.label}{{/str}}`);
+                button.setAttribute('aria-label', `{{#str}} remove_filter, mod_coursework {{/str}} ${filter_info.label}`);
 
                 button.addEventListener('click', function() {
                     // Logic to remove filter from active_filters
@@ -283,13 +283,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        record_count_display.textContent = `{{#str}}records_count, mod_coursework, ${visible_rows_count}{{/str}}`;
+        record_count_display.textContent = `${get_visible_row_count()} {{#str}} records, mod_coursework {{/str}}`;
 
         const announcement_text = query_lower !== ''
             ? `{{#str}}search_results_found, mod_coursework{{/str}}`.replace('{$a->count}', visible_rows_count.toString()).replace('{$a->query}', current_search_query)
             : (visible_rows_count === table_rows.length && Object.keys(active_filters).length === 0
                 ? '{{#str}}all_records_displayed, mod_coursework{{/str}}'
-                : `{{#str}}records_displayed_with_filters, mod_coursework, ${visible_rows_count}{{/str}}`);
+                : `${visible_rows_count} {{#str}}records_displayed_with_filters, mod_coursework{{/str}}`);
 
         const live_region_div = document.getElementById('filter-display-area');
         let existing_sr_only_announcement = live_region_div.querySelector('.sr-only.results-announcement');
