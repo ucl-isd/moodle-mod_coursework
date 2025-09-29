@@ -1,17 +1,21 @@
 {{! called from templates/submissions/tr }}
 
 <div class="dropdown coursework-actions">
-    <button class="btn btn-outline-secondary btn-icon rounded-circle" type="button" id="dropdownMenuButton"
-            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+    <button class="btn btn-outline-secondary btn-icon rounded-circle"
+            type="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
             <i class="fa-solid fa-ellipsis-vertical"></i>
             <span class="sr-only">{{#str}} edit {{/str}}</span>
     </button>
-    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+
+    <div class="dropdown-menu dropdown-menu-right" aria-label="{{#str}} edit {{/str}}">
+
         {{#coursework.defaultduedate}}
             {{#coursework.personal_deadlines_enabled}}
                 {{! Not editable if an extension exists for this user }}
                 {{#personaldeadline}}
-                    <a class="dropdown-item{{^is_editable}} disabled{{/is_editable}}"
+                    <a class="dropdown-item {{^is_editable}} disabled {{/is_editable}}"
                        href="{{config.wwwroot}}/mod/coursework/actions/personal_deadline.php?allocatableid={{#submissiontype.user}}{{submissiontype.user.id}}{{/submissiontype.user}}{{#group}}{{group.id}}{{/group}}&allocatabletype={{#submissiontype.user}}user{{/submissiontype.user}}{{#group}}group{{/group}}&courseworkid={{coursework.id}}"
                         data-action="mod-coursework-launch-modal-personal-deadline"
                         data-coursework-id="{{coursework.id}}"
@@ -35,6 +39,7 @@
                     <div class="dropdown-divider"></div>
                 {{/personaldeadline}}
             {{/coursework.personal_deadlines_enabled}}
+
             {{#extension.show}}
                 <a class="dropdown-item {{extension.class}}"
                    href="{{extension.url}}"
@@ -53,27 +58,25 @@
                         </span>
                     </small>
                 </a>
-                {{#submission.url}}<div class="dropdown-divider"></div>{{/submission.url}}
-                {{#finalise}}<div class="dropdown-divider"></div>{{/finalise}}
-                {{#unfinalise}}<div class="dropdown-divider"></div>{{/unfinalise}}
-                {{#plagarism.url}}<div class="dropdown-divider"></div>{{/plagarism.url}}
+                <div class="dropdown-divider"></div>
             {{/extension.show}}
         {{/coursework.defaultduedate}}
+
         {{#submission.url}}
             <a class="dropdown-item submit-on-behalf" href="{{submission.url}}">{{submission.label}}</a>
-            {{#finalise}}<div class="dropdown-divider"></div>{{/finalise}}
-            {{#unfinalise}}<div class="dropdown-divider"></div>{{/unfinalise}}
-            {{#plagarism.url}}<div class="dropdown-divider"></div>{{/plagarism.url}}
+            <div class="dropdown-divider"></div>
         {{/submission.url}}
+
         {{#finalise}}
             <a class="dropdown-item submission-finalisation" data-action="finalise" data-student="{{studentname}}" href="{{finalise.url}}">Finalise submission</a>
-            {{#unfinalise}}<div class="dropdown-divider"></div>{{/unfinalise}}
-            {{#plagarism.url}}<div class="dropdown-divider"></div>{{/plagarism.url}}
+            <div class="dropdown-divider"></div>
         {{/finalise}}
+
         {{#unfinalise}}
              <a class="dropdown-item submission-finalisation" data-action="unfinalise" data-student="{{studentname}}" href="{{unfinalise.url}}">Unfinalise submission</a>
-            {{#plagarism.url}}<div class="dropdown-divider"></div>{{/plagarism.url}}
+            <div class="dropdown-divider"></div>
         {{/unfinalise}}
+
         {{#plagarism.url}}
             <a class="dropdown-item" href="{{plagarism.url}}">Plagarism
                 {{#plagarismstatus}}
@@ -85,6 +88,7 @@
                 {{/plagarismstatus}}
             </a>
         {{/plagarism.url}}
+
 <!--        <a class="dropdown-item" href="#">Release mark</a>-->
     </div>
 </div>

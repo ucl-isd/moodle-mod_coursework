@@ -15,7 +15,7 @@ Coursework.
     }
 
     /* Plagiarism in table submissions col. */
-    .mod-coursework-submissions-row .core_plagiarism_links {
+    .mod-coursework-submissions-submission-col .core_plagiarism_links {
         display: block;
         padding: .5rem;
         margin-top: .5rem;
@@ -40,6 +40,15 @@ Coursework.
                     text-decoration: underline;
                 }
             }
+        }
+    }
+
+    /* Actions menu dropdown dividers. */
+    .mod-coursework-submissions-action-col .dropdown-menu {
+        /* Hide any hanging dividers. */
+        .dropdown-divider:last-of-type,
+        .dropdown-divider + .dropdown-divider {
+            display: none;
         }
     }
 
