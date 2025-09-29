@@ -24,7 +24,7 @@
                         {{#deadlineid}}data-deadline-id="{{deadlineid}}"{{/deadlineid}}>
                         {{^is_editable}}<i class="fa fa-fw fa-lock mr-1"></i>{{/is_editable}}
                         {{#exists}}
-                            {{#str}}personal_deadline, coursework{{/str}}
+                            {{#str}} personal_deadline, coursework {{/str}}
                             <small class="actions-extension-date-container {{#personaldeadline.date}}d-block{{/personaldeadline.date}} {{^personaldeadline.date}}d-none{{/personaldeadline.date}}">
                                 <i class="fa-solid fa-circle-check text-{{#is_editable}}primary{{/is_editable}}{{^is_editable}}secondary{{/is_editable}} mr-2"></i>
                                 <span class="actions-extension-date">
@@ -34,7 +34,7 @@
                                 </span>
                             </small>
                         {{/exists}}
-                        {{^exists}}{{#str}}personal_deadline, coursework{{/str}}{{/exists}}
+                        {{^exists}}{{#str}} personal_deadline, coursework {{/str}}{{/exists}}
                     </a>
                     <div class="dropdown-divider"></div>
                 {{/personaldeadline}}
@@ -48,18 +48,19 @@
                    {{#extension.id}}data-extension-id="{{extension.id}}"{{/extension.id}}
                    data-allocatable-id="{{extension.extensionparams.allocatableid}}"
                    data-allocatable-type="{{extension.extensionparams.allocatabletype}}"
-                >{{#str}}submissionextension, mod_coursework{{/str}}
+                >{{#str}} submissionextension, mod_coursework {{/str}}
                     <small class="actions-extension-date-container {{#extension.date}}d-block{{/extension.date}} {{^extension.date}}d-none{{/extension.date}}">
                         <i class="fa-solid fa-circle-check text-success mr-2"></i>
                         <span class="actions-extension-date">
                             {{#extension.date}}
-                                {{#userdate}}{{extension.date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
+                                {{#userdate}}{{extension.date}},{{#str}} strftimedatetime, langconfig {{/str}}{{/userdate}}
                             {{/extension.date}}
                         </span>
                     </small>
                 </a>
                 <div class="dropdown-divider"></div>
             {{/extension.show}}
+
         {{/coursework.defaultduedate}}
 
         {{#submission.url}}
@@ -68,27 +69,30 @@
         {{/submission.url}}
 
         {{#finalise}}
-            <a class="dropdown-item submission-finalisation" data-action="finalise" data-student="{{studentname}}" href="{{finalise.url}}">Finalise submission</a>
+            <a class="dropdown-item submission-finalisation" data-action="finalise" data-student="{{studentname}}" href="{{finalise.url}}">{{#str}} finalise_submission, mod_coursework {{/str}}</a>
             <div class="dropdown-divider"></div>
         {{/finalise}}
 
         {{#unfinalise}}
-             <a class="dropdown-item submission-finalisation" data-action="unfinalise" data-student="{{studentname}}" href="{{unfinalise.url}}">Unfinalise submission</a>
+             <a class="dropdown-item submission-finalisation" data-action="unfinalise" data-student="{{studentname}}" href="{{unfinalise.url}}">{{#str}} unfinalise_submission, mod_coursework {{/str}}</a>
             <div class="dropdown-divider"></div>
         {{/unfinalise}}
 
         {{#plagarism.url}}
-            <a class="dropdown-item" href="{{plagarism.url}}">Plagarism
+            <a class="dropdown-item" href="{{plagarism.url}}">{{#str}} plagiarism_action, mod_coursework {{/str}}
                 {{#plagarismstatus}}
                     <small class="d-block">
                         <i class="fa-solid fa-triangle-exclamation text-danger mr-2"></i>
-                        <span class="sr-only">Flagged for plagiarism status </span>
+                        <span class="sr-only">{{#str}} flagged_for_plagiarism_status, mod_coursework {{/str}}</span>
                         {{.}}
                     </small>
                 {{/plagarismstatus}}
             </a>
+            <div class="dropdown-divider"></div>
         {{/plagarism.url}}
 
-<!--        <a class="dropdown-item" href="#">Release mark</a>-->
+        <!--
+    <a class="dropdown-item" href="#">{{#str}} release_mark, mod_coursework {{/str}}</a>
+        -->
     </div>
 </div>
