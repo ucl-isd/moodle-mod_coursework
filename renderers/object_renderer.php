@@ -436,7 +436,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     protected function render_mod_coursework_coursework(mod_coursework_coursework $coursework) {
         global $USER;
 
-        $out = '';
+        $out = '<div class="container">';
 
         if (has_capability('mod/coursework:allocate', $coursework->get_context())) {
             $warnings = new warnings($coursework);
@@ -446,24 +446,20 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $cangrade = has_capability('mod/coursework:addinitialgrade', $this->page->context);
         $canpublish = has_capability('mod/coursework:publish', $this->page->context);
         $canaddgeneralfeedback = has_capability('mod/coursework:addgeneralfeedback', $this->page->context);
-        $student = user::find($USER);
-
-        // WIP - grid output.
-        $out .= "<div class='row'>";
-        // Little col.
-        $out .= "<div class='col-md-4'>";
-        if ($cangrade || $canpublish) {
-            $out .= $this->coursework_marking_summary($coursework);
-        }
-        // WIP - student view overview data here.
         $cansubmit = has_capability('mod/coursework:submit', $this->page->context);
+
+        $student = user::find($USER);
+        $template = new stdClass();
+
+        if ($cangrade || $canpublish) {
+            $template->markingsummary = $this->coursework_marking_summary($coursework);
+        }
+
         if ($cansubmit && !$cangrade) {
             $pagerenderer = $this->page->get_renderer('mod_coursework', 'page');
-            $out .= $pagerenderer->student_view_page($coursework, $student);
+            $template->studentview = $pagerenderer->student_view_page($coursework, $student);
         }
-        $out .= "</div>";
 
-        $template = new stdClass();
         $template->description = null;
         $template->markingguideurl = null;
 
@@ -514,9 +510,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
 
         $out .= $this->render_from_template('mod_coursework/intro', $template);
-
-        // Close row.
-        $out .= "</div>";
+        $out .= "</div>"; // Close container.
 
         return $out;
     }
@@ -1462,9 +1456,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * for assessors and dropdown menus for export and upload actions.
      *
      * @param mod_coursework_coursework $coursework The coursework activity object.
-     * @return string The HTML for the marking summary.
+     * @return stdClass Template data for the marking summary.
      */
-    private function coursework_marking_summary(mod_coursework_coursework $coursework): string {
+    private function coursework_marking_summary(mod_coursework_coursework $coursework): stdClass {
         $template = new stdClass();
 
         // Edge case: for a single-marked coursework with marker allocation
@@ -1545,7 +1539,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 ];
             }
         }
-        return $this->render_from_template('mod_coursework/marking_summary', $template);
+
+        return $template;
     }
 
     /**

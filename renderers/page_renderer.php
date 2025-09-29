@@ -207,21 +207,21 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     /**
      * @param \mod_coursework\models\coursework $coursework
      * @param user $student
-     * @return string
+     * @return stdClass Template data for rendering.
      */
-    public function student_view_page($coursework, $student) {
+    public function student_view_page($coursework, $student): stdClass {
         // Coursework not yet open for submissions.
         if (!$coursework->start_date_has_passed()) {
             $template = new stdClass();
             $template->startdate = $coursework->startdate;
-            return $this->render_from_template('mod_coursework/submission', $template);
+            return $template;
         }
 
         // If coursework groups and the student is not in any group.
         if ($coursework->is_configured_to_have_group_submissions() && !$coursework->student_is_in_any_group($student)) {
             $template = new stdClass();
             $template->notingroup = true;
-            return $this->render_from_template('mod_coursework/submission', $template);
+            return $template;
         }
 
         // $submission here means the existing stuff. Might be the group of the student. The only place where
@@ -272,7 +272,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $template->submissionbutton = $this->edit_submission_button($coursework, $submission);
         }
 
-        return $this->render_from_template('mod_coursework/submission', $template);
+        return $template;
     }
 
     /**
@@ -533,6 +533,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
          */
         $gradingreportrenderer = new \mod_coursework\renderers\grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
 
+        $html = "<div class='container'>";
         $warnings = new warnings($coursework);
         // Show any warnings that may need to be here
         if ($coursework->use_groups == 1) {
@@ -540,6 +541,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
         $html .= $warnings->percentage_allocations_not_complete();
         $html .= $warnings->student_in_no_group();
+        $html .= "</div>"; // Close container.
 
         // display 'Group mode' with the relevant groups
         $currenturl = new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]);
