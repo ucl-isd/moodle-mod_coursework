@@ -22,6 +22,7 @@
 
 namespace mod_coursework;
 use mod_coursework\models\coursework;
+use core\output\notification;
 
 /**
  * Class warnings is responsible for detecting and displaying warnings to users based on
@@ -327,11 +328,9 @@ class warnings {
      * @return string
      */
     private function alert_div($message) {
-        $html = '';
-        $html .= '<div class="alert">';
-        $html .= $message;
-        $html .= '</div>';
-        return $html;
+        global $OUTPUT;
+        $notification = new notification($message, notification::NOTIFY_WARNING);
+        return $OUTPUT->render($notification);
     }
 
     /**
