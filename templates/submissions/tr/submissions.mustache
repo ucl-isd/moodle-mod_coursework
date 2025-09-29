@@ -1,0 +1,110 @@
+{{#submission}}
+    {{#submissiondata}}
+        {{#files}}
+            <div class="position-relative d-flex align-items-center pb-2">
+                {{! Icon. }}
+                <div class="rounded-circle border border-primary d-flex align-items-center justify-content-center flex-shrink-0 mr-2" style="height: 2rem; width: 2rem;">
+                    <i class="fa-regular fa-file-lines text-primary"></i>
+                </div>
+
+                {{! File. }}
+                <div>
+                    {{^finalised}}
+                        <span class="badge badge-pill badge-info">
+                            {{#str}} draft, mod_coursework {{/str}}
+                        </span>
+                    {{/finalised}}
+
+                    <a href="{{{url}}}" class="stretched-link text-break line-clamp-1" title="{{filename}}" style="line-height: 1.25;">
+                        {{filename}}
+                    </a>
+
+                    {{#datemodified}}
+                        <div class="small text-nowrap text-muted">
+                            <span class="sr-only">
+                                {{#str}} submitted, mod_coursework {{/str}}
+                            </span>
+
+                            {{#userdate}}
+                                {{.}}, {{#str}} strftimedatetime, langconfig {{/str}}
+                            {{/userdate}}
+                        </div>
+                    {{/datemodified}}
+                </div>
+            </div>
+
+            {{#extensiondeadline}}
+            <div class="bg-light badge-pill my-2 py-1">
+                <div class="position-relative d-flex align-items-center">
+                        <div class="mr-3">
+                            <i class="fa-regular fa-clock"></i>
+                        </div>
+                        <div class="small">
+                            {{#str}} extension, mod_coursework {{/str}}
+                            <br>
+                            {{#userdate}}
+                                {{.}}, {{#str}} strftimedatetime, langconfig {{/str}}
+                            {{/userdate}}
+                        </div>
+                </div>
+            </div>
+            {{/extensiondeadline}}
+
+            {{#submittedlate}}
+                <span class="badge badge-pill badge-warning">
+                    <i class="fa-regular fa-clock m-1"></i>
+                    {{#str}} submitted_late, mod_coursework {{/str}}
+                </span>
+            {{/submittedlate}}
+
+            {{#flaggedplagiarism}}
+                <span class="badge badge-pill badge-danger">
+                    <i class="fa-regular fa-flag m-1"></i>
+                    {{#str}} flagged_plagiarism, mod_coursework {{/str}}
+                </span>
+            {{/flaggedplagiarism}}
+
+            {{#plagiarismlinks}}
+                <br>
+                <span class="sr-only">
+                    {{#str}} plagiarism_report, mod_coursework {{/str}}
+                </span>
+                {{{plagiarismlinks}}}
+                <br>
+            {{/plagiarismlinks}}
+        {{/files}}
+    {{/submissiondata}}
+
+    {{^submissiondata}}
+        {{^extensiongranted}}
+            {{#personaldeadline}}
+                <div>
+                    {{#str}} personal_deadline, mod_coursework {{/str}}
+                    <br>
+                    {{#userdate}}
+                        {{.}}, {{#str}} strftimedatetime, langconfig {{/str}}
+                    {{/userdate}}
+                </div>
+            {{/personaldeadline}}
+        {{/extensiongranted}}
+
+        {{#extensiondeadline}}
+            <div class="bg-light badge-pill my-2 py-1">
+                <div class="position-relative d-flex align-items-center">
+                        <div class="mr-3">
+                            <i class="fa-regular fa-clock"></i>
+                        </div>
+                        <div class="small">
+                            {{#str}} extension, mod_coursework {{/str}}
+                            <br>
+                            {{#userdate}}
+                                {{.}}, {{#str}} strftimedatetime, langconfig {{/str}}
+                            {{/userdate}}
+                        </div>
+                </div>
+            </div>
+        {{/extensiondeadline}}
+
+    {{/submissiondata}}
+
+{{/submission}}
