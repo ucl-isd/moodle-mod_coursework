@@ -501,6 +501,7 @@ $string['manualsrscode'] = 'Manual candidate number';
 $string['manualsrscodesetting'] = 'Provide a space for students to enter a candidate number when submitting.';
 $string['mark'] = 'Mark';
 $string['marked'] = 'Marked';
+$string['markersandagreedmark'] = 'Markers and agreed mark';
 $string['markedagreemark'] = 'Marked (agreed mark)';
 $string['markedandreleased'] = 'Marked and released';
 $string['markernumber'] = 'Marker {$a}';
