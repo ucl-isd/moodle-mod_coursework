@@ -9,9 +9,9 @@
             <tr>
                 <th scope="col"></th>
                 {{#marker_columns}}
-                    <th scope="col" id="marker-col={{markernumber}}" data-feedback-id="{{feedbackid}}" data-stage="{{stage_identifier}}" data-grade="{{grade}}">{{#str}}markernumber, mod_coursework, {{markernumber}}{{/str}}</th>
+                    <th scope="col" id="marker-col={{markernumber}}" data-feedback-id="{{feedbackid}}" data-stage="{{stage_identifier}}" data-grade="{{grade}}">{{#str}} markernumber, mod_coursework, {{markernumber}} {{/str}}</th>
                 {{/marker_columns}}
-                <th scope="col" class="w-50">{{#str}}agreed, mod_coursework{{/str}}</th>
+                <th scope="col" class="w-50">{{#str}} agreed, mod_coursework {{/str}}</th>
             </tr>
             </thead>
             <tbody>
@@ -27,23 +27,23 @@
                     <td>
                         <div class="form-inline">
                             <input class="form-control" type="number" id="agreed_grade_criterion_{{id}}" name="advancedgrading[criteria][{{id}}][score]" min="0" max="{{maxscore}}" step=".01"{{#existing_agreed_feedback.score}} value="{{existing_agreed_feedback.score}}"{{/existing_agreed_feedback.score}}>
-                            <label class="ml-2" for="agreed_grade_criterion_{{id}}">{{#str}}guidemaxmark, mod_coursework, {{maxscore}}{{/str}}</label>
+                            <label class="ml-2" for="agreed_grade_criterion_{{id}}">{{#str}} guidemaxmark, mod_coursework, {{maxscore}} {{/str}}</label>
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row">{{#str}}feedback, mod_coursework{{/str}}</th>
+                    <th scope="row">{{#str}} feedback, mod_coursework {{/str}}</th>
                     {{#criterion_grades}}
                         <td id="comment_criterion_{{id}}_{{stage_identifier}}">{{remark}}</td>
                     {{/criterion_grades}}
                     <td>
 
-                        <label for="agreed_feedback_select_criterion_{{id}}">{{#str}}feedback, mod_coursework{{/str}}:</label>
+                        <label for="agreed_feedback_select_criterion_{{id}}">{{#str}} feedback, mod_coursework {{/str}}:</label>
                         {{#hasfrequentcomments}}
                             <div class="form-group">
                                 <select class="form-control mod_coursework_custom_comment_select" advancedgrading[criteria][{{id}}][select] style="height: auto;" id="agreed_feedback_select_criterion_{{id}}">
                                     <button><div><selectedcontent></selectedcontent></div></button>
-                                    <option disabled selected value="0">{{#str}}choosedots{{/str}}</option>
+                                    <option disabled selected value="0">{{#str}} choosedots {{/str}}</option>
                                     {{#dropdownoptions}}
                                         <option value="{{id}}"{{#selected}} selected{{/selected}} data-extra="{{extrea}}">{{description}}</option>
                                     {{/dropdownoptions}}

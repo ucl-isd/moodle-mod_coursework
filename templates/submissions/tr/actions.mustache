@@ -78,18 +78,18 @@
             <div class="dropdown-divider"></div>
         {{/unfinalise}}
 
-        {{#plagarism.url}}
-            <a class="dropdown-item" href="{{plagarism.url}}">{{#str}} plagiarism_action, mod_coursework {{/str}}
-                {{#plagarismstatus}}
+        {{#plagiarism.url}}
+            <a class="dropdown-item" href="{{plagiarism.url}}">{{#str}} plagiarism_action, mod_coursework {{/str}}
+                {{#plagiarismstatus}}
                     <small class="d-block">
                         <i class="fa-solid fa-triangle-exclamation text-danger mr-2"></i>
                         <span class="sr-only">{{#str}} flagged_for_plagiarism_status, mod_coursework {{/str}}</span>
                         {{.}}
                     </small>
-                {{/plagarismstatus}}
+                {{/plagiarismstatus}}
             </a>
             <div class="dropdown-divider"></div>
-        {{/plagarism.url}}
+        {{/plagiarism.url}}
 
         <!--
     <a class="dropdown-item" href="#">{{#str}} release_mark, mod_coursework {{/str}}</a>
