@@ -3317,8 +3317,6 @@ class coursework extends table_base {
             $event->visible = instance_is_visible($modulename, $this);
             // Priority set to override default deadline for this coursework in user calendar/timeline.
             $event->priority = CALENDAR_EVENT_USER_OVERRIDE_PRIORITY;
-            $event->component = 'mod_coursework';
-
             return (bool)\calendar_event::create($event, false);
         }
     }

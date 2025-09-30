@@ -116,11 +116,11 @@ class deadline_extensions_controller extends controller_base {
             $ability->require_can('create', $this->deadlineextension);
 
             $this->deadlineextension->save();
-            $personaldeadline = personal_deadline::get_personal_deadline_for_student($this->allocatable, $this->coursework);
+            $personaldeadline = personal_deadline::get_personal_deadline_for_student($allocatable, $this->coursework);
             // Update calendar/timeline event to the latest of the new extension date or existing personal deadline.
             $this->coursework->update_user_calendar_event(
-                $this->allocatable->id(),
-                $this->allocatable->type(),
+                $allocatable->id(),
+                $allocatable->type(),
                 max($this->deadlineextension->extended_deadline, $personaldeadline->personal_deadline ?? 0)
             );
             redirect(
@@ -224,11 +224,14 @@ class deadline_extensions_controller extends controller_base {
             $values->extra_information_format = $values->extra_information['format'];
             $this->deadlineextension->update_attributes($values);
 
-            $personaldeadline = personal_deadline::get_personal_deadline_for_student($this->allocatable, $this->coursework);
+            $personaldeadline = personal_deadline::get_personal_deadline_for_student(
+                $this->deadlineextension->get_allocatable(),
+                $this->coursework
+            );
             // Update calendar/timeline event to the latest of the new extension date or existing personal deadline.
             $this->coursework->update_user_calendar_event(
-                $this->allocatable->id(),
-                $this->allocatable->type(),
+                $values->allocatableid,
+                $values->allocatabletype,
                 max($this->deadlineextension->extended_deadline, $personaldeadline->personal_deadline ?? 0)
             );
             redirect($courseworkpageurl);

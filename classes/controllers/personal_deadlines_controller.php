@@ -23,7 +23,7 @@
 namespace mod_coursework\controllers;
 use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
-use mod_coursework\models\coursework;
+use mod_coursework\models\deadline_extension;
 use mod_coursework\forms\personal_deadline_form;
 use mod_coursework\forms\personal_deadline_form_bulk;
 use mod_coursework\models\personal_deadline;

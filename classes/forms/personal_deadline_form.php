@@ -26,6 +26,7 @@ use mod_coursework\ability;
 use mod_coursework\controllers\personal_deadlines_controller;
 use mod_coursework\exceptions\access_denied;
 use mod_coursework\models\coursework;
+use mod_coursework\models\deadline_extension;
 use mod_coursework\models\personal_deadline;
 use mod_coursework\models\user;
 use mod_coursework\models\group;
@@ -299,6 +300,13 @@ class personal_deadline_form extends dynamic_form {
                 $this->existingdeadline->save();
             }
         }
+        $extension = deadline_extension::get_extension_for_student($this->allocatable, $this->coursework);
+        // Update calendar/timeline event to the latest of the new personal deadline or existing extension.
+        $this->coursework->update_user_calendar_event(
+            $this->allocatable->id(),
+            $this->allocatable->type(),
+            max($data->personal_deadline, $extension->extended_deadline ?? 0)
+        );
         return [
             'success' => empty($errors),
             'resultcode' => empty($errors) ? 'saved' : 'error',
