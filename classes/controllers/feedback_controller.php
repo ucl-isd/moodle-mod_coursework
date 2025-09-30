@@ -230,11 +230,12 @@ class feedback_controller extends controller_base {
     }
 
     /**
-     * Saves the new feedback form for the first time.
+     * Updates the feedback.
      */
     protected function update_feedback() {
         global $USER, $PAGE;
 
+        $PAGE->set_url(new \moodle_url('/mod/coursework/actions/feedbacks/update.php', $this->params));
         $teacherfeedback = new feedback($this->params['feedbackid']);
         $teacherfeedback->lasteditedbyuser = $USER->id;
         $teacherfeedback->finalised = $this->params['finalised'] ? 1 : 0;

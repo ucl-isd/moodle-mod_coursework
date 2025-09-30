@@ -37,6 +37,6 @@ $params = [
     'remove' => $remove,
     'confirm' => $confirm,
 ];
-$PAGE->set_url(new moodle_url('/mod/coursework/actions/feedbacks/update.php', $params));
+
 $controller = new mod_coursework\controllers\feedback_controller($params);
 $controller->update_feedback();

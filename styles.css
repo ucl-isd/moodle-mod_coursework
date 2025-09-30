@@ -150,8 +150,8 @@ Coursework.
         }
         #id_removefeedbackbutton {
             color: #fff;
-            background-color: #ca3120;
-            border-color: #ca3120;
+            background-color: var(--danger);
+            border-color: var(--danger);
         }
     }
     .coursework-feedback {

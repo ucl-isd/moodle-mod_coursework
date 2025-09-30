@@ -178,7 +178,7 @@ class assessor_feedback_mform extends moodleform {
 
         if ($feedbackid &&  !$ispublished) {
             $buttonarray[] = $this->_form->createElement(
-                'submit', 'removefeedbackbutton', get_string('removefeedback', 'coursework')
+                'submit', 'removefeedbackbutton',get_string('removefeedback', 'coursework')
             );
         }
         $buttonarray[] = $this->_form->createElement('cancel');
@@ -327,7 +327,7 @@ class assessor_feedback_mform extends moodleform {
     public function validation($data, $files) {
         $data = (array)$data;
         $errors = parent::validation($data, $files);
-        $hasadvancedgrading = ($data['advancedgrading'] ?? null);
+        $hasadvancedgrading = $data['advancedgrading'] ?? null;
         if (!$hasadvancedgrading && isset($data['stage_identifier']) && $data['stage_identifier'] == 'final_agreed_1') {
             if (!$this->grade_in_range($data['grade'])) {
                 $errors['grade'] = get_string('err_valueoutofrange', 'coursework');
@@ -340,9 +340,7 @@ class assessor_feedback_mform extends moodleform {
      * Agreed grade can be entered as text field (float or int) so need to validate it.
      */
     public function grade_in_range(string $grade): bool {
-        $feedback = $this->_customdata['feedback'];
-        $coursework = $feedback->get_coursework();
-        $gradeoptions = array_keys(make_grades_menu($coursework->grade));
+        $gradeoptions = array_keys(make_grades_menu($this->coursework->grade));
         return is_numeric($grade) && $grade >= min($gradeoptions) && $grade <= max($gradeoptions);
     }
 }
