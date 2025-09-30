@@ -178,7 +178,7 @@ class assessor_feedback_mform extends moodleform {
 
         if ($feedbackid &&  !$ispublished) {
             $buttonarray[] = $this->_form->createElement(
-                'submit', 'removefeedbackbutton',get_string('removefeedback', 'coursework')
+                'submit', 'removefeedbackbutton', get_string('removefeedback', 'coursework')
             );
         }
         $buttonarray[] = $this->_form->createElement('cancel');

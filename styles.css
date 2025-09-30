@@ -148,11 +148,6 @@ Coursework.
                 display: block;
             }
         }
-        #id_removefeedbackbutton {
-            color: #fff;
-            background-color: var(--danger);
-            border-color: var(--danger);
-        }
     }
     .coursework-feedback {
         /* General bubble styles (same as before, but added a top-left class for clarity) */
@@ -191,5 +186,10 @@ Coursework.
             left: 1rem; /* Horizontal position, slightly offset to match outer */
             z-index: 2;
         }
+    }
+    &.path-mod-coursework-actions-feedbacks #id_removefeedbackbutton {
+        color: var(--white);
+        background-color: var(--danger);
+        border-color: var(--danger);
     }
 }
