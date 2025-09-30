@@ -196,4 +196,9 @@ Coursework.
             z-index: 2;
         }
     }
+    &.path-mod-coursework-actions-feedbacks #id_removefeedbackbutton {
+        color: var(--white);
+        background-color: var(--danger);
+        border-color: var(--danger);
+    }
 }
