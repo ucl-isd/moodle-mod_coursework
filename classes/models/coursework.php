@@ -90,6 +90,11 @@ require_once($CFG->dirroot.'/grade/grading/lib.php');
 class coursework extends table_base {
 
     /**
+     * Event type for due or extension dates in mdl_event.
+     */
+    const COURSEWORK_EVENT_TYPE_DUE = 'due';
+
+    /**
      * @var string
      */
     protected static $tablename = 'coursework';
@@ -3252,5 +3257,67 @@ class coursework extends table_base {
 
         // Cannot get candidate number from provider, fallback to hash.
         return $this->get_username_hash($userid);
+    }
+
+
+    /**
+     * User may need to see a personal event in timeline block on dashboard, showing due time.
+     * This could be personal deadline or an extension.
+     * Adapted from save_user_extension()in mod/assign/locallib.php.
+     * Event is only shown to user if mod_coursework_core_calendar_is_event_visible() returns true.
+     * @param int $allocatableid
+     * @param string $allocatabletype
+     * @param int $newdate
+     * @return bool
+     */
+    public function update_user_calendar_event(int $allocatableid, string $allocatabletype, int $newdate): bool {
+        global $DB, $CFG;
+        require_once("$CFG->dirroot/calendar/lib.php");
+        $modulename = 'coursework';
+        $cm = $this->get_course_module();
+
+        $sqlparams = [
+            'eventtype' => self::COURSEWORK_EVENT_TYPE_DUE,
+            'modulename' => $modulename,
+            'instance' => $this->id,
+        ];
+
+        if ($allocatabletype == 'user') {
+            $sqlparams['userid'] = $allocatableid;
+            $sqlparams['groupid'] = 0;
+        } else if ($allocatabletype == 'group') {
+            $sqlparams['userid'] = 0;
+            $sqlparams['groupid'] = $allocatableid;
+        } else {
+            throw new \Exception("Unexpected allocatable type");
+        }
+
+        if (!$newdate) {
+            $DB->delete_records('event', $sqlparams);
+            return true;
+        }
+
+        $event = $DB->get_record('event', $sqlparams);
+
+        if ($event) {
+            $event->timestart = $newdate;
+            $event->timesort = $newdate;
+            return $DB->update_record('event', $event);
+        } else {
+            $event = (object)$sqlparams;
+            $event->type = CALENDAR_EVENT_TYPE_ACTION;
+            $event->name = get_string('courseworkisdue', $modulename, $this->name);
+            $event->description = format_module_intro($modulename, $this, $cm->id);
+            $event->format = FORMAT_HTML;
+            // Do not set course ID here otherwise this personal item will appear to other users in course.
+            $event->courseid = 0;
+            $event->timestart = $newdate;
+            $event->timesort = $newdate;
+            $event->timeduration = 0;
+            $event->visible = instance_is_visible($modulename, $this);
+            // Priority set to override default deadline for this coursework in user calendar/timeline.
+            $event->priority = CALENDAR_EVENT_USER_OVERRIDE_PRIORITY;
+            return (bool)\calendar_event::create($event, false);
+        }
     }
 }

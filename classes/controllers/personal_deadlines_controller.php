@@ -23,6 +23,7 @@
 namespace mod_coursework\controllers;
 use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
+use mod_coursework\models\deadline_extension;
 use mod_coursework\forms\personal_deadline_form;
 use mod_coursework\forms\personal_deadline_form_bulk;
 use mod_coursework\models\personal_deadline;
@@ -109,6 +110,8 @@ class personal_deadlines_controller extends controller_base {
                     $data->timemodified = time();
                     $this->personaldeadline->update_attributes($data);
                 }
+
+                $this->update_calendar_event($data->personal_deadline);
                 \core\notification::success(
                     get_string(
                         'alert_personaldeadline_save_successful',
@@ -136,7 +139,6 @@ class personal_deadlines_controller extends controller_base {
                         $data->createdbyid = $USER->id;
                         $this->personaldeadline = personal_deadline::build($data);
                         $this->personaldeadline->save();
-
                     } else {
                         // Update.
                         $data->id = $this->personaldeadline->id;
@@ -144,6 +146,7 @@ class personal_deadlines_controller extends controller_base {
                         $data->timemodified = time();
                         $this->personaldeadline->update_attributes($data);
                     }
+                    $this->update_calendar_event($data->personal_deadline);
                     \core\notification::success(
                         get_string(
                             'alert_personaldeadline_save_successful',
@@ -165,6 +168,32 @@ class personal_deadlines_controller extends controller_base {
             die();
         }
 
+    }
+
+    /**
+     * Get the allocatable for this personal deadline.
+     * @return mixed
+     */
+    public function get_allocatable() {
+        $allocatableclass = "\\mod_coursework\\models\\{$this->params['allocatabletype']}";
+        return $allocatableclass::find($this->params['allocatableid']);
+    }
+
+    /**
+     * Update the calendar event and timeline with this deadline.
+     * int $personaldeadlineunix the new time to set
+     * @return void
+     * @throws \Exception
+     */
+    public function update_calendar_event(int $personaldeadlineunix) {
+        $allocatable = $this->get_allocatable();
+        $existingextension = deadline_extension::get_extension_for_student($allocatable, $this->coursework);
+        // Update calendar/timeline event to the latest of the new personal deadline or existing extension.
+        $this->coursework->update_user_calendar_event(
+            $allocatable->id(),
+            $allocatable->type(),
+            max($personaldeadlineunix, $existingextension->extended_deadline ?? 0)
+        );
     }
 
     /**
