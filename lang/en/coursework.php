@@ -22,10 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-
 $string['access_denied'] = 'Access denied';
 $string['accesserror'] = 'Access error';
 $string['actions'] = 'Actions';
