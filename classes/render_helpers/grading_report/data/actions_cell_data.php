@@ -209,9 +209,9 @@ class actions_cell_data extends cell_data_base {
 
         $submission = $rowsbase->get_submission();
         $plagiarismflag = $rowsbase->get_plagiarism_flag();
-        $data->plagarism = new stdClass();
-        $data->plagarism->url = $this->get_plagiarism_url($submission, $plagiarismflag);
-        $data->plagarismstatus = $this->get_flagged_plagiarism_status($submission);
+        $data->plagiarism = new stdClass();
+        $data->plagiarism->url = $this->get_plagiarism_url($submission, $plagiarismflag);
+        $data->plagiarismstatus = $this->get_flagged_plagiarism_status($submission);
     }
 
     /**

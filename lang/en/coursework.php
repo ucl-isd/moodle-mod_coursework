@@ -22,10 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-
 $string['access_denied'] = 'Access denied';
 $string['accesserror'] = 'Access error';
 $string['actions'] = 'Actions';
@@ -389,6 +385,7 @@ $string['finaliseyoursubmission'] = 'Finalise your submission';
 $string['finalstagegrading'] = 'Grading method for final stage';
 $string['finalstagegrading_help'] = 'This allows to choose the grading method for the final stage of grading if Rubrics or Marking Guide is used in initial stages. You will not be able to change it back if at least one final stage feedback exists.';
 $string['finalisedsubmission'] = 'Finalised submission';
+$string['finalise_submission'] = 'Finalise submission';
 $string['flagged_plagiarism'] = 'Flagged for plagiarism';
 $string['flagplagiarism'] = 'Flag plagiarism';
 $string['followingerrors'] = 'Following errors were found:';
@@ -681,6 +678,7 @@ $string['plagiarism_report'] = 'Plagiarism report';
 $string['plagiarismcomment'] = 'Plagiarism comment';
 $string['plagiarismflaggingfor'] = 'Plagiarism flagging for {$a}';
 $string['plagiarismstatus'] = 'Plagiarism status';
+$string['plagiarism_action'] = 'Plagiarism action';
 $string['pluginadministration'] = 'Coursework administration';
 $string['pluginname'] = 'Coursework';
 $string['preventlatesubmissions'] = 'Prevent late submissions';
@@ -707,6 +705,7 @@ $string['ready_release'] = 'Ready for release';
 $string['refreshpageforchanges'] = 'Please refresh page to see changes';
 $string['released_early'] = '(released early)';
 $string['release_marks'] = 'Release the marks';
+$string['release_mark'] = 'Release mark';
 $string['relativeinitialmarkingdeadline'] = "Relative initial marking deadline";
 $string['relativeinitialmarkingdeadline_help'] = "Set the amount of time that initial marking should be completed by relative to submission time";
 $string['relativeagreedmarkingdeadline'] = "Relative agreed grade marking deadline";
@@ -835,6 +834,7 @@ $string['submission_table_header'] = 'Coursework submissions';
 $string['submission_table_header_help'] = 'Coursework submissions';
 $string['submissiondate'] = 'Submission date';
 $string['submissionextension'] = 'Submission extension';
+$string['unfinalise_submission'] = 'Unfinalise submission';
 $string['submissionfile'] = 'Submission file';
 $string['submissionfiles'] = 'Submission files';
 $string['submissionfileid'] = 'Submission file id';

@@ -25,7 +25,7 @@
     <div class="col">
         {{#duedate}}
             <h3 class="h6">{{#str}} due, mod_coursework {{/str}}</h3>
-            <p>{{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>
+            <p>{{#userdate}}{{.}}, {{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>
 
             {{#latesubmissionsallowed}}
             <p class="small">
@@ -41,14 +41,14 @@
 
         {{#deadlineextension}}
             <h3 class="h6">{{#str}} extended_deadline, mod_coursework {{/str}}</h3>
-            <p>{{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>
+            <p>{{#userdate}}{{.}}, {{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>
         {{/deadlineextension}}
     </div>
 
     {{#individualfeedbackdeadline}}
     <div class="col-6">
         <h3 class="h6">{{#str}} individualfeedback, mod_coursework {{/str}}</h3>
-        <p>{{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>
+    <p>{{#userdate}}{{.}}, {{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>
     </div>
     {{/individualfeedbackdeadline }}
 </div>
