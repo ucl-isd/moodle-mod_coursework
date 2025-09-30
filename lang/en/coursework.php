@@ -388,7 +388,6 @@ $string['finalisedsubmission'] = 'Finalised submission';
 $string['finalise_submission'] = 'Finalise submission';
 $string['flagged_plagiarism'] = 'Flagged for plagiarism';
 $string['flagplagiarism'] = 'Flag plagiarism';
-$string['flagged_for_plagiarism_status'] = 'Flagged for plagiarism';
 $string['followingerrors'] = 'Following errors were found:';
 $string['forceautoauto_release_individual_feedback'] = 'Force auto release of individual feedback global setting across all courseworks';
 $string['forceautoauto_release_individual_feedback_desc'] = 'If this is checked, the global auto release of individual feedback setting will be applied across all courseworks by default without a possibility to overwrite individual instances.';
