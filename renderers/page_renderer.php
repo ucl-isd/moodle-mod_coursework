@@ -631,7 +631,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             : ($isnew ? 'addyoursubmission' : 'edityoursubmission');
         $template->title = get_string($title, 'mod_coursework');
 
-        $template->markingguide = $this->marking_preview_link($submission);
+        $coursework = $submission->get_coursework();
+        $template->markingguide = $this->get_marking_guide_url($coursework);
         $template->plagiarism = plagiarism_similarity_information($submission->get_coursework()->get_course_module());
 
         if ($submission->get_coursework()->early_finalisation_allowed()) {
@@ -755,15 +756,16 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param submission $ownsubmission
+     * @param $coursework
      * @return string
      */
-    protected function marking_preview_link($ownsubmission) {
+    protected function get_marking_guide_url($coursework) {
         // TODO - this is now a copy of get_marking_guide_url.
-        // Can we just reuse that and pass through $controller?
+        // We should just reuse that.
 
-        if ($ownsubmission->get_coursework()->is_using_advanced_grading()) {
-            $controller = $ownsubmission->get_coursework()->get_advanced_grading_active_controller();
+        if ($coursework->is_using_advanced_grading()) {
+
+            $controller = $coursework->get_advanced_grading_active_controller();
 
             if ($controller->is_form_defined() && ($options = $controller->get_options()) && !empty($options['alwaysshowdefinition'])) {
                 // Extract method name using reflection for protected method access.
