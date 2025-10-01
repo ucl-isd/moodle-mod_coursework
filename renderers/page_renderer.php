@@ -624,7 +624,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param submission $submission
      */
     public function submission_page($submitform, $submission, $isnew = true) {
-        $html = '';
         $template = new stdClass();
 
         $title = $submission->get_coursework()->is_configured_to_have_group_submissions()
