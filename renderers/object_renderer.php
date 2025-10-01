@@ -448,7 +448,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // Warnings.
         if ($canallocate) {
             $warnings = new warnings($coursework);
-            $template->warnings = $warnings->not_enough_assessors();
+            $template->notenoughassessors = $warnings->not_enough_assessors();
         }
 
         // Teacher summary col.
@@ -467,23 +467,14 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // Feedback or intro.
         if (!$cangrade && $submission && $submission->is_published()) {
             $template->feedbackfromteachers = $this->existing_feedback_from_teachers($submission);
-            $template->introdates = null;
         } else {
             $template->introdates = $this->add_intro_dates($coursework, $template);
-            $template->feedbackfromteachers = null;
-            $template->description = null;
-            $template->markingguideurl = null;
-
-            if ($description = format_module_intro('coursework', $coursework, $coursework->get_coursemodule_id())) {
-                $template->description = $description;
-            }
+            $template->description = format_module_intro('coursework', $coursework, $coursework->get_coursemodule_id());
             if ($coursework->is_using_advanced_grading()) {
                 $template->markingguideurl = $this->get_marking_guide_url($coursework);
             }
         }
 
-        // General feedback.
-        $template->generalfeedback = null;
         if ($cangrade || $canpublish || $canaddgeneralfeedback || $coursework->is_general_feedback_released()) {
             $feedback = new stdClass();
             $feedback->feedback = $coursework->feedbackcomment;
