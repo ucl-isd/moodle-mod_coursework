@@ -63,7 +63,7 @@ class submissions_controller extends controller_base {
         } else {
             $submitform->set_data($submission);
         }
-        if ($validation != true) {
+        if ($validation !== true) {
             $this->get_page_renderer()->submission_page($submitform, $submission, $isnew);
             return true;
         }
