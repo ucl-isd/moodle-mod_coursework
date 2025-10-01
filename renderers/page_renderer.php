@@ -636,7 +636,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template->plagarism = plagiarism_similarity_information($submission->get_coursework()->get_course_module());
 
         if ($submission->get_coursework()->early_finalisation_allowed()) {
-            $$template->finalise = true;
+            $template->finalise = true;
         }
 
         if ($submission->get_coursework()->deadline_has_passed() && !$submission->has_valid_extension()) {
