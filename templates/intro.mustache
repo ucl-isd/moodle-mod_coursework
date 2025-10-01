@@ -31,29 +31,37 @@
         "generalfeedback": null
     }
 }}
-<div class='row'>
-    <div class='col-md-4'>
-        {{#markingsummary}}
-            {{> mod_coursework/marking_summary}}
-        {{/markingsummary}}
-        {{#studentview}}
-            {{> mod_coursework/submission}}
-        {{/studentview}}
-    </div>
-    <div class='col-md-8 coursework_intro'>
-        {{{feedbackfromteachers}}}
-        {{#introdates}}
-            {{> mod_coursework/intro_dates}}
-        {{/introdates}}
-        {{#separator1}}
-            <hr>
-        {{/separator1}}
-        {{> mod_coursework/description}}
-        {{#separator2}}
-            <hr>
-        {{/separator2}}
-        {{#generalfeedback}}
-            {{> mod_coursework/general_feedback}}
-        {{/generalfeedback}}
+<div class='container'>
+
+    {{warnings}}
+
+    <div class='row'>
+        <div class='col-md-4'>
+            {{#markingsummary}}
+                {{> mod_coursework/marking_summary}}
+            {{/markingsummary}}
+
+            {{#studentview}}
+                {{> mod_coursework/submission}}
+            {{/studentview}}
+        </div>
+
+        <div class='col-md-8 coursework_intro'>
+            {{{feedbackfromteachers}}}
+
+            {{#introdates}}
+                {{> mod_coursework/intro_dates}}
+                <hr>
+            {{/introdates}}
+
+            {{#description}}
+                {{> mod_coursework/description}}
+                <hr>
+            {{/description}}
+
+            {{#generalfeedback}}
+                {{> mod_coursework/general_feedback}}
+            {{/generalfeedback}}
+        </div>
     </div>
 </div>
