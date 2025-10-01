@@ -38,6 +38,11 @@ class warnings {
     protected $coursework;
 
     /**
+     * @var string[] $warnings
+     */
+    private $warnings = [];
+
+    /**
      * @param coursework $coursework
      */
     public function __construct($coursework) {
@@ -76,7 +81,7 @@ class warnings {
      * @return bool|string
      * @throws \coding_exception
      */
-    public function students_in_mutiple_grouos() {
+    public function students_in_mutiple_groups() {
 
         global $DB;
         $message = '';
@@ -329,8 +334,9 @@ class warnings {
      */
     private function alert_div($message) {
         global $OUTPUT;
-        $notification = new notification($message, notification::NOTIFY_WARNING);
-        return $OUTPUT->render($notification);
+        $notification = $OUTPUT->render(new notification($message, notification::NOTIFY_WARNING));
+        $this->warnings[] = $notification;
+        return $notification;
     }
 
     /**
@@ -425,5 +431,32 @@ class warnings {
      */
     public function filters_warning() {
         return $this->alert_div(get_string('filteronwarning', 'mod_coursework'));
+    }
+
+    /**
+     * Alert markers there may be more submissions to grade due to group mode
+     * settings.
+     *
+     * @return string
+     */
+    public function group_mode_chosen_warning(int $group): string {
+        if (groups_get_activity_groupmode($this->coursework->get_course_module()) != 0 && $group != 0) {
+            return $this->alert_div(get_string('groupmodechosenalert', 'mod_coursework'));
+        }
+
+        return "";
+    }
+
+    /**
+     * Output buffered warnings for this instance.
+     *
+     * @return string[] HTML source code of each warning, for example:
+     *   [
+     *     '<div class="alert alert-warning">You may have ...</div>',
+     *     '<div class="alert alert-warning">Some students are ...</div>',
+     *   ]
+     */
+    public function get_warnings(): array {
+        return $this->warnings;
     }
 }
