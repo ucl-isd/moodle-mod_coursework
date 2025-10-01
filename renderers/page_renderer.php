@@ -618,65 +618,42 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param student_submission_form $submitform
-     * @param submission $ownsubmission
-     * @throws \coding_exception
-     */
-    public function new_submission_page($submitform, $ownsubmission) {
-        $html = '';
-
-        $html .= html_writer::start_tag('h3');
-        $stringname = $ownsubmission->get_coursework()->is_configured_to_have_group_submissions() ? 'addgroupsubmission' : 'addyoursubmission';
-        $html .= get_string($stringname, 'mod_coursework');
-        $html .= html_writer::end_tag('h3');
-
-        $html .= $this->marking_preview_html($ownsubmission);
-
-        if ($ownsubmission->get_coursework()->early_finalisation_allowed()) {
-            $html .= $this->finalise_warning();
-        }
-        $html .= plagiarism_similarity_information($ownsubmission->get_coursework()->get_course_module());
-        ob_start();
-        $submitform->display();
-        $html .= ob_get_clean();
-
-        echo $this->output->header();
-        echo $html;
-        echo $this->output->footer();
-    }
-
-    /**
+     * Return submission page.
+     *
      * @param student_submission_form $submitform
      * @param submission $submission
-     * @throws \coding_exception
      */
-    public function edit_submission_page($submitform, $submission) {
+    public function submission_page($submitform, $submission, $isnew = true) {
         $html = '';
+        $template = new stdClass();
 
-        $html .= html_writer::start_tag('h3');
-        $stringname = $submission->get_coursework()->is_configured_to_have_group_submissions() ? 'editgroupsubmission' : 'edityoursubmission';
-        $html .= get_string($stringname, 'mod_coursework');
-        $html .= ' ' . $submission->get_coursework()->name;
-        $html .= html_writer::end_tag('h3');
+        $title = $submission->get_coursework()->is_configured_to_have_group_submissions()
+            ? ($isnew ? 'addgroupsubmission' : 'editgroupsubmission')
+            : ($isnew ? 'addyoursubmission' : 'edityoursubmission');
+        $template->title = get_string($title, 'mod_coursework');
 
-        $html .= $this->marking_preview_html($submission);
+        $template->markingguide = $this->marking_preview_link($submission);
+        $template->plagarism = plagiarism_similarity_information($submission->get_coursework()->get_course_module());
 
         if ($submission->get_coursework()->early_finalisation_allowed()) {
-            $html .= $this->finalise_warning();
-        }
-        $html .= '<div class="alert">'.get_string('replacing_an_existing_file_warning', 'mod_coursework').'</div>';
-        if ($submission->get_coursework()->deadline_has_passed() && !$submission->has_valid_extension()) {
-            $html .= '<div class="alert">'.get_string('late_submissions_warning', 'mod_coursework').'</div>';
+            $$template->finalise = true;
         }
 
+        if ($submission->get_coursework()->deadline_has_passed() && !$submission->has_valid_extension()) {
+            $template->late = true;
+        }
+
+        // Sumbimit form.
         ob_start();
         $submitform->display();
-        $html .= ob_get_clean();
+        $template->form = ob_get_clean();
 
         echo $this->output->header();
-        echo $html;
+        echo $this->render_from_template('mod_coursework/submission_page', $template);
         echo $this->output->footer();
     }
+
+
 
     /**
      * @return router
@@ -749,7 +726,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws coding_exception
      */
     public function finalise_warning() {
-        return '<p class="small">' . get_string('finalise_button_info', 'mod_coursework') . '</p>';
+        return '<div class="my-3"><div class="alert alert-info">' . get_string('finalise_button_info', 'mod_coursework') . '</div></div>';
     }
 
     /**
@@ -790,7 +767,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param submission $ownsubmission
      * @return string
      */
-    protected function marking_preview_html($ownsubmission) {
+    protected function marking_preview_link($ownsubmission) {
         // TODO - this in now a copy of get_marking_guide_url.
         // Can we just reuse that and pass through $controller?
         if ($ownsubmission->get_coursework()->is_using_advanced_grading()) {

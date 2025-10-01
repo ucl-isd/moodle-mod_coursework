@@ -83,7 +83,7 @@ class submissions_controller extends controller_base {
             $validation = $submitform->validate_defined_fields();
         }
         if ($validation != true) {
-            $this->get_page_renderer()->new_submission_page($submitform, $submission);
+            $this->get_page_renderer()->submission_page($submitform, $submission, true);
             return true;
         }
 
@@ -225,7 +225,7 @@ class submissions_controller extends controller_base {
         $submitform->set_data($submission);
 
         if ($validation != true) {
-            $this->get_page_renderer()->edit_submission_page($submitform, $submission);
+            $this->get_page_renderer()->submission_page($submitform, $submission, false);
             return true;
         }
     }

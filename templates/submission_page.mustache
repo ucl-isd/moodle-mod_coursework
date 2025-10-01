@@ -1,0 +1,19 @@
+<h3>{{{title}}}</h3>
+
+{{{markingguide}}}
+
+{{#late}}
+    <div class="alert alert-warning">
+        <div class="badge badge-pill badge-warning"> {{#str}} late, mod_coursework {{/str}}</div>
+        <br>
+        {{#str}} late_submissions_warning, mod_coursework {{/str}}
+    </div>
+{{/late}}
+
+{{#finalise}}
+    <div class="alert alert-info">
+        {{#str}} finalise_button_info, mod_coursework {{/str}}
+    </div>
+{{/finalise}}
+
+{{{form}}}
