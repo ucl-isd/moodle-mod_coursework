@@ -706,7 +706,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     protected function finalise_submission_button($coursework, $submission) {
 
         $html = '<div>';
-        $html .= $this->finalise_warning();
+
+        $html .= '<p class="small">'. get_string('finalise_button_info', 'mod_coursework') ."</p>;
+
         $stringname = $coursework->is_configured_to_have_group_submissions() ? 'finalisegroupsubmission' : 'finaliseyoursubmission';
         $finalisesubmissionpath =
             $this->get_router()->get_path('finalise submission', ['submission' => $submission], true);
@@ -719,14 +721,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         return $html;
 
-    }
-
-    /**
-     * @return string
-     * @throws coding_exception
-     */
-    public function finalise_warning() {
-        return '<div class="my-3"><div class="alert alert-info">' . get_string('finalise_button_info', 'mod_coursework') . '</div></div>';
     }
 
     /**
