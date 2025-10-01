@@ -177,7 +177,7 @@ $studentsinmultiplegroups = '';
 if ($coursework->allocation_enabled()) {
     $manualallocationnotcomplete = $warnings->manual_allocation_not_completed();
     if ($coursework->use_groups == 1 || $coursework->assessorallocationstrategy == 'group_assessor') {
-        $studentsinmultiplegroups = $warnings->students_in_mutiple_grouos();
+        $studentsinmultiplegroups = $warnings->students_in_mutiple_groups();
     }
 }
 
