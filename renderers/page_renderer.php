@@ -633,7 +633,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template->title = get_string($title, 'mod_coursework');
 
         $template->markingguide = $this->marking_preview_link($submission);
-        $template->plagarism = plagiarism_similarity_information($submission->get_coursework()->get_course_module());
+        $template->plagiarism = plagiarism_similarity_information($submission->get_coursework()->get_course_module());
 
         if ($submission->get_coursework()->early_finalisation_allowed()) {
             $template->finalise = true;
