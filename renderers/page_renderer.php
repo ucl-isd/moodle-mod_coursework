@@ -707,7 +707,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $html = '<div>';
 
-        $html .= '<p class="small">'. get_string('finalise_button_info', 'mod_coursework') ."</p>;
+        $html .= '<p class="small">'. get_string('finalise_button_info', 'mod_coursework') ."</p>";
 
         $stringname = $coursework->is_configured_to_have_group_submissions() ? 'finalisegroupsubmission' : 'finaliseyoursubmission';
         $finalisesubmissionpath =
