@@ -1,29 +1,30 @@
-<div class="container py-3" id="mod-coursework-submissions-table-container-{{coursework.id}}">
-    <h3>{{#str}} submissions, mod_coursework {{/str}}</h3>
+<div class='wrapper_table_submissions'>
+    <div class="container py-3" id="mod-coursework-submissions-table-container-{{coursework.id}}">
+        <h3>{{#str}} submissions, mod_coursework {{/str}}</h3>
 
-     {{> mod_coursework/submissions/filter }}
+         {{> mod_coursework/submissions/filter }}
 
-    <table class="table w-100 mod-coursework-submissions-table" id="mod-coursework-submissions-table-{{coursework.id}}">
-    <caption class="sr-only">{{#str}} submissions_table, mod_coursework {{/str}}</caption>
-        <thead>
-            <tr>
-                {{#coursework.isgroupsubmission}}
-                    <th scope="col">{{#str}} group, mod_coursework {{/str}}</th>
-                {{/coursework.isgroupsubmission}}
-                {{^coursework.isgroupsubmission}}
-                    <th scope="col">{{#str}} student, mod_coursework {{/str}}</th>
-                {{/coursework.isgroupsubmission}}
-                <th scope="col">{{#str}} submission, mod_coursework {{/str}}</th>
-                <th scope="col" class="w-50">{{#str}} marking, mod_coursework {{/str}}</th>
-                <th scope="col" class="text-right">{{#str}} actions, mod_coursework {{/str}}</th>
-            </tr>
-        </thead>
+        <table class="table w-100 mod-coursework-submissions-table" id="mod-coursework-submissions-table-{{coursework.id}}">
+            <caption class="sr-only">{{#str}} submissions_table, mod_coursework {{/str}}</caption>
+            <thead>
+                <tr>
+                    {{#coursework.isgroupsubmission}}
+                        <th scope="col">{{#str}} group, mod_coursework {{/str}}</th>
+                    {{/coursework.isgroupsubmission}}
+                    {{^coursework.isgroupsubmission}}
+                        <th scope="col">{{#str}} student, mod_coursework {{/str}}</th>
+                    {{/coursework.isgroupsubmission}}
+                    <th scope="col">{{#str}} submission, mod_coursework {{/str}}</th>
+                    <th scope="col" class="w-50">{{#str}} marking, mod_coursework {{/str}}</th>
+                    <th scope="col" class="text-right">{{#str}} actions, mod_coursework {{/str}}</th>
+                </tr>
+            </thead>
 
-        <tbody id="table-body-rows">
-        {{#tr}}
-            {{> mod_coursework/submissions/tr }}
-        {{/tr}}
-        </tbody>
-    </table>
+            <tbody id="table-body-rows">
+            {{#tr}}
+                {{> mod_coursework/submissions/tr }}
+            {{/tr}}
+            </tbody>
+        </table>
+    </div>
 </div>
-
