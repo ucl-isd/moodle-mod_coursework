@@ -749,7 +749,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws coding_exception
      */
     public function finalise_warning() {
-        return '<p class="small">' . get_string('finalise_button_info', 'mod_coursework') . '</small>';
+        return '<p class="small">' . get_string('finalise_button_info', 'mod_coursework') . '</p>';
     }
 
     /**
@@ -789,24 +789,28 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     /**
      * @param submission $ownsubmission
      * @return string
-     * @throws coding_exception
      */
     protected function marking_preview_html($ownsubmission) {
-        $html = '';
-
+        // TODO - this in now a copy of get_marking_guide_url.
+        // Can we just reuse that and pass through $controller?
         if ($ownsubmission->get_coursework()->is_using_advanced_grading()) {
             $controller = $ownsubmission->get_coursework()->get_advanced_grading_active_controller();
-            $previewhtml = $controller->render_preview($this->page);
-            if (!empty($previewhtml)) {
-                $html .= '<h4>';
-                $html .= get_string('marking_guide_preview', 'mod_coursework');
-                $html .= '</h4>';
-                $html .= $previewhtml;
-                return $html;
+
+            if ($controller->is_form_defined() && ($options = $controller->get_options()) && !empty($options['alwaysshowdefinition'])) {
+                // Extract method name using reflection for protected method access.
+                $reflectionclass = new ReflectionClass($controller);
+                $getmethodname = $reflectionclass->getMethod('get_method_name');
+                $getmethodname->setAccessible(true);
+                $methodname = $getmethodname->invoke($controller);
+                $template = new stdClass();
+                $template->markingguideurl = new moodle_url('/grade/grading/form/' . $methodname . '/preview.php',
+                        ['areaid' => $controller->get_areaid()]);
+
+                return $this->render_from_template('mod_coursework/description', $template);
+
             }
-            return $html;
         }
-        return $html;
+        return null;
     }
 
     /**

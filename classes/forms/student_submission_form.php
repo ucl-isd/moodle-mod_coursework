@@ -59,8 +59,6 @@ class student_submission_form extends moodleform {
         // if TII plagiarism enabled check if user agreed/disagreed EULA
         if (!$this->get_coursework()->plagiarism_enbled() || has_user_seen_tii_eula_agreement()) {
 
-            $this->add_header_to_form();
-
             $this->add_instructions_to_form();
 
             $this->add_file_manager_to_form();
@@ -370,26 +368,8 @@ class student_submission_form extends moodleform {
         $usernamehash = $this->get_coursework()->get_username_hash($this->get_submission()->userid);
         $filerenamestring = ($this->get_coursework()->renamefiles == 1) ? get_string('file_rename', 'coursework', $usernamehash) : "";
         $filerenamestring .= $this->make_plagiarism_instructions();
-        $filerenamestring .= html_writer::empty_tag('br');
-        if ($filemanageroptions['accepted_types'] != '*') {
-            $filerenamestring .= 'Allowed file types: ' . implode(' ', $filemanageroptions['accepted_types']);
-        } else {
-            $filerenamestring .= 'All file types are allowed.';
-        }
         $p = html_writer::tag('p', $filerenamestring);
         $this->_form->addElement('html', $p);
-    }
-
-    /**
-     * @throws \coding_exception
-     */
-    protected function add_header_to_form() {
-        $filemanageroptions = $this->get_file_manager_options();
-        $filesstring = ($filemanageroptions['maxfiles'] == 1) ? 'yoursubmissionfile' : 'yoursubmissionfiles';
-        $renamed = ($this->get_coursework()->renamefiles == 1) ? get_string('yoursubmissionfile_renamed', 'coursework') : "";
-
-        $this->_form->addElement('header', 'submitform', get_string($filesstring, 'coursework'). $renamed);
-
     }
 
     /**
