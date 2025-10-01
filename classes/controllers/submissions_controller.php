@@ -108,6 +108,36 @@ class submissions_controller extends controller_base {
     }
 
     /**
+     * Makes the page where a user can edit an existing submission.
+     * Might be someone editing the group feedback thing too, so we load based on the submission
+     * user, not the current user.
+     *
+     * @throws \coding_exception
+     * @throws \unauthorized_access_exception
+     */
+    protected function edit_submission() {
+        global $USER, $PAGE;
+
+        $submission = submission::find($this->params['submissionid']);
+
+        $ability = new ability(user::find($USER), $this->coursework);
+        if (!$ability->can('edit', $submission)) {
+            throw new access_denied($this->coursework);
+        }
+
+        $urlparams = ['submissionid' => $this->params['submissionid']];
+        $PAGE->set_url('/mod/coursework/actions/submissions/edit.php', $urlparams);
+
+        $path = $this->get_router()->get_path('update submission', ['submission' => $submission]);
+        $submitform = new student_submission_form($path, [
+            'coursework' => $this->coursework,
+            'submission' => $submission,
+        ]);
+
+        return $this->submission_page($submitform, $submission, false);
+    }
+
+    /**
      * Receives the form input from the new submission page and saves it.
      */
     protected function create_submission() {
@@ -206,36 +236,6 @@ class submissions_controller extends controller_base {
         }
 
         redirect($courseworkpageurl);
-    }
-
-    /**
-     * Makes the page where a user can edit an existing submission.
-     * Might be someone editing the group feedback thing too, so we load based on the submission
-     * user, not the current user.
-     *
-     * @throws \coding_exception
-     * @throws \unauthorized_access_exception
-     */
-    protected function edit_submission() {
-        global $USER, $PAGE;
-
-        $submission = submission::find($this->params['submissionid']);
-
-        $ability = new ability(user::find($USER), $this->coursework);
-        if (!$ability->can('edit', $submission)) {
-            throw new access_denied($this->coursework);
-        }
-
-        $urlparams = ['submissionid' => $this->params['submissionid']];
-        $PAGE->set_url('/mod/coursework/actions/submissions/edit.php', $urlparams);
-
-        $path = $this->get_router()->get_path('update submission', ['submission' => $submission]);
-        $submitform = new student_submission_form($path, [
-            'coursework' => $this->coursework,
-            'submission' => $submission,
-        ]);
-
-        return $this->submission_page($submitform, $submission, false);
     }
 
     /**
