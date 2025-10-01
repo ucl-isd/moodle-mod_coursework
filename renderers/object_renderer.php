@@ -433,86 +433,72 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param mod_coursework_coursework $coursework
      * @return string html
      */
-    protected function render_mod_coursework_coursework(mod_coursework_coursework $coursework) {
+    protected function render_mod_coursework_coursework(mod_coursework_coursework $coursework): string {
         global $USER;
+        $student = user::find($USER);
+        $template = new stdClass();
 
-        $out = '<div class="container">';
-
-        if (has_capability('mod/coursework:allocate', $coursework->get_context())) {
-            $warnings = new warnings($coursework);
-            $out .= $warnings->not_enough_assessors();
-        }
-
+        // Capability checks
+        $canallocate = has_capability('mod/coursework:allocate', $coursework->get_context());
         $cangrade = has_capability('mod/coursework:addinitialgrade', $this->page->context);
         $canpublish = has_capability('mod/coursework:publish', $this->page->context);
         $canaddgeneralfeedback = has_capability('mod/coursework:addgeneralfeedback', $this->page->context);
         $cansubmit = has_capability('mod/coursework:submit', $this->page->context);
 
-        $student = user::find($USER);
-        $template = new stdClass();
+        // Warnings.
+        if ($canallocate) {
+            $warnings = new warnings($coursework);
+            $template->warnings = $warnings->not_enough_assessors();
+        }
 
+        // Teacher summary col.
         if ($cangrade || $canpublish) {
             $template->markingsummary = $this->coursework_marking_summary($coursework);
         }
 
+        // Student summary col.
         if ($cansubmit && !$cangrade) {
             $pagerenderer = $this->page->get_renderer('mod_coursework', 'page');
             $template->studentview = $pagerenderer->student_view_page($coursework, $student);
         }
 
-        $template->description = null;
-        $template->markingguideurl = null;
+        $submission = $coursework->get_user_submission($student);
 
-        // Display feedback if available.
-        if (!$cangrade && ($submission = $coursework->get_user_submission($student)) && $submission->is_published()) {
+        // Feedback or intro.
+        if (!$cangrade && $submission && $submission->is_published()) {
             $template->feedbackfromteachers = $this->existing_feedback_from_teachers($submission);
             $template->introdates = null;
-        } else { // Else, output the intro data.
+        } else {
             $template->introdates = $this->add_intro_dates($coursework, $template);
             $template->feedbackfromteachers = null;
+            $template->description = null;
+            $template->markingguideurl = null;
 
             if ($description = format_module_intro('coursework', $coursework, $coursework->get_coursemodule_id())) {
                 $template->description = $description;
             }
-
-            // Marking guide - from advanced grading.
             if ($coursework->is_using_advanced_grading()) {
                 $template->markingguideurl = $this->get_marking_guide_url($coursework);
             }
         }
 
+        // General feedback.
         $template->generalfeedback = null;
-
-        // Show general feedback if it's there and the deadline has passed or general feedback's date is not enabled which means it should be displayed automatically
         if ($cangrade || $canpublish || $canaddgeneralfeedback || $coursework->is_general_feedback_released()) {
             $feedback = new stdClass();
             $feedback->feedback = $coursework->feedbackcomment;
-
             if ($cangrade || $canpublish || $canaddgeneralfeedback) {
                 $feedback->duedate = $coursework->generalfeedback;
             }
-
-            if ($canaddgeneralfeedback) { // Add/edit general feedback button.
+            if ($canaddgeneralfeedback) {
                 $feedback->button = new stdClass();
                 $feedback->button->url = new moodle_url('/mod/coursework/actions/general_feedback.php', ['cmid' => $coursework->get_coursemodule_id()]);
                 $feedback->button->label = get_string($coursework->feedbackcomment ? 'editgeneralfeedback' : 'addgeneralfeedback', 'coursework');
             }
-
             $template->generalfeedback = $feedback;
         }
 
-        // Only show <hr> if there's content above and below it to be separated.
-        if (($template->feedbackfromteachers || $template->introdates) && ($template->description || $template->markingguideurl || $template->generalfeedback)) {
-            $template->separator1 = true;
-        }
-        if (($template->description || $template->markingguideurl) && $template->generalfeedback) {
-            $template->separator2 = true;
-        }
-
-        $out .= $this->render_from_template('mod_coursework/intro', $template);
-        $out .= "</div>"; // Close container.
-
-        return $out;
+        return $this->render_from_template('mod_coursework/intro', $template);
     }
 
     /**
