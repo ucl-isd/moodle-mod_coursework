@@ -768,8 +768,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @return string
      */
     protected function marking_preview_link($ownsubmission) {
-        // TODO - this in now a copy of get_marking_guide_url.
+        // TODO - this is now a copy of get_marking_guide_url.
         // Can we just reuse that and pass through $controller?
+
         if ($ownsubmission->get_coursework()->is_using_advanced_grading()) {
             $controller = $ownsubmission->get_coursework()->get_advanced_grading_active_controller();
 
