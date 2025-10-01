@@ -643,7 +643,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $template->late = true;
         }
 
-        // Sumbimit form.
+        // Submit form.
         ob_start();
         $submitform->display();
         $template->form = ob_get_clean();
