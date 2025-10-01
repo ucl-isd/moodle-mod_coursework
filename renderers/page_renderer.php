@@ -652,8 +652,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         echo $this->output->footer();
     }
 
-
-
     /**
      * @return router
      */
