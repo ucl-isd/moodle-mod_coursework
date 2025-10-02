@@ -632,7 +632,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template->title = get_string($title, 'mod_coursework');
 
         $coursework = $submission->get_coursework();
-        $template->markingguideurl = $this->get_marking_guide_url($coursework);
+        $template->markingguideurl = mod_coursework_object_renderer::get_marking_guide_url($coursework);
         $template->plagiarism = plagiarism_similarity_information($submission->get_coursework()->get_course_module());
 
         if ($submission->get_coursework()->early_finalisation_allowed()) {
@@ -753,32 +753,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         );
         $submissionbutton->url = $this->get_router()->get_path('new submission', ['submission' => $submission], true);
         return $submissionbutton;
-    }
-
-    /**
-     * @param $coursework
-     * @return string
-     */
-    protected function get_marking_guide_url($coursework): ?moodle_url {
-        // TODO - this is now a copy of get_marking_guide_url.
-        // We should just reuse that.
-
-
-        if ($coursework->is_using_advanced_grading()) {
-
-            $controller = $coursework->get_advanced_grading_active_controller();
-
-            if ($controller->is_form_defined() && ($options = $controller->get_options()) && !empty($options['alwaysshowdefinition'])) {
-                // Extract method name using reflection for protected method access.
-                $reflectionclass = new ReflectionClass($controller);
-                $getmethodname = $reflectionclass->getMethod('get_method_name');
-                $getmethodname->setAccessible(true);
-                $methodname = $getmethodname->invoke($controller);
-                return new moodle_url('/grade/grading/form/' . $methodname . '/preview.php',
-                    ['areaid' => $controller->get_areaid()]);
-            }
-        }
-        return null;
     }
 
     /**
