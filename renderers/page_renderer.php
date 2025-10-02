@@ -373,6 +373,25 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $this->page->set_heading($SITE->fullname);
         echo $this->output->header();
         echo $this->render_from_template('mod_coursework/marking_details', $template);
+
+        $rendertype = optional_param('rendertype', null, PARAM_TEXT);
+
+        if (!empty($rendertype)) {
+            $model = (object)['pdfs' => []];
+            foreach ($files->get_files() as $file) {
+                if ($file->get_mimetype() == 'application/pdf') {
+                    $model->pdfs[] = (object)[
+                        'href' => $objectrenderer->make_file_url($file),
+                        'filename' => $file->get_filename()
+                    ];
+                }
+            }
+
+            if (!empty($model->pdfs)) {
+                echo $this->render_from_template('mod_coursework/pdfsubmissions_' . $rendertype, $model);
+            }
+        }
+
         // SHAME - Can we add an id to the form.
         echo "<div id='coursework-markingform'>";
         $simpleform->display();
