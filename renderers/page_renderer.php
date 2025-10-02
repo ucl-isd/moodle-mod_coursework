@@ -632,7 +632,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template->title = get_string($title, 'mod_coursework');
 
         $coursework = $submission->get_coursework();
-        $template->markingguide = $this->get_marking_guide_url($coursework);
+        $template->markingguideurl = $this->get_marking_guide_url($coursework);
         $template->plagiarism = plagiarism_similarity_information($submission->get_coursework()->get_course_module());
 
         if ($submission->get_coursework()->early_finalisation_allowed()) {
@@ -759,9 +759,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param $coursework
      * @return string
      */
-    protected function get_marking_guide_url($coursework) {
+    protected function get_marking_guide_url($coursework): ?moodle_url {
         // TODO - this is now a copy of get_marking_guide_url.
         // We should just reuse that.
+
 
         if ($coursework->is_using_advanced_grading()) {
 
@@ -773,12 +774,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $getmethodname = $reflectionclass->getMethod('get_method_name');
                 $getmethodname->setAccessible(true);
                 $methodname = $getmethodname->invoke($controller);
-                $template = new stdClass();
-                $template->markingguideurl = new moodle_url('/grade/grading/form/' . $methodname . '/preview.php',
-                        ['areaid' => $controller->get_areaid()]);
-
-                return $this->render_from_template('mod_coursework/description', $template);
-
+                return new moodle_url('/grade/grading/form/' . $methodname . '/preview.php',
+                    ['areaid' => $controller->get_areaid()]);
             }
         }
         return null;
