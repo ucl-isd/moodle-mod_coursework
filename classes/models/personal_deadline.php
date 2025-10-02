@@ -160,7 +160,7 @@ class personal_deadline extends table_base {
      * @param string $eventtype create, or update.
      * @return void
      */
-    public function trigger_deadline_created_updated_event(string $eventtype): void {
+    public function trigger_created_updated_event(string $eventtype): void {
         global $USER;
         $allocatable = $this->get_allocatable();
         $coursework = $this->get_coursework();
@@ -169,6 +169,7 @@ class personal_deadline extends table_base {
             'userid' => $USER->id ?? 0,
             'relateduserid' => $allocatable->type() == 'user' ? $allocatable->id() : null,
             'context' => \context_module::instance($coursework->get_course_module()->id),
+            'anonymous' => 1, // To prevent potential de-anonymisation of users via course reports.
             'other' => [
                 'allocatabletype' => $allocatable->type(),
                 'courseworkid' => $coursework->id,

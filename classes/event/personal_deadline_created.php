@@ -65,7 +65,7 @@ class personal_deadline_created extends \core\event\base {
     public function get_description() {
         $readabledate = userdate($this->other['deadline']);
         return "The user with ID '$this->userid' created personal deadline ID '$this->objectid' as '$readabledate'"
-            . "for the coursework with course module id '$this->contextinstanceid' for the user with id '{$this->relateduserid}'.";
+            . " for the coursework with course module id '$this->contextinstanceid' for the user with id '{$this->relateduserid}'.";
     }
 
     /**
@@ -85,9 +85,16 @@ class personal_deadline_created extends \core\event\base {
      */
     protected function validate_data() {
         parent::validate_data();
-
         if (!isset($this->other['courseworkid'])) {
             throw new \coding_exception('The \'courseworkid\' value must be set in other.');
+        }
+        if (!isset($this->other['deadline'])) {
+            throw new \coding_exception('The \'deadline\' value must be set in other.');
+        }
+        if (!$this->anonymous ?? false) {
+            throw new \coding_exception(
+                'The \'anonymous\' value must be set to prevent potential de-anonymisation of users via course reports.'
+            );
         }
     }
 }

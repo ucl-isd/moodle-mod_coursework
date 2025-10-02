@@ -26,7 +26,7 @@
 namespace mod_coursework\event;
 
 /**
- * The mod_coursework personal deadline created event class.
+ * The mod_coursework extension created event class.
  *
  * @property-read array $other {
  *      Extra information about event.
@@ -38,12 +38,12 @@ namespace mod_coursework\event;
  * @copyright  2025 UCL
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class personal_deadline_updated extends \core\event\base {
+class extension_updated extends \core\event\base {
     /**
      * Init method.
      */
     protected function init() {
-        $this->data['objecttable'] = 'coursework_person_deadlines';
+        $this->data['objecttable'] = 'coursework_extensions';
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
     }
@@ -54,7 +54,7 @@ class personal_deadline_updated extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('personaldeadlineupdated', 'mod_coursework');
+        return get_string('extensionupdated', 'mod_coursework');
     }
 
     /**
@@ -64,7 +64,7 @@ class personal_deadline_updated extends \core\event\base {
      */
     public function get_description() {
         $readabledate = userdate($this->other['deadline']);
-        return "The user with ID '$this->userid' updated personal deadline ID '$this->objectid' to '$readabledate'"
+        return "The user with ID '$this->userid' updated extension ID '$this->objectid' to '$readabledate'"
             . " for the coursework with course module id '$this->contextinstanceid' for the user with id '{$this->relateduserid}'.";
     }
 

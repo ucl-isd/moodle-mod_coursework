@@ -103,13 +103,13 @@ class personal_deadlines_controller extends controller_base {
                     $data->createdbyid = $USER->id;
                     $this->personaldeadline = personal_deadline::build($data);
                     $this->personaldeadline->save();
-                    $this->personaldeadline->trigger_deadline_created_updated_event('create');
+                    $this->personaldeadline->trigger_created_updated_event('create');
                 } else {
                     // Update.
                     $data->lastmodifiedbyid = $USER->id;
                     $data->timemodified = time();
                     $this->personaldeadline->update_attributes($data);
-                    $this->personaldeadline->trigger_deadline_created_updated_event('update');
+                    $this->personaldeadline->trigger_created_updated_event('update');
                 }
 
                 $this->update_calendar_event($data->personal_deadline);
@@ -140,14 +140,14 @@ class personal_deadlines_controller extends controller_base {
                         $data->createdbyid = $USER->id;
                         $this->personaldeadline = personal_deadline::build($data);
                         $this->personaldeadline->save();
-                        $this->personaldeadline->trigger_deadline_created_updated_event('create');
+                        $this->personaldeadline->trigger_created_updated_event('create');
                     } else {
                         // Update.
                         $data->id = $this->personaldeadline->id;
                         $data->lastmodifiedbyid = $USER->id;
                         $data->timemodified = time();
                         $this->personaldeadline->update_attributes($data);
-                        $this->personaldeadline->trigger_deadline_created_updated_event('update');
+                        $this->personaldeadline->trigger_created_updated_event('update');
                     }
                     $this->update_calendar_event($data->personal_deadline);
                     \core\notification::success(
