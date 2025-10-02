@@ -2007,6 +2007,10 @@ class coursework extends table_base {
         $this->update_attribute('generalfeedback', 0);
     }
 
+    public function is_general_feedback_enabled() {
+        return !empty($this->generalfeedback);
+    }
+
     public function enable_general_feedback() {
         $this->update_attribute('generalfeedback', strtotime('1 week ago'));
     }

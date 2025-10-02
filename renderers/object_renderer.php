@@ -1470,7 +1470,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // Edge case: for a single-marked coursework with marker allocation
         // enabled managers who can only add agreed grades cannot mark anyone.
         if (has_capability('mod/coursework:addinitialgrade', $coursework->get_context())
-                || (!(has_capability('mod/coursework:addagreedgrade', $coursework->get_context()) && !has_multiple_markers() && !allocation_enabled())
+                || (!(has_capability('mod/coursework:addagreedgrade', $coursework->get_context()) && !$coursework->has_multiple_markers() && !$coursework->allocation_enabled())
                 && has_any_capability(['mod/coursework:addagreedgrade', 'mod/coursework:administergrades'], $coursework->get_context()))) {
             $template->canmark = true;
 

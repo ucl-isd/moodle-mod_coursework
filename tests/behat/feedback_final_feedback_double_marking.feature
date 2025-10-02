@@ -21,7 +21,7 @@ Feature: Adding and editing final feedback
     And I am logged in as a manager
     And I visit the coursework page
     And I click the new multiple final feedback button for the student
-    And I grade the submission as 57 using the ajax form
+    And I grade the submission as 57 using the grading form
     Then I visit the coursework page
     And I should see the final grade as 57 on the multiple marker page
 
@@ -31,7 +31,7 @@ Feature: Adding and editing final feedback
     And I am logged in as a manager
     And I visit the coursework page
     And I click the new multiple final feedback button for the student
-    And I grade the submission as 58 using the ajax form
+    And I grade the submission as 58 using the grading form
     Then I visit the coursework page
     When I click the edit final feedback button
     And I wait until the page is ready
@@ -46,7 +46,7 @@ Feature: Adding and editing final feedback
     And there are feedbacks from both me and another teacher
     And I visit the coursework page
     When I click the new multiple final feedback button for the student
-    And I grade the submission as 59 using the ajax form
+    And I grade the submission as 59 using the grading form
 
   @javascript
   Scenario: Editing final feedback from others

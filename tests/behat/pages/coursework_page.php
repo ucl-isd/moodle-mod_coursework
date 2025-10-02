@@ -97,7 +97,7 @@ class mod_coursework_behat_coursework_page extends mod_coursework_behat_page_bas
     }
 
     public function get_coursework_student_name($studentname) {
-        $tableusers = $this->getPage()->findAll('css', 'table.submissions');
+        $tableusers = $this->getPage()->findAll('css', '.mod-coursework-submissions-table');
 
         if (!empty($tableusers)) {
             foreach ($tableusers as $tableuser) {
