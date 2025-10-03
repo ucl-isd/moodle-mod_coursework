@@ -19,8 +19,8 @@
                        href="{{config.wwwroot}}/mod/coursework/actions/personal_deadline.php?allocatableid={{#submissiontype.user}}{{submissiontype.user.id}}{{/submissiontype.user}}{{#group}}{{group.id}}{{/group}}&allocatabletype={{#submissiontype.user}}user{{/submissiontype.user}}{{#group}}group{{/group}}&courseworkid={{coursework.id}}"
                         data-action="mod-coursework-launch-modal-personal-deadline"
                         data-coursework-id="{{coursework.id}}"
-                        data-allocatable-id="{{extension.extensionparams.allocatableid}}"
-                        data-allocatable-type="{{extension.extensionparams.allocatabletype}}"
+                        data-allocatable-id="{{allocatableid}}"
+                        data-allocatable-type="{{allocatabletype}}"
                         {{#deadlineid}}data-deadline-id="{{deadlineid}}"{{/deadlineid}}>
 
                         {{^is_editable}}<i class="fa fa-fw fa-lock mr-1"></i>{{/is_editable}}
@@ -49,8 +49,8 @@
                    data-action="mod-coursework-launch-modal-extension"
                    data-coursework-id="{{coursework.id}}"
                    {{#extension.id}}data-extension-id="{{extension.id}}"{{/extension.id}}
-                   data-allocatable-id="{{extension.extensionparams.allocatableid}}"
-                   data-allocatable-type="{{extension.extensionparams.allocatabletype}}"
+                   data-allocatable-id="{{allocatableid}}"
+                   data-allocatable-type="{{allocatabletype}}"
                 >{{#str}} submissionextension, mod_coursework {{/str}}
                     <small class="actions-extension-date-container {{#extension.date}}d-block{{/extension.date}} {{^extension.date}}d-none{{/extension.date}}">
                         <i class="fa-solid fa-circle-check text-success mr-2"></i>
@@ -82,7 +82,14 @@
         {{/unfinalise}}
 
         {{#plagiarism.url}}
-            <a class="dropdown-item" href="{{plagiarism.url}}">{{#str}} plagiarism_action, mod_coursework {{/str}}
+            <a class="dropdown-item" href="{{plagiarism.url}}"
+               data-action="mod-coursework-launch-modal-plagiarism"
+               data-coursework-id="{{coursework.id}}"
+               data-allocatable-id="{{allocatableid}}"
+               data-allocatable-type="{{allocatabletype}}"
+               {{#plagiarism.flagid}}data-plagiarism-id="{{plagiarism.flagid}}"{{/plagiarism.flagid}}
+               data-submission-id="{{submission.id}}"
+            >{{#str}} plagiarism_action, mod_coursework {{/str}}
                 {{#plagiarismstatus}}
                     <small class="d-block">
                         <i class="fa-solid fa-flag text-danger mr-2"></i>

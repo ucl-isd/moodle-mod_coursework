@@ -1,0 +1,10 @@
+{{#submissionispublished}}
+    <div class="alert alert-danger">{{#str}}gradereleasedtostudent, coursework{{/str}}</div>
+{{/submissionispublished}}
+<h2>{{{title}}}</h2>
+{{#flag}}
+    <ul>
+        <li>{{{createdby}}}</li>
+        {{#lastedited}}<li>{{{lastedited}}}</li>{{/lastedited}}
+    </ul>
+{{/flag}}

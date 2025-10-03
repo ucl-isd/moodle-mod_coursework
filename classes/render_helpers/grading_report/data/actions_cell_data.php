@@ -45,7 +45,10 @@ class actions_cell_data extends cell_data_base {
      * @return stdClass|null The data object for template rendering.
      */
     public function get_table_cell_data(grading_table_row_base $rowsbase): ?stdClass {
-        $data = new stdClass();
+        $data = (object)[
+            'allocatableid' => $rowsbase->get_allocatable_id(),
+            'allocatabletype' => $rowsbase->get_allocatable()->type(),
+        ];
 
         $identitieshidden = $this->coursework->blindmarking_enabled() &&
             !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context());
@@ -82,12 +85,11 @@ class actions_cell_data extends cell_data_base {
         if (!$this->coursework->get_deadline()) {
             return;
         }
-
         // Set parameters to add/update extension.
         $extensionparams = [
-            'allocatableid'=> $rowsbase->get_allocatable_id(),
-            'allocatabletype'=> $rowsbase->get_allocatable()->type(),
-            'courseworkid'=> $this->coursework->id,
+            'allocatableid' => $rowsbase->get_allocatable_id(),
+            'allocatabletype' => $rowsbase->get_allocatable()->type(),
+            'courseworkid' => $this->coursework->id,
         ];
         $extension = $rowsbase->get_extension();
         $canedit = $extension && $this->ability->can('edit', deadline_extension::find(['id' => $extension->id]));
@@ -105,7 +107,6 @@ class actions_cell_data extends cell_data_base {
             }
 
             $data->extension->show = $canedit || $cannew;
-            $data->extension->extensionparams = $extensionparams;
             $data->extension->class = $extension ? 'edit_deadline_extension' : 'new_deadline_extension';
             $data->extension->stdname = $rowsbase->get_user_name();
             $data->extension->url = $extension ? router::instance()->get_path('edit deadline extension', ['id' => $extension->id]) :
@@ -212,6 +213,7 @@ class actions_cell_data extends cell_data_base {
         $data->plagiarism = new stdClass();
         $data->plagiarism->url = $this->get_plagiarism_url($submission, $plagiarismflag);
         $data->plagiarismstatus = $this->get_flagged_plagiarism_status($submission);
+        $data->plagiarism->flagid = $plagiarismflag->id ?? null;
     }
 
     /**

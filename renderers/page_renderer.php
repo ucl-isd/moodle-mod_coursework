@@ -430,7 +430,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= $this->output->heading($gradingtitle);
 
         $submiturl = $this->get_router()->get_path('create plagiarism flag', ['plagiarism_flag' => $newplagiarismflag]);
-        $simpleform = new plagiarism_flagging_mform($submiturl, ['plagiarism_flag' => $newplagiarismflag]);
+        $simpleform = new plagiarism_flagging_mform($submiturl, ['submissionid' => $submission->id()]);
         echo $this->output->header();
         echo $html;
         $simpleform->display();
@@ -456,32 +456,14 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $this->page->set_title($SITE->fullname);
         $this->page->set_heading($SITE->fullname);
 
-        $html = '';
-
-        $createddby = fullname($creator);
-        $lasteditedby = fullname($editor);
-
-        $html .= $this->output->heading($gradingtitle);
-
-        $html .= '<table class = "plagiarism-flag-details">';
-        $html .= '<tr><th>' . get_string('createdby', 'coursework') . '</th><td>' . $createddby . '</td></tr>';
-        $html .= '<tr><th>' . get_string('lasteditedby', 'coursework') . '</th><td>' . $lasteditedby . ' on ' .
-            userdate($plagiarismflag->timemodified, '%a, %d %b %Y, %H:%M') . '</td></tr>';
-        $html .= '</table>';
-
-        if ($submission->is_published()) {
-            $html .= '<div class ="alert">' . get_string('gradereleasedtostudent', 'coursework') . '</div>';
-        }
-
         $submiturl = $this->get_router()->get_path('update plagiarism flag', ['flag' => $plagiarismflag, 'submission' => $submission]);
-        $simpleform = new plagiarism_flagging_mform($submiturl, ['plagiarism_flag' => $plagiarismflag]);
+        $simpleform = new plagiarism_flagging_mform($submiturl, ['plagiarismflagid' => $plagiarismflag->id]);
 
         $plagiarismflag->plagiarismcomment = ['text' => $plagiarismflag->comment,
                                                     'format' => $plagiarismflag->comment_format];
 
         $simpleform->set_data($plagiarismflag);
         echo $this->output->header();
-        echo $html;
         $simpleform->display();
         echo $this->output->footer();
 
@@ -563,7 +545,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= $gradingreportrenderer->render_grading_report($gradingreport);
         $html .= html_writer::end_tag('div');
 
-        foreach (['modal_handler_extensions', 'modal_handler_personal_deadlines'] as $amd) {
+        foreach (['modal_handler_extensions', 'modal_handler_personal_deadlines', 'modal_handler_plagiarism'] as $amd) {
             $this->page->requires->js_call_amd(
                 "mod_coursework/$amd",
                 'init',

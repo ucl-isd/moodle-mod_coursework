@@ -128,7 +128,7 @@ class plagiarism_flagging_controller extends controller_base {
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('new', $plagiarismflag);
 
-        $form = new plagiarism_flagging_mform(null, ['plagiarism_flag' => $plagiarismflag]);
+        $form = new plagiarism_flagging_mform(null, ['submissionid' => $submission->id()]);
 
         $courseworkpageurl = $this->get_path('coursework', ['coursework' => $plagiarismflag->get_coursework()]);
         if ($form->is_cancelled()) {
@@ -162,7 +162,7 @@ class plagiarism_flagging_controller extends controller_base {
         $ability = new ability(user::find($USER), $this->coursework);
         $ability->require_can('edit', $plagiarismflag);
 
-        $form = new plagiarism_flagging_mform(null, ['plagiarism_flag' => $plagiarismflag]);
+        $form = new plagiarism_flagging_mform(null, ['plagiarismflagid' => $this->params['flagid']]);
 
         $courseworkpageurl = $this->get_path('coursework', ['coursework' => $plagiarismflag->get_coursework()]);
         if ($form->is_cancelled()) {
