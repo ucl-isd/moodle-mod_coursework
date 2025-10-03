@@ -480,9 +480,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             }
 
             // Marking guide - from advanced grading.
-            if ($coursework->is_using_advanced_grading()) {
-                $template->markingguideurl = self::get_marking_guide_url($coursework);
-            }
+            $template->markingguideurl = self::get_marking_guide_url($coursework);
         }
 
         $template->generalfeedback = null;
@@ -1203,8 +1201,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return moodle_url|null Null if there's no advanced grading form set up.
      */
     public static function get_marking_guide_url(mod_coursework_coursework|mod_coursework\models\coursework $coursework): ?moodle_url {
-        $controller = $coursework->get_advanced_grading_active_controller();
 
+        if (!$coursework->is_using_advanced_grading()) {
+            return null;
+        }
+
+        $controller = $coursework->get_advanced_grading_active_controller();
         if ($controller->is_form_defined() && ($options = $controller->get_options()) && !empty($options['alwaysshowdefinition'])) {
             // Extract method name using reflection for protected method access.
             $reflectionclass = new ReflectionClass($controller);
