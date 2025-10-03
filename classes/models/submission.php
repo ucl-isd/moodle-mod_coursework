@@ -1015,10 +1015,14 @@ class submission extends table_base implements \renderable {
     }
 
     /**
-     * @return bool
+     * @return bool|int
      * @throws \coding_exception
      */
-    public function is_late() {
+    public function get_overall_deadline() {
+        if (!$this->get_coursework()->has_deadline()) {
+            return false;
+        }
+
         // check if submission has personal deadline
         if ($this->get_coursework()->personaldeadlineenabled) {
             $deadline = $this->submission_personal_deadline();
@@ -1026,7 +1030,44 @@ class submission extends table_base implements \renderable {
             $deadline = $this->get_coursework()->get_deadline();
         }
 
-        return ($this->get_coursework()->has_deadline() && $this->time_submitted() > $deadline);
+        if ($this->has_extension()) {
+            $deadline = $this->extension_deadline();
+        }
+
+        return $deadline;
+    }
+
+    /**
+     * @return bool|int
+     * @throws \coding_exception
+     */
+    public function is_late() {
+        $deadline = $this->get_overall_deadline();
+        $now = time();
+
+        if (empty($deadline)) {
+            return false;
+        } else if ($now <= $deadline) {
+            return false;
+        } else {
+            return $now - $deadline;
+        }
+    }
+
+    /**
+     * @return bool|int
+     * @throws \coding_exception
+     */
+    public function was_late() {
+        $deadline = $this->get_overall_deadline();
+
+        if (empty($deadline)) {
+            return false;
+        } else if ($this->time_submitted() <= $deadline) {
+            return false;
+        } else {
+            return $this->time_submitted() - $deadline;
+        }
     }
 
     /**
@@ -1229,6 +1270,10 @@ class submission extends table_base implements \renderable {
      * @throws \coding_exception
      */
     public function has_extension() {
+        if (!$this->coursework->extensions_enabled()) {
+            return false;
+        }
+
         deadline_extension::fill_pool_coursework($this->courseworkid);
         $extension = deadline_extension::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$this->allocatableid, $this->allocatabletype]);
         return !empty($extension);
@@ -1241,6 +1286,10 @@ class submission extends table_base implements \renderable {
      * @throws \coding_exception
      */
     public function submission_extension() {
+        if (!$this->coursework->extensions_enabled()) {
+            return false;
+        }
+
         deadline_extension::fill_pool_coursework($this->courseworkid);
         $extension = deadline_extension::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$this->allocatableid, $this->allocatabletype]);
         return $extension;
@@ -1265,15 +1314,6 @@ class submission extends table_base implements \renderable {
 
         return  $personaldeadline;
 
-    }
-
-    /**
-     * Check if submission was submitted within the extension time
-     *
-     * @return bool
-     */
-    public function submitted_within_extension() {
-        return $this->time_submitted() < $this->extension_deadline();
     }
 
     /**
@@ -1310,7 +1350,7 @@ class submission extends table_base implements \renderable {
 
         $editablefeedbacks = [];
         $coursework = $this->get_coursework();
-        if ($coursework->numberofmarkers > 1 && $this->finalised = 1) {
+        if ($coursework->numberofmarkers > 1 && $this->finalised == 1) {
             $this->get_coursework()->get_grade_editing_time();
             $gradeeditingtime = $coursework->get_grade_editing_time();
 

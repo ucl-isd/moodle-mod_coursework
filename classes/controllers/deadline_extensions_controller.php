@@ -206,7 +206,6 @@ class deadline_extensions_controller extends controller_base {
             $updateurl,
             [
                 'courseworkid' => $this->coursework->id,
-                'courseworkid' => $this->coursework->id,
                 'extensionid' => $this->params['id']
             ]
         );

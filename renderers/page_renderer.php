@@ -575,10 +575,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         // Was the submission late?
-        if ($submission->is_late() && (!$submission->has_extension() || !$submission->submitted_within_extension())) {
-            $deadline = $coursework->personaldeadlineenabled ? $submission->submission_personal_deadline() : $coursework->deadline;
-            $deadline = $submission->has_extension() ? $submission->extension_deadline() : $deadline;
-            $lateseconds = $submission->time_submitted() - $deadline;
+        if ($lateseconds = $submission->was_late()) {
             $template->late = format_time($lateseconds) . " " . strtolower(get_string('late', 'mod_coursework'));
         }
 
@@ -782,7 +779,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= $title;
         $html .= html_writer::end_tag('h3');
         $html .= html_writer::start_tag('p');
-        $html .= get_string('process'.$csvtype.'desc', 'mod_coursework');;
+        $html .= get_string('process'.$csvtype.'desc', 'mod_coursework');
         $html .= html_writer::end_tag('p');
 
         $html .= html_writer::start_tag('p');
@@ -847,7 +844,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= html_writer::end_tag('h3');
 
         $html .= html_writer::start_tag('p');
-        $html .= get_string('feedbackuploadresultsdesc', 'mod_coursework');;
+        $html .= get_string('feedbackuploadresultsdesc', 'mod_coursework');
         $html .= html_writer::end_tag('p');
 
         $html .= html_writer::start_tag('p');
