@@ -102,7 +102,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $lastmarked = ((!$teacherfeedback->get_coursework()->sampling_enabled() || $teacherfeedback->get_submission()->sampled_feedback_exists())
             && $teacherfeedback->assessorid == 0 && $teacherfeedback->timecreated == $teacherfeedback->timemodified )
             ? get_string('automaticagreement', 'mod_coursework') : fullname($editor);
-        $template->lasteditedby = $lastmarked . userdate($teacherfeedback->timemodified, '%a, %d %b %Y, %H:%M');
+        $template->lasteditedby = (object)[
+            'name' => $lastmarked,
+            'date' => userdate($teacherfeedback->timemodified, '%a, %d %b %Y, %H:%M')
+        ];
 
         $submiturl = $this->get_router()->get_path('update feedback', ['feedback' => $teacherfeedback]);
         $simpleform = new assessor_feedback_mform(

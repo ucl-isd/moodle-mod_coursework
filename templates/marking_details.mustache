@@ -5,19 +5,22 @@
 <div class="container">
     <div class="row bg-light p-3">
         <div class="col">
-            <h3 class="h6">Submission</h3>
+            <h3 class="h6">{{#str}}submission, coursework{{/str}}</h3>
             {{{submission}}}
         </div>
         <div class="col-4">
-            <h3 class="h6">Marker</h3>
+            <h3 class="h6">{{#str}}assessor, coursework{{/str}}</h3>
             {{{marker}}}
         </div>
 
-        {{#lastmarked}}
+        {{#lasteditedby}}
         <div class="col-4">
-            <h3 class="h6">Last marked</h3>
-            {{{lastmarked}}}
+            <h3 class="h6">{{#str}}lasteditedby, coursework{{/str}}</h3>
+            <ul>
+                <li>{{{name}}}</li>
+                <li>{{{date}}}</li>
+            </ul>
         </div>
-        {{/lastmarked}}
+        {{/lasteditedby}}
     </div>
 </div>
