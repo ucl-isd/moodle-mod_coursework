@@ -567,7 +567,7 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I click on the new feedback button for assessor (\d+)$/
+     * @Given /^I click on the add feedback button for assessor (\d+)$/
      * @param $assessornumber
      * @throws coding_exception
      */
@@ -577,6 +577,18 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
         $page->click_assessor_new_feedback_button($assessornumber, $this->student);
+
+    }
+
+    /**
+     * @Given /^I grade the submission as ([\d\.]*) using the grading form$/
+     * @param $grade
+     * @throws coding_exception
+     */
+    public function i_grade_the_submission_using_the_grading_form($grade) {
+        $fieldnode = $this->find_field('grade');
+        $field = behat_field_manager::get_form_field($fieldnode, $this->getSession());
+        $field->set_value($grade);
 
     }
 
@@ -603,7 +615,7 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I click on the new feedback button for assessor (\d+) for another student$/
+     * @Given /^I click on the add feedback button for assessor (\d+) for another student$/
      * @param $assessornumber
      * @throws coding_exception
      */
@@ -2240,27 +2252,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * Check expected final agreed grade appears on page.
-     * @Then /^I should see the final agreed grade(?: as )?(\d*\.?\d+)? on the page$/
-     * @param float $grade
-     * @throws ExpectationException
-     */
-    public function i_should_see_the_final_agreed_grade_on_the_page($grade) {
-        try {
-            $grade = count(
-                $this->find_all(
-                    'xpath', $this->xpath_tag_class_contains_text('a', 'agreed-feedback-grade', $grade)
-                )
-            );
-        } catch (Exception $e) {
-            $grade = false;
-        }
-        if (!$grade) {
-            throw new ExpectationException('Could not find the final grade', $this->getSession());
-        }
-    }
-
-    /**
      * @Then /^I should( not)? see the final grade(?: as )?(\d*\.?\d+)? on the multiple marker page$/
      * @param bool $negate
      * @param float $grade
@@ -2922,16 +2913,14 @@ class behat_mod_coursework extends behat_base {
 
         $generator = testing_util::get_data_generator();
 
-        // Chrome complains about passwords existing in previous data breaches so tests fail.
-        $randomstring = random_string(8);
         $user = new stdClass();
         $user->username = 'user' . $this->usersuffix;
-        $user->password = 'user' . $randomstring . $this->usersuffix;
+        $user->password = 'user' . $this->usersuffix;
         $user->firstname = $displayname ? $displayname : $rolename . $this->usersuffix;
         $user->lastname = $rolename . $this->usersuffix;
         $user = $generator->create_user($user);
         $user = \mod_coursework\models\user::find($user);
-        $user->password = 'user' . $randomstring . $this->usersuffix;
+        $user->password = 'user' . $this->usersuffix;
 
         // If the role name starts with 'other_' here (e.g. 'other_teacher') we need to remove it.
         $rolename = str_replace('other_', '', $rolename);

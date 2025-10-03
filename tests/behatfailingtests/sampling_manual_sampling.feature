@@ -31,11 +31,10 @@ Feature: Manual sampling
     And I log in as the teacher
     And I visit the coursework page
     # I should be able to grade the user
-    And I expand the coursework grading row
     And I wait "1" seconds
-    And I should see "New feedback"
-    And I click on the only interactable link with title "New feedback"
-    And I grade the submission as 67 using the ajax form
+    And I should see "Add feedback"
+    And I click on the add feedback button for assessor 1
+    And I grade the submission as 67 using the grading form
 
   @javascript
   Scenario: Manual sampling should not include student when not selected
@@ -45,10 +44,9 @@ Feature: Manual sampling
     And I log out
     And I log in as the teacher
     And I visit the coursework page
-    And I expand the coursework grading row
     And I wait "1" seconds
     # I should *NOT* be able to grade the user
-    And I should not see "New feedback"
+    And I should not see "Add feedback"
     Then I should not be able to add the second grade for this student
 
   @javascript

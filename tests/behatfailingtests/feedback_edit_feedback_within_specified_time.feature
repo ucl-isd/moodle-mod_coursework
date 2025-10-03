@@ -23,7 +23,6 @@ Feature: Allow markers to edit their marking but only during specific marking st
     Given there are feedbacks from both teachers
     And I log in as the teacher
     And I visit the coursework page
-    And I expand the coursework grading row
     Then I should see the edit feedback button for the teacher's feedback
 
   @javascript
@@ -32,7 +31,6 @@ Feature: Allow markers to edit their marking but only during specific marking st
     And I wait "35" seconds
     And I log in as the teacher
     And I visit the coursework page
-    And I expand the coursework grading row
     Then I should not see the edit feedback button for the teacher's feedback
 
   @javascript
@@ -50,16 +48,14 @@ Feature: Allow markers to edit their marking but only during specific marking st
 
     And I am logged in as a teacher
     And I visit the coursework page
-    And I expand the coursework grading row
-    And I click on the only interactable link with title "New feedback"
-    And I grade the submission as 67 using the ajax form
+    And I click on the add feedback button for assessor 1
+    And I grade the submission as 67 using the grading form
     And I log out
 
     And I log in as the other teacher
     And I visit the coursework page
-    And I expand the coursework grading row
-    And I click on the only interactable link with title "New feedback"
-    And I grade the submission as 63 using the ajax form
+    And I click on the add feedback button for assessor 2
+    And I grade the submission as 63 using the grading form
     And I visit the coursework page
     Then I should not see the final grade on the multiple marker page
 
@@ -78,16 +74,14 @@ Feature: Allow markers to edit their marking but only during specific marking st
 
     And I log in as a teacher
     And I visit the coursework page
-    And I expand the coursework grading row 1
-    And I click on the only interactable link with title "New feedback"
-    And I grade the submission as 67 using the ajax form
+    And I click on the add feedback button for assessor 1
+    And I grade the submission as 67 using the grading form
     And I log out
 
     And I log in as the other teacher
     And I visit the coursework page
-    And I expand the coursework grading row 1
-    And I click on the only interactable link with title "New feedback"
-    And I grade the submission as 63 using the ajax form
+    And I click on the add feedback button for assessor 2
+    And I grade the submission as 63 using the grading form
     And I wait "50" seconds
     And I visit the coursework page
     Then I should see the final grade as 67 on the multiple marker page
