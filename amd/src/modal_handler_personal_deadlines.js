@@ -40,10 +40,10 @@ export const init = (courseworkid) => {
     const triggerElement = document.querySelector(tableSelector);
     const actionSelector = '[data-action="mod-coursework-launch-modal-personal-deadline"]';
     triggerElement.addEventListener('click', event => {
-        const actionMenu = event.srcElement.matches(actionSelector)
-            ? event.srcElement
-            : event.srcElement.closest(actionSelector);
-        const rowElement = event.srcElement.closest('tr');
+        const actionMenu = event.target.matches(actionSelector)
+            ? event.target
+            : event.target.closest(actionSelector);
+        const rowElement = event.target.closest('tr');
         if (actionMenu) {
             event.preventDefault();
         } else {

@@ -69,6 +69,7 @@ class submission_cell_data extends cell_data_base {
      */
     protected function add_submission_data(stdClass $data, grading_table_row_base $rowobject): void {
         $submission = $rowobject->get_submission();
+        $data->id = $submission->id;
         $data->datemodified = $submission->time_submitted();
         $data->submissiondata = new stdClass();
         $data->submissiondata->files = $this->get_submission_files_data($rowobject);

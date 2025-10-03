@@ -28,12 +28,10 @@ use mod_coursework\grading_report;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\coursework;
 use mod_coursework\models\user;
-use mod_coursework\render_helpers\grading_report\cells\cell_interface;
 use mod_coursework\render_helpers\grading_report\data\actions_cell_data;
 use mod_coursework\render_helpers\grading_report\data\marking_cell_data;
 use mod_coursework\render_helpers\grading_report\data\student_cell_data;
 use mod_coursework\render_helpers\grading_report\data\submission_cell_data;
-use mod_coursework\render_helpers\grading_report\sub_rows\sub_rows_interface;
 use stdClass;
 
 /**
