@@ -374,7 +374,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         echo $this->output->header();
         echo $this->render_from_template('mod_coursework/marking_details', $template);
 
-        $rendertype = optional_param('rendertype', null, PARAM_TEXT);
+        $rendertype = optional_param('rendertype', 'full', PARAM_TEXT);
 
         if (!empty($rendertype)) {
             $model = (object)['pdfs' => []];

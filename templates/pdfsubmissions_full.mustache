@@ -31,6 +31,12 @@
             })
         },
     };
+    document.querySelectorAll('[data-action="modcoursework_viewfile"]')
+            .forEach(function (elem) {
+                elem.addEventListener("click", async (event) => {
+                    await controller.loadpdf(event.target.dataset.href).promise;
+                });
+            });
 
     document.querySelector('[data-action="modcoursework_viewfile"]')
             .addEventListener("click", async (event) => {

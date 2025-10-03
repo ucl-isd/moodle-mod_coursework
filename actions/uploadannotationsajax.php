@@ -123,26 +123,22 @@ foreach ($files as $file) {
         continue;
     }
     $filerecord = new stdClass;
-    $filerecord->component = 'user';
-    $filerecord->contextid = $context->id;
+    $filerecord->component = 'mod_coursework';
+    $filerecord->contextid = 53;
     $filerecord->userid = $USER->id;
-    $filerecord->filearea = 'draft';
+    $filerecord->filearea = 'submission';
     $filerecord->filename = $file->filename;
     $filerecord->filepath = $filepath;
-    $filerecord->itemid = $itemid;
+    $filerecord->itemid = 1;
     $filerecord->license = $CFG->sitedefaultlicense;
-    $filerecord->author = fullname($authenticationinfo['user']);
+    $filerecord->author = fullname($USER);
     $filerecord->source = serialize((object)array('source' => $file->filename));
     $filerecord->filesize = $file->size;
 
     // Check if the file already exist.
-    $existingfile = $fs->file_exists($filerecord->contextid, $filerecord->component, $filerecord->filearea,
+    $existingfile = $fs->get_file($filerecord->contextid, $filerecord->component, $filerecord->filearea,
                 $filerecord->itemid, $filerecord->filepath, $filerecord->filename);
-    if ($existingfile) {
-        $file->errortype = 'filenameexist';
-        $file->error = get_string('filenameexist', 'webservice', $file->filename);
-        $results[] = $file;
-    } else {
+
         $storedfile = $fs->create_file_from_pathname($filerecord, $file->filepath);
         $results[] = $filerecord;
 
@@ -159,6 +155,5 @@ foreach ($files as $file) {
                 ],
         ]);
         $logevent->trigger();
-    }
 }
 echo json_encode($results);
