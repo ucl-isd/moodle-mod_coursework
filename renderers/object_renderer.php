@@ -195,124 +195,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Renders a feedback as a table row. We may want an empty one for the user to add their own feedback.
-     *
-     * @param mod_coursework_assessor_feedback_row $feedbackrow
-     * @return \html_table_row
-     */
-    protected function render_mod_coursework_assessor_feedback_row(mod_coursework_assessor_feedback_row $feedbackrow) {
-
-        /**
-         * NOT USED!!!!!!
-         */
-
-        global $USER, $COURSE;
-
-        $row = new html_table_row();
-
-        // Row attributes
-
-        if ($feedbackrow->get_assessor_id() == $USER->id) {
-            $row->attributes['class'] = 'coursework_own_feedback';
-        }
-        // Unique identifier for testing.
-        // We can't add ids to the row.
-        // Also might be the same person marking many students so needs to have the student id.
-        // Do not say 'student so that it's not obvious that this is a way that blind marking could be circumvented.
-        $row->attributes['class'] =
-            "feedback-{$feedbackrow->get_assessor_id()}-{$feedbackrow->get_allocatable()->id()} {$feedbackrow->get_stage()->identifier()}";
-
-        $existingfeedback = $feedbackrow->get_feedback();
-
-        // Assessor cell: name, image and edit link.
-
-        $cell = new html_table_cell();
-        $assessor = $feedbackrow->get_assessor();
-
-        $cell->text = $assessor->picture();
-        $cell->text .= ' &nbsp;';
-        $profilelinkurl = new moodle_url('/user/profile.php', ['id' => $assessor->id(),
-                                                                    'course' => $COURSE->id]);
-        $cell->text .= html_writer::link($profilelinkurl, $assessor->name());
-
-        $row->cells['assessor'] = $cell;
-
-        // Comment cell (includes edit feedback link)
-
-        $cell = new html_table_cell();
-        $cell->text = 'asdadas';
-        // Edit feedback link.
-        $submission = $feedbackrow->get_submission();
-        $newfeedback = false;
-        if (empty($existingfeedback)) {
-            $params = [
-                'assessorid' => $assessor->id(),
-                'stage_identifier' => $feedbackrow->get_stage()->identifier(),
-            ];
-            if ($submission) {
-                $params['submissionid'] = $submission->id;
-            }
-            $newfeedback = feedback::build($params);
-        }
-
-        $ability = new ability(user::find($USER), $feedbackrow->get_coursework());
-
-        if ($existingfeedback && $ability->can('edit', $existingfeedback)) {
-
-            $linktitle = get_string('edit');
-            $icon = new pix_icon('edit', $linktitle, 'coursework', ['width' => '20px']);
-            $linkid = "edit_feedback_" . $feedbackrow->get_feedback()->id;
-            $link = $this->get_router()->get_path('edit feedback', ['feedback' => $feedbackrow->get_feedback()]);
-            $iconlink = $this->output->action_icon($link, $icon, null, ['id' => $linkid]);
-            $cell->text .= $iconlink;
-        } else if ($newfeedback && $ability->can('new', $newfeedback)) {
-
-            // New
-            $linktitle = "new_feedback";
-            $icon = new pix_icon('edit', $linktitle, 'coursework', ['width' => '20px']);
-
-            $newfeedbackparams = [
-                'submission' => $feedbackrow->get_submission(),
-                'assessor' => $feedbackrow->get_assessor(),
-                'stage' => $feedbackrow->get_stage(),
-            ];
-            $link = $this->get_router()->get_path('new feedback', $newfeedbackparams);
-            $iconlink = $this->output->action_icon($link, $icon, null, ['class' => "new_feedback"]);
-            $cell->text .= $iconlink;
-        } else if ($existingfeedback && $ability->can('show', $existingfeedback)) {
-            // Show - for managers and others who are reviewing the grades but who should
-            // not be able to change them.
-
-            $linktitle = get_string('viewfeedback', 'mod_coursework');
-            $icon = new pix_icon('show', $linktitle, 'coursework', ['width' => '20px']);
-            $linkid = "show_feedback_" . $feedbackrow->get_feedback()->id;
-            $link = $this->get_router()->get_path('show feedback', ['feedback' => $feedbackrow->get_feedback()]);
-            $iconlink = $this->output->action_icon($link, $icon, null, ['id' => $linkid]);
-            $cell->text .= $iconlink;
-
-        }
-
-        if (!is_null($feedbackrow->get_grade()) && $feedbackrow->has_feedback()) {
-            $maxgrade = $feedbackrow->get_max_grade();
-            $feedbackgrade = $feedbackrow->get_grade();
-            $gradestring = $this->output_grade_as_string($feedbackgrade, $maxgrade);
-            $cell->text .= '&nbsp;' . get_string('grade', 'coursework') . ": " . $gradestring;
-        }
-
-        $row->cells['feedbackcomment'] = $cell;
-
-        // Feedback time submitted cell.
-
-        $cell = new html_table_cell();
-        if ($feedbackrow->has_feedback()) {
-            $cell->text = $feedbackrow ? userdate($feedbackrow->get_time_modified(), '%a, %d %b %Y, %H:%M') : '';
-        }
-        $row->cells['timemodified'] = $cell;
-
-        return $row;
-    }
-
-    /**
      * Outputs the files as a HTML list.
      *
      * @param mod_coursework_submission_files $files
@@ -1405,6 +1287,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
     /**
+     * This is used on the old bulk personal deadlines page i.e. actions/set_personal_deadlines.php.
      * @param \mod_coursework\personal_deadline\table\row\builder $personaldeadlinerow
      * @return string
      */
@@ -1414,19 +1297,17 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $coursework = $personaldeadlinerow->get_coursework();
 
-        $newpersonaldeadlineparams = [
-            'allocatableid' => $personaldeadlinerow->get_allocatable()->id(),
-            'allocatabletype' => $personaldeadlinerow->get_allocatable()->type(),
-            'courseworkid' => $personaldeadlinerow->get_coursework()->id,
-        ];
-
-        // $personal_deadline = \mod_coursework\models\personal_deadline::find($new_personal_deadline_params);
-
         $personaldeadline =
             \mod_coursework\models\personal_deadline::get_personal_deadline_for_student(user::find($personaldeadlinerow->get_allocatable()->id()), $coursework);
 
         if (!$personaldeadline) {
-            $personaldeadline = \mod_coursework\models\personal_deadline::build($newpersonaldeadlineparams);
+            $personaldeadline = \mod_coursework\models\personal_deadline::build(
+                [
+                    'allocatableid' => $personaldeadlinerow->get_allocatable()->id(),
+                    'allocatabletype' => $personaldeadlinerow->get_allocatable()->type(),
+                    'courseworkid' => $personaldeadlinerow->get_coursework()->id,
+                ]
+            );
         }
 
         $ability = new ability(user::find($USER), $coursework);
@@ -1437,13 +1318,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $rowhtml .= '<input type="checkbox" name="allocatableid_arr['.$personaldeadlinerow->get_allocatable()->id().']" id="date_'. $personaldeadlinerow->get_allocatable()->type() . '_' . $personaldeadlinerow->get_allocatable()->id().'" class="date_select" value="'.$personaldeadlinerow->get_allocatable()->id().'" '.$disabledelement.' >';
         $rowhtml .= '<input type="hidden" name="allocatabletype_'.$personaldeadlinerow->get_allocatable()->id().'" value="'.$personaldeadlinerow->get_allocatable()->type().'" />';
         $rowhtml .= '</td>';
-
-        $newpersonaldeadlineparams = [
-            'allocatableid' => $personaldeadlinerow->get_allocatable()->id(),
-            'allocatabletype' => $personaldeadlinerow->get_allocatable()->type(),
-            'courseworkid' => $personaldeadlinerow->get_coursework()->id,
-            'setpersonaldeadlinespage' => '1',
-        ];
 
         $allocatablecellhelper = $personaldeadlinerow->get_allocatable_cell();
         $personaldeadlinescellhelper = $personaldeadlinerow->get_personal_deadline_cell();

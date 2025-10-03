@@ -829,7 +829,6 @@ $string['studentviewmoderatorgrade'] = 'Students can view moderator grades';
 $string['studentviewmoderatorgrade_help'] = 'Students can view moderator grades';
 $string['studentsinmultiplegroups'] = 'The following students are in more than one group:';
 $string['students_in_no_group_warning'] = 'Some students are not in any of the configured groups and so will be unable to submit:';
-$string['submission'] = 'submission';
 $string['submission_feedback'] = 'Submission feedback';
 $string['submissions_table'] = 'Submissions table';
 $string['submissionid'] = 'Sub ID';
