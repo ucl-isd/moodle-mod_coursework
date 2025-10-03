@@ -46,6 +46,31 @@ class submissions_controller extends controller_base {
     protected $submission;
 
     /**
+     * Shared logic for rendering the submission page (new or edit).
+     *
+     * @param student_submission_form $submitform
+     * @param submission $submission
+     * @param bool $isnew
+     * @return bool|null
+     */
+    protected function submission_page($submitform, $submission, $isnew) {
+        $validation = false;
+        if ($submitform->is_submitted()) {
+            $validation = $submitform->validate_defined_fields();
+        }
+        if ($isnew) {
+            // No need to set form data for new submission
+        } else {
+            $submitform->set_data($submission);
+        }
+        if ($validation !== true) {
+            $this->get_page_renderer()->submission_page($submitform, $submission, $isnew);
+            return true;
+        }
+        return null;
+    }
+
+    /**
      * Makes the page where a user can create a new submission.
      *
      * @throws \coding_exception
@@ -55,13 +80,13 @@ class submissions_controller extends controller_base {
         global $USER, $PAGE;
 
         $user = user::find($USER);
-        $validation = false;
 
         $submission = submission::build([
-                                                'allocatableid' => $this->params['allocatableid'],
-                                                'allocatabletype' => $this->params['allocatabletype'],
-                                                'courseworkid' => $this->coursework->id,
-                                                'createdby' => $user->id()]);
+            'allocatableid' => $this->params['allocatableid'],
+            'allocatabletype' => $this->params['allocatabletype'],
+            'courseworkid' => $this->coursework->id,
+            'createdby' => $user->id()
+        ]);
 
         $ability = new ability($user, $this->coursework);
         if (!$ability->can('new', $submission)) {
@@ -74,19 +99,42 @@ class submissions_controller extends controller_base {
         $PAGE->set_url('/mod/coursework/actions/submissions/new.php', $urlparams);
 
         $path = $this->get_router()->get_path('create submission', ['coursework' => $this->coursework]);
-        $submitform = new student_submission_form($path,
-                                                    [
-                                                      'coursework' => $this->coursework,
-                                                      'submission' => $submission,
-                                                    ]);
-        if ($submitform->is_submitted()) {
-            $validation = $submitform->validate_defined_fields();
-        }
-        if ($validation != true) {
-            $this->get_page_renderer()->new_submission_page($submitform, $submission);
-            return true;
+        $submitform = new student_submission_form($path, [
+            'coursework' => $this->coursework,
+            'submission' => $submission,
+        ]);
+
+        return $this->submission_page($submitform, $submission, true);
+    }
+
+    /**
+     * Makes the page where a user can edit an existing submission.
+     * Might be someone editing the group feedback thing too, so we load based on the submission
+     * user, not the current user.
+     *
+     * @throws \coding_exception
+     * @throws \unauthorized_access_exception
+     */
+    protected function edit_submission() {
+        global $USER, $PAGE;
+
+        $submission = submission::find($this->params['submissionid']);
+
+        $ability = new ability(user::find($USER), $this->coursework);
+        if (!$ability->can('edit', $submission)) {
+            throw new access_denied($this->coursework);
         }
 
+        $urlparams = ['submissionid' => $this->params['submissionid']];
+        $PAGE->set_url('/mod/coursework/actions/submissions/edit.php', $urlparams);
+
+        $path = $this->get_router()->get_path('update submission', ['submission' => $submission]);
+        $submitform = new student_submission_form($path, [
+            'coursework' => $this->coursework,
+            'submission' => $submission,
+        ]);
+
+        return $this->submission_page($submitform, $submission, false);
     }
 
     /**
@@ -188,46 +236,6 @@ class submissions_controller extends controller_base {
         }
 
         redirect($courseworkpageurl);
-    }
-
-    /**
-     * Makes the page where a user can edit an existing submission.
-     * Might be someone editing the group feedback thing too, so we load based on the submission
-     * user, not the current user.
-     *
-     * @throws \coding_exception
-     * @throws \unauthorized_access_exception
-     */
-    protected function edit_submission() {
-        global $USER, $PAGE;
-
-        $submission = submission::find($this->params['submissionid']);
-        $validation = false;
-
-        $ability = new ability(user::find($USER), $this->coursework);
-        if (!$ability->can('edit', $submission)) {
-            throw new access_denied($this->coursework);
-        }
-
-        $urlparams = ['submissionid' => $this->params['submissionid']];
-        $PAGE->set_url('/mod/coursework/actions/submissions/edit.php', $urlparams);
-
-        $path = $this->get_router()->get_path('update submission', ['submission' => $submission]);
-        $submitform = new student_submission_form($path,
-                                                   [
-                                                       'coursework' => $this->coursework,
-                                                       'submission' => $submission,
-                                                   ]);
-        if ($submitform->is_submitted()) {
-            $validation = $submitform->validate_defined_fields();
-        }
-
-        $submitform->set_data($submission);
-
-        if ($validation != true) {
-            $this->get_page_renderer()->edit_submission_page($submitform, $submission);
-            return true;
-        }
     }
 
     /**

@@ -618,63 +618,38 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param student_submission_form $submitform
-     * @param submission $ownsubmission
-     * @throws \coding_exception
-     */
-    public function new_submission_page($submitform, $ownsubmission) {
-        $html = '';
-
-        $html .= html_writer::start_tag('h3');
-        $stringname = $ownsubmission->get_coursework()->is_configured_to_have_group_submissions() ? 'addgroupsubmission' : 'addyoursubmission';
-        $html .= get_string($stringname, 'mod_coursework');
-        $html .= html_writer::end_tag('h3');
-
-        $html .= $this->marking_preview_html($ownsubmission);
-
-        if ($ownsubmission->get_coursework()->early_finalisation_allowed()) {
-            $html .= $this->finalise_warning();
-        }
-        $html .= plagiarism_similarity_information($ownsubmission->get_coursework()->get_course_module());
-        ob_start();
-        $submitform->display();
-        $html .= ob_get_clean();
-
-        echo $this->output->header();
-        echo $html;
-        echo $this->output->footer();
-    }
-
-    /**
+     * Return submission page.
+     *
      * @param student_submission_form $submitform
      * @param submission $submission
-     * @throws \coding_exception
      */
-    public function edit_submission_page($submitform, $submission) {
-        $html = '';
+    public function submission_page($submitform, $submission, $isnew = true) {
+        $template = new stdClass();
 
-        $html .= html_writer::start_tag('h3');
-        $stringname = $submission->get_coursework()->is_configured_to_have_group_submissions() ? 'editgroupsubmission' : 'edityoursubmission';
-        $html .= get_string($stringname, 'mod_coursework');
-        $html .= ' ' . $submission->get_coursework()->name;
-        $html .= html_writer::end_tag('h3');
+        $title = $submission->get_coursework()->is_configured_to_have_group_submissions()
+            ? ($isnew ? 'addgroupsubmission' : 'editgroupsubmission')
+            : ($isnew ? 'addyoursubmission' : 'edityoursubmission');
+        $template->title = get_string($title, 'mod_coursework');
 
-        $html .= $this->marking_preview_html($submission);
+        $coursework = $submission->get_coursework();
+        $template->markingguideurl = mod_coursework_object_renderer::get_marking_guide_url($coursework);
+        $template->plagiarism = plagiarism_similarity_information($submission->get_coursework()->get_course_module());
 
         if ($submission->get_coursework()->early_finalisation_allowed()) {
-            $html .= $this->finalise_warning();
-        }
-        $html .= '<div class="alert">'.get_string('replacing_an_existing_file_warning', 'mod_coursework').'</div>';
-        if ($submission->get_coursework()->deadline_has_passed() && !$submission->has_valid_extension()) {
-            $html .= '<div class="alert">'.get_string('late_submissions_warning', 'mod_coursework').'</div>';
+            $template->finalise = true;
         }
 
+        if ($submission->get_coursework()->deadline_has_passed() && !$submission->has_valid_extension()) {
+            $template->late = true;
+        }
+
+        // Submit form.
         ob_start();
         $submitform->display();
-        $html .= ob_get_clean();
+        $template->form = ob_get_clean();
 
         echo $this->output->header();
-        echo $html;
+        echo $this->render_from_template('mod_coursework/submission_page', $template);
         echo $this->output->footer();
     }
 
@@ -729,7 +704,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     protected function finalise_submission_button($coursework, $submission) {
 
         $html = '<div>';
-        $html .= $this->finalise_warning();
+
+        $html .= '<p class="small">'. get_string('finalise_button_info', 'mod_coursework') .'</p>';
+
         $stringname = $coursework->is_configured_to_have_group_submissions() ? 'finalisegroupsubmission' : 'finaliseyoursubmission';
         $finalisesubmissionpath =
             $this->get_router()->get_path('finalise submission', ['submission' => $submission], true);
@@ -742,14 +719,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         return $html;
 
-    }
-
-    /**
-     * @return string
-     * @throws coding_exception
-     */
-    public function finalise_warning() {
-        return '<p class="small">' . get_string('finalise_button_info', 'mod_coursework') . '</small>';
     }
 
     /**
@@ -784,29 +753,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         );
         $submissionbutton->url = $this->get_router()->get_path('new submission', ['submission' => $submission], true);
         return $submissionbutton;
-    }
-
-    /**
-     * @param submission $ownsubmission
-     * @return string
-     * @throws coding_exception
-     */
-    protected function marking_preview_html($ownsubmission) {
-        $html = '';
-
-        if ($ownsubmission->get_coursework()->is_using_advanced_grading()) {
-            $controller = $ownsubmission->get_coursework()->get_advanced_grading_active_controller();
-            $previewhtml = $controller->render_preview($this->page);
-            if (!empty($previewhtml)) {
-                $html .= '<h4>';
-                $html .= get_string('marking_guide_preview', 'mod_coursework');
-                $html .= '</h4>';
-                $html .= $previewhtml;
-                return $html;
-            }
-            return $html;
-        }
-        return $html;
     }
 
     /**

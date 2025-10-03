@@ -1,5 +1,6 @@
+
 {{!
-    This file is part the Feedback tracker report plugin for Moodle
+    This file is part of Moodle - http://moodle.org/
     Moodle is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -14,18 +15,20 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_coursework/description
+    @template mod_coursework/submission_page
 
     Example context (json):
     {
-        "description": "<p>This assignment requires you to write an essay of approximately 1500 words on the impact of social media on political discourse. Please refer to the marking guide for specific criteria.</p>\n<ul>\n<li>Ensure you cite your sources correctly using APA style.</li>\n<li>The deadline for submission is clearly indicated below.</li>\n</ul>",
-        "markingguideurl": "https://moodle.example.com/pluginfile.php/123/mod_resource/content/0/marking_guide.pdf"
+        "title": "Submission",
+        "markingguideurl": "https://example.com/marking-guide",
+        "plagiarism": "<div>Plagiarism warning</div>",
+        "late": true,
+        "finalise": true,
+        "form": "<form>...</form>"
     }
 }}
-{{#description}}
-<h3 class="h5">{{#str}} description, mod_coursework {{/str}}</h3>
-{{{.}}}
-{{/description}}
+
+<h3>{{{title}}}</h3>
 
 {{#markingguideurl}}
 <div class="my-3">
@@ -35,3 +38,23 @@
     </a>
 </div>
 {{/markingguideurl}}
+
+{{{plagiarism}}}
+
+{{#late}}
+    <div class="alert alert-warning">
+        <div class="badge badge-pill badge-warning">
+            {{#str}} late, mod_coursework {{/str}}
+        </div>
+        <br>
+        {{#str}} late_submissions_warning, mod_coursework {{/str}}
+    </div>
+{{/late}}
+
+{{#finalise}}
+    <div class="alert alert-info">
+        {{#str}} finalise_button_info, mod_coursework {{/str}}
+    </div>
+{{/finalise}}
+
+{{{form}}}
