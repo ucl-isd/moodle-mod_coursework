@@ -201,4 +201,9 @@ Coursework.
         background-color: var(--danger);
         border-color: var(--danger);
     }
+
+    .container + .container > .alert {
+        /* Ensure there's space above notifications. */
+        margin-top: 1em;
+    }
 }
