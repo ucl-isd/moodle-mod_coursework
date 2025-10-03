@@ -22,6 +22,7 @@
 
 namespace mod_coursework\models;
 
+use core\exception\invalid_parameter_exception;
 use  mod_coursework\framework\table_base;
 
 /**
@@ -154,4 +155,39 @@ class personal_deadline extends table_base {
         self::remove_cache($this->courseworkid);
     }
 
+    /**
+     * Trigger an event when deadline is created or updated.
+     * @param string $eventtype create, or update.
+     * @return void
+     */
+    public function trigger_created_updated_event(string $eventtype): void {
+        global $USER;
+        $allocatable = $this->get_allocatable();
+        $coursework = $this->get_coursework();
+        $params = [
+            'objectid' => $this->id,
+            'userid' => $USER->id ?? 0,
+            'relateduserid' => $allocatable->type() == 'user' ? $allocatable->id() : null,
+            'context' => \context_module::instance($coursework->get_course_module()->id),
+            'anonymous' => 1, // To prevent potential de-anonymisation of users via course reports.
+            'other' => [
+                'allocatabletype' => $allocatable->type(),
+                'courseworkid' => $coursework->id,
+                'groupid' => $allocatable->type() == 'group' ? $allocatable->id() : null,
+                'deadline' => $this->personal_deadline,
+            ],
+        ];
+
+        switch ($eventtype) {
+            case 'create':
+                $event = \mod_coursework\event\personal_deadline_created::create($params);
+                break;
+            case 'update':
+                $event = \mod_coursework\event\personal_deadline_updated::create($params);
+                break;
+            default:
+                throw new invalid_parameter_exception("Unexpected event type '$eventtype'");
+        }
+        $event->trigger();
+    }
 }

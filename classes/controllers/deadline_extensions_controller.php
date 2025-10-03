@@ -116,6 +116,7 @@ class deadline_extensions_controller extends controller_base {
             $ability->require_can('create', $this->deadlineextension);
 
             $this->deadlineextension->save();
+            $this->deadlineextension->trigger_created_updated_event('create');
             $personaldeadline = personal_deadline::get_personal_deadline_for_student($allocatable, $this->coursework);
             // Update calendar/timeline event to the latest of the new extension date or existing personal deadline.
             $this->coursework->update_user_calendar_event(
@@ -234,6 +235,7 @@ class deadline_extensions_controller extends controller_base {
                 $values->allocatabletype,
                 max($this->deadlineextension->extended_deadline, $personaldeadline->personal_deadline ?? 0)
             );
+            $this->deadlineextension->trigger_created_updated_event('update');
             redirect($courseworkpageurl);
         } else {
             $this->render_page('edit');

@@ -374,6 +374,7 @@ class deadline_extension_form extends dynamic_form {
         }
         // If we reach this far with no errors, we can update the extension.
         if (empty($errors)) {
+            $iscreating = !$this->extension->id ?? false;
             $this->extension->update_attributes($data);
             $personaldeadline = personal_deadline::get_personal_deadline_for_student($this->allocatable, $this->coursework);
             // Update calendar/timeline event to the latest of the new extension date or existing personal deadline.
@@ -382,6 +383,7 @@ class deadline_extension_form extends dynamic_form {
                 $this->allocatable->type(),
                 max($data->extended_deadline, $personaldeadline->personal_deadline ?? 0)
             );
+            $this->extension->trigger_created_updated_event($iscreating ? 'create' : 'update');
         }
         return [
             'success' => empty($errors),
