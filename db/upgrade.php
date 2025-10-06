@@ -2552,6 +2552,26 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025082800, 'coursework');
     }
 
+    if ($oldversion < 2025100300) {
+        $tablestoaddindex = ['coursework_submissions', 'coursework_extensions', 'coursework_person_deadlines'];
+        foreach ($tablestoaddindex as $tablename) {
+            // Define index courseworkid-allocatableid-allocatabletype (not unique) to be added to table.
+            $table = new xmldb_table($tablename);
+            $index = new xmldb_index(
+                'courseworkid-allocatableid-allocatabletype',
+                XMLDB_INDEX_NOTUNIQUE,
+                ['courseworkid', 'allocatableid', 'allocatabletype']
+            );
+
+            // Conditionally launch add index courseworkid-allocatableid-allocatabletype.
+            if (!$dbman->index_exists($table, $index)) {
+                $dbman->add_index($table, $index);
+            }
+        }
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2025100300, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }

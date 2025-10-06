@@ -135,6 +135,9 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="courseworkid-id" TYPE="foreign" FIELDS="courseworkid" REFTABLE="coursework" REFFIELDS="id" COMMENT="links the coursework and submission tables"/>
       </KEYS>
+        <INDEXES>
+            <INDEX NAME="courseworkid-allocatableid-allocatabletype" UNIQUE="false" FIELDS="courseworkid, allocatableid, allocatabletype"/>
+        </INDEXES>
     </TABLE>
     <TABLE NAME="coursework_reminder" COMMENT="coursework reminder">
       <FIELDS>
@@ -227,6 +230,9 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
+        <INDEXES>
+            <INDEX NAME="courseworkid-allocatableid-allocatabletype" UNIQUE="false" FIELDS="courseworkid, allocatableid, allocatabletype"/>
+        </INDEXES>
     </TABLE>
     <TABLE NAME="coursework_sample_set_rules" COMMENT="Automatic sample sets for each coursework stage. This allows us to keep track of which rules have been added. The order matters as some will be top-up rules.">
       <FIELDS>
@@ -285,6 +291,9 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
+        <INDEXES>
+            <INDEX NAME="courseworkid-allocatableid-allocatabletype" UNIQUE="false" FIELDS="courseworkid, allocatableid, allocatabletype"/>
+        </INDEXES>
     </TABLE>
 
     <TABLE NAME="coursework_mod_agreements" COMMENT="Stores moderation agreements.">
