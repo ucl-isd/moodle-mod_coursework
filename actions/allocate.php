@@ -136,9 +136,6 @@ function coursework_get_page_options($coursemoduleid) {
 function coursework_render_page(coursework $coursework, $options) {
     global $PAGE, $OUTPUT;
 
-
-
-
     // Prepare renderable objects.
     $allocationsmanager = $coursework->get_allocation_manager();
     $allocationtable = new \mod_coursework_allocation_table(
@@ -152,29 +149,21 @@ function coursework_render_page(coursework $coursework, $options) {
 
     // Start rendering.
     echo $OUTPUT->header();
-
-
-
     // Add hidden params for forms.
     echo \html_writer::input_hidden_params($PAGE->url);
 
-    echo '<div class="container">';
-    echo '<h2>Allocate markers</h2>';
+    $template = new stdClass();
 
     // Display warnings.
-    echo $warnings->percentage_allocations_not_complete();
+    $template->warnings = $warnings->percentage_allocations_not_complete();
     if ($coursework->allocation_enabled()) {
-        echo $warnings->manual_allocation_not_completed();
+        $template->warnings .= $warnings->manual_allocation_not_completed();
         if ($coursework->use_groups == 1 || $coursework->assessorallocationstrategy == 'group_assessor') {
-            echo $warnings->students_in_mutiple_grouos();
+            $template->warnings .= $warnings->students_in_mutiple_grouos();
         }
     }
 
-    echo '<div class="row">';
-
-    echo '<div class="col-4">';
-
-    // Render sampling widget if enabled.
+    // TODO - Render sampling widget if enabled.
     if ($coursework->sampling_enabled()) {
         echo \html_writer::start_tag('form', ['id' => 'sampling_form', 'method' => 'post']);
         $samplesetwidget = $allocationsmanager->get_sampling_set_widget();
@@ -184,23 +173,13 @@ function coursework_render_page(coursework $coursework, $options) {
 
     // Render allocation strategy widget if enabled.
     if ($coursework->allocation_enabled()) {
-        echo $objectrenderer->render($allocationwidget);
+        $template->allocation = $objectrenderer->render($allocationwidget);
     }
 
-    echo '</div>';
-
-    echo '<div class="col-8">';
-
     // Render main allocation table.
-    echo \html_writer::div('', 'coursework_spacer');
-    echo \html_writer::tag('h3', get_string('assessormoderatorgrades', 'mod_coursework'));
-    echo \html_writer::tag('div', get_string('pininfo', 'mod_coursework'), ['class' => 'pininfo']);
-    echo $objectrenderer->render($allocationtable);
+    $template->table = $objectrenderer->render($allocationtable);
 
-    echo '</div>';
-
-    echo '</div>';
-    echo '</div>';
+    echo $OUTPUT->render_from_template('mod_coursework/allocate/page', $template);
 
     echo $OUTPUT->footer();
 }

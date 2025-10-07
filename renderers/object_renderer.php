@@ -695,7 +695,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $allocationwidget->get_coursework()
         );
 
-        return $this->render_from_template('coursework/allocation/stratergy', $template);
+        return $this->render_from_template('coursework/allocate/strategy', $template);
     }
 
     /**
