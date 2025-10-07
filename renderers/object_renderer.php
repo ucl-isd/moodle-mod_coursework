@@ -1008,34 +1008,42 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param coursework $coursework
      * @return string HTML form elements
      */
-    protected function get_allocation_strategy_form_elements($coursework) {
-
+    protected function get_allocation_strategy_form_elements(coursework $coursework): string {
         global $CFG;
 
         $html = '';
+        $strategydir = $CFG->dirroot . '/mod/coursework/classes/allocation/strategy';
+        $strategyfilepaths = glob($strategydir . '/*.php');
+        $currentstrategyname = $coursework->assessorallocationstrategy;
 
-        $classdir = $CFG->dirroot . '/mod/coursework/classes/allocation/strategy';
-        $fullclasspaths = glob($classdir . '/*.php');
-        foreach ($fullclasspaths as $fullclassname) {
-            if (strpos($fullclassname, 'base') !== false) {
+        foreach ($strategyfilepaths as $filepath) {
+            $shortname = pathinfo($filepath, PATHINFO_FILENAME);
+
+            // Skip the base class file.
+            if ($shortname === 'base') {
                 continue;
             }
-            preg_match('/([^\/]+).php/', $fullclassname, $matches);
-            $classname = $matches[1];
-            $fullclassname = '\mod_coursework\allocation\strategy\\' . $classname;
-            // We want the elements from all the strategies so we can show/hide them.
-            /* @var \mod_coursework\allocation\strategy\base $strategy */
+
+            $fullclassname = "\\mod_coursework\\allocation\\strategy\\{$shortname}";
+
+            // Ensure the class exists before trying to instantiate it.
+            if (!class_exists($fullclassname)) {
+                continue;
+            }
+
+            /** @var \mod_coursework\allocation\strategy\base $strategy */
             $strategy = new $fullclassname($coursework);
 
             $attributes = [
                 'class' => 'assessor-strategy-options',
-                'id' => 'assessor-strategy-' . $classname,
+                'id' => 'assessor-strategy-' . $shortname,
             ];
+
             // Hide this if it's not currently selected.
-            $strategytype = 'assessorallocationstrategy';
-            if ($classname !== $coursework->$strategytype) {
+            if ($shortname !== $currentstrategyname) {
                 $attributes['style'] = 'display:none';
             }
+
             $html .= html_writer::start_tag('div', $attributes);
             $html .= $strategy->add_form_elements('assessor');
             $html .= html_writer::end_tag('div');
