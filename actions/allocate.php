@@ -89,45 +89,6 @@ function coursework_process_form_submissions(coursework $coursework, $coursemodu
 }
 
 /**
- * Get and manage table pagination and sorting options from parameters and session.
- *
- * @param int $coursemoduleid
- * @return array An array of options for the table builder.
- */
-function coursework_get_page_options($coursemoduleid) {
-    global $SESSION, $CFG;
-
-    // If a session variable holding page preference for the specific coursework is not set, set default value (0).
-    if (isset($SESSION->allocate_perpage[$coursemoduleid]) && (isset($SESSION->perpage[$coursemoduleid]) && optional_param('per_page', 0, PARAM_INT) != $SESSION->perpage[$coursemoduleid])
-        && optional_param('per_page', 0, PARAM_INT) != 0) { // prevent blank pages if not in correct page
-        $page = 0;
-        $SESSION->allocate_page[$coursemoduleid] = $page;
-    } else if (!(isset($SESSION->allocate_page[$coursemoduleid]))) {
-        $SESSION->allocate_page[$coursemoduleid] = optional_param('page', 0, PARAM_INT);
-        $page = $SESSION->allocate_page[$coursemoduleid];
-    } else {
-        $page = optional_param('page', $SESSION->allocate_page[$coursemoduleid], PARAM_INT);
-        $SESSION->allocate_page[$coursemoduleid] = $page;
-    }
-
-    // If a session variable holding perpage preference for the specific coursework is not set, set default value (10).
-    if (!(isset($SESSION->allocate_perpage[$coursemoduleid]))) {
-        $perpage = optional_param('per_page', 0, PARAM_INT);
-        $perpage = $perpage ?: ($CFG->coursework_per_page ?? 10);
-        $SESSION->allocate_perpage[$coursemoduleid] = $perpage;
-    } else {
-        $perpage = optional_param('per_page', $SESSION->allocate_perpage[$coursemoduleid], PARAM_INT);
-        $SESSION->allocate_perpage[$coursemoduleid] = $perpage;
-    }
-
-    // SQL sort for allocation table.
-    $sortby = optional_param('sortby', '', PARAM_ALPHA);
-    $sorthow = optional_param('sorthow', '', PARAM_ALPHA);
-
-    return compact('sortby', 'sorthow', 'perpage', 'page');
-}
-
-/**
  * Renders the allocation page content.
  *
  * @param coursework $coursework
@@ -209,8 +170,13 @@ $PAGE->requires->js_init_call(
 );
 $PAGE->requires->string_for_js('sameassessorerror', 'coursework');
 
-// 3. Get pagination and sorting options.
-$options = coursework_get_page_options($coursemoduleid);
+// 3. Get table options. Pagination is disabled, but sorting is still active.
+$options = [
+    'page' => 0,
+    'perpage' => 0, // A value of 0 signifies 'all records'.
+    'sortby' => optional_param('sortby', '', PARAM_ALPHA),
+    'sorthow' => optional_param('sorthow', '', PARAM_ALPHA),
+];
 
 // 4. Process any form submissions. This may redirect away.
 coursework_process_form_submissions($coursework, $coursemodule);

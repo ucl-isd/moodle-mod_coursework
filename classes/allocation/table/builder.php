@@ -101,53 +101,6 @@ class builder {
     }
 
     /**
-     *
-     */
-    public function get_table_rows_for_page() {
-
-        $allocatables = $this->get_coursework()->get_allocatables();
-
-        $rows = [];
-        foreach ($allocatables as $allocatable) {
-            $rows[] = new row_builder($this, $allocatable);
-        }
-
-        // Sort the rows.
-        $sorting = new mod_coursework\grading_report($this->options, $this->coursework);
-        $methodname = 'sort_by_' . $this->options['sortby'];
-        if (method_exists($sorting, $methodname)) {
-            usort($rows,
-                [$sorting,
-                    $methodname]);
-        }
-
-        // Now, we remove the ones who should not be visible on this page. Must happen AFTER the sort!
-        // Rather than sort in SQL, we sort here so we can use complex permissions stuff.
-        // Further to the above this could have been carried out in the database (if it proves to be slow
-        // I will change it) but for now in the name of consistency I will carry out pagination in the code
-        // Page starts at 0!
-        $start = ($this->options['page']) * $this->options['perpage']; // Will start at 0.
-        $end = ($this->options['page'] + 1) * $this->options['perpage']; // Take care of overlap: 0-10, 10-20, 20-30.
-
-        $end = (empty($end)) ? count($rows) : $end;
-        $counter = 0; // Begin from the first one that the user could see.
-        foreach ($rows as $allocatableid => $row) {
-
-            $counter++;
-
-            if ($counter <= $start || $counter > $end) { // Taking care not to include the same ones in two pages.
-                unset($rows[$allocatableid]);
-            }
-        }
-
-        $this->totalrows = $rows;
-        $this->totalcount = $counter;
-
-        return $this->totalrows;
-
-    }
-
-    /**
      * Getter for the coursework instance
      *
      * @return coursework

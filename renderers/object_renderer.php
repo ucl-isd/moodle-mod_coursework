@@ -390,23 +390,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $tablehtml .= '<div class="table-and-jumptos">';
 
-        $recordsperpage = [3 => 3,
-            10 => 10,
-            20 => 20,
-            30 => 30,
-            40 => 40,
-            50 => 50,
-            100 => 100,
-            $all => get_string('all', 'mod_coursework')]; // for boost themes instead of 'all' we can put 0, however currently it is a bug
-
-        // Commenting these out as they appear unused and are causing exception in behat test.
-        // $single_select_params = compact('sortby', 'sorthow', 'page');
-        // $single_select_params['page'] = '0';
-        $select = new single_select($this->page->url, 'per_page', $recordsperpage, $options['perpage'], null);
-        $select->label = get_string('records_per_page', 'coursework');
-        $select->class = 'jumpmenu';
-        $select->formid = 'sectionmenutop';
-        $tablehtml .= $this->output->render($select);
+        // Pagination controls have been removed.
         $tablehtml .= \html_writer::start_tag('form', ['method' => 'post']);
 
         $tablehtml .= '
@@ -416,9 +400,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 <tr>
 
         ';
-
-        $pagingbar = new paging_bar($allocationtable->get_participant_count(), $options['page'], $options['perpage'],
-            $this->page->url, 'page');
 
         // Get the hidden elements used for assessors and moderators selected on other pages;
 
@@ -459,7 +440,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 <tbody>
         ';
 
-        $rowdata = $allocationtable->get_table_rows_for_page();
+        $rowdata = $allocationtable->get_rows();
         foreach ($rowdata as $row) {
             $tablehtml .= $this->render_allocation_table_row($row);
         }
@@ -476,12 +457,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             'value' => get_string('save', 'mod_coursework')];
         $tablehtml .= html_writer::empty_tag('input', $attributes);
         $tablehtml .= html_writer::end_tag('form');
-
-        $select->formid = 'sectionmenubottom';
-        $tablehtml .= $this->output->render($select);
         $tablehtml .= '</div>';
-
-        $tablehtml .= $this->page->get_renderer('mod_coursework', 'object')->render($pagingbar);
 
         return $tablehtml;
     }
