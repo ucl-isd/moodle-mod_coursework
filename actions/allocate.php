@@ -136,6 +136,9 @@ function coursework_get_page_options($coursemoduleid) {
 function coursework_render_page(coursework $coursework, $options) {
     global $PAGE, $OUTPUT;
 
+
+
+
     // Prepare renderable objects.
     $allocationsmanager = $coursework->get_allocation_manager();
     $allocationtable = new \mod_coursework_allocation_table(
@@ -150,6 +153,14 @@ function coursework_render_page(coursework $coursework, $options) {
     // Start rendering.
     echo $OUTPUT->header();
 
+
+
+    // Add hidden params for forms.
+    echo \html_writer::input_hidden_params($PAGE->url);
+
+    echo '<div class="container">';
+    echo '<h2>Allocate markers</h2>';
+
     // Display warnings.
     echo $warnings->percentage_allocations_not_complete();
     if ($coursework->allocation_enabled()) {
@@ -159,8 +170,9 @@ function coursework_render_page(coursework $coursework, $options) {
         }
     }
 
-    // Add hidden params for forms.
-    echo \html_writer::input_hidden_params($PAGE->url);
+    echo '<div class="row">';
+
+    echo '<div class="col-4">';
 
     // Render sampling widget if enabled.
     if ($coursework->sampling_enabled()) {
@@ -175,11 +187,20 @@ function coursework_render_page(coursework $coursework, $options) {
         echo $objectrenderer->render($allocationwidget);
     }
 
+    echo '</div>';
+
+    echo '<div class="col-8">';
+
     // Render main allocation table.
     echo \html_writer::div('', 'coursework_spacer');
     echo \html_writer::tag('h3', get_string('assessormoderatorgrades', 'mod_coursework'));
     echo \html_writer::tag('div', get_string('pininfo', 'mod_coursework'), ['class' => 'pininfo']);
     echo $objectrenderer->render($allocationtable);
+
+    echo '</div>';
+
+    echo '</div>';
+    echo '</div>';
 
     echo $OUTPUT->footer();
 }

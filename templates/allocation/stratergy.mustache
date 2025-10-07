@@ -1,28 +1,22 @@
 {{! @template mod_coursework/allocation/stratergy }}
-<h2>{{{headerstring}}}</h2>
-<div class="container">
-    <div class="row">
-        <div classs="col-3">
-            <form id="allocation_form" class="py-3 border" method="post">
-                <label for="coursework-mas-select" class="font-weight-bold">
-                {{#str}} allocationstrategy, mod_coursework {{/str}}</label>
-                <select id="coursework-mas-select" name="assessorallocationstrategy" class="form-control mb-3" aria-label="Allocation strategy selector">
-                {{#strategy}}
-                    <option value="{{{value}}}" {{#selected}} selected {{/selected}}>{{{string}}}</option>
-                {{/strategy}}
-                </select>
+<form id="allocation_form" class="p-3 mb-3 bg-light" method="post">
+    <label for="coursework-mas-select" class="font-weight-bold">
+    {{#str}} allocationstrategy, mod_coursework {{/str}}</label>
+    <select id="coursework-mas-select" name="assessorallocationstrategy" class="form-control mb-3" aria-label="Allocation strategy selector">
+    {{#strategy}}
+        <option value="{{{value}}}" {{#selected}} selected {{/selected}}>{{{string}}}</option>
+    {{/strategy}}
+    </select>
 
-                <div class="assessor-strategy-options-configs">
-                    {{{strategyoptionshtml}}}
-                </div>
-
-                <input name="save"
-                        type="submit"
-                        id="save_assessor_allocation_strategy"
-                        class="coursework_assessor_allocation btn btn-primary"
-                        value="{{#str}} apply {{/str}}">
-
-            </form>
-        </div>
+    <div class="assessor-strategy-options-configs">
+        {{{strategyoptionshtml}}}
     </div>
-</div>
+
+    <input name="save"
+            type="submit"
+            id="save_assessor_allocation_strategy"
+            class="coursework_assessor_allocation btn btn-primary"
+            value="{{#str}} apply {{/str}}">
+
+</form>
+
