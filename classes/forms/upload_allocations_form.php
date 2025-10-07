@@ -57,7 +57,7 @@ class upload_allocations_form extends moodleform {
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
         $mform->setDefault('encoding', 'UTF-8');
 
-        $this->add_action_buttons(true, get_string('uploadallocations', 'coursework'));
+        $this->add_action_buttons(true, get_string('uploadmarkers', 'coursework'));
     }
 
     public function display() {
