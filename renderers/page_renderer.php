@@ -102,7 +102,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $lastmarked = ((!$teacherfeedback->get_coursework()->sampling_enabled() || $teacherfeedback->get_submission()->sampled_feedback_exists())
             && $teacherfeedback->assessorid == 0 && $teacherfeedback->timecreated == $teacherfeedback->timemodified )
             ? get_string('automaticagreement', 'mod_coursework') : fullname($editor);
-        $template->lasteditedby = $lastmarked . userdate($teacherfeedback->timemodified, '%a, %d %b %Y, %H:%M');
+        $template->lasteditedby = (object)[
+            'name' => $lastmarked,
+            'date' => userdate($teacherfeedback->timemodified, '%a, %d %b %Y, %H:%M')
+        ];
 
         $submiturl = $this->get_router()->get_path('update feedback', ['feedback' => $teacherfeedback]);
         $simpleform = new assessor_feedback_mform(
@@ -204,21 +207,21 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     /**
      * @param \mod_coursework\models\coursework $coursework
      * @param user $student
-     * @return string
+     * @return stdClass Template data for rendering.
      */
-    public function student_view_page($coursework, $student) {
+    public function student_view_page($coursework, $student): stdClass {
         // Coursework not yet open for submissions.
         if (!$coursework->start_date_has_passed()) {
             $template = new stdClass();
             $template->startdate = $coursework->startdate;
-            return $this->render_from_template('mod_coursework/submission', $template);
+            return $template;
         }
 
         // If coursework groups and the student is not in any group.
         if ($coursework->is_configured_to_have_group_submissions() && !$coursework->student_is_in_any_group($student)) {
             $template = new stdClass();
             $template->notingroup = true;
-            return $this->render_from_template('mod_coursework/submission', $template);
+            return $template;
         }
 
         // $submission here means the existing stuff. Might be the group of the student. The only place where
@@ -269,7 +272,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $template->submissionbutton = $this->edit_submission_button($coursework, $submission);
         }
 
-        return $this->render_from_template('mod_coursework/submission', $template);
+        return $template;
     }
 
     /**
@@ -509,41 +512,36 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
          */
         $gradingreportrenderer = new \mod_coursework\renderers\grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
 
+        $template = new stdClass();
         $warnings = new warnings($coursework);
         // Show any warnings that may need to be here
         if ($coursework->use_groups == 1) {
-            $html .= $warnings->students_in_mutiple_grouos();
+            $warnings->students_in_mutiple_groups();
         }
-        $html .= $warnings->percentage_allocations_not_complete();
-        $html .= $warnings->student_in_no_group();
+        $warnings->percentage_allocations_not_complete();
+        $warnings->student_in_no_group();
 
-        // display 'Group mode' with the relevant groups
+        // Display 'Group mode' with the relevant groups.
         $currenturl = new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]);
-        $html .= groups_print_activity_menu($coursework->get_course_module(), $currenturl->out(), true);
-        if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $group != 0) {
-            $html .= '<div class="alert">'.get_string('groupmodechosenalert', 'mod_coursework').'</div>';
-        }
+        $template->groupmenu = groups_print_activity_menu($coursework->get_course_module(), $currenturl, true);
+        $warnings->group_mode_chosen_warning($group);
 
         // reset table preferences
         if ($firstnamealpha || $lastnamealpha || $groupnamealpha) {
-            $url = new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id, 'treset' => 1]);
-
-            $html .= html_writer::start_div('mdl-right');
-            $html .= html_writer::link($url, get_string('resettable'));
-            $html .= html_writer::end_div();
+            $template->resettableurl = new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id, 'treset' => 1]);
         }
 
         if ($firstnamealpha || $lastnamealpha || $groupnamealpha || $group != -1) {
-            $html .= $warnings->filters_warning();
+            $warnings->filters_warning();
         }
+        $template->warnings = $warnings->get_warnings();
+        $html = $this->render_from_template('mod_coursework/submissions/beforetable', $template);
 
         /**
          * @var \mod_coursework\renderers\grading_report_renderer $grading_report_renderer
          */
 
-        $html .= html_writer::start_tag('div', ['class' => 'wrapper_table_submissions']);
         $html .= $gradingreportrenderer->render_grading_report($gradingreport);
-        $html .= html_writer::end_tag('div');
 
         foreach (['modal_handler_extensions', 'modal_handler_personal_deadlines', 'modal_handler_plagiarism'] as $amd) {
             $this->page->requires->js_call_amd(
@@ -577,10 +575,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         // Was the submission late?
-        if ($submission->is_late() && (!$submission->has_extension() || !$submission->submitted_within_extension())) {
-            $deadline = $coursework->personaldeadlineenabled ? $submission->submission_personal_deadline() : $coursework->deadline;
-            $deadline = $submission->has_extension() ? $submission->extension_deadline() : $deadline;
-            $lateseconds = $submission->time_submitted() - $deadline;
+        if ($lateseconds = $submission->was_late()) {
             $template->late = format_time($lateseconds) . " " . strtolower(get_string('late', 'mod_coursework'));
         }
 
@@ -784,7 +779,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= $title;
         $html .= html_writer::end_tag('h3');
         $html .= html_writer::start_tag('p');
-        $html .= get_string('process'.$csvtype.'desc', 'mod_coursework');;
+        $html .= get_string('process'.$csvtype.'desc', 'mod_coursework');
         $html .= html_writer::end_tag('p');
 
         $html .= html_writer::start_tag('p');
@@ -849,7 +844,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= html_writer::end_tag('h3');
 
         $html .= html_writer::start_tag('p');
-        $html .= get_string('feedbackuploadresultsdesc', 'mod_coursework');;
+        $html .= get_string('feedbackuploadresultsdesc', 'mod_coursework');
         $html .= html_writer::end_tag('p');
 
         $html .= html_writer::start_tag('p');

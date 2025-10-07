@@ -25,6 +25,7 @@ namespace mod_coursework\models;
 use mod_coursework\framework\table_base;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\event\extension_deleted;
+use core\exception\invalid_parameter_exception;
 
 /**
  * Class deadline_extension is responsible for representing one row of the deadline_extensions table.
@@ -224,5 +225,41 @@ class deadline_extension extends table_base {
 
             $event->trigger();
         }
+    }
+
+    /**
+     * Trigger an event when extension is created or updated.
+     * @param string $eventtype create, or update.
+     * @return void
+     */
+    public function trigger_created_updated_event(string $eventtype): void {
+        global $USER;
+        $allocatable = $this->get_allocatable();
+        $coursework = $this->get_coursework();
+        $params = [
+            'objectid' => $this->id,
+            'userid' => $USER->id ?? 0,
+            'relateduserid' => $allocatable->type() == 'user' ? $allocatable->id() : null,
+            'context' => \context_module::instance($coursework->get_course_module()->id),
+            'anonymous' => 1,
+            'other' => [
+                'allocatabletype' => $allocatable->type(),
+                'courseworkid' => $coursework->id,
+                'groupid' => $allocatable->type() == 'group' ? $allocatable->id() : null,
+                'deadline' => $this->extended_deadline,
+            ],
+        ];
+
+        switch ($eventtype) {
+            case 'create':
+                $event = \mod_coursework\event\extension_created::create($params);
+                break;
+            case 'update':
+                $event = \mod_coursework\event\extension_updated::create($params);
+                break;
+            default:
+                throw new invalid_parameter_exception("Unexpected event type '$eventtype'");
+        }
+        $event->trigger();
     }
 }

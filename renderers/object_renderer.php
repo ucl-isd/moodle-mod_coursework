@@ -195,124 +195,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Renders a feedback as a table row. We may want an empty one for the user to add their own feedback.
-     *
-     * @param mod_coursework_assessor_feedback_row $feedbackrow
-     * @return \html_table_row
-     */
-    protected function render_mod_coursework_assessor_feedback_row(mod_coursework_assessor_feedback_row $feedbackrow) {
-
-        /**
-         * NOT USED!!!!!!
-         */
-
-        global $USER, $COURSE;
-
-        $row = new html_table_row();
-
-        // Row attributes
-
-        if ($feedbackrow->get_assessor_id() == $USER->id) {
-            $row->attributes['class'] = 'coursework_own_feedback';
-        }
-        // Unique identifier for testing.
-        // We can't add ids to the row.
-        // Also might be the same person marking many students so needs to have the student id.
-        // Do not say 'student so that it's not obvious that this is a way that blind marking could be circumvented.
-        $row->attributes['class'] =
-            "feedback-{$feedbackrow->get_assessor_id()}-{$feedbackrow->get_allocatable()->id()} {$feedbackrow->get_stage()->identifier()}";
-
-        $existingfeedback = $feedbackrow->get_feedback();
-
-        // Assessor cell: name, image and edit link.
-
-        $cell = new html_table_cell();
-        $assessor = $feedbackrow->get_assessor();
-
-        $cell->text = $assessor->picture();
-        $cell->text .= ' &nbsp;';
-        $profilelinkurl = new moodle_url('/user/profile.php', ['id' => $assessor->id(),
-                                                                    'course' => $COURSE->id]);
-        $cell->text .= html_writer::link($profilelinkurl, $assessor->name());
-
-        $row->cells['assessor'] = $cell;
-
-        // Comment cell (includes edit feedback link)
-
-        $cell = new html_table_cell();
-        $cell->text = 'asdadas';
-        // Edit feedback link.
-        $submission = $feedbackrow->get_submission();
-        $newfeedback = false;
-        if (empty($existingfeedback)) {
-            $params = [
-                'assessorid' => $assessor->id(),
-                'stage_identifier' => $feedbackrow->get_stage()->identifier(),
-            ];
-            if ($submission) {
-                $params['submissionid'] = $submission->id;
-            }
-            $newfeedback = feedback::build($params);
-        }
-
-        $ability = new ability(user::find($USER), $feedbackrow->get_coursework());
-
-        if ($existingfeedback && $ability->can('edit', $existingfeedback)) {
-
-            $linktitle = get_string('edit');
-            $icon = new pix_icon('edit', $linktitle, 'coursework', ['width' => '20px']);
-            $linkid = "edit_feedback_" . $feedbackrow->get_feedback()->id;
-            $link = $this->get_router()->get_path('edit feedback', ['feedback' => $feedbackrow->get_feedback()]);
-            $iconlink = $this->output->action_icon($link, $icon, null, ['id' => $linkid]);
-            $cell->text .= $iconlink;
-        } else if ($newfeedback && $ability->can('new', $newfeedback)) {
-
-            // New
-            $linktitle = "new_feedback";
-            $icon = new pix_icon('edit', $linktitle, 'coursework', ['width' => '20px']);
-
-            $newfeedbackparams = [
-                'submission' => $feedbackrow->get_submission(),
-                'assessor' => $feedbackrow->get_assessor(),
-                'stage' => $feedbackrow->get_stage(),
-            ];
-            $link = $this->get_router()->get_path('new feedback', $newfeedbackparams);
-            $iconlink = $this->output->action_icon($link, $icon, null, ['class' => "new_feedback"]);
-            $cell->text .= $iconlink;
-        } else if ($existingfeedback && $ability->can('show', $existingfeedback)) {
-            // Show - for managers and others who are reviewing the grades but who should
-            // not be able to change them.
-
-            $linktitle = get_string('viewfeedback', 'mod_coursework');
-            $icon = new pix_icon('show', $linktitle, 'coursework', ['width' => '20px']);
-            $linkid = "show_feedback_" . $feedbackrow->get_feedback()->id;
-            $link = $this->get_router()->get_path('show feedback', ['feedback' => $feedbackrow->get_feedback()]);
-            $iconlink = $this->output->action_icon($link, $icon, null, ['id' => $linkid]);
-            $cell->text .= $iconlink;
-
-        }
-
-        if (!is_null($feedbackrow->get_grade()) && $feedbackrow->has_feedback()) {
-            $maxgrade = $feedbackrow->get_max_grade();
-            $feedbackgrade = $feedbackrow->get_grade();
-            $gradestring = $this->output_grade_as_string($feedbackgrade, $maxgrade);
-            $cell->text .= '&nbsp;' . get_string('grade', 'coursework') . ": " . $gradestring;
-        }
-
-        $row->cells['feedbackcomment'] = $cell;
-
-        // Feedback time submitted cell.
-
-        $cell = new html_table_cell();
-        if ($feedbackrow->has_feedback()) {
-            $cell->text = $feedbackrow ? userdate($feedbackrow->get_time_modified(), '%a, %d %b %Y, %H:%M') : '';
-        }
-        $row->cells['timemodified'] = $cell;
-
-        return $row;
-    }
-
-    /**
      * Outputs the files as a HTML list.
      *
      * @param mod_coursework_submission_files $files
@@ -433,90 +315,63 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param mod_coursework_coursework $coursework
      * @return string html
      */
-    protected function render_mod_coursework_coursework(mod_coursework_coursework $coursework) {
+    protected function render_mod_coursework_coursework(mod_coursework_coursework $coursework): string {
         global $USER;
+        $student = user::find($USER);
+        $template = new stdClass();
 
-        $out = '';
-
-        if (has_capability('mod/coursework:allocate', $coursework->get_context())) {
-            $warnings = new warnings($coursework);
-            $out .= $warnings->not_enough_assessors();
-        }
-
+        // Capability checks
+        $canallocate = has_capability('mod/coursework:allocate', $coursework->get_context());
         $cangrade = has_capability('mod/coursework:addinitialgrade', $this->page->context);
         $canpublish = has_capability('mod/coursework:publish', $this->page->context);
         $canaddgeneralfeedback = has_capability('mod/coursework:addgeneralfeedback', $this->page->context);
-        $student = user::find($USER);
-
-        // WIP - grid output.
-        $out .= "<div class='row'>";
-        // Little col.
-        $out .= "<div class='col-md-4'>";
-        if ($cangrade || $canpublish) {
-            $out .= $this->coursework_marking_summary($coursework);
-        }
-        // WIP - student view overview data here.
         $cansubmit = has_capability('mod/coursework:submit', $this->page->context);
+
+        // Warnings.
+        if ($canallocate) {
+            $warnings = new warnings($coursework);
+            $template->notenoughassessors = $warnings->not_enough_assessors();
+        }
+
+        // Teacher summary col.
+        if ($cangrade || $canpublish) {
+            $template->markingsummary = $this->coursework_marking_summary($coursework);
+        }
+
+        // Student summary col.
         if ($cansubmit && !$cangrade) {
             $pagerenderer = $this->page->get_renderer('mod_coursework', 'page');
-            $out .= $pagerenderer->student_view_page($coursework, $student);
+            $template->studentview = $pagerenderer->student_view_page($coursework, $student);
         }
-        $out .= "</div>";
 
-        $template = new stdClass();
-        $template->description = null;
-        $template->markingguideurl = null;
+        $submission = $coursework->get_user_submission($student);
 
-        // Display feedback if available.
-        if (!$cangrade && ($submission = $coursework->get_user_submission($student)) && $submission->is_published()) {
+        // Feedback or intro.
+        if (!$cangrade && $submission && $submission->is_published()) {
             $template->feedbackfromteachers = $this->existing_feedback_from_teachers($submission);
-            $template->introdates = null;
-        } else { // Else, output the intro data.
+        } else {
             $template->introdates = $this->add_intro_dates($coursework, $template);
-            $template->feedbackfromteachers = null;
-
-            if ($description = format_module_intro('coursework', $coursework, $coursework->get_coursemodule_id())) {
-                $template->description = $description;
-            }
+            $template->description = format_module_intro('coursework', $coursework, $coursework->get_coursemodule_id());
 
             // Marking guide - from advanced grading.
             $template->markingguideurl = self::get_marking_guide_url($coursework);
         }
 
-        $template->generalfeedback = null;
-
-        // Show general feedback if it's there and the deadline has passed or general feedback's date is not enabled which means it should be displayed automatically
         if ($cangrade || $canpublish || $canaddgeneralfeedback || $coursework->is_general_feedback_released()) {
             $feedback = new stdClass();
             $feedback->feedback = $coursework->feedbackcomment;
-
             if ($cangrade || $canpublish || $canaddgeneralfeedback) {
                 $feedback->duedate = $coursework->generalfeedback;
             }
-
-            if ($canaddgeneralfeedback) { // Add/edit general feedback button.
+            if ($canaddgeneralfeedback) {
                 $feedback->button = new stdClass();
                 $feedback->button->url = new moodle_url('/mod/coursework/actions/general_feedback.php', ['cmid' => $coursework->get_coursemodule_id()]);
                 $feedback->button->label = get_string($coursework->feedbackcomment ? 'editgeneralfeedback' : 'addgeneralfeedback', 'coursework');
             }
-
             $template->generalfeedback = $feedback;
         }
 
-        // Only show <hr> if there's content above and below it to be separated.
-        if (($template->feedbackfromteachers || $template->introdates) && ($template->description || $template->markingguideurl || $template->generalfeedback)) {
-            $template->separator1 = true;
-        }
-        if (($template->description || $template->markingguideurl) && $template->generalfeedback) {
-            $template->separator2 = true;
-        }
-
-        $out .= $this->render_from_template('mod_coursework/intro', $template);
-
-        // Close row.
-        $out .= "</div>";
-
-        return $out;
+        return $this->render_from_template('mod_coursework/intro', $template);
     }
 
     /**
@@ -1389,6 +1244,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
     /**
+     * This is used on the old bulk personal deadlines page i.e. actions/set_personal_deadlines.php.
      * @param \mod_coursework\personal_deadline\table\row\builder $personaldeadlinerow
      * @return string
      */
@@ -1398,19 +1254,17 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $coursework = $personaldeadlinerow->get_coursework();
 
-        $newpersonaldeadlineparams = [
-            'allocatableid' => $personaldeadlinerow->get_allocatable()->id(),
-            'allocatabletype' => $personaldeadlinerow->get_allocatable()->type(),
-            'courseworkid' => $personaldeadlinerow->get_coursework()->id,
-        ];
-
-        // $personal_deadline = \mod_coursework\models\personal_deadline::find($new_personal_deadline_params);
-
         $personaldeadline =
             \mod_coursework\models\personal_deadline::get_personal_deadline_for_student(user::find($personaldeadlinerow->get_allocatable()->id()), $coursework);
 
         if (!$personaldeadline) {
-            $personaldeadline = \mod_coursework\models\personal_deadline::build($newpersonaldeadlineparams);
+            $personaldeadline = \mod_coursework\models\personal_deadline::build(
+                [
+                    'allocatableid' => $personaldeadlinerow->get_allocatable()->id(),
+                    'allocatabletype' => $personaldeadlinerow->get_allocatable()->type(),
+                    'courseworkid' => $personaldeadlinerow->get_coursework()->id,
+                ]
+            );
         }
 
         $ability = new ability(user::find($USER), $coursework);
@@ -1421,13 +1275,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $rowhtml .= '<input type="checkbox" name="allocatableid_arr['.$personaldeadlinerow->get_allocatable()->id().']" id="date_'. $personaldeadlinerow->get_allocatable()->type() . '_' . $personaldeadlinerow->get_allocatable()->id().'" class="date_select" value="'.$personaldeadlinerow->get_allocatable()->id().'" '.$disabledelement.' >';
         $rowhtml .= '<input type="hidden" name="allocatabletype_'.$personaldeadlinerow->get_allocatable()->id().'" value="'.$personaldeadlinerow->get_allocatable()->type().'" />';
         $rowhtml .= '</td>';
-
-        $newpersonaldeadlineparams = [
-            'allocatableid' => $personaldeadlinerow->get_allocatable()->id(),
-            'allocatabletype' => $personaldeadlinerow->get_allocatable()->type(),
-            'courseworkid' => $personaldeadlinerow->get_coursework()->id,
-            'setpersonaldeadlinespage' => '1',
-        ];
 
         $allocatablecellhelper = $personaldeadlinerow->get_allocatable_cell();
         $personaldeadlinescellhelper = $personaldeadlinerow->get_personal_deadline_cell();
@@ -1448,15 +1295,15 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * for assessors and dropdown menus for export and upload actions.
      *
      * @param mod_coursework_coursework $coursework The coursework activity object.
-     * @return string The HTML for the marking summary.
+     * @return stdClass Template data for the marking summary.
      */
-    private function coursework_marking_summary(mod_coursework_coursework $coursework): string {
+    private function coursework_marking_summary(mod_coursework_coursework $coursework): stdClass {
         $template = new stdClass();
 
         // Edge case: for a single-marked coursework with marker allocation
         // enabled managers who can only add agreed grades cannot mark anyone.
         if (has_capability('mod/coursework:addinitialgrade', $coursework->get_context())
-                || (!(has_capability('mod/coursework:addagreedgrade', $coursework->get_context()) && !has_multiple_markers() && !allocation_enabled())
+                || (!(has_capability('mod/coursework:addagreedgrade', $coursework->get_context()) && !$coursework->has_multiple_markers() && !$coursework->allocation_enabled())
                 && has_any_capability(['mod/coursework:addagreedgrade', 'mod/coursework:administergrades'], $coursework->get_context()))) {
             $template->canmark = true;
 
@@ -1531,7 +1378,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 ];
             }
         }
-        return $this->render_from_template('mod_coursework/marking_summary', $template);
+
+        return $template;
     }
 
     /**

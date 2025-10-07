@@ -292,12 +292,14 @@ class personal_deadline_form extends dynamic_form {
                     // Updating.
                     $data->id = $this->existingdeadline->id;
                     $this->existingdeadline->update_attributes($data);
+                    $this->existingdeadline->trigger_created_updated_event('update');
                 }
             } else {
                 // Creating.
                 $data->createdbyid = $USER->id;
                 $this->existingdeadline = personal_deadline::build($data);
                 $this->existingdeadline->save();
+                $this->existingdeadline->trigger_created_updated_event('create');
             }
         }
         $extension = deadline_extension::get_extension_for_student($this->allocatable, $this->coursework);

@@ -21,9 +21,8 @@ Feature: Automatic agreement for simple grades
     And the coursework "automaticagreementstrategy" setting is "none" in the database
     Given I am logged in as a teacher
     And I visit the coursework page
-    And I expand the coursework grading row
-    And I click on the only interactable link with title "New feedback"
-    When I grade the submission as 56 using the ajax form
+    And I click on the add feedback button for assessor 1
+    When I grade the submission as 56 using the grading form
     Then I should not see the final grade on the multiple marker page
 
   @javascript
@@ -32,16 +31,14 @@ Feature: Automatic agreement for simple grades
     Given the coursework "automaticagreementrange" setting is "10" in the database
     And I am logged in as a teacher
     And I visit the coursework page
-    And I expand the coursework grading row
-    And I click on the only interactable link with title "New feedback"
-    When I grade the submission as 67 using the ajax form
+    And I click on the add feedback button for assessor 1
+    When I grade the submission as 67 using the grading form
     And I log out
 
     And I log in as the other teacher
     And I visit the coursework page
-    And I expand the coursework grading row
-    And I click on the only interactable link with title "New feedback"
-    When I grade the submission as 63 using the ajax form
+    And I click on the add feedback button for assessor 2
+    When I grade the submission as 63 using the grading form
     And I visit the coursework page
     Then I should see the final grade as 67 on the multiple marker page
 

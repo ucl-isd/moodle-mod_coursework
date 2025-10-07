@@ -166,8 +166,7 @@ class submission_cell_data extends cell_data_base {
      * @param submission $submission The submission to check.
      */
     protected function add_late_submission_data(stdClass $submissiondata, submission $submission): void {
-        $submissiondata->submittedlate = $submission->is_late() &&
-            (!$submission->has_extension() || !$submission->submitted_within_extension());
+        $submissiondata->submittedlate = ($submission->was_late() !== false);
     }
 
     /**

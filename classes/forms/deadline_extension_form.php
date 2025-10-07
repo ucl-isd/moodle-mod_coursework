@@ -337,10 +337,10 @@ class deadline_extension_form extends dynamic_form {
             $errors[] = get_string('nopermissiongeneral', 'mod_coursework');
         }
         // Extension object expects different format for extra_information to match coursework_extensions DB table.
-        $data->extra_information_text = $data->extra_information['text'];
-        $data->extra_information_format = $data->extra_information['format'];
+        $data->extra_information_text = $data->extra_information['text'] ?? null;
+        $data->extra_information_format = $data->extra_information['format'] ?? null;
 
-        if ($data->deleteextension == 1) {
+        if ($data->deleteextension ?? null == 1) {
             if (!$this->extension->can_be_deleted()) {
                 $errors[] = get_string('extension_cannot_delete', 'mod_coursework');
                 return [
@@ -350,7 +350,7 @@ class deadline_extension_form extends dynamic_form {
                     'errors' => $errors,
                     'warnings' => $warnings,
                 ];
-            } else if ($data->suredelete) {
+            } else if ($data->suredelete ?? false) {
                 $ability->require_can('update', $this->extension);
                 $this->extension->delete();
                 return [
@@ -374,6 +374,7 @@ class deadline_extension_form extends dynamic_form {
         }
         // If we reach this far with no errors, we can update the extension.
         if (empty($errors)) {
+            $iscreating = !$this->extension->id ?? false;
             $this->extension->update_attributes($data);
             $personaldeadline = personal_deadline::get_personal_deadline_for_student($this->allocatable, $this->coursework);
             // Update calendar/timeline event to the latest of the new extension date or existing personal deadline.
@@ -382,6 +383,7 @@ class deadline_extension_form extends dynamic_form {
                 $this->allocatable->type(),
                 max($data->extended_deadline, $personaldeadline->personal_deadline ?? 0)
             );
+            $this->extension->trigger_created_updated_event($iscreating ? 'create' : 'update');
         }
         return [
             'success' => empty($errors),

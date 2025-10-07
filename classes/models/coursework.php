@@ -2007,6 +2007,10 @@ class coursework extends table_base {
         $this->update_attribute('generalfeedback', 0);
     }
 
+    public function is_general_feedback_enabled() {
+        return !empty($this->generalfeedback);
+    }
+
     public function enable_general_feedback() {
         $this->update_attribute('generalfeedback', strtotime('1 week ago'));
     }
@@ -2459,6 +2463,14 @@ class coursework extends table_base {
 
     public function finalise_all() {
         global $DB;
+        if (
+            (!$this->has_deadline() && !$this->deadline_has_passed()) // There is no deadline or it is in the future.
+            &&
+            !$this->personal_deadlines_enabled() // Personal deadlines are disabled.
+        ) {
+            return;
+        }
+
         $excludesql = '';
          // check if any extensions granted for this coursework
         if ($this->extensions_enabled() && $this->extension_exists()) {

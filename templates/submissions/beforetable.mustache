@@ -1,0 +1,11 @@
+<div class="container">
+    {{#warnings}}
+        {{{.}}}
+    {{/warnings}}
+    {{#resettableurl}}
+        <div class='mdl-right'><a href={{.}}>{{#str}} resettable {{/str}}</a></div>
+    {{/resettableurl}}
+    {{#groupmenu}}
+        {{{.}}}
+    {{/groupmenu}}
+</div>
