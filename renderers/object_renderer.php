@@ -659,73 +659,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Outputs the buttons etc to choose and trigger the auto allocation mechanism. Do this as part of the main form so we
-     * can choose some allocations, then click a button to auto-allocate the rest.
-     * @param mod_coursework_allocation_widget $allocationwidget
-     * @throws \coding_exception
-     * @return string
-     */
-    public function render_mod_coursework_allocation_widget_old(mod_coursework_allocation_widget $allocationwidget) {
-        $template = new stdClass();
-
-
-        $langstr = ($allocationwidget->get_coursework()->moderation_agreement_enabled()) ? 'allocatemarkersandmoderators' : 'allocatemarkers';
-        $html = html_writer::tag('h2', get_string($langstr, 'mod_coursework'));
-
-        $html .= html_writer::start_tag('h3', ['id' => 'assessor_allocation_settings_header']);
-        $html .= get_string('assessorallocationstrategy', 'mod_coursework');
-        $html .= html_writer::end_tag('h3');
-
-        $html .= '<div class="allocation-strategy">';
-        $html .= \html_writer::start_tag('form',
-            ['id' => 'allocation_form', 'method' => 'post']);
-        // Allow allocation method to be changed.
-        $html .= html_writer::label(get_string('allocationstrategy', 'mod_coursework'), 'assessorallocationstrategy');
-
-        $options = manager::get_allocation_classnames();
-        // TODO - Bootstrap this.
-        $html .= html_writer::select($options,
-                                     'assessorallocationstrategy',
-                                     $allocationwidget->get_assessor_allocation_strategy(),
-                                     '');
-
-        // We want to allow the allocation strategy to add configuration options.
-        $html .= html_writer::start_tag('div', ['class' => 'assessor-strategy-options-configs']);
-        $html .= $this->get_allocation_strategy_form_elements($allocationwidget->get_coursework());
-        $html .= html_writer::end_tag('div');
-        $html .= "<br>";
-        $attributes = ['id' => 'coursework_input_buttons'];
-        $html .= html_writer::start_tag('div', $attributes);
-        // Spacer so we get the button underneath the form stuff.
-        $attributes = ['class' => 'coursework_spacer'];
-        $html .= html_writer::start_tag('div', $attributes);
-        $html .= html_writer::end_tag('div');
-
-        // Save button.
-        $attributes = ['name' => 'save',
-            'type' => 'submit',
-            'id' => 'save_assessor_allocation_strategy',
-            'class' => 'coursework_assessor_allocation',
-            'value' => get_string('apply', 'mod_coursework')];
-        $html .= html_writer::empty_tag('input', $attributes);
-
-        $attributes = ['name' => 'saveandexit',
-            'type' => 'submit',
-            'id' => 'save_and_exit_assessor_allocation_strategy',
-            'class' => 'coursework_assessor_allocation',
-            'value' => get_string('save_and_exit', 'mod_coursework')];
-        $html .= html_writer::empty_tag('input', $attributes);
-        $html .= html_writer::end_tag('div');
-        $html .= html_writer::end_tag('form');
-        $html .= '</div>';
-
-        // return $this->render_from_template('coursework/allocation/stratergy', $template);
-
-        return $html;
-    }
-
-    /**
-     * Outputs allocation mechanism.
+     * Output allocation mechanism.
      *
      * @param mod_coursework_allocation_widget $allocationwidget
      * @return string
