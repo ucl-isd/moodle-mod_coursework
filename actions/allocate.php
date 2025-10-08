@@ -93,10 +93,9 @@ function coursework_process_form_submissions(coursework $coursework, $coursemodu
 /**
  * Renders the allocation page content.
  *
- * @param coursework $coursework
- * @param array $options
+ * @param coursework $coursework The coursework object.
  */
-function coursework_render_page(coursework $coursework, $options) {
+function coursework_render_page(coursework $coursework) {
     global $PAGE, $OUTPUT;
 
     // Prepare renderable objects.
@@ -132,8 +131,14 @@ function coursework_render_page(coursework $coursework, $options) {
     }
 
     // Render main allocation table.
-    $template->table_heading = get_string('markermoderatorgrades', 'mod_coursework');
-    $template->pin_info = get_string('pininfo', 'mod_coursework');
+
+    // Set table options. Pagination is disabled and sorting is fixed to first name.
+    $options = [
+        'page' => 0,
+        'perpage' => 0, // 0 = 'all records'.
+        'sortby' => 'firstname',
+        'sorthow' => 'ASC',
+    ];
     $allocationtable = new \mod_coursework_allocation_table(new \mod_coursework\allocation\table\builder($coursework, $options));
     $template->table = $objectrenderer->render($allocationtable);
 
@@ -172,16 +177,9 @@ $PAGE->requires->js_init_call(
 );
 $PAGE->requires->string_for_js('sameassessorerror', 'coursework');
 
-// 3. Get table options. Pagination is disabled, but sorting is still active.
-$options = [
-    'page' => 0,
-    'perpage' => 0, // A value of 0 signifies 'all records'.
-    'sortby' => optional_param('sortby', '', PARAM_ALPHA),
-    'sorthow' => optional_param('sorthow', '', PARAM_ALPHA),
-];
 
-// 4. Process any form submissions. This may redirect away.
+// 3. Process any form submissions. This may redirect away.
 coursework_process_form_submissions($coursework, $coursemodule);
 
-// 5. Render the page.
-coursework_render_page($coursework, $options);
+// 4. Render the page.
+coursework_render_page($coursework);
