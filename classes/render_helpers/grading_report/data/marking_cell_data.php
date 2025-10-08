@@ -148,6 +148,10 @@ class marking_cell_data extends cell_data_base {
 
         $markernumber = 1;
         foreach ($tablerows as $row) {
+            if ($row->get_stage()->identifier() === 'moderator') {
+                // If moderation is turned on then we don't show a marker/feedback button for the moderation stage.
+                continue;
+            }
             $feedback = $row->get_feedback();
             // Get the assessor to last edit user if feedback exists, otherwise use the allocated assessor.
             $assessor = !empty($feedback) ? user::find($feedback->lasteditedbyuser) : $row->get_assessor();
