@@ -132,7 +132,7 @@ function coursework_render_page(coursework $coursework, $options) {
     }
 
     // Render main allocation table.
-    $template->table_heading = get_string('assessormoderatorgrades', 'mod_coursework');
+    $template->table_heading = get_string('markermoderatorgrades', 'mod_coursework');
     $template->pin_info = get_string('pininfo', 'mod_coursework');
     $allocationtable = new \mod_coursework_allocation_table(new \mod_coursework\allocation\table\builder($coursework, $options));
     $template->table = $objectrenderer->render($allocationtable);
