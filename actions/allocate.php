@@ -49,10 +49,12 @@ function coursework_process_form_submissions(coursework $coursework, $coursemodu
 
     if ($formsavebutton) {
         // Save allocation strategy settings.
-        if ($assessorallocationstrategy && $assessorallocationstrategy != $coursework->assessorallocationstrategy) {
-            $coursework->set_assessor_allocation_strategy($assessorallocationstrategy);
+        if ($assessorallocationstrategy) {
+            if ($assessorallocationstrategy != $coursework->assessorallocationstrategy) {
+                $coursework->set_assessor_allocation_strategy($assessorallocationstrategy);
+            }
+            $coursework->save_allocation_strategy_options($assessorallocationstrategy);
         }
-        $coursework->save_allocation_strategy_options($assessorallocationstrategy);
         $coursework->save();
 
         // Process manual allocations from the table.
