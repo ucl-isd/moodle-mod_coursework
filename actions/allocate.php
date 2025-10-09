@@ -139,9 +139,6 @@ $coursemodule = get_coursemodule_from_id('coursework', $coursemoduleid, 0, false
 $course = $DB->get_record('course', ['id' => $coursemodule->course], '*', MUST_EXIST);
 $coursework = $DB->get_record('coursework', ['id' => $coursemodule->instance], '*', MUST_EXIST);
 $coursework = coursework::find($coursework);
-$formsavebutton = optional_param('save', 0, PARAM_BOOL);
-$samplingformsavebutton = optional_param('save_sampling', 0, PARAM_BOOL);
-$allocateallbutton = optional_param('auto-allocate-all', 0, PARAM_BOOL);
 
 // options used for pagination
 // If a session variable holding page preference for the specific coursework is not set, set default value (0).
