@@ -642,7 +642,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $template->javascript = html_writer::script("var samplingValidateHdl = [];");
         $template->javascript .= html_writer::script($jsscript);
 
-        return $this->render_from_template('coursework/allocate/samplingwidget', $template);
+        return $this->render_from_template('mod_coursework/allocate/samplingwidget', $template);
     }
 
     private function sampling_strategy_column($samplingwidget, $suffix = '') {
