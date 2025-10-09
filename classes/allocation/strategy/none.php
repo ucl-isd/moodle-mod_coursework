@@ -52,9 +52,9 @@ class none extends base {
         global $PAGE, $CFG;
 
         $url = "$CFG->wwwroot/mod/coursework/actions/upload_allocations.php?cmid={$PAGE->cm->id}";
-        $html = '<a href="'. $url .'" class="btn btn-primary mb-3"><i class="fa-solid fa-upload mr-2"></i>'
-            . get_string('uploadallocations', 'mod_coursework')
-            . '</a>';
+        $icon = '<i class="fa-solid fa-upload mr-2"></i>';
+        $linktext = $icon . get_string('uploadallocations', 'mod_coursework');
+        $html = html_writer::link($url, $linktext, ['class' => 'btn btn-primary mb-3']);
         return $html;
     }
 
