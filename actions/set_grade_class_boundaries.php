@@ -27,8 +27,8 @@ if ($coursework) {
 } else {
     require_login();
 }
+require_capability('moodle/course:manageactivities', $context);
 
-//todo require capability.
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url($url, $urlparams));
 
@@ -38,6 +38,8 @@ $redirecturl = $coursework
     : new \moodle_url('/admin/settings.php?=', ['section' => 'modsettingcoursework']);
 if ($form->is_cancelled()) {
     redirect($redirecturl);
+} else if ($data = $form->get_data()) {
+    //todo process data.
 }
 
 echo $OUTPUT->header();
