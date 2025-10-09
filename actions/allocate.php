@@ -130,7 +130,7 @@ function coursework_render_page(coursework $coursework, \mod_coursework_allocati
     $template->table = $objectrenderer->render($allocationtable);
 
     echo $OUTPUT->header();
-    echo $OUTPUT->render_from_template('mod_coursework/allocate/main', $template);
+    echo $OUTPUT->render_from_template('coursework/allocate/main', $template);
     echo $OUTPUT->footer();
 }
 
