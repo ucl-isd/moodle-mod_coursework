@@ -390,23 +390,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $tablehtml .= '<div class="table-and-jumptos">';
 
-        $recordsperpage = [3 => 3,
-            10 => 10,
-            20 => 20,
-            30 => 30,
-            40 => 40,
-            50 => 50,
-            100 => 100,
-            $all => get_string('all', 'mod_coursework')]; // for boost themes instead of 'all' we can put 0, however currently it is a bug
-
-        // Commenting these out as they appear unused and are causing exception in behat test.
-        // $single_select_params = compact('sortby', 'sorthow', 'page');
-        // $single_select_params['page'] = '0';
-        $select = new single_select($this->page->url, 'per_page', $recordsperpage, $options['perpage'], null);
-        $select->label = get_string('records_per_page', 'coursework');
-        $select->class = 'jumpmenu';
-        $select->formid = 'sectionmenutop';
-        $tablehtml .= $this->output->render($select);
+        // Pagination controls have been removed.
         $tablehtml .= \html_writer::start_tag('form', ['method' => 'post']);
 
         $tablehtml .= '
@@ -416,9 +400,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 <tr>
 
         ';
-
-        $pagingbar = new paging_bar($allocationtable->get_participant_count(), $options['page'], $options['perpage'],
-            $this->page->url, 'page');
 
         // Get the hidden elements used for assessors and moderators selected on other pages;
 
@@ -459,7 +440,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 <tbody>
         ';
 
-        $rowdata = $allocationtable->get_table_rows_for_page();
+        $rowdata = $allocationtable->get_rows();
         foreach ($rowdata as $row) {
             $tablehtml .= $this->render_allocation_table_row($row);
         }
@@ -476,12 +457,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             'value' => get_string('save', 'mod_coursework')];
         $tablehtml .= html_writer::empty_tag('input', $attributes);
         $tablehtml .= html_writer::end_tag('form');
-
-        $select->formid = 'sectionmenubottom';
-        $tablehtml .= $this->output->render($select);
         $tablehtml .= '</div>';
-
-        $tablehtml .= $this->page->get_renderer('mod_coursework', 'object')->render($pagingbar);
 
         return $tablehtml;
     }
@@ -514,67 +490,33 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Outputs the buttons etc to choose and trigger the auto allocation mechanism. Do this as part of the main form so we
-     * can choose some allocations, then click a button to auto-allocate the rest.
+     * Output allocation mechanism.
+     *
      * @param mod_coursework_allocation_widget $allocationwidget
-     * @throws \coding_exception
      * @return string
      */
-    public function render_mod_coursework_allocation_widget(mod_coursework_allocation_widget $allocationwidget) {
-        $langstr = ($allocationwidget->get_coursework()->moderation_agreement_enabled()) ? 'allocateassessorsandmoderators' : 'allocateassessors';
-        $html = html_writer::tag('h2', get_string($langstr, 'mod_coursework'));
-
-        $html .= '<div class="assessor-allocation-wrapper accordion">';
-
-        $html .= html_writer::start_tag('h3', ['id' => 'assessor_allocation_settings_header']);
-        $html .= get_string('assessorallocationstrategy', 'mod_coursework');
-        // $html .= $this->output->help_icon('allocationstrategy', 'mod_coursework');
-        $html .= html_writer::end_tag('h3');
-
-        $html .= '<div class="allocation-strategy">';
-        $html .= \html_writer::start_tag('form',
-            ['id' => 'allocation_form', 'method' => 'post']);
-        // Allow allocation method to be changed.
-        $html .= html_writer::label(get_string('allocationstrategy', 'mod_coursework'), 'assessorallocationstrategy');
+    public function render_mod_coursework_allocation_widget(mod_coursework_allocation_widget $allocationwidget): string {
+        $template = new stdClass();
 
         $options = manager::get_allocation_classnames();
-        $html .= html_writer::select($options,
-                                     'assessorallocationstrategy',
-                                     $allocationwidget->get_assessor_allocation_strategy(),
-                                     '');
+        $currentstrategy = $allocationwidget->get_assessor_allocation_strategy();
+        $strategyselectoptions = [];
 
-        // We want to allow the allocation strategy to add configuration options.
-        $html .= html_writer::start_tag('div', ['class' => 'assessor-strategy-options-configs']);
-        $html .= $this->get_allocation_strategy_form_elements($allocationwidget->get_coursework());
-        $html .= html_writer::end_tag('div');
-        $html .= "<br>";
-        $attributes = ['id' => 'coursework_input_buttons'];
-        $html .= html_writer::start_tag('div', $attributes);
-        // Spacer so we get the button underneath the form stuff.
-        $attributes = ['class' => 'coursework_spacer'];
-        $html .= html_writer::start_tag('div', $attributes);
-        $html .= html_writer::end_tag('div');
+        // Loop through options to create the structure Mustache expects for a select loop.
+        foreach ($options as $key => $value) {
+            $option = new stdClass();
+            $option->value = $key;
+            $option->string = $value;
+            $option->selected = ($key === $currentstrategy); // Boolean for conditional rendering.
+            $strategyselectoptions[] = $option;
+        }
+        $template->strategy = $strategyselectoptions;
 
-        // Save button.
-        $attributes = ['name' => 'save',
-            'type' => 'submit',
-            'id' => 'save_assessor_allocation_strategy',
-            'class' => 'coursework_assessor_allocation',
-            'value' => get_string('apply', 'mod_coursework')];
-        $html .= html_writer::empty_tag('input', $attributes);
+        $template->strategyoptionshtml = $this->get_allocation_strategy_form_elements(
+            $allocationwidget->get_coursework()
+        );
 
-        $attributes = ['name' => 'saveandexit',
-            'type' => 'submit',
-            'id' => 'save_and_exit_assessor_allocation_strategy',
-            'class' => 'coursework_assessor_allocation',
-            'value' => get_string('save_and_exit', 'mod_coursework')];
-        $html .= html_writer::empty_tag('input', $attributes);
-        $html .= html_writer::end_tag('div');
-        $html .= html_writer::end_tag('form');
-        $html .= '</div>';
-        $html .= '</div>';
-
-        return $html;
+        return $this->render_from_template('coursework/allocate/strategy', $template);
     }
 
     /**
@@ -887,34 +829,42 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param coursework $coursework
      * @return string HTML form elements
      */
-    protected function get_allocation_strategy_form_elements($coursework) {
-
+    protected function get_allocation_strategy_form_elements(coursework $coursework): string {
         global $CFG;
 
         $html = '';
+        $strategydir = $CFG->dirroot . '/mod/coursework/classes/allocation/strategy';
+        $strategyfilepaths = glob($strategydir . '/*.php');
+        $currentstrategyname = $coursework->assessorallocationstrategy;
 
-        $classdir = $CFG->dirroot . '/mod/coursework/classes/allocation/strategy';
-        $fullclasspaths = glob($classdir . '/*.php');
-        foreach ($fullclasspaths as $fullclassname) {
-            if (strpos($fullclassname, 'base') !== false) {
+        foreach ($strategyfilepaths as $filepath) {
+            $shortname = pathinfo($filepath, PATHINFO_FILENAME);
+
+            // Skip the base class file.
+            if ($shortname === 'base') {
                 continue;
             }
-            preg_match('/([^\/]+).php/', $fullclassname, $matches);
-            $classname = $matches[1];
-            $fullclassname = '\mod_coursework\allocation\strategy\\' . $classname;
-            // We want the elements from all the strategies so we can show/hide them.
-            /* @var \mod_coursework\allocation\strategy\base $strategy */
+
+            $fullclassname = "\\mod_coursework\\allocation\\strategy\\{$shortname}";
+
+            // Ensure the class exists before trying to instantiate it.
+            if (!class_exists($fullclassname)) {
+                continue;
+            }
+
+            /** @var \mod_coursework\allocation\strategy\base $strategy */
             $strategy = new $fullclassname($coursework);
 
             $attributes = [
                 'class' => 'assessor-strategy-options',
-                'id' => 'assessor-strategy-' . $classname,
+                'id' => 'assessor-strategy-' . $shortname,
             ];
+
             // Hide this if it's not currently selected.
-            $strategytype = 'assessorallocationstrategy';
-            if ($classname !== $coursework->$strategytype) {
+            if ($shortname !== $currentstrategyname) {
                 $attributes['style'] = 'display:none';
             }
+
             $html .= html_writer::start_tag('div', $attributes);
             $html .= $strategy->add_form_elements('assessor');
             $html .= html_writer::end_tag('div');
@@ -1159,29 +1109,30 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param \mod_coursework\allocation\table\row\builder $allocationrow
      * @return string
      */
-    private function render_allocation_table_row($allocationrow) {
+    private function render_allocation_table_row(\mod_coursework\allocation\table\row\builder $allocationrow) {
+        $template = new stdClass();
+        $allocatable = $allocationrow->get_allocatable();
+        $template->id = $allocatable->id();
+        $template->type = $allocatable->type();
 
-        $rowhtml = '
-            <tr id="'. $allocationrow->get_allocatable()->type() . '_' . $allocationrow->get_allocatable()->id().'">
-        ';
-
+        // Student/group.
         $allocatablecellhelper = $allocationrow->get_allocatable_cell();
-        $rowhtml .= $allocatablecellhelper->get_table_cell($allocationrow);
+        $template->student = $allocatablecellhelper->get_table_cell($allocationrow);
 
+        // Marker/Moderator cells.
+        $template->cells = [];
         foreach ($allocationrow->marking_stages() as $stage) {
             if ($stage->uses_allocation() && $stage->identifier() != 'moderator') {
-                $rowhtml .= $stage->get_allocation_table_cell($allocationrow->get_allocatable());
+                $template->cells[]['html'] = $stage->get_allocation_table_cell($allocatable);
             }
         }
 
-        // moderator
+        // Moderator cell.
         if ($allocationrow->get_coursework()->moderation_agreement_enabled()) {
-            $rowhtml .= $stage->get_moderation_table_cell($allocationrow->get_allocatable());
+            $template->cells[]['html'] = $stage->get_moderation_table_cell($allocatable);
         }
 
-        $rowhtml .= '</tr>';
-
-        return $rowhtml;
+        return $this->render_from_template('mod_coursework/allocate/table_row', $template);
     }
 
     /**

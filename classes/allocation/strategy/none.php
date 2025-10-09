@@ -24,9 +24,7 @@ namespace mod_coursework\allocation\strategy;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use html_writer;
-
-    /**
+/**
  * Class that acts as a default for auto allocation when we don't actually want to allocate at all.
  * Will always return false when asked for the next appropriate teacher.
  */
@@ -52,7 +50,9 @@ class none extends base {
         global $PAGE, $CFG;
 
         $url = "$CFG->wwwroot/mod/coursework/actions/upload_allocations.php?cmid={$PAGE->cm->id}";
-        $html = html_writer::link($url, get_string('uploadallocations', 'mod_coursework'));
+        $html = '<a href="'. $url .'" class="btn btn-primary mb-3"><i class="fa-solid fa-upload mr-2"></i>'
+                . get_string('uploadmarkers', 'mod_coursework')
+                . '</a>';
 
         return $html;
     }
