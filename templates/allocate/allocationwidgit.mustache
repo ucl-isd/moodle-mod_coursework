@@ -1,6 +1,6 @@
-<form id="allocation_form" class="p-3 mb-3 bg-light" method="post">
+<form id="allocation_form" class="p-3 bg-light" method="post">
 
-    <label for="assessorallocationstrategy" class="h4">
+    <label for="assessorallocationstrategy" class="h5">
     {{#str}} allocationstrategy, mod_coursework {{/str}}</label>
     <select id="assessorallocationstrategy" name="assessorallocationstrategy" class="form-control mb-3" aria-label="Allocation strategy selector">
     {{#strategy}}
@@ -18,12 +18,6 @@
                 id="save_assessor_allocation_strategy"
                 class="coursework_assessor_allocation btn btn-primary"
                 value="{{#str}} apply {{/str}}">
-
-        <input name="saveandexit"
-                type="submit"
-                id="save_and_exit_assessor_allocation_strategy"
-                class="coursework_assessor_allocation btn btn-secondary"
-                value="{{#str}} save_and_exit, mod_coursework {{/str}}">
     </div>
 
 </form>

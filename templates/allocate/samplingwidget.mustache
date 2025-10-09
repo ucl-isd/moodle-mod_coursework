@@ -1,0 +1,32 @@
+<div class="p-3 bg-light">
+    <h3 class="h5">{{#str}} sampling, mod_coursework {{/str}}</h3>
+
+    <div class="sampling-rules">
+        <div class="sampling-select">
+            {{{scale_input}}}
+            <table class="table sampling">
+                <thead>
+                    <tr>
+                        {{#headers}}
+                            <th scope="col">{{{.}}}</th>
+                        {{/headers}}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {{#columns}}
+                            <td>{{{html}}}</td>
+                        {{/columns}}
+                    </tr>
+                </tbody>
+            </table>
+
+            <input name="save_sampling"
+                   type="submit"
+                   id="save_manual_sampling"
+                   class="btn btn-primary"
+                   value="{{#str}}save{{/str}}">
+        </div>
+    </div>
+</div>
+{{{javascript}}}

@@ -554,121 +554,67 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
     public function render_mod_coursework_sampling_set_widget(mod_coursework_sampling_set_widget $samplingwidget) {
 
-        global $DB;
+        $coursework = $samplingwidget->get_coursework();
+        $template = new stdClass();
+        $template->headers = [];
+        $template->columns = [];
 
-        $html = html_writer::tag('h2', get_string('sampling', 'mod_coursework'));
-
-        $html .= html_writer::start_tag('div', ['class' => 'assessor-sampling-wrapper accordion']);
-
-        $html .= html_writer::start_tag('h3', ['id' => 'sampling_strategy_settings_header']);
-        $html .= get_string('samplingstrategy', 'mod_coursework');
-        $html .= html_writer::end_tag('h3');
-
-        $html .= html_writer::start_tag('div', ['class' => 'sampling-rules']);
-
-        // We want to allow the allocation strategy to add configuration options.
-
-        $html .= html_writer::start_tag('div', ['class' => 'sampling-select']);
-
-        $script = "
-            var samplingValidateHdl = [];
-        ";
-
-        $html  .= html_writer::script($script);
-
-        $table = new html_table();
-        $table->attributes['class'] = 'sampling';
-        $table->head = [''];
-
-        $assessorheaders = [];
-
+        // Prepare headers.
         for ($i = 0; $i < $samplingwidget->get_coursework()->get_max_markers(); $i++) {
-            $assessorheaders[] = get_string('assessorheading', 'mod_coursework', $i + 1);
+            $template->headers[] = get_string('assessorheading', 'mod_coursework', $i + 1);
         }
 
+        // Prepare scale input.
         $scale = "";
-
-        if ($samplingwidget->get_coursework()->grade > 0) {
-
+        if ($coursework->grade > 0) {
             $comma = "";
-
-            for ($i = 0; $i <= $samplingwidget->get_coursework()->grade; $i++) {
+            for ($i = 0; $i <= $coursework->grade; $i++) {
                 $scale .= $comma.$i;
                 $comma = ",";
             }
         } else {
-            $gradescale = \grade_scale::fetch(['id' => abs($samplingwidget->get_coursework()->grade)]);
+            $gradescale = \grade_scale::fetch(['id' => abs($coursework->grade)]);
             $scale = $gradescale->scale;
         }
+        $template->scaleinput = html_writer::empty_tag('input', ['id' => 'scale_values', 'type' => 'hidden', 'value' => $scale]);
 
-        $html  .= "<input id='scale_values' type='hidden' value='".$scale."' />";
-
-        $table->head = $assessorheaders;
-
+        // Prepare columns.
+        // Assessor 1 column is always manual.
         $assessor1cell = html_writer::start_tag('div', ['class' => 'samples_strategy']);
         $assessor1cell  .= get_string('assessoronedefault', 'mod_coursework');
         $assessor1cell  .= html_writer::end_tag('div');
+        $template->columns[]['html'] = $assessor1cell;
 
-        $columndata = [new html_table_cell($assessor1cell)];
-
-        $percentageoptions = [];
-
-        for ($i = 0; $i < 110; $i = $i + 10) {
-            $percentageoptions[$i] = "{$i}%";
-        }
-
+        // Prepare columns for other assessors.
         $javascript = false;
-
-        for ($i = 2; $i <= $samplingwidget->get_coursework()->get_max_markers(); $i++) {
-
-            // Create the secon
-
+        for ($i = 2; $i <= $coursework->get_max_markers(); $i++) {
             $samplingstrategies = ['0' => get_string('sampling_manual', 'mod_coursework'),
                                               '1' => get_string('sampling_automatic', 'mod_coursework')];
 
             // Check whether any rules have been saved for this stage
-            $selected = ($samplingwidget->get_coursework()->has_automatic_sampling_at_stage('assessor_'.$i)) ? '1' : false;
+            $selected = ($coursework->has_automatic_sampling_at_stage('assessor_'.$i)) ? '1' : false;
 
             $samplingcell = html_writer::start_tag('div', ['class' => 'samples_strategy']);
             $samplingcell .= html_writer::label(get_string('sampletype', 'mod_coursework'), "assessor_{$i}_samplingstrategy");
-
             $samplingcell .= html_writer::select($samplingstrategies,
                 "assessor_{$i}_samplingstrategy",
                 $selected,
                 false,
                 ['id' => "assessor_{$i}_samplingstrategy", 'class' => "assessor_sampling_strategy sampling_strategy_detail"]);
-
             $samplingcell .= html_writer::end_tag('div');
 
-            if ($i == $samplingwidget->get_coursework()->get_max_markers()) {
+            if ($i == $coursework->get_max_markers()) {
                 $javascript = true;
             }
-
-            $graderules =
 
             $graderules = html_writer::start_tag('h4');
             $graderules .= get_string('graderules', 'mod_coursework');
             $graderules .= html_writer::end_tag('h4');
-
-            $graderules .= $this->get_sampling_strategy_form_elements($samplingwidget->get_coursework(), $i, $javascript);
-
+            $graderules .= $this->get_sampling_strategy_form_elements($coursework, $i, $javascript);
             $samplingcell .= html_writer::div($graderules, '', ['id' => "assessor_{$i}_automatic_rules"]);
 
-            $columndata[] = new html_table_cell($samplingcell);
+            $template->columns[]['html'] = $samplingcell;
         }
-
-        $table->data[] = $columndata;
-
-          //= array($asessoronecell, $asessortwocell);
-
-        $html  .= html_writer::table($table);
-
-        // End the form with save button.
-        $attributes = ['name' => 'save_sampling',
-            'type' => 'submit',
-            'id' => 'save_manual_sampling',
-            'value' => get_string('save', 'mod_coursework')];
-        $html  .= html_writer::empty_tag('input', $attributes);
 
         /**
          *  Ok this is either some really clever or really hacky code depending on where you stand, time of day and your mood :)
@@ -678,7 +624,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
          *  returning 0 or 1 depending on whether and error was found. (Was that verbose...yeah...oh well) - ND
          */
 
-        $script = "
+        $jsscript = "
 
             $('#save_manual_sampling').on('click', function (e) {
 
@@ -693,15 +639,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         ";
 
-        $html  .= html_writer::script($script);
+        $template->javascript = html_writer::script("var samplingValidateHdl = [];");
+        $template->javascript .= html_writer::script($jsscript);
 
-        $html .= html_writer::end_tag('div');
-
-        $html .= html_writer::end_tag('div');
-
-        $html .= html_writer::end_tag('div');
-
-        return $html;
+        return $this->render_from_template('coursework/allocate/samplingwidget', $template);
     }
 
     private function sampling_strategy_column($samplingwidget, $suffix = '') {
