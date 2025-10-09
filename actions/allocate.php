@@ -45,7 +45,7 @@ function coursework_process_form_submissions(coursework $coursework, $coursemodu
     $samplingformsavebutton = optional_param('save_sampling', 0, PARAM_BOOL);
     $assessorallocationstrategy = optional_param('assessorallocationstrategy', false, PARAM_TEXT);
     $deletemodsetrule = optional_param('delete-mod-set-rule', [], PARAM_RAW);
-    $dirtyformdata = $_POST['allocatables'] ?? [];
+    $dirtyformdata = optional_param_array('allocatables', [], PARAM_RAW);
 
     $allocationsmanager = $coursework->get_allocation_manager();
 
