@@ -259,26 +259,6 @@ if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $gro
     $group = groups_get_activity_group($coursework->get_course_module());
 }
 
-// Commented out the redirection for Release1 #108535552, this will be revisited for Release2
-/*if (has_capability('mod/coursework:allocate', $coursework->get_context())) {
-    $warnings = new \mod_coursework\warnings($coursework);
-
-    $percentage_allocation_not_complete = $warnings->percentage_allocations_not_complete();
-    $manual_allocation_not_complete = '';
-    if ($coursework->allocation_enabled()) {
-        $manual_allocation_not_complete = $warnings->manual_allocation_not_completed();
-    }
-
-    if (!empty($percentage_allocation_not_complete) || !empty($manual_allocation_not_complete)) {
-
-        $redirectdetail = new \stdClass();
-        $redirectdetail->percentage = $percentage_allocation_not_complete;
-        $redirectdetail->ismanual = $manual_allocation_not_complete;
-
-        redirect($CFG->wwwroot.'/mod/coursework/actions/allocate.php?id='.$course_module_id, get_string('configuration_needed', 'coursework', $redirectdetail));
-    }
-}*/
-
 // Change default sortby to Date (timesubmitted) if CW is set to blind marking and a user doesn't have capability to view anonymous
 $viewanonymous = has_capability('mod/coursework:viewanonymous', $coursework->get_context());
 if (($coursework->blindmarking && !$viewanonymous )) {

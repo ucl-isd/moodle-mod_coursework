@@ -78,7 +78,7 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
             }
             $template->tr[] = $trdata;
         }
-        $template->markerfilter = array_values($template->markerfilter);
+        $template->markerfilter = empty($template->markerfilter) ? null : array_values($template->markerfilter);
 
         return $this->render_from_template('mod_coursework/submissions/table', $template);
     }

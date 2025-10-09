@@ -270,17 +270,19 @@ class feedback_controller extends controller_base {
                  // $OUTPUT->confirm(get_string('confirmremovefeedback', 'mod_coursework'), $confirmurl, $PAGE->url);
 
             } else {
+                \mod_coursework\models\feedback::remove_cache($teacherfeedback->get_coursework_id());
+                \mod_coursework\models\submission::remove_cache($teacherfeedback->get_coursework_id());
+
+                // Remove associated files.
+                $fs = get_file_storage();
+                $fs->delete_area_files(
+                    $teacherfeedback->get_coursework()->get_context()->id,
+                    'mod_coursework',
+                    'feedback',
+                    $teacherfeedback->id()
+                );
 
                 $teacherfeedback->destroy();
-                // Clear cache.
-                if ($this->submission) {
-                    \mod_coursework\models\feedback::remove_cache($this->submission->courseworkid);
-                    \mod_coursework\models\submission::remove_cache($this->submission->courseworkid);
-                }
-
-                // Remove associated files
-                $fs = get_file_storage();
-                $fs->delete_area_files($teacherfeedback->get_coursework()->get_context()->id, 'mod_coursework', 'feedback', $teacherfeedback->id());
                 redirect($courseworkpageurl, get_string('deleted'), null, \core\output\notification::NOTIFY_ERROR);
             }
         }

@@ -37,5 +37,8 @@ $params = [
     'assessorid' => $assessorid,
     'stage_identifier' => $stageidentifier,
 ];
+if ($stageidentifier === 'moderator') {
+    throw new \core\exception\invalid_parameter_exception("Cannot create feedback for moderation stage");
+}
 $controller = new mod_coursework\controllers\feedback_controller($params);
 $controller->new_feedback();

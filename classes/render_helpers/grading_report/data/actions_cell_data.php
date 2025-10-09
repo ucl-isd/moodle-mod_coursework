@@ -45,10 +45,7 @@ class actions_cell_data extends cell_data_base {
      * @return stdClass|null The data object for template rendering.
      */
     public function get_table_cell_data(grading_table_row_base $rowsbase): ?stdClass {
-        $data = (object)[
-            'allocatableid' => $rowsbase->get_allocatable_id(),
-            'allocatabletype' => $rowsbase->get_allocatable()->type(),
-        ];
+        $data = new \stdClass();
 
         $identitieshidden = $this->coursework->blindmarking_enabled() &&
             !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context());
@@ -70,8 +67,14 @@ class actions_cell_data extends cell_data_base {
         // Set plagiarism parameters.
         $this->set_plagiarism_data($data, $rowsbase);
 
-        // If $data has no properties here, return null and we will skip adding the actions menu at all.
-        return get_object_vars($data) ? $data : null;
+        if (empty(get_object_vars($data))) {
+            // If $data has no properties here, return null and we will skip adding the actions menu at all.
+            return null;
+        }
+
+        $data->allocatableid = $rowsbase->get_allocatable_id();
+        $data->allocatabletype = $rowsbase->get_allocatable()->type();
+        return $data;
     }
 
     /**
