@@ -1,0 +1,98 @@
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package    mod_coursework
+ * @copyright  2025 UCL
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+namespace mod_coursework\auto_grader;
+
+use mod_coursework\allocation\allocatable;
+use mod_coursework\models\coursework;
+use mod_coursework\models\feedback;
+use mod_coursework\traits\autoagreement_functions;
+
+/**
+ * Class percentage_distance is responsible for calculating and applying the automatically agreed grade if the initial
+ * assessor grades are within a certain percentage of one another, and do not straddle class boundaries.
+ *
+ * @package mod_coursework\auto_grader
+ */
+class percentage_distance_no_straddle extends percentage_distance {
+
+    /**
+     * This will test whether there is a grade already present, test whether the rules for this class match the
+     * state of the initial assessor grades and make an automatic grade if they do.
+     *
+     */
+    public function create_auto_grade_if_rules_match() {
+        if (self::grades_straddle_class_boundaries($this->get_coursework()->id(), $this->grades_as_percentages())) {
+            return;
+        }
+        parent::create_auto_grade_if_rules_match();
+    }
+
+
+    /**
+     * Do the grades awarded for this assessment straddle class boundaries?
+     * @return bool
+     */
+    public static function grades_straddle_class_boundaries(int $courseworkid, array $grades): bool {
+        $gradeclasses = self::get_grade_class_boundaries($courseworkid);
+        if (empty($gradeclasses) || empty($grades)) {
+            // No class boundaries are set or no grades, so we are not applying this rule.
+            return false;
+        }
+
+        $gradeclassesseen = [];
+        foreach ($grades as $grade) {
+            foreach ($gradeclasses as $index => $gradeclass) {
+                if ($grade >= $gradeclass[0] && $grade <= $gradeclass[1]) {
+                    // Grade is within this class.
+                    if (!in_array($index, $gradeclassesseen)) {
+                        $gradeclassesseen[] = $index;
+                    }
+                    if (count($gradeclassesseen) > 1) {
+                        // We have seen more than one grade class so the grades straddle class boundaries.
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Get the grade class boundaries that apply to this coursework.
+     * @param int $courseworkid
+     * @return array
+     */
+    protected static function get_grade_class_boundaries(int $courseworkid): array {
+        //todo these will come from DB.
+        return [
+            [70.00, 100.00],
+            [60.00, 69.99],
+            [50.00, 59.99],
+            [40.00, 49.99],
+            [1.00, 39.99],
+            [0.00, 0.99],
+        ];
+    }
+
+}

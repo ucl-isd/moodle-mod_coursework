@@ -68,7 +68,7 @@ class percentage_distance implements auto_grader {
      */
     public function create_auto_grade_if_rules_match() {
 
-        // bounce out if conditions are not right/
+        // Bounce out if conditions are not right.
         if (!$this->get_allocatable()->has_all_initial_feedbacks($this->get_coursework())) {
             return;
         }
@@ -96,7 +96,7 @@ class percentage_distance implements auto_grader {
     /**
      * @return coursework
      */
-    private function get_coursework() {
+    protected function get_coursework() {
         return $this->coursework;
     }
 
@@ -167,7 +167,7 @@ class percentage_distance implements auto_grader {
     /**
      * @return array
      */
-    private function grades_as_percentages() {
+    protected function grades_as_percentages() {
         $initialfeedbacks = $this->get_allocatable()->get_initial_feedbacks($this->get_coursework());
         $grades = array_map(function ($feedback) {
             return ($feedback->get_grade() / $this->get_coursework()->get_max_grade()) * 100;
