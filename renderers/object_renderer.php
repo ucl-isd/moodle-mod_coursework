@@ -542,7 +542,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // Get the HTML for the strategy-specific configuration options.
         $template->strategyoptionshtml = $this->get_allocation_strategy_form_elements($coursework);
 
-        return $this->render_from_template('mod_coursework/allocate/allocationwidgit', $template);
+        return $this->render_from_template('mod_coursework/allocate/allocationwidget', $template);
     }
 
     /**
