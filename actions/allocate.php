@@ -45,7 +45,11 @@ function coursework_process_form_submissions(coursework $coursework, $coursemodu
     $samplingformsavebutton = optional_param('save_sampling', 0, PARAM_BOOL);
     $assessorallocationstrategy = optional_param('assessorallocationstrategy', false, PARAM_TEXT);
     $deletemodsetrule = optional_param('delete-mod-set-rule', [], PARAM_RAW);
-    $dirtyformdata = optional_param_array('allocatables', [], PARAM_RAW);
+
+    // SHAME.
+    // Variable $_POST['allocatables'] comes as array of arrays which is not supported by optional_param_array.
+    // However, we clean this later in process_data() function.
+    $dirtyformdata = isset($_POST['allocatables']) ? $_POST['allocatables'] : [];
 
     $allocationsmanager = $coursework->get_allocation_manager();
 
