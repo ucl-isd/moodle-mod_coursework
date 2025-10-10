@@ -43,17 +43,18 @@ class none extends base {
     }
 
     /**
-     * Some strategies need to be configured. This function will get the HTML for the form that will configure them.
+     * Upload button.
      *
      * @param string $strategypurpose
      * @return string
      */
-    public function add_form_elements($strategypurpose = 'assessor') {
+    public function add_form_elements($strategypurpose = 'assessor'): string {
         global $PAGE, $CFG;
 
         $url = "$CFG->wwwroot/mod/coursework/actions/upload_allocations.php?cmid={$PAGE->cm->id}";
-        $html = html_writer::link($url, get_string('uploadallocations', 'mod_coursework'));
-
+        $icon = '<i class="fa-solid fa-upload mr-2"></i>';
+        $linktext = $icon . get_string('uploadallocations', 'mod_coursework');
+        $html = html_writer::link($url, $linktext, ['class' => 'btn btn-primary mb-3']);
         return $html;
     }
 

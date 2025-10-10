@@ -1,0 +1,46 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coursework/allocate/main
+
+    Main layout template for the marker allocation page.
+
+    Example context (json):
+    {
+        "warnings": "<div class=\"alert alert-warning\">Warning message</div>",
+        "samplingwidget": "<div>Sampling widget HTML</div>",
+        "allocationwidget": "<div>Allocation widget HTML</div>",
+        "table": "<table>...</table>"
+    }
+}}
+<div class="container">
+    <h2>{{#str}} allocatemarkers, mod_coursework {{/str}}</h2>
+
+    {{{warnings}}}
+
+    <div class="row">
+        <div class="col-md-4">
+            {{{samplingwidget}}}
+            {{{allocationwidget}}}
+        </div>
+
+        <div class="col-md-8">
+            <h3 class="h4">{{#str}} markermoderatormarks, mod_coursework {{/str}}</h3>
+            <small>{{#str}} allocatetableinstructions, mod_coursework {{/str}}</small>
+            {{{table}}}
+        </div>
+    </div>
+</div>

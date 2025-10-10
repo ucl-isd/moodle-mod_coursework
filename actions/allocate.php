@@ -32,20 +32,123 @@ global $CFG, $OUTPUT, $DB, $PAGE;
 
 require_once($CFG->dirroot.'/mod/coursework/lib.php');
 
+/**
+ * Handles all form submissions from the allocation page.
+ *
+ * @param coursework $coursework The coursework object.
+ * @param \stdClass $coursemodule The coursemodule object.
+ */
+function coursework_process_form_submissions(coursework $coursework, $coursemodule) {
+    global $DB, $PAGE, $CFG;
+
+    $formsavebutton = optional_param('save', 0, PARAM_BOOL);
+    $samplingformsavebutton = optional_param('save_sampling', 0, PARAM_BOOL);
+    $assessorallocationstrategy = optional_param('assessorallocationstrategy', false, PARAM_TEXT);
+    $deletemodsetrule = optional_param('delete-mod-set-rule', [], PARAM_RAW);
+    $allocationsmanager = $coursework->get_allocation_manager();
+
+    // SHAME.
+    // Variable $_POST['allocatables'] comes as array of arrays which is not supported by optional_param_array.
+    // However, we clean this later in process_data() function.
+    $dirtyformdata = isset($_POST['allocatables']) ? $_POST['allocatables'] : [];
+
+    if ($formsavebutton) {
+        // Save allocation strategy settings if a strategy was submitted.
+        if ($assessorallocationstrategy) {
+            if ($assessorallocationstrategy != $coursework->assessorallocationstrategy) {
+                $coursework->set_assessor_allocation_strategy($assessorallocationstrategy);
+            }
+            $coursework->save_allocation_strategy_options($assessorallocationstrategy);
+        }
+        $coursework->save();
+
+        // Process manual allocations from the table.
+        $processor = new \mod_coursework\allocation\table\processor($coursework);
+        $processor->process_data($dirtyformdata);
+        $allocationsmanager->auto_generate_sample_set();
+    }
+
+    if ($samplingformsavebutton && $coursework->sampling_enabled()) {
+        $allocationsmanager->save_sample();
+    }
+
+    // TODO - Leon and Stuart think this is never used.
+    if ($deletemodsetrule) {
+        if (is_array($deletemodsetrule)) {
+            reset($deletemodsetrule);
+            $deleteruleid = key($deletemodsetrule); // Only one button can be clicked.
+            if (is_numeric($deleteruleid)) {
+                $DB->delete_records('coursework_mod_set_rules', ['id' => $deleteruleid]);
+            }
+        }
+    }
+
+    // Redirect on save.
+    if ($formsavebutton) {
+        $warnings = new \mod_coursework\warnings($coursework);
+        $percentageallocationnotcomplete = $warnings->percentage_allocations_not_complete();
+        $manualallocationnotcomplete = $coursework->allocation_enabled() ? $warnings->manual_allocation_not_completed() : '';
+
+        if (empty($percentageallocationnotcomplete) && empty($manualallocationnotcomplete)) {
+            redirect(new moodle_url('/mod/coursework/view.php', ['id' => $coursemodule->id]), get_string('changessaved', 'mod_coursework'));
+        } else {
+            redirect($PAGE->url);
+        }
+    }
+}
+
+/**
+ * Renders the allocation page content.
+ *
+ * @param coursework $coursework The coursework object.
+ * @param \mod_coursework_allocation_table $allocationtable The renderable table object.
+ */
+function coursework_render_page(coursework $coursework, \mod_coursework_allocation_table $allocationtable) {
+    global $PAGE, $OUTPUT;
+
+    // Prepare renderable objects.
+    $allocationsmanager = $coursework->get_allocation_manager();
+    $warnings = new \mod_coursework\warnings($coursework);
+    $objectrenderer = $PAGE->get_renderer('mod_coursework', 'object');
+
+    $template = new stdClass();
+    $template->page_url_params = \html_writer::input_hidden_params($PAGE->url);
+
+    // Warnings.
+    $template->warnings = $warnings->percentage_allocations_not_complete();
+    if ($coursework->allocation_enabled()) {
+        $template->warnings .= $warnings->manual_allocation_not_completed();
+        if ($coursework->use_groups == 1 || $coursework->assessorallocationstrategy == 'group_assessor') {
+            $template->warnings .= $warnings->students_in_mutiple_groups();
+        }
+    }
+
+    // Widgets.
+    if ($coursework->sampling_enabled()) {
+        $samplesetwidget = $allocationsmanager->get_sampling_set_widget();
+        $template->samplingwidget = \html_writer::tag('form', $objectrenderer->render($samplesetwidget), ['id' => 'sampling_form', 'method' => 'post']);
+    }
+    if ($coursework->allocation_enabled()) {
+        $allocationwidget = new \mod_coursework_allocation_widget(new widget($coursework));
+        $template->allocationwidget = $objectrenderer->render($allocationwidget);
+    }
+
+    // Main allocation table.
+    $template->table = $objectrenderer->render($allocationtable);
+
+    echo $OUTPUT->header();
+    echo $OUTPUT->render_from_template('mod_coursework/allocate/main', $template);
+    echo $OUTPUT->footer();
+}
+
 $coursemoduleid = required_param('id', PARAM_INT);
 $coursemodule = get_coursemodule_from_id('coursework', $coursemoduleid, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', ['id' => $coursemodule->course], '*', MUST_EXIST);
 $coursework = $DB->get_record('coursework', ['id' => $coursemodule->instance], '*', MUST_EXIST);
-$coursework = coursework::find($coursework);
 $formsavebutton = optional_param('save', 0, PARAM_BOOL);
 $samplingformsavebutton = optional_param('save_sampling', 0, PARAM_BOOL);
 $allocateallbutton = optional_param('auto-allocate-all', 0, PARAM_BOOL);
-$allocatenonmanualbutton = optional_param('auto-allocate-non-manual', 0, PARAM_BOOL);
-$allocatenonallocatedbutton = optional_param('auto-allocate-non-allocated', 0, PARAM_BOOL);
-$assessorallocationstrategy = optional_param('assessorallocationstrategy', false, PARAM_TEXT);
-
-$moderationruletype = optional_param('addmodsetruletype', 0, PARAM_ALPHAEXT);
-$deletemodsetrule = optional_param('delete-mod-set-rule', [], PARAM_RAW);
+$coursework = coursework::find($coursework);
 
 // options used for pagination
 // If a session variable holding page preference for the specific coursework is not set, set default value (0).
@@ -76,10 +179,6 @@ $sortby = optional_param('sortby', '', PARAM_ALPHA);
 $sorthow = optional_param('sorthow', '', PARAM_ALPHA);
 $options = compact('sortby', 'sorthow', 'perpage', 'page');
 
-// Variable $_POST['allocatables'] comes as array of arrays which is not supported by optional_param_array.
-// However, we clean this later in process_data() function.
-$dirtyformdata = isset($_POST['allocatables']) ? $_POST['allocatables'] : [];
-
 require_login($course, true, $coursemodule);
 
 require_capability('mod/coursework:allocate', $PAGE->context, null, true, "Can't allocate here - permission denied.");
@@ -108,126 +207,12 @@ $PAGE->requires->js_init_call(
 
 $PAGE->requires->string_for_js('sameassessorerror', 'coursework');
 
-$allocationsmanager = $coursework->get_allocation_manager();
+// Process any form submissions. This may redirect away from the page.
+coursework_process_form_submissions($coursework, $coursemodule);
+
+// Prepare the main allocation table for rendering.
 $allocationtable = new mod_coursework\allocation\table\builder($coursework, $options);
 $allocationtable = new mod_coursework_allocation_table($allocationtable);
-$pageurl = $PAGE->url;
 
-// 1. Save the rules and settings from the config bits.
-
-if ($formsavebutton) {
-    // We need to save the allocation strategy. Make sure it's a real class first.
-    if ($assessorallocationstrategy) {
-        if ($assessorallocationstrategy != $coursework->assessorallocationstrategy) {
-            $coursework->set_assessor_allocation_strategy($assessorallocationstrategy);
-        }
-        $coursework->save_allocation_strategy_options($assessorallocationstrategy);
-    }
-
-    $coursework->save();
-}
-
-if ($samplingformsavebutton) {
-    if ($coursework->sampling_enabled()) {
-        $allocationsmanager->save_sample();
-    }
-}
-
-// Adjust moderation set if needs be. This must happen before moderation pairs are saved/auto-allocated.
-if ($deletemodsetrule) {
-    if (is_array($deletemodsetrule)) {
-        reset($deletemodsetrule);
-        $deleteruleid = key($deletemodsetrule); // Only one button can be clicked.
-        if (is_numeric($deleteruleid)) {
-            $DB->delete_records('coursework_mod_set_rules', ['id' => $deleteruleid]);
-        }
-    }
-}
-
-// 2. Process the manual allocations
-
-// Did we just get the form submitted to us?
-if ($formsavebutton) {
-    $processor = new \mod_coursework\allocation\table\processor($coursework);
-    $processor->process_data($dirtyformdata);
-
-    $allocationsmanager->auto_generate_sample_set();
-}
-
-// 3. Process the auto allocations to fill in the gaps.
-
-// Get the data to render as a moderation set widget.
-$allocationwidget = new widget($coursework);
-$allocationwidget = new \mod_coursework_allocation_widget($allocationwidget);
-
-/**
- * @var mod_coursework_object_renderer $object_renderer
- */
-$objectrenderer = $PAGE->get_renderer('mod_coursework', 'object');
-/**
- * @var mod_coursework_page_renderer $page_renderer
- */
-$pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
-
-$warnings = new \mod_coursework\warnings($coursework);
-
-$percentageallocationnotcomplete = $warnings->percentage_allocations_not_complete();
-$manualallocationnotcomplete = '';
-$studentsinmultiplegroups = '';
-if ($coursework->allocation_enabled()) {
-    $manualallocationnotcomplete = $warnings->manual_allocation_not_completed();
-    if ($coursework->use_groups == 1 || $coursework->assessorallocationstrategy == 'group_assessor') {
-        $studentsinmultiplegroups = $warnings->students_in_mutiple_groups();
-    }
-}
-
-if ($formsavebutton && $percentageallocationnotcomplete == '' && $manualallocationnotcomplete == '') {
-    redirect($CFG->wwwroot.'/mod/coursework/view.php?id='.$coursemoduleid, get_string('changessaved', 'mod_coursework'));
-} else if ($formsavebutton) {
-    redirect($PAGE->url);
-}
-
-echo $OUTPUT->header();
-echo $percentageallocationnotcomplete;
-if ($coursework->allocation_enabled()) {
-    echo $manualallocationnotcomplete;
-    echo $studentsinmultiplegroups;
-}
-
-// Add coursework id etc.
-echo \html_writer::input_hidden_params($PAGE->url);
-
-if ($coursework->sampling_enabled()) { // Do not delete yet - refactoring...
-    echo \html_writer::start_tag('form', ['id' => 'sampling_form',
-        'method' => 'post']);
-    $samplesetwidget = $allocationsmanager->get_sampling_set_widget();
-    echo $objectrenderer->render($samplesetwidget);
-    echo html_writer::end_tag('form');
-}
-
-if ($coursework->allocation_enabled()) {
-    echo $objectrenderer->render($allocationwidget);
-}
-
-// Spacer so that we can float the headers next to each other.
-$attributes = [
-    'class' => 'coursework_spacer',
-];
-echo html_writer::start_tag('div', $attributes);
-echo html_writer::end_tag('div');
-
-echo html_writer::tag('h3', get_string('assessormoderatorgrades', 'mod_coursework'));
-echo html_writer::tag('div', get_string('pininfo', 'mod_coursework'), ['class' => 'pininfo']);
-
-// Start the form with save button.
-/*
-$attributes = array('name' => 'save',
-                    'type' => 'submit',
-                    'id' => 'save_manual_allocations_1',
-                    'value' => get_string('saveeverything', 'mod_coursework'));
-echo html_writer::empty_tag('input', $attributes);
-echo $OUTPUT->help_icon('savemanualallocations', 'mod_coursework');
-*/
-echo $objectrenderer->render($allocationtable);
-
-echo $OUTPUT->footer();
+// Render the page.
+coursework_render_page($coursework, $allocationtable);
