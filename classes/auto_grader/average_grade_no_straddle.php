@@ -116,8 +116,16 @@ class average_grade_no_straddle extends average_grade {
      * @param int $courseworkid
      * @return array
      */
-    protected static function get_grade_class_boundaries(int $courseworkid): array {
+    public static function get_grade_class_boundaries(int $courseworkid): array {
         //todo these will come from DB.
+        return self::get_default_grade_class_boundaries();
+    }
+
+    /**
+     * Get the default grade class boundaries (e.g. if none are set at course or site level).
+     * @return array[]
+     */
+    public static function get_default_grade_class_boundaries(): array {
         return [
             [70.00, 100.00],
             [60.00, 69.99],

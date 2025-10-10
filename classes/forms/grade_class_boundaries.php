@@ -61,57 +61,42 @@ class grade_class_boundaries extends moodleform {
             get_string('automaticagreementgradebands_form_desc', 'coursework'))
         );
 
-        $defaults = $this->get_default_boundaries();
+        $bands =
+            \mod_coursework\auto_grader\average_grade_no_straddle::get_grade_class_boundaries($this->_customdata['courseworkid']);
 
-        $maxbands = 6;
-        for ($i = 1; $i <= $maxbands; $i++) {
+        foreach ($bands as $index => $band) {
             $mform->addElement('html', '<hr/><h2 class="h5">' . get_string('band', 'coursework') . '</h2>');
             $mform->addElement(
                 'float',
-                "grade_boundary_top_$i",
-                get_string('gradeboundarytop', 'mod_coursework', $i),
+                "grade_boundary_top_$index",
+                get_string('gradeboundarytop', 'mod_coursework', $index),
                 ['size' => '5']
             );
-            $mform->setType("grade_boundary_top_$i", PARAM_TEXT);
+            $mform->setType("grade_boundary_top_$index", PARAM_TEXT);
             $mform->addRule(
-                "grade_boundary_top_$i", get_string('err_valueoutofrange', 'mod_coursework'), 'numeric', null, 'client'
+                "grade_boundary_top_$index", get_string('err_valueoutofrange', 'mod_coursework'), 'numeric', null, 'client'
             );
-            $default = $defaults[$i - 1][1] ?? null;
+            $default = $band[1] ?? null;
             if ($default !== null) {
-                $mform->setDefault("grade_boundary_top_$i", number_format($default, 2));
+                $mform->setDefault("grade_boundary_top_$index", number_format($default, 2));
             }
 
             $mform->addElement(
                 'float',
-                "grade_boundary_bottom_$i",
-                get_string('gradeboundarybottom', 'mod_coursework', $i),
+                "grade_boundary_bottom_$index",
+                get_string('gradeboundarybottom', 'mod_coursework', $index),
                 ['size' => '5'],
             );
-            $mform->setType("grade_boundary_bottom_$i", PARAM_TEXT);
-            $default = $defaults[$i - 1][0] ?? null;
+            $mform->setType("grade_boundary_bottom_$index", PARAM_TEXT);
+            $default = $band[0] ?? null;
             if ($default !== null) {
-                $mform->setDefault("grade_boundary_bottom_$i", number_format($default, 2));
+                $mform->setDefault("grade_boundary_bottom_$index", number_format($default, 2));
             }
         }
         $mform->addElement('html', '<hr/>');
 
         $this->add_action_buttons();
 
-    }
-
-    /**
-     * Get the default grade boundaries.
-     * @return array[]
-     */
-    protected function get_default_boundaries(): array {
-        return [
-            [70.00, 100.00],
-            [60.00, 69.99],
-            [50.00, 59.99],
-            [40.00, 49.99],
-            [1.00, 39.99],
-            [0.00, 0.99],
-        ];
     }
 
     /**
