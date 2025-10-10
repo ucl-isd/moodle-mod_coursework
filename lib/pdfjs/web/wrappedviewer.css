@@ -3789,7 +3789,7 @@
   width: var(--editor-toolbar-height);
 }
 .modcoursework_pdfjswrapper :is(:is(:is(:is(.annotationEditorLayer :is(.freeTextEditor, .inkEditor, .stampEditor, .highlightEditor, .signatureEditor), .textLayer) .editToolbar) .buttons) .basic)::before {
-  content: "";
+  content: "X";
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-position: center;
@@ -3962,7 +3962,7 @@
   width: var(--editor-toolbar-height);
 }
 .modcoursework_pdfjswrapper :is(:is(:is(:is(.annotationEditorLayer :is(.freeTextEditor, .inkEditor, .stampEditor, .highlightEditor, .signatureEditor), .textLayer) .editToolbar) .buttons) .comment)::before {
-  content: "";
+  content: "X";
   -webkit-mask-image: var(--comment-edit-button-icon);
   mask-image: var(--comment-edit-button-icon);
   -webkit-mask-repeat: no-repeat;
