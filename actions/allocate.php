@@ -72,10 +72,14 @@ function coursework_process_form_submissions(coursework $coursework, $coursemodu
         $allocationsmanager->save_sample();
     }
 
-    if ($deletemodsetrule && is_array($deletemodsetrule)) {
-        $deleteruleid = key($deletemodsetrule);
-        if (is_numeric($deleteruleid)) {
-            $DB->delete_records('coursework_mod_set_rules', ['id' => $deleteruleid]);
+    // TODO - Leon and Stuart think this is never used.
+    if ($deletemodsetrule) {
+        if (is_array($deletemodsetrule)) {
+            reset($deletemodsetrule);
+            $deleteruleid = key($deletemodsetrule); // Only one button can be clicked.
+            if (is_numeric($deleteruleid)) {
+                $DB->delete_records('coursework_mod_set_rules', ['id' => $deleteruleid]);
+            }
         }
     }
 
