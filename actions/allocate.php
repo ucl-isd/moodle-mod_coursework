@@ -45,13 +45,12 @@ function coursework_process_form_submissions(coursework $coursework, $coursemodu
     $samplingformsavebutton = optional_param('save_sampling', 0, PARAM_BOOL);
     $assessorallocationstrategy = optional_param('assessorallocationstrategy', false, PARAM_TEXT);
     $deletemodsetrule = optional_param('delete-mod-set-rule', [], PARAM_RAW);
+    $allocationsmanager = $coursework->get_allocation_manager();
 
     // SHAME.
     // Variable $_POST['allocatables'] comes as array of arrays which is not supported by optional_param_array.
     // However, we clean this later in process_data() function.
     $dirtyformdata = isset($_POST['allocatables']) ? $_POST['allocatables'] : [];
-
-    $allocationsmanager = $coursework->get_allocation_manager();
 
     if ($formsavebutton) {
         // Save allocation strategy settings if a strategy was submitted.
@@ -142,6 +141,9 @@ $coursemoduleid = required_param('id', PARAM_INT);
 $coursemodule = get_coursemodule_from_id('coursework', $coursemoduleid, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', ['id' => $coursemodule->course], '*', MUST_EXIST);
 $coursework = $DB->get_record('coursework', ['id' => $coursemodule->instance], '*', MUST_EXIST);
+$formsavebutton = optional_param('save', 0, PARAM_BOOL);
+$samplingformsavebutton = optional_param('save_sampling', 0, PARAM_BOOL);
+$allocateallbutton = optional_param('auto-allocate-all', 0, PARAM_BOOL);
 $coursework = coursework::find($coursework);
 
 // options used for pagination
