@@ -1319,7 +1319,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $options = [
             'none' => get_string('none'),
             'percentage_distance' => get_string('automaticagreementpercentagedistance', 'coursework'),
-            'percentage_distance_no_straddle' => get_string('automaticagreementpercentagedistancenostraddling', 'coursework'),
+            'average_grade_no_straddle' => get_string('automaticagreementaveragegradenostraddling', 'coursework'),
             'average_grade' => get_string('automaticagreementaveragegrade', 'coursework'),
         ];
         $this->form()->addelement('select',
@@ -1330,19 +1330,13 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->form()->addhelpbutton('automaticagreementstrategy', 'automaticagreement', 'mod_coursework');
 
         $this->form()->hideif('automaticagreementstrategy', 'numberofmarkers', 'eq', 1);
-        $this->form()->hideif('automaticagreementrange', 'automaticagreementstrategy', 'eq', 'none');
         $this->form()->hideif('automaticagreementrange', 'automaticagreementstrategy', 'eq', 'average_grade');
+        $this->form()->hideif('automaticagreementrange', 'automaticagreementstrategy', 'eq', 'none');
 
-        $setbopundariesurl = "$CFG->wwwroot/mod/coursework/actions/set_grade_class_boundaries.php?courseworkid="
-            . $this->get_coursework_id();
-        $this->form()->addElement(
-            'selectwithlink',
-            'automaticagreementrange',
-            get_string('automaticagreementrange', 'mod_coursework'),
-            range(0, 100),
-            null,
-            ['link' => $setbopundariesurl, 'label' => get_string('gradeclasssetboundaries', 'coursework')]
-        );
+        $this->form()->addElement('select',
+                                  'automaticagreementrange',
+                                  get_string('automaticagreementrange', 'mod_coursework'),
+                                  range(0, 100));
         $this->form()->setType('automaticagreementrange', PARAM_INT);
         $this->form()->setDefault('automaticagreementrange', 10);
         $this->form()->addHelpButton('automaticagreementrange', 'automaticagreementrange', 'mod_coursework');
@@ -1351,16 +1345,22 @@ class mod_coursework_mod_form extends moodleform_mod {
         $roundingoptions = ['mid' => get_string('roundmid', 'mod_coursework'),
                                  'up' => get_string('roundup', 'mod_coursework'),
                                  'down' => get_string('rounddown', 'mod_coursework')];
-
-        $this->form()->addElement('select',
-                                   'roundingrule',
-                                    get_string('roundingrule', 'mod_coursework'),
-                                    $roundingoptions);
+        $setbopundariesurl = "$CFG->wwwroot/mod/coursework/actions/set_grade_class_boundaries.php?courseworkid="
+            . $this->get_coursework_id();
+        $this->form()->addElement(
+            'selectwithlink',
+            'roundingrule',
+            get_string('roundingrule', 'mod_coursework'),
+            $roundingoptions,
+            null,
+            ['link' => $setbopundariesurl, 'label' => get_string('gradeclasssetboundaries', 'coursework')]
+        );
         $this->form()->addhelpbutton('roundingrule', 'roundingrule', 'mod_coursework');
 
         $this->form()->setType('roundingrule', PARAM_ALPHAEXT);
         $this->form()->setDefault('roundingrule', 'mid');
-        $this->form()->hideif('roundingrule', 'automaticagreementstrategy', 'neq', 'average_grade');
+        $this->form()->hideif('roundingrule', 'automaticagreementstrategy', 'eq', 'percentage_distance');
+        $this->form()->hideif('roundingrule', 'automaticagreementstrategy', 'eq', 'none');
 
     }
 

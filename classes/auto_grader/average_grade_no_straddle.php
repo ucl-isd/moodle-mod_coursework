@@ -24,16 +24,35 @@ namespace mod_coursework\auto_grader;
 
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
-use mod_coursework\models\feedback;
-use mod_coursework\traits\autoagreement_functions;
 
 /**
- * Class percentage_distance is responsible for calculating and applying the automatically agreed grade if the initial
- * assessor grades are within a certain percentage of one another, and do not straddle class boundaries.
+ * Class average_grade_no_straddle is responsible for calculating and applying the automatically agreed average grade
+ * if the initial assessor grades are within a certain percentage of one another, and do not straddle class boundaries.
  *
  * @package mod_coursework\auto_grader
  */
-class percentage_distance_no_straddle extends percentage_distance {
+class average_grade_no_straddle extends average_grade {
+
+    /**
+     * @var coursework
+     */
+    private $coursework;
+
+    /**
+     * @var int
+     */
+    private $percentage;
+
+    /**
+     * Constructor.
+     * @param coursework $coursework
+     * @param allocatable $allocatable
+     */
+    public function __construct($coursework, $allocatable) {
+        $this->coursework = $coursework;
+        $this->percentage = (int)$this->coursework->automaticagreementrange;
+        parent::__construct($coursework, $allocatable);
+    }
 
     /**
      * This will test whether there is a grade already present, test whether the rules for this class match the
@@ -41,12 +60,26 @@ class percentage_distance_no_straddle extends percentage_distance {
      *
      */
     public function create_auto_grade_if_rules_match() {
-        if (self::grades_straddle_class_boundaries($this->get_coursework()->id(), $this->grades_as_percentages())) {
+        if (!$this->grades_are_close_enough()
+            || self::grades_straddle_class_boundaries($this->get_coursework()->id(), $this->grades_as_percentages())) {
             return;
         }
         parent::create_auto_grade_if_rules_match();
     }
 
+    /**
+     * Are grades close enough (within % setting in cm settings) to allow auto agreement?
+     * @return bool
+     */
+    private function grades_are_close_enough(): bool {
+        $grades = $this->grades_as_percentages();
+        if (empty($grades)) {
+            return false;
+        }
+        $maxgrade = max($grades);
+        $mingrade = min($grades);
+        return ($maxgrade - $mingrade) <= $this->percentage;
+    }
 
     /**
      * Do the grades awarded for this assessment straddle class boundaries?

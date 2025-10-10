@@ -427,7 +427,7 @@ class feedback_controller extends controller_base {
      * @param $submission
      */
     protected function try_auto_feedback_creation($submission) {
-        // automatic agreement if necessary
+        // Automatic agreement if necessary.
         $autofeedbackclassname = '\mod_coursework\auto_grader\\' . $this->coursework->automaticagreementstrategy;
         /**
          * @var auto_grader $auto_grader

@@ -56,7 +56,10 @@ class grade_class_boundaries extends moodleform {
             \html_writer::tag('h1', get_string('gradeboundariessettingfor', 'coursework', $titleelement), ['class' => 'h2'])
         );
 
-        $mform->addElement('html', \html_writer::tag('p', get_string('automaticagreementrange_form_desc', 'coursework')));
+        $mform->addElement('html', \html_writer::tag(
+            'p',
+            get_string('automaticagreementgradebands_form_desc', 'coursework'))
+        );
 
         $defaults = $this->get_default_boundaries();
 

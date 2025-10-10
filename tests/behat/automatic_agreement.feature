@@ -23,6 +23,8 @@ Feature: Automatic agreement for simple grades
     And I visit the coursework page
     And I click on the add feedback button for assessor 1
     When I grade the submission as 56 using the grading form
+    And I press "Save and finalise"
+    And I visit the coursework page
     Then I should not see the final grade on the multiple marker page
 
   @javascript
@@ -33,12 +35,14 @@ Feature: Automatic agreement for simple grades
     And I visit the coursework page
     And I click on the add feedback button for assessor 1
     When I grade the submission as 67 using the grading form
+    And I press "Save and finalise"
     And I log out
 
     And I log in as the other teacher
     And I visit the coursework page
     And I click on the add feedback button for assessor 2
     When I grade the submission as 63 using the grading form
+    And I press "Save and finalise"
     And I visit the coursework page
     Then I should see the final grade as 67 on the multiple marker page
 
