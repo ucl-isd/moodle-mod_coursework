@@ -12,440 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-:root {
-  --xfa-unfocused-field-background: url("data:image/svg+xml;charset=UTF-8,<svg width='1px' height='1px' xmlns='http://www.w3.org/2000/svg'><rect width='100%' height='100%' style='fill:rgba(0, 54, 255, 0.13);'/></svg>");
-  --xfa-focus-outline: auto;
-}
-
-@media screen and (forced-colors: active) {
-  :root {
-    --xfa-focus-outline: 2px solid CanvasText;
-  }
-}
-:root {
-  --clear-signature-button-icon: url(images/editor-toolbar-delete.svg);
-  --csstools-light-dark-toggle--71: var(--csstools-color-scheme--light) #2b2a33;
-  --signature-bg: var(--csstools-light-dark-toggle--71, #f9f9fb);
-  --csstools-light-dark-toggle--72: var(--csstools-color-scheme--light) var(--signature-bg);
-  --signature-hover-bg: var(--csstools-light-dark-toggle--72, #f0f0f4);
-  --button-signature-bg: transparent;
-  --button-signature-color: var(--main-color);
-  --csstools-light-dark-toggle--73: var(--csstools-color-scheme--light) #5b5b66;
-  --button-signature-active-bg: var(--csstools-light-dark-toggle--73, #cfcfd8);
-  --button-signature-active-border: none;
-  --button-signature-active-color: var(--button-signature-color);
-  --button-signature-border: none;
-  --csstools-light-dark-toggle--74: var(--csstools-color-scheme--light) #52525e;
-  --button-signature-hover-bg: var(--csstools-light-dark-toggle--74, #e0e0e6);
-  --button-signature-hover-color: var(--button-signature-color);
-}
-
-@supports (color: light-dark(red, red)) {
-  :root {
-    --signature-bg: light-dark(#f9f9fb, #2b2a33);
-    --signature-hover-bg: light-dark(#f0f0f4, var(--signature-bg));
-    --button-signature-active-bg: light-dark(#cfcfd8, #5b5b66);
-    --button-signature-hover-bg: light-dark(#e0e0e6, #52525e);
-  }
-}
-@supports not (color: light-dark(tan, tan)) {
-  :root * {
-    --csstools-light-dark-toggle--71: var(--csstools-color-scheme--light) #2b2a33;
-    --signature-bg: var(--csstools-light-dark-toggle--71, #f9f9fb);
-    --csstools-light-dark-toggle--72: var(--csstools-color-scheme--light) var(--signature-bg);
-    --signature-hover-bg: var(--csstools-light-dark-toggle--72, #f0f0f4);
-    --csstools-light-dark-toggle--73: var(--csstools-color-scheme--light) #5b5b66;
-    --button-signature-active-bg: var(--csstools-light-dark-toggle--73, #cfcfd8);
-    --csstools-light-dark-toggle--74: var(--csstools-color-scheme--light) #52525e;
-    --button-signature-hover-bg: var(--csstools-light-dark-toggle--74, #e0e0e6);
-  }
-}
-@media screen and (forced-colors: active) {
-  :root {
-    --signature-bg: HighlightText;
-    --signature-hover-bg: var(--signature-bg);
-    --button-signature-bg: HighlightText;
-    --button-signature-color: ButtonText;
-    --button-signature-active-bg: ButtonText;
-    --button-signature-active-color: HighlightText;
-    --button-signature-border: 1px solid ButtonText;
-    --button-signature-hover-bg: Highlight;
-    --button-signature-hover-color: HighlightText;
-  }
-}
-:root {
-  --editor-toolbar-vert-offset: 6px;
-  --outline-width: 2px;
-  --outline-color: #0060df;
-  --outline-around-width: 1px;
-  --outline-around-color: #f0f0f4;
-  --hover-outline-around-color: var(--outline-around-color);
-  --focus-outline: solid var(--outline-width) var(--outline-color);
-  --unfocus-outline: solid var(--outline-width) transparent;
-  --focus-outline-around: solid var(--outline-around-width) var(--outline-around-color);
-  --hover-outline-color: #8f8f9d;
-  --hover-outline: solid var(--outline-width) var(--hover-outline-color);
-  --hover-outline-around: solid var(--outline-around-width) var(--hover-outline-around-color);
-  --freetext-line-height: 1.35;
-  --freetext-padding: 2px;
-  --resizer-bg-color: var(--outline-color);
-  --resizer-size: 6px;
-  --resizer-shift: calc(
-          0px - (var(--outline-width) + var(--resizer-size)) / 2 -
-          var(--outline-around-width)
-  );
-  --editorFreeText-editing-cursor: text;
-  --editorInk-editing-cursor: url(images/cursor-editorInk.svg) 0 16, pointer;
-  --editorHighlight-editing-cursor: url(images/cursor-editorTextHighlight.svg) 24 24, text;
-  --editorFreeHighlight-editing-cursor: url(images/cursor-editorFreeHighlight.svg) 1 18, pointer;
-  --new-alt-text-warning-image: url(images/altText_warning.svg);
-}
-
-@media (min-resolution: 1.1dppx) {
-  :root {
-    --editorFreeText-editing-cursor: url(images/cursor-editorFreeText.svg) 0 16, text;
-  }
-}
-@media screen and (forced-colors: active) {
-  :root {
-    --outline-color: CanvasText;
-    --outline-around-color: ButtonFace;
-    --resizer-bg-color: ButtonText;
-    --hover-outline-color: Highlight;
-    --hover-outline-around-color: SelectedItemText;
-  }
-}
-:root {
-  --csstools-color-scheme--light: initial;
-  color-scheme: light dark;
-  --viewer-container-height: 0;
-  --pdfViewer-padding-bottom: 0;
-  --page-margin: 1px auto -8px;
-  --page-border: 9px solid transparent;
-  --spreadHorizontalWrapped-margin-LR: -3.5px;
-  --loading-icon-delay: 400ms;
-  --csstools-light-dark-toggle--128: var(--csstools-color-scheme--light) #0df;
-  --focus-ring-color: var(--csstools-light-dark-toggle--128, #0060df);
-  --focus-ring-outline: 2px solid var(--focus-ring-color);
-}
-
-@supports (color: light-dark(red, red)) {
-  :root {
-    --focus-ring-color: light-dark(#0060df, #0df);
-  }
-}
-@supports not (color: light-dark(tan, tan)) {
-  :root * {
-    --csstools-light-dark-toggle--128: var(--csstools-color-scheme--light) #0df;
-    --focus-ring-color: var(--csstools-light-dark-toggle--128, #0060df);
-  }
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --csstools-color-scheme--light: ;
-  }
-}
-@media screen and (forced-colors: active) {
-  :root {
-    --pdfViewer-padding-bottom: 9px;
-    --page-margin: 8px auto -1px;
-    --page-border: 1px solid CanvasText;
-    --spreadHorizontalWrapped-margin-LR: 3.5px;
-    --focus-ring-color: CanvasText;
-  }
-}
-:root {
-  --dir-factor: 1;
-  --inline-start: left;
-  --inline-end: right;
-  --sidebar-width: 200px;
-  --sidebar-transition-duration: 200ms;
-  --sidebar-transition-timing-function: ease;
-  --toolbar-height: 32px;
-  --toolbar-horizontal-padding: 1px;
-  --toolbar-vertical-padding: 2px;
-  --icon-size: 16px;
-  --toolbar-icon-opacity: 0.7;
-  --doorhanger-icon-opacity: 0.9;
-  --doorhanger-height: 8px;
-  --csstools-light-dark-toggle--0: var(--csstools-color-scheme--light) rgb(249 249 250);
-  --main-color: var(--csstools-light-dark-toggle--0, rgb(12 12 13));
-  --csstools-light-dark-toggle--1: var(--csstools-color-scheme--light) rgb(42 42 46);
-  --body-bg-color: var(--csstools-light-dark-toggle--1, rgb(212 212 215));
-  --csstools-light-dark-toggle--2: var(--csstools-color-scheme--light) rgb(0 96 223);
-  --progressBar-color: var(--csstools-light-dark-toggle--2, rgb(10 132 255));
-  --csstools-light-dark-toggle--3: var(--csstools-color-scheme--light) rgb(40 40 43);
-  --progressBar-bg-color: var(--csstools-light-dark-toggle--3, rgb(221 221 222));
-  --csstools-light-dark-toggle--4: var(--csstools-color-scheme--light) rgb(20 68 133);
-  --progressBar-blend-color: var(--csstools-light-dark-toggle--4, rgb(116 177 239));
-  --csstools-light-dark-toggle--5: var(--csstools-color-scheme--light) rgb(121 121 123);
-  --scrollbar-color: var(--csstools-light-dark-toggle--5, auto);
-  --csstools-light-dark-toggle--6: var(--csstools-color-scheme--light) rgb(35 35 39);
-  --scrollbar-bg-color: var(--csstools-light-dark-toggle--6, auto);
-  --csstools-light-dark-toggle--7: var(--csstools-color-scheme--light) rgb(255 255 255);
-  --toolbar-icon-bg-color: var(--csstools-light-dark-toggle--7, rgb(0 0 0));
-  --csstools-light-dark-toggle--8: var(--csstools-color-scheme--light) rgb(255 255 255);
-  --toolbar-icon-hover-bg-color: var(--csstools-light-dark-toggle--8, rgb(0 0 0));
-  --csstools-light-dark-toggle--9: var(--csstools-color-scheme--light) rgb(42 42 46 / 0.9);
-  --sidebar-narrow-bg-color: var(--csstools-light-dark-toggle--9, rgb(212 212 215 / 0.9));
-  --csstools-light-dark-toggle--10: var(--csstools-color-scheme--light) rgb(50 50 52);
-  --sidebar-toolbar-bg-color: var(--csstools-light-dark-toggle--10, rgb(245 246 247));
-  --csstools-light-dark-toggle--11: var(--csstools-color-scheme--light) rgb(56 56 61);
-  --toolbar-bg-color: var(--csstools-light-dark-toggle--11, rgb(249 249 250));
-  --csstools-light-dark-toggle--12: var(--csstools-color-scheme--light) rgb(12 12 13);
-  --toolbar-border-color: var(--csstools-light-dark-toggle--12, rgb(184 184 184));
-  --toolbar-box-shadow: 0 1px 0 var(--toolbar-border-color);
-  --toolbar-border-bottom: none;
-  --toolbarSidebar-box-shadow: inset calc(-1px * var(--dir-factor)) 0 0 rgb(0 0 0 / 0.25), 0 1px 0 rgb(0 0 0 / 0.15), 0 0 1px rgb(0 0 0 / 0.1);
-  --toolbarSidebar-border-bottom: none;
-  --button-hover-color: color-mix(in srgb, currentColor 17%, transparent);
-  --csstools-light-dark-toggle--13: var(--csstools-color-scheme--light) rgb(255 255 255);
-  --toggled-btn-color: var(--csstools-light-dark-toggle--13, rgb(0 0 0));
-  --toggled-btn-bg-color: rgb(0 0 0 / 0.3);
-  --toggled-hover-active-btn-color: rgb(0 0 0 / 0.4);
-  --toggled-hover-btn-outline: none;
-  --csstools-light-dark-toggle--14: var(--csstools-color-scheme--light) rgb(74 74 79);
-  --dropdown-btn-bg-color: var(--csstools-light-dark-toggle--14, rgb(215 215 219));
-  --dropdown-btn-border: none;
-  --separator-color: rgb(0 0 0 / 0.3);
-  --csstools-light-dark-toggle--15: var(--csstools-color-scheme--light) rgb(250 250 250);
-  --field-color: var(--csstools-light-dark-toggle--15, rgb(6 6 6));
-  --csstools-light-dark-toggle--16: var(--csstools-color-scheme--light) rgb(64 64 68);
-  --field-bg-color: var(--csstools-light-dark-toggle--16, rgb(255 255 255));
-  --csstools-light-dark-toggle--17: var(--csstools-color-scheme--light) rgb(115 115 115);
-  --field-border-color: var(--csstools-light-dark-toggle--17, rgb(187 187 188));
-  --csstools-light-dark-toggle--18: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.8);
-  --treeitem-color: var(--csstools-light-dark-toggle--18, rgb(0 0 0 / 0.8));
-  --csstools-light-dark-toggle--19: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.15);
-  --treeitem-bg-color: var(--csstools-light-dark-toggle--19, rgb(0 0 0 / 0.15));
-  --csstools-light-dark-toggle--20: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.9);
-  --treeitem-hover-color: var(--csstools-light-dark-toggle--20, rgb(0 0 0 / 0.9));
-  --csstools-light-dark-toggle--21: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.9);
-  --treeitem-selected-color: var(--csstools-light-dark-toggle--21, rgb(0 0 0 / 0.9));
-  --csstools-light-dark-toggle--22: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.25);
-  --treeitem-selected-bg-color: var(--csstools-light-dark-toggle--22, rgb(0 0 0 / 0.25));
-  --csstools-light-dark-toggle--23: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.1);
-  --thumbnail-hover-color: var(--csstools-light-dark-toggle--23, rgb(0 0 0 / 0.1));
-  --csstools-light-dark-toggle--24: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.2);
-  --thumbnail-selected-color: var(--csstools-light-dark-toggle--24, rgb(0 0 0 / 0.2));
-  --csstools-light-dark-toggle--25: var(--csstools-color-scheme--light) #42414d;
-  --doorhanger-bg-color: var(--csstools-light-dark-toggle--25, rgb(255 255 255));
-  --csstools-light-dark-toggle--26: var(--csstools-color-scheme--light) rgb(39 39 43);
-  --doorhanger-border-color: var(--csstools-light-dark-toggle--26, rgb(12 12 13 / 0.2));
-  --csstools-light-dark-toggle--27: var(--csstools-color-scheme--light) rgb(249 249 250);
-  --doorhanger-hover-color: var(--csstools-light-dark-toggle--27, rgb(12 12 13));
-  --csstools-light-dark-toggle--28: var(--csstools-color-scheme--light) rgb(92 92 97);
-  --doorhanger-separator-color: var(--csstools-light-dark-toggle--28, rgb(222 222 222));
-  --dialog-button-border: none;
-  --csstools-light-dark-toggle--29: var(--csstools-color-scheme--light) rgb(92 92 97);
-  --dialog-button-bg-color: var(--csstools-light-dark-toggle--29, rgb(12 12 13 / 0.1));
-  --csstools-light-dark-toggle--30: var(--csstools-color-scheme--light) rgb(115 115 115);
-  --dialog-button-hover-bg-color: var(--csstools-light-dark-toggle--30, rgb(12 12 13 / 0.3));
-  --loading-icon: url(images/loading.svg);
-  --treeitem-expanded-icon: url(images/treeitem-expanded.svg);
-  --treeitem-collapsed-icon: url(images/treeitem-collapsed.svg);
-  --toolbarButton-editorComment-icon: url(images/comment-editButton.svg);
-  --toolbarButton-editorFreeText-icon: url(images/toolbarButton-editorFreeText.svg);
-  --toolbarButton-editorHighlight-icon: url(images/toolbarButton-editorHighlight.svg);
-  --toolbarButton-editorInk-icon: url(images/toolbarButton-editorInk.svg);
-  --toolbarButton-editorStamp-icon: url(images/toolbarButton-editorStamp.svg);
-  --toolbarButton-editorSignature-icon: url(images/toolbarButton-editorSignature.svg);
-  --toolbarButton-menuArrow-icon: url(images/toolbarButton-menuArrow.svg);
-  --toolbarButton-sidebarToggle-icon: url(images/toolbarButton-sidebarToggle.svg);
-  --toolbarButton-secondaryToolbarToggle-icon: url(images/toolbarButton-secondaryToolbarToggle.svg);
-  --toolbarButton-pageUp-icon: url(images/toolbarButton-pageUp.svg);
-  --toolbarButton-pageDown-icon: url(images/toolbarButton-pageDown.svg);
-  --toolbarButton-zoomOut-icon: url(images/toolbarButton-zoomOut.svg);
-  --toolbarButton-zoomIn-icon: url(images/toolbarButton-zoomIn.svg);
-  --toolbarButton-presentationMode-icon: url(images/toolbarButton-presentationMode.svg);
-  --toolbarButton-print-icon: url(images/toolbarButton-print.svg);
-  --toolbarButton-openFile-icon: url(images/toolbarButton-openFile.svg);
-  --toolbarButton-download-icon: url(images/toolbarButton-download.svg);
-  --toolbarButton-bookmark-icon: url(images/toolbarButton-bookmark.svg);
-  --toolbarButton-viewThumbnail-icon: url(images/toolbarButton-viewThumbnail.svg);
-  --toolbarButton-viewOutline-icon: url(images/toolbarButton-viewOutline.svg);
-  --toolbarButton-viewAttachments-icon: url(images/toolbarButton-viewAttachments.svg);
-  --toolbarButton-viewLayers-icon: url(images/toolbarButton-viewLayers.svg);
-  --toolbarButton-currentOutlineItem-icon: url(images/toolbarButton-currentOutlineItem.svg);
-  --toolbarButton-search-icon: url(images/toolbarButton-search.svg);
-  --findbarButton-previous-icon: url(images/findbarButton-previous.svg);
-  --findbarButton-next-icon: url(images/findbarButton-next.svg);
-  --secondaryToolbarButton-firstPage-icon: url(images/secondaryToolbarButton-firstPage.svg);
-  --secondaryToolbarButton-lastPage-icon: url(images/secondaryToolbarButton-lastPage.svg);
-  --secondaryToolbarButton-rotateCcw-icon: url(images/secondaryToolbarButton-rotateCcw.svg);
-  --secondaryToolbarButton-rotateCw-icon: url(images/secondaryToolbarButton-rotateCw.svg);
-  --secondaryToolbarButton-selectTool-icon: url(images/secondaryToolbarButton-selectTool.svg);
-  --secondaryToolbarButton-handTool-icon: url(images/secondaryToolbarButton-handTool.svg);
-  --secondaryToolbarButton-scrollPage-icon: url(images/secondaryToolbarButton-scrollPage.svg);
-  --secondaryToolbarButton-scrollVertical-icon: url(images/secondaryToolbarButton-scrollVertical.svg);
-  --secondaryToolbarButton-scrollHorizontal-icon: url(images/secondaryToolbarButton-scrollHorizontal.svg);
-  --secondaryToolbarButton-scrollWrapped-icon: url(images/secondaryToolbarButton-scrollWrapped.svg);
-  --secondaryToolbarButton-spreadNone-icon: url(images/secondaryToolbarButton-spreadNone.svg);
-  --secondaryToolbarButton-spreadOdd-icon: url(images/secondaryToolbarButton-spreadOdd.svg);
-  --secondaryToolbarButton-spreadEven-icon: url(images/secondaryToolbarButton-spreadEven.svg);
-  --secondaryToolbarButton-imageAltTextSettings-icon: var(
-                  --toolbarButton-editorStamp-icon
-  );
-  --secondaryToolbarButton-documentProperties-icon: url(images/secondaryToolbarButton-documentProperties.svg);
-  --editorParams-stampAddImage-icon: url(images/toolbarButton-zoomIn.svg);
-  --comment-edit-button-icon: url(images/comment-editButton.svg);
-}
-
-@supports (color: light-dark(red, red)) and (color: rgba(0, 0, 0, 0)) {
-  :root {
-    --main-color: light-dark(rgb(12 12 13), rgb(249 249 250));
-    --body-bg-color: light-dark(rgb(212 212 215), rgb(42 42 46));
-    --progressBar-color: light-dark(rgb(10 132 255), rgb(0 96 223));
-    --progressBar-bg-color: light-dark(rgb(221 221 222), rgb(40 40 43));
-    --progressBar-blend-color: light-dark(rgb(116 177 239), rgb(20 68 133));
-    --scrollbar-color: light-dark(auto, rgb(121 121 123));
-    --scrollbar-bg-color: light-dark(auto, rgb(35 35 39));
-    --toolbar-icon-bg-color: light-dark(rgb(0 0 0), rgb(255 255 255));
-    --toolbar-icon-hover-bg-color: light-dark(rgb(0 0 0), rgb(255 255 255));
-    --sidebar-narrow-bg-color: light-dark(
-                    rgb(212 212 215 / 0.9),
-                    rgb(42 42 46 / 0.9)
-    );
-    --sidebar-toolbar-bg-color: light-dark(rgb(245 246 247), rgb(50 50 52));
-    --toolbar-bg-color: light-dark(rgb(249 249 250), rgb(56 56 61));
-    --toolbar-border-color: light-dark(rgb(184 184 184), rgb(12 12 13));
-    --toggled-btn-color: light-dark(rgb(0 0 0), rgb(255 255 255));
-    --dropdown-btn-bg-color: light-dark(rgb(215 215 219), rgb(74 74 79));
-    --field-color: light-dark(rgb(6 6 6), rgb(250 250 250));
-    --field-bg-color: light-dark(rgb(255 255 255), rgb(64 64 68));
-    --field-border-color: light-dark(rgb(187 187 188), rgb(115 115 115));
-    --treeitem-color: light-dark(rgb(0 0 0 / 0.8), rgb(255 255 255 / 0.8));
-    --treeitem-bg-color: light-dark(rgb(0 0 0 / 0.15), rgb(255 255 255 / 0.15));
-    --treeitem-hover-color: light-dark(rgb(0 0 0 / 0.9), rgb(255 255 255 / 0.9));
-    --treeitem-selected-color: light-dark(
-                    rgb(0 0 0 / 0.9),
-                    rgb(255 255 255 / 0.9)
-    );
-    --treeitem-selected-bg-color: light-dark(
-                    rgb(0 0 0 / 0.25),
-                    rgb(255 255 255 / 0.25)
-    );
-    --thumbnail-hover-color: light-dark(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.1));
-    --thumbnail-selected-color: light-dark(
-                    rgb(0 0 0 / 0.2),
-                    rgb(255 255 255 / 0.2)
-    );
-    --doorhanger-bg-color: light-dark(rgb(255 255 255), #42414d);
-    --doorhanger-border-color: light-dark(rgb(12 12 13 / 0.2), rgb(39 39 43));
-    --doorhanger-hover-color: light-dark(rgb(12 12 13), rgb(249 249 250));
-    --doorhanger-separator-color: light-dark(rgb(222 222 222), rgb(92 92 97));
-    --dialog-button-bg-color: light-dark(rgb(12 12 13 / 0.1), rgb(92 92 97));
-    --dialog-button-hover-bg-color: light-dark(
-                    rgb(12 12 13 / 0.3),
-                    rgb(115 115 115)
-    );
-  }
-}
-@supports not (color: light-dark(tan, tan)) {
-  :root * {
-    --csstools-light-dark-toggle--0: var(--csstools-color-scheme--light) rgb(249 249 250);
-    --main-color: var(--csstools-light-dark-toggle--0, rgb(12 12 13));
-    --csstools-light-dark-toggle--1: var(--csstools-color-scheme--light) rgb(42 42 46);
-    --body-bg-color: var(--csstools-light-dark-toggle--1, rgb(212 212 215));
-    --csstools-light-dark-toggle--2: var(--csstools-color-scheme--light) rgb(0 96 223);
-    --progressBar-color: var(--csstools-light-dark-toggle--2, rgb(10 132 255));
-    --csstools-light-dark-toggle--3: var(--csstools-color-scheme--light) rgb(40 40 43);
-    --progressBar-bg-color: var(--csstools-light-dark-toggle--3, rgb(221 221 222));
-    --csstools-light-dark-toggle--4: var(--csstools-color-scheme--light) rgb(20 68 133);
-    --progressBar-blend-color: var(--csstools-light-dark-toggle--4, rgb(116 177 239));
-    --csstools-light-dark-toggle--5: var(--csstools-color-scheme--light) rgb(121 121 123);
-    --scrollbar-color: var(--csstools-light-dark-toggle--5, auto);
-    --csstools-light-dark-toggle--6: var(--csstools-color-scheme--light) rgb(35 35 39);
-    --scrollbar-bg-color: var(--csstools-light-dark-toggle--6, auto);
-    --csstools-light-dark-toggle--7: var(--csstools-color-scheme--light) rgb(255 255 255);
-    --toolbar-icon-bg-color: var(--csstools-light-dark-toggle--7, rgb(0 0 0));
-    --csstools-light-dark-toggle--8: var(--csstools-color-scheme--light) rgb(255 255 255);
-    --toolbar-icon-hover-bg-color: var(--csstools-light-dark-toggle--8, rgb(0 0 0));
-    --csstools-light-dark-toggle--9: var(--csstools-color-scheme--light) rgb(42 42 46 / 0.9);
-    --sidebar-narrow-bg-color: var(--csstools-light-dark-toggle--9, rgb(212 212 215 / 0.9));
-    --csstools-light-dark-toggle--10: var(--csstools-color-scheme--light) rgb(50 50 52);
-    --sidebar-toolbar-bg-color: var(--csstools-light-dark-toggle--10, rgb(245 246 247));
-    --csstools-light-dark-toggle--11: var(--csstools-color-scheme--light) rgb(56 56 61);
-    --toolbar-bg-color: var(--csstools-light-dark-toggle--11, rgb(249 249 250));
-    --csstools-light-dark-toggle--12: var(--csstools-color-scheme--light) rgb(12 12 13);
-    --toolbar-border-color: var(--csstools-light-dark-toggle--12, rgb(184 184 184));
-    --csstools-light-dark-toggle--13: var(--csstools-color-scheme--light) rgb(255 255 255);
-    --toggled-btn-color: var(--csstools-light-dark-toggle--13, rgb(0 0 0));
-    --csstools-light-dark-toggle--14: var(--csstools-color-scheme--light) rgb(74 74 79);
-    --dropdown-btn-bg-color: var(--csstools-light-dark-toggle--14, rgb(215 215 219));
-    --csstools-light-dark-toggle--15: var(--csstools-color-scheme--light) rgb(250 250 250);
-    --field-color: var(--csstools-light-dark-toggle--15, rgb(6 6 6));
-    --csstools-light-dark-toggle--16: var(--csstools-color-scheme--light) rgb(64 64 68);
-    --field-bg-color: var(--csstools-light-dark-toggle--16, rgb(255 255 255));
-    --csstools-light-dark-toggle--17: var(--csstools-color-scheme--light) rgb(115 115 115);
-    --field-border-color: var(--csstools-light-dark-toggle--17, rgb(187 187 188));
-    --csstools-light-dark-toggle--18: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.8);
-    --treeitem-color: var(--csstools-light-dark-toggle--18, rgb(0 0 0 / 0.8));
-    --csstools-light-dark-toggle--19: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.15);
-    --treeitem-bg-color: var(--csstools-light-dark-toggle--19, rgb(0 0 0 / 0.15));
-    --csstools-light-dark-toggle--20: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.9);
-    --treeitem-hover-color: var(--csstools-light-dark-toggle--20, rgb(0 0 0 / 0.9));
-    --csstools-light-dark-toggle--21: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.9);
-    --treeitem-selected-color: var(--csstools-light-dark-toggle--21, rgb(0 0 0 / 0.9));
-    --csstools-light-dark-toggle--22: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.25);
-    --treeitem-selected-bg-color: var(--csstools-light-dark-toggle--22, rgb(0 0 0 / 0.25));
-    --csstools-light-dark-toggle--23: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.1);
-    --thumbnail-hover-color: var(--csstools-light-dark-toggle--23, rgb(0 0 0 / 0.1));
-    --csstools-light-dark-toggle--24: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.2);
-    --thumbnail-selected-color: var(--csstools-light-dark-toggle--24, rgb(0 0 0 / 0.2));
-    --csstools-light-dark-toggle--25: var(--csstools-color-scheme--light) #42414d;
-    --doorhanger-bg-color: var(--csstools-light-dark-toggle--25, rgb(255 255 255));
-    --csstools-light-dark-toggle--26: var(--csstools-color-scheme--light) rgb(39 39 43);
-    --doorhanger-border-color: var(--csstools-light-dark-toggle--26, rgb(12 12 13 / 0.2));
-    --csstools-light-dark-toggle--27: var(--csstools-color-scheme--light) rgb(249 249 250);
-    --doorhanger-hover-color: var(--csstools-light-dark-toggle--27, rgb(12 12 13));
-    --csstools-light-dark-toggle--28: var(--csstools-color-scheme--light) rgb(92 92 97);
-    --doorhanger-separator-color: var(--csstools-light-dark-toggle--28, rgb(222 222 222));
-    --csstools-light-dark-toggle--29: var(--csstools-color-scheme--light) rgb(92 92 97);
-    --dialog-button-bg-color: var(--csstools-light-dark-toggle--29, rgb(12 12 13 / 0.1));
-    --csstools-light-dark-toggle--30: var(--csstools-color-scheme--light) rgb(115 115 115);
-    --dialog-button-hover-bg-color: var(--csstools-light-dark-toggle--30, rgb(12 12 13 / 0.3));
-  }
-}
-[dir=rtl]:root {
-  --dir-factor: -1;
-  --inline-start: right;
-  --inline-end: left;
-}
-
-@media screen and (forced-colors: active) {
-  :root {
-    --button-hover-color: Highlight;
-    --toolbar-icon-opacity: 1;
-    --toolbar-icon-bg-color: ButtonText;
-    --toolbar-icon-hover-bg-color: ButtonFace;
-    --toggled-hover-active-btn-color: ButtonText;
-    --toggled-hover-btn-outline: 2px solid ButtonBorder;
-    --toolbar-border-color: CanvasText;
-    --toolbar-border-bottom: 1px solid var(--toolbar-border-color);
-    --toolbar-box-shadow: none;
-    --toggled-btn-color: HighlightText;
-    --toggled-btn-bg-color: LinkText;
-    --doorhanger-hover-color: ButtonFace;
-    --doorhanger-border-color-whcm: 1px solid ButtonText;
-    --doorhanger-triangle-opacity-whcm: 0;
-    --dialog-button-border: 1px solid Highlight;
-    --dialog-button-hover-bg-color: Highlight;
-    --dialog-button-hover-color: ButtonFace;
-    --dropdown-btn-border: 1px solid ButtonText;
-    --field-border-color: ButtonText;
-    --main-color: CanvasText;
-    --separator-color: GrayText;
-    --doorhanger-separator-color: GrayText;
-    --toolbarSidebar-box-shadow: none;
-    --toolbarSidebar-border-bottom: 1px solid var(--toolbar-border-color);
-  }
-}
-@media screen and (prefers-reduced-motion: reduce) {
-  :root {
-    --sidebar-transition-duration: 0;
-  }
-}
 .modcoursework_pdfjswrapper .messageBar {
   --closing-button-icon: url(images/messageBar_closingButton.svg);
   --message-bar-close-button-color: var(--text-primary-color);
@@ -1601,7 +1167,14 @@
   left: 0;
   z-index: -1;
 }
+.modcoursework_pdfjswrapper {
+  --xfa-unfocused-field-background: url("data:image/svg+xml;charset=UTF-8,<svg width='1px' height='1px' xmlns='http://www.w3.org/2000/svg'><rect width='100%' height='100%' style='fill:rgba(0, 54, 255, 0.13);'/></svg>");
+  --xfa-focus-outline: auto;
+}
 @media screen and (forced-colors: active) {
+  .modcoursework_pdfjswrapper {
+    --xfa-focus-outline: 2px solid CanvasText;
+  }
   .modcoursework_pdfjswrapper .xfaLayer *:required {
     outline: 1.5px solid selectedItem;
   }
@@ -2131,6 +1704,56 @@
   }
   .modcoursework_pdfjswrapper .toggle-button[aria-pressed=true]:enabled:hover:active::after {
     border-color: var(--toggle-border-color-active);
+  }
+}
+.modcoursework_pdfjswrapper {
+  --clear-signature-button-icon: url(images/editor-toolbar-delete.svg);
+  --csstools-light-dark-toggle--71: var(--csstools-color-scheme--light) #2b2a33;
+  --signature-bg: var(--csstools-light-dark-toggle--71, #f9f9fb);
+  --csstools-light-dark-toggle--72: var(--csstools-color-scheme--light) var(--signature-bg);
+  --signature-hover-bg: var(--csstools-light-dark-toggle--72, #f0f0f4);
+  --button-signature-bg: transparent;
+  --button-signature-color: var(--main-color);
+  --csstools-light-dark-toggle--73: var(--csstools-color-scheme--light) #5b5b66;
+  --button-signature-active-bg: var(--csstools-light-dark-toggle--73, #cfcfd8);
+  --button-signature-active-border: none;
+  --button-signature-active-color: var(--button-signature-color);
+  --button-signature-border: none;
+  --csstools-light-dark-toggle--74: var(--csstools-color-scheme--light) #52525e;
+  --button-signature-hover-bg: var(--csstools-light-dark-toggle--74, #e0e0e6);
+  --button-signature-hover-color: var(--button-signature-color);
+}
+@supports (color: light-dark(red, red)) {
+  .modcoursework_pdfjswrapper {
+    --signature-bg: light-dark(#f9f9fb, #2b2a33);
+    --signature-hover-bg: light-dark(#f0f0f4, var(--signature-bg));
+    --button-signature-active-bg: light-dark(#cfcfd8, #5b5b66);
+    --button-signature-hover-bg: light-dark(#e0e0e6, #52525e);
+  }
+}
+@supports not (color: light-dark(tan, tan)) {
+  .modcoursework_pdfjswrapper * {
+    --csstools-light-dark-toggle--71: var(--csstools-color-scheme--light) #2b2a33;
+    --signature-bg: var(--csstools-light-dark-toggle--71, #f9f9fb);
+    --csstools-light-dark-toggle--72: var(--csstools-color-scheme--light) var(--signature-bg);
+    --signature-hover-bg: var(--csstools-light-dark-toggle--72, #f0f0f4);
+    --csstools-light-dark-toggle--73: var(--csstools-color-scheme--light) #5b5b66;
+    --button-signature-active-bg: var(--csstools-light-dark-toggle--73, #cfcfd8);
+    --csstools-light-dark-toggle--74: var(--csstools-color-scheme--light) #52525e;
+    --button-signature-hover-bg: var(--csstools-light-dark-toggle--74, #e0e0e6);
+  }
+}
+@media screen and (forced-colors: active) {
+  .modcoursework_pdfjswrapper {
+    --signature-bg: HighlightText;
+    --signature-hover-bg: var(--signature-bg);
+    --button-signature-bg: HighlightText;
+    --button-signature-color: ButtonText;
+    --button-signature-active-bg: ButtonText;
+    --button-signature-active-color: HighlightText;
+    --button-signature-border: 1px solid ButtonText;
+    --button-signature-hover-bg: Highlight;
+    --button-signature-hover-color: HighlightText;
   }
 }
 .modcoursework_pdfjswrapper .signatureDialog {
@@ -3562,6 +3185,33 @@
 .modcoursework_pdfjswrapper :is(.commentPopupText, .sidebarCommentText .richText) span {
   color: var(--comment-fg-color) !important;
 }
+.modcoursework_pdfjswrapper {
+  --editor-toolbar-vert-offset: 6px;
+  --outline-width: 2px;
+  --outline-color: #0060df;
+  --outline-around-width: 1px;
+  --outline-around-color: #f0f0f4;
+  --hover-outline-around-color: var(--outline-around-color);
+  --focus-outline: solid var(--outline-width) var(--outline-color);
+  --unfocus-outline: solid var(--outline-width) transparent;
+  --focus-outline-around: solid var(--outline-around-width) var(--outline-around-color);
+  --hover-outline-color: #8f8f9d;
+  --hover-outline: solid var(--outline-width) var(--hover-outline-color);
+  --hover-outline-around: solid var(--outline-around-width) var(--hover-outline-around-color);
+  --freetext-line-height: 1.35;
+  --freetext-padding: 2px;
+  --resizer-bg-color: var(--outline-color);
+  --resizer-size: 6px;
+  --resizer-shift: calc(
+          0px - (var(--outline-width) + var(--resizer-size)) / 2 -
+          var(--outline-around-width)
+  );
+  --editorFreeText-editing-cursor: text;
+  --editorInk-editing-cursor: url(images/cursor-editorInk.svg) 0 16, pointer;
+  --editorHighlight-editing-cursor: url(images/cursor-editorTextHighlight.svg) 24 24, text;
+  --editorFreeHighlight-editing-cursor: url(images/cursor-editorFreeHighlight.svg) 1 18, pointer;
+  --new-alt-text-warning-image: url(images/altText_warning.svg);
+}
 .modcoursework_pdfjswrapper .textLayer.highlighting {
   cursor: var(--editorFreeHighlight-editing-cursor);
 }
@@ -3580,6 +3230,20 @@
 }
 .modcoursework_pdfjswrapper :is(#viewerContainer.pdfPresentationMode:fullscreen, .annotationEditorLayer.disabled) .noAltTextBadge {
   display: none !important;
+}
+@media (min-resolution: 1.1dppx) {
+  .modcoursework_pdfjswrapper {
+    --editorFreeText-editing-cursor: url(images/cursor-editorFreeText.svg) 0 16, text;
+  }
+}
+@media screen and (forced-colors: active) {
+  .modcoursework_pdfjswrapper {
+    --outline-color: CanvasText;
+    --outline-around-color: ButtonFace;
+    --resizer-bg-color: ButtonText;
+    --hover-outline-color: Highlight;
+    --hover-outline-around-color: SelectedItemText;
+  }
 }
 .modcoursework_pdfjswrapper [data-editor-rotation="90"] {
   transform: rotate(90deg);
@@ -4865,6 +4529,44 @@
 .modcoursework_pdfjswrapper .sidebar.resizing :not(.sidebarResizer) {
   pointer-events: none;
 }
+.modcoursework_pdfjswrapper {
+  --csstools-color-scheme--light: initial;
+  color-scheme: light dark;
+  --viewer-container-height: 0;
+  --pdfViewer-padding-bottom: 0;
+  --page-margin: 1px auto -8px;
+  --page-border: 9px solid transparent;
+  --spreadHorizontalWrapped-margin-LR: -3.5px;
+  --loading-icon-delay: 400ms;
+  --csstools-light-dark-toggle--128: var(--csstools-color-scheme--light) #0df;
+  --focus-ring-color: var(--csstools-light-dark-toggle--128, #0060df);
+  --focus-ring-outline: 2px solid var(--focus-ring-color);
+}
+@supports (color: light-dark(red, red)) {
+  .modcoursework_pdfjswrapper {
+    --focus-ring-color: light-dark(#0060df, #0df);
+  }
+}
+@supports not (color: light-dark(tan, tan)) {
+  .modcoursework_pdfjswrapper * {
+    --csstools-light-dark-toggle--128: var(--csstools-color-scheme--light) #0df;
+    --focus-ring-color: var(--csstools-light-dark-toggle--128, #0060df);
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .modcoursework_pdfjswrapper {
+    --csstools-color-scheme--light: ;
+  }
+}
+@media screen and (forced-colors: active) {
+  .modcoursework_pdfjswrapper {
+    --pdfViewer-padding-bottom: 9px;
+    --page-margin: 8px auto -1px;
+    --page-border: 1px solid CanvasText;
+    --spreadHorizontalWrapped-margin-LR: 3.5px;
+    --focus-ring-color: CanvasText;
+  }
+}
 .modcoursework_pdfjswrapper [data-main-rotation="90"] {
   transform: rotate(90deg) translateY(-100%);
 }
@@ -5004,6 +4706,296 @@
 .modcoursework_pdfjswrapper .pdfPresentationMode .pdfViewer .page {
   margin: 0 auto;
   border: 2px solid transparent;
+}
+.modcoursework_pdfjswrapper {
+  --dir-factor: 1;
+  --inline-start: left;
+  --inline-end: right;
+  --sidebar-width: 200px;
+  --sidebar-transition-duration: 200ms;
+  --sidebar-transition-timing-function: ease;
+  --toolbar-height: 32px;
+  --toolbar-horizontal-padding: 1px;
+  --toolbar-vertical-padding: 2px;
+  --icon-size: 16px;
+  --toolbar-icon-opacity: 0.7;
+  --doorhanger-icon-opacity: 0.9;
+  --doorhanger-height: 8px;
+  --csstools-light-dark-toggle--0: var(--csstools-color-scheme--light) rgb(249 249 250);
+  --main-color: var(--csstools-light-dark-toggle--0, rgb(12 12 13));
+  --csstools-light-dark-toggle--1: var(--csstools-color-scheme--light) rgb(42 42 46);
+  --body-bg-color: var(--csstools-light-dark-toggle--1, rgb(212 212 215));
+  --csstools-light-dark-toggle--2: var(--csstools-color-scheme--light) rgb(0 96 223);
+  --progressBar-color: var(--csstools-light-dark-toggle--2, rgb(10 132 255));
+  --csstools-light-dark-toggle--3: var(--csstools-color-scheme--light) rgb(40 40 43);
+  --progressBar-bg-color: var(--csstools-light-dark-toggle--3, rgb(221 221 222));
+  --csstools-light-dark-toggle--4: var(--csstools-color-scheme--light) rgb(20 68 133);
+  --progressBar-blend-color: var(--csstools-light-dark-toggle--4, rgb(116 177 239));
+  --csstools-light-dark-toggle--5: var(--csstools-color-scheme--light) rgb(121 121 123);
+  --scrollbar-color: var(--csstools-light-dark-toggle--5, auto);
+  --csstools-light-dark-toggle--6: var(--csstools-color-scheme--light) rgb(35 35 39);
+  --scrollbar-bg-color: var(--csstools-light-dark-toggle--6, auto);
+  --csstools-light-dark-toggle--7: var(--csstools-color-scheme--light) rgb(255 255 255);
+  --toolbar-icon-bg-color: var(--csstools-light-dark-toggle--7, rgb(0 0 0));
+  --csstools-light-dark-toggle--8: var(--csstools-color-scheme--light) rgb(255 255 255);
+  --toolbar-icon-hover-bg-color: var(--csstools-light-dark-toggle--8, rgb(0 0 0));
+  --csstools-light-dark-toggle--9: var(--csstools-color-scheme--light) rgb(42 42 46 / 0.9);
+  --sidebar-narrow-bg-color: var(--csstools-light-dark-toggle--9, rgb(212 212 215 / 0.9));
+  --csstools-light-dark-toggle--10: var(--csstools-color-scheme--light) rgb(50 50 52);
+  --sidebar-toolbar-bg-color: var(--csstools-light-dark-toggle--10, rgb(245 246 247));
+  --csstools-light-dark-toggle--11: var(--csstools-color-scheme--light) rgb(56 56 61);
+  --toolbar-bg-color: var(--csstools-light-dark-toggle--11, rgb(249 249 250));
+  --csstools-light-dark-toggle--12: var(--csstools-color-scheme--light) rgb(12 12 13);
+  --toolbar-border-color: var(--csstools-light-dark-toggle--12, rgb(184 184 184));
+  --toolbar-box-shadow: 0 1px 0 var(--toolbar-border-color);
+  --toolbar-border-bottom: none;
+  --toolbarSidebar-box-shadow: inset calc(-1px * var(--dir-factor)) 0 0 rgb(0 0 0 / 0.25), 0 1px 0 rgb(0 0 0 / 0.15), 0 0 1px rgb(0 0 0 / 0.1);
+  --toolbarSidebar-border-bottom: none;
+  --button-hover-color: color-mix(in srgb, currentColor 17%, transparent);
+  --csstools-light-dark-toggle--13: var(--csstools-color-scheme--light) rgb(255 255 255);
+  --toggled-btn-color: var(--csstools-light-dark-toggle--13, rgb(0 0 0));
+  --toggled-btn-bg-color: rgb(0 0 0 / 0.3);
+  --toggled-hover-active-btn-color: rgb(0 0 0 / 0.4);
+  --toggled-hover-btn-outline: none;
+  --csstools-light-dark-toggle--14: var(--csstools-color-scheme--light) rgb(74 74 79);
+  --dropdown-btn-bg-color: var(--csstools-light-dark-toggle--14, rgb(215 215 219));
+  --dropdown-btn-border: none;
+  --separator-color: rgb(0 0 0 / 0.3);
+  --csstools-light-dark-toggle--15: var(--csstools-color-scheme--light) rgb(250 250 250);
+  --field-color: var(--csstools-light-dark-toggle--15, rgb(6 6 6));
+  --csstools-light-dark-toggle--16: var(--csstools-color-scheme--light) rgb(64 64 68);
+  --field-bg-color: var(--csstools-light-dark-toggle--16, rgb(255 255 255));
+  --csstools-light-dark-toggle--17: var(--csstools-color-scheme--light) rgb(115 115 115);
+  --field-border-color: var(--csstools-light-dark-toggle--17, rgb(187 187 188));
+  --csstools-light-dark-toggle--18: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.8);
+  --treeitem-color: var(--csstools-light-dark-toggle--18, rgb(0 0 0 / 0.8));
+  --csstools-light-dark-toggle--19: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.15);
+  --treeitem-bg-color: var(--csstools-light-dark-toggle--19, rgb(0 0 0 / 0.15));
+  --csstools-light-dark-toggle--20: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.9);
+  --treeitem-hover-color: var(--csstools-light-dark-toggle--20, rgb(0 0 0 / 0.9));
+  --csstools-light-dark-toggle--21: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.9);
+  --treeitem-selected-color: var(--csstools-light-dark-toggle--21, rgb(0 0 0 / 0.9));
+  --csstools-light-dark-toggle--22: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.25);
+  --treeitem-selected-bg-color: var(--csstools-light-dark-toggle--22, rgb(0 0 0 / 0.25));
+  --csstools-light-dark-toggle--23: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.1);
+  --thumbnail-hover-color: var(--csstools-light-dark-toggle--23, rgb(0 0 0 / 0.1));
+  --csstools-light-dark-toggle--24: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.2);
+  --thumbnail-selected-color: var(--csstools-light-dark-toggle--24, rgb(0 0 0 / 0.2));
+  --csstools-light-dark-toggle--25: var(--csstools-color-scheme--light) #42414d;
+  --doorhanger-bg-color: var(--csstools-light-dark-toggle--25, rgb(255 255 255));
+  --csstools-light-dark-toggle--26: var(--csstools-color-scheme--light) rgb(39 39 43);
+  --doorhanger-border-color: var(--csstools-light-dark-toggle--26, rgb(12 12 13 / 0.2));
+  --csstools-light-dark-toggle--27: var(--csstools-color-scheme--light) rgb(249 249 250);
+  --doorhanger-hover-color: var(--csstools-light-dark-toggle--27, rgb(12 12 13));
+  --csstools-light-dark-toggle--28: var(--csstools-color-scheme--light) rgb(92 92 97);
+  --doorhanger-separator-color: var(--csstools-light-dark-toggle--28, rgb(222 222 222));
+  --dialog-button-border: none;
+  --csstools-light-dark-toggle--29: var(--csstools-color-scheme--light) rgb(92 92 97);
+  --dialog-button-bg-color: var(--csstools-light-dark-toggle--29, rgb(12 12 13 / 0.1));
+  --csstools-light-dark-toggle--30: var(--csstools-color-scheme--light) rgb(115 115 115);
+  --dialog-button-hover-bg-color: var(--csstools-light-dark-toggle--30, rgb(12 12 13 / 0.3));
+  --loading-icon: url(images/loading.svg);
+  --treeitem-expanded-icon: url(images/treeitem-expanded.svg);
+  --treeitem-collapsed-icon: url(images/treeitem-collapsed.svg);
+  --toolbarButton-editorComment-icon: url(images/comment-editButton.svg);
+  --toolbarButton-editorFreeText-icon: url(images/toolbarButton-editorFreeText.svg);
+  --toolbarButton-editorHighlight-icon: url(images/toolbarButton-editorHighlight.svg);
+  --toolbarButton-editorInk-icon: url(images/toolbarButton-editorInk.svg);
+  --toolbarButton-editorStamp-icon: url(images/toolbarButton-editorStamp.svg);
+  --toolbarButton-editorSignature-icon: url(images/toolbarButton-editorSignature.svg);
+  --toolbarButton-menuArrow-icon: url(images/toolbarButton-menuArrow.svg);
+  --toolbarButton-sidebarToggle-icon: url(images/toolbarButton-sidebarToggle.svg);
+  --toolbarButton-secondaryToolbarToggle-icon: url(images/toolbarButton-secondaryToolbarToggle.svg);
+  --toolbarButton-pageUp-icon: url(images/toolbarButton-pageUp.svg);
+  --toolbarButton-pageDown-icon: url(images/toolbarButton-pageDown.svg);
+  --toolbarButton-zoomOut-icon: url(images/toolbarButton-zoomOut.svg);
+  --toolbarButton-zoomIn-icon: url(images/toolbarButton-zoomIn.svg);
+  --toolbarButton-presentationMode-icon: url(images/toolbarButton-presentationMode.svg);
+  --toolbarButton-print-icon: url(images/toolbarButton-print.svg);
+  --toolbarButton-openFile-icon: url(images/toolbarButton-openFile.svg);
+  --toolbarButton-download-icon: url(images/toolbarButton-download.svg);
+  --toolbarButton-bookmark-icon: url(images/toolbarButton-bookmark.svg);
+  --toolbarButton-viewThumbnail-icon: url(images/toolbarButton-viewThumbnail.svg);
+  --toolbarButton-viewOutline-icon: url(images/toolbarButton-viewOutline.svg);
+  --toolbarButton-viewAttachments-icon: url(images/toolbarButton-viewAttachments.svg);
+  --toolbarButton-viewLayers-icon: url(images/toolbarButton-viewLayers.svg);
+  --toolbarButton-currentOutlineItem-icon: url(images/toolbarButton-currentOutlineItem.svg);
+  --toolbarButton-search-icon: url(images/toolbarButton-search.svg);
+  --findbarButton-previous-icon: url(images/findbarButton-previous.svg);
+  --findbarButton-next-icon: url(images/findbarButton-next.svg);
+  --secondaryToolbarButton-firstPage-icon: url(images/secondaryToolbarButton-firstPage.svg);
+  --secondaryToolbarButton-lastPage-icon: url(images/secondaryToolbarButton-lastPage.svg);
+  --secondaryToolbarButton-rotateCcw-icon: url(images/secondaryToolbarButton-rotateCcw.svg);
+  --secondaryToolbarButton-rotateCw-icon: url(images/secondaryToolbarButton-rotateCw.svg);
+  --secondaryToolbarButton-selectTool-icon: url(images/secondaryToolbarButton-selectTool.svg);
+  --secondaryToolbarButton-handTool-icon: url(images/secondaryToolbarButton-handTool.svg);
+  --secondaryToolbarButton-scrollPage-icon: url(images/secondaryToolbarButton-scrollPage.svg);
+  --secondaryToolbarButton-scrollVertical-icon: url(images/secondaryToolbarButton-scrollVertical.svg);
+  --secondaryToolbarButton-scrollHorizontal-icon: url(images/secondaryToolbarButton-scrollHorizontal.svg);
+  --secondaryToolbarButton-scrollWrapped-icon: url(images/secondaryToolbarButton-scrollWrapped.svg);
+  --secondaryToolbarButton-spreadNone-icon: url(images/secondaryToolbarButton-spreadNone.svg);
+  --secondaryToolbarButton-spreadOdd-icon: url(images/secondaryToolbarButton-spreadOdd.svg);
+  --secondaryToolbarButton-spreadEven-icon: url(images/secondaryToolbarButton-spreadEven.svg);
+  --secondaryToolbarButton-imageAltTextSettings-icon: var(
+                  --toolbarButton-editorStamp-icon
+  );
+  --secondaryToolbarButton-documentProperties-icon: url(images/secondaryToolbarButton-documentProperties.svg);
+  --editorParams-stampAddImage-icon: url(images/toolbarButton-zoomIn.svg);
+  --comment-edit-button-icon: url(images/comment-editButton.svg);
+}
+@supports (color: light-dark(red, red)) and (color: rgba(0, 0, 0, 0)) {
+  .modcoursework_pdfjswrapper {
+    --main-color: light-dark(rgb(12 12 13), rgb(249 249 250));
+    --body-bg-color: light-dark(rgb(212 212 215), rgb(42 42 46));
+    --progressBar-color: light-dark(rgb(10 132 255), rgb(0 96 223));
+    --progressBar-bg-color: light-dark(rgb(221 221 222), rgb(40 40 43));
+    --progressBar-blend-color: light-dark(rgb(116 177 239), rgb(20 68 133));
+    --scrollbar-color: light-dark(auto, rgb(121 121 123));
+    --scrollbar-bg-color: light-dark(auto, rgb(35 35 39));
+    --toolbar-icon-bg-color: light-dark(rgb(0 0 0), rgb(255 255 255));
+    --toolbar-icon-hover-bg-color: light-dark(rgb(0 0 0), rgb(255 255 255));
+    --sidebar-narrow-bg-color: light-dark(
+                    rgb(212 212 215 / 0.9),
+                    rgb(42 42 46 / 0.9)
+    );
+    --sidebar-toolbar-bg-color: light-dark(rgb(245 246 247), rgb(50 50 52));
+    --toolbar-bg-color: light-dark(rgb(249 249 250), rgb(56 56 61));
+    --toolbar-border-color: light-dark(rgb(184 184 184), rgb(12 12 13));
+    --toggled-btn-color: light-dark(rgb(0 0 0), rgb(255 255 255));
+    --dropdown-btn-bg-color: light-dark(rgb(215 215 219), rgb(74 74 79));
+    --field-color: light-dark(rgb(6 6 6), rgb(250 250 250));
+    --field-bg-color: light-dark(rgb(255 255 255), rgb(64 64 68));
+    --field-border-color: light-dark(rgb(187 187 188), rgb(115 115 115));
+    --treeitem-color: light-dark(rgb(0 0 0 / 0.8), rgb(255 255 255 / 0.8));
+    --treeitem-bg-color: light-dark(rgb(0 0 0 / 0.15), rgb(255 255 255 / 0.15));
+    --treeitem-hover-color: light-dark(rgb(0 0 0 / 0.9), rgb(255 255 255 / 0.9));
+    --treeitem-selected-color: light-dark(
+                    rgb(0 0 0 / 0.9),
+                    rgb(255 255 255 / 0.9)
+    );
+    --treeitem-selected-bg-color: light-dark(
+                    rgb(0 0 0 / 0.25),
+                    rgb(255 255 255 / 0.25)
+    );
+    --thumbnail-hover-color: light-dark(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.1));
+    --thumbnail-selected-color: light-dark(
+                    rgb(0 0 0 / 0.2),
+                    rgb(255 255 255 / 0.2)
+    );
+    --doorhanger-bg-color: light-dark(rgb(255 255 255), #42414d);
+    --doorhanger-border-color: light-dark(rgb(12 12 13 / 0.2), rgb(39 39 43));
+    --doorhanger-hover-color: light-dark(rgb(12 12 13), rgb(249 249 250));
+    --doorhanger-separator-color: light-dark(rgb(222 222 222), rgb(92 92 97));
+    --dialog-button-bg-color: light-dark(rgb(12 12 13 / 0.1), rgb(92 92 97));
+    --dialog-button-hover-bg-color: light-dark(
+                    rgb(12 12 13 / 0.3),
+                    rgb(115 115 115)
+    );
+  }
+}
+@supports not (color: light-dark(tan, tan)) {
+  .modcoursework_pdfjswrapper * {
+    --csstools-light-dark-toggle--0: var(--csstools-color-scheme--light) rgb(249 249 250);
+    --main-color: var(--csstools-light-dark-toggle--0, rgb(12 12 13));
+    --csstools-light-dark-toggle--1: var(--csstools-color-scheme--light) rgb(42 42 46);
+    --body-bg-color: var(--csstools-light-dark-toggle--1, rgb(212 212 215));
+    --csstools-light-dark-toggle--2: var(--csstools-color-scheme--light) rgb(0 96 223);
+    --progressBar-color: var(--csstools-light-dark-toggle--2, rgb(10 132 255));
+    --csstools-light-dark-toggle--3: var(--csstools-color-scheme--light) rgb(40 40 43);
+    --progressBar-bg-color: var(--csstools-light-dark-toggle--3, rgb(221 221 222));
+    --csstools-light-dark-toggle--4: var(--csstools-color-scheme--light) rgb(20 68 133);
+    --progressBar-blend-color: var(--csstools-light-dark-toggle--4, rgb(116 177 239));
+    --csstools-light-dark-toggle--5: var(--csstools-color-scheme--light) rgb(121 121 123);
+    --scrollbar-color: var(--csstools-light-dark-toggle--5, auto);
+    --csstools-light-dark-toggle--6: var(--csstools-color-scheme--light) rgb(35 35 39);
+    --scrollbar-bg-color: var(--csstools-light-dark-toggle--6, auto);
+    --csstools-light-dark-toggle--7: var(--csstools-color-scheme--light) rgb(255 255 255);
+    --toolbar-icon-bg-color: var(--csstools-light-dark-toggle--7, rgb(0 0 0));
+    --csstools-light-dark-toggle--8: var(--csstools-color-scheme--light) rgb(255 255 255);
+    --toolbar-icon-hover-bg-color: var(--csstools-light-dark-toggle--8, rgb(0 0 0));
+    --csstools-light-dark-toggle--9: var(--csstools-color-scheme--light) rgb(42 42 46 / 0.9);
+    --sidebar-narrow-bg-color: var(--csstools-light-dark-toggle--9, rgb(212 212 215 / 0.9));
+    --csstools-light-dark-toggle--10: var(--csstools-color-scheme--light) rgb(50 50 52);
+    --sidebar-toolbar-bg-color: var(--csstools-light-dark-toggle--10, rgb(245 246 247));
+    --csstools-light-dark-toggle--11: var(--csstools-color-scheme--light) rgb(56 56 61);
+    --toolbar-bg-color: var(--csstools-light-dark-toggle--11, rgb(249 249 250));
+    --csstools-light-dark-toggle--12: var(--csstools-color-scheme--light) rgb(12 12 13);
+    --toolbar-border-color: var(--csstools-light-dark-toggle--12, rgb(184 184 184));
+    --csstools-light-dark-toggle--13: var(--csstools-color-scheme--light) rgb(255 255 255);
+    --toggled-btn-color: var(--csstools-light-dark-toggle--13, rgb(0 0 0));
+    --csstools-light-dark-toggle--14: var(--csstools-color-scheme--light) rgb(74 74 79);
+    --dropdown-btn-bg-color: var(--csstools-light-dark-toggle--14, rgb(215 215 219));
+    --csstools-light-dark-toggle--15: var(--csstools-color-scheme--light) rgb(250 250 250);
+    --field-color: var(--csstools-light-dark-toggle--15, rgb(6 6 6));
+    --csstools-light-dark-toggle--16: var(--csstools-color-scheme--light) rgb(64 64 68);
+    --field-bg-color: var(--csstools-light-dark-toggle--16, rgb(255 255 255));
+    --csstools-light-dark-toggle--17: var(--csstools-color-scheme--light) rgb(115 115 115);
+    --field-border-color: var(--csstools-light-dark-toggle--17, rgb(187 187 188));
+    --csstools-light-dark-toggle--18: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.8);
+    --treeitem-color: var(--csstools-light-dark-toggle--18, rgb(0 0 0 / 0.8));
+    --csstools-light-dark-toggle--19: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.15);
+    --treeitem-bg-color: var(--csstools-light-dark-toggle--19, rgb(0 0 0 / 0.15));
+    --csstools-light-dark-toggle--20: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.9);
+    --treeitem-hover-color: var(--csstools-light-dark-toggle--20, rgb(0 0 0 / 0.9));
+    --csstools-light-dark-toggle--21: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.9);
+    --treeitem-selected-color: var(--csstools-light-dark-toggle--21, rgb(0 0 0 / 0.9));
+    --csstools-light-dark-toggle--22: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.25);
+    --treeitem-selected-bg-color: var(--csstools-light-dark-toggle--22, rgb(0 0 0 / 0.25));
+    --csstools-light-dark-toggle--23: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.1);
+    --thumbnail-hover-color: var(--csstools-light-dark-toggle--23, rgb(0 0 0 / 0.1));
+    --csstools-light-dark-toggle--24: var(--csstools-color-scheme--light) rgb(255 255 255 / 0.2);
+    --thumbnail-selected-color: var(--csstools-light-dark-toggle--24, rgb(0 0 0 / 0.2));
+    --csstools-light-dark-toggle--25: var(--csstools-color-scheme--light) #42414d;
+    --doorhanger-bg-color: var(--csstools-light-dark-toggle--25, rgb(255 255 255));
+    --csstools-light-dark-toggle--26: var(--csstools-color-scheme--light) rgb(39 39 43);
+    --doorhanger-border-color: var(--csstools-light-dark-toggle--26, rgb(12 12 13 / 0.2));
+    --csstools-light-dark-toggle--27: var(--csstools-color-scheme--light) rgb(249 249 250);
+    --doorhanger-hover-color: var(--csstools-light-dark-toggle--27, rgb(12 12 13));
+    --csstools-light-dark-toggle--28: var(--csstools-color-scheme--light) rgb(92 92 97);
+    --doorhanger-separator-color: var(--csstools-light-dark-toggle--28, rgb(222 222 222));
+    --csstools-light-dark-toggle--29: var(--csstools-color-scheme--light) rgb(92 92 97);
+    --dialog-button-bg-color: var(--csstools-light-dark-toggle--29, rgb(12 12 13 / 0.1));
+    --csstools-light-dark-toggle--30: var(--csstools-color-scheme--light) rgb(115 115 115);
+    --dialog-button-hover-bg-color: var(--csstools-light-dark-toggle--30, rgb(12 12 13 / 0.3));
+  }
+}
+.modcoursework_pdfjswrapper[dir=rtl] {
+  --dir-factor: -1;
+  --inline-start: right;
+  --inline-end: left;
+}
+@media screen and (forced-colors: active) {
+  .modcoursework_pdfjswrapper {
+    --button-hover-color: Highlight;
+    --toolbar-icon-opacity: 1;
+    --toolbar-icon-bg-color: ButtonText;
+    --toolbar-icon-hover-bg-color: ButtonFace;
+    --toggled-hover-active-btn-color: ButtonText;
+    --toggled-hover-btn-outline: 2px solid ButtonBorder;
+    --toolbar-border-color: CanvasText;
+    --toolbar-border-bottom: 1px solid var(--toolbar-border-color);
+    --toolbar-box-shadow: none;
+    --toggled-btn-color: HighlightText;
+    --toggled-btn-bg-color: LinkText;
+    --doorhanger-hover-color: ButtonFace;
+    --doorhanger-border-color-whcm: 1px solid ButtonText;
+    --doorhanger-triangle-opacity-whcm: 0;
+    --dialog-button-border: 1px solid Highlight;
+    --dialog-button-hover-bg-color: Highlight;
+    --dialog-button-hover-color: ButtonFace;
+    --dropdown-btn-border: 1px solid ButtonText;
+    --field-border-color: ButtonText;
+    --main-color: CanvasText;
+    --separator-color: GrayText;
+    --doorhanger-separator-color: GrayText;
+    --toolbarSidebar-box-shadow: none;
+    --toolbarSidebar-border-bottom: 1px solid var(--toolbar-border-color);
+  }
+}
+@media screen and (prefers-reduced-motion: reduce) {
+  .modcoursework_pdfjswrapper {
+    --sidebar-transition-duration: 0;
+  }
 }
 @keyframes progressIndeterminate {
   0% {
