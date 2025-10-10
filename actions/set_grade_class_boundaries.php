@@ -31,7 +31,7 @@ require_capability('moodle/course:manageactivities', $context);
 
 $PAGE->set_context($context);
 $PAGE->set_url(new moodle_url($url, $urlparams));
-
+$PAGE->set_pagelayout('standard');
 $form = new \mod_coursework\forms\grade_class_boundaries(new \moodle_url($url), $urlparams);
 $redirecturl = $coursework
     ? new \moodle_url('/course/modedit.php', ['update' => $coursework->get_course_module()->id], 'id_markingworkflow')

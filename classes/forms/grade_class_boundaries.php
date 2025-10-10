@@ -24,8 +24,6 @@
 
 namespace mod_coursework\forms;
 
-require_once("$CFG->dirroot/lib/formslib.php");
-
 use mod_coursework\models\coursework;
 
 use moodleform;
@@ -34,6 +32,13 @@ use moodleform;
  * Simple form providing a set of grade class boundary percentages.
  */
 class grade_class_boundaries extends moodleform {
+
+    /**
+     * The coursework object
+     * @var ?coursework $coursework
+     */
+    protected ?coursework $coursework = null;
+
     /**
      * Makes the form elements.
      */
@@ -48,7 +53,7 @@ class grade_class_boundaries extends moodleform {
         $titleelement = $coursework ? $coursework->name : get_string('systemdefault', 'coursework');
         $mform->addElement(
             'html',
-            \html_writer::tag('h1', get_string('gradeboundariessettingfor', 'coursework', $titleelement))
+            \html_writer::tag('h1', get_string('gradeboundariessettingfor', 'coursework', $titleelement), ['class' => 'h2'])
         );
 
         $mform->addElement('html', \html_writer::tag('p', get_string('automaticagreementrange_form_desc', 'coursework')));
@@ -56,24 +61,36 @@ class grade_class_boundaries extends moodleform {
         $defaults = $this->get_default_boundaries();
 
         $maxbands = 6;
-        $mform->addElement('html', '<hr/>');
         for ($i = 1; $i <= $maxbands; $i++) {
-            $mform->addElement('float', "gradeboundarytop-$i", get_string('gradeboundarytop', 'mod_coursework', $i));
-            $mform->setType("gradeboundarytop-$i", PARAM_FLOAT);
+            $mform->addElement('html', '<hr/><h2 class="h5">' . get_string('band', 'coursework') . '</h2>');
+            $mform->addElement(
+                'float',
+                "grade_boundary_top_$i",
+                get_string('gradeboundarytop', 'mod_coursework', $i),
+                ['size' => '5']
+            );
+            $mform->setType("grade_boundary_top_$i", PARAM_TEXT);
+            $mform->addRule(
+                "grade_boundary_top_$i", get_string('err_valueoutofrange', 'mod_coursework'), 'numeric', null, 'client'
+            );
             $default = $defaults[$i - 1][1] ?? null;
             if ($default !== null) {
-                $mform->setDefault("gradeboundarytop-$i", number_format($default, 2));    
+                $mform->setDefault("grade_boundary_top_$i", number_format($default, 2));
             }
 
-            $mform->addElement('float', "gradeboundarybottom-$i", get_string('gradeboundarybottom', 'mod_coursework', $i));
-            $mform->setType("gradeboundarybottom-$i", PARAM_FLOAT);
+            $mform->addElement(
+                'float',
+                "grade_boundary_bottom_$i",
+                get_string('gradeboundarybottom', 'mod_coursework', $i),
+                ['size' => '5'],
+            );
+            $mform->setType("grade_boundary_bottom_$i", PARAM_TEXT);
             $default = $defaults[$i - 1][0] ?? null;
             if ($default !== null) {
-                $mform->setDefault("gradeboundarybottom-$i", number_format($default, 2));
+                $mform->setDefault("grade_boundary_bottom_$i", number_format($default, 2));
             }
-
-            $mform->addElement('html', '<hr/>');
         }
+        $mform->addElement('html', '<hr/>');
 
         $this->add_action_buttons();
 
@@ -99,8 +116,80 @@ class grade_class_boundaries extends moodleform {
      * @return coursework|null
      */
     protected function get_coursework(): ?coursework {
-        return  $this->_customdata['courseworkid']
-            ? coursework::find($this->_customdata['courseworkid'])
-            : null;
+        if ($this->coursework === null && $this->_customdata['courseworkid']) {
+            $this->coursework = coursework::find($this->_customdata['courseworkid']);
+        }
+        return $this->coursework;
+    }
+
+    /**
+     * Validate submitted data.
+     * @param $data
+     * @param $files
+     * @return array of errors
+     */
+    public function validation($data, $files): array {
+        $errors = [];
+        $data = (array)$data;
+        $boundaries = self::parse_form_data($data);
+        $gradeoptions = array_keys(make_grades_menu($this->get_coursework()->grade));
+        foreach ($boundaries as $boundary) {
+            if ($boundary['top'] && $boundary['bottom'] === '') {
+                $errors["grade_boundary_bottom_" . $boundary['index']] = get_string('error');
+            } else if ($boundary['bottom'] && $boundary['top'] === '') {
+                $errors["grade_boundary_top_" . $boundary['index']] = get_string('required');
+            }
+            if (!is_numeric($boundary['top']) || $boundary['top'] < 0) {
+                $errors["grade_boundary_top_" . $boundary['index']] = get_string('required');
+            } else if (abs(number_format($boundary['top'], 2, '.', '') - $boundary['top']) > 0) {
+                $errors["grade_boundary_top_" . $boundary['index']] =
+                    get_string('gradeboundarydecimalprecisionwarning', 'coursework');
+            }
+            if (!is_numeric($boundary['bottom']) || $boundary['bottom'] < 0) {
+                $errors["grade_boundary_bottom_" . $boundary['index']] = get_string('required');
+            } else if (abs(number_format($boundary['bottom'], 2, '.', '') - $boundary['bottom']) > 0) {
+                $errors["grade_boundary_bottom_" . $boundary['index']] =
+                    get_string('gradeboundarydecimalprecisionwarning', 'coursework');
+            }
+            if ($boundary['bottom'] > $boundary['top']) {
+                $errors["grade_boundary_bottom_" . $boundary['index']] = get_string('gradeboundarytopbottommismatch', 'coursework');
+            }
+            if ($boundary['bottom'] < min($gradeoptions)) {
+                $errors["grade_boundary_bottom_" . $boundary['index']] = get_string('err_valueoutofrange', 'coursework');
+            }
+            if ($boundary['top'] > max($gradeoptions)) {
+                $errors["grade_boundary_top_" . $boundary['index']] = get_string('err_valueoutofrange', 'coursework');
+            }
+        }
+        return $errors;
+    }
+
+    /**
+     * Parse the grade boundary figures from submitted form data into an object.
+     * @param $data
+     * @return array
+     */
+    public static function parse_form_data($data): array {
+        $keys = array_keys($data);
+        sort($keys);
+        $boundaries = [];
+        foreach ($keys as $key) {
+            if (preg_match('/^grade_boundary_(top|bottom)_[\d]+$/', $key)) {
+                $index = (int)filter_var($key, FILTER_SANITIZE_NUMBER_INT);
+                $istop = str_starts_with($key, 'grade_boundary_top_');
+                if (!isset($boundaries[$index])) {
+                    $boundaries[$index] = [
+                        'index' => $index,
+                        'top' => $istop ? $data[$key] : null,
+                        'bottom' => !$istop ? $data[$key] : null,
+                    ];
+                } else if ($istop) {
+                    $boundaries[$index]['top'] = $data[$key];
+                } else {
+                    $boundaries[$index]['bottom'] = $data[$key];
+                }
+            }
+        }
+        return $boundaries;
     }
 }
