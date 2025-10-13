@@ -1143,7 +1143,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodleform->addElement('hidden', 'feedbackexists', $feedbackexists);
         $moodleform->setType('feedbackexists', PARAM_INT);
-        $moodleform->hideif('finalstagegrading', 'feedbackexists', 'eq', 1);
+        $moodleform->disabledIf('finalstagegrading', 'feedbackexists', 'eq', 1);
 
         // Don't think this belongs here...
         // $options = array(0 => get_string('no'), 1 => get_string('yes'));
