@@ -100,10 +100,7 @@ class marking_cell_data extends cell_data_base {
      * @param grading_table_row_base $rowsbase Base row data
      * @param assessor_feedback_row $row Current row being processed
      */
-    private function process_feedback_data(stdClass $marker, feedback $feedback,
-        grading_table_row_base $rowsbase,
-        assessor_feedback_row $row
-    ): void {
+    private function process_feedback_data(stdClass $marker, feedback $feedback, grading_table_row_base $rowsbase, assessor_feedback_row $row): void {
         // Get feedback mark.
         $marker->mark = $this->get_mark_for_feedback($feedback);
         // Return early if no marking.
