@@ -870,7 +870,7 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
         ($coursework->allocation_enabled() || $coursework->sampling_enabled())) {
 
         $link = new moodle_url('/mod/coursework/actions/allocate.php', ['id' => $cm->id]);
-        $langstr = ($coursework->moderation_agreement_enabled()) ? 'allocateassessorsandmoderators' : 'allocateassessors';
+        $langstr = ($coursework->moderation_agreement_enabled()) ? 'markermoderatormarks' : 'allocatemarkers';
         $navref->add(get_string($langstr, 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
 
     }
