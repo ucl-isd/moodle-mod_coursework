@@ -2914,6 +2914,7 @@ class behat_mod_coursework extends behat_base {
         $generator = testing_util::get_data_generator();
 
         $user = new stdClass();
+        // Use a random string in password to stop Chrome complaining that password exposed in data breach.
         $randomstring = random_string(8);
         $user->username = 'user' . $this->usersuffix;
         $user->password = $randomstring;
