@@ -118,7 +118,9 @@ trait allocatable_functions {
              WHERE f.stage_identifier LIKE 'assess%'
                AND s.allocatableid = :id
                AND s.courseworkid = :courseworkid
-        ";
+                AND f.finalised = 1";
+        // We only want to include finalised feedbacks.
+        // Otherwise, for example, auto grading will happen to add agree mark even if fist marks are draft.
         $feedbacks = $DB->count_records_sql($sql,
             ['id' => $this->id(),
                 'courseworkid' => $coursework->id()]);

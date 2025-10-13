@@ -2914,13 +2914,14 @@ class behat_mod_coursework extends behat_base {
         $generator = testing_util::get_data_generator();
 
         $user = new stdClass();
+        $randomstring = random_string(8);
         $user->username = 'user' . $this->usersuffix;
-        $user->password = 'user' . $this->usersuffix;
-        $user->firstname = $displayname ? $displayname : $rolename . $this->usersuffix;
+        $user->password = $randomstring;
+        $user->firstname = $displayname ?: ($rolename . $this->usersuffix);
         $user->lastname = $rolename . $this->usersuffix;
         $user = $generator->create_user($user);
         $user = \mod_coursework\models\user::find($user);
-        $user->password = 'user' . $this->usersuffix;
+        $user->password = $randomstring;
 
         // If the role name starts with 'other_' here (e.g. 'other_teacher') we need to remove it.
         $rolename = str_replace('other_', '', $rolename);

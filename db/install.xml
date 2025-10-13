@@ -329,6 +329,19 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-
+      <TABLE NAME="coursework_class_boundaries" COMMENT="Table to hold class boundaries for auto grader average_grade_no_straddle">
+      <FIELDS>
+          <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+          <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the coursework or 0 if this is system level"/>
+          <FIELD NAME="bottom" TYPE="number" LENGTH="10" NOTNULL="true" SEQUENCE="false" DECIMALS="2" COMMENT="Bottom of the range for this grade class"/>
+          <FIELD NAME="top" TYPE="number" LENGTH="10" NOTNULL="true" SEQUENCE="false" DECIMALS="2" COMMENT="Top of the range for this grade class"/>
+      </FIELDS>
+      <KEYS>
+          <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+          <INDEX NAME="courseworkid" UNIQUE="false" FIELDS="courseworkid"/>
+      </INDEXES>
+      </TABLE>
   </TABLES>
 </XMLDB>
