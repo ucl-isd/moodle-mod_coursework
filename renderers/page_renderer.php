@@ -52,6 +52,20 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
+     * @param submission $feedback
+     */
+    public function show_viewpdf_page($submission) {
+        $this->page->set_pagelayout('popup');
+
+        $html = '';
+        $objectrenderer = $this->get_object_renderer();
+        $html .= $this->output->header();
+        $html .= $objectrenderer->render_viewpdf($submission);
+        $html .= $this->output->footer();
+        return $html;
+    }
+
+    /**
      * @param moderation $moderation
      */
     public function show_moderation_page($moderation) {
@@ -373,24 +387,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $this->page->set_heading($SITE->fullname);
         echo $this->output->header();
         echo $this->render_from_template('mod_coursework/marking_details', $template);
-
-        $rendertype = optional_param('rendertype', 'full', PARAM_TEXT);
-
-        if (!empty($rendertype)) {
-            $model = (object)['pdfs' => []];
-            foreach ($files->get_files() as $file) {
-                if ($file->get_mimetype() == 'application/pdf') {
-                    $model->pdfs[] = (object)[
-                        'href' => $objectrenderer->make_file_url($file),
-                        'filename' => $file->get_filename()
-                    ];
-                }
-            }
-
-            if (!empty($model->pdfs)) {
-                echo $this->render_from_template('mod_coursework/pdfsubmissions_' . $rendertype, $model);
-            }
-        }
 
         // SHAME - Can we add an id to the form.
         echo "<div id='coursework-markingform'>";

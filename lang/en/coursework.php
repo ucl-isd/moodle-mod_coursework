@@ -945,6 +945,7 @@ $string['viewinitialgradeenabled'] = 'View initial assessors grades';
 $string['viewinitialgradeenabled_help'] = 'If selected, assessors will be able to see initial grades from other assessors.';
 $string['viewmembers'] = 'View members';
 $string['viewmoderation'] = 'View moderation';
+$string['viewsubmission'] = 'View submission - {$a}';
 $string['viewallstudents'] = 'View students not allocated to user';
 $string['week'] = 'Week';
 $string['weeks'] = 'Weeks';

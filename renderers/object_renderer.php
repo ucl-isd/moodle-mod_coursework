@@ -116,6 +116,51 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         return $this->render_from_template('mod_coursework/feedback', $template);
     }
 
+    /**
+     * Renders a coursework feedback as a row in a table.
+     * This is for the grading report when we have multiple markers and we want an AJAX pop up *
+     * with details of the feedback. Also for the student view.
+     *
+     * @param submission $submission
+     * @return string
+     */
+    public function render_viewpdf(submission $submission) {
+        global $USER;
+
+        $template = new stdClass();
+
+        $studentname = $submission->get_allocatable_name();
+
+        $template->title = get_string('viewsubmission', 'mod_coursework', $studentname);
+
+        $template->files = [];
+
+        $annotatedfiles = $submission->get_file_annotations();
+        foreach ($submission->get_submission_files()->get_files() as $file) {
+            if ($file->get_mimetype() !== 'application/pdf') {
+                continue;
+            }
+
+            if (isset($annotatedfiles[$file->get_id()])) {
+                $fileurl = $this->make_file_url($annotatedfiles[$file->get_id()]);
+            } else {
+                $fileurl = $this->make_file_url($file);
+            }
+
+            $template->files[] = (object)[
+                'filename' => $file->get_filename(),
+                'href' => $fileurl,
+                'fileid' => $file->get_id(),
+                'submissionid' => $submission->id,
+                ];
+        }
+
+       // $template->multiplefiles = (count($template->files) > 1);
+
+        // Return html from template.
+        return $this->render_from_template('mod_coursework/viewpdf', $template);
+    }
+
 
     /**
      * Renders a coursework moderation as a row in a table.
@@ -923,7 +968,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param stored_file $file
      * @return moodle_url
      */
-    public function make_file_url($file, $classname = 'submissionfile') {
+    public function make_file_url($file) {
         return moodle_url::make_pluginfile_url(
             $file->get_contextid(),
             'mod_coursework',

@@ -2,6 +2,11 @@
 Coursework.
 **/
 
+#page-mod-coursework-actions-feedbacks-viewpdf #page {
+    padding: 0;
+    margin: 0;
+}
+
 .path-mod-coursework {
     /* Hide activity header - date and description displayed differently. */
     .activity-header {

@@ -29,21 +29,39 @@
 /**
  * AJAX_SCRIPT - exception will be converted into JSON
  */
+
+use mod_coursework\ability;
+use mod_coursework\models\coursework;
+use mod_coursework\models\submission;
+use mod_coursework\models\user;
+
 define('AJAX_SCRIPT', true);
 
-require_once(dirname(__FILE__).'/../../../config.php');
+require_once(dirname(__FILE__) . '/../../../config.php');
 require_once($CFG->dirroot . '/webservice/lib.php');
 
-// Allow CORS requests.
-header('Access-Control-Allow-Origin: *');
-
-$filepath = optional_param('filepath', '/', PARAM_PATH);
-$itemid = optional_param('itemid', 0, PARAM_INT);
 
 // Authenticate the user.
 require_login();
 
-$context = context_user::instance($USER->id);
+$submissionid = required_param('submissionid', PARAM_INT);
+$fileid = required_param('fileid', PARAM_INT);
+$filename = required_param('filename', PARAM_TEXT);
+
+$submission = submission::find($submissionid);
+
+if (!$submission) {
+    return false;
+}
+
+$coursework = coursework::find($submission->courseworkid);
+$user = user::find($USER);
+$ability = new ability($user, $coursework);
+if ($ability->cannot('show', $submission)) {
+    return false;
+}
+
+$context = $coursework->get_context();
 $PAGE->set_context($context);
 
 $fs = get_file_storage();
@@ -103,10 +121,6 @@ foreach ($_FILES as $fieldname => $uploadedfile) {
 
 $fs = get_file_storage();
 
-if ($itemid <= 0) {
-    $itemid = file_get_unused_draft_itemid();
-}
-
 // Get any existing file size limits.
 $maxupload = get_user_max_upload_file_size($context, $CFG->maxbytes);
 
@@ -124,36 +138,26 @@ foreach ($files as $file) {
     }
     $filerecord = new stdClass;
     $filerecord->component = 'mod_coursework';
-    $filerecord->contextid = 53;
+    $filerecord->contextid = $context->id;
     $filerecord->userid = $USER->id;
-    $filerecord->filearea = 'submission';
-    $filerecord->filename = $file->filename;
-    $filerecord->filepath = $filepath;
-    $filerecord->itemid = 1;
+    $filerecord->filearea = 'submissionannotations';
+    $filerecord->filename = $filename;
+    $filerecord->filepath = '/';
+    $filerecord->itemid = $submissionid;
     $filerecord->license = $CFG->sitedefaultlicense;
     $filerecord->author = fullname($USER);
-    $filerecord->source = serialize((object)array('source' => $file->filename));
+    $filerecord->source = $fileid;
     $filerecord->filesize = $file->size;
 
     // Check if the file already exist.
     $existingfile = $fs->get_file($filerecord->contextid, $filerecord->component, $filerecord->filearea,
-                $filerecord->itemid, $filerecord->filepath, $filerecord->filename);
+        $filerecord->itemid, $filerecord->filepath, $filerecord->filename);
 
-        $storedfile = $fs->create_file_from_pathname($filerecord, $file->filepath);
-        $results[] = $filerecord;
+    if ($existingfile) {
+        $existingfile->delete();
+    }
 
-        // Log the event when a file is uploaded to the draft area.
-        $logevent = \core\event\draft_file_added::create([
-                'objectid' => $storedfile->get_id(),
-                'context' => $context,
-                'other' => [
-                        'itemid' => $filerecord->itemid,
-                        'filename' => $filerecord->filename,
-                        'filesize' => $filerecord->filesize,
-                        'filepath' => $filerecord->filepath,
-                        'contenthash' => $storedfile->get_contenthash(),
-                ],
-        ]);
-        $logevent->trigger();
+    $storedfile = $fs->create_file_from_pathname($filerecord, $file->filepath);
+    $results[] = $filerecord;
 }
 echo json_encode($results);
