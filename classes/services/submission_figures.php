@@ -73,7 +73,7 @@ class submission_figures {
             } else {
                 $allocated = $coursework->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable());
                 $sampled = $submission->get_coursework()->sampling_enabled();
-                $initialgraded = $submission->all_inital_graded();
+                $initialgraded = $submission->all_initial_graded();
                 $requiresamplingcheck = $sampled && ($submission->max_number_of_feedbacks() > 1);
 
                 if ($allocated || ($canaddagreed && $initialgraded && (!$sampled || $requiresamplingcheck))) {
@@ -146,7 +146,7 @@ class submission_figures {
             if (empty($submission->finalised)
                 || !empty($submission->get_final_grade())
                 || (has_capability('mod/coursework:addallocatedagreedgrade', $submission->get_coursework()->get_context())
-                    && !$submission->is_assessor_initial_grader() && $submission->all_inital_graded())) {
+                    && !$submission->is_assessor_initial_grader() && $submission->all_initial_graded())) {
                 unset($submissions[$submission->id]);
             }
         }
@@ -161,7 +161,7 @@ class submission_figures {
      */
     private static function remove_final_gradable_submissions(array $submissions): array {
         foreach ($submissions as $submission) {
-            if (!empty($submission->all_inital_graded()) ) {
+            if (!empty($submission->all_initial_graded()) ) {
                 unset($submissions[$submission->id]);
             }
         }
