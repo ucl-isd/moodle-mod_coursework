@@ -1345,15 +1345,16 @@ class mod_coursework_mod_form extends moodleform_mod {
         $roundingoptions = ['mid' => get_string('roundmid', 'mod_coursework'),
                                  'up' => get_string('roundup', 'mod_coursework'),
                                  'down' => get_string('rounddown', 'mod_coursework')];
-        $setbopundariesurl = "$CFG->wwwroot/mod/coursework/actions/set_grade_class_boundaries.php?courseworkid="
-            . $this->get_coursework_id();
+        $setboundariesurl = (new \moodle_url(
+            "/mod/coursework/actions/set_grade_class_boundaries.php", ['courseworkid' => $this->get_coursework_id()])
+        )->out();
         $this->form()->addElement(
             'selectwithlink',
             'roundingrule',
             get_string('roundingrule', 'mod_coursework'),
             $roundingoptions,
             null,
-            ['link' => $setbopundariesurl, 'label' => get_string('gradeclasssetboundaries', 'coursework')]
+            ['link' => $setboundariesurl, 'label' => get_string('gradeclasssetboundaries', 'coursework')]
         );
         $this->form()->addhelpbutton('roundingrule', 'roundingrule', 'mod_coursework');
 

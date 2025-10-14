@@ -125,7 +125,7 @@ class average_grade_no_straddle extends average_grade {
         }
         if (empty($records)) {
             // Use hard coded default boundaries.
-            $records = [
+            return [
                 ['bottom' => 70.00, 'top' => 100.00],
                 ['bottom' => 60.00, 'top' => 69.99],
                 ['bottom' => 50.00, 'top' => 59.99],

@@ -42,7 +42,7 @@ $PAGE->set_context($context);
 $form = new \mod_coursework\forms\grade_class_boundaries(new \moodle_url($url), $urlparams);
 $redirecturl = $coursework
     ? new \moodle_url('/course/modedit.php', ['update' => $coursework->get_course_module()->id], 'id_markingworkflow')
-    : new \moodle_url('/admin/settings.php?=', ['section' => 'modsettingcoursework']);
+    : new \moodle_url('/admin/settings.php', ['section' => 'modsettingcoursework']);
 if ($form->is_cancelled()) {
     redirect($redirecturl);
 } else if ($data = $form->get_data()) {
