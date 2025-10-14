@@ -240,10 +240,12 @@ class submission extends table_base implements \renderable {
         global $DB;
 
         // get all unfinalised submissions that have a deadline
-        $sql = 'SELECT cs.*, co.deadline
+        $sql = 'SELECT cs.*, co.deadline, ls.id as latesubsallowed
                   FROM {coursework_submissions} cs
             INNER JOIN {coursework} co
                     ON co.id = cs.courseworkid
+            LEFT OUTER JOIN {coursework_allowed_late_subs} ls ON ls.courseworkid = cs.courseworkid
+                        AND ls.allocatableid = cs.allocatableid AND ls.allocatabletype = cs.allocatabletype
                  WHERE co.deadline != 0
                    AND cs.finalised = 0';
 
@@ -251,6 +253,7 @@ class submission extends table_base implements \renderable {
 
         foreach ($submissions as &$submission) {
             $deadline = $submission->deadline;
+            $latesubsallowed = $submission->latesubsallowed;
             $submission = static::find($submission);
 
             if ($submission->get_coursework()->personal_deadlines_enabled()) {
@@ -266,6 +269,11 @@ class submission extends table_base implements \renderable {
                         // Unset as it doesn't need to be autofinalise yet
                         unset($submissions[$submission->id]);
                     }
+                }
+                // Or is the user allowed to submit late without extension?
+                if ($latesubsallowed) {
+                    // Unset as it doesn't need to be autofinalise yet.
+                    unset($submissions[$submission->id]);
                 }
             } else {
                 // Unset as it doesn't need to be autofinalise yet.
