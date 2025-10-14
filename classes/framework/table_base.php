@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @property mixed fields
  */
-#[\AllowDynamicProperties]
+#[\AllowDynamicProperties] // Allow dynamic properties for table_base to avoid interferences elsewhere.
 abstract class table_base {
 
     /**
