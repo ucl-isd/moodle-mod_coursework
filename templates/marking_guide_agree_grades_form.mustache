@@ -39,8 +39,8 @@
                     <td>
 
                         <label for="agreed_feedback_select_criterion_{{id}}">{{#str}} feedback, mod_coursework {{/str}}:</label>
-                        {{#hasfrequentcomments}}
-                            <div class="form-group">
+                        <div class="form-group">
+                            {{#hasfrequentcomments}}
                                 <select class="form-control mod_coursework_custom_comment_select" advancedgrading[criteria][{{id}}][select] style="height: auto;" id="agreed_feedback_select_criterion_{{id}}">
                                     <button><div><selectedcontent></selectedcontent></div></button>
                                     <option disabled selected value="0">{{#str}} choosedots {{/str}}</option>
@@ -48,12 +48,11 @@
                                         <option value="{{id}}"{{#selected}} selected{{/selected}} data-extra="{{extrea}}">{{description}}</option>
                                     {{/dropdownoptions}}
                                 </select>
-                                <div class="form-group mt-2 mod_coursework_custom_comment_field" data-criterion="{{id}}" id="agreed_feedback_custom_textarea_criterion_{{id}}">
-                                    <textarea class="form-control" rows="4" id="agreed_feedback_criterion_{{id}}" name="advancedgrading[criteria][{{id}}][remark]" placeholder="{{#str}}customentertext, mod_coursework{{/str}}" {{^customisselected}} style="display: none;"{{/customisselected}}>{{{existing_agreed_feedback.remark}}}</textarea>
-                                </div>
+                            {{/hasfrequentcomments}}
+                            <div class="form-group mt-2 mod_coursework_custom_comment_field" data-criterion="{{id}}" id="agreed_feedback_custom_textarea_criterion_{{id}}">
+                                <textarea class="form-control" rows="4" id="agreed_feedback_criterion_{{id}}" name="advancedgrading[criteria][{{id}}][remark]" placeholder="{{#str}}customentertext, mod_coursework{{/str}}" {{^customisselected}} style="display: none;"{{/customisselected}}>{{{existing_agreed_feedback.remark}}}</textarea>
                             </div>
-                        {{/hasfrequentcomments}}
-
+                        </div>
                     </td>
                 </tr>
             {{/criteria_rows}}
