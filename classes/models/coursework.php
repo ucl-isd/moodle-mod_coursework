@@ -486,10 +486,17 @@ class coursework extends table_base {
     }
 
     /**
+     * Are late submissions allowed?
+     * This could be at the coursework level (all users) or the allocatable level.
      * @return bool
      */
-    public function allow_late_submissions() {
-        return (bool)$this->allowlatesubmissions;
+    public function allow_late_submissions(string $allocatabletype, int $allocatableid) {
+        return $this->allowlatesubmissions
+            || \mod_coursework\models\deadline_extension::user_allowed_to_submit_late_without_extension(
+                $this->id,
+                $allocatabletype,
+                $allocatableid
+            );
     }
 
     /**
@@ -600,13 +607,17 @@ class coursework extends table_base {
     /**
      * Getter for DB deadline field.
      *
-     * @return mixed
+     * @return bool
      */
-    public function deadline_has_passed() {
+    public function deadline_has_passed(): bool {
         return ($this->has_deadline() && $this->deadline < time());
     }
 
-    public function has_deadline() {
+    /**
+     * Does the coursework have a deadline?
+     * @return bool
+     */
+    public function has_deadline(): bool {
         return !empty($this->deadline);
     }
 
@@ -1683,7 +1694,8 @@ class coursework extends table_base {
      */
     public function allowed_to_submit() {
         global $USER;
-        return (time() < $this->get_user_deadline($USER->id)) || $this->allow_late_submissions();
+        return (time() < $this->get_user_deadline($USER->id))
+            || $this->allow_late_submissions('user', $USER->id);
     }
 
     /**
@@ -1758,16 +1770,25 @@ class coursework extends table_base {
     }
 
     /**
+     * Get the allocatable.
+     * @param group|user $user
+     * @return group|user
+     */
+    public function get_allocatable($user) {
+        if ($this->is_configured_to_have_group_submissions()) {
+            return $this->get_student_group($user);
+        } else {
+            return $user;
+        }
+    }
+
+    /**
      * @param user|null $user
      * @return \mod_coursework\decorators\submission_groups_decorator|submission
      */
     public function get_user_submission($user) {
 
-        if ($this->is_configured_to_have_group_submissions()) {
-            $allocatable = $this->get_student_group($user);
-        } else {
-            $allocatable = $user;
-        }
+        $allocatable = $this->get_allocatable($user);
 
         return $this->get_allocatable_submission($allocatable);
 
@@ -1804,11 +1825,7 @@ class coursework extends table_base {
      * @return \mod_coursework\framework\table_base
      */
     public function build_own_submission($user) {
-        if ($this->is_configured_to_have_group_submissions()) {
-            $allocatable = $this->get_student_group($user);
-        } else {
-            $allocatable = $user;
-        }
+        $allocatable = $this->get_allocatable($user);
         $ownsubmissionparams = [
             'courseworkid' => $this->id,
             'allocatableid' => $allocatable->id(),
@@ -2470,7 +2487,7 @@ class coursework extends table_base {
         ) {
             return;
         }
-
+        $excludesubmissions = [];
         $excludesql = '';
          // check if any extensions granted for this coursework
         if ($this->extensions_enabled() && $this->extension_exists()) {
@@ -2488,7 +2505,6 @@ class coursework extends table_base {
                 $excludesql .= ')';
             }
         }
-
         // if it's personal dealdines coursework, check individual deadline if passed, if not exclude
         if ($this->personal_deadlines_enabled()) {
             $submissions = $this->get_coursework_submission_personal_deadlines();
@@ -2498,6 +2514,18 @@ class coursework extends table_base {
                     $excludesubmissions[$submission->submissionid] = $submission->submissionid;
                 }
             }
+        }
+
+
+        // If user is allowed individually to submit late, add to excluded list.
+        $excludedids = $DB->get_fieldset_sql(
+        "SELECT s.id FROM {coursework_submissions} s
+            JOIN {coursework_allowed_late_subs} ls ON ls.courseworkid = s.courseworkid AND ls.allocatableid = s.allocatableid AND ls.allocatabletype = s.allocatabletype
+            WHERE s.finalised = 0 AND s.courseworkid = ?",
+            [$this->id]
+        );
+        if (!empty($excludedids)) {
+            $excludesubmissions = array_merge($excludesubmissions, $excludedids);
         }
 
         // build exclude sql

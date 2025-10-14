@@ -67,6 +67,9 @@ class actions_cell_data extends cell_data_base {
         // Set plagiarism parameters.
         $this->set_plagiarism_data($data, $rowsbase);
 
+        // Set allow late submissions for individual user data.
+        $this->set_allow_late_submissions_data($data, $rowsbase);
+
         if (empty(get_object_vars($data))) {
             // If $data has no properties here, return null and we will skip adding the actions menu at all.
             return null;
@@ -311,7 +314,7 @@ class actions_cell_data extends cell_data_base {
             return true;
         }
 
-        if ($coursework->allow_late_submissions()) {
+        if ($coursework->allow_late_submissions($rowsbase->get_allocatable()->type(), $rowsbase->get_allocatable()->id())) {
             return true;
         }
 
@@ -324,5 +327,32 @@ class actions_cell_data extends cell_data_base {
         }
 
         return false;
+    }
+
+    /**
+     * Set allow late submissions data.
+     *
+     * @param stdClass $data The data object
+     * @param grading_table_row_base $rowsbase The row base object
+     */
+    protected function set_allow_late_submissions_data(stdClass $data, grading_table_row_base $rowsbase): void {
+        $allocatable = $rowsbase->get_allocatable();
+
+        // Early returns for conditions where allow late submissions should not be shown.
+        if ($this->coursework->allowlatesubmissions) {
+            // All users already allowed to submit late - no need for action menu item.
+            return;
+        }
+        if (!$this->coursework->deadline_has_passed()) {
+            // Coursework has no deadline, or it has not yet passed - no need for action menu item.
+            return;
+        }
+        if (!has_capability('mod/coursework:allowlatesubmissionsuser', $this->coursework->get_context())) {
+            return;
+        }
+        $data->allowlatesubmissionsuser = new \stdClass();
+        // Is a permission already in place for this user?
+        $data->allowlatesubmissionsuser->granted = $this->coursework->allow_late_submissions($allocatable->type(), $allocatable->id());
+
     }
 }

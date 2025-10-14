@@ -340,7 +340,8 @@ class ability extends \mod_coursework\framework\ability {
         $this->allow('new',
                      'mod_coursework\models\submission',
             function (submission $submission) {
-                if ($submission->get_coursework()->allow_late_submissions()) {
+                $allocatable = $submission->get_allocatable();
+                if ($submission->get_coursework()->allow_late_submissions($allocatable->type(), $allocatable->id())) {
                     return true;
                 }
                 return false;
@@ -491,19 +492,18 @@ class ability extends \mod_coursework\framework\ability {
                 } else {
                     $deadlinepassed = $submission->get_coursework()->deadline_has_passed();
                 }
-                $oktosubmitlate = $submission->get_coursework()->allow_late_submissions();
+                $allocatable = $submission->get_allocatable();
+                $oktosubmitlate = $submission->get_coursework()->allow_late_submissions($allocatable->type(), $allocatable->id());
+                if ($oktosubmitlate) {
+                    return false;
+                }
                 $coursework = $submission->get_coursework();
                 $submittingallocatable = $coursework->submiting_allocatable_for_student($this->get_user());
-                if ($deadlinepassed && !deadline_extension::allocatable_extension_allows_submission($submittingallocatable, $coursework)) {
-                    if (!$oktosubmitlate) {
-                        $this->set_message('Cannot submit past the deadline');
+                $noextensionallowssubmission = $deadlinepassed
+                    && !deadline_extension::allocatable_extension_allows_submission($submittingallocatable, $coursework);
+                if ($noextensionallowssubmission && $submission->persisted()) {
+                        $this->set_message('Cannot update submissions past the deadline');
                         return true;
-                    } else {
-                        if ($submission->persisted()) {
-                            $this->set_message('Cannot update submissions past the deadline');
-                            return true;
-                        }
-                    }
                 }
                 return false;
             });
@@ -522,7 +522,14 @@ class ability extends \mod_coursework\framework\ability {
                      'mod_coursework\models\submission',
             function (submission $submission) {
                 $cansubmit = has_capability('mod/coursework:submit', $submission->get_context(), $this->get_user());
-                return $cansubmit && $submission->belongs_to_user($this->get_user());
+                if (!$cansubmit) {
+                    $this->set_message("No capability to submit");
+                }
+                $belongstouser = $submission->belongs_to_user($this->get_user());
+                if (!$belongstouser) {
+                    $this->set_message("Submission does not belong to user");
+                }
+                return $cansubmit && $belongstouser;
             });
     }
 
@@ -546,7 +553,9 @@ class ability extends \mod_coursework\framework\ability {
         $this->prevent('revert',
             'mod_coursework\models\submission',
             function (submission $submission) {
-                return $submission->is_late() && !$submission->get_coursework()->allow_late_submissions();
+                $allocatable = $submission->get_allocatable();
+                return $submission->is_late()
+                    && !$submission->get_coursework()->allow_late_submissions($allocatable->type(), $allocatable->id());
             });
     }
 
@@ -576,9 +585,16 @@ class ability extends \mod_coursework\framework\ability {
                 $notalreadyfinalised = !$submission->ready_to_grade();
                 $earlyfinalisationallowed = $submission->get_coursework()->early_finalisation_allowed();
                 $courseworkhasnodeadline = !$submission->get_coursework()->has_deadline();
+                $islateandallowedtosubmitlate = $submission->is_late()
+                    && \mod_coursework\models\deadline_extension::user_allowed_to_submit_late_without_extension(
+                        $submission->get_coursework()->id(),
+                        $submission->get_allocatable()->type(),
+                        $submission->get_allocatable()->id(),
+                    );
                 $allowedto = $this->can('new', $submission) || $this->can('edit', $submission);
 
-                return $allowedto && $notalreadyfinalised && ($earlyfinalisationallowed || $courseworkhasnodeadline);
+                return $allowedto && $notalreadyfinalised
+                    && ($earlyfinalisationallowed || $courseworkhasnodeadline || $islateandallowedtosubmitlate);
             });
     }
 

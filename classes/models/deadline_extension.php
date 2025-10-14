@@ -262,4 +262,60 @@ class deadline_extension extends table_base {
         }
         $event->trigger();
     }
+
+    /**
+     * Individual users may be allowed to submit late without an extension.
+     * This is meant to be used where an extension is expected to come through from an external integration.
+     * The user is allowed to submit "late" in the expectation that the extension will come through later.
+     * @param int $courseworkid
+     * @param string $allocatabletype
+     * @param int $allocatableid
+     * @return bool
+     */
+    public static function user_allowed_to_submit_late_without_extension(
+        int $courseworkid,
+        string $allocatabletype,
+        int $allocatableid
+    ): bool {
+        global $DB;
+        return $DB->record_exists(
+                'coursework_allowed_late_subs',
+                ['courseworkid' => $courseworkid, 'allocatabletype' => $allocatabletype, 'allocatableid' => $allocatableid]
+            );
+    }
+
+    /**
+     * Allow an individual user to submit late without an extension.
+     * @see self::user_allowed_to_submit_late_without_extension() for more explanation.
+     * @param int $courseworkid
+     * @param string $allocatabletype
+     * @param int $allocatableid
+     * @return bool
+     */
+    public static function set_user_allowed_to_submit_late_without_extension(
+        int $courseworkid,
+        string $allocatabletype,
+        int $allocatableid,
+        bool $newstatus
+    ): bool {
+        global $DB, $USER;
+        $params = ['courseworkid' => $courseworkid, 'allocatabletype' => $allocatabletype, 'allocatableid' => $allocatableid];
+        $existingid = $DB->get_field('coursework_allowed_late_subs', 'id', $params);
+        if ($newstatus) {
+            $params['timemodified'] = time();
+            $params['modifiedby'] = $USER->id;
+        }
+        if ($existingid) {
+            $params['id'] = $existingid;
+            if ($newstatus) {
+                return $DB->update_record('coursework_allowed_late_subs', (object)$params);
+            } else {
+                return $DB->delete_records('coursework_allowed_late_subs', $params);
+            }
+        } else if ($newstatus) {
+            return (bool)$DB->insert_record('coursework_allowed_late_subs', (object)$params);
+        } else {
+            return false;
+        }
+    }
 }
