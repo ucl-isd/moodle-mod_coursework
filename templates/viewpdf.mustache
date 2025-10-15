@@ -28,15 +28,22 @@
         "markername": "Denise Soto"
     }
 }}
-<div>
-    <h3 class="h5 float-left">{{title}}</h3>
+<div class="row m-3">
+    <h3 class="h3">{{title}}</h3>
+
+    <span class="ml-auto">
     {{#files}}
         <button class="btn btn-primary {{^multiplefiles}}d-none{{/multiplefiles}}" data-href="{{{href}}}"
                 data-action="modcoursework_viewfile" data-fileid="{{fileid}}" data-submissionid="{{submissionid}}"
-                data-filename="{{filename}}">{{filename}}</button>
+                data-filename="{{filename}}"
+                data-annotatedfileurl="{{annotatedfileurl}}"
+                data-annotatedfileid="{{annotatedfileid}}">{{filename}}</button>
     {{/files}}
 
-    <button class="btn btn-primary m-3" data-action="modcoursework_saveannotations">Save annotations</button>
+        <!-- Save annotations button must have a tabindex or its blur event does not have a relatedtarget, which prevents pdf.js from persisting annotations !-->
+    <button class="btn btn-primary" tabindex="0" data-action="modcoursework_saveannotations">Save annotations</button>
+    <button class="btn btn-primary" data-action="modcoursework_clearannotations">Clear annotations</button>
+        </span>
 </div>
 
 <div class="modcoursework_pdfjswrapper" style="height:1000px;">
