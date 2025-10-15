@@ -141,23 +141,30 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 continue;
             }
 
-            if (isset($annotatedfiles[$file->get_id()])) {
-                $fileurl = $this->make_file_url($annotatedfiles[$file->get_id()]);
-            } else {
-                $fileurl = $this->make_file_url($file);
-            }
-
-            $template->files[] = (object)[
+            $model = [
                 'filename' => $file->get_filename(),
-                'href' => $fileurl,
+                'href' => self::make_file_url($file),
                 'fileid' => $file->get_id(),
                 'submissionid' => $submission->id,
-                ];
+            ];
+
+            if (isset($annotatedfiles[$file->get_id()])) {
+                $annotatedfile = $annotatedfiles[$file->get_id()];
+                $model['annotatedfileurl'] = self::make_file_url($annotatedfile);
+                $model['annotatedfileid'] = $annotatedfile->get_id();
+            }
+
+            $template->files[] = (object)$model;
         }
 
-       // $template->multiplefiles = (count($template->files) > 1);
+        $template->multiplefiles = (count($template->files) > 1);
 
         // Return html from template.
+
+        $this->page->requires->js_call_amd(
+            "mod_coursework/viewpdf",
+            'init',
+        );
         return $this->render_from_template('mod_coursework/viewpdf', $template);
     }
 

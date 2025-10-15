@@ -69,6 +69,10 @@ $fs = get_file_storage();
 $totalsize = 0;
 $files = array();
 foreach ($_FILES as $fieldname => $uploadedfile) {
+    if (!empty($files)) {
+        throw new \Exception('too many files');
+    }
+
     // Check upload errors.
     if (!empty($_FILES[$fieldname]['error'])) {
         switch ($_FILES[$fieldname]['error']) {
@@ -107,8 +111,7 @@ foreach ($_FILES as $fieldname => $uploadedfile) {
     if (($_FILES[$fieldname]['size'] > get_max_upload_file_size($CFG->maxbytes))) {
         // Oversize file will be ignored, error added to array to notify
         // web service client.
-        $file->errortype = 'fileoversized';
-        $file->error = get_string('maxbytes', 'error');
+        throw new moodle_exception('maxbytes', 'error');
     } else {
         $file->filepath = $_FILES[$fieldname]['tmp_name'];
         // Calculate total size of upload.
@@ -118,6 +121,8 @@ foreach ($_FILES as $fieldname => $uploadedfile) {
     }
     $files[] = $file;
 }
+
+$file = reset($files);
 
 $fs = get_file_storage();
 
@@ -130,34 +135,28 @@ if ($maxupload !== USER_CAN_IGNORE_FILE_SIZE_LIMITS && $totalsize > $maxupload) 
 }
 
 $results = array();
-foreach ($files as $file) {
-    if (!empty($file->error)) {
-        // Including error and filename.
-        $results[] = $file;
-        continue;
-    }
-    $filerecord = new stdClass;
-    $filerecord->component = 'mod_coursework';
-    $filerecord->contextid = $context->id;
-    $filerecord->userid = $USER->id;
-    $filerecord->filearea = 'submissionannotations';
-    $filerecord->filename = $filename;
-    $filerecord->filepath = '/';
-    $filerecord->itemid = $submissionid;
-    $filerecord->license = $CFG->sitedefaultlicense;
-    $filerecord->author = fullname($USER);
-    $filerecord->source = $fileid;
-    $filerecord->filesize = $file->size;
+$filerecord = new stdClass;
+$filerecord->component = 'mod_coursework';
+$filerecord->contextid = $context->id;
+$filerecord->userid = $USER->id;
+$filerecord->filearea = 'submissionannotations';
+$filerecord->filename = $filename;
+$filerecord->filepath = '/';
+$filerecord->itemid = $submissionid;
+$filerecord->license = $CFG->sitedefaultlicense;
+$filerecord->author = fullname($USER);
+$filerecord->source = $fileid;
+$filerecord->filesize = $file->size;
 
-    // Check if the file already exist.
-    $existingfile = $fs->get_file($filerecord->contextid, $filerecord->component, $filerecord->filearea,
-        $filerecord->itemid, $filerecord->filepath, $filerecord->filename);
+// Check if the file already exist.
+$existingfile = $fs->get_file($filerecord->contextid, $filerecord->component, $filerecord->filearea,
+    $filerecord->itemid, $filerecord->filepath, $filerecord->filename);
 
-    if ($existingfile) {
-        $existingfile->delete();
-    }
-
-    $storedfile = $fs->create_file_from_pathname($filerecord, $file->filepath);
-    $results[] = $filerecord;
+if ($existingfile && $existingfile->get_userid() == $USER->id) {
+    $existingfile->delete();
 }
-echo json_encode($results);
+
+$storedfile = $fs->create_file_from_pathname($filerecord, $file->filepath);
+require_once("$CFG->dirroot/mod/coursework/renderers/object_renderer.php");
+
+echo json_encode((object)['fileid' => $storedfile->get_id(), 'url' => \mod_coursework_object_renderer::make_file_url($storedfile)->out(false)]);
