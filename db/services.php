@@ -42,4 +42,12 @@ $functions = [
         'loginrequired' => true,
         'capabilities' => '', // Handled within the class.
     ],
+    'mod_coursework_allow_late_submissions' => [
+        'classname' => 'mod_coursework\external\allow_late_submissions',
+        'description' => 'Allow an individual user to make a late submission where coursework level setting does not allow it',
+        'type' => 'write',
+        'ajax' => true,
+        'loginrequired' => true,
+        'capabilities' => 'mod/coursework:allowlatesubmissionsuser',
+    ],
 ];

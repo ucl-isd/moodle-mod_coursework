@@ -101,6 +101,20 @@
             <div class="dropdown-divider"></div>
         {{/plagiarism.url}}
 
+        {{#allowlatesubmissionsuser}}
+            <button class="dropdown-item"
+               data-action="mod-coursework-launch-modal-allowlatesubmissionsuser"
+               data-coursework-id="{{coursework.id}}"
+               data-allocatable-id="{{allocatableid}}"
+               data-allocatable-type="{{allocatabletype}}"
+               data-late-subs-allowed="{{#allowlatesubmissionsuser.granted}}1{{/allowlatesubmissionsuser.granted}}{{^allowlatesubmissionsuser.granted}}0{{/allowlatesubmissionsuser.granted}}"
+            >
+                {{#allowlatesubmissionsuser.granted}}{{#str}} allowlatesubmissionsrevoke, mod_coursework {{/str}}{{/allowlatesubmissionsuser.granted}}
+                {{^allowlatesubmissionsuser.granted}}{{#str}} allowlatesubmissions, mod_coursework {{/str}}{{/allowlatesubmissionsuser.granted}}
+            </button>
+            <div class="dropdown-divider"></div>
+        {{/allowlatesubmissionsuser}}
+
         {{! Release mark - not implemented yet.}}
         <!--
         <a class="dropdown-item" href="#">{{#str}} release_mark, mod_coursework {{/str}}</a>
