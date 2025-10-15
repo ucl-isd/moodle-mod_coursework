@@ -96,39 +96,44 @@ class marking_cell_data extends cell_data_base {
      * Processes feedback data for a marker.
      *
      * @param stdClass $marker Marker object to update
-     * @param feedback|bool $feedback Feedback object or false
+     * @param feedback $feedback Feedback object
      * @param grading_table_row_base $rowsbase Base row data
      * @param assessor_feedback_row $row Current row being processed
      */
-    private function process_feedback_data(
-        stdClass $marker,
-        feedback|bool $feedback,
-        grading_table_row_base $rowsbase,
-        assessor_feedback_row $row
-    ): void {
-        // Skip if no feedback exists.
-        if (empty($feedback)) {
+    private function process_feedback_data(stdClass $marker, feedback $feedback, grading_table_row_base $rowsbase, assessor_feedback_row $row): void {
+        // Get feedback mark.
+        $marker->mark = $this->get_mark_for_feedback($feedback);
+        // Return early if no marking.
+        if (empty($marker->mark)) {
             return;
         }
 
-        // Get mark and set draft flag if feedback is not finalised.
-        $marker->mark = $this->get_mark_for_feedback($feedback);
-        $marker->allocatablehash = $this->get_allocatable_hash($rowsbase->get_allocatable());
+        // Marker template data.
         $marker->draft = !$feedback->finalised;
         $marker->readyforrelease = $rowsbase->get_submission()->ready_to_publish();
         $marker->timemodified = $feedback->timemodified;
 
-        $action = $this->ability->can('edit', $feedback) ? 'edit' :
-                ($this->ability->can('show', $feedback) ? 'show' : null);
+        // Actions - show, edit.
+        $action = null;
+        if ($this->ability->can('show', $feedback)) {
+            $action = 'show';
+        }
+        if ($this->ability->can('edit', $feedback)) {
+            $action = 'edit';
+        }
 
-        // Set the mark URL depending on the ability.
+        // Mark URL.
         if ($action) {
             $marker->markurl = $this->get_mark_url(
-                $action,
-                $rowsbase->get_submission(),
-                $row->get_stage(),
-                $feedback
+                    $action,
+                    $rowsbase->get_submission(),
+                    $row->get_stage(),
+                    $feedback
             );
+        }
+        // User cannot see the mark.
+        else {
+            $marker->markhidden = true;
         }
     }
 
@@ -158,7 +163,9 @@ class marking_cell_data extends cell_data_base {
 
             $canaddfeedback = $this->can_add_new_feedback($row, $rowsbase);
             $marker = $this->create_marker_data($assessor, $markernumber, $canaddfeedback);
-            $this->process_feedback_data($marker, $feedback, $rowsbase, $row);
+            if ($feedback) {
+                $this->process_feedback_data($marker, $feedback, $rowsbase, $row);
+            }
 
             if ($canaddfeedback) {
                 $marker->addfeedback = (object)[
