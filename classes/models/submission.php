@@ -880,7 +880,7 @@ class submission extends table_base implements \renderable {
     /**
      * @return bool
      */
-    public function all_inital_graded() {
+    public function all_initial_graded() {
         return $this->get_state() >= self::FULLY_GRADED;
     }
 
@@ -1436,7 +1436,7 @@ class submission extends table_base implements \renderable {
         if ($this->get_coursework()->get_max_markers() == 1) {
             $canadd = (has_any_capability(['mod/coursework:addinitialgrade', 'mod/coursework:addministergrades'], $this->get_context()) && $this->ready_to_grade());
         } else {
-            $canadd = (has_any_capability(['mod/coursework:addagreedgrade', 'mod/coursework:addallocatedagreedgrade', 'mod/coursework:addministergrades'], $this->get_context()) && $this->all_inital_graded());
+            $canadd = (has_any_capability(['mod/coursework:addagreedgrade', 'mod/coursework:addallocatedagreedgrade', 'mod/coursework:addministergrades'], $this->get_context()) && $this->all_initial_graded());
         }
 
         return  $canadd;
