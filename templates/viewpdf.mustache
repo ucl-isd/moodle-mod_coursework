@@ -1074,41 +1074,13 @@
 
     const unusedref = pdfjsLib; // Stops the import being removed by PHP Storm.
 
-    var controller = {
+    window.pdfcontroller = {
         currentfiledataset: null,
-        loadpdf: async function (dataset) {
-            viewerLib.PDFViewerApplication.open({url: dataset.href});
-            controller.currentfiledataset = dataset;
+        loadpdf: async function (url) {
+            viewerLib.PDFViewerApplication.open({url: url});
         },
-        saveannotations: async function () {
-            const pdfdata = await viewerLib.PDFViewerApplication.pdfDocument.saveDocument();
-            const blob = new Blob([pdfdata], {type: "application/pdf"});
-            const data = new FormData();
-            data.append("annotations", blob, "annotated.pdf");
-            data.append('submissionid', controller.currentfiledataset.submissionid);
-            data.append('fileid', controller.currentfiledataset.fileid);
-            data.append('filename', controller.currentfiledataset.filename);
-
-            fetch("../../actions/uploadannotatedsubmissionajax.php", {
-                method: "POST",
-                body: data,
-            })
+        getpdfdata: async function () {
+            return await viewerLib.PDFViewerApplication.pdfDocument.saveDocument();
         },
     };
-
-    let viewfilebuttons = document.querySelectorAll('[data-action="modcoursework_viewfile"]');
-    viewfilebuttons.forEach((node) => {
-                node.addEventListener("click", async (event) => {
-                    await controller.loadpdf(event.target.dataset).promise;
-                });
-            }
-    );
-    if (viewfilebuttons[0]) {
-        await controller.loadpdf(viewfilebuttons[0].dataset).promise;
-    }
-
-    document.querySelector('[data-action="modcoursework_saveannotations"]')
-            .addEventListener("click", async () => {
-                await controller.saveannotations().promise;
-            });
 </script>
