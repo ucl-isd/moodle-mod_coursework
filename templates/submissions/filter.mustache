@@ -9,9 +9,11 @@
                 </span>
             </button>
 
-            <div class="dropdown-menu p-4" aria-labelledby="filter-submissions" style="width: 600px;">
+            <div class="dropdown-menu p-4" aria-labelledby="filter-submissions"
+            {{^hasmarkers}} style="width: 300px;" {{/hasmarkers}}
+            {{#hasmarkers}} style="width: 600px;" {{/hasmarkers}}>
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col">
                         <h4 class="badge badge-dark">{{#str}}marking, mod_coursework{{/str}}</h4>
                         <div class="pb-1 custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="filter-need-marking" data-filter-type="status" data-filter-value="need-marking">
@@ -44,8 +46,9 @@
                             <label class="custom-control-label" for="filter-not-submitted">{{#str}}statusnotsubmitted, mod_coursework{{/str}}</label>
                         </div>
                     </div>
+                    {{#hasmarkers}}
                     <div class="col-6">
-                        <h4 class="badge badge-dark">{{#str}}assessor, mod_coursework{{/str}}</h4>
+                        <h4 class="badge badge-dark">{{#str}} assessor, mod_coursework {{/str}}</h4>
                         {{#markerfilter}}
                         <div class="pb-1 custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="filter-{{markeridentifier}}" data-filter-type="marker" data-filter-value="{{markeridentifier}}">
@@ -53,6 +56,7 @@
                         </div>
                         {{/markerfilter}}
                     </div>
+                    {{/hasmarkers}}
                 </div>
             </div>
         </div>

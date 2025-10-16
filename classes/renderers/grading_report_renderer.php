@@ -68,7 +68,9 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
             $this->set_tr_marker_filter($trdata);
 
             // Collect markers for filter.
+            $template->hasmarkers = false;
             if (!empty($trdata->markers)) {
+                $template->hasmarkers = true;
                 // Add valid markers to filter, preserving only first occurrence.
                 foreach (array_filter($trdata->markers, fn($m) => isset($m->markerid)) as $marker) {
                     if (!array_key_exists($marker->markerid, $template->markerfilter)) {
@@ -78,7 +80,16 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
             }
             $template->tr[] = $trdata;
         }
+
         $template->markerfilter = empty($template->markerfilter) ? null : array_values($template->markerfilter);
+
+        // Sort the marker filter alphabetically by name.
+        if (!empty($template->markerfilter)) {
+            usort($template->markerfilter, function ($a, $b) {
+                return strnatcasecmp($a->markername, $b->markername);
+            });
+            $template->markerfilter = array_values($template->markerfilter);
+        }
 
         return $this->render_from_template('mod_coursework/submissions/table', $template);
     }
