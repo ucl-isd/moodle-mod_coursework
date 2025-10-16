@@ -999,7 +999,20 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                         'moodle',
                                ['class' => 'submissionfileicon']);
 
-        return html_writer::link($this->make_file_url($file), $image.$filename, ['class' => $classname]);
+
+        $fileurl = $this->make_file_url($file);
+        if ($file->get_mimetype() == 'application/pdf') {
+            $viewurl = new moodle_url("/mod/coursework/actions/feedbacks/viewpdf.php", ['submissionid'=>1]);
+
+            $retval = html_writer::link($viewurl, $image.$filename, ['class' => $classname, 'target' => '_blank']);
+
+            $downloadimage = $this->output->pix_icon('i/export', get_string('download'), 'core');
+            $retval .= html_writer::link($fileurl, $downloadimage);
+
+            return $retval;
+        } else {
+            return html_writer::link($fileurl, $image.$filename, ['class' => $classname]);
+        }
     }
 
     /**
