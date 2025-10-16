@@ -22,6 +22,7 @@
 
 namespace mod_coursework\export;
 use mod_coursework\export\csv;
+use mod_coursework\export\csv\cells\cell_base;
 use mod_coursework\grade_judge;
 use mod_coursework\controllers;
 use mod_coursework\models\coursework;
@@ -677,7 +678,7 @@ class import extends grading_sheet {
         // update record only if the value of grade or feedback is changed
         $currentfeedback = $DB->get_record('coursework_feedbacks', ['id' => $cwfeedbackid]);
 
-        if ($currentfeedback->grade != $grade || strip_tags($currentfeedback->feedbackcomment) != $feedback) {
+        if ($currentfeedback->grade != $grade || cell_base::clean_cell($currentfeedback->feedbackcomment) != $feedback) {
 
             $editgrade = new \stdClass();
             $editgrade->id = $cwfeedbackid;

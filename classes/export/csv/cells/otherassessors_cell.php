@@ -78,7 +78,7 @@ class otherassessors_cell extends cell_base {
                     } else {
                         $gradedata[] = $this->get_actual_grade($grade->grade);
                     }
-                    $gradedata[] = strip_tags($grade->feedbackcomment);
+                    $gradedata[] = cell_base::clean_cell($grade->feedbackcomment);
 
                 } else {
 
