@@ -157,6 +157,14 @@ if ($existingfile && $existingfile->get_userid() == $USER->id) {
 }
 
 $storedfile = $fs->create_file_from_pathname($filerecord, $file->filepath);
-require_once("$CFG->dirroot/mod/coursework/renderers/object_renderer.php");
 
-echo json_encode((object)['fileid' => $storedfile->get_id(), 'url' => \mod_coursework_object_renderer::make_file_url($storedfile)->out(false)]);
+$url = moodle_url::make_pluginfile_url(
+    $storedfile->get_contextid(),
+    'mod_coursework',
+    $storedfile->get_filearea(),
+    $storedfile->get_itemid(),
+    $storedfile->get_filepath(),
+    $storedfile->get_filename()
+);
+
+echo json_encode((object)['fileid' => $storedfile->get_id(), 'url' => $url->out(false)]);
