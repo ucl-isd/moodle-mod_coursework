@@ -2,6 +2,22 @@
 Coursework.
 **/
 
+#page-mod-coursework-actions-feedbacks-viewpdf #page {
+    padding: 0;
+
+    #printButton,
+    #downloadButton,
+    #secondaryOpenFile,
+    #secondaryPrint,
+    #secondaryDownload,
+    #presentationMode,
+    #viewBookmark,
+    #viewBookmarkSeparator,
+    #spreadModeButtons {
+        display: none;
+    }
+}
+
 .path-mod-coursework {
     /* Hide activity header - date and description displayed differently. */
     .activity-header {

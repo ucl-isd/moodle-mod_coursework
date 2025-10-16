@@ -26,6 +26,7 @@ use mod_coursework\ability;
 use mod_coursework\auto_grader\auto_grader;
 use mod_coursework\exceptions\access_denied;
 use mod_coursework\forms\assessor_feedback_mform;
+use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
@@ -66,6 +67,23 @@ class feedback_controller extends controller_base {
             $html = $renderer->show_feedback_page($teacherfeedback);
             echo $html;
         }
+    }
+
+    protected function viewpdf() {
+        global $PAGE, $USER;
+        $urlparams = ['submissionid' => $this->params['submissionid']];
+        $PAGE->set_url('/mod/coursework/actions/feedbacks/viewpdf.php', $urlparams);
+
+        $user = user::find($USER);
+        $ability = new ability($user, $this->coursework);
+        $submission = submission::find($this->params['submissionid']);
+
+        if ($ability->cannot('show', $submission)) {
+            return false;
+        }
+
+        $renderer = $this->get_page_renderer();
+        echo $renderer->show_viewpdf_page($submission);
     }
 
     /**
