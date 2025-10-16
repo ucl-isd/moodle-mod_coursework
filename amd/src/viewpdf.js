@@ -22,6 +22,8 @@
  */
 
 import Ajax from 'core/ajax';
+import {prefetchStrings} from 'core/prefetch';
+import {getString} from 'core/str';
 import {add as addToast} from 'core/toast';
 
 var controller = {
@@ -43,7 +45,7 @@ var controller = {
         controller.currentfiledataset.annotatedfileurl = result.url;
         controller.currentfiledataset.annotatedfileid = result.fileid;
 
-        addToast(result.url, {type: 'success'});
+        addToast(getString('annotationssaved', 'mod_coursework'), {type: 'success'});
     },
 
     loadpdf: async function (dataset) {
@@ -70,6 +72,7 @@ var controller = {
                 controller.currentfiledataset.annotatedfileurl = '';
                 controller.currentfiledataset.annotatedfileid = '';
                 controller.loadpdf(controller.currentfiledataset);
+                addToast(getString('annotationscleared', 'mod_coursework'), {type: 'success'});
             })
             .catch((error) => {
                 addToast(error, {type: 'error'});
@@ -80,6 +83,11 @@ var controller = {
 
 
 export const init = async () => {
+    prefetchStrings('mod_coursework', [
+        'annotationssaved',
+        'annotationscleared',
+    ]);
+
     let viewfilebuttons = document.querySelectorAll('[data-action="modcoursework_viewfile"]');
     viewfilebuttons.forEach((node) => {
             node.addEventListener("click", async (event) => {
