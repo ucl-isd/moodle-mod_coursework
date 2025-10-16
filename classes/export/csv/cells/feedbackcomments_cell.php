@@ -44,7 +44,7 @@ class feedbackcomments_cell extends cell_base {
             ? "assessor_1"
             : $this->get_stage_identifier_for_assessor($submission, $student);
         $grade = $submission->get_assessor_feedback_by_stage($stageident);
-        return (!$grade || !isset($grade->feedbackcomment)) ? '' : strip_tags($grade->feedbackcomment);
+        return (!$grade || !isset($grade->feedbackcomment)) ? '' : cell_base::clean_cell($grade->feedbackcomment);
     }
 
     /**

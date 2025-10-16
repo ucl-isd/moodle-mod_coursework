@@ -166,7 +166,7 @@ final class grading_sheet_download_test extends \advanced_testcase {
         $feedbackdata4 = new stdClass();
         $feedbackdata4->submissionid = $submission2->id;
         $feedbackdata4->grade = 62;
-        $feedbackdata4->feedbackcomment = 'abc';
+        $feedbackdata4->feedbackcomment = '<p>abc’s feedback</p>';
         $feedbackdata4->assessorid = $assessor2->id;
         $feedbackdata4->stage_identifier = 'final_agreed_1';
         $feedback4 = $generator->create_feedback($feedbackdata4);
@@ -219,7 +219,7 @@ final class grading_sheet_download_test extends \advanced_testcase {
                 $feedbackdata3->grade,
                 $feedbackdata3->feedbackcomment,
                 $feedbackdata4->grade,
-                $feedbackdata4->feedbackcomment,
+                'abc\'s feedback',
             ],
         ];
 
