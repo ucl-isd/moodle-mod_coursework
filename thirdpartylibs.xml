@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<libraries>
+    <library>
+        <location>lib/pdfjs</location>
+        <name>PDF.js</name>
+        <license>Apache</license>
+        <version>5.4.2963</version>
+        <licenseversion>2</licenseversion>
+        <repository>https://github.com/mozilla/pdf.js</repository>
+    </library>
+</libraries>
