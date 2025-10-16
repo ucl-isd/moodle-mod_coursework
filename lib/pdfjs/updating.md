@@ -43,4 +43,8 @@ defaultOptions.enableComment = {
     value: true,
     kind: OptionKind.VIEWER
 };
+  workerSrc: {
+    value: "../../lib/pdfjs/build/pdf.worker.mjs",
+    kind: OptionKind.WORKER
+  }
 ```
