@@ -436,6 +436,7 @@ $string['gradeboundarydecimalprecisionwarning'] = 'Only two decimal places allow
 $string['gradeboundarytop'] = 'Top %';
 $string['gradeboundarytopbottommismatch'] = 'Grade boundary top must be greater than bottom';
 $string['gradeclass'] = 'Grade class \'{$a}\'';
+$string['gradeclassboundaries'] = 'Grade class boundaries';
 $string['gradeclassboundariessystemdefaultmessage'] = 'This coursework will use the default class boundaries.  If you want to set custom boundaries, create the activity first, then return here to see a link to do that.';
 $string['gradeclasssetboundaries'] = 'Set grade class boundaries';
 $string['gradeclasssetboundariesgapwarning'] = 'Gaps in the ranges provided will cause errors. Please cover the whole range of possible marks (check {$a->top} to {$a->bottom}).';

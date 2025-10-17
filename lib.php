@@ -886,6 +886,12 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
         $link = new moodle_url('/admin/roles/assign.php', ['contextid' => $context->id]);
         $navref->add(get_string('addassessors', 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
     }
+
+    if (($coursework->automaticagreementstrategy ?? null) == 'average_grade_no_straddle'
+        && has_capability('moodle/course:manageactivities', $context)) {
+        $link = new moodle_url('/mod/coursework/actions/set_grade_class_boundaries.php', ['courseworkid' => $coursework->id]);
+        $navref->add(get_string('gradeclassboundaries', 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
+    }
 }
 
 /**
