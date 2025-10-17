@@ -202,13 +202,13 @@ class grade_class_boundaries extends moodleform {
         }
 
         // Finally check bottom boundary covers min possible mark.
-        $bottomboundaryindex = end($boundaries)['index'];
-        if (min($gradeoptions) != $boundaries[$bottomboundaryindex]['bottom']) {
-            $errors["grade_boundary_bottom_" . $bottomboundaryindex] =
+        $bottomboundaryitem = end($boundaries);
+        if (min($gradeoptions) != $bottomboundaryitem['bottom']) {
+            $errors["grade_boundary_bottom_" . $bottomboundaryitem['index']] =
                 get_string(
                     'gradeclasssetboundariesgapwarning',
                     'coursework',
-                    ['bottom' => $boundaries[$bottomboundaryindex]['bottom'], 'top' => min($gradeoptions)]
+                    ['bottom' => $bottomboundaryitem['bottom'], 'top' => min($gradeoptions)]
                 );
         }
 
@@ -240,7 +240,6 @@ class grade_class_boundaries extends moodleform {
      */
     public static function parse_form_data(array $data): array {
         $keys = array_keys($data);
-        sort($keys);
         $boundaries = [];
         foreach ($keys as $key) {
             if (preg_match('/^grade_boundary_(top|bottom)_[\d]+$/', $key)) {
@@ -259,6 +258,9 @@ class grade_class_boundaries extends moodleform {
                 }
             }
         }
+        usort($boundaries, function ($a, $b) {
+            return $a['index'] <=> $b['index'];
+        });
         return $boundaries;
     }
 }
