@@ -33,9 +33,15 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
 require_once($CFG->dirroot.'/mod/coursework/lib.php');
 
 /**
- * Mod form that allows a new coursework to ber created, or for the settings of an existing one to be altered.
+ * Mod form that allows a new coursework to be created, or for the settings of an existing one to be altered.
  */
 class mod_coursework_mod_form extends moodleform_mod {
+
+    /**
+     * Coursework ID (if updating an existing coursework).
+     * @var int|null
+     */
+    private ?int $courseworkid = null;
 
     private function form() {
         return $this->_form;
@@ -44,8 +50,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     /**
      */
     public function definition() {
-
-        global $PAGE, $CFG;
+        global $PAGE;
 
         // Don't include jQuery when not on this module's settings page, for
         // example, if on the default activity completion page.  See MDL-78528.
@@ -889,18 +894,32 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     /**
+     * Get the coursework ID.
      * @return int
-     * @throws coding_exception
      */
-    protected function get_coursework_id() {
-        $upcmid = optional_param('update', -1, PARAM_INT);
-        $cm = get_coursemodule_from_id('coursework', $upcmid);
-        $courseworkid = 0;
-        if ($cm) {
-            $courseworkid = $cm->instance;
-            return $courseworkid;
+    protected function get_coursework_id(): int {
+        if ($this->courseworkid === null) {
+            $upcmid = optional_param('update', -1, PARAM_INT);
+            $cm = get_coursemodule_from_id('coursework', $upcmid);
+            if ($cm) {
+                $this->courseworkid = $cm->instance;
+            } else {
+                $this->courseworkid = 0;
+            }
         }
-        return $courseworkid;
+        return $this->courseworkid;
+    }
+
+    /**
+     * Get the coursework.
+     * @return ?coursework
+     */
+    protected function get_coursework(): ?coursework {
+        $id = $this->get_coursework_id();
+        if ($id) {
+            return coursework::find($id);
+        }
+        return null;
     }
 
     /**
@@ -1315,23 +1334,61 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     private function add_automatic_agreement_enabled() {
-        global $CFG;
         $options = [
             'none' => get_string('none'),
             'percentage_distance' => get_string('automaticagreementpercentagedistance', 'coursework'),
             'average_grade_no_straddle' => get_string('automaticagreementaveragegradenostraddling', 'coursework'),
             'average_grade' => get_string('automaticagreementaveragegrade', 'coursework'),
         ];
-        $this->form()->addelement('select',
-                                  'automaticagreementstrategy',
-                                  get_string('automaticagreementofgrades', 'mod_coursework'),
-                                  $options);
+        // Show the set class boundaries link only if no straddling strategy is selected.
+        $classboundaryjs = 'const elements = document.querySelectorAll(".hide-unless-average-no-straddle");' .
+            'elements.forEach(element => {element.style.display = (this.value == "average_grade_no_straddle" ? null : "none");});';
+
+        $this->form()->addelement(
+            'select',
+            'automaticagreementstrategy',
+            get_string('automaticagreementofgrades', 'mod_coursework'),
+            $options,
+            ['onchange' => $classboundaryjs]
+        );
         $this->form()->settype('automaticagreementstrategy', PARAM_ALPHAEXT);
         $this->form()->addhelpbutton('automaticagreementstrategy', 'automaticagreement', 'mod_coursework');
 
         $this->form()->hideif('automaticagreementstrategy', 'numberofmarkers', 'eq', 1);
         $this->form()->hideif('automaticagreementrange', 'automaticagreementstrategy', 'eq', 'average_grade');
         $this->form()->hideif('automaticagreementrange', 'automaticagreementstrategy', 'eq', 'none');
+
+        // Display link to set class boundaries page, or explanations as to why it's not there yet.
+        $initialdisplaystyle = '';
+        if ($this->get_coursework_id()) {
+            $coursework = $this->get_coursework();
+            if (!$coursework || $coursework->automaticagreementstrategy !== 'average_grade_no_straddle') {
+                $initialdisplaystyle = 'style="display: none;"';
+            }
+        } else {
+            $initialdisplaystyle = 'style="display: none;"';
+        }
+        $creatingnewcoursework = optional_param('update', null, PARAM_INT) === null;
+        if ($creatingnewcoursework) {
+            // If creating a new coursework, no coursework ID exists for it yet (to use in coursework_class_boundaries table).
+            // So we don't include a link to set the boundaries here but will provide one once coursework exists.
+            $classboundarymessage = '<div class="alert alert-info hide-unless-average-no-straddle" ' . $initialdisplaystyle . '>'
+                . get_string('gradeclassboundariessystemdefaultmessage', 'coursework')
+                . '</div>';
+        } else {
+            $setboundariesurlparams = ['courseworkid' => $this->get_coursework_id()];
+            $classboundarymessage = \html_writer::link(
+                new \moodle_url("/mod/coursework/actions/set_grade_class_boundaries.php", $setboundariesurlparams),
+                get_string('gradeclasssetboundaries', 'coursework')
+            );
+        }
+
+
+        $this->form()->addElement(
+            'html',
+            '<div ' . $initialdisplaystyle
+                . 'class="row mb-3 hide-unless-average-no-straddle"><div class="col-md-3"></div><div class="col-md-9">'
+                . $classboundarymessage . '</div></div>');
 
         $this->form()->addElement('select',
                                   'automaticagreementrange',
@@ -1345,16 +1402,12 @@ class mod_coursework_mod_form extends moodleform_mod {
         $roundingoptions = ['mid' => get_string('roundmid', 'mod_coursework'),
                                  'up' => get_string('roundup', 'mod_coursework'),
                                  'down' => get_string('rounddown', 'mod_coursework')];
-        $setboundariesurl = (new \moodle_url(
-            "/mod/coursework/actions/set_grade_class_boundaries.php", ['courseworkid' => $this->get_coursework_id()])
-        )->out();
+
         $this->form()->addElement(
-            'selectwithlink',
+            'select',
             'roundingrule',
             get_string('roundingrule', 'mod_coursework'),
             $roundingoptions,
-            null,
-            ['link' => $setboundariesurl, 'label' => get_string('gradeclasssetboundaries', 'coursework')]
         );
         $this->form()->addhelpbutton('roundingrule', 'roundingrule', 'mod_coursework');
 

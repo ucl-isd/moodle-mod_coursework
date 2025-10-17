@@ -143,6 +143,16 @@ class average_grade_no_straddle extends average_grade {
         );
     }
 
+    /**
+     * Does this coursework have custom grade class boundaries set?
+     * @param int $courseworkid
+     * @return bool
+     */
+    public static function has_grade_class_boundaries_db(int $courseworkid): bool {
+        global $DB;
+        return $DB->record_exists('coursework_class_boundaries', ['courseworkid' => $courseworkid]);
+    }
+
 
     /**
      * Save a set of bands for a given coursework to the database.

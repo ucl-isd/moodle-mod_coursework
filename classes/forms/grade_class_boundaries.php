@@ -25,6 +25,7 @@
 namespace mod_coursework\forms;
 
 use mod_coursework\models\coursework;
+use mod_coursework\auto_grader\average_grade_no_straddle;
 
 use moodleform;
 
@@ -55,7 +56,7 @@ class grade_class_boundaries extends moodleform {
         $titleelement = $coursework ? $coursework->name : get_string('systemdefault', 'coursework');
         $mform->addElement(
             'html',
-            \html_writer::tag('h1', get_string('gradeboundariessettingfor', 'coursework', $titleelement), ['class' => 'h2'])
+            \html_writer::tag('h1', get_string('gradeboundariessettingfor', 'coursework', $titleelement), ['class' => 'h5'])
         );
 
         $mform->addElement('html', \html_writer::tag(
@@ -63,6 +64,7 @@ class grade_class_boundaries extends moodleform {
             get_string('automaticagreementgradebands_form_desc', 'coursework'))
         );
 
+        $hascustomboundaries = $coursework && average_grade_no_straddle::has_grade_class_boundaries_db($coursework->id);
         if (!$coursework) {
             $mform->addElement(
                 'html',
@@ -70,13 +72,19 @@ class grade_class_boundaries extends moodleform {
                     '<i class="fa fa-fw fa-exclamation-triangle mr-1"></i>' .
                     get_string('gradeclasssetboundariessettingsystem', 'coursework'),
                     'alert alert-warning'
-                    )
-                );
-        }
-        $bands =
-            \mod_coursework\auto_grader\average_grade_no_straddle::get_grade_class_boundaries(
-                $this->_customdata['courseworkid'] ?? 0
+                )
             );
+        } else if (!$hascustomboundaries) {
+            $mform->addElement(
+                'html',
+                \html_writer::div(
+                    '<i class="fa fa-fw fa-info-circle mr-1"></i>' .
+                    get_string('gradeclasssetboundariesnotyetset', 'coursework'),
+                    'alert alert-info'
+                )
+            );
+        }
+        $bands = average_grade_no_straddle::get_grade_class_boundaries($hascustomboundaries ? $coursework->id : 0);
         foreach ($bands as $index => $band) {
             $mform->addElement('html', '<hr/><h2 class="h5">' . get_string('band', 'coursework') . '</h2>');
             $mform->addElement(
@@ -176,6 +184,34 @@ class grade_class_boundaries extends moodleform {
                     = get_string('automaticagreementgradebandsoverlap', 'coursework');
             }
         }
+
+        // Now check if there are any gaps in the boundaries.
+        // (Boundaries sorted in descending order).
+        $bottomprevious = max($gradeoptions);
+        foreach ($boundaries as $boundary) {
+            // Check if there is a gap between previous bottom and current top.
+            if (number_format(abs($bottomprevious - $boundary['top']), 2) > 0.01) {
+                $errors["grade_boundary_top_" . $boundary['index']] =
+                    get_string(
+                        'gradeclasssetboundariesgapwarning',
+                        'coursework',
+                        ['top' => $boundary['top'], 'bottom' => $bottomprevious]
+                    );
+            }
+            $bottomprevious = min($bottomprevious, $boundary['bottom']);
+        }
+
+        // Finally check bottom boundary covers min possible mark.
+        $bottomboundaryindex = end($boundaries)['index'];
+        if (min($gradeoptions) != $boundaries[$bottomboundaryindex]['bottom']) {
+            $errors["grade_boundary_bottom_" . $bottomboundaryindex] =
+                get_string(
+                    'gradeclasssetboundariesgapwarning',
+                    'coursework',
+                    ['bottom' => $boundaries[$bottomboundaryindex]['bottom'], 'top' => min($gradeoptions)]
+                );
+        }
+
         return $errors;
     }
 
