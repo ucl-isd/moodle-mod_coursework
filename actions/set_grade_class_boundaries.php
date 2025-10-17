@@ -39,6 +39,8 @@ if ($coursework) {
 }
 
 $PAGE->set_context($context);
+$PAGE->set_title(get_string('gradeclasssetboundaries', 'mod_coursework'));
+
 $form = new \mod_coursework\forms\grade_class_boundaries(new \moodle_url($url), $urlparams);
 $redirecturl = $coursework
     ? new \moodle_url('/course/modedit.php', ['update' => $coursework->get_course_module()->id], 'id_markingworkflow')
