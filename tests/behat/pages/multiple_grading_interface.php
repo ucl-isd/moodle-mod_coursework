@@ -186,6 +186,15 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
         $this->click_that_thing($locator);
     }
 
+    /**
+     * @param int $assessornumber
+     * @param allocatable $allocatable
+     */
+    public function click_assessor_edit_feedback_button($assessornumber, $allocatable) {
+        $locator = '[data-allocateble-id="' . $this->allocatable_identifier_hash($allocatable) . '"] [data-mark-stage="'. $assessornumber . '"] [data-mark-action="editfeedback"]';
+        $this->click_that_thing($locator);
+    }
+
     public function press_publish_button() {
         $linkid = "release-marks-button";
         $this->getPage()->clickLink($linkid);

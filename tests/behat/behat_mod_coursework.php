@@ -581,6 +581,20 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * @Given /^I click on the edit feedback button for assessor (\d+)$/
+     * @param $assessornumber
+     * @throws coding_exception
+     */
+    public function i_click_on_the_edit_feedback_button_for_assessor($assessornumber) {
+        /**
+         * @var mod_coursework_behat_multiple_grading_interface $page
+         */
+        $page = $this->get_page('multiple grading interface');
+        $page->click_assessor_edit_feedback_button($assessornumber, $this->student);
+
+    }
+
+    /**
      * @Given /^I grade the submission as ([\d\.]*) using the grading form$/
      * @param $grade
      * @throws coding_exception
