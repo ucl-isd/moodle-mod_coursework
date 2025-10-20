@@ -62,11 +62,11 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
 
         // Populate template tr data.
         $template->tr = [];
-        $markersarray = []; // Collect list of all named markers while we are iterating.
+        $markersarray = []; // Collect list of allocated markers while we are iterating.
         foreach ($tablerows as $rowobject) {
             $trdata = $this->get_table_row_data($gradingreport->get_coursework(), $rowobject);
 
-            // Add named markers for data-marker and dropdown filter.
+            // Add allocated markers for data-marker and dropdown filter.
             if (!empty($trdata->markers)) {
                 // Tr.mustache - csv list for data-marker used by js filtering.
                 $trdata->markerfilter = implode(', ', array_column($trdata->markers, 'markeridentifier'));
