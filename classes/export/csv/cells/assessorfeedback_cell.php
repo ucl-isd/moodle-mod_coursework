@@ -53,7 +53,7 @@ class assessorfeedback_cell extends cell_base {
             $feedback = feedback::find($feedbackparams);
 
             if ($submission->get_agreed_grade() || $ability->can('show', $feedback) || is_siteadmin($USER->id)) {
-                $grade = strip_tags($grade->feedbackcomment);
+                $grade = cell_base::clean_cell($grade->feedbackcomment);
             } else {
                 $grade = '';
 

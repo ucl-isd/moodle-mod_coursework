@@ -39,7 +39,7 @@ class agreedfeedback_cell extends cell_base {
      */
 
     public function get_cell($submission, $student, $stageidentifier) {
-        return  $gradedata[] = $submission->get_agreed_grade() == false ? '' : strip_tags($submission->get_agreed_grade()->feedbackcomment);
+        return $submission->get_agreed_grade() == false ? '' : cell_base::clean_cell($submission->get_agreed_grade()->feedbackcomment);
     }
 
     /**
