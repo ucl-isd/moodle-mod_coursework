@@ -63,7 +63,6 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         // Populate template tr data.
         $template->tr = [];
         $markerfilter = []; // Collect list of all named markers while we are iterating.
-        $template->hasmarkers = false;
         foreach ($tablerows as $rowobject) {
             $trdata = $this->get_table_row_data($gradingreport->get_coursework(), $rowobject);
 
@@ -75,7 +74,6 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
                 // Create markers array by id to ensure unique.
                 foreach (array_filter($trdata->markers, fn($m) => isset($m->markerid)) as $marker) {
                     if (!array_key_exists($marker->markerid, $markerfilter)) {
-                        $template->hasmarkers = true;
                         $markerfilter[$marker->markerid] = $marker;
                     }
                 }
@@ -83,11 +81,13 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
             $template->tr[] = $trdata;
         }
 
-        // Sort and add markers filter for template.
-        if ($template->hasmarkers) {
+        // Sort and add markers to template.
+        $template->hasmarkers = false;
+        if (!empty($markerfilter)) {
             uasort($markerfilter, function ($a, $b) {
                 return strnatcasecmp($a->markername, $b->markername);
             });
+            $template->hasmarkers = true;
             $template->markerfilter = array_values($markerfilter);
         }
 
