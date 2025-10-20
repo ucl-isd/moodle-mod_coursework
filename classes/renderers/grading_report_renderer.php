@@ -59,34 +59,43 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         $template->blindmarkingenabled = $gradingreport->get_coursework()->blindmarking_enabled() &&
             !has_capability('mod/coursework:viewanonymous', $gradingreport->get_coursework()->get_context());
         $template->releasemarks = $this->prepare_release_marks_button($gradingreport->get_coursework());
-        $template->tr = [];
-        $template->markerfilter = [];
 
-        /** @var grading_table_row_base $rowobject */
+        // Populate template tr data.
+        $template->tr = [];
+        $markersarray = []; // Collect list of allocated markers while we are iterating.
         foreach ($tablerows as $rowobject) {
             $trdata = $this->get_table_row_data($gradingreport->get_coursework(), $rowobject);
-            $this->set_tr_marker_filter($trdata);
 
-            // Collect markers for filter.
+            // Add allocated markers for data-marker and dropdown filter.
             if (!empty($trdata->markers)) {
-                // Add valid markers to filter, preserving only first occurrence.
+                // Tr.mustache - csv list for data-marker used by js filtering.
+                $trdata->markerfilter = implode(', ', array_column($trdata->markers, 'markeridentifier'));
+
+                // Create markers array by id to ensure unique.
                 foreach (array_filter($trdata->markers, fn($m) => isset($m->markerid)) as $marker) {
-                    if (!array_key_exists($marker->markerid, $template->markerfilter)) {
-                        $template->markerfilter[$marker->markerid] = $marker;
-                    }
+                    $markersarray[$marker->markerid] = $marker;
                 }
             }
             $template->tr[] = $trdata;
         }
-        $template->markerfilter = empty($template->markerfilter) ? null : array_values($template->markerfilter);
+
+        // Sort and add markers to template.
+        if ($markersarray) {
+            usort($markersarray, function ($a, $b) {
+                return strnatcasecmp($a->markername, $b->markername);
+            });
+            $template->hasmarkers = true;
+            $template->markerfilter = $markersarray;
+        }
 
         return $this->render_from_template('mod_coursework/submissions/table', $template);
     }
 
     /**
-     * Sort the table rows - those with submissions first, then by submission time.
-     * @param grading_table_row_base[] $tablerows unsorted rows.
-     * @return grading_table_row_base[] sorted rows.
+     * Sort table rows by submission timemodified, with null submissions last.
+     *
+     * @param grading_table_row_base[] $tablerows
+     * @return grading_table_row_base[]
      */
     protected function sort_table_rows(array $tablerows): array {
         usort($tablerows, function($rowa, $rowb) {
@@ -301,18 +310,5 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         }
 
         $trdata->status = implode(', ', $status);
-    }
-
-    /**
-     * Set marker filter data for table row.
-     *
-     * @param stdClass $trdata Table row data
-     */
-    protected function set_tr_marker_filter(stdClass $trdata): void {
-        if (empty($trdata->markers)) {
-            return;
-        }
-
-        $trdata->markerfilter = implode(', ', array_column((array)$trdata->markers, 'markeridentifier'));
     }
 }
