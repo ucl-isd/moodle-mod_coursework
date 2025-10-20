@@ -69,13 +69,13 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
 
             // Add named markers for data-marker and dropdown filter.
             if (!empty($trdata->markers)) {
-                $template->hasmarkers = true;
                 // Tr.mustache - Array for data-marker for js filtering.
                 $trdata->markerfilter = implode(', ', array_column((array)$trdata->markers, 'markeridentifier'));
 
                 // Create markers array by id to ensure unique.
                 foreach (array_filter($trdata->markers, fn($m) => isset($m->markerid)) as $marker) {
                     if (!array_key_exists($marker->markerid, $markerfilter)) {
+                        $template->hasmarkers = true;
                         $markerfilter[$marker->markerid] = $marker;
                     }
                 }
