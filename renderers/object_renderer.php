@@ -1002,7 +1002,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $fileurl = $this->make_file_url($file);
         if ($file->get_mimetype() == 'application/pdf') {
-            $viewurl = new moodle_url("/mod/coursework/actions/feedbacks/viewpdf.php", ['submissionid'=>1]);
+            $viewurl = new moodle_url("/mod/coursework/actions/feedbacks/viewpdf.php", ['submissionid' => $file->get_itemid()]);
 
             $retval = html_writer::link($viewurl, $image.$filename, ['class' => $classname, 'target' => '_blank']);
 
