@@ -66,15 +66,13 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         $template->hasmarkers = false;
         foreach ($tablerows as $rowobject) {
             $trdata = $this->get_table_row_data($gradingreport->get_coursework(), $rowobject);
-            // Tr.mustache - Array for data-marker for js filtering.
-            if (!empty($trdata->markers)) {
-                $trdata->markerfilter = implode(', ', array_column((array)$trdata->markers, 'markeridentifier'));
-            }
-            $template->tr[] = $trdata;
 
-            // Filter.mustache - Add named markers for dropdown js filter.
-            if ($trdata->markers) {
+            // Add named markers for data-marker and dropdown filter.
+            if (!empty($trdata->markers)) {
                 $template->hasmarkers = true;
+                // Tr.mustache - Array for data-marker for js filtering.
+                $trdata->markerfilter = implode(', ', array_column((array)$trdata->markers, 'markeridentifier'));
+
                 // Create markers array by id to ensure unique.
                 foreach (array_filter($trdata->markers, fn($m) => isset($m->markerid)) as $marker) {
                     if (!array_key_exists($marker->markerid, $markerfilter)) {
@@ -82,6 +80,7 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
                     }
                 }
             }
+            $template->tr[] = $trdata;
         }
 
         // Sort and add markers filter for template.
