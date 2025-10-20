@@ -62,33 +62,30 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
 
         // Populate template tr data.
         $template->tr = [];
-        $markerfilter = []; // Collect list of all named markers while we are iterating.
+        $markersarray = []; // Collect list of all named markers while we are iterating.
         foreach ($tablerows as $rowobject) {
             $trdata = $this->get_table_row_data($gradingreport->get_coursework(), $rowobject);
 
             // Add named markers for data-marker and dropdown filter.
             if (!empty($trdata->markers)) {
                 // Tr.mustache - csv list for data-marker used by js filtering.
-                $trdata->markerfilter = implode(', ', array_column((array)$trdata->markers, 'markeridentifier'));
+                $trdata->markerfilter = implode(', ', array_column($trdata->markers, 'markeridentifier'));
 
                 // Create markers array by id to ensure unique.
                 foreach (array_filter($trdata->markers, fn($m) => isset($m->markerid)) as $marker) {
-                    if (!array_key_exists($marker->markerid, $markerfilter)) {
-                        $markerfilter[$marker->markerid] = $marker;
-                    }
+                    $markersarray[$marker->markerid] = $marker;
                 }
             }
             $template->tr[] = $trdata;
         }
 
         // Sort and add markers to template.
-        $template->hasmarkers = false;
-        if (!empty($markerfilter)) {
-            uasort($markerfilter, function ($a, $b) {
+        if ($markersarray) {
+            usort($markersarray, function ($a, $b) {
                 return strnatcasecmp($a->markername, $b->markername);
             });
             $template->hasmarkers = true;
-            $template->markerfilter = array_values($markerfilter);
+            $template->markerfilter = $markersarray;
         }
 
         return $this->render_from_template('mod_coursework/submissions/table', $template);
