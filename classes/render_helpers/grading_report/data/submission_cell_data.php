@@ -181,10 +181,6 @@ class submission_cell_data extends cell_data_base {
         if (!$extension) {
             return;
         }
-        // User does not have permission to view extension.
-        if (!$this->ability->can('show', deadline_extension::find(['id' => $extension->id]))) {
-            return;
-        }
         $data->extensiongranted = true;
         $data->extensiondeadline = $extension->extended_deadline;
     }
