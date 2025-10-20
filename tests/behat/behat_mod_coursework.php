@@ -590,6 +590,7 @@ class behat_mod_coursework extends behat_base {
         $field = behat_field_manager::get_form_field($fieldnode, $this->getSession());
         $field->set_value($grade);
 
+        $this->getSession()->getPage()->findButton('submitbutton')->press();
     }
 
     /**
@@ -2260,7 +2261,7 @@ class behat_mod_coursework extends behat_base {
      */
     public function i_should_see_the_final_multiple_grade_on_the_page($negate = false, $grade = 56) {
         try {
-            $grade = count($this->find_all('xpath', $this->xpath_tag_class_contains_text('td', 'multiple_agreed_grade_cell', $grade)));
+            $grade = count($this->find_all('xpath', $this->xpath_tag_class_contains_text('a', 'agreed-feedback-grade', $grade)));
         } catch(Exception $e) {
             $grade = false;
         }

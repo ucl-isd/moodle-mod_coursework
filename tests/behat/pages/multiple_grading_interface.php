@@ -75,7 +75,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
      * @param allocatable $allocatable
      */
     public function get_edit_final_feedback_button($allocatable) {
-        $identifier = '#edit-agreed-feedback-' . $allocatable->id();
+        $identifier = '[data-allocateble-id=' . $allocatable->id() . '] [data-mark-stage="final_agreed"] a.agreed-feedback-grade';
         return $this->getPage()->find('css', $identifier);
     }
 
@@ -182,7 +182,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
      * @param allocatable $allocatable
      */
     public function click_assessor_new_feedback_button($assessornumber, $allocatable) {
-        $locator = '[data-mark-stage="'. $assessornumber . '"] #add-feedback-' . $this->allocatable_identifier_hash($allocatable);
+        $locator = '[data-allocateble-id="' . $this->allocatable_identifier_hash($allocatable) . '"] [data-mark-stage="'. $assessornumber . '"] [data-mark-action="addfeedback"]';
         $this->click_that_thing($locator);
     }
 

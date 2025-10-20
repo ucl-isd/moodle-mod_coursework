@@ -34,7 +34,8 @@ Feature: Manual sampling
     And I wait "1" seconds
     And I should see "Add feedback"
     And I click on the add feedback button for assessor 1
-    And I grade the submission as 67 using the grading form
+    And I set the field "Grade" to "67"
+    And I press "Save and finalise"
 
   @javascript
   Scenario: Manual sampling should not include student when not selected
