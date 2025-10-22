@@ -15,11 +15,7 @@ Feature: Auto finalising before cron runs
   Scenario: Teacher visits the page and sees the submission is finalised when the deadline has passed
     Given I am logged in as a teacher
     And I visit the coursework page
+    Then I should not see "Add feedback"
     And the coursework deadline has passed
     When I reload the page
-    Then I should see "Ready to grade"
-
-  Scenario: Teacher visits the page and sees the submission is not finalised when the deadline has not passed
-    Given I am logged in as a teacher
-    When I visit the coursework page
-    Then I should not see "Ready to grade"
+    Then I should see "Add feedback"
