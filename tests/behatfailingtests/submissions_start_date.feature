@@ -13,16 +13,16 @@ Feature: Start date
     Given the coursework start date is disabled
     When I log in as a student
     And I visit the coursework page
-    Then I should see the new submission button
+    Then I should see "Upload your submission"
 
   Scenario: The student can not submit when the start date is in the future
     Given the coursework start date is in the future
     When I log in as a student
     And I visit the coursework page
-    Then I should not see the new submission button
+    Then I should not see "Upload your submission"
 
   Scenario: The student can submit when the start date is in the past
     Given the coursework start date is in the past
     When I log in as a student
     And I visit the coursework page
-    Then I should see the new submission button
+    Then I should see "Upload your submission"
