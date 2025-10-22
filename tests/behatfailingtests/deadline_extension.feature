@@ -25,7 +25,7 @@ Feature: Deadlines extensions for submissions
     And there is an extension for the student which has expired
     When I log in as a student
     And I visit the coursework page
-    Then I should not see the new submission button
+    Then I should not see "Upload your submission"
 
   @javascript
   Scenario: The teacher can add a deadline extension to an individual submission
