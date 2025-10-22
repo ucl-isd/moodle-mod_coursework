@@ -345,12 +345,8 @@ class cron {
     /**
      * Updates all DB columns where the deadline was before now, so that finalised = 1
      */
-    private static function finalise_any_submissions_where_the_deadline_has_passed() {
-        if (!self::in_test_environment()) {
-            echo 'Finalising submissions for courseworks where the deadlines have passed...';
-        }
-
-        $submissions = submission::unfinalised_past_deadline();
+    public static function finalise_any_submissions_where_the_deadline_has_passed($courseworkid = null) {
+        $submissions = submission::unfinalised_past_deadline($courseworkid);
         foreach ($submissions as $submission) {
             // Doing this one at a time so that the email will arrive with finalisation already
             // done. Would not want them to check straight away and then find they could still
@@ -363,7 +359,6 @@ class cron {
                 $mailer->send_submission_receipt($student, true);
             }
         }
-
     }
 
     /**
