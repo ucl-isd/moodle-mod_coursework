@@ -37,7 +37,7 @@
     <ol class="list-unstyled p-0 m-0" aria-label="{{#str}} markersandagreedmark, mod_coursework {{/str}}">
 
     {{#markers}}
-    <li class="d-flex align-items-center mb-2">
+    <li class="d-flex align-items-center mb-2" data-behat-markstage="{{markingstage}}">
         <div>
             <span class="sr-only">{{#str}} assessor, mod_coursework {{/str}}</span>
             <div class="position-relative d-flex align-items-center">
@@ -79,7 +79,7 @@
             {{/draft}}
 
             {{#markurl}}
-            <a href="{{{markurl}}}" class="font-weight-bold pl-1">{{mark}}</a>
+            <a data-mark-action="editfeedback" href="{{{markurl}}}" class="font-weight-bold pl-1">{{mark}}</a>
             {{/markurl}}
 
             {{! Marked and hidden from user. }}
@@ -96,7 +96,7 @@
 
         {{#addfeedback}}
         <div class="text-right ml-auto">
-            <a href="{{{markurl}}}" class="btn btn-primary btn-sm">{{#str}} add_feedback, mod_coursework {{/str}}</a>
+            <a data-mark-action="addfeedback" href="{{{markurl}}}" class="btn btn-primary btn-sm">{{#str}} add_feedback, mod_coursework {{/str}}</a>
         </div>
         {{/addfeedback}}
 
@@ -104,7 +104,7 @@
     {{/markers}}
 
     {{#agreedmark}}
-    <li class="d-flex align-items-center my-2" data-mark-stage="final_agreed">
+    <li class="d-flex align-items-center my-2" data-behat-markstage="final_agreed">
         <div>
         <div>{{#str}} agreedmark, mod_coursework {{/str}}</div>
         {{#mark}}{{#released}}

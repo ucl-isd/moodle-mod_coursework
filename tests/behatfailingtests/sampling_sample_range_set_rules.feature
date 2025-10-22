@@ -22,13 +22,15 @@ Feature: Automatic sample based on range set grades using marking of students in
     And I visit the coursework page
     And I wait "1" seconds
     And I click on the add feedback button for assessor 1
-    And I grade the submission as 56 using the grading form
+    And I set the field "Grade" to "56"
+    And I press "Save and finalise"
     And I wait "1" seconds
     And I should see "Your data has been saved."
 
     And I visit the coursework page
     And I click on the add feedback button for assessor 1 for another student
-    And I grade the submission as 45 using the grading form
+    And I set the field "Grade" to "45"
+    And I press "Save and finalise"
     And I log out
 
   @javascript
@@ -68,10 +70,12 @@ Feature: Automatic sample based on range set grades using marking of students in
     And I visit the coursework page
     And I wait "1" seconds
     And I click on the add feedback button for assessor 2
-    And I grade the submission as 60 using the grading form
+    And I set the field "Grade" to "60"
+    And I press "Save and finalise"
     And I visit the coursework page
     And I click on the add feedback button for assessor 2 for another student
-    And I grade the submission as 40 using the grading form
+    And I set the field "Grade" to "40"
+    And I press "Save and finalise"
     And I log out
     And I am logged in as a manager
     And I visit the allocations page

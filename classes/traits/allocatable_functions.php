@@ -118,6 +118,7 @@ trait allocatable_functions {
              WHERE f.stage_identifier LIKE 'assess%'
                AND s.allocatableid = :id
                AND s.courseworkid = :courseworkid
+               AND f.finalised = 1
         ";
         $feedbacks = $DB->count_records_sql($sql,
             ['id' => $this->id(),

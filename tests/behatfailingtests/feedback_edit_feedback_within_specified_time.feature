@@ -49,13 +49,15 @@ Feature: Allow markers to edit their marking but only during specific marking st
     And I am logged in as a teacher
     And I visit the coursework page
     And I click on the add feedback button for assessor 1
-    And I grade the submission as 67 using the grading form
+    And I set the field "Grade" to "67"
+    And I press "Save and finalise"
     And I log out
 
     And I log in as the other teacher
     And I visit the coursework page
     And I click on the add feedback button for assessor 2
-    And I grade the submission as 63 using the grading form
+    And I set the field "Grade" to "63"
+    And I press "Save and finalise"
     And I visit the coursework page
     Then I should not see the final grade on the multiple marker page
 
@@ -75,13 +77,15 @@ Feature: Allow markers to edit their marking but only during specific marking st
     And I log in as a teacher
     And I visit the coursework page
     And I click on the add feedback button for assessor 1
-    And I grade the submission as 67 using the grading form
+    And I set the field "Grade" to "67"
+    And I press "Save and finalise"
     And I log out
 
     And I log in as the other teacher
     And I visit the coursework page
     And I click on the add feedback button for assessor 2
-    And I grade the submission as 63 using the grading form
+    And I set the field "Grade" to "63"
+    And I press "Save and finalise"
     And I wait "50" seconds
     And I visit the coursework page
     Then I should see the final grade as 67 on the multiple marker page

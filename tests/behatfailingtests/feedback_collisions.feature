@@ -33,7 +33,8 @@ Feature: Collisions: two people try to create feedback at the same time
     And I have an assessor feedback at grade 67
     And I visit the coursework page
     And I click on the add feedback button for assessor 2
-    And I grade the submission as 56 using the grading form
+    And I set the field "Grade" to "56"
+    And I press "Save and finalise"
 
   @javascript
   Scenario: Multiple marker: If I submit feedback and it's already been given by all teachers then it should fail

@@ -16,24 +16,28 @@ Feature: For the final grade the mark should be to the decimal point
     And I am logged in as a teacher
     And I visit the coursework page
     And I click on the add feedback button for assessor 1
-    And I grade the submission as 59 using the grading form
+    And I set the field "Grade" to "59"
+    And I press "Save and finalise"
     And I log out
     And I log in as the other teacher
     And I visit the coursework page
     And I click on the add feedback button for assessor 2
-    And I grade the submission as 58 using the grading form
+    And I set the field "Grade" to "58"
+    And I press "Save and finalise"
     Then I should see the final grade as 58.5 on the multiple marker page
 
   Scenario: A manager can enter decimals for the final grade
     Given I am logged in as a teacher
     And I visit the coursework page
     And I click on the add feedback button for assessor 1
-    And I grade the submission as 59 using the grading form
+    And I set the field "Grade" to "59"
+    And I press "Save and finalise"
     And I log out
     And I log in as the other teacher
     And I visit the coursework page
     And I click on the add feedback button for assessor 2
-    And I grade the submission as 58 using the grading form
+    And I set the field "Grade" to "58"
+    And I press "Save and finalise"
     And I log out
     And I log in as a manager
     And I visit the coursework page
