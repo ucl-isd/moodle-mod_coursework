@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace mod_coursework;
+
 /**
  * @package    mod_coursework
  * @copyright  2017 University of London Computer Centre {@link https://www.cosector.com}
@@ -27,7 +29,7 @@ use mod_coursework\router;
  * Class router_test
  * @group mod_coursework
  */
-final class router_test extends advanced_testcase {
+final class router_test extends \advanced_testcase {
 
     /**
      * @var router
@@ -35,7 +37,7 @@ final class router_test extends advanced_testcase {
     protected $router;
 
     /**
-     * @var stdClass
+     * @var \stdClass
      */
     protected $course;
 
@@ -71,13 +73,13 @@ final class router_test extends advanced_testcase {
      * @throws coding_exception
      */
     protected function get_coursework() {
-        $coursework = new stdClass();
+        $coursework = new \stdClass();
         $coursework->course = $this->get_course();
         return $this->get_generator()->create_instance($coursework);
     }
 
     /**
-     * @return stdClass
+     * @return \stdClass
      */
     private function get_course() {
         $this->course = $this->getDataGenerator()->create_course();

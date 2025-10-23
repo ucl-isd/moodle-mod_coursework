@@ -21,7 +21,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_coursework\allocation;
+namespace mod_coursework;
 
 use mod_coursework\models\coursework;
 
@@ -33,14 +33,14 @@ require_once($CFG->libdir.'/csvlib.class.php');
 /**
  * Class upload_allocators_test.
  * @property coursework coursework
- * @property stdClass student
- * @property stdClass teacher_one
- * @property stdClass teacher_two
- * @property stdClass course
+ * @property \stdClass student
+ * @property \stdClass teacher_one
+ * @property \stdClass teacher_two
+ * @property \stdClass course
  * @group mod_coursework
  */
 final class upload_allocators_test extends \advanced_testcase {
-    use \mod_coursework\test_helpers\factory_mixin;
+    use test_helpers\factory_mixin;
 
     /**
      * Setup.

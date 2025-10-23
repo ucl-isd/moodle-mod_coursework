@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace mod_coursework;
+
 /**
  * Unit tests for the csv class
  *
@@ -26,16 +28,14 @@ use mod_coursework\export\csv;
 use mod_coursework\models\submission;
 use mod_coursework\models\deadline_extension;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * @property mixed feedback_data
  * @property mixed csv
  * @group mod_coursework
  */
-final class csv_test extends advanced_testcase {
+final class csv_test extends \advanced_testcase {
 
-    use mod_coursework\test_helpers\factory_mixin;
+    use test_helpers\factory_mixin;
 
     public function setUp(): void {
         $this->resetAfterTest();
@@ -64,7 +64,7 @@ final class csv_test extends advanced_testcase {
             'extensionsenabled' => 1,
         ];
         $coursework = $this->create_a_coursework($params);
-        $submission = new stdClass();
+        $submission = new \stdClass();
         $submission->userid = $this->student->id;
         $submission->allocatableid = $this->student->id;
         $submission = $generator->create_submission($submission, $coursework);
@@ -72,7 +72,7 @@ final class csv_test extends advanced_testcase {
         $student = $this->student;
         $assessor = $this->teacher;
 
-        $feedbackdata = new stdClass();
+        $feedbackdata = new \stdClass();
         $feedbackdata->submissionid = $submission->id;
         $feedbackdata->grade = 54;
         $feedbackdata->assessorid = $assessor->id;
@@ -157,7 +157,7 @@ final class csv_test extends advanced_testcase {
         ];
         $coursework = $this->create_a_coursework($params);
 
-        $submission = new stdClass();
+        $submission = new \stdClass();
         $submission->userid = $this->student->id;
         $submission = $generator->create_submission($submission, $coursework);
 
@@ -166,7 +166,7 @@ final class csv_test extends advanced_testcase {
         $assessor2 = $this->otherteacher;
 
         // Assessor one feedback.
-        $feedbackdata1 = new stdClass();
+        $feedbackdata1 = new \stdClass();
         $feedbackdata1->submissionid = $submission->id;
         $feedbackdata1->grade = 54;
         $feedbackdata1->assessorid = $assessor1->id;
@@ -174,7 +174,7 @@ final class csv_test extends advanced_testcase {
         $feedback1 = $generator->create_feedback($feedbackdata1);
 
         // Assessor two feedback.
-        $feedbackdata2 = new stdClass();
+        $feedbackdata2 = new \stdClass();
         $feedbackdata2->submissionid = $submission->id;
         $feedbackdata2->grade = 60;
         $feedbackdata2->assessorid = $assessor2->id;
@@ -182,7 +182,7 @@ final class csv_test extends advanced_testcase {
         $feedback2 = $generator->create_feedback($feedbackdata2);
 
         // Agreed grade feedback.
-        $feedbackdata3 = new stdClass();
+        $feedbackdata3 = new \stdClass();
         $feedbackdata3->submissionid = $submission->id;
         $feedbackdata3->grade = 58;
         $feedbackdata3->assessorid = $assessor1->id;
@@ -254,7 +254,7 @@ final class csv_test extends advanced_testcase {
             'deadline' => time() + 86400,
         ];
         $coursework = $this->create_a_coursework($params);
-        $submission = new stdClass();
+        $submission = new \stdClass();
         $submission->userid = $this->student->id;
         $submission = $generator->create_submission($submission, $coursework);
 
@@ -262,7 +262,7 @@ final class csv_test extends advanced_testcase {
         $assessor1 = $this->teacher;
 
         // Assessor one feedback.
-        $feedbackdata = new stdClass();
+        $feedbackdata = new \stdClass();
         $feedbackdata->submissionid = $submission->id;
         $feedbackdata->grade = 54;
         $feedbackdata->assessorid = $assessor1->id;
@@ -334,19 +334,19 @@ final class csv_test extends advanced_testcase {
         $student1 = $this->student;
         $assessor1 = $this->teacher;
         $assessor2 = $this->otherteacher;
-        $submission1 = new stdClass();
+        $submission1 = new \stdClass();
         $submission1->userid = $student1->id;
         $submission1->allocatableid = $student1->id;
         $submission1 = $generator->create_submission($submission1, $coursework);
 
         $student2 = $this->create_a_student();
-        $submission2 = new stdClass();
+        $submission2 = new \stdClass();
         $submission2->userid = $student2->id;
         $submission2->allocatableid = $student2->id;
         $submission2 = $generator->create_submission($submission2, $coursework);
 
         // Student 2 manual sampling enabled.
-        $setmembersdata = new stdClass();
+        $setmembersdata = new \stdClass();
         $setmembersdata->courseworkid = $coursework->id;
         $setmembersdata->allocatableid = $submission2->allocatableid;
         $setmembersdata->allocatabletype = 'user';
@@ -355,7 +355,7 @@ final class csv_test extends advanced_testcase {
         $DB->insert_record('coursework_sample_set_mbrs', $setmembersdata);
 
         // Assessor one feedback for student 1.
-        $feedbackdata1 = new stdClass();
+        $feedbackdata1 = new \stdClass();
         $feedbackdata1->submissionid = $submission1->id;
         $feedbackdata1->grade = 54;
         $feedbackdata1->assessorid = $assessor1->id;
@@ -363,7 +363,7 @@ final class csv_test extends advanced_testcase {
         $feedback1 = $generator->create_feedback($feedbackdata1);
 
         // Assessor one feedback for student 2.
-        $feedbackdata2 = new stdClass();
+        $feedbackdata2 = new \stdClass();
         $feedbackdata2->submissionid = $submission2->id;
         $feedbackdata2->grade = 60;
         $feedbackdata2->assessorid = $assessor1->id;
@@ -371,7 +371,7 @@ final class csv_test extends advanced_testcase {
         $feedback2 = $generator->create_feedback($feedbackdata2);
 
         // Assessor two feedback for student 2.
-        $feedbackdata3 = new stdClass();
+        $feedbackdata3 = new \stdClass();
         $feedbackdata3->submissionid = $submission2->id;
         $feedbackdata3->grade = 50;
         $feedbackdata3->assessorid = $assessor2->id;
@@ -379,7 +379,7 @@ final class csv_test extends advanced_testcase {
         $feedback3 = $generator->create_feedback($feedbackdata3);
 
         // Agreed grade feedback.
-        $feedbackdata4 = new stdClass();
+        $feedbackdata4 = new \stdClass();
         $feedbackdata4->submissionid = $submission2->id;
         $feedbackdata4->grade = 58;
         $feedbackdata4->assessorid = $assessor2->id;

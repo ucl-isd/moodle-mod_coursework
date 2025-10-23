@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace mod_coursework;
+
 /**
  * Unit tests for the coursework class
  *
@@ -25,15 +27,13 @@
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Class that will make sure the allocation_manager works.
  * @group mod_coursework
  */
-final class coursework_submission_test extends advanced_testcase {
+final class submission_test extends \advanced_testcase {
 
-    use mod_coursework\test_helpers\factory_mixin;
+    use test_helpers\factory_mixin;
 
     /**
      * Makes us a blank coursework and allocation manager.
@@ -102,7 +102,7 @@ final class coursework_submission_test extends advanced_testcase {
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $coursework = $this->create_a_coursework(['grade' => 0]);
 
-        $submission = new stdClass();
+        $submission = new \stdClass();
         $submission->userid = 2;
         $submission = $generator->create_submission($submission, $coursework);
 
@@ -135,7 +135,7 @@ final class coursework_submission_test extends advanced_testcase {
         $submissiondata = ['allocatableid' => $student->id, 'allocatabletype' => 'user'];
         $submission = $generator->create_submission($submissiondata, $this->coursework);
         $this->coursework->update_attribute('numberofmarkers', 1);
-        $feedbackdata = new stdClass();
+        $feedbackdata = new \stdClass();
         $feedbackdata->submissionid = $submission->id;
         $feedbackdata->grade = 54;
         $feedbackdata->assessorid = 4566;
@@ -172,7 +172,7 @@ final class coursework_submission_test extends advanced_testcase {
         $submissiondata = ['allocatableid' => $student->id, 'allocatabletype' => 'user'];
         $submission = $generator->create_submission($submissiondata, $this->coursework);
         $this->coursework->update_attribute('numberofmarkers', 1);
-        $feedbackdata = new stdClass();
+        $feedbackdata = new \stdClass();
         $feedbackdata->submissionid = $submission->id;
         $feedbackdata->grade = 54;
         $feedbackdata->assessorid = 4566;
@@ -201,7 +201,7 @@ final class coursework_submission_test extends advanced_testcase {
         $submissiondata = ['allocatableid' => $student->id, 'allocatabletype' => 'user'];
         $submission = $generator->create_submission($submissiondata, $this->coursework);
         $this->coursework->update_attribute('numberofmarkers', 1);
-        $feedbackdata = new stdClass();
+        $feedbackdata = new \stdClass();
         $feedbackdata->submissionid = $submission->id;
         $feedbackdata->grade = 54;
         $feedbackdata->assessorid = 4566;

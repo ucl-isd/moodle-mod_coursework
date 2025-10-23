@@ -22,9 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace phpunit\export;
+namespace mod_coursework;
 
-use mod_coursework\export\coding_exception;
 use stdClass;
 
 /**
@@ -60,7 +59,6 @@ final class grading_sheet_download_test extends \advanced_testcase {
 
     /**
      * One stage only, no allocation, one student, coursework submitted but not graded
-     * @throws coding_exception
      */
     public function test_one_stage_no_allocations(): void {
 
@@ -105,7 +103,6 @@ final class grading_sheet_download_test extends \advanced_testcase {
     /**
      * Two stages with allocation, two students, both submissions made
      * student1 graded by assessor2, student2 graded by assessor1 and assessor2
-     * @throws coding_exception
      */
     public function test_two_stages_with_allocations(): void {
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');

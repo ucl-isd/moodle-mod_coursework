@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace mod_coursework;
+
 /**
  * @package    mod_coursework
  * @copyright  2017 University of London Computer Centre {@link https://www.cosector.com}
@@ -26,7 +28,7 @@ use mod_coursework\ability\rule;
  * Class abiity_rule_test is responsible for testing the rule class that is part of the ability system
  * @group mod_coursework
  */
-final class abiity_rule_test extends basic_testcase {
+final class rule_test extends \basic_testcase {
 
     // Test what happens when we have a rule that matches and returns true
 

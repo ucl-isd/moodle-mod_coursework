@@ -21,7 +21,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace phpunit;
+namespace mod_coursework;
 
 use mod_coursework\models\deadline_extension;
 
