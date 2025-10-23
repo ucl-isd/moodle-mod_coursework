@@ -20,13 +20,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_coursework;
+
 use mod_coursework\models\group;
 
 /**
  * Class coursework_user_test
  * @group mod_coursework
  */
-final class coursework_group_test extends advanced_testcase {
+final class group_test extends \advanced_testcase {
 
     public function setUp(): void {
         $this->resetAfterTest();
@@ -37,7 +39,7 @@ final class coursework_group_test extends advanced_testcase {
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
 
-        $group = new stdClass();
+        $group = new \stdClass();
         $group->courseid = $course->id;
         $group = $generator->create_group($group);
 

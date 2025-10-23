@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace mod_coursework;
+
 /**
  * @package    mod_coursework
  * @copyright  2017 University of London Computer Centre {@link https://www.cosector.com}
@@ -26,9 +28,9 @@ use mod_coursework\ability;
  * Class ability_test is responsible for testing the ability class to make sure the mechanisms work.
  * @group mod_coursework
  */
-final class ability_test extends advanced_testcase {
+final class ability_test extends \advanced_testcase {
 
-    use mod_coursework\test_helpers\factory_mixin;
+    use test_helpers\factory_mixin;
 
     public function setUp(): void {
         $this->setAdminUser();
