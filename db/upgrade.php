@@ -2572,6 +2572,37 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025100300, 'coursework');
     }
 
+    if ($oldversion < 2025101303) {
+
+        // Define table coursework_allowed_late_subs to be created.
+        $table = new xmldb_table('coursework_allowed_late_subs');
+
+        // Adding fields to table coursework_allowed_late_subs.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('courseworkid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('allocatabletype', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('allocatableid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('modifiedby', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table coursework_allowed_late_subs.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('courseworkid', XMLDB_KEY_FOREIGN, ['courseworkid'], 'coursework', ['id']);
+        $table->add_key(
+            'courseworkid-allocatableid-allocatabletype',
+            XMLDB_KEY_UNIQUE,
+            ['courseworkid', 'allocatableid', 'allocatabletype']
+        );
+
+        // Conditionally launch create table for coursework_allowed_late_subs.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2025101303, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }

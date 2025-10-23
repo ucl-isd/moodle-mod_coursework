@@ -42,8 +42,8 @@ class submission_cell extends cell_base {
      * @return string
      */
     public function get_table_cell($rowobject) {
-
-        global $USER, $OUTPUT, $DB, $CFG;
+        //todo October 2025 this appears to be unused.  Can it be removed?  Even the whole class?
+        global $USER, $OUTPUT;
 
         $content = '';
 

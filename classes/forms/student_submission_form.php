@@ -363,8 +363,6 @@ class student_submission_form extends moodleform {
      * @throws \coding_exception
      */
     protected function add_instructions_to_form() {
-        $filemanageroptions = $this->get_file_manager_options();
-
         $usernamehash = $this->get_coursework()->get_username_hash($this->get_submission()->userid);
         $filerenamestring = ($this->get_coursework()->renamefiles == 1) ? get_string('file_rename', 'coursework', $usernamehash) : "";
         $filerenamestring .= $this->make_plagiarism_instructions();

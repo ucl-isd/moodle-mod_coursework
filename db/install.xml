@@ -329,6 +329,20 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-
+      <TABLE NAME="coursework_allowed_late_subs" COMMENT="Allocatables who are allowed to submit late even when coursework setting does not allow it">
+          <FIELDS>
+              <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+              <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+              <FIELD NAME="allocatabletype" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false"/>
+              <FIELD NAME="allocatableid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+              <FIELD NAME="modifiedby" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+              <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+          </FIELDS>
+          <KEYS>
+              <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+              <KEY NAME="courseworkid" TYPE="foreign" FIELDS="courseworkid" REFTABLE="coursework" REFFIELDS="id"/>
+              <KEY NAME="courseworkid-allocatableid-allocatabletype" TYPE="unique" FIELDS="courseworkid, allocatableid, allocatabletype"/>
+          </KEYS>
+      </TABLE>
   </TABLES>
 </XMLDB>

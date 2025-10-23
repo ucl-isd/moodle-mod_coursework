@@ -1007,7 +1007,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             }
 
 
-            if ($coursework->allow_late_submissions()) {
+            if ($coursework->allow_late_submissions('user', $user->id())) {
                 $template->latesubmissionsallowed = true;
             }
 

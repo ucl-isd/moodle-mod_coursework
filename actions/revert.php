@@ -48,7 +48,12 @@ if (!has_capability('mod/coursework:revertfinalised', $PAGE->context)) {
     redirect($url, $message);
 }
 
-if ($submission->is_late()) {
+$userallowedtosubmitlatewithoutextension = \mod_coursework\models\deadline_extension::user_allowed_to_submit_late_without_extension(
+    $coursework->id(),
+    $submission->get_allocatable()->type(),
+    $submission->get_allocatable()->id()
+);
+if ($submission->is_late() && !$userallowedtosubmitlatewithoutextension) {
     redirect(
         $url,
         get_string('extendbeforerevert', 'coursework'), null, \core\output\notification::NOTIFY_ERROR
