@@ -122,7 +122,15 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
      * @param int $expectedgrade
      */
     public function assessor_grade_should_be_present($allocatable, $assessornumber, $expectedgrade) {
-        $gradecontainer = $this->getPage()->find('css', '#edit-feedback-' . $allocatable->id());
+        $locator = '[data-allocateble-id="' . $this->allocatable_identifier_hash($allocatable) . '"]';
+
+        if (isset($assessornumber)) {
+            $locator .= ' [data-behat-markstage="' . $assessornumber . '"]';
+        }
+
+        $locator .= ' [data-mark-action="editfeedback"]';
+
+        $gradecontainer = $this->getPage()->find('css', $locator);
         $text = $gradecontainer ? $gradecontainer->getText() : '';
         if (!str_contains($text, (string)$expectedgrade)) {
             throw new \Behat\Mink\Exception\ExpectationException(

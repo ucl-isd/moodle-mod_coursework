@@ -2189,11 +2189,11 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_multiple_grading_interface $page
          */
         $page = $this->get_page('multiple grading interface');
-        $page->click_assessor_new_feedback_button('final_agreed', $this->student);
+        $page->click_assessor_edit_feedback_button('final_agreed', $this->student);
     }
 
     /**
-     * @When /^I click the edit single assessor feedback button$/
+     * @When /^I click the edit feedback button$/
      */
     public function i_click_the_edit_single_feedback_button() {
         /**
@@ -2330,13 +2330,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I click on the edit feedback link$/
-     */
-    public function i_click_on_the_edit_feedback_link() {
-        $this->find('css', "#edit-feedback-{$this->student->id}")->click();
-    }
-
-    /**
      * @Then /^I should see the grade on the page$/
      */
     public function i_should_see_the_grade_on_the_page() {
@@ -2345,11 +2338,6 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
         $page->assessor_grade_should_be_present($this->student, 1, 56);
-        // $xpath = $this->xpath_tag_class_contains_text('td', 'cfeedbackcomment', '56');
-        // if (!$this->getSession()->getPage()->has('xpath', $xpath)) {
-        // throw new ExpectationException('Should have seen the grade ("56"), but it was not there',
-        // $this->getSession());
-        // }
     }
 
     /**
