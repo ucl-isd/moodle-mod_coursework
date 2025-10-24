@@ -1,8 +1,8 @@
 <tr class="mod-coursework-submissions-row"
     data-status="{{status}}"
     data-marker="{{{markerfilter}}}"
-    data-allocateble-id="{{#submissiontype.user}}{{submissiontype.user.id}}{{/submissiontype.user}}{{#group}}{{group.id}}{{/group}}"
-    data-allocatable-type="{{#submissiontype.user}}user{{/submissiontype.user}}{{#group}}group{{/group}}">
+    data-allocateble-id="{{#submissiontype.user}}{{submissiontype.user.id}}{{/submissiontype.user}}{{#submissiontype.group}}{{submissiontype.group.id}}{{/submissiontype.group}}"
+    data-allocatable-type="{{#submissiontype.user}}user{{/submissiontype.user}}{{#submissiontype.group}}group{{/submissiontype.group}}">
 
         {{! User. }}
         <td class="mod-coursework-submissions-user-col">
