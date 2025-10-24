@@ -581,6 +581,20 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * @Given /^I click on the add feedback button$/
+     * @param $assessornumber
+     * @throws coding_exception
+     */
+    public function i_click_on_the_new_feedback_button() {
+        /**
+         * @var mod_coursework_behat_multiple_grading_interface $page
+         */
+        $page = $this->get_page('multiple grading interface');
+        $page->click_assessor_new_feedback_button(null, $this->student);
+
+    }
+
+    /**
      * @Given /^I click on the edit feedback button for assessor (\d+)$/
      * @param $assessornumber
      * @throws coding_exception
@@ -2033,7 +2047,7 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_multiple_grading_interface $page
          */
         $page = $this->get_page('multiple grading interface');
-        $page->click_new_final_feedback_button($this->group);
+        $page->click_assessor_new_feedback_button('final_agreed', $this->group);
     }
 
     /**
@@ -2044,18 +2058,7 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_multiple_grading_interface $page
          */
         $page = $this->get_page('multiple grading interface');
-        $page->click_new_final_feedback_button($this->student);
-    }
-
-    /**
-     * @When /^I click the new single final feedback button for the student/
-     */
-    public function i_click_the_new_single_final_feedback_button_student() {
-        /**
-         * @var mod_coursework_behat_single_grading_interface $page
-         */
-        $page = $this->get_page('single grading interface');
-        $page->click_new_final_feedback_button($this->student);
+        $page->click_assessor_new_feedback_button('final_agreed', $this->student);
     }
 
     /**
@@ -2186,11 +2189,7 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_multiple_grading_interface $page
          */
         $page = $this->get_page('multiple grading interface');
-        $button = $page->get_edit_final_feedback_button($this->student);
-        if (!$button) {
-            throw new ExpectationException('Edit feedback button not present', $this->getSession());
-        }
-        $button->click();
+        $page->click_assessor_new_feedback_button('final_agreed', $this->student);
     }
 
     /**
@@ -2200,8 +2199,8 @@ class behat_mod_coursework extends behat_base {
         /**
          * @var mod_coursework_behat_single_grading_interface $page
          */
-        $page = $this->get_page('single grading interface');
-        $page->click_edit_feedback_button($this->student);
+        $page = $this->get_page('multiple grading interface');
+        $page->click_assessor_edit_feedback_button(null, $this->student);
     }
 
     /**
@@ -2440,22 +2439,6 @@ class behat_mod_coursework extends behat_base {
             $message = "Should be a grade in the student row final grade cell, but there's not";
             throw new ExpectationException($message, $this->getSession());
         };
-    }
-
-    /**
-     * @Given /^I should see the group grade assigned to the other student$/
-     */
-    public function i_should_see_the_group_grade_assigned_to_the_other_student() {
-        /**
-         * @var mod_coursework_behat_multiple_grading_interface $page
-         */
-        $page = $this->get_page('multiple grading interface');
-        if ($page->student_has_a_final_grade($this->otherstudent)) {
-            throw new ExpectationException(
-                $message = "Should be a grade in the student row final grade cell, but there's not",
-                $this->getSession()
-            );
-        }
     }
 
     /**
