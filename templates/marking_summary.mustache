@@ -47,10 +47,12 @@
 
     {{#canmark}}
     <ul class="w-100 list-unstyled" aria-labelledby="marking-summary-title">
+        {{#showsubmitted}}
         <li class="d-flex py-1">
             {{#str}} submitted, mod_coursework {{/str}}
             <span class="ml-auto">{{submitted}}/{{participants}}</span>
         </li>
+        {{/showsubmitted}}
         <li class="d-flex py-1 border-top">
             {{#str}} needsmarking, mod_coursework {{/str}}
             <span class="ml-auto">{{needsmarking}}</span>
