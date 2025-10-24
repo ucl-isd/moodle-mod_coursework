@@ -48,7 +48,11 @@
         <li class="d-flex py-1 border-top">
             {{#str}} tableheadtime, mod_coursework {{/str}}
             <span class="ml-auto text-right">
-                {{#late}}<span class="badge badge-warning">{{#str}} late, mod_coursework {{/str}}</span>{{/late}}
+                {{#late}}
+                <span class="badge badge-warning badge-pill">
+                    {{#str}} late, mod_coursework {{/str}}
+                </span>
+                {{/late}}
                 {{#userdate}} {{date}}, {{#str}} strftimedatetime, langconfig {{/str}} {{/userdate}}
                 {{#late}}<br>{{.}}{{/late}}
             </span>
@@ -69,7 +73,7 @@
                 {{#str}} status, mod_coursework {{/str}}
                 <span class="ml-auto text-right">
                     {{#badge}}
-                        <span class="badge badge-{{badge}}">{{status}}</span>
+                        <span class="badge badge-{{badge}} badge-pill">{{status}}</span>
                     {{/badge}}
                 </span>
             </li>
@@ -78,7 +82,9 @@
         {{#marknotpublished}}
         <li class="d-flex py-1 border-top">
             {{#str}} mark, mod_coursework {{/str}}
-            <span class="ml-auto text-right">{{#str}} notpublishedyet, mod_coursework {{/str}}</span>
+            <span class="ml-auto text-right">
+                {{#str}} notpublishedyet, mod_coursework {{/str}}
+            </span>
         </li>
         {{/marknotpublished}}
 
@@ -93,7 +99,11 @@
 
     {{! Add/Edit submission. }}
     {{#submissionbutton}}
-        <a href="{{{url}}}" class="btn btn-primary btn-block"><i class="fa-solid fa-upload mr-2"></i>{{label}}</a>
+        <hr>
+        <a href="{{{url}}}" class="btn btn-primary btn-block">
+            <i class="fa-solid fa-upload mr-2"></i>
+            {{label}}
+        </a>
     {{/submissionbutton}}
 
     {{! Finalise submission. }}

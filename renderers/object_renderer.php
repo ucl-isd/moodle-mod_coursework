@@ -1408,46 +1408,75 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
     /**
      * Get number of participants assessor can see on the grading page
-     * @param coursework $coursework
+     * @param mod_coursework_coursework $coursework
      */
-    public function get_allocatables_count_per_assessor($coursework) {
+    public function get_allocatables_count_per_assessor(mod_coursework_coursework $coursework) {
         global $USER;
-        $participant = 0;
+
+        $context = $coursework->get_context();
         $allocatables = $coursework->get_allocatables();
+        $participantcount = 0;
 
-        if (!$coursework->has_multiple_markers() && has_capability('mod/coursework:addagreedgrade', $coursework->get_context()) &&
-            !has_capability('mod/coursework:addinitialgrade', $coursework->get_context()) ) {
+        // Capability flags.
+        $canaddagreed = has_capability('mod/coursework:addagreedgrade', $context);
+        $canaddinitial = has_capability('mod/coursework:addinitialgrade', $context);
+        $canadminister = has_any_capability(['mod/coursework:administergrades'], $context);
+        $hasmultiplemarkers = $coursework->has_multiple_markers();
+        $allocationenabled = $coursework->allocation_enabled();
 
+        // Scenario 2: Admin or Allocation Disabled (View All Count)
+        if (!$allocationenabled || $canadminister) {
+            // Count all possible participants/allocatables.
+            $participantcount = count($allocatables);
+
+        // Scenario 1: User can ONLY add Agreed Grade (Single Marker, No Initial Grade cap).
+        } else if (!$hasmultiplemarkers && $canaddagreed && !$canaddinitial) {
             $submissions = $coursework->get_all_submissions();
+            $gradablesubmissions = 0; // Use a count variable
 
+            // Pre-load all submission objects to check status.
             foreach ($submissions as $sub) {
-                $submission = submission::find($sub);
-                if ( $submission->final_grade_agreed()) {
+                $submission = \mod_coursework\models\submission::find($sub); // Using the likely correct namespace
 
-                    continue;
-                } else if ( count($submission->get_assessor_feedbacks()) < $submission->max_number_of_feedbacks()) {
-                    unset($submissions[$submission->id]);
+                // Check if submission is ready for agreed grading by this limited user.
+                $finalgradeagreed = $submission->final_grade_agreed();
+                $hasenoughfeedback = count($submission->get_assessor_feedbacks()) >= $submission->max_number_of_feedbacks();
+
+                // Only count if it's not finished AND has enough initial feedback.
+                if (!$finalgradeagreed && $hasenoughfeedback) {
+                    $gradablesubmissions++;
                 }
             }
 
-            $participant = count($submissions);
+            $participantcount = $gradablesubmissions;
 
-        } else if (is_siteadmin($USER) || !$coursework->allocation_enabled() || has_any_capability(['mod/coursework:administergrades'], $coursework->get_context())) {
-            $participant = count($allocatables);
+        // Scenario 3: Standard Allocation Enabled (Count Allocated Submissions).
         } else {
+            $enablesampling = $coursework->sampling_enabled(); // Positive variable name
+            $allocatedcount = 0; // Positive variable name
+
             foreach ($allocatables as $allocatable) {
                 $submission = $allocatable->get_submission($coursework);
 
-                if ($coursework->assessor_has_any_allocation_for_student($allocatable) || has_capability('mod/coursework:addagreedgrade', $coursework->get_context())
-                    && !empty($submission) && (($submission->all_inital_graded() && !$coursework->sampling_enabled())
-                        || ($coursework->sampling_enabled() && $submission->all_inital_graded() && $submission->max_number_of_feedbacks() > 1 ))) {
-                    $participant  ++;
+                // Check A: Assessor is allocated to the student/allocatable.
+                $isallocated = $coursework->assessor_has_any_allocation_for_student($allocatable);
+
+                // Check B: User can add agreed grade AND submission is ready for it.
+                $isreadyforagreed = $canaddagreed &&
+                                    !empty($submission) &&
+                                    $submission->all_inital_graded() &&
+                                    (!$enablesampling || $submission->max_number_of_feedbacks() > 1);
+
+                if ($isallocated || $isreadyforagreed) {
+                    $allocatedcount++;
                 }
             }
+            $participantcount = $allocatedcount;
         }
 
-        return $participant;
+        return $participantcount;
     }
+
 
     /**
      * Remove submissions that have not been finalised
