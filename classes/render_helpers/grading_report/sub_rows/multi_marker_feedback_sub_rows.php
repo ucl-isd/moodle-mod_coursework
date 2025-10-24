@@ -81,7 +81,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         global $USER;
 
         if (empty($ability)) {
-            $ability = new ability(user::find($USER), $coursework);
+            $ability = new ability($USER->id, $coursework);
         }
         $needsgradedby = $coursework->allocation_enabled() && $feedbackrow->has_feedback()
             && $feedbackrow->get_graded_by() != $feedbackrow->get_assessor();
@@ -106,7 +106,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         global $USER, $PAGE;
 
         $coursework = $assessorfeedbacktable->get_coursework();
-        $ability = new ability(user::find($USER, false), $coursework);
+        $ability = new ability($USER->id, $coursework);
         $feedbackrows = $assessorfeedbacktable->get_renderable_feedback_rows();
 
         $allocatable = $assessorfeedbacktable->get_allocatable();

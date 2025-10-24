@@ -55,7 +55,7 @@ abstract class cell_data_base implements cell_data_interface {
         global $USER;
 
         $this->coursework = $coursework;
-        $this->ability = new ability(user::find($USER), $this->coursework);
+        $this->ability = new ability($USER->id, $this->coursework);
         $this->clock = di::get(clock::class);
     }
 

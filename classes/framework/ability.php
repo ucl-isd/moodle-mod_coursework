@@ -22,6 +22,7 @@
 
 namespace mod_coursework\framework;
 use mod_coursework\ability\rule;
+use mod_coursework\models\user;
 
 /**
  * This class provides a central point where all of the can/cannot decisions are stored.
@@ -42,9 +43,15 @@ use mod_coursework\ability\rule;
 abstract class ability {
 
     /**
-     * @var \stdClass;
+     * @var ?user $user;
      */
-    protected $user;
+    protected ?user $user = null;
+
+    /**
+     * The user ID.
+     * @var int $userid
+     */
+    protected int $userid;
 
     /**
      * @var string
@@ -61,8 +68,8 @@ abstract class ability {
      *
      * @param $user
      */
-    public function __construct($user) {
-        $this->user = $user;
+    public function __construct(int $userid) {
+        $this->userid = $userid;
     }
 
     /**
@@ -165,6 +172,9 @@ abstract class ability {
      * @return table_base|\stdClass
      */
     protected function get_user() {
+        if ($this->user === null) {
+            $this->user = user::find($this->userid);
+        }
         return $this->user;
     }
 

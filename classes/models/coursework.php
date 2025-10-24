@@ -855,12 +855,12 @@ class coursework extends table_base {
     }
 
     /**
-     * @param user $user
+     * @param int $userid
      * @return bool
      */
-    public function is_assessor($user) {
+    public function is_assessor(int $userid) {
         foreach ($this->marking_stages() as $stage) {
-            if ($stage->user_is_assessor($user)) {
+            if ($stage->user_is_assessor($userid)) {
                 return true;
             }
         }
@@ -958,7 +958,7 @@ class coursework extends table_base {
         global $CFG, $DB, $USER;
 
         $context = \context_module::instance($this->get_coursemodule_id());
-        $ability = new ability(user::find($USER), $this);
+        $ability = new ability($USER->id, $this);
 
         $submissions = $DB->get_records('coursework_submissions',
                                         ['courseworkid' => $this->id, 'finalised' => 1]);

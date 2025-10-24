@@ -298,7 +298,7 @@ class student_submission_form extends moodleform {
     protected function add_submit_buttons_to_form() {
         global $USER;
 
-        $ability = new ability(user::find($USER), $this->get_coursework());
+        $ability = new ability($USER->id, $this->get_coursework());
 
         $buttonarray = [];
         // If submitting on behalf of someone else, we want to make sure that we don't have people leaving it in a draft

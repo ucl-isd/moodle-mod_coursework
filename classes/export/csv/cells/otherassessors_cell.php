@@ -69,7 +69,7 @@ class otherassessors_cell extends cell_base {
                 if ($allocation && $allocation->assessorid == $USER->id) {
                     continue;
                 }
-                $ability = new ability(user::find($USER), $this->coursework);
+                $ability = new ability($USER->id, $this->coursework);
                 if ((($ability->can('show', $feedback) || has_capability('mod/coursework:addallocatedagreedgrade', $submission->get_coursework()->get_context())) &&
                     (!$submission->any_editable_feedback_exists() && count($submission->get_assessor_feedbacks()) <= $submission->max_number_of_feedbacks())) || is_siteadmin($USER->id)) {
 

@@ -868,6 +868,7 @@ $string['submission_notification_html'] = '<p>Dear {$a->name},</p><p> A submissi
 $string['submission_notification_subject'] = 'A submission has been made in {$a}';
 $string['submission_notification_text'] = 'Dear {$a->name},'."\n\n".'A submission has been made in the {$a->coursework_name} coursework.';
 $string['coursework:submitonbehalfof'] = 'Submit work on behalf of a student';
+$string['submitonbehalf'] = 'Submit on behalf';
 $string['submitonbehalfofstudent'] = 'Submit work on behalf of {$a}';
 $string['submitted_late'] = 'Submitted late';
 $string['submitted'] = 'Submitted';

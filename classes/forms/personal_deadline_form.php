@@ -262,7 +262,7 @@ class personal_deadline_form extends dynamic_form {
             $datasource['allocatabletype'],
             $datasource['courseworkid'],
         );
-        $ability = new ability(user::find($USER), $this->get_coursework());
+        $ability = new ability($USER->id, $this->get_coursework());
         $deadline = personal_deadline::find_or_build($deadline);
         $deadline->courseworkid = $this->coursework->id();
         return $ability->can('edit', $deadline);

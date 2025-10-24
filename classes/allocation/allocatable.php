@@ -52,13 +52,7 @@ interface allocatable {
     /**
      * @return string
      */
-    public function picture();
-
-    /**
-     * @param bool $withpicture
-     * @return string
-     */
-    public function profile_link($withpicture = false);
+    public function profile_link();
 
     /**
      * @param \stdClass $course

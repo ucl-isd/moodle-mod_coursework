@@ -50,11 +50,6 @@ interface allocatable {
     public function type();
 
     /**
-     * @return string
-     */
-    public function picture();
-
-    /**
      * @param bool $withpicture
      * @return string
      */

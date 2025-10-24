@@ -61,7 +61,7 @@ class moderation_agreement_cell extends cell_base {
     public function get_table_cell($rowobject) {
         global $USER;
 
-        $ability = new ability(user::find($USER), $rowobject->get_coursework());
+        $ability = new ability($USER->id, $rowobject->get_coursework());
 
         $content = '';
         $moderation = '';

@@ -115,7 +115,7 @@ class time_submitted_cell extends cell_base {
         ];
 
         $extension = deadline_extension::find_or_build($newextensionparams);
-        $ability = new ability(user::find($USER), $rowobject->get_coursework());
+        $ability = new ability($USER->id, $rowobject->get_coursework());
 
         if ($extension->persisted()) {
             $content .= 'Extension: </br>'.userdate($extension->extended_deadline, '%a, %d %b %Y, %H:%M');

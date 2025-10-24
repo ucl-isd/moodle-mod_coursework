@@ -81,11 +81,11 @@ class assessor extends base {
     }
 
     /**
-     * @param user $assessor
+     * @param int $assessorid
      * @param \mod_coursework\models\submission $submission
      * @return bool
      */
-    public function other_parallel_stage_has_feedback_from_this_assessor($assessor, $submission) {
+    public function other_parallel_stage_has_feedback_from_this_assessor(int $assessorid, $submission) {
         global $DB;
 
         $sql = "
@@ -95,8 +95,7 @@ class assessor extends base {
             AND submissionid = ?
             AND stage_identifier LIKE '{$this->type()}%'
         ";
-        return $DB->record_exists_sql($sql, [$assessor->id(),
-                                                  $submission->id]);
+        return $DB->record_exists_sql($sql, [$assessorid, $submission->id]);
     }
 
     /**

@@ -41,7 +41,7 @@ class grade_for_gradebook_cell extends cell_base {
         global $USER;
 
         $content = '';
-        $ability = new ability(user::find($USER), $rowobject->get_coursework());
+        $ability = new ability($USER->id, $rowobject->get_coursework());
         $judge = new grade_judge($this->coursework);
         if ($ability->can('show', $judge->get_feedback_that_is_promoted_to_gradebook($rowobject->get_submission())) && !$rowobject->get_submission()->editable_final_feedback_exist()) {
             $grade = $judge->get_grade_capped_by_submission_time($rowobject->get_submission());

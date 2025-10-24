@@ -25,14 +25,13 @@ namespace mod_coursework;
 use mod_coursework\models\allocation;
 use mod_coursework\models\course_module;
 use mod_coursework\models\coursework;
+use mod_coursework\models\deadline_extension;
+use mod_coursework\models\personal_deadline;
 use mod_coursework\models\feedback;
 use mod_coursework\models\module;
 use mod_coursework\models\submission;
-use mod_coursework\models\user;
 use mod_coursework\render_helpers\grading_report\cells\cell_interface;
 use mod_coursework\render_helpers\grading_report\sub_rows\sub_rows_interface;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Renderable component containing all the data needed to display the grading report
@@ -353,11 +352,16 @@ class grading_report {
             $options = $this->options;
 
             $participants = $this->coursework->get_allocatables();
+            $extensions = $this->coursework->extensions_enabled()
+                ? deadline_extension::get_all_for_coursework($this->coursework->id) : [];
+            $personaldeadlines = $this->coursework->personal_deadlines_enabled()
+                ? personal_deadline::get_all_for_coursework($this->coursework->id) : [];
 
             // Make tablerow objects so we can use the methods to check permissions and set things.
             $rows = [];
-            $rowclass = $this->coursework->has_multiple_markers() ? 'mod_coursework\grading_table_row_multi' : 'mod_coursework\grading_table_row_single';
-            $ability = new ability(user::find($USER, false), $this->get_coursework());
+            $rowclass = $this->coursework->has_multiple_markers()
+                ? 'mod_coursework\grading_table_row_multi' : 'mod_coursework\grading_table_row_single';
+            $ability = new ability($USER->id, $this->get_coursework());
 
             $participantsfound = 0;
 
@@ -376,7 +380,33 @@ class grading_report {
                     }
                 }
 
-                $row = new $rowclass($this->coursework, $participant);
+                // To save multiple queries to DB for extensions and deadlines, add them here.
+                $extension = array_filter(
+                    $extensions,
+                    function ($ext) use ($participant) {
+                        return $participant->id() == $ext->allocatableid
+                            && $participant->type() == $ext->allocatabletype;
+                    }
+                );
+                $extension = array_pop($extension);
+
+                $personaldeadline = array_filter(
+                    $personaldeadlines,
+                    function ($ext) use ($participant) {
+                        return $participant->id() == $ext->allocatableid
+                            && $participant->type() == $ext->allocatabletype;
+                    }
+                );
+                $personaldeadline = array_pop($personaldeadline);
+
+                // New grading_table_row_base.
+                $row = new $rowclass(
+                    $this->coursework,
+                    $participant,
+                    $extension ? deadline_extension::find($extension, false) : null,
+                    $personaldeadline ? personal_deadline::find($personaldeadline, false) : null,
+                    $personaldeadline,
+                );
 
                 // Now, we skip the ones who should not be visible on this page.
                 $canshow = $ability->can('show', $row);
@@ -388,7 +418,6 @@ class grading_report {
                     unset($participants[$key]);
                     continue;
                 }
-
                 $rows[$participant->id()] = $row;
                 $participantsfound++;
                 if (!empty($rowcount) && $participantsfound >= $rowcount) {
@@ -396,7 +425,6 @@ class grading_report {
                 }
 
             }
-
             // Sort the rows.
             $methodname = 'sort_by_' . $options['sortby'];
             if (method_exists($this, $methodname)) {

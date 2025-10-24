@@ -240,22 +240,6 @@ class feedback extends table_base {
     public function get_feedbacks_assessorid() {
         return $this->assessorid;
     }
-    /**
-     * Gets the HTML user picture for the assessor.
-     *
-     * @return \core\output\user_picture
-     */
-    public function get_assessor_user_picture() {
-        global $DB;
-
-        if ($user = $DB->get_record('user', ['id' => $this->assessorid])) {
-            $userpicture = new \core\output\user_picture($user);
-            $userpicture->size = 100;
-            return $userpicture;
-        }
-
-        return '';
-    }
 
     /**
      * Chained getter for loose coupling.

@@ -46,7 +46,7 @@ class deadline_extensions_controller extends controller_base {
     protected function show_deadline_extension() {
         global $USER, $PAGE;
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('show', $this->deadlineextension);
 
         $PAGE->set_url('/mod/coursework/actions/deadline_extensions/show.php', $this->params);
@@ -58,7 +58,7 @@ class deadline_extensions_controller extends controller_base {
         global $USER, $PAGE;
 
         $params = $this->set_default_current_deadline();
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('new', $this->deadlineextension);
 
         $PAGE->set_url('/mod/coursework/actions/deadline_extensions/new.php', $params);
@@ -112,7 +112,7 @@ class deadline_extensions_controller extends controller_base {
             $data->extra_information_format = $data->extra_information['format'];
             $this->deadlineextension = deadline_extension::build($data);
 
-            $ability = new ability(user::find($USER), $this->coursework);
+            $ability = new ability($USER->id, $this->coursework);
             $ability->require_can('create', $this->deadlineextension);
 
             $this->deadlineextension->save();
@@ -157,7 +157,7 @@ class deadline_extensions_controller extends controller_base {
         ];
         $this->deadlineextension = deadline_extension::find($params);
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('edit', $this->deadlineextension);
 
         $PAGE->set_url('/mod/coursework/actions/deadline_extensions/edit.php', $params);
@@ -181,7 +181,7 @@ class deadline_extensions_controller extends controller_base {
     public function delete_deadline_extension(): bool {
         global $USER;
         $extensionid = $this->params['extensionid'];
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $deadlineextension = deadline_extension::find(['id' => $extensionid]);
         if ($deadlineextension && $deadlineextension->can_be_deleted()) {
             $ability->require_can('edit', $deadlineextension);
@@ -213,7 +213,7 @@ class deadline_extensions_controller extends controller_base {
         if ($this->cancel_button_was_pressed()) {
             redirect($courseworkpageurl);
         }
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $values = $this->form->get_data();
         $this->deadlineextension = deadline_extension::find(['id' => $this->params['id']]);
 
