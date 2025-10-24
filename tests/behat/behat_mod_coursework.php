@@ -1831,10 +1831,7 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_allocations_page $page
          */
         $page = $this->get_page('allocations page');
-        if ($this->running_javascript()) {
-            $page->show_assessor_allocation_settings();
-        }
-        $this->find('css', '#menuassessorallocationstrategy')->selectOption('percentages');
+        $this->find('css', '#assessorallocationstrategy')->selectOption('percentages');
         $this->getSession()->getPage()->fillField("assessorstrategypercentages[{$this->otherteacher->id}]", $percent);
     }
 
@@ -1852,7 +1849,7 @@ class behat_mod_coursework extends behat_base {
         if ($this->running_javascript()) {
             $page->show_assessor_allocation_settings();
         }
-        $this->find('css', '#menuassessorallocationstrategy')->selectOption('percentages');
+        $this->find('css', '#assessorallocationstrategy')->selectOption('percentages');
         $this->getSession()->getPage()->fillField("assessorstrategypercentages[{$this->teacher->id}]", $percent);
         $this->find('css', '#save_manual_allocations_1')->press();
     }
