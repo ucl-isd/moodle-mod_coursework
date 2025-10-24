@@ -114,7 +114,7 @@ M.mod_coursework = {
         });
 
         // default select
-        var $menuassessorallocationstrategy = $('#menuassessorallocationstrategy');
+        var $menuassessorallocationstrategy = $('#assessorallocationstrategy');
         var $selected = $menuassessorallocationstrategy.val();
 
         /// var $newname = '.assessor-strategy-options #assessor-strategy-' + $selected;

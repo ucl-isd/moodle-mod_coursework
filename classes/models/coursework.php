@@ -2462,7 +2462,6 @@ class coursework extends table_base {
     }
 
     public function finalise_all() {
-        global $DB;
         if (
             (!$this->has_deadline() && !$this->deadline_has_passed()) // There is no deadline or it is in the future.
             &&
@@ -2471,46 +2470,7 @@ class coursework extends table_base {
             return;
         }
 
-        $excludesql = '';
-         // check if any extensions granted for this coursework
-        if ($this->extensions_enabled() && $this->extension_exists()) {
-            $submissionswithextensions = $this->get_submissions_with_extensions();
-            foreach ($submissionswithextensions as $submission) {
-                // exclude submissions that are still within extended deadline
-                if ($submission->extended_deadline > time()) {
-                    $excludesubmissions[$submission->submissionid] = $submission->submissionid;
-                }
-            }
-            // build exclude sql
-            if (!empty($excludesubmissions)) {
-                $excludesql = ' AND id NOT IN(';
-                $excludesql .= implode(',', $excludesubmissions);
-                $excludesql .= ')';
-            }
-        }
-
-        // if it's personal dealdines coursework, check individual deadline if passed, if not exclude
-        if ($this->personal_deadlines_enabled()) {
-            $submissions = $this->get_coursework_submission_personal_deadlines();
-            foreach ($submissions as $submission) {
-                // exclude submissions still within personal deadline
-                if ($submission->personal_deadline > time()) {
-                    $excludesubmissions[$submission->submissionid] = $submission->submissionid;
-                }
-            }
-        }
-
-        // build exclude sql
-        if (!empty($excludesubmissions)) {
-            $excludesql = ' AND id NOT IN(';
-            $excludesql .= implode(',', $excludesubmissions);
-            $excludesql .= ')';
-        }
-
-        $DB->execute("UPDATE {coursework_submissions}
-                         SET finalised = 1
-                       WHERE courseworkid = ? $excludesql", [$this->id]);
-        \mod_coursework\models\submission::remove_cache($this->id);
+        \mod_coursework\cron::finalise_any_submissions_where_the_deadline_has_passed($this->id);
     }
 
     /**

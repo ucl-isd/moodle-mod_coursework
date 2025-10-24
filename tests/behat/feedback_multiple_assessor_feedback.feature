@@ -39,7 +39,7 @@ Feature: Multiple assessors simple grading form
     When I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I press "Save and finalise"
     And I visit the coursework page
-    And I click on the edit feedback link
+    And I click the edit feedback button
     Then I should see "1" elements in "Upload a file" filemanager
 
   @javascript
@@ -48,7 +48,7 @@ Feature: Multiple assessors simple grading form
     And the submission is finalised
     And I have an assessor feedback at grade 67
     And I visit the coursework page
-    And I click on the edit feedback link
+    And I click the edit feedback button
     And the grade comment textarea field matches "New comment here"
 
   @javascript
@@ -71,12 +71,12 @@ Feature: Multiple assessors simple grading form
     When I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I press "Save and finalise"
     And I visit the coursework page
-    And I click on the edit feedback link
+    And I click the edit feedback button
     And I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
     Then I should see "2" elements in "Upload a file" filemanager
     When I press "Save and finalise"
     And I visit the coursework page
-    And I click on the edit feedback link
+    And I click the edit feedback button
     Then I should see "2" elements in "Upload a file" filemanager
 
   @javascript

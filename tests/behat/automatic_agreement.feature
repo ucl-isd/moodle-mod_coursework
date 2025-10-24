@@ -43,7 +43,7 @@ Feature: Automatic agreement for simple grades
     When I set the field "Grade" to "63"
     And I press "Save and finalise"
     And I visit the coursework page
-    Then I should see the final grade as 67 on the multiple marker page
+    Then I should see the final agreed grade as 67
 
   @javascript
   Scenario: If "Auto-populate agreed feedback comment" is enabled then the final grade should contain the combined feedback of markers
@@ -89,4 +89,4 @@ Feature: Automatic agreement for simple grades
     And I click on the edit feedback button for assessor 2
     And I press "Save and finalise"
     And I visit the coursework page
-    Then I should see the final grade as 67 on the multiple marker page
+    Then I should see the final agreed grade as 67

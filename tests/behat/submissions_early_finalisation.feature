@@ -62,6 +62,19 @@ Feature: Early finalisation of student submissions
     And I visit the coursework page
     Then I should not see the finalise submission button
 
+  @javascript @_file_upload
+  Scenario: allowed to submit late if the setting allows it
+    Given the coursework "allowearlyfinalisation" setting is "1" in the database
+    And the coursework "allowlatesubmissions" setting is "1" in the database
+    When I visit the coursework page
+    And I follow "Upload your submission"
+    And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
+    And I press "Submit"
+    Then I should be on the coursework page
+    Then I should see the file on the page
+    And I should see the edit submission button
+    And I should see the finalise submission button
+
   Scenario: I should not see the early finalisation button on the student submission form
     Given the coursework "allowearlyfinalisation" setting is "0" in the database
     When I visit the coursework page

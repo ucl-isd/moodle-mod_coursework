@@ -236,7 +236,7 @@ class submission extends table_base implements \renderable {
     /**
      * @return submission[]
      */
-    public static function unfinalised_past_deadline() {
+    public static function unfinalised_past_deadline($courseworkid = null) {
         global $DB;
 
         // get all unfinalised submissions that have a deadline
@@ -246,8 +246,14 @@ class submission extends table_base implements \renderable {
                     ON co.id = cs.courseworkid
                  WHERE co.deadline != 0
                    AND cs.finalised = 0';
+        $params = [];
 
-        $submissions = $DB->get_records_sql($sql);
+        if (isset($courseworkid)) {
+            $sql .= ' AND cs.courseworkid = :courseworkid';
+            $params = ['courseworkid' => $courseworkid];
+        }
+
+        $submissions = $DB->get_records_sql($sql, $params);
 
         foreach ($submissions as &$submission) {
             $deadline = $submission->deadline;
