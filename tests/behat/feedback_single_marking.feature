@@ -23,7 +23,7 @@ Feature: Adding and editing single feedback
     And I click on the add feedback button
     And I grade the submission as 56 using the simple form
     Then I visit the coursework page
-    And I should see the final grade as 56 on the single marker page
+    And I should see the final grade as 56
     And I click the edit feedback button
     And the field "Grade" matches value "56"
     And the grade comment textarea field matches "New comment"

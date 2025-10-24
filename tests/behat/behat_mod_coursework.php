@@ -2263,40 +2263,25 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Then /^I should( not)? see the final grade(?: as )?(\d*\.?\d+)? on the multiple marker page$/
-     * @param bool $negate
-     * @param float $grade
-     * @throws ExpectationException
-     * @throws coding_exception
-     */
-    public function i_should_see_the_final_multiple_grade_on_the_page($negate = false, $grade = 56) {
-        try {
-            $grade = count($this->find_all('xpath', $this->xpath_tag_class_contains_text('a', 'agreed-feedback-grade', $grade)));
-        } catch(Exception $e) {
-            $grade = false;
-        }
-        $ishouldseegrade = $negate == false;
-        $ishouldnotseegrade = $negate == true;
-        if (!$grade && $ishouldseegrade) {
-            throw new ExpectationException('Could not find the final grade', $this->getSession());
-        } else {
-            if ($grade && $ishouldnotseegrade) {
-                throw new ExpectationException('Grade found, but there should be none', $this->getSession());
-            }
-        }
-    }
-
-    /**
-     * @Then /^I should see the final grade(?: as )?(\d+)? on the single marker page$/
+     * @Then /^I should see the final grade(?: as )?([\.\d]+)?$/
      * @param int $grade
      * @throws ExpectationException
      * @throws coding_exception
      */
     public function i_should_see_the_final_single_grade_on_the_page($grade = 56) {
-        $actualgrade = $this->find('css', '#edit-feedback-' . $this->student->id)->getText();
-        if (strpos($actualgrade, (string)$grade) === false) {
-            throw new ExpectationException('Could not find the final grade. Got '.$actualgrade.' instead', $this->getSession());
-        }
+        $page = $this->get_page('multiple grading interface');
+        $page->assessor_grade_should_be_present($this->student, '1', $grade);
+    }
+
+    /**
+     * @Then /^I should see the final agreed grade(?: as )?([\.\d]+)?$/
+     * @param int $grade
+     * @throws ExpectationException
+     * @throws coding_exception
+     */
+    public function i_should_see_the_final_agreed_grade_on_the_page($grade = 56) {
+        $page = $this->get_page('multiple grading interface');
+        $page->assessor_grade_should_be_present($this->student, 'final_agreed', $grade);
     }
 
     /**
