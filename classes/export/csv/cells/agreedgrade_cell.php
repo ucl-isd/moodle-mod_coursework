@@ -177,7 +177,7 @@ class agreedgrade_cell extends cell_base {
 
             $feedback = feedback::find($feedbackparams);
 
-            $ability = new ability(user::find($USER), $this->coursework);
+            $ability = new ability($USER->id, $this->coursework);
 
             // Does a feedback exist for this stage
             if (empty($feedback)) {

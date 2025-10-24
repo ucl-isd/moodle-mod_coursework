@@ -111,7 +111,8 @@ class actions_cell_data extends cell_data_base {
 
             $data->extension->show = $canedit || $cannew;
             $data->extension->class = $extension ? 'edit_deadline_extension' : 'new_deadline_extension';
-            $data->extension->stdname = $rowsbase->get_user_name();
+            $data->extension->stdname = $rowsbase->can_see_user_name()
+                ? $rowsbase->get_allocatable()->name() : get_string('hidden', 'mod_coursework');
             $data->extension->url = $extension ? router::instance()->get_path('edit deadline extension', ['id' => $extension->id]) :
                 htmlspecialchars_decode(router::instance()->get_path('new deadline extension', $extensionparams));
         }
@@ -170,7 +171,8 @@ class actions_cell_data extends cell_data_base {
             $data->finalise = new stdClass();
             $data->finalise->url = router::instance()
                 ->get_path('finalise submission', ['submission' => $rowsbase->get_submission()], false, false);
-            $data->finalise->studentname = $rowsbase->get_user_name();
+            $data->finalise->studentname = $rowsbase->can_see_user_name()
+                ? $rowsbase->get_allocatable()->name() : get_string('hidden', 'mod_coursework');
         }
     }
 
@@ -193,7 +195,8 @@ class actions_cell_data extends cell_data_base {
                 ]);
             $data->unfinalise = new stdClass();
             $data->unfinalise->url = $url->out(false);
-            $data->unfinalise->studentname = $rowsbase->get_user_name();
+            $data->unfinalise->studentname = $rowsbase->can_see_user_name()
+                ? $rowsbase->get_allocatable()->name() : get_string('hidden', 'mod_coursework');
         }
     }
 

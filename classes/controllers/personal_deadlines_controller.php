@@ -51,7 +51,7 @@ class personal_deadlines_controller extends controller_base {
         $courseworkpageurl = $this->get_path('coursework', ['coursework' => $this->coursework]);
 
         $urlparams = $this->set_default_current_deadline();
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('edit', $this->personaldeadline);
 
         $urlparams['allocatableid'] = (!is_array($urlparams['allocatableid']))

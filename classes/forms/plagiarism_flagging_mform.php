@@ -201,7 +201,7 @@ class plagiarism_flagging_mform extends dynamic_form {
         $plagiarismflag->submissionid = $this->get_submission()->id();
         $plagiarismflag->courseworkid = $this->get_submission()->get_coursework()->id();
 
-        $ability = new ability(user::find($USER), $this->get_submission()->get_coursework());
+        $ability = new ability($USER->id, $this->get_submission()->get_coursework());
         return $ability->can('new', $plagiarismflag);
     }
 

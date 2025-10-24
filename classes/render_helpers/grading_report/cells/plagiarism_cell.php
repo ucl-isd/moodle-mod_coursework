@@ -44,7 +44,7 @@ class plagiarism_cell extends cell_base {
         global $USER;
 
         $content = '';
-        $ability = new ability(user::find($USER), $rowobject->get_coursework());
+        $ability = new ability($USER->id, $rowobject->get_coursework());
 
         if ($rowobject->has_submission() && $ability->can('show', $rowobject->get_submission())) {
             // The files and the form to resubmit them.

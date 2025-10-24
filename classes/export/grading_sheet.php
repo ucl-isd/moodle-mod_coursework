@@ -48,7 +48,7 @@ class grading_sheet extends csv {
             return $submissions;
         }
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
 
         if (!has_capability('mod/coursework:administergrades', $PAGE->context)) {
 

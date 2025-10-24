@@ -36,13 +36,12 @@ final class ability_test extends advanced_testcase {
     }
 
     public function test_allow_saves_rules(): void {
-        $ability = new ability($this->create_a_teacher(), $this->create_a_coursework());
+        $ability = new ability($this->create_a_teacher()->id(), $this->create_a_coursework());
         $this->assertTrue($ability->can('show', $this->get_coursework()));
     }
 
     public function test_ridiculous_things_are_banned_by_default_if_not_mentioned(): void {
-        $ability = new ability($this->create_a_teacher(), $this->create_a_coursework());
+        $ability = new ability($this->create_a_teacher()->id(), $this->create_a_coursework());
         $this->assertFalse($ability->can('set_fire_to', $this->get_coursework()));
     }
-
 }

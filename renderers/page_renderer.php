@@ -241,7 +241,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         // WIP - student overview.
-        $ability = new ability($student, $coursework);
+        $ability = new ability($student->id(), $coursework);
 
         if ($coursework->start_date_has_passed()) {
             // Main data.

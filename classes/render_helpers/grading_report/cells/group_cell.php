@@ -100,7 +100,7 @@ class group_cell extends cell_base implements allocatable_cell {
         if ($this->coursework->blindmarking_enabled() && !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context()) && !$rowobject->is_published()) {
             $text .= 'Hidden';
         } else {
-            $text .= $groupmember->profile_link(false) . ' ('. $groupmember->email.')';
+            $text .= $groupmember->profile_link() . ' ('. $groupmember->email.')';
         }
         $text .= '</option>';
         return $text;

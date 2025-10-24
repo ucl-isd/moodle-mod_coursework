@@ -31,8 +31,6 @@ use mod_coursework\models\user;
 use mod_coursework\models\plagiarism_flag;
 use moodle_url;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Refactoring the grading table to clarify the logic. There will be two subclasses of this -
  * one for single row tables and one for multi-row tables. These classes contain all the business
@@ -95,6 +93,20 @@ abstract class grading_table_row_base implements user_row {
     }
 
     /**
+     * Can the current user see the row user's name?
+     * @return bool
+     */
+    public function can_see_user_name(): bool {
+        if (!$this->get_coursework()->blindmarking || $this->is_published()) {
+            return true;
+        }
+        return has_capability(
+            'mod/coursework:viewanonymous', $this->get_coursework()->get_context()
+        );
+    }
+
+    /**
+     * Avoid calling repeatedly as it results in DB queries.
      * Will return the username if permissions allow, otherwise, an anonymous placeholder. Can't delegate to the similar
      * submission::get_user_name() function as there may not be a submission.
      *
@@ -121,22 +133,6 @@ abstract class grading_table_row_base implements user_row {
         } else {
             return get_string('hidden', 'mod_coursework');
         }
-    }
-
-    /**
-     * Returns the user picture
-     *
-     * @return string
-     * @throws \core\exception\coding_exception
-     * @throws \dml_exception
-     */
-    public function get_user_picture(int $size = 100) {
-        global $PAGE;
-        $user = \core_user::get_user($this->get_allocatable()->id);
-        $userpicture = new \core\output\user_picture($user);
-        $userpicture->size = $size;
-
-        return $userpicture->get_url($PAGE)->out(false);
     }
 
     /**

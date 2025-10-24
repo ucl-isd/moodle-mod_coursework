@@ -50,6 +50,9 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
     public function render_grading_report(grading_report $gradingreport) {
 
         $tablerows = $gradingreport->get_table_rows_for_page();
+        $participantcontextids = user::get_user_picture_context_ids(
+            $gradingreport->get_coursework()->get_course_id()
+        );
 
         // Sort the table rows.
         $tablerows = $this->sort_table_rows($tablerows);
@@ -65,6 +68,10 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         $markersarray = []; // Collect list of allocated markers while we are iterating.
         foreach ($tablerows as $rowobject) {
             $trdata = $this->get_table_row_data($gradingreport->get_coursework(), $rowobject);
+
+            // Add the user picture.
+            $participantcontextid = $participantcontextids[$rowobject->get_allocatable()->id()] ?? null;
+            $trdata->submissiontype->user->picture = user::get_picture_url_from_context_id($participantcontextid, $rowobject->get_allocatable()->picture);
 
             // Add allocated markers for data-marker and dropdown filter.
             if (!empty($trdata->markers)) {
@@ -155,7 +162,7 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         $rowclass = $coursework->has_multiple_markers()
             ? 'mod_coursework\grading_table_row_multi'
             : 'mod_coursework\grading_table_row_single';
-        $ability = new ability(user::find($USER, false), $coursework);
+        $ability = new ability($USER->id, $coursework);
         $row = new $rowclass($coursework, $alloctable);
         if (!$ability->can('show', $row)) {
             return null;

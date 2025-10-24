@@ -32,8 +32,6 @@ use mod_coursework\models\user;
 use mod_coursework\render_helpers\grading_report\cells\cell_interface;
 use mod_coursework\render_helpers\grading_report\sub_rows\sub_rows_interface;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Renderable component containing all the data needed to display the grading report
  */
@@ -356,8 +354,9 @@ class grading_report {
 
             // Make tablerow objects so we can use the methods to check permissions and set things.
             $rows = [];
-            $rowclass = $this->coursework->has_multiple_markers() ? 'mod_coursework\grading_table_row_multi' : 'mod_coursework\grading_table_row_single';
-            $ability = new ability(user::find($USER, false), $this->get_coursework());
+            $rowclass = $this->coursework->has_multiple_markers()
+                ? 'mod_coursework\grading_table_row_multi' : 'mod_coursework\grading_table_row_single';
+            $ability = new ability($USER->id, $this->get_coursework());
 
             $participantsfound = 0;
 
@@ -388,7 +387,6 @@ class grading_report {
                     unset($participants[$key]);
                     continue;
                 }
-
                 $rows[$participant->id()] = $row;
                 $participantsfound++;
                 if (!empty($rowcount) && $participantsfound >= $rowcount) {
@@ -396,7 +394,6 @@ class grading_report {
                 }
 
             }
-
             // Sort the rows.
             $methodname = 'sort_by_' . $options['sortby'];
             if (method_exists($this, $methodname)) {

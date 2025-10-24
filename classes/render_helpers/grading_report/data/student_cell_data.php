@@ -109,15 +109,17 @@ class student_cell_data extends cell_data_base {
                 'id' => '',
                 'name' => $this->get_candidate_or_fallback($rowsbase->get_allocatable_id(), 'hidden'),
                 'url' => '',
-                'picture' => ''
             ];
         }
-
         return (object)[
             'id' => $rowsbase->get_allocatable_id(),
-            'name' => $this->get_enhanced_name_with_candidate_number($user->id(), $rowsbase->get_user_name()),
+            'name' => $this->get_enhanced_name_with_candidate_number(
+                $user->id(),
+                $rowsbase->can_see_user_name()
+                    ? $rowsbase->get_allocatable()->name()
+                    : get_string('hidden', 'mod_coursework')
+            ),
             'url' => $user->get_user_profile_url(),
-            'picture' => $user->get_user_picture_url()
         ];
     }
 

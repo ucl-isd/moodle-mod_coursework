@@ -47,7 +47,7 @@ class plagiarism_flag_cell extends cell_base {
         global $USER;
 
         $content = '';
-        $ability = new ability(user::find($USER), $rowobject->get_coursework());
+        $ability = new ability($USER->id, $rowobject->get_coursework());
 
         if ($rowobject->has_submission() && $rowobject->get_submission()->finalised) {
             $plagiarismflagparams = [

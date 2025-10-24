@@ -58,14 +58,11 @@ class feedback_controller extends controller_base {
         $PAGE->set_url('/mod/coursework/actions/feedbacks/show.php', $urlparams);
         $teacherfeedback = new feedback($this->params['feedbackid']);
 
-        $user = user::find($USER);
-        if ($user) {
-            $ability = new ability($user, $this->coursework);
-            $ability->require_can('show', $teacherfeedback);
-            $renderer = $this->get_page_renderer();
-            $html = $renderer->show_feedback_page($teacherfeedback);
-            echo $html;
-        }
+        $ability = new ability($USER->id, $this->coursework);
+        $ability->require_can('show', $teacherfeedback);
+        $renderer = $this->get_page_renderer();
+        $html = $renderer->show_feedback_page($teacherfeedback);
+        echo $html;
     }
 
     /**
@@ -93,7 +90,7 @@ class feedback_controller extends controller_base {
             }
         }
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         if (!$ability->can('new', $teacherfeedback)) {
             throw new access_denied($this->coursework, $ability->get_last_message());
         }
@@ -124,7 +121,7 @@ class feedback_controller extends controller_base {
         $teacherfeedback = new feedback($this->params['feedbackid']);
         $this->check_stage_permissions($teacherfeedback->stage_identifier);
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('edit', $teacherfeedback);
 
         $urlparams = ['feedbackid' => $this->params['feedbackid']];
@@ -185,7 +182,7 @@ class feedback_controller extends controller_base {
             }
         }
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('create', $teacherfeedback);
 
         $form = new assessor_feedback_mform(null, ['feedback' => $teacherfeedback]);
@@ -240,7 +237,7 @@ class feedback_controller extends controller_base {
         $teacherfeedback->lasteditedbyuser = $USER->id;
         $teacherfeedback->finalised = $this->params['finalised'] ? 1 : 0;
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('update', $teacherfeedback);
         $courseworkpageurl = $this->get_path('coursework', ['coursework' => $teacherfeedback->get_coursework()]);
 
@@ -367,7 +364,7 @@ class feedback_controller extends controller_base {
         global $USER;
 
         $stage = $this->coursework->get_stage($identifier);
-        if (!$stage->user_is_assessor($USER)) {
+        if (!$stage->user_is_assessor($USER->id)) {
             if (!(has_capability('mod/coursework:administergrades', $this->coursework->get_context()) ||
                   has_capability('mod/coursework:addallocatedagreedgrade', $this->coursework->get_context())) ) {
                 throw new access_denied(

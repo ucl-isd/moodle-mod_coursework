@@ -151,7 +151,7 @@ class singlegrade_cell extends cell_base {
             }
 
             // Is the current user an assessor at any of this submissions grading stages or do they have administer grades
-            if ($this->coursework->allocation_enabled() && !$this->coursework->is_assessor($USER) && !has_capability('mod/coursework:administergrades', $PAGE->context)) {
+            if ($this->coursework->allocation_enabled() && !$this->coursework->is_assessor($USER->id) && !has_capability('mod/coursework:administergrades', $PAGE->context)) {
                 return get_string('nopermissiontogradesubmission', 'coursework');
             }
 
@@ -175,7 +175,7 @@ class singlegrade_cell extends cell_base {
 
             }
 
-            $ability = new ability(user::find($USER), $this->coursework);
+            $ability = new ability($USER->id, $this->coursework);
 
             $feedbackparams = [
                 'submissionid' => $submission->id,
