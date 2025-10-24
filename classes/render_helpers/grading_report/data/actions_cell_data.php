@@ -95,25 +95,27 @@ class actions_cell_data extends cell_data_base {
             'courseworkid' => $this->coursework->id,
         ];
         $extension = $rowsbase->get_extension();
-        $canedit = $extension && $this->ability->can('edit', $extension);
-        $cannew = !$extension && $this->ability->can('new', deadline_extension::build($extensionparams));
+        // We avoid using $this->ability->can() in this context as it creates multiple DB queries per row.
+        $hascapability = has_capability('mod/coursework:grantextensions', $this->coursework->get_context());
 
-        // If cannot do either, we do not want to add any data at all to actions.
-        if ($cannew || $canedit) {
-            $data->extension = new stdClass();
-            if ($canedit) {
-                $extensionparams['id'] = $extension->id;
-                $data->extension->date = $extension->extended_deadline;
-                $data->extension->id = $extension->id;
-            } else if ($cannew) {
-                $data->extension->date = null;
-            }
-
-            $data->extension->show = $canedit || $cannew;
-            $data->extension->class = $extension ? 'edit_deadline_extension' : 'new_deadline_extension';
-            $data->extension->url = $extension ? router::instance()->get_path('edit deadline extension', ['id' => $extension->id]) :
-                htmlspecialchars_decode(router::instance()->get_path('new deadline extension', $extensionparams));
+        // If cannot grant, add no data at all to actions.
+        if (!$hascapability) {
+            return;
         }
+
+        $data->extension = new stdClass();
+        if ($extension) {
+            $extensionparams['id'] = $extension->id;
+            $data->extension->date = $extension->extended_deadline;
+            $data->extension->id = $extension->id;
+        } else {
+            $data->extension->date = null;
+        }
+
+        $data->extension->show = true;
+        $data->extension->class = $extension ? 'edit_deadline_extension' : 'new_deadline_extension';
+        $data->extension->url = $extension ? router::instance()->get_path('edit deadline extension', ['id' => $extension->id]) :
+            htmlspecialchars_decode(router::instance()->get_path('new deadline extension', $extensionparams));
     }
 
     /**
@@ -132,7 +134,7 @@ class actions_cell_data extends cell_data_base {
         }
 
         // Check if we can create new submission.
-        if ($this->can_submit_new($rowsbase, $USER->id)) {
+        if ($this->can_submit_new($rowsbase)) {
             $submissiondata = submission::build([
                 'allocatableid' => $rowsbase->get_allocatable()->id(),
                 'allocatabletype' => $rowsbase->get_allocatable()->type(),
@@ -142,7 +144,7 @@ class actions_cell_data extends cell_data_base {
             $data->submission = new stdClass();
             $data->submission->url = router::instance()
                 ->get_path('new submission', ['submission' => $submissiondata], false, false);
-            $data->submission->label = 'Submit on behalf';
+            $data->submission->label = get_string('submitonbehalf', 'coursework');
             return;
         }
 
@@ -259,6 +261,11 @@ class actions_cell_data extends cell_data_base {
      * @return void
      */
     protected function set_personal_deadline_data(stdClass $data, grading_table_row_base $rowsbase): void {
+        // We avoid using $this->ability->can() in this context as it creates multiple DB queries per row.
+        $hascapability = has_capability('mod/coursework:editpersonaldeadline', $this->coursework->get_context());
+        if (!$hascapability) {
+            return;
+        }
         $personaldeadlineobject = $rowsbase->get_personal_deadline();
         if ($personaldeadlineobject) {
             $data->personaldeadline = (object)[
@@ -269,22 +276,11 @@ class actions_cell_data extends cell_data_base {
                 ),
                 'exists' => $personaldeadlineobject->personal_deadline > 0 ? 1 : 0,
                 // Careful when to allow edits (e.g. edit blocked if extension exists for this user).
-                'is_editable' => $this->ability->can('edit', $personaldeadlineobject),
+                'is_editable' => true,
                 'deadlineid' => $personaldeadlineobject->id,
             ];
         } else {
-            // Allow user to create one.
-            $cancreate = $this->ability->can('edit', personal_deadline::build(
-                [
-                    'allocatableid' => $rowsbase->get_allocatable()->id(),
-                    'allocatabletype' => $rowsbase->get_allocatable()->type(),
-                    'courseworkid' => $rowsbase->get_coursework()->id(),
-                ],
-            ));
-            if ($cancreate) {
-                $data->personaldeadline = (object)['exists' => false, 'is_editable' => true];
-            }
-
+            $data->personaldeadline = (object)['exists' => false, 'is_editable' => true];
         }
     }
 
@@ -292,18 +288,10 @@ class actions_cell_data extends cell_data_base {
      * Check if a new submission can be made
      *
      * @param grading_table_row_base $rowsbase
-     * @param int $userid
      * @return bool
      */
-    private function can_submit_new(grading_table_row_base $rowsbase, int $userid): bool {
-        $submissiondata = submission::build([
-            'allocatableid' => $rowsbase->get_allocatable()->id(),
-            'allocatabletype' => $rowsbase->get_allocatable()->type(),
-            'courseworkid' => $rowsbase->get_coursework()->id,
-            'createdby' => $userid,
-        ]);
-
-        if (!$this->ability->can('new', $submissiondata)) {
+    private function can_submit_new(grading_table_row_base $rowsbase): bool {
+        if (!has_capability('mod/coursework:submitonbehalfof', $this->coursework->get_context())) {
             return false;
         }
 

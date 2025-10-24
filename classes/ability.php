@@ -29,7 +29,6 @@ use mod_coursework\models\deadline_extension;
 use mod_coursework\models\personal_deadline;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
-use mod_coursework\models\user;
 use mod_coursework\models\moderation;
 use mod_coursework\models\plagiarism_flag;
 
