@@ -23,7 +23,8 @@
 namespace mod_coursework\renderers;
 
 use mod_coursework\ability;
-use mod_coursework\allocation\allocatable;
+use mod_coursework\models\deadline_extension;
+use mod_coursework\models\personal_deadline;
 use mod_coursework\grading_report;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\coursework;
@@ -71,7 +72,8 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
 
             // Add the user picture.
             $participantcontextid = $participantcontextids[$rowobject->get_allocatable()->id()] ?? null;
-            $trdata->submissiontype->user->picture = user::get_picture_url_from_context_id($participantcontextid, $rowobject->get_allocatable()->picture);
+            $trdata->submissiontype->user->picture =
+                user::get_picture_url_from_context_id($participantcontextid, $rowobject->get_allocatable()->picture);
 
             // Add allocated markers for data-marker and dropdown filter.
             if (!empty($trdata->markers)) {
@@ -148,22 +150,29 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
     /**
      * Export the data for a single table row to make it accessible from JS.
      * Enables a table row to be re-rendered from JS when updated via modal form.
-     * @param int $alloctableid
+     * @param int $allocatableid
      * @param string $allocatabletype
      * @return ?object
      */
-    public static function export_one_row_data(coursework $coursework, int $alloctableid, string $allocatabletype): ?object {
+    public static function export_one_row_data(coursework $coursework, int $allocatableid, string $allocatabletype): ?object {
         global $USER;
         $classname = "\\mod_coursework\\models\\$allocatabletype";
-        $alloctable = $classname::get_object($alloctableid);
-        if (!$alloctable) {
+        $allocatable = $classname::get_object($allocatableid);
+        if (!$allocatable) {
             return null;
         }
         $rowclass = $coursework->has_multiple_markers()
             ? 'mod_coursework\grading_table_row_multi'
             : 'mod_coursework\grading_table_row_single';
         $ability = new ability($USER->id, $coursework);
-        $row = new $rowclass($coursework, $alloctable);
+
+        // New grading_table_row_base.
+        $row = new $rowclass(
+            $coursework,
+            $allocatable,
+            deadline_extension::get_for_allocatable($coursework->id, $allocatableid, $allocatabletype),
+            personal_deadline::get_for_allocatable($coursework->id, $allocatableid, $allocatabletype),
+        );
         if (!$ability->can('show', $row)) {
             return null;
         }
@@ -172,6 +181,9 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         // We need to add some to this because the tr and actions templates both use fields from parent as well as row.
         // Otherwise some action menu elements may be incomplete.
         $data->coursework = self::prepare_coursework_data($coursework);
+        $participantcontextid = $allocatabletype === 'user' ? \context_user::instance($allocatableid)->id : null;
+        $data->submissiontype->user->picture =
+            user::get_picture_url_from_context_id($participantcontextid, $allocatable->picture);
         return $data;
     }
 

@@ -59,15 +59,16 @@ class user extends table_base implements allocatable, moderatable {
     }
 
     /**
+     * Get the user's full name.
      * @return string
      */
-    public function name() {
+    public function name(): string {
         // If we already have properties to get the name without going to database, use them.
         $data = new \stdClass;
         $hasallfields = true;
         foreach (\core_user\fields::get_name_fields() as $field) {
             if ($this->$field ?? false) {
-                $data->field = $this->$field;
+                $data->$field = $this->$field;
             } else {
                 $hasallfields = false;
                 break;

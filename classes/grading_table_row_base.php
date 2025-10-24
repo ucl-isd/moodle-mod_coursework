@@ -26,8 +26,11 @@ use html_writer;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\controllers\personal_deadlines_controller;
 use mod_coursework\models\coursework;
+use mod_coursework\models\deadline_extension;
+use mod_coursework\models\personal_deadline;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
+use mod_coursework\models\group;
 use mod_coursework\models\plagiarism_flag;
 use moodle_url;
 
@@ -37,7 +40,7 @@ use moodle_url;
  * logic relating the what ought to be rendered. The renderer methods then decide how the decision
  * will be translated into a page.
  */
-abstract class grading_table_row_base implements user_row {
+class grading_table_row_base implements user_row {
 
     /**
      * Using this as a delegate
@@ -46,7 +49,7 @@ abstract class grading_table_row_base implements user_row {
     protected $submission;
 
     /**
-     * @var models\coursework
+     * @var coursework
      */
     protected $coursework;
 
@@ -56,14 +59,26 @@ abstract class grading_table_row_base implements user_row {
     protected $allocatable;
 
     /**
+     * @var deadline_extension $extension
+     */
+    protected ?deadline_extension $extension;
+
+    /**
+     * @var ?personal_deadline
+     */
+    protected ?personal_deadline $personaldeadline;
+
+    /**
      * Constructor
      *
      * @param \mod_coursework\models\coursework $coursework $coursework
      * @param allocatable $user
      */
-    public function __construct(models\coursework $coursework, $user) {
+    public function __construct(coursework $coursework, user|group $user, ?deadline_extension $extension, ?personal_deadline $personaldeadline) {
         $this->coursework = $coursework;
         $this->allocatable = $user;
+        $this->extension = $extension;
+        $this->personaldeadline = $personaldeadline;
     }
 
     /**
@@ -199,28 +214,10 @@ abstract class grading_table_row_base implements user_row {
     /**
      * Getter for personal deadline time
      *
-     * @return int
+     * @return ?int
      */
     public function get_personal_deadline_time(): ?int {
-        $record = $this->get_personal_deadline_record();
-        return $record ? (int)$record->personal_deadline : null;
-    }
-
-    /**
-     * Get the personal deadline DB object (if any).
-     * @return object|null
-     */
-    public function get_personal_deadline_record(): ?object {
-        $allocatable = $this->get_allocatable();
-        if (!$allocatable) {
-            return null;
-        }
-        $record = personal_deadlines_controller::get_personal_deadline(
-            $allocatable->id(),
-            $allocatable->type(),
-            $this->get_coursework()->id,
-        );
-        return $record ?: null;
+        return $this->personaldeadline->personal_deadline ?? null;
     }
 
     /**
@@ -409,34 +406,37 @@ abstract class grading_table_row_base implements user_row {
      * @return bool
      */
 
-    public function has_extension() {
-        global $DB;
-
-        if (empty($this->coursework->extensions_enabled())) {
-            return false;
-        }
-
-        return $DB->record_exists('coursework_extensions', ['courseworkid' => $this->get_coursework()->id,
-                                                                      'allocatableid' => $this->get_allocatable()->id(),
-                                                                      'allocatabletype' => $this->get_allocatable()->type()]);
+    public function has_extension(): bool {
+        return (bool)$this->extension;
     }
 
     /**
      * Getter for row extension
      *
-     * @return mixed
+     * @return ?deadline_extension
 
      */
-    public function get_extension() {
-        global $DB;
-
+    public function get_extension(): ?deadline_extension {
         if (empty($this->coursework->extensions_enabled())) {
-            return false;
+            return null;
         }
 
-        return $DB->get_record('coursework_extensions', ['courseworkid' => $this->get_coursework()->id,
-                                                                   'allocatableid' => $this->get_allocatable()->id(),
-                                                                   'allocatabletype' => $this->get_allocatable()->type()]);
+        return $this->extension;
+    }
+
+
+    /**
+     * Getter for row personal deadline
+     *
+     * @return ?personal_deadline
+
+     */
+    public function get_personal_deadline(): ?personal_deadline {
+        if (empty($this->coursework->personaldeadlineenabled)) {
+            return null;
+        }
+
+        return $this->personaldeadline;
     }
 
     public function get_user_firstname() {

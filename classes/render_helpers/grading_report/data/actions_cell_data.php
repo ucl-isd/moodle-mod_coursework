@@ -95,7 +95,7 @@ class actions_cell_data extends cell_data_base {
             'courseworkid' => $this->coursework->id,
         ];
         $extension = $rowsbase->get_extension();
-        $canedit = $extension && $this->ability->can('edit', deadline_extension::find(['id' => $extension->id]));
+        $canedit = $extension && $this->ability->can('edit', $extension);
         $cannew = !$extension && $this->ability->can('new', deadline_extension::build($extensionparams));
 
         // If cannot do either, we do not want to add any data at all to actions.
@@ -111,8 +111,6 @@ class actions_cell_data extends cell_data_base {
 
             $data->extension->show = $canedit || $cannew;
             $data->extension->class = $extension ? 'edit_deadline_extension' : 'new_deadline_extension';
-            $data->extension->stdname = $rowsbase->can_see_user_name()
-                ? $rowsbase->get_allocatable()->name() : get_string('hidden', 'mod_coursework');
             $data->extension->url = $extension ? router::instance()->get_path('edit deadline extension', ['id' => $extension->id]) :
                 htmlspecialchars_decode(router::instance()->get_path('new deadline extension', $extensionparams));
         }
@@ -261,28 +259,28 @@ class actions_cell_data extends cell_data_base {
      * @return void
      */
     protected function set_personal_deadline_data(stdClass $data, grading_table_row_base $rowsbase): void {
-        $personaldeadlinerecord = $rowsbase->get_personal_deadline_record();
-        $personaldeadline = $personaldeadlinerecord ? (int)$personaldeadlinerecord->personal_deadline : null;
-        $personaldeadlineobject = personal_deadline::find_or_build(
-            $personaldeadlinerecord ?? (object)[
-                'allocatableid' => $rowsbase->get_allocatable()->id(),
-                'allocatabletype' => $rowsbase->get_allocatable()->type(),
-                'courseworkid' => $rowsbase->get_coursework()->id(),
-            ]
-        );
-        if ($personaldeadlinerecord) {
+        $personaldeadlineobject = $rowsbase->get_personal_deadline();
+        if ($personaldeadlineobject) {
             $data->personaldeadline = (object)[
-                'date' => $personaldeadline,
-                'time' => userdate($personaldeadline, '%d-%m-%Y %I:%M', fixday: false),
-                'time_content' => userdate($personaldeadline, get_string('strftimedaydatetime', 'langconfig'), fixday: false),
-                'exists' => $personaldeadline > 0 ? 1 : 0,
+                'date' => $personaldeadlineobject->personal_deadline,
+                'time' => userdate($personaldeadlineobject->personal_deadline, '%d-%m-%Y %I:%M', fixday: false),
+                'time_content' => userdate(
+                    $personaldeadlineobject->personal_deadline, get_string('strftimedaydatetime', 'langconfig'), fixday: false
+                ),
+                'exists' => $personaldeadlineobject->personal_deadline > 0 ? 1 : 0,
                 // Careful when to allow edits (e.g. edit blocked if extension exists for this user).
                 'is_editable' => $this->ability->can('edit', $personaldeadlineobject),
-                'deadlineid' => $personaldeadlinerecord->id,
+                'deadlineid' => $personaldeadlineobject->id,
             ];
         } else {
             // Allow user to create one.
-            $cancreate = $this->ability->can('edit', $personaldeadlineobject);
+            $cancreate = $this->ability->can('edit', personal_deadline::build(
+                [
+                    'allocatableid' => $rowsbase->get_allocatable()->id(),
+                    'allocatabletype' => $rowsbase->get_allocatable()->type(),
+                    'courseworkid' => $rowsbase->get_coursework()->id(),
+                ],
+            ));
             if ($cancreate) {
                 $data->personaldeadline = (object)['exists' => false, 'is_editable' => true];
             }
