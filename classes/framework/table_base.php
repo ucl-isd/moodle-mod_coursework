@@ -31,6 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @property mixed fields
  */
+#[\AllowDynamicProperties] // Allow dynamic properties for table_base to avoid interferences elsewhere.
 abstract class table_base {
 
     /**
@@ -56,26 +57,6 @@ abstract class table_base {
      * @var int
      */
     public $id;
-
-    /**
-     * @var int
-     */
-    public $timecreated;
-
-    /**
-     * @var int
-     */
-    public $timemodified;
-
-    /**
-     * @var int
-     */
-    public $lasteditedby;
-
-    /**
-     * @var stdClass
-     */
-    public $moderator;
 
     /**
      * Makes a new instance. Can be overridden to provide a factory
