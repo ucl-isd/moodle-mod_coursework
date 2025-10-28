@@ -27,7 +27,6 @@ use mod_coursework\models\deadline_extension;
 use mod_coursework\forms\personal_deadline_form;
 use mod_coursework\forms\personal_deadline_form_bulk;
 use mod_coursework\models\personal_deadline;
-use mod_coursework\models\user;
 
 /**
  * Class personal_deadline_controller is responsible for handling restful requests related
@@ -54,15 +53,10 @@ class personal_deadlines_controller extends controller_base {
         $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('edit', $this->personaldeadline);
 
-        $urlparams['allocatableid'] = (!is_array($urlparams['allocatableid']))
-            ? $urlparams['allocatableid']
-            : serialize($urlparams['allocatableid']);
-
         $isusingbulkform = (isset($this->params['allocatableid_arr'])
             && is_array($this->params['allocatableid_arr'])) || !is_numeric($this->params['allocatableid']);
 
         $createurl = $this->get_router()->get_path('edit personal deadline');
-
 
         $PAGE->set_url('/mod/coursework/actions/personal_deadline/new.php', $urlparams);
         $formparams = [
@@ -112,7 +106,11 @@ class personal_deadlines_controller extends controller_base {
                     $this->personaldeadline->trigger_created_updated_event('update');
                 }
 
-                $this->update_calendar_event($data->personal_deadline);
+                $this->update_calendar_event(
+                    $this->params['allocatableid'],
+                    $this->params['allocatabletype'],
+                    $data->personal_deadline
+                );
                 \core\notification::success(
                     get_string(
                         'alert_personaldeadline_save_successful',
@@ -125,7 +123,7 @@ class personal_deadlines_controller extends controller_base {
                 );
             } else {
                 // Bulk submission.
-                foreach (unserialize($data->allocatableid) as $allocatableid) {
+                foreach (json_decode($data->allocatableid) as $allocatableid) {
                     $data->allocatableid = $allocatableid;
                     $data->id = '';
                     $findparams = [
@@ -149,7 +147,11 @@ class personal_deadlines_controller extends controller_base {
                         $this->personaldeadline->update_attributes($data);
                         $this->personaldeadline->trigger_created_updated_event('update');
                     }
-                    $this->update_calendar_event($data->personal_deadline);
+                    $this->update_calendar_event(
+                        $allocatableid,
+                        $data->allocatabletype,
+                        $this->personaldeadline->personal_deadline
+                    );
                     \core\notification::success(
                         get_string(
                             'alert_personaldeadline_save_successful',
@@ -184,17 +186,18 @@ class personal_deadlines_controller extends controller_base {
 
     /**
      * Update the calendar event and timeline with this deadline.
-     * int $personaldeadlineunix the new time to set
+     * @param int $allocatableid
+     * @param string $allocatabletype
+     * @param int $personaldeadlineunix the new time to set
      * @return void
      * @throws \Exception
      */
-    public function update_calendar_event(int $personaldeadlineunix) {
-        $allocatable = $this->get_allocatable();
-        $existingextension = deadline_extension::get_extension_for_student($allocatable, $this->coursework);
+    public function update_calendar_event(int $allocatableid, string $allocatabletype, int $personaldeadlineunix) {
+        $existingextension = deadline_extension::get_for_allocatable($this->coursework->id, $allocatableid, $allocatabletype);
         // Update calendar/timeline event to the latest of the new personal deadline or existing extension.
         $this->coursework->update_user_calendar_event(
-            $allocatable->id(),
-            $allocatable->type(),
+            $allocatableid,
+            $allocatabletype,
             max($personaldeadlineunix, $existingextension->extended_deadline ?? 0)
         );
     }

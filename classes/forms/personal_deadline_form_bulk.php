@@ -49,7 +49,7 @@ class personal_deadline_form_bulk extends \moodleform {
         $this->_form->settype('multipleuserdeadlines', PARAM_INT);
 
         $mustachedata = $this->get_header_mustache_data(
-            unserialize($this->_customdata['allocatableid']),
+            json_decode($this->_customdata['allocatableid']),
             $this->_customdata['allocatabletype']
         );
         $this->_form->addElement(

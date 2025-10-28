@@ -48,7 +48,7 @@ $params = [
 
 if (!empty($allocatableidarr)) {
     $params['allocatableid_arr'] = $allocatableidarr;
-    $params['allocatableid'] = serialize($allocatableidarr);
+    $params['allocatableid'] = json_encode(array_values($allocatableidarr));
 }
 
 if ($selectedtype != 'unfinalise') {
