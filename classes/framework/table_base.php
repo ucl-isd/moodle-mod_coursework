@@ -24,8 +24,6 @@ namespace mod_coursework\framework;
 
 use stdClass;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * This forms the base class for other classes that represent database table objects using the Active Record pattern.
  *

@@ -561,18 +561,19 @@ abstract class base {
     }
 
     /**
-     * @param $assessor
+     * Is the specified user an assessor?
+     * @param int $userid
      * @return bool
      */
-    public function user_is_assessor($assessor) {
-        if (!isset(self::$selfcache['user_is_assessor'][$this->coursework->id][$assessor->id])) {
-            $enrolled = is_enrolled($this->coursework->get_course_context(), $assessor);
+    public function user_is_assessor(int $userid): bool {
+        if (!isset(self::$selfcache['user_is_assessor'][$this->coursework->id][$userid])) {
+            $enrolled = is_enrolled($this->coursework->get_course_context(), $userid);
             $hasmoduleassessorcapability =
-                ($enrolled && has_capability($this->assessor_capability(), $this->coursework->get_context(), $assessor))
-                || is_primary_admin($assessor->id);
-            self::$selfcache['user_is_assessor'][$this->coursework->id][$assessor->id] = $hasmoduleassessorcapability;
+                ($enrolled && has_capability($this->assessor_capability(), $this->coursework->get_context(), $userid))
+                || is_primary_admin($userid);
+            self::$selfcache['user_is_assessor'][$this->coursework->id][$userid] = $hasmoduleassessorcapability;
         }
-        return self::$selfcache['user_is_assessor'][$this->coursework->id][$assessor->id];
+        return self::$selfcache['user_is_assessor'][$this->coursework->id][$userid];
     }
 
     /**
@@ -735,11 +736,11 @@ abstract class base {
     }
 
     /**
-     * @param user $assessor
+     * @param int $assessorid
      * @param submission $submission
      * @return bool
      */
-    public function other_parallel_stage_has_feedback_from_this_assessor($assessor, $submission) {
+    public function other_parallel_stage_has_feedback_from_this_assessor(int $assessorid, $submission) {
         return false;
     }
 

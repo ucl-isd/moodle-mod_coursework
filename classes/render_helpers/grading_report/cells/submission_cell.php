@@ -47,7 +47,7 @@ class submission_cell extends cell_base {
 
         $content = '';
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
 
         if ($rowobject->has_submission() && $ability->can('show', $rowobject->get_submission())) {
             // The files and the form to resubmit them.
@@ -68,7 +68,7 @@ class submission_cell extends cell_base {
             $content .= $ability->get_last_message();
         }
 
-        $ability = new ability(user::find($USER), $rowobject->get_coursework());
+        $ability = new ability($USER->id, $rowobject->get_coursework());
 
         $submissiononbehalfofallocatable = submission::build([
                                                                      'allocatableid' => $rowobject->get_allocatable()

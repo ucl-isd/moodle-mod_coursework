@@ -70,7 +70,7 @@ class multiple_agreed_grade_cell extends cell_base {
             $content = get_string('singlemarker', 'coursework');
             return $content;
         }
-        $ability = new ability(user::find($USER, false), $rowobject->get_coursework());
+        $ability = new ability($USER->id, $rowobject->get_coursework());
 
         $content = '';
 

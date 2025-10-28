@@ -35,13 +35,6 @@ class null_user implements \mod_coursework\allocation\allocatable {
     }
 
     /**
-     * @return string
-     */
-    public function picture() {
-        return '';
-    }
-
-    /**
      * @return int
      */
     public function id() {

@@ -311,7 +311,7 @@ class deadline_extension_form extends dynamic_form {
     */
     protected function check_access_for_dynamic_submission(): void {
         global $USER;
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         if ($this->extension && $this->extension->extended_deadline) {
              $ability->require_can('edit', $this->extension);
         } else {
@@ -332,7 +332,7 @@ class deadline_extension_form extends dynamic_form {
         $warnings = [];
 
         // Code adapted from deadline_extensions_controller->update_deadline_extension().
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         if (!$ability->can($this->extension->id ? 'update' : 'new', $this->extension)) {
             $errors[] = get_string('nopermissiongeneral', 'mod_coursework');
         }

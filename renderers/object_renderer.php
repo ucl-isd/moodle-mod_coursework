@@ -90,7 +90,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             // Marker image.
             if ($feedback->assessor) {
-                $template->markerimg = $feedback->get_assessor_user_picture()->get_url($this->page)->out(false);
+                $template->markerimg = $feedback->assessor()->get_user_picture_url();
             }
         }
 
@@ -245,7 +245,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         global $USER;
 
-        $ability = new ability(user::find($USER), $files->get_coursework());
+        $ability = new ability($USER->id, $files->get_coursework());
 
         $coursework = $files->get_coursework();
         $submissionfiles = $files->get_files();
@@ -284,7 +284,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         global $USER;
 
-        $ability = new ability(user::find($USER), $files->get_coursework());
+        $ability = new ability($USER->id, $files->get_coursework());
 
         $coursework = $files->get_coursework();
         $submissionfiles = $files->get_files();
@@ -949,7 +949,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     protected function render_resubmit_to_plagiarism_button($coursework, $submission) {
         global $USER;
 
-        $ability = new ability(user::find($USER), $coursework);
+        $ability = new ability($USER->id, $coursework);
         $html = '';
         if ($coursework->plagiarism_enbled() && $ability->can('resubmit_to_plagiarism', $submission)) {
             // Show the resubmit to plagiarism button if the user is allowed to do this.
@@ -1046,7 +1046,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $finalfeedback = $submission->get_final_feedback();
 
-        $ability = new ability(user::find($USER), $submission->get_coursework());
+        $ability = new ability($USER->id, $submission->get_coursework());
 
         if ($finalfeedback && $ability->can('show', $finalfeedback)) {
             $html .= $this->render_feedback($finalfeedback);
@@ -1192,7 +1192,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             );
         }
 
-        $ability = new ability(user::find($USER), $coursework);
+        $ability = new ability($USER->id, $coursework);
         $disabledelement = (!$personaldeadline ||($personaldeadline && $ability->can('edit', $personaldeadline)) ) ? "" : " disabled='disabled' ";
 
         $rowhtml = '<tr id="'. $personaldeadlinerow->get_allocatable()->type() . '_' . $personaldeadlinerow->get_allocatable()->id().'">';

@@ -72,8 +72,6 @@ function mod_coursework_pluginfile($course, $cm, $context, $filearea, $args, $fo
     // Lifted form the assignment version.
     global $CFG, $DB, $USER;
 
-    $user = \mod_coursework\models\user::find($USER);
-
     if ($context->contextlevel != CONTEXT_MODULE) {
         return false;
     }
@@ -84,7 +82,7 @@ function mod_coursework_pluginfile($course, $cm, $context, $filearea, $args, $fo
         return false;
     }
 
-    $ability = new ability($user, coursework::find($coursework));
+    $ability = new ability($USER->id, coursework::find($coursework));
 
     // From assessment send_file().
     require_once($CFG->dirroot.'/lib/filelib.php');
@@ -236,9 +234,8 @@ function mod_coursework_core_calendar_is_event_visible(calendar_event $event): b
     $dbcoursework = $DB->get_record('coursework', ['id' => $cm->instance]);
     $coursework = coursework::find($dbcoursework);
 
-    $user = user::find($USER->id);
     $cansubmit = $coursework->can_submit();
-    $ismarker = $coursework->is_assessor($user);
+    $ismarker = $coursework->is_assessor($USER->id);
 
     if ($ismarker) {
         return in_array($event->eventtype, ['initialgradingdue', 'agreedgradingdue']);
@@ -273,10 +270,9 @@ function mod_coursework_core_calendar_provide_event_action(calendar_event $event
 
     $dbcoursework = $DB->get_record('coursework', ['id' => $cm->instance]);
     $coursework = coursework::find($dbcoursework);
-    $user = user::find($USER->id);
 
     $student = $coursework->can_submit();
-    $marker = $coursework->is_assessor($user);
+    $marker = $coursework->is_assessor($USER->id);
 
     if ($marker) { // For markers
 
@@ -285,13 +281,13 @@ function mod_coursework_core_calendar_provide_event_action(calendar_event $event
 
         if ($event->eventtype == 'initialgradingdue') {
             // Initial grades
-            $togradeinitialcount = $outstandingmarking->get_to_grade_initial_count($dbcoursework, $user->id());
+            $togradeinitialcount = $outstandingmarking->get_to_grade_initial_count($dbcoursework, $USER->id);
             $name = ($coursework->has_multiple_markers()) ? get_string('initialgrade', 'coursework') : get_string('grade', 'mod_coursework');
             $itemcount = $togradeinitialcount;
 
         } else if ($event->eventtype == 'agreedgradingdue') {
             // Agreed grades
-            $togradeagreedcount = $outstandingmarking->get_to_grade_agreed_count($dbcoursework, $user->id());
+            $togradeagreedcount = $outstandingmarking->get_to_grade_agreed_count($dbcoursework, $USER->id);
             $name = get_string('agreedgrade', 'coursework');
             $itemcount = $togradeagreedcount;
 
@@ -300,7 +296,7 @@ function mod_coursework_core_calendar_provide_event_action(calendar_event $event
         $submissionurl = new \moodle_url('/mod/coursework/view.php', ['id' => $cm->id]);
 
     } else if ($student) { // for students
-
+        $user = user::find($USER->id);
         // if group cw check if student is in group, if not then don't display 'Add submission' link
         if ($coursework->is_configured_to_have_group_submissions() && !$coursework->get_student_group($user)) {
             // return null;
@@ -315,7 +311,7 @@ function mod_coursework_core_calendar_provide_event_action(calendar_event $event
                 $submission = $newsubmission;
             }
             // Check if user can still submit
-            $ability = new ability($user, $coursework);
+            $ability = new ability($USER->id, $coursework);
             if (!$submission || $ability->can('new', $submission)) {
                 $name = get_string('addsubmission', 'coursework');
                 $itemcount = 1;

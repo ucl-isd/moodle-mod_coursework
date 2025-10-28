@@ -62,7 +62,7 @@ class moderation_cell extends cell_base {
             $content .= $this->add_existing_moderator_feedback_details_to_cell($rowobject);
         }
 
-        $ability = new ability(user::find($USER), $rowobject->get_coursework());
+        $ability = new ability($USER->id, $rowobject->get_coursework());
         $existingfeedback = $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable());
         $newfeedback = feedback::build([
             'submissionid' => $rowobject->get_submission_id(),

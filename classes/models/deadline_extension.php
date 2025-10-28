@@ -262,4 +262,30 @@ class deadline_extension extends table_base {
         }
         $event->trigger();
     }
+
+    /**
+     * Get all extensions for a particular coursework from the database.
+     * @param int $courseworkid
+     * @return array
+     */
+    public static function get_all_for_coursework(int $courseworkid): array {
+        global $DB;
+        return $DB->get_records(self::$tablename, ['courseworkid' => $courseworkid]);
+    }
+
+    /**
+     * Get extension for a particular allocatable from the database.
+     * @param int $courseworkid
+     * @param int $allocatableid
+     * @param string $allocatabletype
+     * @return ?self
+     */
+    public static function get_for_allocatable(int $courseworkid, int $allocatableid, string $allocatabletype): ?self {
+        global $DB;
+        $record = $DB->get_record(
+            self::$tablename,
+            ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid, 'allocatabletype' => $allocatabletype]
+        );
+        return $record ? new self($record) : null;
+    }
 }

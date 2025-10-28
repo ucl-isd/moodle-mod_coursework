@@ -67,7 +67,7 @@ class plagiarism_flagging_controller extends controller_base {
         $plagiarismflag->submissionid = $this->params['submissionid'];
         $plagiarismflag->courseworkid = $this->coursework->id;
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('new', $plagiarismflag);
 
         $urlparams = [];
@@ -91,7 +91,7 @@ class plagiarism_flagging_controller extends controller_base {
 
         $plagiarismflag = new plagiarism_flag($this->params['flagid']);
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('edit', $plagiarismflag);
 
         $urlparams = ['flagid' => $this->params['flagid']];
@@ -125,7 +125,7 @@ class plagiarism_flagging_controller extends controller_base {
         $url = $this->get_router()->get_path('new plagiarism flag', $pathparams, true);
         $PAGE->set_url($url);
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('new', $plagiarismflag);
 
         $form = new plagiarism_flagging_mform(null, ['submissionid' => $submission->id()]);
@@ -159,7 +159,7 @@ class plagiarism_flagging_controller extends controller_base {
         $plagiarismflag = new plagiarism_flag($this->params['flagid']);
         $plagiarismflag->lastmodifiedby = $USER->id;
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('edit', $plagiarismflag);
 
         $form = new plagiarism_flagging_mform(null, ['plagiarismflagid' => $this->params['flagid']]);

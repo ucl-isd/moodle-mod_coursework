@@ -75,7 +75,7 @@ class single_assessor_feedback_cell extends cell_base {
         // Single:
         // Feedback column.
 
-        $ability = new ability(user::find($USER), $rowobject->get_coursework());
+        $ability = new ability($USER->id, $rowobject->get_coursework());
 
         $content = '';
         $submission = $rowobject->get_submission();
@@ -84,7 +84,7 @@ class single_assessor_feedback_cell extends cell_base {
         // Add new feedback
         if ($rowobject->has_submission() &&
             $rowobject->get_submission()->ready_to_grade() &&
-            ($this->stage->user_is_assessor($USER) ||
+            ($this->stage->user_is_assessor($USER->id) ||
                 has_capability('mod/coursework:administergrades', $this->coursework->get_context()))) {
 
             $feedbackparams = [

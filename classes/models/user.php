@@ -59,10 +59,26 @@ class user extends table_base implements allocatable, moderatable {
     }
 
     /**
+     * Get the user's full name.
      * @return string
      */
-    public function name() {
-        return fullname($this->get_raw_record());
+    public function name(): string {
+        // If we already have properties to get the name without going to database, use them.
+        $data = new \stdClass;
+        $hasallfields = true;
+        foreach (\core_user\fields::get_name_fields() as $field) {
+            if ($this->$field ?? false) {
+                $data->$field = $this->$field;
+            } else {
+                $hasallfields = false;
+                break;
+            }
+        }
+        if ($hasallfields) {
+            return \core_user::get_fullname($data);
+        }
+
+        return \core_user::get_fullname($this->get_raw_record());
     }
 
     /**
@@ -75,27 +91,8 @@ class user extends table_base implements allocatable, moderatable {
     /**
      * @return string
      */
-    public function picture() {
-        global $OUTPUT;
-
-        return $OUTPUT->user_picture($this->get_raw_record());
-    }
-
-    /**
-     * @param bool $withpicture
-     * @return string
-     */
-    public function profile_link($withpicture = false) {
-        global $OUTPUT;
-
-        $output = '';
-        if ($withpicture) {
-            $output .= $OUTPUT->user_picture($this->get_raw_record(), ['link' => false]);
-            $output .= ' ';
-        }
-        $output .= ' ' . $this->name();
-
-        return \html_writer::link(new \moodle_url('/user/view.php', ['id' => $this->id()]), $output, ['data-assessorid' => $this->id()]);
+    public function profile_link() {
+        return \html_writer::link(new \moodle_url('/user/view.php', ['id' => $this->id()]), $this->name(), ['data-assessorid' => $this->id()]);
     }
 
     /**
@@ -145,6 +142,33 @@ class user extends table_base implements allocatable, moderatable {
         $userpicture = new \core\output\user_picture($this->get_raw_record());
         $userpicture->size = $size;
         return $userpicture->get_url($PAGE)->out(false);
+    }
+
+    /**
+     * Get user picture URL as string without going to database.
+     * @param int|null $usercontextid
+     * @param int|null $rev mdl_user.picture value (falsey = no image, +ve value = revision num to avoid browser caching problems).
+     * @return string
+     */
+    public static function get_picture_url_from_context_id(?int $usercontextid, ?int $rev): string {
+        global $PAGE, $OUTPUT;
+        // On teacher grading page, we avoid using \core\output\user_picture.
+        // We don't need the extra fields and it results in additional DB queries.
+        if ($usercontextid && $rev) {
+            $url = \moodle_url::make_pluginfile_url(
+                $usercontextid,
+                'user',
+                'icon',
+                null,
+                "/" . $PAGE->theme->name . "/",
+                "f1",
+                false,
+                false
+            );
+            $url->param('rev', $rev);
+            return $url->out(false);
+        }
+        return $OUTPUT->image_url('u/f1')->out(false);
     }
 
     /**
@@ -233,6 +257,24 @@ class user extends table_base implements allocatable, moderatable {
             self::$pool['id'][$id] = new self($user);
         }
         return self::$pool['id'][$id];
+    }
+
+    /**
+     * To save multiple queries to get user picture data, get relevant user context IDs for course in one hit.
+     * @param int $courseid
+     * @return array
+     */
+    public static function get_user_picture_context_ids(int $courseid): array {
+        global $DB;
+        return $DB->get_records_sql_menu(
+        "SELECT u.id, ctx.id as ctxid
+            FROM {user} u
+            JOIN {context} ctx on ctx.instanceid = u.id AND ctx.contextlevel = ?
+            JOIN {user_enrolments} ue ON ue.userid = u.id
+            JOIN {enrol} e ON ue.enrolid = e.id AND e.courseid = ?
+            WHERE u.picture <> 0",
+            [CONTEXT_USER, $courseid]
+        );
     }
 
 }

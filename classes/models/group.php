@@ -72,13 +72,6 @@ class group extends table_base implements allocatable, moderatable {
     }
 
     /**
-     * @return string
-     */
-    public function picture() {
-        return print_group_picture($this, $this->courseid);
-    }
-
-    /**
      * @return user[]
      */
     public function get_members($context, $cm) {

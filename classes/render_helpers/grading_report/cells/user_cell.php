@@ -39,34 +39,8 @@ class user_cell extends cell_base implements allocatable_cell {
      * @return string
      */
     public function get_table_cell($rowobject) {
-        global $OUTPUT, $PAGE;
-
-        $content = '';
-
-        /*      if ($rowobject->can_view_username()) {
-            $content .= $OUTPUT->user_picture($user->get_raw_record());
-        } else {
-            $renderer = $PAGE->get_renderer('core');
-            // Just output the image for an anonymous user.
-            $defaulturl = $renderer->pix_url('u/f2'); // Default image.
-            $attributes = array('src' => $defaulturl);
-            $content .= html_writer::empty_tag('img', $attributes);
-        } */
-        // TODO CSS for the space!!
-        $content .= ' ' . $rowobject->get_user_name(true);
-        $content .= "<br>".$rowobject->get_email();
-        $user = $rowobject->get_allocatable();
-        /*
-        $candidatenumber = $user->candidate_number();
-
-        if (!empty($candidatenumber)) {
-
-            $content  .= '<br /> ('.$candidatenumber.')';
-
-        }
-
-        */
-
+        $content = ' ' . $rowobject->get_user_name(true)
+            . "<br>" . $rowobject->get_email();
         return $this->get_new_cell_with_class($content);
     }
 

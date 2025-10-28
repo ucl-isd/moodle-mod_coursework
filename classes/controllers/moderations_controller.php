@@ -74,7 +74,7 @@ class moderations_controller extends controller_base {
         $moderatoragreement->courseworkid = $this->params['courseworkid'];
         $moderatoragreement->feedbackid = $this->params['feedbackid'];
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('new', $moderatoragreement);
 
         $this->check_stage_permissions($this->params['stage_identifier']);
@@ -103,7 +103,7 @@ class moderations_controller extends controller_base {
         $moderation = new moderation($this->params['moderationid']);
         $this->check_stage_permissions($moderation->stageidentifier);
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('edit', $moderation);
 
         $urlparams = ['moderationid' => $this->params['moderationid']];
@@ -145,7 +145,7 @@ class moderations_controller extends controller_base {
         $url = $this->get_router()->get_path('new moderation', $pathparams, true);
         $PAGE->set_url($url);
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('new', $moderatoragreement);
 
         $form = new moderator_agreement_mform(null, ['moderation' => $moderatoragreement]);
@@ -178,7 +178,7 @@ class moderations_controller extends controller_base {
         $moderatoragreement = new moderation($this->params['moderationid']);
         $moderatoragreement->lasteditedby = $USER->id;
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('edit', $moderatoragreement);
 
         $this->check_stage_permissions($moderatoragreement->stageidentifier);
@@ -210,7 +210,7 @@ class moderations_controller extends controller_base {
 
         $moderation = new moderation($this->params['moderationid']);
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('show', $moderation);
 
         $renderer = $this->get_page_renderer();

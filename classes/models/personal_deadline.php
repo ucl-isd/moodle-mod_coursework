@@ -76,7 +76,7 @@ class personal_deadline extends table_base {
                         'allocatableid' => $this->allocatableid,
                         'allocatabletype' => $this->allocatabletype];
 
-        return   deadline_extension::find($params);
+        return deadline_extension::find($params);
     }
 
     /**
@@ -189,5 +189,31 @@ class personal_deadline extends table_base {
                 throw new invalid_parameter_exception("Unexpected event type '$eventtype'");
         }
         $event->trigger();
+    }
+
+    /**
+     * Get all personal deadlines for a particular coursework from the database.
+     * @param int $courseworkid
+     * @return array
+     */
+    public static function get_all_for_coursework(int $courseworkid): array {
+        global $DB;
+        return $DB->get_records(self::$tablename, ['courseworkid' => $courseworkid]);
+    }
+
+    /**
+     * Get deadline for a particular allocatable from the database.
+     * @param int $courseworkid
+     * @param int $allocatableid
+     * @param string $allocatabletype
+     * @return ?self
+     */
+    public static function get_for_allocatable(int $courseworkid, int $allocatableid, string $allocatabletype): ?self {
+        global $DB;
+        $record = $DB->get_record(
+            self::$tablename,
+            ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid, 'allocatabletype' => $allocatabletype]
+        );
+        return $record ? new self($record) : null;
     }
 }

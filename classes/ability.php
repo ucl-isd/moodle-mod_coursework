@@ -29,7 +29,6 @@ use mod_coursework\models\deadline_extension;
 use mod_coursework\models\personal_deadline;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
-use mod_coursework\models\user;
 use mod_coursework\models\moderation;
 use mod_coursework\models\plagiarism_flag;
 
@@ -50,21 +49,13 @@ class ability extends \mod_coursework\framework\ability {
     protected $coursework;
 
     /**
-     * This is so we can specify the type of the user variable. The parent
-     * class may be subclassed and not use the coursework user object.
-     *
-     * @var user
-     */
-    protected $user;
-
-    /**
      * We use a different instance of the class for each user. This makes it a bit cleaner.
      *
-     * @param user $user
+     * @param int $userid
      * @param coursework $coursework
      */
-    public function __construct(user $user, $coursework) {
-        parent::__construct($user);
+    public function __construct(int $userid, $coursework) {
+        parent::__construct($userid);
         $this->coursework = $coursework;
 
         // These rules determine what will happen when can() is called. They are intended to be RESTful.
@@ -273,15 +264,6 @@ class ability extends \mod_coursework\framework\ability {
      */
     private function get_coursework() {
         return $this->coursework;
-    }
-
-    /**
-     * Only here so that the type hinting is more accurate.
-     *
-     * @return user
-     */
-    protected function get_user() {
-        return $this->user;
     }
 
     protected function prevent_new_submissions_if_not_for_this_user() {
@@ -586,7 +568,7 @@ class ability extends \mod_coursework\framework\ability {
         $this->allow('resubmit_to_plagiarism',
                      'mod_coursework\models\submission',
             function (submission $submission) {
-                return $submission->get_coursework()->is_assessor($this->get_user());
+                return $submission->get_coursework()->is_assessor($this->userid);
             });
     }
 
@@ -594,7 +576,7 @@ class ability extends \mod_coursework\framework\ability {
         $this->allow('view_plagiarism',
                      'mod_coursework\models\submission',
             function (submission $submission) {
-                return $submission->get_coursework()->is_assessor($this->get_user())
+                return $submission->get_coursework()->is_assessor($this->userid)
                     || has_capability('mod/coursework:grade', $submission->get_context());
             });
     }
@@ -747,7 +729,7 @@ class ability extends \mod_coursework\framework\ability {
                        'mod_coursework\models\feedback',
             function (feedback $feedback) {
                 $this->set_message('User is not an assessor for this stage');
-                return !$feedback->get_stage()->user_is_assessor($this->user)
+                return !$feedback->get_stage()->user_is_assessor($this->userid)
                 && !(has_capability('mod/coursework:addallocatedagreedgrade',
                     $feedback->get_coursework()
                         ->get_context()) && $feedback->get_submission()->is_assessor_initial_grader());
@@ -770,7 +752,7 @@ class ability extends \mod_coursework\framework\ability {
             function (feedback $feedback) {
                 $this->set_message('Assessor has already assessed an initial stage');
                 $stage = $feedback->get_stage();
-                return $stage->other_parallel_stage_has_feedback_from_this_assessor($this->get_user(),
+                return $stage->other_parallel_stage_has_feedback_from_this_assessor($this->userid,
                                                                                     $feedback->get_submission());
             });
     }
@@ -881,7 +863,7 @@ class ability extends \mod_coursework\framework\ability {
                        'mod_coursework\models\feedback',
             function (feedback $feedback) {
                 $stage = $feedback->get_stage();
-                if (!$stage->user_is_assessor($this->get_user()) &&
+                if (!$stage->user_is_assessor($this->userid) &&
                     !(has_capability('mod/coursework:editallocatedagreedgrade',
                             $feedback->get_coursework()
                                 ->get_context()) && $feedback->get_submission()->is_assessor_initial_grader()) && !$feedback->get_submission()->editable_final_feedback_exist()) {
@@ -917,7 +899,7 @@ class ability extends \mod_coursework\framework\ability {
             function (feedback $feedback) {
                 $stage = $feedback->get_stage();
                 $allowed = has_capability('mod/coursework:editagreedgrade', $feedback->get_context());
-                return $allowed && $stage->identifier() == 'final_agreed_1' && $stage->user_is_assessor($this->get_user());
+                return $allowed && $stage->identifier() == 'final_agreed_1' && $stage->user_is_assessor($this->userid);
             });
     }
 
@@ -971,7 +953,7 @@ class ability extends \mod_coursework\framework\ability {
                      'mod_coursework\models\feedback',
             function (feedback $feedback) {
                 $stage = $feedback->get_stage();
-                if ($stage->user_is_assessor($this->get_user()) &&
+                if ($stage->user_is_assessor($this->userid) &&
                     $feedback->get_coursework()->viewinitialgradeenabled()
                 ) {
                     return true;
@@ -1090,7 +1072,7 @@ class ability extends \mod_coursework\framework\ability {
             function (grading_table_row_base $gradingtablerow) {
                 if (!$gradingtablerow->get_coursework()->allocation_enabled()) {
                     foreach ($gradingtablerow->get_coursework()->marking_stages() as $stage) {
-                        if ($stage->user_is_assessor($this->get_user())) {
+                        if ($stage->user_is_assessor($this->userid)) {
                             return true;
                         }
                     }

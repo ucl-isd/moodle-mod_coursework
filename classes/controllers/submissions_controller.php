@@ -79,16 +79,14 @@ class submissions_controller extends controller_base {
     protected function new_submission() {
         global $USER, $PAGE;
 
-        $user = user::find($USER);
-
         $submission = submission::build([
             'allocatableid' => $this->params['allocatableid'],
             'allocatabletype' => $this->params['allocatabletype'],
             'courseworkid' => $this->coursework->id,
-            'createdby' => $user->id()
+            'createdby' => $USER->id
         ]);
 
-        $ability = new ability($user, $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         if (!$ability->can('new', $submission)) {
             throw new access_denied($this->coursework);
         }
@@ -120,7 +118,7 @@ class submissions_controller extends controller_base {
 
         $submission = submission::find($this->params['submissionid']);
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         if (!$ability->can('edit', $submission)) {
             throw new access_denied($this->coursework);
         }
@@ -174,7 +172,7 @@ class submissions_controller extends controller_base {
             $submission->finalised = 1;
         }
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
 
         $this->exception_if_late($submission);
 
@@ -258,7 +256,7 @@ class submissions_controller extends controller_base {
 
         $submission = submission::find($this->params['submissionid']);
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $this->exception_if_late($submission);
         if (!$ability->can('update', $submission)) {
             throw new access_denied($this->coursework, $ability->get_last_message());
@@ -317,7 +315,7 @@ class submissions_controller extends controller_base {
 
         $submission = submission::find($this->params['submissionid']);
 
-        $ability = new ability(user::find($USER), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         if (!$ability->can('finalise', $submission)) {
             throw new access_denied($this->coursework);
         }
