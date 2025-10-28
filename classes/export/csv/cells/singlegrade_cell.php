@@ -242,43 +242,4 @@ class singlegrade_cell extends cell_base {
 
         return $valuefound;
     }
-
-    /**
-     * Takes the given cells and returns the cells with the singlegrade cell replaced by the rubric headers if the coursework instance
-     * makes use of rubrics
-     *
-     * @param $coursework
-     * @param $csvcells
-     * @return array
-     */
-    public function get_rubrics($coursework, $csvcells) {
-
-        if ($coursework->is_using_rubric()) {
-
-            $rubricheaders = [];
-
-            $criterias = $coursework->get_rubric_criteria();
-
-            foreach ($criterias as $criteria) {
-                $rubricheaders[] = $criteria['description'];
-                $rubricheaders[] = $criteria['description']." comment";
-            }
-
-            // Find out the position of singlegrade
-            $position = array_search('singlegrade', $csvcells);
-            // Get all data from the position of the singlegrade to the length of rubricheaders
-            // $csv_cells = array_splice($csv_cells,5, 1, $rubricheaders);
-
-            $startcells = array_slice($csvcells, 0, $position, true);
-            $endcells = array_slice($csvcells, $position + 1, count($csvcells), true);
-
-            $cells = array_merge($startcells, $rubricheaders);
-
-            $cells = array_merge($cells, $endcells);
-
-        }
-
-        return $cells;
-    }
-
 }
