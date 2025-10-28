@@ -276,6 +276,8 @@ class deadline_extension extends table_base {
     /**
      * Get extension for a particular allocatable from the database.
      * @param int $courseworkid
+     * @param int $allocatableid
+     * @param string $allocatabletype
      * @return ?self
      */
     public static function get_for_allocatable(int $courseworkid, int $allocatableid, string $allocatabletype): ?self {

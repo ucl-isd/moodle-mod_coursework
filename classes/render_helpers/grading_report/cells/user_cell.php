@@ -39,9 +39,8 @@ class user_cell extends cell_base implements allocatable_cell {
      * @return string
      */
     public function get_table_cell($rowobject) {
-        $content = '';
-        $content .= ' ' . $rowobject->get_user_name(true);
-        $content .= "<br>".$rowobject->get_email();
+        $content = ' ' . $rowobject->get_user_name(true)
+            . "<br>" . $rowobject->get_email();
         return $this->get_new_cell_with_class($content);
     }
 

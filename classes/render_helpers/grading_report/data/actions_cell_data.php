@@ -275,8 +275,8 @@ class actions_cell_data extends cell_data_base {
                     $personaldeadlineobject->personal_deadline, get_string('strftimedaydatetime', 'langconfig'), fixday: false
                 ),
                 'exists' => $personaldeadlineobject->personal_deadline > 0 ? 1 : 0,
-                // Careful when to allow edits (e.g. edit blocked if extension exists for this user).
-                'is_editable' => true,
+                // Disable deadline edit link if extension also exists (as ability class will throw error if edit attempted).
+                'is_editable' => !$rowsbase->get_extension(),
                 'deadlineid' => $personaldeadlineobject->id,
             ];
         } else {

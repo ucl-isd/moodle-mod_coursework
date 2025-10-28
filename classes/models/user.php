@@ -147,7 +147,7 @@ class user extends table_base implements allocatable, moderatable {
     /**
      * Get user picture URL as string without going to database.
      * @param int|null $usercontextid
-     * @param int|null $rev
+     * @param int|null $rev mdl_user.picture value (falsey = no image, +ve value = revision num to avoid browser caching problems).
      * @return string
      */
     public static function get_picture_url_from_context_id(?int $usercontextid, ?int $rev): string {
@@ -266,23 +266,15 @@ class user extends table_base implements allocatable, moderatable {
      */
     public static function get_user_picture_context_ids(int $courseid): array {
         global $DB;
-        $ctxids = [];
-        $rs = $DB->get_recordset_sql(
+        return $DB->get_records_sql_menu(
         "SELECT u.id, ctx.id as ctxid
-                FROM {user} u
-                JOIN {context} ctx on ctx.instanceid = u.id AND ctx.contextlevel = ?
-                JOIN {user_enrolments} ue ON ue.userid = u.id
-                JOIN {enrol} e ON ue.enrolid = e.id AND e.courseid = ?
-                WHERE u.picture != 0",
+            FROM {user} u
+            JOIN {context} ctx on ctx.instanceid = u.id AND ctx.contextlevel = ?
+            JOIN {user_enrolments} ue ON ue.userid = u.id
+            JOIN {enrol} e ON ue.enrolid = e.id AND e.courseid = ?
+            WHERE u.picture <> 0",
             [CONTEXT_USER, $courseid]
         );
-        if ($rs->valid()) {
-            foreach($rs as $r) {
-                $ctxids[$r->id] = $r->ctxid;
-            }
-            $rs->close();
-        }
-        return $ctxids;
     }
 
 }

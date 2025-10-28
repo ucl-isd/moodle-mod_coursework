@@ -61,8 +61,7 @@ class feedback_controller extends controller_base {
         $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('show', $teacherfeedback);
         $renderer = $this->get_page_renderer();
-        $html = $renderer->show_feedback_page($teacherfeedback);
-        echo $html;
+        echo $renderer->show_feedback_page($teacherfeedback);
     }
 
     /**
