@@ -88,7 +88,6 @@ function xmldb_coursework_upgrade($oldversion) {
 
     // To match the new way of storing data, the old data needs to be re-done.
     if ($oldversion < 2012020100) {
-
         // Checkboxes
         // old format : array of arrays. Each array contains id and value of a component
         // new format : array of ids of checked boxes.
@@ -102,7 +101,12 @@ function xmldb_coursework_upgrade($oldversion) {
         $olddata = $DB->get_records_sql($sql);
         // Alter the comments and write them to the DB.
         foreach ($olddata as $datarow) {
-            $oldcomment = unserialize($datarow->feedbackcomment);
+            // Throw exception to avoid running old unserialize code below.
+            // See https://moodledev.io/general/community/plugincontribution/checklist#security
+            // This version number 2012 ... is > 13 years old now and unlikely anyone will be upgrading from this.
+            // Also note that the coursework_fdata table was dropped in a 2014.. upgrade.
+            throw new \Exception("Cannot upgrade from this historic version");
+//            $oldcomment = unserialize($datarow->feedbackcomment);
             $newcomment = [];
             if ($oldcomment) { // Some were blank - probably an earlier experiment.
                 foreach ($oldcomment as $componentarray) {
