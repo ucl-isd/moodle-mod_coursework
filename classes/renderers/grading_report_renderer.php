@@ -70,10 +70,13 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         foreach ($tablerows as $rowobject) {
             $trdata = $this->get_table_row_data($gradingreport->get_coursework(), $rowobject);
 
-            // Add the user picture.
-            $participantcontextid = $participantcontextids[$rowobject->get_allocatable()->id()] ?? null;
-            $trdata->submissiontype->user->picture =
-                user::get_picture_url_from_context_id($participantcontextid, $rowobject->get_allocatable()->picture);
+            // If this row represents a user (not a group), add the user picture.
+            $allocatable = $rowobject->get_allocatable();
+            if ($allocatable->type() === 'user') {
+                $participantcontextid = $participantcontextids[$allocatable->id()] ?? null;
+                $trdata->submissiontype->user->picture =
+                    user::get_picture_url_from_context_id($participantcontextid, $allocatable->picture);
+            }
 
             // Add allocated markers for data-marker and dropdown filter.
             if (!empty($trdata->markers)) {
