@@ -138,11 +138,11 @@
                 </span>
             {{/released}}
 
-            <a href="{{{url}}}" class="font-weight-bold pl-1 agreed-feedback-grade" data-mark="{{markvalue}}">{{markvalue}}</a>
+            <a href="{{{url}}}" class="font-weight-bold pl-1 agreed-feedback-grade" data-mark-action="editfeedback" data-mark="{{markvalue}}">{{markvalue}}</a>
         {{/mark}}
 
         {{#addfinalfeedback}}
-        <a href="{{{url}}}" class="btn btn-sm btn-success">{{#str}} add_agreed_feedback, mod_coursework {{/str}}</a>
+        <a href="{{{url}}}" class="btn btn-sm btn-success" data-mark-action="addfeedback">{{#str}} add_agreed_feedback, mod_coursework {{/str}}</a>
         {{/addfinalfeedback}}
     </div>
     </li>
