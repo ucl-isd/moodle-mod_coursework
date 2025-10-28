@@ -24,7 +24,7 @@ Feature: For the final grade the mark should be to the decimal point
     And I click on the add feedback button for assessor 2
     And I set the field "Grade" to "58"
     And I press "Save and finalise"
-    Then I should see the final grade as 58.5 on the multiple marker page
+    Then I should see the final agreed grade as 58.5
 
   Scenario: A manager can enter decimals for the final grade
     Given I am logged in as a teacher
@@ -43,4 +43,4 @@ Feature: For the final grade the mark should be to the decimal point
     And I visit the coursework page
     And I click the new multiple final feedback button for the student
     And I grade the submission as 56.12 using the grading form
-    Then I should see the final grade as 56.12 on the multiple marker page
+    Then I should see the final agreed grade as 56.12

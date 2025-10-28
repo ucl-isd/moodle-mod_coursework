@@ -24,7 +24,7 @@ Feature: Adding and editing final feedback
     And I set the field "Grade" to "57"
     And I press "Save and finalise"
     Then I visit the coursework page
-    And I should see the final grade as 57 on the multiple marker page
+    And I should see the final agreed grade as 57
 
   @javascript
   Scenario: Setting the final feedback comment
@@ -33,6 +33,7 @@ Feature: Adding and editing final feedback
     And I visit the coursework page
     And I click the new multiple final feedback button for the student
     And I set the field "Grade" to "58"
+    And I set the field "Comment" to "New comment"
     And I press "Save and finalise"
     Then I visit the coursework page
     When I click the edit final feedback button

@@ -21,7 +21,7 @@ Feature: Collisions: two people try to create feedback at the same time
     And the coursework is set to single marker
     When I visit the coursework page
     And I have an assessor feedback at grade 67
-    And I click the new single final feedback button for the student
+    And I click on the add feedback button
     And I should see "Allocatable already has feedback for this stage"
 
   @javascript

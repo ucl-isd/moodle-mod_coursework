@@ -19,7 +19,7 @@ Feature: Adding feedback using the built in Moodle rubrics
   Scenario: I should be able to add feedback using a simple rubric
     Given there is a rubric defined for the coursework
     Given I visit the coursework page
-    When I click the new single final feedback button for the student
+    When I click on the add feedback button
     And I click the rubric score box "1" and add the comment "New comment here"
     And I press "Save and finalise"
     And I wait "1" seconds
@@ -39,7 +39,7 @@ Feature: Adding feedback using the built in Moodle rubrics
   Scenario: I should see the rubric grade show up in the gradebook
     Given there is a rubric defined for the coursework
     Given I visit the coursework page
-    When I click the new single final feedback button for the student
+    When I click on the add feedback button
     # Box 2 is very good so 100%, Box 0 is bad so zero.
     And I click the rubric score box "2" and add the comment "Very good"
     And I press "Save and finalise"

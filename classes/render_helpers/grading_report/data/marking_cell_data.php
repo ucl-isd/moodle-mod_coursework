@@ -120,6 +120,7 @@ class marking_cell_data extends cell_data_base {
         }
         if ($this->ability->can('edit', $feedback)) {
             $action = 'edit';
+            $marker->feedbackid = $feedback->id;
         }
 
         // Mark URL.

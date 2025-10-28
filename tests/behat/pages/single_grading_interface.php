@@ -45,20 +45,34 @@ class mod_coursework_behat_single_grading_interface extends mod_coursework_behat
     }
 
     /**
+     * @param int $assessornumber
      * @param allocatable $allocatable
      */
-    public function click_new_final_feedback_button($allocatable) {
-        $identifier = '#add-feedback-' . $allocatable->id();
-        $this->click_that_thing($identifier);
+    public function click_assessor_new_feedback_button($assessornumber, $allocatable) {
+        $locator = '[data-allocateble-id="' . $this->allocatable_identifier_hash($allocatable) . '"]';
+
+        if (isset($assessornumber)) {
+            $locator .= ' [data-behat-markstage="'. $assessornumber . '"]';
+        }
+
+        $locator .= ' [data-mark-action="addfeedback"]';
+        $this->click_that_thing($locator);
     }
 
     /**
+     * @param int $assessornumber
      * @param allocatable $allocatable
-     * @throws Behat\Mink\Exception\ElementException
      */
-    public function click_edit_feedback_button($allocatable) {
-        $identifier = '#edit-feedback-' . $allocatable->id();
-        $this->getPage()->find('css', $identifier)->click();
+    public function click_assessor_edit_feedback_button($assessornumber, $allocatable) {
+        $locator = '[data-allocateble-id="' . $this->allocatable_identifier_hash($allocatable) . '"]';
+
+        if (isset($assessornumber)) {
+            $locator .= ' [data-behat-markstage="'. $assessornumber . '"]';
+        }
+
+        $locator .= ' [data-mark-action="editfeedback"]';
+
+        $this->click_that_thing($locator);
     }
 
     /**

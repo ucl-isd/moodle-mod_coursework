@@ -55,28 +55,11 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
      * @param group $allocatable
      */
     public function group_has_a_final_multiple_grade($allocatable): bool {
-        $gradecell = $this->getPage()->find('css', '#edit-agreed-feedback-' . $allocatable->id());
-        $actualtext = $gradecell ? $gradecell->getText() : '';
-        return !empty($actualtext);
-    }
+        $locator = '[data-allocatable-type="group"][data-allocateble-id="' . $this->allocatable_identifier_hash($allocatable) . '"]';
+        $locator .= ' [data-behat-markstage="final_agreed"]';
+        $locator .= ' [data-mark-action="editfeedback"]';
 
-    /**
-     * @param allocatable $allocatable
-     */
-    public function click_new_final_feedback_button($allocatable) {
-        $identifier = '#add-agreed-feedback-'. $this->allocatable_identifier_hash($allocatable);
-        $nodeelement = $this->getPage()->find('css', $identifier);
-        if ($nodeelement) {
-            $nodeelement->click();
-        }
-    }
-
-    /**
-     * @param allocatable $allocatable
-     */
-    public function get_edit_final_feedback_button($allocatable) {
-        $identifier = '[data-allocateble-id=' . $allocatable->id() . '] [data-behat-markstage="final_agreed"] a.agreed-feedback-grade';
-        return $this->getPage()->find('css', $identifier);
+        return $this->getPage()->has('css', $locator);
     }
 
     /**
@@ -139,7 +122,15 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
      * @param int $expectedgrade
      */
     public function assessor_grade_should_be_present($allocatable, $assessornumber, $expectedgrade) {
-        $gradecontainer = $this->getPage()->find('css', '#edit-feedback-' . $allocatable->id());
+        $locator = '[data-allocateble-id="' . $this->allocatable_identifier_hash($allocatable) . '"]';
+
+        if (isset($assessornumber)) {
+            $locator .= ' [data-behat-markstage="' . $assessornumber . '"]';
+        }
+
+        $locator .= ' [data-mark-action="editfeedback"]';
+
+        $gradecontainer = $this->getPage()->find('css', $locator);
         $text = $gradecontainer ? $gradecontainer->getText() : '';
         if (!str_contains($text, (string)$expectedgrade)) {
             throw new \Behat\Mink\Exception\ExpectationException(
@@ -154,19 +145,20 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
      * @param int $assessornumber
      * @param int $expectedgrade
      */
-    public function assessor_grade_should_not_be_present($allocatable, $assessornumber, $expectedgrade) {
-        $locator =
-            $this->assessor_feedback_table_id($allocatable) . ' .assessor_' . $assessornumber . ' ' . $this->assessor_grade_cell_class();
-        $cell = $this->getPage()->findAll('css', $locator);
-        if (!empty($cell)) {
-            $cell = reset($cell);
-            $text = $cell ? $cell->getText() : '';
-            if (str_contains($text, $expectedgrade)) {
-                throw new \Behat\Mink\Exception\ExpectationException(
-                    "Expected not to find grade '$expectedgrade' but did find it in '$text'",
-                    $this->getSession()
-                );
-            }
+    public function assessor_grade_should_not_be_present($allocatable, $assessornumber) {
+        $locator = '[data-allocateble-id="' . $this->allocatable_identifier_hash($allocatable) . '"]';
+
+        if (isset($assessornumber)) {
+            $locator .= ' [data-behat-markstage="' . $assessornumber . '"]';
+        }
+
+        $locator .= ' [data-mark-action="editfeedback"]';
+
+        if ($this->getPage()->has('css', $locator)) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                "Found final assessor grade",
+                $this->getSession()
+            );
         }
     }
 
@@ -175,24 +167,6 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
      */
     protected function assessor_grade_cell_class() {
         return '.assessor_feedback_grade';
-    }
-
-    /**
-     * @param int $assessornumber
-     * @param allocatable $allocatable
-     */
-    public function click_assessor_new_feedback_button($assessornumber, $allocatable) {
-        $locator = '[data-allocateble-id="' . $this->allocatable_identifier_hash($allocatable) . '"] [data-behat-markstage="'. $assessornumber . '"] [data-mark-action="addfeedback"]';
-        $this->click_that_thing($locator);
-    }
-
-    /**
-     * @param int $assessornumber
-     * @param allocatable $allocatable
-     */
-    public function click_assessor_edit_feedback_button($assessornumber, $allocatable) {
-        $locator = '[data-allocateble-id="' . $this->allocatable_identifier_hash($allocatable) . '"] [data-behat-markstage="'. $assessornumber . '"] [data-mark-action="editfeedback"]';
-        $this->click_that_thing($locator);
     }
 
     public function press_publish_button() {
@@ -262,7 +236,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
      * @param feedback $feedback
      */
     public function should_not_have_edit_link_for_feedback($feedback) {
-        $identifier = '#edit_feedback_'.$feedback->id;
+        $identifier = '[data-behat-feedbackid="' . $feedback->id . '"]';
         $this->should_not_have_css($identifier);
     }
 
@@ -270,7 +244,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
      * @param feedback $feedback
      */
     public function should_have_edit_link_for_feedback($feedback) {
-        $identifier = '#edit_feedback_'.$feedback->id;
+        $identifier = '[data-behat-feedbackid="' . $feedback->id . '"]';
         $this->should_have_css($identifier);
     }
 

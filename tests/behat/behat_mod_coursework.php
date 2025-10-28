@@ -581,6 +581,20 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * @Given /^I click on the add feedback button$/
+     * @param $assessornumber
+     * @throws coding_exception
+     */
+    public function i_click_on_the_new_feedback_button() {
+        /**
+         * @var mod_coursework_behat_multiple_grading_interface $page
+         */
+        $page = $this->get_page('multiple grading interface');
+        $page->click_assessor_new_feedback_button(null, $this->student);
+
+    }
+
+    /**
      * @Given /^I click on the edit feedback button for assessor (\d+)$/
      * @param $assessornumber
      * @throws coding_exception
@@ -1831,10 +1845,7 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_allocations_page $page
          */
         $page = $this->get_page('allocations page');
-        if ($this->running_javascript()) {
-            $page->show_assessor_allocation_settings();
-        }
-        $this->find('css', '#menuassessorallocationstrategy')->selectOption('percentages');
+        $this->find('css', '#assessorallocationstrategy')->selectOption('percentages');
         $this->getSession()->getPage()->fillField("assessorstrategypercentages[{$this->otherteacher->id}]", $percent);
     }
 
@@ -1852,7 +1863,7 @@ class behat_mod_coursework extends behat_base {
         if ($this->running_javascript()) {
             $page->show_assessor_allocation_settings();
         }
-        $this->find('css', '#menuassessorallocationstrategy')->selectOption('percentages');
+        $this->find('css', '#assessorallocationstrategy')->selectOption('percentages');
         $this->getSession()->getPage()->fillField("assessorstrategypercentages[{$this->teacher->id}]", $percent);
         $this->find('css', '#save_manual_allocations_1')->press();
     }
@@ -2021,7 +2032,7 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
         if ($negate) {
-            $page->assessor_grade_should_not_be_present($this->student, $assessornumber, '50');
+            $page->assessor_grade_should_not_be_present($this->student, $assessornumber);
         } else {
             $page->assessor_grade_should_be_present($this->student, $assessornumber, '50');
         }
@@ -2036,7 +2047,7 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_multiple_grading_interface $page
          */
         $page = $this->get_page('multiple grading interface');
-        $page->click_new_final_feedback_button($this->group);
+        $page->click_assessor_new_feedback_button('final_agreed', $this->group);
     }
 
     /**
@@ -2047,18 +2058,7 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_multiple_grading_interface $page
          */
         $page = $this->get_page('multiple grading interface');
-        $page->click_new_final_feedback_button($this->student);
-    }
-
-    /**
-     * @When /^I click the new single final feedback button for the student/
-     */
-    public function i_click_the_new_single_final_feedback_button_student() {
-        /**
-         * @var mod_coursework_behat_single_grading_interface $page
-         */
-        $page = $this->get_page('single grading interface');
-        $page->click_new_final_feedback_button($this->student);
+        $page->click_assessor_new_feedback_button('final_agreed', $this->student);
     }
 
     /**
@@ -2189,22 +2189,18 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_multiple_grading_interface $page
          */
         $page = $this->get_page('multiple grading interface');
-        $button = $page->get_edit_final_feedback_button($this->student);
-        if (!$button) {
-            throw new ExpectationException('Edit feedback button not present', $this->getSession());
-        }
-        $button->click();
+        $page->click_assessor_edit_feedback_button('final_agreed', $this->student);
     }
 
     /**
-     * @When /^I click the edit single assessor feedback button$/
+     * @When /^I click the edit feedback button$/
      */
     public function i_click_the_edit_single_feedback_button() {
         /**
          * @var mod_coursework_behat_single_grading_interface $page
          */
-        $page = $this->get_page('single grading interface');
-        $page->click_edit_feedback_button($this->student);
+        $page = $this->get_page('multiple grading interface');
+        $page->click_assessor_edit_feedback_button(null, $this->student);
     }
 
     /**
@@ -2267,40 +2263,25 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Then /^I should( not)? see the final grade(?: as )?(\d*\.?\d+)? on the multiple marker page$/
-     * @param bool $negate
-     * @param float $grade
-     * @throws ExpectationException
-     * @throws coding_exception
-     */
-    public function i_should_see_the_final_multiple_grade_on_the_page($negate = false, $grade = 56) {
-        try {
-            $grade = count($this->find_all('xpath', $this->xpath_tag_class_contains_text('a', 'agreed-feedback-grade', $grade)));
-        } catch(Exception $e) {
-            $grade = false;
-        }
-        $ishouldseegrade = $negate == false;
-        $ishouldnotseegrade = $negate == true;
-        if (!$grade && $ishouldseegrade) {
-            throw new ExpectationException('Could not find the final grade', $this->getSession());
-        } else {
-            if ($grade && $ishouldnotseegrade) {
-                throw new ExpectationException('Grade found, but there should be none', $this->getSession());
-            }
-        }
-    }
-
-    /**
-     * @Then /^I should see the final grade(?: as )?(\d+)? on the single marker page$/
+     * @Then /^I should see the final grade(?: as )?([\.\d]+)?$/
      * @param int $grade
      * @throws ExpectationException
      * @throws coding_exception
      */
     public function i_should_see_the_final_single_grade_on_the_page($grade = 56) {
-        $actualgrade = $this->find('css', '#edit-feedback-' . $this->student->id)->getText();
-        if (strpos($actualgrade, (string)$grade) === false) {
-            throw new ExpectationException('Could not find the final grade. Got '.$actualgrade.' instead', $this->getSession());
-        }
+        $page = $this->get_page('multiple grading interface');
+        $page->assessor_grade_should_be_present($this->student, '1', $grade);
+    }
+
+    /**
+     * @Then /^I should see the final agreed grade(?: as )?([\.\d]+)?$/
+     * @param int $grade
+     * @throws ExpectationException
+     * @throws coding_exception
+     */
+    public function i_should_see_the_final_agreed_grade_on_the_page($grade = 56) {
+        $page = $this->get_page('multiple grading interface');
+        $page->assessor_grade_should_be_present($this->student, 'final_agreed', $grade);
     }
 
     /**
@@ -2334,13 +2315,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I click on the edit feedback link$/
-     */
-    public function i_click_on_the_edit_feedback_link() {
-        $this->find('css', "#edit-feedback-{$this->student->id}")->click();
-    }
-
-    /**
      * @Then /^I should see the grade on the page$/
      */
     public function i_should_see_the_grade_on_the_page() {
@@ -2349,11 +2323,17 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
         $page->assessor_grade_should_be_present($this->student, 1, 56);
-        // $xpath = $this->xpath_tag_class_contains_text('td', 'cfeedbackcomment', '56');
-        // if (!$this->getSession()->getPage()->has('xpath', $xpath)) {
-        // throw new ExpectationException('Should have seen the grade ("56"), but it was not there',
-        // $this->getSession());
-        // }
+    }
+
+    /**
+     * @Then /^I should not see the final grade on the multiple marker page$/
+     */
+    public function i_should_not_see_the_grade_on_the_page() {
+        /**
+         * @var mod_coursework_behat_multiple_grading_interface $page
+         */
+        $page = $this->get_page('multiple grading interface');
+        $page->assessor_grade_should_not_be_present($this->student, 'final_agreed');
     }
 
     /**
@@ -2443,22 +2423,6 @@ class behat_mod_coursework extends behat_base {
             $message = "Should be a grade in the student row final grade cell, but there's not";
             throw new ExpectationException($message, $this->getSession());
         };
-    }
-
-    /**
-     * @Given /^I should see the group grade assigned to the other student$/
-     */
-    public function i_should_see_the_group_grade_assigned_to_the_other_student() {
-        /**
-         * @var mod_coursework_behat_multiple_grading_interface $page
-         */
-        $page = $this->get_page('multiple grading interface');
-        if ($page->student_has_a_final_grade($this->otherstudent)) {
-            throw new ExpectationException(
-                $message = "Should be a grade in the student row final grade cell, but there's not",
-                $this->getSession()
-            );
-        }
     }
 
     /**

@@ -88,4 +88,4 @@ Feature: Allow markers to edit their marking but only during specific marking st
     And I press "Save and finalise"
     And I wait "50" seconds
     And I visit the coursework page
-    Then I should see the final grade as 67 on the multiple marker page
+    Then I should see the final agreed grade as 67
