@@ -194,6 +194,7 @@ class grading_guide_agreed_grades implements \renderable, \templatable {
 
         // For the agreed feedback we need an array of dropdown options.
         $frequentcommentoptions = array_values($gradingdefinition->guide_comments);
+        $frequentcommentssimple = [];
         $templatedata->hasfrequentcomments = !empty($frequentcommentoptions);
         if ($templatedata->hasfrequentcomments) {
             // Prepare a simple non-associative array of values for later.
@@ -223,7 +224,11 @@ class grading_guide_agreed_grades implements \renderable, \templatable {
             );
         }
         $existingagreedfeedback = !empty($existingagreedfeedbacks) ? $existingagreedfeedbacks[0] : null;
-        $existingagreedfeedback = $existingagreedfeedback ? (object)[
+        $gradingcontrollerinstance =
+            $gradingcontroller->get_current_instance($existingagreedfeedback->assessorid, $existingagreedfeedback->id);
+        // Check for grading controller instance first.
+        // It will be null if we have an automatic agreed grade (percentage distance) with no detailed marks breakdown (CTP-5278).
+        $existingagreedfeedback = $existingagreedfeedback && $gradingcontrollerinstance ? (object)[
             'markernumber' => $existingagreedfeedback->markernumber,
             'feedbackid' => $existingagreedfeedback->id,
             'assessorid' => $existingagreedfeedback->assessorid,
@@ -237,14 +242,13 @@ class grading_guide_agreed_grades implements \renderable, \templatable {
                         $item['stage_identifier'] = $existingagreedfeedback->stage_identifier ?? 'final_agreed_1';
                         return $item;
                     },
-                    $gradingcontroller->get_current_instance(
-                        $existingagreedfeedback->assessorid, $existingagreedfeedback->id)->get_guide_filling()['criteria']
+                    $gradingcontrollerinstance->get_guide_filling()['criteria']
                 )
             ),
         ] : null;
 
         // Now set the dropdown options for each criterion the agreed feedback comments.
-        if ($existingagreedfeedback) {
+        if ($existingagreedfeedback && $gradingcontrollerinstance) {
             foreach ($templatedata->criteria_rows as $criteriarow) {
                 foreach ($existingagreedfeedback->criterion_grades as $agreedgrade) {
                     if ($criteriarow->id == $agreedgrade['criterionid']) {
