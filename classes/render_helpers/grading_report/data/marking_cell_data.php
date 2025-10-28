@@ -104,9 +104,10 @@ class marking_cell_data extends cell_data_base {
         // Get feedback mark.
         $marker->mark = $this->get_mark_for_feedback($feedback);
         // Return early if no marking.
-        if (empty($marker->mark)) {
+        if (!isset($marker->mark) || ($marker->mark === false)) {
             return;
         }
+        $marker->showmark = true;
 
         // Marker template data.
         $marker->draft = !$feedback->finalised;
