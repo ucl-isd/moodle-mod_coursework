@@ -143,6 +143,36 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
     /**
      * @param allocatable $allocatable
      * @param int $assessornumber
+     * @param int $expectedstatus
+     */
+    public function grade_status_should_be_present($allocatable, $assessornumber, $expectedstatus, $negate = false) {
+        $locator = '[data-allocateble-id="' . $this->allocatable_identifier_hash($allocatable) . '"]';
+
+        if (isset($assessornumber)) {
+            $locator .= ' [data-behat-markstage="' . $assessornumber . '"]';
+        }
+
+        $locator .= ' .badge';
+
+        $gradecontainer = $this->getPage()->find('css', $locator);
+        $text = $gradecontainer ? $gradecontainer->getText() : '';
+        $found = str_contains($text, (string)$expectedstatus);
+        if (!$found && !$negate) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                "Did not find expected status '$expectedstatus' in '$text'",
+                $this->getSession()
+            );
+        } else if ($found && $negate) {
+            throw new \Behat\Mink\Exception\ExpectationException(
+                "Found expected status '$expectedstatus' in '$text'",
+                $this->getSession()
+            );
+        }
+    }
+
+    /**
+     * @param allocatable $allocatable
+     * @param int $assessornumber
      * @param int $expectedgrade
      */
     public function assessor_grade_should_not_be_present($allocatable, $assessornumber) {

@@ -2285,6 +2285,18 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     *
+     * @When /^^I should see the final agreed grade status "(?P<expectedstatus>(?:[^"]|\\")*)"$/
+     * @param int $expectedstatus
+     * @throws ExpectationException
+     * @throws coding_exception
+     */
+    public function i_should_see_the_final_agreed_grade_status_on_the_page($expectedstatus) {
+        $page = $this->get_page('multiple grading interface');
+        $page->grade_status_should_be_present($this->student, 'final_agreed', $expectedstatus);
+    }
+
+    /**
      * @Given /^I have an assessor feedback at grade 67$/
      */
     public function i_have_an_assessor_feedback() {

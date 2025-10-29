@@ -27,6 +27,25 @@ Feature: Adding and editing final feedback
     And I should see the final agreed grade as 57
 
   @javascript
+  Scenario: Setting and releasing the final feedback grade via a draft state
+    Given there are feedbacks from both teachers
+    And the coursework "draftfeedbackenabled" setting is "1" in the database
+    And I am logged in as a manager
+    And I visit the coursework page
+    And I click the new multiple final feedback button for the student
+    And I set the field "Grade" to "57"
+    And I press "Save as draft"
+    Then I visit the coursework page
+    And I should see the final agreed grade as 57
+    And I should see the final agreed grade status "Draft"
+    And I click the edit final feedback button
+    And I press "Save and finalise"
+    And I should see the final agreed grade status "Ready for release"
+    And I follow "Release the marks"
+    And I press "Confirm"
+    And I should see the final agreed grade status "Released"
+
+  @javascript
   Scenario: Setting the final feedback comment
     Given there are feedbacks from both teachers
     And I am logged in as a manager
