@@ -301,7 +301,6 @@ $capabilities = [
             'editingteacher' => CAP_ALLOW,
         ],
     ],
-
     'mod/coursework:updateplagiarismflag' => [
         'riskbitmask' => RISK_PERSONAL | RISK_SPAM,
         'captype' => 'write',
@@ -310,5 +309,12 @@ $capabilities = [
             'manager' => CAP_ALLOW,
         ],
     ],
-
+    'mod/coursework:allowlatesubmissionsuser' => [
+        'riskbitmask' => RISK_PERSONAL | RISK_SPAM,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'legacy' => [
+            'manager' => CAP_ALLOW,
+        ],
+    ],
 ];

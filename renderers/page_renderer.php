@@ -558,7 +558,13 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $html .= $gradingreportrenderer->render_grading_report($gradingreport);
 
-        foreach (['modal_handler_extensions', 'modal_handler_personal_deadlines', 'modal_handler_plagiarism'] as $amd) {
+        $modalhandlers = [
+            'modal_handler_extensions',
+            'modal_handler_personal_deadlines',
+            'modal_handler_plagiarism',
+            'modal_handler_allow_late_submissions',
+        ];
+        foreach ($modalhandlers as $amd) {
             $this->page->requires->js_call_amd(
                 "mod_coursework/$amd",
                 'init',

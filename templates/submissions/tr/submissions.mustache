@@ -106,5 +106,17 @@
         {{/extensiondeadline}}
 
     {{/submissiondata}}
+    {{#latesubmissionalloweduser}}
+        <div class="bg-light badge-pill my-2 py-1">
+            <div class="position-relative d-flex align-items-center">
+                <div class="mr-3">
+                    <i class="fa-regular fa-hourglass"></i>
+                </div>
+                <div class="small">
+                    {{#str}} latesubmissionsallowed, mod_coursework {{/str}}
+                </div>
+            </div>
+        </div>
+    {{/latesubmissionalloweduser}}
 
 {{/submission}}

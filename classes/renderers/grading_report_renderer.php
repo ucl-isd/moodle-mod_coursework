@@ -213,6 +213,11 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
     protected static function prepare_student_cell_data(coursework $coursework, grading_table_row_base $rowobject, stdClass $trdata) {
         $dataprovider = new student_cell_data($coursework);
         $trdata->submissiontype = $dataprovider->get_table_cell_data($rowobject);
+        $trdata->latesubmissionalloweduser = \mod_coursework\models\deadline_extension::user_allowed_to_submit_late_without_extension(
+            $coursework->id(),
+            $rowobject->get_allocatable()->type(),
+            $rowobject->get_allocatable()->id(),
+        );
     }
 
     /**

@@ -400,9 +400,11 @@ class submissions_controller extends controller_base {
     }
 
     /**
+     * Throw an exception if the submission is late.
+     * @param submission $submission
      * @throws late_submission
      */
-    private function exception_if_late($submission) {
+    private function exception_if_late(submission $submission) {
         $couldhavesubmitted = has_capability('mod/coursework:submit', $this->coursework->get_context());
         if ($this->coursework->personal_deadlines_enabled()) {
             $deadlinehaspassed = !$this->has_valid_personal_deadline($submission);
@@ -410,7 +412,10 @@ class submissions_controller extends controller_base {
             $deadlinehaspassed = $this->coursework->deadline_has_passed();
         }
 
-        if ($couldhavesubmitted && $deadlinehaspassed && !$this->has_valid_extension($submission) && !$this->coursework->allow_late_submissions()) {
+        $allocatable = $submission->get_allocatable();
+        if ($couldhavesubmitted && $deadlinehaspassed &&
+            !$this->has_valid_extension($submission)
+            && !$this->coursework->allow_late_submissions($allocatable->type(), $allocatable->id)) {
             throw new late_submission($this->coursework);
         }
     }

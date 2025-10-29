@@ -111,13 +111,13 @@ class submission_cell_data extends cell_data_base {
     protected function prepare_file_data(\stored_file $file, coursework $coursework, int $submissionid): stdClass {
         $fileinfo = new stdClass();
         $fileinfo->filename = $file->get_filename();
-        $fileinfo->url = moodle_url::make_file_url('/pluginfile.php', '/' . implode('/', [
+        $fileinfo->url = \moodle_url::make_file_url('/pluginfile.php', '/' . implode('/', [
                 $file->get_contextid(),
                 'mod_coursework',
                 'submission',
                 $submissionid,
-                $file->get_filename()
-            ]));
+                $file->get_filename(),
+            ]))->out();
 
         $fileinfo->plagiarismlinks = $this->get_plagiarism_links($file, $coursework);
 
