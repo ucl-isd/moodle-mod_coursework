@@ -87,7 +87,7 @@ function mod_coursework_pluginfile($course, $cm, $context, $filearea, $args, $fo
     // From assessment send_file().
     require_once($CFG->dirroot.'/lib/filelib.php');
 
-    if ($filearea === 'submission') {
+    if (in_array($filearea, ['submission', 'submissionannotations'])) {
         $submissionid = (int)array_shift($args);
 
         $submission = submission::find($submissionid);
@@ -100,10 +100,9 @@ function mod_coursework_pluginfile($course, $cm, $context, $filearea, $args, $fo
         }
 
         $relativepath = implode('/', $args);
-        $fullpath = "/{$context->id}/mod_coursework/submission/{$submission->id}/{$relativepath}";
 
         $fs = get_file_storage();
-        $file = $fs->get_file_by_hash(sha1($fullpath));
+        $file = $fs->get_file($context->id, 'mod_coursework', $filearea, $submission->id, "/", $relativepath);
         if (!$file || $file->is_directory()) {
             return false;
         }

@@ -23,6 +23,7 @@
 namespace mod_coursework\models;
 
 use context;
+use file_storage;
 use html_writer;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\grade_judge;
@@ -388,6 +389,26 @@ class submission extends table_base implements \renderable {
 
         $files = new submission_files([], $this);
         return $files;
+    }
+
+    public function get_file_annotations() {
+        global $USER;
+
+        $fs = new file_storage();
+
+        $annotatedfiles = [];
+        foreach (
+            $fs->get_area_files($this->get_context_id(), 'mod_coursework', 'submissionannotations', $this->id)
+            as
+            $file
+        ) {
+            if ($file->get_userid() !== $USER->id) {
+                continue;
+            }
+            $annotatedfiles[$file->get_source()] = $file;
+        }
+
+        return $annotatedfiles;
     }
 
     /**

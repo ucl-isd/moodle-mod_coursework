@@ -42,4 +42,12 @@ $functions = [
         'loginrequired' => true,
         'capabilities' => '', // Handled within the class.
     ],
+    'mod_coursework_clearannotations' => [
+        'classname' => 'mod_coursework\external\clearannotations',
+        'description' => 'Clear user file annotations',
+        'type' => 'write',
+        'ajax' => true,
+        'loginrequired' => true,
+        'capabilities' => '', // Handled within the class.
+    ],
 ];
