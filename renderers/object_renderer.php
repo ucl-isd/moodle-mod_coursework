@@ -116,6 +116,58 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         return $this->render_from_template('mod_coursework/feedback', $template);
     }
 
+    /**
+     * Renders a coursework feedback as a row in a table.
+     * This is for the grading report when we have multiple markers and we want an AJAX pop up *
+     * with details of the feedback. Also for the student view.
+     *
+     * @param submission $submission
+     * @return string
+     */
+    public function render_viewpdf(submission $submission) {
+        global $USER;
+
+        $template = new stdClass();
+
+        $studentname = $submission->get_allocatable_name();
+
+        $template->title = get_string('viewsubmission', 'mod_coursework', $studentname);
+
+        $template->files = [];
+
+        $annotatedfiles = $submission->get_file_annotations();
+        foreach ($submission->get_submission_files()->get_files() as $file) {
+            if ($file->get_mimetype() !== 'application/pdf') {
+                continue;
+            }
+
+            $model = [
+                'filename' => $file->get_filename(),
+                'href' => self::make_file_url($file),
+                'fileid' => $file->get_id(),
+                'submissionid' => $submission->id,
+            ];
+
+            if (isset($annotatedfiles[$file->get_id()])) {
+                $annotatedfile = $annotatedfiles[$file->get_id()];
+                $model['annotatedfileurl'] = self::make_file_url($annotatedfile);
+                $model['annotatedfileid'] = $annotatedfile->get_id();
+            }
+
+            $template->files[] = (object)$model;
+        }
+
+        $template->multiplefiles = (count($template->files) > 1);
+
+        // Return html from template.
+
+        $this->page->requires->js_call_amd(
+            "mod_coursework/viewpdf",
+            'init',
+        );
+        return $this->render_from_template('mod_coursework/viewpdf', $template);
+    }
+
 
     /**
      * Renders a coursework moderation as a row in a table.

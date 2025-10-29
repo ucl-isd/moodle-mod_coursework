@@ -52,6 +52,20 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
+     * @param submission $feedback
+     */
+    public function show_viewpdf_page($submission) {
+        $this->page->set_pagelayout('popup');
+
+        $html = '';
+        $objectrenderer = $this->get_object_renderer();
+        $html .= $this->output->header();
+        $html .= $objectrenderer->render_viewpdf($submission);
+        $html .= $this->output->footer();
+        return $html;
+    }
+
+    /**
      * @param moderation $moderation
      */
     public function show_moderation_page($moderation) {
