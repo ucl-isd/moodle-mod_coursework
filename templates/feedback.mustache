@@ -40,12 +40,12 @@
             <div>
                 <b>{{markername}}</b>
                 <br>
-                {{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
+                {{#date}}{{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}{{/date}}
             </div>
         </div>
         {{/markername}}
         {{^markername}}
-            <p>{{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>
+            {{#date}}<p>{{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>{{/date}}
         {{/markername}}
 
         <div class="{{#markername}} chat-bubble-bordered {{/markername}}">
