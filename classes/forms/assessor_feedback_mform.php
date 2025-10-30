@@ -144,7 +144,7 @@ class assessor_feedback_mform extends moodleform {
                                  null,
                                  $filemanageroptions);
 
-        $this->add_submit_buttons($this->coursework->draft_feedback_enabled(), $this->feedback->id);
+        $this->add_submit_buttons($this->feedback->id);
 
     }
     /**
@@ -157,20 +157,14 @@ class assessor_feedback_mform extends moodleform {
 
     /**
      * Add submit buttons.
-     * @param $draftenabled
      * @param $feedbackid
      * @throws coding_exception
      */
-    public function add_submit_buttons($draftenabled,  $feedbackid) {
-
-        $buttonarray = [];
-
-        if ($draftenabled) {
-            $buttonarray[] = $this->_form->createElement('submit', 'submitfeedbackbutton', get_string('saveasdraft', 'coursework'));
-        }
-
-            $buttonarray[] =
-                $this->_form->createElement('submit', 'submitbutton', get_string('saveandfinalise', 'coursework'));
+    public function add_submit_buttons($feedbackid) {
+        $buttonarray = [
+            $this->_form->createElement('submit', 'submitfeedbackbutton', get_string('saveasdraft', 'coursework')),
+            $this->_form->createElement('submit', 'submitbutton', get_string('saveandfinalise', 'coursework')),
+        ];
 
         $this->feedback = $this->_customdata['feedback'];
 

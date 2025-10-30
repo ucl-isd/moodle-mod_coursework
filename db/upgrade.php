@@ -2572,6 +2572,18 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025100300, 'coursework');
     }
 
+    if ($oldversion < 2025100301) {
+
+        $table = new xmldb_table('coursework');
+        $upgradefield = new xmldb_field('draftfeedbackenabled');
+
+        if (!$dbman->field_exists($table, $upgradefield)) {
+            $dbman->drop_field($table, $upgradefield);
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2025100301, 'coursework');
+    }
     // Always needs to return true.
     return true;
 }

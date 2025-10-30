@@ -455,7 +455,6 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'relativeagreedmarkingdeadline' => 0,
                                   'autopopulatefeedbackcomment' => 0,
                                   'moderationagreementenabled' => 0,
-                                  'draftfeedbackenabled' => 0,
                                     'processenrol' => 0,
                                   'plagiarismflagenabled' => 0,
                                     'processunenrol' => 0], $data);

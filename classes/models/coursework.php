@@ -2674,14 +2674,6 @@ class coursework extends table_base {
     }
 
     /**
-     * Lets us know if draft feedback is enabled in the coursework.
-     * @return bool
-     */
-    public function draft_feedback_enabled() {
-        return (bool)$this->draftfeedbackenabled;
-    }
-
-    /**
      * Return all allocatables and the allocatables deadline
      * Note! allocatables are returned irrespective of whether they have submitted.
      *

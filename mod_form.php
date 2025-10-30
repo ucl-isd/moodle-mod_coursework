@@ -115,7 +115,6 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->add_automatic_agreement_enabled();
         $this->add_view_initial_assessors_grade();
         $this->add_enable_agreed_grade_delay();
-        $this->add_save_feedback_as_draft();
         $this->add_auto_populate_agreed_feedback_comments();
 
         $this->add_blind_marking_header();
@@ -1248,21 +1247,6 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->setDefault('gradeeditingtime', $CFG->coursework_grade_editing);
 
         $moodleform->hideif('gradeeditingtime', 'numberofmarkers', 'eq', 1);
-
-    }
-
-    /**
-     *
-     */
-    private function add_save_feedback_as_draft() {
-
-        $moodleform =& $this->_form;
-
-        $options = [0 => get_string('no'), 1 => get_string('yes')];
-
-        $moodleform->addElement('select', 'draftfeedbackenabled', get_string('savefeedbackasdraft', 'mod_coursework'), $options);
-        $moodleform->addHelpButton('draftfeedbackenabled', 'savefeedbackasdraft', 'mod_coursework');
-        $moodleform->setDefault('draftfeedbackenabled', 1);
 
     }
 
