@@ -978,10 +978,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string
      */
     protected function make_file_link($files, $file, $classname = 'submissionfile') {
-        global $CFG;
 
-        $url = "{$CFG->wwwroot}/pluginfile.php/{$file->get_contextid()}" .
-            "/mod_coursework/{$files->get_file_area_name()}";
         $filename = $file->get_filename();
 
         $image = $this->output->pix_icon(file_file_icon($file),
@@ -989,8 +986,23 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                         'moodle',
                                ['class' => 'submissionfileicon']);
 
-        $fileurl = $url . $file->get_filepath() . $file->get_itemid() . '/' . rawurlencode($filename);
-        return html_writer::link($fileurl, $image.$filename, ['class' => $classname]);
+        return html_writer::link($this->make_file_url($file), $image.$filename, ['class' => $classname]);
+    }
+
+    /**
+     * @param stored_file $file
+     * @return moodle_url
+     */
+    public function make_file_url($file) {
+        return moodle_url::make_pluginfile_url(
+            $file->get_contextid(),
+            'mod_coursework',
+            $file->get_filearea(),
+            $file->get_itemid(),
+            $file->get_filepath(),
+            $file->get_filename()
+        );
+    }
     }
 
     /**
