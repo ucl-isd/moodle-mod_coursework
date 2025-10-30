@@ -278,4 +278,8 @@ if ($ADMIN->fulltree) {
     $options = [ 'username' => get_string('username'), 'email' => get_string('email')];
     $settings->add(new admin_setting_configselect('coursework_allocation_identifier',  get_string('allocationidentifier', 'coursework'), get_string('allocationidentifier_desc', 'coursework'), 'username', $options));
 
+    $settingsheader = new admin_setting_heading('featuresunderdevelopment_header', get_string('featuresunderdevelopment_header', 'mod_coursework'), '');
+    $settings->add($settingsheader);
+
+    $settings->add(new admin_setting_configcheckbox('coursework_enablepdfjs', get_string('enablepdfjs', 'mod_coursework'), '', 0));
 }

@@ -978,6 +978,15 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string
      */
     protected function make_file_link($files, $file, $classname = 'submissionfile') {
+        if (
+            $files->get_file_area_name() == 'submission'
+            &&
+            $files->get_coursework()->enablepdfjs()
+            &&
+            ($file->get_mimetype() == 'application/pdf')
+        ) {
+            return $this->make_pdfjs_link($file, $classname);
+        }
 
         $filename = $file->get_filename();
 
@@ -1003,6 +1012,28 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $file->get_filename()
         );
     }
+
+    /**
+     * @param stored_file $file
+     * @param string $classname
+     * @return string
+     */
+    private function make_pdfjs_link($file, $classname = 'submissionfile') {
+        $filename = $file->get_filename();
+
+        $image = $this->output->pix_icon(file_file_icon($file),
+            $filename,
+            'moodle',
+            ['class' => 'submissionfileicon']);
+
+        $viewurl = new moodle_url("/mod/coursework/actions/feedbacks/viewpdf.php", ['submissionid' => $file->get_itemid()]);
+
+        $retval = html_writer::link($viewurl, $image . $filename, ['class' => $classname, 'target' => '_blank']);
+
+        $downloadimage = $this->output->pix_icon('i/export', get_string('download'), 'core');
+        $retval .= html_writer::link($this->make_file_url($file), $downloadimage);
+
+        return $retval;
     }
 
     /**

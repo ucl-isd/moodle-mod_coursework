@@ -55,6 +55,11 @@ if (!$submission) {
 }
 
 $coursework = coursework::find($submission->courseworkid);
+
+if(empty($this->coursework->enablepdfjs())) {
+    throw new \Exception('coursework enablepdfjs not enabled');
+}
+
 $user = user::find($USER);
 $ability = new ability($user, $coursework);
 if ($ability->cannot('show', $submission)) {
