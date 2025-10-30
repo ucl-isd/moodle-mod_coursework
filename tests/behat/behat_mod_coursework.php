@@ -2404,21 +2404,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * Complete a rubric form.
-     * @Given /^I click the rubric score box "(\d+)?" and add the comment "(?P<comment_string>(?:[^"]|\\")*)"$/
-     * @param string $boxnumber
-     * @param string $comment
-     * @throws coding_exception
-     */
-    public function i_click_the_rubric_box_and_set_comment($boxnumber, $comment) {
-        $script = "document.querySelectorAll('#rubric-advancedgrading input[type=\"radio\"]')[" . $boxnumber . "].click();";
-        behat_base::execute_script_in_session($this->getSession(), $script);
-
-        $script = "(document.querySelector('td.remark textarea')).value = '" . $comment . "';";
-        behat_base::execute_script_in_session($this->getSession(), $script);
-    }
-
-    /**
      * @Then /^I should see the final grade for the group in the grading interface$/
      *
      */
