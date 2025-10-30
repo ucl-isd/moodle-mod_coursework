@@ -1357,21 +1357,8 @@ class submission extends table_base implements \renderable {
         $editablefeedbacks = [];
         $coursework = $this->get_coursework();
         if ($coursework->numberofmarkers > 1 && $this->finalised == 1) {
-            $this->get_coursework()->get_grade_editing_time();
-            $gradeeditingtime = $coursework->get_grade_editing_time();
-
             $editablefeedbacks = isset(feedback::$pool[$coursework->id]['submissionid-finalised'][$this->id . '-0']) ?
                 feedback::$pool[$coursework->id]['submissionid-finalised'][$this->id . '-0'] : [];
-            if ($gradeeditingtime != 0) {
-                $time = time();
-                $finalizedfeedbacks = isset(feedback::$pool[$coursework->id]['submissionid-finalised'][$this->id . '-1']) ?
-                    feedback::$pool[$coursework->id]['submissionid-finalised'][$this->id . '-1'] : [];
-                foreach ($finalizedfeedbacks as $feedback) {
-                    if ($feedback->timecreated + $gradeeditingtime > $time) {
-                        $editablefeedbacks[] = $feedback;
-                    }
-                }
-            }
         }
 
         return (empty($editablefeedbacks)) ? false : $editablefeedbacks;
@@ -1388,15 +1375,8 @@ class submission extends table_base implements \renderable {
 
                 $coursework = $this->get_coursework();
                 $finalfeedback = feedback::get_object($coursework->id, 'submissionid-stage_identifier', [$this->id, 'final_agreed_1']);
-                if ($finalfeedback) {
-                    $gradeeditingtime = $coursework->get_grade_editing_time();
-                    if ($gradeeditingtime) {
-                        if ($finalfeedback->timecreated + $gradeeditingtime > time()) {
-                            $this->editable_final_feedback = true;
-                        }
-                    } else if ($finalfeedback->finalised == 0 && $finalfeedback->assessorid <> 0) {
-                        $this->editable_final_feedback = true;
-                    }
+                if ($finalfeedback && $finalfeedback->finalised == 0 && $finalfeedback->assessorid <> 0) {
+                    $this->editable_final_feedback = true;
                 }
             }
         }
@@ -1411,8 +1391,6 @@ class submission extends table_base implements \renderable {
 
         global $DB;
 
-        $this->get_coursework()->get_grade_editing_time();
-
         $sql = "
                     SELECT  *
                     FROM 	{coursework} c,
@@ -1422,13 +1400,11 @@ class submission extends table_base implements \renderable {
 			         AND	cs.id = cf.submissionid
 			         AND	c.numberofmarkers > 1
 			         AND 	cs.finalised = 1
-			         AND	c.gradeeditingtime != 0
 			         AND	cf.stage_identifier NOT LIKE 'final_agreed%'
 			         AND	cs.id = :submissionid
-			         AND    cf.timecreated + c.gradeeditingtime > :time
-        ";
+";
 
-        $editablefeedbacks = $DB->get_records_sql($sql, ['submissionid' => $this->id, 'time' => time()]);
+        $editablefeedbacks = $DB->get_records_sql($sql, ['submissionid' => $this->id]);
 
         return (empty($editablefeedbacks)) ? false : $editablefeedbacks;
     }

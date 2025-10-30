@@ -444,7 +444,6 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'automaticagreementstrategy' => '',
                                   'averagerounding' => 'mid',
                                   'feedbackreleaseemail' => 0,
-                                    'gradeeditingtime' => 0,
                                     'markingdeadlineenabled' => 0,
                                     'initialmarkingdeadline' => 0,
                                     'agreedgrademarkingdeadline' => 0,

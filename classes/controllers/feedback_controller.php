@@ -207,13 +207,8 @@ class feedback_controller extends controller_base {
                 $submission->publish();
             }
 
-            // Only implement auto feedback (automatic agreement) if the settings is set to disabled.
-            // Otherwise, we will do this in the cron.
-            $gradeeditingtime = $teacherfeedback->get_coursework()->get_grade_editing_time();
+            $this->try_auto_feedback_creation($teacherfeedback->get_submission());
 
-            if (empty($gradeeditingtime) || time() > $teacherfeedback->timecreated + $gradeeditingtime) {
-                $this->try_auto_feedback_creation($teacherfeedback->get_submission());
-            }
             redirect($courseworkpageurl,
                 get_string('changessaved', 'mod_coursework'),
                 null,
@@ -296,10 +291,7 @@ class feedback_controller extends controller_base {
             $teacherfeedback->save();
             $form->save_feedback_files();
 
-            $gradeeditingtime = $teacherfeedback->get_coursework()->get_grade_editing_time();
-            if (empty($gradeeditingtime) || time() > $teacherfeedback->timecreated + $gradeeditingtime) {
-                $this->try_auto_feedback_creation($teacherfeedback->get_submission());
-            }
+            $this->try_auto_feedback_creation($teacherfeedback->get_submission());
 
             if ($teacherfeedback->get_submission()->is_published()) { // Keep the gradebook updated
                 $this->coursework->grade_changed_event();

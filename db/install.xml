@@ -63,7 +63,6 @@
         <FIELD NAME="automaticagreementstrategy" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="none" SEQUENCE="false"/>
         <FIELD NAME="roundingrule" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="mid" SEQUENCE="false"/>
         <FIELD NAME="feedbackreleaseemail" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="gradeeditingtime" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="markingdeadlineenabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="initialmarkingdeadline" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="agreedgrademarkingdeadline" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>

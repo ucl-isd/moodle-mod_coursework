@@ -353,8 +353,6 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
                 }
             }
 
-            $gradeediting = get_config('mod_coursework', 'coursework_grade_editing');
-
             if ($ability->can('edit', $feedbackrow->get_feedback()) && !$submission->already_published()) {
                 $html .= $this->edit_existing_feedback_link($feedbackrow);
             } else if ($ability->can('show', $feedbackrow->get_feedback())) {

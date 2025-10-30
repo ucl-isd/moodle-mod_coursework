@@ -878,18 +878,12 @@ class ability extends \mod_coursework\framework\ability {
         $this->allow('edit',
                      'mod_coursework\models\feedback',
             function (feedback $feedback) {
-                global $CFG;
-
                 $isinitialgrade = $feedback->is_initial_assessor_feedback();
                 $hascapability = has_capability('mod/coursework:editinitialgrade', $feedback->get_context());
                 $iscreator = $feedback->assessorid == $this->get_user()->id;
                 $isallocated = $feedback->is_assessor_allocated();
 
-                $submission = $feedback->get_submission();
-
-                $ineditableperiod = (!empty($feedback->get_coursework()->get_grade_editing_time()) && $feedback->timecreated + $feedback->get_coursework()->get_grade_editing_time() > time());
-
-                return $isinitialgrade && ($hascapability || $ineditableperiod) && ($iscreator || $isallocated);
+                return $isinitialgrade && $hascapability && ($iscreator || $isallocated);
             });
     }
 

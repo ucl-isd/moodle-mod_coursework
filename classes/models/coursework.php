@@ -392,8 +392,6 @@ class coursework extends table_base {
      */
     public $extensionsenabled;
 
-    public $gradeeditingtime;
-
     /**
      * @var int
      */
@@ -669,10 +667,6 @@ class coursework extends table_base {
     public function get_context_id() {
 
         return $this->get_context()->id;
-    }
-
-    public function get_grade_editing_time() {
-        return $this->gradeeditingtime;
     }
 
     /**
@@ -2602,24 +2596,8 @@ class coursework extends table_base {
             return;
         }
         $current = time();
-        $gradeeditingtime = $this->gradeeditingtime;
         $SESSION->keep_cache_data = 1;
         foreach ($submissions as $submission) {
-            if ($gradeeditingtime != 0) {
-                // initial feedbacks - other feedbacks than final
-                $initialfeedbacks = isset(feedback::$pool[$this->id]['submissionid-stage_identifier_index'][$submission->id . '-others']) ?
-                    feedback::$pool[$this->id]['submissionid-stage_identifier_index'][$submission->id . '-others'] : [];
-                $validfb = false;
-                foreach ($initialfeedbacks as $feedback) {
-                    if ($feedback->timecreated + $gradeeditingtime <= $current) {
-                        $validfb = true;
-                        break;
-                    }
-                }
-                if (!$validfb) {
-                    continue;
-                }
-            }
             if (!$submission->editable_feedbacks_exist()) {
                 // this submission needs automatic agreement
                 $autofeedbackclassname = '\mod_coursework\auto_grader\\' . $submission->get_coursework()->automaticagreementstrategy;
