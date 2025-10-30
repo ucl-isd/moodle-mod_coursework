@@ -22,8 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_coursework;
+
 use mod_coursework\models\coursework;
-use mod_coursework\stages\assessor;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -38,9 +39,9 @@ defined('MOODLE_INTERNAL') || die();
  * @group mod_coursework
  */
 #[\AllowDynamicProperties]
-final class coursework_test extends advanced_testcase {
+final class coursework_test extends \advanced_testcase {
 
-    use mod_coursework\test_helpers\factory_mixin;
+    use test_helpers\factory_mixin;
 
     /**
      * Makes us a blank coursework and allocation manager.

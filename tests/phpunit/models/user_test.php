@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace mod_coursework;
+
 /**
  * @package    mod_coursework
  * @copyright  2017 University of London Computer Centre {@link https://www.cosector.com}
@@ -24,9 +26,9 @@
  * Class coursework_user_test
  * @group mod_coursework
  */
-final class coursework_user_test extends advanced_testcase {
+final class user_test extends \advanced_testcase {
 
-    use mod_coursework\test_helpers\factory_mixin;
+    use test_helpers\factory_mixin;
 
     public function setUp(): void {
         $this->resetAfterTest();
@@ -56,7 +58,7 @@ final class coursework_user_test extends advanced_testcase {
     public function test_has_final_agreed_grade_returns_false_when_present_for_different_coursework(): void {
         $this->create_a_student();
         $this->create_a_final_feedback_for_the_submission();
-        $coursework = $this->getMockBuilder('\mod_coursework\coursework')->setMethods(['id'])->getMock();
+        $coursework = $this->getMockBuilder('\mod_coursework\models\coursework')->getMock();
         $coursework->expects($this->any())
             ->method('id')
             ->will($this->returnValue(234234));

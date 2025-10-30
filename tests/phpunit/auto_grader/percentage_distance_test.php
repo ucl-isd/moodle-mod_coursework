@@ -20,8 +20,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_coursework\auto_grader;
+namespace mod_coursework;
 
+use mod_coursework\auto_grader\percentage_distance;
 /**
  * Class percentage_distance_test is responsible for testing the behaviour of the percentage_distance class.
  *

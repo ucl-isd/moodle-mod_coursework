@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_coursework;
+
 use mod_coursework\models\deadline_extension;
 
 /**
@@ -27,9 +29,9 @@ use mod_coursework\models\deadline_extension;
  * the deadline_extension model class.
  * @group mod_coursework
  */
-final class mod_coursework_models_deadline_extension_test extends advanced_testcase {
+final class deadline_extension_test extends \advanced_testcase {
 
-    use mod_coursework\test_helpers\factory_mixin;
+    use test_helpers\factory_mixin;
 
     public function setUp(): void {
         $this->resetAfterTest();

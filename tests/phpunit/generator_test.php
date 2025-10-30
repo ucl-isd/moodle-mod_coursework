@@ -18,12 +18,11 @@
  * PHPUnit data generator tests
  *
  * @package    mod_coursework
- * @category   phpunit
  * @copyright  2011 University of London Computer Centre {@link https://www.cosector.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace phpunit;
+namespace mod_coursework;
 
 use mod_coursework\models\coursework;
 
@@ -37,7 +36,6 @@ require_once($CFG->dirroot . '/mod/coursework/lib.php');
  * PHPUnit data generator testcase
  *
  * @package    mod_coursework
- * @category   phpunit
  * @copyright  2012 ULCC {@link https://www.cosector.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

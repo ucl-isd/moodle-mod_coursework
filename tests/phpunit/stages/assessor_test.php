@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace mod_coursework;
+
 /**
  * @package    mod_coursework
  * @copyright  2017 University of London Computer Centre {@link https://www.cosector.com}
@@ -23,9 +25,9 @@
 /**
  * @group mod_coursework
  */
-final class assessor_test extends advanced_testcase {
+final class assessor_test extends \advanced_testcase {
 
-    use mod_coursework\test_helpers\factory_mixin;
+    use test_helpers\factory_mixin;
 
     public function setUp(): void {
         $this->resetAfterTest();
