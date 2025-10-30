@@ -43,6 +43,7 @@
         <FIELD NAME="studentviewmoderatorgrade" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Can the student view the moderator grades"/>
         <FIELD NAME="strictanonymitymoderator" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Do we enforce the prevention of publishing when moderation is in use and some work has not been moderated?"/>
         <FIELD NAME="allowlatesubmissions" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If true, students will be able to submit after the deadline even if they don't have a submission"/>
+        <FIELD NAME="enablepdfjs" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If true, submissions can be viewed and annotated using pdfjs"/>
         <FIELD NAME="mitigationenabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="enablegeneralfeedback" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="maxfiles" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>

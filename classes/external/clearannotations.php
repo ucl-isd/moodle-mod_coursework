@@ -73,6 +73,10 @@ class clearannotations extends external_api {
 
         $coursework = $submission->get_coursework();
 
+        if (empty($coursework->enablepdfjs())) {
+            throw new \Exception('coursework enablepdfjs not enabled');
+        }
+
         // The export function contains a capability check so we don't have an extra one here.
         $PAGE->set_context($coursework->get_context());
 

@@ -67,6 +67,11 @@ class feedback_controller extends controller_base {
 
     protected function viewpdf() {
         global $PAGE, $USER;
+
+        if(empty($this->coursework->enablepdfjs())) {
+            throw new \Exception('coursework enablepdfjs not enabled');
+        }
+
         $urlparams = ['submissionid' => $this->params['submissionid']];
         $PAGE->set_url('/mod/coursework/actions/feedbacks/viewpdf.php', $urlparams);
 

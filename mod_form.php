@@ -103,6 +103,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->add_rename_file_field();
         $this->add_submission_notification_field();
         $this->add_enable_plagiarism_flag_field();
+        $this->add_enable_pdfjs_field();
 
         $this->add_marking_workflow_header();
 
@@ -1375,6 +1376,15 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->addElement('select', 'plagiarismflagenabled', get_string('plagiarism_flag_enable', 'mod_coursework'), $options);
         $moodleform->addHelpButton('plagiarismflagenabled', 'plagiarism_flag_enable', 'mod_coursework');
         $moodleform->setDefault('plagiarismflagenabled', $CFG->coursework_plagiarismflag);
+    }
+
+    private function add_enable_pdfjs_field() {
+        global $CFG;
+        $moodleform =& $this->_form;
+
+        $options = [ 0 => get_string('no'), 1 => get_string('yes')];
+        $moodleform->addElement('select', 'enablepdfjs', get_string('enablepdfjs', 'mod_coursework'), $options);
+        $moodleform->setDefault('enablepdfjs', !empty($CFG->coursework_enablepdfjs));
     }
 
     /**

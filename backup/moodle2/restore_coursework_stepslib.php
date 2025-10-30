@@ -426,6 +426,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'studentviewmoderatorgrade' => 0,
                                   'strictanonymitymoderator' => 0,
                                   'allowlatesubmissions' => 0,
+                                  'enablepdfjs' => 0,
                                   'mitigationenabled' => 0,
                                   'enablegeneralfeedback' => 0,
                                   'maxfiles' => 1,
