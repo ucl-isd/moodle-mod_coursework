@@ -1,4 +1,4 @@
-@mod @mod_coursework @javascript
+@mod @mod_coursework @mod_coursework_grade_decimals @javascript
 Feature: For the final grade the mark should be to the decimal point
 
   Background:
@@ -30,17 +30,22 @@ Feature: For the final grade the mark should be to the decimal point
     Given I am logged in as a teacher
     And I visit the coursework page
     And I click on the add feedback button for assessor 1
+    And I wait until the page is ready
     And I set the field "Grade" to "59"
     And I press "Save and finalise"
     And I log out
     And I log in as the other teacher
     And I visit the coursework page
     And I click on the add feedback button for assessor 2
+    And I wait until the page is ready
     And I set the field "Grade" to "58"
     And I press "Save and finalise"
     And I log out
     And I log in as a manager
     And I visit the coursework page
-    And I click the new multiple final feedback button for the student
-    And I grade the submission as 56.12 using the grading form
+    And I click on "Add agreed feedback" "link"
+    And I wait until the page is ready
+    And I set the field "Grade" to "56.12"
+    And I press "Save and finalise"
+    And I visit the coursework page
     Then I should see the final grade as 56.12 on the multiple marker page
