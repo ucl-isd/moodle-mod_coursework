@@ -356,7 +356,7 @@ class deadline_extension_form extends dynamic_form {
                 return [
                     'success' => empty($errors),
                     'resultcode' => 'deleted',
-                    'message' => get_string('extension_deleted,', 'mod_coursework', $this->allocatable->name()),
+                    'message' => get_string('extension_deleted', 'mod_coursework', $this->allocatable->name()),
                     'errors' => $errors,
                     'warnings' => $warnings,
                 ];

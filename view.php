@@ -57,7 +57,6 @@ $courseworkid = optional_param('e', 0, PARAM_INT);
 if (!$courseworkid) {
     $courseworkid = optional_param('courseworkid', 0, PARAM_INT);
 }
-$publish = optional_param('publishbutton', 0, PARAM_ALPHA);
 $download = optional_param('download', false, PARAM_BOOL);
 $resubmit = optional_param('resubmit', 0, PARAM_TEXT); // Are we resubmitting a turnitin thing?
 $resubmitted = optional_param('resubmitted', 0, PARAM_INT); // Is this a post-resubmit redirect?

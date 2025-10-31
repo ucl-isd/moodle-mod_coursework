@@ -185,18 +185,6 @@ class manager {
     }
 
     /**
-     * Returns array of sampling options. This function should be looked upon as a placeholder
-     * in case more complex functionality is defined
-     *
-     * @return array
-     */
-    public function get_sampling_options() {
-        return ['0' => get_string('manual', 'mod_coursework'),
-                     '1' => get_string('automatic', 'mod_coursework')];
-
-    }
-
-    /**
      * Gets the sampling rules as an array of classes.
      *
      * @return moderation_set_rule[] array
