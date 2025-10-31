@@ -220,22 +220,8 @@ if ($ADMIN->fulltree) {
     $perpagedescription = get_string('per_page_desc', 'coursework');
     $settings->add(new admin_setting_configselect('coursework_per_page', $perpage, $perpagedescription, '10', $options));
 
-    // Automatic agreement delay
-
-    $options = ['0' => get_string('disabled', 'mod_coursework')];
-    $options['1800'] = get_string('timedminutes', 'mod_coursework', '30');
-    $options['3600'] = get_string('timedhour', 'mod_coursework', '1');
-    $options['7200'] = get_string('timedhours', 'mod_coursework', '2');
-    $options['18000'] = get_string('timedhours', 'mod_coursework', '5');
-    $options['43200'] = get_string('timedhours', 'mod_coursework', '12');
-    $options['86400'] = get_string('aday', 'mod_coursework');
-
     $gradeeditingheader = new admin_setting_heading('grade_editing_header', get_string('grade_editing', 'mod_coursework'), '');
     $settings->add($gradeeditingheader);
-
-    $gradeeditingname = get_string('grade_editing_enabled', 'coursework');
-    $gradeeditingdescription = get_string('grade_editing_enabled_desc', 'coursework');
-    $settings->add(new admin_setting_configselect('coursework_grade_editing', $gradeeditingname, $gradeeditingdescription, '0', $options));
 
     // Deadline defaults
     $deadlinedefaultsheader = new admin_setting_heading('deadline_defaults_header', get_string('deadline_defaults', 'mod_coursework'), '');

@@ -676,9 +676,9 @@ abstract class base {
             if ($class != $currentstage) { // New stage type
                 $currentstage = $class;
                 $previousstageok = $currentstageok;
-                $currentstageok = $stage->has_feedback($allocatable) && !$stage->in_editable_period($allocatable);
+                $currentstageok = $stage->has_feedback($allocatable);
             } else { // Same stage (parallel)
-                $currentstageok = $currentstageok && $stage->has_feedback($allocatable) && !$stage->in_editable_period($allocatable);
+                $currentstageok = $currentstageok && $stage->has_feedback($allocatable);
             }
         }
 
@@ -904,33 +904,6 @@ abstract class base {
             return $this->get_allocation($allocatable)->assessor();
         }
         return false;
-    }
-
-    /**
-     * @param $allocatable
-     * @return bool
-     * @throws \dml_exception
-     */
-    private function in_editable_period($allocatable) {
-
-        $result = $this->get_coursework()->get_grade_editing_time();
-
-        // The feedback is not in the editable period if the editable setting is disabled
-        if (empty($this->get_coursework()->get_grade_editing_time())) {
-            return false;
-        }
-
-        $courseworkid = $this->get_coursework_id();
-        submission::fill_pool_coursework($courseworkid);
-        $submission = submission::get_object($courseworkid, 'allocatableid-allocatabletype', [$allocatable->id(), $allocatable->type()]);
-
-        $feedback = $this->get_feedback_for_submission($submission);
-        if ($feedback) {
-            $result += $feedback->timecreated;
-        }
-
-        return $result > time();
-
     }
 
     private function selected_allocation_in_session($dropdownname) {
