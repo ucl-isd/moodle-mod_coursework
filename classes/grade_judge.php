@@ -77,10 +77,10 @@ class grade_judge {
     }
 
     /**
-     * @param ?int $grade
+     * @param null|int|float $grade
      * @return ?string
      */
-    public function grade_to_display(?int $grade): ?string {
+    public function grade_to_display($grade): ?string {
         if (is_null($grade)) {
             return '';
         } else if ($this->coursework->grade >= 1) {
