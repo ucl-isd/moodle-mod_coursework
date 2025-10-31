@@ -77,10 +77,10 @@ class grade_judge {
     }
 
     /**
-     * @param int $grade
-     * @return null
+     * @param ?int $grade
+     * @return ?string
      */
-    public function grade_to_display($grade) {
+    public function grade_to_display(?int $grade): ?string {
         if (is_null($grade)) {
             return '';
         } else if ($this->coursework->grade >= 1) {
@@ -93,6 +93,8 @@ class grade_judge {
             // Scale
             $scale = \grade_scale::fetch(['id' => abs($this->coursework->grade)]);
             return $scale->get_nearest_item($grade);
+        } else {
+            return null;
         }
     }
 
