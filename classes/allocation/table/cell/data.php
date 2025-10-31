@@ -82,7 +82,7 @@ class data {
     protected function preprocess_data() {
         if (array_key_exists(self::ASSESSOR_ID_KEY, $this->data) && !empty($this->data[self::ASSESSOR_ID_KEY])) {
             $assessor = user::find($this->data[self::ASSESSOR_ID_KEY]);
-            if ($assessor && $this->stage->user_is_assessor($assessor)) {
+            if ($assessor && $this->stage->user_is_assessor($assessor->id())) {
                 $this->assessor = $assessor;
             }
         }
