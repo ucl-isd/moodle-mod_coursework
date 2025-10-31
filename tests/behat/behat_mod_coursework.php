@@ -582,8 +582,6 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * @Given /^I click on the add feedback button$/
-     * @param $assessornumber
-     * @throws coding_exception
      */
     public function i_click_on_the_new_feedback_button() {
         /**
@@ -2286,10 +2284,8 @@ class behat_mod_coursework extends behat_base {
 
     /**
      *
-     * @When /^^I should see the final agreed grade status "(?P<expectedstatus>(?:[^"]|\\")*)"$/
+     * @When /^I should see the final agreed grade status "(?P<expectedstatus>(?:[^"]|\\")*)"$/
      * @param int $expectedstatus
-     * @throws ExpectationException
-     * @throws coding_exception
      */
     public function i_should_see_the_final_agreed_grade_status_on_the_page($expectedstatus) {
         $page = $this->get_page('multiple grading interface');

@@ -35,11 +35,11 @@ Feature: Deadlines extensions for submissions
     And I press "Actions"
     And I follow "Submission extension"
     And I set the following fields to these values:
-      | extended_deadline[day]       | 1 |
-      | extended_deadline[month]     | January |
-      | extended_deadline[year]      | 2027 |
-      | extended_deadline[hour]      | 08 |
-      | extended_deadline[minute]    | 00 |
+      | extended_deadline[day]    | 1       |
+      | extended_deadline[month]  | January |
+      | extended_deadline[year]   | 2027    |
+      | extended_deadline[hour]   | 08      |
+      | extended_deadline[minute] | 00      |
     And I click on "Save" "button" in the "Extended deadline" "dialogue"
     And I should see "1 January 2027, 8:00 AM" in the "student student1" "table_row"
     Then I visit the coursework page
@@ -54,11 +54,11 @@ Feature: Deadlines extensions for submissions
     And I press "Actions"
     And I follow "Submission extension"
     And I set the following fields to these values:
-      | extended_deadline[day]       | 1 |
-      | extended_deadline[month]     | January |
-      | extended_deadline[year]      | 2027 |
-      | extended_deadline[hour]      | 08 |
-      | extended_deadline[minute]    | 00 |
+      | extended_deadline[day]    | 1       |
+      | extended_deadline[month]  | January |
+      | extended_deadline[year]   | 2027    |
+      | extended_deadline[hour]   | 08      |
+      | extended_deadline[minute] | 00      |
     And I click on "Save" "button" in the "Extended deadline" "dialogue"
     And I should see "1 January 2027, 8:00 AM" in the "student student1" "table_row"
     Then I visit the coursework page

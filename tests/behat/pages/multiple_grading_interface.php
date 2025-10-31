@@ -156,7 +156,7 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
 
         $gradecontainer = $this->getPage()->find('css', $locator);
         $text = $gradecontainer ? $gradecontainer->getText() : '';
-        $found = str_contains($text, (string)$expectedstatus);
+        $found = str_contains($text, $expectedstatus);
         if (!$found && !$negate) {
             throw new \Behat\Mink\Exception\ExpectationException(
                 "Did not find expected status '$expectedstatus' in '$text'",
