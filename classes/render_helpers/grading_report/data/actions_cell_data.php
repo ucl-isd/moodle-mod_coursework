@@ -164,7 +164,7 @@ class actions_cell_data extends cell_data_base {
      * @param grading_table_row_base $rowsbase The row base object
      */
     protected function set_finalise_data(stdClass $data, grading_table_row_base $rowsbase): void {
-        if (!$rowsbase->get_submission() || $rowsbase->get_submission()->finalised) {
+        if (!$rowsbase->get_submission() || $rowsbase->get_submission()->finalised == submission::FINALISED_STATUS_FINALISED) {
             return;
         }
         if ($this->ability->can('finalise', $rowsbase->get_submission())) {
@@ -183,7 +183,7 @@ class actions_cell_data extends cell_data_base {
      * @param grading_table_row_base $rowsbase The row base object
      */
     protected function set_unfinalise_data(stdClass $data, grading_table_row_base $rowsbase): void {
-        if (!$rowsbase->get_submission() || !$rowsbase->get_submission()->finalised) {
+        if (!$rowsbase->get_submission() || $rowsbase->get_submission()->finalised != submission::FINALISED_STATUS_FINALISED) {
             return;
         }
         if ($this->ability->can('revert', $rowsbase->get_submission())) {
@@ -191,7 +191,7 @@ class actions_cell_data extends cell_data_base {
                 '/mod/coursework/actions/revert.php',
                 [
                     'cmid' => $rowsbase->get_course_module_id(),
-                    'submissionid' => $rowsbase->get_submission_id()
+                    'submissionid' => $rowsbase->get_submission_id(),
                 ]);
             $data->unfinalise = new stdClass();
             $data->unfinalise->url = $url->out(false);

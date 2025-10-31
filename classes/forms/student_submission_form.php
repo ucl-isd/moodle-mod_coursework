@@ -135,7 +135,7 @@ class student_submission_form extends moodleform {
 
                 if ($filecount > 0) { // Check that there is a file before updating to finalised.
                     // Confirm finalise state.
-                    $submission->finalised = 1;
+                    $submission->finalised = submission::FINALISED_STATUS_FINALISED;
                     $submission->save();
 
                     // Rename the uploaded file to the submission hash.
@@ -206,13 +206,13 @@ class student_submission_form extends moodleform {
 
             }
 
-            if ($CFG->coursework_allsubmissionreceipt || $data->finalisebutton) {
+            if ($CFG->coursework_allsubmissionreceipt || $data->finalisebutton == submission::FINALISED_STATUS_FINALISED) {
                 // send the receipts to students
                 $studentswhoneedareceipt = $submission->get_students();
                 $mailer = new mailer($coursework);
 
                 foreach ($studentswhoneedareceipt as $student) {
-                    $mailer->send_submission_receipt($student, $data->finalisebutton);
+                    $mailer->send_submission_receipt($student, $data->finalisebutton == submission::FINALISED_STATUS_FINALISED);
                 }
             }
 

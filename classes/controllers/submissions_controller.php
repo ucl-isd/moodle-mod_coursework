@@ -154,7 +154,8 @@ class submissions_controller extends controller_base {
 
         $submission = new submission();
         $submission->courseworkid = $this->coursework->id;
-        $submission->finalised = $this->params['finalised'] ? 1 : 0;
+        $submission->finalised = $this->params['finalised']
+            ? submission::FINALISED_STATUS_FINALISED : submission::FINALISED_STATUS_NOT_FINALISED;
         $submission->allocatableid = $this->params['allocatableid'];
         $submission->createdby = $USER->id;
         $submission->lastupdatedby = $USER->id;
@@ -166,10 +167,10 @@ class submissions_controller extends controller_base {
         if ($this->coursework->personal_deadlines_enabled()) {
             // Check is submission has a valid personal deadline or a valid extension
             if (!$this->has_valid_personal_deadline($submission) && !$this->has_valid_extension($submission)) {
-                $submission->finalised = 1;
+                $submission->finalised = submission::FINALISED_STATUS_FINALISED;
             }
         } else if ($this->coursework->deadline_has_passed() && !$this->has_valid_extension($submission)) {
-            $submission->finalised = 1;
+            $submission->finalised = submission::FINALISED_STATUS_FINALISED;
         }
 
         $ability = new ability($USER->id, $this->coursework);
@@ -209,7 +210,7 @@ class submissions_controller extends controller_base {
         $mailer = new mailer($this->coursework);
         if ($CFG->coursework_allsubmissionreceipt || $submission->finalised) {
             foreach ($submission->get_students() as $student) {
-                $mailer->send_submission_receipt($student, $submission->finalised);
+                $mailer->send_submission_receipt($student, $submission->finalised == submission::FINALISED_STATUS_FINALISED);
             }
         }
 
@@ -263,8 +264,10 @@ class submissions_controller extends controller_base {
         }
 
         $notifyaboutfinalisation = false;
-        $incomingfinalisedsetting = $this->params['finalised'] ? 1 : 0;
-        if ($incomingfinalisedsetting == 1 && $submission->finalised == 0) {
+        $incomingfinalisedsetting = $this->params['finalised']
+            ? submission::FINALISED_STATUS_FINALISED : submission::FINALISED_STATUS_NOT_FINALISED;
+        if ($incomingfinalisedsetting == submission::FINALISED_STATUS_FINALISED
+            && $submission->finalised != submission::FINALISED_STATUS_FINALISED) {
             $notifyaboutfinalisation = true;
         }
         $submission->finalised = $incomingfinalisedsetting;
@@ -320,7 +323,7 @@ class submissions_controller extends controller_base {
             throw new access_denied($this->coursework);
         }
 
-        $submission->finalised = 1;
+        $submission->finalised = submission::FINALISED_STATUS_FINALISED;
         $submission->save();
 
         // Email the user. Best to do this as an event after 2.7 so as to keep the page fast.
@@ -335,7 +338,8 @@ class submissions_controller extends controller_base {
     protected function unfinalise_submission() {
         global $DB;
 
-        $allocatableids = (!is_array($this->params['allocatableid'])) ? [$this->params['allocatableid']] : $this->params['allocatableid'];
+        $allocatableids = (!is_array($this->params['allocatableid']))
+            ? [$this->params['allocatableid']] : $this->params['allocatableid'];
 
         $personaldeadlinepageurl = new \moodle_url('/mod/coursework/actions/personal_deadline.php',
             ['id' => $this->coursework->get_coursemodule_id(), 'multipleuserdeadlines' => 1, 'setpersonaldeadlinespage' => 1,
@@ -350,7 +354,7 @@ class submissions_controller extends controller_base {
                 $submission = \mod_coursework\models\submission::find($submissiondb);
 
                 if ($submission->can_be_unfinalised()) {
-                    $submission->finalised = 0;
+                    $submission->finalised = submission::FINALISED_STATUS_MANUALLY_UNFINALISED;
                     $submission->save();
                     $personaldeadlinepageurl->param("allocatableid_arr[$aid]", $aid);
                     $changedeadlines = true;

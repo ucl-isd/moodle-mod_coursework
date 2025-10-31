@@ -2709,9 +2709,9 @@ class behat_mod_coursework extends behat_base {
         global $DB;
 
         $finalised = $DB->get_field('coursework_submissions', 'finalised', ['id' => $this->submission->id]);
-        if ($negate && $finalised == 1) {
+        if ($negate && $finalised == submission::FINALISED_STATUS_FINALISED) {
             throw new ExpectationException('Submission is finalised and should not be', $this->getSession());
-        } else if (!$negate && $finalised == 0) {
+        } else if (!$negate && $finalised == submission::FINALISED_STATUS_NOT_FINALISED) {
             throw new ExpectationException('Submission is not finalised and should be', $this->getSession());
         }
     }

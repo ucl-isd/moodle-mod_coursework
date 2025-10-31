@@ -1535,9 +1535,9 @@ class coursework extends table_base {
      */
     public function get_unfinalised_students($fields = 'u.id, u.firstname, u.lastname') {
 
-        $students = get_enrolled_users(context_course::instance($this->get_course_id()), 'mod/coursework:submit', 0, $fields);
+        $students = get_enrolled_users(\context_course::instance($this->get_course_id()), 'mod/coursework:submit', 0, $fields);
         submission::fill_pool_coursework($this->id);
-        $alreadyfinalised = isset(submission::$pool[$this->id]['finalised'][1]) ? submission::$pool[$this->id]['finalised'][1] : [];
+        $alreadyfinalised = submission::$pool[$this->id]['finalised'][submission::FINALISED_STATUS_FINALISED] ?? [];
         foreach ($alreadyfinalised as $submission) {
             unset ($students[$submission->userid]);
         }
@@ -2463,7 +2463,7 @@ class coursework extends table_base {
 
     public function finalise_all() {
         if (
-            (!$this->has_deadline() && !$this->deadline_has_passed()) // There is no deadline or it is in the future.
+            (!$this->has_deadline() || !$this->deadline_has_passed()) // There is no deadline or it is in the future.
             &&
             !$this->personal_deadlines_enabled() // Personal deadlines are disabled.
         ) {
@@ -2597,7 +2597,7 @@ class coursework extends table_base {
         }
         submission::fill_pool_coursework($this->id);
         feedback::fill_pool_coursework($this->id);
-        $submissions = isset(submission::$pool[$this->id]['finalised'][1]) ? submission::$pool[$this->id]['finalised'][1] : [];
+        $submissions = submission::$pool[$this->id]['finalised'][submission::FINALISED_STATUS_FINALISED] ?? [];
         if (empty($submissions)) {
             return;
         }
