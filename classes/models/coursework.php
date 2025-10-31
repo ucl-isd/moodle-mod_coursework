@@ -958,10 +958,9 @@ class coursework extends table_base {
         global $CFG, $DB, $USER;
 
         $context = \context_module::instance($this->get_coursemodule_id());
-        $ability = new ability($USER->id, $this);
 
         $submissions = $DB->get_records('coursework_submissions',
-                                        ['courseworkid' => $this->id, 'finalised' => 1]);
+                                        ['courseworkid' => $this->id, 'finalised' => submission::FINALISED_STATUS_FINALISED]);
         if (!$submissions) {
             return false;
         }
@@ -2444,7 +2443,7 @@ class coursework extends table_base {
         global $DB;
 
         $submissions = $DB->get_records('coursework_submissions',
-            ['courseworkid' => $this->id, 'finalised' => 1], '', 'id');
+            ['courseworkid' => $this->id, 'finalised' => submission::FINALISED_STATUS_FINALISED], '', 'id');
 
         foreach ($submissions as &$submission) {
             $submission = submission::find($submission);

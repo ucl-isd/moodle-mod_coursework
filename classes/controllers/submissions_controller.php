@@ -208,13 +208,13 @@ class submissions_controller extends controller_base {
         $submission->submit_plagiarism();
 
         $mailer = new mailer($this->coursework);
-        if ($CFG->coursework_allsubmissionreceipt || $submission->finalised) {
+        if ($CFG->coursework_allsubmissionreceipt || $submission->finalised == submission::FINALISED_STATUS_FINALISED) {
             foreach ($submission->get_students() as $student) {
                 $mailer->send_submission_receipt($student, $submission->finalised == submission::FINALISED_STATUS_FINALISED);
             }
         }
 
-        if ($submission->finalised) {
+        if ($submission->finalised == submission::FINALISED_STATUS_FINALISED) {
             if (!$submission->get_coursework()->has_deadline()) {
 
                 $useridcommaseparatedlist = $submission->get_coursework()->get_submission_notification_users();

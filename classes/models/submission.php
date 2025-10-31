@@ -70,7 +70,7 @@ class submission extends table_base implements \renderable {
      * Possible value for mdl_submission.finalised field.
      * Submission has previously been finalised, but then manually unfinalised.
      * This status indicates that it should *not* be automatically re-finalised (e.g. by cron).
-     * Instead, it must be manually re-finalised by user action (when it will go back to STATUS_FINALISED).
+     * Instead, it must be manually re-finalised by user action (when it will go back to FINALISED_STATUS_FINALISED).
      */
     const FINALISED_STATUS_MANUALLY_UNFINALISED = 2;
 

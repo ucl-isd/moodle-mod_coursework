@@ -129,7 +129,7 @@ class actions_cell_data extends cell_data_base {
 
         // If submission is finalised, no actions needed.
         $submission = $rowsbase->get_submission();
-        if ($submission && $submission->finalised) {
+        if ($submission && $submission->finalised == submission::FINALISED_STATUS_FINALISED) {
             return;
         }
 
@@ -210,7 +210,7 @@ class actions_cell_data extends cell_data_base {
         // Early returns for conditions where plagiarism data should not be shown.
         if (!$this->coursework->plagiarism_flagging_enbled() ||
             !$rowsbase->get_submission() ||
-            !$rowsbase->get_submission()->finalised) {
+            !$rowsbase->get_submission()->finalised == submission::FINALISED_STATUS_FINALISED) {
             return;
         }
 
