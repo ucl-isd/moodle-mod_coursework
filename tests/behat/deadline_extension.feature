@@ -25,21 +25,25 @@ Feature: Deadlines extensions for submissions
     And there is an extension for the student which has expired
     When I log in as a student
     And I visit the coursework page
-    Then I should not see the new submission button
+    Then I should not see "Upload your submission"
 
   @javascript
   Scenario: The teacher can add a deadline extension to an individual submission
     Given the coursework deadline has passed
     And I log in as a manager
     And I visit the coursework page
-    And I click on "New extension" "link"
-    And I enter an extension "+1 week" in the form
-    And I click on "Save" "button"
-    And I wait until the page is ready
-    And I wait "1" seconds
-    And I should see "Extension saved successfully"
+    And I press "Actions"
+    And I follow "Submission extension"
+    And I set the following fields to these values:
+      | extended_deadline[day]    | 1       |
+      | extended_deadline[month]  | January |
+      | extended_deadline[year]   | 2027    |
+      | extended_deadline[hour]   | 08      |
+      | extended_deadline[minute] | 00      |
+    And I click on "Save" "button" in the "Extended deadline" "dialogue"
+    And I should see "1 January 2027, 8:00 AM" in the "student student1" "table_row"
     Then I visit the coursework page
-    And I should see the extended deadline "+1 week" in the student row
+    And I should see "1 January 2027, 8:00 AM" in the "student student1" "table_row"
 
   @javascript
   Scenario: The teacher can edit a deadline extension to an individual submission
@@ -47,11 +51,15 @@ Feature: Deadlines extensions for submissions
     And there is an extension for the student which has expired
     And I log in as a manager
     And I visit the coursework page
-    And I click on "Edit extension" "link"
-    And I enter an extension "+4 weeks" in the form
-    And I click on "Save" "button"
-    And I wait until the page is ready
-    And I wait "1" seconds
-    And I should see "Extension saved successfully"
+    And I press "Actions"
+    And I follow "Submission extension"
+    And I set the following fields to these values:
+      | extended_deadline[day]    | 1       |
+      | extended_deadline[month]  | January |
+      | extended_deadline[year]   | 2027    |
+      | extended_deadline[hour]   | 08      |
+      | extended_deadline[minute] | 00      |
+    And I click on "Save" "button" in the "Extended deadline" "dialogue"
+    And I should see "1 January 2027, 8:00 AM" in the "student student1" "table_row"
     Then I visit the coursework page
-    And I should see the extended deadline "+4 weeks" in the student row
+    And I should see "1 January 2027, 8:00 AM" in the "student student1" "table_row"

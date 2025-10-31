@@ -24,7 +24,7 @@ Feature: Automatic agreement for simple grades
     And I click on the add feedback button for assessor 1
     When I set the field "Grade" to "56"
     And I press "Save and finalise"
-    Then I should not see the final grade on the multiple marker page
+    Then I should not see the final grade on the student page
 
   @javascript
   Scenario: Simple grades within 10% boundaries takes higher mark as a final grade
@@ -43,7 +43,7 @@ Feature: Automatic agreement for simple grades
     When I set the field "Grade" to "63"
     And I press "Save and finalise"
     And I visit the coursework page
-    Then I should see the final grade as 67 on the multiple marker page
+    Then I should see the final agreed grade as 67
 
   @javascript
   Scenario: If "Auto-populate agreed feedback comment" is enabled then the final grade should contain the combined feedback of markers
@@ -75,7 +75,7 @@ Feature: Automatic agreement for simple grades
     When I set the field "Grade" to "63"
     And I press "Save as draft"
     And I visit the coursework page
-    Then I should not see the final grade as 67 on the multiple marker page
+    Then I should not see the final grade on the multiple marker page
     And I log out
 
     And I am logged in as a teacher
@@ -89,4 +89,4 @@ Feature: Automatic agreement for simple grades
     And I click on the edit feedback button for assessor 2
     And I press "Save and finalise"
     And I visit the coursework page
-    Then I should see the final grade as 67 on the multiple marker page
+    Then I should see the final agreed grade as 67

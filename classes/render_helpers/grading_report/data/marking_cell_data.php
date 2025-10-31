@@ -104,9 +104,10 @@ class marking_cell_data extends cell_data_base {
         // Get feedback mark.
         $marker->mark = $this->get_mark_for_feedback($feedback);
         // Return early if no marking.
-        if (empty($marker->mark)) {
+        if (!isset($marker->mark) || ($marker->mark === '')) {
             return;
         }
+        $marker->showmark = true;
 
         // Marker template data.
         $marker->draft = !$feedback->finalised;
@@ -120,6 +121,7 @@ class marking_cell_data extends cell_data_base {
         }
         if ($this->ability->can('edit', $feedback)) {
             $action = 'edit';
+            $marker->feedbackid = $feedback->id;
         }
 
         // Mark URL.
@@ -293,10 +295,15 @@ class marking_cell_data extends cell_data_base {
             return $judge->grade_to_display($feedback->get_grade());
         }
 
-        return has_capability('mod/coursework:addagreedgrade', $this->coursework->get_context()) ||
-               has_capability('mod/coursework:addallocatedagreedgrade', $this->coursework->get_context()) ?
-               get_string('grade_hidden_manager', 'mod_coursework') :
-               get_string('grade_hidden_teacher', 'mod_coursework');
+        if (
+            has_capability('mod/coursework:addagreedgrade', $this->coursework->get_context())
+            ||
+            has_capability('mod/coursework:addallocatedagreedgrade', $this->coursework->get_context())
+        ) {
+            return get_string('grade_hidden_manager', 'mod_coursework');
+        }
+
+        return get_string('grade_hidden_teacher', 'mod_coursework');
     }
 
     /**

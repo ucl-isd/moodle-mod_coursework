@@ -68,7 +68,7 @@
             </div>
         </div>
 
-        {{#mark}}
+        {{#showmark}}
         <div class="text-right ml-auto">
             <span class="sr-only">{{#str}} mark, mod_coursework {{/str}}</span>
 
@@ -79,7 +79,7 @@
             {{/draft}}
 
             {{#markurl}}
-            <a data-mark-action="editfeedback" href="{{{markurl}}}" class="font-weight-bold pl-1">{{mark}}</a>
+            <a data-mark-action="editfeedback" data-behat-feedbackid="{{feedbackid}}" href="{{{markurl}}}" class="font-weight-bold pl-1">{{{mark}}}</a>
             {{/markurl}}
 
             {{! Marked and hidden from user. }}
@@ -92,7 +92,7 @@
                 {{/draft}}
             {{/markhidden}}
         </div>
-        {{/mark}}
+        {{/showmark}}
 
         {{#addfeedback}}
         <div class="text-right ml-auto">
@@ -138,11 +138,11 @@
                 </span>
             {{/released}}
 
-            <a href="{{{url}}}" class="font-weight-bold pl-1 agreed-feedback-grade" data-mark="{{markvalue}}">{{markvalue}}</a>
+            <a href="{{{url}}}" class="font-weight-bold pl-1 agreed-feedback-grade" data-mark-action="editfeedback" data-mark="{{markvalue}}">{{markvalue}}</a>
         {{/mark}}
 
         {{#addfinalfeedback}}
-        <a href="{{{url}}}" class="btn btn-sm btn-success">{{#str}} add_agreed_feedback, mod_coursework {{/str}}</a>
+        <a href="{{{url}}}" class="btn btn-sm btn-success" data-mark-action="addfeedback">{{#str}} add_agreed_feedback, mod_coursework {{/str}}</a>
         {{/addfinalfeedback}}
     </div>
     </li>
