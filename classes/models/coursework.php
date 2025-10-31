@@ -205,6 +205,11 @@ class coursework extends table_base {
     /**
      * @var int 0 or 1
      */
+    public $enablepdfjs;
+
+    /**
+     * @var int 0 or 1
+     */
     public $enablegeneralfeedback;
 
     /**
@@ -490,6 +495,13 @@ class coursework extends table_base {
      */
     public function allow_late_submissions() {
         return (bool)$this->allowlatesubmissions;
+    }
+
+    /**
+     * @return bool
+     */
+    public function enablepdfjs() {
+        return (bool)$this->enablepdfjs;
     }
 
     /**

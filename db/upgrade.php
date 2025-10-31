@@ -2572,6 +2572,20 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025100300, 'coursework');
     }
 
+    if ($oldversion < 2025100302) {
+        // Add enablepdfjs field to coursework table.
+        $table = new xmldb_table('coursework');
+        $field = new xmldb_field('enablepdfjs', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0, 'allowlatesubmissions');
+
+        // Conditionally launch add field enablepdfjs.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2025100302, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }

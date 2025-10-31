@@ -116,6 +116,58 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         return $this->render_from_template('mod_coursework/feedback', $template);
     }
 
+    /**
+     * Renders a coursework feedback as a row in a table.
+     * This is for the grading report when we have multiple markers and we want an AJAX pop up *
+     * with details of the feedback. Also for the student view.
+     *
+     * @param submission $submission
+     * @return string
+     */
+    public function render_viewpdf(submission $submission) {
+        global $USER;
+
+        $template = new stdClass();
+
+        $studentname = $submission->get_allocatable_name();
+
+        $template->title = get_string('viewsubmission', 'mod_coursework', $studentname);
+
+        $template->files = [];
+
+        $annotatedfiles = $submission->get_file_annotations();
+        foreach ($submission->get_submission_files()->get_files() as $file) {
+            if ($file->get_mimetype() !== 'application/pdf') {
+                continue;
+            }
+
+            $model = [
+                'filename' => $file->get_filename(),
+                'href' => self::make_file_url($file),
+                'fileid' => $file->get_id(),
+                'submissionid' => $submission->id,
+            ];
+
+            if (isset($annotatedfiles[$file->get_id()])) {
+                $annotatedfile = $annotatedfiles[$file->get_id()];
+                $model['annotatedfileurl'] = self::make_file_url($annotatedfile);
+                $model['annotatedfileid'] = $annotatedfile->get_id();
+            }
+
+            $template->files[] = (object)$model;
+        }
+
+        $template->multiplefiles = (count($template->files) > 1);
+
+        // Return html from template.
+
+        $this->page->requires->js_call_amd(
+            "mod_coursework/viewpdf",
+            'init',
+        );
+        return $this->render_from_template('mod_coursework/viewpdf', $template);
+    }
+
 
     /**
      * Renders a coursework moderation as a row in a table.
@@ -926,10 +978,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string
      */
     protected function make_file_link($files, $file, $classname = 'submissionfile') {
-        global $CFG;
+        if ($files->get_coursework()->enablepdfjs() && ($file->get_mimetype() == 'application/pdf')) {
+            return $this->make_pdfjs_link($file, $classname);
+        }
 
-        $url = "{$CFG->wwwroot}/pluginfile.php/{$file->get_contextid()}" .
-            "/mod_coursework/{$files->get_file_area_name()}";
         $filename = $file->get_filename();
 
         $image = $this->output->pix_icon(file_file_icon($file),
@@ -937,8 +989,45 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                         'moodle',
                                ['class' => 'submissionfileicon']);
 
-        $fileurl = $url . $file->get_filepath() . $file->get_itemid() . '/' . rawurlencode($filename);
-        return html_writer::link($fileurl, $image.$filename, ['class' => $classname]);
+        return html_writer::link($this->make_file_url($file), $image.$filename, ['class' => $classname]);
+    }
+
+    /**
+     * @param stored_file $file
+     * @return moodle_url
+     */
+    public function make_file_url($file) {
+        return moodle_url::make_pluginfile_url(
+            $file->get_contextid(),
+            'mod_coursework',
+            $file->get_filearea(),
+            $file->get_itemid(),
+            $file->get_filepath(),
+            $file->get_filename()
+        );
+    }
+
+    /**
+     * @param stored_file $file
+     * @param string $classname
+     * @return string
+     */
+    private function make_pdfjs_link($file, $classname = 'submissionfile') {
+        $filename = $file->get_filename();
+
+        $image = $this->output->pix_icon(file_file_icon($file),
+            $filename,
+            'moodle',
+            ['class' => 'submissionfileicon']);
+
+        $viewurl = new moodle_url("/mod/coursework/actions/feedbacks/viewpdf.php", ['submissionid' => $file->get_itemid()]);
+
+        $retval = html_writer::link($viewurl, $image . $filename, ['class' => $classname, 'target' => '_blank']);
+
+        $downloadimage = $this->output->pix_icon('i/export', get_string('download'), 'core');
+        $retval .= html_writer::link($this->make_file_url($file), $downloadimage);
+
+        return $retval;
     }
 
     /**
