@@ -753,9 +753,6 @@ class mod_coursework_mod_form extends moodleform_mod {
                                  get_string('maximumsizelabel', 'coursework'));*/
         $moodleform->addHelpButton('maxbytes', 'maximumsize', 'mod_coursework');
         $moodleform->hideif('maxbytes', 'use_turnitin', 'eq', '1');
-
-        $moodleform->closeHeaderBefore('submissiontype');
-
     }
 
     /**
