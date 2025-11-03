@@ -412,23 +412,26 @@ class cron {
     }
 
     /**
+     * Get admins and teachers.
      * @param $context
      * @return array
      */
-    public static function get_admins_and_teachers($context) {
+    public static function get_admins_and_teachers($context): array {
+        $result = [];
 
         $graders = get_enrolled_users($context, 'mod/coursework:addinitialgrade');
-        $managers = get_enrolled_users($context, 'mod/coursework:addagreedgrade');
-
-        $users = array_merge($graders, $managers);
-        $users = array_map("unserialize", array_unique(array_map("serialize", $users)));
-
-        foreach ($users as &$user) {
-            $user = user::find($user);
+        foreach ($graders as $grader) {
+            $result[$grader->id] = user::find($grader, false);
         }
-
-        return $users;
-
+        $managers = get_enrolled_users($context, 'mod/coursework:addagreedgrade');
+        foreach ($managers as $manager) {
+            if (isset($result[$manager->id])) {
+                // Already have this user.
+                continue;
+            }
+            $result[$manager->id] = user::find($manager, false);
+        }
+        return array_values($result);
     }
 
 }

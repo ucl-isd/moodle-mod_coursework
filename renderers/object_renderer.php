@@ -616,32 +616,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $template->columns[]['html'] = $samplingcell;
         }
 
-        /**
-         *  Ok this is either some really clever or really hacky code depending on where you stand, time of day and your mood :)
-         *  The following script creates a global Array var (samplingValidateHdl)that holds the names of the validation functions for each plugin
-         *  (as  I write none but....) It also creates an event handler for the submit button. The event handler calls each of the
-         *  functions defined in samplingValidateHdl  allowing the plugins to validate their own sections (function names to be called plugin_name_validation)
-         *  returning 0 or 1 depending on whether and error was found. (Was that verbose...yeah...oh well) - ND
-         */
-
-        $jsscript = "
-
-            $('#save_manual_sampling').on('click', function (e) {
-
-                validationresults = [];
-
-                $.each(samplingValidateHdl, function(i,functionname) {
-                     validationresults.push(eval(functionname+'()'));
-                })
-
-                if (validationresults.lastIndexOf(1) != -1) e.preventDefault();
-            })
-
-        ";
-
-        $template->javascript = html_writer::script("var samplingValidateHdl = [];");
-        $template->javascript .= html_writer::script($jsscript);
-
         return $this->render_from_template('mod_coursework/allocate/samplingwidget', $template);
     }
 
