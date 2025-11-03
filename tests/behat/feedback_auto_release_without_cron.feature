@@ -15,8 +15,8 @@ Feature: Auto releasing the student feedback without cron
     And there is a teacher
     And there is feedback for the submission from the teacher
 
-  Scenario: auto release happens after the deadline without the cron running
-    Given the coursework individual feedback release date has passed
+  Scenario: auto release does not happen before the deadline without the cron running
+    Given the coursework individual feedback release date has not passed
     When I log in as a student
     And I visit the coursework page
-    Then I should see "Released to students"
+    Then I should not see "Released to students"
