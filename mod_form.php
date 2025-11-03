@@ -399,7 +399,7 @@ class mod_coursework_mod_form extends moodleform_mod {
                                  'personaldeadlineenabled',
                                   get_string('usepersonaldeadline', 'mod_coursework'), $options, $disabled);
         $moodleform->setType('personaldeadlineenabled', PARAM_INT);
-        $moodleform->addHelpButton('personaldeadlineenabled', 'personaldeadlineenabled', 'mod_coursework');
+        $moodleform->addHelpButton('personaldeadlineenabled', 'usepersonaldeadline', 'mod_coursework');
 
         $moodleform->setDefault('personaldeadlineenabled', 0);
         // $moodle_form->hideif('personaldeadlineenabled', 'deadline[enabled]', 'notchecked');
@@ -579,7 +579,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         if (!empty($CFG->coursework_marking_deadline)) {
             $moodleform->setDefault('relativeinitialmarkingdeadline', $CFG->coursework_marking_deadline);
         }
-        $moodleform->addHelpButton('relativeinitialmarkingdeadline', 'agreedgrademarkingdeadline', 'mod_coursework');
+        $moodleform->addHelpButton('relativeinitialmarkingdeadline', 'relativeinitialmarkingdeadline', 'mod_coursework');
 
     }
 
@@ -606,7 +606,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         if (!empty($CFG->coursework_agreed_marking_deadline)) {
             $moodleform->setDefault('relativeagreedmarkingdeadline', $CFG->coursework_agreed_marking_deadline);
         }
-        $moodleform->addHelpButton('relativeagreedmarkingdeadline', 'agreedgrademarkingdeadline', 'mod_coursework');
+        $moodleform->addHelpButton('relativeagreedmarkingdeadline', 'relativeagreedmarkingdeadline', 'mod_coursework');
 
     }
 
