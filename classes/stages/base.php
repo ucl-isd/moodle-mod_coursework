@@ -53,6 +53,11 @@ abstract class base {
     protected $stageidentifier;
 
     /**
+     * @var array
+     */
+    protected ?array $teachers = null;
+
+    /**
      * @var array|null
      */
     protected $allocatableswithfeedback;
@@ -292,29 +297,26 @@ abstract class base {
     }
 
     /**
+     * Get teachers as user objects.
+     * Used to populate drop down of teachers on marker allocation page.
+     * Also called repeatedly by auto allocation process to get list of possible markers.
      * @return user[]
      */
-    public function get_teachers() {
-        $cache = \cache::make('mod_coursework', 'courseworkdata');
-
-        $serialisedteachers = $cache->get($this->coursework->id()."_teachers");
-
-        // There is a chance that when the teachers were initially cached the dataset was empty
-        // So check again
-        if (empty($serialisedteachers) || empty(unserialize($serialisedteachers))) {
-            $users = get_enrolled_users($this->coursework->get_context());
-            $teacherusers = [];
-            $modcontext = $this->coursework->get_context();
-            foreach ($users as $user) {
-                if (has_capability($this->assessor_capability(), $modcontext, $user)) {
-                    $teacherusers[] = user::build($user);
-                }
-            }
-            $cache->set($this->coursework->id()."_teachers", serialize($teacherusers));
-        } else {
-            $teacherusers = unserialize($serialisedteachers);
+    public function get_teachers(): array {
+        if ($this->teachers === null) {
+            // Teachers array was previously cached in {courseworkid}_teachers.
+            // However, there was no cachedef or any cache management, and method used unserialize(), so removed that code.
+            // Instead of cache, to avoid running DB query repeatedly during marker allocation process, we set $this->teachers with the result.
+            // This seems adequate for allocation page process (but if cache turns out to be necessary, it can be added later).
+            $users = get_enrolled_users($this->coursework->get_context(), $this->assessor_capability());
+            $this->teachers = array_map(
+                function ($user) {
+                    return user::find($user, false);
+                },
+                $users
+            );
         }
-        return $teacherusers;
+        return $this->teachers;
     }
 
     /**
