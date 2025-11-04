@@ -2693,10 +2693,10 @@ class behat_mod_coursework extends behat_base {
     public function the_submission_should_be_finalised($negate = false) {
         global $DB;
 
-        $finalised = $DB->get_field('coursework_submissions', 'finalised', ['id' => $this->submission->id]);
-        if ($negate && $finalised == 1) {
+        $finalised = $DB->get_field('coursework_submissions', 'finalisedstatus', ['id' => $this->submission->id]);
+        if ($negate && $finalised == submission::FINALISED_STATUS_FINALISED) {
             throw new ExpectationException('Submission is finalised and should not be', $this->getSession());
-        } else if (!$negate && $finalised == 0) {
+        } else if (!$negate && $finalised != submission::FINALISED_STATUS_FINALISED) {
             throw new ExpectationException('Submission is not finalised and should be', $this->getSession());
         }
     }
@@ -2717,10 +2717,11 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^the submission is finalised$/
+     * @Given /^the submission is (not )?finalised$/
      */
-    public function the_submission_is_finalised() {
-        $this->submission->finalised = 1;
+    public function the_submission_is_finalised($negate = false) {
+        $this->submission->finalisedstatus = $negate
+            ? submission::FINALISED_STATUS_NOT_FINALISED : submission::FINALISED_STATUS_FINALISED;
         $this->submission->save();
     }
 

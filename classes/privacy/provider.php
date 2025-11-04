@@ -30,6 +30,8 @@ use core_privacy\local\request\transform;
 use core_privacy\local\request\helper;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\approved_userlist;
+use mod_coursework\models\submission;
+
 /**
  * Privacy Subsystem implementation for coursework.
  *
@@ -445,7 +447,7 @@ class provider implements
             'timemodified' => transform::datetime($submission->timemodified),
             'timesubmitted' => transform::datetime($submission->timesubmitted),
             'createdby' => $submission->createdby,
-            'finalised' => transform::yesno($submission->finalised),
+            'finalised' => transform::yesno($submission->finalisedstatus == submission::FINALISED_STATUS_FINALISED),
         ];
         writer::with_context($context)
             ->export_data(array_merge($currentpath, [get_string('privacy:submissionpath', 'mod_coursework')]), $submissiondata);

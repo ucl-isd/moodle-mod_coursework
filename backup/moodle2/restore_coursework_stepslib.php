@@ -86,6 +86,12 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $data->createdby = $this->get_mappingid('user', $data->createdby);
         $data->lastupdatedby = $this->get_mappingid('user', $data->lastupdatedby);
 
+        // Finalised field was renamed to finalisedstatus.
+        if (!isset($data->finalisedstatus) && isset($data->finalised)) {
+            $data->finalisedstatus = $data->finalised;
+            unset($data->finalised);
+        }
+
         $this->fixallocatable($data);
 
         $this->updatedate(['timemodified',
@@ -100,7 +106,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'firstpublished' => null,
                                   'lastpublished' => null,
                                   'timesubmitted' => null,
-                                  'finalised' => 0,
+                                  'finalisedstatus' => 0,
                                   'manualsrscode' => ''],
                             $data);
 

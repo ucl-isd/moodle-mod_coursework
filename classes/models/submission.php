@@ -52,6 +52,28 @@ defined('MOODLE_INTERNAL') || die();
 #[\AllowDynamicProperties]
 class submission extends table_base implements \renderable {
 
+
+    /**
+     * Possible value for mdl_submission.finalised field.
+     * Submission has never been finalised, can be finalised by changing to 1.
+     */
+    const FINALISED_STATUS_NOT_FINALISED = 0;
+
+
+    /**
+     * Possible value for mdl_submission.finalised field.
+     * Submission has been finalised, can be un-finalised by changing to 2.
+     */
+    const FINALISED_STATUS_FINALISED = 1;
+
+    /**
+     * Possible value for mdl_submission.finalised field.
+     * Submission has previously been finalised, but then manually unfinalised.
+     * This status indicates that it should *not* be automatically re-finalised (e.g. by cron).
+     * Instead, it must be manually re-finalised by user action (when it will go back to FINALISED_STATUS_FINALISED).
+     */
+    const FINALISED_STATUS_MANUALLY_UNFINALISED = 2;
+
     /**
      * @var string
      */
@@ -84,10 +106,11 @@ class submission extends table_base implements \renderable {
     public $timecreated;
 
     /**
-     * Flag to show whether the submission has been marked as ready for grading by the student. 0 or 1.
+     * Flag to show whether the submission has been marked as ready for grading by the student.
+     * Possible value for example self::FINALISED_STATUS_FINALISED.
      * @var int
      */
-    public $finalised;
+    public $finalisedstatus;
 
     /**
      * @var
@@ -152,7 +175,7 @@ class submission extends table_base implements \renderable {
         'userid',
         'timecreated',
         'timemodified',
-        'finalised',
+        'finalisedstatus',
         'manualsrscode',
     ];
 
@@ -234,25 +257,29 @@ class submission extends table_base implements \renderable {
     }
 
     /**
+     * Get an array of submissions that need to be finalised.
      * @return submission[]
      */
-    public static function unfinalised_past_deadline($courseworkid = null) {
+    public static function not_finalised_past_deadline($courseworkid = null) {
         global $DB;
 
-        // get all unfinalised submissions that have a deadline
+        // Get all submissions that require finalisation and have a deadline.
         $sql = 'SELECT cs.*, co.deadline
                   FROM {coursework_submissions} cs
             INNER JOIN {coursework} co
                     ON co.id = cs.courseworkid
                  WHERE co.deadline != 0
-                   AND cs.finalised = 0';
-        $params = [];
+                   AND cs.finalisedstatus = :notfinalised';
+
+        // We want only never finalised submissions (submission::FINALISED_STATUS_NOT_FINALISED).
+        // We do not want finalised (submission::FINALISED_STATUS_FINALISED).
+        // Nor do we want manually unfinalised, previously finalised (submission::FINALISED_STATUS_MANUALLY_UNFINALISED).
+        $params = ['notfinalised' => self::FINALISED_STATUS_NOT_FINALISED];
 
         if (isset($courseworkid)) {
             $sql .= ' AND cs.courseworkid = :courseworkid';
-            $params = ['courseworkid' => $courseworkid];
+            $params['courseworkid'] = $courseworkid;
         }
-
         $submissions = $DB->get_records_sql($sql, $params);
 
         foreach ($submissions as &$submission) {
@@ -602,7 +629,7 @@ class submission extends table_base implements \renderable {
         }
 
         // Submitted with only some of the required grades in place.
-        if ($this->finalised &&
+        if ($this->finalisedstatus == self::FINALISED_STATUS_FINALISED &&
             count($assessorfeedbacks) > 0 &&
             (count($assessorfeedbacks) < $this->get_coursework()->numberofmarkers || $this->any_editable_feedback_exists())
         ) {
@@ -611,7 +638,7 @@ class submission extends table_base implements \renderable {
         }
 
         // Student has marked this as finalised.
-        if ($this->finalised) {
+        if ($this->finalisedstatus == self::FINALISED_STATUS_FINALISED) {
             return self::FINALISED;
         }
 
@@ -1356,7 +1383,7 @@ class submission extends table_base implements \renderable {
 
         $editablefeedbacks = [];
         $coursework = $this->get_coursework();
-        if ($coursework->numberofmarkers > 1 && $this->finalised == 1) {
+        if ($coursework->numberofmarkers > 1 && $this->finalisedstatus == self::FINALISED_STATUS_FINALISED) {
             $editablefeedbacks = isset(feedback::$pool[$coursework->id]['submissionid-finalised'][$this->id . '-0']) ?
                 feedback::$pool[$coursework->id]['submissionid-finalised'][$this->id . '-0'] : [];
         }
@@ -1371,7 +1398,7 @@ class submission extends table_base implements \renderable {
     public function editable_final_feedback_exist() {
         if (!isset($this->editable_final_feedback)) {
             $this->editable_final_feedback = false;
-            if ($this->finalised == 1) {
+            if ($this->finalisedstatus == self::FINALISED_STATUS_FINALISED) {
 
                 $coursework = $this->get_coursework();
                 $finalfeedback = feedback::get_object($coursework->id, 'submissionid-stage_identifier', [$this->id, 'final_agreed_1']);
@@ -1399,12 +1426,12 @@ class submission extends table_base implements \renderable {
 			         WHERE 	c.id = cs.courseworkid
 			         AND	cs.id = cf.submissionid
 			         AND	c.numberofmarkers > 1
-			         AND 	cs.finalised = 1
+			         AND 	cs.finalisedstatus = :submissionfinalised
 			         AND	cf.stage_identifier NOT LIKE 'final_agreed%'
 			         AND	cs.id = :submissionid
 ";
 
-        $editablefeedbacks = $DB->get_records_sql($sql, ['submissionid' => $this->id]);
+        $editablefeedbacks = $DB->get_records_sql($sql, ['submissionid' => $this->id, 'submissionfinalised' => self::FINALISED_STATUS_FINALISED]);
 
         return (empty($editablefeedbacks)) ? false : $editablefeedbacks;
     }
@@ -1493,7 +1520,7 @@ class submission extends table_base implements \renderable {
         $result = [
             'id' => [],
             'allocatableid' => [],
-            'finalised' => [],
+            'finalisedstatus' => [],
             'allocatableid-allocatabletype' => [],
         ];
         if ($records) {
@@ -1501,7 +1528,7 @@ class submission extends table_base implements \renderable {
                 $object = new self($record);
                 $result['id'][$record->id] = $object;
                 $result['allocatableid'][$record->allocatableid][] = $object;
-                $result['finalised'][$record->finalised][] = $object;
+                $result['finalisedstatus'][$record->finalisedstatus][] = $object;
                 $result['allocatableid-allocatabletype'][$record->allocatableid . '-' . $record->allocatabletype][] = $object;
             }
         }

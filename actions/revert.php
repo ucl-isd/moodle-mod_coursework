@@ -48,14 +48,14 @@ if (!has_capability('mod/coursework:revertfinalised', $PAGE->context)) {
     redirect($url, $message);
 }
 
-if ($submission->is_late()) {
+if ($submission->is_late() && !$coursework->allow_late_submissions()) {
     redirect(
         $url,
         get_string('extendbeforerevert', 'coursework'), null, \core\output\notification::NOTIFY_ERROR
     );
 }
 
-$submission->finalised = 0;
+$submission->finalisedstatus = submission::FINALISED_STATUS_MANUALLY_UNFINALISED;
 $submission->save();
 
 $message = get_string('changessaved');

@@ -2484,6 +2484,22 @@ function xmldb_coursework_upgrade($oldversion) {
         // Coursework savepoint reached.
         upgrade_mod_savepoint(true, 2025100302, 'coursework');
     }
+
+    if ($oldversion < 2025110300) {
+
+        // Rename field finalised on table coursework_submissions to finalisedstatus.
+        $table = new xmldb_table('coursework_submissions');
+        $field = new xmldb_field('finalised', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'timemodified');
+
+        if ($dbman->field_exists($table, $field)) {
+            // Launch rename field finalisedstatus.
+            $dbman->rename_field($table, $field, 'finalisedstatus');
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2025110300, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }

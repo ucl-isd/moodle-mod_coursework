@@ -1073,7 +1073,7 @@ function coursework_send_deadline_changed_emails($eventdata) {
             continue;
         }
 
-        $hassubmitted = ($submission && !$submission->finalised);
+        $hassubmitted = ($submission && $submission->finalisedstatus != submission::FINALISED_STATUS_FINALISED);
         $userreleasedate = $coursework->get_student_feedback_release_date();
 
         if ($userreleasedate < time()) {

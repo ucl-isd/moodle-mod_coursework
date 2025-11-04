@@ -117,7 +117,7 @@
         <FIELD NAME="authorid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="finalised" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If true, then the student can no longer add files."/>
+        <FIELD NAME="finalisedstatus" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="See \mod_coursework\models\submission::FINALISED_STATUS_FINALISED and related constants for possible values. If equals FINALISED_STATUS_FINALISED, student can no longer add files."/>
         <FIELD NAME="manualsrscode" TYPE="char" LENGTH="50" NOTNULL="true" SEQUENCE="false" COMMENT="Temporary solution for KCL requirement for a student to be able to manually enter their SRS number."/>
         <FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="User id of creator"/>
         <FIELD NAME="lastupdatedby" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="User id of last person to update this submission."/>
