@@ -112,6 +112,11 @@ class assessor_feedback_mform extends moodleform {
             $mform->addElement(
                 'grading', 'advancedgrading', get_string('grade', 'mod_coursework'), ['gradinginstance' => $this->_grading_instance]
             );
+
+            // This link is required by the core behat step to complete a rubric.
+            if (defined('BEHAT_SITE_RUNNING')) {
+                $mform->addElement('html', '<a href="#">' . get_string('togglezoom', 'mod_assign') . '</a>');
+            }
         } else if ($this->feedback->stage_identifier == final_agreed::STAGE_FINAL_AGREED_1) {
             $mform->addElement('text', 'grade', get_string('grade', 'mod_coursework'));
             $mform->setType('grade', PARAM_RAW);
