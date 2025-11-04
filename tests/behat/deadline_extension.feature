@@ -1,4 +1,4 @@
-@mod @mod_coursework @RVC_PT_83106618 @mod_coursework_deadline_extension @javascript
+@mod @mod_coursework @RVC_PT_83106618 @mod_coursework_deadline_extension
 Feature: Deadlines extensions for submissions
 
   As an OCM admin
@@ -33,7 +33,9 @@ Feature: Deadlines extensions for submissions
     And I log in as a manager
     And I visit the coursework page
     And I press "Actions"
-    And I follow "Submission extension"
+    And I wait until the page is ready
+    And I click on "Submission extension" "link"
+    And I wait until the page is ready
     And I set the following fields to these values:
       | extended_deadline[day]    | 1       |
       | extended_deadline[month]  | January |
@@ -52,7 +54,9 @@ Feature: Deadlines extensions for submissions
     And I log in as a manager
     And I visit the coursework page
     And I press "Actions"
-    And I follow "Submission extension"
+    And I wait until the page is ready
+    And I click on "Submission extension" "link"
+    And I wait until the page is ready
     And I set the following fields to these values:
       | extended_deadline[day]    | 1       |
       | extended_deadline[month]  | January |
