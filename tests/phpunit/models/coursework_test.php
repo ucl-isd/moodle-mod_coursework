@@ -271,7 +271,7 @@ final class coursework_test extends \advanced_testcase {
         $submission->update_attribute('courseworkid', 54443434);
         $coursework->update_attribute('deadline', strtotime('1 week ago'));
         $coursework->finalise_all();
-        $this->assertEquals(submission::FINALISED_STATUS_NOT_FINALISED, $submission->reload()->finalisedstatus);
+        $this->assertFalse($submission->reload()->is_finalised());
     }
 
     public function test_finalise_all_works(): void {
@@ -279,7 +279,7 @@ final class coursework_test extends \advanced_testcase {
         $submission = $this->create_a_submission_for_the_student();
         $coursework->update_attribute('deadline', strtotime('1 week ago'));
         $coursework->finalise_all();
-        $this->assertEquals(submission::FINALISED_STATUS_FINALISED, $submission->reload()->finalisedstatus);
+        $this->assertTrue($submission->reload()->is_finalised());
     }
 
     public function test_deadline_has_passed_when_it_has(): void {

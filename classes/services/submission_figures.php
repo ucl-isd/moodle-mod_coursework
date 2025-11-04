@@ -143,7 +143,7 @@ class submission_figures {
     private static function remove_ungradable_submissions(array $submissions): array {
         foreach ($submissions as $submission) {
 
-            if ($submission->finalisedstatus != submission::FINALISED_STATUS_FINALISED
+            if (!$submission->is_finalised()
                 || !empty($submission->get_final_grade())
                 || (has_capability('mod/coursework:addallocatedagreedgrade', $submission->get_coursework()->get_context())
                     && !$submission->is_assessor_initial_grader() && $submission->all_initial_graded())) {

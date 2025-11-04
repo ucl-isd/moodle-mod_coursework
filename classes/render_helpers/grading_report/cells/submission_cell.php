@@ -79,8 +79,11 @@ class submission_cell extends cell_base {
                                                                      'createdby' => $USER->id,
                                                                  ]);
 
-        if (($rowobject->get_submission() && $rowobject->get_submission()->finalisedstatus != submission::FINALISED_STATUS_FINALISED)
-            || !$rowobject->get_submission()) {
+        if (
+            ($rowobject->get_submission() && !$rowobject->get_submission()->is_finalised())
+            ||
+            !$rowobject->get_submission()
+        ) {
 
             if ($ability->can('new', $submissiononbehalfofallocatable) && (!$rowobject->get_coursework()->has_deadline()
                     || $rowobject->get_coursework()->allow_late_submissions()

@@ -1528,7 +1528,7 @@ class coursework extends table_base {
      */
     public function get_unfinalised_students($fields = 'u.id, u.firstname, u.lastname') {
 
-        $students = get_enrolled_users(\context_course::instance($this->get_course_id()), 'mod/coursework:submit', 0, $fields);
+        $students = get_enrolled_users(context_course::instance($this->get_course_id()), 'mod/coursework:submit', 0, $fields);
         submission::fill_pool_coursework($this->id);
         $alreadyfinalised = submission::$pool[$this->id]['finalisedstatus'][submission::FINALISED_STATUS_FINALISED] ?? [];
         foreach ($alreadyfinalised as $submission) {

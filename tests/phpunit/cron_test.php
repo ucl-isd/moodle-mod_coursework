@@ -63,7 +63,7 @@ final class cron_test extends \advanced_testcase {
 
         // Then the submission should be finalised.
         $submission->reload();
-        $this->assertEquals(submission::FINALISED_STATUS_FINALISED, $submission->finalisedstatus);
+        $this->assertTrue($submission->is_finalised());
     }
 
     public function test_cron_does_not_auto_finalise_before_deadline(): void {
@@ -87,7 +87,7 @@ final class cron_test extends \advanced_testcase {
 
         // Then the submission should be finalised.
         $submission->reload();
-        $this->assertEquals(submission::FINALISED_STATUS_NOT_FINALISED, $submission->finalisedstatus);
+        $this->assertFalse($submission->is_finalised());
     }
 
     public function test_admins_and_graders(): void {

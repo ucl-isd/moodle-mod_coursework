@@ -129,7 +129,7 @@ class actions_cell_data extends cell_data_base {
 
         // If submission is finalised, no actions needed.
         $submission = $rowsbase->get_submission();
-        if ($submission && $submission->finalisedstatus == submission::FINALISED_STATUS_FINALISED) {
+        if ($submission && $submission->is_finalised()) {
             return;
         }
 
@@ -164,7 +164,7 @@ class actions_cell_data extends cell_data_base {
      * @param grading_table_row_base $rowsbase The row base object
      */
     protected function set_finalise_data(stdClass $data, grading_table_row_base $rowsbase): void {
-        if (!$rowsbase->get_submission() || $rowsbase->get_submission()->finalisedstatus == submission::FINALISED_STATUS_FINALISED) {
+        if (!$rowsbase->get_submission() || $rowsbase->get_submission()->is_finalised()) {
             return;
         }
         if ($this->ability->can('finalise', $rowsbase->get_submission())) {
@@ -183,7 +183,7 @@ class actions_cell_data extends cell_data_base {
      * @param grading_table_row_base $rowsbase The row base object
      */
     protected function set_unfinalise_data(stdClass $data, grading_table_row_base $rowsbase): void {
-        if (!$rowsbase->get_submission() || $rowsbase->get_submission()->finalisedstatus != submission::FINALISED_STATUS_FINALISED) {
+        if (!$rowsbase->get_submission() || !$rowsbase->get_submission()->is_finalised()) {
             return;
         }
         if ($this->ability->can('revert', $rowsbase->get_submission())) {
@@ -210,7 +210,7 @@ class actions_cell_data extends cell_data_base {
         // Early returns for conditions where plagiarism data should not be shown.
         if (!$this->coursework->plagiarism_flagging_enbled() ||
             !$rowsbase->get_submission() ||
-            !$rowsbase->get_submission()->finalisedstatus == submission::FINALISED_STATUS_FINALISED) {
+            !$rowsbase->get_submission()->is_finalised()) {
             return;
         }
 
@@ -262,8 +262,11 @@ class actions_cell_data extends cell_data_base {
      */
     protected function set_personal_deadline_data(stdClass $data, grading_table_row_base $rowsbase): void {
         // We avoid using $this->ability->can() in this context as it creates multiple DB queries per row.
-        if (!has_capability('mod/coursework:editpersonaldeadline', $this->coursework->get_context())
-            || !$rowsbase->get_coursework()->personal_deadlines_enabled()) {
+        if (
+            !has_capability('mod/coursework:editpersonaldeadline', $this->coursework->get_context())
+            ||
+            !$rowsbase->get_coursework()->personal_deadlines_enabled()
+        ) {
             return;
         }
         $personaldeadlineobject = $rowsbase->get_personal_deadline();

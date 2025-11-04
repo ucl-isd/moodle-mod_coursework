@@ -193,7 +193,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
 
             if ($assessorfeedbacktable->get_submission() &&
                     ($assessorfeedbacktable->get_coursework()->deadline_has_passed() &&
-                    $assessorfeedbacktable->get_submission()->finalisedstatus == submission::FINALISED_STATUS_FINALISED)) {
+                    $assessorfeedbacktable->get_submission()->is_finalised())) {
 
                 $tablehtml = '<tr><td colspan = "11" class="nograde" ><table class="nograde">';
                 $tablehtml .= '<tr>' . get_string('nogradescomments', 'mod_coursework') . '</tr>';

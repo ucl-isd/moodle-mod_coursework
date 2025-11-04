@@ -434,7 +434,7 @@ class provider implements
     /**
      * Formats and then exports the user's submission data.
      *
-     * @param  \stdClass $submission The coursework submission object
+     * @param  \stdClass $submission The coursework submission DB record.
      * @param  \context $context The context object
      * @param  array $currentpath Current directory path that we are exporting to.
      */

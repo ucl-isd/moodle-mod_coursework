@@ -1415,7 +1415,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $submission = submission::find($sub);
 
-            if ($submission->finalisedstatus != submission::FINALISED_STATUS_FINALISED) {
+            if (!$submission->is_finalised()) {
                 unset($submissions[$sub->id]);
             }
         }

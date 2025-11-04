@@ -208,13 +208,13 @@ class submissions_controller extends controller_base {
         $submission->submit_plagiarism();
 
         $mailer = new mailer($this->coursework);
-        if ($CFG->coursework_allsubmissionreceipt || $submission->finalisedstatus == submission::FINALISED_STATUS_FINALISED) {
+        if ($CFG->coursework_allsubmissionreceipt || $submission->is_finalised()) {
             foreach ($submission->get_students() as $student) {
-                $mailer->send_submission_receipt($student, $submission->finalisedstatus == submission::FINALISED_STATUS_FINALISED);
+                $mailer->send_submission_receipt($student, $submission->is_finalised());
             }
         }
 
-        if ($submission->finalisedstatus == submission::FINALISED_STATUS_FINALISED) {
+        if ($submission->is_finalised()) {
             if (!$submission->get_coursework()->has_deadline()) {
 
                 $useridcommaseparatedlist = $submission->get_coursework()->get_submission_notification_users();
@@ -263,13 +263,11 @@ class submissions_controller extends controller_base {
             throw new access_denied($this->coursework, $ability->get_last_message());
         }
 
-        $notifyaboutfinalisation = false;
         $incomingfinalisedsetting = $this->params['finalised']
             ? submission::FINALISED_STATUS_FINALISED : submission::FINALISED_STATUS_NOT_FINALISED;
-        if ($incomingfinalisedsetting == submission::FINALISED_STATUS_FINALISED
-            && $submission->finalisedstatus != submission::FINALISED_STATUS_FINALISED) {
-            $notifyaboutfinalisation = true;
-        }
+        $notifyaboutfinalisation = $incomingfinalisedsetting == submission::FINALISED_STATUS_FINALISED
+            && !$submission->is_finalised();
+
         $submission->finalisedstatus = $incomingfinalisedsetting;
         $submission->lastupdatedby = $USER->id;
         $submission->timesubmitted = time();

@@ -629,8 +629,11 @@ class submission extends table_base implements \renderable {
         }
 
         // Submitted with only some of the required grades in place.
-        if ($this->finalisedstatus == self::FINALISED_STATUS_FINALISED &&
-            count($assessorfeedbacks) > 0 &&
+        if (
+            $this->is_finalised()
+            &&
+            count($assessorfeedbacks) > 0
+            &&
             (count($assessorfeedbacks) < $this->get_coursework()->numberofmarkers || $this->any_editable_feedback_exists())
         ) {
 
@@ -638,7 +641,7 @@ class submission extends table_base implements \renderable {
         }
 
         // Student has marked this as finalised.
-        if ($this->finalisedstatus == self::FINALISED_STATUS_FINALISED) {
+        if ($this->is_finalised()) {
             return self::FINALISED;
         }
 
@@ -917,8 +920,12 @@ class submission extends table_base implements \renderable {
         return $this->get_state() >= self::FULLY_GRADED;
     }
 
-    public function is_finalised() {
-        return $this->get_state() == self::FINALISED;
+    /**
+     * Is this submission marked as finalised?
+     * @return bool
+     */
+    public function is_finalised(): bool {
+        return $this->finalisedstatus == self::FINALISED_STATUS_FINALISED;
     }
 
     /**
@@ -1383,7 +1390,7 @@ class submission extends table_base implements \renderable {
 
         $editablefeedbacks = [];
         $coursework = $this->get_coursework();
-        if ($coursework->numberofmarkers > 1 && $this->finalisedstatus == self::FINALISED_STATUS_FINALISED) {
+        if ($coursework->numberofmarkers > 1 && $this->is_finalised()) {
             $editablefeedbacks = isset(feedback::$pool[$coursework->id]['submissionid-finalised'][$this->id . '-0']) ?
                 feedback::$pool[$coursework->id]['submissionid-finalised'][$this->id . '-0'] : [];
         }
@@ -1398,8 +1405,7 @@ class submission extends table_base implements \renderable {
     public function editable_final_feedback_exist() {
         if (!isset($this->editable_final_feedback)) {
             $this->editable_final_feedback = false;
-            if ($this->finalisedstatus == self::FINALISED_STATUS_FINALISED) {
-
+            if ($this->is_finalised()) {
                 $coursework = $this->get_coursework();
                 $finalfeedback = feedback::get_object($coursework->id, 'submissionid-stage_identifier', [$this->id, 'final_agreed_1']);
                 if ($finalfeedback && $finalfeedback->finalised == 0 && $finalfeedback->assessorid <> 0) {
