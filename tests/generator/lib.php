@@ -233,7 +233,7 @@ class mod_coursework_generator extends testing_module_generator {
         if (!isset($submission->timemodified)) {
             $submission->timemodified = time();
         }
-        $submission->finalisedstatus = submission::FINALISED_STATUS_FINALISED;
+        $submission->finalisedstatus = $submission->finalisedstatus ?: submission::FINALISED_STATUS_NOT_FINALISED;
 
         $submission->save();
 
