@@ -1,4 +1,4 @@
-@mod @mod_coursework @RVC_PT_83106618 @mod_coursework_deadline_extension
+@mod @mod_coursework @RVC_PT_83106618 @mod_coursework_deadline_extension @javascript
 Feature: Deadlines extensions for submissions
 
   As an OCM admin
