@@ -1,5 +1,5 @@
 @mod @mod_coursework @mod_coursework_submission_unfinalise @javascript
-Feature: Auto finalising before cron runs
+Feature: Manager manually un-finalising a student submission
 
   As a manager
   I want to be able to unfinalise a student's submission after the deadline has passed
@@ -71,4 +71,3 @@ Feature: Auto finalising before cron runs
     # Because late submissions are not allowed, I cannot unfinalise.
     And I should not see "Actions" in the table row containing "student student1"
     And I log out
-
