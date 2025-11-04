@@ -1142,19 +1142,6 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->addElement('hidden', 'feedbackexists', $feedbackexists);
         $moodleform->setType('feedbackexists', PARAM_INT);
         $moodleform->disabledIf('finalstagegrading', 'feedbackexists', 'eq', 1);
-
-        // Don't think this belongs here...
-        // $options = array(0 => get_string('no'), 1 => get_string('yes'));
-        // $moodle_form->addElement('select', 'automaticagreement', get_string('automaticagreement', 'mod_coursework'), $options);
-        // $moodle_form->addHelpButton('automaticagreement', 'automaticagreement', 'mod_coursework');
-        // $moodle_form->setDefault('automaticagreement',0);
-        // $moodle_form->hideif('automaticagreement', 'numberofmarkers', 'eq', '1');
-        //
-        // $moodle_form->addElement('text', 'automaticagreementrange', get_string('automaticagreementrange', 'mod_coursework'), array('size' => 3));
-        // $moodle_form->addHelpButton('automaticagreementrange', 'automaticagreementrange', 'mod_coursework');
-        // $moodle_form->setDefault('automaticagreementrange',0);
-        // $moodle_form->hideif('automaticagreementrange', 'automaticagreement', 'eq', '0');
-
     }
 
     /**
