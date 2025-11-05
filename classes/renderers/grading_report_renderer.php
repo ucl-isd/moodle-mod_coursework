@@ -142,13 +142,13 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
             }
         }
 
-        $data = new stdClass();
-        $data->submitted = $submittedcount;
-        $data->participants = $participantscount;
-        $data->readyforagreement = $agreecount;
-        $data->readyforrelease = $readycount;
-        $data->published = $releasedcount;
-        return $data;
+        $template = new stdClass();
+        $template->submitted = $submittedcount;
+        $template->participants = $participantscount;
+        $template->readyforagreement = $agreecount;
+        $template->readyforrelease = $readycount;
+        $template->published = $releasedcount;
+        return $template;
     }
 
     /**
