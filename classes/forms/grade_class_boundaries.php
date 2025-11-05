@@ -132,7 +132,7 @@ class grade_class_boundaries extends moodleform {
                 get_string('gradeboundarybottom', 'mod_coursework', $index),
                 ['size' => '5'],
             );
-            $mform->setType("grade_boundary_bottom_$index", PARAM_TEXT);
+            $mform->setType("grade_boundary_bottom_$index", PARAM_LOCALISEDFLOAT);
             $default = $band['bottom'] ?? null;
             if ($default !== null) {
                 $mform->setDefault("grade_boundary_bottom_$index", number_format($default, 2));

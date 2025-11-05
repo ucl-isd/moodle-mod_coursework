@@ -82,11 +82,13 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->add_submission_deadline_field();
         $this->add_personal_deadline_field();
 
-        $this->add_marking_deadline_field();
-        $this->add_initial_marking_deadline_field();
-        $this->add_agreed_grade_marking_deadline_field();
-        $this->add_relative_initial_marking_deadline_field();
-        $this->add_relative_agreed_grade_marking_deadline_field();
+        // if (coursework_is_ulcc_digest_coursework_plugin_installed()) {
+            $this->add_marking_deadline_field();
+            $this->add_initial_marking_deadline_field();
+            $this->add_agreed_grade_marking_deadline_field();
+            $this->add_relative_initial_marking_deadline_field();
+            $this->add_relative_agreed_grade_marking_deadline_field();
+        // }
 
         $this->add_allow_early_finalisation_field();
         $this->add_allow_late_submissions_field();
@@ -265,9 +267,12 @@ class mod_coursework_mod_form extends moodleform_mod {
                 }
             }
         }
-        $missingbondaryselection = ($data['automaticagreementstrategy'] ?? null) == 'average_grade_no_straddle'
-            && !($data['gradeboundarytemplateid'] ?? false);
-        if ($missingbondaryselection) {
+
+        if (
+            ($data['automaticagreementstrategy'] ?? null) == 'average_grade_no_straddle'
+            &&
+            empty($data['gradeboundarytemplateid'])
+        ) {
             $errors['gradeboundarytemplateid'] = get_string('required');
         }
 
@@ -1291,6 +1296,7 @@ class mod_coursework_mod_form extends moodleform_mod {
      * @return void
      */
     private function add_automatic_agreement_enabled() {
+        global $DB;
         $options = [
             'none' => get_string('none'),
             'percentage_distance' => get_string('automaticagreementpercentagedistance', 'coursework'),
@@ -1315,7 +1321,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->form()->hideif('automaticagreementstrategy', 'advancedgradingmethod_submissions', 'neq', "");
         $this->form()->hideif('automaticagreementrange', 'advancedgradingmethod_submissions', 'neq', '');
 
-        $templateoptions = \mod_coursework\auto_grader\average_grade_no_straddle::get_grade_class_boundary_templates();
+        $templateoptions = $DB->get_records_menu('coursework_class_boundary_templates', null, 'id', 'id, name');
         $templateoptions = array_merge(
             [0 => !empty($templateoptions) ? get_string('choosedots') : get_string('siteadminmustcreateoptions', 'coursework')],
             $templateoptions

@@ -192,20 +192,4 @@ class average_grade_no_straddle extends average_grade {
             'coursework_class_boundary_templates', 'name', $title, ['id' => $templateid]
         );
     }
-
-    /**
-     * Get the available class boundary templates.
-     * @return array
-     */
-    public static function get_grade_class_boundary_templates(): array {
-        global $DB;
-        $result = [];
-        $classboundarytemplates = $DB->get_records('coursework_class_boundary_templates', null, 'id');
-        if ($classboundarytemplates) {
-            foreach ($classboundarytemplates as $classboundarytemplate) {
-                $result[$classboundarytemplate->id] = $classboundarytemplate->name;
-            }
-        }
-        return $result;
-    }
 }

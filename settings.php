@@ -279,14 +279,15 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect('coursework_allocation_identifier',  get_string('allocationidentifier', 'coursework'), get_string('allocationidentifier_desc', 'coursework'), 'username', $options));
 
     // Grade class boundaries for \mod_coursework\auto_grader\average_grade_no_straddle.
+    $info = \html_writer::div(get_string('gradeclasssetboundariesforautograder', 'mod_coursework'), 'mb-1')
+        . \html_writer::link(
+            new \moodle_url('/mod/coursework/actions/grade_class_boundary_menu.php'),
+            get_string('gradeclasssetboundaries', 'mod_coursework')
+        );
     $classboundaryheader = new admin_setting_heading(
         'gradeclassboundariestemplates',
         get_string('gradeclassboundariestemplates', 'mod_coursework'),
-        \html_writer::div(get_string('gradeclasssetboundariesforautograder', 'mod_coursework'), 'mb-1')
-            . \html_writer::link(
-                new \moodle_url('/mod/coursework/actions/grade_class_boundary_menu.php'),
-            get_string('gradeclasssetboundaries', 'mod_coursework')
-        )
+        $info
     );
     $settings->add($classboundaryheader);
 }
