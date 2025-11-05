@@ -1313,6 +1313,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         // If guide or rubric grading in use, none of the existing auto agreement options will work correctly, so hide for now.
         $this->form()->hideif('automaticagreementstrategy', 'advancedgradingmethod_submissions', 'neq', "");
+        $this->form()->hideif('automaticagreementrange', 'advancedgradingmethod_submissions', 'neq', '');
 
         $templateoptions = \mod_coursework\auto_grader\average_grade_no_straddle::get_grade_class_boundary_templates();
         $templateoptions = array_merge(
@@ -1335,7 +1336,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         );
         $this->form()->addHelpButton('gradeboundarytemplateid', 'gradeclassboundaries', 'mod_coursework');
         $this->form()->hideif('gradeboundarytemplateid', 'automaticagreementstrategy', 'neq', 'average_grade_no_straddle');
-        $this->form()->addRule('gradeboundarytemplateid', null, 'required', null, 'client');
+        $this->form()->hideif('gradeboundarytemplateid', 'advancedgradingmethod_submissions', 'neq', "");
 
         $this->form()->addElement('select',
                                   'automaticagreementrange',
