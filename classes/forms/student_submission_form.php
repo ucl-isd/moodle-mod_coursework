@@ -135,7 +135,7 @@ class student_submission_form extends moodleform {
 
                 if ($filecount > 0) { // Check that there is a file before updating to finalised.
                     // Confirm finalise state.
-                    $submission->finalised = 1;
+                    $submission->finalisedstatus = submission::FINALISED_STATUS_FINALISED;
                     $submission->save();
 
                     // Rename the uploaded file to the submission hash.

@@ -25,6 +25,7 @@
 namespace mod_coursework;
 
 use mod_coursework\models\coursework;
+use mod_coursework\models\submission;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -270,7 +271,7 @@ final class coursework_test extends \advanced_testcase {
         $submission->update_attribute('courseworkid', 54443434);
         $coursework->update_attribute('deadline', strtotime('1 week ago'));
         $coursework->finalise_all();
-        $this->assertEquals(0, $submission->reload()->finalised);
+        $this->assertFalse($submission->reload()->is_finalised());
     }
 
     public function test_finalise_all_works(): void {
@@ -278,7 +279,7 @@ final class coursework_test extends \advanced_testcase {
         $submission = $this->create_a_submission_for_the_student();
         $coursework->update_attribute('deadline', strtotime('1 week ago'));
         $coursework->finalise_all();
-        $this->assertEquals(1, $submission->reload()->finalised);
+        $this->assertTrue($submission->reload()->is_finalised());
     }
 
     public function test_deadline_has_passed_when_it_has(): void {

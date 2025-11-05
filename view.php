@@ -250,6 +250,9 @@ if ($coursemoduleid) {
     }
 }
 
+// This will set $PAGE->context to the coursemodule's context.
+require_login($course, true, $coursemodule);
+
 $coursework = mod_coursework\models\coursework::find($courseworkrecord);
 
 // Check if group is in session and use it no group available in url
@@ -266,9 +269,6 @@ if (($coursework->blindmarking && !$viewanonymous )) {
 
 // Make sure we sort out any stuff that cron should have done, just in case it's not run yet.
 $coursework->finalise_all();
-
-// This will set $PAGE->context to the coursemodule's context.
-require_login($course, true, $coursemodule);
 
 // Name of new zip file.
 $filename = str_replace(' ', '_', clean_filename($COURSE->shortname . '-' . $coursework->name . '.zip'));

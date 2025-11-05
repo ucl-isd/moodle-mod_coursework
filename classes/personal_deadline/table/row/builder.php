@@ -209,7 +209,7 @@ class builder implements user_row {
 
         $statustext = get_string('statusnotsubmitted', 'mod_coursework');
 
-        if (!empty($submission) && $submission->is_finalised()) {
+        if (!empty($submission) && $submission->get_state() == $submission::FINALISED) {
             $statustext = get_string('finalisedsubmission', 'mod_coursework');
         } else if (!empty($submission)) {
             $statustext = $submission->get_status_text();

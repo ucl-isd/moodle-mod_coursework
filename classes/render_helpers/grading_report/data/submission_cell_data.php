@@ -73,8 +73,7 @@ class submission_cell_data extends cell_data_base {
         $data->datemodified = $submission->time_submitted();
         $data->submissiondata = new stdClass();
         $data->submissiondata->files = $this->get_submission_files_data($rowobject);
-        // Finalised is string 0 when not finalised.
-        $data->submissiondata->finalised = $submission->finalised;
+        $data->submissiondata->finalised = $submission->is_finalised();
 
         $this->add_plagiarism_data($data->submissiondata, $submission);
         $this->add_late_submission_data($data->submissiondata, $submission);

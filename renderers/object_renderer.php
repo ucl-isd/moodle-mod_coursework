@@ -1292,7 +1292,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $viewurl = '/mod/coursework/view.php';
         $submissions = $coursework->get_all_submissions();
         $hasfinalised = $coursework->get_finalised_submissions();
-        $finalised = submission::$pool[$coursework->id]['finalised'][1] ?? [];
+        $finalised = submission::$pool[$coursework->id]['finalisedstatus'][submission::FINALISED_STATUS_FINALISED] ?? [];
         $can = fn(string $cap) => has_capability($cap, $this->page->context);
         $canmark = !empty($submissions) && $hasfinalised;
 
@@ -1415,7 +1415,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $submission = submission::find($sub);
 
-            if (empty($submission->finalised)) {
+            if (!$submission->is_finalised()) {
                 unset($submissions[$sub->id]);
             }
         }

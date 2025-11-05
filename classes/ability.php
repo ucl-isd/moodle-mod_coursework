@@ -481,7 +481,11 @@ class ability extends \mod_coursework\framework\ability {
                         $this->set_message('Cannot submit past the deadline');
                         return true;
                     } else {
-                        if ($submission->persisted()) {
+                        if (
+                            $submission->persisted()
+                            &&
+                            $submission->finalisedstatus != submission::FINALISED_STATUS_MANUALLY_UNFINALISED
+                        ) {
                             $this->set_message('Cannot update submissions past the deadline');
                             return true;
                         }
