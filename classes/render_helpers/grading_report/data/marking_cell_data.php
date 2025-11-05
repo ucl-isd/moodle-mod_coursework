@@ -412,13 +412,13 @@ class marking_cell_data extends cell_data_base {
             $markdata->url = router::instance()->get_path('show moderation', ['moderation' => $moderation]);
 
             // Edit url (overwrites default if user can edit).
-            if ($this->ability->can('edit', $moderation)) {
+            if (!$submission->is_published() && $this->ability->can('edit', $moderation)) {
                 $markdata->url = router::instance()->get_path('edit moderation', ['moderation' => $moderation]);
             }
 
             $moderationdata->mark = $markdata;
 
-            // Return exising moderation.
+            // Return existing moderation.
             return $moderationdata;
         }
 
