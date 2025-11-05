@@ -52,7 +52,8 @@
             <span class="ml-auto">{{submitted}}/{{participants}}</span>
         </li>
 
-        {{! Not implimented - Assessor data. }}
+        {{! Not implimented - Assessor data - marker X has marked Y etc.
+        Note - Stuart thinks this is not usefull/actually confusing and should be removed. }}
         <!--
         {{#assessor}}
             <li class="d-flex py-1 {{#border}} border-top {{/border}}">
@@ -63,8 +64,7 @@
         -->
         {{#readyforagreement}}
         <li class="d-flex py-1 border-top">
-            {{! TODO - string. }}
-            Ready for agreement
+            {{#str}} ready_for_agreement, mod_coursework {{/str}}
             <span class="ml-auto">{{.}}</span>
         </li>
         {{/readyforagreement}}

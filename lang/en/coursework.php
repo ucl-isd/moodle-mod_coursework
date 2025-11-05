@@ -464,6 +464,7 @@ $string['records'] = 'records';
 $string['records_displayed_with_filters'] = 'records displayed with current filters.';
 $string['records_per_page'] = 'Showing:';
 $string['ready_release'] = 'Ready for release';
+$string['ready_for_agreement'] = 'Ready for agreement';
 $string['refreshpageforchanges'] = 'Please refresh page to see changes';
 $string['release_marks'] = 'Release the marks';
 $string['release_mark'] = 'Release mark';
