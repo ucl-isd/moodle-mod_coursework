@@ -1199,17 +1199,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      */
     private function coursework_marking_summary(\mod_coursework\models\coursework $coursework): stdClass {
         $reportoptions = [
-            'page' => 0,
-            'group' => 0,
-            'perpage' => 0,
             'mode' => \mod_coursework\grading_report::MODE_GET_ALL,
             'sortby' => '',
-            'sorthow' => '',
-            'showsubmissiongrade' => false,
-            'showgradinggrade' => false,
-            'firstnamealpha' => '',
-            'lastnamealpha' => '',
-            'groupnamealpha' => '',
         ];
 
         $gradingreport = $coursework->renderable_grading_report_factory($reportoptions);
