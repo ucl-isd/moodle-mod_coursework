@@ -119,11 +119,9 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         $template->readyforrelease = 0;
         $template->published = 0;
 
-        // Renamed $rowobject to $rowdata for Moodle compliance.
         foreach ($tablerows as $tr) {
             $trdata = $this->get_table_row_data($coursework, $tr);
 
-            // 2. Increment the stdClass properties directly within the loop.
             $template->participants++;
             if (!empty($trdata->submission->submissiondata)) {
                 $template->submitted++;
