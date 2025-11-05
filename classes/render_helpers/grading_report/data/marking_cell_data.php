@@ -395,7 +395,7 @@ class marking_cell_data extends cell_data_base {
             // Mark data.
             $markdata = new stdClass();
             $markdata->markvalue = get_string($moderation->agreement, 'coursework');
-            $markdata->readyforrelease = $moderation->agreement == 'agreed' && !$submission->is_published();
+            $markdata->readyforrelease = $moderation->agreement === 'agreed' && !$submission->is_published();
             $markdata->released = $submission->is_published();
 
             if ($moderation->timemodified) {
