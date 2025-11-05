@@ -244,6 +244,7 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         $markingcelldata = $dataprovider->get_table_cell_data($rowobject);
         $trdata->markers = $markingcelldata->markers;
         $trdata->agreedmark = !empty($markingcelldata->agreedmark) ? $markingcelldata->agreedmark : null;
+        $trdata->moderation = !empty($markingcelldata->moderation) ? $markingcelldata->moderation : null;
     }
 
     /**
@@ -317,11 +318,11 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
             $status[] = 'not-submitted';
         }
 
-        if (!empty($trdata->agreedmark->addfinalfeedback)) {
+        if (!empty($trdata->agreedmark->addfinalfeedback) || !empty($trdata->moderation->addmoderation)) {
             $status[] = 'need-agreement';
         }
 
-        if (!empty($trdata->agreedmark->mark->readyforrelease)) {
+        if (!empty($trdata->agreedmark->mark->readyforrelease) || !empty($trdata->moderation->mark->readyforrelease)) {
             $status[] = 'ready-for-release';
         }
 

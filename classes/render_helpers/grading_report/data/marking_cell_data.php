@@ -156,7 +156,7 @@ class marking_cell_data extends cell_data_base {
         $markernumber = 1;
         foreach ($tablerows as $row) {
             if ($row->get_stage()->identifier() === 'moderator') {
-                // If moderation is turned on then we don't show a marker/feedback button for the moderation stage.
+                $rowdata->moderation = $this->get_moderation_data($rowsbase);
                 continue;
             }
             $feedback = $row->get_feedback();
@@ -365,5 +365,82 @@ class marking_cell_data extends cell_data_base {
             $this->allocatablehash = $this->coursework->get_allocatable_identifier_hash($allocatable);
         }
         return $this->allocatablehash;
+    }
+
+    /**
+     * Get moderation data for the template.
+     *
+     * @param grading_table_row_base $rowsbase
+     * @return stdClass|null
+     */
+    private function get_moderation_data(grading_table_row_base $rowsbase): ?stdClass {
+        global $USER;
+
+        $submission = $rowsbase->get_submission();
+
+        if (!$submission) {
+            return null; // No submission.
+        }
+
+        $moderationstage = $this->coursework->get_moderator_marking_stage();
+        $moderation = $moderationstage->get_moderation($submission);
+        $moderationdata = new stdClass(); // Mustache data.
+
+        // Existing moderation.
+        if ($moderation) {
+            if (!$this->ability->can('show', $moderation)) {
+                return $moderationdata; // Exit: Cannot view moderation data.
+            }
+
+            // Mark data.
+            $markdata = new stdClass();
+            $markdata->markvalue = get_string($moderation->agreement, 'coursework');
+            $markdata->readyforrelease = $moderation->agreement === 'agreed' && !$submission->is_published();
+            $markdata->released = $submission->is_published();
+
+            if ($moderation->timemodified) {
+                $markdata->moderatorname = $moderation->moderator()->name();
+                $markdata->timemodified = $moderation->timemodified;
+            }
+
+            // TODO - currently there are 3 forms/urls for moderation.
+            // Ideally we should just have one which contains the logic for new/edit/show.
+            // It should show what the user is moderating/agreeing on.
+            // Ideally this could be combined with the agree feedback process.
+
+            // Default show url.
+            $markdata->url = router::instance()->get_path('show moderation', ['moderation' => $moderation]);
+
+            // Edit url (overwrites default if user can edit).
+            if (!$submission->is_published() && $this->ability->can('edit', $moderation)) {
+                $markdata->url = router::instance()->get_path('edit moderation', ['moderation' => $moderation]);
+            }
+
+            $moderationdata->mark = $markdata;
+
+            // Return existing moderation.
+            return $moderationdata;
+        }
+
+        // New moderation.
+        $firstfeedback = $moderationstage->get_single_feedback($submission);
+        if (!$firstfeedback || !$firstfeedback->finalised) {
+            return null; // No feedback to moderate.
+        }
+
+        $newmoderation = \mod_coursework\models\moderation::build(['feedbackid' => $firstfeedback->id]);
+
+        // Convoluted url builder.
+        if ($this->ability->can('new', $newmoderation)) {
+            $moderationdata->addmoderation = new stdClass();
+            $params = [
+                'submission' => $submission,
+                'stage' => $moderationstage,
+                'feedbackid' => $firstfeedback->id,
+                'assessor' => \core_user::get_user($USER->id),
+            ];
+            $moderationdata->addmoderation->url = router::instance()->get_path('new moderations', $params);
+        }
+        return $moderationdata;
     }
 }
