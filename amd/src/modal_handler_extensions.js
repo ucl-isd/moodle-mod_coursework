@@ -82,7 +82,8 @@ export const init = (courseworkid) => {
                     const strRequests = ['areyousure', 'delete', 'cancel'].map((k) => {
                         return {key: k, component: 'core'};
                     });
-                    getStrings(strRequests).then((strings) => {
+                    (async () => {
+                        const strings = await getStrings(strRequests);
                         Notification.confirm(
                             strings[0],
                             event.detail.message,
@@ -106,7 +107,7 @@ export const init = (courseworkid) => {
                                 }
                             }
                         );
-                    });
+                    })();
                 } else if (event.detail.resultcode === 'saved') {
                     try {
                         replaceRow(rowElement, dataSet, event.detail.message);
@@ -127,7 +128,6 @@ export const init = (courseworkid) => {
                 });
             }
         });
-
         modalForm.show();
     });
 };
