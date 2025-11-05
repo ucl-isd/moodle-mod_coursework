@@ -67,8 +67,7 @@ class average_grade implements auto_grader {
      *
      */
     public function create_auto_grade_if_rules_match() {
-
-        // bounce out if conditions are not right/
+        // Bounce out if conditions are not right.
         if (!$this->get_allocatable()->has_all_initial_feedbacks($this->get_coursework())) {
             return;
         }
@@ -85,7 +84,7 @@ class average_grade implements auto_grader {
         if (!$this->get_allocatable()->has_agreed_feedback($this->get_coursework())) {
             $this->create_final_feedback();
         } else {
-            // update only if AgreedGrade has been automatic
+            // Update only if AgreedGrade has been automatic.
             $agreedfeedback = $this->get_allocatable()->get_agreed_feedback($this->get_coursework());
             if ($agreedfeedback->timecreated == $agreedfeedback->timemodified || $agreedfeedback->lasteditedbyuser == 0) {
                 $this->update_final_feedback($agreedfeedback);
@@ -99,7 +98,7 @@ class average_grade implements auto_grader {
     /**
      * @return coursework
      */
-    private function get_coursework() {
+    protected function get_coursework() {
         return $this->coursework;
     }
 
@@ -132,7 +131,7 @@ class average_grade implements auto_grader {
     /**
      * @return allocatable
      */
-    private function get_allocatable() {
+    protected function get_allocatable() {
         return $this->allocatable;
     }
 
@@ -174,14 +173,17 @@ class average_grade implements auto_grader {
     }
 
     /**
+     * Get grades as percentages.
      * @return array
      */
-    private function grades_as_percentages() {
+    protected function grades_as_percentages(): array {
         $initialfeedbacks = $this->get_allocatable()->get_initial_feedbacks($this->get_coursework());
-        $grades = array_map(function ($feedback) {
-            return ($feedback->get_grade() / $this->get_coursework()->get_max_grade()) * 100;
-        },
-            $initialfeedbacks);
-        return $grades;
+
+        return array_map(
+            function ($feedback) {
+                return ($feedback->get_grade() / $this->get_coursework()->get_max_grade()) * 100;
+            },
+            $initialfeedbacks
+        );
     }
 }

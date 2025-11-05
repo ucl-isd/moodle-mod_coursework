@@ -1,0 +1,23 @@
+<div class="mb-2">{{#str}}plugins, admin{{/str}} / <a href="{{config.wwwroot}}/admin/settings.php?section=modsettingcoursework">{{#str}}pluginname, coursework{{/str}}</a></div>
+<h1 class="h2">{{#str}}gradeclassboundariestemplates, coursework{{/str}}</h1>
+<p>{{#str}}gradeclassboundariestemplatesintro, coursework{{/str}}
+{{#hastemplates}}
+    <form action="{{config.wwwroot}}/mod/coursework/actions/grade_class_boundary_menu.php">
+        <label for="id_classboundarytemplate" class="mt-3 d-block">{{#str}}gradeclassboundariesedit, coursework{{/str}}</label>
+        <select class="custom-select " name="templateid" id="id_classboundarytemplate" aria-required="true" data-initial-value="0" onchange="this.form.submit();" >
+            <option value="0">{{#str}}choosedots{{/str}}</option>
+            {{#templates}}
+                <option value="{{id}}"{{#selected}} selected{{/selected}}>{{{name}}}</option>
+            {{/templates}}
+        </select>
+    </form>
+{{/hastemplates}}
+
+<form action="{{config.wwwroot}}/mod/coursework/actions/grade_class_boundary_menu.php">
+    <label for="title" class="mt-3 d-block">{{#str}}gradeclassboundariesadd, coursework{{/str}}</label>
+    <input name="title" id="title" type="text" required placeholder="{{#str}}name{{/str}}">
+    <input type="submit" class="btn btn-primary">
+    <input type="hidden" name ="sesskey" value="{{config.sesskey}}">
+    <input type="hidden" name="action" value="add">
+</form>
+<hr>

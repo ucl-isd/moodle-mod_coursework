@@ -33,19 +33,25 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
 require_once($CFG->dirroot.'/mod/coursework/lib.php');
 
 /**
- * Mod form that allows a new coursework to ber created, or for the settings of an existing one to be altered.
+ * Mod form that allows a new coursework to be created, or for the settings of an existing one to be altered.
  */
 class mod_coursework_mod_form extends moodleform_mod {
+
+    /**
+     * Coursework ID (if updating an existing coursework).
+     * @var int|null
+     */
+    private ?int $courseworkid = null;
 
     private function form() {
         return $this->_form;
     }
 
     /**
+     * Form definition.
      */
     public function definition() {
-
-        global $PAGE, $CFG;
+        global $PAGE;
 
         // Don't include jQuery when not on this module's settings page, for
         // example, if on the default activity completion page.  See MDL-78528.
@@ -76,13 +82,11 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->add_submission_deadline_field();
         $this->add_personal_deadline_field();
 
-        // if (coursework_is_ulcc_digest_coursework_plugin_installed()) {
-            $this->add_marking_deadline_field();
-            $this->add_initial_marking_deadline_field();
-            $this->add_agreed_grade_marking_deadline_field();
-            $this->add_relative_initial_marking_deadline_field();
-            $this->add_relative_agreed_grade_marking_deadline_field();
-        // }
+        $this->add_marking_deadline_field();
+        $this->add_initial_marking_deadline_field();
+        $this->add_agreed_grade_marking_deadline_field();
+        $this->add_relative_initial_marking_deadline_field();
+        $this->add_relative_agreed_grade_marking_deadline_field();
 
         $this->add_allow_early_finalisation_field();
         $this->add_allow_late_submissions_field();
@@ -150,8 +154,6 @@ class mod_coursework_mod_form extends moodleform_mod {
 
     /**
      * Adds all default data to the form elements.
-     *
-     * @global moodle_database $DB
      * @param $defaultvalues
      * @return void
      */
@@ -262,6 +264,11 @@ class mod_coursework_mod_form extends moodleform_mod {
                     $errors['usecandidate'] = get_string('cannot_change_candidate', 'mod_coursework');
                 }
             }
+        }
+        $missingbondaryselection = ($data['automaticagreementstrategy'] ?? null) == 'average_grade_no_straddle'
+            && !($data['gradeboundarytemplateid'] ?? false);
+        if ($missingbondaryselection) {
+            $errors['gradeboundarytemplateid'] = get_string('required');
         }
 
         $parenterrors = parent::validation($data, $files);
@@ -884,18 +891,25 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     /**
+     * Get the coursework ID.
      * @return int
-     * @throws coding_exception
      */
-    protected function get_coursework_id() {
-        $upcmid = optional_param('update', -1, PARAM_INT);
-        $cm = get_coursemodule_from_id('coursework', $upcmid);
-        $courseworkid = 0;
-        if ($cm) {
-            $courseworkid = $cm->instance;
-            return $courseworkid;
+    protected function get_coursework_id(): int {
+        if ($this->courseworkid === null) {
+            $upcmid = optional_param('update', -1, PARAM_INT);
+            $cm = get_coursemodule_from_id('coursework', $upcmid);
+            $this->courseworkid = $cm ? $cm->instance : 0;
         }
-        return $courseworkid;
+        return $this->courseworkid;
+    }
+
+    /**
+     * Get the coursework.
+     * @return ?coursework
+     */
+    protected function get_coursework(): ?coursework {
+        $id = $this->get_coursework_id();
+        return $id ? coursework::find($id) : null;
     }
 
     /**
@@ -1139,6 +1153,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->addElement('hidden', 'feedbackexists', $feedbackexists);
         $moodleform->setType('feedbackexists', PARAM_INT);
         $moodleform->disabledIf('finalstagegrading', 'feedbackexists', 'eq', 1);
+
     }
 
     /**
@@ -1271,22 +1286,56 @@ class mod_coursework_mod_form extends moodleform_mod {
 
     }
 
+    /**
+     * Add the fields for automatic agreement of grades.
+     * @return void
+     */
     private function add_automatic_agreement_enabled() {
-        $options = ['none' => 'none',
-                         'percentage_distance' => 'percentage distance',
-                         'average_grade' => 'average grade'];
-        $this->form()->addelement('select',
-                                  'automaticagreementstrategy',
-                                  get_string('automaticagreementofgrades', 'mod_coursework'),
-                                  $options);
+        $options = [
+            'none' => get_string('none'),
+            'percentage_distance' => get_string('automaticagreementpercentagedistance', 'coursework'),
+            'average_grade_no_straddle' => get_string('automaticagreementaveragegradenostraddling', 'coursework'),
+            'average_grade' => get_string('automaticagreementaveragegrade', 'coursework'),
+        ];
+
+        $this->form()->addelement(
+            'select',
+            'automaticagreementstrategy',
+            get_string('automaticagreementofgrades', 'mod_coursework'),
+            $options
+        );
         $this->form()->settype('automaticagreementstrategy', PARAM_ALPHAEXT);
         $this->form()->addhelpbutton('automaticagreementstrategy', 'automaticagreement', 'mod_coursework');
 
         $this->form()->hideif('automaticagreementstrategy', 'numberofmarkers', 'eq', 1);
-        $this->form()->hideif('automaticagreementrange', 'automaticagreementstrategy', 'neq', 'percentage_distance');
+        $this->form()->hideif('automaticagreementrange', 'automaticagreementstrategy', 'eq', 'average_grade');
+        $this->form()->hideif('automaticagreementrange', 'automaticagreementstrategy', 'eq', 'none');
 
         // If guide or rubric grading in use, none of the existing auto agreement options will work correctly, so hide for now.
         $this->form()->hideif('automaticagreementstrategy', 'advancedgradingmethod_submissions', 'neq', "");
+
+        $templateoptions = \mod_coursework\auto_grader\average_grade_no_straddle::get_grade_class_boundary_templates();
+        $templateoptions = array_merge(
+            [0 => !empty($templateoptions) ? get_string('choosedots') : get_string('siteadminmustcreateoptions', 'coursework')],
+            $templateoptions
+        );
+
+        // Site admin needs a link to page where grade class boundaries can be managed.
+        // Other users only need a select menu to choose which to apply (no link to manage options).
+        $this->form()->addelement(
+            is_siteadmin() ? 'selectwithlink' : 'select',
+            'gradeboundarytemplateid',
+            get_string('gradeclassboundaries', 'mod_coursework'),
+            $templateoptions,
+            null,
+            [
+                'link' => '/mod/coursework/actions/grade_class_boundary_menu.php',
+                'label' => get_string('manageoptions', 'coursework'),
+            ]
+        );
+        $this->form()->addHelpButton('gradeboundarytemplateid', 'gradeclassboundaries', 'mod_coursework');
+        $this->form()->hideif('gradeboundarytemplateid', 'automaticagreementstrategy', 'neq', 'average_grade_no_straddle');
+        $this->form()->addRule('gradeboundarytemplateid', null, 'required', null, 'client');
 
         $this->form()->addElement('select',
                                   'automaticagreementrange',
@@ -1294,21 +1343,25 @@ class mod_coursework_mod_form extends moodleform_mod {
                                   range(0, 100));
         $this->form()->setType('automaticagreementrange', PARAM_INT);
         $this->form()->setDefault('automaticagreementrange', 10);
+        $this->form()->addHelpButton('automaticagreementrange', 'automaticagreementrange', 'mod_coursework');
 
-        // rounding of the average grade
+        // Rounding of the average grade.
         $roundingoptions = ['mid' => get_string('roundmid', 'mod_coursework'),
                                  'up' => get_string('roundup', 'mod_coursework'),
                                  'down' => get_string('rounddown', 'mod_coursework')];
 
-        $this->form()->addElement('select',
-                                   'roundingrule',
-                                    get_string('roundingrule', 'mod_coursework'),
-                                    $roundingoptions);
+        $this->form()->addElement(
+            'select',
+            'roundingrule',
+            get_string('roundingrule', 'mod_coursework'),
+            $roundingoptions,
+        );
         $this->form()->addhelpbutton('roundingrule', 'roundingrule', 'mod_coursework');
 
         $this->form()->setType('roundingrule', PARAM_ALPHAEXT);
         $this->form()->setDefault('roundingrule', 'mid');
-        $this->form()->hideif('roundingrule', 'automaticagreementstrategy', 'neq', 'average_grade');
+        $this->form()->hideif('roundingrule', 'automaticagreementstrategy', 'eq', 'percentage_distance');
+        $this->form()->hideif('roundingrule', 'automaticagreementstrategy', 'eq', 'none');
 
     }
 
