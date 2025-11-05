@@ -112,41 +112,36 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
      * @return stdClass
      */
     public function get_marking_summary_data(array $tablerows, coursework $coursework): stdClass {
-        // Counts for marking_summary.mustache.
-        $submittedcount = 0;
-        $participantscount = 0;
-        $agreecount = 0;
-        $readycount = 0;
-        $releasedcount = 0;
+        $template = new stdClass();
+        $template->submitted = 0;
+        $template->participants = 0;
+        $template->readyforagreement = 0;
+        $template->readyforrelease = 0;
+        $template->published = 0;
 
-        foreach ($tablerows as $rowobject) {
-            $trdata = $this->get_table_row_data($coursework, $rowobject);
+        // Renamed $rowobject to $rowdata for Moodle compliance.
+        foreach ($tablerows as $tr) {
+            $trdata = $this->get_table_row_data($coursework, $tr);
 
-            // Data for marking_summary.mustache.
-            $participantscount++;
+            // 2. Increment the stdClass properties directly within the loop.
+            $template->participants++;
             if (!empty($trdata->submission->submissiondata)) {
-                $submittedcount++;
+                $template->submitted++;
             }
 
             if (!empty($trdata->agreedmark->addfinalfeedback) || !empty($trdata->moderation->addmoderation)) {
-                $agreecount++;
+                $template->readyforagreement++;
             }
 
             if (!empty($trdata->agreedmark->mark->readyforrelease) || !empty($trdata->moderation->mark->readyforrelease)) {
-                $readycount++;
+                $template->readyforrelease++;
             }
 
             if (!empty($trdata->agreedmark->mark->released) || !empty($trdata->moderation->mark->released)) {
-                $releasedcount++;
+                $template->published++;
             }
         }
 
-        $template = new stdClass();
-        $template->submitted = $submittedcount;
-        $template->participants = $participantscount;
-        $template->readyforagreement = $agreecount;
-        $template->readyforrelease = $readycount;
-        $template->published = $releasedcount;
         return $template;
     }
 
