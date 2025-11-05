@@ -36,15 +36,12 @@
     {{{notenoughassessors}}}
 
     <div class='row'>
-        <div class='col-md-4'>
-            {{#markingsummary}}
-                {{> mod_coursework/marking_summary}}
-            {{/markingsummary}}
 
-            {{#studentview}}
-                {{> mod_coursework/submission}}
-            {{/studentview}}
+        {{#studentview}}
+        <div class='col-md-4'>
+            {{> mod_coursework/submission}}
         </div>
+        {{/studentview}}
 
         <div class='col-md-8 coursework_intro'>
             {{{feedbackfromteachers}}}
@@ -63,5 +60,11 @@
                 {{> mod_coursework/general_feedback}}
             {{/generalfeedback}}
         </div>
+
+        {{#markingsummary}}
+        <div class='col-md-4'>
+            {{> mod_coursework/marking_summary}}
+        </div>
+        {{/markingsummary}}
     </div>
 </div>

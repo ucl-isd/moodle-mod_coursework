@@ -65,8 +65,10 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         $template->releasemarks = $this->prepare_release_marks_button($gradingreport->get_coursework());
 
         // Populate template tr data.
+        $summarydata = $this->get_marking_summary_data($tablerows, $gradingreport->get_coursework());
         $template->tr = [];
         $markersarray = []; // Collect list of allocated markers while we are iterating.
+
         foreach ($tablerows as $rowobject) {
             $trdata = $this->get_table_row_data($gradingreport->get_coursework(), $rowobject);
 
@@ -101,6 +103,52 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         }
 
         return $this->render_from_template('mod_coursework/submissions/table', $template);
+    }
+
+    /**
+     * Get marking summary data.
+     *
+     * @param array $tablerows
+     * @param coursework $coursework
+     * @return stdClass
+     */
+    public function get_marking_summary_data(array $tablerows, coursework $coursework): stdClass {
+        // Counts for marking_summary.mustache.
+        $submittedcount = 0;
+        $participantscount = 0;
+        $agreecount = 0;
+        $readycount = 0;
+        $releasedcount = 0;
+
+        foreach ($tablerows as $rowobject) {
+            $trdata = $this->get_table_row_data($coursework, $rowobject);
+
+            // Data for marking_summary.mustache.
+            $participantscount++;
+            if (!empty($trdata->submission->submissiondata)) {
+                $submittedcount++;
+            }
+
+            if (!empty($trdata->agreedmark->addfinalfeedback) || !empty($trdata->moderation->addmoderation)) {
+                $agreecount++;
+            }
+
+            if (!empty($trdata->agreedmark->mark->readyforrelease) || !empty($trdata->moderation->mark->readyforrelease)) {
+                $readycount++;
+            }
+
+            if (!empty($trdata->agreedmark->mark->released) || !empty($trdata->moderation->mark->released)) {
+                $releasedcount++;
+            }
+        }
+
+        $data = new stdClass();
+        $data->submitted = $submittedcount;
+        $data->participants = $participantscount;
+        $data->readyforagreement = $agreecount;
+        $data->readyforrelease = $readycount;
+        $data->published = $releasedcount;
+        return $data;
     }
 
     /**
