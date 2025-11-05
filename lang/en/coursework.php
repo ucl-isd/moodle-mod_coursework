@@ -360,6 +360,7 @@ $string['late_submissions_warning'] = 'You are submitting after the deadline has
 $string['latesubmissionsallowed'] = 'Late submissions allowed';
 $string['latesubmissionsnotallowed'] = 'The deadline has now passed and late submissions (or updates to existing submissions) are not allowed.';
 $string['lowerlimit'] = 'Lower limit';
+$string['manageoptions'] = 'Manage options';
 $string['mark'] = 'Mark';
 $string['marked'] = 'Marked';
 $string['markersandagreedmark'] = 'Markers and agreed mark';
