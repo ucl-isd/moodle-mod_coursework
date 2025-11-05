@@ -28,7 +28,6 @@ Feature: Automatic agreement for grades not straddling grade class boundaries
     And I press "Save and finalise"
     Then I should not see the final grade on the student page
 
-  @javascript
   Scenario: Simple grades within 10% of eachother and both in the same grade class, agreed grade is averaged
     Given the coursework "automaticagreementstrategy" setting is "average_grade_no_straddle" in the database
     Given the coursework "automaticagreementrange" setting is "10" in the database
@@ -51,7 +50,6 @@ Feature: Automatic agreement for grades not straddling grade class boundaries
     Then I should see the final agreed grade as 65
     And I should not see "Add agreed feedback" in the table row containing "student student1"
 
-  @javascript
   Scenario: Simple grades within 10% of eachother, but in different grade classes, no auto agreed grade appears.
     Given the coursework "automaticagreementstrategy" setting is "average_grade_no_straddle" in the database
     Given A default auto grading grade class boundaries option exists and is assigned to the course
@@ -74,8 +72,6 @@ Feature: Automatic agreement for grades not straddling grade class boundaries
     Then I should see "Add agreed feedback" in the table row containing "student student1"
     And I should not see "70" in the table row containing "student student1"
 
-
-  @javascript
   Scenario: Simple grades *NOT* within 5% of eachother where they should be, but both in the same grade class, agreed grade does not appear
     Given the coursework "automaticagreementstrategy" setting is "average_grade_no_straddle" in the database
     Given A default auto grading grade class boundaries option exists and is assigned to the course
@@ -98,7 +94,6 @@ Feature: Automatic agreement for grades not straddling grade class boundaries
     Then I should not see "64" in the table row containing "student student1"
     And I should see "Add agreed feedback" in the table row containing "student student1"
 
-  @javascript
   Scenario: Simple grades are *NOT* within 5% of eachother, and in different grade classes, no auto agreed grade appears.
     Given the coursework "automaticagreementstrategy" setting is "average_grade_no_straddle" in the database
     Given A default auto grading grade class boundaries option exists and is assigned to the course
@@ -121,7 +116,6 @@ Feature: Automatic agreement for grades not straddling grade class boundaries
     Then I should see "Add agreed feedback" in the table row containing "student student1"
     And I should not see "70" in the table row containing "student student1"
 
-  @javascript
   Scenario: Simple grades within 10% of eachother and both in the same grade class, but setting is "none" - agreed grade does not appear.
     Given the coursework "automaticagreementstrategy" setting is "none" in the database
     And I am logged in as a teacher

@@ -45,11 +45,10 @@ class grade_class_boundaries implements \renderable, \templatable {
         if ($selectedtemplateid && isset($templates[$selectedtemplateid])) {
             $templates[$selectedtemplateid]->selected = true;
         }
-        $data = (object)[
+        return (object)[
             'templates' => array_values($templates),
             'hastemplates' => !empty($templates),
             'templateid' => $selectedtemplateid,
         ];
-        return $data;
     }
 }

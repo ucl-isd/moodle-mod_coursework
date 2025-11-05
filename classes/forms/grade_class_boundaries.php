@@ -24,6 +24,7 @@
 
 namespace mod_coursework\forms;
 
+use core\exception\access_denied_exception;
 use core\exception\invalid_parameter_exception;
 use mod_coursework\auto_grader\average_grade_no_straddle;
 
@@ -72,7 +73,7 @@ class grade_class_boundaries extends moodleform {
                 'name',
                 ['id' => $this->_customdata['templateid']],
             )
-            : null;
+            : '';
 
         if ($this->_customdata['templateid'] && !$templatename) {
             throw new invalid_parameter_exception("Invalid template ID " . $this->_customdata['templateid']);
@@ -154,11 +155,16 @@ class grade_class_boundaries extends moodleform {
      */
     public function validation($data, $files): array {
         if (!is_siteadmin()) {
-            throw new \Exception("Only site admin allowed to edit");
+            throw new access_denied_exception(
+                'accessdenied',
+                'admin',
+                '',
+                null,
+                "Only site admin allowed to edit"
+            );
         }
         $errors = [];
-        $data = (array)$data;
-        $boundaries = self::parse_form_data($data);
+        $boundaries = self::parse_form_data((array)$data);
         foreach ($boundaries as $boundary) {
             if ($boundary['top'] === '' && $boundary['bottom'] === '') {
                 // We allow both top and bottom to be null as this indicates that this band is not in use.

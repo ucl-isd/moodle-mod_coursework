@@ -13,10 +13,10 @@
     </form>
 {{/hastemplates}}
 
-<form action="{{config.wwwroot}}/mod/coursework/actions/grade_class_boundary_menu.php">
+<form action="{{config.wwwroot}}/mod/coursework/actions/grade_class_boundary_menu.php" method="POST">
     <label for="title" class="mt-3 d-block">{{#str}}gradeclassboundariesadd, coursework{{/str}}</label>
     <input name="title" id="title" type="text" required placeholder="{{#str}}name{{/str}}">
-    <input type="submit" class="btn btn-primary">
+    <input type="submit" class="btn btn-primary" value="{{#str}}add{{/str}}">
     <input type="hidden" name ="sesskey" value="{{config.sesskey}}">
     <input type="hidden" name="action" value="add">
 </form>

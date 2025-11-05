@@ -24,6 +24,7 @@ namespace mod_coursework\auto_grader;
 
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
+use core\exception\coding_exception;
 
 /**
  * Class average_grade_no_straddle is responsible for calculating and applying the automatically agreed average grade
@@ -132,6 +133,7 @@ class average_grade_no_straddle extends average_grade {
      * Get the grade class boundaries that apply to this template.
      * @param int $templateid
      * @return array
+     * @throws coding_exception
      */
     public static function get_grade_class_boundaries(int $templateid): array {
         global $DB;
@@ -150,7 +152,7 @@ class average_grade_no_straddle extends average_grade {
         }
         $records = $DB->get_records('coursework_class_boundaries', ['templateid' => $templateid], 'top DESC');
         if (empty($records)) {
-            throw new \Exception("No grade class boundaries found for template $templateid");
+            throw new coding_exception("No grade class boundaries found for template $templateid");
         }
         return array_map(
             function ($record) {
