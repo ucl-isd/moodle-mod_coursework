@@ -65,7 +65,6 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         $template->releasemarks = $this->prepare_release_marks_button($gradingreport->get_coursework());
 
         // Populate template tr data.
-        $summarydata = $this->get_marking_summary_data($tablerows, $gradingreport->get_coursework());
         $template->tr = [];
         $markersarray = []; // Collect list of allocated markers while we are iterating.
 
