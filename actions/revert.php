@@ -23,6 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\output\notification;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
 
@@ -51,7 +52,7 @@ if (!has_capability('mod/coursework:revertfinalised', $PAGE->context)) {
 if ($submission->is_late() && !$coursework->allow_late_submissions()) {
     redirect(
         $url,
-        get_string('extendbeforerevert', 'coursework'), null, \core\output\notification::NOTIFY_ERROR
+        get_string('extendbeforerevert', 'coursework'), null, notification::NOTIFY_ERROR
     );
 }
 

@@ -22,12 +22,14 @@
 
 namespace mod_coursework\forms;
 
+use moodleform;
+
 /**
  * Class personal_deadline_form_bulk is responsible for new and edit actions related to the
  * personal_deadlines where the user is submitting a bulk deadline change.
  *
  */
-class personal_deadline_form_bulk extends \moodleform {
+class personal_deadline_form_bulk extends moodleform {
 
     /**
      * Form definition.

@@ -26,6 +26,7 @@ use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\traits\autoagreement_functions;
+use stdClass;
 
 /**
  * Class percentage_distance is responsible for calculating and applying the automatically agreed grade if the initial
@@ -151,7 +152,7 @@ class percentage_distance implements auto_grader {
     private function update_final_feedback($feedback) {
         global $DB;
 
-        $updatedfeedback = new \stdClass();
+        $updatedfeedback = new stdClass();
         $updatedfeedback->id = $feedback->id;
         $updatedfeedback->grade = $this->automatic_grade();
         $updatedfeedback->lasteditedbyuser = 0;

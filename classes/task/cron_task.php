@@ -16,6 +16,9 @@
 
 namespace mod_coursework\task;
 
+use core\task\scheduled_task;
+use mod_coursework\cron;
+
 /**
  * A scheduled task for the coursework module cron.
  *
@@ -24,7 +27,7 @@ namespace mod_coursework\task;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class cron_task extends \core\task\scheduled_task {
+class cron_task extends scheduled_task {
 
     /**
      * Get a descriptive name for this task (shown to admins).
@@ -39,6 +42,6 @@ class cron_task extends \core\task\scheduled_task {
      * Run coursework cron.
      */
     public function execute() {
-        return \mod_coursework\cron::run();
+        return cron::run();
     }
 }

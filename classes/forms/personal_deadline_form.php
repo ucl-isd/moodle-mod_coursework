@@ -21,15 +21,17 @@
  */
 
 namespace mod_coursework\forms;
+use context;
 use core_form\dynamic_form;
 use mod_coursework\ability;
 use mod_coursework\controllers\personal_deadlines_controller;
 use mod_coursework\exceptions\access_denied;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
+use mod_coursework\models\group;
 use mod_coursework\models\personal_deadline;
 use mod_coursework\models\user;
-use mod_coursework\models\group;
+use moodle_url;
 
 /**
  * Class personal_deadline_form is responsible for new and edit actions related to the
@@ -214,9 +216,9 @@ class personal_deadline_form extends dynamic_form {
      * If context depends on the form data, it is available in $this->_ajaxformdata or
      * by calling $this->optional_param()
      *
-     * @return \context
+     * @return context
      **/
-    protected function get_context_for_dynamic_submission(): \context {
+    protected function get_context_for_dynamic_submission(): context {
         return $this->get_coursework()->get_context();
     }
 
@@ -354,9 +356,9 @@ class personal_deadline_form extends dynamic_form {
      *  This is used in the form elements sensitive to the page url, such as Atto autosave in 'editor'
      *  If the form has arguments (such as 'id' of the element being edited), the URL should
      *  also have respective argument.
-     * @return \moodle_url
+     * @return moodle_url
      */
-    protected function get_page_url_for_dynamic_submission(): \moodle_url {
-        return new \moodle_url('/mod/coursework/view.php', ['id' => $this->coursework->id]);
+    protected function get_page_url_for_dynamic_submission(): moodle_url {
+        return new moodle_url('/mod/coursework/view.php', ['id' => $this->coursework->id]);
     }
 }

@@ -25,15 +25,19 @@
 
 namespace mod_coursework\render_helpers\grading_report\data;
 
+use coding_exception;
+use core_user;
+use dml_exception;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\assessor_feedback_row;
 use mod_coursework\assessor_feedback_table;
 use mod_coursework\grade_judge;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\feedback;
+use mod_coursework\models\moderation;
+use mod_coursework\models\null_user;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
-use mod_coursework\models\null_user;
 use mod_coursework\router;
 use mod_coursework\stages\base as stage;
 use mod_coursework\stages\final_agreed;
@@ -146,8 +150,8 @@ class marking_cell_data extends cell_data_base {
      * @param grading_table_row_base $rowsbase Row base object containing general data
      * @param bool $ismultiple Whether this is for multiple markers
      * @return stdClass
-     * @throws \coding_exception
-     * @throws \dml_exception
+     * @throws coding_exception
+     * @throws dml_exception
      */
     protected function get_marker_data(array $tablerows, grading_table_row_base $rowsbase, bool $ismultiple = false): stdClass {
         $rowdata = new stdClass();
@@ -203,8 +207,8 @@ class marking_cell_data extends cell_data_base {
      * @param feedback|null $feedback $feedback the feedback
      * @param bool $final whether this is for a final mark
      * @return string
-     * @throws \coding_exception
-     * @throws \dml_exception
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_mark_url(
         string $action,
@@ -284,7 +288,7 @@ class marking_cell_data extends cell_data_base {
      *
      * @param feedback $feedback
      * @return ?string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function get_mark_for_feedback(feedback $feedback): ?string {
         global $USER;
@@ -428,7 +432,7 @@ class marking_cell_data extends cell_data_base {
             return null; // No feedback to moderate.
         }
 
-        $newmoderation = \mod_coursework\models\moderation::build(['feedbackid' => $firstfeedback->id]);
+        $newmoderation = moderation::build(['feedbackid' => $firstfeedback->id]);
 
         // Convoluted url builder.
         if ($this->ability->can('new', $newmoderation)) {
@@ -437,7 +441,7 @@ class marking_cell_data extends cell_data_base {
                 'submission' => $submission,
                 'stage' => $moderationstage,
                 'feedbackid' => $firstfeedback->id,
-                'assessor' => \core_user::get_user($USER->id),
+                'assessor' => core_user::get_user($USER->id),
             ];
             $moderationdata->addmoderation->url = router::instance()->get_path('new moderations', $params);
         }

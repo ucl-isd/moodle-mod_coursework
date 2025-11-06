@@ -23,12 +23,14 @@
 
 namespace mod_coursework\event;
 
+use core\event\base;
+
 /**
  * Class extension_deleted is responsible for listening for changes to the extensions deleted.
  *
  * @package mod_coursework\event
  */
-class extension_deleted extends \core\event\base {
+class extension_deleted extends base {
 
     /**
      * Override in subclass.

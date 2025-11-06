@@ -22,10 +22,13 @@
 
 namespace mod_coursework\models;
 
+use mod_coursework\allocation\allocatable;
+use stdClass;
+
 /**
  * Class null_user
  */
-class null_user implements \mod_coursework\allocation\allocatable {
+class null_user implements allocatable {
 
     /**
      * @return string
@@ -57,7 +60,7 @@ class null_user implements \mod_coursework\allocation\allocatable {
     }
 
     /**
-     * @param \stdClass $course
+     * @param stdClass $course
      * @return mixed
      */
     public function is_valid_for_course($course) {

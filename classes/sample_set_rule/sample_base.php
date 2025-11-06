@@ -24,10 +24,6 @@
 
 namespace mod_coursework\sample_set_rule;
 
-use html_writer;
-use mod_coursework\allocation\allocatable;
-use mod_coursework\models\coursework;
-
 defined('MOODLE_INTERNAL') || die();
 
 /**

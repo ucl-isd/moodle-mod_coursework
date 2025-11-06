@@ -34,6 +34,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
 require_once($CFG->dirroot . '/mod/coursework/lib.php');
+
 use mod_coursework\models\coursework;
 
 /**
@@ -53,7 +54,7 @@ function xmldb_coursework_upgrade($oldversion) {
         // See https://moodledev.io/general/community/plugincontribution/checklist#security
         // This version number 2012 ... is > 13 years old now and unlikely anyone will be upgrading from this.
         // If you need to see the original upgrade code for versions before 2012020100, look at the git history.
-        throw new \Exception("Cannot upgrade from this historic version");
+        throw new Exception("Cannot upgrade from this historic version");
     }
 
     if ($oldversion < 2012053100) {
@@ -1079,7 +1080,7 @@ function xmldb_coursework_upgrade($oldversion) {
 
         $courseworks = $DB->get_records('coursework', null, '', 'id');
         foreach ($courseworks as $coursework) {
-            $coursework = \mod_coursework\models\coursework::find($coursework->id);
+            $coursework = coursework::find($coursework->id);
             $studentswithassessorallocations = $DB->get_records_sql('
                 SELECT DISTINCT studentid
                   FROM {coursework_allocation_pairs} ap
@@ -1158,7 +1159,7 @@ function xmldb_coursework_upgrade($oldversion) {
         // Set the stage identifier for each of the feedbacks
         $courseworks = $DB->get_records('coursework', null, '', 'id');
         foreach ($courseworks as $coursework) {
-            $coursework = \mod_coursework\models\coursework::find($coursework->id);
+            $coursework = coursework::find($coursework->id);
 
             $submissionswithfeedbacks = $DB->get_records_sql('
                 SELECT DISTINCT s.id
@@ -1348,7 +1349,7 @@ function xmldb_coursework_upgrade($oldversion) {
         $courseworkswithgroups = $DB->get_records('coursework', ['use_groups' => 1]);
 
         foreach ($courseworkswithgroups as $coursework) {
-            $coursework = \mod_coursework\models\coursework::find($coursework);
+            $coursework = coursework::find($coursework);
 
             $params = [
                 'courseworkid' => $coursework->id,
@@ -1890,7 +1891,7 @@ function xmldb_coursework_upgrade($oldversion) {
             $i = 1;
 
             foreach ($plugins as $p) {
-                $dbrecord = new \stdClass();
+                $dbrecord = new stdClass();
                 $dbrecord->rulename = $p;
                 $dbrecord->pluginorder = $i;
 

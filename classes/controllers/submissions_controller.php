@@ -22,6 +22,9 @@
 
 namespace mod_coursework\controllers;
 
+use coding_exception;
+use context_module;
+use Exception;
 use mod_coursework\ability;
 use mod_coursework\event\assessable_submitted;
 use mod_coursework\exceptions\access_denied;
@@ -30,7 +33,8 @@ use mod_coursework\forms\student_submission_form;
 use mod_coursework\mailer;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
-use mod_coursework\models\user;
+use moodle_url;
+use unauthorized_access_exception;
 
 defined('MOODLE_INTERNAL' || die());
 
@@ -73,8 +77,8 @@ class submissions_controller extends controller_base {
     /**
      * Makes the page where a user can create a new submission.
      *
-     * @throws \coding_exception
-     * @throws \unauthorized_access_exception
+     * @throws coding_exception
+     * @throws unauthorized_access_exception
      */
     protected function new_submission() {
         global $USER, $PAGE;
@@ -110,8 +114,8 @@ class submissions_controller extends controller_base {
      * Might be someone editing the group feedback thing too, so we load based on the submission
      * user, not the current user.
      *
-     * @throws \coding_exception
-     * @throws \unauthorized_access_exception
+     * @throws coding_exception
+     * @throws unauthorized_access_exception
      */
     protected function edit_submission() {
         global $USER, $PAGE;
@@ -193,7 +197,7 @@ class submissions_controller extends controller_base {
         $filesid = file_get_submitted_draft_itemid('submission_manager');
         $submission->save_files($filesid);
 
-        $context = \context_module::instance($this->coursemodule->id);
+        $context = context_module::instance($this->coursemodule->id);
         // Trigger assessable_submitted event to show files are complete.
         $params = [
             'context' => $context,
@@ -277,7 +281,7 @@ class submissions_controller extends controller_base {
         $filesid = file_get_submitted_draft_itemid('submission_manager');
         $submission->save_files($filesid);
 
-        $context = \context_module::instance($this->coursemodule->id);
+        $context = context_module::instance($this->coursemodule->id);
         // Trigger assessable_submitted event to show files are complete.
         $params = [
             'context' => $context,
@@ -339,7 +343,7 @@ class submissions_controller extends controller_base {
         $allocatableids = (!is_array($this->params['allocatableid']))
             ? [$this->params['allocatableid']] : $this->params['allocatableid'];
 
-        $personaldeadlinepageurl = new \moodle_url('/mod/coursework/actions/personal_deadline.php',
+        $personaldeadlinepageurl = new moodle_url('/mod/coursework/actions/personal_deadline.php',
             ['id' => $this->coursework->get_coursemodule_id(), 'multipleuserdeadlines' => 1, 'setpersonaldeadlinespage' => 1,
                 'courseworkid' => $this->params['courseworkid'], 'allocatabletype' => $this->params['allocatabletype']]);
 
@@ -349,7 +353,7 @@ class submissions_controller extends controller_base {
             $submissiondb = $DB->get_record('coursework_submissions',
                 ['courseworkid' => $this->params['courseworkid'], 'allocatableid' => $aid, 'allocatabletype' => $this->params['allocatabletype']]);
             if (!empty($submissiondb)) {
-                $submission = \mod_coursework\models\submission::find($submissiondb);
+                $submission = submission::find($submissiondb);
 
                 if ($submission->can_be_unfinalised()) {
                     $submission->finalisedstatus = submission::FINALISED_STATUS_MANUALLY_UNFINALISED;
@@ -363,7 +367,7 @@ class submissions_controller extends controller_base {
         if (!empty($changedeadlines)) {
             redirect($personaldeadlinepageurl, get_string('unfinalisedchangesubmissiondate', 'mod_coursework'));
         } else {
-            $setpersonaldeadlinepageurl = new \moodle_url('/mod/coursework/actions/set_personal_deadlines.php',
+            $setpersonaldeadlinepageurl = new moodle_url('/mod/coursework/actions/set_personal_deadlines.php',
                 ['id' => $this->coursework->get_coursemodule_id()]);
             redirect($setpersonaldeadlinepageurl);
         }
@@ -383,7 +387,7 @@ class submissions_controller extends controller_base {
      * Tells us whether the agree to terms checkbox was used.
      *
      * @return bool
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     private function terms_were_agreed_to() {
         return (bool)optional_param('termsagreed', 0, PARAM_INT);
@@ -392,12 +396,12 @@ class submissions_controller extends controller_base {
     /**
      * Is the coursework open?
      * @param coursework $coursework
-     * @throws \coding_exception
+     * @throws coding_exception
      * @throws access_denied
      */
     protected function check_coursework_is_open($coursework) {
         if (!$coursework->start_date_has_passed()) {
-            throw new \Exception(get_string('notstartedyet', 'mod_coursework', userdate($coursework->startdate)));
+            throw new Exception(get_string('notstartedyet', 'mod_coursework', userdate($coursework->startdate)));
         }
     }
 

@@ -24,10 +24,9 @@
 
 namespace mod_coursework\sample_set_rule;
 
-use mod_coursework\sample_set_rule;
+use grade_scale;
 use html_writer;
-use mod_coursework\allocation\allocatable;
-use mod_coursework\models\coursework;
+use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -35,7 +34,7 @@ defined('MOODLE_INTERNAL') || die();
  * Defines a rule that will include all students above or below a particular percentage of
  * the total grade.
  */
-class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
+class range_sample_type extends sample_base {
 
     public function adjust_set(array &$moderationset, array &$potentialallocatables, $stage) {
 
@@ -99,7 +98,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                 $scale[] = $i;
             }
         } else {
-            $gradescale = \grade_scale::fetch(['id' => abs($this->coursework->grade)]);
+            $gradescale = grade_scale::fetch(['id' => abs($this->coursework->grade)]);
             $scale = explode(",", $gradescale->scale);
         }
 
@@ -344,7 +343,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         if ($samplerules) {
             foreach ($samplerules as $i => $val) {
 
-                $dbrecord = new \stdClass();
+                $dbrecord = new stdClass();
 
                 $dbrecord->ruletype = $sampletype[$i];
                 $dbrecord->lowerlimit = $samplefrom[$i];

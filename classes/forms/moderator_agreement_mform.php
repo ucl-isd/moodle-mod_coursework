@@ -26,8 +26,6 @@ namespace mod_coursework\forms;
 
 global $CFG;
 
-use coding_exception;
-
 use mod_coursework\models\moderation;
 use moodleform;
 

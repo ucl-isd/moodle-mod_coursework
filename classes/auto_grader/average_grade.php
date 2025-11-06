@@ -26,6 +26,7 @@ use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\traits\autoagreement_functions;
+use stdClass;
 
 /**
  * Class average_grade is responsible for calculating and applying the automatically agreed grade based on the initial
@@ -160,7 +161,7 @@ class average_grade implements auto_grader {
     private function update_final_feedback($feedback) {
         global $DB;
 
-        $updatedfeedback = new \stdClass();
+        $updatedfeedback = new stdClass();
         $updatedfeedback->id = $feedback->id;
         $updatedfeedback->grade = $this->automatic_grade();
         $updatedfeedback->lasteditedbyuser = 0;

@@ -27,11 +27,10 @@ namespace mod_coursework\render_helpers\grading_report\data;
 
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\coursework;
-use mod_coursework\models\deadline_extension;
-use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
 use moodle_url;
 use stdClass;
+use stored_file;
 
 /**
  * Class submission_cell_data provides data for submission cell in tr template.
@@ -102,12 +101,12 @@ class submission_cell_data extends cell_data_base {
     /**
      * Prepare data for a single file.
      *
-     * @param \stored_file $file The file to prepare data for.
+     * @param stored_file $file The file to prepare data for.
      * @param coursework $coursework The coursework instance.
      * @param int $submissionid The submission id.
      * @return stdClass File data object.
      */
-    protected function prepare_file_data(\stored_file $file, coursework $coursework, int $submissionid): stdClass {
+    protected function prepare_file_data(stored_file $file, coursework $coursework, int $submissionid): stdClass {
         $fileinfo = new stdClass();
         $fileinfo->filename = $file->get_filename();
         $fileinfo->url = moodle_url::make_file_url('/pluginfile.php', '/' . implode('/', [
@@ -126,11 +125,11 @@ class submission_cell_data extends cell_data_base {
     /**
      * Get plagiarism links for a file.
      *
-     * @param \stored_file $file The file to get plagiarism links for.
+     * @param stored_file $file The file to get plagiarism links for.
      * @param coursework $coursework The coursework instance.
      * @return string HTML of plagiarism links.
      */
-    protected function get_plagiarism_links(\stored_file $file, coursework $coursework): string {
+    protected function get_plagiarism_links(stored_file $file, coursework $coursework): string {
         global $CFG;
         require_once("$CFG->libdir/plagiarismlib.php");
         $params = [

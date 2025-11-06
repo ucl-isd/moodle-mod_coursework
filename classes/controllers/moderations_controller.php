@@ -22,15 +22,15 @@
 
 namespace mod_coursework\controllers;
 
+use coding_exception;
+use core_user;
 use mod_coursework\ability;
 use mod_coursework\exceptions\access_denied;
 use mod_coursework\forms\moderator_agreement_mform;
 use mod_coursework\models\feedback;
-use mod_coursework\models\submission;
-use mod_coursework\models\user;
 use mod_coursework\models\moderation;
+use mod_coursework\models\submission;
 use moodle_exception;
-use stdClass;
 
 defined('MOODLE_INTERNAL' || die());
 
@@ -61,7 +61,7 @@ class moderations_controller extends controller_base {
     /**
      * This deals with the page that the assessors see when they want to add component feedbacks.
      *
-     * @throws \moodle_exception
+     * @throws moodle_exception
      */
     protected function new_moderation() {
 
@@ -139,7 +139,7 @@ class moderations_controller extends controller_base {
         $submission = submission::find($this->params['submissionid']);
         $pathparams = [
             'submission' => $submission,
-            'moderator' => \core_user::get_user($this->params['moderatorid']),
+            'moderator' => core_user::get_user($this->params['moderatorid']),
             'stage' => 'moderator',
         ];
         $url = $this->get_router()->get_path('new moderation', $pathparams, true);
@@ -199,7 +199,7 @@ class moderations_controller extends controller_base {
     /**
      * Shows the moderation as 'view only'
      *
-     * @throws \coding_exception
+     * @throws coding_exception
      * @throws access_denied
      */
     protected function show_moderation() {

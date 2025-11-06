@@ -25,6 +25,7 @@
 
 use core\output\notification;
 use mod_coursework\models\coursework;
+
 require_once(dirname(__FILE__).'/../../../config.php');
 
 $cmid = required_param('cmid', PARAM_INT);
@@ -50,6 +51,6 @@ if (!$canrelease) {
 try {
     $coursework->publish_grades();
     redirect($returnurl, get_string('marks_released', 'mod_coursework'));
-} catch (\Exception $e) {
+} catch (Exception $e) {
     redirect($returnurl, $e->getMessage(), null, notification::NOTIFY_ERROR);
 }

@@ -21,7 +21,8 @@
  */
 
 namespace mod_coursework\export\csv\cells;
-use mod_coursework\models\submission;
+
+use coding_exception;
 
 /**
  * Class assessor_cell
@@ -50,7 +51,7 @@ class assessor_cell extends cell_base {
     /**
      * @param $stage
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function get_header($stage) {
         return  get_string('assessorcsv', 'coursework', $stage);

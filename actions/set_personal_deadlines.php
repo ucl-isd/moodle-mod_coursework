@@ -23,7 +23,6 @@
  */
 
 use mod_coursework\models\coursework;
-use mod_coursework\models\personal_deadline;
 
 require_once(dirname(__FILE__).'/../../../config.php');
 
@@ -46,7 +45,7 @@ require_login($course, true, $coursemodule);
 require_capability('mod/coursework:editpersonaldeadline', $PAGE->context, null, true, "Can't change personal deadlines here - permission denied.");
 
 $url = '/mod/coursework/actions/set_personal_deadlines.php';
-$link = new \moodle_url($url, ['id' => $coursemoduleid]);
+$link = new moodle_url($url, ['id' => $coursemoduleid]);
 $PAGE->set_url($link);
 $title = get_string('setpersonaldeadlinesfor', 'mod_coursework', $coursework->name);
 $PAGE->set_title($title);

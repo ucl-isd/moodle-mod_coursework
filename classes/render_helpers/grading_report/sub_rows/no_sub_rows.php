@@ -22,13 +22,15 @@
 
 namespace mod_coursework\render_helpers\grading_report\sub_rows;
 
+use mod_coursework\grading_table_row_base;
+
 /**
  * Class no_sub_rows
  */
 class no_sub_rows implements sub_rows_interface {
 
     /**
-     * @param \mod_coursework\grading_table_row_base $rowobject
+     * @param grading_table_row_base $rowobject
      * @param int $columnwidth
      * @return mixed
      */

@@ -22,8 +22,6 @@ namespace mod_coursework;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_coursework\ability;
-
 /**
  * Class ability_test is responsible for testing the ability class to make sure the mechanisms work.
  * @group mod_coursework

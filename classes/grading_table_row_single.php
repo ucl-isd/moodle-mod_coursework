@@ -22,8 +22,6 @@
 
 namespace mod_coursework;
 
-use coding_exception;
-
 defined('MOODLE_INTERNAL') || die();
 
 /**

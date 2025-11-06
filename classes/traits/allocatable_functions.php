@@ -21,7 +21,6 @@
  */
 
 namespace mod_coursework\traits;
-use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;

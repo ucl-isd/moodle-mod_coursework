@@ -22,13 +22,13 @@
 
 namespace mod_coursework;
 
+use grade_scale;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\null_feedback;
 use mod_coursework\models\submission;
-use mod_coursework\stages\base as stage_base;
 
 /**
  * Class grade_judge is responsible for deciding what the student's final grade should be, given
@@ -91,7 +91,7 @@ class grade_judge {
             return null;
         } else if ($this->coursework->grade <= -1) {
             // Scale
-            $scale = \grade_scale::fetch(['id' => abs($this->coursework->grade)]);
+            $scale = grade_scale::fetch(['id' => abs($this->coursework->grade)]);
             return $scale->get_nearest_item($grade);
         } else {
             return null;
@@ -193,7 +193,7 @@ class grade_judge {
             return true;
         } else if ($this->coursework->grade <= -1) {
             // Scale
-            $scale = \grade_scale::fetch(['id' => abs($this->coursework->grade)]);
+            $scale = grade_scale::fetch(['id' => abs($this->coursework->grade)]);
             $scale->load_items();
             return in_array($value, $scale->scale_items);
         }
@@ -209,7 +209,7 @@ class grade_judge {
 
         if ($this->coursework->grade <= -1) {
             // Scale
-            $scale = \grade_scale::fetch(['id' => abs($this->coursework->grade)]);
+            $scale = grade_scale::fetch(['id' => abs($this->coursework->grade)]);
             $scale->load_items();
             return array_search($value, $scale->scale_items) + 1;
         } else {

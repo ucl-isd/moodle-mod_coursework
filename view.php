@@ -28,8 +28,10 @@ header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache"); // HTTP/1.0
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 
+use mod_coursework\event\course_module_viewed;
+use mod_coursework\export\csv;
+use mod_coursework\export\grading_sheet;
 use mod_coursework\models\submission;
-use mod_coursework\warnings;
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
@@ -309,18 +311,18 @@ if ($exportgrades) {
 
     $timestamp = date('d_m_y @ H-i');
     $filename = get_string('finalgradesfor', 'coursework'). $coursework->name .' '.$timestamp;
-    $csv = new \mod_coursework\export\csv($coursework, $csvcells, $filename);
+    $csv = new csv($coursework, $csvcells, $filename);
     $csv->export();
 
 }
 
 if ($downloadgradingsheet) {
 
-    $csvcells = \mod_coursework\export\grading_sheet::cells_array($coursework);
+    $csvcells = grading_sheet::cells_array($coursework);
 
     $timestamp = date('d_m_y @ H-i');
     $filename = get_string('gradingsheetfor', 'coursework'). $coursework->name .' '.$timestamp;
-    $gradingsheet = new \mod_coursework\export\grading_sheet($coursework, $csvcells, $filename);
+    $gradingsheet = new grading_sheet($coursework, $csvcells, $filename);
     $gradingsheet->export();
 }
 
@@ -355,7 +357,7 @@ foreach ($capabilities as $capability) {
 }
 
 
-$event = \mod_coursework\event\course_module_viewed::create(
+$event = course_module_viewed::create(
     ['objectid' => $coursework->id, 'context' => $coursework->get_context()]
 );
 $event->trigger();

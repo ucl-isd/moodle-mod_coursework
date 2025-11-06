@@ -22,13 +22,16 @@
 
 namespace mod_coursework\utils;
 
+use editor_tiny\editor;
+use stdClass;
+
 /**
  * Subclass of editor_tiny for pop-up feedback form.
  *
  * @package mod_coursework
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cs_editor extends \editor_tiny\editor {
+class cs_editor extends editor {
     /**
      *
      * @return array
@@ -54,7 +57,7 @@ class cs_editor extends \editor_tiny\editor {
             'context' => $context->id,
 
             // File picker options.
-            'filepicker' => new \stdClass(),
+            'filepicker' => new stdClass(),
 
             // Default draft item ID.
             'draftitemid' => 0,

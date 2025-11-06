@@ -23,11 +23,9 @@
 namespace mod_coursework\render_helpers\grading_report\cells;
 
 use coding_exception;
-use html_table_cell;
 use mod_coursework\ability;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\feedback;
-use mod_coursework\models\user;
 use mod_coursework\stages\moderator;
 use pix_icon;
 
@@ -120,7 +118,7 @@ class moderation_cell extends cell_base {
      * @param grading_table_row_base $rowobject
      * @param feedback $feedback
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     protected function add_edit_feedback_link_to_cell($rowobject, $feedback) {
         global $OUTPUT;
@@ -144,7 +142,7 @@ class moderation_cell extends cell_base {
     /**
      * @param grading_table_row_base $rowobject
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     protected function add_new_feedback_link_to_cell($rowobject) {
         global $OUTPUT;

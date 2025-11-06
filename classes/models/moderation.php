@@ -22,13 +22,10 @@
 
 namespace mod_coursework\models;
 
-use context;
 use core_user;
+use mod_coursework\allocation\allocatable;
 use mod_coursework\framework\table_base;
-use mod_coursework\ability;
 use mod_coursework\stages\base as stage_base;
-use stdClass;
-use mod_coursework\feedback_files;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -193,7 +190,7 @@ class moderation extends table_base {
     }
 
     /**
-     * @return \mod_coursework\allocation\allocatable
+     * @return allocatable
      */
     public function get_allocatable() {
         return $this->get_submission()->get_allocatable();

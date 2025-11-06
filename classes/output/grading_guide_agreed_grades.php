@@ -24,7 +24,12 @@
 
 namespace mod_coursework\output;
 
+use core\output\renderer_base;
+use gradingform_controller;
 use mod_coursework\models\submission;
+use renderable;
+use stdClass;
+use templatable;
 
 /**
  * Output class to assemble data needed to display the marking guide form for agreed marks.
@@ -33,7 +38,7 @@ use mod_coursework\models\submission;
  * @copyright  2025 UCL
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class grading_guide_agreed_grades implements \renderable, \templatable {
+class grading_guide_agreed_grades implements renderable, templatable {
 
     /**
      * Moodle form attributes.
@@ -49,9 +54,9 @@ class grading_guide_agreed_grades implements \renderable, \templatable {
 
     /**
      * Grading form controller.
-     * @var \gradingform_controller
+     * @var gradingform_controller
      */
-    protected \gradingform_controller $gradingcontroller;
+    protected gradingform_controller $gradingcontroller;
 
     /**
      * Submission we are grading.
@@ -62,7 +67,7 @@ class grading_guide_agreed_grades implements \renderable, \templatable {
      * Constructor.
      */
     public function __construct(
-        array $formattributes, array $formelements, \gradingform_controller $gradingcontroller, submission $submission
+        array $formattributes, array $formelements, gradingform_controller $gradingcontroller, submission $submission
     ) {
         $this->formattributes = $formattributes;
         $this->formelements = $formelements;
@@ -73,11 +78,11 @@ class grading_guide_agreed_grades implements \renderable, \templatable {
     /**
      * Export this data so it can be used as the context for a mustache template.
      *
-     * @param \core\output\renderer_base $output Renderer base.
-     * @return \stdClass
+     * @param renderer_base $output Renderer base.
+     * @return stdClass
      * @see gradingform_controller for $gradingcontroller class.
      */
-    public function export_for_template(\core\output\renderer_base $output): \stdClass {
+    public function export_for_template(renderer_base $output): stdClass {
         $formattributes = $this->formattributes;
         $formelements = $this->formelements;
         $gradingcontroller = $this->gradingcontroller;

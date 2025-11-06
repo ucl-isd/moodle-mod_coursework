@@ -20,13 +20,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_coursework\framework\table_base;
+
 /**
  * Class framework_user_table allows us to test the table_base class on a reasonably stable table
  * with known columns.
  *
  * @property mixed username
  */
-class framework_user_table extends \mod_coursework\framework\table_base {
+class framework_user_table extends table_base {
 
     /**
      * @var string

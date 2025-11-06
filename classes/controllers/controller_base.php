@@ -26,10 +26,13 @@ use coding_exception;
 use context;
 use core\exception\invalid_parameter_exception;
 use mod_coursework\framework\table_base;
-use mod_coursework\router;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
+use mod_coursework\router;
+use mod_coursework_object_renderer;
+use mod_coursework_page_renderer;
 use moodle_exception;
+use stdClass;
 
 defined('MOODLE_INTERNAL' || die());
 
@@ -61,7 +64,7 @@ class controller_base {
     protected $submission;
 
     /**
-     * @var \stdClass
+     * @var stdClass
      */
     protected $coursemodule;
 
@@ -71,7 +74,7 @@ class controller_base {
     protected $coursework;
 
     /**
-     * @var \stdClass
+     * @var stdClass
      */
     protected $course;
 
@@ -211,7 +214,7 @@ class controller_base {
     }
 
     /**
-     * @return \mod_coursework_object_renderer
+     * @return mod_coursework_object_renderer
      */
     protected function get_object_renderer() {
         global $PAGE;
@@ -220,7 +223,7 @@ class controller_base {
     }
 
     /**
-     * @return \mod_coursework_page_renderer
+     * @return mod_coursework_page_renderer
      */
     protected function get_page_renderer() {
         global $PAGE;
@@ -253,7 +256,7 @@ class controller_base {
      * Tells us whether the user pressed the cancel button in a moodle form
      *
      * @return bool
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     protected function cancel_button_was_pressed() {
         return (bool)optional_param('cancel', false, PARAM_ALPHA);

@@ -24,16 +24,13 @@
  * Step definitions for the Coursework module Behat tests.
  */
 
-use Behat\Behat\Context\Step\Given as Given;
-use Behat\Behat\Context\Step\When as When;
-use Behat\Behat\Context\Step\Then as Then;
-use Behat\Mink\Exception\ExpectationException as ExpectationException;
 use Behat\Gherkin\Node\TableNode;
-use mod_coursework\models\group;
-use mod_coursework\router;
+use Behat\Mink\Exception\ExpectationException as ExpectationException;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
+use mod_coursework\models\group;
 use mod_coursework\models\submission;
+use mod_coursework\router;
 use mod_coursework\stages\base as stage_base;
 
 require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');

@@ -21,10 +21,11 @@
  */
 
 namespace mod_coursework\allocation\table\cell;
+use coding_exception;
+use mod_coursework\allocation\allocatable;
 use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 use mod_coursework\stages\base as stage_base;
-use mod_coursework\allocation\allocatable;
 
 /**
  * This class and it's descendants are responsible for processing the data from the allocation form.
@@ -167,7 +168,7 @@ class processor {
      * returns whether the current record was automatically included in the sample set at the current stage
      *
      * @return bool
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     private function has_automatic_sampling() {
 

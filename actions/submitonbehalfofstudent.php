@@ -23,8 +23,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_coursework\forms\choose_student_for_submission_mform;
 use mod_coursework\models\coursework;
-use mod_coursework\models\submission;
+use mod_coursework\models\user;
 
 require_once(dirname(__FILE__).'/../../../config.php');
 
@@ -35,7 +36,7 @@ $coursemodule = $DB->get_record('course_modules', ['id' => $coursemoduleid]);
 $coursework = coursework::find($coursemodule->instance);
 $course = $DB->get_record('course', ['id' => $coursemodule->course]);
 $studentid = optional_param('userid', 0, PARAM_INT);
-$student = \mod_coursework\models\user::find($studentid);
+$student = user::find($studentid);
 
 // Get an empty submission for the form even if we know there won't be one.
 $submission = $coursework->get_user_submission($student);
@@ -55,7 +56,7 @@ $PAGE->set_url($url, $params);
 // In case we had the choose student form cancelled.
 $customdata = new stdClass();
 $customdata->coursework = $coursework;
-$chooseform = new \mod_coursework\forms\choose_student_for_submission_mform($PAGE->url->out(), $customdata);
+$chooseform = new choose_student_for_submission_mform($PAGE->url->out(), $customdata);
 if ($chooseform->is_cancelled()) {
     redirect(new moodle_url('mod/coursework/view.php', ['id' => $coursemoduleid]));
 }

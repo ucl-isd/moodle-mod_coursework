@@ -28,9 +28,9 @@
 
 namespace mod_coursework\models;
 
-use mod_coursework\framework\table_base;
-use mod_coursework\allocation\allocatable;
+use AllowDynamicProperties;
 use mod_coursework\allocation\moderatable;
+use mod_coursework\framework\table_base;
 
 /**
  * @property int courseworkid
@@ -38,7 +38,7 @@ use mod_coursework\allocation\moderatable;
  * @package mod_coursework\models
  *
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class assessment_set_membership extends table_base implements moderatable {
 
     /**

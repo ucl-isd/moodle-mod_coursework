@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\notification;
+
 require_once(dirname(__FILE__) . '/../../../../config.php');
 
 global $CFG, $PAGE, $USER;
@@ -31,7 +33,7 @@ $delete = optional_param('deleteextension', false, PARAM_BOOL);
 // Extension ID is clearer and we should switch id to that over time.
 $params = ['extensionid' => $extensionid, 'id' => $extensionid];
 $url = '/mod/coursework/actions/deadline_extensions/update.php';
-$link = new \moodle_url($url, $params);
+$link = new moodle_url($url, $params);
 $PAGE->set_url($link);
 
 if (!$delete) {
@@ -39,7 +41,7 @@ if (!$delete) {
     $controller->update_deadline_extension();
 } else {
     $deadlineextension = mod_coursework\models\deadline_extension::find($extensionid);
-    $redirecturl = new \moodle_url('/mod/coursework/actions/deadline_extensions/edit.php', ['id' => $extensionid]);
+    $redirecturl = new moodle_url('/mod/coursework/actions/deadline_extensions/edit.php', ['id' => $extensionid]);
     if (!$deadlineextension || !$deadlineextension->courseworkid) {
         redirect(
             $redirecturl,
@@ -72,13 +74,13 @@ if (!$delete) {
             $message = $success
                 ? get_string('extension_deleted', 'mod_coursework', $deadlineextension->get_grantee_user_name())
                 : get_string('error');
-            $messagetype = $success ? \core\notification::SUCCESS : \core\notification::ERROR;
+            $messagetype = $success ? notification::SUCCESS : notification::ERROR;
             redirect($courseworkurl, $message, null, $messagetype);
         } else {
-            $PAGE->set_context(\context_module::instance($cm->id));
+            $PAGE->set_context(context_module::instance($cm->id));
             $PAGE->set_cm($cm);
 
-            $deleteurl = new \moodle_url($PAGE->url);
+            $deleteurl = new moodle_url($PAGE->url);
             $deleteurl->param('sure', '1');
             $deleteurl->param('deleteextension', '1');
             $btn = new single_button(

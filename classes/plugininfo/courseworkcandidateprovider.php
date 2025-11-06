@@ -16,6 +16,8 @@
 
 namespace mod_coursework\plugininfo;
 
+use core\plugininfo\base;
+
 /**
  * Plugin info class for coursework candidate number providers.
  *
@@ -24,7 +26,7 @@ namespace mod_coursework\plugininfo;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Alex Yeung <k.yeung@ucl.ac.uk>
  */
-class courseworkcandidateprovider extends \core\plugininfo\base {
+class courseworkcandidateprovider extends base {
 
     /**
      * Should there be a way to uninstall the plugin via the administration UI.

@@ -22,12 +22,14 @@
 
 namespace mod_coursework\models;
 
+use AllowDynamicProperties;
+
 /**
  * Class null_feedback is responsible for implementing the null objecti pattern for the feedback
  * class.
  *
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class null_feedback {
 
     /**

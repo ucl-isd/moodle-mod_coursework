@@ -21,12 +21,12 @@
  */
 
 namespace mod_coursework\export\csv\cells;
-use mod_coursework\models\submission;
+use coding_exception;
 use mod_coursework\ability;
-use mod_coursework\models\user;
-use mod_coursework\models\feedback;
 use mod_coursework\grade_judge;
-use mod_coursework\export;
+use mod_coursework\models\feedback;
+use mod_coursework\models\submission;
+
 /**
  * Class assessorgrade_cell
  */
@@ -84,7 +84,7 @@ class assessorgrade_cell extends cell_base {
     /**
      * @param $stage
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function get_header($stage) {
 
@@ -113,7 +113,7 @@ class assessorgrade_cell extends cell_base {
         $agreedgradecap = ['mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade'];
         $initialgradecap = ['mod/coursework:addinitialgrade', 'mod/coursework:editinitialgrade'];
         $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
-        $submission = \mod_coursework\models\submission::find($subdbrecord);
+        $submission = submission::find($subdbrecord);
 
         if (has_any_capability($agreedgradecap, $PAGE->context) && has_any_capability($initialgradecap, $PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context)

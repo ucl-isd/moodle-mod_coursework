@@ -20,9 +20,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use Behat\Mink\Exception\ElementNotFoundException;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\user;
-use Behat\Mink\Exception\ElementNotFoundException;
 
 defined('MOODLE_INTERNAL') || die();
 

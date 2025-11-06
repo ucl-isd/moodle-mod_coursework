@@ -24,6 +24,9 @@
  * Creates a submission instance and redirects to the coursework page.
  */
 
+use mod_coursework\exceptions\access_denied;
+use mod_coursework\models\coursework;
+
 require_once(dirname(__FILE__) . '/../../../../config.php');
 
 global $USER;
@@ -35,7 +38,7 @@ $submissionid = optional_param('submissionid', 0, PARAM_INT);
 $finalised = (bool)optional_param('finalisebutton', 0, PARAM_TEXT);
 
 if (!in_array($allocatabletype, ['user', 'group'])) {
-    throw new \mod_coursework\exceptions\access_denied(\mod_coursework\models\coursework::find($courseworkid),
+    throw new access_denied(coursework::find($courseworkid),
                                                        'Bad alloctable type');
 }
 

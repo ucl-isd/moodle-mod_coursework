@@ -22,6 +22,8 @@
 
 namespace mod_coursework\models;
 
+use context_course;
+
 class outstanding_marking {
 
     /**
@@ -31,7 +33,7 @@ class outstanding_marking {
      */
     public function get_to_grade_initial_count($cwkrecord, $userid) {
 
-        $coursework = new \mod_coursework\models\coursework($cwkrecord);
+        $coursework = new coursework($cwkrecord);
 
         $initialsubmissions = [];
 
@@ -60,7 +62,7 @@ class outstanding_marking {
      */
     public function get_to_grade_agreed_count($cwkrecord, $userid) {
 
-        $coursework = new \mod_coursework\models\coursework($cwkrecord);
+        $coursework = new coursework($cwkrecord);
 
         $agreedsubmissions = [];
 
@@ -271,7 +273,7 @@ class outstanding_marking {
      */
     private function has_agreed_grade($courseid, $userid) {
 
-        $coursecontext = \context_course::instance($courseid);
+        $coursecontext = context_course::instance($courseid);
 
         return  has_capability('mod/coursework:addagreedgrade', $coursecontext, $userid) || has_capability('mod/coursework:addallocatedagreedgrade', $coursecontext, $userid);
     }
@@ -283,7 +285,7 @@ class outstanding_marking {
      */
     private function has_initial_grade($courseid, $userid) {
 
-        $coursecontext = \context_course::instance($courseid);
+        $coursecontext = context_course::instance($courseid);
 
         return  has_capability('mod/coursework:addinitialgrade', $coursecontext, $userid);
     }
@@ -295,7 +297,7 @@ class outstanding_marking {
      */
     private function should_get_to_mark_initial_grade_info($courseworkid, $userid) {
 
-        $coursework = new \mod_coursework\models\coursework($courseworkid);
+        $coursework = new coursework($courseworkid);
 
         // Findout if the user can create an initial grade
         $userhasinitialgradecapability = $this->has_initial_grade($coursework->get_course()->id, $userid);
@@ -310,7 +312,7 @@ class outstanding_marking {
      */
     private function should_get_to_mark_agreed_grade_info($courseworkid, $userid) {
 
-        $coursework = new \mod_coursework\models\coursework($courseworkid);
+        $coursework = new coursework($courseworkid);
 
         // Findout if the user can create an initial grade
         $userhasagreedgradecapability = $this->has_agreed_grade($coursework->get_course()->id, $userid);

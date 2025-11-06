@@ -21,11 +21,11 @@
  */
 
 namespace mod_coursework\export;
-use mod_coursework\export\csv;
-use mod_coursework\models\submission;
-use mod_coursework\models\user;
+use coding_exception;
 use mod_coursework\ability;
 use mod_coursework\models\coursework;
+use mod_coursework\models\group;
+use mod_coursework\models\submission;
 
 class grading_sheet extends csv {
 
@@ -125,7 +125,7 @@ class grading_sheet extends csv {
         $csvdata = [];
         // groups
         if ($this->coursework->is_configured_to_have_group_submissions()) {
-            $group = \mod_coursework\models\group::find($submission->allocatableid);
+            $group = group::find($submission->allocatableid);
             $csvdata[] = $this->add_cells_to_array($submission, $group, $this->csvcells);
 
         } else {
@@ -145,7 +145,7 @@ class grading_sheet extends csv {
      * Put together cells that will be used in the csv file
      * @param coursework $coursework
      * @return array
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public static function cells_array($coursework) {
         global $PAGE;

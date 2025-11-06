@@ -22,8 +22,8 @@
 
 namespace mod_coursework\models;
 
+use AllowDynamicProperties;
 use mod_coursework\framework\table_base;
-use mod_coursework\ability;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -35,7 +35,7 @@ defined('MOODLE_INTERNAL') || die();
  * @property mixed allocatableid
  * @property mixed allocatabletype
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class allocation extends table_base {
 
     /**

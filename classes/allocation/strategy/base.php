@@ -27,6 +27,7 @@ use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 use mod_coursework\models\user;
 use mod_coursework\stages\base as stage_base;
+use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -136,7 +137,7 @@ abstract class base {
      *
      * @param $type
      * @param bool $reset we cache this stuff, so reset = true will wipe the cache
-     * @return \stdClass[]
+     * @return stdClass[]
      */
     final protected function get_existing_config_data($type = 'assessor', $reset = false) {
 

@@ -23,7 +23,6 @@ namespace mod_coursework;
  */
 
 use mod_coursework\models\submission;
-use mod_coursework\router;
 
 /**
  * Class router_test

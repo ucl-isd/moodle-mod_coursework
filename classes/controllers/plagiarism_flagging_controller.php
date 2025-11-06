@@ -22,15 +22,15 @@
 
 namespace mod_coursework\controllers;
 
+use AllowDynamicProperties;
+use context_module;
 use mod_coursework\ability;
-use mod_coursework\exceptions\access_denied;
+use mod_coursework\event\coursework_plagiarism_flag_updated;
 use mod_coursework\forms\plagiarism_flagging_mform;
+use mod_coursework\models\moderation;
 use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
-use mod_coursework\models\user;
-use mod_coursework\models\moderation;
 use moodle_exception;
-use stdClass;
 
 defined('MOODLE_INTERNAL' || die());
 
@@ -46,7 +46,7 @@ require_once($CFG->dirroot . '/mod/coursework/renderer.php');
  * It is the beginning of the process of tidying things up to make them a bit more MVC where possible.
  *
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class plagiarism_flagging_controller extends controller_base {
 
     /**
@@ -57,7 +57,7 @@ class plagiarism_flagging_controller extends controller_base {
     /**
      * This deals with the page that the assessors see when they want to add component feedbacks.
      *
-     * @throws \moodle_exception
+     * @throws moodle_exception
      */
     protected function new_plagiarism_flag() {
 
@@ -174,7 +174,7 @@ class plagiarism_flagging_controller extends controller_base {
         // add to log here
         $oldstatus = $DB->get_field(plagiarism_flag::get_table_name(), 'status', ['id' => $flagid]); // Retrieve old status before saving new
         $params = [
-            'context' => \context_module::instance($this->coursework->get_course_module()->id),
+            'context' => context_module::instance($this->coursework->get_course_module()->id),
             'courseid' => $this->coursework->get_course()->id,
             'objectid' => $this->coursework->id,
             'other' => [
@@ -186,7 +186,7 @@ class plagiarism_flagging_controller extends controller_base {
             ],
         ];
 
-        $event = \mod_coursework\event\coursework_plagiarism_flag_updated::create($params);
+        $event = coursework_plagiarism_flag_updated::create($params);
         $event->trigger();
 
         $plagiarismflag->save();

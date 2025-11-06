@@ -22,15 +22,18 @@
 
 namespace mod_coursework\controllers;
 
+use core\exception\moodle_exception;
+use core\output\notification;
+use core_user;
+use Exception;
 use mod_coursework\ability;
 use mod_coursework\auto_grader\auto_grader;
 use mod_coursework\exceptions\access_denied;
 use mod_coursework\forms\assessor_feedback_mform;
-use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
-use core\exception\moodle_exception;
+use moodle_url;
 
 defined('MOODLE_INTERNAL' || die());
 
@@ -69,7 +72,7 @@ class feedback_controller extends controller_base {
         global $PAGE, $USER;
 
         if(empty($this->coursework->enablepdfjs())) {
-            throw new \Exception('coursework enablepdfjs not enabled');
+            throw new Exception('coursework enablepdfjs not enabled');
         }
 
         $urlparams = ['submissionid' => $this->params['submissionid']];
@@ -184,7 +187,7 @@ class feedback_controller extends controller_base {
         $submission = submission::find($this->params['submissionid']);
         $pathparams = [
             'submission' => $submission,
-            'assessor' => \core_user::get_user($this->params['assessorid']),
+            'assessor' => core_user::get_user($this->params['assessorid']),
             'stage' => $teacherfeedback->get_stage(),
 
         ];
@@ -211,7 +214,7 @@ class feedback_controller extends controller_base {
 
         $courseworkpageurl = $this->get_path('coursework', ['coursework' => $teacherfeedback->get_coursework()]);
         if ($form->is_cancelled()) {
-            redirect($courseworkpageurl, get_string('cancelled'), null, \core\output\notification::NOTIFY_SUCCESS);
+            redirect($courseworkpageurl, get_string('cancelled'), null, notification::NOTIFY_SUCCESS);
         }
 
         $data = $form->get_data();
@@ -235,7 +238,7 @@ class feedback_controller extends controller_base {
             redirect($courseworkpageurl,
                 get_string('changessaved', 'mod_coursework'),
                 null,
-                \core\output\notification::NOTIFY_SUCCESS
+                notification::NOTIFY_SUCCESS
             );
         } else {
             $renderer = $this->get_page_renderer();
@@ -249,7 +252,7 @@ class feedback_controller extends controller_base {
     protected function update_feedback() {
         global $USER, $PAGE;
 
-        $PAGE->set_url(new \moodle_url('/mod/coursework/actions/feedbacks/update.php', $this->params));
+        $PAGE->set_url(new moodle_url('/mod/coursework/actions/feedbacks/update.php', $this->params));
         $teacherfeedback = new feedback($this->params['feedbackid']);
         $teacherfeedback->lasteditedbyuser = $USER->id;
         $teacherfeedback->finalised = $this->params['finalised'] ? 1 : 0;
@@ -268,7 +271,7 @@ class feedback_controller extends controller_base {
                 $PAGE->set_url('/mod/coursework/actions/feedbacks/edit.php', $urlparams);
 
                 // Ask the user for confirmation.
-                $confirmurl = new \moodle_url('/mod/coursework/actions/feedbacks/update.php');
+                $confirmurl = new moodle_url('/mod/coursework/actions/feedbacks/update.php');
                 $confirmurl->param('confirm', 1);
                 $confirmurl->param('removefeedbackbutton', 1);
                 $confirmurl->param('feedbackid', $this->params['feedbackid']);
@@ -284,8 +287,8 @@ class feedback_controller extends controller_base {
                  // $OUTPUT->confirm(get_string('confirmremovefeedback', 'mod_coursework'), $confirmurl, $PAGE->url);
 
             } else {
-                \mod_coursework\models\feedback::remove_cache($teacherfeedback->get_coursework_id());
-                \mod_coursework\models\submission::remove_cache($teacherfeedback->get_coursework_id());
+                feedback::remove_cache($teacherfeedback->get_coursework_id());
+                submission::remove_cache($teacherfeedback->get_coursework_id());
 
                 // Remove associated files.
                 $fs = get_file_storage();
@@ -297,7 +300,7 @@ class feedback_controller extends controller_base {
                 );
 
                 $teacherfeedback->destroy();
-                redirect($courseworkpageurl, get_string('deleted'), null, \core\output\notification::NOTIFY_ERROR);
+                redirect($courseworkpageurl, get_string('deleted'), null, notification::NOTIFY_ERROR);
             }
         }
 
@@ -307,7 +310,7 @@ class feedback_controller extends controller_base {
 
         $courseworkpageurl = $this->get_path('coursework', ['coursework' => $teacherfeedback->get_coursework()]);
         if ($form->is_cancelled()) {
-            redirect($courseworkpageurl, get_string('cancelled'), null, \core\output\notification::NOTIFY_SUCCESS);
+            redirect($courseworkpageurl, get_string('cancelled'), null, notification::NOTIFY_SUCCESS);
         } else if ($form->get_data()) {
             $teacherfeedback = $form->process_data();
 
@@ -324,7 +327,7 @@ class feedback_controller extends controller_base {
                 $courseworkpageurl,
                 get_string('changessaved', 'mod_coursework'),
                 null,
-                \core\output\notification::NOTIFY_SUCCESS
+                notification::NOTIFY_SUCCESS
             );
         } else {
             // Grade validation error - redisplay form with messages.

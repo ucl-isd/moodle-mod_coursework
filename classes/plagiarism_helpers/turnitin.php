@@ -22,6 +22,11 @@
 
 namespace mod_coursework\plagiarism_helpers;
 
+use coding_exception;
+use dml_exception;
+use Exception;
+use moodle_exception;
+
 /**
  * Class turnitin
  * @package mod_coursework\plagiarism_helpers
@@ -37,9 +42,9 @@ class turnitin extends base {
 
     /**
      * @return bool
-     * @throws \Exception
-     * @throws \dml_exception
-     * @throws \moodle_exception
+     * @throws Exception
+     * @throws dml_exception
+     * @throws moodle_exception
      */
     public function enabled() {
         global $DB, $CFG;
@@ -63,7 +68,7 @@ class turnitin extends base {
 
     /**
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function human_readable_name() {
         return get_string('turnitin', 'plagiarism_turnitin');

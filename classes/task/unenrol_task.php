@@ -17,6 +17,10 @@
 namespace mod_coursework\models;
 namespace mod_coursework\task;
 
+use core\task\scheduled_task;
+use mod_coursework\allocation\auto_allocator;
+use mod_coursework\models\coursework;
+
 /**
  * A scheduled task for the coursework module cron.
  *
@@ -25,7 +29,7 @@ namespace mod_coursework\task;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class unenrol_task extends \core\task\scheduled_task {
+class unenrol_task extends scheduled_task {
 
     /**
      * Get a descriptive name for this task (shown to admins).
@@ -47,12 +51,12 @@ class unenrol_task extends \core\task\scheduled_task {
 
         if (!empty($courseworkids)) {
             foreach ($courseworkids as $courseworkid) {
-                $coursework = \mod_coursework\models\coursework::find($courseworkid);
+                $coursework = coursework::find($courseworkid);
                 if (empty($coursework)) {
                     continue;
                 }
 
-                $allocator = new \mod_coursework\allocation\auto_allocator($coursework);
+                $allocator = new auto_allocator($coursework);
                 $allocator->process_allocations();
 
                 $DB->set_field('coursework', 'processunenrol', 0, ['id' => $coursework->id()]);

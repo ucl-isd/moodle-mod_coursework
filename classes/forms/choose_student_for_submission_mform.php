@@ -23,6 +23,7 @@
 
 namespace mod_coursework\forms;
 
+use core_user\fields;
 use mod_coursework\models\coursework;
 use moodleform;
 
@@ -54,7 +55,7 @@ class choose_student_for_submission_mform extends moodleform {
         }
 
         $options = [];
-        $allnames = \core_user\fields::get_name_fields();
+        $allnames = fields::get_name_fields();
 
         foreach ($students as $student) {
 

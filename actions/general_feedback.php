@@ -35,7 +35,7 @@ require_login($course, false, $cm);
 $coursework = $DB->get_record('coursework', ['id' => $cm->instance]);
 
 if (!has_capability('mod/coursework:addinitialgrade', $PAGE->context)) {
-    throw new \moodle_exception('access_denied', 'coursework');
+    throw new moodle_exception('access_denied', 'coursework');
 }
 
 $url = '/mod/coursework/actions/general_feedback.php';

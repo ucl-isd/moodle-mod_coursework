@@ -66,7 +66,7 @@ class router {
      * @param array $items named array keys so we can construct meaningful paths.
      * @param bool $asurlobject return the moodle_url or a string of the path?
      * @param bool $escaped
-     * @throws \coding_exception
+     * @throws coding_exception
      * @return moodle_url|string url
      */
     public function get_path($pathname, $items = [], $asurlobject = false, $escaped = true) {

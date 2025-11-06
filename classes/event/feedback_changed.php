@@ -22,6 +22,8 @@
 
 namespace mod_coursework\event;
 
+use core\event\base;
+
 /**
  * Class feedback_changed is responsible for listening for changes to the feedbacks that have been
  * given to a student submission and to take action if needed. The main use case is for automatic
@@ -29,7 +31,7 @@ namespace mod_coursework\event;
  *
  * @package mod_coursework\event
  */
-class feedback_changed extends \core\event\base {
+class feedback_changed extends base {
 
     /**
      * Override in subclass.

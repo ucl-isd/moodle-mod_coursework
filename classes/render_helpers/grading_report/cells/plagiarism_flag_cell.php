@@ -25,11 +25,7 @@ use coding_exception;
 use html_writer;
 use mod_coursework\ability;
 use mod_coursework\grading_table_row_base;
-use mod_coursework\models\submission;
-use mod_coursework\models\user;
 use mod_coursework\models\plagiarism_flag;
-use mod_coursework_submission_files;
-use moodle_url;
 use pix_icon;
 
 /**
@@ -103,7 +99,7 @@ class plagiarism_flag_cell extends cell_base {
     /**
      * @param $rowobject
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     private function new_flag_plagiarism_button($rowobject) {
         global $OUTPUT;
@@ -126,7 +122,7 @@ class plagiarism_flag_cell extends cell_base {
     /**
      * @param $rowobject
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     private function edit_flag_plagiarism_button($rowobject) {
         global $OUTPUT;

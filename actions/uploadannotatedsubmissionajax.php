@@ -28,6 +28,7 @@
  * AJAX_SCRIPT - exception will be converted into JSON
  */
 
+use core\antivirus\manager;
 use mod_coursework\ability;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
@@ -55,7 +56,7 @@ if (!$submission) {
 $coursework = coursework::find($submission->courseworkid);
 
 if(empty($this->coursework->enablepdfjs())) {
-    throw new \Exception('coursework enablepdfjs not enabled');
+    throw new Exception('coursework enablepdfjs not enabled');
 }
 
 $user = user::find($USER);
@@ -73,7 +74,7 @@ $totalsize = 0;
 $files = [];
 foreach ($_FILES as $fieldname => $uploadedfile) {
     if (!empty($files)) {
-        throw new \Exception('too many files');
+        throw new Exception('too many files');
     }
 
     // Check upload errors.
@@ -106,7 +107,7 @@ foreach ($_FILES as $fieldname => $uploadedfile) {
     }
 
     // Scan for viruses.
-    \core\antivirus\manager::scan_file($_FILES[$fieldname]['tmp_name'], $_FILES[$fieldname]['name'], true);
+    manager::scan_file($_FILES[$fieldname]['tmp_name'], $_FILES[$fieldname]['name'], true);
 
     $file = new stdClass();
     $file->filename = clean_param($_FILES[$fieldname]['name'], PARAM_FILE);

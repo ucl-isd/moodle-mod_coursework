@@ -21,7 +21,10 @@
  */
 
 namespace mod_coursework\stages;
-use mod_coursework\models\user;
+
+use AllowDynamicProperties;
+use coding_exception;
+use mod_coursework\models\submission;
 
 /**
  * Class marking_stage represents a stage of the marking process. For a basic single marked coursework,
@@ -30,7 +33,7 @@ use mod_coursework\models\user;
  *
  * @package mod_coursework
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class assessor extends base {
 
     /**
@@ -49,7 +52,7 @@ class assessor extends base {
     const STAGE_ASSESSOR_3 = 'assessor_3';
 
     /**
-     * @throws \coding_exception
+     * @throws coding_exception
      * @return string
      */
     protected function strategy_name(): string {
@@ -82,7 +85,7 @@ class assessor extends base {
 
     /**
      * @param int $assessorid
-     * @param \mod_coursework\models\submission $submission
+     * @param submission $submission
      * @return bool
      */
     public function other_parallel_stage_has_feedback_from_this_assessor(int $assessorid, $submission) {

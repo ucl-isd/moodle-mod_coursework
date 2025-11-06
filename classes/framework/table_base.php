@@ -22,6 +22,12 @@
 
 namespace mod_coursework\framework;
 
+use AllowDynamicProperties;
+use cache;
+use coding_exception;
+use dml_exception;
+use dml_missing_record_exception;
+use dml_multiple_records_exception;
 use stdClass;
 
 /**
@@ -29,7 +35,7 @@ use stdClass;
  *
  * @property mixed fields
  */
-#[\AllowDynamicProperties] // Allow dynamic properties for table_base to avoid interferences elsewhere.
+#[AllowDynamicProperties] // Allow dynamic properties for table_base to avoid interferences elsewhere.
 abstract class table_base {
 
     /**
@@ -59,11 +65,11 @@ abstract class table_base {
     /**
      * Makes a new instance. Can be overridden to provide a factory
      *
-     * @param \stdClass|int|array $dbrecord
+     * @param stdClass|int|array $dbrecord
      * @param bool $reload
      * @return bool|self
-     * @throws \coding_exception
-     * @throws \dml_exception
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public static function find($dbrecord, $reload = true) {
 
@@ -109,12 +115,12 @@ abstract class table_base {
     /**
      * @param array $params
      * @return array
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public static function find_all($params  = []) {
 
         if (!is_array($params)) {
-            throw new \coding_exception('::all() require an array of parameters');
+            throw new coding_exception('::all() require an array of parameters');
         }
 
         self::remove_non_existant_columns($params);
@@ -217,11 +223,11 @@ abstract class table_base {
 
     /**
      * @param $colname
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     private static function ensure_column_exists($colname) {
         if (!static::column_exists($colname)) {
-            throw new \coding_exception('Column '.$colname.' does not exist in class '.static::get_table_name());
+            throw new coding_exception('Column '.$colname.' does not exist in class '.static::get_table_name());
         }
     }
 
@@ -229,7 +235,7 @@ abstract class table_base {
      * Magic method to get data from the DB table columns dynamically.
      *
      * @param string $requestedpropertyname
-     * @throws \coding_exception
+     * @throws coding_exception
      * @return mixed
      */
     public function __get($requestedpropertyname) {
@@ -286,7 +292,7 @@ abstract class table_base {
 
     /**
      * Returns the table in the DB that this data object will be written to.
-     * @throws \coding_exception
+     * @throws coding_exception
      * @return string
      */
     final public static function get_table_name() {
@@ -394,7 +400,7 @@ abstract class table_base {
      * Reloads the data from the DB columns.
      * @param bool $complainifnotfound
      * @return $this
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function reload($complainifnotfound = true) {
         global $DB;
@@ -443,13 +449,13 @@ abstract class table_base {
     /**
      * Wipes out the record from the database.
      *
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function destroy() {
         global $DB;
 
         if (empty($this->id)) {
-            throw new \coding_exception('Cannot destroy an object that has not yet been saved');
+            throw new coding_exception('Cannot destroy an object that has not yet been saved');
         }
 
         $this->before_destroy();
@@ -468,7 +474,7 @@ abstract class table_base {
      * @param $col
      * @param $val
      * @param bool $witherrorsformissingcolumns
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     private function apply_column_value_to_self($col, $val, $witherrorsformissingcolumns = true) {
         if ($witherrorsformissingcolumns) {
@@ -541,7 +547,7 @@ abstract class table_base {
 
     /**
      * @return stdClass|bool
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function get_raw_record() {
         global $DB;
@@ -562,9 +568,9 @@ abstract class table_base {
      * @param string $sql The bit after WHERE
      * @param array $params
      * @return array
-     * @throws \coding_exception
-     * @throws \dml_missing_record_exception
-     * @throws \dml_multiple_records_exception
+     * @throws coding_exception
+     * @throws dml_missing_record_exception
+     * @throws dml_multiple_records_exception
      */
     public static function find_by_sql($sql, $params) {
         global $DB;
@@ -580,7 +586,7 @@ abstract class table_base {
 
     /**
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function __toString() {
         $string = $this->get_table_name().' '.$this->id.' ';
@@ -607,11 +613,11 @@ abstract class table_base {
 
     /**
      * @return int|string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function id() {
         if (empty($this->id)) {
-            throw new \coding_exception('Asking for the id of an unsaved object');
+            throw new coding_exception('Asking for the id of an unsaved object');
         }
         return $this->id;
     }
@@ -626,14 +632,14 @@ abstract class table_base {
     /**
      *
      * @param int $courseworkid
-     * @throws \dml_exception
+     * @throws dml_exception
      */
     public static function fill_pool_coursework($courseworkid) {
         if (isset(static::$pool[$courseworkid])) {
             return;
         }
         $key = static::$tablename;
-        $cache = \cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
+        $cache = cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
 
         $data = $cache->get($key);
         if ($data === false) {
@@ -654,7 +660,7 @@ abstract class table_base {
             return;
         }
         static::$pool[$courseworkid] = null;
-        $cache = \cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
+        $cache = cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
         $cache->delete(static::$tablename);
     }
 

@@ -21,11 +21,11 @@
  */
 
 namespace mod_coursework\export\csv\cells;
-use mod_coursework\models\submission;
-use mod_coursework\grade_judge;
+use coding_exception;
 use mod_coursework\ability;
-use mod_coursework\models\user;
+use mod_coursework\grade_judge;
 use mod_coursework\models\feedback;
+use mod_coursework\models\submission;
 
 /**
  * Class singlegrade_cell
@@ -55,7 +55,7 @@ class singlegrade_cell extends cell_base {
     /**
      * @param $stage
      * @return array|mixed|string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function get_header($stage) {
 
@@ -138,10 +138,10 @@ class singlegrade_cell extends cell_base {
 
             $dbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
 
-            $submission = \mod_coursework\models\submission::find($dbrecord);
+            $submission = submission::find($dbrecord);
 
             // Is this submission ready to be graded
-            if (!$submission->ready_to_grade() && $submission->get_state() < \mod_coursework\models\submission::FULLY_GRADED) {
+            if (!$submission->ready_to_grade() && $submission->get_state() < submission::FULLY_GRADED) {
                 return get_string('submissionnotreadytograde', 'coursework');
             }
 

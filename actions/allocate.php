@@ -23,8 +23,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_coursework\models\coursework;
+use mod_coursework\allocation\table\processor;
 use mod_coursework\allocation\widget;
+use mod_coursework\models\coursework;
+use mod_coursework\warnings;
 
 require_once(dirname(__FILE__).'/../../../config.php');
 
@@ -36,7 +38,7 @@ require_once($CFG->dirroot.'/mod/coursework/lib.php');
  * Handles all form submissions from the allocation page.
  *
  * @param coursework $coursework The coursework object.
- * @param \stdClass $coursemodule The coursemodule object.
+ * @param stdClass $coursemodule The coursemodule object.
  */
 function coursework_process_form_submissions(coursework $coursework, $coursemodule) {
     global $DB, $PAGE, $CFG;
@@ -63,7 +65,7 @@ function coursework_process_form_submissions(coursework $coursework, $coursemodu
         $coursework->save();
 
         // Process manual allocations from the table.
-        $processor = new \mod_coursework\allocation\table\processor($coursework);
+        $processor = new processor($coursework);
         $processor->process_data($dirtyformdata);
         $allocationsmanager->auto_generate_sample_set();
     }
@@ -85,7 +87,7 @@ function coursework_process_form_submissions(coursework $coursework, $coursemodu
 
     // Redirect on save.
     if ($formsavebutton) {
-        $warnings = new \mod_coursework\warnings($coursework);
+        $warnings = new warnings($coursework);
         $percentageallocationnotcomplete = $warnings->percentage_allocations_not_complete();
         $manualallocationnotcomplete = $coursework->allocation_enabled() ? $warnings->manual_allocation_not_completed() : '';
 
@@ -101,18 +103,18 @@ function coursework_process_form_submissions(coursework $coursework, $coursemodu
  * Renders the allocation page content.
  *
  * @param coursework $coursework The coursework object.
- * @param \mod_coursework_allocation_table $allocationtable The renderable table object.
+ * @param mod_coursework_allocation_table $allocationtable The renderable table object.
  */
-function coursework_render_page(coursework $coursework, \mod_coursework_allocation_table $allocationtable) {
+function coursework_render_page(coursework $coursework, mod_coursework_allocation_table $allocationtable) {
     global $PAGE, $OUTPUT;
 
     // Prepare renderable objects.
     $allocationsmanager = $coursework->get_allocation_manager();
-    $warnings = new \mod_coursework\warnings($coursework);
+    $warnings = new warnings($coursework);
     $objectrenderer = $PAGE->get_renderer('mod_coursework', 'object');
 
     $template = new stdClass();
-    $template->page_url_params = \html_writer::input_hidden_params($PAGE->url);
+    $template->page_url_params = html_writer::input_hidden_params($PAGE->url);
 
     // Warnings.
     $template->warnings = $warnings->percentage_allocations_not_complete();
@@ -126,10 +128,10 @@ function coursework_render_page(coursework $coursework, \mod_coursework_allocati
     // Widgets.
     if ($coursework->sampling_enabled()) {
         $samplesetwidget = $allocationsmanager->get_sampling_set_widget();
-        $template->samplingwidget = \html_writer::tag('form', $objectrenderer->render($samplesetwidget), ['id' => 'sampling_form', 'method' => 'post']);
+        $template->samplingwidget = html_writer::tag('form', $objectrenderer->render($samplesetwidget), ['id' => 'sampling_form', 'method' => 'post']);
     }
     if ($coursework->allocation_enabled()) {
-        $allocationwidget = new \mod_coursework_allocation_widget(new widget($coursework));
+        $allocationwidget = new mod_coursework_allocation_widget(new widget($coursework));
         $template->allocationwidget = $objectrenderer->render($allocationwidget);
     }
 
@@ -184,7 +186,7 @@ require_login($course, true, $coursemodule);
 require_capability('mod/coursework:allocate', $PAGE->context, null, true, "Can't allocate here - permission denied.");
 
 $url = '/mod/coursework/actions/allocate.php';
-$link = new \moodle_url($url, ['id' => $coursemoduleid]);
+$link = new moodle_url($url, ['id' => $coursemoduleid]);
 $PAGE->set_url($link);
 $title = get_string('allocatefor', 'mod_coursework', $coursework->name);
 $PAGE->set_title($title);

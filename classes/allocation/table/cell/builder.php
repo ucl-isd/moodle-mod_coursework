@@ -21,12 +21,16 @@
  */
 
 namespace mod_coursework\allocation\table\cell;
+use coding_exception;
+use html_table_cell;
+use html_writer;
+use mod_coursework\allocation\allocatable;
 use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
-use mod_coursework\stages\base as stage_base;
-use mod_coursework\allocation\allocatable;
+use mod_coursework\models\moderation;
 use mod_coursework\models\submission;
+use mod_coursework\stages\base as stage_base;
 
 /**
  * This class and it's descendants are responsible for processing the data from the allocation form.
@@ -65,14 +69,14 @@ class builder {
     }
 
     /**
-     * @return \html_table_cell
+     * @return html_table_cell
      */
     public function get_renderable_allocation_table_cell() {
         return $this->prepare_allocation_table_cell();
     }
 
     /**
-     * @return \html_table_cell
+     * @return html_table_cell
      */
     public function get_renderable_moderation_table_cell() {
         return $this->prepare_moderation_table_cell();
@@ -130,14 +134,14 @@ class builder {
     }
 
     /**
-     * @return bool|\mod_coursework\models\feedback
+     * @return bool|feedback
      */
     private function get_feedback() {
         return $this->get_stage()->get_feedback_for_allocatable($this->get_allocatable());
     }
 
     /**
-     * @return bool|\mod_coursework\models\moderation
+     * @return bool|moderation
      */
     private function get_moderation() {
         if ($this->get_submission()) {
@@ -286,7 +290,7 @@ class builder {
     }
 
     /**
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     private function sampling_set_checkbox() {
         $checkboxname =
@@ -310,7 +314,7 @@ class builder {
             $attributes['disabled'] = 'true';
         }
 
-        return \html_writer::checkbox($checkboxname,
+        return html_writer::checkbox($checkboxname,
                                       1,
                                       $checkboxchecked,
                                       get_string('includedinsample', 'mod_coursework'),
@@ -325,7 +329,7 @@ class builder {
             'allocatables[' . $this->get_allocatable()->id . '][' . $this->get_stage()->identifier() . '][in_set]';
         $checkboxtitle = 'Included in sample';
 
-        return \html_writer::checkbox($checkboxname,
+        return html_writer::checkbox($checkboxname,
             1,
             1,
            '',
@@ -338,7 +342,7 @@ class builder {
      * returns whether the current record was automatically included in the sample set at the current stage
      *
      * @return bool
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     private function has_automatic_sampling() {
 
@@ -370,7 +374,7 @@ class builder {
 
         $stage = substr($this->get_stage()->identifier(), -1);
         $checkboxtitle = 'Pinned (auto allocations will not alter this)';
-        return \html_writer::checkbox($checkboxname,
+        return html_writer::checkbox($checkboxname,
                                                      1,
                                                      $checkboxchecked,
                                                      '',
@@ -411,18 +415,18 @@ class builder {
 
     /**
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     private function get_included_in_sample_label() {
-        return \html_writer::label(get_string('includedinsample', 'mod_coursework'), null, true, ['class' => 'included_in_sample']);
+        return html_writer::label(get_string('includedinsample', 'mod_coursework'), null, true, ['class' => 'included_in_sample']);
     }
 
     /**
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     private function get_automatically_in_sample_label() {
-        return \html_writer::label(get_string('automaticallyinsample', 'mod_coursework'), null, true, ['class' => 'included_in_sample']);
+        return html_writer::label(get_string('automaticallyinsample', 'mod_coursework'), null, true, ['class' => 'included_in_sample']);
     }
 
     /**

@@ -21,8 +21,11 @@
  */
 
 namespace mod_coursework;
+use coding_exception;
 use context;
 use mod_coursework\models\coursework;
+use mod_coursework\models\deadline_extension;
+use mod_coursework\models\personal_deadline;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
 use stdClass;
@@ -100,10 +103,10 @@ class cron {
                 $personaldeadline = false;
 
                 if ($coursework->extensions_enabled()) {
-                    $individualextension = \mod_coursework\models\deadline_extension::get_extension_for_student($student, $coursework);
+                    $individualextension = deadline_extension::get_extension_for_student($student, $coursework);
                 }
                 if ($coursework->personal_deadlines_enabled()) {
-                    $personaldeadline = \mod_coursework\models\personal_deadline::get_personal_deadline_for_student($student, $coursework);
+                    $personaldeadline = personal_deadline::get_personal_deadline_for_student($student, $coursework);
                 }
 
                 $deadline = $personaldeadline ? $personaldeadline->personal_deadline : $coursework->deadline;
@@ -375,7 +378,7 @@ class cron {
 
     /**
      * Auto release feedback of marked submission if the coursework has individual feedback enabled
-     * @throws \coding_exception
+     * @throws coding_exception
      */
 
     private static function autorelease_feedbacks_where_the_release_date_has_passed() {

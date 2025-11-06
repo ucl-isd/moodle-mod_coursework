@@ -30,7 +30,6 @@ use mod_coursework\ability;
 use mod_coursework\mailer;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
-use mod_coursework\models\user;
 use moodle_url;
 use moodleform;
 use stdClass;
@@ -276,7 +275,7 @@ class student_submission_form extends moodleform {
     }
 
     /**
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     protected function add_agree_terms_elements_to_form() {
         global $CFG;
@@ -293,7 +292,7 @@ class student_submission_form extends moodleform {
     }
 
     /**
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     protected function add_submit_buttons_to_form() {
         global $USER;
@@ -346,7 +345,7 @@ class student_submission_form extends moodleform {
     }
 
     /**
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     protected function add_file_manager_to_form() {
         $uploadfilestring = get_string('uploadafile');
@@ -360,7 +359,7 @@ class student_submission_form extends moodleform {
     }
 
     /**
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     protected function add_instructions_to_form() {
         $filemanageroptions = $this->get_file_manager_options();

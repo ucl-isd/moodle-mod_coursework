@@ -21,6 +21,7 @@
  */
 
 namespace mod_coursework\export\csv\cells;
+use coding_exception;
 use mod_coursework\models\submission;
 
 /**
@@ -33,7 +34,7 @@ class username_cell extends cell_base {
      * @param $student
      * @param $stageidentifier
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function get_cell($submission, $student, $stageidentifier) {
 
@@ -49,7 +50,7 @@ class username_cell extends cell_base {
     /**
      * @param $stage
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function get_header($stage) {
         return  get_string('studentusername', 'coursework');

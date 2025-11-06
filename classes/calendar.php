@@ -23,6 +23,10 @@
 
 namespace mod_coursework;
 
+use calendar_event;
+use dml_exception;
+use stdClass;
+
 /**
  * Class to handle interaction with core calendar.
  *
@@ -34,11 +38,11 @@ class calendar {
      * @param object $coursework
      * @param string $eventtype
      * @param int|null $deadline
-     * @return \stdClass
+     * @return stdClass
      */
-    public static function coursework_event(object $coursework, string $eventtype, ?int $deadline): \stdClass {
+    public static function coursework_event(object $coursework, string $eventtype, ?int $deadline): stdClass {
 
-        $event = new \stdClass();
+        $event = new stdClass();
         $event->type = CALENDAR_EVENT_TYPE_ACTION;
 
         // Description field needs some formatting in same way a mod_assign does it.
@@ -87,7 +91,7 @@ class calendar {
      * @param object $coursework
      * @param string $eventtype if null then will remove all
      * @return void
-     * @throws \dml_exception
+     * @throws dml_exception
      */
     public static function remove_event($coursework, $eventtype = '') {
         global $DB;
@@ -100,7 +104,7 @@ class calendar {
 
         $events = $DB->get_records('event', $params);
         foreach ($events as $eventid) {
-            $event = \calendar_event::load($eventid->id);
+            $event = calendar_event::load($eventid->id);
             $event->delete(); // delete events from mdl_event table
         }
     }

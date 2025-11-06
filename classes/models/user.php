@@ -28,16 +28,25 @@
 
 namespace mod_coursework\models;
 
-use mod_coursework\framework\table_base;
+use AllowDynamicProperties;
+use coding_exception;
+use context_course;
+use core\output\user_picture;
+use core_user;
+use core_user\fields;
+use html_writer;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\allocation\moderatable;
+use mod_coursework\framework\table_base;
 use mod_coursework\traits\allocatable_functions;
+use moodle_url;
+use stdClass;
 
 /**
  * Class user
  * @package mod_coursework\models
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class user extends table_base implements allocatable, moderatable {
 
     use allocatable_functions;
@@ -51,7 +60,7 @@ class user extends table_base implements allocatable, moderatable {
      * @param array|object|bool $data
      */
     public function __construct($data = false) {
-        $allnames = \core_user\fields::get_name_fields();
+        $allnames = fields::get_name_fields();
         foreach ($allnames as $namefield) {
             $this->$namefield = '';
         }
@@ -64,9 +73,9 @@ class user extends table_base implements allocatable, moderatable {
      */
     public function name(): string {
         // If we already have properties to get the name without going to database, use them.
-        $data = new \stdClass;
+        $data = new stdClass;
         $hasallfields = true;
-        foreach (\core_user\fields::get_name_fields() as $field) {
+        foreach (fields::get_name_fields() as $field) {
             if ($this->$field ?? false) {
                 $data->$field = $this->$field;
             } else {
@@ -75,10 +84,10 @@ class user extends table_base implements allocatable, moderatable {
             }
         }
         if ($hasallfields) {
-            return \core_user::get_fullname($data);
+            return core_user::get_fullname($data);
         }
 
-        return \core_user::get_fullname($this->get_raw_record());
+        return core_user::get_fullname($this->get_raw_record());
     }
 
     /**
@@ -92,15 +101,15 @@ class user extends table_base implements allocatable, moderatable {
      * @return string
      */
     public function profile_link() {
-        return \html_writer::link(new \moodle_url('/user/view.php', ['id' => $this->id()]), $this->name(), ['data-assessorid' => $this->id()]);
+        return html_writer::link(new moodle_url('/user/view.php', ['id' => $this->id()]), $this->name(), ['data-assessorid' => $this->id()]);
     }
 
     /**
-     * @param \stdClass $course
+     * @param stdClass $course
      * @return mixed
      */
     public function is_valid_for_course($course) {
-        $coursecontext = \context_course::instance($course->id);
+        $coursecontext = context_course::instance($course->id);
         return is_enrolled($coursecontext, $this->id(), 'mod/coursework:submit');
     }
 
@@ -109,7 +118,7 @@ class user extends table_base implements allocatable, moderatable {
      * @param $remindernumber
      * @param int $extension
      * @return bool
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function has_not_been_sent_reminder($coursework, $remindernumber, $extension=0) {
         $conditions = [
@@ -139,7 +148,7 @@ class user extends table_base implements allocatable, moderatable {
      */
     public function get_user_picture_url(int $size = 100): string {
         global $PAGE;
-        $userpicture = new \core\output\user_picture($this->get_raw_record());
+        $userpicture = new user_picture($this->get_raw_record());
         $userpicture->size = $size;
         return $userpicture->get_url($PAGE)->out(false);
     }
@@ -155,7 +164,7 @@ class user extends table_base implements allocatable, moderatable {
         // On teacher grading page, we avoid using \core\output\user_picture.
         // We don't need the extra fields and it results in additional DB queries.
         if ($usercontextid && $rev) {
-            $url = \moodle_url::make_pluginfile_url(
+            $url = moodle_url::make_pluginfile_url(
                 $usercontextid,
                 'user',
                 'icon',
@@ -177,7 +186,7 @@ class user extends table_base implements allocatable, moderatable {
      * @return string
      */
     public function get_user_profile_url(): string {
-        $url = new \moodle_url('/user/profile.php', ['id' => $this->id()]);
+        $url = new moodle_url('/user/profile.php', ['id' => $this->id()]);
         return $url->out(false);
     }
 

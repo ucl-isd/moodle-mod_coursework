@@ -22,16 +22,16 @@
 
 namespace mod_coursework;
 
+use coding_exception;
 use html_writer;
 use mod_coursework\allocation\allocatable;
-use mod_coursework\controllers\personal_deadlines_controller;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
+use mod_coursework\models\group;
 use mod_coursework\models\personal_deadline;
+use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
-use mod_coursework\models\group;
-use mod_coursework\models\plagiarism_flag;
 use moodle_url;
 
 /**
@@ -71,7 +71,7 @@ class grading_table_row_base implements user_row {
     /**
      * Constructor
      *
-     * @param \mod_coursework\models\coursework $coursework $coursework
+     * @param coursework $coursework $coursework
      * @param allocatable $user
      */
     public function __construct(coursework $coursework, user|group $user, ?deadline_extension $extension, ?personal_deadline $personaldeadline) {
@@ -126,7 +126,7 @@ class grading_table_row_base implements user_row {
      * submission::get_user_name() function as there may not be a submission.
      *
      * @param bool $link
-     * @throws \coding_exception
+     * @throws coding_exception
      * @return string
      */
     public function get_user_name($link = false) {
@@ -153,7 +153,7 @@ class grading_table_row_base implements user_row {
     /**
      * Will return the idnumber if permissions allow, otherwise, an anonymous placeholder.
      *
-     * @throws \coding_exception
+     * @throws coding_exception
      * @return string
      */
     public function get_idnumber() {
@@ -171,7 +171,7 @@ class grading_table_row_base implements user_row {
     /**
      * Will return the email if permissions allow, otherwise, an anonymous placeholder.
      *
-     * @throws \coding_exception
+     * @throws coding_exception
      * @return string
      */
     public function get_email() {

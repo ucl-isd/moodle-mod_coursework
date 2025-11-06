@@ -26,7 +26,9 @@
  */
 
 namespace mod_coursework\allocation\table;
+use invalid_parameter_exception;
 use mod_coursework\allocation\allocatable;
+use mod_coursework\allocation\table\cell\data;
 use mod_coursework\models\coursework;
 use mod_coursework\models\group;
 use mod_coursework\models\user;
@@ -94,10 +96,10 @@ class processor {
         // ],
         // ];
         $allowedrowkeys = [
-            \mod_coursework\allocation\table\cell\data::ALLOCATION_ID_KEY,
-            \mod_coursework\allocation\table\cell\data::ASSESSOR_ID_KEY,
-            \mod_coursework\allocation\table\cell\data::MODERATION_SET_KEY,
-            \mod_coursework\allocation\table\cell\data::PINNED_KEY,
+            data::ALLOCATION_ID_KEY,
+            data::ASSESSOR_ID_KEY,
+            data::MODERATION_SET_KEY,
+            data::PINNED_KEY,
         ];
 
         $cleandata = [];
@@ -112,17 +114,17 @@ class processor {
             $validstageindentifiers = array_keys($this->coursework->marking_stages());
             foreach ($dirtyrowsforuser as $stageidentifier => $dirtyrowforuser) {
                 if (!isset($validstageindentifiers, $stageidentifier)) {
-                    throw new \invalid_parameter_exception("Invalid stage identifier $stageidentifier");
+                    throw new invalid_parameter_exception("Invalid stage identifier $stageidentifier");
                 }
 
                 // Finally, check the keys and values in the cleaned row individually.
                 $keys = array_keys($dirtyrowforuser);
                 foreach ($keys as $key) {
                     if (!in_array($key, $allowedrowkeys)) {
-                        throw new \invalid_parameter_exception("Invalid key $key");
+                        throw new invalid_parameter_exception("Invalid key $key");
                     }
                     if ($dirtyrowforuser[$key] && !filter_var($dirtyrowforuser[$key], FILTER_SANITIZE_NUMBER_INT)) {
-                        throw new \invalid_parameter_exception(
+                        throw new invalid_parameter_exception(
                             "Invalid value type for key '$key' - expected integer"
                         );
                     }

@@ -25,11 +25,11 @@
 
 namespace mod_coursework\render_helpers\grading_report\data;
 
+use coding_exception;
 use mod_coursework\candidateprovider_manager;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\group;
 use mod_coursework\models\user;
-use moodle_url;
 use stdClass;
 
 /**
@@ -143,7 +143,7 @@ class student_cell_data extends cell_data_base {
      * Determine if the identity should be hidden.
      *
      * @return bool
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     private function should_hide_identity() {
         return $this->coursework->blindmarking_enabled() &&

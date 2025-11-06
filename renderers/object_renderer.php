@@ -22,18 +22,21 @@
 
 use mod_coursework\ability;
 use mod_coursework\allocation\manager;
+use mod_coursework\allocation\strategy\base;
 use mod_coursework\grade_judge;
+use mod_coursework\grading_report;
 use mod_coursework\models\coursework;
+use mod_coursework\models\deadline_extension;
 use mod_coursework\models\feedback;
 use mod_coursework\models\moderation;
-use mod_coursework\models\user;
 use mod_coursework\models\moderation_set_rule;
+use mod_coursework\models\personal_deadline;
 use mod_coursework\models\submission;
+use mod_coursework\models\user;
+use mod_coursework\personal_deadline\table\row\builder;
+use mod_coursework\renderers\grading_report_renderer;
 use mod_coursework\router;
 use mod_coursework\warnings;
-use mod_coursework\models\personal_deadline;
-use mod_coursework\models\deadline_extension;
-use mod_coursework\render_helpers\grading_report\cells;
 
 global $CFG;
 
@@ -176,8 +179,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             get_string('moderationfor', 'coursework', $moderation->get_submission()->get_allocatable_name());
 
         $out = '';
-        $moderatedby = \core_user::get_fullname(\core_user::get_user($moderation->moderatorid));
-        $lasteditedby = \core_user::get_fullname(\core_user::get_user($moderation->lasteditedby));
+        $moderatedby = core_user::get_fullname(core_user::get_user($moderation->moderatorid));
+        $lasteditedby = core_user::get_fullname(core_user::get_user($moderation->lasteditedby));
 
         $table = new html_table();
         $table->attributes['class'] = 'moderation';
@@ -382,7 +385,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         // Teacher summary col.
         if ($cangrade || $canpublish) {
-            $courseworkmodel = \mod_coursework\models\coursework::find($coursework->id);
+            $courseworkmodel = coursework::find($coursework->id);
             $template->markingsummary = $this->coursework_marking_summary($courseworkmodel);
         }
 
@@ -455,7 +458,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $select->class = 'jumpmenu';
         $select->formid = 'sectionmenutop';
         $tablehtml .= $this->output->render($select);
-        $tablehtml .= \html_writer::start_tag('form', ['method' => 'post']);
+        $tablehtml .= html_writer::start_tag('form', ['method' => 'post']);
 
         $tablehtml .= '
 
@@ -540,7 +543,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * start and end of each table row in the form.
      *
      * @param mod_coursework_allocation_table_row $allocationrow
-     * @return \html_table_row
+     * @return html_table_row
      */
     protected function render_mod_coursework_allocation_table_row(mod_coursework_allocation_table_row $allocationrow) {
 
@@ -565,7 +568,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * Outputs the buttons etc to choose and trigger the auto allocation mechanism. Do this as part of the main form so we
      * can choose some allocations, then click a button to auto-allocate the rest.
      * @param mod_coursework_allocation_widget $allocationwidget
-     * @throws \coding_exception
+     * @throws coding_exception
      * @return string
      */
     public function render_mod_coursework_allocation_widget(mod_coursework_allocation_widget $allocationwidget) {
@@ -621,7 +624,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 $comma = ",";
             }
         } else {
-            $gradescale = \grade_scale::fetch(['id' => abs($coursework->grade)]);
+            $gradescale = grade_scale::fetch(['id' => abs($coursework->grade)]);
             $scale = $gradescale->scale;
         }
         $template->scaleinput = html_writer::empty_tag('input', ['id' => 'scale_values', 'type' => 'hidden', 'value' => $scale]);
@@ -779,8 +782,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * Outputs a rule object on screen so we can see what it does.
      *
      * @param moderation_set_rule $rule
-     * @throws coding_exception
-     * @return \html_table_row
+     * @return html_table_row
+     *@throws coding_exception
      */
     protected function make_moderation_set_rule_row(moderation_set_rule $rule) {
 
@@ -834,7 +837,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $classname = $matches[1];
             $fullclassname = '\mod_coursework\allocation\strategy\\' . $classname;
             // We want the elements from all the strategies so we can show/hide them.
-            /* @var \mod_coursework\allocation\strategy\base $strategy */
+            /* @var base $strategy */
             $strategy = new $fullclassname($coursework);
 
             $attributes = [
@@ -1234,7 +1237,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
     /**
      * This is used on the old bulk personal deadlines page i.e. actions/set_personal_deadlines.php.
-     * @param \mod_coursework\personal_deadline\table\row\builder $personaldeadlinerow
+     * @param builder $personaldeadlinerow
      * @return string
      */
     private function render_personal_deadline_table_row($personaldeadlinerow) {
@@ -1244,10 +1247,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $coursework = $personaldeadlinerow->get_coursework();
 
         $personaldeadline =
-            \mod_coursework\models\personal_deadline::get_personal_deadline_for_student(user::find($personaldeadlinerow->get_allocatable()->id()), $coursework);
+            personal_deadline::get_personal_deadline_for_student(user::find($personaldeadlinerow->get_allocatable()->id()), $coursework);
 
         if (!$personaldeadline) {
-            $personaldeadline = \mod_coursework\models\personal_deadline::build(
+            $personaldeadline = personal_deadline::build(
                 [
                     'allocatableid' => $personaldeadlinerow->get_allocatable()->id(),
                     'allocatabletype' => $personaldeadlinerow->get_allocatable()->type(),
@@ -1286,16 +1289,16 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param mod_coursework_coursework $coursework The coursework activity object.
      * @return stdClass Template data for the marking summary.
      */
-    private function coursework_marking_summary(\mod_coursework\models\coursework $coursework): stdClass {
+    private function coursework_marking_summary(coursework $coursework): stdClass {
         $reportoptions = [
-            'mode' => \mod_coursework\grading_report::MODE_GET_ALL,
+            'mode' => grading_report::MODE_GET_ALL,
             'sortby' => '',
         ];
 
         $gradingreport = $coursework->renderable_grading_report_factory($reportoptions);
         $tablerows = $gradingreport->get_table_rows_for_page();
 
-        $gradingreportrenderer = new \mod_coursework\renderers\grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
+        $gradingreportrenderer = new grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
         $summarydata = $gradingreportrenderer->get_marking_summary_data($tablerows, $coursework);
         $summarydata->canmark = true;
         $summarydata->dropdown = $this->get_export_upload_links($coursework);
@@ -1309,7 +1312,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param mod_coursework_coursework $coursework The coursework activity object.
      * @return array An array containing the structured dropdown data.
      */
-    private function get_export_upload_links(\mod_coursework\models\coursework $coursework): array {
+    private function get_export_upload_links(coursework $coursework): array {
         $cmid = $this->page->cm->id;
         $viewurl = '/mod/coursework/view.php';
         $submissions = $coursework->get_all_submissions();

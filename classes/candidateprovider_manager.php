@@ -16,6 +16,9 @@
 
 namespace mod_coursework;
 
+use core_plugin_manager;
+use Exception;
+
 /**
  * Manager class for candidate number providers.
  *
@@ -72,7 +75,7 @@ class candidateprovider_manager {
      */
     public function get_available_providers(): array {
         $providers = [];
-        $subplugins = \core_plugin_manager::instance()->get_subplugins_of_plugin('mod_coursework');
+        $subplugins = core_plugin_manager::instance()->get_subplugins_of_plugin('mod_coursework');
         if (empty($subplugins)) {
             return $providers;
         }
@@ -139,7 +142,7 @@ class candidateprovider_manager {
         }
 
         // Check if plugin is installed.
-        $plugininfo = \core_plugin_manager::instance()->get_plugin_info($component);
+        $plugininfo = core_plugin_manager::instance()->get_plugin_info($component);
         if (!$plugininfo) {
             return null;
         }
@@ -149,7 +152,7 @@ class candidateprovider_manager {
             if ($instance instanceof candidateprovider) {
                 return $instance;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             debugging('Failed to create provider instance for ' . $providername . ': ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
 
@@ -171,7 +174,7 @@ class candidateprovider_manager {
 
         try {
             return $provider->get_candidate_number($courseid, $userid);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             debugging('Provider failed to get candidate number: ' . $e->getMessage(), DEBUG_DEVELOPER);
             return null;
         }
@@ -191,7 +194,7 @@ class candidateprovider_manager {
             if (class_exists($classname)) {
                 return new $classname($candidatenumber);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             debugging('Failed to load mock provider from file: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
 

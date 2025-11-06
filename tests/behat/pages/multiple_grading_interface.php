@@ -21,14 +21,10 @@
  */
 
 use mod_coursework\allocation\allocatable;
-use mod_coursework\models\coursework;
-use mod_coursework\models\deadline_extension;
 use mod_coursework\models\feedback;
 use mod_coursework\models\group;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
-
-use Behat\Mink\Exception\ElementNotFoundException;
 
 defined('MOODLE_INTERNAL') || die();
 

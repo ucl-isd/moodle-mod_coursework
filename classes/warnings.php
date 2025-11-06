@@ -21,8 +21,10 @@
  */
 
 namespace mod_coursework;
-use mod_coursework\models\coursework;
+use coding_exception;
 use core\output\notification;
+use mod_coursework\models\coursework;
+use stdClass;
 
 /**
  * Class warnings is responsible for detecting and displaying warnings to users based on
@@ -65,7 +67,7 @@ class warnings {
         if ($numberofinitialassessors < $this->coursework->numberofmarkers) {
             // Problem!
 
-            $strings = new \stdClass();
+            $strings = new stdClass();
             $strings->actual_number = $actualnumber;
             $strings->required_number = $this->coursework->numberofmarkers;
 
@@ -79,7 +81,7 @@ class warnings {
 
     /**
      * @return bool|string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function students_in_mutiple_groups() {
 
@@ -219,7 +221,7 @@ class warnings {
 
     /** Warning if allocation is selected but no assessor is chosen
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function manual_allocation_not_completed() {
         global $DB;
@@ -418,7 +420,7 @@ class warnings {
     /**
      * Alert markers that filter A to Z filter is on
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function a_to_z_filter_on() {
         return $this->alert_div(get_string('namefilternon', 'mod_coursework'));
@@ -427,7 +429,7 @@ class warnings {
     /**
      * Alert markers that there may be more submissions to grade
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function filters_warning() {
         return $this->alert_div(get_string('filteronwarning', 'mod_coursework'));

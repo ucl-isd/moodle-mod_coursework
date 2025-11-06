@@ -25,10 +25,10 @@ namespace mod_coursework\personal_deadline\table\row;
  */
 
 use mod_coursework\allocation\allocatable;
-use mod_coursework\personal_deadline\table\builder as table_builder;
 use mod_coursework\models\coursework;
+use mod_coursework\models\submission;
+use mod_coursework\personal_deadline\table\builder as table_builder;
 use mod_coursework\render_helpers\grading_report\cells\allocatable_cell;
-use mod_coursework\stages\base as stage_base;
 use mod_coursework\user_row;
 
 defined('MOODLE_INTERNAL') || die();
@@ -205,7 +205,7 @@ class builder implements user_row {
                 'allocatableid' => $this->allocatable->id(),
                 'allocatabletype' => $this->allocatable->type()]);
 
-        $submission = \mod_coursework\models\submission::find($submissiondb);
+        $submission = submission::find($submissiondb);
 
         $statustext = get_string('statusnotsubmitted', 'mod_coursework');
 

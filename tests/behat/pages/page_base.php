@@ -21,9 +21,7 @@
  */
 
 use Behat\Mink\Element\NodeElement;
-use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
-use mod_coursework\models\user;
 
 /**
  * This forms a common base for the page context objects that are used to hold the functions

@@ -22,23 +22,27 @@
 
 namespace mod_coursework\render_helpers\grading_report\sub_rows;
 
+use AllowDynamicProperties;
+use coding_exception;
 use html_table_row;
 use html_writer;
 use mod_coursework\ability;
 use mod_coursework\assessor_feedback_row;
 use mod_coursework\assessor_feedback_table;
+use mod_coursework\framework\table_base;
 use mod_coursework\grade_judge;
+use mod_coursework\grading_table_row_base;
 use mod_coursework\models\feedback;
-use mod_coursework\models\submission;
 use mod_coursework\models\user;
 use mod_coursework\router;
+use mod_coursework_object_renderer;
 use moodle_url;
 use pix_icon;
 
 /**
  * Class no_sub_rows
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class multi_marker_feedback_sub_rows implements sub_rows_interface {
 
     /**
@@ -48,7 +52,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     private bool $alreadyshownanewbutton = false;
 
     /**
-     * @param \mod_coursework\grading_table_row_base $rowobject
+     * @param grading_table_row_base $rowobject
      * @param int $columnwidth
      * @return string
      */
@@ -65,7 +69,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     }
 
     /**
-     * @return \mod_coursework_object_renderer
+     * @return mod_coursework_object_renderer
      */
     protected function get_renderer() {
         global $PAGE;
@@ -213,7 +217,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     /**
      * @param assessor_feedback_row $feedbackrow
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     protected function edit_existing_feedback_link($feedbackrow) {
         global $OUTPUT;
@@ -230,7 +234,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     /**
      * @param assessor_feedback_row $feedbackrow
      * @param $submission
-     * @return \mod_coursework\framework\table_base
+     * @return table_base
      */
     protected function build_new_feedback($feedbackrow, $submission) {
         global $USER;
@@ -249,7 +253,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     /**
      * @param assessor_feedback_row $feedbackrow
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     private function show_feedback_link($feedbackrow) {
         global $OUTPUT;
@@ -268,7 +272,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     /**
      * @param assessor_feedback_row $feedbackrow
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     protected function new_feedaback_link($feedbackrow) {
         global $USER, $OUTPUT;

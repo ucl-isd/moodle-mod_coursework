@@ -28,6 +28,7 @@ use mod_coursework\models\feedback;
 use mod_coursework\models\group;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
+use mod_coursework_generator;
 use phpunit_util;
 use stdClass;
 use testing_util;
@@ -88,9 +89,9 @@ trait factory_mixin {
      * @return user
      */
     protected function create_a_student() {
-        $generator = \testing_util::get_data_generator();
+        $generator = testing_util::get_data_generator();
 
-        $user = new \stdClass();
+        $user = new stdClass();
         $user->firstname = 'Student';
         $rawstudent = $generator->create_user($user);
         $this->student = user::find($rawstudent);
@@ -194,7 +195,7 @@ trait factory_mixin {
     }
 
     /**
-     * @return \mod_coursework_generator
+     * @return mod_coursework_generator
      */
     protected function get_coursework_generator() {
         return $this->getDataGenerator()->get_plugin_generator('mod_coursework');
@@ -269,7 +270,7 @@ trait factory_mixin {
     /**
      * @param user $assessor
      * @return stdClass
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function create_an_assessor_feedback_for_the_submission($assessor) {
         $count = $this->number_of_assessor_feedbacks();

@@ -22,31 +22,35 @@
 
 namespace mod_coursework\renderers;
 
+use context_user;
+use core\exception\moodle_exception;
+use core\output\plugin_renderer_base;
 use mod_coursework\ability;
-use mod_coursework\models\deadline_extension;
-use mod_coursework\models\personal_deadline;
 use mod_coursework\grading_report;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\coursework;
+use mod_coursework\models\deadline_extension;
+use mod_coursework\models\personal_deadline;
 use mod_coursework\models\user;
 use mod_coursework\render_helpers\grading_report\data\actions_cell_data;
 use mod_coursework\render_helpers\grading_report\data\marking_cell_data;
 use mod_coursework\render_helpers\grading_report\data\student_cell_data;
 use mod_coursework\render_helpers\grading_report\data\submission_cell_data;
+use moodle_url;
 use stdClass;
 
 /**
  * Class to render the grading / submission table.
  *
  */
-class grading_report_renderer extends \core\output\plugin_renderer_base {
+class grading_report_renderer extends plugin_renderer_base {
 
     /**
      * Renders the grading report.
      *
      * @param grading_report $gradingreport
      * @return bool|string
-     * @throws \core\exception\moodle_exception
+     * @throws moodle_exception
      */
     public function render_grading_report(grading_report $gradingreport) {
 
@@ -224,7 +228,7 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         // We need to add some to this because the tr and actions templates both use fields from parent as well as row.
         // Otherwise some action menu elements may be incomplete.
         $data->coursework = self::prepare_coursework_data($coursework);
-        $participantcontextid = $allocatabletype === 'user' ? \context_user::instance($allocatableid)->id : null;
+        $participantcontextid = $allocatabletype === 'user' ? context_user::instance($allocatableid)->id : null;
         $data->submissiontype->user->picture =
             user::get_picture_url_from_context_id($participantcontextid, $allocatable->picture);
         return $data;
@@ -310,7 +314,7 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
      *
      * @param coursework $coursework
      * @return stdClass|null
-     * @throws \core\exception\moodle_exception
+     * @throws moodle_exception
      * @throws coding_exception
      */
     protected function prepare_release_marks_button(coursework $coursework): ?stdClass {
@@ -321,7 +325,7 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
 
         $releasemarks = new stdClass();
         $releasemarks->warning = '';
-        $releasemarks->url = new \moodle_url(
+        $releasemarks->url = new moodle_url(
             '/mod/coursework/actions/releasemarks.php',
             ['cmid' => $coursework->get_coursemodule_id()]
         );

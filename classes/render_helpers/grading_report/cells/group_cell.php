@@ -22,7 +22,6 @@
 
 namespace mod_coursework\render_helpers\grading_report\cells;
 use coding_exception;
-use html_table_cell;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\group;
 use mod_coursework\models\user;

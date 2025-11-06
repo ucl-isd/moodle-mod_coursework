@@ -25,9 +25,7 @@
 namespace mod_coursework\sample_set_rule;
 
 use html_writer;
-use mod_coursework\allocation\allocatable;
-use mod_coursework\models\coursework;
-use mod_coursework\sample_set_rule\sample_base;
+use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -123,7 +121,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         if ($totalcheckbox) {
 
-            $dbrecord = new \stdClass();
+            $dbrecord = new stdClass();
             $dbrecord->ruletype = "";
             $dbrecord->lowerlimit = 0;
             $dbrecord->upperlimit = $sampletotal;

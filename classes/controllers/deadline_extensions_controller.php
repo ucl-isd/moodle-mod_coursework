@@ -21,26 +21,33 @@
  */
 
 namespace mod_coursework\controllers;
+use AllowDynamicProperties;
+use core\output\notification;
 use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\decorators\coursework_groups_decorator;
+use mod_coursework\exceptions\access_denied;
 use mod_coursework\forms\deadline_extension_form;
+use mod_coursework\framework\table_base;
+use mod_coursework\grading_table_row_multi;
+use mod_coursework\grading_table_row_single;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
 use mod_coursework\models\group;
 use mod_coursework\models\personal_deadline;
 use mod_coursework\models\user;
+use mod_coursework\render_helpers\grading_report\cells\time_submitted_cell;
 
 /**
  * Class deadline_extensions_controller is responsible for handling restful requests related
  * to the deadline_extensions.
  *
- * @property \mod_coursework\framework\table_base deadlineextension
+ * @property table_base deadlineextension
  * @property allocatable allocatable
  * @property deadline_extension_form form
  * @package mod_coursework\controllers
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class deadline_extensions_controller extends controller_base {
 
     protected function show_deadline_extension() {
@@ -80,9 +87,9 @@ class deadline_extensions_controller extends controller_base {
      * This will only be called if the user is using the old HTML form and not the modal form.
      * I.e. they are visiting /mod/coursework/actions/deadline_extensions/edit.php or new.php.
      * If using the modal form, this is done by the form itself.
-     * @see \mod_coursework\forms\deadline_extension_form::process_dynamic_submission()
      * @return void
-     * @throws \mod_coursework\exceptions\access_denied
+     * @throws access_denied
+     * @see deadline_extension_form::process_dynamic_submission
      */
     protected function create_deadline_extension() {
         global $USER;
@@ -128,7 +135,7 @@ class deadline_extensions_controller extends controller_base {
                 $courseworkpageurl,
                 get_string('extension_saved', 'mod_coursework', $allocatable->name()),
                 null,
-                \core\output\notification::NOTIFY_SUCCESS
+                notification::NOTIFY_SUCCESS
             );
         } else {
             $this->set_default_current_deadline();
@@ -146,8 +153,8 @@ class deadline_extensions_controller extends controller_base {
      * This will only be called if the user is using the old HTML form and not the modal form.
      * I.e. they are visiting /mod/coursework/actions/deadline_extensions/edit.php or new.php.
      * If using the modal form, this is done by the form itself.
-     * @see \mod_coursework\forms\deadline_extension_form::process_dynamic_submission()
      * @return void
+     * @see deadline_extension_form::process_dynamic_submission
      */
     protected function edit_deadline_extension() {
         global $USER, $PAGE;
@@ -319,12 +326,12 @@ class deadline_extensions_controller extends controller_base {
         $participant = ($dataparams['allocatabletype'] && $dataparams['allocatabletype'] == 'group') ? group::find($dataparams['allocatableid']) : user::find($dataparams['allocatableid']);
         $coursework = ($this->coursework instanceof coursework_groups_decorator) ? $this->coursework->wrapped_object() : $this->coursework;
         if ($this->coursework->has_multiple_markers()) {
-            $rowobject = new \mod_coursework\grading_table_row_multi($coursework, $participant);
+            $rowobject = new grading_table_row_multi($coursework, $participant);
         } else {
-            $rowobject = new \mod_coursework\grading_table_row_single($coursework, $participant);
+            $rowobject = new grading_table_row_single($coursework, $participant);
         }
 
-        $timesubmittedcell = new  \mod_coursework\render_helpers\grading_report\cells\time_submitted_cell(['coursework' => $this->coursework]);
+        $timesubmittedcell = new  time_submitted_cell(['coursework' => $this->coursework]);
 
         $content = $timesubmittedcell->prepare_content_cell($rowobject);
 

@@ -21,17 +21,16 @@
  */
 
 namespace mod_coursework\render_helpers\grading_report\cells;
-use coding_exception;
-use html_table_cell;
+use core_user;
 use html_writer;
 use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
-use mod_coursework\grade_judge;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\moderation;
 use mod_coursework\models\user;
 use mod_coursework\stages\base as stage_base;
 use pix_icon;
+
 /**
  * Class moderation_agreement_cell
  */
@@ -105,7 +104,7 @@ class moderation_agreement_cell extends cell_base {
             $content .= html_writer::empty_tag('br');
             if ($this->coursework->allocation_enabled() && !empty($allocation)
                 && $allocation->assessor()->id != $moderation->get_moderator_id()) {
-                    $fullname = \core_user::get_fullname((object)(array)$allocation->assessor());
+                    $fullname = core_user::get_fullname((object)(array)$allocation->assessor());
                     $content .= '(' . get_string('allocatedtoname', 'coursework', $fullname) . ')';
             }
 

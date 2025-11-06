@@ -21,7 +21,6 @@
  */
 
 namespace mod_coursework\stages;
-use mod_coursework\models\user;
 
 /**
  * Class marking_stage represents a stage of the marking process. For a basic single marked coursework,

@@ -22,7 +22,9 @@
 
 namespace mod_coursework\models;
 
-use  mod_coursework\framework\table_base;
+use AllowDynamicProperties;
+use mod_coursework\framework\table_base;
+use mod_coursework_coursework;
 
 /**
  * Class plagiarism flag is responsible for representing one row of the plagiarism flags table.
@@ -34,7 +36,7 @@ use  mod_coursework\framework\table_base;
  * @property mixed allocatableid
  * @package mod_coursework\models
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class plagiarism_flag extends table_base {
 
     /**
@@ -56,7 +58,7 @@ class plagiarism_flag extends table_base {
     const NOTCLEARED = 3;
 
     /**
-     * @return mixed|\mod_coursework_coursework
+     * @return mixed|mod_coursework_coursework
      */
     public function get_coursework() {
         if (!isset($this->coursework)) {

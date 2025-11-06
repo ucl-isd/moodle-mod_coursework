@@ -24,6 +24,7 @@ namespace mod_coursework;
 
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
+use mod_coursework_assessor_feedback_row;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -71,7 +72,7 @@ class assessor_feedback_table {
      * have not yet been turned into feedbacks, so we want to show these as empty rows in order to let
      * managers know what is going on.
      *
-     * @return \mod_coursework_assessor_feedback_row[]
+     * @return mod_coursework_assessor_feedback_row[]
      */
     public function get_renderable_feedback_rows() {
 

@@ -24,15 +24,13 @@ namespace mod_coursework\personal_deadline\table;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_coursework;
 use mod_coursework\models\coursework;
 use mod_coursework\personal_deadline\table\row\builder as row_builder;
 use mod_coursework\render_helpers\grading_report\cells\allocatable_cell;
 use mod_coursework\render_helpers\grading_report\cells\group_cell;
-use mod_coursework\render_helpers\grading_report\cells\user_cell;
 use mod_coursework\render_helpers\grading_report\cells\personal_deadline_cell;
-use mod_coursework\stages\base as stage_base;
-
-use mod_coursework;
+use mod_coursework\render_helpers\grading_report\cells\user_cell;
 
 defined('MOODLE_INTERNAL') || die();
 

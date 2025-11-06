@@ -26,7 +26,6 @@ global $CFG;
 
 require_once($CFG->dirroot . '/mod/coursework/tests/behat/pages/page_base.php');
 
-use Behat\Mink\Exception\ExpectationException;
 use mod_coursework\models\feedback;
 
 /**

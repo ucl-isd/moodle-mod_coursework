@@ -24,6 +24,10 @@
 
 namespace mod_coursework\event;
 
+use coding_exception;
+use core\event\base;
+use moodle_url;
+
 /**
  * The mod_coursework extension created event class.
  *
@@ -37,7 +41,7 @@ namespace mod_coursework\event;
  * @copyright  2025 UCL
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class extension_updated extends \core\event\base {
+class extension_updated extends base {
     /**
      * Init method.
      */
@@ -70,28 +74,28 @@ class extension_updated extends \core\event\base {
     /**
      * Returns relevant URL.
      *
-     * @return \moodle_url
+     * @return moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/coursework/view.php', ['id' => $this->contextinstanceid]);
+        return new moodle_url('/mod/coursework/view.php', ['id' => $this->contextinstanceid]);
     }
 
     /**
      * Custom validation.
      *
      * @return void
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     protected function validate_data() {
         parent::validate_data();
         if (!isset($this->other['courseworkid'])) {
-            throw new \coding_exception('The \'courseworkid\' value must be set in other.');
+            throw new coding_exception('The \'courseworkid\' value must be set in other.');
         }
         if (!isset($this->other['deadline'])) {
-            throw new \coding_exception('The \'deadline\' value must be set in other.');
+            throw new coding_exception('The \'deadline\' value must be set in other.');
         }
         if (!$this->anonymous ?? false) {
-            throw new \coding_exception(
+            throw new coding_exception(
                 'The \'anonymous\' value must be set to prevent potential de-anonymisation of users via course reports.'
             );
         }

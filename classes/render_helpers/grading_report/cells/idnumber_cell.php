@@ -21,9 +21,7 @@
  */
 
 namespace mod_coursework\render_helpers\grading_report\cells;
-use mod_coursework\models\user;
 use mod_coursework\user_row;
-use stdClass;
 
 /**
  * Class idnumber_cell

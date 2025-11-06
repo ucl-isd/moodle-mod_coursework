@@ -22,17 +22,27 @@
 
 namespace mod_coursework\models;
 
+use AllowDynamicProperties;
+use coding_exception;
 use context;
+use context_module;
+use core_user\fields;
+use dml_exception;
+use dml_missing_record_exception;
+use dml_multiple_records_exception;
+use exception;
 use file_storage;
 use html_writer;
 use mod_coursework\allocation\allocatable;
-use mod_coursework\grade_judge;
-use mod_coursework\submission_files;
+use mod_coursework\event\assessable_uploaded;
 use mod_coursework\framework\table_base;
+use mod_coursework\grade_judge;
+use mod_coursework\mailer;
+use mod_coursework\submission_files;
 use moodle_url;
+use renderable;
 use stdClass;
 use stored_file;
-use mod_coursework\mailer;
 
 global $CFG;
 require_once($CFG->libdir . '/gradelib.php');
@@ -50,8 +60,8 @@ defined('MOODLE_INTERNAL') || die();
  * @property mixed timesubmitted
  * @property mixed lastpublished
  */
-#[\AllowDynamicProperties]
-class submission extends table_base implements \renderable {
+#[AllowDynamicProperties]
+class submission extends table_base implements renderable {
 
 
     /**
@@ -250,7 +260,7 @@ class submission extends table_base implements \renderable {
             // Get the real first and last name from the user table. We use fullname($this), which needs it,
             // so we can't lazy-load.
             $user = $DB->get_record('user', ['id' => $this->userid]);
-            $allnames = \core_user\fields::get_name_fields();
+            $allnames = fields::get_name_fields();
             foreach ($allnames as $namefield) {
                 $this->$namefield = $user->$namefield;
             }
@@ -376,7 +386,7 @@ class submission extends table_base implements \renderable {
             $this->id, "id", false);
 
         $params = [
-            'context' => \context_module::instance($this->get_coursework()->get_course_module()->id),
+            'context' => context_module::instance($this->get_coursework()->get_course_module()->id),
             'courseid' => $this->get_course_id(),
             'objectid' => $this->id,
             'relateduserid' => $this->get_author_id(),
@@ -386,7 +396,7 @@ class submission extends table_base implements \renderable {
                 'pathnamehashes' => array_keys($files),
             ],
         ];
-        $event = \mod_coursework\event\assessable_uploaded::create($params);
+        $event = assessable_uploaded::create($params);
         $event->trigger();
     }
 
@@ -502,7 +512,7 @@ class submission extends table_base implements \renderable {
      * Function to retrieve a grade for the specific stage
      * @param $stageidentifier
      * @return bool|feedback
-     * @throws \dml_exception
+     * @throws dml_exception
      */
     public function get_assessor_feedback_by_stage($stageidentifier) {
         $params = [
@@ -520,8 +530,8 @@ class submission extends table_base implements \renderable {
      * Function to retrieve a assessor allocated for the specific stage
      * @param $stageidentifier
      * @return bool
-     * @throws \coding_exception
-     * @throws \dml_exception
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_assessor_allocation_by_stage($stageidentifier) {
 
@@ -537,8 +547,8 @@ class submission extends table_base implements \renderable {
 
     /**
      * @return mixed|feedback|string
-     * @throws \dml_missing_record_exception
-     * @throws \dml_multiple_records_exception
+     * @throws dml_missing_record_exception
+     * @throws dml_multiple_records_exception
      */
     public function get_agreed_grade() {
         global $DB;
@@ -562,7 +572,7 @@ class submission extends table_base implements \renderable {
     /**
      * This will return the final feedback if the record exists, or false if not.
      *
-     * @throws \exception
+     * @throws exception
      * @return bool|feedback
      */
     public function get_final_feedback() {
@@ -736,7 +746,7 @@ class submission extends table_base implements \renderable {
     /**
      * Getter for the coursework instance. Memoized.
      *
-     * @throws \coding_exception
+     * @throws coding_exception
      * @return coursework
      */
     public function get_coursework() {
@@ -747,7 +757,7 @@ class submission extends table_base implements \renderable {
             }
             $this->coursework = coursework::$pool['id'][$this->courseworkid];
             if (!$this->coursework) {
-                throw new \coding_exception('Could not find the coursework for submission id '. $this->id);
+                throw new coding_exception('Could not find the coursework for submission id '. $this->id);
             }
         }
 
@@ -906,7 +916,7 @@ class submission extends table_base implements \renderable {
     /**
      * @param user $user
      * @return bool
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function belongs_to_user($user) {
         if ($this->get_coursework()->is_configured_to_have_group_submissions()) {
@@ -1011,7 +1021,7 @@ class submission extends table_base implements \renderable {
     }
 
     /**
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function publish() {
 
@@ -1074,7 +1084,7 @@ class submission extends table_base implements \renderable {
 
     /**
      * @return bool|int
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function get_overall_deadline() {
         if (!$this->get_coursework()->has_deadline()) {
@@ -1097,7 +1107,7 @@ class submission extends table_base implements \renderable {
 
     /**
      * @return bool|int
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function is_late() {
         $deadline = $this->get_overall_deadline();
@@ -1114,7 +1124,7 @@ class submission extends table_base implements \renderable {
 
     /**
      * @return bool|int
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function was_late() {
         $deadline = $this->get_overall_deadline();
@@ -1249,7 +1259,7 @@ class submission extends table_base implements \renderable {
 
     /**
      * @return array
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function students_for_gradebook(): array {
         if ($this->get_coursework()->is_configured_to_have_group_submissions()) {
@@ -1266,7 +1276,7 @@ class submission extends table_base implements \renderable {
 
     /**
      * @return array|bool
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     private function students_for_gradng() {
         if ($this->get_coursework()->is_configured_to_have_group_submissions()) {
@@ -1294,7 +1304,7 @@ class submission extends table_base implements \renderable {
     /**
      *  Function to get samplings for the submission
      * @return array
-     * @throws \coding_exception
+     * @throws coding_exception
      */
 
     public function get_submissions_in_sample() {
@@ -1308,7 +1318,7 @@ class submission extends table_base implements \renderable {
     /**
      *  Function to get samplings for the submission
      * @return array
-     * @throws \coding_exception
+     * @throws coding_exception
      */
 
     public function get_submissions_in_sample_by_stage($stageidentifier) {
@@ -1325,7 +1335,7 @@ class submission extends table_base implements \renderable {
      * Check if submission has an extension
      *
      * @return bool
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function has_extension() {
         if (!$this->coursework->extensions_enabled()) {
@@ -1341,7 +1351,7 @@ class submission extends table_base implements \renderable {
      * Retrieve details of submission's extension
      *
      * @return mixed
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function submission_extension() {
         if (!$this->coursework->extensions_enabled()) {
@@ -1357,7 +1367,7 @@ class submission extends table_base implements \renderable {
      * Retrieve details of submission's personal deadline, if not given, use corsework default
      *
      * @return mixed
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function submission_personal_deadline() {
         $allocatableid = $this->get_allocatable()->id();
@@ -1513,7 +1523,7 @@ class submission extends table_base implements \renderable {
      *
      * @param $assessorid
      * @return bool|false|mixed|stdClass
-     * @throws \dml_exception
+     * @throws dml_exception
      */
     public function has_specific_assessor_feedback($assessorid) {
         global $DB;

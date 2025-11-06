@@ -24,7 +24,7 @@ namespace mod_coursework\allocation\strategy;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use html_writer;
+    use html_writer;
 
     /**
      * Class that acts as a default for auto allocation when we don't actually want to allocate at all.

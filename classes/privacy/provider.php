@@ -22,15 +22,21 @@
 
 namespace mod_coursework\privacy;
 defined('MOODLE_INTERNAL') || die();
+
+use context;
+use context_module;
 use core_privacy\local\metadata\collection;
-use core_privacy\local\request\contextlist;
-use core_privacy\local\request\writer;
 use core_privacy\local\request\approved_contextlist;
-use core_privacy\local\request\transform;
-use core_privacy\local\request\helper;
-use core_privacy\local\request\userlist;
 use core_privacy\local\request\approved_userlist;
+use core_privacy\local\request\contextlist;
+use core_privacy\local\request\core_userlist_provider;
+use core_privacy\local\request\helper;
+use core_privacy\local\request\transform;
+use core_privacy\local\request\userlist;
+use core_privacy\local\request\writer;
+use coursework;
 use mod_coursework\models\submission;
+use stdClass;
 
 /**
  * Privacy Subsystem implementation for coursework.
@@ -42,7 +48,7 @@ use mod_coursework\models\submission;
 class provider implements
     \core_privacy\local\metadata\provider,
     \core_privacy\local\request\plugin\provider,
-    \core_privacy\local\request\core_userlist_provider {
+    core_userlist_provider {
     /**
      * Provides meta data that is stored about a user with mod_coursework
      *
@@ -269,7 +275,7 @@ class provider implements
             static::export_plagiarism_flags($coursework->id, $context, []);
         }
     }
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
         if ($context->contextlevel == CONTEXT_MODULE) {
             $cm = get_coursemodule_from_id('coursework', $context->instanceid);
@@ -376,7 +382,7 @@ class provider implements
             $coursework->remove_personal_deadlines_by_user($userid);
         }
     }
-    protected static function get_coursework_instance(\context $context) {
+    protected static function get_coursework_instance(context $context) {
         global $DB;
         $courseid = ['id' => $context->get_course_context()->instanceid];
         $course = $DB->get_record('course', $courseid, '*', MUST_EXIST);
@@ -389,9 +395,9 @@ class provider implements
     /**
      * Exports coursework submission data for a user.
      *
-     * @param  \coursework     $coursework       The coursework object
-     * @param  \stdClass       $user             The user object
-     * @param  \context_module $context          The context
+     * @param  coursework     $coursework       The coursework object
+     * @param  stdClass       $user             The user object
+     * @param  context_module $context          The context
      * @param  array           $path             The path for exporting data
      * @param  bool|boolean    $exportforteacher A flag for if this is exporting data as a teacher.
      */
@@ -434,11 +440,11 @@ class provider implements
     /**
      * Formats and then exports the user's submission data.
      *
-     * @param  \stdClass $submission The coursework submission DB record.
-     * @param  \context $context The context object
+     * @param  stdClass $submission The coursework submission DB record.
+     * @param  context $context The context object
      * @param  array $currentpath Current directory path that we are exporting to.
      */
-    protected static function export_coursework_submission(\stdClass $submission, \context $context, array $currentpath) {
+    protected static function export_coursework_submission(stdClass $submission, context $context, array $currentpath) {
         $status = self::get_submissions_status($submission->id);
         $submissiondata = (object)[
             'userid' => $submission->userid,
@@ -453,7 +459,7 @@ class provider implements
             ->export_data(array_merge($currentpath, [get_string('privacy:submissionpath', 'mod_coursework')]), $submissiondata);
     }
     protected static function get_submissions_status($submissionid) {
-        $submission = new \mod_coursework\models\submission($submissionid);
+        $submission = new submission($submissionid);
         $status = $submission->get_status_text();
         if (!empty($status)) {
             return $status;
@@ -495,9 +501,9 @@ class provider implements
     /**
      * Formats the user's submission grade data.
      *
-     * @param  \stdClass $feedback The coursework submission grade object
+     * @param  stdClass $feedback The coursework submission grade object
      */
-    protected static function format_submissions_feedback(\stdClass $feedback) {
+    protected static function format_submissions_feedback(stdClass $feedback) {
         $feedbackdata = [
             'assessorid' => $feedback->assessorid,
             'timecreated' => transform::datetime($feedback->timecreated),

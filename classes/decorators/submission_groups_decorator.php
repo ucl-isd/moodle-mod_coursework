@@ -22,8 +22,8 @@
 
 namespace mod_coursework\decorators;
 
+use coding_exception;
 use mod_coursework\framework\decorator;
-use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 
 /**
@@ -39,12 +39,12 @@ class submission_groups_decorator extends decorator {
     /**
      * @param $user
      * @return bool
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function user_is_in_same_group($user) {
 
         if (!$this->wrappedobject->get_coursework()->is_configured_to_have_group_submissions()) {
-            throw new \coding_exception('Asking for groups membership of a submissions when we are not using groups');
+            throw new coding_exception('Asking for groups membership of a submissions when we are not using groups');
         }
 
         $group = $this->wrappedobject->get_allocatable();

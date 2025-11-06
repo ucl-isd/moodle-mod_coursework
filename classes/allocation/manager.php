@@ -26,13 +26,15 @@ namespace mod_coursework\allocation;
  */
 
 use coding_exception;
+use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\coursework;
 use mod_coursework\models\moderation_set_rule;
 use mod_coursework\moderation_set_widget;
 use mod_coursework\sampling_set_widget;
 use mod_coursework\stages\base as stage_base;
+use mod_coursework_sampling_set_widget;
 use moodle_exception;
-use mod_coursework\grade_judge;
+use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -62,7 +64,7 @@ class manager {
      * New instance created with references to the coursework stored.
      *
      * @param coursework $coursework
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function __construct(coursework $coursework) {
 
@@ -213,7 +215,7 @@ class manager {
      * Returns a new widget object that can be rendered to make the bit where the user defines the sampling set.
      *
      * @param string|bool $requestedrule
-     * @return \mod_coursework_sampling_set_widget
+     * @return mod_coursework_sampling_set_widget
      */
     public function get_sampling_set_widget($requestedrule = false) {
 
@@ -221,7 +223,7 @@ class manager {
 
         $widget = new sampling_set_widget($rules, $this->coursework, $requestedrule);
 
-        return new \mod_coursework_sampling_set_widget($widget);
+        return new mod_coursework_sampling_set_widget($widget);
     }
 
     /**
@@ -254,7 +256,7 @@ class manager {
         $DB->delete_records('coursework_sample_set_rules', ['courseworkid' => $this->coursework->id]);
         // We also need to clear the cache.
         // We get an error in behat @mod_coursework_sampling_range_set_rules if not as user not in cached sample for assessor 2.
-        \mod_coursework\models\assessment_set_membership::remove_cache($this->coursework->id);
+        assessment_set_membership::remove_cache($this->coursework->id);
         for ($i = 2; $i <= $this->coursework->get_max_markers(); $i++) {
 
             $samplestrategy = required_param("assessor_{$i}_samplingstrategy", PARAM_INT);
@@ -340,7 +342,7 @@ class manager {
                 // Save sample set
                 if (!empty($autosampleset)) {
                     foreach ($autosampleset as $allocatable) {
-                        $sample = new \stdClass();
+                        $sample = new stdClass();
                         $sample->courseworkid = $this->coursework->id;
                         $sample->allocatableid = $allocatable->id;
                         $sample->allocatabletype = ($this->coursework->is_configured_to_have_group_submissions()) ? "group" : "user";

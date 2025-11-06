@@ -23,18 +23,15 @@
 namespace mod_coursework\render_helpers\grading_report\cells;
 
 use coding_exception;
-use html_table_cell;
+use core_user;
 use html_writer;
 use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\grade_judge;
 use mod_coursework\grading_table_row_base;
-use mod_coursework\models\allocation;
-use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\user;
 use mod_coursework\stages\base as stage_base;
-use moodle_url;
 use pix_icon;
 
 /**
@@ -118,7 +115,7 @@ class single_assessor_feedback_cell extends cell_base {
             $content .= html_writer::empty_tag('br');
             if ($this->coursework->allocation_enabled() && !empty($allocation)
                 && $allocation->assessor()->id != $feedback->get_assessor_id()) {
-                    $fullname = \core_user::get_fullname((object)(array)$allocation->assessor());
+                    $fullname = core_user::get_fullname((object)(array)$allocation->assessor());
                     $content .= '(' . get_string('allocatedtoname', 'coursework', $fullname) . ')';
             }
         } else if ($this->coursework->allocation_enabled()) {
@@ -160,7 +157,7 @@ class single_assessor_feedback_cell extends cell_base {
     /**
      * @param $rowobject
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     private function edit_feedback_button($rowobject) {
         global $OUTPUT;
@@ -208,7 +205,7 @@ class single_assessor_feedback_cell extends cell_base {
      * @param grading_table_row_base $rowobject
      * @param user $assessor
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     private function new_feedback_button($rowobject, $assessor) {
         global $OUTPUT;

@@ -22,10 +22,15 @@
 
 namespace mod_coursework\models;
 
-use mod_coursework\framework\table_base;
-use mod_coursework\allocation\allocatable;
-use mod_coursework\event\extension_deleted;
+use AllowDynamicProperties;
+use context_module;
 use core\exception\invalid_parameter_exception;
+use mod_coursework\allocation\allocatable;
+use mod_coursework\event\extension_created;
+use mod_coursework\event\extension_deleted;
+use mod_coursework\event\extension_updated;
+use mod_coursework\framework\table_base;
+use mod_coursework_coursework;
 
 /**
  * Class deadline_extension is responsible for representing one row of the deadline_extensions table.
@@ -38,7 +43,7 @@ use core\exception\invalid_parameter_exception;
  * @property mixed allocatableid
  * @package mod_coursework\models
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class deadline_extension extends table_base {
 
     /**
@@ -83,7 +88,7 @@ class deadline_extension extends table_base {
     }
 
     /**
-     * @return mixed|\mod_coursework_coursework
+     * @return mixed|mod_coursework_coursework
      */
     public function get_coursework() {
         if (!isset($this->coursework)) {
@@ -219,7 +224,7 @@ class deadline_extension extends table_base {
             // Keep a record of what's deleted in the log table for audit purposes.
             $event = extension_deleted::create([
                 'objectid' => $this->id,
-                'context' => \context_module::instance($cm->id),
+                'context' => context_module::instance($cm->id),
                 'other' => ['record' => json_encode($record)],
             ]);
 
@@ -240,7 +245,7 @@ class deadline_extension extends table_base {
             'objectid' => $this->id,
             'userid' => $USER->id ?? 0,
             'relateduserid' => $allocatable->type() == 'user' ? $allocatable->id() : null,
-            'context' => \context_module::instance($coursework->get_course_module()->id),
+            'context' => context_module::instance($coursework->get_course_module()->id),
             'anonymous' => 1,
             'other' => [
                 'allocatabletype' => $allocatable->type(),
@@ -252,10 +257,10 @@ class deadline_extension extends table_base {
 
         switch ($eventtype) {
             case 'create':
-                $event = \mod_coursework\event\extension_created::create($params);
+                $event = extension_created::create($params);
                 break;
             case 'update':
-                $event = \mod_coursework\event\extension_updated::create($params);
+                $event = extension_updated::create($params);
                 break;
             default:
                 throw new invalid_parameter_exception("Unexpected event type '$eventtype'");

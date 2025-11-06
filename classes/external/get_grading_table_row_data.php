@@ -20,6 +20,8 @@ use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
+use mod_coursework\models\coursework;
+use mod_coursework\renderers\grading_report_renderer;
 
 
 /**
@@ -61,7 +63,7 @@ class get_grading_table_row_data extends external_api {
             ]
         );
 
-        $coursework = \mod_coursework\models\coursework::find($params['courseworkid']);
+        $coursework = coursework::find($params['courseworkid']);
         if (get_class($coursework) == 'mod_coursework\decorators\coursework_groups_decorator') {
             // If the coursework is in group mode, coursework::find returns a wrapped object so unwrap.
             $coursework = $coursework->wrapped_object();
@@ -86,7 +88,7 @@ class get_grading_table_row_data extends external_api {
 
         // The export function contains a capability check so we don't have an extra one here.
         $PAGE->set_context($coursework->get_context());
-        $rowdata = \mod_coursework\renderers\grading_report_renderer::export_one_row_data(
+        $rowdata = grading_report_renderer::export_one_row_data(
             $coursework, $allocatableid, $allocatabletype
         );
         if (!$rowdata) {

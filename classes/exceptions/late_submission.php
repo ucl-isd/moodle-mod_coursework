@@ -22,6 +22,7 @@
 
 namespace mod_coursework\exceptions;
 
+use core\exception\moodle_exception;
 use mod_coursework\models\coursework;
 use mod_coursework\router;
 
@@ -33,7 +34,7 @@ use mod_coursework\router;
  *
  * @package mod_coursework
  */
-class late_submission extends \core\exception\moodle_exception {
+class late_submission extends moodle_exception {
 
     /**
      * Constructor

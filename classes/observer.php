@@ -22,6 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\event\group_member_added;
+use core\event\group_member_removed;
+use core\event\role_assigned;
+use core\event\role_unassigned;
+
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/mod/coursework/lib.php');
 
@@ -58,21 +63,21 @@ class mod_coursework_observer {
     }
 
     /**
-     * @param \core\event\group_member_added $event
+     * @param group_member_added $event
      */
-    public static function process_allocations_when_group_member_added(\core\event\group_member_added $event) {
+    public static function process_allocations_when_group_member_added(group_member_added $event) {
         course_group_member_added($event);
     }
 
     /**
-     * @param \core\event\group_member_removed $event
+     * @param group_member_removed $event
      */
-    public static function process_allocations_when_group_member_removed(\core\event\group_member_removed $event) {
+    public static function process_allocations_when_group_member_removed(group_member_removed $event) {
         course_group_member_removed($event);
     }
 
     /**
-     * @param \core\event\role_assigned $event
+     * @param role_assigned $event
      */
     public static function add_teacher_to_dropdown_when_enrolled(core\event\role_assigned$event) {
         teacher_allocation_cache_purge($event);
@@ -80,7 +85,7 @@ class mod_coursework_observer {
     }
 
     /**
-     * @param \core\event\role_unassigned $event
+     * @param role_unassigned $event
      */
     public static function remove_teacher_from_dropdown_when_unenrolled(core\event\role_unassigned$event) {
         teacher_removed_allocated_not_graded($event);

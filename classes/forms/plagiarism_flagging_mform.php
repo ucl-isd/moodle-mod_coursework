@@ -24,12 +24,13 @@
 
 namespace mod_coursework\forms;
 
+use context;
 use core_form\dynamic_form;
 use mod_coursework\ability;
 use mod_coursework\exceptions\access_denied;
 use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
-use mod_coursework\models\user;
+use moodle_url;
 
 /**
  * Simple form providing a plagiarism status and comment area that will feed straight into the coursework_plagiarism_flagging table
@@ -185,9 +186,9 @@ class plagiarism_flagging_mform extends dynamic_form {
      * If context depends on the form data, it is available in $this->_ajaxformdata or
      * by calling $this->optional_param()
      *
-     * @return \context
+     * @return context
      **/
-    protected function get_context_for_dynamic_submission(): \context {
+    protected function get_context_for_dynamic_submission(): context {
         return $this->get_submission()->get_coursework()->get_context();
     }
 
@@ -280,10 +281,10 @@ class plagiarism_flagging_mform extends dynamic_form {
      *  This is used in the form elements sensitive to the page url, such as Atto autosave in 'editor'
      *  If the form has arguments (such as 'id' of the element being edited), the URL should
      *  also have respective argument.
-     * @return \moodle_url
+     * @return moodle_url
      */
-    protected function get_page_url_for_dynamic_submission(): \moodle_url {
-        return new \moodle_url('/mod/coursework/view.php', ['id' => $this->get_submission()->get_coursework()->id]);
+    protected function get_page_url_for_dynamic_submission(): moodle_url {
+        return new moodle_url('/mod/coursework/view.php', ['id' => $this->get_submission()->get_coursework()->id]);
     }
 
     /**

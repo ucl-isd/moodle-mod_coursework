@@ -28,10 +28,14 @@
 
 namespace mod_coursework\models;
 
-use mod_coursework\framework\table_base;
+use AllowDynamicProperties;
+use cm_info;
+use core_availability\info_module;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\allocation\moderatable;
+use mod_coursework\framework\table_base;
 use mod_coursework\traits\allocatable_functions;
+use stdClass;
 
 /**
  * Class group
@@ -40,7 +44,7 @@ use mod_coursework\traits\allocatable_functions;
  * @property mixed courseid
  * @package mod_coursework\models
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class group extends table_base implements allocatable, moderatable {
 
     use allocatable_functions;
@@ -77,7 +81,7 @@ class group extends table_base implements allocatable, moderatable {
     public function get_members($context, $cm) {
         $members = groups_get_members($this->id());
 
-        $info = new \core_availability\info_module(\cm_info::create($cm));
+        $info = new info_module(cm_info::create($cm));
         $members = $info->filter_user_list($members);
 
         $memberobjects = [];
@@ -99,7 +103,7 @@ class group extends table_base implements allocatable, moderatable {
     }
 
     /**
-     * @param \stdClass $course
+     * @param stdClass $course
      * @return mixed
      */
     public function is_valid_for_course($course) {

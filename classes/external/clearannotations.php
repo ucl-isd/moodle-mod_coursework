@@ -20,7 +20,9 @@ use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
+use Exception;
 use mod_coursework\ability;
+use mod_coursework\models\submission;
 use mod_coursework\models\user;
 
 
@@ -62,7 +64,7 @@ class clearannotations extends external_api {
             ]
         );
 
-        $submission = \mod_coursework\models\submission::find($params['submissionid']);
+        $submission = submission::find($params['submissionid']);
         if (!$submission) {
             return [
                 'success' => false,
@@ -75,7 +77,7 @@ class clearannotations extends external_api {
         $coursework = $submission->get_coursework();
 
         if (empty($coursework->enablepdfjs())) {
-            throw new \Exception('coursework enablepdfjs not enabled');
+            throw new Exception('coursework enablepdfjs not enabled');
         }
 
         // The export function contains a capability check so we don't have an extra one here.

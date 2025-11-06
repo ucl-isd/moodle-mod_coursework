@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_coursework\models\submission;
+
 defined('MOODLE_INTERNAL') || die();
 
 class restore_coursework_activity_structure_step extends restore_activity_structure_step {
@@ -510,7 +512,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                 $entry = $DB->get_record('coursework_submissions',
                                        ['id' => $itemid]);
 
-                $submission = \mod_coursework\models\submission::find($entry->id);
+                $submission = submission::find($entry->id);
                 $submission->rename_files(); // use cw function to handle file renaming as submission may have few files
 
             }

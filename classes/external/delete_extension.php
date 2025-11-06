@@ -22,7 +22,6 @@ use core_external\external_single_structure;
 use core_external\external_value;
 use mod_coursework\ability;
 use mod_coursework\models\deadline_extension;
-use mod_coursework\models\user;
 
 /**
  * External service to delete an extension.

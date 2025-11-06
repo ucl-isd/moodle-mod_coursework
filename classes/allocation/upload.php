@@ -16,7 +16,12 @@
 
 namespace mod_coursework\allocation;
 
-use mod_coursework\models;
+use csv_import_reader;
+use mod_coursework\models\group;
+use mod_coursework\models\submission;
+use mod_coursework\models\user;
+use moodle_exception;
+use stdClass;
 
 /**
  * @package    mod_coursework
@@ -45,15 +50,15 @@ class upload {
      * @param $encoding
      * @param $delimeter
      * @return array|bool
-     * @throws \moodle_exception
+     * @throws moodle_exception
      */
     public function validate_csv($content, $encoding, $delimeter) {
         global $CFG, $DB;
 
         $assessoridentifier = $CFG->coursework_allocation_identifier;
 
-        $iid = \csv_import_reader::get_new_iid('courseworkallocationsdata');
-        $csvreader = new \csv_import_reader($iid, 'courseworkallocationsdata');
+        $iid = csv_import_reader::get_new_iid('courseworkallocationsdata');
+        $csvreader = new csv_import_reader($iid, 'courseworkallocationsdata');
 
         $readcount = $csvreader->load_csv_content($content, $encoding, $delimeter);
         $csvloaderror = $csvreader->get_error();
@@ -111,12 +116,12 @@ class upload {
                     if ($allocatabletype == 'user') {
                         // get user id
                         $suballocatable = $DB->get_record('user', [$assessoridentifier => $value]);
-                        $allocatable = ($suballocatable) ? \mod_coursework\models\user::find($suballocatable->id) : '';
+                        $allocatable = ($suballocatable) ? user::find($suballocatable->id) : '';
                     } else {
                         // get group id
                         $suballocatable = $DB->get_record('groups', ['courseid' => $this->coursework->course,
                                                                         'name' => $value]);
-                        $allocatable = ($suballocatable) ? \mod_coursework\models\group::find($suballocatable->id) : '';
+                        $allocatable = ($suballocatable) ? group::find($suballocatable->id) : '';
                     }
 
                     // check if allocatable exists in this coursework
@@ -174,7 +179,7 @@ class upload {
      * @param $delimiter
      * @param $processingresults
      * @return array|bool
-     * @throws \moodle_exception
+     * @throws moodle_exception
      */
     public function process_csv($content, $encoding, $delimiter, $processingresults) {
 
@@ -182,8 +187,8 @@ class upload {
 
         $assessoridentifier = $CFG->coursework_allocation_identifier;
 
-        $iid = \csv_import_reader::get_new_iid('courseworkallocationsdata');
-        $csvreader = new \csv_import_reader($iid, 'courseworkallocationsdata');
+        $iid = csv_import_reader::get_new_iid('courseworkallocationsdata');
+        $csvreader = new csv_import_reader($iid, 'courseworkallocationsdata');
 
         $readcount = $csvreader->load_csv_content($content, $encoding, $delimiter);
         $csvloaderror = $csvreader->get_error();
@@ -236,12 +241,12 @@ class upload {
                     if ($allocatabletype == 'user') {
                         // get user id
                         $suballocatable = $DB->get_record('user', [$assessoridentifier => $value]);
-                        $allocatable = ($suballocatable) ? \mod_coursework\models\user::find($suballocatable->id) : '';
+                        $allocatable = ($suballocatable) ? user::find($suballocatable->id) : '';
                     } else {
                         // get group id
                         $suballocatable = $DB->get_record('groups', ['courseid' => $this->coursework->course,
                             'name' => $value]);
-                        $allocatable = ($suballocatable) ? \mod_coursework\models\group::find($suballocatable->id) : '';
+                        $allocatable = ($suballocatable) ? group::find($suballocatable->id) : '';
                     }
                 }
                 if ($allocatable && substr($cells[$keynum], 0, 8) == 'assessor' && !empty($value)) {
@@ -264,7 +269,7 @@ class upload {
                         $subdbrecord = $DB->get_record('coursework_submissions', ['courseworkid' => $this->coursework->id,
                                                                                        'allocatabletype' => $allocatabletype,
                                                                                        'allocatableid' => $allocatable->id]);
-                        $submission = \mod_coursework\models\submission::find($subdbrecord);
+                        $submission = submission::find($subdbrecord);
 
                         if (!$submission || !$submission->get_assessor_feedback_by_stage($cells[$keynum])) {
                             $this->update_allocation($allocation->id, $assessor->id);
@@ -292,7 +297,7 @@ class upload {
     public function add_allocation($assessorid, $stageidentifier, $allocatable) {
         global $DB;
 
-        $addallocation = new \stdClass();
+        $addallocation = new stdClass();
         $addallocation->id = '';
         $addallocation->courseworkid = $this->coursework->id;
         $addallocation->assessorid = $assessorid;
@@ -317,7 +322,7 @@ class upload {
     public function update_allocation($allocationid, $assessorid) {
         global $DB;
 
-        $updateallocation = new \stdClass();
+        $updateallocation = new stdClass();
         $updateallocation->id = $allocationid;
         $updateallocation->ismanual = 1;
         $updateallocation->assessorid = $assessorid;

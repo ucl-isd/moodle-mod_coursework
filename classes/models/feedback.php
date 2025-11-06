@@ -22,14 +22,18 @@
 
 namespace mod_coursework\models;
 
+use AllowDynamicProperties;
+use cache;
+use coding_exception;
 use context;
-use core_user;
+use dml_exception;
+use mod_coursework\allocation\allocatable;
+use mod_coursework\feedback_files;
 use mod_coursework\framework\table_base;
-use mod_coursework\ability;
+use mod_coursework\stages\assessor;
 use mod_coursework\stages\base as stage_base;
 use mod_coursework\stages\final_agreed;
 use stdClass;
-use mod_coursework\feedback_files;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -39,7 +43,7 @@ defined('MOODLE_INTERNAL') || die();
  * @property mixed stage_identifier
  * @property int feedback_manager
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class feedback extends table_base {
 
     /**
@@ -194,7 +198,7 @@ class feedback extends table_base {
     /**
      * This function is used for student view, it determines if assessors' names should be displayed or should be hidden
      * @return string assessor's name
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function display_assessor_name() {
 
@@ -397,7 +401,7 @@ class feedback extends table_base {
         if ($this->get_coursework()->has_multiple_markers()) {
             return $identifier == final_agreed::STAGE_FINAL_AGREED_1;
         } else {
-            return $identifier == \mod_coursework\stages\assessor::STAGE_ASSESSOR_1;
+            return $identifier == assessor::STAGE_ASSESSOR_1;
         }
     }
 
@@ -555,7 +559,7 @@ class feedback extends table_base {
     }
 
     /**
-     * @return \mod_coursework\allocation\allocatable
+     * @return allocatable
      */
     public function get_allocatable() {
         return $this->get_submission()->get_allocatable();
@@ -593,7 +597,7 @@ class feedback extends table_base {
     /**
      *
      * @param int $courseworkid
-     * @throws \dml_exception
+     * @throws dml_exception
      */
     public static function fill_pool_coursework($courseworkid) {
         global $DB;
@@ -620,7 +624,7 @@ class feedback extends table_base {
         }
 
         $key = self::$tablename;
-        $cache = \cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
+        $cache = cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
 
         $data = $cache->get($key);
         if ($data === false) {

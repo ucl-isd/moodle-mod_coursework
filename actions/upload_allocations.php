@@ -20,8 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_coursework\allocation\upload;
 use mod_coursework\models\coursework;
-use mod_coursework\allocation;
 
 require_once(dirname(__FILE__).'/../../../config.php');
 
@@ -64,7 +64,7 @@ if ($data = $allocationsuploadform->get_data()) {
 
     $content = $allocationsuploadform->get_file_content('allocationsdata');
 
-    $csvimport = new \mod_coursework\allocation\upload($coursework);
+    $csvimport = new upload($coursework);
 
     $procsessingresults = $csvimport->validate_csv($content, $data->encoding, $data->delimiter_name);
 
@@ -73,7 +73,7 @@ if ($data = $allocationsuploadform->get_data()) {
     $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
     echo $pagerenderer->process_csv_upload($procsessingresults, $content, $csvtype);
 
-    $cache = \cache::make('mod_coursework', 'courseworkdata', ['id' => $coursework->id]);
+    $cache = cache::make('mod_coursework', 'courseworkdata', ['id' => $coursework->id]);
     $cache->purge();
 
 } else {

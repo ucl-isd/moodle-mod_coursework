@@ -21,11 +21,9 @@
  */
 
 namespace mod_coursework\export\csv\cells;
-use mod_coursework\models\submission;
-use mod_coursework\grade_judge;
+use coding_exception;
 use mod_coursework\ability;
-use mod_coursework\models\user;
-use mod_coursework\models\feedback;
+use mod_coursework\models\submission;
 
 /**
  * Class otherassessors_cell
@@ -130,7 +128,7 @@ class otherassessors_cell extends cell_base {
     /**
      * @param $stage
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function get_header($stage) {
 

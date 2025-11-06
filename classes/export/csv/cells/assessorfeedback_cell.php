@@ -21,10 +21,12 @@
  */
 
 namespace mod_coursework\export\csv\cells;
-use mod_coursework\models\submission;
+use coding_exception;
 use mod_coursework\ability;
-use mod_coursework\models\user;
 use mod_coursework\models\feedback;
+use mod_coursework\models\submission;
+use moodle_exception;
+
 /**
  * Class assessorfeedback_cell
  */
@@ -68,7 +70,7 @@ class assessorfeedback_cell extends cell_base {
     /**
      * @param $stage
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function get_header($stage) {
         return  get_string('assessorfeedbackcsv', 'coursework', $stage);
@@ -81,7 +83,7 @@ class assessorfeedback_cell extends cell_base {
         if ($modulecontext->contextlevel !== CONTEXT_MODULE) {
             // CTP-3559 sometimes require_login() is being called without passing a module context.
             // This means that $PAGE->context will be course context & capability checks may be wrong so check it here.
-            throw new \moodle_exception(
+            throw new moodle_exception(
                 "accesserror", 'coursework', "", null,
                 "Invalid context level " . $modulecontext->contextlevel
             );
@@ -90,7 +92,7 @@ class assessorfeedback_cell extends cell_base {
         $initialgradecap = ['mod/coursework:addinitialgrade', 'mod/coursework:editinitialgrade'];
 
         $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
-        $submission = \mod_coursework\models\submission::find($subdbrecord);
+        $submission = submission::find($subdbrecord);
         if (has_any_capability($agreedgradecap, $modulecontext) && has_any_capability($initialgradecap, $modulecontext)
             || has_capability('mod/coursework:administergrades', $modulecontext)) {
 

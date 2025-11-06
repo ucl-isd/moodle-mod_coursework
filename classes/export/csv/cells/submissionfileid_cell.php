@@ -22,6 +22,9 @@
 
 namespace mod_coursework\export\csv\cells;
 
+use coding_exception;
+use mod_coursework\models\submission;
+
 /**
  * Class submissionfileid_cell
  */
@@ -40,7 +43,7 @@ class submissionfileid_cell extends cell_base {
     /**
      * @param $stage
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function get_header($stage) {
         return  get_string('submissionfileid', 'coursework');
@@ -55,7 +58,7 @@ class submissionfileid_cell extends cell_base {
 
         $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
 
-        $submission = \mod_coursework\models\submission::find($subdbrecord);
+        $submission = submission::find($subdbrecord);
 
         $hash = $this->coursework->get_username_hash($submission->allocatableid);
 

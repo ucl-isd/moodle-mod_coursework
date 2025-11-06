@@ -27,7 +27,6 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/coursework/tests/behat/pages/page_base.php');
 
 use Behat\Mink\Exception\ExpectationException;
-use Behat\Mink\Exception\ElementNotFoundException;
 
 /**
  * Holds the functions that know about the HTML structure of the student page.

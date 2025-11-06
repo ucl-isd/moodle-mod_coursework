@@ -22,6 +22,7 @@
 
 namespace mod_coursework\models;
 
+use AllowDynamicProperties;
 use mod_coursework\framework\table_base;
 
 defined('MOODLE_INTERNAL') || die();
@@ -29,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Represents a row in the course_modules table.
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class course_module extends table_base {
 
     /**

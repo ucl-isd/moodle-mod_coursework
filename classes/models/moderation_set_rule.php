@@ -17,7 +17,11 @@
 namespace mod_coursework\models;
 
 use mod_coursework\allocation\allocatable;
+use mod_coursework\framework\table_base;
 use mod_coursework\stages\base as stage_base;
+use mod_coursework_coursework;
+use renderable;
+use stdClass;
 
 /**
  * This file keeps track of upgrades to the eassessment module
@@ -33,10 +37,6 @@ use mod_coursework\stages\base as stage_base;
  * @copyright  2011 University of London Computer Centre {@link https://www.cosector.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-use mod_coursework\framework\table_base;
-use renderable;
-use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -205,7 +205,7 @@ abstract class moderation_set_rule extends table_base implements renderable {
     }
 
     /**
-     * @return mixed|\mod_coursework_coursework
+     * @return mixed|mod_coursework_coursework
      */
     protected function get_coursework() {
         if (!isset($this->coursework)) {

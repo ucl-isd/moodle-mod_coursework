@@ -21,7 +21,9 @@
  */
 
 namespace mod_coursework\stages;
-use mod_coursework\models\user;
+
+use AllowDynamicProperties;
+use coding_exception;
 
 /**
  * Class marking_stage represents a stage of the marking process. For a basic single marked coursework,
@@ -30,7 +32,7 @@ use mod_coursework\models\user;
  *
  * @package mod_coursework
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class final_agreed extends base {
 
     /**
@@ -56,7 +58,7 @@ class final_agreed extends base {
 
     /**
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function allocation_table_header() {
         return get_string('agreedgrade', 'mod_coursework');

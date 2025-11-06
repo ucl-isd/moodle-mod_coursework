@@ -25,7 +25,6 @@
 namespace mod_coursework;
 
 use mod_coursework\models\coursework;
-use mod_coursework\models\submission;
 
 defined('MOODLE_INTERNAL') || die();
 

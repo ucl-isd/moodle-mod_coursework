@@ -24,6 +24,7 @@ namespace mod_coursework\personal_deadline;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
+use stdClass;
 
 /**
  * This tells us that a class (e.g. user or group) can be allocated to a teacher for marking
@@ -56,7 +57,7 @@ interface allocatable {
     public function profile_link($withpicture = false);
 
     /**
-     * @param \stdClass $course
+     * @param stdClass $course
      * @return mixed
      */
     public function is_valid_for_course($course);

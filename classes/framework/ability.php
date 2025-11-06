@@ -21,8 +21,11 @@
  */
 
 namespace mod_coursework\framework;
+use closure;
+use coding_exception;
 use mod_coursework\ability\rule;
 use mod_coursework\models\user;
+use stdClass;
 
 /**
  * This class provides a central point where all of the can/cannot decisions are stored.
@@ -145,8 +148,8 @@ abstract class ability {
      *
      * @param $action
      * @param $type
-     * @return \closure
-     * @throws \coding_exception
+     * @return closure
+     * @throws coding_exception
      */
     protected function get_rule($action, $type) {
 
@@ -169,7 +172,7 @@ abstract class ability {
     }
 
     /**
-     * @return table_base|\stdClass
+     * @return table_base|stdClass
      */
     protected function get_user() {
         if ($this->user === null) {

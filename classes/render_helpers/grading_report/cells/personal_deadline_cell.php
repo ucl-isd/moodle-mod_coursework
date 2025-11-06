@@ -25,7 +25,6 @@ use coding_exception;
 use mod_coursework\ability;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\personal_deadline;
-use mod_coursework\models\user;
 use pix_icon;
 
 /**

@@ -34,7 +34,7 @@ $params = [
     'allocatabletype' => $allocatabletype,
 ];
 $url = '/mod/coursework/actions/deadline_extensions/create.php';
-$link = new \moodle_url($url, $params);
+$link = new moodle_url($url, $params);
 $PAGE->set_url($link);
 
 $controller = new mod_coursework\controllers\deadline_extensions_controller($params);

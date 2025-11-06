@@ -26,11 +26,11 @@ use mod_coursework\exceptions\access_denied;
 use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
-use mod_coursework\models\personal_deadline;
 use mod_coursework\models\feedback;
-use mod_coursework\models\submission;
 use mod_coursework\models\moderation;
+use mod_coursework\models\personal_deadline;
 use mod_coursework\models\plagiarism_flag;
+use mod_coursework\models\submission;
 
 /**
  * This class provides a central point where all of the can/cannot decisions are stored.
@@ -41,7 +41,7 @@ use mod_coursework\models\plagiarism_flag;
  *
  * @package mod_coursework
  */
-class ability extends \mod_coursework\framework\ability {
+class ability extends framework\ability {
 
     /**
      * @var coursework

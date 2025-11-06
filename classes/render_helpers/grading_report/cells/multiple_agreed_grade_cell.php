@@ -22,12 +22,12 @@
 
 namespace mod_coursework\render_helpers\grading_report\cells;
 
+use html_table_cell;
 use html_writer;
 use mod_coursework\ability;
 use mod_coursework\grade_judge;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\feedback;
-use mod_coursework\models\user;
 use mod_coursework\stages\base as stage_base;
 use pix_icon;
 
@@ -59,7 +59,7 @@ class multiple_agreed_grade_cell extends cell_base {
 
     /**
      * @param $rowobject
-     * @return \html_table_cell|string
+     * @return html_table_cell|string
      */
     public function get_content($rowobject) {
 

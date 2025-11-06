@@ -20,6 +20,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_coursework\models\coursework;
+
 require_once(dirname(__FILE__) . '/../../../config.php');
 
 global $CFG, $USER, $PAGE, $DB;
@@ -34,7 +36,7 @@ $selectedtype = optional_param('selectedtype', 'date', PARAM_RAW);
 
 $courseworkdb = $DB->get_record('coursework', ['id' => $courseworkid]);
 
-$coursework = \mod_coursework\models\coursework::find($courseworkdb);
+$coursework = coursework::find($courseworkdb);
 
 require_login($coursework->get_course(), false, $coursework->get_course_module());
 

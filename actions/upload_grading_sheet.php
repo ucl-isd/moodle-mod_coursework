@@ -20,8 +20,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_coursework\export\grading_sheet;
+use mod_coursework\export\import;
 use mod_coursework\models\coursework;
-use mod_coursework\export;
 
 require_once(dirname(__FILE__).'/../../../config.php');
 
@@ -65,9 +66,9 @@ if ($data = $gradinguploadform->get_data()) {
 
     $content = $gradinguploadform->get_file_content('gradingdata');
 
-    $csvcells = \mod_coursework\export\grading_sheet::cells_array($coursework);
+    $csvcells = grading_sheet::cells_array($coursework);
 
-    $csvimport = new \mod_coursework\export\import($coursework, false, false);
+    $csvimport = new import($coursework, false, false);
 
     $procsessingresults = $csvimport->validate_csv($content, $data->encoding, $data->delimiter_name, $csvcells);
 

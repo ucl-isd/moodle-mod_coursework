@@ -23,8 +23,7 @@
 namespace mod_coursework;
 
 use mod_coursework\models\coursework;
-use mod_coursework\models\submission;
-use mod_coursework\export;
+use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -120,9 +119,9 @@ class coursework_file_zip_importer {
 
                 $subdbrecord = $DB->get_record('coursework_submissions', ['courseworkid' => $coursework->id(), 'allocatableid' => $allocatableid, 'allocatabletype' => $coursework->get_allocatable_type()]);
 
-                $submission = \mod_coursework\models\submission::find($subdbrecord);
+                $submission = models\submission::find($subdbrecord);
 
-                if ($submission->get_state() < \mod_coursework\models\submission::PUBLISHED) {
+                if ($submission->get_state() < models\submission::PUBLISHED) {
 
                     // If only add/edit initial capability then workout stage identifier
                     if ($feedbackstage == 'initialassessor') {
@@ -158,7 +157,7 @@ class coursework_file_zip_importer {
                             }
                         } else {
                             // Create a new feedback file.
-                            $newfilerecord = new \stdClass();
+                            $newfilerecord = new stdClass();
                             $newfilerecord->contextid = $contextid;
                             $newfilerecord->component = 'mod_coursework';
                             $newfilerecord->filearea = 'feedback';

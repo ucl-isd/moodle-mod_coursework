@@ -24,7 +24,6 @@ namespace mod_coursework;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 
 /**

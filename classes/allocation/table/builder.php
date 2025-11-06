@@ -24,13 +24,14 @@ namespace mod_coursework\allocation\table;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_coursework\models\coursework;
+use AllowDynamicProperties;
+use mod_coursework;
 use mod_coursework\allocation\table\row\builder as row_builder;
+use mod_coursework\models\coursework;
 use mod_coursework\render_helpers\grading_report\cells\allocatable_cell;
 use mod_coursework\render_helpers\grading_report\cells\group_cell;
 use mod_coursework\render_helpers\grading_report\cells\user_cell;
 use mod_coursework\stages\base as stage_base;
-use mod_coursework;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -38,7 +39,7 @@ defined('MOODLE_INTERNAL') || die();
  * Represents the table that will show all students and all markers so that they can be matched up with one another for grading.
  * Various automatic strategies will be available for this, but the manual override happens here.
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class builder {
 
     /**

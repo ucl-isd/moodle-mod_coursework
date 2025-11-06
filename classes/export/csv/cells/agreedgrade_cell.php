@@ -21,11 +21,12 @@
  */
 
 namespace mod_coursework\export\csv\cells;
-use mod_coursework\models\submission;
+use coding_exception;
 use mod_coursework\ability;
-use mod_coursework\models\user;
-use mod_coursework\models\feedback;
 use mod_coursework\grade_judge;
+use mod_coursework\models\feedback;
+use mod_coursework\models\submission;
+
 /**
  * Class agreedgrade_cell
  */
@@ -54,7 +55,7 @@ class agreedgrade_cell extends cell_base {
     /**
      * @param $stage
      * @return array|mixed|string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function get_header($stage) {
 
@@ -153,7 +154,7 @@ class agreedgrade_cell extends cell_base {
             }
 
             $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
-            $submission = \mod_coursework\models\submission::find($subdbrecord);
+            $submission = submission::find($subdbrecord);
 
             // Is the submission in question ready to grade?
             if (!$submission->all_initial_graded() && !empty($value) && count($uploadedgradecells) < $submission->max_number_of_feedbacks()) { return get_string('submissionnotreadyforagreedgrade', 'coursework');

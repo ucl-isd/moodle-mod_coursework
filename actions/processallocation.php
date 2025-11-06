@@ -26,8 +26,8 @@ ignore_user_abort(true);
 // We have to set the time limit to 0 as depending on
 set_time_limit ( 0 );
 
+use mod_coursework\allocation\auto_allocator;
 use mod_coursework\models\coursework;
-use mod_coursework\allocation\widget;
 
 require_once(dirname(__FILE__).'/../../../config.php');
 
@@ -55,7 +55,7 @@ if ($assessorallocationstrategy) {
 
 $coursework->save();
 
-$allocator = new \mod_coursework\allocation\auto_allocator($coursework);
+$allocator = new auto_allocator($coursework);
 $allocator->process_allocations();
 
  echo $coursework->name. "re-allocated";

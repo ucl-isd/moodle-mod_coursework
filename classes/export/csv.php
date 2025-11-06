@@ -22,8 +22,8 @@
 
 namespace mod_coursework\export;
 
+use coding_exception;
 use csv_export_writer;
-use mod_coursework\ability;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
 
@@ -71,7 +71,7 @@ class csv {
     }
 
     /**
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function export() {
 
@@ -217,7 +217,7 @@ class csv {
      * @param null $groupid
      * @param string $selectedsubmissionids
      * @return array
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function get_submissions($groupid = null, $selectedsubmissionids = '') {
 

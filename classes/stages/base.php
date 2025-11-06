@@ -22,19 +22,22 @@
 
 namespace mod_coursework\stages;
 
+use coding_exception;
+use html_table_cell;
+use html_writer;
 use mod_coursework\allocation\allocatable;
+use mod_coursework\allocation\strategy\base as strategy_base;
 use mod_coursework\allocation\table\cell\builder;
 use mod_coursework\allocation\table\cell\data;
-use mod_coursework\allocation\strategy\base as strategy_base;
 use mod_coursework\allocation\table\cell\processor;
 use mod_coursework\models\allocation;
+use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\moderation;
-use mod_coursework\models\assessment_set_membership;
+use mod_coursework\models\null_user;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
-use mod_coursework\models\null_user;
 
 /**
  * Class base
@@ -120,7 +123,7 @@ abstract class base {
     }
 
     /**
-     * @return \mod_coursework\models\coursework
+     * @return coursework
      */
     protected function get_coursework() {
         return $this->coursework;
@@ -163,7 +166,7 @@ abstract class base {
     }
 
     /**
-     * @throws \coding_exception
+     * @throws coding_exception
      * @return string
      */
     abstract protected function strategy_name(): string;
@@ -199,7 +202,7 @@ abstract class base {
 
     /**
      * @param $allocatable
-     * @return \html_table_cell
+     * @return html_table_cell
      */
     public function get_allocation_table_cell($allocatable) {
         $cellhelper = $this->get_cell_helper($allocatable);
@@ -209,7 +212,7 @@ abstract class base {
 
     /**
      * @param $allocatable
-     * @return \html_table_cell
+     * @return html_table_cell
      */
     public function get_moderation_table_cell($allocatable) {
         $cellhelper = $this->get_cell_helper($allocatable);
@@ -431,7 +434,7 @@ abstract class base {
 
     /**
      * @param $allocatable
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function destroy_allocation($allocatable) {
         $this->get_allocation($allocatable)->destroy();
@@ -696,14 +699,14 @@ abstract class base {
 
     /**
      * @return bool
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function auto_allocation_enabled() {
         return $this->strategy_name() !== 'none';
     }
     /**
      * @return bool
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function group_assessor_enabled() {
         return $this->strategy_name() == 'group_assessor';
@@ -763,7 +766,7 @@ abstract class base {
     /**
      * @param allocatable $allocatable
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function potential_marker_dropdown($allocatable) {
 
@@ -802,7 +805,7 @@ abstract class base {
 
         $selected = $this->selected_allocation_in_session($dropdownname);
 
-        $assessordropdown = \html_writer::select($this->assessor_dropdown_options,
+        $assessordropdown = html_writer::select($this->assessor_dropdown_options,
                                                  $dropdownname,
                                                  $selected,
                                                   $optionfornothingchosenyet,
@@ -828,7 +831,7 @@ abstract class base {
 
         $selected = $this->selected_allocation_in_session($dropdownname);
 
-        return  $moderatordropdown = \html_writer::select($this->potential_moderators_as_options_array(),
+        return  $moderatordropdown = html_writer::select($this->potential_moderators_as_options_array(),
             'allocatables[' . $allocatable->id . '][moderator][assessor_id]',
             $selected,
             $optionfornothingchosenyet,

@@ -21,7 +21,8 @@
  */
 
 namespace mod_coursework\event;
-use mod_coursework\models\submission;
+use moodle_url;
+
 defined('MOODLE_INTERNAL') || die();
 
 class assessable_uploaded extends \core\event\assessable_uploaded {
@@ -55,10 +56,10 @@ class assessable_uploaded extends \core\event\assessable_uploaded {
     /**
      * Get URL related to the action.
      *
-     * @return \moodle_url
+     * @return moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/coursework/view.php', ['id' => $this->contextinstanceid]);
+        return new moodle_url('/mod/coursework/view.php', ['id' => $this->contextinstanceid]);
     }
 
     /**

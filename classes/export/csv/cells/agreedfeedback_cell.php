@@ -21,11 +21,13 @@
  */
 
 namespace mod_coursework\export\csv\cells;
-use mod_coursework\models\submission;
+use coding_exception;
+use dml_exception;
+use lang_string;
 use mod_coursework\ability;
-use mod_coursework\models\user;
 use mod_coursework\models\feedback;
-use mod_coursework\grade_judge;
+use mod_coursework\models\submission;
+
 /**
  * Class agreedfeedback_cell
  */
@@ -45,7 +47,7 @@ class agreedfeedback_cell extends cell_base {
     /**
      * @param $stage
      * @return string
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function get_header($stage) {
         return get_string('agreedgradefeedback', 'coursework');
@@ -57,9 +59,9 @@ class agreedfeedback_cell extends cell_base {
      * @param int $submissionid
      * @param string $stageidentifier
      * @param array $uploadedgradecells
-     * @return \lang_string|mixed|string|true
-     * @throws \coding_exception
-     * @throws \dml_exception
+     * @return lang_string|mixed|string|true
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells  = []) {
         global $DB, $PAGE, $USER;
@@ -73,7 +75,7 @@ class agreedfeedback_cell extends cell_base {
             || has_capability('mod/coursework:administergrades', $PAGE->context)) {
 
             $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
-            $submission = \mod_coursework\models\submission::find($subdbrecord);
+            $submission = submission::find($subdbrecord);
 
             // Is the submission in question ready to grade?
             if (!$submission->all_initial_graded() && !empty($value)) {

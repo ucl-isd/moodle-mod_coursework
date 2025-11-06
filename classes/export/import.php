@@ -21,12 +21,18 @@
  */
 
 namespace mod_coursework\export;
-use mod_coursework\export\csv;
+use coding_exception;
+use csv_import_reader;
+use dml_exception;
+use dml_missing_record_exception;
+use dml_multiple_records_exception;
+use mod_coursework\auto_grader\auto_grader;
 use mod_coursework\export\csv\cells\cell_base;
 use mod_coursework\grade_judge;
-use mod_coursework\controllers;
-use mod_coursework\models\coursework;
-use mod_coursework\auto_grader\auto_grader;
+use mod_coursework\models\feedback;
+use mod_coursework\models\submission;
+use moodle_exception;
+use stdClass;
 
 global $CFG;
 require_once($CFG->libdir . '/csvlib.class.php');
@@ -47,15 +53,15 @@ class import extends grading_sheet {
      * @param $delimeter
      * @param $csvcells
      * @return array|bool
-     * @throws \coding_exception
-     * @throws \moodle_exception
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     public function validate_csv($content, $encoding, $delimeter, $csvcells) {
 
         global $DB, $USER;
 
-        $iid = \csv_import_reader::get_new_iid('courseworkgradingdata');
-        $csvreader = new \csv_import_reader($iid, 'courseworkgradingdata');
+        $iid = csv_import_reader::get_new_iid('courseworkgradingdata');
+        $csvreader = new csv_import_reader($iid, 'courseworkgradingdata');
 
         $readcount = $csvreader->load_csv_content($content, $encoding, $delimeter);
         $csvloaderror = $csvreader->get_error();
@@ -266,14 +272,14 @@ class import extends grading_sheet {
      * @param $csvcells
      * @param $processingresults
      * @return array|bool
-     * @throws \moodle_exception
+     * @throws moodle_exception
      */
     public function process_csv($content, $encoding, $delimiter, $csvcells, $processingresults) {
 
         global $DB, $PAGE, $USER;
 
-        $iid = \csv_import_reader::get_new_iid('courseworkgradingdata');
-        $csvreader = new \csv_import_reader($iid, 'courseworkgradingdata');
+        $iid = csv_import_reader::get_new_iid('courseworkgradingdata');
+        $csvreader = new csv_import_reader($iid, 'courseworkgradingdata');
 
         $readcount = $csvreader->load_csv_content($content, $encoding, $delimiter);
         $csvloaderror = $csvreader->get_error();
@@ -338,7 +344,7 @@ class import extends grading_sheet {
             }
 
             $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
-            $submission = \mod_coursework\models\submission::find($subdbrecord);
+            $submission = submission::find($subdbrecord);
 
             // Is this submission graded? if yes did this user grade it?
 
@@ -578,7 +584,7 @@ class import extends grading_sheet {
      * @param $stageidentifier
      * @param bool $usesrubric
      * @return bool|int
-     * @throws \dml_exception
+     * @throws dml_exception
      */
     public function add_grade($submissionid, $grade, $feedback, $stageidentifier, $usesrubric=false) {
         global $DB, $USER;
@@ -596,7 +602,7 @@ class import extends grading_sheet {
         $gradejudge = new grade_judge($this->coursework);
         $grade = $gradejudge->get_grade($grade);
 
-        $addgrade = new \stdClass();
+        $addgrade = new stdClass();
         $addgrade->id = '';
         $addgrade->submissionid = $submissionid;
         $addgrade->assessorid = $USER->id;
@@ -656,7 +662,7 @@ class import extends grading_sheet {
      * @param $feedback
      * @param bool $usesrubric
      * @return bool]
-     * @throws \dml_exception
+     * @throws dml_exception
      */
     public function edit_grade($cwfeedbackid, $grade, $feedback, $usesrubric=false) {
         global $DB, $USER;
@@ -680,7 +686,7 @@ class import extends grading_sheet {
 
         if ($currentfeedback->grade != $grade || cell_base::clean_cell($currentfeedback->feedbackcomment) != $feedback) {
 
-            $editgrade = new \stdClass();
+            $editgrade = new stdClass();
             $editgrade->id = $cwfeedbackid;
             $editgrade->timemodified = time();
             $editgrade->grade = $grade;
@@ -706,15 +712,15 @@ class import extends grading_sheet {
      * @param $submissionid
      * @param $cellidentifier
      * @return string
-     * @throws \dml_missing_record_exception
-     * @throws \dml_multiple_records_exception
+     * @throws dml_missing_record_exception
+     * @throws dml_multiple_records_exception
      */
     public function get_stage_identifier($submissionid, $cellidentifier) {
 
         global $DB, $USER;
         $submission = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
 
-        $submission = \mod_coursework\models\submission::find($submission);
+        $submission = submission::find($submission);
 
         // single marked - singlegrade - allocated/notallocated
         $stageidentifier = 'assessor_1';
@@ -800,7 +806,7 @@ class import extends grading_sheet {
         global $DB;
 
         $feedback = $DB->get_record('coursework_feedbacks', ['id' => $cwfeedbackid]);
-        $feedback = \mod_coursework\models\feedback::find($feedback);
+        $feedback = feedback::find($feedback);
 
         $autofeedbackclassname = '\mod_coursework\auto_grader\\' . $this->coursework->automaticagreementstrategy;
         /**

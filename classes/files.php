@@ -23,6 +23,7 @@
 namespace mod_coursework;
 
 use Countable;
+use stored_file;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -32,7 +33,7 @@ defined('MOODLE_INTERNAL') || die();
 abstract class files implements countable {
 
     /**
-     * @var \stored_file[]
+     * @var stored_file[]
      */
     protected $files;
 

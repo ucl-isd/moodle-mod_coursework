@@ -21,7 +21,6 @@
  */
 
 use mod_coursework\models\coursework;
-use mod_coursework\export;
 
 require_once(dirname(__FILE__).'/../../../config.php');
 

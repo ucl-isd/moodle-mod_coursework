@@ -16,6 +16,8 @@
 
 namespace courseworkcandidateprovider_sitsgradepush;
 
+use core_plugin_manager;
+use Exception;
 use local_sitsgradepush\scnmanager;
 use mod_coursework\candidateprovider;
 
@@ -45,7 +47,7 @@ class candidatenumber_provider extends candidateprovider {
         try {
             // Use SITS Grade Push SCN manager to get candidate number.
             return scnmanager::get_instance()->get_candidate_number_by_course_student($courseid, $userid);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             debugging('SITS Grade Push provider failed: ' . $e->getMessage(), DEBUG_DEVELOPER);
             return null;
         }
@@ -76,7 +78,7 @@ class candidatenumber_provider extends candidateprovider {
      */
     private function is_sitsgradepush_available(): bool {
         // Check if the sitsgradepush plugin is installed.
-        $plugininfo = \core_plugin_manager::instance()->get_plugin_info('local_sitsgradepush');
+        $plugininfo = core_plugin_manager::instance()->get_plugin_info('local_sitsgradepush');
         if (!$plugininfo) {
             return false;
         }
@@ -97,7 +99,7 @@ class candidatenumber_provider extends candidateprovider {
 
         try {
             return scnmanager::get_instance()->is_fetch_candidate_numbers_enabled();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }

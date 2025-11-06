@@ -25,9 +25,13 @@
 namespace mod_coursework\forms;
 
 use core\exception\coding_exception;
+use form_filemanager;
+use gradingform_controller;
+use gradingform_instance;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
+use mod_coursework\output\grading_guide_agreed_grades;
 use mod_coursework\stages\final_agreed;
 use mod_coursework\utils\cs_editor;
 use moodleform;
@@ -50,12 +54,12 @@ class assessor_feedback_mform extends moodleform {
     public $assessorid;
 
     /**
-     * @var bool|\gradingform_controller|null $_grading_controller
+     * @var bool|gradingform_controller|null $_grading_controller
      */
     private $_grading_controller;
 
     /**
-     * @var \gradingform_instance $_grading_instance
+     * @var gradingform_instance $_grading_instance
      */
     private $_grading_instance;
 
@@ -269,7 +273,7 @@ class assessor_feedback_mform extends moodleform {
                 'context' => $PAGE->context,
                 'itemid' => $filemanager->getValue(),
             ];
-            $fm = new \form_filemanager($params);
+            $fm = new form_filemanager($params);
             $options = $fm->options;
         }
         return $options;
@@ -305,7 +309,7 @@ class assessor_feedback_mform extends moodleform {
             && optional_param('stage_identifier', '', PARAM_TEXT) == final_agreed::STAGE_FINAL_AGREED_1;
 
         if ($isnewagreedfeedback || $isexistingagreedfeedback) {
-            $data = (new \mod_coursework\output\grading_guide_agreed_grades(
+            $data = (new grading_guide_agreed_grades(
                 $this->_form->getAttributes(), $this->_form->_elements, $this->_grading_controller, $this->submission
                 ))->export_for_template($OUTPUT);
             echo $OUTPUT->render_from_template('coursework/marking_guide_agree_grades_form', $data);

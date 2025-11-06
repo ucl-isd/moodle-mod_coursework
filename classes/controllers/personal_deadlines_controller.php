@@ -21,28 +21,33 @@
  */
 
 namespace mod_coursework\controllers;
+use AllowDynamicProperties;
+use core\notification;
+use Exception;
 use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
-use mod_coursework\models\deadline_extension;
+use mod_coursework\exceptions\access_denied;
 use mod_coursework\forms\personal_deadline_form;
 use mod_coursework\forms\personal_deadline_form_bulk;
+use mod_coursework\framework\table_base;
+use mod_coursework\models\deadline_extension;
 use mod_coursework\models\personal_deadline;
 
 /**
  * Class personal_deadline_controller is responsible for handling restful requests related
  * to the personal_deadline.
  *
- * @property \mod_coursework\framework\table_base deadline_extension
+ * @property table_base deadline_extension
  * @property allocatable allocatable
  * @property personal_deadline_form form
  * @package mod_coursework\controllers
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class personal_deadlines_controller extends controller_base {
     /**
      * Handle the generation of personal deadline form and processing data.
      * @return void
-     * @throws \mod_coursework\exceptions\access_denied
+     * @throws access_denied
      */
     protected function new_personal_deadline() {
         global $USER, $PAGE, $OUTPUT;
@@ -111,7 +116,7 @@ class personal_deadlines_controller extends controller_base {
                     $this->params['allocatabletype'],
                     $data->personal_deadline
                 );
-                \core\notification::success(
+                notification::success(
                     get_string(
                         'alert_personaldeadline_save_successful',
                         'coursework',
@@ -152,7 +157,7 @@ class personal_deadlines_controller extends controller_base {
                         $data->allocatabletype,
                         $this->personaldeadline->personal_deadline
                     );
-                    \core\notification::success(
+                    notification::success(
                         get_string(
                             'alert_personaldeadline_save_successful',
                             'coursework',
@@ -190,7 +195,7 @@ class personal_deadlines_controller extends controller_base {
      * @param string $allocatabletype
      * @param int $personaldeadlineunix the new time to set
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function update_calendar_event(int $allocatableid, string $allocatabletype, int $personaldeadlineunix) {
         $existingextension = deadline_extension::get_for_allocatable($this->coursework->id, $allocatableid, $allocatabletype);

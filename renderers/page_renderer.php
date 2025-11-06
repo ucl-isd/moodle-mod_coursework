@@ -21,16 +21,21 @@
  */
 
 use mod_coursework\ability;
+use mod_coursework\export\grading_sheet;
 use mod_coursework\forms\assessor_feedback_mform;
+use mod_coursework\forms\choose_student_for_submission_mform;
 use mod_coursework\forms\moderator_agreement_mform;
 use mod_coursework\forms\plagiarism_flagging_mform;
 use mod_coursework\forms\student_submission_form;
+use mod_coursework\grade_judge;
+use mod_coursework\grading_report;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\moderation;
 use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
+use mod_coursework\renderers\grading_report_renderer;
 use mod_coursework\router;
 use mod_coursework\warnings;
 
@@ -110,7 +115,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $submission = $teacherfeedback->get_submission();
         $files = $submission->get_submission_files();
         $objectrenderer = $this->get_object_renderer();
-        $template->submission = $objectrenderer->render_submission_files_with_plagiarism_links(new \mod_coursework_submission_files($files), false);
+        $template->submission = $objectrenderer->render_submission_files_with_plagiarism_links(new mod_coursework_submission_files($files), false);
 
         // Last edit.
         $lastmarked = ((!$teacherfeedback->get_coursework()->sampling_enabled() || $teacherfeedback->get_submission()->sampled_feedback_exists())
@@ -219,7 +224,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param \mod_coursework\models\coursework $coursework
+     * @param coursework $coursework
      * @param user $student
      * @return stdClass Template data for rendering.
      */
@@ -294,7 +299,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * This has to come first so that we can load the student submission form with the relevant student id.
      *
      * @param int $coursemoduleid
-     * @param \mod_coursework\forms\choose_student_for_submission_mform $chooseform
+     * @param choose_student_for_submission_mform $chooseform
      * @internal param \coursework $coursework
      * @return string HTML
      */
@@ -351,7 +356,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $files = $submission->get_submission_files();
         $objectrenderer = $this->get_object_renderer();
         $template->submission = $objectrenderer->render_submission_files_with_plagiarism_links(
-            new \mod_coursework_submission_files($files), false
+            new mod_coursework_submission_files($files), false
         );
 
         $submiturl = $this->get_router()->get_path('create feedback', ['feedback' => $newfeedback]);
@@ -508,7 +513,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $reportoptions['page'] = $page;
         $reportoptions['group'] = $group;
         $reportoptions['perpage'] = $perpage;
-        $reportoptions['mode'] = \mod_coursework\grading_report::MODE_GET_ALL; // Load all students as pagination is removed for now.
+        $reportoptions['mode'] = grading_report::MODE_GET_ALL; // Load all students as pagination is removed for now.
         $reportoptions['sortby'] = $sortby;
         $reportoptions['sorthow'] = $sorthow;
         $reportoptions['showsubmissiongrade'] = false;
@@ -518,13 +523,13 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $reportoptions['groupnamealpha'] = $groupnamealpha;
 
         $gradingreport = $coursework->renderable_grading_report_factory($reportoptions);
-        $gradingsheet = new \mod_coursework\export\grading_sheet($coursework, null, null);
+        $gradingsheet = new grading_sheet($coursework, null, null);
         // get only submissions that user can grade
         $submissions = $gradingsheet->get_submissions();
         /**
-         * @var \mod_coursework\renderers\grading_report_renderer $grading_report_renderer
+         * @var grading_report_renderer $grading_report_renderer
          */
-        $gradingreportrenderer = new \mod_coursework\renderers\grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
+        $gradingreportrenderer = new grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
 
         $template = new stdClass();
         $warnings = new warnings($coursework);
@@ -552,7 +557,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html = $this->render_from_template('mod_coursework/submissions/beforetable', $template);
 
         /**
-         * @var \mod_coursework\renderers\grading_report_renderer $grading_report_renderer
+         * @var grading_report_renderer $grading_report_renderer
          */
 
         $html .= $gradingreportrenderer->render_grading_report($gradingreport);
@@ -595,7 +600,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         // Mark.
         if ($submission->is_published()) {
-            $judge = new \mod_coursework\grade_judge($coursework);
+            $judge = new grade_judge($coursework);
             $gradeforgradebook = $judge->get_grade_capped_by_submission_time($submission);
             $template->mark = $judge->grade_to_display($gradeforgradebook);
         }
@@ -655,7 +660,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * Shows the interface for a teacher to
      *
      * @param $student
-     * @param \mod_coursework\forms\student_submission_form $submitform
+     * @param student_submission_form $submitform
      * @return string
      */
     public function submit_on_behalf_of_student_interface($student, $submitform) {
@@ -701,7 +706,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $stringname = $coursework->is_configured_to_have_group_submissions() ? 'finalisegroupsubmission' : 'finaliseyoursubmission';
         $finalisesubmissionpath =
             $this->get_router()->get_path('finalise submission', ['submission' => $submission], true);
-        $button = new \single_button($finalisesubmissionpath, get_string($stringname, 'mod_coursework'), 'post', single_button::BUTTON_SUCCESS);
+        $button = new single_button($finalisesubmissionpath, get_string($stringname, 'mod_coursework'), 'post', single_button::BUTTON_SUCCESS);
         $button->add_confirm_action(get_string('finalise_button_confirm', 'mod_coursework'));
         $button->class = 'd-block';
         $html .= $this->output->render($button);
@@ -1033,7 +1038,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $this->page->set_pagelayout('standard');
         $templatedata = (object)[
             'submission' => $objectrenderer->render_submission_files_with_plagiarism_links(
-                new \mod_coursework_submission_files($files), false
+                new mod_coursework_submission_files($files), false
             ),
             'title' => get_string('gradingfor', 'coursework', $submission->get_allocatable_name()),
         ];

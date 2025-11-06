@@ -27,6 +27,7 @@ namespace mod_coursework\moderation_set_rule;
 use html_writer;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\moderation_set_rule;
+use mod_coursework\stages\base;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -47,7 +48,7 @@ class minimum_range_grade_raw extends moderation_set_rule {
      *
      * @param allocatable[] $moderationset
      * @param allocatable[] $potentialallocatables
-     * @param \mod_coursework\stages\base $stage
+     * @param base $stage
      * @return mixed
      */
     public function adjust_set(array &$moderationset, array &$potentialallocatables, $stage) {

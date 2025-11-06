@@ -22,6 +22,7 @@
 
 namespace mod_coursework\exceptions;
 
+use core\exception\moodle_exception;
 use mod_coursework\models\coursework;
 use mod_coursework\router;
 
@@ -33,7 +34,7 @@ use mod_coursework\router;
  *
  * @package mod_coursework
  */
-class access_denied extends \core\exception\moodle_exception {
+class access_denied extends moodle_exception {
 
     /**
      * Constructor.

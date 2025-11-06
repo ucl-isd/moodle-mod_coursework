@@ -25,9 +25,8 @@
 
 namespace mod_coursework\render_helpers\grading_report\data;
 
+use coding_exception;
 use mod_coursework\grading_table_row_base;
-use mod_coursework\models\deadline_extension;
-use mod_coursework\models\personal_deadline;
 use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
 use mod_coursework\router;
@@ -45,7 +44,7 @@ class actions_cell_data extends cell_data_base {
      * @return stdClass|null The data object for template rendering.
      */
     public function get_table_cell_data(grading_table_row_base $rowsbase): ?stdClass {
-        $data = new \stdClass();
+        $data = new stdClass();
 
         $identitieshidden = $this->coursework->blindmarking_enabled() &&
             !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context());
@@ -228,7 +227,7 @@ class actions_cell_data extends cell_data_base {
      * @param submission $submission The submission object
      * @param plagiarism_flag|bool $flag The plagiarism flag object
      * @return string The URL or empty string if no permissions
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     private function get_plagiarism_url(submission $submission, plagiarism_flag|bool $flag): string {
         if (!$flag) {

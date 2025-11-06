@@ -31,7 +31,6 @@ use mod_coursework\ability;
 use mod_coursework\models\coursework;
 use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
-use mod_coursework\models\user;
 
 /**
  * Abstract base class for cell data providers.

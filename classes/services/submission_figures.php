@@ -25,7 +25,6 @@
 namespace mod_coursework\services;
 
 use mod_coursework\models\coursework;
-use mod_coursework\models\submission;
 
 /**
  * Class to provide figures around submissions and gradings.

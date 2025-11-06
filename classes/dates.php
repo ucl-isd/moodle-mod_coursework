@@ -28,6 +28,8 @@ namespace mod_coursework;
 
 use core\activity_dates;
 use mod_coursework\models\coursework;
+use mod_coursework\models\deadline_extension;
+use mod_coursework\models\user;
 
 /**
  * Class for fetching the important dates in mod_coursework for a given module instance and a user.
@@ -49,9 +51,9 @@ class dates extends activity_dates {
         $timeopen = $instance->startdate ?? null;
         $timedue = $instance->get_user_deadline($USER->id) ?? null;
 
-        $user = \mod_coursework\models\user::find($USER->id);
+        $user = user::find($USER->id);
         $deadlineextension = $user
-            ? \mod_coursework\models\deadline_extension::get_extension_for_student($user, $instance) : null;
+            ? deadline_extension::get_extension_for_student($user, $instance) : null;
         if ($deadlineextension && ($deadlineextension->extended_deadline ?? null)) {
             $timedue = $deadlineextension->extended_deadline;
         }

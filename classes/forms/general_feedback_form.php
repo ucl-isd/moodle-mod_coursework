@@ -23,6 +23,7 @@
 namespace mod_coursework\forms;
 
 use moodleform;
+use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -61,7 +62,7 @@ class general_feedback_form extends moodleform {
      */
     public function process_data($feedback) {
         global $DB;
-        $coursework = new \stdClass();
+        $coursework = new stdClass();
         $coursework->feedbackcomment = $feedback->feedbackcomment_editor['text'];
         $coursework->feedbackcommentformat = 1;
         $coursework->generalfeedbacktimepublished = time();

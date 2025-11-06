@@ -26,7 +26,6 @@ use html_writer;
 use mod_coursework\ability;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\submission;
-use mod_coursework\models\user;
 use mod_coursework_submission_files;
 use moodle_url;
 use pix_icon;

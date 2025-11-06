@@ -21,12 +21,14 @@
  */
 
 namespace mod_coursework\export\csv\cells;
+use coding_exception;
+use core_text;
+use gradingform_rubric_instance;
+use mod_coursework\grade_judge;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
-use mod_coursework\grade_judge;
-use mod_coursework\models\submission;
 use mod_coursework\models\plagiarism_flag;
-use gradingform_rubric_instance;
+use mod_coursework\models\submission;
 
 /**
  * Class cell_base
@@ -58,7 +60,7 @@ abstract class cell_base implements cell_interface {
     /**
      * Function to check if a user can see real names/usernames even if blind marking is enabled
      * @return bool
-     * @throws \coding_exception
+     * @throws coding_exception
      */
     public function can_view_hidden() {
 
@@ -300,6 +302,6 @@ abstract class cell_base implements cell_interface {
     }
 
     public static function clean_cell($contents) {
-        return trim(\core_text::specialtoascii(html_to_text($contents, 0)));
+        return trim(core_text::specialtoascii(html_to_text($contents, 0)));
     }
 }
