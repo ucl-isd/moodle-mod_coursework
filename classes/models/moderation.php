@@ -32,7 +32,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Class to represent a single item of moderation agreement
  *
- * @property mixed stage_identifier
+ * @property mixed stageidentifier
  * @property int feedback_manager
  */
 class moderation extends table_base {

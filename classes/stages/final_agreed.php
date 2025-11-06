@@ -36,7 +36,7 @@ use coding_exception;
 class final_agreed extends base {
 
     /**
-     * Value for mdl_coursework_feedbacks.stage_identifier for feedback from final agreed mark.
+     * Value for mdl_coursework_feedbacks.stageidentifier for feedback from final agreed mark.
      */
     const STAGE_FINAL_AGREED_1 = 'final_agreed_1';
 

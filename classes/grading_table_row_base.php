@@ -28,7 +28,7 @@ use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
 use mod_coursework\models\group;
-use mod_coursework\models\personal_deadline;
+use mod_coursework\models\personaldeadline;
 use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
@@ -64,9 +64,9 @@ class grading_table_row_base implements user_row {
     protected ?deadline_extension $extension;
 
     /**
-     * @var ?personal_deadline
+     * @var ?personaldeadline
      */
-    protected ?personal_deadline $personaldeadline;
+    protected ?personaldeadline $personaldeadline;
 
     /**
      * Constructor
@@ -74,7 +74,7 @@ class grading_table_row_base implements user_row {
      * @param coursework $coursework $coursework
      * @param allocatable $user
      */
-    public function __construct(coursework $coursework, user|group $user, ?deadline_extension $extension, ?personal_deadline $personaldeadline) {
+    public function __construct(coursework $coursework, user|group $user, ?deadline_extension $extension, ?personaldeadline $personaldeadline) {
         $this->coursework = $coursework;
         $this->allocatable = $user;
         $this->extension = $extension;
@@ -216,8 +216,8 @@ class grading_table_row_base implements user_row {
      *
      * @return ?int
      */
-    public function get_personal_deadline_time(): ?int {
-        return $this->personaldeadline->personal_deadline ?? null;
+    public function get_personaldeadline_time(): ?int {
+        return $this->personaldeadline->personaldeadline ?? null;
     }
 
     /**
@@ -232,7 +232,7 @@ class grading_table_row_base implements user_row {
      *
      * @return mixed
      */
-    public function get_coursework_id() {
+    public function get_courseworkid() {
         return $this->get_coursework()->id;
     }
 
@@ -254,7 +254,7 @@ class grading_table_row_base implements user_row {
             $allocatableid = $this->get_allocatable()->id();
             $allocatabletype = $this->get_allocatable()->type();
             $params = [$allocatableid, $allocatabletype];
-            $this->submission = submission::get_object($this->get_coursework_id(), 'allocatableid-allocatabletype', $params);
+            $this->submission = submission::get_object($this->get_courseworkid(), 'allocatableid-allocatabletype', $params);
         }
 
         return $this->submission;
@@ -428,10 +428,10 @@ class grading_table_row_base implements user_row {
     /**
      * Getter for row personal deadline
      *
-     * @return ?personal_deadline
+     * @return ?personaldeadline
 
      */
-    public function get_personal_deadline(): ?personal_deadline {
+    public function get_personaldeadline(): ?personaldeadline {
         if (empty($this->coursework->personaldeadlineenabled)) {
             return null;
         }

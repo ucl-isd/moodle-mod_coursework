@@ -57,9 +57,9 @@ class range_sample_type extends sample_base {
         $sql = "SELECT     sr.*
                      FROM       {coursework_sample_set_rules}   sr,
                                 {coursework_sample_set_plugin}  sp
-                     WHERE      sr.sample_set_plugin_id = sp.id
+                     WHERE      sr.samplesetpluginid = sp.id
                      AND        sr.courseworkid = {$this->coursework->id}
-                     AND        sr.stage_identifier = 'assessor_{$assessornumber}'
+                     AND        sr.stageidentifier = 'assessor_{$assessornumber}'
                      AND        sp.rulename = 'range_sample_type'";
 
         $rulesfound = false;
@@ -348,10 +348,10 @@ class range_sample_type extends sample_base {
                 $dbrecord->ruletype = $sampletype[$i];
                 $dbrecord->lowerlimit = $samplefrom[$i];
                 $dbrecord->upperlimit = $sampleto[$i];
-                $dbrecord->sample_set_plugin_id = $sampleplugin->id;
+                $dbrecord->samplesetpluginid = $sampleplugin->id;
                 $dbrecord->courseworkid = $this->coursework->id;
                 $dbrecord->ruleorder = $order;
-                $dbrecord->stage_identifier = "assessor_{$assessornumber}";
+                $dbrecord->stageidentifier = "assessor_{$assessornumber}";
 
                 $DB->insert_record("coursework_sample_set_rules", $dbrecord);
                 $order++;
@@ -369,10 +369,10 @@ class range_sample_type extends sample_base {
         $sql = "SELECT         r.*,p.rulename
                          FROM           {coursework_sample_set_plugin} p,
                                         {coursework_sample_set_rules} r
-                         WHERE          p.id = r.sample_set_plugin_id
+                         WHERE          p.id = r.samplesetpluginid
                          AND            r.courseworkid = :courseworkid
                          AND            p.rulename = 'range_sample_type'
-                         AND            stage_identifier = :stage
+                         AND            stageidentifier = :stage
                          ORDER BY       ruleorder";
 
         $ruleinstance = $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id, 'stage' => $stage]);
@@ -450,7 +450,7 @@ class range_sample_type extends sample_base {
                          {coursework_feedbacks} cf
                     WHERE cs.id = cf.submissionid
                     AND courseworkid = :courseworkid
-                    AND stage_identifier = :stage
+                    AND stageidentifier = :stage
                     AND $gradesql BETWEEN {$limit1} AND {$limit2}";
 
         // Note as things stand limit1 and limit2 can not be params as the type of the grade field (varchar)

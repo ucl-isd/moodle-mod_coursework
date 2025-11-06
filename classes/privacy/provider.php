@@ -75,7 +75,7 @@ class provider implements
         $extensions = [
             'allocatableid' => 'privacy:metadata:allocatableid',
             'createdbyid' => 'privacy:metadata:createdbyid',
-            'extra_information_text' => 'privacy:metadata:extra_information_text',
+            'extrainformationtext' => 'privacy:metadata:extrainformationtext',
             'extended_deadline' => 'privacy:metadata:extended_deadline',
             'allocatableuser' => 'privacy:metadata:userid',
             'allocatablegroup' => 'privacy:metadata:groupid',
@@ -83,7 +83,7 @@ class provider implements
         $persondeadlines = [
             'allocatableid' => 'privacy:metadata:allocatableid',
             'createdbyid' => 'privacy:metadata:createdbyid',
-            'personal_deadline' => 'privacy:metadata:personal_deadline',
+            'personaldeadline' => 'privacy:metadata:personaldeadline',
             'allocatableuser' => 'privacy:metadata:userid',
             'allocatablegroup' => 'privacy:metadata:groupid',
         ];
@@ -304,7 +304,7 @@ class provider implements
                 // Remove all deadline extensions by coursework
                 $coursework->remove_deadline_extensions_by_coursework();
                 // Remove all personal deadlines by coursework
-                $coursework->remove_personal_deadlines_by_coursework();
+                $coursework->remove_personaldeadlines_by_coursework();
             }
         }
     }
@@ -339,7 +339,7 @@ class provider implements
             // Remove all deadline extensions
             $coursework->remove_deadline_extensions_by_user($user->id);
             // Remove all personal deadlines
-            $coursework->remove_personal_deadlines_by_user($user->id);
+            $coursework->remove_personaldeadlines_by_user($user->id);
         }
     }
     public static function delete_data_for_users(approved_userlist $userlist) {
@@ -376,7 +376,7 @@ class provider implements
             // Remove all deadline extensions
             $coursework->remove_deadline_extensions_by_user($userid);
             // Remove all personal deadlines
-            $coursework->remove_personal_deadlines_by_user($userid);
+            $coursework->remove_personaldeadlines_by_user($userid);
         }
     }
     protected static function get_coursework_instance(context $context) {
@@ -507,7 +507,7 @@ class provider implements
             'timemodified' => transform::datetime($feedback->timemodified),
             'grade' => $feedback->grade,
             'feedbackcomment' => $feedback->feedbackcomment,
-            'stage_identifier' => $feedback->stage_identifier,
+            'stageidentifier' => $feedback->stageidentifier,
             'finalised' => transform::yesno($feedback->finalised),
         ];
         return $feedbackdata;
@@ -527,7 +527,7 @@ class provider implements
     protected static function export_coursework_extension_data($extension, $context, $path) {
         $extensiondata = [
             'extended_deadline' => transform::datetime($extension->extended_deadline),
-            'extra_information_text' => $extension->extra_information_text,
+            'extrainformationtext' => $extension->extrainformationtext,
             'createdbyid' => $extension->createdbyid,
         ];
         writer::with_context($context)
@@ -547,7 +547,7 @@ class provider implements
     }
     protected static function export_person_deadline_data($persondeadline, $context, $path) {
         $persondeadlinedata = [
-            'personal_deadline' => transform::datetime($persondeadline->personal_deadline),
+            'personaldeadline' => transform::datetime($persondeadline->personaldeadline),
             'timecreated' => transform::datetime($persondeadline->timecreated),
             'timemodified' => transform::datetime($persondeadline->timemodified),
             'createdbyid' => $persondeadline->createdbyid,

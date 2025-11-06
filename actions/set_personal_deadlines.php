@@ -44,7 +44,7 @@ $options = compact('sortby', 'sorthow');
 require_login($course, true, $coursemodule);
 require_capability('mod/coursework:editpersonaldeadline', $PAGE->context, null, true, "Can't change personal deadlines here - permission denied.");
 
-$url = '/mod/coursework/actions/set_personal_deadlines.php';
+$url = '/mod/coursework/actions/set_personaldeadlines.php';
 $link = new moodle_url($url, ['id' => $coursemoduleid]);
 $PAGE->set_url($link);
 $title = get_string('setpersonaldeadlinesfor', 'mod_coursework', $coursework->name);
@@ -60,7 +60,7 @@ $jsmodule = [
     'requires' => ['base',
         'node-base'],
 ];
-$PAGE->requires->js_init_call('M.mod_coursework.init_personal_deadlines_page',
+$PAGE->requires->js_init_call('M.mod_coursework.init_personaldeadlines_page',
     [],
     false,
     $jsmodule);
@@ -69,8 +69,8 @@ $PAGE->requires->js_init_call('M.mod_coursework.init_personal_deadlines_page',
  * @var mod_coursework_object_renderer $object_renderer
  */
 $objectrenderer = $PAGE->get_renderer('mod_coursework', 'object');
-$personaldeadlinestable = new mod_coursework\personal_deadline\table\builder($coursework, $options);
-$personaldeadlinestable = new mod_coursework_personal_deadlines_table($personaldeadlinestable);
+$personaldeadlinestable = new mod_coursework\personaldeadline\table\builder($coursework, $options);
+$personaldeadlinestable = new mod_coursework_personaldeadlines_table($personaldeadlinestable);
 echo $OUTPUT->header();
 
 echo $objectrenderer->render($personaldeadlinestable);

@@ -112,7 +112,7 @@ abstract class cell_base implements cell_interface {
 
         $extension = $this->extension->get_extension_for_student($student, $this->coursework);
 
-        return self::clean_cell($extension->extra_information_text);
+        return self::clean_cell($extension->extrainformationtext);
     }
 
     /**
@@ -234,28 +234,28 @@ abstract class cell_base implements cell_interface {
     }
 
     /**
-     * Function to get stage_identifier for the current assessor
+     * Function to get stageidentifier for the current assessor
      * @param $submission
      * @param $student
      * @return string
      */
-    public function get_stage_identifier_for_assessor($submission, $student) {
+    public function get_stageidentifier_for_assessor($submission, $student) {
         global $DB, $USER;
 
         $stageidentifier = '';
         if ($this->coursework->allocation_enabled()) {
-            $stageidentifier = $this->coursework->get_assessors_stage_identifier($student->id, $USER->id);
+            $stageidentifier = $this->coursework->get_assessors_stageidentifier($student->id, $USER->id);
         } else if ($this->coursework->get_max_markers() > 1) {
             // get existing feedback
 
             $sql = "SELECT * FROM {coursework_feedbacks}
                   WHERE submissionid= $submission->id
                   AND assessorid = $USER->id
-                  AND stage_identifier <> 'final_agreed_1'";
+                  AND stageidentifier <> 'final_agreed_1'";
 
             $feedback = $DB->get_record_sql($sql);
             if ($feedback) {
-                $stageidentifier = $feedback->stage_identifier;
+                $stageidentifier = $feedback->stageidentifier;
             }
         } else { // 1 marker only
             $stageidentifier = 'assessor_1';

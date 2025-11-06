@@ -38,10 +38,10 @@ require_once($CFG->dirroot . '/mod/coursework/tests/behat/pages/page_base.php');
 class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_base {
 
     public function save_everything() {
-        $this->getPage()->pressButton('save_manual_allocations_1');
+        $this->getpage()->pressButton('save_manual_allocations_1');
 
-        if ($this->getPage()->hasLink('Continue')) {
-            $this->getPage()->clickLink('Continue');
+        if ($this->getpage()->hasLink('Continue')) {
+            $this->getpage()->clickLink('Continue');
         }
     }
 
@@ -51,7 +51,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @throws Behat\Mink\Exception\ElementNotFoundException
      */
     public function user_allocated_assessor($user, $stageidentifier): string {
-        $cellspan = $this->getPage()->find('css', '#user_'.$user->id.' .'.$stageidentifier.' .existing-assessor');
+        $cellspan = $this->getpage()->find('css', '#user_'.$user->id.' .'.$stageidentifier.' .existing-assessor');
         return $cellspan ? $cellspan->getText() : '';
     }
 
@@ -64,11 +64,11 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
 
         // Identify the allocation dropdown.
         $dropdownid = $allocatable->type().'_' . $allocatable->id . '_'.$stageidentifier;
-        $node = $this->getContext()->find_field($dropdownid);
+        $node = $this->getcontext()->find_field($dropdownid);
 
         // We delegate to behat_form_field class, it will
         // guess the type properly as it is a select tag.
-        $field = behat_field_manager::get_form_field($node, $this->getSession());
+        $field = behat_field_manager::get_form_field($node, $this->getsession());
         $field->set_value($assessor->id());
 
         $this->pin_allocation($allocatable, $stageidentifier);
@@ -80,7 +80,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      */
     public function select_for_sample($student, $stageidentifier) {
         $elementid = $this->sampling_checkbox_id($student, $stageidentifier);
-        $node = $this->getPage()->find('css', $elementid);
+        $node = $this->getpage()->find('css', $elementid);
         $node->check();
     }
 
@@ -90,19 +90,19 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      */
     private function pin_allocation($allocatable, $stageidentifier) {
         $name = "//input[@name='allocatables[".$allocatable->id()."][".$stageidentifier."][pinned]']";
-        $nodes = $this->getPage()->findAll('xpath', $name);
+        $nodes = $this->getpage()->findAll('xpath', $name);
 
         // We delegate to behat_form_field class, it will
         // guess the type properly as it is a select tag.
         if ($nodes) {
-            $field = behat_field_manager::get_form_field(reset($nodes), $this->getSession());
+            $field = behat_field_manager::get_form_field(reset($nodes), $this->getsession());
             $field->set_value(true);
         }
     }
 
     public function show_assessor_allocation_settings() {
-        $this->getPage()->find('css', '#assessor_allocation_settings_header')->click();
-        $this->getSession()->wait(1000);
+        $this->getpage()->find('css', '#assessor_allocation_settings_header')->click();
+        $this->getsession()->wait(1000);
     }
 
     /**
@@ -129,7 +129,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      */
     public function deselect_for_sample($student, $stageidentifier) {
         $elementid = $this->sampling_checkbox_id($student, $stageidentifier);
-        $node = $this->getPage()->find('css', $elementid);
+        $node = $this->getpage()->find('css', $elementid);
         $node->uncheck();
     }
 
@@ -154,7 +154,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      */
     public function enable_atomatic_sampling_for($stage) {
         $elementid = '#assessor_'.$stage.'_samplingstrategy';
-        $node = $this->getPage()->find('css', $elementid);
+        $node = $this->getpage()->find('css', $elementid);
 
         $node->selectOption('Automatic');
     }
@@ -165,7 +165,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      */
     public function enable_total_rule_for_stage($stage) {
         $elementid = '#assessor_'.$stage.'_sampletotal_checkbox';
-        $node = $this->getPage()->find('css', $elementid);
+        $node = $this->getpage()->find('css', $elementid);
 
         $node->check();
     }
@@ -177,7 +177,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
     public function add_grade_range_rule_for_stage($stage) {
         $elementid = 'assessor_'.$stage.'_addgradderule';
 
-        $this->getPage()->clickLink($elementid);
+        $this->getpage()->clickLink($elementid);
     }
 
     /**
@@ -187,7 +187,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      */
     public function enable_grade_range_rule_for_stage($stage, $ruleno) {
         $elementid = '#assessor_'.$stage.'_samplerules_'.$ruleno;
-        $node = $this->getPage()->find('css', $elementid);
+        $node = $this->getpage()->find('css', $elementid);
 
         $node->check();
     }
@@ -200,7 +200,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      */
     public function select_type_of_grade_range_rule_for_stage($stage, $ruleno, $type) {
         $elementid = '#assessor_'.$stage.'_sampletype_'.$ruleno;
-        $node = $this->getPage()->find('css', $elementid);
+        $node = $this->getpage()->find('css', $elementid);
 
         $node->selectOption($type);
 
@@ -215,7 +215,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      */
     public function select_range_for_grade_range_rule_for_stage($range, $stage, $ruleno, $value) {
         $elementid = '#assessor_'.$stage.'_sample'.$range.'_'.$ruleno;
-        $node = $this->getPage()->find('css', $elementid);
+        $node = $this->getpage()->find('css', $elementid);
 
         $node->selectOption($value);
     }
@@ -231,7 +231,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
         $stage++;
 
         $elementid = '#assessor_'.$stage.'_sampletotal';
-        $node = $this->getPage()->find('css', $elementid);
+        $node = $this->getpage()->find('css', $elementid);
 
         $node->selectOption($percentage);
     }
@@ -251,7 +251,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
         $sql = "SELECT *
                      FROM {coursework_sample_set_mbrs}
                      WHERE courseworkid = :courseworkid
-                     AND stage_identifier = :stage
+                     AND stageidentifier = :stage
                      AND (allocatableid = :user $othersql)";
 
         $stage = "assessor_".$stagenumber;
@@ -266,6 +266,6 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
     }
 
     public function save_sampling_strategy() {
-        $this->getPage()->pressButton('save_manual_sampling');
+        $this->getpage()->pressButton('save_manual_sampling');
     }
 }

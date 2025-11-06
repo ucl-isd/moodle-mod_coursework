@@ -49,7 +49,7 @@ class mod_coursework_behat_page_base {
      * @return \Behat\Mink\Session
      */
     protected function getsession() {
-        return $this->context->getSession();
+        return $this->context->getsession();
     }
 
     /**
@@ -63,7 +63,7 @@ class mod_coursework_behat_page_base {
      * @return \Behat\Mink\Element\DocumentElement
      */
     protected function getpage() {
-        return $this->getSession()->getPage();
+        return $this->getsession()->getpage();
     }
 
     /**
@@ -77,9 +77,9 @@ class mod_coursework_behat_page_base {
      */
     public function should_have_text($text) {
 
-        $pagetext = $this->getPage()->getText();
+        $pagetext = $this->getpage()->getText();
         if (substr_count($pagetext, $text) == 0) {
-            throw new ExpectationException('Page did not have text "'.$text.'"', $this->getSession());
+            throw new ExpectationException('Page did not have text "'.$text.'"', $this->getsession());
         }
 
     }
@@ -90,15 +90,15 @@ class mod_coursework_behat_page_base {
      * @param string $error
      */
     protected function should_have_css($css, $text = '', $error = '') {
-        $elements = $this->getPage()->findAll('css', $css);
+        $elements = $this->getpage()->findAll('css', $css);
         $message = "CSS containing '$text' not found " . $error;
         if (empty($elements)) {
-            throw new ExpectationException($message, $this->getSession());
+            throw new ExpectationException($message, $this->getsession());
         }
         if ($text) {
             $actualtext = reset($elements)->getText();
             if (!str_contains($actualtext, $text)) {
-                throw new ExpectationException($message, $this->getSession());
+                throw new ExpectationException($message, $this->getsession());
             }
         }
     }
@@ -108,17 +108,17 @@ class mod_coursework_behat_page_base {
      * @param string $text
      */
     protected function should_not_have_css($css, $text = '') {
-        $elements = $this->getPage()->findAll('css', $css);
+        $elements = $this->getpage()->findAll('css', $css);
         if ($text) {
             foreach ($elements as $element) {
                 $actualtext = $element->getText();
                 if (str_contains($actualtext, $text)) {
-                    throw new ExpectationException("Should not have CSS $css", $this->getSession());
+                    throw new ExpectationException("Should not have CSS $css", $this->getsession());
                 }
             }
         } else {
             if (!empty($elements)) {
-                throw new ExpectationException("Should not have CSS $css", $this->getSession());
+                throw new ExpectationException("Should not have CSS $css", $this->getsession());
             }
         }
     }
@@ -134,7 +134,7 @@ class mod_coursework_behat_page_base {
         /**
          * @var $things NodeElement[]
          */
-        $things = $this->getPage()->findAll('css', $thingcss);
+        $things = $this->getpage()->findAll('css', $thingcss);
         foreach ($things as $thing) {
             if (empty($text) || $thing->getText() == $text || $thing->getValue() == $text) {
                 $thing->click();
@@ -145,7 +145,7 @@ class mod_coursework_behat_page_base {
 
         if (empty($ok)) {
             $message = 'Tried to click a thing that is not there: ' . $thingcss. ' '. $text;
-            throw new ExpectationException($message, $this->getSession());
+            throw new ExpectationException($message, $this->getsession());
         }
     }
 
@@ -159,7 +159,7 @@ class mod_coursework_behat_page_base {
         /**
          * @var $things NodeElement[]
          */
-        $things = $this->getPage()->findAll('css', $thingcss);
+        $things = $this->getpage()->findAll('css', $thingcss);
         foreach ($things as $thing) {
             if (empty($text) || $thing->getText() == $text || $thing->getValue() == $text) {
                 $foundit = true;
@@ -175,7 +175,7 @@ class mod_coursework_behat_page_base {
      * @return string
      */
     protected function allocatable_identifier_hash($allocatable) {
-        return $this->getContext()->coursework->get_allocatable_identifier_hash($allocatable);
+        return $this->getcontext()->coursework->get_allocatable_identifier_hash($allocatable);
     }
 
     /**
@@ -197,10 +197,10 @@ class mod_coursework_behat_page_base {
         $month = date('n', $timestamp);
         $year = date('Y', $timestamp);
 
-        $this->getPage()->fillField($minutedropdownselector, $minute);
-        $this->getPage()->fillField($hourdropdownselector, $hour);
-        $this->getPage()->fillField($daydropdownselector, $day);
-        $this->getPage()->fillField($monthdropdownselector, $month);
-        $this->getPage()->fillField($yeardropdownselector, $year);
+        $this->getpage()->fillField($minutedropdownselector, $minute);
+        $this->getpage()->fillField($hourdropdownselector, $hour);
+        $this->getpage()->fillField($daydropdownselector, $day);
+        $this->getpage()->fillField($monthdropdownselector, $month);
+        $this->getpage()->fillField($yeardropdownselector, $year);
     }
 }

@@ -877,8 +877,8 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
 
     }
     // Link to personal deadlines screen
-    if (has_capability('mod/coursework:editpersonaldeadline', $context) && ($coursework->personal_deadlines_enabled())) {
-        $link = new moodle_url('/mod/coursework/actions/set_personal_deadlines.php', ['id' => $cm->id]);
+    if (has_capability('mod/coursework:editpersonaldeadline', $context) && ($coursework->personaldeadlines_enabled())) {
+        $link = new moodle_url('/mod/coursework/actions/set_personaldeadlines.php', ['id' => $cm->id]);
         $navref->add(get_string('setpersonaldeadlines', 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
     }
 
@@ -901,7 +901,7 @@ function coursework_role_assigned_event_handler($roleassignment) {
 
     // return true; // Until we fix the auto allocator. The stuff below causes an infinite loop.
 
-    $courseworkids = coursework_get_coursework_ids_from_context_id($roleassignment->contextid);
+    $courseworkids = coursework_get_courseworkids_from_context_id($roleassignment->contextid);
 
     foreach ($courseworkids as $courseworkid) {
         $DB->set_field('coursework', 'processenrol', 1, ['id' => $courseworkid]);
@@ -922,7 +922,7 @@ function coursework_role_unassigned_event_handler($roleassignment) {
 
     global $DB;
 
-    $courseworkids = coursework_get_coursework_ids_from_context_id($roleassignment->contextid);
+    $courseworkids = coursework_get_courseworkids_from_context_id($roleassignment->contextid);
 
     foreach ($courseworkids as $courseworkid) {
         $DB->set_field('coursework', 'processunenrol', 1, ['id' => $courseworkid]);
@@ -938,7 +938,7 @@ function coursework_role_unassigned_event_handler($roleassignment) {
  * @param $contextid
  * @return array
  */
-function coursework_get_coursework_ids_from_context_id($contextid) {
+function coursework_get_courseworkids_from_context_id($contextid) {
 
     global $DB;
 
@@ -1024,7 +1024,7 @@ function coursework_get_current_max_feedbacks($courseworkid) {
                      WHERE submissions.courseworkid = :courseworkid
                        AND feedbacks.ismoderation = 0
                        AND feedbacks.isfinalgrade = 0
-                       AND feedbacks.stage_identifier LIKE 'assessor%'
+                       AND feedbacks.stageidentifier LIKE 'assessor%'
                   GROUP BY feedbacks.submissionid) AS feedbackcounts
                       ";
     $params = [
@@ -1325,7 +1325,7 @@ function course_group_member_removed($eventdata) {
             // remove all assessor allocations for this group
             if ($coursework->is_configured_to_have_group_submissions()) {
                 if (can_delete_allocation($coursework->id(), $groupid)) {
-                    $DB->delete_records('coursework_allocation_pairs', ['courseworkid' => $coursework->id(), 'assessorid' => $removeduserid, 'allocatableid' => $groupid, 'stage_identifier' => 'assessor_1']);
+                    $DB->delete_records('coursework_allocation_pairs', ['courseworkid' => $coursework->id(), 'assessorid' => $removeduserid, 'allocatableid' => $groupid, 'stageidentifier' => 'assessor_1']);
                 }
             } else {
                 // find all individual students in the group
@@ -1333,7 +1333,7 @@ function course_group_member_removed($eventdata) {
                 if ($students) {
                     foreach ($students as $student) {
                         if (can_delete_allocation($coursework->id(), $student->id)) {
-                            $DB->delete_records('coursework_allocation_pairs', ['courseworkid' => $coursework->id(), 'assessorid' => $removeduserid, 'allocatableid' => $student->id, 'stage_identifier' => 'assessor_1']);
+                            $DB->delete_records('coursework_allocation_pairs', ['courseworkid' => $coursework->id(), 'assessorid' => $removeduserid, 'allocatableid' => $student->id, 'stageidentifier' => 'assessor_1']);
                         }
                     }
                 } else {
@@ -1379,7 +1379,7 @@ function course_group_member_removed($eventdata) {
             }
 
             if (can_delete_allocation($coursework->id(), $allocatableid)) {
-                $DB->delete_records('coursework_allocation_pairs', ['courseworkid' => $coursework->id(), 'allocatableid' => $allocatableid, 'stage_identifier' => 'assessor_1']);
+                $DB->delete_records('coursework_allocation_pairs', ['courseworkid' => $coursework->id(), 'allocatableid' => $allocatableid, 'stageidentifier' => 'assessor_1']);
             }
 
             // check if the student was in a different group and allocate them to the first found group
@@ -1410,7 +1410,7 @@ function can_delete_allocation($courseworkid, $allocatableid) {
         FROM {coursework_allocation_pairs} p
         WHERE courseworkid = :courseworkid
         AND p.ismanual = 0
-        AND stage_identifier = 'assessor_1'
+        AND stageidentifier = 'assessor_1'
         AND allocatableid = :allocatableid
         AND NOT EXISTS (
             SELECT 1
@@ -1419,7 +1419,7 @@ function can_delete_allocation($courseworkid, $allocatableid) {
             WHERE s.allocatableid = p.allocatableid
             AND s.allocatabletype = p.allocatabletype
             AND s.courseworkid = p.courseworkid
-            AND f.stage_identifier = p.stage_identifier
+            AND f.stageidentifier = p.stageidentifier
         )";
 
     $ungradedallocations = $DB->get_record_sql($sql, ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid]);
@@ -1489,13 +1489,13 @@ function coursework_is_ulcc_digest_coursework_plugin_installed() {
  * @param int $courseworkid
  * @return bool
  */
-function coursework_personal_deadline_passed($courseworkid) {
+function coursework_personaldeadline_passed($courseworkid) {
     global $DB;
 
     $sql = "SELECT *
             FROM {coursework_person_deadlines}
             WHERE courseworkid = :courseworkid
-            AND personal_deadline < :now";
+            AND personaldeadline < :now";
 
     return $DB->record_exists_sql($sql, ['courseworkid' => $courseworkid, 'now' => time()]);
 

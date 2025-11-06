@@ -73,7 +73,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $this->add_start_date_field();
         $this->add_submission_deadline_field();
-        $this->add_personal_deadline_field();
+        $this->add_personaldeadline_field();
 
         // if (coursework_is_ulcc_digest_coursework_plugin_installed()) {
             $this->add_marking_deadline_field();
@@ -136,7 +136,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $this->add_group_submission_header();
 
-        $this->add_use_groups_field();
+        $this->add_usegroups_field();
         $this->add_grouping_field();
 
         $this->standard_grading_coursemodule_elements();
@@ -236,7 +236,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         }
 
-        $courseworkid = $this->get_coursework_id();
+        $courseworkid = $this->get_courseworkid();
         if ($courseworkid) {
             $coursework = mod_coursework\models\coursework::find($courseworkid);
             if ($coursework->has_samples() && isset($data['samplingenabled']) && $data['samplingenabled'] == 0) {
@@ -357,7 +357,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         }
 
         $optional = true;
-        $courseworkid = $this->get_coursework_id();
+        $courseworkid = $this->get_courseworkid();
         if ($courseworkid) {
             $coursework = mod_coursework\models\coursework::find($courseworkid);
             if ($coursework->extension_exists()) {
@@ -383,14 +383,14 @@ class mod_coursework_mod_form extends moodleform_mod {
     /**
      * @throws coding_exception
      */
-    protected function add_personal_deadline_field() {
+    protected function add_personaldeadline_field() {
 
         $moodleform =& $this->_form;
         $options = [0 => get_string('no'), 1 => get_string('yes')];
 
-        $courseworkid = $this->get_coursework_id();
+        $courseworkid = $this->get_courseworkid();
         $disabled = [];
-        if (coursework_personal_deadline_passed($courseworkid)) {
+        if (coursework_personaldeadline_passed($courseworkid)) {
             $moodleform->hideif('personaldeadlineenabled', 'deadline[enabled]', 'notchecked');
             $disabled = ['disabled' => true];
         }
@@ -670,12 +670,12 @@ class mod_coursework_mod_form extends moodleform_mod {
     /**
      * @throws coding_exception
      */
-    protected function add_use_groups_field() {
+    protected function add_usegroups_field() {
         $moodleform =& $this->_form;
 
         $options = [ 0 => get_string('no'), 1 => get_string('yes')];
-        $moodleform->addElement('select', 'use_groups', get_string('use_groups', 'mod_coursework'), $options);
-        $moodleform->addHelpButton('use_groups', 'use_groups', 'mod_coursework');
+        $moodleform->addElement('select', 'usegroups', get_string('usegroups', 'mod_coursework'), $options);
+        $moodleform->addHelpButton('usegroups', 'usegroups', 'mod_coursework');
     }
 
     /**
@@ -703,7 +703,7 @@ class mod_coursework_mod_form extends moodleform_mod {
                                  get_string('grouping_id', 'mod_coursework'),
                                  $groupsoptions);
         $moodleform->addHelpButton('grouping_id', 'grouping_id', 'mod_coursework');
-        $moodleform->hideif('grouping_id', 'use_groups', 'eq', 0);
+        $moodleform->hideif('grouping_id', 'usegroups', 'eq', 0);
     }
 
     /**
@@ -789,7 +789,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform =& $this->_form;
 
         $choices = ['0' => get_string('no'), '1' => get_string('yes')];
-        $courseworkid = $this->get_coursework_id();
+        $courseworkid = $this->get_courseworkid();
         $courseworkhassubmissions = !empty($courseworkid)
             && $DB->record_exists('coursework_submissions', ['courseworkid' => $courseworkid]);
 
@@ -844,7 +844,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     protected function add_number_of_initial_assessors_field() {
 
         $moodleform =& $this->_form;
-        $courseworkid = $this->get_coursework_id();
+        $courseworkid = $this->get_courseworkid();
 
         $multioptions = [
             // Don't want to give the option for 0!
@@ -886,7 +886,7 @@ class mod_coursework_mod_form extends moodleform_mod {
      * @return int
      * @throws coding_exception
      */
-    protected function get_coursework_id() {
+    protected function get_courseworkid() {
         $upcmid = optional_param('update', -1, PARAM_INT);
         $cm = get_coursemodule_from_id('coursework', $upcmid);
         $courseworkid = 0;
@@ -980,7 +980,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $submissionexists = 0;
         // disable the setting if at least one submission exists
-        $courseworkid = $this->get_coursework_id();
+        $courseworkid = $this->get_courseworkid();
         if ($courseworkid && mod_coursework\models\coursework::find($courseworkid)->has_any_submission()) {
             $submissionexists = 1;
         }
@@ -1130,7 +1130,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $feedbackexists = 0;
         // disable the setting if at least one feedback exists
-        $courseworkid = $this->get_coursework_id();
+        $courseworkid = $this->get_courseworkid();
         if ($courseworkid && mod_coursework\models\coursework::find($courseworkid)->has_any_final_feedback()) {
             $feedbackexists = 1;
         }
@@ -1190,7 +1190,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->addElement('selectyesno', 'samplingenabled', get_string('samplingenabled', 'mod_coursework'));
         $moodleform->addHelpButton('samplingenabled', 'samplingenabled', 'mod_coursework');
 
-        $courseworkid = $this->get_coursework_id();
+        $courseworkid = $this->get_courseworkid();
         if (!$courseworkid ||  ($courseworkid && !mod_coursework\models\coursework::find($courseworkid)->has_samples()) ) {
             $moodleform->hideif('samplingenabled', 'numberofmarkers', 'eq', 1);
 
@@ -1329,7 +1329,7 @@ class mod_coursework_mod_form extends moodleform_mod {
      */
     protected function add_candidate_number_setting(): void {
         $moodleform =& $this->_form;
-        $coursework = $this->get_coursework_id() ? coursework::find($this->get_coursework_id()) : null;
+        $coursework = $this->get_courseworkid() ? coursework::find($this->get_courseworkid()) : null;
 
         // If new coursework, or can change setting, show as editable.
         if (!$coursework || $coursework->can_change_candidate_number_setting()) {

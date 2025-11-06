@@ -240,7 +240,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
 
         $params = [
             'assessorid' => $USER->id,
-            'stage_identifier' => $feedbackrow->get_stage()->identifier(),
+            'stageidentifier' => $feedbackrow->get_stage()->identifier(),
         ];
         if ($submission) {
             $params['submissionid'] = $submission->id;

@@ -122,7 +122,7 @@ class user extends table_base implements allocatable, moderatable {
      */
     public function has_not_been_sent_reminder($coursework, $remindernumber, $extension=0) {
         $conditions = [
-            'coursework_id' => $coursework->id,
+            'courseworkid' => $coursework->id,
             'userid' => $this->id(),
             'remindernumber' => $remindernumber,
             'extension' => $extension,

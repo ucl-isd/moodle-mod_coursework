@@ -24,13 +24,13 @@ namespace mod_coursework\render_helpers\grading_report\cells;
 use coding_exception;
 use mod_coursework\ability;
 use mod_coursework\grading_table_row_base;
-use mod_coursework\models\personal_deadline;
+use mod_coursework\models\personaldeadline;
 use pix_icon;
 
 /**
- * Class personal_deadline_cell
+ * Class personaldeadline_cell
  */
-class personal_deadline_cell extends cell_base {
+class personaldeadline_cell extends cell_base {
 
     /**
      * @param grading_table_row_base $rowobject
@@ -50,14 +50,14 @@ class personal_deadline_cell extends cell_base {
             'courseworkid' => $rowobject->get_coursework()->id,
         ];
 
-        $personaldeadline = personal_deadline::find_or_build($newpersonaldeadlineparams);
-        if ($personaldeadline->personal_deadline) {
-            $deadline = $personaldeadline->personal_deadline;
+        $personaldeadline = personaldeadline::find_or_build($newpersonaldeadlineparams);
+        if ($personaldeadline->personaldeadline) {
+            $deadline = $personaldeadline->personaldeadline;
         }
         $date = userdate($deadline, '%a, %d %b %Y, %H:%M');
-        $content .= '<div class="content_personal_deadline">'.$date.'</div>';
+        $content .= '<div class="content_personaldeadline">'.$date.'</div>';
         $ability = new ability($USER->id, $rowobject->get_coursework());
-        $class = 'edit_personal_deadline';
+        $class = 'edit_personaldeadline';
         if (!$ability->can('edit', $personaldeadline)) {
             $class .= ' display-none';
         }

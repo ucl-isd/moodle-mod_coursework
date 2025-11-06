@@ -24,21 +24,21 @@ namespace mod_coursework\forms;
 use context;
 use core_form\dynamic_form;
 use mod_coursework\ability;
-use mod_coursework\controllers\personal_deadlines_controller;
+use mod_coursework\controllers\personaldeadlines_controller;
 use mod_coursework\exceptions\access_denied;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
 use mod_coursework\models\group;
-use mod_coursework\models\personal_deadline;
+use mod_coursework\models\personaldeadline;
 use mod_coursework\models\user;
 use moodle_url;
 
 /**
- * Class personal_deadline_form is responsible for new and edit actions related to the
- * personal_deadlines.
+ * Class personaldeadline_form is responsible for new and edit actions related to the
+ * personaldeadlines.
  *
  */
-class personal_deadline_form extends dynamic_form {
+class personaldeadline_form extends dynamic_form {
 
     /**
      * Coursework object.
@@ -48,9 +48,9 @@ class personal_deadline_form extends dynamic_form {
 
     /**
      * Coursework object.
-     * @var personal_deadline|null
+     * @var personaldeadline|null
      */
-    protected ?personal_deadline $existingdeadline = null;
+    protected ?personaldeadline $existingdeadline = null;
 
     /**
      * Allocatable object.
@@ -68,13 +68,13 @@ class personal_deadline_form extends dynamic_form {
 
         $this->coursework = $this->get_coursework();
 
-        $existingdeadlinerecord = personal_deadlines_controller::get_personal_deadline(
+        $existingdeadlinerecord = personaldeadlines_controller::get_personaldeadline(
             $customdata['allocatableid'],
             $customdata['allocatabletype'],
             $customdata['courseworkid'],
         );
         $this->existingdeadline = $existingdeadlinerecord
-            ? personal_deadline::find($existingdeadlinerecord)
+            ? personaldeadline::find($existingdeadlinerecord)
             : null;
 
         $this->allocatable = $this->existingdeadline
@@ -100,26 +100,26 @@ class personal_deadline_form extends dynamic_form {
 
         $this->_form->addElement(
             'html',
-            $OUTPUT->render_from_template('coursework/form_header_personal_deadline',
+            $OUTPUT->render_from_template('coursework/form_header_personaldeadline',
                 $this->get_header_mustache_data()
             )
         );
 
         if ($customdata['existingdeadline']->deadline ?? false) {
             $this->_form->setDefault(
-                'personal_deadline',
-                $customdata['existingdeadline']->deadline->personal_deadline
+                'personaldeadline',
+                $customdata['existingdeadline']->deadline->personaldeadline
             );
         } else {
-            $this->_form->setDefault('personal_deadline', time());
+            $this->_form->setDefault('personaldeadline', time());
         }
         // Date and time picker.
         $maxextensionmonths = $CFG->coursework_max_extension_deadline ?? 0;
         $maxyear = (int)date("Y") + max(ceil($maxextensionmonths / 12), 2);
         $this->_form->addElement(
             'date_time_selector',
-            'personal_deadline',
-            get_string('personal_deadline', 'mod_coursework'),
+            'personaldeadline',
+            get_string('personaldeadline', 'mod_coursework'),
             ['startyear' => (int)date("Y"), 'stopyear'  => $maxyear]
         );
 
@@ -150,10 +150,10 @@ class personal_deadline_form extends dynamic_form {
         ];
 
         // User specific deadlines.
-        if ($this->existingdeadline && $this->existingdeadline->personal_deadline ?? null) {
+        if ($this->existingdeadline && $this->existingdeadline->personaldeadline ?? null) {
             $deadline = (object)[
-                'label' => get_string('personal_deadline', 'mod_coursework'),
-                'value' => userdate($this->existingdeadline->personal_deadline, get_string('strftimerecentfull', 'langconfig')),
+                'label' => get_string('personaldeadline', 'mod_coursework'),
+                'value' => userdate($this->existingdeadline->personaldeadline, get_string('strftimerecentfull', 'langconfig')),
                 'notes' => [
                     get_string(
                         'createdbyname',
@@ -186,7 +186,7 @@ class personal_deadline_form extends dynamic_form {
         }
         if ($this->allocatable->name() ?? false) {
             $data->title = get_string(
-                $this->existingdeadline ? 'edit_personal_deadline_for' : 'new_personal_deadline_for',
+                $this->existingdeadline ? 'edit_personaldeadline_for' : 'new_personaldeadline_for',
                 'coursework', $this->allocatable->name()
             );
         }
@@ -200,8 +200,8 @@ class personal_deadline_form extends dynamic_form {
      */
     public function validation($data, $files) {
         $errors = [];
-        if ($data['personal_deadline'] <= time()) {
-            $errors['personal_deadline'] = get_string('alert_validate_deadline', 'coursework');
+        if ($data['personaldeadline'] <= time()) {
+            $errors['personaldeadline'] = get_string('alert_validate_deadline', 'coursework');
         }
 
         return $errors;
@@ -259,13 +259,13 @@ class personal_deadline_form extends dynamic_form {
     protected function can_edit(): bool {
         global $USER;
         $datasource = isset($this->_customdata) ? $this->_customdata : $this->_ajaxformdata;
-        $deadline = personal_deadlines_controller::get_personal_deadline(
+        $deadline = personaldeadlines_controller::get_personaldeadline(
             $datasource['allocatableid'],
             $datasource['allocatabletype'],
             $datasource['courseworkid'],
         );
         $ability = new ability($USER->id, $this->get_coursework());
-        $deadline = personal_deadline::find_or_build($deadline);
+        $deadline = personaldeadline::find_or_build($deadline);
         $deadline->courseworkid = $this->coursework->id();
         return $ability->can('edit', $deadline);
     }
@@ -290,7 +290,7 @@ class personal_deadline_form extends dynamic_form {
         // If we reach this far with no errors, we can create/update the deadline.
         if (empty($errors)) {
             if ($this->existingdeadline->id) {
-                if ($this->existingdeadline->personal_deadline != $data->personal_deadline) {
+                if ($this->existingdeadline->personaldeadline != $data->personaldeadline) {
                     // Updating.
                     $data->id = $this->existingdeadline->id;
                     $this->existingdeadline->update_attributes($data);
@@ -299,7 +299,7 @@ class personal_deadline_form extends dynamic_form {
             } else {
                 // Creating.
                 $data->createdbyid = $USER->id;
-                $this->existingdeadline = personal_deadline::build($data);
+                $this->existingdeadline = personaldeadline::build($data);
                 $this->existingdeadline->save();
                 $this->existingdeadline->trigger_created_updated_event('create');
             }
@@ -309,7 +309,7 @@ class personal_deadline_form extends dynamic_form {
         $this->coursework->update_user_calendar_event(
             $this->allocatable->id(),
             $this->allocatable->type(),
-            max($data->personal_deadline, $extension->extended_deadline ?? 0)
+            max($data->personaldeadline, $extension->extended_deadline ?? 0)
         );
         return [
             'success' => empty($errors),
@@ -320,7 +320,7 @@ class personal_deadline_form extends dynamic_form {
                 (object)[
                     'name' => $this->allocatable->name(),
                     'deadline' => userdate(
-                        $data->personal_deadline,
+                        $data->personaldeadline,
                         get_string('strftimerecentfull', 'langconfig')
                     ),
                 ]
@@ -344,9 +344,9 @@ class personal_deadline_form extends dynamic_form {
         if ($this->existingdeadline->id) {
             // If editing existing deadline.
             $data['deadlineid'] = $this->existingdeadline->id;
-            $data['personal_deadline'] = $this->existingdeadline->personal_deadline;
+            $data['personaldeadline'] = $this->existingdeadline->personaldeadline;
         } else {
-            $data['personal_deadline'] = $this->get_coursework()->deadline;
+            $data['personaldeadline'] = $this->get_coursework()->deadline;
         }
         $this->set_data($data);
     }

@@ -142,7 +142,7 @@ class average_grade implements auto_grader {
      */
     private function create_final_feedback() {
         $feedback = [
-            'stage_identifier' => 'final_agreed_1',
+            'stageidentifier' => 'final_agreed_1',
             'submissionid' => $this->get_allocatable()->get_submission($this->get_coursework())->id(),
             'grade' => $this->automatic_grade(),
 

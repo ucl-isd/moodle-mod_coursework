@@ -12,7 +12,7 @@ Feature: Marking the group submissions applies the grades to the whole group
     And there is a teacher
     And there is another teacher
     And the coursework "numberofmarkers" setting is "2" in the database
-    And the coursework "use_groups" setting is "1" in the database
+    And the coursework "usegroups" setting is "1" in the database
     And there is a student
     And the student is a member of a group
     And there is another student

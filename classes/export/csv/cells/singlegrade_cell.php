@@ -40,7 +40,7 @@ class singlegrade_cell extends cell_base {
      */
     public function get_cell($submission, $student, $stageidentifier) {
         $stageident = ($this->coursework->get_max_markers() == 1)
-            ? "assessor_1" : $this->get_stage_identifier_for_assessor($submission, $student);
+            ? "assessor_1" : $this->get_stageidentifier_for_assessor($submission, $student);
 
         $grade = $submission->get_assessor_feedback_by_stage($stageident);
         if ($this->coursework->is_using_rubric()) {
@@ -163,7 +163,7 @@ class singlegrade_cell extends cell_base {
             // Has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
             $feedbackparams = [
                 'submissionid' => $submission->id,
-                'stage_identifier' => $stageidentifier,
+                'stageidentifier' => $stageidentifier,
             ];
             $feedback = feedback::find($feedbackparams);
 
@@ -179,7 +179,7 @@ class singlegrade_cell extends cell_base {
 
             $feedbackparams = [
                 'submissionid' => $submission->id,
-                'stage_identifier' => $stageidentifier,
+                'stageidentifier' => $stageidentifier,
             ];
             $feedback = feedback::find($feedbackparams);
 
@@ -191,7 +191,7 @@ class singlegrade_cell extends cell_base {
                 $feedbackparams = [
                     'submissionid' => $submissionid,
                     'assessorid' => $USER->id,
-                    'stage_identifier' => $stageidentifier,
+                    'stageidentifier' => $stageidentifier,
                 ];
                 $newfeedback = feedback::build($feedbackparams);
 

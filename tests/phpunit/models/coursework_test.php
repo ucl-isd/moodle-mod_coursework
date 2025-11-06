@@ -104,7 +104,7 @@ final class coursework_test extends \advanced_testcase {
     public function test_group_decorator_is_added(): void {
         $params = [
             'grade' => 0,
-            'use_groups' => true,
+            'usegroups' => true,
         ];
         $coursework = $this->create_a_coursework($params);
         $this->assertInstanceOf('\mod_coursework\decorators\coursework_groups_decorator', coursework::find($coursework->id));
@@ -123,7 +123,7 @@ final class coursework_test extends \advanced_testcase {
 
         $params = [
             'grade' => 0,
-            'use_groups' => true,
+            'usegroups' => true,
         ];
         $coursework = $this->create_a_coursework($params);
         $this->assertEquals($this->group->id, $coursework->get_student_group($this->student)->id);
@@ -138,7 +138,7 @@ final class coursework_test extends \advanced_testcase {
 
         $params = [
             'grade' => 0,
-            'use_groups' => true,
+            'usegroups' => true,
             'grouping_id' => $this->grouping->id,
         ];
         $coursework = $this->create_a_coursework($params);
@@ -153,7 +153,7 @@ final class coursework_test extends \advanced_testcase {
 
         $params = [
             'grade' => 0,
-            'use_groups' => true,
+            'usegroups' => true,
             'grouping_id' => 543,
         ];
         $coursework = $this->create_a_coursework($params);
@@ -239,7 +239,7 @@ final class coursework_test extends \advanced_testcase {
 
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('grouping_id', $grouping->id);
-        $coursework->update_attribute('use_groups', 1);
+        $coursework->update_attribute('usegroups', 1);
 
         $allocatables = $coursework->get_allocatables();
         $ispresent = is_numeric($group->id) && in_array((string)$group->id, array_keys($allocatables));

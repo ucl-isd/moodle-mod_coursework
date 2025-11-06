@@ -40,12 +40,12 @@ class mod_coursework_behat_new_extension_page extends mod_coursework_behat_page_
 
         // Choose an extension reason from the dropdown if it's there
         if (!empty($CFG->coursework_extension_reasons_list)) {
-            $this->getPage()->fillField('pre_defined_reason', 0);
+            $this->getpage()->fillField('pre_defined_reason', 0);
         }
 
-        $fieldnode = $this->getPage()->findField('Extra information');
+        $fieldnode = $this->getpage()->findField('Extra information');
 
-        $field = behat_field_manager::get_form_field($fieldnode, $this->getSession());
+        $field = behat_field_manager::get_form_field($fieldnode, $this->getsession());
         // Delegates to the field class.
         $field->set_value('Extra info here');
 
@@ -53,7 +53,7 @@ class mod_coursework_behat_new_extension_page extends mod_coursework_behat_page_
     }
 
     public function submit_form() {
-        $this->getPage()->find('css', '#id_submitbutton')->click();
+        $this->getpage()->find('css', '#id_submitbutton')->click();
     }
 
 }

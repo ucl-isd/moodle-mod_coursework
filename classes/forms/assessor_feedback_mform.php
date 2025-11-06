@@ -103,8 +103,8 @@ class assessor_feedback_mform extends moodleform {
         $mform->addElement('hidden', 'feedbackid', $this->feedback->id ?? 0);
         $mform->setType('feedbackid', PARAM_INT);
 
-        $mform->addElement('hidden', 'stage_identifier', $this->feedback->stage_identifier ?? '');
-        $mform->setType('stage_identifier', PARAM_ALPHANUMEXT);
+        $mform->addElement('hidden', 'stageidentifier', $this->feedback->stageidentifier ?? '');
+        $mform->setType('stageidentifier', PARAM_ALPHANUMEXT);
 
         $grademenu = make_grades_menu($this->coursework->grade);
 
@@ -121,7 +121,7 @@ class assessor_feedback_mform extends moodleform {
             if (defined('BEHAT_SITE_RUNNING')) {
                 $mform->addElement('html', '<a href="#">' . get_string('togglezoom', 'mod_assign') . '</a>');
             }
-        } else if ($this->feedback->stage_identifier == final_agreed::STAGE_FINAL_AGREED_1) {
+        } else if ($this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1) {
             $mform->addElement('text', 'grade', get_string('grade', 'mod_coursework'));
             $mform->setType('grade', PARAM_RAW);
             $mform->addRule(
@@ -222,7 +222,7 @@ class assessor_feedback_mform extends moodleform {
                 $formdata->advancedgrading, $this->feedback->id
             );
 
-        } else if ($this->feedback->stage_identifier == final_agreed::STAGE_FINAL_AGREED_1) {
+        } else if ($this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1) {
             $this->feedback->grade = format_float($formdata->grade, $this->coursework->get_grade_item()->get_decimals());
         } else {
             $this->feedback->grade = $formdata->grade;
@@ -306,7 +306,7 @@ class assessor_feedback_mform extends moodleform {
         $isexistingagreedfeedback = $this->coursework->has_multiple_markers()
             && $this->feedback->is_agreed_grade() ?? false;
         $isnewagreedfeedback = !$isexistingagreedfeedback
-            && optional_param('stage_identifier', '', PARAM_TEXT) == final_agreed::STAGE_FINAL_AGREED_1;
+            && optional_param('stageidentifier', '', PARAM_TEXT) == final_agreed::STAGE_FINAL_AGREED_1;
 
         if ($isnewagreedfeedback || $isexistingagreedfeedback) {
             $data = (new grading_guide_agreed_grades(
@@ -332,7 +332,7 @@ class assessor_feedback_mform extends moodleform {
         $data = (array)$data;
         $errors = parent::validation($data, $files);
         $hasadvancedgrading = $data['advancedgrading'] ?? null;
-        if (!$hasadvancedgrading && isset($data['stage_identifier']) && $data['stage_identifier'] == 'final_agreed_1') {
+        if (!$hasadvancedgrading && isset($data['stageidentifier']) && $data['stageidentifier'] == 'final_agreed_1') {
             if (!$this->grade_in_range($data['grade'])) {
                 $errors['grade'] = get_string('err_valueoutofrange', 'coursework');
             }

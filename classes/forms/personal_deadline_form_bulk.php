@@ -25,11 +25,11 @@ namespace mod_coursework\forms;
 use moodleform;
 
 /**
- * Class personal_deadline_form_bulk is responsible for new and edit actions related to the
- * personal_deadlines where the user is submitting a bulk deadline change.
+ * Class personaldeadline_form_bulk is responsible for new and edit actions related to the
+ * personaldeadlines where the user is submitting a bulk deadline change.
  *
  */
-class personal_deadline_form_bulk extends moodleform {
+class personaldeadline_form_bulk extends moodleform {
 
     /**
      * Form definition.
@@ -56,7 +56,7 @@ class personal_deadline_form_bulk extends moodleform {
         );
         $this->_form->addElement(
             'html',
-            $OUTPUT->render_from_template('coursework/form_header_personal_deadline', $mustachedata)
+            $OUTPUT->render_from_template('coursework/form_header_personaldeadline', $mustachedata)
         );
 
         // Date and time picker.
@@ -64,11 +64,11 @@ class personal_deadline_form_bulk extends moodleform {
         $maxyear = (int)date("Y") + max(ceil($maxextensionmonths / 12), 2);
         $this->_form->addElement(
             'date_time_selector',
-            'personal_deadline',
-            get_string('personal_deadline', 'mod_coursework'),
+            'personaldeadline',
+            get_string('personaldeadline', 'mod_coursework'),
             ['startyear' => (int)date("Y"), 'stopyear'  => $maxyear]
         );
-        $this->_form->setDefault('personal_deadline', time());
+        $this->_form->setDefault('personaldeadline', time());
 
         // Submit button.
         $this->add_action_buttons();
@@ -85,8 +85,8 @@ class personal_deadline_form_bulk extends moodleform {
      */
     public function validation($data, $files) {
         $errors = [];
-        if ($data['personal_deadline'] <= time()) {
-            $errors['personal_deadline'] = get_string('alert_validate_deadline', 'coursework');
+        if ($data['personaldeadline'] <= time()) {
+            $errors['personaldeadline'] = get_string('alert_validate_deadline', 'coursework');
         }
 
         return $errors;
@@ -133,7 +133,7 @@ class personal_deadline_form_bulk extends moodleform {
         }
 
         $data->title = get_string(
-            $allocatabletype == 'user' ? 'new_personal_deadline_for_bulk_users' : 'new_personal_deadline_for_bulk_groups',
+            $allocatabletype == 'user' ? 'new_personaldeadline_for_bulk_users' : 'new_personaldeadline_for_bulk_groups',
             'coursework'
         );
 

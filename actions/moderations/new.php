@@ -28,14 +28,14 @@ $submissionid = required_param('submissionid', PARAM_INT);
 $cmid = optional_param('cmid', 0, PARAM_INT);
 $feedbackid = required_param('feedbackid',  PARAM_INT);
 $moderatorid = optional_param('moderatorid', $USER->id, PARAM_INT);
-$stageidentifier = optional_param('stage_identifier', 'uh-oh',  PARAM_RAW);
+$stageidentifier = optional_param('stageidentifier', 'uh-oh',  PARAM_RAW);
 
 $params = [
     'submissionid' => $submissionid,
     'cmid' => $cmid,
     'feedbackid' => $feedbackid,
     'moderatorid' => $moderatorid,
-    'stage_identifier' => $stageidentifier,
+    'stageidentifier' => $stageidentifier,
 ];
 $controller = new mod_coursework\controllers\moderations_controller($params);
 $controller->new_moderation();

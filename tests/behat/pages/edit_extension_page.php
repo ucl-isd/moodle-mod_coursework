@@ -41,17 +41,17 @@ class mod_coursework_behat_edit_extension_page extends mod_coursework_behat_page
 
         // Choose an extension reason from the dropdown if it's there
         if (!empty($CFG->coursework_extension_reasons_list)) {
-            $this->getPage()->fillField('pre_defined_reason', 1);
+            $this->getpage()->fillField('pre_defined_reason', 1);
         }
 
-        $fieldnode = $this->getPage()->findField('Extra information');
+        $fieldnode = $this->getpage()->findField('Extra information');
 
-        $field = behat_field_manager::get_form_field($fieldnode, $this->getSession());
+        $field = behat_field_manager::get_form_field($fieldnode, $this->getsession());
         // Delegates to the field class.
         $field->set_value('New info here');
 
         // Click the submit button
-        $this->getPage()->find('css', '#id_submitbutton')->click();
+        $this->getpage()->find('css', '#id_submitbutton')->click();
 
     }
 
@@ -59,14 +59,14 @@ class mod_coursework_behat_edit_extension_page extends mod_coursework_behat_page
      * @return string $reason
      */
     public function get_extension_reason_for_allocatable() {
-        return $this->getPage()->findField('pre_defined_reason')->getValue();
+        return $this->getpage()->findField('pre_defined_reason')->getValue();
     }
 
     /**
      * @param string $string
      */
     public function get_extra_information_for_allocatable($string) {
-        $field = $this->getPage()->findField('extra_information[text]');
+        $field = $this->getpage()->findField('extra_information[text]');
         return $field->getValue();
     }
 }

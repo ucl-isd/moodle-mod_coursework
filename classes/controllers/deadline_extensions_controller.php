@@ -34,7 +34,7 @@ use mod_coursework\grading_table_row_single;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
 use mod_coursework\models\group;
-use mod_coursework\models\personal_deadline;
+use mod_coursework\models\personaldeadline;
 use mod_coursework\models\user;
 use mod_coursework\render_helpers\grading_report\cells\time_submitted_cell;
 
@@ -115,8 +115,8 @@ class deadline_extensions_controller extends controller_base {
         }
         if ($this->form->is_validated()) {
             $data = $this->form->get_data();
-            $data->extra_information_text = $data->extra_information['text'];
-            $data->extra_information_format = $data->extra_information['format'];
+            $data->extrainformationtext = $data->extra_information['text'];
+            $data->extrainformationformat = $data->extra_information['format'];
             $this->deadlineextension = deadline_extension::build($data);
 
             $ability = new ability($USER->id, $this->coursework);
@@ -124,12 +124,12 @@ class deadline_extensions_controller extends controller_base {
 
             $this->deadlineextension->save();
             $this->deadlineextension->trigger_created_updated_event('create');
-            $personaldeadline = personal_deadline::get_personal_deadline_for_student($allocatable, $this->coursework);
+            $personaldeadline = personaldeadline::get_personaldeadline_for_student($allocatable, $this->coursework);
             // Update calendar/timeline event to the latest of the new extension date or existing personal deadline.
             $this->coursework->update_user_calendar_event(
                 $allocatable->id(),
                 $allocatable->type(),
-                max($this->deadlineextension->extended_deadline, $personaldeadline->personal_deadline ?? 0)
+                max($this->deadlineextension->extended_deadline, $personaldeadline->personaldeadline ?? 0)
             );
             redirect(
                 $courseworkpageurl,
@@ -173,8 +173,8 @@ class deadline_extensions_controller extends controller_base {
         $formdata = ['courseworkid' => $this->coursework->id, 'extensionid' => $this->params['extensionid']];
         $this->form = new deadline_extension_form($updateurl, $formdata);
         $this->deadlineextension->extra_information = [
-            'text' => $this->deadlineextension->extra_information_text,
-            'format' => $this->deadlineextension->extra_information_format,
+            'text' => $this->deadlineextension->extrainformationtext,
+            'format' => $this->deadlineextension->extrainformationformat,
         ];
         $this->form->set_data(array_merge((array)$this->deadlineextension, $formdata));
 
@@ -227,11 +227,11 @@ class deadline_extensions_controller extends controller_base {
         $ability->require_can('update', $this->deadlineextension);
 
         if ($this->form->is_validated()) {
-            $values->extra_information_text = $values->extra_information['text'];
-            $values->extra_information_format = $values->extra_information['format'];
+            $values->extrainformationtext = $values->extra_information['text'];
+            $values->extrainformationformat = $values->extra_information['format'];
             $this->deadlineextension->update_attributes($values);
 
-            $personaldeadline = personal_deadline::get_personal_deadline_for_student(
+            $personaldeadline = personaldeadline::get_personaldeadline_for_student(
                 $this->deadlineextension->get_allocatable(),
                 $this->coursework
             );
@@ -239,7 +239,7 @@ class deadline_extensions_controller extends controller_base {
             $this->coursework->update_user_calendar_event(
                 $values->allocatableid,
                 $values->allocatabletype,
-                max($this->deadlineextension->extended_deadline, $personaldeadline->personal_deadline ?? 0)
+                max($this->deadlineextension->extended_deadline, $personaldeadline->personaldeadline ?? 0)
             );
             $this->deadlineextension->trigger_created_updated_event('update');
             redirect($courseworkpageurl);
@@ -265,7 +265,7 @@ class deadline_extensions_controller extends controller_base {
         if ($this->coursework->personaldeadlineenabled) {
             $personaldeadline = $DB->get_record('coursework_person_deadlines', $params);
             if ($personaldeadline) {
-                $this->coursework->deadline = $personaldeadline->personal_deadline;
+                $this->coursework->deadline = $personaldeadline->personaldeadline;
             }
         }
         $this->deadlineextension->extended_deadline = $this->coursework->deadline;
@@ -273,8 +273,8 @@ class deadline_extensions_controller extends controller_base {
     }
 
     public function validation($data) {
-        if ($this->coursework->personaldeadlineenabled && $personaldeadline = $this->personal_deadline()) {
-            $deadline = $personaldeadline->personal_deadline;
+        if ($this->coursework->personaldeadlineenabled && $personaldeadline = $this->personaldeadline()) {
+            $deadline = $personaldeadline->personaldeadline;
         } else {
             $deadline = $this->coursework->deadline;
         }
@@ -286,7 +286,7 @@ class deadline_extensions_controller extends controller_base {
         return false;
     }
 
-    public function personal_deadline() {
+    public function personaldeadline() {
         global $DB;
 
         $extensionid = optional_param('id', 0,  PARAM_INT);

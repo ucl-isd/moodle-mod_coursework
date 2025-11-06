@@ -37,13 +37,13 @@ class mod_coursework_behat_student_page extends mod_coursework_behat_page_base {
 
     public function should_have_two_submission_files() {
 
-        $files = $this->getPage()->findAll('css', '.submissionfile');
+        $files = $this->getpage()->findAll('css', '.submissionfile');
         $numberoffiles = count($files);
 
         $expectednumberoffiles = 2;
         if (!$numberoffiles == $expectednumberoffiles) {
             $message = 'Expected 2 submission files but there were ' . $numberoffiles;
-            throw new ExpectationException($message, $this->getSession());
+            throw new ExpectationException($message, $this->getsession());
         }
     }
 
@@ -53,12 +53,12 @@ class mod_coursework_behat_student_page extends mod_coursework_behat_page_base {
      */
     public function should_have_number_of_feedback_files($expectednumberoffiles) {
 
-        $files = $this->getPage()->findAll('css', '.feedbackfile');
+        $files = $this->getpage()->findAll('css', '.feedbackfile');
         $numberoffiles = count($files);
 
         if (!$numberoffiles == $expectednumberoffiles) {
             $message = 'Expected '.$expectednumberoffiles.' feedback files but there were ' . $numberoffiles;
-            throw new ExpectationException($message, $this->getSession());
+            throw new ExpectationException($message, $this->getsession());
         }
     }
 
@@ -69,14 +69,14 @@ class mod_coursework_behat_student_page extends mod_coursework_behat_page_base {
         // If the rolename has an underscore in it then we need to remove it as instance vars no longer have underscores.
         // E.g. other_student => otherstudent
         $rolename = str_replace('_', '', $rolename);
-        $studentname = fullname((object)(array)$this->getContext()->$rolename);
+        $studentname = fullname((object)(array)$this->getcontext()->$rolename);
 
-        $node = $this->getPage()->find('xpath', "//li[normalize-space(string()) = 'Submitted by $studentname']");
+        $node = $this->getpage()->find('xpath', "//li[normalize-space(string()) = 'Submitted by $studentname']");
 
         if (!$node) {
             throw new ExpectationException(
                 "Expected the submission to have been made by {$studentname}",
-                $this->getSession()
+                $this->getsession()
             );
         }
     }
@@ -86,7 +86,7 @@ class mod_coursework_behat_student_page extends mod_coursework_behat_page_base {
      */
     public function get_visible_grade(): ?string {
         // final_feedback_grade
-        $finalgradecell = $this->getPage()->find('css', '#final_feedback_grade');
+        $finalgradecell = $this->getpage()->find('css', '#final_feedback_grade');
         return $finalgradecell ? $finalgradecell->getText() : null;
     }
 
@@ -95,11 +95,11 @@ class mod_coursework_behat_student_page extends mod_coursework_behat_page_base {
      */
     public function get_visible_feedback() {
         // final_feedback_grade
-        $finalgradecell = $this->getPage()->find('css', '#final_feedback_comment');
+        $finalgradecell = $this->getpage()->find('css', '#final_feedback_comment');
         return $finalgradecell->getText();
     }
 
     public function has_finalise_button(): bool {
-        return !empty($this->getPage()->findAll('css', '.finalisesubmissionbutton'));
+        return !empty($this->getpage()->findAll('css', '.finalisesubmissionbutton'));
     }
 }

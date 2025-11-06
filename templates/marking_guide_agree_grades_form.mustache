@@ -9,7 +9,7 @@
             <tr>
                 <th scope="col"></th>
                 {{#marker_columns}}
-                    <th scope="col" id="marker-col={{markernumber}}" data-feedback-id="{{feedbackid}}" data-stage="{{stage_identifier}}" data-grade="{{grade}}">{{#str}} markernumber, mod_coursework, {{markernumber}} {{/str}}</th>
+                    <th scope="col" id="marker-col={{markernumber}}" data-feedback-id="{{feedbackid}}" data-stage="{{stageidentifier}}" data-grade="{{grade}}">{{#str}} markernumber, mod_coursework, {{markernumber}} {{/str}}</th>
                 {{/marker_columns}}
                 <th scope="col" class="w-50">{{#str}} agreed, mod_coursework {{/str}}</th>
             </tr>
@@ -22,7 +22,7 @@
                         <div><small>{{{descriptionmarkers}}}</small></div>
                     </th>
                     {{#criterion_grades}}
-                        <td id="grade_criterion_{{id}}_{{stage_identifier}}"><strong>{{score}}</strong></td>
+                        <td id="grade_criterion_{{id}}_{{stageidentifier}}"><strong>{{score}}</strong></td>
                     {{/criterion_grades}}
                     <td>
                         <div class="form-inline">
@@ -34,7 +34,7 @@
                 <tr>
                     <th scope="row">{{#str}} feedback, mod_coursework {{/str}}</th>
                     {{#criterion_grades}}
-                        <td id="comment_criterion_{{id}}_{{stage_identifier}}">{{remark}}</td>
+                        <td id="comment_criterion_{{id}}_{{stageidentifier}}">{{remark}}</td>
                     {{/criterion_grades}}
                     <td>
 

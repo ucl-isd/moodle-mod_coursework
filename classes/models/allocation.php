@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Represents a row in the coursework_allocation_pairings table.
  *
- * @property string stage_identifier
+ * @property string stageidentifier
  * @property int moderator
  * @property mixed allocatableid
  * @property mixed allocatabletype
@@ -166,8 +166,8 @@ class allocation extends table_base {
         $records = $DB->get_records(static::$tablename, ['courseworkid' => $courseworkid]);
         $result = [
             'id' => [],
-            'stage_identifier' => [],
-            'allocatableid-allocatabletype-stage_identifier' => [],
+            'stageidentifier' => [],
+            'allocatableid-allocatabletype-stageidentifier' => [],
             'allocatableid-allocatabletype-assessorid' => [],
             'assessorid-allocatabletype' => [],
         ];
@@ -175,8 +175,8 @@ class allocation extends table_base {
             foreach ($records as $record) {
                 $object = new self($record);
                 $result['id'][$record->id] = $object;
-                $result['stage_identifier'][$record->stage_identifier][] = $object;
-                $result['allocatableid-allocatabletype-stage_identifier'][$record->allocatableid . '-' . $record->allocatabletype . '-' . $record->stage_identifier][] = $object;
+                $result['stageidentifier'][$record->stageidentifier][] = $object;
+                $result['allocatableid-allocatabletype-stageidentifier'][$record->allocatableid . '-' . $record->allocatabletype . '-' . $record->stageidentifier][] = $object;
                 $result['allocatableid-allocatabletype-assessorid'][$record->allocatableid . '-' . $record->allocatabletype . '-' . $record->assessorid][] = $object;
                 $result['assessorid-allocatabletype'][$record->assessorid . '-' . $record->allocatabletype][] = $object;
             }

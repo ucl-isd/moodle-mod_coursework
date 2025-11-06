@@ -146,7 +146,7 @@ class outstanding_marking {
                                                           FROM        {coursework_feedbacks} feed
                                                           JOIN       {coursework_submissions} sub ON sub.id = feed.submissionid
                                      WHERE assessorid = :subassessorid AND sub.courseworkid= :subcourseworkid)
-                                                  GROUP BY cs.allocatableid, ssm.stage_identifier, f.id, cs.id, ssm.id
+                                                  GROUP BY cs.allocatableid, ssm.stageidentifier, f.id, cs.id, ssm.id
                                                 ) a
                                    GROUP BY a.allocatableid, a.csid, a.fid, a.id, a.count_feedback, a.courseworkid
                                    HAVING (count_feedback < $countsamples  )";
@@ -256,7 +256,7 @@ class outstanding_marking {
                                                   LEFT JOIN {coursework_sample_set_mbrs} ssm
                                                   ON  cs.courseworkid = ssm.courseworkid AND cs.allocatableid =ssm.allocatableid
                                                   WHERE cs.courseworkid = :courseworkid
-                                                  GROUP BY cs.allocatableid, ssm.stage_identifier, f.id, cs.id, ssm.id
+                                                  GROUP BY cs.allocatableid, ssm.stageidentifier, f.id, cs.id, ssm.id
                                                 ) a
                                    GROUP BY a.allocatableid, a.csid, a.fid, a.id, a.count_feedback, a.courseworkid
                                    HAVING (count_feedback = $countsamples AND $countsamples > 1 );";

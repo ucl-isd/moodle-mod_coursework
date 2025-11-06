@@ -37,7 +37,7 @@ class personaldeadline_cell extends cell_base {
      */
     public function get_cell($submission, $student, $stageidentifier) {
 
-        $personaldeadline = $submission->submission_personal_deadline();
+        $personaldeadline = $submission->submission_personaldeadline();
 
         return userdate($personaldeadline, $this->dateformat);
     }
@@ -48,7 +48,7 @@ class personaldeadline_cell extends cell_base {
      * @throws coding_exception
      */
     public function get_header($stage) {
-        return  get_string('personal_deadline', 'coursework');
+        return  get_string('personaldeadline', 'coursework');
     }
 
 }

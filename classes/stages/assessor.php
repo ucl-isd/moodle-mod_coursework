@@ -37,17 +37,17 @@ use mod_coursework\models\submission;
 class assessor extends base {
 
     /**
-     * Value for mdl_coursework_feedbacks.stage_identifier for feedback from assessor 1.
+     * Value for mdl_coursework_feedbacks.stageidentifier for feedback from assessor 1.
      */
     const STAGE_ASSESSOR_1 = 'assessor_1';
 
     /**
-     * Value for mdl_coursework_feedbacks.stage_identifier for feedback from assessor 2.
+     * Value for mdl_coursework_feedbacks.stageidentifier for feedback from assessor 2.
      */
     const STAGE_ASSESSOR_2 = 'assessor_2';
 
     /**
-     * Value for mdl_coursework_feedbacks.stage_identifier for feedback from assessor 3.
+     * Value for mdl_coursework_feedbacks.stageidentifier for feedback from assessor 3.
      */
     const STAGE_ASSESSOR_3 = 'assessor_3';
 
@@ -96,7 +96,7 @@ class assessor extends base {
             FROM {coursework_feedbacks} f
             WHERE assessorid = ?
             AND submissionid = ?
-            AND stage_identifier LIKE '{$this->type()}%'
+            AND stageidentifier LIKE '{$this->type()}%'
         ";
         return $DB->record_exists_sql($sql, [$assessorid, $submission->id]);
     }

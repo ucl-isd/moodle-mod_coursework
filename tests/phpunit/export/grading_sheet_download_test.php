@@ -138,7 +138,7 @@ final class grading_sheet_download_test extends \advanced_testcase {
         $feedbackdata1->grade = 54;
         $feedbackdata1->feedbackcomment = 'abc';
         $feedbackdata1->assessorid = $assessor2->id;
-        $feedbackdata1->stage_identifier = 'assessor_2';
+        $feedbackdata1->stageidentifier = 'assessor_2';
         $feedback1 = $generator->create_feedback($feedbackdata1);
 
         // Assessor1 feedback for student2.
@@ -147,7 +147,7 @@ final class grading_sheet_download_test extends \advanced_testcase {
         $feedbackdata2->grade = 60;
         $feedbackdata2->feedbackcomment = 'abc';
         $feedbackdata2->assessorid = $assessor1->id;
-        $feedbackdata2->stage_identifier = 'assessor_1';
+        $feedbackdata2->stageidentifier = 'assessor_1';
         $feedback2 = $generator->create_feedback($feedbackdata2);
 
         // Assessor2 feedback for student2.
@@ -156,7 +156,7 @@ final class grading_sheet_download_test extends \advanced_testcase {
         $feedbackdata3->grade = 65;
         $feedbackdata3->feedbackcomment = 'abc';
         $feedbackdata3->assessorid = $assessor2->id;
-        $feedbackdata3->stage_identifier = 'assessor_2';
+        $feedbackdata3->stageidentifier = 'assessor_2';
         $feedback3 = $generator->create_feedback($feedbackdata3);
 
         // Agreed grade feedback.
@@ -165,7 +165,7 @@ final class grading_sheet_download_test extends \advanced_testcase {
         $feedbackdata4->grade = 62;
         $feedbackdata4->feedbackcomment = '<p>abc’s feedback</p>';
         $feedbackdata4->assessorid = $assessor2->id;
-        $feedbackdata4->stage_identifier = 'final_agreed_1';
+        $feedbackdata4->stageidentifier = 'final_agreed_1';
         $feedback4 = $generator->create_feedback($feedbackdata4);
 
         // Headers and data for csv.

@@ -119,13 +119,13 @@ class router {
             case 'new feedback':
                 $url = new moodle_url('/mod/coursework/actions/feedbacks/new.php',
                                           ['submissionid' => $items['submission']->id,
-                                                'stage_identifier' => $items['stage']->identifier(),
+                                                'stageidentifier' => $items['stage']->identifier(),
                                                 'assessorid' => $items['assessor']->id]);
                 break;
 
             case 'new final feedback':
                 $params = ['submissionid' => $items['submission']->id,
-                                'stage_identifier' => $items['stage']->identifier(),
+                                'stageidentifier' => $items['stage']->identifier(),
                                 'isfinalgrade' => 1];
                 $url = new moodle_url('/mod/coursework/actions/feedbacks/new.php', $params);
                 break;
@@ -133,7 +133,7 @@ class router {
             /*case 'new moderator feedback':
                 $url = new moodle_url('/mod/coursework/actions/feedbacks/new.php',
                                       array('submissionid' => $items['submission']->id,
-                                            'stage_identifier' => $items['stage']->identifier(),
+                                            'stageidentifier' => $items['stage']->identifier(),
                                             'ismoderation' => 1));
                 break;*/
 
@@ -167,18 +167,18 @@ class router {
                 break;
 
             case 'edit personal deadline':
-                $url = new moodle_url('/mod/coursework/actions/personal_deadline.php',
+                $url = new moodle_url('/mod/coursework/actions/personaldeadline.php',
                     $items);
                 break;
 
             case 'set personal deadlines':
-                $url = new moodle_url('/mod/coursework/actions/set_personal_deadlines.php',
+                $url = new moodle_url('/mod/coursework/actions/set_personaldeadlines.php',
                     ['id' => $coursemoduleid]);
                 break;
 
             case 'new moderations':
                 $params = ['submissionid' => $items['submission']->id,
-                                'stage_identifier' => $items['stage']->identifier(),
+                                'stageidentifier' => $items['stage']->identifier(),
                                 'feedbackid' => $items['feedbackid']];
                 $url = new moodle_url('/mod/coursework/actions/moderations/new.php', $params);
                 break;

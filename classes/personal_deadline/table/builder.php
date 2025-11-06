@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_coursework\personal_deadline\table;
+namespace mod_coursework\personaldeadline\table;
 
 /**
  * Class file for the renderable object that makes the table for assigning personal deadlines to students.
@@ -26,10 +26,10 @@ namespace mod_coursework\personal_deadline\table;
 
 use mod_coursework;
 use mod_coursework\models\coursework;
-use mod_coursework\personal_deadline\table\row\builder as row_builder;
+use mod_coursework\personaldeadline\table\row\builder as row_builder;
 use mod_coursework\render_helpers\grading_report\cells\allocatable_cell;
 use mod_coursework\render_helpers\grading_report\cells\group_cell;
-use mod_coursework\render_helpers\grading_report\cells\personal_deadline_cell;
+use mod_coursework\render_helpers\grading_report\cells\personaldeadline_cell;
 use mod_coursework\render_helpers\grading_report\cells\user_cell;
 
 defined('MOODLE_INTERNAL') || die();
@@ -57,7 +57,7 @@ class builder {
      * @param array $options
      */
     public function __construct($coursework, array $options) {
-        // When visiting /mod/coursework/actions/set_personal_deadlines.php?id=xxx with group mode enabled, error is thrown.
+        // When visiting /mod/coursework/actions/set_personaldeadlines.php?id=xxx with group mode enabled, error is thrown.
         // This is because $coursework object passed here is wrapped in another class.
         if (get_class($coursework) == 'mod_coursework\decorators\coursework_groups_decorator') {
             $coursework = $coursework->wrapped_object();
@@ -125,13 +125,13 @@ class builder {
     }
 
     /**
-     * @return personal_deadline_cell
+     * @return personaldeadline_cell
      */
-    public function get_personal_deadline_cell() {
+    public function get_personaldeadline_cell() {
         $items = [
             'coursework' => $this->coursework,
         ];
 
-        return new personal_deadline_cell($items);
+        return new personaldeadline_cell($items);
     }
 }

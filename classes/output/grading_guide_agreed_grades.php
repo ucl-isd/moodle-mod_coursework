@@ -177,7 +177,7 @@ class grading_guide_agreed_grades implements renderable, templatable {
         $filteredfeedbacks = array_filter(
             $feedbacks,
             function($feedback) {
-                return $feedback->stage_identifier != 'final_agreed_1';
+                return $feedback->stageidentifier != 'final_agreed_1';
             }
         );
         $templatedata->marker_columns = array_map(
@@ -189,7 +189,7 @@ class grading_guide_agreed_grades implements renderable, templatable {
                     'feedbackid' => $feedback->id,
                     'assessorid' => $feedback->assessorid,
                     'grade' => $feedback->grade,
-                    'stage_identifier' => $feedback->stage_identifier,
+                    'stageidentifier' => $feedback->stageidentifier,
                     'finalised' => $feedback->finalised,
                     'criterion_grades' => $criteriongrades,
                 ];
@@ -219,7 +219,7 @@ class grading_guide_agreed_grades implements renderable, templatable {
         $existingagreedfeedbacks = array_values(array_filter(
             $feedbacks,
             function($feedback) {
-                return $feedback->stage_identifier == 'final_agreed_1';
+                return $feedback->stageidentifier == 'final_agreed_1';
             }
         ));
         if (count($existingagreedfeedbacks) > 1) {
@@ -238,13 +238,13 @@ class grading_guide_agreed_grades implements renderable, templatable {
             'feedbackid' => $existingagreedfeedback->id,
             'assessorid' => $existingagreedfeedback->assessorid,
             'grade' => format_float($existingagreedfeedback->grade, 2, false, true),
-            'stage_identifier' => $existingagreedfeedback->stage_identifier,
+            'stageidentifier' => $existingagreedfeedback->stageidentifier,
             'finalised' => $existingagreedfeedback->finalised,
             'criterion_grades' => array_values(
                 array_map(
                     function($item) use ($existingagreedfeedback, $frequentcommentoptions, $customoptionindex) {
                         $item['score'] = format_float($item['score'], 2, false, true);
-                        $item['stage_identifier'] = $existingagreedfeedback->stage_identifier ?? 'final_agreed_1';
+                        $item['stageidentifier'] = $existingagreedfeedback->stageidentifier ?? 'final_agreed_1';
                         return $item;
                     },
                     $gradingcontrollerinstance->get_guide_filling()['criteria']
@@ -283,7 +283,7 @@ class grading_guide_agreed_grades implements renderable, templatable {
                         $criteriongrade['score'] = format_float($criteriongrade['score'], 2, false, true);
                         $criteriongrade['sortorder'] = $criterion->sortorder;
                         $criteriongrade['assessorid'] = $feedback->assessorid;
-                        $criteriongrade['stage_identifier'] = $feedback->stage_identifier;
+                        $criteriongrade['stageidentifier'] = $feedback->stageidentifier;
                         $criterion->criterion_grades[] = $criteriongrade;
                     }
                 }

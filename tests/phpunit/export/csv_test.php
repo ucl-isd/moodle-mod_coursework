@@ -75,7 +75,7 @@ final class csv_test extends \advanced_testcase {
         $feedbackdata->submissionid = $submission->id;
         $feedbackdata->grade = 54;
         $feedbackdata->assessorid = $assessor->id;
-        $feedbackdata->stage_identifier = 'assessor_1';
+        $feedbackdata->stageidentifier = 'assessor_1';
         $feedback = $generator->create_feedback($feedbackdata);
 
         $extendiondeadline = time();
@@ -85,8 +85,8 @@ final class csv_test extends \advanced_testcase {
             'courseworkid' => $coursework->id,
             'pre_defined_reason' => 1,
             'createdbyid' => 4,
-            'extra_information_text' => '<p>extra information</p>',
-            'extra_information_format' => 1,
+            'extrainformationtext' => '<p>extra information</p>',
+            'extrainformationformat' => 1,
             'extended_deadline' => $extendiondeadline,
         ];
 
@@ -169,7 +169,7 @@ final class csv_test extends \advanced_testcase {
         $feedbackdata1->submissionid = $submission->id;
         $feedbackdata1->grade = 54;
         $feedbackdata1->assessorid = $assessor1->id;
-        $feedbackdata1->stage_identifier = 'assessor_1';
+        $feedbackdata1->stageidentifier = 'assessor_1';
         $feedback1 = $generator->create_feedback($feedbackdata1);
 
         // Assessor two feedback.
@@ -177,7 +177,7 @@ final class csv_test extends \advanced_testcase {
         $feedbackdata2->submissionid = $submission->id;
         $feedbackdata2->grade = 60;
         $feedbackdata2->assessorid = $assessor2->id;
-        $feedbackdata2->stage_identifier = 'assessor_2';
+        $feedbackdata2->stageidentifier = 'assessor_2';
         $feedback2 = $generator->create_feedback($feedbackdata2);
 
         // Agreed grade feedback.
@@ -185,7 +185,7 @@ final class csv_test extends \advanced_testcase {
         $feedbackdata3->submissionid = $submission->id;
         $feedbackdata3->grade = 58;
         $feedbackdata3->assessorid = $assessor1->id;
-        $feedbackdata3->stage_identifier = 'final_agreed_1';
+        $feedbackdata3->stageidentifier = 'final_agreed_1';
         $feedbackdata3->lasteditedbyuser = $assessor1->id;
         $feedback3 = $generator->create_feedback($feedbackdata3);
 
@@ -265,7 +265,7 @@ final class csv_test extends \advanced_testcase {
         $feedbackdata->submissionid = $submission->id;
         $feedbackdata->grade = 54;
         $feedbackdata->assessorid = $assessor1->id;
-        $feedbackdata->stage_identifier = 'assessor_1';
+        $feedbackdata->stageidentifier = 'assessor_1';
         $feedback = $generator->create_feedback($feedbackdata);
 
         // Headers and data for csv.
@@ -349,7 +349,7 @@ final class csv_test extends \advanced_testcase {
         $setmembersdata->courseworkid = $coursework->id;
         $setmembersdata->allocatableid = $submission2->allocatableid;
         $setmembersdata->allocatabletype = 'user';
-        $setmembersdata->stage_identifier = 'assessor_2';
+        $setmembersdata->stageidentifier = 'assessor_2';
 
         $DB->insert_record('coursework_sample_set_mbrs', $setmembersdata);
 
@@ -358,7 +358,7 @@ final class csv_test extends \advanced_testcase {
         $feedbackdata1->submissionid = $submission1->id;
         $feedbackdata1->grade = 54;
         $feedbackdata1->assessorid = $assessor1->id;
-        $feedbackdata1->stage_identifier = 'assessor_1';
+        $feedbackdata1->stageidentifier = 'assessor_1';
         $feedback1 = $generator->create_feedback($feedbackdata1);
 
         // Assessor one feedback for student 2.
@@ -366,7 +366,7 @@ final class csv_test extends \advanced_testcase {
         $feedbackdata2->submissionid = $submission2->id;
         $feedbackdata2->grade = 60;
         $feedbackdata2->assessorid = $assessor1->id;
-        $feedbackdata2->stage_identifier = 'assessor_1';
+        $feedbackdata2->stageidentifier = 'assessor_1';
         $feedback2 = $generator->create_feedback($feedbackdata2);
 
         // Assessor two feedback for student 2.
@@ -374,7 +374,7 @@ final class csv_test extends \advanced_testcase {
         $feedbackdata3->submissionid = $submission2->id;
         $feedbackdata3->grade = 50;
         $feedbackdata3->assessorid = $assessor2->id;
-        $feedbackdata3->stage_identifier = 'assessor_2';
+        $feedbackdata3->stageidentifier = 'assessor_2';
         $feedback3 = $generator->create_feedback($feedbackdata3);
 
         // Agreed grade feedback.
@@ -382,7 +382,7 @@ final class csv_test extends \advanced_testcase {
         $feedbackdata4->submissionid = $submission2->id;
         $feedbackdata4->grade = 58;
         $feedbackdata4->assessorid = $assessor2->id;
-        $feedbackdata4->stage_identifier = 'final_agreed_1';
+        $feedbackdata4->stageidentifier = 'final_agreed_1';
         $feedbackdata4->lasteditedbyuser = $assessor2->id;
         $feedback4 = $generator->create_feedback($feedbackdata4);
 

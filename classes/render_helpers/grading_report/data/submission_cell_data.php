@@ -54,8 +54,8 @@ class submission_cell_data extends cell_data_base {
         if ($rowsbase->get_coursework()->get_deadline()) {
             $data->duedate = $rowsbase->get_coursework()->get_deadline();
         }
-        if ($rowsbase->get_coursework()->personal_deadlines_enabled()) {
-            $this->add_personal_deadline_data($data, $rowsbase);
+        if ($rowsbase->get_coursework()->personaldeadlines_enabled()) {
+            $this->add_personaldeadline_data($data, $rowsbase);
         }
         return $data;
     }
@@ -193,8 +193,8 @@ class submission_cell_data extends cell_data_base {
      * @param stdClass $data Data object to add extension data to.
      * @param grading_table_row_base $rowobject Row object to get extension from.
      */
-    protected function add_personal_deadline_data(stdClass $data, grading_table_row_base $rowobject): void {
-        if ($personaldeadline = $rowobject->get_personal_deadline_time()) {
+    protected function add_personaldeadline_data(stdClass $data, grading_table_row_base $rowobject): void {
+        if ($personaldeadline = $rowobject->get_personaldeadline_time()) {
             $data->personaldeadline = $personaldeadline;
         }
     }

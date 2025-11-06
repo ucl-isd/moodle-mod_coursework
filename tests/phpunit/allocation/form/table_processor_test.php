@@ -89,7 +89,7 @@ final class table_processor_test extends \advanced_testcase {
 
     }
 
-    public function test_process_rows_sets_the_stage_identifiers_for_new_assessor_allocation(): void {
+    public function test_process_rows_sets_the_stageidentifiers_for_new_assessor_allocation(): void {
 
         global $DB;
 
@@ -113,15 +113,15 @@ final class table_processor_test extends \advanced_testcase {
             'allocatabletype' => 'user',
             'ismanual' => 1,
             'assessorid' => $this->teacher->id,
-            'stage_identifier' => 'assessor_1',
+            'stageidentifier' => 'assessor_1',
         ];
         $firstallocation = $DB->get_record('coursework_allocation_pairs', $params);
         $params['assessorid'] = $this->otherteacher->id;
-        $params['stage_identifier'] = 'assessor_2';
+        $params['stageidentifier'] = 'assessor_2';
         $secondallocation = $DB->get_record('coursework_allocation_pairs', $params);
 
-        $this->assertEquals('assessor_1', $firstallocation->stage_identifier);
-        $this->assertEquals('assessor_2', $secondallocation->stage_identifier);
+        $this->assertEquals('assessor_1', $firstallocation->stageidentifier);
+        $this->assertEquals('assessor_2', $secondallocation->stageidentifier);
     }
 
     public function test_process_rows_alters_an_existing_allocation(): void {
@@ -135,7 +135,7 @@ final class table_processor_test extends \advanced_testcase {
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
             'assessorid' => $this->teacher->id,
-            'stage_identifier' => 'assessor_1',
+            'stageidentifier' => 'assessor_1',
         ]);
         $allocation->save();
         $this->assertEquals($allocation->assessorid, $this->teacher->id);
@@ -158,7 +158,7 @@ final class table_processor_test extends \advanced_testcase {
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
-            'stage_identifier' => 'assessor_1',
+            'stageidentifier' => 'assessor_1',
         ];
         $records = $DB->get_records('coursework_allocation_pairs', $params);
         $this->assertEquals(

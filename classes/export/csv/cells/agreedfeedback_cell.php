@@ -95,7 +95,7 @@ class agreedfeedback_cell extends cell_base {
             // Has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
             $feedbackparams = [
                 'submissionid' => $submission->id,
-                'stage_identifier' => $stageidentfinal,
+                'stageidentifier' => $stageidentfinal,
             ];
 
             $feedback = feedback::find($feedbackparams);
@@ -107,7 +107,7 @@ class agreedfeedback_cell extends cell_base {
                 $feedbackparams = [
                     'submissionid' => $submissionid,
                     'assessorid' => $USER->id,
-                    'stage_identifier' => $stageidentfinal,
+                    'stageidentifier' => $stageidentfinal,
                 ];
                 $newfeedback = feedback::build($feedbackparams);
 

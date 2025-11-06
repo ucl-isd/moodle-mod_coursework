@@ -30,7 +30,7 @@ use mod_coursework\grading_report;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
-use mod_coursework\models\personal_deadline;
+use mod_coursework\models\personaldeadline;
 use mod_coursework\models\user;
 use mod_coursework\render_helpers\grading_report\data\actions_cell_data;
 use mod_coursework\render_helpers\grading_report\data\marking_cell_data;
@@ -218,7 +218,7 @@ class grading_report_renderer extends plugin_renderer_base {
             $coursework,
             $allocatable,
             deadline_extension::get_for_allocatable($coursework->id, $allocatableid, $allocatabletype),
-            personal_deadline::get_for_allocatable($coursework->id, $allocatableid, $allocatabletype),
+            personaldeadline::get_for_allocatable($coursework->id, $allocatableid, $allocatabletype),
         );
         if (!$ability->can('show', $row)) {
             return null;
@@ -243,7 +243,7 @@ class grading_report_renderer extends plugin_renderer_base {
         return  (object)[
             'id' => $coursework->id,
             'title' => $coursework->name,
-            'personal_deadlines_enabled' => $coursework->personal_deadlines_enabled(),
+            'personaldeadlines_enabled' => $coursework->personaldeadlines_enabled(),
             'defaultduedate' => $coursework->get_deadline(),
             'isgroupsubmission' => $coursework->is_configured_to_have_group_submissions(),
         ];

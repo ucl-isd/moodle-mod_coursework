@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_coursework\personal_deadline\table\row;
+namespace mod_coursework\personaldeadline\table\row;
 
 /**
  * Class file for the renderable object that makes a single row in the marker personal deadline table.
@@ -27,7 +27,7 @@ namespace mod_coursework\personal_deadline\table\row;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
-use mod_coursework\personal_deadline\table\builder as table_builder;
+use mod_coursework\personaldeadline\table\builder as table_builder;
 use mod_coursework\render_helpers\grading_report\cells\allocatable_cell;
 use mod_coursework\user_row;
 
@@ -106,8 +106,8 @@ class builder implements user_row {
     /**
      * @return coursework
      */
-    public function get_personal_deadline_cell() {
-        return $this->personaldeadlinetable->get_personal_deadline_cell();
+    public function get_personaldeadline_cell() {
+        return $this->personaldeadlinetable->get_personaldeadline_cell();
     }
 
     /**
@@ -169,7 +169,7 @@ class builder implements user_row {
      *
      * @return int|mixed|string
      */
-    public function get_personal_deadlines() {
+    public function get_personaldeadlines() {
         global $DB;
 
         $allocatable = $this->get_allocatable();
@@ -183,7 +183,7 @@ class builder implements user_row {
                   'allocatableid' => $this->allocatable->id(),
                   'allocatabletype' => $this->allocatable->type()]);
         if ($personaldeadline) {
-            $personaldeadline = $personaldeadline->personal_deadline;
+            $personaldeadline = $personaldeadline->personaldeadline;
         } else {
             $personaldeadline = $this->get_coursework()->deadline;
         }

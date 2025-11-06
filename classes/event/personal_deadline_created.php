@@ -41,7 +41,7 @@ use moodle_url;
  * @copyright  2025 UCL
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class personal_deadline_created extends base {
+class personaldeadline_created extends base {
     /**
      * Init method.
      */

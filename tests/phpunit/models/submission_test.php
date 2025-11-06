@@ -140,7 +140,7 @@ final class submission_test extends \advanced_testcase {
         $feedbackdata->submissionid = $submission->id;
         $feedbackdata->grade = 54;
         $feedbackdata->assessorid = 4566;
-        $feedbackdata->stage_identifier = 'assessor_1';
+        $feedbackdata->stageidentifier = 'assessor_1';
         $feedback = $generator->create_feedback($feedbackdata);
 
         sleep(1);
@@ -177,7 +177,7 @@ final class submission_test extends \advanced_testcase {
         $feedbackdata->submissionid = $submission->id;
         $feedbackdata->grade = 54;
         $feedbackdata->assessorid = 4566;
-        $feedbackdata->stage_identifier = 'assessor_1';
+        $feedbackdata->stageidentifier = 'assessor_1';
         $feedback = $generator->create_feedback($feedbackdata);
 
         $submission->publish();
@@ -206,7 +206,7 @@ final class submission_test extends \advanced_testcase {
         $feedbackdata->submissionid = $submission->id;
         $feedbackdata->grade = 54;
         $feedbackdata->assessorid = 4566;
-        $feedbackdata->stage_identifier = 'assessor_1';
+        $feedbackdata->stageidentifier = 'assessor_1';
 
         $feedback = $generator->create_feedback($feedbackdata);
 

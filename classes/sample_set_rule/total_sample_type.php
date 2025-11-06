@@ -54,9 +54,9 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         $sql = "SELECT     sr.*
                      FROM       {coursework_sample_set_rules}   sr,
                                 {coursework_sample_set_plugin}  sp
-                     WHERE      sr.sample_set_plugin_id = sp.id
+                     WHERE      sr.samplesetpluginid = sp.id
                      AND        sr.courseworkid = {$this->coursework->id}
-                     AND        sr.stage_identifier = 'assessor_{$assessornumber}'
+                     AND        sr.stageidentifier = 'assessor_{$assessornumber}'
                      AND        sp.rulename = 'total_sample_type'";
 
         $selected = ($record = $DB->get_record_sql($sql)) ? [$record->upperlimit => $record->upperlimit] : false;
@@ -125,10 +125,10 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $dbrecord->ruletype = "";
             $dbrecord->lowerlimit = 0;
             $dbrecord->upperlimit = $sampletotal;
-            $dbrecord->sample_set_plugin_id = 2; // TODO: THIS SHOULD NOT BE HARD CODED - AF
+            $dbrecord->samplesetpluginid = 2; // TODO: THIS SHOULD NOT BE HARD CODED - AF
             $dbrecord->courseworkid = $this->coursework->id;
             $dbrecord->ruleorder = $order;
-            $dbrecord->stage_identifier = "assessor_{$assessornumber}";
+            $dbrecord->stageidentifier = "assessor_{$assessornumber}";
 
             $DB->insert_record('coursework_sample_set_rules', $dbrecord);
         }
@@ -151,10 +151,10 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         $sql = "SELECT         r.*,p.rulename
                          FROM           {coursework_sample_set_plugin} p,
                                         {coursework_sample_set_rules} r
-                         WHERE          p.id = r.sample_set_plugin_id
+                         WHERE          p.id = r.samplesetpluginid
                          AND            r.courseworkid = :courseworkid
                          AND            p.rulename = 'total_sample_type'
-                         AND            stage_identifier = :stage
+                         AND            stageidentifier = :stage
                          ORDER BY       ruleorder";
 
         $rule = $DB->get_record_sql($sql, ['courseworkid' => $this->coursework->id, 'stage' => $stage]);

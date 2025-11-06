@@ -28,7 +28,7 @@ use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
 use mod_coursework\models\feedback;
 use mod_coursework\models\module;
-use mod_coursework\models\personal_deadline;
+use mod_coursework\models\personaldeadline;
 use mod_coursework\models\submission;
 use mod_coursework\render_helpers\grading_report\cells\cell_interface;
 use mod_coursework\render_helpers\grading_report\sub_rows\sub_rows_interface;
@@ -277,8 +277,8 @@ class grading_report {
     public function sort_by_personaldeadline($a, $b) {
         $courseworkdeadline = $this->get_coursework()->deadline;
         $sort = $this->sort_by_numberfield(
-            $a->get_personal_deadline_time() ?? $courseworkdeadline,
-            $b->get_personal_deadline_time() ?? $courseworkdeadline
+            $a->get_personaldeadline_time() ?? $courseworkdeadline,
+            $b->get_personaldeadline_time() ?? $courseworkdeadline
         );
         return $sort;
     }
@@ -354,8 +354,8 @@ class grading_report {
             $participants = $this->coursework->get_allocatables();
             $extensions = $this->coursework->extensions_enabled()
                 ? deadline_extension::get_all_for_coursework($this->coursework->id) : [];
-            $personaldeadlines = $this->coursework->personal_deadlines_enabled()
-                ? personal_deadline::get_all_for_coursework($this->coursework->id) : [];
+            $personaldeadlines = $this->coursework->personaldeadlines_enabled()
+                ? personaldeadline::get_all_for_coursework($this->coursework->id) : [];
 
             // Make tablerow objects so we can use the methods to check permissions and set things.
             $rows = [];
@@ -404,7 +404,7 @@ class grading_report {
                     $this->coursework,
                     $participant,
                     $extension ? deadline_extension::find($extension, false) : null,
-                    $personaldeadline ? personal_deadline::find($personaldeadline, false) : null,
+                    $personaldeadline ? personaldeadline::find($personaldeadline, false) : null,
                     $personaldeadline,
                 );
 

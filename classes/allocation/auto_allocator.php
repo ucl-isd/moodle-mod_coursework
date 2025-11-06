@@ -118,7 +118,7 @@ class auto_allocator {
                 WHERE s.allocatableid = p.allocatableid
                 AND s.allocatabletype = p.allocatabletype
                 AND s.courseworkid = p.courseworkid
-                AND f.stage_identifier = p.stage_identifier
+                AND f.stageidentifier = p.stageidentifier
             )
         ', ['courseworkid' => $this->get_coursework()->id]);
 

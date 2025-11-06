@@ -106,7 +106,7 @@ class import extends grading_sheet {
             for ($z = 0; $z < count($line); $z++) {
 
                 $value = $line[$z];
-                $stageidentifier = $this->get_stage_identifier($submissionid, $cells[$i]);
+                $stageidentifier = $this->get_stageidentifier($submissionid, $cells[$i]);
 
                 // remove numbers from cell names so they can be dynamically validated
                 if (substr($cells[$i], 0, 8) == 'assessor') {
@@ -349,7 +349,7 @@ class import extends grading_sheet {
             $stages = [];
 
             if (!$coursework->has_multiple_markers()) {
-                $stages['singlegrade'] = $this->get_stage_identifier($csvline['submissionid'], 'singlegrade');
+                $stages['singlegrade'] = $this->get_stageidentifier($csvline['submissionid'], 'singlegrade');
                 if (array_key_exists('agreedgrade', $csvline)) {
                     $stages['agreedgrade'] = 'final_agreed_1';
                 }
@@ -357,7 +357,7 @@ class import extends grading_sheet {
 
                 foreach ($csvline as $k => $v) {
                     if (substr($k, 0, 13) == 'assessorgrade' || substr($k, 0, 11) == 'singlegrade') {
-                        $stages[$k] = $this->get_stage_identifier($csvline['submissionid'], $k);
+                        $stages[$k] = $this->get_stageidentifier($csvline['submissionid'], $k);
                     } else if (substr($k, 0, 11) == 'agreedgrade') {
                         $stages[$k] = 'final_agreed_1';
                     }
@@ -609,7 +609,7 @@ class import extends grading_sheet {
         $addgrade->feedbackcomment = $feedback;
         $addgrade->lasteditedbyuser = $USER->id;
         $addgrade->markernumber = $markernumber;
-        $addgrade->stage_identifier = $stageidentifier;
+        $addgrade->stageidentifier = $stageidentifier;
         $addgrade->finalised = 1;
 
         $feedbackid = $DB->insert_record('coursework_feedbacks', $addgrade, true);
@@ -641,7 +641,7 @@ class import extends grading_sheet {
         global $DB;
 
         $record = $DB->get_record('coursework_feedbacks', ['submissionid' => $submissionid,
-                                                               'stage_identifier' => $stageidentifier],
+                                                               'stageidentifier' => $stageidentifier],
                                   'id');
 
         return $record->id;
@@ -700,7 +700,7 @@ class import extends grading_sheet {
     }
 
     /**
-     * Get stage_identifier for the current submission
+     * Get stageidentifier for the current submission
      *
      * @param $submissionid
      * @param $cellidentifier
@@ -708,7 +708,7 @@ class import extends grading_sheet {
      * @throws dml_missing_record_exception
      * @throws dml_multiple_records_exception
      */
-    public function get_stage_identifier($submissionid, $cellidentifier) {
+    public function get_stageidentifier($submissionid, $cellidentifier) {
 
         global $DB, $USER;
         $submission = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
@@ -728,27 +728,27 @@ class import extends grading_sheet {
                                                      'allocatabletype' => $submission->allocatabletype,
                                                      'assessorid' => $USER->id,
                                                      ]);
-            $stageidentifier = $dbrecord->stage_identifier;
+            $stageidentifier = $dbrecord->stageidentifier;
         }
 
         // Double marked - singlegrade - notallocated
         if ($this->coursework->get_max_markers() > 1 && ($cellidentifier == 'singlegrade' || $cellidentifier == 'feedbackcomments')
             && !$this->coursework->allocation_enabled()) {
 
-            // if any part of initial submission graded by the user then get stage_identifier from feedback
+            // if any part of initial submission graded by the user then get stageidentifier from feedback
             // else workout
-            $sql = "SELECT stage_identifier FROM {coursework_feedbacks}
+            $sql = "SELECT stageidentifier FROM {coursework_feedbacks}
                     WHERE submissionid = $submissionid
                     AND assessorid = $USER->id
-                    AND stage_identifier <> 'final_agreed_1'";
+                    AND stageidentifier <> 'final_agreed_1'";
             $record = $DB->get_record_sql($sql);
             if (!empty($record)) {
-                $stageidentifier = $record->stage_identifier;
+                $stageidentifier = $record->stageidentifier;
             } else if (!$this->coursework->sampling_enabled()) { // Samplings disabled
                 // workout if any stage is still available
                 $sql = "SELECT count(*) as graded FROM {coursework_feedbacks}
                         WHERE submissionid = $submissionid
-                        AND stage_identifier <> 'final_agreed_1'";
+                        AND stageidentifier <> 'final_agreed_1'";
                 $record = $DB->get_record_sql($sql);
 
                 if ($this->coursework->get_max_markers() > $record->graded) {
@@ -758,7 +758,7 @@ class import extends grading_sheet {
             } else if ($this->coursework->sampling_enabled()) { // samplings enabled
                 $insample = ($subs = $submission->get_submissions_in_sample()) ? count($subs) : 0;
                 $feedback = $DB->record_exists('coursework_feedbacks', ['submissionid' => $submissionid,
-                                                                             'stage_identifier' => 'assessor_1']);
+                                                                             'stageidentifier' => 'assessor_1']);
                 // no sample or no feedback for sample yet
                 if (!$insample || ($insample && !$feedback)) {
                     $stageidentifier = 'assessor_1';
@@ -766,10 +766,10 @@ class import extends grading_sheet {
                     $samples = $submission->get_submissions_in_sample();
                     foreach ($samples as $sample) {
                         $feedback = $DB->record_exists('coursework_feedbacks', ['submissionid' => $submissionid,
-                                                                                    'stage_identifier' => $sample->stage_identifier]);
+                                                                                    'stageidentifier' => $sample->stageidentifier]);
                          // if feedback doesn't exist, we'll use this stage identifier for a new feedback
                         if (!$feedback) {
-                            $stageidentifier = $sample->stage_identifier;
+                            $stageidentifier = $sample->stageidentifier;
                             break;
                         }
                     }

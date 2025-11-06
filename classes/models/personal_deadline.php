@@ -26,23 +26,23 @@ use AllowDynamicProperties;
 use context_module;
 use core\exception\invalid_parameter_exception;
 use mod_coursework\allocation\allocatable;
-use mod_coursework\event\personal_deadline_created;
-use mod_coursework\event\personal_deadline_updated;
+use mod_coursework\event\personaldeadline_created;
+use mod_coursework\event\personaldeadline_updated;
 use mod_coursework\framework\table_base;
 use mod_coursework_coursework;
 
 /**
- * Class personal_deadline is responsible for representing one row of the personal_deadline table.
+ * Class personaldeadline is responsible for representing one row of the personaldeadline table.
 
  *
- * @property mixed personal_deadline
+ * @property mixed personaldeadline
  * @property mixed courseworkid
  * @property mixed allocatabletype
  * @property mixed allocatableid
  * @package mod_coursework\models
  */
 #[AllowDynamicProperties]
-class personal_deadline extends table_base {
+class personaldeadline extends table_base {
 
     /**
      * @var coursework
@@ -89,9 +89,9 @@ class personal_deadline extends table_base {
      * Get any personal deadline for this student.
      * @param allocatable|user $student
      * @param coursework $coursework
-     * @return personal_deadline|bool
+     * @return personaldeadline|bool
      */
-    public static function get_personal_deadline_for_student($student, $coursework) {
+    public static function get_personaldeadline_for_student($student, $coursework) {
         if ($coursework->is_configured_to_have_group_submissions()) {
             $allocatable = $coursework->get_student_group($student);
         } else {
@@ -180,16 +180,16 @@ class personal_deadline extends table_base {
                 'allocatabletype' => $allocatable->type(),
                 'courseworkid' => $coursework->id,
                 'groupid' => $allocatable->type() == 'group' ? $allocatable->id() : null,
-                'deadline' => $this->personal_deadline,
+                'deadline' => $this->personaldeadline,
             ],
         ];
 
         switch ($eventtype) {
             case 'create':
-                $event = personal_deadline_created::create($params);
+                $event = personaldeadline_created::create($params);
                 break;
             case 'update':
-                $event = personal_deadline_updated::create($params);
+                $event = personaldeadline_updated::create($params);
                 break;
             default:
                 throw new invalid_parameter_exception("Unexpected event type '$eventtype'");

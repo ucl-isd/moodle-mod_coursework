@@ -2501,6 +2501,48 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025110300, 'coursework');
     }
 
+    if ($oldversion < 2025110600) {
+        // Align column names with coding standards.
+
+        $dbman->drop_field(new xmldb_table('coursework_feedbacks'), new xmldb_field('entry_id'));
+
+        $xmldbfield = new xmldb_field('stage_identifier', XMLDB_TYPE_CHAR, 20);
+        $dbman->rename_field(new xmldb_table('coursework_feedbacks'), $xmldbfield, 'stageidentifier');
+        $dbman->rename_field(new xmldb_table('coursework_allocation_pairs'), $xmldbfield, 'stageidentifier');
+        $dbman->rename_field(new xmldb_table('coursework_mod_set_members'), $xmldbfield, 'stageidentifier');
+        $dbman->rename_field(new xmldb_table('coursework_sample_set_rules'), $xmldbfield, 'stageidentifier');
+        $dbman->rename_field(new xmldb_table('coursework_sample_set_mbrs'), $xmldbfield, 'stageidentifier');
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2025110600, 'coursework');
+    }
+
+    if ($oldversion < 2025110601) {
+        $xmldbfield = new xmldb_field('use_groups', XMLDB_TYPE_INTEGER, 1);
+        $dbman->rename_field(new xmldb_table('coursework'), $xmldbfield, 'usegroups');
+
+        $xmldbfield = new xmldb_field('coursework_id', XMLDB_TYPE_INTEGER, 11);
+        $dbman->rename_field(new xmldb_table('coursework_reminder'), $xmldbfield, 'courseworkid');
+
+        $xmldbfield = new xmldb_field('extra_information_text', XMLDB_TYPE_TEXT);
+        $dbman->rename_field(new xmldb_table('coursework_extensions'), $xmldbfield, 'extrainformationtext');
+
+        $xmldbfield = new xmldb_field('extra_information_format', XMLDB_TYPE_INTEGER, 2);
+        $dbman->rename_field(new xmldb_table('coursework_extensions'), $xmldbfield, 'extrainformationformat');
+
+        $xmldbfield = new xmldb_field('sample_set_plugin_id', XMLDB_TYPE_INTEGER, 10);
+        $dbman->rename_field(new xmldb_table('coursework_sample_set_rules'), $xmldbfield, 'samplesetpluginid');
+
+        $xmldbfield = new xmldb_field('personal_deadline', XMLDB_TYPE_INTEGER, 10);
+        $dbman->rename_field(new xmldb_table('coursework_person_deadlines'), $xmldbfield, 'personaldeadline');
+
+        $xmldbfield = new xmldb_field('comment_format', XMLDB_TYPE_INTEGER, 2);
+        $dbman->rename_field(new xmldb_table('coursework_plagiarism_flags'), $xmldbfield, 'commentformat');
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2025110601, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }

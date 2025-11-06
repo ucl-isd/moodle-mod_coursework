@@ -77,7 +77,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                     'enablegeneralfeedback',
                                                     'maxfiles',
                                                     'filetypes',
-                                                    'use_groups',
+                                                    'usegroups',
                                                     'grouping_id',
                                                     'allowearlyfinalisation',
                                                     'showallfeedbacks',
@@ -110,12 +110,12 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
 
             $samplestrategy = new backup_nested_element('coursework_sample_set_rule', ['id'],
                                                                 ['courseworkid',
-                                                                     'sample_set_plugin_id',
+                                                                     'samplesetpluginid',
                                                                      'ruleorder',
                                                                      'ruletype',
                                                                      'upperlimit',
                                                                      'lowerlimit',
-                                                                     'stage_identifier']);
+                                                                     'stageidentifier']);
 
             $coursework->add_child($samplestrategies);
 
@@ -134,7 +134,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                                     "submissiond",
                                                                     "status",
                                                                     "comment",
-                                                                    "comment_format",
+                                                                    "commentformat",
                                                                     "createdby",
                                                                     "timecreated",
                                                                     "lastmodifiedby",
@@ -173,7 +173,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                      "feedbackcommentformat",
                                                      "entry_id",
                                                      "markernumber",
-                                                     "stage_identifier",
+                                                     "stageidentifier",
                                                      "finalised",
                                                  ]);
 
@@ -203,7 +203,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
             $reminder = new backup_nested_element('coursework_reminder', ['id'],
                                                 [
                                                     "userid",
-                                                    "coursework_id",
+                                                    "courseworkid",
                                                     "remindernumber",
                                                     "extension",
                                                 ]);
@@ -217,7 +217,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                 "ismanual",
                                                 "moderator",
                                                 "timelocked",
-                                                "stage_identifier",
+                                                "stageidentifier",
                                                 "allocatableid",
                                                 "allocatabletype",
                                                 'allocatableuser',
@@ -256,7 +256,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                         "allocatabletype",
                                                         'allocatableuser',
                                                         'allocatablegroup',
-                                                        "stage_identifier",
+                                                        "stageidentifier",
                                                     ]);
 
             $extensions = new backup_nested_element('coursework_extensions');
@@ -271,8 +271,8 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                      "extended_deadline",
                                                      "pre_defined_reason",
                                                      "createdbyid",
-                                                     "extra_information_text",
-                                                     "extra_information_format",
+                                                     "extrainformationtext",
+                                                     "extrainformationformat",
                                                  ]);
 
             $personaldeadlines = new backup_nested_element('coursework_person_deadlines');
@@ -284,7 +284,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                     'allocatablegroup',
                                                     "allocatabletype",
                                                     "courseworkid",
-                                                    "personal_deadline",
+                                                    "personaldeadline",
                                                     "createdbyid",
                                                     "timecreated",
                                                     "timemodified",
@@ -300,7 +300,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                         "allocatabletype",
                                                         'allocatableuser',
                                                         'allocatablegroup',
-                                                        "stage_identifier",
+                                                        "stageidentifier",
                                                         "selectiontype",
                                                 ]);
 
@@ -361,7 +361,7 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                         ['feedbackid' => backup::VAR_PARENTID]);
 
             $reminder->set_source_table('coursework_reminder',
-                                        ['coursework_id' => backup::VAR_PARENTID]);
+                                        ['courseworkid' => backup::VAR_PARENTID]);
 
             $pair->set_source_table('coursework_allocation_pairs',
                                     ['courseworkid' => backup::VAR_PARENTID]);

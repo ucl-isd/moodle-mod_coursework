@@ -120,7 +120,7 @@ function coursework_render_page(coursework $coursework, mod_coursework_allocatio
     $template->warnings = $warnings->percentage_allocations_not_complete();
     if ($coursework->allocation_enabled()) {
         $template->warnings .= $warnings->manual_allocation_not_completed();
-        if ($coursework->use_groups == 1 || $coursework->assessorallocationstrategy == 'group_assessor') {
+        if ($coursework->usegroups == 1 || $coursework->assessorallocationstrategy == 'group_assessor') {
             $template->warnings .= $warnings->students_in_mutiple_groups();
         }
     }

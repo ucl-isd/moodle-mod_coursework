@@ -304,9 +304,9 @@ class manager {
                          FROM (SELECT         rulename,ruleorder
                                FROM           {coursework_sample_set_plugin} p,
                                               {coursework_sample_set_rules} r
-                               WHERE          p.id = r.sample_set_plugin_id
+                               WHERE          p.id = r.samplesetpluginid
                                AND            r.courseworkid = :courseworkid
-                               AND            stage_identifier = :stage
+                               AND            stageidentifier = :stage
                                ORDER BY       ruleorder)a";
 
             if ($sampleplugins = $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id, 'stage' => $stage])) {
@@ -345,7 +345,7 @@ class manager {
                         $sample->courseworkid = $this->coursework->id;
                         $sample->allocatableid = $allocatable->id;
                         $sample->allocatabletype = ($this->coursework->is_configured_to_have_group_submissions()) ? "group" : "user";
-                        $sample->stage_identifier = "assessor_{$stagenumber}";
+                        $sample->stageidentifier = "assessor_{$stagenumber}";
                         $sample->selectiontype = "automatic";
 
                         // If this a manually selected allocatable check to see if the allocatable is already in the table
@@ -366,16 +366,16 @@ class manager {
         $sql = "SELECT     allocatableid,
                                 courseworkid,
                                 allocatabletype,
-                                stage_identifier,
+                                stageidentifier,
                                 selectiontype
                      FROM       {coursework_sample_set_mbrs}
                      WHERE      courseworkid = :courseworkid
-                     AND        stage_identifier = :stage_identifier
+                     AND        stageidentifier = :stageidentifier
                      AND        selectiontype = 'manual'";
 
         // Get all users in manually selected for stage in coursework
         return $DB->get_records_sql($sql,
-            ['courseworkid' => $this->coursework->id, 'stage_identifier' => $stage]);
+            ['courseworkid' => $this->coursework->id, 'stageidentifier' => $stage]);
 
     }
 
@@ -389,11 +389,11 @@ class manager {
                                     {coursework_sample_set_mbrs} m
                          WHERE      s.id = f.submissionid
                          AND        s.courseworkid = :courseworkid
-                         AND        f.stage_identifier = :stage
+                         AND        f.stageidentifier = :stage
                          AND        s.courseworkid = m.courseworkid
                          AND        s.allocatableid = m.allocatableid
                          AND        s.allocatabletype = m.allocatabletype
-                         AND        f.stage_identifier = m.stage_identifier
+                         AND        f.stageidentifier = m.stageidentifier
                          ";
 
         return $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id, 'stage' => $stage]);
@@ -405,7 +405,7 @@ class manager {
         $sql = "DELETE
                      FROM     {coursework_sample_set_mbrs}
                      WHERE    selectiontype = 'automatic'
-                     AND      stage_identifier = '{$stage}'
+                     AND      stageidentifier = '{$stage}'
                      AND      courseworkid = {$this->coursework->id}
                      AND      allocatableid NOT IN (
                         SELECT    s.allocatableid
@@ -413,7 +413,7 @@ class manager {
                                   {coursework_feedbacks}    f
                         WHERE     s.id = f.submissionid
                          AND      s.courseworkid = {$this->coursework->id}
-                         AND      f.stage_identifier = '{$stage}'
+                         AND      f.stageidentifier = '{$stage}'
 
                      )";
 
@@ -430,7 +430,7 @@ class manager {
                   JOIN {coursework_feedbacks} f
                     ON f.submissionid = s.id
                  WHERE s.courseworkid = {$this->coursework->id}
-                   AND f.stage_identifier = 'final_agreed_1'";
+                   AND f.stageidentifier = 'final_agreed_1'";
 
         return $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id]);
 

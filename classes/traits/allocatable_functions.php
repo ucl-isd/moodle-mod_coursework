@@ -74,7 +74,7 @@ trait allocatable_functions {
               FROM {coursework_feedbacks} f
         INNER JOIN {coursework_submissions} s
                 ON f.submissionid = s.id
-             WHERE f.stage_identifier LIKE 'final%'
+             WHERE f.stageidentifier LIKE 'final%'
                AND s.allocatableid = :id
                AND s.courseworkid = :courseworkid
         ";
@@ -93,7 +93,7 @@ trait allocatable_functions {
               FROM {coursework_feedbacks} f
         INNER JOIN {coursework_submissions} s
                 ON f.submissionid = s.id
-             WHERE f.stage_identifier = 'final_agreed_1'
+             WHERE f.stageidentifier = 'final_agreed_1'
                AND s.allocatableid = :id
                AND s.courseworkid = :courseworkid";
 
@@ -114,7 +114,7 @@ trait allocatable_functions {
               FROM {coursework_feedbacks} f
         INNER JOIN {coursework_submissions} s
                 ON f.submissionid = s.id
-             WHERE f.stage_identifier LIKE 'assess%'
+             WHERE f.stageidentifier LIKE 'assess%'
                AND s.allocatableid = :id
                AND s.courseworkid = :courseworkid
                AND f.finalised = 1
@@ -152,8 +152,8 @@ trait allocatable_functions {
         $result = [];
         $submission = $this->get_submission($coursework);
         if ($submission) {
-            $result = isset(feedback::$pool[$coursework->id]['submissionid-stage_identifier_index'][$submission->id . '-others']) ?
-                feedback::$pool[$coursework->id]['submissionid-stage_identifier_index'][$submission->id . '-others'] : [];
+            $result = isset(feedback::$pool[$coursework->id]['submissionid-stageidentifier_index'][$submission->id . '-others']) ?
+                feedback::$pool[$coursework->id]['submissionid-stageidentifier_index'][$submission->id . '-others'] : [];
         }
         return $result;
     }

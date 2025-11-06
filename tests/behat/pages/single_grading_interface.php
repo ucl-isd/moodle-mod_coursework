@@ -39,7 +39,7 @@ class mod_coursework_behat_single_grading_interface extends mod_coursework_behat
      * @return bool
      */
     public function student_has_a_final_grade($studenthash): bool {
-        $studentgradecell = $this->getPage()->find('css', '#submission_'. $studenthash.' .single_final_grade_cell');
+        $studentgradecell = $this->getpage()->find('css', '#submission_'. $studenthash.' .single_final_grade_cell');
         return !empty($studentgradecell->getText());
     }
 

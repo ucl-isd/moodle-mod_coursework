@@ -28,7 +28,7 @@ use mod_coursework\ability;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
 use mod_coursework\models\group;
-use mod_coursework\models\personal_deadline;
+use mod_coursework\models\personaldeadline;
 use mod_coursework\models\user;
 use moodle_url;
 
@@ -53,9 +53,9 @@ class deadline_extension_form extends dynamic_form {
 
     /**
      * Existing personal deadline object (if any).
-     * @var personal_deadline|null
+     * @var personaldeadline|null
      */
-    protected ?personal_deadline $personaldeadline;
+    protected ?personaldeadline $personaldeadline;
 
     /**
      * Allocatable object.
@@ -151,7 +151,7 @@ class deadline_extension_form extends dynamic_form {
      */
     protected function get_user_latest_deadline(): int {
         return max(
-            $this->personaldeadline->personal_deadline ?? 0,
+            $this->personaldeadline->personaldeadline ?? 0,
             $this->extension->extended_deadline ?? 0,
             $this->coursework->deadline ?? 0
         );
@@ -174,10 +174,10 @@ class deadline_extension_form extends dynamic_form {
         ];
 
         // User specific deadlines.
-        if ($this->personaldeadline && $this->personaldeadline->personal_deadline ?? null) {
+        if ($this->personaldeadline && $this->personaldeadline->personaldeadline ?? null) {
             $data->deadlines[] = (object)[
-                'label' => get_string('personal_deadline', 'mod_coursework'),
-                'value' => userdate($this->personaldeadline->personal_deadline, get_string('strftimerecentfull', 'langconfig')),
+                'label' => get_string('personaldeadline', 'mod_coursework'),
+                'value' => userdate($this->personaldeadline->personaldeadline, get_string('strftimerecentfull', 'langconfig')),
                 'class' => 'info',
             ];
         }
@@ -234,16 +234,16 @@ class deadline_extension_form extends dynamic_form {
 
     /**
      * If user has a personal deadline, get the object.
-     * @return personal_deadline|null
+     * @return personaldeadline|null
      */
-    public function personal_deadline(): ?personal_deadline {
+    public function personaldeadline(): ?personaldeadline {
         global $DB;
         $params = [
             'allocatableid' => $this->allocatable->id(),
             'allocatabletype' => $this->allocatable->type(),
             'courseworkid' => $this->coursework->id(),
         ];
-        return personal_deadline::find($DB->get_record('coursework_person_deadlines', $params)) ?: null;
+        return personaldeadline::find($DB->get_record('coursework_person_deadlines', $params)) ?: null;
     }
 
     /**
@@ -288,7 +288,7 @@ class deadline_extension_form extends dynamic_form {
             ]);
         }
         $this->extensionreasons = coursework::extension_reasons();
-        $this->personaldeadline = $this->coursework->personaldeadlineenabled ? $this->personal_deadline() : null;
+        $this->personaldeadline = $this->coursework->personaldeadlineenabled ? $this->personaldeadline() : null;
     }
 
 
@@ -339,8 +339,8 @@ class deadline_extension_form extends dynamic_form {
             $errors[] = get_string('nopermissiongeneral', 'mod_coursework');
         }
         // Extension object expects different format for extra_information to match coursework_extensions DB table.
-        $data->extra_information_text = $data->extra_information['text'] ?? null;
-        $data->extra_information_format = $data->extra_information['format'] ?? null;
+        $data->extrainformationtext = $data->extra_information['text'] ?? null;
+        $data->extrainformationformat = $data->extra_information['format'] ?? null;
 
         if ($data->deleteextension ?? null == 1) {
             if (!$this->extension->can_be_deleted()) {
@@ -378,12 +378,12 @@ class deadline_extension_form extends dynamic_form {
         if (empty($errors)) {
             $iscreating = !$this->extension->id ?? false;
             $this->extension->update_attributes($data);
-            $personaldeadline = personal_deadline::get_personal_deadline_for_student($this->allocatable, $this->coursework);
+            $personaldeadline = personaldeadline::get_personaldeadline_for_student($this->allocatable, $this->coursework);
             // Update calendar/timeline event to the latest of the new extension date or existing personal deadline.
             $this->coursework->update_user_calendar_event(
                 $this->allocatable->id(),
                 $this->allocatable->type(),
-                max($data->extended_deadline, $personaldeadline->personal_deadline ?? 0)
+                max($data->extended_deadline, $personaldeadline->personaldeadline ?? 0)
             );
             $this->extension->trigger_created_updated_event($iscreating ? 'create' : 'update');
         }
@@ -411,10 +411,10 @@ class deadline_extension_form extends dynamic_form {
         if ($this->extension->id) {
             // If editing existing extension.
             $data['extensionid'] = $this->extension->id;
-            if ($this->extension->extra_information_text) {
+            if ($this->extension->extrainformationtext) {
                 $data['extra_information'] = [
-                    'text' => $this->extension->extra_information_text,
-                    'format' => $this->extension->extra_information_format,
+                    'text' => $this->extension->extrainformationtext,
+                    'format' => $this->extension->extrainformationformat,
                 ];
             }
         }

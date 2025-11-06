@@ -297,8 +297,8 @@ class submission extends table_base implements renderable {
             $deadline = $submission->deadline;
             $submission = static::find($submission);
 
-            if ($submission->get_coursework()->personal_deadlines_enabled()) {
-                $deadline = $submission->submission_personal_deadline();
+            if ($submission->get_coursework()->personaldeadlines_enabled()) {
+                $deadline = $submission->submission_personaldeadline();
             }
 
             if ($deadline < time()) {
@@ -499,12 +499,12 @@ class submission extends table_base implements renderable {
             return [];
         }
 
-        if (!isset(feedback::$pool[$this->courseworkid]['submissionid-stage_identifier_index'])) {
+        if (!isset(feedback::$pool[$this->courseworkid]['submissionid-stageidentifier_index'])) {
             feedback::fill_pool_coursework($this->courseworkid);
         }
-        // Get all other feedbacks whose stage_identifier is not "final_agreed_1"
+        // Get all other feedbacks whose stageidentifier is not "final_agreed_1"
         // In case of loops, we would like empty array instead of false.
-        $res = feedback::$pool[$this->courseworkid]['submissionid-stage_identifier_index']["$this->id-others"] ?? [];
+        $res = feedback::$pool[$this->courseworkid]['submissionid-stageidentifier_index']["$this->id-others"] ?? [];
         return $res;
     }
 
@@ -519,10 +519,10 @@ class submission extends table_base implements renderable {
             'submissionid' => $this->id,
             'ismoderation' => 0,
             'isfinalgrade' => 0,
-            'stage_identifier' => $stageidentifier,
+            'stageidentifier' => $stageidentifier,
         ];
         feedback::fill_pool_coursework($this->courseworkid);
-        $feedback = feedback::get_object($this->courseworkid, 'submissionid-ismoderation-isfinalgrade-stage_identifier', $params);
+        $feedback = feedback::get_object($this->courseworkid, 'submissionid-ismoderation-isfinalgrade-stageidentifier', $params);
         return $feedback;
     }
 
@@ -539,7 +539,7 @@ class submission extends table_base implements renderable {
         allocation::fill_pool_coursework($courseworkid);
         $allocation = allocation::get_object(
             $courseworkid,
-            'allocatableid-allocatabletype-stage_identifier',
+            'allocatableid-allocatabletype-stageidentifier',
             [$this->get_allocatable()->id(), $this->get_allocatable()->type(), $stageidentifier]);
         return $allocation;
 
@@ -560,10 +560,10 @@ class submission extends table_base implements renderable {
             'submissionid' => $this->id,
             'ismoderation' => 0,
             'isfinalgrade' => 0,
-            'stage_identifier' => 'final_agreed_1',
+            'stageidentifier' => 'final_agreed_1',
         ];
         feedback::fill_pool_coursework($this->courseworkid);
-        $feedback = feedback::get_object($this->courseworkid, 'submissionid-ismoderation-isfinalgrade-stage_identifier', $params);
+        $feedback = feedback::get_object($this->courseworkid, 'submissionid-ismoderation-isfinalgrade-stageidentifier', $params);
         return $feedback;
     }
 
@@ -591,7 +591,7 @@ class submission extends table_base implements renderable {
 
         $params = [
             'submissionid' => $this->id,
-            'stage_identifier' => $identifier,
+            'stageidentifier' => $identifier,
         ];
 
         $feedback = $DB->get_record('coursework_feedbacks', $params);
@@ -1090,7 +1090,7 @@ class submission extends table_base implements renderable {
 
         // check if submission has personal deadline
         if ($this->get_coursework()->personaldeadlineenabled) {
-            $deadline = $this->submission_personal_deadline();
+            $deadline = $this->submission_personaldeadline();
         } else { // if not, use coursework default deadline
             $deadline = $this->get_coursework()->get_deadline();
         }
@@ -1322,7 +1322,7 @@ class submission extends table_base implements renderable {
         assessment_set_membership::fill_pool_coursework($this->courseworkid);
         $record = assessment_set_membership::get_object(
             $this->courseworkid,
-            'allocatableid-allocatabletype-stage_identifier',
+            'allocatableid-allocatabletype-stageidentifier',
             [$this->allocatableid, $this->allocatabletype, $stageidentifier]
         );
         return $record;
@@ -1366,13 +1366,13 @@ class submission extends table_base implements renderable {
      * @return mixed
      * @throws coding_exception
      */
-    public function submission_personal_deadline() {
+    public function submission_personaldeadline() {
         $allocatableid = $this->get_allocatable()->id();
         $allocatabletype = $this->get_allocatable()->type();
-        $personaldeadline = personal_deadline::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$allocatableid, $allocatabletype]);
+        $personaldeadline = personaldeadline::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$allocatableid, $allocatabletype]);
 
         if ($personaldeadline) {
-            $personaldeadline = $personaldeadline->personal_deadline;
+            $personaldeadline = $personaldeadline->personaldeadline;
         } else {
             $personaldeadline = $this->get_coursework()->deadline;
         }
@@ -1399,7 +1399,7 @@ class submission extends table_base implements renderable {
         $feedbacks = isset(feedback::$pool[$this->courseworkid]['submissionid-assessorid'][$this->id . '-' . $USER->id]) ?
             feedback::$pool[$this->courseworkid]['submissionid-assessorid'][$this->id . '-' . $USER->id] : [];
         foreach ($feedbacks as $feedback) {
-            if ($feedback->stage_identifier != 'final_agreed_1') {
+            if ($feedback->stageidentifier != 'final_agreed_1') {
                 return true;
             }
         }
@@ -1432,7 +1432,7 @@ class submission extends table_base implements renderable {
             $this->editable_final_feedback = false;
             if ($this->is_finalised()) {
                 $coursework = $this->get_coursework();
-                $finalfeedback = feedback::get_object($coursework->id, 'submissionid-stage_identifier', [$this->id, 'final_agreed_1']);
+                $finalfeedback = feedback::get_object($coursework->id, 'submissionid-stageidentifier', [$this->id, 'final_agreed_1']);
                 if ($finalfeedback && $finalfeedback->finalised == 0 && $finalfeedback->assessorid <> 0) {
                     $this->editable_final_feedback = true;
                 }
@@ -1458,7 +1458,7 @@ class submission extends table_base implements renderable {
 			         AND	cs.id = cf.submissionid
 			         AND	c.numberofmarkers > 1
 			         AND 	cs.finalisedstatus = :submissionfinalised
-			         AND	cf.stage_identifier NOT LIKE 'final_agreed%'
+			         AND	cf.stageidentifier NOT LIKE 'final_agreed%'
 			         AND	cs.id = :submissionid
 ";
 

@@ -28,7 +28,7 @@ use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
 use mod_coursework\models\feedback;
 use mod_coursework\models\moderation;
-use mod_coursework\models\personal_deadline;
+use mod_coursework\models\personaldeadline;
 use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
 
@@ -232,8 +232,8 @@ class ability extends framework\ability {
         $this->allow_edit_plagiarism_flag_with_capability();
 
         // Personal deadlines rules
-        $this->prevent_edit_personal_deadline_if_extension_given();
-        $this->allow_edit_personal_deadline_with_capability();
+        $this->prevent_edit_personaldeadline_if_extension_given();
+        $this->allow_edit_personaldeadline_with_capability();
     }
 
     /**
@@ -468,8 +468,8 @@ class ability extends framework\ability {
             'mod_coursework\models\submission',
             function (submission $submission) {
                 // take into account courseworks with personal deadlines
-                if ($submission->get_coursework()->personal_deadlines_enabled()) {
-                    $deadlinepassed = (bool)$submission->submission_personal_deadline() < time();
+                if ($submission->get_coursework()->personaldeadlines_enabled()) {
+                    $deadlinepassed = (bool)$submission->submission_personaldeadline() < time();
                 } else {
                     $deadlinepassed = $submission->get_coursework()->deadline_has_passed();
                 }
@@ -1285,21 +1285,21 @@ class ability extends framework\ability {
             });
     }
 
-    private function allow_edit_personal_deadline_with_capability() {
+    private function allow_edit_personaldeadline_with_capability() {
         $this->allow('edit',
-            'mod_coursework\models\personal_deadline',
-            function (personal_deadline $personaldeadline) {
-                return $personaldeadline->get_coursework()->personal_deadlines_enabled()
+            'mod_coursework\models\personaldeadline',
+            function (personaldeadline $personaldeadline) {
+                return $personaldeadline->get_coursework()->personaldeadlines_enabled()
                         && has_capability('mod/coursework:editpersonaldeadline',
                     $personaldeadline->get_coursework()
                         ->get_context());
             });
     }
 
-    private function prevent_edit_personal_deadline_if_extension_given() {
+    private function prevent_edit_personaldeadline_if_extension_given() {
         $this->prevent('edit',
-            'mod_coursework\models\personal_deadline',
-            function (personal_deadline $personaldeadline) {
+            'mod_coursework\models\personaldeadline',
+            function (personaldeadline $personaldeadline) {
                 // check if extension for this PD exists
                 return $personaldeadline->extension_exists();
             });

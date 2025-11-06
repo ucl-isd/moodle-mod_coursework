@@ -50,7 +50,7 @@ class assessorfeedback_cell extends cell_base {
 
             $feedbackparams = [
                 'submissionid' => $submission->id,
-                'stage_identifier' => $stageidentifier,
+                'stageidentifier' => $stageidentifier,
             ];
             $feedback = feedback::find($feedbackparams);
 
@@ -114,7 +114,7 @@ class assessorfeedback_cell extends cell_base {
             // Has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
             $feedbackparams = [
                 'submissionid' => $submission->id,
-                'stage_identifier' => $stageidentifier,
+                'stageidentifier' => $stageidentifier,
             ];
             $feedback = feedback::find($feedbackparams);
 
@@ -150,7 +150,7 @@ class assessorfeedback_cell extends cell_base {
                     'courseworkid' => $this->coursework->id,
                     'allocatableid' => $submission->allocatableid,
                     'allocatabletype' => $submission->allocatabletype,
-                    'stage_identifier' => $stageidentifier,
+                    'stageidentifier' => $stageidentifier,
                 ];
 
                 if (!has_capability('mod/coursework:administergrades', $modulecontext)

@@ -96,7 +96,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         global $SITE;
 
-        $areagreeing = $teacherfeedback->stage_identifier == 'final_agreed_1';
+        $areagreeing = $teacherfeedback->stageidentifier == 'final_agreed_1';
         $gradingtitle = $areagreeing
             ? get_string('gradingforagree', 'coursework', $teacherfeedback->get_submission()->get_allocatable_name())
             : get_string('gradingfor', 'coursework', $teacherfeedback->get_submission()->get_allocatable_name());
@@ -329,7 +329,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         global $SITE, $DB;
 
         $submission = $newfeedback->get_submission();
-        $areagreeing = optional_param('stage_identifier', '', PARAM_TEXT) == 'final_agreed_1';
+        $areagreeing = optional_param('stageidentifier', '', PARAM_TEXT) == 'final_agreed_1';
         $gradingtitle = $areagreeing
             ? get_string('gradingforagree', 'coursework', $submission->get_allocatable_name())
             : get_string('gradingfor', 'coursework', $submission->get_allocatable_name());
@@ -343,7 +343,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template->title = $gradingtitle;
         // Warning in case there is already some feedback from another teacher.
         $conditions = ['submissionid' => $newfeedback->submissionid,
-                            'stage_identifier' => $newfeedback->stage_identifier];
+                            'stageidentifier' => $newfeedback->stageidentifier];
         if (feedback::exists($conditions)) {
             $template->alert = 'Another user has already submitted feedback for this student. Your changes will not be saved.';
         }
@@ -365,7 +365,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $coursework = coursework::find($newfeedback->get_submission()->get_coursework()->id());
 
         // auto-populate Agreed Feedback with comments from initial marking
-        if ($coursework && $coursework->autopopulatefeedbackcomment_enabled() && $newfeedback->stage_identifier == 'final_agreed_1') {
+        if ($coursework && $coursework->autopopulatefeedbackcomment_enabled() && $newfeedback->stageidentifier == 'final_agreed_1') {
             // get all initial stages feedbacks for this submission
             $initialfeedbacks = $DB->get_records('coursework_feedbacks', ['submissionid' => $newfeedback->submissionid]);
 
@@ -481,7 +481,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $simpleform = new plagiarism_flagging_mform($submiturl, ['plagiarismflagid' => $plagiarismflag->id]);
 
         $plagiarismflag->plagiarismcomment = ['text' => $plagiarismflag->comment,
-                                                    'format' => $plagiarismflag->comment_format];
+                                                    'format' => $plagiarismflag->commentformat];
 
         $simpleform->set_data($plagiarismflag);
         echo $this->output->header();
@@ -533,7 +533,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template = new stdClass();
         $warnings = new warnings($coursework);
         // Show any warnings that may need to be here
-        if ($coursework->use_groups == 1) {
+        if ($coursework->usegroups == 1) {
             $warnings->students_in_mutiple_groups();
         }
         $warnings->percentage_allocations_not_complete();
@@ -561,7 +561,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $html .= $gradingreportrenderer->render_grading_report($gradingreport);
 
-        foreach (['modal_handler_extensions', 'modal_handler_personal_deadlines', 'modal_handler_plagiarism'] as $amd) {
+        foreach (['modal_handler_extensions', 'modal_handler_personaldeadlines', 'modal_handler_plagiarism'] as $amd) {
             $this->page->requires->js_call_amd(
                 "mod_coursework/$amd",
                 'init',
@@ -935,7 +935,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             if ($coursework->can_grade()) { // teachers
                 $submitted = count($coursework->get_all_submissions());
             } else if ($coursework->can_submit()) { // Students
-                if ($coursework->use_groups) {
+                if ($coursework->usegroups) {
                     $allocatable = $coursework->get_student_group($USER);
                 } else {
                     $allocatable = $USER;

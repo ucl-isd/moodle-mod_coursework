@@ -146,7 +146,7 @@ final class percentage_distance_test extends \advanced_testcase {
         $createdfeedback = reset($createdfeedbacks);
         $this->assertEquals($createdfeedback->grade ?? null, 55); // Right grade.
         $this->assertEquals($createdfeedback->submissionid ?? null, $expectedsubmissionid); // Right submission.
-        $this->assertEquals($createdfeedback->stage_identifier ?? null, 'final_agreed_1'); // Right stage.
+        $this->assertEquals($createdfeedback->stageidentifier ?? null, 'final_agreed_1'); // Right stage.
     }
 
 }

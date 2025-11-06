@@ -31,14 +31,14 @@ global $USER;
 $submissionid = required_param('submissionid', PARAM_INT);
 $isfinalgrade = optional_param('isfinalgrade', 0, PARAM_INT);
 $assessorid = optional_param('assessorid', $USER->id, PARAM_INT);
-$stageidentifier = optional_param('stage_identifier', '', PARAM_ALPHANUMEXT);
+$stageidentifier = optional_param('stageidentifier', '', PARAM_ALPHANUMEXT);
 $finalised = (bool)optional_param('submitbutton', 0, PARAM_TEXT);
 
 $params = [
     'submissionid' => $submissionid,
     'isfinalgrade' => $isfinalgrade,
     'assessorid' => $assessorid,
-    'stage_identifier' => $stageidentifier,
+    'stageidentifier' => $stageidentifier,
     'finalised' => $finalised,
 ];
 

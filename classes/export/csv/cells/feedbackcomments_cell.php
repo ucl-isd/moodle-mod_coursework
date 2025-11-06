@@ -41,7 +41,7 @@ class feedbackcomments_cell extends cell_base {
 
         $stageident = ($this->coursework->get_max_markers() == 1)
             ? "assessor_1"
-            : $this->get_stage_identifier_for_assessor($submission, $student);
+            : $this->get_stageidentifier_for_assessor($submission, $student);
         $grade = $submission->get_assessor_feedback_by_stage($stageident);
         return (!$grade || !isset($grade->feedbackcomment)) ? '' : cell_base::clean_cell($grade->feedbackcomment);
     }
@@ -85,7 +85,7 @@ class feedbackcomments_cell extends cell_base {
 
             $feedbackparams = [
                 'submissionid' => $submission->id,
-                'stage_identifier' => $stageidentifier,
+                'stageidentifier' => $stageidentifier,
             ];
             $feedback = feedback::find($feedbackparams);
 
@@ -95,7 +95,7 @@ class feedbackcomments_cell extends cell_base {
                 $feedbackparams = [
                     'submissionid' => $submissionid,
                     'assessorid' => $USER->id,
-                    'stage_identifier' => $stageidentifier,
+                    'stageidentifier' => $stageidentifier,
                 ];
                 $newfeedback = feedback::build($feedbackparams);
 

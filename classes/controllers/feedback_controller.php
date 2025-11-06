@@ -104,14 +104,14 @@ class feedback_controller extends controller_base {
         $teacherfeedback->assessorid = $this->params['assessorid'];
         $teacherfeedback->isfinalgrade = $this->params['isfinalgrade'];
         $teacherfeedback->ismoderation = $this->params['ismoderation'];
-        $teacherfeedback->stage_identifier = $this->params['stage_identifier'];
+        $teacherfeedback->stageidentifier = $this->params['stageidentifier'];
         $teacherfeedback->courseworkid = $this->params['courseworkid'];
 
         $conditions = ['submissionid' => $this->params['submissionid'],
-                            'stage_identifier' => $this->params['stage_identifier']];
+                            'stageidentifier' => $this->params['stageidentifier']];
         if (feedback::exists($conditions)) {
             if ($this->space_for_another_feedback($teacherfeedback)) {
-                $teacherfeedback->stage_identifier = $this->next_available_stage($teacherfeedback);
+                $teacherfeedback->stageidentifier = $this->next_available_stage($teacherfeedback);
             }
         }
 
@@ -119,14 +119,14 @@ class feedback_controller extends controller_base {
         if (!$ability->can('new', $teacherfeedback)) {
             throw new access_denied($this->coursework, $ability->get_last_message());
         }
-        $this->check_stage_permissions($this->params['stage_identifier']);
+        $this->check_stage_permissions($this->params['stageidentifier']);
 
         $urlparams = [];
         $urlparams['submissionid'] = $teacherfeedback->submissionid;
         $urlparams['assessorid'] = $teacherfeedback->assessorid;
         $urlparams['isfinalgrade'] = $teacherfeedback->isfinalgrade;
         $urlparams['ismoderation'] = $teacherfeedback->ismoderation;
-        $urlparams['stage_identifier'] = $teacherfeedback->stage_identifier;
+        $urlparams['stageidentifier'] = $teacherfeedback->stageidentifier;
         $PAGE->set_url('/mod/coursework/actions/feedbacks/new.php', $urlparams);
 
         $renderer = $this->get_page_renderer();
@@ -144,7 +144,7 @@ class feedback_controller extends controller_base {
         global $DB, $PAGE, $USER;
 
         $teacherfeedback = new feedback($this->params['feedbackid']);
-        $this->check_stage_permissions($teacherfeedback->stage_identifier);
+        $this->check_stage_permissions($teacherfeedback->stageidentifier);
 
         $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('edit', $teacherfeedback);
@@ -173,14 +173,14 @@ class feedback_controller extends controller_base {
 
         global $USER, $PAGE;
 
-        $this->check_stage_permissions($this->params['stage_identifier']);
+        $this->check_stage_permissions($this->params['stageidentifier']);
 
         $teacherfeedback = new feedback();
         $teacherfeedback->submissionid = $this->params['submissionid'];
         $teacherfeedback->assessorid = $this->params['assessorid'];
         $teacherfeedback->isfinalgrade = $this->params['isfinalgrade'];
         $teacherfeedback->ismoderation = $this->params['ismoderation'];
-        $teacherfeedback->stage_identifier = $this->params['stage_identifier'];
+        $teacherfeedback->stageidentifier = $this->params['stageidentifier'];
         $teacherfeedback->lasteditedbyuser = $USER->id;
         $teacherfeedback->finalised = $this->params['finalised'] ? 1 : 0;
 
@@ -195,11 +195,11 @@ class feedback_controller extends controller_base {
         $PAGE->set_url($url);
 
         $conditions = ['submissionid' => $this->params['submissionid'],
-                            'stage_identifier' => $this->params['stage_identifier']];
+                            'stageidentifier' => $this->params['stageidentifier']];
         if (feedback::exists($conditions)) {
 
             if ($this->space_for_another_feedback($teacherfeedback)) {
-                $teacherfeedback->stage_identifier = $this->next_available_stage($teacherfeedback);
+                $teacherfeedback->stageidentifier = $this->next_available_stage($teacherfeedback);
             } else {
                 $renderer = $this->get_page_renderer();
                 $renderer->new_feedback_page($teacherfeedback);
@@ -287,8 +287,8 @@ class feedback_controller extends controller_base {
                  // $OUTPUT->confirm(get_string('confirmremovefeedback', 'mod_coursework'), $confirmurl, $PAGE->url);
 
             } else {
-                feedback::remove_cache($teacherfeedback->get_coursework_id());
-                submission::remove_cache($teacherfeedback->get_coursework_id());
+                feedback::remove_cache($teacherfeedback->get_courseworkid());
+                submission::remove_cache($teacherfeedback->get_courseworkid());
 
                 // Remove associated files.
                 $fs = get_file_storage();
@@ -304,7 +304,7 @@ class feedback_controller extends controller_base {
             }
         }
 
-        $this->check_stage_permissions($teacherfeedback->stage_identifier);
+        $this->check_stage_permissions($teacherfeedback->stageidentifier);
 
         $form = new assessor_feedback_mform(null, ['feedback' => $teacherfeedback]);
 
@@ -428,7 +428,7 @@ class feedback_controller extends controller_base {
         $sql = "SELECT COUNT(*) as total
                 FROM {coursework_feedbacks}
                 WHERE submissionid = $feedback->submissionid
-                AND stage_identifier <> 'final_agreed_1'";
+                AND stageidentifier <> 'final_agreed_1'";
 
         $usedstages = $DB->get_record_sql($sql);
         $newstage = $usedstages->total + 1;

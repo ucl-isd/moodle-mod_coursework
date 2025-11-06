@@ -30,10 +30,10 @@ use mod_coursework\models\deadline_extension;
 use mod_coursework\models\feedback;
 use mod_coursework\models\moderation;
 use mod_coursework\models\moderation_set_rule;
-use mod_coursework\models\personal_deadline;
+use mod_coursework\models\personaldeadline;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
-use mod_coursework\personal_deadline\table\row\builder;
+use mod_coursework\personaldeadline\table\row\builder;
 use mod_coursework\renderers\grading_report_renderer;
 use mod_coursework\router;
 use mod_coursework\warnings;
@@ -776,7 +776,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      *
      * @param moderation_set_rule $rule
      * @return html_table_row
-     *@throws coding_exception
+     * @throws coding_exception
      */
     protected function make_moderation_set_rule_row(moderation_set_rule $rule) {
 
@@ -1061,8 +1061,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // Handle coursework deadline details.
         if ($coursework->has_deadline()) {
             // Determine the effective deadline.
-            if ($personaldeadline = personal_deadline::get_personal_deadline_for_student($user, $coursework)) {
-                $template->duedate = $personaldeadline->personal_deadline;
+            if ($personaldeadline = personaldeadline::get_personaldeadline_for_student($user, $coursework)) {
+                $template->duedate = $personaldeadline->personaldeadline;
             } else {
                 $template->duedate = $coursework->deadline;
             }
@@ -1071,7 +1071,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 $template->latesubmissionsallowed = true;
             }
 
-            if ($coursework->personal_deadlines_enabled() && (!has_capability('mod/coursework:submit', $this->page->context) || is_siteadmin($user))) {
+            if ($coursework->personaldeadlines_enabled() && (!has_capability('mod/coursework:submit', $this->page->context) || is_siteadmin($user))) {
                 $template->personaldeadlines = true;
             }
 
@@ -1156,10 +1156,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     /**
      * Makes the HTML table for allocating markers to students and returns it.
      *
-     * @param mod_coursework_personal_deadlines_table $personaldeadlinestable
+     * @param mod_coursework_personaldeadlines_table $personaldeadlinestable
      * @return string
      */
-    protected function render_mod_coursework_personal_deadlines_table(mod_coursework_personal_deadlines_table $personaldeadlinestable) {
+    protected function render_mod_coursework_personaldeadlines_table(mod_coursework_personaldeadlines_table $personaldeadlinestable) {
         $courseworkpageurl = $this->get_router()->get_path('coursework', ['coursework' => $personaldeadlinestable->get_coursework()]);
         $tablehtml = '<div class="return_to_page">'.html_writer::link($courseworkpageurl, get_string('returntocourseworkpage', 'mod_coursework')).'</div>';
 
@@ -1175,7 +1175,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $tablehtml .= '<br />';
         $url = $this->get_router()->get_path('edit personal deadline', []);
 
-        $tablehtml .= '<form  action="'.$url.'" id="coursework_personal_deadline_form" method="post">';
+        $tablehtml .= '<form  action="'.$url.'" id="coursework_personaldeadline_form" method="post">';
 
         $tablehtml .= '<input type="hidden" name="courseworkid" value="'.$personaldeadlinestable->get_coursework()->id().'" />';
         $tablehtml .= '<input type="hidden" name="allocatabletype" value="'.$personaldeadlinestable->get_coursework()->get_allocatable_type().'" />';
@@ -1185,14 +1185,14 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $tablehtml .= '
 
-            <table class="personal_deadline display">
+            <table class="personaldeadline display">
                 <thead>
                 <tr>
 
         ';
 
         $allocatablecellhelper = $personaldeadlinestable->get_allocatable_cell();
-        $personaldeadlinescellhelper = $personaldeadlinestable->get_personal_deadline_cell();
+        $personaldeadlinescellhelper = $personaldeadlinestable->get_personaldeadline_cell();
         $tablehtml .= '<th>';
         $tablehtml .= '<input type="checkbox" name="" id="selectall">';
         $tablehtml .= '</th>';
@@ -1214,7 +1214,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $rowdata = $personaldeadlinestable->get_rows();
         foreach ($rowdata as $row) {
-            $tablehtml .= $this->render_personal_deadline_table_row($row);
+            $tablehtml .= $this->render_personaldeadline_table_row($row);
         }
 
         $tablehtml .= '
@@ -1229,21 +1229,21 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
     /**
-     * This is used on the old bulk personal deadlines page i.e. actions/set_personal_deadlines.php.
+     * This is used on the old bulk personal deadlines page i.e. actions/set_personaldeadlines.php.
      * @param builder $personaldeadlinerow
      * @return string
      */
-    private function render_personal_deadline_table_row($personaldeadlinerow) {
+    private function render_personaldeadline_table_row($personaldeadlinerow) {
 
         global $USER;
 
         $coursework = $personaldeadlinerow->get_coursework();
 
         $personaldeadline =
-            personal_deadline::get_personal_deadline_for_student(user::find($personaldeadlinerow->get_allocatable()->id()), $coursework);
+            personaldeadline::get_personaldeadline_for_student(user::find($personaldeadlinerow->get_allocatable()->id()), $coursework);
 
         if (!$personaldeadline) {
-            $personaldeadline = personal_deadline::build(
+            $personaldeadline = personaldeadline::build(
                 [
                     'allocatableid' => $personaldeadlinerow->get_allocatable()->id(),
                     'allocatabletype' => $personaldeadlinerow->get_allocatable()->type(),
@@ -1262,7 +1262,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $rowhtml .= '</td>';
 
         $allocatablecellhelper = $personaldeadlinerow->get_allocatable_cell();
-        $personaldeadlinescellhelper = $personaldeadlinerow->get_personal_deadline_cell();
+        $personaldeadlinescellhelper = $personaldeadlinerow->get_personaldeadline_cell();
         $rowhtml .= $allocatablecellhelper->get_table_cell($personaldeadlinerow);
         $rowhtml .= $personaldeadlinescellhelper->get_table_cell($personaldeadlinerow);
         $rowhtml .= '';

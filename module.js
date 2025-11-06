@@ -474,7 +474,7 @@ M.mod_coursework = {
     /**
      * This is to set up the listeners etc for the page elements on the allocations page.
      */
-    init_personal_deadlines_page: function () {
+    init_personaldeadlines_page: function () {
 
         $('#selectall').change(function () {
 
@@ -507,7 +507,7 @@ M.mod_coursework = {
 
             if (dateselected == true) {
                 $('#selectedtype').val('date');
-                $('#coursework_personal_deadline_form').submit();
+                $('#coursework_personaldeadline_form').submit();
             } else {
                 alert('You must make at least one selection');
             }
@@ -531,7 +531,7 @@ M.mod_coursework = {
                 $('#selectedtype').val('unfinalise');
 
 
-              $('#coursework_personal_deadline_form').submit();
+              $('#coursework_personaldeadline_form').submit();
             } else {
                 alert('You must make at least one selection');
             }

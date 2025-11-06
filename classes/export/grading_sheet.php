@@ -68,7 +68,7 @@ class grading_sheet extends csv {
                         // check how many other assessors for this submission
                         $insample = $submission->get_submissions_in_sample();
                         foreach ($insample as $i) {
-                            $stageidentifiers[] = $i->stage_identifier;
+                            $stageidentifiers[] = $i->stageidentifier;
                         }
                     } else { // if sampling not enabled, everyone is marked in all stages
                         for ($i = 1; $i <= $stages; $i++) {

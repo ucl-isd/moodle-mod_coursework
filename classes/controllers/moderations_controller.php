@@ -70,14 +70,14 @@ class moderations_controller extends controller_base {
         $moderatoragreement = new moderation();
         $moderatoragreement->submissionid = $this->params['submissionid'];
         $moderatoragreement->moderatorid = $this->params['moderatorid'];
-        $moderatoragreement->stageidentifier = $this->params['stage_identifier'];
+        $moderatoragreement->stageidentifier = $this->params['stageidentifier'];
         $moderatoragreement->courseworkid = $this->params['courseworkid'];
         $moderatoragreement->feedbackid = $this->params['feedbackid'];
 
         $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('new', $moderatoragreement);
 
-        $this->check_stage_permissions($this->params['stage_identifier']);
+        $this->check_stage_permissions($this->params['stageidentifier']);
 
         $urlparams = [];
         $urlparams['submissionid'] = $moderatoragreement->submissionid;
@@ -126,12 +126,12 @@ class moderations_controller extends controller_base {
     protected function create_moderation() {
         global $USER, $PAGE;
 
-        $this->check_stage_permissions($this->params['stage_identifier']);
+        $this->check_stage_permissions($this->params['stageidentifier']);
 
         $moderatoragreement = new moderation();
         $moderatoragreement->submissionid = $this->params['submissionid'];
         $moderatoragreement->moderatorid = $this->params['moderatorid'];
-        $moderatoragreement->stageidentifier = $this->params['stage_identifier'];
+        $moderatoragreement->stageidentifier = $this->params['stageidentifier'];
         $moderatoragreement->lasteditedby = $USER->id;
         $moderatoragreement->feedbackid = $this->params['feedbackid'];
 

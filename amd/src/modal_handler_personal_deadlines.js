@@ -16,7 +16,7 @@
 /**
  * Javascript module for handling personal extension modal.
  *
- * @module      mod_coursework/modal_handler_personal_deadlines
+ * @module      mod_coursework/modal_handler_personaldeadlines
  * @copyright   2025 UCL
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -66,7 +66,7 @@ export const init = (courseworkid) => {
             modalConfig: {
                 title: getString('extended_deadline', 'mod_coursework'),
             },
-            formClass: 'mod_coursework\\forms\\personal_deadline_form',
+            formClass: 'mod_coursework\\forms\\personaldeadline_form',
             saveButtonText: getString('save', 'core'),
             returnFocus: triggerElement,
             args: args

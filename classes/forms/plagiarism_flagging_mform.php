@@ -116,7 +116,7 @@ class plagiarism_flagging_mform extends dynamic_form {
 
         if ($flag) {
             $mform->setDefault('status', $flag->status);
-            $mform->setDefault('plagiarismcomment', ['text' => $flag->comment, 'format' => $flag->comment_format]);
+            $mform->setDefault('plagiarismcomment', ['text' => $flag->comment, 'format' => $flag->commentformat]);
         }
         $mform->hideIf('plagiarismcomment', 'status', 'eq', "1");
 
@@ -173,7 +173,7 @@ class plagiarism_flagging_mform extends dynamic_form {
 
         $plagiarismflag->status = $formdata->status;
         $plagiarismflag->comment = $formdata->plagiarismcomment['text'] ?? '';
-        $plagiarismflag->comment_format = $formdata->plagiarismcomment['format'] ?? FORMAT_PLAIN;
+        $plagiarismflag->commentformat = $formdata->plagiarismcomment['format'] ?? FORMAT_PLAIN;
 
         return $plagiarismflag;
     }
@@ -248,7 +248,7 @@ class plagiarism_flagging_mform extends dynamic_form {
             }
             $this->plagiarismflag->status = $data->status;
             $this->plagiarismflag->comment = $data->plagiarismcomment['text'] ?? '';
-            $this->plagiarismflag->comment_format = $data->plagiarismcomment['format'] ?? FORMAT_PLAIN;
+            $this->plagiarismflag->commentformat = $data->plagiarismcomment['format'] ?? FORMAT_PLAIN;
             if ($iscreating) {
                 $this->plagiarismflag->save();
             } else {

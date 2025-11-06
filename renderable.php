@@ -34,7 +34,7 @@ use mod_coursework\grading_table_row_multi;
 use mod_coursework\grading_table_row_single;
 use mod_coursework\models\coursework;
 use mod_coursework\moderation_set_widget;
-use mod_coursework\personal_deadline\table\builder;
+use mod_coursework\personaldeadline\table\builder;
 use mod_coursework\sampling_set_widget;
 use mod_coursework\submission_files;
 
@@ -126,5 +126,5 @@ class mod_coursework_feedback_files extends mod_coursework_renderable {
 /**
  * @mixin builder
  */
-class mod_coursework_personal_deadlines_table extends mod_coursework_renderable {
+class mod_coursework_personaldeadlines_table extends mod_coursework_renderable {
 }

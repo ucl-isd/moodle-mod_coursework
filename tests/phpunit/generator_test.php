@@ -113,7 +113,7 @@ final class generator_test extends \advanced_testcase {
         $data = new \stdClass();
         $data->allocatableid = 5;
         $data->allocatabletype = 'user';
-        $data->stage_identifier = 'assessor_1';
+        $data->stageidentifier = 'assessor_1';
         $data->courseworkid = 65;
 
         /* @var \mod_coursework_generator $generator */

@@ -176,7 +176,7 @@ class processor {
 
         $params = ['courseworkid' => $this->coursework->id(),
             'allocatableid' => $this->get_allocatable()->id(),
-            'stage_identifier' => $this->get_stage()->identifier(),
+            'stageidentifier' => $this->get_stage()->identifier(),
             'selectiontype' => 'automatic'];
 
         return $DB->record_exists('coursework_sample_set_mbrs', $params);

@@ -32,7 +32,7 @@ namespace mod_coursework\stages;
 class moderator extends base {
 
     /**
-     * Value for mdl_coursework_feedbacks.stage_identifier for feedback from moderator 1.
+     * Value for mdl_coursework_feedbacks.stageidentifier for feedback from moderator 1.
      */
     const STAGE_MODERATOR_1 = 'moderator_1';
 

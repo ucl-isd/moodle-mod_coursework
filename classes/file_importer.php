@@ -129,7 +129,7 @@ class coursework_file_zip_importer {
                         $feedback = $DB->get_record('coursework_feedbacks', ['submissionid' => $submission->id, 'assessorid' => $USER->id ]);
 
                         if ($feedback) {
-                            $feedbackstage = $feedback->stage_identifier;
+                            $feedbackstage = $feedback->stageidentifier;
 
                         } else {
                             $results[$filename] = get_string('assessorfeedbacknotfound', 'mod_coursework');
@@ -226,7 +226,7 @@ class coursework_file_zip_importer {
         $sql = "SELECT     *
                      FROM       {coursework_feedbacks}
                      WHERE      submissionid = :submissionid
-                     AND        stage_identifier = :stage
+                     AND        stageidentifier = :stage
                      ";
 
         $params = ['submissionid' => $submission->id,

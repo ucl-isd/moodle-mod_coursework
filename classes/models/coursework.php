@@ -64,7 +64,7 @@ use mod_coursework\render_helpers\grading_report\cells\idnumber_cell;
 use mod_coursework\render_helpers\grading_report\cells\last_name_cell;
 use mod_coursework\render_helpers\grading_report\cells\moderation_agreement_cell;
 use mod_coursework\render_helpers\grading_report\cells\multiple_agreed_grade_cell;
-use mod_coursework\render_helpers\grading_report\cells\personal_deadline_cell;
+use mod_coursework\render_helpers\grading_report\cells\personaldeadline_cell;
 use mod_coursework\render_helpers\grading_report\cells\plagiarism_cell;
 use mod_coursework\render_helpers\grading_report\cells\plagiarism_flag_cell;
 use mod_coursework\render_helpers\grading_report\cells\single_assessor_feedback_cell;
@@ -95,7 +95,7 @@ require_once($CFG->dirroot.'/grade/grading/lib.php');
  * Class representing a coursework instance.
  *
  * @property int grouping_id
- * @property int use_groups
+ * @property int usegroups
  * @property int allowearlyfinalisation
  * @property mixed startdate
  * @author administrator
@@ -467,7 +467,7 @@ class coursework extends table_base {
      * Gets the relevant course module and caches it.
      *
      * @return mixed|stdClass
-     *@throws moodle_exception
+     * @throws moodle_exception
      */
     public function get_course_module() {
 
@@ -1117,7 +1117,7 @@ class coursework extends table_base {
      * Ensures we only have one. Sort-of singleton pattern.
      *
      * @return manager
-     *@throws coding_exception
+     * @throws coding_exception
      */
     public function get_allocation_manager() {
 
@@ -1275,7 +1275,7 @@ class coursework extends table_base {
             allocation::$pool[$this->id]['allocatableid-allocatabletype-assessorid'][$allocatable->id() . '-' . $allocatable->type() . "-$userid"] : [];
 
         foreach ($records as $record) {
-            if ($record->stage_identifier != $stage) {
+            if ($record->stageidentifier != $stage) {
                 return true;
             }
         }
@@ -1296,7 +1296,7 @@ class coursework extends table_base {
         $params = [
             'courseworkid' => $this->id,
             'assessorid' => $USER->id,
-            'stage_identifier' => 'moderator_1',
+            'stageidentifier' => 'moderator_1',
             'allocatableid' => $allocatable->id(),
             'allocatabletype' => $allocatable->type(),
         ];
@@ -1491,7 +1491,7 @@ class coursework extends table_base {
         $params = [
             'courseworkid' => $this->id,
             'allocatableid' => $allocatable->allocatableid,
-            'stage_identifier' => $stageidentifier,
+            'stageidentifier' => $stageidentifier,
             'allocatabletype' => $allocatable->allocatabletype,
         ];
         $allocation = $DB->get_record('coursework_allocation_pairs', $params);
@@ -1499,7 +1499,7 @@ class coursework extends table_base {
         return $allocation;
     }
 
-    public function get_assessors_stage_identifier($allocatableid, $assessorid) {
+    public function get_assessors_stageidentifier($allocatableid, $assessorid) {
         global $DB;
 
         $params = [
@@ -1510,7 +1510,7 @@ class coursework extends table_base {
 
         $stageidentifier = $DB->get_record('coursework_allocation_pairs', $params);
 
-        return $stageidentifier->stage_identifier;
+        return $stageidentifier->stageidentifier;
     }
 
     /**
@@ -1866,8 +1866,8 @@ class coursework extends table_base {
             $report->add_cell(new idnumber_cell($cellitems));
         }
 
-        if ($this->personal_deadlines_enabled()) {
-            $report->add_cell(new personal_deadline_cell($cellitems));
+        if ($this->personaldeadlines_enabled()) {
+            $report->add_cell(new personaldeadline_cell($cellitems));
         }
         $report->add_cell(new status_cell($cellitems));
         $report->add_cell(new submission_cell($cellitems));
@@ -1919,7 +1919,7 @@ class coursework extends table_base {
      * @return bool
      */
     public function is_configured_to_have_group_submissions(): bool {
-        return (bool)$this->use_groups;
+        return (bool)$this->usegroups;
     }
 
     /**
@@ -2263,7 +2263,7 @@ class coursework extends table_base {
      * Temporary messy solution only used in the bit that makes the grading report cells.
      *
      * @return final_agreed
-     *@throws coding_exception
+     * @throws coding_exception
      */
     private function get_final_grade_stage() {
         if ($this->get_max_markers() > 1) {
@@ -2486,7 +2486,7 @@ class coursework extends table_base {
         if (
             (!$this->has_deadline() || !$this->deadline_has_passed()) // There is no deadline or it is in the future.
             &&
-            !$this->personal_deadlines_enabled() // Personal deadlines are disabled.
+            !$this->personaldeadlines_enabled() // Personal deadlines are disabled.
         ) {
             return;
         }
@@ -2547,10 +2547,10 @@ class coursework extends table_base {
     /**
      * Get all personal deadline in coursework, they can be coursework deadline-(default) or personal
      */
-    public function get_coursework_submission_personal_deadlines() {
+    public function get_coursework_submission_personaldeadlines() {
         global $DB;
 
-        $sql = "SELECT cs.id as submissionid, personal_deadline
+        $sql = "SELECT cs.id as submissionid, personaldeadline
                 FROM {coursework_submissions} cs
                 LEFT JOIN {coursework_person_deadlines} pd ON cs.courseworkid = pd.courseworkid
                 AND pd.allocatableid = cs.allocatableid
@@ -2562,8 +2562,8 @@ class coursework extends table_base {
         // for submissions that don't have a set personal deadline give coursework's default deadline
         if ($submissions) {
             foreach ($submissions as $submission) {
-                if (is_null($submission->personal_deadline)) {
-                    $submission->personal_deadline = $this->deadline;
+                if (is_null($submission->personaldeadline)) {
+                    $submission->personaldeadline = $this->deadline;
                 }
             }
         }
@@ -2579,7 +2579,7 @@ class coursework extends table_base {
     public function has_automatic_sampling_at_stage($stage) {
         global  $DB;
 
-        return $DB->record_exists('coursework_sample_set_rules', ['courseworkid' => $this->id, 'stage_identifier' => $stage]);
+        return $DB->record_exists('coursework_sample_set_rules', ['courseworkid' => $this->id, 'stageidentifier' => $stage]);
     }
 
     /**
@@ -2594,15 +2594,15 @@ class coursework extends table_base {
                          FROM       {coursework_submissions}  cwrsub,
                                     {coursework_feedbacks}    cwrfb
                          WHERE      cwrsub.id = cwrfb.submissionid
-                         AND        cwrsub.courseworkid = :coursework_id
-                         AND        stage_identifier = :stage";
+                         AND        cwrsub.courseworkid = :courseworkid
+                         AND        stageidentifier = :stage";
 
         if ($random) {
             $sql .= ($CFG->dbtype == 'pgsql') ? " ORDER BY RANDOM() " : " ORDER BY RAND() ";
         }
 
         return $DB->get_records_sql($sql,
-            ['coursework_id' => $this->id, "stage" => $stage]);
+            ['courseworkid' => $this->id, "stage" => $stage]);
 
     }
 
@@ -2674,7 +2674,7 @@ class coursework extends table_base {
      * Lets us know if personal deadlines are enabled in the coursework.
      * @return bool
      */
-    public function personal_deadlines_enabled() {
+    public function personaldeadlines_enabled() {
         return (bool)$this->personaldeadlineenabled;
     }
 
@@ -2689,7 +2689,7 @@ class coursework extends table_base {
         $allocatables = $this->get_allocatables();
 
         if (!empty($allocatables)) {
-            $allocatables = array_map([$this, "get_allocatable_personal_deadline"], $allocatables);
+            $allocatables = array_map([$this, "get_allocatable_personaldeadline"], $allocatables);
         }
 
         return $allocatables;
@@ -2702,16 +2702,16 @@ class coursework extends table_base {
      *
      * @return array
      */
-    private function get_allocatable_personal_deadline($allocatable) {
+    private function get_allocatable_personaldeadline($allocatable) {
         $allocatable->deadline = $this->deadline;
-        $allocatable->coursework_id = $this->id;
+        $allocatable->courseworkid = $this->id;
 
-        if ($this->personal_deadlines_enabled()) {
-            personal_deadline::fill_pool_coursework($this->id);
-            $deadlinerecord = personal_deadline::get_object($this->id, 'allocatableid-allocatabletype', [$allocatable->id, $allocatable->type()]);
+        if ($this->personaldeadlines_enabled()) {
+            personaldeadline::fill_pool_coursework($this->id);
+            $deadlinerecord = personaldeadline::get_object($this->id, 'allocatableid-allocatabletype', [$allocatable->id, $allocatable->type()]);
 
             if (!empty($deadlinerecord)) {
-                $allocatable->deadline = $deadlinerecord->personal_deadline;
+                $allocatable->deadline = $deadlinerecord->personaldeadline;
             }
         }
 
@@ -2876,11 +2876,11 @@ class coursework extends table_base {
      * Function to Remove all personal deadlines by coursework
      *
      */
-    public function remove_personal_deadlines_by_coursework() {
+    public function remove_personaldeadlines_by_coursework() {
         global $DB;
 
         $DB->execute('DELETE FROM {coursework_person_deadlines} WHERE allocatabletype = ? AND courseworkid = ? ', ['user', $this->id]);
-        personal_deadline::remove_cache($this->id);
+        personaldeadline::remove_cache($this->id);
     }
     /**
      * Function to Remove all deadline extensions by coursework
@@ -2904,7 +2904,7 @@ class coursework extends table_base {
                 FROM {coursework_feedbacks} cf
                 JOIN {coursework_submissions} cs ON cs.id = cf.submissionid
                 WHERE cs.courseworkid = :courseworkid
-                AND cf.stage_identifier = 'final_agreed_1'";
+                AND cf.stageidentifier = 'final_agreed_1'";
 
         return $DB->record_exists_sql($sql, ['courseworkid' => $this->id]);
     }
@@ -2918,15 +2918,15 @@ class coursework extends table_base {
     public function get_allocatable_deadline($allocatableid) {
         $deadline = $this->deadline;
 
-        if ($this->use_groups) {
+        if ($this->usegroups) {
             $allocatable = group::find($allocatableid);
         } else {
             $allocatable = user::find($allocatableid);
         }
 
-        if ($this->personal_deadlines_enabled()) {
+        if ($this->personaldeadlines_enabled()) {
             // find personal deadline for a user if this option enabled
-            $personal = $this->get_allocatable_personal_deadline($allocatable);
+            $personal = $this->get_allocatable_personaldeadline($allocatable);
             if (!empty($personal)) {
                 $deadline = $personal->deadline;
             }

@@ -260,7 +260,7 @@ trait factory_mixin {
         $feedback = new stdClass();
         $feedback->submissionid = $this->get_submission()->id;
         $feedback->assessorid = 11; // Dummy
-        $feedback->stage_identifier = 'final_agreed_1';
+        $feedback->stageidentifier = 'final_agreed_1';
         $feedback->grade = 45;
         $this->finalfeedback = $generator->create_feedback($feedback);
 
@@ -279,7 +279,7 @@ trait factory_mixin {
         $feedback = new stdClass();
         $feedback->submissionid = $this->get_submission()->id;
         $feedback->assessorid = $assessor->id;
-        $feedback->stage_identifier = 'assessor_'.($count + 1);
+        $feedback->stageidentifier = 'assessor_'.($count + 1);
         $feedback->grade = 45;
         return $generator->create_feedback($feedback);
     }
@@ -349,7 +349,7 @@ trait factory_mixin {
         $count = 0;
         for ($i = 1; $i <= 3; $i++) {
             $params = ['submissionid' => $this->get_submission()->id,
-                            'stage_identifier' => 'assessor_' . $i];
+                            'stageidentifier' => 'assessor_' . $i];
             if (feedback::exists($params)) {
                 $count++;
             }

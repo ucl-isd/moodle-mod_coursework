@@ -64,7 +64,7 @@ class moderation_cell extends cell_base {
         $existingfeedback = $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable());
         $newfeedback = feedback::build([
             'submissionid' => $rowobject->get_submission_id(),
-            'stage_identifier' => $this->stage->identifier(),
+            'stageidentifier' => $this->stage->identifier(),
             'assessorid' => $USER->id,
         ]);
         // New or edit for moderators

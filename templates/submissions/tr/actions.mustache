@@ -12,11 +12,11 @@
     <div class="dropdown-menu dropdown-menu-right" aria-label="{{#str}} actions, mod_coursework {{/str}}">
 
         {{#coursework.defaultduedate}}
-            {{#coursework.personal_deadlines_enabled}}
+            {{#coursework.personaldeadlines_enabled}}
                 {{! Not editable if an extension exists for this user }}
                 {{#personaldeadline}}
                     <a class="dropdown-item {{^is_editable}} disabled {{/is_editable}}"
-                       href="{{config.wwwroot}}/mod/coursework/actions/personal_deadline.php?allocatableid={{#submissiontype.user}}{{submissiontype.user.id}}{{/submissiontype.user}}{{#group}}{{group.id}}{{/group}}&allocatabletype={{#submissiontype.user}}user{{/submissiontype.user}}{{#group}}group{{/group}}&courseworkid={{coursework.id}}"
+                       href="{{config.wwwroot}}/mod/coursework/actions/personaldeadline.php?allocatableid={{#submissiontype.user}}{{submissiontype.user.id}}{{/submissiontype.user}}{{#group}}{{group.id}}{{/group}}&allocatabletype={{#submissiontype.user}}user{{/submissiontype.user}}{{#group}}group{{/group}}&courseworkid={{coursework.id}}"
                         data-action="mod-coursework-launch-modal-personal-deadline"
                         data-coursework-id="{{coursework.id}}"
                         data-allocatable-id="{{allocatableid}}"
@@ -26,7 +26,7 @@
                         {{^is_editable}}<i class="fa fa-fw fa-lock mr-1"></i>{{/is_editable}}
 
                         {{#exists}}
-                            {{#str}} personal_deadline, coursework {{/str}}
+                            {{#str}} personaldeadline, coursework {{/str}}
                             <small class="actions-extension-date-container {{#personaldeadline.date}}d-block{{/personaldeadline.date}} {{^personaldeadline.date}}d-none{{/personaldeadline.date}}">
                                 <i class="fa-solid fa-circle-check text-{{#is_editable}}primary{{/is_editable}}{{^is_editable}}secondary{{/is_editable}} mr-2"></i>
                                 <span class="actions-extension-date">
@@ -37,11 +37,11 @@
                             </small>
                         {{/exists}}
 
-                        {{^exists}}{{#str}} personal_deadline, coursework {{/str}}{{/exists}}
+                        {{^exists}}{{#str}} personaldeadline, coursework {{/str}}{{/exists}}
                     </a>
                     <div class="dropdown-divider"></div>
                 {{/personaldeadline}}
-            {{/coursework.personal_deadlines_enabled}}
+            {{/coursework.personaldeadlines_enabled}}
 
             {{#extension.show}}
                 <a class="dropdown-item {{extension.class}}"

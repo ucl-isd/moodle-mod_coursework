@@ -25,7 +25,7 @@ use coding_exception;
 use context;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
-use mod_coursework\models\personal_deadline;
+use mod_coursework\models\personaldeadline;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
 use stdClass;
@@ -90,7 +90,7 @@ class cron {
             }
 
             // if cw doesn't have personal deadlines and deadline passed and cw doesnt have any individual extensions
-            if (!$coursework->personal_deadlines_enabled() && (!$coursework->has_deadline()
+            if (!$coursework->personaldeadlines_enabled() && (!$coursework->has_deadline()
                 || $coursework->deadline_has_passed() && !$coursework->extension_exists())) {
                 continue;
             }
@@ -104,11 +104,11 @@ class cron {
                 if ($coursework->extensions_enabled()) {
                     $individualextension = deadline_extension::get_extension_for_student($student, $coursework);
                 }
-                if ($coursework->personal_deadlines_enabled()) {
-                    $personaldeadline = personal_deadline::get_personal_deadline_for_student($student, $coursework);
+                if ($coursework->personaldeadlines_enabled()) {
+                    $personaldeadline = personaldeadline::get_personaldeadline_for_student($student, $coursework);
                 }
 
-                $deadline = $personaldeadline ? $personaldeadline->personal_deadline : $coursework->deadline;
+                $deadline = $personaldeadline ? $personaldeadline->personaldeadline : $coursework->deadline;
 
                 if ($individualextension) {
                     // check if 1st reminder is due to be sent but has not been sent yet
@@ -116,7 +116,7 @@ class cron {
                        $student->has_not_been_sent_reminder($coursework, 1, $individualextension->extended_deadline)) {
                            $student->deadline = $individualextension->extended_deadline;
                            $student->extension = $individualextension->extended_deadline;
-                           $student->coursework_id = $coursework->id;
+                           $student->courseworkid = $coursework->id;
                            $student->nextremindernumber = 1;
                            $userswhoneedreminding[$student->id().'_'.$coursework->id] = $student;
 
@@ -125,7 +125,7 @@ class cron {
                        $student->has_not_been_sent_reminder($coursework, 2, $individualextension->extended_deadline)) {
                            $student->deadline = $individualextension->extended_deadline;
                            $student->extension = $individualextension->extended_deadline;
-                           $student->coursework_id = $coursework->id;
+                           $student->courseworkid = $coursework->id;
                            $student->nextremindernumber = 2;
                            $userswhoneedreminding[$student->id().'_'.$coursework->id] = $student;
                     }
@@ -134,14 +134,14 @@ class cron {
                     // check if 1st reminder is due to be sent but has not been sent yet
                     if ($coursework->due_to_send_first_reminders($deadline) && $student->has_not_been_sent_reminder($coursework, 1)) {
                             $student->deadline = $deadline;
-                            $student->coursework_id = $coursework->id;
+                            $student->courseworkid = $coursework->id;
                             $student->nextremindernumber = 1;
                             $userswhoneedreminding[$student->id().'_'.$coursework->id] = $student;
 
                         // check if 2nd reminder is due to be sent but has not been sent yet
                     } else if ($coursework->due_to_send_second_reminders($deadline) && $student->has_not_been_sent_reminder($coursework, 2)) {
                             $student->deadline = $deadline;
-                            $student->coursework_id = $coursework->id;
+                            $student->courseworkid = $coursework->id;
                             $student->nextremindernumber = 2;
                             $userswhoneedreminding[$student->id().'_'.$coursework->id] = $student;
 
@@ -174,7 +174,7 @@ class cron {
 
         // TODO this runs off role names and doesn't use permissions.
         // Get all courseworks that have students who need reminding, along with a count of those students.
-        $sql = "SELECT coursework.id AS coursework_id,
+        $sql = "SELECT coursework.id AS courseworkid,
                        COUNT(u.id) AS numberofstudents,
                        coursework.name AS coursework_name,
                        c.id AS contextid
@@ -194,7 +194,7 @@ class cron {
                     ON r.id = ra.roleid
              LEFT JOIN {coursework_reminder} firstreminder
                     ON (firstreminder.userid = u.id
-                        AND firstreminder.coursework_id = coursework.id
+                        AND firstreminder.courseworkid = coursework.id
                         AND firstreminder.remindernumber = 1)
              LEFT JOIN {coursework_submissions} sub
                     ON sub.courseworkid = coursework.id
@@ -217,7 +217,7 @@ class cron {
         foreach ($courseworks as $coursework) {
 
             /* @var coursework $coursework_instance */
-            $courseworkinstance = coursework::find($coursework->coursework_id);
+            $courseworkinstance = coursework::find($coursework->courseworkid);
 
             if (empty($coursework)) {
                 continue;
@@ -230,7 +230,7 @@ class cron {
             foreach ($users as $user) {
 
                 if ($DB->record_exists('coursework_reminder', [
-                    'coursework_id' => $courseworkinstance->id,
+                    'courseworkid' => $courseworkinstance->id,
                     'userid' => $user->id,
                     'remindernumber' => 1,
                 ])) {
@@ -251,12 +251,12 @@ class cron {
                 $emailssent++;
 
                 // Need to record this so they don;t get another one.
-                $numberofexistingreminders = $DB->count_records('coursework_reminder', ['coursework_id' => $courseworkinstance->id,
+                $numberofexistingreminders = $DB->count_records('coursework_reminder', ['courseworkid' => $courseworkinstance->id,
                                                                                                  'userid' => $user->id,
                 ]);
                 $reminder = new stdClass();
                 $reminder->userid = $user->id;
-                $reminder->coursework_id = $courseworkinstance->id;
+                $reminder->courseworkid = $courseworkinstance->id;
                 $reminder->remindernumber = $numberofexistingreminders + 1;
                 $DB->insert_record('coursework_reminder', $reminder);
 
@@ -317,7 +317,7 @@ class cron {
 
         foreach ($users as $user) {
 
-            $courseworkinstance = coursework::find($user->coursework_id);
+            $courseworkinstance = coursework::find($user->courseworkid);
 
             $mailer = new mailer($courseworkinstance);
 
@@ -333,7 +333,7 @@ class cron {
                 $extension = isset($user->extension) ? $user->extension : 0;
                 $emailreminder = new stdClass();
                 $emailreminder->userid = $user->id;
-                $emailreminder->coursework_id = $user->coursework_id;
+                $emailreminder->courseworkid = $user->courseworkid;
                 $emailreminder->remindernumber = $user->nextremindernumber;
                 $emailreminder->extension = $extension;
                 $DB->insert_record('coursework_reminder', $emailreminder);

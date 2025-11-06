@@ -109,7 +109,7 @@ class multiple_agreed_grade_cell extends cell_base {
             $feedbackparams = [
                 'submissionid' => $rowobject->get_submission()->id,
                 'assessorid' => $USER->id,
-                'stage_identifier' => $this->stage->identifier(),
+                'stageidentifier' => $this->stage->identifier(),
             ];
             $newfeedback = feedback::build($feedbackparams);
 

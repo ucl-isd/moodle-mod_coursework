@@ -51,7 +51,7 @@ class actions_cell_data extends cell_data_base {
 
         if (!$identitieshidden) {
             $this->set_extension_data($data, $rowsbase);
-            $this->set_personal_deadline_data($data, $rowsbase);
+            $this->set_personaldeadline_data($data, $rowsbase);
         }
 
         // Set submission parameters.
@@ -259,24 +259,24 @@ class actions_cell_data extends cell_data_base {
      * @param grading_table_row_base $rowsbase
      * @return void
      */
-    protected function set_personal_deadline_data(stdClass $data, grading_table_row_base $rowsbase): void {
+    protected function set_personaldeadline_data(stdClass $data, grading_table_row_base $rowsbase): void {
         // We avoid using $this->ability->can() in this context as it creates multiple DB queries per row.
         if (
             !has_capability('mod/coursework:editpersonaldeadline', $this->coursework->get_context())
             ||
-            !$rowsbase->get_coursework()->personal_deadlines_enabled()
+            !$rowsbase->get_coursework()->personaldeadlines_enabled()
         ) {
             return;
         }
-        $personaldeadlineobject = $rowsbase->get_personal_deadline();
+        $personaldeadlineobject = $rowsbase->get_personaldeadline();
         if ($personaldeadlineobject) {
             $data->personaldeadline = (object)[
-                'date' => $personaldeadlineobject->personal_deadline,
-                'time' => userdate($personaldeadlineobject->personal_deadline, '%d-%m-%Y %I:%M', fixday: false),
+                'date' => $personaldeadlineobject->personaldeadline,
+                'time' => userdate($personaldeadlineobject->personaldeadline, '%d-%m-%Y %I:%M', fixday: false),
                 'time_content' => userdate(
-                    $personaldeadlineobject->personal_deadline, get_string('strftimedaydatetime', 'langconfig'), fixday: false
+                    $personaldeadlineobject->personaldeadline, get_string('strftimedaydatetime', 'langconfig'), fixday: false
                 ),
-                'exists' => $personaldeadlineobject->personal_deadline > 0 ? 1 : 0,
+                'exists' => $personaldeadlineobject->personaldeadline > 0 ? 1 : 0,
                 // Disable deadline edit link if extension also exists (as ability class will throw error if edit attempted).
                 'is_editable' => !$rowsbase->get_extension(),
                 'deadlineid' => $personaldeadlineobject->id,
@@ -306,7 +306,7 @@ class actions_cell_data extends cell_data_base {
             return true;
         }
 
-        if (($rowsbase->get_personal_deadline_time() || $rowsbase->get_coursework()->get_deadline()) >= $this->clock->time()) {
+        if (($rowsbase->get_personaldeadline_time() || $rowsbase->get_coursework()->get_deadline()) >= $this->clock->time()) {
             return true;
         }
 

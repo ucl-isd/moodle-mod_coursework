@@ -155,7 +155,7 @@ final class auto_allocator_test extends \advanced_testcase {
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $this->student->id,
             'allocatabletype' => 'user',
-            'stage_identifier' => 'assessor_1',
+            'stageidentifier' => 'assessor_1',
             'assessorid' => 555,
         ];
         $otherallocation = \mod_coursework\models\allocation::build($allocationparams);
@@ -170,7 +170,7 @@ final class auto_allocator_test extends \advanced_testcase {
         $feedbackparams = [
             'submissionid' => $submission->id,
             'assessorid' => 555,
-            'stage_identifier' => 'assessor_1',
+            'stageidentifier' => 'assessor_1',
         ];
         \mod_coursework\models\feedback::create($feedbackparams);
 

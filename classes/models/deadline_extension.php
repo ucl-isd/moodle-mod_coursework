@@ -192,9 +192,9 @@ class deadline_extension extends table_base {
             'allocatabletype' => $allocatable->type(),
             'courseworkid' => $this->coursework->id(),
         ];
-        $personaldeadline = personal_deadline::find($DB->get_record('coursework_person_deadlines', $params)) ?? null;
+        $personaldeadline = personaldeadline::find($DB->get_record('coursework_person_deadlines', $params)) ?? null;
         if ($personaldeadline) {
-            return $personaldeadline->personal_deadline > time();
+            return $personaldeadline->personaldeadline > time();
         }
         return false;
     }
@@ -212,13 +212,13 @@ class deadline_extension extends table_base {
             );
             $DB->delete_records(self::$tablename, ['id' => $this->id]);
             self::after_destroy();
-            $personaldeadline = personal_deadline::get_personal_deadline_for_student($this->get_allocatable(), $this->coursework);
+            $personaldeadline = personaldeadline::get_personaldeadline_for_student($this->get_allocatable(), $this->coursework);
             // Delete the calendar/timeline event, or set it to the existing personal deadline date if present.
             $allocatable = $this->get_allocatable();
             $this->coursework->update_user_calendar_event(
                 $allocatable->id(),
                 $allocatable->type(),
-                $personaldeadline->personal_deadline ?? 0
+                $personaldeadline->personaldeadline ?? 0
             );
 
             // Keep a record of what's deleted in the log table for audit purposes.

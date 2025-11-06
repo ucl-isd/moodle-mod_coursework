@@ -125,7 +125,7 @@ class mod_coursework_generator extends testing_module_generator {
             throw new coding_exception('Coursework generator needs an allocatableid for a new allocation');
         }
 
-        if (empty($allocation->stage_identifier)) {
+        if (empty($allocation->stageidentifier)) {
             throw new coding_exception('Coursework generator needs a stage identifier for a new allocation');
         }
         if (empty($allocation->courseworkid) || !is_numeric($allocation->courseworkid)) {

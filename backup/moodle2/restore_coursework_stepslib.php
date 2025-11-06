@@ -155,7 +155,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'feedbackcommentformat' => FORMAT_HTML,
                                   'entry_id' => 0,
                                   'markernumber' => 0,
-                                  'stage_identifier' => '',
+                                  'stageidentifier' => '',
                                   'finalised' => 0], $data);
 
         $newitemid = $DB->insert_record('coursework_feedbacks', $data);
@@ -167,7 +167,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $data = (object)$data;
         $oldid = $data->id;
 
-        $data->coursework_id = $this->get_new_parentid('coursework');
+        $data->courseworkid = $this->get_new_parentid('coursework');
         $data->userid = $this->get_mappingid('user', $data->userid);
 
         $this->set_defaults(['remindernumber' => 0], $data);
@@ -201,7 +201,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
             'ismanual' => 0,
             'moderator' => 0,
             'timelocked' => time(),
-            'stage_identifier' => '',
+            'stageidentifier' => '',
             ],
         $data
         );
@@ -234,8 +234,8 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
             'ruleorder' => 0,
             'upperlimit' => 0,
             'lowerlimit' => 0,
-            'sample_set_plugin_id' => 0,
-            'stage_identifier' => ''], $data);
+            'samplesetpluginid' => 0,
+            'stageidentifier' => ''], $data);
 
         global $DB;
         $newitemid = $DB->insert_record('coursework_sample_set_rules', $data);
@@ -264,7 +264,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $this->fixallocatable($data);
 
-        $this->set_defaults(['stage_identifier' => ''], $data);
+        $this->set_defaults(['stageidentifier' => ''], $data);
 
         global $DB;
         $newitemid = $DB->insert_record('coursework_mod_set_members', $data);
@@ -281,7 +281,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'allocatabletype' => '',
                                   'allocatableuser' => 0,
                                   'allocatablegroup' => 0,
-                                  'stage_identifier' => '',
+                                  'stageidentifier' => '',
                                   'selectiontype' => ''], $data);
 
         global $DB;
@@ -300,8 +300,8 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $this->set_defaults(['extended_deadline' => 0,
                                   'pre_defined_reason' => '',
-                                  'extra_information_text' => '',
-                                  'extra_information_format' => FORMAT_HTML]
+                                  'extrainformationtext' => '',
+                                  'extrainformationformat' => FORMAT_HTML]
                             , $data);
 
         global $DB;
@@ -318,12 +318,12 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $this->fixallocatable($data);
 
-        $this->updatedate(['personal_deadline',
+        $this->updatedate(['personaldeadline',
                                 'timecreated',
                                 'timemodified'], $data);
 
         $now = time();
-        $this->set_defaults(['personal_deadline' => 0,
+        $this->set_defaults(['personaldeadline' => 0,
                                   'timecreated' => $now,
                                   'timemodified' => 0,
                                   'lastmodifiedbyid' => 0], $data);
@@ -372,7 +372,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'timemodified' => $now,
                                   'lastmodifieddby' => 0,
                                   'comment' => '',
-                                  'comment_format' => 1], $data);
+                                  'commentformat' => 1], $data);
 
         global $DB;
         $newitemid = $DB->insert_record('coursework_plagiarism_flags', $data);
@@ -438,7 +438,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'enablegeneralfeedback' => 0,
                                   'maxfiles' => 1,
                                   'filetypes' => '',
-                                  'use_groups' => 0,
+                                  'usegroups' => 0,
                                   'grouping_id' => 0,
                                   'allowearlyfinalisation' => 0,
                                   'showallfeedbacks' => 0,

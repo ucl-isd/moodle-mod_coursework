@@ -256,7 +256,7 @@ class upload {
                     $params = ['courseworkid' => $this->coursework->id,
                                     'allocatableid' => $allocatable->id,
                                     'allocatabletype' => $allocatabletype,
-                                    'stage_identifier' => $cells[$keynum]];
+                                    'stageidentifier' => $cells[$keynum]];
 
                     $allocation = $DB->get_record('coursework_allocation_pairs', $params);
 
@@ -302,7 +302,7 @@ class upload {
         $addallocation->courseworkid = $this->coursework->id;
         $addallocation->assessorid = $assessorid;
         $addallocation->ismanual = 1;
-        $addallocation->stage_identifier = $stageidentifier;
+        $addallocation->stageidentifier = $stageidentifier;
         $addallocation->allocatableid = $allocatable->id();
         $addallocation->allocatabletype = $allocatable->type();
 

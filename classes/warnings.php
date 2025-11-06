@@ -250,14 +250,14 @@ class warnings {
             } else {
 
                 $params = ['courseworkid' => $coursework->id];
-                $sql = "SELECT id, stage_identifier, allocatableid
+                $sql = "SELECT id, stageidentifier, allocatableid
                          FROM {coursework_sample_set_mbrs}
                          WHERE courseworkid = :courseworkid";
 
                 $stageidentifiers = $DB->get_records_sql($sql, $params);
                 foreach ($stageidentifiers as $stageidentifier) {
                     $params = ['courseworkid' => $coursework->id,
-                                    'stageidentifier' => $stageidentifier->stage_identifier,
+                                    'stageidentifier' => $stageidentifier->stageidentifier,
                                     'allocatableid' => $stageidentifier->allocatableid];
 
                     $existingallocations = $this->check_existing_allocations($params);
@@ -280,7 +280,7 @@ class warnings {
         $sql = "SELECT 1
                 FROM {coursework_allocation_pairs}
                 WHERE courseworkid = :courseworkid
-                AND stage_identifier = :stageidentifier
+                AND stageidentifier = :stageidentifier
                 AND allocatableid = :allocatableid";
 
         return $existingallocations = $DB->get_records_sql($sql, $params);

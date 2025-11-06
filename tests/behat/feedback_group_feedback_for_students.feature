@@ -8,7 +8,7 @@ Feature: Students see feedback on group assignments
   Background:
     Given there is a course
     And there is a coursework
-    And the coursework "use_groups" setting is "1" in the database
+    And the coursework "usegroups" setting is "1" in the database
     And the coursework is set to double marker
     And there is a manager
     And there is a student

@@ -40,7 +40,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Class to represent a single item of feedback that a tutor will provide for a submission.
  *
- * @property mixed stage_identifier
+ * @property mixed stageidentifier
  * @property int feedback_manager
  */
 #[AllowDynamicProperties]
@@ -235,8 +235,8 @@ class feedback extends table_base {
      */
     public function get_assessor_stage_no() {
         $no = '';
-        if (substr($this->stage_identifier, 0, 9 ) == 'assessor_') {
-            $no = substr($this->stage_identifier, -1);
+        if (substr($this->stageidentifier, 0, 9 ) == 'assessor_') {
+            $no = substr($this->stageidentifier, -1);
         }
         return $no;
     }
@@ -419,7 +419,7 @@ class feedback extends table_base {
      *
      * @return mixed
      */
-    public function get_coursework_id() {
+    public function get_courseworkid() {
         return $this->get_coursework()->id;
     }
 
@@ -555,7 +555,7 @@ class feedback extends table_base {
      * @return stage_base
      */
     public function get_stage() {
-        return $this->get_coursework()->get_stage($this->stage_identifier);
+        return $this->get_coursework()->get_stage($this->stageidentifier);
     }
 
     /**
@@ -583,7 +583,7 @@ class feedback extends table_base {
             && (
                 $coursework->finalstagegrading == 0 ||
                 // If $coursework->finalstagegrading == 1 then $feedback must now be initialised.
-                ($coursework->finalstagegrading == 1 && $feedback->stage_identifier != final_agreed::STAGE_FINAL_AGREED_1)
+                ($coursework->finalstagegrading == 1 && $feedback->stageidentifier != final_agreed::STAGE_FINAL_AGREED_1)
             );
     }
 
@@ -630,10 +630,10 @@ class feedback extends table_base {
         if ($data === false) {
             $data = [
                 'id' => [],
-                'submissionid-stage_identifier' => [],
-                'submissionid-stage_identifier_index' => [],
+                'submissionid-stageidentifier' => [],
+                'submissionid-stageidentifier_index' => [],
                 'submissionid-finalised' => [],
-                'submissionid-ismoderation-isfinalgrade-stage_identifier' => [],
+                'submissionid-ismoderation-isfinalgrade-stageidentifier' => [],
                 'submissionid-assessorid' => [],
                 'submissionid' => [],
             ];
@@ -642,13 +642,13 @@ class feedback extends table_base {
                 $feedbacks = $DB->get_records_sql("SELECT * FROM {coursework_feedbacks} WHERE submissionid $submissionidsql", $submissionidparams);
                 foreach ($feedbacks as $record) {
                     $object = new self($record);
-                    $stageidentifier = $record->stage_identifier;
+                    $stageidentifier = $record->stageidentifier;
                     $stageidentifierindex = ($stageidentifier == final_agreed::STAGE_FINAL_AGREED_1) ? $stageidentifier : 'others';
                     $data['id'][$record->id] = $object;
-                    $data['submissionid-stage_identifier'][$record->submissionid . '-' . $stageidentifier][] = $object;
-                    $data['submissionid-stage_identifier_index'][$record->submissionid . '-' . $stageidentifierindex][] = $object;
+                    $data['submissionid-stageidentifier'][$record->submissionid . '-' . $stageidentifier][] = $object;
+                    $data['submissionid-stageidentifier_index'][$record->submissionid . '-' . $stageidentifierindex][] = $object;
                     $data['submissionid-finalised'][$record->submissionid . '-' . $record->finalised][] = $object;
-                    $data['submissionid-ismoderation-isfinalgrade-stage_identifier'][$record->submissionid . '-' . $record->ismoderation . '-' . $record->isfinalgrade . '-' . $stageidentifier][] = $object;
+                    $data['submissionid-ismoderation-isfinalgrade-stageidentifier'][$record->submissionid . '-' . $record->ismoderation . '-' . $record->isfinalgrade . '-' . $stageidentifier][] = $object;
                     $data['submissionid-assessorid'][$record->submissionid . '-' . $record->assessorid][] = $object;
                     $data['submissionid'][$record->submissionid][] = $object;
                 }

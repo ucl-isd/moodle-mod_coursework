@@ -350,7 +350,7 @@ class builder {
 
         $params = ['courseworkid' => $this->coursework->id(),
                           'allocatableid' => $this->get_allocatable()->id(),
-                          'stage_identifier' => $this->get_stage()->identifier(),
+                          'stageidentifier' => $this->get_stage()->identifier(),
                           'selectiontype' => 'automatic'];
 
         return $DB->record_exists('coursework_sample_set_mbrs', $params);
@@ -445,7 +445,7 @@ class builder {
             feedback::$pool[$this->coursework->id]['submissionid'][$submission->id] : [];
 
             foreach ($feedbacks as $feedback) {
-                if ($feedback->stage_identifier == 'final_agreed_1') {
+                if ($feedback->stageidentifier == 'final_agreed_1') {
                     return true;
                 }
             }

@@ -63,15 +63,15 @@ class assessment_set_membership extends table_base implements moderatable {
         $records = $DB->get_records(self::$tablename, ['courseworkid' => $courseworkid]);
         $result = [
             'allocatableid-allocatabletype' => [],
-            'allocatableid-allocatabletype-stage_identifier' => [],
-            'allocatableid-stage_identifier-selectiontype' => [],
+            'allocatableid-allocatabletype-stageidentifier' => [],
+            'allocatableid-stageidentifier-selectiontype' => [],
         ];
         if ($records) {
             foreach ($records as $record) {
                 $object = new self($record);
                 $result['allocatableid-allocatabletype'][$record->allocatableid . '-' . $record->allocatabletype][] = $object;
-                $result['allocatableid-allocatabletype-stage_identifier'][$record->allocatableid . '-' . $record->allocatabletype . '-' . $record->stage_identifier][] = $object;
-                $result['allocatableid-stage_identifier-selectiontype'][$record->allocatableid . '-' . $record->stage_identifier . '-' . $record->selectiontype][] = $object;
+                $result['allocatableid-allocatabletype-stageidentifier'][$record->allocatableid . '-' . $record->allocatabletype . '-' . $record->stageidentifier][] = $object;
+                $result['allocatableid-stageidentifier-selectiontype'][$record->allocatableid . '-' . $record->stageidentifier . '-' . $record->selectiontype][] = $object;
             }
         }
         return $result;

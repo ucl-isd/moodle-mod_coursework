@@ -30,7 +30,7 @@ use mod_coursework_coursework;
  * Class plagiarism flag is responsible for representing one row of the plagiarism flags table.
 
  *
- * @property mixed personal_deadline
+ * @property mixed personaldeadline
  * @property mixed courseworkid
  * @property mixed allocatabletype
  * @property mixed allocatableid

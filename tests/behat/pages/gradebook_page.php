@@ -43,6 +43,6 @@ class mod_coursework_behat_gradebook_page extends mod_coursework_behat_page_base
         $columnnumber = 2;
         $script = "Array.from(document.querySelectorAll('table.user-grade th a')).find(el => el.textContent === '"
             . $coursework->name . "').closest('tr').children[" . $columnnumber . "].innerHTML;";
-        return \behat_base::evaluate_script_in_session($this->getSession(), $script);
+        return \behat_base::evaluate_script_in_session($this->getsession(), $script);
     }
 }

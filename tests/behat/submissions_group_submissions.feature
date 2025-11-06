@@ -8,7 +8,7 @@ Feature: Students are able to submit one piece of work on behalf of the group
   Background:
     Given there is a course
     And there is a coursework
-    And the coursework "use_groups" setting is "1" in the database
+    And the coursework "usegroups" setting is "1" in the database
     And I am logged in as a student
     And the student is a member of a group
     And there is another student

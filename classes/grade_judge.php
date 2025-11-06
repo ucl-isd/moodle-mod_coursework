@@ -133,9 +133,9 @@ class grade_judge {
         }
 
         if ($this->allocatable_needs_more_than_one_feedback($submission->get_allocatable())) {
-            $feedback = feedback::find(['submissionid' => $submission->id, 'stage_identifier' => 'final_agreed_1']);
+            $feedback = feedback::find(['submissionid' => $submission->id, 'stageidentifier' => 'final_agreed_1']);
         } else {
-            $feedback = feedback::find(['submissionid' => $submission->id, 'stage_identifier' => 'assessor_1']);
+            $feedback = feedback::find(['submissionid' => $submission->id, 'stageidentifier' => 'assessor_1']);
         }
 
         return $feedback ? $feedback : new null_feedback();

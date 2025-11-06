@@ -283,7 +283,7 @@ if ($exportgrades) {
     // Headers and data for csv.
     $csvcells = ['name', 'username', 'idnumber', 'email'];
 
-    if ($coursework->personal_deadlines_enabled()) {
+    if ($coursework->personaldeadlines_enabled()) {
         $csvcells[] = 'personaldeadline';
     }
 
@@ -291,7 +291,7 @@ if ($exportgrades) {
     $csvcells[] = 'submissiontime';
     $csvcells[] = 'submissionfileid';
 
-    if ($coursework->extensions_enabled() && ($coursework->has_deadline()) || $coursework->personal_deadlines_enabled()) {
+    if ($coursework->extensions_enabled() && ($coursework->has_deadline()) || $coursework->personaldeadlines_enabled()) {
         $csvcells[] = 'extensiondeadline';
         $csvcells[] = 'extensionreason';
         $csvcells[] = 'extensionextrainfo';

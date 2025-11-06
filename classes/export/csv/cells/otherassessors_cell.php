@@ -40,7 +40,7 @@ class otherassessors_cell extends cell_base {
         global $DB, $USER;
         // find out current user stage identifier
 
-        // $stage_identifier =
+        // $stageidentifier =
         // retrieve all feedbacks without currents user feedback
 
         $params = [
@@ -52,18 +52,18 @@ class otherassessors_cell extends cell_base {
         $sql = "SELECT * FROM {coursework_feedbacks}
                 WHERE submissionid = :submissionid
                 AND assessorid <> :assessorid
-                AND stage_identifier <> 'final_agreed_1'";
+                AND stageidentifier <> 'final_agreed_1'";
 
         $feedbacks = $DB->get_records_sql($sql, $params);
         $gradedata = [];
 
-        // $stage_identifier = ($this->coursework->get_max_markers() == 1) ? "assessor_1" : $this->get_stage_identifier_for_assessor($submission, $student);
+        // $stageidentifier = ($this->coursework->get_max_markers() == 1) ? "assessor_1" : $this->get_stageidentifier_for_assessor($submission, $student);
         foreach ($feedbacks as $feedback) {
 
-            $grade = $submission->get_assessor_feedback_by_stage($feedback->stage_identifier);
+            $grade = $submission->get_assessor_feedback_by_stage($feedback->stageidentifier);
             if ($grade) {
                 // skip if you are allocated but someone else graded it
-                $allocation = $submission->get_assessor_allocation_by_stage($feedback->stage_identifier);
+                $allocation = $submission->get_assessor_allocation_by_stage($feedback->stageidentifier);
                 if ($allocation && $allocation->assessorid == $USER->id) {
                     continue;
                 }

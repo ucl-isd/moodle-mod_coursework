@@ -168,9 +168,9 @@ class submissions_controller extends controller_base {
         $submission->timesubmitted = time();
 
         // Automatically finalise any submissions that's past the deadline/personal deadline and doesn't have valid extension
-        if ($this->coursework->personal_deadlines_enabled()) {
+        if ($this->coursework->personaldeadlines_enabled()) {
             // Check is submission has a valid personal deadline or a valid extension
-            if (!$this->has_valid_personal_deadline($submission) && !$this->has_valid_extension($submission)) {
+            if (!$this->has_valid_personaldeadline($submission) && !$this->has_valid_extension($submission)) {
                 $submission->finalisedstatus = submission::FINALISED_STATUS_FINALISED;
             }
         } else if ($this->coursework->deadline_has_passed() && !$this->has_valid_extension($submission)) {
@@ -343,7 +343,7 @@ class submissions_controller extends controller_base {
         $allocatableids = (!is_array($this->params['allocatableid']))
             ? [$this->params['allocatableid']] : $this->params['allocatableid'];
 
-        $personaldeadlinepageurl = new moodle_url('/mod/coursework/actions/personal_deadline.php',
+        $personaldeadlinepageurl = new moodle_url('/mod/coursework/actions/personaldeadline.php',
             ['id' => $this->coursework->get_coursemodule_id(), 'multipleuserdeadlines' => 1, 'setpersonaldeadlinespage' => 1,
                 'courseworkid' => $this->params['courseworkid'], 'allocatabletype' => $this->params['allocatabletype']]);
 
@@ -367,7 +367,7 @@ class submissions_controller extends controller_base {
         if (!empty($changedeadlines)) {
             redirect($personaldeadlinepageurl, get_string('unfinalisedchangesubmissiondate', 'mod_coursework'));
         } else {
-            $setpersonaldeadlinepageurl = new moodle_url('/mod/coursework/actions/set_personal_deadlines.php',
+            $setpersonaldeadlinepageurl = new moodle_url('/mod/coursework/actions/set_personaldeadlines.php',
                 ['id' => $this->coursework->get_coursemodule_id()]);
             redirect($setpersonaldeadlinepageurl);
         }
@@ -410,8 +410,8 @@ class submissions_controller extends controller_base {
      */
     private function exception_if_late($submission) {
         $couldhavesubmitted = has_capability('mod/coursework:submit', $this->coursework->get_context());
-        if ($this->coursework->personal_deadlines_enabled()) {
-            $deadlinehaspassed = !$this->has_valid_personal_deadline($submission);
+        if ($this->coursework->personaldeadlines_enabled()) {
+            $deadlinehaspassed = !$this->has_valid_personaldeadline($submission);
         } else {
             $deadlinehaspassed = $this->coursework->deadline_has_passed();
         }
@@ -462,7 +462,7 @@ class submissions_controller extends controller_base {
      * @param $submission
      * @return bool
      */
-    protected function has_valid_personal_deadline($submission) {
+    protected function has_valid_personaldeadline($submission) {
         global $DB;
 
         $validpersonaldeadline = false;
@@ -471,7 +471,7 @@ class submissions_controller extends controller_base {
                                                   'allocatableid' => $submission->allocatableid,
                                                   'allocatabletype' => $submission->allocatabletype]);
         if ($personaldeadline) {
-            if ($personaldeadline->personal_deadline > time()) {
+            if ($personaldeadline->personaldeadline > time()) {
                 $validpersonaldeadline = true;
             }
         } else {

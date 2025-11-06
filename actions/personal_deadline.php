@@ -54,8 +54,8 @@ if (!empty($allocatableidarr)) {
 }
 
 if ($selectedtype != 'unfinalise') {
-    $controller = new mod_coursework\controllers\personal_deadlines_controller($params);
-    $controller->new_personal_deadline();
+    $controller = new mod_coursework\controllers\personaldeadlines_controller($params);
+    $controller->new_personaldeadline();
 } else {
 
     if (!has_capability('mod/coursework:revertfinalised', $PAGE->context)) {

@@ -76,7 +76,7 @@ class moderation_agreement_cell extends cell_base {
                 $moderationparams = [
                     'submissionid' => $rowobject->get_submission()->id,
                     'moderatorid' => $USER->id,
-                    'stage_identifier' => $this->stage->identifier(),
+                    'stageidentifier' => $this->stage->identifier(),
                     'feedbackid' => $rowobject->get_single_feedback()->id,
                 ];
                 // allow moderations if feedback exists

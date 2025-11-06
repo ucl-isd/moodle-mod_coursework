@@ -254,7 +254,7 @@ class marking_cell_data extends cell_data_base {
         $feedbackparams = [
             'submissionid' => $rowsbase->get_submission()->id,
             'assessorid' => $USER->id,
-            'stage_identifier' => $feedbackrow->get_stage()->identifier(),
+            'stageidentifier' => $feedbackrow->get_stage()->identifier(),
         ];
 
         return $this->ability->can('new', feedback::build($feedbackparams));
@@ -277,7 +277,7 @@ class marking_cell_data extends cell_data_base {
         $newfeedback = feedback::build([
             'submissionid' => $rowsbase->get_submission()->id,
             'assessorid' => $USER->id,
-            'stage_identifier' => $finalstage->identifier(),
+            'stageidentifier' => $finalstage->identifier(),
         ]);
 
         return $this->ability->can('new', $newfeedback);
