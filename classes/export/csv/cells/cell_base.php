@@ -110,7 +110,7 @@ abstract class cell_base implements cell_interface {
 
         $extension = $this->extension->get_extension_for_student($student, $this->coursework);
 
-        return cell_base::clean_cell($extension->extra_information_text);
+        return self::clean_cell($extension->extra_information_text);
     }
 
     /**
@@ -127,7 +127,7 @@ abstract class cell_base implements cell_interface {
         $extensionreasons = $this->get_extension_predefined_reasons();
 
         return (!empty($extensionreasons[$extension->pre_defined_reason])) ?
-            cell_base::clean_cell($extensionreasons[$extension->pre_defined_reason]) : "";
+            self::clean_cell($extensionreasons[$extension->pre_defined_reason]) : "";
     }
 
     /**
@@ -175,7 +175,7 @@ abstract class cell_base implements cell_interface {
 
         $flag = $this->plagiarismflag->get_plagiarism_flag($submission);
 
-        return cell_base::clean_cell($flag->comment);
+        return self::clean_cell($flag->comment);
     }
 
     /**

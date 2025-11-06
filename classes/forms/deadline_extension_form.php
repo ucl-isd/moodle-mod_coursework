@@ -308,7 +308,7 @@ class deadline_extension_form extends dynamic_form {
 
     /**
      * Checks if current user has access to this form, otherwise throws exception.
-    */
+     */
     protected function check_access_for_dynamic_submission(): void {
         global $USER;
         $ability = new ability($USER->id, $this->coursework);

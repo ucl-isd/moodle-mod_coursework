@@ -88,10 +88,10 @@ class processor {
     private function clean_data(array $dirtyformdata): array {
         // Raw data looks like this - 4543 is student ID.
         // $exampledata = [
-        //      4543 => [
-        //          'assessor_1' => ['allocation_id' => 43, 'assessor_id' => 232],
-        //          'moderator_1' => ['allocation_id' => 46, 'assessor_id' => 235, 'in_set' => 1],
-        //      ],
+        // 4543 => [
+        // 'assessor_1' => ['allocation_id' => 43, 'assessor_id' => 232],
+        // 'moderator_1' => ['allocation_id' => 46, 'assessor_id' => 235, 'in_set' => 1],
+        // ],
         // ];
         $allowedrowkeys = [
             \mod_coursework\allocation\table\cell\data::ALLOCATION_ID_KEY,

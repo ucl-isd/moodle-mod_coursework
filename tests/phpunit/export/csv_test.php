@@ -38,6 +38,7 @@ final class csv_test extends \advanced_testcase {
     use test_helpers\factory_mixin;
 
     public function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest();
         $this->course = $this->getDataGenerator()->create_course();
         $this->setAdminUser();

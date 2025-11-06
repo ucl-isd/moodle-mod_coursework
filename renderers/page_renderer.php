@@ -118,7 +118,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             ? get_string('automaticagreement', 'mod_coursework') : fullname($editor);
         $template->lasteditedby = (object)[
             'name' => $lastmarked,
-            'date' => userdate($teacherfeedback->timemodified, '%a, %d %b %Y, %H:%M')
+            'date' => userdate($teacherfeedback->timemodified, '%a, %d %b %Y, %H:%M'),
         ];
 
         $submiturl = $this->get_router()->get_path('update feedback', ['feedback' => $teacherfeedback]);
@@ -701,7 +701,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $stringname = $coursework->is_configured_to_have_group_submissions() ? 'finalisegroupsubmission' : 'finaliseyoursubmission';
         $finalisesubmissionpath =
             $this->get_router()->get_path('finalise submission', ['submission' => $submission], true);
-        $button = new \single_button($finalisesubmissionpath, get_string($stringname, 'mod_coursework'), 'post',single_button::BUTTON_SUCCESS);
+        $button = new \single_button($finalisesubmissionpath, get_string($stringname, 'mod_coursework'), 'post', single_button::BUTTON_SUCCESS);
         $button->add_confirm_action(get_string('finalise_button_confirm', 'mod_coursework'));
         $button->class = 'd-block';
         $html .= $this->output->render($button);
@@ -904,7 +904,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $table = new html_table();
         // table headers
         $formatname = course_get_format($course)->get_format();
-        $table->head =  [ucfirst($formatname), 'Courseworks', 'Deadline', 'Submission', 'Grade'];
+        $table->head = [ucfirst($formatname), 'Courseworks', 'Deadline', 'Submission', 'Grade'];
 
         $currentsection = '';
         $printsection = '';
@@ -959,7 +959,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             }
             $url = $CFG->wwwroot.'/mod/coursework/view.php';
             $link = "<a href=\"{$url}?id={$coursework->coursemodule->id}\">{$coursework->name}</a>";
-            $table->data[] = [//'cmid' => $cm->id,
+            $table->data[] = [// 'cmid' => $cm->id,
                 'sectionname' => $printsection,
                 'cmname' => $link,
                 'timedue' => $timedue,

@@ -28,7 +28,7 @@ use mod_coursework\models\coursework;
 require_once(dirname(__FILE__).'/../../../config.php');
 
 $cmid = required_param('cmid', PARAM_INT);
-$returnurl = new moodle_url('/mod/coursework/view.php', array('id' => $cmid));
+$returnurl = new moodle_url('/mod/coursework/view.php', ['id' => $cmid]);
 
 $cm = get_coursemodule_from_id('coursework', $cmid);
 if (!$cm) {

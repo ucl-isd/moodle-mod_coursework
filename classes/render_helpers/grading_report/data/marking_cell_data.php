@@ -224,8 +224,8 @@ class marking_cell_data extends cell_data_base {
                     'submission' => $submission,
                     'assessor' => user::find($USER),
                     'stage' => $stage,
-                ]
-            ]
+                ],
+            ],
         ];
 
         return isset($paths[$action]) ?

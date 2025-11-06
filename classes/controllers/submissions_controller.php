@@ -83,7 +83,7 @@ class submissions_controller extends controller_base {
             'allocatableid' => $this->params['allocatableid'],
             'allocatabletype' => $this->params['allocatabletype'],
             'courseworkid' => $this->coursework->id,
-            'createdby' => $USER->id
+            'createdby' => $USER->id,
         ]);
 
         $ability = new ability($USER->id, $this->coursework);

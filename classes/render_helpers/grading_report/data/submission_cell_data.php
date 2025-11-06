@@ -115,7 +115,7 @@ class submission_cell_data extends cell_data_base {
                 'mod_coursework',
                 'submission',
                 $submissionid,
-                $file->get_filename()
+                $file->get_filename(),
             ]));
 
         $fileinfo->plagiarismlinks = $this->get_plagiarism_links($file, $coursework);

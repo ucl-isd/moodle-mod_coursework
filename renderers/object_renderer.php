@@ -66,7 +66,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // Determine the feedback title.
         if ($feedback->is_agreed_grade()) {
             $template->title = get_string('finalfeedback', 'mod_coursework', $studentname);
-        } elseif ($feedback->is_moderation()) {
+        } else if ($feedback->is_moderation()) {
             $template->title = get_string('moderatorfeedback', 'mod_coursework', $studentname);
         } else {
             $stage = $feedback->get_assessor_stage_no();
@@ -1070,7 +1070,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             } else {
                 $template->duedate = $coursework->deadline;
             }
-
 
             if ($coursework->allow_late_submissions()) {
                 $template->latesubmissionsallowed = true;

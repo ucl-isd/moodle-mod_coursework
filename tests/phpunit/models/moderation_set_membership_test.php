@@ -29,6 +29,7 @@ namespace mod_coursework;
 final class moderation_set_membership_test extends \advanced_testcase {
 
     public function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest();
     }
 

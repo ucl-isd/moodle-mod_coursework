@@ -34,6 +34,7 @@ final class percentage_distance_test extends \advanced_testcase {
     use \mod_coursework\test_helpers\factory_mixin;
 
     public function setUp(): void {
+        parent::setUp();
         $this->setAdminUser();
         $this->resetAfterTest();
     }

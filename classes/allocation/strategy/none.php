@@ -27,9 +27,9 @@ namespace mod_coursework\allocation\strategy;
 use html_writer;
 
     /**
- * Class that acts as a default for auto allocation when we don't actually want to allocate at all.
- * Will always return false when asked for the next appropriate teacher.
- */
+     * Class that acts as a default for auto allocation when we don't actually want to allocate at all.
+     * Will always return false when asked for the next appropriate teacher.
+     */
 class none extends base {
 
     /**

@@ -124,7 +124,7 @@ class submission extends table_base implements \renderable {
     public $lastname;
 
     /**
-     * @var
+     * @var int courseid
      */
     private $courseid;
 
@@ -424,11 +424,8 @@ class submission extends table_base implements \renderable {
         $fs = new file_storage();
 
         $annotatedfiles = [];
-        foreach (
-            $fs->get_area_files($this->get_context_id(), 'mod_coursework', 'submissionannotations', $this->id)
-            as
-            $file
-        ) {
+        foreach ($fs->get_area_files($this->get_context_id(), 'mod_coursework', 'submissionannotations', $this->id)
+        as $file) {
             if ($file->get_userid() !== $USER->id) {
                 continue;
             }
@@ -829,7 +826,7 @@ class submission extends table_base implements \renderable {
      * Returns the first group member of the given group who has accepted turnitin's user agreement
      *
      * @param $groupid
-     * @return array
+     * @return mixed a fieldset object containing the first matching record
      */
     public function get_tii_group_member_with_eula($groupid) {
 

@@ -65,11 +65,11 @@ class submission_figures {
                     $assessorsubmissions[$submission->id] = $submission;
                 }
 
-            // Case 2: Admin or no allocation or grading override.
+                // Case 2: Admin or no allocation or grading override.
             } else if ($allocationdisabled || $canoverride) {
                 $assessorsubmissions[$submission->id] = $submission;
 
-            // Case 3: Allocated assessor or allowed to add agreed grade after initial grading (and sampling if enabled).
+                // Case 3: Allocated assessor or allowed to add agreed grade after initial grading (and sampling if enabled).
             } else {
                 $allocated = $coursework->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable());
                 $sampled = $submission->get_coursework()->sampling_enabled();

@@ -2743,7 +2743,7 @@ class behat_mod_coursework extends behat_base {
         /**
          * @var mod_coursework_behat_student_page $page
          */
-        //        $page = $this->get_page('student page');
+        // $page = $this->get_page('student page');
         if ($action == 'edit') {
             $locator = "//div[@class='editsubmissionbutton']";
         } else if ($action == 'new') {
@@ -3503,7 +3503,7 @@ class behat_mod_coursework extends behat_base {
         // Get the submission record.
         $submissionrecord = $DB->get_record('coursework_submissions', [
             'courseworkid' => $this->coursework->id,
-            'userid' => $this->student->id
+            'userid' => $this->student->id,
         ]);
 
         if (!$submissionrecord) {

@@ -32,6 +32,7 @@ final class renderer_test extends \advanced_testcase {
     use \mod_coursework\test_helpers\factory_mixin;
 
     public function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest();
         $this->setAdminUser();
 

@@ -1256,7 +1256,7 @@ function course_group_member_added($eventdata) {
             $assessorsingroup = get_enrolled_users($coursework->get_context(), 'mod/coursework:addinitialgrade', $groupid);
             unset($assessorsingroup[$addeduserid]); // Remove added assessor as at this point they will be already in the group
 
-            if ($assessorsingroup) {//yes - do nothing as other assessor is already assigned to group members, return true
+            if ($assessorsingroup) {// yes - do nothing as other assessor is already assigned to group members, return true
                 break;
             } else { // No - check if CW is a group coursework
                 if ($coursework->is_configured_to_have_group_submissions()) {// yes - assign the tutor to a allocatable group

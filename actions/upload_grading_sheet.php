@@ -79,9 +79,9 @@ if ($data = $gradinguploadform->get_data()) {
     $csvimport->process_csv($content, $data->encoding, $data->delimiter_name, $csvcells, $procsessingresults);
     $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
     echo $pagerenderer->process_csv_upload($procsessingresults, $content, $csvtype);
-    //} else {
+    // } else {
         //
-    //}
+    // }
 
 } else {
     $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');

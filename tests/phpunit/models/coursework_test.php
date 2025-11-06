@@ -48,6 +48,7 @@ final class coursework_test extends \advanced_testcase {
      * Makes us a blank coursework and allocation manager.
      */
     public function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest();
         $this->course = $this->getDataGenerator()->create_course();
         $this->setAdminUser();
@@ -62,6 +63,7 @@ final class coursework_test extends \advanced_testcase {
 
         $DB->delete_records('coursework', ['id' => $this->coursework->id]);
         unset($this->coursework);
+        parent::tearDown();
     }
 
     /**

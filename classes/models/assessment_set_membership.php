@@ -82,7 +82,7 @@ class assessment_set_membership extends table_base implements moderatable {
      * @param int $courseworkid
      * @param $key
      * @param $params
-     * @return bool
+     * @return mixed
      */
     public static function get_object($courseworkid, $key, $params) {
         if (!isset(self::$pool[$courseworkid])) {

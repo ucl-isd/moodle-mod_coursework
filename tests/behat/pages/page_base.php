@@ -50,21 +50,21 @@ class mod_coursework_behat_page_base {
     /**
      * @return \Behat\Mink\Session
      */
-    protected function getSession() {
+    protected function getsession() {
         return $this->context->getSession();
     }
 
     /**
      * @return behat_mod_coursework
      */
-    protected function getContext() {
+    protected function getcontext() {
         return $this->context;
     }
 
     /**
      * @return \Behat\Mink\Element\DocumentElement
      */
-    protected function getPage() {
+    protected function getpage() {
         return $this->getSession()->getPage();
     }
 

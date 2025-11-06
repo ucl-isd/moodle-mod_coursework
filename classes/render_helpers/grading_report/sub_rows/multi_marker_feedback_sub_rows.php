@@ -274,7 +274,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         global $USER, $OUTPUT;
 
         $this->alreadyshownanewbutton = true;
-        //        $this->displaytable = true; //todo this is deprecated and causes behat exception - was it doing anything useful?
+        // $this->displaytable = true; //todo this is deprecated and causes behat exception - was it doing anything useful?
 
         // New
         $linktitle = get_string('newfeedback', 'coursework');

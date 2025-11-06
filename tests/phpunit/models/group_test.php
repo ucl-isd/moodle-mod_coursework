@@ -31,6 +31,7 @@ use mod_coursework\models\group;
 final class group_test extends \advanced_testcase {
 
     public function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest();
     }
 

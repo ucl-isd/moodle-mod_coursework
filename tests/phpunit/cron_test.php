@@ -33,6 +33,7 @@ final class cron_test extends \advanced_testcase {
     use test_helpers\factory_mixin;
 
     public function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest();
         $this->setAdminUser();
         $this->preventResetByRollback();

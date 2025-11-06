@@ -141,7 +141,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         $html .= html_writer::label(get_string('from', 'mod_coursework'), 'assessortwo_samplefrom[0]');
 
-        $ruleoptions = (!empty($selectedtype) && array_key_exists('percentage', $selectedtype)) ? $percentageoptions : $scale; //change this into a ternary statement that
+        $ruleoptions = (!empty($selectedtype) && array_key_exists('percentage', $selectedtype)) ? $percentageoptions : $scale; // change this into a ternary statement that
 
         $html .= html_writer::select($ruleoptions,
             "assessor_{$assessornumber}_samplefrom[]",
@@ -455,7 +455,7 @@ class range_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                     AND $gradesql BETWEEN {$limit1} AND {$limit2}";
 
         // Note as things stand limit1 and limit2 can not be params as the type of the grade field (varchar)
-        //means the values are cast as strings
+        // means the values are cast as strings
 
         return $DB->get_records_sql($sql,
             ['courseworkid' => $this->coursework->id, 'stage' => $stage]

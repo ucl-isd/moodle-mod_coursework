@@ -37,6 +37,7 @@ final class strategy_test extends \advanced_testcase {
      * Makes us a blank coursework and allocation manager.
      */
     public function setUp(): void {
+        parent::setUp();
 
         $this->resetAfterTest();
 

@@ -39,6 +39,7 @@ final class submission_test extends \advanced_testcase {
      * Makes us a blank coursework and allocation manager.
      */
     public function setUp(): void {
+        parent::setUp();
 
         $this->resetAfterTest();
 
@@ -61,6 +62,7 @@ final class submission_test extends \advanced_testcase {
 
         $DB->delete_records('coursework', ['id' => $this->coursework->id]);
         unset($this->coursework);
+        parent::tearDown();
     }
 
     /**

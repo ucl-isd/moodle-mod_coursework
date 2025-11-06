@@ -103,7 +103,7 @@ class moderation extends table_base {
     /**
      * @var string
      */
-    public $stage_identifier;
+    public $stageidentifier;
 
     /**
      * @var int

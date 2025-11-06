@@ -186,7 +186,7 @@ class user extends table_base implements allocatable, moderatable {
      *
      * @var
      */
-    //public static $pool;
+    // public static $pool;
 
     /**
      *
