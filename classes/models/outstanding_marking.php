@@ -104,17 +104,17 @@ class outstanding_marking {
         }
 
         $sql = "SELECT cs.id as submissionid
-                                 FROM       {coursework_submissions}    cs
-                                 LEFT JOIN  {coursework_feedbacks}   f
-                                 ON          cs.id = f.submissionid
-                                 {$sqltable}
-                                 WHERE     f.id IS NULL
-                                 AND cs.finalised = 1
-                                 AND cs.courseworkid = :courseworkid
-                                  {$sqlextra}
-                                 ";
+                    FROM       {coursework_submissions}    cs
+                    LEFT JOIN  {coursework_feedbacks}   f
+                    ON          cs.id = f.submissionid
+                    {$sqltable}
+                    WHERE     f.id IS NULL
+                    AND cs.finalisedstatus = :submissionfinalised
+                    AND cs.courseworkid = :courseworkid
+                    {$sqlextra}";
 
         $sqlparams['courseworkid'] = $courseworkid;
+        $sqlparams['submissionfinalised'] = submission::FINALISED_STATUS_FINALISED;
 
         return  $DB->get_records_sql($sql, $sqlparams);
     }
@@ -189,7 +189,7 @@ class outstanding_marking {
                                       FROM 	{coursework_submissions}	cs LEFT JOIN
                                             {coursework_feedbacks} f ON   cs.id = f.submissionid
                                             {$sqltable}
-                                     WHERE cs.finalised = 1
+                                     WHERE cs.finalisedstatus = :submissionfinalised
                                        AND cs.courseworkid = :courseworkid
                                           AND (f.assessorid != :assessorid OR f.assessorid IS NULL)
                                           {$sqlextra}
@@ -205,6 +205,7 @@ class outstanding_marking {
         $sqlparams['courseworkid'] = $courseworkid;
         $sqlparams['numofmarkers'] = $numberofmarkers;
         $sqlparams['assessorid'] = $userid;
+        $sqlparams['submissionfinalised'] = submission::FINALISED_STATUS_FINALISED;
 
         return  $DB->get_records_sql($sql, $sqlparams);
     }
@@ -222,13 +223,14 @@ class outstanding_marking {
                                       FROM 	{coursework_submissions} cs ,
                                             {coursework_feedbacks} f
                                      WHERE  f.submissionid= cs.id
-                                        AND cs.finalised = 1
+                                        AND cs.finalisedstatus = :submissionfinalised
                                         AND cs.courseworkid = :courseworkid
                                         GROUP BY cs.id
                                         HAVING (COUNT(cs.id) = :numofmarkers)";
 
         $sqlparams['numofmarkers'] = $numberofmarkers;
         $sqlparams['courseworkid'] = $courseworkid;
+        $sqlparams['submissionfinalised'] = submission::FINALISED_STATUS_FINALISED;
 
         return $DB->get_records_sql($sql, $sqlparams);
     }

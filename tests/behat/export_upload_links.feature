@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework  @mod_coursework_export_upload_links
 Feature: Download and upload buttons on submissions page
   These should only appear when there are submissions
   They should contain the expected menu items corresponding the user's role
@@ -33,6 +33,7 @@ Feature: Download and upload buttons on submissions page
     And I log in as a teacher
     And I visit the coursework page
     And I click on "Download" "button"
+    And I wait until the page is ready
     Then I should see "Download submitted files"
     And I should see "Download grading sheet"
     But I should not see "Download grades"
@@ -44,6 +45,7 @@ Feature: Download and upload buttons on submissions page
     And I log in as "admin"
     And I visit the coursework page
     And I click on "Download" "button"
+    And I wait until the page is ready
     Then I should see "Download submitted files"
     And I should see "Download grades"
     And I should see "Download grading sheet"

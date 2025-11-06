@@ -63,7 +63,7 @@ final class cron_test extends \advanced_testcase {
 
         // Then the submission should be finalised.
         $submission->reload();
-        $this->assertEquals(1, $submission->finalised);
+        $this->assertTrue($submission->is_finalised());
     }
 
     public function test_cron_does_not_auto_finalise_before_deadline(): void {
@@ -87,7 +87,7 @@ final class cron_test extends \advanced_testcase {
 
         // Then the submission should be finalised.
         $submission->reload();
-        $this->assertEquals(0, $submission->finalised);
+        $this->assertFalse($submission->is_finalised());
     }
 
     public function test_admins_and_graders(): void {
@@ -104,7 +104,7 @@ final class cron_test extends \advanced_testcase {
         $coursework = $this->create_a_coursework();
         $this->create_a_student();
         $submission = $this->create_a_submission_for_the_student();
-        $submission->update_attribute('finalised', 0);
+        $submission->update_attribute('finalisedstatus', submission::FINALISED_STATUS_NOT_FINALISED);
         $coursework->update_attribute('deadline', strtotime('-1 week'));
         $submission->update_attribute('timesubmitted', 5555);
 
@@ -118,7 +118,7 @@ final class cron_test extends \advanced_testcase {
         $coursework = $this->create_a_coursework();
         $this->create_a_student();
         $submission = $this->create_a_submission_for_the_student();
-        $submission->update_attribute('finalised', 1);
+        $submission->update_attribute('finalisedstatus', submission::FINALISED_STATUS_FINALISED);
         $coursework->update_attribute('deadline', strtotime('-1 week'));
         $coursework->update_attribute('individualfeedback', strtotime('-1 week'));
         $submission->update_attribute('timesubmitted', 5555);
@@ -133,7 +133,7 @@ final class cron_test extends \advanced_testcase {
         $coursework = $this->create_a_coursework();
         $this->create_a_student();
         $submission = $this->create_a_submission_for_the_student();
-        $submission->update_attribute('finalised', 1);
+        $submission->update_attribute('finalisedstatus', submission::FINALISED_STATUS_FINALISED);
         $coursework->update_attribute('individualfeedback', strtotime('+1 week'));
 
         \mod_coursework\cron::run();
@@ -146,7 +146,7 @@ final class cron_test extends \advanced_testcase {
         $coursework = $this->create_a_coursework();
         $this->create_a_student();
         $submission = $this->create_a_submission_for_the_student();
-        $submission->update_attribute('finalised', 1);
+        $submission->update_attribute('finalisedstatus', submission::FINALISED_STATUS_FINALISED);
         $this->create_a_final_feedback_for_the_submission();
         $coursework->update_attribute('individualfeedback', strtotime('-1 week'));
 

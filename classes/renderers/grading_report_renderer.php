@@ -67,6 +67,7 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         // Populate template tr data.
         $template->tr = [];
         $markersarray = []; // Collect list of allocated markers while we are iterating.
+
         foreach ($tablerows as $rowobject) {
             $trdata = $this->get_table_row_data($gradingreport->get_coursework(), $rowobject);
 
@@ -101,6 +102,45 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         }
 
         return $this->render_from_template('mod_coursework/submissions/table', $template);
+    }
+
+    /**
+     * Get marking summary data.
+     *
+     * @param array $tablerows
+     * @param coursework $coursework
+     * @return stdClass
+     */
+    public function get_marking_summary_data(array $tablerows, coursework $coursework): stdClass {
+        $template = new stdClass();
+        $template->submitted = 0;
+        $template->participants = 0;
+        $template->readyforagreement = 0;
+        $template->readyforrelease = 0;
+        $template->published = 0;
+
+        foreach ($tablerows as $tr) {
+            $trdata = $this->get_table_row_data($coursework, $tr);
+
+            $template->participants++;
+            if (!empty($trdata->submission->submissiondata)) {
+                $template->submitted++;
+            }
+
+            if (!empty($trdata->agreedmark->addfinalfeedback) || !empty($trdata->moderation->addmoderation)) {
+                $template->readyforagreement++;
+            }
+
+            if (!empty($trdata->agreedmark->mark->readyforrelease) || !empty($trdata->moderation->mark->readyforrelease)) {
+                $template->readyforrelease++;
+            }
+
+            if (!empty($trdata->agreedmark->mark->released) || !empty($trdata->moderation->mark->released)) {
+                $template->published++;
+            }
+        }
+
+        return $template;
     }
 
     /**
@@ -244,6 +284,7 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
         $markingcelldata = $dataprovider->get_table_cell_data($rowobject);
         $trdata->markers = $markingcelldata->markers;
         $trdata->agreedmark = !empty($markingcelldata->agreedmark) ? $markingcelldata->agreedmark : null;
+        $trdata->moderation = !empty($markingcelldata->moderation) ? $markingcelldata->moderation : null;
     }
 
     /**
@@ -317,11 +358,11 @@ class grading_report_renderer extends \core\output\plugin_renderer_base {
             $status[] = 'not-submitted';
         }
 
-        if (!empty($trdata->agreedmark->addfinalfeedback)) {
+        if (!empty($trdata->agreedmark->addfinalfeedback) || !empty($trdata->moderation->addmoderation)) {
             $status[] = 'need-agreement';
         }
 
-        if (!empty($trdata->agreedmark->mark->readyforrelease)) {
+        if (!empty($trdata->agreedmark->mark->readyforrelease) || !empty($trdata->moderation->mark->readyforrelease)) {
             $status[] = 'ready-for-release';
         }
 

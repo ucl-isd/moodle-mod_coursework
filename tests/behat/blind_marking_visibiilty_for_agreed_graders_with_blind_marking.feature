@@ -18,9 +18,8 @@ Feature: visibility of agreed graders with blind marking
     And the student has a submission
     And the submission is finalised
 
-  Scenario: agreed graders can view the feedback of the other assessors when all done
-    Given there are feedbacks from both teachers
-    And I am logged in as the other teacher
-    And I visit the coursework page
-    When I click on the view icon for the first initial assessor's grade
-    Then I should see the first initial assessors grade and comment
+  Scenario: agreed graders cannot see other feedbacks before they have done their own
+    Given I am logged in as the other teacher
+    And there is feedback for the submission from the teacher
+    When I visit the coursework page
+    Then I should not see the grade from the teacher in the assessor table

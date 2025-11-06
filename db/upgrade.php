@@ -48,118 +48,12 @@ function xmldb_coursework_upgrade($oldversion) {
 
     $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
 
-    if ($oldversion < 2011122000) {
-
-        // Define field timepublished to be added to coursework_feedbacks.
-        $table = new xmldb_table('coursework_feedbacks');
-        $field = new xmldb_field('timepublished', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, null, null, null, 'feedbackcomment');
-
-        // Conditionally launch add field timepublished.
-        if (!$dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
-        }
-
-        // Coursework savepoint reached.
-        upgrade_mod_savepoint(true, 2011122000, 'coursework');
-    }
-
-    if ($oldversion < 2012013000) {
-
-        // Define field lasteditedbyuser to be added to coursework_feedbacks.
-        $table = new xmldb_table('coursework_feedbacks');
-        $field = new xmldb_field('lasteditedbyuser', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED,
-                                 XMLDB_NOTNULL, null, '0', 'timepublished');
-
-        // Conditionally launch add field lasteditedbyuser.
-        if (!$dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
-        }
-
-        // Update all older feedbacks.
-        $allfeedbacks = $DB->get_records('coursework_feedbacks');
-        foreach ($allfeedbacks as $feedback) {
-            $feedback->lasteditedbyuser = $feedback->assessorid;
-            $DB->update_record('coursework_feedbacks', $feedback);
-        }
-
-        // Coursework savepoint reached.
-        upgrade_mod_savepoint(true, 2012013000, 'coursework');
-    }
-
-    // To match the new way of storing data, the old data needs to be re-done.
     if ($oldversion < 2012020100) {
-
-        // Checkboxes
-        // old format : array of arrays. Each array contains id and value of a component
-        // new format : array of ids of checked boxes.
-
-        // Get old data.
-        $sql = "SELECT fdata.id, fdata.feedbackcomment
-                  FROM {coursework_fdata} fdata
-            INNER JOIN {coursework_field} field
-                    ON field.id = fdata.fieldid
-                 WHERE field.type = 'checkbox' ";
-        $olddata = $DB->get_records_sql($sql);
-        // Alter the comments and write them to the DB.
-        foreach ($olddata as $datarow) {
-            $oldcomment = unserialize($datarow->feedbackcomment);
-            $newcomment = [];
-            if ($oldcomment) { // Some were blank - probably an earlier experiment.
-                foreach ($oldcomment as $componentarray) {
-                    $newcomment[] = $componentarray['id'];
-                }
-            }
-            $datarow->feedbackcomment = serialize($newcomment);
-            $DB->update_record('coursework_fdata', $datarow);
-        }
-
-        // Multi-select
-        // old format : comma separated values.
-        // new format : array of ids of checked boxes.
-        $sql = "SELECT fdata.id, fdata.feedbackcomment, fdata.fieldid
-                          FROM {coursework_fdata} fdata
-                    INNER JOIN {coursework_field} field
-                            ON field.id = fdata.fieldid
-                         WHERE field.type = 'select-multiple' ";
-        $olddata = $DB->get_records_sql($sql);
-        // Problem - DB has lots of responses containing commas, which means we can't use explode.
-        // Will have to subtract component values from the string one at a time, recording their
-        // ids if we find the value.
-        foreach ($olddata as $datarow) {
-            $newcomment = [];
-            $oldcomment = $datarow->feedbackcomment; // Comma separated, with lots of extra commas.
-            $components = $DB->get_records('coursework_form_component',
-                                           ['fieldid' => $datarow->fieldid]);
-            foreach ($components as $component) {
-                if (!empty($oldcomment) && strpos($component->comp_description, $oldcomment) !== false) {
-                    $newcomment[] = $component->id;
-                    // Remove it to prevent overlaps in next matches.
-                    $oldcomment = str_replace($component->comp_description, '', $oldcomment);
-                }
-            }
-            $datarow->feedbackcomment = serialize($newcomment);
-            $DB->update_record('coursework_fdata', $datarow);
-
-        }
-
-        // Select
-        // old format : array - all are empty
-        // new format : single value - id of component to have selected.
-
-        // Make all into empty fields.
-        $sql = "SELECT fdata.id, fdata.feedbackcomment
-                                  FROM {coursework_fdata} fdata
-                            INNER JOIN {coursework_field} field
-                                    ON field.id = fdata.fieldid
-                                 WHERE field.type = 'select' ";
-        $olddata = $DB->get_records_sql($sql);
-        foreach ($olddata as $datarow) {
-            $datarow->feedbackcomment = '';
-            $DB->update_record('coursework_fdata', $datarow);
-
-        }
-
-        upgrade_mod_savepoint(true, 2012020100, 'coursework');
+        // Throw exception to avoid running old unserialize code which was previously included here.
+        // See https://moodledev.io/general/community/plugincontribution/checklist#security
+        // This version number 2012 ... is > 13 years old now and unlikely anyone will be upgrading from this.
+        // If you need to see the original upgrade code for versions before 2012020100, look at the git history.
+        throw new \Exception("Cannot upgrade from this historic version");
     }
 
     if ($oldversion < 2012053100) {
@@ -2590,6 +2484,22 @@ function xmldb_coursework_upgrade($oldversion) {
         // Coursework savepoint reached.
         upgrade_mod_savepoint(true, 2025100302, 'coursework');
     }
+
+    if ($oldversion < 2025110300) {
+
+        // Rename field finalised on table coursework_submissions to finalisedstatus.
+        $table = new xmldb_table('coursework_submissions');
+        $field = new xmldb_field('finalised', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'timemodified');
+
+        if ($dbman->field_exists($table, $field)) {
+            // Launch rename field finalisedstatus.
+            $dbman->rename_field($table, $field, 'finalisedstatus');
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2025110300, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }

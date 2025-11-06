@@ -382,7 +382,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         // Teacher summary col.
         if ($cangrade || $canpublish) {
-            $template->markingsummary = $this->coursework_marking_summary($coursework);
+            $courseworkmodel = \mod_coursework\models\coursework::find($coursework->id);
+            $template->markingsummary = $this->coursework_marking_summary($courseworkmodel);
         }
 
         // Student summary col.
@@ -662,32 +663,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $template->columns[]['html'] = $samplingcell;
         }
-
-        /**
-         *  Ok this is either some really clever or really hacky code depending on where you stand, time of day and your mood :)
-         *  The following script creates a global Array var (samplingValidateHdl)that holds the names of the validation functions for each plugin
-         *  (as  I write none but....) It also creates an event handler for the submit button. The event handler calls each of the
-         *  functions defined in samplingValidateHdl  allowing the plugins to validate their own sections (function names to be called plugin_name_validation)
-         *  returning 0 or 1 depending on whether and error was found. (Was that verbose...yeah...oh well) - ND
-         */
-
-        $jsscript = "
-
-            $('#save_manual_sampling').on('click', function (e) {
-
-                validationresults = [];
-
-                $.each(samplingValidateHdl, function(i,functionname) {
-                     validationresults.push(eval(functionname+'()'));
-                })
-
-                if (validationresults.lastIndexOf(1) != -1) e.preventDefault();
-            })
-
-        ";
-
-        $template->javascript = html_writer::script("var samplingValidateHdl = [];");
-        $template->javascript .= html_writer::script($jsscript);
 
         return $this->render_from_template('mod_coursework/allocate/samplingwidget', $template);
     }
@@ -1312,89 +1287,21 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param mod_coursework_coursework $coursework The coursework activity object.
      * @return stdClass Template data for the marking summary.
      */
-    private function coursework_marking_summary(mod_coursework_coursework $coursework): stdClass {
-        $template = new stdClass();
+    private function coursework_marking_summary(\mod_coursework\models\coursework $coursework): stdClass {
+        $reportoptions = [
+            'mode' => \mod_coursework\grading_report::MODE_GET_ALL,
+            'sortby' => '',
+        ];
 
-        // Edge case: for a single-marked coursework with marker allocation
-        // enabled managers who can only add agreed grades cannot mark anyone.
-        if (has_capability('mod/coursework:addinitialgrade', $coursework->get_context())
-                || (!(has_capability('mod/coursework:addagreedgrade', $coursework->get_context()) && !$coursework->has_multiple_markers() && !$coursework->allocation_enabled())
-                && has_any_capability(['mod/coursework:addagreedgrade', 'mod/coursework:administergrades'], $coursework->get_context()))) {
-            $template->canmark = true;
+        $gradingreport = $coursework->renderable_grading_report_factory($reportoptions);
+        $tablerows = $gradingreport->get_table_rows_for_page();
 
-            $participants = $this->get_allocatables_count_per_assessor($coursework);
-            $allsubs = $coursework->get_all_submissions();
-            $submitted = count($allsubs);
+        $gradingreportrenderer = new \mod_coursework\renderers\grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
+        $summarydata = $gradingreportrenderer->get_marking_summary_data($tablerows, $coursework);
+        $summarydata->canmark = true;
+        $summarydata->dropdown = $this->get_export_upload_links($coursework);
 
-            $allocatedsubs = $this->get_submissions_for_assessor($coursework, $allsubs);
-            $allocatedsubs = $this->remove_unfinalised_submissions($allocatedsubs);
-            $allocatedsubs = $this->remove_ungradable_submissions($allocatedsubs);
-            $finalgradedsubs = $this->removed_final_graded_submissions($allocatedsubs);
-            $gradedcount = count($finalgradedsubs);
-            $needsmarking = 0;
-            $allocatedsubsforgrading = $allocatedsubs;
-            $template->assessor = []; // Initialize the assessor array.
-            $template->dropdown = $this->get_export_upload_links($coursework);
-
-            // For users who can add agreed grades or administer grades (or a combination).
-            if (has_any_capability(['mod/coursework:addagreedgrade', 'mod/coursework:administergrades'], $coursework->get_context())
-                    || has_all_capabilities(['mod/coursework:addinitialgrade', 'mod/coursework:addallocatedagreedgrade'], $coursework->get_context())) {
-                $numberofassessable = count($allocatedsubsforgrading);
-                $allocatedsubsforgrading = $this->remove_final_gradable_submissions($allocatedsubsforgrading);
-                $needsmarking = $numberofassessable - count($allocatedsubsforgrading);
-            }
-
-            // For users who can add initial grades or administer grades.
-            if (has_any_capability(['mod/coursework:addinitialgrade', 'mod/coursework:administergrades'], $coursework->get_context())) {
-                $allocatedsubsforinitial = $allocatedsubs; // Use the original set
-                $allocatedsubsforinitial = $this->remove_final_gradable_submissions($allocatedsubsforinitial);
-                $needsmarking += count($this->get_assessor_initial_graded_submissions($allocatedsubsforinitial));
-            }
-
-            $publishedsubs = $coursework->get_published_submissions();
-            $published = count($this->get_submissions_for_assessor($coursework, $publishedsubs));
-
-            $template->participants = $participants;
-            $template->submitted = $submitted;
-            $template->needsmarking = $needsmarking;
-            $template->published = $published;
-
-            // Assessor data.
-            if ($coursework->has_multiple_markers() && has_capability('mod/coursework:administergrades', $coursework->get_context())) {
-                // Agreed Mark count.
-                $agreedstage = 'final_agreed_1';
-                $agreedsubs = $coursework->get_graded_submissions_by_stage($agreedstage);
-                $agreedmarkcount = count($this->get_submissions_for_assessor($coursework, $agreedsubs));
-                $template->assessor[] = [
-                    'border' => true,
-                    'name' => get_string('markedagreemark', 'mod_coursework'),
-                    'count' => $agreedmarkcount,
-                ];
-
-                $stages = $coursework->marking_stages();
-                foreach ($stages as $stage => $s) {
-                    if ($stage != 'final_agreed_1') {
-                        $initialassessorno = substr("$stage", -1);
-                        $gradedsubs = $coursework->get_graded_submissions_by_stage($stage);
-                        $count = count($this->get_submissions_for_assessor($coursework, $gradedsubs));
-                        $template->assessor[] = [
-                            'name' => get_string('initialassessorno', 'mod_coursework', $initialassessorno),
-                            'count' => $count,
-                        ];
-                    }
-                }
-            } else {
-                // If no multiple markers, the 'graded' count essentially represents the 'marked' count.
-                $gradedsubs = $this->get_submissions_with_final_grade($this->get_submissions_for_assessor($coursework, $allsubs));
-                $template->assessor[] = [
-                    'border' => true,
-                    'name' => get_string('marked', 'mod_coursework'),
-                    'count' => count($gradedsubs),
-                ];
-            }
-        }
-
-        return $template;
+        return $summarydata;
     }
 
     /**
@@ -1403,12 +1310,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param mod_coursework_coursework $coursework The coursework activity object.
      * @return array An array containing the structured dropdown data.
      */
-    private function get_export_upload_links(mod_coursework_coursework $coursework): array {
+    private function get_export_upload_links(\mod_coursework\models\coursework $coursework): array {
         $cmid = $this->page->cm->id;
         $viewurl = '/mod/coursework/view.php';
         $submissions = $coursework->get_all_submissions();
         $hasfinalised = $coursework->get_finalised_submissions();
-        $finalised = submission::$pool[$coursework->id]['finalised'][1] ?? [];
+        $finalised = submission::$pool[$coursework->id]['finalisedstatus'][submission::FINALISED_STATUS_FINALISED] ?? [];
         $can = fn(string $cap) => has_capability($cap, $this->page->context);
         $canmark = !empty($submissions) && $hasfinalised;
 
@@ -1531,7 +1438,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             $submission = submission::find($sub);
 
-            if (empty($submission->finalised)) {
+            if (!$submission->is_finalised()) {
                 unset($submissions[$sub->id]);
             }
         }

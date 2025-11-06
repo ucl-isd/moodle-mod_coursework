@@ -343,15 +343,15 @@ class cron {
     }
 
     /**
-     * Updates all DB columns where the deadline was before now, so that finalised = 1
+     * Updates all DB columns where the deadline was before now - updates 'finalisedstatus' to submission::FINALISED_STATUS_FINALISED
      */
     public static function finalise_any_submissions_where_the_deadline_has_passed($courseworkid = null) {
-        $submissions = submission::unfinalised_past_deadline($courseworkid);
+        $submissions = submission::not_finalised_past_deadline($courseworkid);
         foreach ($submissions as $submission) {
             // Doing this one at a time so that the email will arrive with finalisation already
             // done. Would not want them to check straight away and then find they could still
             // edit it.
-            $submission->update_attribute('finalised', 1);
+            $submission->update_attribute('finalisedstatus', submission::FINALISED_STATUS_FINALISED);
             submission::remove_cache($submission->courseworkid);
             // Slightly wasteful to keep re-fetching the coursework :-/
             $mailer = new mailer($submission->get_coursework());
@@ -412,23 +412,26 @@ class cron {
     }
 
     /**
+     * Get admins and teachers.
      * @param $context
      * @return array
      */
-    public static function get_admins_and_teachers($context) {
+    public static function get_admins_and_teachers($context): array {
+        $result = [];
 
         $graders = get_enrolled_users($context, 'mod/coursework:addinitialgrade');
-        $managers = get_enrolled_users($context, 'mod/coursework:addagreedgrade');
-
-        $users = array_merge($graders, $managers);
-        $users = array_map("unserialize", array_unique(array_map("serialize", $users)));
-
-        foreach ($users as &$user) {
-            $user = user::find($user);
+        foreach ($graders as $grader) {
+            $result[$grader->id] = user::find($grader, false);
         }
-
-        return $users;
-
+        $managers = get_enrolled_users($context, 'mod/coursework:addagreedgrade');
+        foreach ($managers as $manager) {
+            if (isset($result[$manager->id])) {
+                // Already have this user.
+                continue;
+            }
+            $result[$manager->id] = user::find($manager, false);
+        }
+        return array_values($result);
     }
 
 }

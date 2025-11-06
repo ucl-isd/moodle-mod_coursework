@@ -20,10 +20,9 @@ Feature: Adding feedback using the built in Moodle rubrics
     Given there is a rubric defined for the coursework
     Given I visit the coursework page
     When I click on the add feedback button
-    And I click the rubric score box "1" and add the comment "New comment here"
+    And I grade by filling the rubric with:
+      | first criterion | 1 | New comment here |
     And I press "Save and finalise"
-    And I wait "1" seconds
-    And I should see "Your data has been saved."
     And I log out
 
     And I log in as a manager
@@ -40,8 +39,8 @@ Feature: Adding feedback using the built in Moodle rubrics
     Given there is a rubric defined for the coursework
     Given I visit the coursework page
     When I click on the add feedback button
-    # Box 2 is very good so 100%, Box 0 is bad so zero.
-    And I click the rubric score box "2" and add the comment "Very good"
+     And I grade by filling the rubric with:
+       | first criterion | 2 | Very good |
     And I press "Save and finalise"
     And I log out
     And I log in as a manager

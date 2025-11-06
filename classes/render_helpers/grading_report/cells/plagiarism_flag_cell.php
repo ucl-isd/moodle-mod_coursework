@@ -49,7 +49,7 @@ class plagiarism_flag_cell extends cell_base {
         $content = '';
         $ability = new ability($USER->id, $rowobject->get_coursework());
 
-        if ($rowobject->has_submission() && $rowobject->get_submission()->finalised) {
+        if ($rowobject->has_submission() && $rowobject->get_submission()->is_finalised()) {
             $plagiarismflagparams = [
                 'submissionid' => $rowobject->get_submission()->id,
             ];

@@ -57,7 +57,6 @@ $courseworkid = optional_param('e', 0, PARAM_INT);
 if (!$courseworkid) {
     $courseworkid = optional_param('courseworkid', 0, PARAM_INT);
 }
-$publish = optional_param('publishbutton', 0, PARAM_ALPHA);
 $download = optional_param('download', false, PARAM_BOOL);
 $resubmit = optional_param('resubmit', 0, PARAM_TEXT); // Are we resubmitting a turnitin thing?
 $resubmitted = optional_param('resubmitted', 0, PARAM_INT); // Is this a post-resubmit redirect?
@@ -251,6 +250,9 @@ if ($coursemoduleid) {
     }
 }
 
+// This will set $PAGE->context to the coursemodule's context.
+require_login($course, true, $coursemodule);
+
 $coursework = mod_coursework\models\coursework::find($courseworkrecord);
 
 // Check if group is in session and use it no group available in url
@@ -267,9 +269,6 @@ if (($coursework->blindmarking && !$viewanonymous )) {
 
 // Make sure we sort out any stuff that cron should have done, just in case it's not run yet.
 $coursework->finalise_all();
-
-// This will set $PAGE->context to the coursemodule's context.
-require_login($course, true, $coursemodule);
 
 // Name of new zip file.
 $filename = str_replace(' ', '_', clean_filename($COURSE->shortname . '-' . $coursework->name . '.zip'));
