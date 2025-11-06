@@ -134,12 +134,6 @@ abstract class ability {
         $bits = explode('\\', $classnamewithnamespace); // 'mod_coursework\models\submission'
         $classname = end($bits); // 'submission'
 
-        // For non-standard things like decorated classes:
-        $map = $this->classname_mappings();
-        if (array_key_exists($classname, $map)) {
-            return $map[$classname];
-        }
-
         return $classname;
     }
 
@@ -160,15 +154,6 @@ abstract class ability {
         }
 
         return false;
-    }
-
-    /**
-     * Override to map non-standard things like decorated classes. 'decorated_class_name' => 'normal_class_name'
-     *
-     * @return array
-     */
-    protected function classname_mappings() {
-        return [];
     }
 
     /**

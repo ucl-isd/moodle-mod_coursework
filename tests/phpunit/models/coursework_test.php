@@ -101,21 +101,6 @@ final class coursework_test extends \advanced_testcase {
         $this->assertInstanceOf('\mod_coursework\allocation\manager', $allocationmanager);
     }
 
-    public function test_group_decorator_is_added(): void {
-        $params = [
-            'grade' => 0,
-            'usegroups' => true,
-        ];
-        $coursework = $this->create_a_coursework($params);
-        $this->assertInstanceOf('\mod_coursework\decorators\coursework_groups_decorator', coursework::find($coursework->id));
-    }
-
-    public function test_group_decorator_is_not_added(): void {
-        $coursework = $this->create_a_coursework(['grade' => 0]);
-        $this->assertInstanceOf('\mod_coursework\models\coursework',
-                                coursework::find($coursework->id));
-    }
-
     public function test_get_user_group_no_grouping(): void {
         $this->create_a_student();
         $this->create_a_group();

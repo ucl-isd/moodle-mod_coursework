@@ -57,11 +57,6 @@ class builder {
      * @param array $options
      */
     public function __construct($coursework, array $options) {
-        // When visiting /mod/coursework/actions/set_personaldeadlines.php?id=xxx with group mode enabled, error is thrown.
-        // This is because $coursework object passed here is wrapped in another class.
-        if (get_class($coursework) == 'mod_coursework\decorators\coursework_groups_decorator') {
-            $coursework = $coursework->wrapped_object();
-        }
         $this->coursework = $coursework;
         $this->options = $options;
     }

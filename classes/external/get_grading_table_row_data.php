@@ -64,10 +64,6 @@ class get_grading_table_row_data extends external_api {
         );
 
         $coursework = coursework::find($params['courseworkid']);
-        if (get_class($coursework) == 'mod_coursework\decorators\coursework_groups_decorator') {
-            // If the coursework is in group mode, coursework::find returns a wrapped object so unwrap.
-            $coursework = $coursework->wrapped_object();
-        }
         if (!$coursework) {
             return [
                 'success' => false,

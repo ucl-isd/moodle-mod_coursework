@@ -231,13 +231,7 @@ class personaldeadline_form extends dynamic_form {
             return $this->coursework;
         } else {
             $datasource = isset($this->_customdata) ? $this->_customdata : $this->_ajaxformdata;
-            $coursework = coursework::find($datasource['courseworkid']);
-            if (get_class($coursework) == 'mod_coursework\decorators\coursework_groups_decorator') {
-                // If the coursework is in group mode, coursework::find returns a wrapped object so unwrap.
-                $this->coursework = $coursework->wrapped_object();
-            } else {
-                $this->coursework = $coursework;
-            }
+            $this->coursework = coursework::find($datasource['courseworkid']);
         }
         return $this->coursework;
     }

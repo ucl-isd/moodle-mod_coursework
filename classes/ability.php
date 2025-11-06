@@ -248,18 +248,6 @@ class ability extends framework\ability {
     }
 
     /**
-     * For non-standard things like decorated classes:
-     *
-     * @return array
-     */
-    protected function classname_mappings() {
-        return [
-            'submission_groups_decorator' => 'submission',
-            'coursework_groups_decorator' => 'coursework',
-        ];
-    }
-
-    /**
      * @return coursework
      */
     private function get_coursework() {

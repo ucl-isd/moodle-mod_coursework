@@ -25,7 +25,6 @@ use AllowDynamicProperties;
 use core\output\notification;
 use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
-use mod_coursework\decorators\coursework_groups_decorator;
 use mod_coursework\exceptions\access_denied;
 use mod_coursework\forms\deadline_extension_form;
 use mod_coursework\framework\table_base;
@@ -323,11 +322,10 @@ class deadline_extensions_controller extends controller_base {
 
     public function table_cell_response($dataparams) {
         $participant = ($dataparams['allocatabletype'] && $dataparams['allocatabletype'] == 'group') ? group::find($dataparams['allocatableid']) : user::find($dataparams['allocatableid']);
-        $coursework = ($this->coursework instanceof coursework_groups_decorator) ? $this->coursework->wrapped_object() : $this->coursework;
         if ($this->coursework->has_multiple_markers()) {
-            $rowobject = new grading_table_row_multi($coursework, $participant);
+            $rowobject = new grading_table_row_multi($this->coursework, $participant);
         } else {
-            $rowobject = new grading_table_row_single($coursework, $participant);
+            $rowobject = new grading_table_row_single($this->coursework, $participant);
         }
 
         $timesubmittedcell = new  time_submitted_cell(['coursework' => $this->coursework]);

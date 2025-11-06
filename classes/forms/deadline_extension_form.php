@@ -266,12 +266,7 @@ class deadline_extension_form extends dynamic_form {
             $this->coursework = $this->extension->get_coursework();
         } else {
             $coursework = coursework::find($datasource['coursework']->id ?? $datasource['courseworkid']);
-            if (get_class($coursework) == 'mod_coursework\decorators\coursework_groups_decorator') {
-                // If the coursework is in group mode, coursework::find returns a wrapped object so unwrap.
-                $this->coursework = $coursework->wrapped_object();
-            } else {
-                $this->coursework = $coursework;
-            }
+            $this->coursework = $coursework;
             $allocatabletype = $datasource['allocatabletype'];
             $allocatableid = $datasource['allocatableid'];
             $classname = "\\mod_coursework\\models\\$allocatabletype";

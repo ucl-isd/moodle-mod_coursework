@@ -49,8 +49,6 @@ use mod_coursework\allocation\manager;
 use mod_coursework\allocation\strategy\base as allocation_strategy_base;
 use mod_coursework\candidateprovider_manager;
 use mod_coursework\cron;
-use mod_coursework\decorators\coursework_groups_decorator;
-use mod_coursework\decorators\submission_groups_decorator;
 use mod_coursework\export\grading_sheet;
 use mod_coursework\framework\table_base;
 use mod_coursework\grading_report;
@@ -430,27 +428,6 @@ class coursework extends table_base {
      * @var int 0 or 1
      */
     public $personaldeadlineenabled;
-
-
-
-    /**
-     * Factory makes it renderable.
-     *
-     * @param $dbrecord
-     * @param bool $reload
-     * @return mixed|mod_coursework_coursework
-     * @throws dml_exception
-     * @throws coding_exception
-     */
-    public static function find($dbrecord, $reload = true) {
-        $courseworkobject = parent::find($dbrecord);
-
-        if ($courseworkobject && $courseworkobject->is_configured_to_have_group_submissions()) {
-            $courseworkobject = new coursework_groups_decorator($courseworkobject);
-        }
-
-        return $courseworkobject;
-    }
 
     /**
      * Constructor: takes a DB row from the coursework table or an id. We don't always retrieve it
@@ -1780,7 +1757,7 @@ class coursework extends table_base {
 
     /**
      * @param user|null $user
-     * @return submission_groups_decorator|submission
+     * @return submission
      */
     public function get_user_submission($user) {
 
