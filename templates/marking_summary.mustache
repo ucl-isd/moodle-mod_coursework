@@ -51,21 +51,31 @@
             {{#str}} submitted, mod_coursework {{/str}}
             <span class="ml-auto">{{submitted}}/{{participants}}</span>
         </li>
-        <li class="d-flex py-1 border-top">
-            {{#str}} needsmarking, mod_coursework {{/str}}
-            <span class="ml-auto">{{needsmarking}}</span>
-        </li>
 
-        {{! WIP - Assessor data. }}
+        {{! Not implemented - Assessor data - marker X has marked Y etc.
+        Note - Stuart thinks this is not useful/actually confusing and should be removed. }}
+        <!--
         {{#assessor}}
             <li class="d-flex py-1 {{#border}} border-top {{/border}}">
                 {{name}}
                 <span class="ml-auto">{{count}}</span>
             </li>
         {{/assessor}}
+        -->
+        {{#readyforagreement}}
+        <li class="d-flex py-1 border-top">
+            {{#str}} ready_for_agreement, mod_coursework {{/str}}
+            <span class="ml-auto">{{.}}</span>
+        </li>
+        {{/readyforagreement}}
 
         <li class="d-flex py-1 border-top">
-            {{#str}} markedandreleased, mod_coursework {{/str}}
+            {{#str}} ready_release, mod_coursework {{/str}}
+            <span class="ml-auto">{{readyforrelease}}</span>
+        </li>
+
+        <li class="d-flex py-1 border-top">
+            {{#str}} marks_released, mod_coursework {{/str}}
             <span class="ml-auto">{{published}}</span>
         </li>
     </ul>
