@@ -2740,10 +2740,6 @@ class behat_mod_coursework extends behat_base {
      * @param $action
      */
     public function i_click_on_the_new_submission_button($action) {
-        /**
-         * @var mod_coursework_behat_student_page $page
-         */
-        // $page = $this->get_page('student page');
         if ($action == 'edit') {
             $locator = "//div[@class='editsubmissionbutton']";
         } else if ($action == 'new') {

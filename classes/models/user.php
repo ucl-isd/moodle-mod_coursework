@@ -186,52 +186,6 @@ class user extends table_base implements allocatable, moderatable {
      *
      * @var
      */
-    // public static $pool;
-
-    /**
-     *
-     * @param int $courseworkid
-     * @throws \dml_exception
-     */
-    /*
-    public static function fill_pool_coursework($coursework_id) {
-        if (isset(static::$pool[$coursework_id])) {
-            return;
-        }
-        $key = static::$table_name;
-        $cache = \cache::make('mod_coursework', 'courseworkdata', ['id' => $coursework_id]);
-
-        $data = $cache->get($key);
-        if ($data === false) {
-            // no cache found
-            $data = static::get_cache_array($coursework_id);
-            $cache->set($key, $data);
-        }
-
-        static::$pool[$coursework_id] = $data;
-    }
-    */
-
-    /**
-     * @param int $courseworkid
-     */
-    /*
-    public static function remove_cache($coursework_id) {
-        global $SESSION;
-        if (!empty($SESSION->keep_cache_data)) {
-            return;
-        }
-        static::$pool[$coursework_id] = null;
-        $cache = \cache::make('mod_coursework', 'courseworkdata', ['id' => $coursework_id]);
-        $cache->delete(static::$table_name);
-    }
-    */
-
-    /**
-     * cache array
-     *
-     * @var
-     */
     public static $pool;
 
     /**

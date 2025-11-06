@@ -69,20 +69,12 @@ if ($data = $gradinguploadform->get_data()) {
 
     $csvimport = new \mod_coursework\export\import($coursework, false, false);
 
-    // $csv_cells = $csvimport->csv_columns(); // All columns from spreadsheet
-
     $procsessingresults = $csvimport->validate_csv($content, $data->encoding, $data->delimiter_name, $csvcells);
 
     // Process
-
-    // If (!empty($procsessingresults)) {
     $csvimport->process_csv($content, $data->encoding, $data->delimiter_name, $csvcells, $procsessingresults);
     $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
     echo $pagerenderer->process_csv_upload($procsessingresults, $content, $csvtype);
-    // } else {
-        //
-    // }
-
 } else {
     $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
     echo $pagerenderer->csv_upload($gradinguploadform, $csvtype);
