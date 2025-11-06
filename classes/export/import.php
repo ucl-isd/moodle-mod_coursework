@@ -64,7 +64,7 @@ class import extends grading_sheet {
         $csvloaderror = $csvreader->get_error();
 
         if (!is_null($csvloaderror)) {
-            print_error('csvloaderror', '', 'returnurl', $csvloaderror);
+            throw new \core\exception\moodle_exception('csvloaderror', '', null, $csvloaderror);
         }
 
         $columns = $csvreader->get_columns();
@@ -72,7 +72,7 @@ class import extends grading_sheet {
         if (empty($columns)) {
             $csvreader->close();
             $csvreader->cleanup();
-            print_error('courseworkemptycsv', 'error', '');
+            throw new \core\exception\moodle_exception('courseworkemptycsv', 'error', '');
         }
 
         $csvreader->init();
@@ -278,7 +278,7 @@ class import extends grading_sheet {
         $csvloaderror = $csvreader->get_error();
 
         if (!is_null($csvloaderror)) {
-            print_error('csvloaderror', '', 'returnurl', $csvloaderror);
+            throw new \core\exception\moodle_exception('csvloaderror', '', null, $csvloaderror);
         }
 
         $columns = $csvreader->get_columns();
@@ -286,7 +286,7 @@ class import extends grading_sheet {
         if (empty($columns)) {
             $csvreader->close();
             $csvreader->cleanup();
-            print_error('courseworkemptycsv', 'error', '');
+            throw new \core\exception\moodle_exception('courseworkemptycsv');
         }
 
         $csvreader->init();
