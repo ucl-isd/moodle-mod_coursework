@@ -436,8 +436,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws coding_exception
      */
     public function new_plagiarism_flag_page($newplagiarismflag) {
-
-        global $SITE, $DB;
+        global $SITE;
 
         $submission = $newplagiarismflag->get_submission();
         $gradingtitle = get_string('plagiarismflaggingfor', 'coursework', $submission->get_allocatable_name());
@@ -468,7 +467,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      */
     public function edit_plagiarism_flag_page(plagiarism_flag $plagiarismflag, $creator, $editor) {
 
-        global $SITE, $DB;
+        global $SITE;
 
         $submission = $plagiarismflag->get_submission();
         $gradingtitle = get_string('plagiarismflaggingfor', 'coursework', $submission->get_allocatable_name());

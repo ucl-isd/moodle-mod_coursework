@@ -551,8 +551,6 @@ class submission extends table_base implements renderable {
      * @throws dml_multiple_records_exception
      */
     public function get_agreed_grade() {
-        global $DB;
-
         if (!$this->id) {
             // No submission - empty placeholder.
             return [];
@@ -780,8 +778,7 @@ class submission extends table_base implements renderable {
      * @return bool
      */
     public function user_has_submitted_feedback($userid = 0) {
-
-        global $USER, $DB;
+        global $USER;
 
         if (empty($userid)) {
             $userid = $USER->id;

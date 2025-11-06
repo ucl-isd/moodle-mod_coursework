@@ -598,7 +598,7 @@ class coursework extends table_base {
      * @return int number of ungraded assessments, 0
      */
     public function get_ungraded_assessments_number($cangrade) {
-        global $USER, $DB;
+        global $USER;
         // Is this a teacher? If so, show the number of bits of work they need to mark.
         if (!$cangrade) {
             return 0;
@@ -724,8 +724,7 @@ class coursework extends table_base {
      * @return array
      */
     public function get_file_options() {
-
-        global $CFG, $DB;
+        global $CFG;
 
         require_once($CFG->dirroot. '/repository/lib.php');
 
@@ -979,8 +978,7 @@ class coursework extends table_base {
      * extension - it is a temp file.
      */
     public function pack_files() {
-
-        global $CFG, $DB, $USER;
+        global $CFG, $DB;
 
         $context = context_module::instance($this->get_coursemodule_id());
 
@@ -1706,7 +1704,6 @@ class coursework extends table_base {
      * who needs to be a student.
      */
     public function allowed_to_submit() {
-        global $USER;
         return (time() < $this->get_user_deadline($USER->id)) || $this->allow_late_submissions();
     }
 
@@ -2706,9 +2703,6 @@ class coursework extends table_base {
      * @return array
      */
     private function get_allocatable_personal_deadline($allocatable) {
-
-        global  $DB;
-
         $allocatable->deadline = $this->deadline;
         $allocatable->coursework_id = $this->id;
 
@@ -2847,7 +2841,6 @@ class coursework extends table_base {
      * @param $filearea
      */
     public function remove_corresponding_file($contextid, $itemid, $filearea) {
-        global $DB;
         $component = 'mod_coursework';
         $fs = get_file_storage();
         $fs->delete_area_files($contextid, $component, $filearea, $itemid);

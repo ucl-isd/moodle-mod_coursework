@@ -217,9 +217,6 @@ class agreedgrade_cell extends cell_base {
      * @return bool
      */
     public function value_in_rubric($criteria,    $value) {
-
-        global  $DB;
-
         $valuefound = false;
 
         $levels = $criteria['levels'];

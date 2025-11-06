@@ -70,8 +70,7 @@ class cron {
      * @return boolean
      **/
     private static function send_reminders_to_students() {
-
-        global $CFG, $DB;
+        global $DB;
 
         $counts = [
             'emails' => 0,

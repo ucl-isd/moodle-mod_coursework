@@ -144,9 +144,6 @@ class builder implements user_row {
      * @return string
      */
     public function get_idnumber() {
-
-        global $DB;
-
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->idnumber)) {
             $this->allocatable = user::find($allocatable);
@@ -159,9 +156,6 @@ class builder implements user_row {
      * @return string
      */
     public function get_email() {
-
-        global $DB;
-
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->email)) {
             $this->allocatable = user::find($allocatable);

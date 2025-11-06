@@ -56,10 +56,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string
      */
     public function render_feedback(feedback $feedback) {
-        // WIP - feedback view.
-
-        global $USER;
-
         $template = new stdClass();
 
         $submission = $feedback->get_submission();
@@ -432,9 +428,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string
      */
     protected function render_mod_coursework_allocation_table(mod_coursework_allocation_table $allocationtable) {
-
-        global $SESSION;
-
         $tablehtml = $allocationtable->get_hidden_elements();
         $all = count($allocationtable->get_coursework()->get_allocatables());
         $options = $allocationtable->get_options();

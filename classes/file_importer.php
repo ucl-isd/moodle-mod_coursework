@@ -95,7 +95,7 @@ class coursework_file_zip_importer {
      * @return string - The html response
      */
     public function import_zip_files($coursework, $feedbackstage, $overwritecurrent) {
-        global $CFG, $PAGE, $DB, $USER;
+        global $DB, $USER;
 
         set_time_limit(120);
 

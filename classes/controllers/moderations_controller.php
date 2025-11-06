@@ -124,8 +124,7 @@ class moderations_controller extends controller_base {
      * Saves the new feedback form for the first time.
      */
     protected function create_moderation() {
-
-        global $USER, $PAGE, $CFG;
+        global $USER, $PAGE;
 
         $this->check_stage_permissions($this->params['stage_identifier']);
 
@@ -172,8 +171,7 @@ class moderations_controller extends controller_base {
      * Saves the new feedback form for the first time.
      */
     protected function update_moderation() {
-
-        global $USER, $CFG;
+        global $USER;
 
         $moderatoragreement = new moderation($this->params['moderationid']);
         $moderatoragreement->lasteditedby = $USER->id;

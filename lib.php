@@ -1215,8 +1215,6 @@ function mod_coursework_supports($feature) {
  * @return bool
  */
 function coursework_mod_updated($eventdata) {
-    global $DB;
-
     if ($eventdata->other['modulename'] == 'coursework') {
 
         $coursework = coursework::find($eventdata->other['instanceid']);
@@ -1510,8 +1508,6 @@ function coursework_personal_deadline_passed($courseworkid) {
  * @return bool
  */
 function teacher_allocation_cache_purge($eventdata) {
-    global $DB;
-
     $roleid = $eventdata->objectid;
 
     // get roles with a specific capability

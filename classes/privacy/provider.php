@@ -276,7 +276,6 @@ class provider implements
         }
     }
     public static function delete_data_for_all_users_in_context(context $context) {
-        global $DB;
         if ($context->contextlevel == CONTEXT_MODULE) {
             $cm = get_coursemodule_from_id('coursework', $context->instanceid);
             if ($cm) {
@@ -310,7 +309,6 @@ class provider implements
         }
     }
     public static function delete_data_for_user(approved_contextlist $contextlist) {
-        global $DB;
         $user = $contextlist->get_user();
         foreach ($contextlist as $context) {
             if ($context->contextlevel != CONTEXT_MODULE) {
@@ -345,7 +343,6 @@ class provider implements
         }
     }
     public static function delete_data_for_users(approved_userlist $userlist) {
-        global $DB;
         $context = $userlist->get_context();
         if ($context->contextlevel != CONTEXT_MODULE) {
             return;

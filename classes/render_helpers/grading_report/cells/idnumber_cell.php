@@ -33,8 +33,6 @@ class idnumber_cell extends cell_base implements allocatable_cell {
      * @return string
      */
     public function get_table_cell($rowobject) {
-        global $OUTPUT, $PAGE;
-
         $content = '';
         $content .= $rowobject->get_idnumber();
 

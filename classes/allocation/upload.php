@@ -183,7 +183,7 @@ class upload {
      */
     public function process_csv($content, $encoding, $delimiter, $processingresults) {
 
-        global $CFG, $DB, $PAGE;
+        global $CFG, $DB;
 
         $assessoridentifier = $CFG->coursework_allocation_identifier;
 

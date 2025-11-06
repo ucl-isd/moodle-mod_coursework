@@ -273,7 +273,6 @@ class deadline_extensions_controller extends controller_base {
     }
 
     public function validation($data) {
-        global $CFG;
         if ($this->coursework->personaldeadlineenabled && $personaldeadline = $this->personal_deadline()) {
             $deadline = $personaldeadline->personal_deadline;
         } else {

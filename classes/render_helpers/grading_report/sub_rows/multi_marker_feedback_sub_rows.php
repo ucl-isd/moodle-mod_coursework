@@ -107,8 +107,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
      * @return html_table_row
      */
     protected function render_assessor_feedback_table(assessor_feedback_table $assessorfeedbacktable) {
-
-        global $USER, $PAGE;
+        global $USER;
 
         $coursework = $assessorfeedbacktable->get_coursework();
         $ability = new ability($USER->id, $coursework);

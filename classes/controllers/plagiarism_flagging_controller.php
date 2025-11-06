@@ -86,8 +86,7 @@ class plagiarism_flagging_controller extends controller_base {
      * @throws moodle_exception
      */
     protected function edit_plagiarism_flag() {
-
-        global $DB, $PAGE, $USER;
+        global $PAGE, $USER;
 
         $plagiarismflag = new plagiarism_flag($this->params['flagid']);
 

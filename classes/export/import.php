@@ -57,9 +57,6 @@ class import extends grading_sheet {
      * @throws moodle_exception
      */
     public function validate_csv($content, $encoding, $delimeter, $csvcells) {
-
-        global $DB, $USER;
-
         $iid = csv_import_reader::get_new_iid('courseworkgradingdata');
         $csvreader = new csv_import_reader($iid, 'courseworkgradingdata');
 
@@ -275,8 +272,7 @@ class import extends grading_sheet {
      * @throws moodle_exception
      */
     public function process_csv($content, $encoding, $delimiter, $csvcells, $processingresults) {
-
-        global $DB, $PAGE, $USER;
+        global $DB, $PAGE;
 
         $iid = csv_import_reader::get_new_iid('courseworkgradingdata');
         $csvreader = new csv_import_reader($iid, 'courseworkgradingdata');
@@ -553,9 +549,6 @@ class import extends grading_sheet {
      * @return bool
      */
     public function get_value_rubric_levelid($criteria,    $value) {
-
-        global  $DB;
-
         $idfound = false;
 
         $levels = $criteria['levels'];

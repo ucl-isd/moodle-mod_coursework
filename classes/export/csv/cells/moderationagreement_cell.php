@@ -37,8 +37,6 @@ class moderationagreement_cell extends cell_base {
      * @return array
      */
     public function get_cell($submission, $student, $stageidentifier) {
-        global $DB;
-
         $data = [];
         $moderationagreement = '';
         $moderation = '';

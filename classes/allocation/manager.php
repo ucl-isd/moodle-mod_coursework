@@ -233,8 +233,7 @@ class manager {
      * @throws moodle_exception
      */
     public function save_sample_set_rule($assessornumber) {
-
-        global $CFG, $DB;
+        global $DB;
 
         $sampleplugins = $DB->get_records('coursework_sample_set_plugin', null, 'pluginorder');
         $order = 0;

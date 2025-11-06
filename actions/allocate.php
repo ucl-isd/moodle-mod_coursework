@@ -41,7 +41,7 @@ require_once($CFG->dirroot.'/mod/coursework/lib.php');
  * @param stdClass $coursemodule The coursemodule object.
  */
 function coursework_process_form_submissions(coursework $coursework, $coursemodule) {
-    global $DB, $PAGE, $CFG;
+    global $DB, $PAGE;
 
     $formsavebutton = optional_param('save', 0, PARAM_BOOL);
     $samplingformsavebutton = optional_param('save_sampling', 0, PARAM_BOOL);

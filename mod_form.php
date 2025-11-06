@@ -44,8 +44,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     /**
      */
     public function definition() {
-
-        global $PAGE, $CFG;
+        global $PAGE;
 
         // Don't include jQuery when not on this module's settings page, for
         // example, if on the default activity completion page.  See MDL-78528.

@@ -42,7 +42,7 @@ class submission_cell extends cell_base {
      */
     public function get_table_cell($rowobject) {
 
-        global $USER, $OUTPUT, $DB, $CFG;
+        global $USER, $OUTPUT;
 
         $content = '';
 
