@@ -130,13 +130,6 @@ class router {
                 $url = new moodle_url('/mod/coursework/actions/feedbacks/new.php', $params);
                 break;
 
-            /*case 'new moderator feedback':
-                $url = new moodle_url('/mod/coursework/actions/feedbacks/new.php',
-                                      array('submissionid' => $items['submission']->id,
-                                            'stageidentifier' => $items['stage']->identifier(),
-                                            'ismoderation' => 1));
-                break;*/
-
             case 'new submission':
                 $url = new moodle_url('/mod/coursework/actions/submissions/new.php',
                                       [

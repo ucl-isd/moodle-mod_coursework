@@ -458,7 +458,7 @@ class coursework extends table_base {
             $moduleid = $modulerecord->id;
             $courseid = $this->get_course_id();
             if (!isset(course_module::$pool['course-module-instance'][$courseid][$moduleid][$this->id]->id)) {
-                $this->coursemodule = course_module::$pool['course-module-instance'][$courseid][$moduleid][$this->id] =
+                course_module::$pool['course-module-instance'][$courseid][$moduleid][$this->id] =
                     $DB->get_record('course_modules', ['course' => $courseid, 'module' => $moduleid, 'instance' => $this->id], '*', MUST_EXIST);
             }
             $this->coursemodule = course_module::$pool['course-module-instance'][$courseid][$moduleid][$this->id];

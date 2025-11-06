@@ -62,9 +62,8 @@ class submissions_controller extends controller_base {
         if ($submitform->is_submitted()) {
             $validation = $submitform->validate_defined_fields();
         }
-        if ($isnew) {
+        if (!$isnew) {
             // No need to set form data for new submission
-        } else {
             $submitform->set_data($submission);
         }
         if ($validation !== true) {

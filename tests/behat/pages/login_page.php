@@ -61,8 +61,7 @@ class mod_coursework_behat_login_page extends mod_coursework_behat_page_base {
                 $this->getsession()->wait(10 * 1000);
             }
             $this->should_have_text('Log out');
-
-        } catch(ExpectationException $e) {
+        } catch (ExpectationException $e) {
             $this->getcontext()->show_me_the_page();
             throw new ExpectationException('User '.$user->username.' could not be logged in', $this->getsession());
         }

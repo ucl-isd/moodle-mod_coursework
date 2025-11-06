@@ -103,7 +103,7 @@ class behat_mod_coursework extends behat_base {
     protected function get_page($pagename) {
         global $CFG;
 
-        $pagename = str_replace(' ', '_', $pagename); // 'student page' => 'student_page'
+        $pagename = str_replace(' ', '_', $pagename);
 
         $filepath = $CFG->dirroot.'/mod/coursework/tests/behat/pages/'.$pagename.'.php';
 
@@ -1699,8 +1699,6 @@ class behat_mod_coursework extends behat_base {
      */
     public function the_grades_have_been_published() {
         global $DB;
-        // $this->coursework->publish_grades();
-
         // Using publish_grades was causing a user not found DB error so trying to isolate that here.
         $submissions = $this->coursework->get_submissions_to_publish();
         foreach ($submissions as $submission) {
@@ -3358,38 +3356,6 @@ class behat_mod_coursework extends behat_base {
             }
         }
     }
-
-    /**
-     * Take screenshot when step fails. Works only with Selenium2Driver.
-     *
-     * Screenshot is saved at [Date]/[Feature]/[Scenario]/[Step].jpg .
-     *
-     * @AfterStep
-     * @param \Behat\Behat\Event\StepEvent $event
-     */
-    // public function take_screenshot_after_failed_step(Behat\Behat\Event\StepEvent $event) {
-    // if ($event->getResult() === Behat\Behat\Event\StepEvent::FAILED) {
-    //
-    // $step = $event->getStep();
-    // $path = array(
-    // 'date' => date("Ymd-Hi"),
-    // 'feature' => $step->getParent()->getFeature()->getTitle(),
-    // 'scenario' => $step->getParent()->getTitle(),
-    // 'step' => $step->getType() . ' ' . $step->getText(),
-    // );
-    // $path = preg_replace('/[^\-\.\w]/', '_', $path);
-    // $filename = implode($path);
-    //
-    // $driver = $this->getsession()->getDriver();
-    // if ($driver instanceof Behat\Mink\Driver\Selenium2Driver) {
-    // $filename .= '_screenshot.jpg';
-    // $this->show_me_a_screenshot($filename);
-    // } else {
-    // $filename .= '_page.html';
-    // $this->show_me_the_page($filename);
-    // }
-    // }
-    // }
 
     // File renaming test step definitions.
 

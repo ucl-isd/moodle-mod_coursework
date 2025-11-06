@@ -310,8 +310,6 @@ class manager {
                                ORDER BY       ruleorder)a";
 
             if ($sampleplugins = $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id, 'stage' => $stage])) {
-
-                // $allocatables = $this->get_coursework()->get_allocatables_with_feedback();
                 $allocatables = $this->get_coursework()->get_allocatables();
                 $manualsampleset = $this->get_include_in_sample_set($stagenumber);
 

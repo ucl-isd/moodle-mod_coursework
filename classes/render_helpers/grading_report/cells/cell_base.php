@@ -58,34 +58,6 @@ abstract class cell_base implements cell_interface {
      * @throws coding_exception
      */
     protected function helper_sortable_heading($displayname, $field, $sorthow, $sortby = '', $tablename='') {
-
-        global $PAGE;
-
-        $params = ['id' => optional_param('id', 0, PARAM_INT)];
-
-        $tablename = (!empty($tablename)) ? $tablename.'_' : '';
-
-        if (optional_param($tablename.'page', 0, PARAM_INT) > 0) {
-            $params[$tablename.'page'] = optional_param($tablename.'page', 0, PARAM_INT);
-        }
-        $params[$tablename.'sortby'] = $field;
-        if ($field == $sortby) {
-            $params[$tablename.'sorthow'] = $sorthow == 'ASC' ? 'DESC' : 'ASC';
-        } else {
-            // Default for columns not currently being sorted.
-            $params[$tablename.'sorthow'] = 'ASC';
-        }
-
-        // $url = clone($PAGE->url);
-        // $url->params($params);
-
-        // Need a little icon to show ASC or DESC.
-        // if ($field == $sortby) {
-        // $display_name .= '&nbsp;'; // Keep them on the same line.
-        // $display_name .= $sort_how == 'ASC' ? '&#x25B2;' : '&#x25BC;'; // Small unicode triangles.
-        // }
-
-        // return html_writer::link($url, $display_name);
         return $displayname;
     }
 

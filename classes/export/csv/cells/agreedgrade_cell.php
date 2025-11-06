@@ -157,7 +157,8 @@ class agreedgrade_cell extends cell_base {
             $submission = submission::find($subdbrecord);
 
             // Is the submission in question ready to grade?
-            if (!$submission->all_initial_graded() && !empty($value) && count($uploadedgradecells) < $submission->max_number_of_feedbacks()) { return get_string('submissionnotreadyforagreedgrade', 'coursework');
+            if (!$submission->all_initial_graded() && !empty($value) && count($uploadedgradecells) < $submission->max_number_of_feedbacks()) {
+                return get_string('submissionnotreadyforagreedgrade', 'coursework');
             }
 
             // Has the submission been published if yes then no further grades are allowed

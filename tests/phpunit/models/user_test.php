@@ -101,8 +101,4 @@ final class user_test extends \advanced_testcase {
         $this->create_an_assessor_feedback_for_the_submission($teacher);
         $this->assertTrue($this->get_student()->has_all_initial_feedbacks($this->get_coursework()));
     }
-
-    // get_initial_feedbacks()
-
-
 }

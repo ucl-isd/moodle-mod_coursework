@@ -127,12 +127,6 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
             // Don't show empty rows with nothing in them
             // As a part of Release 1 we decided to show all rows to apply styling correctly,
             // this is expected to be rewritten for Release 2
-            /* if (!$feedback_row->get_assessor()->id() && (!$feedback_row->get_submission() ||
-                                                         !$feedback_row->get_submission()->ready_to_grade() ||
-                                                          $this->alreadyshownanewbutton)) {
-                continue;
-            }*/
-
             $outputrows .= ' <tr class="' . $this->row_class($feedbackrow) . '">';
 
             if ($coursework->sampling_enabled() && $stage->uses_sampling() && !$stage->allocatable_is_in_sample($allocatable)) {
@@ -158,26 +152,6 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
             $allocationstring = ($coursework->allocation_enabled())
                 ? get_string('allocatedtoassessor', 'mod_coursework')
                 : get_string('assessor', 'mod_coursework');
-            /*
-            $table_html = '
-                <tr class = "submissionrowmultisub">
-
-                  <td colspan = "11" class="assessors" >
-                  <table class="assessors" id="assessorfeedbacktable_' . $assessor_feedback_table->get_coursework()
-                    ->get_allocatable_identifier_hash($assessor_feedback_table->get_allocatable()) . '">
-                    <tr>
-                      <th>' . $allocation_string . '</th>
-                      <th>' . get_string('grade', 'mod_coursework') . '</th>
-                      <th>' . get_string('tableheaddate', 'mod_coursework') . '</th>
-                    </tr>';
-
-            $table_html .= $output_rows;
-
-            $table_html .= '
-                    </table>
-                  </td>
-                </tr>';
-            */
             $tablehtml = '<table class="assessors" id="assessorfeedbacktable_' . $assessorfeedbacktable->get_coursework()
                 ->get_allocatable_identifier_hash($assessorfeedbacktable->get_allocatable()) . '" style="display: none;">
                         <tr>

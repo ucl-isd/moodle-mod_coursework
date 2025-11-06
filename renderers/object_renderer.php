@@ -860,11 +860,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $sampleplugins = $DB->get_records('coursework_sample_set_plugin', null, 'pluginorder');
 
-        // $fullclasspaths = glob($classdir . '/*.php');
         foreach ($sampleplugins as $plugin) {
-            /*    if (strpos($fullclassname, 'base') !== false) {
-                continue;
-            }*/
             preg_match('/([^\/]+).php/', $classdir."/".$plugin->rulename.".php", $matches);
             $classname = $matches[1];
             $fullclassname = '\mod_coursework\sample_set_rule\\' . $classname;

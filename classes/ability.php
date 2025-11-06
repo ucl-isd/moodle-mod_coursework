@@ -224,7 +224,6 @@ class ability extends framework\ability {
         // Plagiarism flagging rules for Plagiarism Alert
 
         // New
-        // $this->prevent_new_plagiarism_flag_if_already_exists();
         $this->allow_new_plagiarism_flag_with_capability();
 
         // Edit

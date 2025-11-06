@@ -210,8 +210,6 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
 
         if ($this->getpage()->hasLink('Continue')) {
             $this->getpage()->clickLink('Continue');
-        } else {
-
         }
     }
 

@@ -172,18 +172,9 @@ class singlegrade_cell extends cell_base {
                 if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $PAGE->context) && !has_capability('mod/coursework:administergrades', $PAGE->context)) {
                     return get_string('nopermissiontoeditgrade', 'coursework');
                 }
-
             }
 
             $ability = new ability($USER->id, $this->coursework);
-
-            $feedbackparams = [
-                'submissionid' => $submission->id,
-                'stageidentifier' => $stageidentifier,
-            ];
-            $feedback = feedback::find($feedbackparams);
-
-            // if (!$ability->can('edit', $feedback))   return get_string('nopermissiontoeditgrade', 'coursework');
 
             // Does a feedback exist for this stage
             if (empty($feedback)) {

@@ -71,7 +71,7 @@ class feedback_controller extends controller_base {
     protected function viewpdf() {
         global $PAGE, $USER;
 
-        if(empty($this->coursework->enablepdfjs())) {
+        if (empty($this->coursework->enablepdfjs())) {
             throw new Exception('coursework enablepdfjs not enabled');
         }
 
@@ -282,10 +282,7 @@ class feedback_controller extends controller_base {
                 $cancelurl->param('feedbackid', $this->params['feedbackid']);
                 $cancelurl->param('finalised', $this->params['finalised']);
                 $renderer = $this->get_page_renderer();
-                return  $renderer->confirm_feedback_removal_page($teacherfeedback, $confirmurl, $cancelurl);
-
-                 // $OUTPUT->confirm(get_string('confirmremovefeedback', 'mod_coursework'), $confirmurl, $PAGE->url);
-
+                return  $renderer->confirm_feedback_removal_page($teacherfeedback, $confirmurl);
             } else {
                 feedback::remove_cache($teacherfeedback->get_courseworkid());
                 submission::remove_cache($teacherfeedback->get_courseworkid());

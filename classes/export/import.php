@@ -172,7 +172,8 @@ class import extends grading_sheet {
 
             $types = ["singlegrade", "assessorgrade"];
 
-            if ($this->coursework->finalstagegrading == 0 ) { $types[] = "agreedgrade";
+            if ($this->coursework->finalstagegrading == 0 ) {
+                $types[] = "agreedgrade";
             }
 
             foreach ($types as $type) {
@@ -207,22 +208,18 @@ class import extends grading_sheet {
                     $offset = 0;
 
                     foreach ($typepositions as $position) {
-                        // if ($position = array_search($type, $csvheader)) {
-                            $class = "mod_coursework\\export\\csv\\cells\\{$type}_cell";
+                        $class = "mod_coursework\\export\\csv\\cells\\{$type}_cell";
                         $cell = new $class($this->coursework);
 
                         $headers = $cell->get_header(null);
 
-                            unset($csvheader[$position + $offset]);
-                            unset($linefromimportedcsv[$position + $offset]);
-                        // if ($type == 'agreedgrade' && $this->coursework->finalstagegrading == 0) {
-                            array_splice($csvheader, $position + $offset, 0, array_keys($headers));
-                            array_splice($linefromimportedcsv, $position + $offset, 0, ['']);
-                        // }
-                            $offset = $offset + count($headers) - 1;
-                            $expectedsize = (int)count($csvheader);
-                            $actualsize = (int)count($linefromimportedcsv);
-
+                        unset($csvheader[$position + $offset]);
+                        unset($linefromimportedcsv[$position + $offset]);
+                        array_splice($csvheader, $position + $offset, 0, array_keys($headers));
+                        array_splice($linefromimportedcsv, $position + $offset, 0, ['']);
+                        $offset = $offset + count($headers) - 1;
+                        $expectedsize = count($csvheader);
+                        $actualsize = count($linefromimportedcsv);
                     }
 
                 }
@@ -307,16 +304,16 @@ class import extends grading_sheet {
             }
 
             $csv = $this->remove_other_assessors_grade($csvcells, $line);
-            // Gets the headers that should be being used in the uploaded csv
-            // $cells = $this->get_rubric_headers($csv);
             $cells = $csv;
             $i = 0;
 
             $csvline = [];
 
-            // if ((!$this->coursework->is_using_rubric() && count($line) != count($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($csv, $line))) {
-            // if (count($line) != count($cells)) {
-            if ((!$this->coursework->is_using_rubric() && count($line) != count($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($csv, $line))) {
+            if (
+                (!$this->coursework->is_using_rubric() && count($line) != count($cells))
+                ||
+                ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($csv, $line))
+            ) {
 
                 $errors = get_string('incorrectfileformat', 'coursework');
                 break;
@@ -456,8 +453,6 @@ class import extends grading_sheet {
                     $arrayvalues = array_filter($rubricdata);
 
                     if (!empty($arrayvalues)) {
-
-                        // for ( $critidx < $numberofrubrics; ) {
                         $critidx = 0;
                         // This assumes that the data in the csv is in the correct criteria order.....it should be
                         foreach ($criterias as $c) {

@@ -136,9 +136,8 @@ class marking_cell_data extends cell_data_base {
                     $row->get_stage(),
                     $feedback
             );
-        }
-        // User cannot see the mark.
-        else {
+        } else {
+            // User cannot see the mark.
             $marker->markhidden = true;
         }
     }

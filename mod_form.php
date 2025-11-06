@@ -75,13 +75,11 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->add_submission_deadline_field();
         $this->add_personaldeadline_field();
 
-        // if (coursework_is_ulcc_digest_coursework_plugin_installed()) {
-            $this->add_marking_deadline_field();
-            $this->add_initial_marking_deadline_field();
-            $this->add_agreed_grade_marking_deadline_field();
-            $this->add_relative_initial_marking_deadline_field();
-            $this->add_relative_agreed_grade_marking_deadline_field();
-        // }
+        $this->add_marking_deadline_field();
+        $this->add_initial_marking_deadline_field();
+        $this->add_agreed_grade_marking_deadline_field();
+        $this->add_relative_initial_marking_deadline_field();
+        $this->add_relative_agreed_grade_marking_deadline_field();
 
         $this->add_allow_early_finalisation_field();
         $this->add_allow_late_submissions_field();
@@ -401,8 +399,6 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->addHelpButton('personaldeadlineenabled', 'usepersonaldeadline', 'mod_coursework');
 
         $moodleform->setDefault('personaldeadlineenabled', 0);
-        // $moodle_form->hideif('personaldeadlineenabled', 'deadline[enabled]', 'notchecked');
-
     }
 
     /**
@@ -739,17 +735,12 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform =& $this->_form;
 
         $choices = get_max_upload_sizes($CFG->maxbytes, $COURSE->maxbytes);
-        // $choices[0] = get_string('maximumupload') . ' (' . display_size($COURSE->maxbytes) . ')';
         $choices[0] = get_string('maximumupload'). ' set in course';
         $moodleform->addElement('select',
                                  'maxbytes',
                                  get_string('maximumsize', 'coursework'),
                                  $choices);
         $moodleform->setDefault('maxbytes', $CFG->coursework_maxbytes);
-        /* $moodle_form->addElement('static',
-                                 'maxbyteslabel',
-                                 '',
-                                 get_string('maximumsizelabel', 'coursework'));*/
         $moodleform->addHelpButton('maxbytes', 'maximumsize', 'mod_coursework');
         $moodleform->hideif('maxbytes', 'use_turnitin', 'eq', '1');
     }

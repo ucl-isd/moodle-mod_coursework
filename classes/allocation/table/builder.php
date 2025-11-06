@@ -194,21 +194,14 @@ class builder {
 
         $cm = $this->coursework->get_course_module();
 
-        if  (isset($SESSION->coursework_allocationsessions[$cm->id])) {
-
+        if (isset($SESSION->coursework_allocationsessions[$cm->id])) {
             foreach ($SESSION->coursework_allocationsessions[$cm->id] as $name => $val) {
-
                 if (!is_array($val)) {
-
                     $elements .= "<input type='hidden' name='$name'   value='$val'> ";
-
                 }
-
             }
-
         }
 
         return  $elements;
-
     }
 }
