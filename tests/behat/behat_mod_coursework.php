@@ -3589,4 +3589,32 @@ class behat_mod_coursework extends behat_base {
             }
         }
     }
+
+    /**
+     * Create default grade class boundary option.
+     *
+     * @Then /^A default auto grading grade class boundaries option exists and is assigned to the course$/
+     */
+    public function default_grade_class_boundary_template_exists() {
+        global $DB;
+        $templateid = $DB->get_field_sql(
+            "SELECT id FROM {coursework_class_boundary_templates} ORDER BY id DESC LIMIT 1"
+        );
+        if (!$templateid) {
+            // Create a default grade class boundary template.
+            $title = get_string('default');
+            $templateid = $DB->insert_record('coursework_class_boundary_templates', ['name' => $title]);
+            \mod_coursework\auto_grader\average_grade_no_straddle::save_grade_class_boundaries(
+                $templateid,
+                $title,
+                \mod_coursework\auto_grader\average_grade_no_straddle::get_grade_class_boundaries(0)
+            );
+        }
+
+        // Ensure template ID is assigned to "the coursework" (which will be the last entry in coursework table).
+        $courseworkid = $DB->get_field_sql("SELECT MAX(id) FROM {coursework}");
+        if ($courseworkid) {
+            $DB->set_field('coursework', 'gradeboundarytemplateid', $templateid, ['id' => $courseworkid]);
+        }
+    }
 }

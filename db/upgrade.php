@@ -2500,6 +2500,65 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025110300, 'coursework');
     }
 
+    if ($oldversion < 2025110402) {
+
+        // Define table coursework_class_boundaries to be created.
+        $table = new xmldb_table('coursework_class_boundaries');
+        // Drop early version of this table possibly created during development.
+        if ($dbman->table_exists($table)) {
+            $dbman->drop_table($table);
+        }
+
+        // Adding fields to table coursework_class_boundaries.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('templateid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('bottom', XMLDB_TYPE_NUMBER, '10, 2', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('top', XMLDB_TYPE_NUMBER, '10, 2', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table coursework_class_boundaries.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+        // Adding indexes to table coursework_class_boundaries.
+        $table->add_index('templateid', XMLDB_INDEX_NOTUNIQUE, ['templateid']);
+
+        // Conditionally launch create table for coursework_class_boundaries.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Define table coursework_class_boundary_templates to be created.
+        $table = new xmldb_table('coursework_class_boundary_templates');
+
+        // Drop early version of this table possibly created during development.
+        if ($dbman->table_exists($table)) {
+            $dbman->drop_table($table);
+        }
+
+        // Adding fields to table coursework_class_boundary_templates.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('name', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+
+        // Adding keys to table coursework_class_boundary_templates.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+        // Conditionally launch create table for coursework_class_boundary_templates.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Define field gradeboundarytemplateid to be added to coursework.
+        $table = new xmldb_table('coursework');
+        $field = new xmldb_field('gradeboundarytemplateid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'roundingrule');
+
+        // Conditionally launch add field gradeboundarytemplateid.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2025110402, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }

@@ -62,6 +62,7 @@
         <FIELD NAME="automaticagreementrange" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="automaticagreementstrategy" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="none" SEQUENCE="false"/>
         <FIELD NAME="roundingrule" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="mid" SEQUENCE="false"/>
+        <FIELD NAME="gradeboundarytemplateid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="feedbackreleaseemail" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="markingdeadlineenabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="initialmarkingdeadline" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
@@ -327,6 +328,28 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-
+    <TABLE NAME="coursework_class_boundary_templates" COMMENT="Templates for class boundaries for auto grader average_grade_no_straddle">
+      <FIELDS>
+          <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+          <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+          <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="coursework_class_boundaries" COMMENT="Table to hold class boundaries for auto grader average_grade_no_straddle">
+      <FIELDS>
+          <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+          <FIELD NAME="templateid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the template this band relates to"/>
+          <FIELD NAME="bottom" TYPE="number" LENGTH="10" NOTNULL="true" SEQUENCE="false" DECIMALS="2" COMMENT="Bottom of the range for this grade class"/>
+          <FIELD NAME="top" TYPE="number" LENGTH="10" NOTNULL="true" SEQUENCE="false" DECIMALS="2" COMMENT="Top of the range for this grade class"/>
+      </FIELDS>
+      <KEYS>
+          <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+          <INDEX NAME="templateid" UNIQUE="false" FIELDS="templateid"/>
+      </INDEXES>
+    </TABLE>
   </TABLES>
 </XMLDB>
