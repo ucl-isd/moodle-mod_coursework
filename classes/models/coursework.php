@@ -2788,7 +2788,7 @@ class coursework extends table_base {
      */
     public function retrieve_feedbacks_by_submission($submissionid) {
         feedback::fill_pool_coursework($this->id);
-        $result = isset(feedback::$pool[$this->id][submissionid]) ? feedback::$pool[$this->id][submissionid] : [];
+        $result = isset(feedback::$pool[$this->id][$submissionid]) ? feedback::$pool[$this->id][$submissionid] : [];
         return $result;
     }
     /**
