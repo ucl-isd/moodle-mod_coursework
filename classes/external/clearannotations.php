@@ -25,7 +25,7 @@ use mod_coursework\models\user;
 
 
 /**
- * External service to get a single row of data (one user) for the grading table to re-render it from JS.
+ * External service to delete the annotate version of a PDF submission.
  *
  * @package   mod_coursework
  * @copyright 2025 UCL
@@ -49,7 +49,8 @@ class clearannotations extends external_api {
     /**
      * Execute the function.
      *
-     * @param int $extensionid
+     * @param int $submissionid
+     * @param int $fileid
      */
     public static function execute(int $submissionid, int $fileid): array {
         global $PAGE, $USER;

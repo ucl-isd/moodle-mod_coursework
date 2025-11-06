@@ -20,10 +20,8 @@
  *
  * @package mod_coursework
  * @author Andrew Hancox <andrewdchancox@googlemail.com>
- * @author Open Source Learning <enquiries@opensourcelearning.co.uk>
- * @link https://opensourcelearning.co.uk
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @copyright 2024, Andrew Hancox
+ * @copyright 2025 UCL
  */
 
 /**
@@ -72,7 +70,7 @@ $PAGE->set_context($context);
 $fs = get_file_storage();
 
 $totalsize = 0;
-$files = array();
+$files = [];
 foreach ($_FILES as $fieldname => $uploadedfile) {
     if (!empty($files)) {
         throw new \Exception('too many files');
@@ -139,7 +137,6 @@ if ($maxupload !== USER_CAN_IGNORE_FILE_SIZE_LIMITS && $totalsize > $maxupload) 
     throw new file_exception('userquotalimit');
 }
 
-$results = array();
 $filerecord = new stdClass;
 $filerecord->component = 'mod_coursework';
 $filerecord->contextid = $context->id;

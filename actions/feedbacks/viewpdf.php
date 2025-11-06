@@ -22,8 +22,6 @@
 
 require_once(dirname(__FILE__) . '/../../../../config.php');
 
-global $USER;
-
 $submissionid = required_param('submissionid', PARAM_INT);
 
 $params = [

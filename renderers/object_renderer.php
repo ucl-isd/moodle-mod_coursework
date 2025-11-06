@@ -125,14 +125,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string
      */
     public function render_viewpdf(submission $submission) {
-        global $USER;
-
         $template = new stdClass();
 
         $studentname = $submission->get_allocatable_name();
 
         $template->title = get_string('viewsubmission', 'mod_coursework', $studentname);
-
         $template->files = [];
 
         $annotatedfiles = $submission->get_file_annotations();
@@ -158,8 +155,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
 
         $template->multiplefiles = (count($template->files) > 1);
-
-        // Return html from template.
 
         $this->page->requires->js_call_amd(
             "mod_coursework/viewpdf",

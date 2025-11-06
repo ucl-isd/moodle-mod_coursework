@@ -39,11 +39,10 @@
                 data-annotatedfileurl="{{annotatedfileurl}}"
                 data-annotatedfileid="{{annotatedfileid}}">{{filename}}</button>
     {{/files}}
-
-        <!-- Save annotations button must have a tabindex or its blur event does not have a relatedtarget, which prevents pdf.js from persisting annotations !-->
-    <button class="btn btn-primary" tabindex="0" data-action="modcoursework_saveannotations">{{#str}}saveannotations, mod_coursework{{/str}}</button>
-    <button class="btn btn-primary" data-action="modcoursework_clearannotations">{{#str}}clearannotations, mod_coursework{{/str}}</button>
-        </span>
+        {{! Save annotations button must have a tabindex or its blur event does not have a relatedtarget, which prevents pdf.js from persisting annotations !}}
+        <button class="btn btn-primary" tabindex="0" data-action="modcoursework_saveannotations">{{#str}}saveannotations, mod_coursework{{/str}}</button>
+        <button class="btn btn-primary" data-action="modcoursework_clearannotations">{{#str}}clearannotations, mod_coursework{{/str}}</button>
+    </span>
 </div>
 
 <div class="modcoursework_pdfjswrapper" style="height:1000px;">
