@@ -22,6 +22,7 @@
 
 namespace mod_coursework\event;
 use moodle_url;
+use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 

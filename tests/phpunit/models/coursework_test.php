@@ -24,8 +24,6 @@
 
 namespace mod_coursework;
 
-use mod_coursework\models\coursework;
-
 defined('MOODLE_INTERNAL') || die();
 
 /**

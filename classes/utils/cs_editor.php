@@ -22,6 +22,7 @@
 
 namespace mod_coursework\utils;
 
+use context_system;
 use editor_tiny\editor;
 use stdClass;
 

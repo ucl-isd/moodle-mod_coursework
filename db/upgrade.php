@@ -35,8 +35,6 @@ global $CFG;
 
 require_once($CFG->dirroot . '/mod/coursework/lib.php');
 
-use mod_coursework\models\coursework;
-
 /**
  * xmldb_eassessment_upgrade
  *

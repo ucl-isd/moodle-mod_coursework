@@ -316,7 +316,7 @@ class deadline_extensions_controller extends controller_base {
      * @param array $dataparams
      *
      * Generate html cell base on time_submitted_cell
-     * @return html_string $content
+     * @return string $content
      *
      */
 

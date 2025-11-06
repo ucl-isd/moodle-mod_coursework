@@ -27,6 +27,7 @@ namespace mod_coursework\allocation\table\row;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\allocation\table\builder as table_builder;
 use mod_coursework\models\coursework;
+use mod_coursework\models\user;
 use mod_coursework\render_helpers\grading_report\cells\allocatable_cell;
 use mod_coursework\stages\base as stage_base;
 use mod_coursework\user_row;

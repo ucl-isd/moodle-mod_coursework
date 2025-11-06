@@ -132,7 +132,7 @@ abstract class table_base {
      * Makes a new object ready to save
      *
      * @param stdClass|array $data
-     * @return \framework\table_base
+     * @return table_base
      */
     public static function build($data) {
         $klass = get_called_class();

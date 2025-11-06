@@ -17,6 +17,7 @@
 namespace mod_coursework\allocation;
 
 use csv_import_reader;
+use mod_coursework\models\coursework;
 use mod_coursework\models\group;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;

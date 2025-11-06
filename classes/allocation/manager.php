@@ -29,7 +29,6 @@ use coding_exception;
 use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\coursework;
 use mod_coursework\models\moderation_set_rule;
-use mod_coursework\moderation_set_widget;
 use mod_coursework\sampling_set_widget;
 use mod_coursework\stages\base as stage_base;
 use mod_coursework_sampling_set_widget;

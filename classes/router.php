@@ -22,6 +22,7 @@
 
 namespace mod_coursework;
 use coding_exception;
+use mod_coursework\models\coursework;
 use moodle_url;
 
 /**
