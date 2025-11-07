@@ -468,15 +468,16 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^there is feedback for the submission from the teacher$/
+     * @Given /^there is( finalised)? feedback for the submission from the teacher$/
      */
-    public function there_is_feedback_for_the_submission_from_the_teacher() {
+    public function there_is_feedback_for_the_submission_from_the_teacher($finalised = false) {
         $feedback = new stdClass();
         $feedback->submissionid = $this->submission->id;
         $feedback->assessorid = $this->teacher->id;
         $feedback->grade = 58;
         $feedback->feedbackcomment = 'Blah';
         $feedback->stageidentifier = 'assessor_1';
+        $feedback->finalised = $finalised ? 1 : 0;
         $this->feedback = feedback::create($feedback);
     }
 
@@ -1672,6 +1673,7 @@ class behat_mod_coursework extends behat_base {
      */
     public function i_press_the_release_marks_button() {
         $this->find('css', '#release-marks-button')->press();
+        $this->wait_for_pending_js();
         $this->find_button(get_string('confirm'))->press();
         $this->getsession()->visit($this->locate_path('coursework')); // Quicker than waiting for a redirect.
     }
@@ -3338,7 +3340,7 @@ class behat_mod_coursework extends behat_base {
      */
     public function i_should_see_marking_summary(TableNode $table) {
         $page = $this->getsession()->getpage();
-        $match = $page->find('xpath', "//h3[text() = 'Marking summary']");
+        $match = $page->find('css', "#marking-summary-title");
 
         if (!$match) {
             throw new ExpectationException("Should have seen expected \"Marking summary\" heading, but it was not there",

@@ -11,4 +11,4 @@ Feature: Grading summary table visibility
     And I log in as the student
     And I visit the coursework page
     Then I should not see "Marking summary"
-    And I should not see "Marked and released"
+    And I should not see "Marks released"
