@@ -5,7 +5,6 @@ Feature: Installing the coursework module and making sure it works
     As an admin
     I need to be able to successfully install the module in a course and add an instance
 
-  @javascript
   Scenario: I can add a new instance of the coursework module to a course
     Given there is a course
     And I am logged in as an editing teacher

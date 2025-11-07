@@ -1,4 +1,4 @@
-@mod @mod_coursework @mod_coursework_submission_unfinalise @javascript
+@mod @mod_coursework @mod_coursework_submission_unfinalise
 Feature: Manager manually un-finalising a student submission
 
   As a manager
@@ -30,6 +30,7 @@ Feature: Manager manually un-finalising a student submission
     And I should not see "Actions" in the table row containing "student student1"
     And I should not see "Unfinalise submission"
 
+  @javascript
   Scenario: Manager *can unfinalise* when visits the page and sees the submission is finalised when the deadline has passed.
     When I am logged in as a manager
     And I visit the coursework page

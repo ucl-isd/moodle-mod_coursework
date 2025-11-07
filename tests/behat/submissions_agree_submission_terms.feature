@@ -47,7 +47,6 @@ Feature: Students must agree to terms before submitting anything
     And I press "Submit"
     Then I should be on the create submission page
 
-  @javascript
   Scenario: The submission is saved when the agree terms checkbox is checked during update
     Given the sitewide "coursework_agree_terms" setting is "1"
     And the sitewide "coursework_agree_terms_text" setting is "Some text"
@@ -58,7 +57,6 @@ Feature: Students must agree to terms before submitting anything
     And I press "Submit"
     Then I should be on the coursework page
 
-  @javascript
   Scenario: The submission is not saved when the agree terms checkbox is not checked during update
     Given the sitewide "coursework_agree_terms" setting is "1"
     And the sitewide "coursework_agree_terms_text" setting is "Some text"

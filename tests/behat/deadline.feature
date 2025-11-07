@@ -1,4 +1,4 @@
-@mod @mod_coursework @javascript
+@mod @mod_coursework
 # Although JavaScript isn't needed for the functionality being tested, it is
 # needed to hide any modals (for example, New Extension).
 

@@ -1,4 +1,4 @@
-@mod @mod_coursework @javascript
+@mod @mod_coursework
 Feature: When "Use the personal deadline" is enabled the deadline date should reflect any personal deadlines
 
   Background:

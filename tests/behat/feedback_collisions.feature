@@ -1,4 +1,4 @@
-@mod @mod_coursework @mod_coursework_feedback_collisions @javascript
+@mod @mod_coursework @mod_coursework_feedback_collisions
 Feature: Collisions: two people try to create feedback at the same time
 
     As a teacher
@@ -13,7 +13,6 @@ Feature: Collisions: two people try to create feedback at the same time
     And the student has a submission
     And the submission is finalised
 
-  @javascript
   Scenario: Multiple marker: If I submit feedback and it's already been given then it should be given a new stageidentifier
     Given there is a teacher
     And there is another teacher
