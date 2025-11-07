@@ -9,15 +9,12 @@ Feature: Download and upload buttons on submissions page
     And there is a teacher
     And there is a student
 
-  # @javascript needed to hide modal.
-  @javascript
   Scenario: When there are no submissions the teacher should not see an upload or download menu
     When I log in as a teacher
     And I visit the coursework page
     Then I should not see "Download"
     And I should not see "Upload"
 
-  @javascript
   Scenario: When there is a submission the teacher should see an upload and download menu
     When the student has a submission
     And the submission is finalised

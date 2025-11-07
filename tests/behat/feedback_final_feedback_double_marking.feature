@@ -15,7 +15,6 @@ Feature: Adding and editing final feedback
     And the student has a submission
     And the submission is finalised
 
-  @javascript
   Scenario: Setting the final feedback grade
     Given there are feedbacks from both teachers
     And I am logged in as a manager
@@ -61,7 +60,6 @@ Feature: Adding and editing final feedback
     And the field "Grade" matches value "58"
     And the grade comment textarea field matches "New comment"
 
-  @javascript
   Scenario: I can be both an initial assessor and the manager who agrees grades
     And managers do not have the manage capability
     Given I am logged in as a manager
@@ -71,7 +69,6 @@ Feature: Adding and editing final feedback
     And I set the field "Grade" to "59"
     And I press "Save and finalise"
 
-  @javascript
   Scenario: Editing final feedback from others
     And managers do not have the manage capability
     Given I am logged in as a manager

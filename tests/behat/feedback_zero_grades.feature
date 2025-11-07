@@ -13,7 +13,6 @@ Feature: Zero grades should show up just like the others
     And the student has a submission
     And the submission is finalised
 
-  @javascript
   Scenario: Single maker final feedback
     Given the coursework "grade" setting is "9" in the database
     Given I am logged in as a teacher

@@ -16,7 +16,6 @@ Feature: Multiple assessors simple grading form
     And there is a student
     And the student has a submission
 
-  @javascript
   Scenario: Grade and comments can be saved
     Given I am logged in as a teacher
     And the submission is finalised
@@ -51,7 +50,6 @@ Feature: Multiple assessors simple grading form
     And I click the edit feedback button
     And the grade comment textarea field matches "New comment here"
 
-  @javascript
   Scenario: Grades can not be edited by other teachers
     Given there is a teacher
     And there is another teacher
@@ -79,7 +77,6 @@ Feature: Multiple assessors simple grading form
     And I click the edit feedback button
     Then I should see "2" elements in "Upload a file" filemanager
 
-  @javascript
   Scenario: I should not see the feedback icon when the submission has not been finalised
     Given I am logged in as a teacher
     And I visit the coursework page

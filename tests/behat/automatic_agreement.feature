@@ -16,7 +16,6 @@ Feature: Automatic agreement for simple grades
     And the submission is finalised
     And the coursework deadline has passed
 
-  @javascript
   Scenario: Only one grade in the submissions
     And the coursework "automaticagreementstrategy" setting is "none" in the database
     Given I am logged in as a teacher
@@ -26,7 +25,6 @@ Feature: Automatic agreement for simple grades
     And I press "Save and finalise"
     Then I should not see the final grade on the student page
 
-  @javascript
   Scenario: Simple grades within 10% boundaries takes higher mark as a final grade
     Given the coursework "automaticagreementstrategy" setting is "percentage_distance" in the database
     Given the coursework "automaticagreementrange" setting is "10" in the database
@@ -57,7 +55,6 @@ Feature: Automatic agreement for simple grades
     And I wait until the page is ready
     Then the grade comment textarea field matches "Assessor 1 comment:New comment hereAssessor 2 comment:New comment here"
 
-  @javascript
   Scenario: Simple grades within 10% boundaries takes higher mark as a final grade once all feedback is finalised
     Given the coursework "automaticagreementstrategy" setting is "percentage_distance" in the database
     Given the coursework "automaticagreementrange" setting is "10" in the database

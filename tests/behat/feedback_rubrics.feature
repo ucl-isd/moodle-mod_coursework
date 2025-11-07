@@ -15,7 +15,6 @@ Feature: Adding feedback using the built in Moodle rubrics
     And the submission is finalised
     And I am logged in as a teacher
 
-  @javascript
   Scenario: I should be able to add feedback using a simple rubric
     Given there is a rubric defined for the coursework
     Given I visit the coursework page

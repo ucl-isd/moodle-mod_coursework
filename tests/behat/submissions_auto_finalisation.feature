@@ -1,4 +1,4 @@
-@mod @mod_coursework @mod_coursework_auto_finalisation @javascript
+@mod @mod_coursework @mod_coursework_auto_finalisation
 Feature: Auto finalising before cron runs
 
     As a teacher

@@ -1,4 +1,4 @@
-@mod @mod_coursework @javascript
+@mod @mod_coursework
 Feature: For the final grade the mark should be to the decimal point
 
   Background:

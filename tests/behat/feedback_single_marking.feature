@@ -32,7 +32,6 @@ Feature: Adding and editing single feedback
     And I visit the coursework page
     Then I should not see a link to add feedback
 
-  @javascript
   Scenario: Editing someone else's grade
     Given the submission is finalised
     And there is feedback for the submission from the teacher

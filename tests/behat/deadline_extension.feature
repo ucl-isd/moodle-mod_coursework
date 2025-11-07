@@ -19,7 +19,6 @@ Feature: Deadlines extensions for submissions
     Then "Upload your submission" "link" should exist
     And I should see extension date "##+1 week##%d %B %Y##"
 
-  @javascript
   Scenario: The student can not submit when the start date is in the future
     Given the coursework deadline has passed
     And there is an extension for the student which has expired
