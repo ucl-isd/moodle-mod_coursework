@@ -98,11 +98,6 @@ class moderation extends table_base {
     public $submissionid;
 
     /**
-     * @var string
-     */
-    public $stageidentifier;
-
-    /**
      * @var int
      */
     public $courseworkid;
