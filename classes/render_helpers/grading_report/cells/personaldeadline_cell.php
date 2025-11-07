@@ -63,7 +63,6 @@ class personaldeadline_cell extends cell_base {
         }
 
         $link = $this->get_router()->get_path('edit personal deadline', $newpersonaldeadlineparams);
-        // $link = '/';
         $icon = new pix_icon('edit', 'Edit personal deadline', 'coursework');
         $newpersonaldeadlineparams['multipleuserdeadlines'] = 0;
 

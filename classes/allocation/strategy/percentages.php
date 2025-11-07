@@ -32,8 +32,6 @@ use mod_coursework\allocation\allocatable;
 use mod_coursework\models\user;
 use stdClass;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Allocates all students equally between teachers.
  */

@@ -34,6 +34,8 @@ use mod_coursework\models\submission;
 use moodle_exception;
 use stdClass;
 
+defined('MOODLE_INTERNAL') || die();
+
 global $CFG;
 require_once($CFG->libdir . '/csvlib.class.php');
 
@@ -770,14 +772,12 @@ class import extends grading_sheet {
                     }
                 }
             }
-
         }
 
         // double marked - multiplegrade - allocated/notallocated
         if ($this->coursework->get_max_markers() > 1 && ($cellidentifier != 'singlegrade' && $cellidentifier != 'feedbackcomments')) {
             if (substr($cellidentifier, 0, 8) == 'assessor') {
                 $stageidentifier = 'assessor_' . (substr($cellidentifier, -1));
-                // $cells[$i] = substr($cells[$i], 0, -1);
             } else if (substr($cellidentifier, 0, 6) == 'agreed') {
                 $stageidentifier = 'final_agreed_1';
             }

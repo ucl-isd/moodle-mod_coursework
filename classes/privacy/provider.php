@@ -21,7 +21,6 @@
  */
 
 namespace mod_coursework\privacy;
-defined('MOODLE_INTERNAL') || die();
 
 use context;
 use context_module;

@@ -22,8 +22,6 @@
 
 use mod_coursework\models\submission;
 
-defined('MOODLE_INTERNAL') || die();
-
 class restore_coursework_activity_structure_step extends restore_activity_structure_step {
 
     /**

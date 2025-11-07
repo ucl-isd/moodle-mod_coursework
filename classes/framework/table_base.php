@@ -298,10 +298,10 @@ abstract class table_base {
     final public static function get_table_name() {
 
         if (empty(static::$tablename)) {
-            $classname = get_called_class(); // 'mod_coursework\models\deadline_extension'
-            $pieces = explode('\\', $classname); // 'mod_coursework', 'models', 'deadline_extension'
-            $tablename = end($pieces); // 'deadline_extension'
-            $tablename .= 's'; // 'deadline_extensions'
+            $classname = get_called_class();
+            $pieces = explode('\\', $classname);
+            $tablename = end($pieces);
+            $tablename .= 's';
         } else {
             $tablename = static::$tablename;
         }

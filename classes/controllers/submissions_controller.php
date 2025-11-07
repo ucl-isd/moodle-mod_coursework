@@ -36,8 +36,6 @@ use mod_coursework\models\submission;
 use moodle_url;
 use unauthorized_access_exception;
 
-defined('MOODLE_INTERNAL' || die());
-
 /**
  * Class submissions_controller
  * @package mod_coursework\controllers

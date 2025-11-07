@@ -78,7 +78,6 @@ use mod_coursework\stages\final_agreed;
 use mod_coursework\stages\moderator;
 use moodle_exception;
 use stdClass;
-use stored_file;
 use zip_packer;
 
 defined('MOODLE_INTERNAL') || die();
@@ -429,17 +428,6 @@ class coursework extends table_base {
     public $personaldeadlineenabled;
 
     /**
-     * Constructor: takes a DB row from the coursework table or an id. We don't always retrieve it
-     * first as we may want to overwrite with submitted data or make a new one.
-     *
-     * @param int|string|stdClass|null $dbrecord a row from the DB coursework table or an id
-     */
-    public function __construct($dbrecord = null) {
-
-        parent::__construct($dbrecord);
-    }
-
-    /**
      * Gets the relevant course module and caches it.
      *
      * @return mixed|stdClass
@@ -559,7 +547,7 @@ class coursework extends table_base {
     /**
      * Gets all the feedbacks for this coursework as DB rows.
      *
-     * @internal param array $userids visible users (paged results) only
+     * @param array $userids visible users (paged results) only
      * @return array
      */
     public function get_all_raw_feedbacks() {
@@ -621,10 +609,10 @@ class coursework extends table_base {
      * issues.
      *
      * @param array $groups array of group ids
-     * @internal param int $page
-     * @internal param int $perpage
-     * @internal param string $sortby
-     * @internal param string $sorthow
+     * @param int $page
+     * @param int $perpage
+     * @param string $sortby
+     * @param string $sorthow
      * @return stdClass[] array of objects
      */
     public function get_participants($groups = [0]) {
@@ -929,7 +917,6 @@ class coursework extends table_base {
     }
 
     /**
-     * @static
      * @param $params
      * @return array
      */
@@ -949,7 +936,7 @@ class coursework extends table_base {
     /**
      * Generate zip file from array of given files
      *
-     * @internal param int $context_id
+     * @param int $context_id
      * @return bool | string path of temp file - note this returned file does not have a .zip
      * extension - it is a temp file.
      */
@@ -996,7 +983,6 @@ class coursework extends table_base {
 
                 $filename = $foldername.'/'.$filename;
 
-                /* @var $f stored_file */
                 $filesforzipping[$filename] = $f;
             }
         }
@@ -1155,10 +1141,8 @@ class coursework extends table_base {
      * @return void
      */
     public function save_allocation_strategy_options($shortname) {
-
         $classname = '\mod_coursework\allocation\strategy\\'.$shortname;
 
-        /* @var allocation_strategy_base $strategy */
         $strategy = new $classname($this);
 
         $strategy->save_allocation_strategy_options();
@@ -2496,10 +2480,6 @@ class coursework extends table_base {
     public function extensions_enabled() {
         return (bool)$this->extensionsenabled;
     }
-
-    /*
-    * @return bool
-    */
     public function extension_exists() {
 
         global $DB;

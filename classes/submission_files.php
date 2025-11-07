@@ -28,8 +28,6 @@ use context;
 use mod_coursework\models\submission;
 use stored_file;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Represents the files a student has submitted.
  */

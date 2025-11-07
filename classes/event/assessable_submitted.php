@@ -23,8 +23,6 @@
 
 namespace mod_coursework\event;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
 
  * @package    coursework_submitted

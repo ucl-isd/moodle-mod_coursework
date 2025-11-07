@@ -32,8 +32,6 @@ use mod_coursework\render_helpers\grading_report\cells\group_cell;
 use mod_coursework\render_helpers\grading_report\cells\personaldeadline_cell;
 use mod_coursework\render_helpers\grading_report\cells\user_cell;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Represents the table that will show all students and there personal deadline date the table will allow the admin
  * to change the date or persnal deadline on mass or individually.

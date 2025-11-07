@@ -434,8 +434,6 @@ class grading_report {
             }
 
             // Some will have submissions and therefore data fields. Others will have those fields null.
-            /* @var grading_table_row_base[] $tablerows */
-
             $counter = count($rows);
             $this->realtotalrows = $counter;
             $mode = empty($this->options['mode']) ? self::MODE_GET_ALL : $this->options['mode'];

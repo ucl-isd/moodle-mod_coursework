@@ -62,7 +62,6 @@ final class generator_test extends \advanced_testcase {
         $this->assertEquals(0, $DB->count_records('coursework'));
         $course = $this->getDataGenerator()->create_course();
 
-        /* @var \mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $this->assertInstanceOf('mod_coursework_generator', $generator);
         $this->assertEquals('coursework', $generator->get_modulename());
@@ -116,7 +115,6 @@ final class generator_test extends \advanced_testcase {
         $data->stageidentifier = 'assessor_1';
         $data->courseworkid = 65;
 
-        /* @var \mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
 
         $this->setAdminUser();
@@ -144,7 +142,6 @@ final class generator_test extends \advanced_testcase {
         $data->submissionid = 5;
         $data->assessorid = 65;
 
-        /* @var \mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
 
         // Should fail because we have no assessorid and we have no logged ourselves in.
@@ -173,7 +170,6 @@ final class generator_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $this->setAdminUser(); // Calendar complains otherwise.
 
-        /* @var \mod_coursework_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
         $coursework = new \stdClass();
         $coursework->course = $course;

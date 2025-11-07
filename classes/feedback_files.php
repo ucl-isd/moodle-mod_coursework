@@ -26,8 +26,6 @@ namespace mod_coursework;
 
 use mod_coursework\models\feedback;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Represents the files a student has submitted.
  */

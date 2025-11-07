@@ -43,8 +43,6 @@ final class user_test extends \advanced_testcase {
         $this->assertEquals($user->firstname, \mod_coursework\models\user::find($user->id)->firstname);
     }
 
-    // has_agreed_feedback()
-
     public function test_has_final_agreed_grade_returns_true_when_present(): void {
         $this->create_a_final_feedback_for_the_submission();
 
@@ -72,8 +70,6 @@ final class user_test extends \advanced_testcase {
         $this->create_an_assessor_feedback_for_the_submission($teacher);
         $this->assertFalse($this->get_student()->has_agreed_feedback($this->get_coursework()));
     }
-
-    // has_all_initial_feedbacks()
 
     public function test_has_all_initial_feedbacks_returns_false_when_only_some_are_present(): void {
         $this->create_a_student();

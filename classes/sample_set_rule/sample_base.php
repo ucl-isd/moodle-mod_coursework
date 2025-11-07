@@ -24,8 +24,6 @@
 
 namespace mod_coursework\sample_set_rule;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * This base class is extended to make specific sampling rules strategies
  */
@@ -105,7 +103,6 @@ abstract class sample_base {
      * calculate what 40% is, then move any below it from the $potentialstudents array to
      * the $moderationset array.
      *
-     * @abstract
      * @param array $moderationset
      * @param array $potentialallocatables
      * @param stage_base $stage
@@ -117,7 +114,6 @@ abstract class sample_base {
      * Tells us where this ought to be in relation to other rules. The one for percent of total must happen last,
      * so this is how we enforce it.
      *
-     * @abstract
      * @return mixed
      */
     abstract public function get_default_rule_order();
@@ -125,8 +121,6 @@ abstract class sample_base {
     /**
      * Some rules make no sense when there are multiple e.g. 'include at least x% of the total number'.
      *
-     * @static
-     * @abstract
      * @return mixed
      */
     public static function allow_multiple() {
@@ -135,7 +129,6 @@ abstract class sample_base {
 
     /**
      * Each rule may have different form elements that we need to add in order for a new one to be
-     * @abstract
      * @return mixed
      */
     abstract public function add_form_elements($assessornumber);

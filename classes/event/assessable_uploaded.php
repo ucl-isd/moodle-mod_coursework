@@ -24,8 +24,6 @@ namespace mod_coursework\event;
 use moodle_url;
 use stdClass;
 
-defined('MOODLE_INTERNAL') || die();
-
 class assessable_uploaded extends \core\event\assessable_uploaded {
 
     /**

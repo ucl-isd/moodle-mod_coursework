@@ -45,7 +45,6 @@ class choose_student_for_submission_mform extends moodleform {
 
         $mform =& $this->_form;
 
-        /* @var coursework $coursework */
         $coursework = $this->_customdata->coursework;
         $students = $coursework->get_unfinalised_students();
 

@@ -33,8 +33,6 @@ use mod_coursework\render_helpers\grading_report\cells\group_cell;
 use mod_coursework\render_helpers\grading_report\cells\user_cell;
 use mod_coursework\stages\base as stage_base;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Represents the table that will show all students and all markers so that they can be matched up with one another for grading.
  * Various automatic strategies will be available for this, but the manual override happens here.

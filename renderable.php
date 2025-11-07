@@ -37,6 +37,8 @@ use mod_coursework\personaldeadline\table\builder;
 use mod_coursework\sampling_set_widget;
 use mod_coursework\submission_files;
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Class mod_coursework_renderable
  *
@@ -48,76 +50,40 @@ class mod_coursework_renderable extends decorator implements renderable {
 
 }
 
-/**
- * @mixin \mod_coursework\allocation\table\builder
- */
 class mod_coursework_allocation_table extends mod_coursework_renderable {
 
 }
 
-/**
- * @mixin \mod_coursework\allocation\table\row\builder
- */
 class mod_coursework_allocation_table_row extends mod_coursework_renderable {
 
 }
 
-/**
- * @mixin widget
- */
 class mod_coursework_allocation_widget extends mod_coursework_renderable {
 }
 
-/**
- * @mixin assessor_feedback_row
- */
 class mod_coursework_assessor_feedback_row extends mod_coursework_renderable {
 }
 
-/**
- * @mixin assessor_feedback_table
- */
 class mod_coursework_assessor_feedback_table extends mod_coursework_renderable {
 }
 
-/**
- * @mixin coursework
- */
 class mod_coursework_coursework extends mod_coursework_renderable {
 }
 
-/**
- * @mixin grading_table_row_multi
- */
 class mod_coursework_grading_table_row_multi extends mod_coursework_renderable {
 }
 
-/**
- * @mixin grading_table_row_single
- */
 class mod_coursework_grading_table_row_single extends mod_coursework_renderable {
 }
 
-/**
- * @mixin sampling_set_widget
- */
 class mod_coursework_sampling_set_widget extends mod_coursework_renderable {
 }
 
-/**
- * @mixin submission_files
- */
 class mod_coursework_submission_files extends mod_coursework_renderable {
 }
 
-/**
- * @mixin feedback_files
- */
 class mod_coursework_feedback_files extends mod_coursework_renderable {
 }
 
-/**
- * @mixin builder
- */
 class mod_coursework_personaldeadlines_table extends mod_coursework_renderable {
 }

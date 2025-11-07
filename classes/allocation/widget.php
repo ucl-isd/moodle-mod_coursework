@@ -26,8 +26,6 @@ namespace mod_coursework\allocation;
 
 use mod_coursework\models\coursework;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Just a placeholder for the renderer really.
  */

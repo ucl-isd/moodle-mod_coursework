@@ -35,8 +35,6 @@ use mod_coursework\stages\base as stage_base;
 use mod_coursework\stages\final_agreed;
 use stdClass;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Class to represent a single item of feedback that a tutor will provide for a submission.
  *
@@ -217,9 +215,7 @@ class feedback extends table_base {
      * in case we don't need it.
      */
     public function get_assesor_username() {
-
         if (!$this->firstname && !empty($this->lasteditedbyuser)) {
-            // $this->assessor = core_user::get_user($this->lasteditedbyuser);
             $this->assessor = user::get_object($this->lasteditedbyuser);
         }
 
@@ -267,12 +263,11 @@ class feedback extends table_base {
      * Returns a feedback instance
      * @todo get rid of this.
      *
-     * @static
      * @param submission $submission
      * @param int $assessorid
      * @param int $isfinalgrade do we want the final grade (in case this assessor did a component
      * one and a final one
-     * @internal param $assessorid
+     * @param $assessorid
      * @return feedback|null
      */
     public static function get_teacher_feedback(submission $submission,

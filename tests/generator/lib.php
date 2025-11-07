@@ -18,7 +18,6 @@
  * mod_coursework data generator
  *
  * @package    mod_coursework
- * @category   phpunit
  * @copyright  2012 University of London Computer Centre {@link https://www.cosector.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -37,7 +36,6 @@ require_once($CFG->dirroot."/mod/coursework/lib.php");
  * Coursework module PHPUnit data generator class
  *
  * @package    mod_forum
- * @category   phpunit
  * @copyright  2012 Petr Skoda {@link http://skodak.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -53,7 +51,7 @@ class mod_coursework_generator extends testing_module_generator {
      * @throws coding_exception
      * @return \mod_coursework\models\coursework activity record with extra cmid field
      */
-    public function create_instance($record = null, array $options = null) {
+    public function create_instance($record = null, ?array $options = null) {
 
         $this->instancecount++;
         $i = $this->instancecount;

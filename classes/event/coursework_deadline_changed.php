@@ -26,8 +26,6 @@ namespace mod_coursework\event;
 
 use core\event\base;
 
-defined('MOODLE_INTERNAL') || die();
-
 class coursework_deadline_changed extends base {
 
     /**

@@ -32,8 +32,6 @@ use mod_coursework\render_helpers\grading_report\cells\allocatable_cell;
 use mod_coursework\stages\base as stage_base;
 use mod_coursework\user_row;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Renderable row class.
  */

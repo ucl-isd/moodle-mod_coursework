@@ -156,7 +156,7 @@ class grading_report_renderer extends plugin_renderer_base {
      * @return grading_table_row_base[]
      */
     protected function sort_table_rows(array $tablerows): array {
-        usort($tablerows, function($rowa, $rowb) {
+        usort($tablerows, function ($rowa, $rowb) {
 
             $submissiona = $rowa->get_submission();
             $submissionb = $rowb->get_submission();
@@ -242,7 +242,7 @@ class grading_report_renderer extends plugin_renderer_base {
      * @return object
      */
     protected static function prepare_coursework_data(coursework $coursework): object {
-        return  (object)[
+        return (object)[
             'id' => $coursework->id,
             'title' => $coursework->name,
             'personaldeadlines_enabled' => $coursework->personaldeadlines_enabled(),
@@ -302,9 +302,9 @@ class grading_report_renderer extends plugin_renderer_base {
      * @return void
      */
     protected static function prepare_actions_cell_data(
-        coursework $coursework,
+        coursework             $coursework,
         grading_table_row_base $rowobject,
-        stdClass $trdata
+        stdClass               $trdata
     ): void {
         $dataprovider = new actions_cell_data($coursework);
         $actions = $dataprovider->get_table_cell_data($rowobject);

@@ -27,8 +27,6 @@ use mod_coursework\allocation\allocatable;
 use mod_coursework\framework\table_base;
 use mod_coursework\stages\base as stage_base;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Class to represent a single item of moderation agreement
  *

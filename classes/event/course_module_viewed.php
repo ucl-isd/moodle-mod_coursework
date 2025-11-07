@@ -24,8 +24,6 @@ namespace mod_coursework\event;
 
 use moodle_url;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Class course_module_viewed is responsible for logging the fact that a user has viewed a coursework.
  *

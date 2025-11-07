@@ -22,8 +22,6 @@
 
 namespace mod_coursework;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Single row of the grading table for when there is just one marker
  */

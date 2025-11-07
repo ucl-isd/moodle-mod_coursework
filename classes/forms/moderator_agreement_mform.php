@@ -24,10 +24,12 @@
 
 namespace mod_coursework\forms;
 
-global $CFG;
-
 use mod_coursework\models\moderation;
 use moodleform;
+
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
 
 require_once($CFG->libdir.'/formslib.php');
 

@@ -33,7 +33,6 @@ use mod_coursework\models\submission;
 use moodle_url;
 use moodleform;
 use stdClass;
-use stored_file;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -77,20 +76,18 @@ class student_submission_form extends moodleform {
 
     /**
      * @throws coding_exception
-     * @internal param \coursework $coursework
-     * @internal param \submission $submission
+     * @param \coursework $coursework
+     * @param \submission $submission
      * @return void
      */
     public function handle() {
 
         global $DB, $CFG, $USER;
 
-        /* @var coursework $coursework */
         $coursework = $this->get_coursework();
         if (!$coursework) {
             throw new coding_exception('submit form needs a coursework instance in its custom data');
         }
-        /* @var submission $submission */
         $submission = $this->get_submission();
         if (!$submission) {
             throw new coding_exception('submit form needs a submission instance in its custom data');
@@ -138,7 +135,6 @@ class student_submission_form extends moodleform {
                     $submission->save();
 
                     // Rename the uploaded file to the submission hash.
-                    /* @var stored_file $file */
                     $file = $submission->get_first_submitted_file();
                     $file->get_id();
 

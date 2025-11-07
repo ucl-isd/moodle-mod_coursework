@@ -25,16 +25,10 @@ namespace mod_coursework;
 use mod_coursework\models\coursework;
 use stdClass;
 
-defined('MOODLE_INTERNAL') || die();
-
 class coursework_file_zip_importer {
 
     public function extract_zip_file($filename, $contextid) {
-
         global $USER;
-
-        // raise_memory_limit(MEMORY_EXTRA);
-        // set_time_limit(120);
 
         $packer = get_file_packer('application/zip');
 

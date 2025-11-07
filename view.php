@@ -22,18 +22,18 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-header("Cache-Control: no-store, no-cache, must-revalidate"); // HTTP/1.1
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache"); // HTTP/1.0
-header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
-
 use mod_coursework\event\course_module_viewed;
 use mod_coursework\export\csv;
 use mod_coursework\export\grading_sheet;
 use mod_coursework\models\submission;
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+
+header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+header("Cache-Control: no-store, no-cache, must-revalidate"); // HTTP/1.1
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache"); // HTTP/1.0
+header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 
 global $CFG, $DB, $PAGE, $COURSE, $OUTPUT, $USER, $SESSION;
 

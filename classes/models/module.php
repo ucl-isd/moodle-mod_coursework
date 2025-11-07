@@ -25,8 +25,6 @@ namespace mod_coursework\models;
 use AllowDynamicProperties;
 use mod_coursework\framework\table_base;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Represents a row in the modules table.
  */

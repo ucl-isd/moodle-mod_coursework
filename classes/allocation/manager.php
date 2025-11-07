@@ -35,8 +35,6 @@ use mod_coursework_sampling_set_widget;
 use moodle_exception;
 use stdClass;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * This takes responsibility for managing the allocations of markers to students, both manually and
  * automatically. Specifically, it processes user input from the allocation screen and performs the allocation

@@ -29,8 +29,6 @@ use mod_coursework\models\user;
 use mod_coursework\stages\base as stage_base;
 use stdClass;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * This base class is extended to make specific allocation strategies, which when run, will
  * allocated teachers to mark student work in specific ways.
@@ -99,7 +97,6 @@ abstract class base {
      * Flag that saves us from doing all the allocations and then getting a flase response for all the
      * teacher ids.
      *
-     * @abstract
      * @return bool
      */
     abstract public function autoallocation_enabled();
@@ -127,7 +124,6 @@ abstract class base {
     /**
      * Saves the form data associated with the instance of this strategy.
      *
-     * @abstract
      * @return mixed
      */
     abstract public function save_allocation_strategy_options();

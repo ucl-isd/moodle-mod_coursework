@@ -300,7 +300,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      *
      * @param int $coursemoduleid
      * @param choose_student_for_submission_mform $chooseform
-     * @internal param \coursework $coursework
+     * @param \coursework $coursework
      * @return string HTML
      */
     public function choose_student_to_submit_for($coursemoduleid, $chooseform) {
@@ -963,7 +963,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             }
             $url = $CFG->wwwroot.'/mod/coursework/view.php';
             $link = "<a href=\"{$url}?id={$coursework->coursemodule->id}\">{$coursework->name}</a>";
-            $table->data[] = [// 'cmid' => $cm->id,
+            $table->data[] = [
                 'sectionname' => $printsection,
                 'cmname' => $link,
                 'timedue' => $timedue,

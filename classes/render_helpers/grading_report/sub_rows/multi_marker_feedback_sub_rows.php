@@ -57,8 +57,6 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
      * @return string
      */
     public function get_row_with_assessor_feedback_table($rowobject, $columnwidth) {
-
-        /* @var assessor_feedback_table $assessor_feedback_table */
         $assessorfeedbacktable = $rowobject->get_assessor_feedback_table();
 
         // The number of columns will vary according to what permissions the user has.
@@ -119,7 +117,6 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         $tablehtml = '';
 
         $this->alreadyshownanewbutton = false;
-        /* @var $feedback_row assessor_feedback_row */
         foreach ($feedbackrows as $feedbackrow) {
 
             $stage = $feedbackrow->get_stage();

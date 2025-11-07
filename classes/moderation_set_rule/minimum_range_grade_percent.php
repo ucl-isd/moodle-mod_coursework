@@ -28,8 +28,6 @@ use html_writer;
 use mod_coursework\models\moderation_set_rule;
 use mod_coursework\stages\base;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Defines a rule that will include all students above or below a particular percentage of
  * the total grade.
@@ -102,7 +100,6 @@ class minimum_range_grade_percent extends moderation_set_rule {
     /**
      * Some rules make no sens when there are multiple e.g. 'include at least x% of the total number'.
      *
-     * @static
      * @return mixed
      */
     public static function allow_multiple() {

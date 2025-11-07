@@ -20,16 +20,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_coursework\allocation\auto_allocator;
+use mod_coursework\models\coursework;
+
+require_once(dirname(__FILE__).'/../../../config.php');
+
 // This stops the page from aborting when an ajax call disconnects
 ignore_user_abort(true);
 
 // We have to set the time limit to 0 as depending on
 set_time_limit ( 0 );
-
-use mod_coursework\allocation\auto_allocator;
-use mod_coursework\models\coursework;
-
-require_once(dirname(__FILE__).'/../../../config.php');
 
 global $CFG, $OUTPUT, $DB, $PAGE;
 

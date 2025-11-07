@@ -29,7 +29,6 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Class that will make sure the allocation_manager works.
  *
- * @mixin mod_coursework\test_helpers\factory_mixin
  * @property mixed group
  * @property mixed grouping
  * @property mixed student

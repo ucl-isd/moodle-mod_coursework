@@ -25,8 +25,6 @@ namespace mod_coursework;
 use Countable;
 use stored_file;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Renderable files list object.
  */

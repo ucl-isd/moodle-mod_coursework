@@ -38,6 +38,8 @@ use mod_coursework\renderers\grading_report_renderer;
 use mod_coursework\router;
 use mod_coursework\warnings;
 
+defined('MOODLE_INTERNAL') || die();
+
 global $CFG;
 
 require_once($CFG->dirroot . '/lib/plagiarismlib.php');
@@ -830,7 +832,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $classname = $matches[1];
             $fullclassname = '\mod_coursework\allocation\strategy\\' . $classname;
             // We want the elements from all the strategies so we can show/hide them.
-            /* @var base $strategy */
             $strategy = new $fullclassname($coursework);
 
             $attributes = [

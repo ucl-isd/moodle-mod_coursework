@@ -37,8 +37,6 @@
 
 namespace mod_coursework\event;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Class course_module_instance_list_viewed is responsible for logging the fact that a user has looked at the list
  * of available coursework modules.

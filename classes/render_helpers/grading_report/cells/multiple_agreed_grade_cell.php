@@ -79,8 +79,6 @@ class multiple_agreed_grade_cell extends cell_base {
         if ($finalfeedback !== false) {
             $gradejudge = new grade_judge($this->coursework);
             $content .= $gradejudge->grade_to_display($finalfeedback->get_grade());
-            // $content .= html_writer::empty_tag('br');
-            // $content .= ' by: ' . $finalfeedback->get_assesor_username();
         }
 
         // Edit/new link

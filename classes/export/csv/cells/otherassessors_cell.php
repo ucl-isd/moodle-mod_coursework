@@ -57,9 +57,7 @@ class otherassessors_cell extends cell_base {
         $feedbacks = $DB->get_records_sql($sql, $params);
         $gradedata = [];
 
-        // $stageidentifier = ($this->coursework->get_max_markers() == 1) ? "assessor_1" : $this->get_stageidentifier_for_assessor($submission, $student);
         foreach ($feedbacks as $feedback) {
-
             $grade = $submission->get_assessor_feedback_by_stage($feedback->stageidentifier);
             if ($grade) {
                 // skip if you are allocated but someone else graded it
@@ -77,9 +75,7 @@ class otherassessors_cell extends cell_base {
                         $gradedata[] = $this->get_actual_grade($grade->grade);
                     }
                     $gradedata[] = cell_base::clean_cell($grade->feedbackcomment);
-
                 } else {
-
                     $gradedata[] = get_string('grade_hidden_manager', 'mod_coursework');
                     $gradedata[] = '';
                 }

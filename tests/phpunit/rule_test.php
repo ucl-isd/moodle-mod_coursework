@@ -32,16 +32,16 @@ final class rule_test extends \basic_testcase {
 
     // Test what happens when we have a rule that matches and returns true
 
-    public function test_allows_when_allowed_and_rule_returns_true() {
+    public function test_allows_when_allowed_and_rule_returns_true(): void {
         $coursework = new \mod_coursework\models\coursework();
         $rulefunction = function ($object) {
             return true;
         };
-        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rulefunction, true );
+        $rule = new rule('set on fire', 'mod_coursework\models\coursework', $rulefunction, true);
         $this->assertTrue($rule->allows($coursework));
     }
 
-    public function test_allows_when_prevent_and_rule_returns_true() {
+    public function test_allows_when_prevent_and_rule_returns_true(): void {
         $coursework = new \mod_coursework\models\coursework();
         $rulefunction = function ($object) {
             return true;
@@ -50,7 +50,7 @@ final class rule_test extends \basic_testcase {
         $this->assertFalse($rule->allows($coursework));
     }
 
-    public function test_prevents_when_allowed_and_rule_returns_true() {
+    public function test_prevents_when_allowed_and_rule_returns_true(): void {
         $coursework = new \mod_coursework\models\coursework();
         $rulefunction = function ($object) {
             return true;
@@ -59,7 +59,7 @@ final class rule_test extends \basic_testcase {
         $this->assertFalse($rule->prevents($coursework));
     }
 
-    public function test_prevents_when_prevent_and_rule_returns_true() {
+    public function test_prevents_when_prevent_and_rule_returns_true(): void {
         $coursework = new \mod_coursework\models\coursework();
         $rulefunction = function ($object) {
             return true;
@@ -70,7 +70,7 @@ final class rule_test extends \basic_testcase {
 
     // Test what happens when we have a rule that matches and returns false
 
-    public function test_allows_when_allowed_and_rule_returns_false() {
+    public function test_allows_when_allowed_and_rule_returns_false(): void {
         $coursework = new \mod_coursework\models\coursework();
         $rulefunction = function ($object) {
             return false;
@@ -79,7 +79,7 @@ final class rule_test extends \basic_testcase {
         $this->assertFalse($rule->allows($coursework));
     }
 
-    public function test_allows_when_prevent_and_rule_returns_false() {
+    public function test_allows_when_prevent_and_rule_returns_false(): void {
         $coursework = new \mod_coursework\models\coursework();
         $rulefunction = function ($object) {
             return false;
@@ -88,7 +88,7 @@ final class rule_test extends \basic_testcase {
         $this->assertFalse($rule->allows($coursework));
     }
 
-    public function test_prevents_when_allowed_and_rule_returns_false() {
+    public function test_prevents_when_allowed_and_rule_returns_false(): void {
         $coursework = new \mod_coursework\models\coursework();
         $rulefunction = function ($object) {
             return false;
@@ -97,7 +97,7 @@ final class rule_test extends \basic_testcase {
         $this->assertFalse($rule->prevents($coursework));
     }
 
-    public function test_prevents_when_prevent_and_rule_returns_false() {
+    public function test_prevents_when_prevent_and_rule_returns_false(): void {
         $coursework = new \mod_coursework\models\coursework();
         $rulefunction = function ($object) {
             return false;

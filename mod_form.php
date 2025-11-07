@@ -148,7 +148,6 @@ class mod_coursework_mod_form extends moodleform_mod {
     /**
      * Adds all default data to the form elements.
      *
-     * @global moodle_database $DB
      * @param $defaultvalues
      * @return void
      */
@@ -542,8 +541,6 @@ class mod_coursework_mod_form extends moodleform_mod {
             get_string('agreedgrademarkingdeadline', 'coursework'),
             ['optional' => true, 'disabled' => $disabled]
         );
-
-        // $moodle_form->hideif('agreedgrademarkingdeadline', 'numberofmarkers', 'eq', '1');
 
         if (!empty($CFG->coursework_agreed_marking_deadline)) {
             $moodleform->setDefault('agreedgrademarkingdeadline', $defaulttimestamp);
@@ -1058,7 +1055,6 @@ class mod_coursework_mod_form extends moodleform_mod {
             $moodleform->hideif('individualfeedback', 'forceautorelease', 'eq', 1);
         }
         $moodleform->hideif('individualfeedback', 'deadline[enabled]', 'notchecked');
-        // $moodle_form->addRule(array('individualfeedback', 'deadline'), get_string('must_be_after_dealdine', 'mod_coursework'), 'compare', 'gt');
     }
 
     /**

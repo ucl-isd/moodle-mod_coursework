@@ -305,10 +305,8 @@ function mod_coursework_core_calendar_provide_event_action(calendar_event $event
         $user = user::find($USER->id);
         // if group cw check if student is in group, if not then don't display 'Add submission' link
         if ($coursework->is_configured_to_have_group_submissions() && !$coursework->get_student_group($user)) {
-            // return null;
             $submissionurl = new moodle_url('/mod/coursework/view.php', ['id' => $cm->id]);
             $itemcount = 1;
-
         } else {
 
             $submission = $coursework->get_user_submission($user);
@@ -807,8 +805,6 @@ function coursework_supports($feature) {
             return true;
         case FEATURE_GROUPINGS:
             return true;
-        case FEATURE_GROUPMEMBERSONLY:
-            return true;
         case FEATURE_MOD_INTRO:
             return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS:
@@ -898,8 +894,6 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
  */
 function coursework_role_assigned_event_handler($roleassignment) {
     global $DB;
-
-    // return true; // Until we fix the auto allocator. The stuff below causes an infinite loop.
 
     $courseworkids = coursework_get_courseworkids_from_context_id($roleassignment->contextid);
 
@@ -1053,8 +1047,6 @@ function coursework_send_deadline_changed_emails($eventdata) {
     }
 
     // No need to send emails if none of the deadlines have changed.
-
-    // echo 'Starting to send Coursework deadline changed emails...';
     $counter = 0;
 
     $coursework = coursework::find($eventdata->other['courseworkid']);
@@ -1136,8 +1128,6 @@ function coursework_send_deadline_changed_emails($eventdata) {
         message_send($messagedata);
     }
 
-    // echo 'Sent '.$counter.' messages.';
-
     return true;
 }
 /**
@@ -1184,8 +1174,6 @@ function mod_coursework_supports($feature) {
             return true;
         case FEATURE_GROUPINGS:
             return true;
-        case FEATURE_GROUPMEMBERSONLY:
-            return false;
         case FEATURE_MOD_INTRO:
             return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS:

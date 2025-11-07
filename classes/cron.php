@@ -161,7 +161,6 @@ class cron {
     /**
      * This will tell teachers that they have students who's deadlines are approaching.
      *
-     * @static
      * @return bool
      */
     private static function send_first_reminders_to_admins() {
@@ -215,8 +214,6 @@ class cron {
         // We have to loop like this as getting users by capability in SQL for multiple contexts is too complex.
         $emailssent = 0;
         foreach ($courseworks as $coursework) {
-
-            /* @var coursework $coursework_instance */
             $courseworkinstance = coursework::find($coursework->courseworkid);
 
             if (empty($coursework)) {
@@ -278,7 +275,6 @@ class cron {
      *
      * @param string $query
      * @param array $params
-     * @global  $CFG
      * @return string
      */
     public static function coursework_debuggable_query($query, $params  = []) {
@@ -304,8 +300,8 @@ class cron {
      *
      * @param array $users
      * @param array $counts user and email cumulative counts so we can set log messages.
-     * @internal param string $email_type Check class constants
-     * @internal param int $type Check class constants
+     * @param string $email_type Check class constants
+     * @param int $type Check class constants
      * @return void
      */
     private static function send_email_reminders_to_students(array $users, array &$counts) {

@@ -1501,13 +1501,6 @@ class behat_mod_coursework extends behat_base {
         $this->ensure_element_exists($element, 'css_element');
     }
 
-    /**
-     * @return bool
-     */
-    public function running_javascript() {
-        return parent::running_javascript();
-    }
-
     // Course steps
 
     /**
@@ -2171,9 +2164,6 @@ class behat_mod_coursework extends behat_base {
         if (!$page->has_moderator_grade_for($this->student, '56')) {
             throw new ExpectationException("Does not have moderator grade");
         }
-        // if (!$this->find('xpath', $this->xpath_tag_class_contains_text('td', 'moderated', '56'))) {
-        // throw new ExpectationException('Could not find the moderated grade', $this->getsession());
-        // }
     }
 
     /**
@@ -2984,7 +2974,7 @@ class behat_mod_coursework extends behat_base {
          * @var mod_coursework_behat_coursework_page $page
          */
         $page = $this->get_page('coursework page');
-        if($page->general_feedback_date_present()) {
+        if ($page->general_feedback_date_present()) {
             throw new ExpectationException('I see the general feedback release date when I should not', $this->getsession());
         }
     }
@@ -3061,12 +3051,8 @@ class behat_mod_coursework extends behat_base {
      * @Given /^I click show all students button$/
      */
     public function i_click_on_show_all_students_button() {
-        // $this->find('id', "id_displayallstudentbutton")->click();
         $page = $this->get_page('coursework page');
-        // $page->clickLink("Show submissions for other students");
-
         $page->show_hide_non_allocated_students();
-
     }
 
     /**

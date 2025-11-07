@@ -38,8 +38,6 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Forms a base for the moderation set rules, which determine various sets of students which
  * need to be included in the set e.g. lowest 40%.
@@ -117,7 +115,6 @@ abstract class moderation_set_rule extends table_base implements renderable {
      * calculate what 40% is, then move any below it from the $potentialstudents array to
      * the $moderationset array.
      *
-     * @abstract
      * @param array $moderationset
      * @param array $potentialallocatables
      * @param stage_base $stage
@@ -144,7 +141,6 @@ abstract class moderation_set_rule extends table_base implements renderable {
      * Tells us where this ought to be in relation to other rules. The one for percent of total must happen last,
      * so this is how we enforce it.
      *
-     * @abstract
      * @return mixed
      */
     abstract public function get_default_rule_order();
@@ -152,8 +148,6 @@ abstract class moderation_set_rule extends table_base implements renderable {
     /**
      * Some rules make no sense when there are multiple e.g. 'include at least x% of the total number'.
      *
-     * @static
-     * @abstract
      * @return mixed
      */
     public static function allow_multiple() {
@@ -162,7 +156,6 @@ abstract class moderation_set_rule extends table_base implements renderable {
 
     /**
      * Each rule may have different form elements that we need to add in order for a new one to be
-     * @abstract
      * @return mixed
      */
     abstract public function get_form_elements();
@@ -170,7 +163,6 @@ abstract class moderation_set_rule extends table_base implements renderable {
     /**
      * Validates and saves data from the form elements defined by {@link get_form_elements()}.
      *
-     * @abstract
      * @return mixed
      */
     public function save_form_data() {

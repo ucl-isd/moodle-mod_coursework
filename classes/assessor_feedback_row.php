@@ -28,8 +28,6 @@ use mod_coursework\models\submission;
 use mod_coursework\models\user;
 use mod_coursework\stages\base as stage_base;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Class that exists to tell the renderer to use a different function. This one will make the
  * feedback into a row in the assessor feedbacks table of the grading report.

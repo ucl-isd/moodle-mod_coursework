@@ -178,7 +178,7 @@ class outstanding_marking {
             // We only have to check for submissions allocated to this user
             $sqltable = ", {coursework_allocation_pairs}  cap ";
 
-            $sqlextra = "	
+            $sqlextra = "
 	                                    AND cap.courseworkid = cs.courseworkid
 		                                AND cap.allocatableid = cs.allocatableid
 	                                    AND cap.allocatabletype = cs.allocatabletype

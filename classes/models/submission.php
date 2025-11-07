@@ -44,11 +44,11 @@ use renderable;
 use stdClass;
 use stored_file;
 
+defined('MOODLE_INTERNAL') || die();
+
 global $CFG;
 require_once($CFG->libdir . '/gradelib.php');
 require_once($CFG->dirroot . '/mod/coursework/lib.php');
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Student submission to a coursework.
@@ -434,8 +434,8 @@ class submission extends table_base implements renderable {
         $fs = new file_storage();
 
         $annotatedfiles = [];
-        foreach ($fs->get_area_files($this->get_context_id(), 'mod_coursework', 'submissionannotations', $this->id)
-        as $file) {
+        $files = $fs->get_area_files($this->get_context_id(), 'mod_coursework', 'submissionannotations', $this->id);
+        foreach ($files as $file) {
             if ($file->get_userid() !== $USER->id) {
                 continue;
             }

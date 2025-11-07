@@ -99,8 +99,6 @@ class time_submitted_cell extends cell_base {
                     $content .= ' by ' . $submission->get_last_submitter()->profile_link();
                 }
             }
-        } else {
-
         }
 
         $content .= '<div class="extension-submission">';

@@ -43,7 +43,6 @@ final class strategy_test extends \advanced_testcase {
 
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
-        /* @var mod_coursework_generator $courseworkgenerator */
         $courseworkgenerator = $generator->get_plugin_generator('mod_coursework');
         $this->setAdminUser();
         $this->coursework = $courseworkgenerator->create_instance(['course' => $course->id, 'grade' => 0]);
@@ -53,9 +52,7 @@ final class strategy_test extends \advanced_testcase {
      * See whether this works to create all allocations
      */
     public function test_allocate_all_ungraded(): void {
-
         $generator = $this->getDataGenerator();
-        /* @var mod_coursework_generator $courseworkgenerator */
         $courseworkgenerator = $generator->get_plugin_generator('mod_coursework');
 
         // Make some students.

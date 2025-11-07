@@ -172,10 +172,8 @@ class builder {
         $contents = '';
         $assessordropdown = '';
 
-        if ($this->coursework->sampling_enabled()) {
-            if ($class == 'final_agreed_1') {
-
-            } else if ($this->get_stage()->uses_sampling()) {
+        if ($this->coursework->sampling_enabled() && $class !== 'final_agreed_1') {
+            if ($this->get_stage()->uses_sampling()) {
 
                 if ($this->has_automatic_sampling()) {
                     $contents .= $this->get_automatically_in_sample_label();

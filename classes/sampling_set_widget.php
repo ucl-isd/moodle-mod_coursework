@@ -28,8 +28,6 @@ namespace mod_coursework;
 use html_writer;
 use mod_coursework\models\coursework;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Acts as a holder for the data needed to render a widget where the user can define a moderation set.
  */
@@ -119,7 +117,6 @@ class sampling_set_widget {
 
             $matches = []; // In case we have stuff left over.
             preg_match('/([^\/]+)\.php/', $file, $matches);
-            /* @var models\moderation_set_rule $fullclassname */
             $rulename = $matches[1];
             $fullclassname = '\mod_coursework\sample_set_rule\\'. $rulename;
 
@@ -177,7 +174,6 @@ class sampling_set_widget {
                 'style' => 'display:none', // Always hide, so they only get revealed by clicking the radio buttons.
             ];
             $html .= html_writer::start_tag('div', $attributes);
-            /* @var models\moderation_set_rule $instance */
             $instance = new $class();
             $html .= $instance->get_form_elements();
             $html .= html_writer::end_tag('div');
