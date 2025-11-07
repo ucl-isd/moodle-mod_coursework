@@ -1,3 +1,4 @@
+/* stylelint-disable declaration-no-important  */
 /**
 Coursework.
 **/
@@ -89,7 +90,7 @@ Coursework.
             table {
                 th,
                 td {
-                    padding: .75rem !important
+                    padding: .75rem !important;
                 }
             }
             .criterion.even,
@@ -141,7 +142,7 @@ Coursework.
                                 background-color: color-mix(in srgb, var(--primary) 10%, white 90%);
                             }
                             /* Selected rubric option. */
-                            &.checked{
+                            &.checked {
                                 color: white;
                                 border-color: var(--primary) !important;
                                 background-color: var(--primary) !important;

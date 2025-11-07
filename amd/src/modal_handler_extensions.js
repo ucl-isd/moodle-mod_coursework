@@ -82,14 +82,14 @@ export const init = (courseworkid) => {
                     const strRequests = ['areyousure', 'delete', 'cancel'].map((k) => {
                         return {key: k, component: 'core'};
                     });
-                    (async () => {
+                    (async() => {
                         const strings = await getStrings(strRequests);
                         Notification.confirm(
                             strings[0],
                             event.detail.message,
                             strings[1], // Delete.
                             strings[2], // Cancel.
-                            async () => {
+                            async() => {
                                 try {
                                     const deleteResult = await Ajax.call([{
                                         methodname: 'mod_coursework_delete_extension',

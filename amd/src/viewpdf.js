@@ -27,7 +27,7 @@ import {getString} from 'core/str';
 import {add as addToast} from 'core/toast';
 
 var controller = {
-    saveannotations: async function () {
+    saveannotations: async function() {
         const pdfdata = await window.pdfcontroller.getpdfdata();
         const blob = new Blob([pdfdata], {type: "application/pdf"});
         const data = new FormData();
@@ -48,7 +48,7 @@ var controller = {
         addToast(getString('annotationssaved', 'mod_coursework'), {type: 'success'});
     },
 
-    loadpdf: async function (dataset) {
+    loadpdf: async function(dataset) {
         var url = dataset.href;
 
         if (dataset.annotatedfileurl) {
@@ -60,7 +60,7 @@ var controller = {
 
     },
 
-    clearannotations: async function () {
+    clearannotations: async function() {
         Ajax.call([{
             methodname: 'mod_coursework_clearannotations',
             args: {
@@ -73,6 +73,7 @@ var controller = {
                 controller.currentfiledataset.annotatedfileid = '';
                 controller.loadpdf(controller.currentfiledataset);
                 addToast(getString('annotationscleared', 'mod_coursework'), {type: 'success'});
+                return;
             })
             .catch((error) => {
                 addToast(error, {type: 'error'});
@@ -82,7 +83,7 @@ var controller = {
 };
 
 
-export const init = async () => {
+export const init = async() => {
     prefetchStrings('mod_coursework', [
         'annotationssaved',
         'annotationscleared',
@@ -90,7 +91,7 @@ export const init = async () => {
 
     let viewfilebuttons = document.querySelectorAll('[data-action="modcoursework_viewfile"]');
     viewfilebuttons.forEach((node) => {
-            node.addEventListener("click", async (event) => {
+            node.addEventListener("click", async(event) => {
                 await controller.loadpdf(event.target.dataset).promise;
             });
         }
@@ -100,12 +101,12 @@ export const init = async () => {
     }
 
     document.querySelector('[data-action="modcoursework_saveannotations"]')
-        .addEventListener("click", async () => {
+        .addEventListener("click", async() => {
             await controller.saveannotations().promise;
         });
 
     document.querySelector('[data-action="modcoursework_clearannotations"]')
-        .addEventListener("click", async () => {
+        .addEventListener("click", async() => {
             await controller.clearannotations().promise;
         });
 

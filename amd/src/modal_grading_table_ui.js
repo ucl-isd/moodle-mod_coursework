@@ -32,7 +32,7 @@ import Templates from 'core/templates';
  * @param {string} successMessage
  * @returns {Promise<void>}
  */
-export const replaceRow = async (rowElement, dataSet, successMessage) => {
+export const replaceRow = async(rowElement, dataSet, successMessage) => {
     const templateDataResult = await Ajax.call([{
         methodname: 'get_grading_table_row_data',
         args: {
