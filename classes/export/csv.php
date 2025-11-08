@@ -114,10 +114,10 @@ class csv {
         $row = [];
         foreach ($csvcells as $csvcell) {
             if (substr($csvcell, 0, 8) == 'assessor') {
-                $stageidentifier = 'assessor_'.(substr($csvcell, -1));
+                $stageidentifier = 'assessor_' . (substr($csvcell, -1));
                 $csvcell = substr($csvcell, 0, -1);
             }
-            $class = "mod_coursework\\export\\csv\\cells\\".$csvcell."_cell";
+            $class = "mod_coursework\\export\\csv\\cells\\" . $csvcell . "_cell";
             $cell = new $class($this->coursework);
             if (substr($csvcell, 0, 8) == 'assessor') {
                 $cell = $cell->get_cell($submission, $student, $stageidentifier);
@@ -134,11 +134,9 @@ class csv {
                     $row[] = $cell;
                 }
             } else {
-
                 $stages = $cell->get_cell($submission, $student, false);
                 $row = array_merge($row, $stages);
             }
-
         }
         return $row;
     }
@@ -154,17 +152,16 @@ class csv {
                 $stage = (substr($header, -1));
                 $header = substr($header, 0, -1);
             }
-            $class = "mod_coursework\\export\\csv\\cells\\".$header."_cell";
+            $class = "mod_coursework\\export\\csv\\cells\\" . $header . "_cell";
             $cell = new $class($this->coursework);
             if (substr($header, 0, 8) == 'assessor') {
                 $head = $cell->get_header($stage);
                 if (is_array($head)) {
                     $headers = array_merge($headers, $head);
                 } else {
-                    $headers[$header.$stage] = $head;
+                    $headers[$header . $stage] = $head;
                 }
-
-            } else if ($header != 'stages' && $header != 'moderationagreement' && $header != 'otherassessors' ) {
+            } else if ($header != 'stages' && $header != 'moderationagreement' && $header != 'otherassessors') {
                  $head = $cell->get_header(false);
                 if (is_array($head)) {
                     $headers = array_merge($headers, $head);
@@ -178,7 +175,6 @@ class csv {
         }
 
         $this->csvexport->add_data($headers);
-
     }
 
     /**
@@ -189,7 +185,7 @@ class csv {
     public function add_filename($filename) {
 
         $filename = clean_filename($filename);
-        return $this->csvexport->filename = $filename.'.csv';
+        return $this->csvexport->filename = $filename . '.csv';
     }
 
     /**
@@ -201,7 +197,6 @@ class csv {
     protected function sort_by_lastname($a, $b) {
 
         return strcmp($a->lastname, $b->lastname);
-
     }
 
     /**
@@ -259,7 +254,6 @@ class csv {
             $criterias = $this->coursework->get_rubric_criteria();
             // We will increment by the number of criterias plus 1 for feedback
             $increment = (count($criterias) * 2) + 1;
-
         } else {
             $increment = 2;
         }
@@ -269,7 +263,5 @@ class csv {
         }
 
         return $cells;
-
     }
-
 }

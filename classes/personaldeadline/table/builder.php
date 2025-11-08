@@ -37,7 +37,6 @@ use mod_coursework\render_helpers\grading_report\cells\user_cell;
  * to change the date or persnal deadline on mass or individually.
  */
 class builder {
-
     /**
      * @var coursework
      */
@@ -76,13 +75,14 @@ class builder {
         $sorting = new mod_coursework\grading_report($this->options, $this->get_coursework());
         $methodname = 'sort_by_' . $this->options['sortby'];
         if (method_exists($sorting, $methodname)) {
-            usort($rows,
+            usort(
+                $rows,
                 [$sorting,
-                    $methodname]);
+                $methodname]
+            );
         }
 
         return $rows;
-
     }
 
     /**

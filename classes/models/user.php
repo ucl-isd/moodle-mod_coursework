@@ -48,7 +48,6 @@ use stdClass;
  */
 #[AllowDynamicProperties]
 class user extends table_base implements allocatable, moderatable {
-
     use allocatable_functions;
 
     /**
@@ -73,7 +72,7 @@ class user extends table_base implements allocatable, moderatable {
      */
     public function name(): string {
         // If we already have properties to get the name without going to database, use them.
-        $data = new stdClass;
+        $data = new stdClass();
         $hasallfields = true;
         foreach (fields::get_name_fields() as $field) {
             if ($this->$field ?? false) {
@@ -120,7 +119,7 @@ class user extends table_base implements allocatable, moderatable {
      * @return bool
      * @throws coding_exception
      */
-    public function has_not_been_sent_reminder($coursework, $remindernumber, $extension=0) {
+    public function has_not_been_sent_reminder($coursework, $remindernumber, $extension = 0) {
         $conditions = [
             'courseworkid' => $coursework->id,
             'userid' => $this->id(),
@@ -128,7 +127,6 @@ class user extends table_base implements allocatable, moderatable {
             'extension' => $extension,
         ];
         return !reminder::exists($conditions);
-
     }
 
     /**
@@ -230,7 +228,7 @@ class user extends table_base implements allocatable, moderatable {
     public static function get_user_picture_context_ids(int $courseid): array {
         global $DB;
         return $DB->get_records_sql_menu(
-        "SELECT u.id, ctx.id as ctxid
+            "SELECT u.id, ctx.id as ctxid
             FROM {user} u
             JOIN {context} ctx on ctx.instanceid = u.id AND ctx.contextlevel = ?
             JOIN {user_enrolments} ue ON ue.userid = u.id
@@ -239,5 +237,4 @@ class user extends table_base implements allocatable, moderatable {
             [CONTEXT_USER, $courseid]
         );
     }
-
 }

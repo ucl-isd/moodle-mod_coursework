@@ -31,7 +31,6 @@ use mod_coursework\models\submission;
  * @group mod_coursework
  */
 final class submission_test extends \advanced_testcase {
-
     use test_helpers\factory_mixin;
 
     /**
@@ -107,8 +106,10 @@ final class submission_test extends \advanced_testcase {
         $submission->userid = 2;
         $submission = $generator->create_submission($submission, $coursework);
 
-        $this->assertInstanceOf('\mod_coursework\models\submission',
-                                submission::find($submission->id));
+        $this->assertInstanceOf(
+            '\mod_coursework\models\submission',
+            submission::find($submission->id)
+        );
     }
 
     public function test_get_allocatable_student(): void {
@@ -156,13 +157,13 @@ final class submission_test extends \advanced_testcase {
         $submission->publish();
 
         $gradeitem = $DB->get_record(
-            'grade_items', ['itemtype' => 'mod', 'itemmodule' => 'coursework', 'iteminstance' => $this->coursework->id]
+            'grade_items',
+            ['itemtype' => 'mod', 'itemmodule' => 'coursework', 'iteminstance' => $this->coursework->id]
         );
         $grade = $DB->get_record('grade_grades', ['itemid' => $gradeitem->id, 'userid' => $student->id]);
         $gradetimemodified = $grade->timemodified;
 
         $this->assertNotEquals($initialtime, $gradetimemodified);
-
     }
 
     public function test_publish_updates_grade_rawgrade(): void {
@@ -186,11 +187,12 @@ final class submission_test extends \advanced_testcase {
 
         $gradeitem = $DB->get_record(
             'grade_items',
-                  ['itemtype' => 'mod', 'itemmodule' => 'coursework', 'iteminstance' => $this->coursework->id]
+            ['itemtype' => 'mod', 'itemmodule' => 'coursework', 'iteminstance' => $this->coursework->id]
         );
         $grade = $DB->get_record(
             'grade_grades',
-            ['itemid' => $gradeitem->id, 'userid' => $student->id]);
+            ['itemid' => $gradeitem->id, 'userid' => $student->id]
+        );
 
         $this->assertEquals(67, $grade->rawgrade);
     }
@@ -214,8 +216,8 @@ final class submission_test extends \advanced_testcase {
         $submission->publish();
 
         $gradeitem = $DB->get_record(
-        'grade_items',
-              ['itemtype' => 'mod', 'itemmodule' => 'coursework', 'iteminstance' => $this->coursework->id]
+            'grade_items',
+            ['itemtype' => 'mod', 'itemmodule' => 'coursework', 'iteminstance' => $this->coursework->id]
         );
         $grade = $DB->get_record('grade_grades', ['itemid' => $gradeitem->id, 'userid' => $student->id]);
         $timemodified = $grade->timemodified;

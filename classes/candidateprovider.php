@@ -25,7 +25,6 @@ namespace mod_coursework;
  * @author     Alex Yeung <k.yeung@ucl.ac.uk>
  */
 abstract class candidateprovider {
-
     /**
      * Get candidate number for a user in a specific course.
      *

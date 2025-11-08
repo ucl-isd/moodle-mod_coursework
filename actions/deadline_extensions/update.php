@@ -46,26 +46,34 @@ if (!$delete) {
         redirect(
             $redirecturl,
             get_string('extension_not_found', 'mod_coursework'),
-            null, \core\output\notification::NOTIFY_ERROR
+            null,
+            \core\output\notification::NOTIFY_ERROR
         );
     }
     if (!$deadlineextension->can_be_deleted()) {
-        $coursemodule = get_coursemodule_from_instance('coursework',
+        $coursemodule = get_coursemodule_from_instance(
+            'coursework',
             $deadlineextension->get_coursework()->id,
             0,
             false,
-            MUST_EXIST);
+            MUST_EXIST
+        );
         redirect(
             $redirecturl,
             get_string('extension_cannot_delete', 'mod_coursework'),
-            null, \core\output\notification::NOTIFY_ERROR
+            null,
+            \core\output\notification::NOTIFY_ERROR
         );
     }
     $courseworkid = $deadlineextension->courseworkid ?? null;
     $sure = optional_param('sure', 0, PARAM_INT);
     if ($courseworkid) {
         $cm = get_coursemodule_from_instance(
-            'coursework', $courseworkid, 0, false, MUST_EXIST
+            'coursework',
+            $courseworkid,
+            0,
+            false,
+            MUST_EXIST
         );
         $courseworkurl = new moodle_url('/mod/coursework/view.php', ['id' => $cm->id]);
         if ($sure) {
@@ -101,4 +109,3 @@ if (!$delete) {
         throw new \core\exception\invalid_parameter_exception("Coursework ID not found");
     }
 }
-

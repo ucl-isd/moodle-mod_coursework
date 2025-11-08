@@ -30,7 +30,6 @@ use mod_coursework\models\user;
  * Class group_cell
  */
 class group_cell extends cell_base implements allocatable_cell {
-
     /**
      * @param grading_table_row_base $rowobject
      * @throws coding_exception
@@ -42,20 +41,19 @@ class group_cell extends cell_base implements allocatable_cell {
          * @var group $group
          */
         $group = $rowobject->get_allocatable();
-        $content .= '<span class="group">'.$group->name().'</span>';
+        $content .= '<span class="group">' . $group->name() . '</span>';
         $content .= '<br>';
         $content .= '<div class="group_style">';
         $content .= '<select>';
 
         if ($this->coursework->blindmarking_enabled() && !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context()) && !$rowobject->is_published()) {
-            $content .= '<option class="expand_members" selected="selected">'.get_string('membershidden', 'coursework').'</option>';
+            $content .= '<option class="expand_members" selected="selected">' . get_string('membershidden', 'coursework') . '</option>';
         } else {
-            $content .= '<option class="expand_members" selected="selected">'.get_string('viewmembers', 'coursework').'</option>';
+            $content .= '<option class="expand_members" selected="selected">' . get_string('viewmembers', 'coursework') . '</option>';
         }
 
         $cm = $this->coursework->get_course_module();
         foreach ($group->get_members($this->coursework->get_context(), $cm) as $groupmember) {
-
             $content .= $this->add_group_member_name($groupmember, $rowobject);
         }
         $content .= '</select>';
@@ -69,17 +67,19 @@ class group_cell extends cell_base implements allocatable_cell {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options  = []) {
+    public function get_table_header($options = []) {
 
         // Adding this line so that the sortable heading function will make a sortable link unique to the table
         // If tablename is set
         $tablename = (isset($options['tablename'])) ? $options['tablename'] : '';
 
-        return $this->helper_sortable_heading(get_string('tableheadgroups', 'coursework'),
-                                              'groupname',
-                                              $options['sorthow'],
-                                              $options['sortby'],
-                                              $tablename);
+        return $this->helper_sortable_heading(
+            get_string('tableheadgroups', 'coursework'),
+            'groupname',
+            $options['sorthow'],
+            $options['sortby'],
+            $tablename
+        );
     }
 
     /**
@@ -99,7 +99,7 @@ class group_cell extends cell_base implements allocatable_cell {
         if ($this->coursework->blindmarking_enabled() && !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context()) && !$rowobject->is_published()) {
             $text .= 'Hidden';
         } else {
-            $text .= $groupmember->profile_link() . ' ('. $groupmember->email.')';
+            $text .= $groupmember->profile_link() . ' (' . $groupmember->email . ')';
         }
         $text .= '</option>';
         return $text;

@@ -32,7 +32,6 @@ use mod_coursework\models\coursework;
  * Acts as a holder for the data needed to render a widget where the user can define a moderation set.
  */
 class sampling_set_widget {
-
     /**
      * @var array
      */
@@ -91,13 +90,11 @@ class sampling_set_widget {
 
         $suffixes = [];
         foreach ($classes as $shortname => $classname) {
-
             $label = get_string($shortname, 'mod_coursework');
             $suffixes[$shortname] = $label;
         }
 
         return $suffixes;
-
     }
 
     /**
@@ -109,16 +106,15 @@ class sampling_set_widget {
 
         global $CFG, $DB;
 
-        $dirname = $CFG->dirroot.'/mod/coursework/classes/sample_set_rule/*.php';
+        $dirname = $CFG->dirroot . '/mod/coursework/classes/sample_set_rule/*.php';
         $files = glob($dirname);
 
         $classes = [];
         foreach ($files as $file) {
-
             $matches = []; // In case we have stuff left over.
             preg_match('/([^\/]+)\.php/', $file, $matches);
             $rulename = $matches[1];
-            $fullclassname = '\mod_coursework\sample_set_rule\\'. $rulename;
+            $fullclassname = '\mod_coursework\sample_set_rule\\' . $rulename;
 
             if (!$fullclassname::allow_multiple()) {
                 $params = [
@@ -170,7 +166,7 @@ class sampling_set_widget {
         foreach ($classes as $shortname => $class) {
             $attributes = [
                 'class' => 'rule-config',
-                'id' => 'rule-config-'.$shortname,
+                'id' => 'rule-config-' . $shortname,
                 'style' => 'display:none', // Always hide, so they only get revealed by clicking the radio buttons.
             ];
             $html .= html_writer::start_tag('div', $attributes);
@@ -181,5 +177,4 @@ class sampling_set_widget {
 
         return $html;
     }
-
 }

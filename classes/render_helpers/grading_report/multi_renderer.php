@@ -30,5 +30,4 @@ namespace mod_coursework\render_helpers\grading_report;
  * @package mod_coursework\render_helpers\grading_report
  */
 class multi_renderer extends base_renderer {
-
 }

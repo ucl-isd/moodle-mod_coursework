@@ -34,7 +34,6 @@ use stdClass;
  * @group mod_coursework
  */
 final class grading_sheet_download_test extends \advanced_testcase {
-
     use \mod_coursework\test_helpers\factory_mixin;
 
     public function setUp(): void {
@@ -80,11 +79,11 @@ final class grading_sheet_download_test extends \advanced_testcase {
         $csvcells = ['submissionid', 'submissionfileid', 'name', 'username', 'submissiontime', 'singlegrade', 'feedbackcomments'];
 
         $timestamp = date('d_m_y @ H-i');
-        $filename = get_string('gradingsheetfor', 'coursework'). $coursework->name .' '.$timestamp;
+        $filename = get_string('gradingsheetfor', 'coursework') . $coursework->name . ' ' . $timestamp;
         $gradingsheet = new \mod_coursework\export\grading_sheet($coursework, $csvcells, $filename);
         $actualsubmission = $gradingsheet->add_csv_data($submission);
 
-        $studentname = $student->lastname .' '.$student->firstname;
+        $studentname = $student->lastname . ' ' . $student->firstname;
 
         // Build an array.
         $expectedsubmission = [
@@ -174,17 +173,17 @@ final class grading_sheet_download_test extends \advanced_testcase {
                            'agreedgrade', 'agreedfeedback'];
 
         $timestamp = date('d_m_y @ H-i');
-        $filename = get_string('gradingsheetfor', 'coursework'). $coursework->name .' '.$timestamp;
+        $filename = get_string('gradingsheetfor', 'coursework') . $coursework->name . ' ' . $timestamp;
         $gradingsheet = new \mod_coursework\export\grading_sheet($coursework, $csvcells, $filename);
         $actualsubmission1 = $gradingsheet->add_csv_data($submission1);
         $actualsubmission2 = $gradingsheet->add_csv_data($submission2);
         $actualsubmission = array_merge($actualsubmission1, $actualsubmission2);
 
-        $studentname1 = $student1->lastname .' '.$student1->firstname;
-        $studentname2 = $student2->lastname .' '.$student2->firstname;
+        $studentname1 = $student1->lastname . ' ' . $student1->firstname;
+        $studentname2 = $student2->lastname . ' ' . $student2->firstname;
 
-        $assessor1name = $assessor1->lastname .' '. $assessor1->firstname;
-        $assessor2name = $assessor2->lastname .' '. $assessor2->firstname;
+        $assessor1name = $assessor1->lastname . ' ' . $assessor1->firstname;
+        $assessor2name = $assessor2->lastname . ' ' . $assessor2->firstname;
 
         // Build an array.
         $expectedsubmission = [

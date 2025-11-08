@@ -24,13 +24,12 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot.'/mod/coursework/framework/test/classes/user_table.php');
+require_once($CFG->dirroot . '/mod/coursework/framework/test/classes/user_table.php');
 
 /**
  * Class framework_table_base_test
  */
 class framework_table_base_test extends advanced_testcase {
-
     public function setUp(): void {
         $this->resetAfterTest();
     }

@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/mod/coursework/tests/behat/pages/page_base.php');
  *
  */
 class mod_coursework_behat_student_submission_form extends mod_coursework_behat_page_base {
-
     public function click_on_the_save_submission_button() {
         $this->getpage()->find('xpath', "//input[@id='id_submitbutton']")->press();
     }

@@ -93,11 +93,13 @@ class personaldeadlines_controller extends controller_base {
         if ($this->form->is_validated()) {
             $data = $this->form->get_data();
             if (empty($data->multipleuserdeadlines)) {
-                if (!$this->get_personaldeadline(
-                    $this->params['allocatableid'],
-                    $this->params['allocatabletype'],
-                    $this->params['courseworkid']
-                )) { // Personal deadline doesnt exist.
+                if (
+                    !$this->get_personaldeadline(
+                        $this->params['allocatableid'],
+                        $this->params['allocatabletype'],
+                        $this->params['courseworkid']
+                    )
+                ) { // Personal deadline doesnt exist.
                     // Add new.
                     $data->createdbyid = $USER->id;
                     $this->personaldeadline = personaldeadline::build($data);
@@ -177,7 +179,6 @@ class personaldeadlines_controller extends controller_base {
             echo $OUTPUT->footer();
             die();
         }
-
     }
 
     /**
@@ -228,12 +229,14 @@ class personaldeadlines_controller extends controller_base {
 
         // If the allocatableid is an array then the current page will probably be setting multiple the personal deadlines
         // of multiple allocatable ids in which case set the personal deadline to the coursework default
-        if ($this->params['multipleuserdeadlines'] || !$this->get_personaldeadline(
+        if (
+            $this->params['multipleuserdeadlines'] || !$this->get_personaldeadline(
                 $this->params['allocatableid'],
                 $this->params['allocatabletype'],
-                $this->params['courseworkid'])) { // if no personal deadline then use coursework deadline
+                $this->params['courseworkid']
+            )
+        ) { // if no personal deadline then use coursework deadline
             $this->personaldeadline->personaldeadline = $this->coursework->deadline;
-
         }
 
         return $params;

@@ -39,7 +39,6 @@ use moodle_url;
  *
  */
 class personaldeadline_form extends dynamic_form {
-
     /**
      * Coursework object.
      * @var coursework|null
@@ -100,7 +99,8 @@ class personaldeadline_form extends dynamic_form {
 
         $this->_form->addElement(
             'html',
-            $OUTPUT->render_from_template('coursework/form_header_personaldeadline',
+            $OUTPUT->render_from_template(
+                'coursework/form_header_personaldeadline',
                 $this->get_header_mustache_data()
             )
         );
@@ -187,7 +187,8 @@ class personaldeadline_form extends dynamic_form {
         if ($this->allocatable->name() ?? false) {
             $data->title = get_string(
                 $this->existingdeadline ? 'edit_personaldeadline_for' : 'new_personaldeadline_for',
-                'coursework', $this->allocatable->name()
+                'coursework',
+                $this->allocatable->name()
             );
         }
         return $data;

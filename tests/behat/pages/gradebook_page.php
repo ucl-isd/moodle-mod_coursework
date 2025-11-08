@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/mod/coursework/tests/behat/pages/page_base.php');
  *
  */
 class mod_coursework_behat_gradebook_page extends mod_coursework_behat_page_base {
-
     /**
      * Get coursework grade shown in gradebook page.
      * @param object $coursework

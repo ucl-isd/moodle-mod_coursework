@@ -23,7 +23,6 @@
 use mod_coursework\models\submission;
 
 class restore_coursework_activity_structure_step extends restore_activity_structure_step {
-
     /**
      * Define the structure of the restore workflow.
      *
@@ -98,27 +97,27 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                 'timecreated',
                                 'timesubmitted',
                                 'firstpublished',
-                                'lastpublished', ],  $data);
+                                'lastpublished', ], $data);
 
         $now = time();
-        $this->set_defaults(['timecreated' => $now,
+        $this->set_defaults(
+            ['timecreated' => $now,
                                   'timemodified' => $now,
                                   'firstpublished' => null,
                                   'lastpublished' => null,
                                   'timesubmitted' => null,
                                   'finalisedstatus' => 0,
                                   'manualsrscode' => ''],
-                            $data);
+            $data
+        );
 
         if (!$DB->record_exists('coursework_submissions', ['courseworkid' => $data->courseworkid, 'allocatableid' => $data->allocatableid, 'allocatabletype' => $data->allocatabletype])) {
-
             $newitemid = $DB->insert_record('coursework_submissions', $data);
             $this->set_mapping('coursework_submission', $oldid, $newitemid);
 
             // Tell system how to map the old submission id to its new one.
             $this->set_mapping('coursework_submission', $oldid, $newitemid, false, null, $this->task->get_old_contextid());
         }
-
     }
 
     protected function process_coursework_feedback($data) {
@@ -194,14 +193,15 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
         $this->fixallocatable($data);
 
-        $this->set_defaults([
+        $this->set_defaults(
+            [
             'assessorid' => 0,
             'ismanual' => 0,
             'moderator' => 0,
             'timelocked' => time(),
             'stageidentifier' => '',
             ],
-        $data
+            $data
         );
         $newitemid = $DB->insert_record('coursework_allocation_pairs', $data);
     }
@@ -246,10 +246,12 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $data->courseworkid = $this->get_new_parentid('coursework');
         $data->assessorid = $this->get_mappingid('user', $data->assessorid);
 
-        $this->set_defaults(['allocationstrategy' => '',
+        $this->set_defaults(
+            ['allocationstrategy' => '',
                                   'value' => 0,
                                   'purpose' => ''],
-                            $data);
+            $data
+        );
 
         global $DB;
         $newitemid = $DB->insert_record('coursework_allocation_config', $data);
@@ -299,12 +301,10 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $this->set_defaults(['extended_deadline' => 0,
                                   'pre_defined_reason' => '',
                                   'extrainformationtext' => '',
-                                  'extrainformationformat' => FORMAT_HTML]
-                            , $data);
+                                  'extrainformationformat' => FORMAT_HTML], $data);
 
         global $DB;
         $newitemid = $DB->insert_record('coursework_extensions', $data);
-
     }
 
     protected function process_coursework_person_deadline($data) {
@@ -469,7 +469,6 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         $newitemid = $DB->insert_record('coursework', $data);
 
         $this->apply_activity_instance($newitemid);
-
     }
 
     protected function check_grade($field, &$data) {
@@ -507,12 +506,13 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
             if (!$file->is_directory()) {
                 $itemid = $file->get_itemid();
 
-                $entry = $DB->get_record('coursework_submissions',
-                                       ['id' => $itemid]);
+                $entry = $DB->get_record(
+                    'coursework_submissions',
+                    ['id' => $itemid]
+                );
 
                 $submission = submission::find($entry->id);
                 $submission->rename_files(); // use cw function to handle file renaming as submission may have few files
-
             }
         }
     }

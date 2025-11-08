@@ -34,7 +34,6 @@ use stdClass;
  * Class containing all logic for the coursework cron functionality
  */
 class cron {
-
     /**
      * Email to be sent to a user
      */
@@ -90,8 +89,10 @@ class cron {
             }
 
             // if cw doesn't have personal deadlines and deadline passed and cw doesnt have any individual extensions
-            if (!$coursework->personaldeadlines_enabled() && (!$coursework->has_deadline()
-                || $coursework->deadline_has_passed() && !$coursework->extension_exists())) {
+            if (
+                !$coursework->personaldeadlines_enabled() && (!$coursework->has_deadline()
+                || $coursework->deadline_has_passed() && !$coursework->extension_exists())
+            ) {
                 continue;
             }
 
@@ -112,39 +113,41 @@ class cron {
 
                 if ($individualextension) {
                     // check if 1st reminder is due to be sent but has not been sent yet
-                    if ($coursework->due_to_send_first_reminders($individualextension->extended_deadline) &&
-                       $student->has_not_been_sent_reminder($coursework, 1, $individualextension->extended_deadline)) {
+                    if (
+                        $coursework->due_to_send_first_reminders($individualextension->extended_deadline) &&
+                        $student->has_not_been_sent_reminder($coursework, 1, $individualextension->extended_deadline)
+                    ) {
                            $student->deadline = $individualextension->extended_deadline;
                            $student->extension = $individualextension->extended_deadline;
                            $student->courseworkid = $coursework->id;
                            $student->nextremindernumber = 1;
-                           $userswhoneedreminding[$student->id().'_'.$coursework->id] = $student;
+                           $userswhoneedreminding[$student->id() . '_' . $coursework->id] = $student;
 
                         // check if 2nd reminder is due to be sent but has not been sent yet
-                    } else if ($coursework->due_to_send_second_reminders($individualextension->extended_deadline) &&
-                       $student->has_not_been_sent_reminder($coursework, 2, $individualextension->extended_deadline)) {
+                    } else if (
+                        $coursework->due_to_send_second_reminders($individualextension->extended_deadline) &&
+                        $student->has_not_been_sent_reminder($coursework, 2, $individualextension->extended_deadline)
+                    ) {
                            $student->deadline = $individualextension->extended_deadline;
                            $student->extension = $individualextension->extended_deadline;
                            $student->courseworkid = $coursework->id;
                            $student->nextremindernumber = 2;
-                           $userswhoneedreminding[$student->id().'_'.$coursework->id] = $student;
+                           $userswhoneedreminding[$student->id() . '_' . $coursework->id] = $student;
                     }
-
                 } else if ($deadline > time()) { // coursework or personal deadline hasn't passed
                     // check if 1st reminder is due to be sent but has not been sent yet
                     if ($coursework->due_to_send_first_reminders($deadline) && $student->has_not_been_sent_reminder($coursework, 1)) {
                             $student->deadline = $deadline;
                             $student->courseworkid = $coursework->id;
                             $student->nextremindernumber = 1;
-                            $userswhoneedreminding[$student->id().'_'.$coursework->id] = $student;
+                            $userswhoneedreminding[$student->id() . '_' . $coursework->id] = $student;
 
                         // check if 2nd reminder is due to be sent but has not been sent yet
                     } else if ($coursework->due_to_send_second_reminders($deadline) && $student->has_not_been_sent_reminder($coursework, 2)) {
                             $student->deadline = $deadline;
                             $student->courseworkid = $coursework->id;
                             $student->nextremindernumber = 2;
-                            $userswhoneedreminding[$student->id().'_'.$coursework->id] = $student;
-
+                            $userswhoneedreminding[$student->id() . '_' . $coursework->id] = $student;
                     }
                 }
             }
@@ -167,7 +170,7 @@ class cron {
 
         global $CFG, $DB;
 
-        require_once($CFG->dirroot.'/mod/coursework/lib.php');
+        require_once($CFG->dirroot . '/mod/coursework/lib.php');
         $timenow = time();
         $firstreminderdays = $CFG->coursework_day_reminder * 60 * 60 * 24;
 
@@ -225,12 +228,13 @@ class cron {
             $users = self::get_admins_and_teachers($context);
 
             foreach ($users as $user) {
-
-                if ($DB->record_exists('coursework_reminder', [
+                if (
+                    $DB->record_exists('coursework_reminder', [
                     'courseworkid' => $courseworkinstance->id,
                     'userid' => $user->id,
                     'remindernumber' => 1,
-                ])) {
+                    ])
+                ) {
                     continue;
                 }
 
@@ -256,7 +260,6 @@ class cron {
                 $reminder->courseworkid = $courseworkinstance->id;
                 $reminder->remindernumber = $numberofexistingreminders + 1;
                 $DB->insert_record('coursework_reminder', $reminder);
-
             }
         }
 
@@ -277,7 +280,7 @@ class cron {
      * @param array $params
      * @return string
      */
-    public static function coursework_debuggable_query($query, $params  = []) {
+    public static function coursework_debuggable_query($query, $params = []) {
 
         global $CFG;
 
@@ -312,13 +315,11 @@ class cron {
         $usercounter = [];
 
         foreach ($users as $user) {
-
             $courseworkinstance = coursework::find($user->courseworkid);
 
             $mailer = new mailer($courseworkinstance);
 
             if ($mailer->send_student_deadline_reminder($user)) {
-
                 $emailcounter++;
                 if (!isset($usercounter[$user->id])) {
                     $usercounter[$user->id] = 1;
@@ -394,7 +395,6 @@ class cron {
         $courseworksubmissions = $DB->get_records_sql($sql, ['now' => time()]);
 
         foreach ($courseworksubmissions as $courseworksubmission) {
-
             $submission = submission::find($courseworksubmission);
             $feedbackautoreleasedeadline = $submission->get_coursework()->get_individual_feedback_deadline();
             $allocatable = $submission->get_allocatable();
@@ -406,7 +406,6 @@ class cron {
                 $submission->publish();
             }
         }
-
     }
 
     /**
@@ -431,6 +430,4 @@ class cron {
         }
         return array_values($result);
     }
-
 }
-

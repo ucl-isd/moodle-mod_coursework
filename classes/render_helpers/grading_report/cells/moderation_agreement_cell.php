@@ -35,7 +35,6 @@ use pix_icon;
  * Class moderation_agreement_cell
  */
 class moderation_agreement_cell extends cell_base {
-
     /**
      * @var allocatable
      */
@@ -69,10 +68,11 @@ class moderation_agreement_cell extends cell_base {
                 $moderation = $this->stage->get_moderation_for_feedback($rowobject->get_single_feedback());
             }
             // Add new moderations agreement
-            if (!$moderation &&
+            if (
+                !$moderation &&
                 $rowobject->get_submission()->final_grade_agreed() &&
-                ($this->stage->user_is_moderator($USER))) {
-
+                ($this->stage->user_is_moderator($USER))
+            ) {
                 $moderationparams = [
                     'submissionid' => $rowobject->get_submission()->id,
                     'moderatorid' => $USER->id,
@@ -88,7 +88,6 @@ class moderation_agreement_cell extends cell_base {
             }
         }
         if ($moderation) {
-
             $allocation = $this->stage->get_allocation($rowobject->get_allocatable());
 
             $content .= get_string($moderation->agreement, 'coursework');
@@ -102,12 +101,13 @@ class moderation_agreement_cell extends cell_base {
             $content .= html_writer::empty_tag('br');
             $content .= 'by: ' . $moderation->get_moderator_username();
             $content .= html_writer::empty_tag('br');
-            if ($this->coursework->allocation_enabled() && !empty($allocation)
-                && $allocation->assessor()->id != $moderation->get_moderator_id()) {
+            if (
+                $this->coursework->allocation_enabled() && !empty($allocation)
+                && $allocation->assessor()->id != $moderation->get_moderator_id()
+            ) {
                     $fullname = core_user::get_fullname((object)(array)$allocation->assessor());
                     $content .= '(' . get_string('allocatedtoname', 'coursework', $fullname) . ')';
             }
-
         } else if ($this->coursework->allocation_enabled()) {
             // Show allocated person if there is one.
             $allocation = $this->stage->get_allocation($rowobject->get_allocatable());
@@ -126,7 +126,7 @@ class moderation_agreement_cell extends cell_base {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options  = []) {
+    public function get_table_header($options = []) {
         return get_string('tableheadmoderationagreement', 'coursework');
     }
 
@@ -176,10 +176,12 @@ class moderation_agreement_cell extends cell_base {
 
         $title = get_string('moderate', 'coursework');
 
-        return  $OUTPUT->action_link($link,
-                                     $title,
-                                null,
-                                ['class' => 'new_moderation', 'id' => $linkid]);
+        return  $OUTPUT->action_link(
+            $link,
+            $title,
+            null,
+            ['class' => 'new_moderation', 'id' => $linkid]
+        );
     }
 
     /**
@@ -202,11 +204,12 @@ class moderation_agreement_cell extends cell_base {
         $title = get_string('editmoderation', 'coursework');
         $icon = new pix_icon('edit', $title, 'coursework');
 
-        return  $OUTPUT->action_icon($link,
+        return  $OUTPUT->action_icon(
+            $link,
             $icon,
             null,
-            ['id' => $linkid]);
-
+            ['id' => $linkid]
+        );
     }
 
     /**
@@ -227,9 +230,11 @@ class moderation_agreement_cell extends cell_base {
             ->get_allocatable_identifier_hash($rowobject->get_allocatable());
         $link = $this->get_router()->get_path('show moderation', $moderationparams);
 
-        return $OUTPUT->action_link($link,
-                                    $linktitle,
-                                null,
-                                      ['class' => 'show_moderation', 'id' => $linkid]);
+        return $OUTPUT->action_link(
+            $link,
+            $linktitle,
+            null,
+            ['class' => 'show_moderation', 'id' => $linkid]
+        );
     }
 }

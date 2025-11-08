@@ -28,7 +28,6 @@ use mod_coursework\models\submission;
  * Class idnumber_cell
  */
 class idnumber_cell extends cell_base {
-
     /**
      * @param submission $submission
      * @param $student

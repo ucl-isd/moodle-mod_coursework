@@ -27,7 +27,6 @@ use mod_coursework\grading_table_row_base;
  * Class feedback_cell
  */
 class status_cell extends cell_base {
-
     /**
      * @param grading_table_row_base $rowobject
      * @return string
@@ -46,7 +45,7 @@ class status_cell extends cell_base {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options  = []) {
+    public function get_table_header($options = []) {
         return get_string('tableheadstatus', 'coursework');
     }
 

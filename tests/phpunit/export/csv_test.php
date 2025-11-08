@@ -32,7 +32,6 @@ use mod_coursework\models\deadline_extension;
  * @group mod_coursework
  */
 final class csv_test extends \advanced_testcase {
-
     use test_helpers\factory_mixin;
 
     public function setUp(): void {
@@ -95,10 +94,8 @@ final class csv_test extends \advanced_testcase {
         $extensionreasons = $coursework->extension_reasons();
 
         if (empty($extensionreasons)) {
-
             set_config('coursework_extension_reasons_list', "coursework extension \n sick leave");
             $extensionreasons = $coursework->extension_reasons();
-
         }
 
         // Headers and data for csv.
@@ -113,13 +110,13 @@ final class csv_test extends \advanced_testcase {
         $csvcells[] = 'finalgrade';
 
         $timestamp = date('d_m_y @ H-i');
-        $filename = get_string('finalgradesfor', 'coursework'). $coursework->name .' '.$timestamp;
+        $filename = get_string('finalgradesfor', 'coursework') . $coursework->name . ' ' . $timestamp;
         $csv = new \mod_coursework\export\csv($coursework, $csvcells, $filename);
         $csvgrades = $csv->add_cells_to_array($submission, $student, $csvcells);
 
         // Build an array.
-        $studentname = $student->lastname .' '.$student->firstname;
-        $assessorname = $assessor->lastname .' '. $assessor->firstname;
+        $studentname = $student->lastname . ' ' . $student->firstname;
+        $assessorname = $assessor->lastname . ' ' . $assessor->firstname;
         $assessorusername = $assessor->username;
 
         $oneassessorgrades = [
@@ -202,7 +199,7 @@ final class csv_test extends \advanced_testcase {
         $csvcells[] = 'finalgrade';
 
         $timestamp = date('d_m_y @ H-i');
-        $filename = get_string('finalgradesfor', 'coursework'). $coursework->name .' '.$timestamp;
+        $filename = get_string('finalgradesfor', 'coursework') . $coursework->name . ' ' . $timestamp;
         $csv = new \mod_coursework\export\csv($coursework, $csvcells, $filename);
         $csvgrades = $csv->add_cells_to_array($submission, $student, $csvcells);
 
@@ -235,7 +232,6 @@ final class csv_test extends \advanced_testcase {
             '17' => (float)$feedback3->grade,
         ];
         $this->assertEqualsCanonicalizing($twoassessorsgrades, $csvgrades);
-
     }
 
     /**
@@ -281,13 +277,13 @@ final class csv_test extends \advanced_testcase {
         $csvcells[] = 'finalgrade';
 
         $timestamp = date('d_m_y @ H-i');
-        $filename = get_string('finalgradesfor', 'coursework'). $coursework->name .' '.$timestamp;
+        $filename = get_string('finalgradesfor', 'coursework') . $coursework->name . ' ' . $timestamp;
         $csv = new \mod_coursework\export\csv($coursework, $csvcells, $filename);
         $csvgrades = $csv->add_cells_to_array($submission, $student, $csvcells);
 
         // Build an array.
-        $studentname = $student->lastname .' '.$student->firstname;
-        $assessorname1 = $assessor1->lastname .' '. $assessor1->firstname;
+        $studentname = $student->lastname . ' ' . $student->firstname;
+        $assessorname1 = $assessor1->lastname . ' ' . $assessor1->firstname;
 
         $assessorusername1 = $assessor1->username;
 
@@ -399,7 +395,7 @@ final class csv_test extends \advanced_testcase {
         $csvcells[] = 'finalgrade';
 
         $timestamp = date('d_m_y @ H-i');
-        $filename = get_string('finalgradesfor', 'coursework'). $coursework->name .' '.$timestamp;
+        $filename = get_string('finalgradesfor', 'coursework') . $coursework->name . ' ' . $timestamp;
         $csv = new \mod_coursework\export\csv($coursework, $csvcells, $filename);
         $array1 = $csv->add_cells_to_array($submission1, $student1, $csvcells);
         $array2 = $csv->add_cells_to_array($submission2, $student2, $csvcells);
@@ -407,10 +403,10 @@ final class csv_test extends \advanced_testcase {
         $csvgrades = array_merge($array1, $array2);
 
         // Build an array.
-        $studentname1 = $student1->lastname .' '.$student1->firstname;
-        $studentname2 = $student2->lastname .' '.$student2->firstname;
-        $assessorname1 = $assessor1->lastname .' '. $assessor1->firstname;
-        $assessorname2 = $assessor2->lastname .' '. $assessor2->firstname;
+        $studentname1 = $student1->lastname . ' ' . $student1->firstname;
+        $studentname2 = $student2->lastname . ' ' . $student2->firstname;
+        $assessorname1 = $assessor1->lastname . ' ' . $assessor1->firstname;
+        $assessorname2 = $assessor2->lastname . ' ' . $assessor2->firstname;
 
         $assessorusername1 = $assessor1->username;
         $assessorusername2 = $assessor2->username;
@@ -456,4 +452,3 @@ final class csv_test extends \advanced_testcase {
         $this->assertEquals($assessorsgrades, $csvgrades);
     }
 }
-

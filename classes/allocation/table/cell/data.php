@@ -30,7 +30,6 @@ use mod_coursework\stages\base as stage_base;
  * @package mod_coursework\allocation\table\cell
  */
 class data {
-
     /**
      * @var user|int
      */
@@ -70,7 +69,7 @@ class data {
      * @param stage_base $stage
      * @param array $data
      */
-    public function __construct($stage, $data  = []) {
+    public function __construct($stage, $data = []) {
         $this->data = $data;
         $this->stage = $stage;
         $this->preprocess_data();

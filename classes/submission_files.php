@@ -32,7 +32,6 @@ use stored_file;
  * Represents the files a student has submitted.
  */
 class submission_files extends files {
-
     /**
      * @var submission
      */

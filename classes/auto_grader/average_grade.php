@@ -94,7 +94,6 @@ class average_grade implements auto_grader {
         }
 
         // trigger events?
-
     }
 
     /**
@@ -171,7 +170,6 @@ class average_grade implements auto_grader {
         }
 
         $DB->update_record('coursework_feedbacks', $updatedfeedback);
-
     }
 
     /**

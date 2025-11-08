@@ -26,40 +26,45 @@ use mod_coursework\models\coursework;
 use stdClass;
 
 class coursework_file_zip_importer {
-
     public function extract_zip_file($filename, $contextid) {
         global $USER;
 
         $packer = get_file_packer('application/zip');
 
-        return $packer->extract_to_storage($filename,
+        return $packer->extract_to_storage(
+            $filename,
             $contextid,
             'coursework_temp_feedback_file',
             'coursework_feedback_file',
             $USER->id,
-            'import');
+            'import'
+        );
     }
 
     public function get_import_files($contextid) {
         global $USER;
 
         $fs = get_file_storage();
-        $files = $fs->get_directory_files($contextid,
+        $files = $fs->get_directory_files(
+            $contextid,
             'coursework_temp_feedback_file',
             'coursework_feedback_file',
             $USER->id,
-            '/import/');
+            '/import/'
+        );
 
         $keys = array_keys($files);
 
         if (count($files) == 1 && $files[$keys[0]]->is_directory()) {
             // An entire folder was zipped, rather than its contents.
             // We need to return the contents of the folder instead, so the import can continue.
-            $files = $fs->get_directory_files($contextid,
+            $files = $fs->get_directory_files(
+                $contextid,
                 'coursework_temp_feedback_file',
                 'coursework_feedback_file',
                 $USER->id,
-                $files[$keys[0]]->get_filepath());
+                $files[$keys[0]]->get_filepath()
+            );
         }
 
         return $files;
@@ -76,10 +81,12 @@ class coursework_file_zip_importer {
 
         $fs = get_file_storage();
 
-        return $fs->delete_area_files($contextid,
+        return $fs->delete_area_files(
+            $contextid,
             'coursework_temp_feedback_file',
             'coursework_feedback_file',
-            $USER->id);
+            $USER->id
+        );
     }
 
     /**
@@ -106,39 +113,35 @@ class coursework_file_zip_importer {
         $participants = $coursework->get_allocatables();
 
         foreach ($feedbackfiles as $file) {
-
             $filename = $file->get_filename();
 
-            if ($allocatableid = $this->is_valid_feedback_file_filename($coursework, $file, $participants) ) {
-
+            if ($allocatableid = $this->is_valid_feedback_file_filename($coursework, $file, $participants)) {
                 $subdbrecord = $DB->get_record('coursework_submissions', ['courseworkid' => $coursework->id(), 'allocatableid' => $allocatableid, 'allocatabletype' => $coursework->get_allocatable_type()]);
 
                 $submission = models\submission::find($subdbrecord);
 
                 if ($submission->get_state() < models\submission::PUBLISHED) {
-
                     // If only add/edit initial capability then workout stage identifier
                     if ($feedbackstage == 'initialassessor') {
-
                         $feedback = $DB->get_record('coursework_feedbacks', ['submissionid' => $submission->id, 'assessorid' => $USER->id ]);
 
                         if ($feedback) {
                             $feedbackstage = $feedback->stageidentifier;
-
                         } else {
                             $results[$filename] = get_string('assessorfeedbacknotfound', 'mod_coursework');
                         }
                     }
 
                     if ($feedback = $this->feedback_exists($coursework, $submission, $feedbackstage)) {
-
-                        if ($oldfile = $fs->get_file($contextid,
-                            'mod_coursework',
-                            'feedback',
-                            $feedback->id,
-                            '/',
-                            $filename
-                        )
+                        if (
+                            $oldfile = $fs->get_file(
+                                $contextid,
+                                'mod_coursework',
+                                'feedback',
+                                $feedback->id,
+                                '/',
+                                $filename
+                            )
                         ) {
                             if (!empty($overwritecurrent)) {
                                 // Update existing feedback file.
@@ -162,14 +165,12 @@ class coursework_file_zip_importer {
                             $feedbackfilesadded++;
                             $results[$filename] = get_string('feedbackfilecreated', 'mod_coursework');
                         }
-
                     } else {
                         $results[$filename] = get_string('assessorfeedbacknotfound', 'mod_coursework');
                     }
                 } else {
                     $results[$filename] = get_string('feedbacksubmissionpublished', 'mod_coursework');
                 }
-
             } else {
                 $results[$filename] = get_string('feedbacknotfound', 'mod_coursework');
             }
@@ -179,7 +180,6 @@ class coursework_file_zip_importer {
         $this->delete_import_files($contextid);
 
         return $results;
-
     }
 
     public function is_valid_feedback_file_filename($coursework, $feedbackfile, $participants) {
@@ -210,7 +210,6 @@ class coursework_file_zip_importer {
         }
 
         return $result;
-
     }
 
     public function feedback_exists($coursework, $submission, $stageidentifier) {
@@ -233,7 +232,5 @@ class coursework_file_zip_importer {
         }
 
         return   $DB->get_record_sql($sql, $params);
-
     }
-
 }

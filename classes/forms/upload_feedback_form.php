@@ -22,10 +22,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class upload_feedback_form extends moodleform {
-
     private $cmid;
     private $coursework;
 
@@ -50,11 +49,9 @@ class upload_feedback_form extends moodleform {
         $options = [];
 
         if ($this->coursework->get_max_markers() > 1) {
-
             $capability = ['mod/coursework:addinitialgrade', 'mod/coursework:editinitialgrade'];
             if (has_any_capability($capability, $this->coursework->get_context()) && !has_capability('mod/coursework:administergrades', $this->coursework->get_context())) {
                 $options['initialassessor'] = get_string('initialassessor', 'coursework');
-
             } else if (has_capability('mod/coursework:administergrades', $this->coursework->get_context())) {
                 $options['assessor_1'] = get_string('assessorupload', 'coursework', '1');
                 if ($this->coursework->get_max_markers() >= 2) {
@@ -81,7 +78,7 @@ class upload_feedback_form extends moodleform {
             $mform->disabledIf('overwrite', 'feedbackstage', 'eq', 'initialassessor');
         }
 
-        if (!has_capability('mod/coursework:editagreedgrade', $this->coursework->get_context()) && !has_capability('mod/coursework:administergrades', $this->coursework->get_context()) ) {
+        if (!has_capability('mod/coursework:editagreedgrade', $this->coursework->get_context()) && !has_capability('mod/coursework:administergrades', $this->coursework->get_context())) {
             $mform->disabledIf('overwrite', 'feedbackstage', 'eq', 'final_agreed_1');
         }
 
@@ -91,5 +88,4 @@ class upload_feedback_form extends moodleform {
     public function display() {
         return $this->_form->toHtml();
     }
-
 }

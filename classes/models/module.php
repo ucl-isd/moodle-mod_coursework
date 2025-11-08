@@ -30,7 +30,6 @@ use mod_coursework\framework\table_base;
  */
 #[AllowDynamicProperties]
 class module extends table_base {
-
     /**
      * @var string
      */

@@ -29,7 +29,6 @@ use mod_coursework\models\submission;
  * @group mod_coursework
  */
 final class cron_test extends \advanced_testcase {
-
     use test_helpers\factory_mixin;
 
     public function setUp(): void {

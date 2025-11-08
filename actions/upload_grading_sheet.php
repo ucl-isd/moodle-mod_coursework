@@ -24,13 +24,13 @@ use mod_coursework\export\grading_sheet;
 use mod_coursework\export\import;
 use mod_coursework\models\coursework;
 
-require_once(dirname(__FILE__).'/../../../config.php');
+require_once(dirname(__FILE__) . '/../../../config.php');
 
 global $CFG, $DB, $PAGE, $OUTPUT;
 
-require_once($CFG->dirroot.'/mod/coursework/classes/forms/upload_grading_sheet_form.php');
+require_once($CFG->dirroot . '/mod/coursework/classes/forms/upload_grading_sheet_form.php');
 
-require_once($CFG->libdir.'/csvlib.class.php');
+require_once($CFG->libdir . '/csvlib.class.php');
 
 $coursemoduleid = required_param('cmid', PARAM_INT);
 
@@ -61,7 +61,6 @@ if ($gradinguploadform->is_cancelled()) {
 }
 
 if ($data = $gradinguploadform->get_data()) {
-
     // Perform checks on data
 
     $content = $gradinguploadform->get_file_content('gradingdata');

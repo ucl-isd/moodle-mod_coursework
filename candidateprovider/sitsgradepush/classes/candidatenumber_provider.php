@@ -30,7 +30,6 @@ use mod_coursework\candidateprovider;
  * @author     Alex Yeung <k.yeung@ucl.ac.uk>
  */
 class candidatenumber_provider extends candidateprovider {
-
     /**
      * Get candidate number for a user in a specific course.
      *

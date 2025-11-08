@@ -27,7 +27,6 @@ use mod_coursework\user_row;
  * Class email_cell
  */
 class email_cell extends cell_base implements allocatable_cell {
-
     /**
      * @param user_row $rowobject
      * @return string
@@ -42,7 +41,7 @@ class email_cell extends cell_base implements allocatable_cell {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options  = []) {
+    public function get_table_header($options = []) {
         return "Email";
     }
 

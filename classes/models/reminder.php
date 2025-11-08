@@ -29,7 +29,5 @@ use mod_coursework\framework\table_base;
  * @package mod_coursework\models
  */
 class reminder extends table_base {
-
     protected static $tablename = 'coursework_reminder';
-
 }

@@ -28,7 +28,6 @@ use mod_coursework\user_row;
  * Class user_cell
  */
 class first_name_letter_cell extends cell_base implements allocatable_cell {
-
     /**
      * @param user_row $rowobject
      * @return string
@@ -51,7 +50,7 @@ class first_name_letter_cell extends cell_base implements allocatable_cell {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options  = []) {
+    public function get_table_header($options = []) {
         return "First Letter - First Name";
     }
 

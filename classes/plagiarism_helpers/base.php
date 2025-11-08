@@ -28,7 +28,6 @@ use mod_coursework\models\coursework;
  * @package mod_coursework\plagiarism_helpers
  */
 abstract class base {
-
     /**
      * @var coursework
      */
@@ -62,5 +61,4 @@ abstract class base {
      * @return string
      */
     abstract public function human_readable_name();
-
 }

@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot."/mod/coursework/lib.php");
+require_once($CFG->dirroot . "/mod/coursework/lib.php");
 
 /**
  * Coursework module PHPUnit data generator class
@@ -40,7 +40,6 @@ require_once($CFG->dirroot."/mod/coursework/lib.php");
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_coursework_generator extends testing_module_generator {
-
     /**
      * Create new coursework module instance.
      *
@@ -63,10 +62,10 @@ class mod_coursework_generator extends testing_module_generator {
             throw new coding_exception('module generator requires $record->course');
         }
         if (!isset($record->name)) {
-            $record->name = get_string('pluginname', 'coursework').' '.$i;
+            $record->name = get_string('pluginname', 'coursework') . ' ' . $i;
         }
         if (!isset($record->intro)) {
-            $record->intro = 'Test coursework '.$i;
+            $record->intro = 'Test coursework ' . $i;
         }
         if (!isset($record->introformat)) {
             $record->introformat = FORMAT_MOODLE;
@@ -144,7 +143,6 @@ class mod_coursework_generator extends testing_module_generator {
         $allocation->id = $DB->insert_record('coursework_allocation_pairs', $allocation);
 
         return $allocation;
-
     }
 
     /**
@@ -254,5 +252,4 @@ class mod_coursework_generator extends testing_module_generator {
 
         return $submission;
     }
-
 }

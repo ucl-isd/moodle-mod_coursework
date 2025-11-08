@@ -32,7 +32,6 @@ use mod_coursework\stages\base as stage_base;
  * @package mod_coursework\allocation
  */
 class auto_allocator {
-
     /**
      * @var coursework
      */
@@ -57,7 +56,6 @@ class auto_allocator {
                 foreach ($allocatables as $allocatable) {
                     $stage->make_auto_allocation_if_necessary($allocatable);
                 }
-
             } else if ($stage->auto_allocation_enabled()) {
                 $this->process_marking_stage($stage);
             }

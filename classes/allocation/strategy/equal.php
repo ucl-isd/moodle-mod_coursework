@@ -30,7 +30,6 @@ use mod_coursework\allocation\allocatable;
  * Allocates all students equally between teachers.
  */
 class equal extends base {
-
     /**
      * This is where the core logic of the allocation strategy lives. Given a list of teachers and a student, which teacher
      * is best suited to be the next assessor for this student.
@@ -46,7 +45,6 @@ class equal extends base {
         $teacherids = $this->list_of_allocatable_teachers_and_their_current_number_of_allocations($teachers, $student);
 
         return $this->get_teacher_with_smallest_number_of_current_allocations($teacherids);
-
     }
 
     /**

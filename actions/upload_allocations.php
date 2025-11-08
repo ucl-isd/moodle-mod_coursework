@@ -23,13 +23,13 @@
 use mod_coursework\allocation\upload;
 use mod_coursework\models\coursework;
 
-require_once(dirname(__FILE__).'/../../../config.php');
+require_once(dirname(__FILE__) . '/../../../config.php');
 
 global $CFG, $DB, $PAGE, $OUTPUT;
 
-require_once($CFG->dirroot.'/mod/coursework/classes/forms/upload_allocations_form.php');
+require_once($CFG->dirroot . '/mod/coursework/classes/forms/upload_allocations_form.php');
 
-require_once($CFG->libdir.'/csvlib.class.php');
+require_once($CFG->libdir . '/csvlib.class.php');
 
 $coursemoduleid = required_param('cmid', PARAM_INT);
 
@@ -59,7 +59,6 @@ if ($allocationsuploadform->is_cancelled()) {
 }
 
 if ($data = $allocationsuploadform->get_data()) {
-
     // Perform checks on data
 
     $content = $allocationsuploadform->get_file_content('allocationsdata');
@@ -75,7 +74,6 @@ if ($data = $allocationsuploadform->get_data()) {
 
     $cache = cache::make('mod_coursework', 'courseworkdata', ['id' => $coursework->id]);
     $cache->purge();
-
 } else {
     $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
     echo $pagerenderer->csv_upload($allocationsuploadform, $csvtype);

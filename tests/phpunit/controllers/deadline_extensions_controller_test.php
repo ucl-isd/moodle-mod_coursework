@@ -28,10 +28,8 @@ namespace mod_coursework;
  * @group mod_coursework
  */
 final class deadline_extensions_controller_test extends \basic_testcase {
-
     public function test_model_name(): void {
         $controller = new \mod_coursework\controllers\deadline_extensions_controller([]);
         $this->assertEquals('deadline_extension', $controller->model_name());
     }
-
 }

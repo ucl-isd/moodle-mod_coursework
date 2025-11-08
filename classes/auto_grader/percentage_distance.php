@@ -87,11 +87,9 @@ class percentage_distance implements auto_grader {
                     $this->update_final_feedback($agreedfeedback);
                 }
             }
-
         }
 
         // trigger events?
-
     }
 
     /**
@@ -162,7 +160,6 @@ class percentage_distance implements auto_grader {
         }
 
         $DB->update_record('coursework_feedbacks', $updatedfeedback);
-
     }
 
     /**

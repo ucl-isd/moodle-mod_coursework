@@ -69,6 +69,6 @@ abstract class cell_data_base implements cell_data_interface {
         if (!$flag || !($flag->status == plagiarism_flag::INVESTIGATION || $flag->status == plagiarism_flag::NOTCLEARED)) {
             return false;
         }
-        return get_string('plagiarism_'.$flag->status, 'mod_coursework');
+        return get_string('plagiarism_' . $flag->status, 'mod_coursework');
     }
 }

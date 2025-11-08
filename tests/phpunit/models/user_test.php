@@ -27,7 +27,6 @@ namespace mod_coursework;
  * @group mod_coursework
  */
 final class user_test extends \advanced_testcase {
-
     use test_helpers\factory_mixin;
 
     public function setUp(): void {

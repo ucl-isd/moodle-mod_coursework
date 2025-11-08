@@ -35,7 +35,6 @@ use mod_coursework\router;
  * @package mod_coursework
  */
 class late_submission extends moodle_exception {
-
     /**
      * Constructor
      * @param coursework $coursework

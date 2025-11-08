@@ -34,7 +34,6 @@ use mod_coursework\stages\base;
  * Defines a rule that will include all students between to raw grade marks.
  */
 class range_grade_raw extends moderation_set_rule {
-
     /**
      * This will take the current set and the list of students who could potentially be added
      * and adjust them. e.g. if the rule says 'include all below 40% of total grade, it will
@@ -49,7 +48,6 @@ class range_grade_raw extends moderation_set_rule {
     public function adjust_set(array &$moderationset, array &$potentialallocatables, $stage) {
 
         foreach ($potentialallocatables as $id => $allocatable) {
-
             if ($this->allocatable_is_not_yet_graded($allocatable)) {
                 continue;
             }
@@ -57,9 +55,8 @@ class range_grade_raw extends moderation_set_rule {
             $grade = $this->get_allocatable_final_grade($allocatable);
 
             if ($grade <= $this->upperlimit && $grade >= $this->lowerlimit) {
-
                 $moderationset[$id] = $allocatable;
-                unset ($potentialallocatables[$id]);
+                unset($potentialallocatables[$id]);
             }
         }
     }
@@ -69,7 +66,7 @@ class range_grade_raw extends moderation_set_rule {
      * @return string
      */
     public function get_numeric_boundaries() {
-        return $this->lowerlimit.' - '.$this->upperlimit;
+        return $this->lowerlimit . ' - ' . $this->upperlimit;
     }
 
     /**
@@ -105,7 +102,7 @@ class range_grade_raw extends moderation_set_rule {
 
         // Upper limit.
         $html .= html_writer::start_tag('p');
-        $html .= get_string('upperlimit', 'mod_coursework').' ';
+        $html .= get_string('upperlimit', 'mod_coursework') . ' ';
         $attributes = [
             'name' => 'rule_range_grade_raw_upperlimit',
             'size' => 3,
@@ -114,7 +111,7 @@ class range_grade_raw extends moderation_set_rule {
         $html .= html_writer::end_tag('p');
         // Lower limit.
         $html .= html_writer::start_tag('p');
-        $html .= get_string('lowerlimit', 'mod_coursework').' ';
+        $html .= get_string('lowerlimit', 'mod_coursework') . ' ';
         $attributes = [
             'name' => 'rule_range_grade_raw_lowerlimit',
             'size' => 3,
@@ -123,5 +120,4 @@ class range_grade_raw extends moderation_set_rule {
         $html .= html_writer::end_tag('p');
         return $html;
     }
-
 }

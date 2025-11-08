@@ -28,7 +28,6 @@ use mod_coursework\models\submission;
  * Class personaldeadline_cell
  */
 class personaldeadline_cell extends cell_base {
-
     /**
      * @param submission $submission
      * @param $student
@@ -50,5 +49,4 @@ class personaldeadline_cell extends cell_base {
     public function get_header($stage) {
         return  get_string('personaldeadline', 'coursework');
     }
-
 }

@@ -35,7 +35,6 @@ use mod_coursework\framework\table_base;
  */
 #[AllowDynamicProperties]
 class allocation extends table_base {
-
     /**
      * @var string
      */
@@ -210,5 +209,4 @@ class allocation extends table_base {
     protected function after_destroy() {
         self::remove_cache($this->courseworkid);
     }
-
 }

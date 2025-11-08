@@ -43,7 +43,6 @@ use stdClass;
  */
 #[AllowDynamicProperties]
 class feedback extends table_base {
-
     /**
      * @var string
      */
@@ -231,7 +230,7 @@ class feedback extends table_base {
      */
     public function get_assessor_stage_no() {
         $no = '';
-        if (substr($this->stageidentifier, 0, 9 ) == 'assessor_') {
+        if (substr($this->stageidentifier, 0, 9) == 'assessor_') {
             $no = substr($this->stageidentifier, -1);
         }
         return $no;
@@ -270,9 +269,11 @@ class feedback extends table_base {
      * @param $assessorid
      * @return feedback|null
      */
-    public static function get_teacher_feedback(submission $submission,
-                                                $isfinalgrade = 0,
-                                                $assessorid = 0 ) {
+    public static function get_teacher_feedback(
+        submission $submission,
+        $isfinalgrade = 0,
+        $assessorid = 0
+    ) {
         global $DB;
 
         $params = ['submissionid' => $submission->id];
@@ -316,8 +317,14 @@ class feedback extends table_base {
         }
 
         $fs = get_file_storage();
-        $this->feedbackfiles = $fs->get_area_files($contextid, 'mod_coursework',
-                                                   'feedback', $this->id, "id", false);
+        $this->feedbackfiles = $fs->get_area_files(
+            $contextid,
+            'mod_coursework',
+            'feedback',
+            $this->id,
+            "id",
+            false
+        );
     }
 
     /**
@@ -633,7 +640,7 @@ class feedback extends table_base {
                 'submissionid' => [],
             ];
             if ($submissionids) {
-                list($submissionidsql, $submissionidparams) = $DB->get_in_or_equal($submissionids, SQL_PARAMS_NAMED);
+                [$submissionidsql, $submissionidparams] = $DB->get_in_or_equal($submissionids, SQL_PARAMS_NAMED);
                 $feedbacks = $DB->get_records_sql("SELECT * FROM {coursework_feedbacks} WHERE submissionid $submissionidsql", $submissionidparams);
                 foreach ($feedbacks as $record) {
                     $object = new self($record);

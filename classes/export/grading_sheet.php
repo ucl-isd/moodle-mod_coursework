@@ -28,7 +28,6 @@ use mod_coursework\models\group;
 use mod_coursework\models\submission;
 
 class grading_sheet extends csv {
-
     public function get_submissions($groupid = null, $selectedsubmissionids = '') {
         global $PAGE, $USER;
         $params = [
@@ -92,19 +91,20 @@ class grading_sheet extends csv {
                 // TODO - decide if already marked submissions should be displayed in single marking
                 // if not marked by a user than dont display it as it would allow them to edit it??
                 // || $submission->get_state() == submission::FINAL_GRADED
-                if (!$ability->can('show', $submission)
-                   || ($stages == 1 && !has_capability('mod/coursework:addinitialgrade', $PAGE->context))
-                   || ($this->coursework->allocation_enabled() && !$this->coursework
-                       ->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable())
+                if (
+                    !$ability->can('show', $submission)
+                    || ($stages == 1 && !has_capability('mod/coursework:addinitialgrade', $PAGE->context))
+                    || ($this->coursework->allocation_enabled() && !$this->coursework
+                        ->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable())
                        && (has_capability('mod/coursework:addinitialgrade', $PAGE->context) && !has_capability('mod/coursework:addagreedgrade', $PAGE->context)))
-                   || ($stages > 1 && $this->coursework->sampling_enabled()
+                    || ($stages > 1 && $this->coursework->sampling_enabled()
                        && !$submission->sampled_feedback_exists()
                        && (!$this->coursework
                            ->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable())
                             && has_capability('mod/coursework:addinitialgrade', $PAGE->context))
                        && (has_capability('mod/coursework:addagreedgrade', $PAGE->context)
                            || has_capability('mod/coursework:editagreedgrade', $PAGE->context)))
-                   || ((has_capability('mod/coursework:addagreedgrade', $PAGE->context) && $submission->get_state() < submission::FULLY_GRADED ))
+                    || ((has_capability('mod/coursework:addagreedgrade', $PAGE->context) && $submission->get_state() < submission::FULLY_GRADED ))
                 ) {
                     unset($submissions[$submission->id]);
                     continue;
@@ -112,7 +112,6 @@ class grading_sheet extends csv {
             }
         }
         return $submissions;
-
     }
 
     /**
@@ -127,7 +126,6 @@ class grading_sheet extends csv {
         if ($this->coursework->is_configured_to_have_group_submissions()) {
             $group = group::find($submission->allocatableid);
             $csvdata[] = $this->add_cells_to_array($submission, $group, $this->csvcells);
-
         } else {
             // students
             $students = $submission->students_for_gradebook();
@@ -164,21 +162,24 @@ class grading_sheet extends csv {
         $csvcells[] = 'submissiontime';
 
         // based on capabilities decide what view display - singlegrade or multiplegrade
-        if ((has_capability('mod/coursework:addagreedgrade', $PAGE->context) || has_capability('mod/coursework:administergrades', $PAGE->context))
-           && $coursework->get_max_markers() > 1 ) {
+        if (
+            (has_capability('mod/coursework:addagreedgrade', $PAGE->context) || has_capability('mod/coursework:administergrades', $PAGE->context))
+            && $coursework->get_max_markers() > 1
+        ) {
             for ($i = 1; $i <= $coursework->get_max_markers(); $i++) {
                 // extra column with allocated assessor name
-                if ($coursework->allocation_enabled() && $coursework->get_max_markers() > 1
-                  && (has_capability('mod/coursework:addinitialgrade', $PAGE->context)
-                      || has_capability('mod/coursework:editinitialgrade', $PAGE->context))) {
+                if (
+                    $coursework->allocation_enabled() && $coursework->get_max_markers() > 1
+                    && (has_capability('mod/coursework:addinitialgrade', $PAGE->context)
+                      || has_capability('mod/coursework:editinitialgrade', $PAGE->context))
+                ) {
                     $csvcells[] = 'assessor' . $i;
                 }
-                $csvcells[] = 'assessorgrade'.$i;
-                $csvcells[] = 'assessorfeedback'.$i;
+                $csvcells[] = 'assessorgrade' . $i;
+                $csvcells[] = 'assessorfeedback' . $i;
             }
             $csvcells[] = 'agreedgrade';
             $csvcells[] = 'agreedfeedback';
-
         } else if (has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && $coursework->get_max_markers() > 1) {
             $csvcells[] = 'singlegrade';
             $csvcells[] = 'feedbackcomments';
@@ -188,7 +189,6 @@ class grading_sheet extends csv {
 
             $csvcells[] = 'agreedgrade';
             $csvcells[] = 'agreedfeedback';
-
         } else if (
             has_capability('mod/coursework:addinitialgrade', $PAGE->context)
             ||
@@ -200,5 +200,4 @@ class grading_sheet extends csv {
 
         return $csvcells;
     }
-
 }

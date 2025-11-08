@@ -31,7 +31,6 @@ use mod_coursework\auto_grader\percentage_distance;
  * @group mod_coursework
  */
 final class percentage_distance_test extends \advanced_testcase {
-
     use \mod_coursework\test_helpers\factory_mixin;
 
     public function setUp(): void {
@@ -148,6 +147,4 @@ final class percentage_distance_test extends \advanced_testcase {
         $this->assertEquals($createdfeedback->submissionid ?? null, $expectedsubmissionid); // Right submission.
         $this->assertEquals($createdfeedback->stageidentifier ?? null, 'final_agreed_1'); // Right stage.
     }
-
 }
-

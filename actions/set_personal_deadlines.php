@@ -24,11 +24,11 @@
 
 use mod_coursework\models\coursework;
 
-require_once(dirname(__FILE__).'/../../../config.php');
+require_once(dirname(__FILE__) . '/../../../config.php');
 
 global $CFG, $OUTPUT, $DB, $PAGE;
 
-require_once($CFG->dirroot.'/mod/coursework/lib.php');
+require_once($CFG->dirroot . '/mod/coursework/lib.php');
 
 $coursemoduleid = required_param('id', PARAM_INT);
 $coursemodule = get_coursemodule_from_id('coursework', $coursemoduleid, 0, false, MUST_EXIST);
@@ -60,10 +60,12 @@ $jsmodule = [
     'requires' => ['base',
         'node-base'],
 ];
-$PAGE->requires->js_init_call('M.mod_coursework.init_personaldeadlines_page',
+$PAGE->requires->js_init_call(
+    'M.mod_coursework.init_personaldeadlines_page',
     [],
     false,
-    $jsmodule);
+    $jsmodule
+);
 
 /**
  * @var mod_coursework_object_renderer $object_renderer

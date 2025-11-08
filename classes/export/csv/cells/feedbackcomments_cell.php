@@ -30,7 +30,6 @@ use mod_coursework\models\submission;
  * Class feedbackcomments_cell
  */
 class feedbackcomments_cell extends cell_base {
-
     /**
      * @param submission $submission
      * @param $student
@@ -55,13 +54,14 @@ class feedbackcomments_cell extends cell_base {
         return  get_string('feedbackcomment', 'coursework');
     }
 
-    public function validate_cell($value, $submissionid, $stageidentifier='', $uploadedgradecells  = []) {
+    public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells = []) {
 
         global $PAGE, $DB, $USER;
 
-        if (has_capability('mod/coursework:addinitialgrade', $PAGE->context) || has_capability('mod/coursework:editinitialgrade', $PAGE->context)
-            || has_capability('mod/coursework:administergrades', $PAGE->context)) {
-
+        if (
+            has_capability('mod/coursework:addinitialgrade', $PAGE->context) || has_capability('mod/coursework:editinitialgrade', $PAGE->context)
+            || has_capability('mod/coursework:administergrades', $PAGE->context)
+        ) {
             $dbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
 
             $submission = submission::find($dbrecord);
@@ -91,7 +91,6 @@ class feedbackcomments_cell extends cell_base {
 
             // Does a feedback exist for this stage
             if (empty($feedback)) {
-
                 $feedbackparams = [
                     'submissionid' => $submissionid,
                     'assessorid' => $USER->id,
@@ -115,5 +114,4 @@ class feedbackcomments_cell extends cell_base {
 
         return true;
     }
-
 }

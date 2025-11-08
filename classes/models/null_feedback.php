@@ -31,7 +31,6 @@ use AllowDynamicProperties;
  */
 #[AllowDynamicProperties]
 class null_feedback {
-
     /**
      * @var int
      */
@@ -43,5 +42,4 @@ class null_feedback {
     public function get_grade() {
         return '';
     }
-
 }

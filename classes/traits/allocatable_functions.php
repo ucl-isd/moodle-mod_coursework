@@ -30,7 +30,6 @@ use mod_coursework\models\submission;
  * @package mod_coursework\traits
  */
 trait allocatable_functions {
-
     /**
      * For when a student leaves. All assessment and moderation stuff can be taken away.
      *
@@ -119,23 +118,26 @@ trait allocatable_functions {
                AND s.courseworkid = :courseworkid
                AND f.finalised = 1
         ";
-        $feedbacks = $DB->count_records_sql($sql,
+        $feedbacks = $DB->count_records_sql(
+            $sql,
             ['id' => $this->id(),
-                'courseworkid' => $coursework->id()]);
+            'courseworkid' => $coursework->id()]
+        );
 
         // when sampling is enabled, calculate how many stages are in sample
         if ($coursework->sampling_enabled()) {
-
             $sql = "SELECT COUNT(*)
                   FROM {coursework_sample_set_mbrs}
                   WHERE courseworkid = :courseworkid
                   AND allocatableid = :allocatableid
                   AND allocatabletype = :allocatabletype";
 
-            $markers = $DB->count_records_sql($sql,
+            $markers = $DB->count_records_sql(
+                $sql,
                 ['courseworkid' => $coursework->id(),
                     'allocatableid' => $this->id(),
-                    'allocatabletype' => $this->type()]);
+                'allocatabletype' => $this->type()]
+            );
 
             $expectedmarkers = $markers + 1; // there is always a marker for stage 1
         }

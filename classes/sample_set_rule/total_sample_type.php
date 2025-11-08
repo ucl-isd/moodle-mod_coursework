@@ -32,17 +32,13 @@ use stdClass;
  * the total grade.
  */
 class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
-
     public function adjust_set(array &$moderationset, array &$potentialallocatables, $stage) {
-
     }
 
     public function get_numeric_boundaries() {
-
     }
 
     public function get_default_rule_order() {
-
     }
 
     public function add_form_elements($assessornumber = 0) {
@@ -69,15 +65,20 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         $html = html_writer::start_div('sampletotal');
 
         $html .= html_writer::checkbox(
-            "assessor_{$assessornumber}_sampletotal_checkbox", 1, $checked, get_string('topupto', 'mod_coursework'),
-            ['id' => "assessor_{$assessornumber}_sampletotal_checkbox", 'class' => "assessor{$assessornumber} totalcheckbox samplesetrule"]);
+            "assessor_{$assessornumber}_sampletotal_checkbox",
+            1,
+            $checked,
+            get_string('topupto', 'mod_coursework'),
+            ['id' => "assessor_{$assessornumber}_sampletotal_checkbox", 'class' => "assessor{$assessornumber} totalcheckbox samplesetrule"]
+        );
 
         $html .= html_writer::select(
             $percentageoptions,
             "assessor_{$assessornumber}_sampletotal",
             "",
             $selected,
-            ['id' => "assessor_{$assessornumber}_sampletotal", 'class' => " sample_set_rule"]);
+            ['id' => "assessor_{$assessornumber}_sampletotal", 'class' => " sample_set_rule"]
+        );
         $html  .= html_writer::label(get_string('ofallstudents', 'mod_coursework'), 'assessortwo_sampletotal[]');
 
         $html .= html_writer::end_div();
@@ -108,7 +109,6 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         ";
 
         return  html_writer::script($jsscript, null);
-
     }
 
     public function save_form_data($assessornumber = 0, &$order = 0) {
@@ -118,7 +118,6 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         $sampletotal = optional_param("assessor_{$assessornumber}_sampletotal", false, PARAM_INT);
 
         if ($totalcheckbox) {
-
             $dbrecord = new stdClass();
             $dbrecord->ruletype = "";
             $dbrecord->lowerlimit = 0;
@@ -130,7 +129,6 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
             $DB->insert_record('coursework_sample_set_rules', $dbrecord);
         }
-
     }
 
     private static function compare_key($a, $b) {
@@ -158,7 +156,6 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         $rule = $DB->get_record_sql($sql, ['courseworkid' => $this->coursework->id, 'stage' => $stage]);
 
         if ($rule) {
-
             $finalised = $this->finalised_submissions();
             $published = $this->released_submissions();
             $numberofalloctables = count($allocatables);
@@ -171,7 +168,6 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
             // If the resultant number isnt greater than 0 then no automatic sample allocatables will be used
             if ($totaltoreturn > 0) {
-
                 // Use array chunk to split auto sample set into chunks we will only use the first chunk
                 if ($chunkedarray = array_chunk($autosampleset, $totaltoreturn, true)) {
                     $autosampleset = $chunkedarray[0];
@@ -179,7 +175,6 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                 // If the number in the sample set is less than the total to return
                 if (count($autosampleset) < $totaltoreturn) {
-
                     // We need to top up the sample set with other allocatables
 
                     // Graded at the previous stage take precedence
@@ -191,22 +186,21 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                     $allocatablesfeedback = $this->coursework->get_allocatables_with_feedback($previousstage, true);
 
                     foreach ($allocatablesfeedback as $af) {
-
-                        if (!isset($published[$af->allocatableid]) && !isset($finalised[$af->allocatableid])
-                            && !isset($autosampleset[$af->allocatableid]) && !isset($manualsampleset[$af->allocatableid])) {
+                        if (
+                            !isset($published[$af->allocatableid]) && !isset($finalised[$af->allocatableid])
+                            && !isset($autosampleset[$af->allocatableid]) && !isset($manualsampleset[$af->allocatableid])
+                        ) {
                                 $autosampleset[$af->allocatableid] = $allocatables[$af->allocatableid];
                         }
 
                         if (count($autosampleset) == $totaltoreturn) {
                             break;
                         }
-
                     }
                 }
 
                 // If this is not enough select anyone (which should == the ungraded as all graded should have been added)
                 if (count($autosampleset) < $totaltoreturn) {
-
                         // Remove allocatables with published submissions
                         $allocatablesampleset = array_diff_ukey($allocatables, $published, ["mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"]);
 
@@ -227,8 +221,8 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                         // Use the allocatables array to get other ungraded allocatables
                     foreach ($arraykeys as $id) {
-
-                        if (!isset($published[$id]) && !isset($finalised[$id])
+                        if (
+                            !isset($published[$id]) && !isset($finalised[$id])
                             && !isset($autosampleset[$id]) && !isset($manualsampleset[$id])
                         ) {
                             $autosampleset[$id] = $allocatables[$id];
@@ -238,15 +232,10 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                             break;
                         }
                     }
-
                 }
-
             } else {
                 $autosampleset = [];
             }
-
         }
-
     }
-
 }

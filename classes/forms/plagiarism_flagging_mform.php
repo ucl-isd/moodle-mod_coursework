@@ -74,8 +74,8 @@ class plagiarism_flagging_mform extends dynamic_form {
             $createdbyuser = $DB->get_record('user', ['id' => $flag->createdby]);
             $formheaderdata->flag = (object)[
                 'createdby' => get_string(
-                'createdbynametime',
-                'coursework',
+                    'createdbynametime',
+                    'coursework',
                     ['name' => fullname($createdbyuser), 'time' => userdate($flag->timecreated)]
                 ),
             ];
@@ -98,16 +98,19 @@ class plagiarism_flagging_mform extends dynamic_form {
 
         $options = [
             self::NO_STATUS_SELECTED => get_string('choose'),
-            plagiarism_flag::INVESTIGATION => get_string('plagiarism_'.plagiarism_flag::INVESTIGATION, 'coursework'),
-            plagiarism_flag::RELEASED => get_string('plagiarism_'.plagiarism_flag::RELEASED, 'coursework'),
-            plagiarism_flag::CLEARED => get_string('plagiarism_'.plagiarism_flag::CLEARED, 'coursework'),
-            plagiarism_flag::NOTCLEARED => get_string('plagiarism_'.plagiarism_flag::NOTCLEARED, 'coursework'),
+            plagiarism_flag::INVESTIGATION => get_string('plagiarism_' . plagiarism_flag::INVESTIGATION, 'coursework'),
+            plagiarism_flag::RELEASED => get_string('plagiarism_' . plagiarism_flag::RELEASED, 'coursework'),
+            plagiarism_flag::CLEARED => get_string('plagiarism_' . plagiarism_flag::CLEARED, 'coursework'),
+            plagiarism_flag::NOTCLEARED => get_string('plagiarism_' . plagiarism_flag::NOTCLEARED, 'coursework'),
         ];
 
-        $mform->addElement('select', 'status',
-                            get_string('status', 'coursework'),
-                            $options,
-                            ['id' => 'plagiarism_status']);
+        $mform->addElement(
+            'select',
+            'status',
+            get_string('status', 'coursework'),
+            $options,
+            ['id' => 'plagiarism_status']
+        );
 
         $mform->addHelpButton('status', 'status', 'mod_coursework');
 

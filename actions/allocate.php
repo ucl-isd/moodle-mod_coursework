@@ -28,11 +28,11 @@ use mod_coursework\allocation\widget;
 use mod_coursework\models\coursework;
 use mod_coursework\warnings;
 
-require_once(dirname(__FILE__).'/../../../config.php');
+require_once(dirname(__FILE__) . '/../../../config.php');
 
 global $CFG, $OUTPUT, $DB, $PAGE;
 
-require_once($CFG->dirroot.'/mod/coursework/lib.php');
+require_once($CFG->dirroot . '/mod/coursework/lib.php');
 
 /**
  * Handles all form submissions from the allocation page.
@@ -154,8 +154,10 @@ $coursework = coursework::find($coursework);
 
 // options used for pagination
 // If a session variable holding page preference for the specific coursework is not set, set default value (0).
-if (isset($SESSION->allocate_perpage[$coursemoduleid]) && (isset($SESSION->perpage[$coursemoduleid]) && optional_param('per_page', 0, PARAM_INT) != $SESSION->perpage[$coursemoduleid])
-    && optional_param('per_page', 0, PARAM_INT) != 0) { // prevent blank pages if not in correct page
+if (
+    isset($SESSION->allocate_perpage[$coursemoduleid]) && (isset($SESSION->perpage[$coursemoduleid]) && optional_param('per_page', 0, PARAM_INT) != $SESSION->perpage[$coursemoduleid])
+    && optional_param('per_page', 0, PARAM_INT) != 0
+) { // prevent blank pages if not in correct page
     $page = 0;
     $SESSION->allocate_page[$coursemoduleid] = $page;
 } else if (!(isset($SESSION->allocate_page[$coursemoduleid]))) {
@@ -201,7 +203,7 @@ $jsmodule = [
     'requires' => ['base', 'node-base'],
 ];
 $PAGE->requires->js_init_call(
-        'M.mod_coursework.init_allocate_page',
+    'M.mod_coursework.init_allocate_page',
     ['wwwroot' => $CFG->wwwroot, 'coursemoduleid' => $coursemoduleid],
     false,
     $jsmodule

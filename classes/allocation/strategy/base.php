@@ -34,7 +34,6 @@ use stdClass;
  * allocated teachers to mark student work in specific ways.
  */
 abstract class base {
-
     /**
      * @var int
      */

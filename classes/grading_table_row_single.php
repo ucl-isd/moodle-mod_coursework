@@ -26,5 +26,4 @@ namespace mod_coursework;
  * Single row of the grading table for when there is just one marker
  */
 class grading_table_row_single extends grading_table_row_base {
-
 }

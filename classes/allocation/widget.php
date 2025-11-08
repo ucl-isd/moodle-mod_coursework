@@ -30,7 +30,6 @@ use mod_coursework\models\coursework;
  * Just a placeholder for the renderer really.
  */
 class widget {
-
     /**
      * @var coursework
      */
@@ -59,7 +58,5 @@ class widget {
      */
     public function get_assessor_allocation_strategy() {
         return $this->coursework->assessorallocationstrategy;
-
     }
-
 }

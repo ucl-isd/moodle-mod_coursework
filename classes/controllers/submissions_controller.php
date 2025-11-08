@@ -41,7 +41,6 @@ use unauthorized_access_exception;
  * @package mod_coursework\controllers
  */
 class submissions_controller extends controller_base {
-
     /**
      * @var submission
      */
@@ -181,7 +180,7 @@ class submissions_controller extends controller_base {
         if (!$ability->can('create', $submission)) {
             // if submission already exists, redirect user to cw instead of throwing an error
             if ($this->submissions_exists($submission)) {
-                redirect($CFG->wwwroot.'/mod/coursework/view.php?id='.$this->coursemodule->id, $ability->get_last_message());
+                redirect($CFG->wwwroot . '/mod/coursework/view.php?id=' . $this->coursemodule->id, $ability->get_last_message());
             } else {
                 throw new access_denied($this->coursework, $ability->get_last_message());
             }
@@ -217,7 +216,6 @@ class submissions_controller extends controller_base {
 
         if ($submission->is_finalised()) {
             if (!$submission->get_coursework()->has_deadline()) {
-
                 $useridcommaseparatedlist = $submission->get_coursework()->get_submission_notification_users();
 
                 if (!empty($useridcommaseparatedlist)) {
@@ -230,9 +228,7 @@ class submissions_controller extends controller_base {
                         }
                     }
                 }
-
             }
-
         }
 
         redirect($courseworkpageurl);
@@ -300,7 +296,6 @@ class submissions_controller extends controller_base {
         }
 
         redirect($courseworkpageurl);
-
     }
 
     /**
@@ -340,15 +335,20 @@ class submissions_controller extends controller_base {
         $allocatableids = (!is_array($this->params['allocatableid']))
             ? [$this->params['allocatableid']] : $this->params['allocatableid'];
 
-        $personaldeadlinepageurl = new moodle_url('/mod/coursework/actions/personaldeadline.php',
+        $personaldeadlinepageurl = new moodle_url(
+            '/mod/coursework/actions/personaldeadline.php',
             ['id' => $this->coursework->get_coursemodule_id(), 'multipleuserdeadlines' => 1, 'setpersonaldeadlinespage' => 1,
-                'courseworkid' => $this->params['courseworkid'], 'allocatabletype' => $this->params['allocatabletype']]);
+            'courseworkid' => $this->params['courseworkid'],
+            'allocatabletype' => $this->params['allocatabletype']]
+        );
 
         $changedeadlines = false;
 
         foreach ($allocatableids as $aid) {
-            $submissiondb = $DB->get_record('coursework_submissions',
-                ['courseworkid' => $this->params['courseworkid'], 'allocatableid' => $aid, 'allocatabletype' => $this->params['allocatabletype']]);
+            $submissiondb = $DB->get_record(
+                'coursework_submissions',
+                ['courseworkid' => $this->params['courseworkid'], 'allocatableid' => $aid, 'allocatabletype' => $this->params['allocatabletype']]
+            );
             if (!empty($submissiondb)) {
                 $submission = submission::find($submissiondb);
 
@@ -364,8 +364,10 @@ class submissions_controller extends controller_base {
         if (!empty($changedeadlines)) {
             redirect($personaldeadlinepageurl, get_string('unfinalisedchangesubmissiondate', 'mod_coursework'));
         } else {
-            $setpersonaldeadlinepageurl = new moodle_url('/mod/coursework/actions/set_personaldeadlines.php',
-                ['id' => $this->coursework->get_coursemodule_id()]);
+            $setpersonaldeadlinepageurl = new moodle_url(
+                '/mod/coursework/actions/set_personaldeadlines.php',
+                ['id' => $this->coursework->get_coursemodule_id()]
+            );
             redirect($setpersonaldeadlinepageurl);
         }
     }
@@ -374,7 +376,6 @@ class submissions_controller extends controller_base {
         if (!empty($this->params['submissionid'])) {
             $this->submission = submission::find($this->params['submissionid']);
             $this->coursework = $this->submission->get_coursework();
-
         }
 
         parent::prepare_environment();
@@ -425,10 +426,12 @@ class submissions_controller extends controller_base {
     protected function submissions_exists($submission) {
         global $DB;
 
-        $subexists = $DB->record_exists('coursework_submissions',
-                                     ['courseworkid' => $submission->courseworkid,
+        $subexists = $DB->record_exists(
+            'coursework_submissions',
+            ['courseworkid' => $submission->courseworkid,
                                            'allocatableid' => $submission->allocatableid,
-                                           'allocatabletype' => $submission->allocatabletype]);
+            'allocatabletype' => $submission->allocatabletype]
+        );
 
         return $subexists;
     }
@@ -441,10 +444,12 @@ class submissions_controller extends controller_base {
         global $DB;
 
         $validextension = false;
-        $extension = $DB->get_record('coursework_extensions',
-                                         ['courseworkid' => $submission->courseworkid,
+        $extension = $DB->get_record(
+            'coursework_extensions',
+            ['courseworkid' => $submission->courseworkid,
                                                'allocatableid' => $submission->allocatableid,
-                                               'allocatabletype' => $submission->allocatabletype]);
+            'allocatabletype' => $submission->allocatabletype]
+        );
 
         if ($extension) {
             if ($extension->extended_deadline > time()) {
@@ -463,10 +468,12 @@ class submissions_controller extends controller_base {
         global $DB;
 
         $validpersonaldeadline = false;
-        $personaldeadline = $DB->get_record('coursework_person_deadlines',
-                                            ['courseworkid' => $submission->courseworkid,
+        $personaldeadline = $DB->get_record(
+            'coursework_person_deadlines',
+            ['courseworkid' => $submission->courseworkid,
                                                   'allocatableid' => $submission->allocatableid,
-                                                  'allocatabletype' => $submission->allocatabletype]);
+            'allocatabletype' => $submission->allocatabletype]
+        );
         if ($personaldeadline) {
             if ($personaldeadline->personaldeadline > time()) {
                 $validpersonaldeadline = true;

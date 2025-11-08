@@ -34,7 +34,6 @@ use coding_exception;
  */
 #[AllowDynamicProperties]
 class final_agreed extends base {
-
     /**
      * Value for mdl_coursework_feedbacks.stageidentifier for feedback from final agreed mark.
      */

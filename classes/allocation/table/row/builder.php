@@ -36,7 +36,6 @@ use mod_coursework\user_row;
  * Renderable row class.
  */
 class builder implements user_row {
-
     /**
      * @var table_builder
      */
@@ -161,5 +160,4 @@ class builder implements user_row {
 
         return $this->get_allocatable()->email;
     }
-
 }

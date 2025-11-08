@@ -28,5 +28,4 @@ namespace mod_coursework\allocation;
  * @package mod_coursework\allocation
  */
 interface moderatable {
-
 }

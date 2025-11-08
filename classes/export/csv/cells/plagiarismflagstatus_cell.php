@@ -28,7 +28,6 @@ use coding_exception;
  * Class plagiarismflagstatus_cell
  */
 class plagiarismflagstatus_cell extends cell_base {
-
     /**
      * @param $submission
      * @param $student
@@ -53,5 +52,4 @@ class plagiarismflagstatus_cell extends cell_base {
     public function get_header($stage) {
         return  get_string('plagiarismstatus', 'coursework');
     }
-
 }

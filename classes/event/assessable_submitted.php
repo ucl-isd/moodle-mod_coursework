@@ -30,7 +30,6 @@ namespace mod_coursework\event;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class assessable_submitted extends \core\event\assessable_submitted {
-
     /**
      * Init method.
      *
@@ -40,5 +39,4 @@ class assessable_submitted extends \core\event\assessable_submitted {
         parent::init();
         $this->data['objecttable'] = 'coursework_submissions';
     }
-
 }

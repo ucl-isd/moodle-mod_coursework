@@ -34,7 +34,6 @@ use mod_coursework\stages\base;
  * the total grade.
  */
 class minimum_range_grade_raw extends moderation_set_rule {
-
     /**
      * @var int keeps track of how many we've added so we don't do too many.
      */
@@ -56,19 +55,19 @@ class minimum_range_grade_raw extends moderation_set_rule {
         $lowerlimit = $this->lowerlimit;
 
         foreach ($potentialallocatables as $id => $allocatable) {
-
             if ($this->allocatable_is_not_yet_graded($allocatable)) {
                 continue;
             }
 
             $grade = $this->get_allocatable_final_grade($allocatable);
 
-            if ($grade <= $upperlimit &&
+            if (
+                $grade <= $upperlimit &&
                 $grade >= $lowerlimit &&
-                ($this->counter < $this->minimum)) {
-
+                ($this->counter < $this->minimum)
+            ) {
                 $moderationset[$id] = $allocatable;
-                unset ($potentialallocatables[$id]);
+                unset($potentialallocatables[$id]);
                 $this->counter++;
             }
         }
@@ -80,7 +79,7 @@ class minimum_range_grade_raw extends moderation_set_rule {
      */
     public function get_numeric_boundaries() {
         $lower = empty($this->lowerlimit) ? '0' : $this->lowerlimit;
-        return $lower.' - '.$this->upperlimit.' '.get_string('minimumis', 'mod_coursework', $this->minimum);
+        return $lower . ' - ' . $this->upperlimit . ' ' . get_string('minimumis', 'mod_coursework', $this->minimum);
     }
 
     /**
@@ -117,7 +116,7 @@ class minimum_range_grade_raw extends moderation_set_rule {
 
         // Upper limit.
         $html .= html_writer::start_tag('p');
-        $html .= get_string('upperlimit', 'mod_coursework').' ';
+        $html .= get_string('upperlimit', 'mod_coursework') . ' ';
         $attributes = [
             'name' => 'rule_minimum_range_grade_raw_upperlimit',
             'size' => 3,
@@ -126,7 +125,7 @@ class minimum_range_grade_raw extends moderation_set_rule {
         $html .= html_writer::end_tag('p');
         // Lower limit.
         $html .= html_writer::start_tag('p');
-        $html .= get_string('lowerlimit', 'mod_coursework').' ';
+        $html .= get_string('lowerlimit', 'mod_coursework') . ' ';
         $attributes = [
             'name' => 'rule_minimum_range_grade_raw_lowerlimit',
             'size' => 3,
@@ -135,7 +134,7 @@ class minimum_range_grade_raw extends moderation_set_rule {
         $html .= html_writer::end_tag('p');
         // Lower limit.
         $html .= html_writer::start_tag('p');
-        $html .= get_string('modsetminimum', 'mod_coursework').' ';
+        $html .= get_string('modsetminimum', 'mod_coursework') . ' ';
         $attributes = [
             'name' => 'rule_minimum_range_grade_raw_minimum',
             'size' => 4,
@@ -145,5 +144,4 @@ class minimum_range_grade_raw extends moderation_set_rule {
 
         return $html;
     }
-
 }

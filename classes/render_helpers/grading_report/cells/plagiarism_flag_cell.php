@@ -32,7 +32,6 @@ use pix_icon;
  * Class plagiarism_flag_cell
  */
 class plagiarism_flag_cell extends cell_base {
-
     /**
      * @param grading_table_row_base $rowobject
      * @throws coding_exception
@@ -61,8 +60,7 @@ class plagiarism_flag_cell extends cell_base {
                     $content .= html_writer::empty_tag('br');
                 }
             } else {
-
-                $content .= "<div class = plagiarism_".$plagiarismflag->status.">".get_string('plagiarism_' . $plagiarismflag->status, 'coursework')." ";
+                $content .= "<div class = plagiarism_" . $plagiarismflag->status . ">" . get_string('plagiarism_' . $plagiarismflag->status, 'coursework') . " ";
 
                 if ($ability->can('edit', $plagiarismflag)) { // Edit
                     $content .= $this->edit_flag_plagiarism_button($rowobject); // edit button
@@ -78,7 +76,7 @@ class plagiarism_flag_cell extends cell_base {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options  = []) {
+    public function get_table_header($options = []) {
         return (get_string('tableheadplagiarismalert', 'coursework'));
     }
 

@@ -57,4 +57,3 @@ for ($i = 0; $i < count($moderatorselect); $i++) {
 for ($i = 0; $i < count($samplechk); $i++) {
     $SESSION->coursework_allocationsessions[$coursemoduleid][$samplechk[$i]] = $samplechkvalue[$i];
 }
-

@@ -29,7 +29,6 @@ namespace mod_coursework\framework;
  * provide autocompletion of methods and properties.
  */
 class decorator {
-
     /**
      * @var
      */
@@ -50,9 +49,11 @@ class decorator {
      * @return mixed
      */
     public function __call($method, $args) {
-        return call_user_func_array([$this->wrappedobject,
+        return call_user_func_array(
+            [$this->wrappedobject,
                                           $method],
-                                    $args);
+            $args
+        );
     }
 
     /**

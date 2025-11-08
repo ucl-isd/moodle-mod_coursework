@@ -43,7 +43,6 @@ use mod_coursework_coursework;
  */
 #[AllowDynamicProperties]
 class personaldeadline extends table_base {
-
     /**
      * @var coursework
      */

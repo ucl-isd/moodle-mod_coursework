@@ -37,7 +37,6 @@ defined('MOODLE_INTERNAL') || die();
  */
 #[\AllowDynamicProperties]
 final class coursework_test extends \advanced_testcase {
-
     use test_helpers\factory_mixin;
 
     /**
@@ -78,7 +77,6 @@ final class coursework_test extends \advanced_testcase {
         $this->assertEquals($goodstrategy, $dbstrategy);
 
         $this->assertFalse($this->coursework->set_assessor_allocation_strategy($badstrategy));
-
     }
 
     /**
@@ -109,7 +107,6 @@ final class coursework_test extends \advanced_testcase {
         ];
         $coursework = $this->create_a_coursework($params);
         $this->assertEquals($this->group->id, $coursework->get_student_group($this->student)->id);
-
     }
 
     public function test_get_user_group_with_grouping(): void {
@@ -180,9 +177,11 @@ final class coursework_test extends \advanced_testcase {
     public function test_file_types_spaces(): void {
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('filetypes', 'doc docx');
-        $this->assertEquals(['.doc',
+        $this->assertEquals(
+            ['.doc',
                                   '.docx'],
-                            $coursework->get_file_options()['accepted_types']);
+            $coursework->get_file_options()['accepted_types']
+        );
     }
 
     public function test_file_types_commas(): void {
@@ -194,17 +193,21 @@ final class coursework_test extends \advanced_testcase {
     public function test_file_types_commas_dots(): void {
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('filetypes', '.doc, .docx');
-        $this->assertEquals(['.doc',
+        $this->assertEquals(
+            ['.doc',
                                   '.docx'],
-                            $coursework->get_file_options()['accepted_types']);
+            $coursework->get_file_options()['accepted_types']
+        );
     }
 
     public function test_file_types_commas_dots_stars(): void {
         $coursework = $this->create_a_coursework();
         $coursework->update_attribute('filetypes', '*.doc, *.docx');
-        $this->assertEquals(['.doc',
+        $this->assertEquals(
+            ['.doc',
                                   '.docx'],
-                            $coursework->get_file_options()['accepted_types']);
+            $coursework->get_file_options()['accepted_types']
+        );
     }
 
     public function test_groupings_appear_in_allocatables(): void {
@@ -226,7 +229,8 @@ final class coursework_test extends \advanced_testcase {
         $allocatables = $coursework->get_allocatables();
         $ispresent = is_numeric($group->id) && in_array((string)$group->id, array_keys($allocatables));
         $this->assertTrue(
-            $ispresent, "Actual array keys: " . implode(', ', array_keys($allocatables))
+            $ispresent,
+            "Actual array keys: " . implode(', ', array_keys($allocatables))
         );
     }
 
@@ -276,5 +280,4 @@ final class coursework_test extends \advanced_testcase {
         $coursework->update_attribute('deadline', strtotime('+1 week'));
         $this->assertFalse($coursework->deadline_has_passed());
     }
-
 }

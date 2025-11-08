@@ -36,7 +36,6 @@ require_once($CFG->dirroot . '/mod/coursework/tests/behat/pages/page_base.php');
  *
  */
 class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_base {
-
     public function save_everything() {
         $this->getpage()->pressButton('save_manual_allocations_1');
 
@@ -51,7 +50,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @throws Behat\Mink\Exception\ElementNotFoundException
      */
     public function user_allocated_assessor($user, $stageidentifier): string {
-        $cellspan = $this->getpage()->find('css', '#user_'.$user->id.' .'.$stageidentifier.' .existing-assessor');
+        $cellspan = $this->getpage()->find('css', '#user_' . $user->id . ' .' . $stageidentifier . ' .existing-assessor');
         return $cellspan ? $cellspan->getText() : '';
     }
 
@@ -63,7 +62,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
     public function manually_allocate($allocatable, $assessor, $stageidentifier) {
 
         // Identify the allocation dropdown.
-        $dropdownid = $allocatable->type().'_' . $allocatable->id . '_'.$stageidentifier;
+        $dropdownid = $allocatable->type() . '_' . $allocatable->id . '_' . $stageidentifier;
         $node = $this->getcontext()->find_field($dropdownid);
 
         // We delegate to behat_form_field class, it will
@@ -89,7 +88,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param string $stageidentifier
      */
     private function pin_allocation($allocatable, $stageidentifier) {
-        $name = "//input[@name='allocatables[".$allocatable->id()."][".$stageidentifier."][pinned]']";
+        $name = "//input[@name='allocatables[" . $allocatable->id() . "][" . $stageidentifier . "][pinned]']";
         $nodes = $this->getpage()->findAll('xpath', $name);
 
         // We delegate to behat_form_field class, it will
@@ -109,7 +108,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @param allocatable $allocatable
      */
     public function should_not_have_moderator_allocated($allocatable) {
-        $locator = '#'.$allocatable->type().'_'.$allocatable->id().' .moderator_1 .existing-assessor';
+        $locator = '#' . $allocatable->type() . '_' . $allocatable->id() . ' .moderator_1 .existing-assessor';
         $this->should_not_have_css($locator);
     }
 
@@ -144,7 +143,6 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
     }
 
     public function student_should_have_allocation($student, $teacher, $string) {
-
     }
 
     /**
@@ -153,7 +151,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @throws ElementNotFoundException
      */
     public function enable_atomatic_sampling_for($stage) {
-        $elementid = '#assessor_'.$stage.'_samplingstrategy';
+        $elementid = '#assessor_' . $stage . '_samplingstrategy';
         $node = $this->getpage()->find('css', $elementid);
 
         $node->selectOption('Automatic');
@@ -164,7 +162,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @throws \Behat\Mink\Exception\ElementException
      */
     public function enable_total_rule_for_stage($stage) {
-        $elementid = '#assessor_'.$stage.'_sampletotal_checkbox';
+        $elementid = '#assessor_' . $stage . '_sampletotal_checkbox';
         $node = $this->getpage()->find('css', $elementid);
 
         $node->check();
@@ -175,7 +173,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @throws \Behat\Mink\Exception\ElementException
      */
     public function add_grade_range_rule_for_stage($stage) {
-        $elementid = 'assessor_'.$stage.'_addgradderule';
+        $elementid = 'assessor_' . $stage . '_addgradderule';
 
         $this->getpage()->clickLink($elementid);
     }
@@ -186,7 +184,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @throws \Behat\Mink\Exception\ElementException
      */
     public function enable_grade_range_rule_for_stage($stage, $ruleno) {
-        $elementid = '#assessor_'.$stage.'_samplerules_'.$ruleno;
+        $elementid = '#assessor_' . $stage . '_samplerules_' . $ruleno;
         $node = $this->getpage()->find('css', $elementid);
 
         $node->check();
@@ -199,11 +197,10 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @throws ElementNotFoundException
      */
     public function select_type_of_grade_range_rule_for_stage($stage, $ruleno, $type) {
-        $elementid = '#assessor_'.$stage.'_sampletype_'.$ruleno;
+        $elementid = '#assessor_' . $stage . '_sampletype_' . $ruleno;
         $node = $this->getpage()->find('css', $elementid);
 
         $node->selectOption($type);
-
     }
 
     /**
@@ -214,7 +211,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
      * @throws ElementNotFoundException
      */
     public function select_range_for_grade_range_rule_for_stage($range, $stage, $ruleno, $value) {
-        $elementid = '#assessor_'.$stage.'_sample'.$range.'_'.$ruleno;
+        $elementid = '#assessor_' . $stage . '_sample' . $range . '_' . $ruleno;
         $node = $this->getpage()->find('css', $elementid);
 
         $node->selectOption($value);
@@ -230,7 +227,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
         // Increment stage as the this will match the id of the element;
         $stage++;
 
-        $elementid = '#assessor_'.$stage.'_sampletotal';
+        $elementid = '#assessor_' . $stage . '_sampletotal';
         $node = $this->getpage()->find('css', $elementid);
 
         $node->selectOption($percentage);
@@ -254,7 +251,7 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
                      AND stageidentifier = :stage
                      AND (allocatableid = :user $othersql)";
 
-        $stage = "assessor_".$stagenumber;
+        $stage = "assessor_" . $stagenumber;
 
         $params = [
             'courseworkid' => $coursework->id,

@@ -29,7 +29,6 @@ namespace mod_coursework;
  * @group mod_coursework
  */
 final class percentages_test extends \advanced_testcase {
-
     use test_helpers\factory_mixin;
 
     public function setUp(): void {
@@ -57,7 +56,6 @@ final class percentages_test extends \advanced_testcase {
 
         $nextteacher = $strategy->next_assessor_from_list($this->list_of_teachers(), $this->student);
         $this->assertEquals($this->otherteacher->id, $nextteacher->id);
-
     }
 
     public function test_next_assessor_from_list_fails_when_at_100_percent_for_one_teacher_and_already_allocated(): void {

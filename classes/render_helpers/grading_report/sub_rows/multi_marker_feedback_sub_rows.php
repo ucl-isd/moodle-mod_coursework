@@ -44,7 +44,6 @@ use pix_icon;
  */
 #[AllowDynamicProperties]
 class multi_marker_feedback_sub_rows implements sub_rows_interface {
-
     /**
      * Has a new button already been shown?
      * @var bool
@@ -63,7 +62,6 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         $assessorfeedbacktable->set_column_width($columnwidth);
 
         return $this->render_assessor_feedback_table($assessorfeedbacktable);
-
     }
 
     /**
@@ -92,7 +90,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
             ? get_string('gradedbyname', 'mod_coursework', $feedbackrow->get_graders_name())
             : '';
         $editable = (!$feedbackrow->has_feedback() || $feedbackrow->get_feedback()->finalised)
-            ? '' : '</br>'.get_string('notfinalised', 'coursework');
+            ? '' : '</br>' . get_string('notfinalised', 'coursework');
         $result = $this->comment_for_row($feedbackrow, $ability) . $gradedby . $editable;
         return $result;
     }
@@ -118,7 +116,6 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
 
         $this->alreadyshownanewbutton = false;
         foreach ($feedbackrows as $feedbackrow) {
-
             $stage = $feedbackrow->get_stage();
 
             // Don't show empty rows with nothing in them
@@ -127,16 +124,14 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
             $outputrows .= ' <tr class="' . $this->row_class($feedbackrow) . '">';
 
             if ($coursework->sampling_enabled() && $stage->uses_sampling() && !$stage->allocatable_is_in_sample($allocatable)) {
-
                 $outputrows .= '
-                        <td class = "not_included_in_sample" colspan =3>'.get_string('notincludedinsample', 'mod_coursework').'</td>
+                        <td class = "not_included_in_sample" colspan =3>' . get_string('notincludedinsample', 'mod_coursework') . '</td>
                         </tr >';
             } else {
-
                 $assessordetails = (empty($feedbackrow->get_assessor()->id()) && $coursework->allocation_enabled()) ?
                      get_string('assessornotallocated', 'mod_coursework') : $this->profile_link($feedbackrow);
                  $outputrows .=
-                     '<td>' . $assessordetails. ' </td>
+                     '<td>' . $assessordetails . ' </td>
                      <td class="assessor_feedback_grade" data-class-name="' . get_class($this) . '">' .
                      $this->get_grade_cell_content($feedbackrow, $coursework, $ability) .
                      '</td>
@@ -145,7 +140,6 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         }
 
         if (!empty($outputrows)) {
-
             $allocationstring = ($coursework->allocation_enabled())
                 ? get_string('allocatedtoassessor', 'mod_coursework')
                 : get_string('assessor', 'mod_coursework');
@@ -164,11 +158,11 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
 
             return $tablehtml;
         } else {
-
-            if ($assessorfeedbacktable->get_submission() &&
+            if (
+                $assessorfeedbacktable->get_submission() &&
                     ($assessorfeedbacktable->get_coursework()->deadline_has_passed() &&
-                    $assessorfeedbacktable->get_submission()->is_finalised())) {
-
+                    $assessorfeedbacktable->get_submission()->is_finalised())
+            ) {
                 $tablehtml = '<tr><td colspan = "11" class="nograde" ><table class="nograde">';
                 $tablehtml .= '<tr>' . get_string('nogradescomments', 'mod_coursework') . '</tr>';
                 $tablehtml .= '</table></td></tr>';
@@ -232,10 +226,12 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         $linkid = "show_feedback_" . $feedbackrow->get_feedback()->id;
         $link = $this->get_router()
             ->get_path('show feedback', ['feedback' => $feedbackrow->get_feedback()]);
-        $iconlink = $OUTPUT->action_link($link,
-                                         $linktitle,
-                                         null,
-                                         ['class' => 'show_feedback', 'id' => $linkid]);
+        $iconlink = $OUTPUT->action_link(
+            $link,
+            $linktitle,
+            null,
+            ['class' => 'show_feedback', 'id' => $linkid]
+        );
         return $iconlink;
     }
 
@@ -258,10 +254,12 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
             'stage' => $feedbackrow->get_stage(),
         ];
         $link = $this->get_router()->get_path('ajax new feedback', $newfeedbackparams);
-        $iconlink = $OUTPUT->action_link($link,
-                                         $linktitle,
-                                         null,
-                                         ['class' => 'new_feedback']);
+        $iconlink = $OUTPUT->action_link(
+            $link,
+            $linktitle,
+            null,
+            ['class' => 'new_feedback']
+        );
         return $iconlink;
     }
 
@@ -314,13 +312,14 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         $html = '';
 
         if ($feedbackrow->has_feedback()) {
-
             if ($ability->can('show', $feedbackrow->get_feedback()) || is_siteadmin($USER->id)) {
                 $gradejudge = new grade_judge($feedbackrow->get_coursework());
                 $html .= $gradejudge->grade_to_display($feedbackrow->get_feedback()->get_grade());
             } else {
-                if (has_capability('mod/coursework:addagreedgrade', $feedbackrow->get_coursework()->get_context())
-                     || has_capability('mod/coursework:addallocatedagreedgrade', $feedbackrow->get_coursework()->get_context())) {
+                if (
+                    has_capability('mod/coursework:addagreedgrade', $feedbackrow->get_coursework()->get_context())
+                     || has_capability('mod/coursework:addallocatedagreedgrade', $feedbackrow->get_coursework()->get_context())
+                ) {
                     $html .= get_string('grade_hidden_manager', 'mod_coursework');
                 } else {
                     $html .= get_string('grade_hidden_teacher', 'mod_coursework');
@@ -333,7 +332,6 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
                 $html .= $this->show_feedback_link($feedbackrow);
             }
         } else {
-
             $newfeedback = $this->build_new_feedback($feedbackrow, $submission);
             if ($ability->can('new', $newfeedback) && !$this->alreadyshownanewbutton) {
                 $html .= $this->new_feedaback_link($feedbackrow);

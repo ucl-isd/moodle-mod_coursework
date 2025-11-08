@@ -39,7 +39,6 @@ use testing_util;
  * @property mixed $teacher
  */
 trait factory_mixin {
-
     /**
      * @var stdClass
      */
@@ -279,7 +278,7 @@ trait factory_mixin {
         $feedback = new stdClass();
         $feedback->submissionid = $this->get_submission()->id;
         $feedback->assessorid = $assessor->id;
-        $feedback->stageidentifier = 'assessor_'.($count + 1);
+        $feedback->stageidentifier = 'assessor_' . ($count + 1);
         $feedback->grade = 45;
         return $generator->create_feedback($feedback);
     }

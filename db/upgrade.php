@@ -57,7 +57,14 @@ function xmldb_coursework_upgrade($oldversion) {
         // CTP-3869 rename field manual on table coursework_allocation_pairs to ismanual.
         $table = new xmldb_table('coursework_allocation_pairs');
         $field = new xmldb_field(
-            'manual', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0, 'assessorid'
+            'manual',
+            XMLDB_TYPE_INTEGER,
+            '1',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            0,
+            'assessorid'
         );
 
         // Launch rename field sourceid.
@@ -102,7 +109,6 @@ function xmldb_coursework_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025100302) {
-
         $table = new xmldb_table('coursework');
         $upgradefield = new xmldb_field('draftfeedbackenabled');
 
@@ -121,7 +127,6 @@ function xmldb_coursework_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025110300) {
-
         // Rename field finalised on table coursework_submissions to finalisedstatus.
         $table = new xmldb_table('coursework_submissions');
         $field = new xmldb_field('finalised', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'timemodified');

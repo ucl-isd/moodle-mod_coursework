@@ -28,7 +28,6 @@ namespace mod_coursework\allocation\strategy;
  * Assessor from the Moodle group assigned as 1st stage assessor to allocatables from their group
  */
 class group_assessor extends base {
-
     /**
      * Flag that saves us from doing all the allocations and then getting a false response for all the
      * teacher ids.

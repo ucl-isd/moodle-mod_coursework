@@ -29,7 +29,6 @@ use mod_coursework\models\submission;
  * Class moderationagreement_cell
  */
 class moderationagreement_cell extends cell_base {
-
     /**
      * @param submission $submission
      * @param $student
@@ -94,5 +93,4 @@ class moderationagreement_cell extends cell_base {
 
         return $fields;
     }
-
 }

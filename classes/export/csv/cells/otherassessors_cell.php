@@ -29,7 +29,6 @@ use mod_coursework\models\submission;
  * Class otherassessors_cell
  */
 class otherassessors_cell extends cell_base {
-
     /**
      * @param submission $submission
      * @param $student
@@ -66,9 +65,10 @@ class otherassessors_cell extends cell_base {
                     continue;
                 }
                 $ability = new ability($USER->id, $this->coursework);
-                if ((($ability->can('show', $feedback) || has_capability('mod/coursework:addallocatedagreedgrade', $submission->get_coursework()->get_context())) &&
-                    (!$submission->any_editable_feedback_exists() && count($submission->get_assessor_feedbacks()) <= $submission->max_number_of_feedbacks())) || is_siteadmin($USER->id)) {
-
+                if (
+                    (($ability->can('show', $feedback) || has_capability('mod/coursework:addallocatedagreedgrade', $submission->get_coursework()->get_context())) &&
+                    (!$submission->any_editable_feedback_exists() && count($submission->get_assessor_feedbacks()) <= $submission->max_number_of_feedbacks())) || is_siteadmin($USER->id)
+                ) {
                     if ($this->coursework->is_using_rubric()) {
                         $this->get_rubric_scores_gradedata($grade, $gradedata); // multiple parts are handled here
                     } else {
@@ -79,9 +79,7 @@ class otherassessors_cell extends cell_base {
                     $gradedata[] = get_string('grade_hidden_manager', 'mod_coursework');
                     $gradedata[] = '';
                 }
-
             } else {
-
                 if ($this->coursework->is_using_rubric()) {
                     $criterias = $this->coursework->get_rubric_criteria();
                     foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
@@ -93,29 +91,25 @@ class otherassessors_cell extends cell_base {
                 }
                 $gradedata[] = '';
             }
-
         }
 
         $numothereassessorfeedbacks = $submission->max_number_of_feedbacks() - 1;
 
-        if ($numothereassessorfeedbacks - count($feedbacks) != 0 ) {
-
+        if ($numothereassessorfeedbacks - count($feedbacks) != 0) {
             $blankcolumns = $numothereassessorfeedbacks - count($feedbacks);
 
             for ($i = 0; $i < $blankcolumns; $i++) {
                 if ($this->coursework->is_using_rubric()) {
                     $criterias = $this->coursework->get_rubric_criteria();
                     foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
-                        $gradedata['assessor' . $stageidentifier.$i. '_' . $criteria['id']] = '';
-                        $gradedata['assessor' . $stageidentifier.$i. '_' . $criteria['id'] . 'comment'] = '';
+                        $gradedata['assessor' . $stageidentifier . $i . '_' . $criteria['id']] = '';
+                        $gradedata['assessor' . $stageidentifier . $i . '_' . $criteria['id'] . 'comment'] = '';
                     }
                 } else {
                     $gradedata[] = '';
                 }
                 $gradedata[] = '';
-
             }
-
         }
 
         return   $gradedata;
@@ -134,8 +128,8 @@ class otherassessors_cell extends cell_base {
             if ($this->coursework->is_using_rubric()) {
                 $criterias = $this->coursework->get_rubric_criteria();
                 foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
-                    $fields['otherassessorgrade'.$i.$stage.'_'.$criteria['id']] = 'Other assessor ('.$i.') - '.$criteria['description'];
-                    $fields['otherassessorgrade'.$i.$stage.'_'.$criteria['id'] . 'comment'] = 'Comment for: Other assessor ('.$i.') - '.$criteria['description'];
+                    $fields['otherassessorgrade' . $i . $stage . '_' . $criteria['id']] = 'Other assessor (' . $i . ') - ' . $criteria['description'];
+                    $fields['otherassessorgrade' . $i . $stage . '_' . $criteria['id'] . 'comment'] = 'Comment for: Other assessor (' . $i . ') - ' . $criteria['description'];
                 }
             } else {
                 $fields['otherassessorgrade' . $i] = get_string('otherassessorgrade', 'coursework', $i);
@@ -144,5 +138,4 @@ class otherassessors_cell extends cell_base {
         }
         return $fields;
     }
-
 }

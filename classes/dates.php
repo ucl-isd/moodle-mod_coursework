@@ -38,7 +38,6 @@ use mod_coursework\models\user;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class dates extends activity_dates {
-
     /**
      * Returns a list of important dates in mod_coursework
      *

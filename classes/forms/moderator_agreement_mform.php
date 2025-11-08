@@ -31,13 +31,12 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 /**
  * Simple form providing a moderation agreement and comment area that will feed straight into the moderation_agreement table
  */
 class moderator_agreement_mform extends moodleform {
-
     /**
      * @var int the id of the submission that the grade pertains to
      */
@@ -82,10 +81,13 @@ class moderator_agreement_mform extends moodleform {
 
         // moderator agreement
         $options = ['agreed' => get_string('agreed', 'coursework'), 'disagreed' => get_string('disagreed', 'coursework')];
-        $mform->addElement('select', 'agreement',
-                            get_string('moderationagreement', 'coursework'),
-                            $options,
-                            ['id' => 'moderation_agreement']);
+        $mform->addElement(
+            'select',
+            'agreement',
+            get_string('moderationagreement', 'coursework'),
+            $options,
+            ['id' => 'moderation_agreement']
+        );
 
         $mform->addElement('editor', 'modcomment', get_string('comment', 'mod_coursework'), ['id' => 'moderation_comment']);
         $mform->setType('editor', PARAM_RAW);
@@ -112,4 +114,3 @@ class moderator_agreement_mform extends moodleform {
         return $moderation;
     }
 }
-

@@ -30,7 +30,6 @@ use mod_coursework\grading_table_row_base;
  * Class feedback_cell
  */
 class grade_for_gradebook_cell extends cell_base {
-
     /**
      * @param grading_table_row_base $rowobject
      * @return string
@@ -53,7 +52,7 @@ class grade_for_gradebook_cell extends cell_base {
      * @throws coding_exception
      * @return string
      */
-    public function get_table_header($options  = []) {
+    public function get_table_header($options = []) {
         return get_string('provisionalgrade', 'mod_coursework');
     }
 
@@ -78,5 +77,4 @@ class grade_for_gradebook_cell extends cell_base {
         global $OUTPUT;
         return ($OUTPUT->help_icon('provisionalgrade', 'mod_coursework'));
     }
-
 }

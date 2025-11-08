@@ -36,7 +36,6 @@ use mod_coursework\user_row;
  * Renderable row class.
  */
 class builder implements user_row {
-
     /**
      * @var table_builder
      */
@@ -177,10 +176,12 @@ class builder implements user_row {
             return '';
         }
 
-        $personaldeadline = $DB->get_record('coursework_person_deadlines',
+        $personaldeadline = $DB->get_record(
+            'coursework_person_deadlines',
             ['courseworkid' => $this->get_coursework()->id,
                   'allocatableid' => $this->allocatable->id(),
-                  'allocatabletype' => $this->allocatable->type()]);
+            'allocatabletype' => $this->allocatable->type()]
+        );
         if ($personaldeadline) {
             $personaldeadline = $personaldeadline->personaldeadline;
         } else {
@@ -193,10 +194,12 @@ class builder implements user_row {
     public function get_submission_status() {
         global  $DB;
 
-        $submissiondb = $DB->get_record('coursework_submissions',
+        $submissiondb = $DB->get_record(
+            'coursework_submissions',
             ['courseworkid' => $this->get_coursework()->id,
                 'allocatableid' => $this->allocatable->id(),
-                'allocatabletype' => $this->allocatable->type()]);
+            'allocatabletype' => $this->allocatable->type()]
+        );
 
         $submission = submission::find($submissiondb);
 

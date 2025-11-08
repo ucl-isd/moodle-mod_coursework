@@ -35,7 +35,6 @@ use mod_coursework\stages\base;
  * the total grade.
  */
 class range_grade_percent extends moderation_set_rule {
-
     /**
      * This will take the current set and the list of students who could potentially be added
      * and adjust them. e.g. if the rule says 'include all below 40% of total grade, it will
@@ -55,18 +54,18 @@ class range_grade_percent extends moderation_set_rule {
         $lowerlimit = ($this->lowerlimit / 100) * $maxgrade;
 
         foreach ($potentialallocatables as $id => $allocatable) {
-
             if ($this->allocatable_is_not_yet_graded($allocatable)) {
                 continue;
             }
 
             $grade = $this->get_allocatable_final_grade($allocatable);
 
-            if ($grade <= $upperlimit &&
-                $grade >= $lowerlimit) {
-
+            if (
+                $grade <= $upperlimit &&
+                $grade >= $lowerlimit
+            ) {
                 $moderationset[$id] = $allocatable;
-                unset ($potentialallocatables[$id]);
+                unset($potentialallocatables[$id]);
             }
         }
     }
@@ -76,8 +75,8 @@ class range_grade_percent extends moderation_set_rule {
      * @return string
      */
     public function get_numeric_boundaries() {
-        $lower = empty($this->lowerlimit) ? '0' : $this->lowerlimit.'%';
-        return $lower.' - '.$this->upperlimit.'%';
+        $lower = empty($this->lowerlimit) ? '0' : $this->lowerlimit . '%';
+        return $lower . ' - ' . $this->upperlimit . '%';
     }
 
     /**
@@ -114,24 +113,23 @@ class range_grade_percent extends moderation_set_rule {
 
         // Upper limit.
         $html .= html_writer::start_tag('p');
-        $html .= get_string('upperlimit', 'mod_coursework').' ';
+        $html .= get_string('upperlimit', 'mod_coursework') . ' ';
         $attributes = [
             'name' => 'rule_range_grade_percent_upperlimit',
             'size' => 3,
         ];
-        $html .= html_writer::empty_tag('input', $attributes).'%';
+        $html .= html_writer::empty_tag('input', $attributes) . '%';
         $html .= html_writer::end_tag('p');
         // Lower limit.
         $html .= html_writer::start_tag('p');
-        $html .= get_string('lowerlimit', 'mod_coursework').' ';
+        $html .= get_string('lowerlimit', 'mod_coursework') . ' ';
         $attributes = [
             'name' => 'rule_range_grade_percent_lowerlimit',
             'size' => 3,
         ];
-        $html .= html_writer::empty_tag('input', $attributes).'%';
+        $html .= html_writer::empty_tag('input', $attributes) . '%';
         $html .= html_writer::end_tag('p');
 
         return $html;
     }
-
 }

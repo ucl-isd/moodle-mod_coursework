@@ -28,12 +28,10 @@ use mod_coursework\grading_table_row_base;
  * Interface sub_rows_interface
  */
 interface sub_rows_interface {
-
     /**
      * @param grading_table_row_base $rowobject
      * @param int $columnwidth
      * @return mixed
      */
     public function get_row_with_assessor_feedback_table($rowobject, $columnwidth);
-
 }

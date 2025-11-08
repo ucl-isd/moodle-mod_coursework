@@ -32,7 +32,6 @@ use core\event\base;
  * @package mod_coursework\event
  */
 class feedback_changed extends base {
-
     /**
      * Override in subclass.
      *
@@ -51,5 +50,4 @@ class feedback_changed extends base {
         $this->data['edulevel'] = self::LEVEL_TEACHING;
         $this->data['objecttable'] = 'coursework_feedbacks';
     }
-
 }

@@ -39,7 +39,6 @@ use templatable;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class grading_guide_agreed_grades implements renderable, templatable {
-
     /**
      * Moodle form attributes.
      * @var array
@@ -67,7 +66,10 @@ class grading_guide_agreed_grades implements renderable, templatable {
      * Constructor.
      */
     public function __construct(
-        array $formattributes, array $formelements, gradingform_controller $gradingcontroller, submission $submission
+        array $formattributes,
+        array $formelements,
+        gradingform_controller $gradingcontroller,
+        submission $submission
     ) {
         $this->formattributes = $formattributes;
         $this->formelements = $formelements;
@@ -98,7 +100,7 @@ class grading_guide_agreed_grades implements renderable, templatable {
         ];
 
         // Now add the hidden elements to template data.
-        $hiddenelements = array_filter($formelements, function($el) {
+        $hiddenelements = array_filter($formelements, function ($el) {
             return $el->_type == "hidden";
         });
 
@@ -110,7 +112,7 @@ class grading_guide_agreed_grades implements renderable, templatable {
         }
 
         // Now add the general comment field.
-        $generalcommentextareaelement = array_values(array_filter($formelements, function($el) {
+        $generalcommentextareaelement = array_values(array_filter($formelements, function ($el) {
             return $el->_type == "editor" && $el->_attributes['name'] == 'feedbackcomment';
         }))[0];
         $generalcommentextareaelement->_generateId();
@@ -124,7 +126,7 @@ class grading_guide_agreed_grades implements renderable, templatable {
             ];
 
         // Now add the "Upload a file" filemanager field for bottom of form.
-        $filemanagerelement = array_values(array_filter($formelements, function($el) {
+        $filemanagerelement = array_values(array_filter($formelements, function ($el) {
             return $el->_type == "filemanager" && $el->_attributes['name'] == 'feedback_manager';
         }))[0];
         $filemanagerelement->_generateId();
@@ -137,7 +139,7 @@ class grading_guide_agreed_grades implements renderable, templatable {
             ];
 
         // Now add the buttons array (submit etc).
-        $buttonsgroup = array_values(array_filter($formelements, function($el) {
+        $buttonsgroup = array_values(array_filter($formelements, function ($el) {
             return $el->_type == "group"
                 && $el->_name == 'buttonar';
         }))[0]->_elements;
@@ -159,7 +161,7 @@ class grading_guide_agreed_grades implements renderable, templatable {
 
         // Add the criteria which are used as the rows in table body.
         $templatedata->criteria_rows = array_map(
-            function($c) {
+            function ($c) {
                 $c['maxscore'] = number_format($c['maxscore']);
                 return (object)$c;
             },
@@ -176,14 +178,16 @@ class grading_guide_agreed_grades implements renderable, templatable {
         // First filter out agreed feedback from the marker columns (if it's there already).
         $filteredfeedbacks = array_filter(
             $feedbacks,
-            function($feedback) {
+            function ($feedback) {
                 return $feedback->stageidentifier != 'final_agreed_1';
             }
         );
         $templatedata->marker_columns = array_map(
-            function($feedback) use ($gradingcontroller) {
+            function ($feedback) use ($gradingcontroller) {
                 $criteriongrades = array_values($gradingcontroller->get_current_instance(
-                    $feedback->assessorid, $feedback->id)->get_guide_filling()['criteria']);
+                    $feedback->assessorid,
+                    $feedback->id
+                )->get_guide_filling()['criteria']);
                 return (object)[
                     'markernumber' => $feedback->markernumber,
                     'feedbackid' => $feedback->id,
@@ -203,7 +207,7 @@ class grading_guide_agreed_grades implements renderable, templatable {
         $templatedata->hasfrequentcomments = !empty($frequentcommentoptions);
         if ($templatedata->hasfrequentcomments) {
             // Prepare a simple non-associative array of values for later.
-            $frequentcommentssimple = array_map(function($item) {
+            $frequentcommentssimple = array_map(function ($item) {
                 return $item['description'];
             }, $frequentcommentoptions);
 
@@ -218,7 +222,7 @@ class grading_guide_agreed_grades implements renderable, templatable {
         // Now add agreed feedback as a separate item.
         $existingagreedfeedbacks = array_values(array_filter(
             $feedbacks,
-            function($feedback) {
+            function ($feedback) {
                 return $feedback->stageidentifier == 'final_agreed_1';
             }
         ));
@@ -242,7 +246,7 @@ class grading_guide_agreed_grades implements renderable, templatable {
             'finalised' => $existingagreedfeedback->finalised,
             'criterion_grades' => array_values(
                 array_map(
-                    function($item) use ($existingagreedfeedback, $frequentcommentoptions, $customoptionindex) {
+                    function ($item) use ($existingagreedfeedback, $frequentcommentoptions, $customoptionindex) {
                         $item['score'] = format_float($item['score'], 2, false, true);
                         $item['stageidentifier'] = $existingagreedfeedback->stageidentifier ?? 'final_agreed_1';
                         return $item;
@@ -258,7 +262,9 @@ class grading_guide_agreed_grades implements renderable, templatable {
                 foreach ($existingagreedfeedback->criterion_grades as $agreedgrade) {
                     if ($criteriarow->id == $agreedgrade['criterionid']) {
                         $criteriarow->dropdownoptions = self::mark_dropdown_option_as_selected(
-                            $frequentcommentoptions, $agreedgrade['remark'], $customoptionindex
+                            $frequentcommentoptions,
+                            $agreedgrade['remark'],
+                            $customoptionindex
                         );
                         $criteriarow->customisselected = !in_array($agreedgrade['remark'], $frequentcommentssimple);
                     }
@@ -294,14 +300,13 @@ class grading_guide_agreed_grades implements renderable, templatable {
             if ($existingagreedfeedback) {
                 $existingfeedbackthiscriterion = array_values(array_filter(
                     $existingagreedfeedback->criterion_grades,
-                    function($item) use ($criterion) {
+                    function ($item) use ($criterion) {
                         return $item['criterionid'] == $criterion->id;
                     }
                 ));
                 if (!empty($existingfeedbackthiscriterion)) {
                     $criterion->existing_agreed_feedback = $existingfeedbackthiscriterion[0];
                 }
-
             }
         }
         return $templatedata;

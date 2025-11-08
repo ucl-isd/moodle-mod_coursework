@@ -28,7 +28,6 @@ use Exception;
  * @author     Alex Yeung <k.yeung@ucl.ac.uk>
  */
 class candidateprovider_manager {
-
     /** @var candidateprovider_manager|null Singleton instance */
     private static $instance = null;
 

@@ -31,7 +31,6 @@ use mod_coursework\models\submission;
  * Class agreedgrade_cell
  */
 class agreedgrade_cell extends cell_base {
-
     /**
      * @param $submission
      * @param $student
@@ -63,8 +62,8 @@ class agreedgrade_cell extends cell_base {
             $strings = [];
             $criterias = $this->coursework->get_rubric_criteria();
             foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
-                $strings['agreedgrade'.$criteria['id']] = 'Agreed grade - '.$criteria['description'];
-                $strings['agreedgrade'.$criteria['id'] . 'comment'] = 'Comment for: Agreed grade - '.$criteria['description'];
+                $strings['agreedgrade' . $criteria['id']] = 'Agreed grade - ' . $criteria['description'];
+                $strings['agreedgrade' . $criteria['id'] . 'comment'] = 'Comment for: Agreed grade - ' . $criteria['description'];
             }
         } else {
             $strings = get_string('agreedgrade', 'coursework');
@@ -73,7 +72,7 @@ class agreedgrade_cell extends cell_base {
         return $strings;
     }
 
-    public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells  = []) {
+    public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells = []) {
 
         global $DB, $PAGE, $USER;
 
@@ -85,9 +84,10 @@ class agreedgrade_cell extends cell_base {
             return true;
         }
 
-        if (has_any_capability($agreedgradecap, $PAGE->context)
-            || has_capability('mod/coursework:administergrades', $PAGE->context)) {
-
+        if (
+            has_any_capability($agreedgradecap, $PAGE->context)
+            || has_capability('mod/coursework:administergrades', $PAGE->context)
+        ) {
             $errormsg = '';
 
             if (!$this->coursework->is_using_rubric() || ($this->coursework->is_using_rubric() && $this->coursework->finalstagegrading == 1)) {
@@ -96,12 +96,11 @@ class agreedgrade_cell extends cell_base {
                     $errormsg = get_string('valuenotincourseworkscale', 'coursework');
                     if (is_numeric($value)) {
                         // if scale is numeric get max allowed scale
-                        $errormsg .= ' '. get_string('max_cw_mark', 'coursework').' '. $this->coursework->grade;
+                        $errormsg .= ' ' . get_string('max_cw_mark', 'coursework') . ' ' . $this->coursework->grade;
                     }
                     return $errormsg;
                 }
             } else {
-
                 // We won't be processing this line if it has no values, empty wont tell us this as it thinks that an array with
                 // Keys isnt. We will use array_filter whhich will return all values from the array if this is empty then we have
                 // Nothing to do
@@ -110,24 +109,19 @@ class agreedgrade_cell extends cell_base {
 
                 // If there are no values we don't need to do anything
                 if (!empty($arrayvalues)) {
-
                     $i = 0;
                     $s = 0;
 
                     $criterias = $this->coursework->get_rubric_criteria();
 
                     foreach ($value as $data) {
-
                         // Check if the value is empty however it can be 0
                         if (empty($data) && $data != 0) {
-
                             $errormsg .= ' ' . get_string('rubric_grade_cannot_be_empty', 'coursework');
-
                         }
 
                         // Only check grades fields that will be even numbered
                         if ($i % 2 == 0) {
-
                             // Get the current criteria
                             $criteria = array_shift($criterias);
 
@@ -141,12 +135,9 @@ class agreedgrade_cell extends cell_base {
                         $i++;
                     }
                 } else {
-
                     // Set value to false so that a submission not ready to grade message isn't returned
                     $value = false;
-
                 }
-
             }
 
             if (!empty($errormsg)) {
@@ -183,7 +174,6 @@ class agreedgrade_cell extends cell_base {
 
             // Does a feedback exist for this stage
             if (empty($feedback)) {
-
                 $feedbackparams = [
                     'submissionid' => $submissionid,
                     'assessorid' => $USER->id,
@@ -201,13 +191,11 @@ class agreedgrade_cell extends cell_base {
                     return get_string('nopermissiontoeditgrade', 'coursework');
                 }
             }
-
         } else {
             return get_string('nopermissiontoimportgrade', 'coursework');
         }
 
         return true;
-
     }
 
     /***
@@ -217,20 +205,17 @@ class agreedgrade_cell extends cell_base {
      * @param $value the value that should be checked to see if it is valid
      * @return bool
      */
-    public function value_in_rubric($criteria,    $value) {
+    public function value_in_rubric($criteria, $value) {
         $valuefound = false;
 
         $levels = $criteria['levels'];
 
-        if (is_numeric($value) ) {
+        if (is_numeric($value)) {
             foreach ($levels as $level) {
-
                 if ((int)$level['score'] == (int)$value) {
-
                     $valuefound = true;
                     break;
                 }
-
             }
         }
 

@@ -29,7 +29,6 @@ use stdClass;
  * Class null_user
  */
 class null_user implements allocatable {
-
     /**
      * @return string
      */
@@ -105,5 +104,4 @@ class null_user implements allocatable {
      */
     public function get_submission($coursework) {
     }
-
 }

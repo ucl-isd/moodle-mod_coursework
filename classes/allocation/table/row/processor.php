@@ -31,7 +31,6 @@ use mod_coursework\models\coursework;
  * @package mod_coursework\allocation\table
  */
 class processor {
-
     /**
      * @var coursework
      */
@@ -66,5 +65,4 @@ class processor {
             }
         }
     }
-
 }

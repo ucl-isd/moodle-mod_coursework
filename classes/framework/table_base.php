@@ -37,7 +37,6 @@ use stdClass;
  */
 #[AllowDynamicProperties] // Allow dynamic properties for table_base to avoid interferences elsewhere.
 abstract class table_base {
-
     /**
      * @var string
      */
@@ -117,7 +116,7 @@ abstract class table_base {
      * @return array
      * @throws coding_exception
      */
-    public static function find_all($params  = []) {
+    public static function find_all($params = []) {
 
         if (!is_array($params)) {
             throw new coding_exception('::all() require an array of parameters');
@@ -227,7 +226,7 @@ abstract class table_base {
      */
     private static function ensure_column_exists($colname) {
         if (!static::column_exists($colname)) {
-            throw new coding_exception('Column '.$colname.' does not exist in class '.static::get_table_name());
+            throw new coding_exception('Column ' . $colname . ' does not exist in class ' . static::get_table_name());
         }
     }
 
@@ -347,7 +346,6 @@ abstract class table_base {
               ORDER BY id DESC
                  LIMIT 1";
         return new static($DB->get_record_sql($sql));
-
     }
 
     /**
@@ -467,7 +465,6 @@ abstract class table_base {
      * Hook method to allow subclasses to get stuff done like destruction of dependent records.
      */
     protected function before_destroy() {
-
     }
 
     /**
@@ -516,7 +513,7 @@ abstract class table_base {
      * @param array|table_base $conditions key value pairs of DB columns
      * @return bool
      */
-    public static function exists($conditions  = []) {
+    public static function exists($conditions = []) {
         global $DB;
 
         if (is_number($conditions)) {
@@ -536,7 +533,7 @@ abstract class table_base {
      * @param array $conditions
      * @return int
      */
-    public static function count($conditions  = []) {
+    public static function count($conditions = []) {
         global $DB;
 
         foreach ($conditions as $colname => $value) {
@@ -589,9 +586,9 @@ abstract class table_base {
      * @throws coding_exception
      */
     public function __toString() {
-        $string = $this->get_table_name().' '.$this->id.' ';
+        $string = $this->get_table_name() . ' ' . $this->id . ' ';
         foreach ($this->get_column_names() as $column) {
-            $string .= $column.' '.$this->$column.' ';
+            $string .= $column . ' ' . $this->$column . ' ';
         }
         return $string;
     }
@@ -663,5 +660,4 @@ abstract class table_base {
         $cache = cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
         $cache->delete(static::$tablename);
     }
-
 }

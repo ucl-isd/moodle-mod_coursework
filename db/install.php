@@ -37,5 +37,4 @@ function xmldb_coursework_install() {
         $DB->insert_record('coursework_sample_set_plugin', $dbrecord);
         $i++;
     }
-
 }

@@ -46,7 +46,6 @@ use stdClass;
  */
 #[AllowDynamicProperties]
 class group extends table_base implements allocatable, moderatable {
-
     use allocatable_functions;
 
     /**

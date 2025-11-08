@@ -38,7 +38,6 @@ use mod_coursework_coursework;
  */
 #[AllowDynamicProperties]
 class plagiarism_flag extends table_base {
-
     /**
      * @var coursework
      */
@@ -100,16 +99,14 @@ class plagiarism_flag extends table_base {
     public function can_release_grades() {
 
         switch ($this->status) {
-
             case self::INVESTIGATION:
             case self::NOTCLEARED:
                 return false;
                 break;
             case self::RELEASED:
             case self::CLEARED:
-            return true;
+                return true;
             break;
-
         }
     }
 
@@ -168,5 +165,4 @@ class plagiarism_flag extends table_base {
     protected function after_destroy() {
         self::remove_cache($this->courseworkid);
     }
-
 }

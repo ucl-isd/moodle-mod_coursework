@@ -30,7 +30,6 @@ use moodleform;
  *
  */
 class personaldeadline_form_bulk extends moodleform {
-
     /**
      * Form definition.
      */

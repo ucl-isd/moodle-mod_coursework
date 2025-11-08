@@ -26,7 +26,6 @@ namespace mod_coursework\export\csv\cells;
  * Interface cell_interface makes sure that all of the grading report cells are the same.
  */
 interface cell_interface {
-
     /**
      * @param $submission
      * @param $student
@@ -47,6 +46,5 @@ interface cell_interface {
      * @param $stageidentifier
      * @return mixed
      */
-    public function validate_cell($value, $submissions, $stageidentifier='');
-
+    public function validate_cell($value, $submissions, $stageidentifier = '');
 }

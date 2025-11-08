@@ -28,7 +28,6 @@ use mod_coursework\grading_table_row_base;
  * Class no_sub_rows
  */
 class no_sub_rows implements sub_rows_interface {
-
     /**
      * @param grading_table_row_base $rowobject
      * @param int $columnwidth

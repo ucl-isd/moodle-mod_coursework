@@ -30,7 +30,6 @@ use mod_coursework\models\coursework;
  * Class to provide figures around submissions and gradings.
  */
 class submission_figures {
-
     /**
      * Get the submissions for current user as assessor.
      *
@@ -94,10 +93,12 @@ class submission_figures {
         $coursework = coursework::find($instance);
         $context = $coursework->get_context();
 
-        if (!$coursework->has_multiple_markers()
+        if (
+            !$coursework->has_multiple_markers()
                 && !$coursework->allocation_enabled()
                 && !has_capability('mod/coursework:addinitialgrade', $context)
-                && has_capability('mod/coursework:addagreedgrade', $context)) {
+                && has_capability('mod/coursework:addagreedgrade', $context)
+        ) {
             return 0;
         }
 
@@ -141,11 +142,12 @@ class submission_figures {
      */
     private static function remove_ungradable_submissions(array $submissions): array {
         foreach ($submissions as $submission) {
-
-            if (!$submission->is_finalised()
+            if (
+                !$submission->is_finalised()
                 || !empty($submission->get_final_grade())
                 || (has_capability('mod/coursework:addallocatedagreedgrade', $submission->get_coursework()->get_context())
-                    && !$submission->is_assessor_initial_grader() && $submission->all_initial_graded())) {
+                    && !$submission->is_assessor_initial_grader() && $submission->all_initial_graded())
+            ) {
                 unset($submissions[$submission->id]);
             }
         }
@@ -160,7 +162,7 @@ class submission_figures {
      */
     private static function remove_final_gradable_submissions(array $submissions): array {
         foreach ($submissions as $submission) {
-            if (!empty($submission->all_initial_graded()) ) {
+            if (!empty($submission->all_initial_graded())) {
                 unset($submissions[$submission->id]);
             }
         }

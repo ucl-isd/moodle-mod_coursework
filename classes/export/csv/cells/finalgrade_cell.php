@@ -28,7 +28,6 @@ use mod_coursework\models\submission;
  * Class finalgrade_cell
  */
 class finalgrade_cell extends cell_base {
-
     /**
      * @param submission $submission
      * @param $student
@@ -39,7 +38,6 @@ class finalgrade_cell extends cell_base {
         return $submission->get_final_grade() == false || $submission->editable_final_feedback_exist()
             ? ''
             : $this->get_actual_grade($submission->get_final_grade());
-
     }
 
     /**
@@ -50,5 +48,4 @@ class finalgrade_cell extends cell_base {
     public function get_header($stage) {
         return  get_string('provisionalgrade', 'coursework');
     }
-
 }

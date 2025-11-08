@@ -28,7 +28,6 @@ namespace mod_coursework\auto_grader;
  * @package mod_coursework\auto_grader
  */
 class none implements auto_grader {
-
     /**
      * @param $coursework
      * @param $allocatable

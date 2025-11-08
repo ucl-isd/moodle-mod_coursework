@@ -29,7 +29,6 @@ namespace mod_coursework\ability;
  *
  */
 class rule {
-
     /**
      * @var string
      */

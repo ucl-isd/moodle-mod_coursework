@@ -32,7 +32,6 @@ use moodle_exception;
  * @package mod_coursework\plagiarism_helpers
  */
 class turnitin extends base {
-
     /**
      * @return string
      */

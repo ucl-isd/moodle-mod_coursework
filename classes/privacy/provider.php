@@ -44,10 +44,7 @@ use stdClass;
  * @category   privacy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class provider implements
-    \core_privacy\local\metadata\provider,
-    \core_privacy\local\request\plugin\provider,
-    core_userlist_provider {
+class provider implements core_userlist_provider, \core_privacy\local\metadata\provider, \core_privacy\local\request\plugin\provider {
     /**
      * Provides meta data that is stored about a user with mod_coursework
      *
@@ -180,7 +177,6 @@ class provider implements
                     JOIN {coursework_plagiarism_flags} cwpf ON cws.id = cwpf.submissionid
                 WHERE ctx.id = :contextid AND ctx.contextlevel = :contextlevel";
         $userlist->add_from_sql('createdby', $sql, $params);
-
     }
     /**
      * Returns all of the contexts that has information relating to the userid.

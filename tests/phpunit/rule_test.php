@@ -29,7 +29,6 @@ use mod_coursework\ability\rule;
  * @group mod_coursework
  */
 final class rule_test extends \basic_testcase {
-
     // Test what happens when we have a rule that matches and returns true
 
     public function test_allows_when_allowed_and_rule_returns_true(): void {

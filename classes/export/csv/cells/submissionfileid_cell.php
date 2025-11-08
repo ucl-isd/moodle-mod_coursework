@@ -29,7 +29,6 @@ use mod_coursework\models\submission;
  * Class submissionfileid_cell
  */
 class submissionfileid_cell extends cell_base {
-
     /**
      * @param $submission
      * @param $student
@@ -49,7 +48,7 @@ class submissionfileid_cell extends cell_base {
         return  get_string('submissionfileid', 'coursework');
     }
 
-    public function validate_cell($value, $submissionid, $stageidentifier='', $uploadedgradecells  = []) {
+    public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells = []) {
         global $DB;
 
         if (empty($value)) {
@@ -64,5 +63,4 @@ class submissionfileid_cell extends cell_base {
 
         return ($value == $hash) ? true : get_string('submissionnotfound', 'coursework');
     }
-
 }

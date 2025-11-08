@@ -27,7 +27,6 @@ use core\plugininfo\base;
  * @author     Alex Yeung <k.yeung@ucl.ac.uk>
  */
 class courseworkcandidateprovider extends base {
-
     /**
      * Should there be a way to uninstall the plugin via the administration UI.
      *

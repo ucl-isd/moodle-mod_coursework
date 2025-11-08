@@ -31,13 +31,12 @@ defined('MOODLE_INTERNAL' || die());
 
 global $CFG;
 
-require_once($CFG->dirroot.'/lib/formslib.php');
+require_once($CFG->dirroot . '/lib/formslib.php');
 
 /**
  * Makes a simple dropdown that allows us to choose the student who the manager is going to submit work on behalf of.
  */
 class choose_student_for_submission_mform extends moodleform {
-
     /**
      * Form definition. Abstract method - always override!
      */
@@ -57,7 +56,6 @@ class choose_student_for_submission_mform extends moodleform {
         $allnames = fields::get_name_fields();
 
         foreach ($students as $student) {
-
             // We use fullname($this), which needs these. It doesn't use them though.
             foreach ($allnames as $namefield) {
                 if (!isset($student->$namefield)) {
@@ -74,6 +72,5 @@ class choose_student_for_submission_mform extends moodleform {
         $mform->setType('cmid', PARAM_INT);
 
         $this->add_action_buttons(true, get_string('choosestudent', 'mod_coursework'));
-
     }
 }

@@ -30,7 +30,6 @@ use mod_coursework_submission_files;
  * Class feedback_cell
  */
 class plagiarism_cell extends cell_base {
-
     /**
      * @param grading_table_row_base $rowobject
      * @throws coding_exception
@@ -57,7 +56,7 @@ class plagiarism_cell extends cell_base {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options  = []) {
+    public function get_table_header($options = []) {
         return get_string('plagiarism', 'mod_coursework');
     }
 

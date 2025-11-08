@@ -22,12 +22,12 @@
 
 use mod_coursework\models\coursework;
 
-require_once(dirname(__FILE__).'/../../../config.php');
+require_once(dirname(__FILE__) . '/../../../config.php');
 
 global $CFG, $DB, $PAGE, $OUTPUT;
 
-require_once($CFG->dirroot.'/mod/coursework/classes/forms/upload_feedback_form.php');
-require_once($CFG->dirroot.'/mod/coursework/classes/file_importer.php');
+require_once($CFG->dirroot . '/mod/coursework/classes/forms/upload_feedback_form.php');
+require_once($CFG->dirroot . '/mod/coursework/classes/file_importer.php');
 $PAGE->set_url(new moodle_url('/mod/coursework/actions/upload_feedback.php'));
 
 $coursemoduleid = required_param('cmid', PARAM_INT);
@@ -58,17 +58,16 @@ if ($feedbackform->is_cancelled()) {
 }
 
 if ($data = $feedbackform->get_data()) {
-
     // Perform checks on data
-    $courseworktempdir = $CFG->dataroot."/temp/coursework/";
+    $courseworktempdir = $CFG->dataroot . "/temp/coursework/";
 
     if (!is_dir($courseworktempdir)) {
         mkdir($courseworktempdir);
     }
 
     $filename = clean_param($feedbackform->get_new_filename('feedbackzip'), PARAM_FILE);
-    $filename = md5(rand(0, 1000000).$filename);
-    $filepath = $courseworktempdir.'/'.$filename.".zip";
+    $filename = md5(rand(0, 1000000) . $filename);
+    $filepath = $courseworktempdir . '/' . $filename . ".zip";
     $feedbackform->save_file('feedbackzip', $filepath);
 
     $stageidentifier = $data->feedbackstage;
@@ -81,7 +80,6 @@ if ($data = $feedbackform->get_data()) {
 
     $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
     echo $pagerenderer->process_feedback_upload($updateresults);
-
 } else {
     $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
     echo $pagerenderer->feedback_upload($feedbackform);

@@ -50,7 +50,6 @@ require_once($CFG->dirroot . '/mod/coursework/renderer.php');
  * @property bool page_rendered
  */
 class controller_base {
-
     /**
      * From the HTTP request
      *
@@ -135,7 +134,6 @@ class controller_base {
         }
 
         if (empty($this->course)) {
-
             if (!empty($this->params['courseid'])) {
                 $this->course = $DB->get_record('course', ['id' => $this->params['courseid']], '*', MUST_EXIST);
             }
@@ -164,7 +162,6 @@ class controller_base {
         }
 
         require_login($this->course, false, $this->coursemodule);
-
     }
 
     /**
@@ -181,7 +178,7 @@ class controller_base {
             call_user_func([$this,
                                  $methodname]);
         } else {
-            throw new coding_exception('No page defined in the controller called "'.$methodname.'"');
+            throw new coding_exception('No page defined in the controller called "' . $methodname . '"');
         }
     }
 
@@ -202,7 +199,6 @@ class controller_base {
     protected function get_path($pathname, $items) {
 
         return call_user_func_array([$this->get_router(), 'get_path'], func_get_args());
-
     }
 
     /**
@@ -236,7 +232,7 @@ class controller_base {
      */
     protected function render_page($pagename) {
         $rendererclass = $this->renderer_class();
-        $renderer = new $rendererclass;
+        $renderer = new $rendererclass();
         $functionname = $pagename . '_page';
         $renderer->$functionname(get_object_vars($this));
         $this->page_rendered = true;

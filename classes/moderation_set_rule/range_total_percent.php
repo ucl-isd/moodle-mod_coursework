@@ -36,7 +36,6 @@ use stdClass;
  * number. Only really makes sense with lowerlimit as 0.
  */
 class range_total_percent extends moderation_set_rule {
-
     /**
      * Constructor builds instance from optional DB record.
      *
@@ -73,15 +72,13 @@ class range_total_percent extends moderation_set_rule {
         $numberneeded = ceil($totalnumber * ($this->upperlimit / 100));
 
         while (count($moderationset) < $numberneeded) {
-
             // Add random ones till we have enough.
             $id = array_rand($potentialallocatables);
 
             $moderationset[$id] = $potentialallocatables[$id];
-            unset ($potentialallocatables[$id]);
+            unset($potentialallocatables[$id]);
 
             $numberneeded--;
-
         }
     }
 
@@ -90,7 +87,7 @@ class range_total_percent extends moderation_set_rule {
      * @return string
      */
     public function get_numeric_boundaries() {
-        return $this->upperlimit.'%';
+        return $this->upperlimit . '%';
     }
 
     /**
@@ -122,12 +119,12 @@ class range_total_percent extends moderation_set_rule {
 
         // Upper limit.
         $html .= html_writer::start_tag('p');
-        $html .= get_string('upperlimit', 'mod_coursework').' ';
+        $html .= get_string('upperlimit', 'mod_coursework') . ' ';
         $attributes = [
             'name' => 'rule_range_total_percent_upperlimit',
             'size' => 3,
         ];
-        $html .= html_writer::empty_tag('input', $attributes).'%';
+        $html .= html_writer::empty_tag('input', $attributes) . '%';
         $html .= html_writer::end_tag('p');
         return $html;
     }
@@ -141,7 +138,7 @@ class range_total_percent extends moderation_set_rule {
 
         global $DB;
 
-        $upperlimit = optional_param('rule_'.self::get_name().'_upperlimit', '', PARAM_INT);
+        $upperlimit = optional_param('rule_' . self::get_name() . '_upperlimit', '', PARAM_INT);
 
         // Validate.
         // Make sure we get a percentage as a whole number.
@@ -158,7 +155,5 @@ class range_total_percent extends moderation_set_rule {
             $tosave->ruleorder = $this->get_default_rule_order();
             $DB->insert_record('coursework_mod_set_rules', $tosave);
         }
-
     }
 }
-

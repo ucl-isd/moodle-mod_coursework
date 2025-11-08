@@ -31,7 +31,6 @@ use moodle_exception;
  * Class assessorfeedback_cell
  */
 class assessorfeedback_cell extends cell_base {
-
     /**
      * @param submission$submission
      * @param $student
@@ -58,7 +57,6 @@ class assessorfeedback_cell extends cell_base {
                 $grade = cell_base::clean_cell($grade->feedbackcomment);
             } else {
                 $grade = '';
-
             }
         } else {
             $grade = '';
@@ -76,7 +74,7 @@ class assessorfeedback_cell extends cell_base {
         return  get_string('assessorfeedbackcsv', 'coursework', $stage);
     }
 
-    public function validate_cell($value, $submissionid, $stageidentifier='', $uploadedgradecells  = []) {
+    public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells = []) {
         global $DB, $PAGE, $USER;
 
         $modulecontext = $PAGE->context;
@@ -84,7 +82,10 @@ class assessorfeedback_cell extends cell_base {
             // CTP-3559 sometimes require_login() is being called without passing a module context.
             // This means that $PAGE->context will be course context & capability checks may be wrong so check it here.
             throw new moodle_exception(
-                "accesserror", 'coursework', "", null,
+                "accesserror",
+                'coursework',
+                "",
+                null,
                 "Invalid context level " . $modulecontext->contextlevel
             );
         }
@@ -93,9 +94,10 @@ class assessorfeedback_cell extends cell_base {
 
         $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
         $submission = submission::find($subdbrecord);
-        if (has_any_capability($agreedgradecap, $modulecontext) && has_any_capability($initialgradecap, $modulecontext)
-            || has_capability('mod/coursework:administergrades', $modulecontext)) {
-
+        if (
+            has_any_capability($agreedgradecap, $modulecontext) && has_any_capability($initialgradecap, $modulecontext)
+            || has_capability('mod/coursework:administergrades', $modulecontext)
+        ) {
             // Is the submission in question ready to grade?
             if (!$submission->ready_to_grade()) {
                 return get_string('submissionnotreadytograde', 'coursework');
@@ -126,22 +128,18 @@ class assessorfeedback_cell extends cell_base {
                 if (!has_capability('mod/coursework:administergrades', $modulecontext) && !$ability->can('new', $feedback)) {
                     return get_string('nopermissiontoeditgrade', 'coursework');
                 }
-
             } else {
-
                 // This is a new feedback check it against the edit ability checks
                 if (!has_capability('mod/coursework:administergrades', $modulecontext) && !$ability->can('edit', $feedback)) {
                     return get_string('nopermissiontoeditgrade', 'coursework');
                 }
-
             }
 
             if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
                 // Was this user the one who last graded this submission if not then user cannot grade
-                if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $modulecontext) ) {
+                if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $modulecontext)) {
                     return get_string('nopermissiontogradesubmission', 'coursework');
                 }
-
             }
 
             if ($this->coursework->allocation_enabled()) {
@@ -153,16 +151,19 @@ class assessorfeedback_cell extends cell_base {
                     'stageidentifier' => $stageidentifier,
                 ];
 
-                if (!has_capability('mod/coursework:administergrades', $modulecontext)
-                    && !$DB->get_record('coursework_allocation_pairs', $allocationparams)) {
+                if (
+                    !has_capability('mod/coursework:administergrades', $modulecontext)
+                    && !$DB->get_record('coursework_allocation_pairs', $allocationparams)
+                ) {
                     return get_string('nopermissiontogradesubmission', 'coursework');
                 }
             }
 
             // Check for coursework without allocations - with/without samplings
-            if (has_capability('mod/coursework:addinitialgrade', $modulecontext) && !has_capability('mod/coursework:editinitialgrade', $modulecontext)
-                && $this->coursework->get_max_markers() > 1 && !$this->coursework->allocation_enabled()) {
-
+            if (
+                has_capability('mod/coursework:addinitialgrade', $modulecontext) && !has_capability('mod/coursework:editinitialgrade', $modulecontext)
+                && $this->coursework->get_max_markers() > 1 && !$this->coursework->allocation_enabled()
+            ) {
                 // check how many feedbacks for this submission
                 $feedbacks = $DB->count_records('coursework_feedbacks', ['submissionid' => $submissionid]);
 
@@ -178,16 +179,12 @@ class assessorfeedback_cell extends cell_base {
                     return get_string('gradealreadyexists', 'coursework');
                 }
             }
-
         } else if (has_any_capability($agreedgradecap, $modulecontext)) {
-
             // If you have the add agreed or edit agreed grades capabilities then you may have the grades on your export sheet
             // We will return true as we will ignore them
             return true;
-
         } else {
             return get_string('nopermissiontoimportgrade', 'coursework');
         }
     }
-
 }

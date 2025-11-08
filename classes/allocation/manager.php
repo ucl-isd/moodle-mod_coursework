@@ -41,7 +41,6 @@ use stdClass;
  * and deallocations as well as making the moderation set.
  */
 class manager {
-
     /**
      * @var coursework
      */
@@ -76,16 +75,15 @@ class manager {
             $strategytypes[] = coursework::MODERATOR;
         }
         foreach ($strategytypes as $strategytype) {
-
-            $propertyname = $strategytype.'allocationstrategy';
+            $propertyname = $strategytype . 'allocationstrategy';
 
             $classname = !empty($coursework->$propertyname) ?
-                '\\mod_coursework\allocation\strategy\\'.$coursework->$propertyname : '';
+                '\\mod_coursework\allocation\strategy\\' . $coursework->$propertyname : '';
 
             if (class_exists($classname)) {
                 $this->$propertyname = new $classname($coursework);
                 if (!($this->$propertyname instanceof strategy\base)) {
-                    $message = "Allocation classname {$classname} is not an instance of ".
+                    $message = "Allocation classname {$classname} is not an instance of " .
                         "\\mod_coursework\\allocation_strategy\\base";
                     throw new coding_exception($message);
                 }
@@ -117,7 +115,7 @@ class manager {
             preg_match('/([^\/]+).php/', $fullclassname, $matches);
             $strategyname = $matches[1]; // E.g. equal.
             $options[$strategyname] =
-                get_string('coursework_allocation_strategy_'.$strategyname, 'mod_coursework', strtolower(get_string($type, 'mod_coursework')));
+                get_string('coursework_allocation_strategy_' . $strategyname, 'mod_coursework', strtolower(get_string($type, 'mod_coursework')));
         }
 
         // move 'none' to be the first option
@@ -180,7 +178,6 @@ class manager {
             // the arrays altered.
             $rule->adjust_set($moderationset, $allocatables, $stage);
         }
-
     }
 
     /**
@@ -197,7 +194,7 @@ class manager {
         $rules = $DB->get_records('coursework_mod_set_rules', $params, 'ruleorder');
 
         foreach ($rules as $key => &$rule) {
-            $classname = '\mod_coursework\sample_set_rule\\'.$rule->rulename;
+            $classname = '\mod_coursework\sample_set_rule\\' . $rule->rulename;
             if (!class_exists($classname)) {
                 unset($rules[$key]);
                 continue;
@@ -235,15 +232,12 @@ class manager {
         $sampleplugins = $DB->get_records('coursework_sample_set_plugin', null, 'pluginorder');
         $order = 0;
         foreach ($sampleplugins as $plugin) {
-
             $classname = '\mod_coursework\sample_set_rule\\' . $plugin->rulename;
 
             $rule = new $classname($this->coursework);
 
             $rule->save_form_data($assessornumber, $order);
-
         }
-
     }
 
     public function save_sample() {
@@ -254,13 +248,11 @@ class manager {
         // We get an error in behat @mod_coursework_sampling_range_set_rules if not as user not in cached sample for assessor 2.
         assessment_set_membership::remove_cache($this->coursework->id);
         for ($i = 2; $i <= $this->coursework->get_max_markers(); $i++) {
-
             $samplestrategy = required_param("assessor_{$i}_samplingstrategy", PARAM_INT);
 
             if ($samplestrategy) {
                 $this->save_sample_set_rule($i);
             }
-
         }
         $this->auto_generate_sample_set();
     }
@@ -292,7 +284,6 @@ class manager {
         }
 
         for ($stagenumber = 2; $stagenumber <= $this->get_coursework()->get_max_markers(); $stagenumber++) {
-
             $stage = "assessor_{$stagenumber}";
 
             $this->remove_unmarked_automatic_allocatables($stage);
@@ -330,7 +321,6 @@ class manager {
                     $rule = new $classname($this->coursework);
 
                        $rule->adjust_sample_set($stagenumber, $allocatables, $manualsampleset, $autosampleset);
-
                 }
 
                 // Save sample set
@@ -345,7 +335,6 @@ class manager {
 
                         // If this a manually selected allocatable check to see if the allocatable is already in the table
                         $DB->insert_record("coursework_sample_set_mbrs", $sample);
-
                     }
                 }
             }
@@ -369,9 +358,10 @@ class manager {
                      AND        selectiontype = 'manual'";
 
         // Get all users in manually selected for stage in coursework
-        return $DB->get_records_sql($sql,
-            ['courseworkid' => $this->coursework->id, 'stageidentifier' => $stage]);
-
+        return $DB->get_records_sql(
+            $sql,
+            ['courseworkid' => $this->coursework->id, 'stageidentifier' => $stage]
+        );
     }
 
     public function get_automatic_with_feedback($stage) {
@@ -413,7 +403,6 @@ class manager {
                      )";
 
         return $DB->execute($sql);
-
     }
 
     public function get_allocatables_with_final_agreed() {
@@ -428,7 +417,5 @@ class manager {
                    AND f.stageidentifier = 'final_agreed_1'";
 
         return $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id]);
-
     }
-
 }

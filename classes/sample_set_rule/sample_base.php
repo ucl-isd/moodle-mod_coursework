@@ -28,7 +28,6 @@ namespace mod_coursework\sample_set_rule;
  * This base class is extended to make specific sampling rules strategies
  */
 abstract class sample_base {
-
     /**
      * @var string DB table this class relates to.
      */
@@ -135,7 +134,7 @@ abstract class sample_base {
 
     abstract public function add_form_elements_js($assessornumber);
 
-    abstract public function save_form_data($assessornumber=0, &$order=0);
+    abstract public function save_form_data($assessornumber = 0, &$order = 0);
 
     abstract public function adjust_sample_set($ruleid, &$manualsampleset, &$allocatables, &$autosampleset);
 
@@ -170,5 +169,4 @@ abstract class sample_base {
 
         return $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id]);
     }
-
 }

@@ -41,7 +41,6 @@ use moodle_url;
  * will be translated into a page.
  */
 class grading_table_row_base implements user_row {
-
     /**
      * Using this as a delegate
      * @var submission
@@ -116,7 +115,8 @@ class grading_table_row_base implements user_row {
             return true;
         }
         return has_capability(
-            'mod/coursework:viewanonymous', $this->get_coursework()->get_context()
+            'mod/coursework:viewanonymous',
+            $this->get_coursework()->get_context()
         );
     }
 
@@ -208,7 +208,6 @@ class grading_table_row_base implements user_row {
             return '';
         }
         return $submission->time_submitted();
-
     }
 
     /**
@@ -446,7 +445,7 @@ class grading_table_row_base implements user_row {
         $user = $this->get_allocatable();
 
         $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context());
-        if (!$this->get_coursework()->blindmarking || $viewanonymous || $this->is_published() ) {
+        if (!$this->get_coursework()->blindmarking || $viewanonymous || $this->is_published()) {
             return $user->firstname;
         } else {
             return get_string('hidden', 'mod_coursework');
@@ -466,5 +465,4 @@ class grading_table_row_base implements user_row {
             return get_string('hidden', 'mod_coursework');
         }
     }
-
 }

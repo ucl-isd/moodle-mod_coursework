@@ -32,7 +32,6 @@ use mod_coursework\models\deadline_extension;
  * @since     Moodle 4.5
  */
 class delete_extension extends external_api {
-
     /**
      * Describes the parameters.
      *

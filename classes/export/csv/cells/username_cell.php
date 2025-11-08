@@ -28,7 +28,6 @@ use mod_coursework\models\submission;
  * Class username_cell
  */
 class username_cell extends cell_base {
-
     /**
      * @param submission $submission
      * @param $student
@@ -54,6 +53,5 @@ class username_cell extends cell_base {
      */
     public function get_header($stage) {
         return  get_string('studentusername', 'coursework');
-
     }
 }

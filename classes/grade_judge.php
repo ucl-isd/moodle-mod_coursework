@@ -37,7 +37,6 @@ use mod_coursework\models\submission;
  * @package mod_coursework
  */
 class grade_judge {
-
     /**
      * @var coursework
      */
@@ -179,7 +178,6 @@ class grade_judge {
         } else {
             return $this->coursework->has_multiple_markers();
         }
-
     }
 
     public function grade_in_scale($value) {
@@ -215,7 +213,5 @@ class grade_judge {
         } else {
             return $value;
         }
-
     }
-
 }

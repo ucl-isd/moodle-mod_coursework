@@ -27,7 +27,6 @@
  *
  */
 class mod_coursework_behat_edit_extension_page extends mod_coursework_behat_page_base {
-
     /**
      * @param $time
      * @throws \Behat\Mink\Exception\ElementException
@@ -52,7 +51,6 @@ class mod_coursework_behat_edit_extension_page extends mod_coursework_behat_page
 
         // Click the submit button
         $this->getpage()->find('css', '#id_submitbutton')->click();
-
     }
 
     /**

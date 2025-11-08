@@ -25,7 +25,6 @@ namespace mod_coursework\behat\fixtures;
  * @author     Alex Yeung <k.yeung@ucl.ac.uk>
  */
 class mock_candidate_provider extends \mod_coursework\candidateprovider {
-
     /** @var string|null The candidate number to return for all requests */
     private ?string $candidatenumber;
 

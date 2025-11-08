@@ -33,7 +33,6 @@ use mod_coursework\renderers\grading_report_renderer;
  * @since     Moodle 4.5
  */
 class get_grading_table_row_data extends external_api {
-
     /**
      * Describes the parameters.
      *
@@ -85,7 +84,9 @@ class get_grading_table_row_data extends external_api {
         // The export function contains a capability check so we don't have an extra one here.
         $PAGE->set_context($coursework->get_context());
         $rowdata = grading_report_renderer::export_one_row_data(
-            $coursework, $allocatableid, $allocatabletype
+            $coursework,
+            $allocatableid,
+            $allocatabletype
         );
         if (!$rowdata) {
             return [

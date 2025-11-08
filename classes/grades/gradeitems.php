@@ -26,7 +26,7 @@
  * @package   mod_coursework
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace mod_coursework\grades;
 
@@ -39,8 +39,7 @@ use core_grades\local\gradeitem\itemnumber_mapping;
  * @package   mod_coursework
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class gradeitems implements itemnumber_mapping, advancedgrading_mapping {
-
+class gradeitems implements advancedgrading_mapping, itemnumber_mapping {
     /**
      * Return the list of grade item mappings for the assign.
      *
@@ -63,4 +62,3 @@ class gradeitems implements itemnumber_mapping, advancedgrading_mapping {
         ];
     }
 }
-

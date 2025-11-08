@@ -31,7 +31,6 @@ namespace mod_coursework\allocation\strategy;
      * Will always return false when asked for the next appropriate teacher.
      */
 class none extends base {
-
     /**
      * Flag that saves us from doing all the allocations and then getting a false response for all the
      * teacher ids.

@@ -34,7 +34,6 @@ use mod_coursework\stages\base as stage_base;
  * @property int feedback_manager
  */
 class moderation extends table_base {
-
     /**
      * @var int
      */
@@ -129,12 +128,10 @@ class moderation extends table_base {
         $params = ['id' => $this->feedbackid];
         $feedback = $DB->get_record('coursework_feedbacks', $params);
         return $feedback;
-
     }
 
     public function get_agreement() {
         return $this->agreement;
-
     }
 
     /**
@@ -213,5 +210,4 @@ class moderation extends table_base {
         }
         return null;
     }
-
 }

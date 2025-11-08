@@ -31,7 +31,6 @@ use mod_coursework\models\coursework;
  */
 
 class enrol_task extends scheduled_task {
-
     /**
      * Get a descriptive name for this task (shown to admins).
      *
@@ -58,7 +57,7 @@ class enrol_task extends scheduled_task {
                 }
 
                 $cache = cache::make('mod_coursework', 'courseworkdata');
-                $cache->set($coursework->id()."_teachers", '');
+                $cache->set($coursework->id() . "_teachers", '');
                 $allocator = new auto_allocator($coursework);
                 $allocator->process_allocations();
 

@@ -34,7 +34,6 @@ use mod_coursework\models\feedback;
  *
  */
 class mod_coursework_behat_show_feedback_page extends mod_coursework_behat_page_base {
-
     /**
      * @var feedback
      */
@@ -68,7 +67,7 @@ class mod_coursework_behat_show_feedback_page extends mod_coursework_behat_page_
      * @throws coding_exception
      */
     private function get_feedback_table() {
-        return $this->getpage()->find('css', '#feedback_'.$this->get_feedback()->id);
+        return $this->getpage()->find('css', '#feedback_' . $this->get_feedback()->id);
     }
 
     /**

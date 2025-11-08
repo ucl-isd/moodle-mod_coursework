@@ -23,17 +23,17 @@
 use mod_coursework\allocation\auto_allocator;
 use mod_coursework\models\coursework;
 
-require_once(dirname(__FILE__).'/../../../config.php');
+require_once(dirname(__FILE__) . '/../../../config.php');
 
 // This stops the page from aborting when an ajax call disconnects
 ignore_user_abort(true);
 
 // We have to set the time limit to 0 as depending on
-set_time_limit ( 0 );
+set_time_limit(0);
 
 global $CFG, $OUTPUT, $DB, $PAGE;
 
-require_once($CFG->dirroot.'/mod/coursework/lib.php');
+require_once($CFG->dirroot . '/mod/coursework/lib.php');
 
 $coursemoduleid = required_param('coursemoduleid', PARAM_INT);
 $coursemodule = get_coursemodule_from_id('coursework', $coursemoduleid, 0, false, MUST_EXIST);
@@ -58,4 +58,4 @@ $coursework->save();
 $allocator = new auto_allocator($coursework);
 $allocator->process_allocations();
 
- echo $coursework->name. "re-allocated";
+ echo $coursework->name . "re-allocated";

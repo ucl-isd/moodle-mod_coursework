@@ -28,7 +28,6 @@ use stdClass;
  * Class user_cell
  */
 class user_cell extends cell_base implements allocatable_cell {
-
     /**
      * @param user_row $rowobject
      * @return string
@@ -43,7 +42,7 @@ class user_cell extends cell_base implements allocatable_cell {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options  = []) {
+    public function get_table_header($options = []) {
 
         $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->coursework->get_context());
 
@@ -53,22 +52,27 @@ class user_cell extends cell_base implements allocatable_cell {
 
         // allow to sort users only if CW is not set to blind marking or a user has capability to view anonymous
         if ($viewanonymous || !$this->coursework->blindmarking) {
-            $sortbyfirstname = $this->helper_sortable_heading(get_string('firstname'),
-                                                                'firstname',
-                                                                $options['sorthow'],
-                                                                $options['sortby'],
-                                                                $tablename);
-            $sortbylastname = $this->helper_sortable_heading(get_string('lastname'),
-                                                               'lastname',
-                                                               $options['sorthow'],
-                                                               $options['sortby'],
-                                                                $tablename);
-            $sortbyemail = $this->helper_sortable_heading(get_string('email', 'mod_coursework'),
-               'email',
-               $options['sorthow'],
-               $options['sortby'],
-               $tablename);
-
+            $sortbyfirstname = $this->helper_sortable_heading(
+                get_string('firstname'),
+                'firstname',
+                $options['sorthow'],
+                $options['sortby'],
+                $tablename
+            );
+            $sortbylastname = $this->helper_sortable_heading(
+                get_string('lastname'),
+                'lastname',
+                $options['sorthow'],
+                $options['sortby'],
+                $tablename
+            );
+            $sortbyemail = $this->helper_sortable_heading(
+                get_string('email', 'mod_coursework'),
+                'email',
+                $options['sorthow'],
+                $options['sortby'],
+                $tablename
+            );
         } else { // otherwise display header without sorting
             $sortbyfirstname = get_string('firstname');
             $sortbylastname = get_string('lastname');
@@ -81,18 +85,18 @@ class user_cell extends cell_base implements allocatable_cell {
             $sortbylastname = ' / ' . $sortbylastname;
         }
 
-        $sortbyfirstname = '<span class="data-table-splitter splitter-firstname sorting">'.$sortbyfirstname.'</span>';
+        $sortbyfirstname = '<span class="data-table-splitter splitter-firstname sorting">' . $sortbyfirstname . '</span>';
 
-        $sortbylastname = '<span class="data-table-splitter splitter-lastname sorting">'.$sortbylastname.'</span>';
+        $sortbylastname = '<span class="data-table-splitter splitter-lastname sorting">' . $sortbylastname . '</span>';
 
-        $sortbyemail = '<span class="data-table-splitter splitter-email sorting">'.$sortbyemail.'</span>';
+        $sortbyemail = '<span class="data-table-splitter splitter-email sorting">' . $sortbyemail . '</span>';
 
         if ($this->fullname_format() == 'lf') {
             $sortbyname = $sortbylastname . $sortbyfirstname;
         } else {
             $sortbyname = $sortbyfirstname . $sortbylastname;
         }
-        $sort = $sortbyname ."<br>" .$sortbyemail;
+        $sort = $sortbyname . "<br>" . $sortbyemail;
         return $sort;
     }
 

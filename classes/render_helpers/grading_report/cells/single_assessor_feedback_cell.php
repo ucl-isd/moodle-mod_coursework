@@ -38,7 +38,6 @@ use pix_icon;
  * Class single_assessor_feedback_cell
  */
 class single_assessor_feedback_cell extends cell_base {
-
     /**
      * @var allocatable
      */
@@ -79,11 +78,12 @@ class single_assessor_feedback_cell extends cell_base {
         $allocatable = $rowobject->get_allocatable();
 
         // Add new feedback
-        if ($rowobject->has_submission() &&
+        if (
+            $rowobject->has_submission() &&
             $rowobject->get_submission()->ready_to_grade() &&
             ($this->stage->user_is_assessor($USER->id) ||
-                has_capability('mod/coursework:administergrades', $this->coursework->get_context()))) {
-
+                has_capability('mod/coursework:administergrades', $this->coursework->get_context()))
+        ) {
             $feedbackparams = [
                 'submissionid' => $rowobject->get_submission()->id,
                 'assessorid' => $USER->id,
@@ -113,8 +113,10 @@ class single_assessor_feedback_cell extends cell_base {
             $content .= html_writer::empty_tag('br');
             $content .= 'by: ' . $feedback->get_assesor_username();
             $content .= html_writer::empty_tag('br');
-            if ($this->coursework->allocation_enabled() && !empty($allocation)
-                && $allocation->assessor()->id != $feedback->get_assessor_id()) {
+            if (
+                $this->coursework->allocation_enabled() && !empty($allocation)
+                && $allocation->assessor()->id != $feedback->get_assessor_id()
+            ) {
                     $fullname = core_user::get_fullname((object)(array)$allocation->assessor());
                     $content .= '(' . get_string('allocatedtoname', 'coursework', $fullname) . ')';
             }
@@ -136,7 +138,7 @@ class single_assessor_feedback_cell extends cell_base {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options  = []) {
+    public function get_table_header($options = []) {
         return get_string('feedbackandgrading', 'coursework');
     }
 
@@ -173,11 +175,12 @@ class single_assessor_feedback_cell extends cell_base {
         $title = get_string('editfinalgrade', 'coursework');
         $icon = new pix_icon('edit', $title, 'coursework');
 
-        return  $OUTPUT->action_icon($link,
-                                     $icon,
-                                     null,
-                                     ['id' => $linkid, 'class' => 'edit_final_feedback']);
-
+        return  $OUTPUT->action_icon(
+            $link,
+            $icon,
+            null,
+            ['id' => $linkid, 'class' => 'edit_final_feedback']
+        );
     }
 
     /**
@@ -193,10 +196,12 @@ class single_assessor_feedback_cell extends cell_base {
             ->get_allocatable_identifier_hash($rowobject->get_allocatable());
         $link = $this->get_router()
             ->get_path('show feedback', ['feedback' => $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable())]);
-        $iconlink = $OUTPUT->action_link($link,
-                                         $linktitle,
-                                         null,
-                                         ['class' => 'show_feedback', 'id' => $linkid]);
+        $iconlink = $OUTPUT->action_link(
+            $link,
+            $linktitle,
+            null,
+            ['class' => 'show_feedback', 'id' => $linkid]
+        );
 
         return $iconlink;
     }
@@ -222,10 +227,11 @@ class single_assessor_feedback_cell extends cell_base {
 
         $title = get_string('addfinalfeedback', 'coursework');
 
-        return  $OUTPUT->action_link($link,
-                                     $title,
-                                     null,
-                                     ['class' => 'new_final_feedback', 'id' => $linkid]);
+        return  $OUTPUT->action_link(
+            $link,
+            $title,
+            null,
+            ['class' => 'new_final_feedback', 'id' => $linkid]
+        );
     }
-
 }

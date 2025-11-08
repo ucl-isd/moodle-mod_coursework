@@ -62,8 +62,6 @@ require_once($CFG->dirroot . '/mod/coursework/lib.php');
  */
 #[AllowDynamicProperties]
 class submission extends table_base implements renderable {
-
-
     /**
      * Possible value for mdl_submission.finalised field.
      * Submission has never been finalised, can be finalised by changing to 1.
@@ -382,8 +380,14 @@ class submission extends table_base implements renderable {
         }
 
         $fs = get_file_storage();
-        $files = $fs->get_area_files($this->get_context_id(), 'mod_coursework', 'submission',
-            $this->id, "id", false);
+        $files = $fs->get_area_files(
+            $this->get_context_id(),
+            'mod_coursework',
+            'submission',
+            $this->id,
+            "id",
+            false
+        );
 
         $params = [
             'context' => context_module::instance($this->get_coursework()->get_course_module()->id),
@@ -540,9 +544,9 @@ class submission extends table_base implements renderable {
         $allocation = allocation::get_object(
             $courseworkid,
             'allocatableid-allocatabletype-stageidentifier',
-            [$this->get_allocatable()->id(), $this->get_allocatable()->type(), $stageidentifier]);
+            [$this->get_allocatable()->id(), $this->get_allocatable()->type(), $stageidentifier]
+        );
         return $allocation;
-
     }
 
     /**
@@ -601,7 +605,6 @@ class submission extends table_base implements renderable {
         } else {
             return new feedback($feedback, $this);
         }
-
     }
 
     /**
@@ -662,7 +665,6 @@ class submission extends table_base implements renderable {
             &&
             (count($assessorfeedbacks) < $this->get_coursework()->numberofmarkers || $this->any_editable_feedback_exists())
         ) {
-
             return self::PARTIALLY_GRADED;
         }
 
@@ -696,7 +698,6 @@ class submission extends table_base implements renderable {
 
         $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context());
         if (!$this->get_coursework()->blindmarking || $viewanonymous || $this->is_published() || $this->get_coursework()->is_configured_to_have_group_submissions()) {
-
             $fullname = $this->get_allocatable()->name();
 
             $allowed = has_capability('moodle/user:viewdetails', $this->get_context());
@@ -755,7 +756,7 @@ class submission extends table_base implements renderable {
             }
             $this->coursework = coursework::$pool['id'][$this->courseworkid];
             if (!$this->coursework) {
-                throw new coding_exception('Could not find the coursework for submission id '. $this->id);
+                throw new coding_exception('Could not find the coursework for submission id ' . $this->id);
             }
         }
 
@@ -809,7 +810,7 @@ class submission extends table_base implements renderable {
         // the author is the first member of the group
 
         if ($this->is_submission_on_behalf()) {
-            if ( $this->get_coursework()->is_configured_to_have_group_submissions()) {
+            if ($this->get_coursework()->is_configured_to_have_group_submissions()) {
                 $members = groups_get_members($this->allocatableid, 'u.id', 'id');
                 if ($members) {
                     $id = reset($members)->id;
@@ -862,7 +863,6 @@ class submission extends table_base implements renderable {
         $statustext = '';
 
         switch ($this->get_state()) {
-
             case self::NOT_SUBMITTED:
                 $statustext = get_string('statusnotsubmitted', 'coursework');
                 break;
@@ -880,7 +880,7 @@ class submission extends table_base implements renderable {
 
             case self::PARTIALLY_GRADED:
                 if ($this->any_editable_feedback_exists()) {
-                    $statustext = get_string('statusfullygraded', 'coursework'). "<br>";
+                    $statustext = get_string('statusfullygraded', 'coursework') . "<br>";
                     $statustext .= get_string('stilleditable', 'coursework');
                 } else {
                     $statustext = get_string('statuspartiallygraded', 'coursework');
@@ -898,12 +898,12 @@ class submission extends table_base implements renderable {
 
                 $statustext = $this->has_multiple_markers() && $this->sampled_feedback_exists() ? $spanfinalgraded : $spanfinalgradedsingle;
                 if ($this->editable_final_feedback_exist()) {
-                    $statustext .= "<br>". get_string('finalgradestilleditable', 'coursework');
+                    $statustext .= "<br>" . get_string('finalgradestilleditable', 'coursework');
                 }
                 break;
 
             case self::PUBLISHED:
-                $statustext = '<span class="badge badge-success">' .get_string('statusreleased', 'coursework') . '</span>';
+                $statustext = '<span class="badge badge-success">' . get_string('statusreleased', 'coursework') . '</span>';
                 break;
         }
 
@@ -967,7 +967,7 @@ class submission extends table_base implements renderable {
         /**
          * @var table_base $classname
          */
-        $classname = "\\mod_coursework\\models\\".$this->allocatabletype;
+        $classname = "\\mod_coursework\\models\\" . $this->allocatabletype;
         return $classname::get_object($this->allocatableid);
     }
 
@@ -983,7 +983,6 @@ class submission extends table_base implements renderable {
             $group = $this->get_allocatable();
             $cm = $this->coursework->get_course_module();
             $allocatables = $group->get_members($this->coursework->get_context(), $cm);
-
         } else if (!$this->get_coursework()->is_configured_to_have_group_submissions() && $this->allocatabletype == 'user') {
             $allocatables = [$this->get_allocatable()];
         } // If neither, the settings have been changed when they shouldn't have been.
@@ -1049,7 +1048,6 @@ class submission extends table_base implements renderable {
             }
             $this->update_attribute('lastpublished', time());
         }
-
     }
 
     /**
@@ -1140,12 +1138,14 @@ class submission extends table_base implements renderable {
      */
     public function save_files($filesid) {
 
-        file_save_draft_area_files($filesid,
-                                   $this->coursework->get_context_id(),
-                                   'mod_coursework',
-                                   'submission',
-                                   $this->id,
-                                   $this->coursework->get_file_options());
+        file_save_draft_area_files(
+            $filesid,
+            $this->coursework->get_context_id(),
+            'mod_coursework',
+            'submission',
+            $this->id,
+            $this->coursework->get_file_options()
+        );
 
         if (!empty($this->coursework->renamefiles)) {
             $this->rename_files();
@@ -1158,12 +1158,14 @@ class submission extends table_base implements renderable {
     private function get_files() {
         $fs = get_file_storage();
 
-        $submissionfiles = $fs->get_area_files($this->get_context_id(),
-                                                'mod_coursework',
-                                                'submission',
-                                                $this->id,
-                                                "id",
-                                                false);
+        $submissionfiles = $fs->get_area_files(
+            $this->get_context_id(),
+            'mod_coursework',
+            'submission',
+            $this->id,
+            "id",
+            false
+        );
         return $submissionfiles;
     }
 
@@ -1228,7 +1230,6 @@ class submission extends table_base implements renderable {
         return $DB->record_exists('coursework_sample_set_mbrs', ['courseworkid' => $this->courseworkid,
                                                                      'allocatableid' => $this->get_allocatable()->id(),
                                                                      'allocatabletype' => $this->get_allocatable()->type()]);
-
     }
 
     public function max_number_of_feedbacks() {
@@ -1248,7 +1249,6 @@ class submission extends table_base implements renderable {
 
             $count = $DB->get_record_sql($sql, $parameters);
             return $count->total + 1; // we add one as by default 1st stage is always marked
-
         } else { // if samplings are not enabled
             return $this->get_coursework()->get_max_markers();
         }
@@ -1378,7 +1378,6 @@ class submission extends table_base implements renderable {
         }
 
         return  $personaldeadline;
-
     }
 
     /**
@@ -1594,5 +1593,4 @@ class submission extends table_base implements renderable {
     protected function after_destroy() {
         self::remove_cache($this->courseworkid);
     }
-
 }

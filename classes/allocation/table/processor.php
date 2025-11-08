@@ -38,7 +38,6 @@ use mod_coursework\models\user;
  * @package mod_coursework\allocation
  */
 class processor {
-
     /**
      * @var coursework
      */
@@ -55,7 +54,7 @@ class processor {
      * Process form data received from /actions/allocate.php form.
      * @param array $dirtyformdata
      */
-    public function process_data($dirtyformdata  = []) {
+    public function process_data($dirtyformdata = []) {
         $cleandata = $this->clean_data($dirtyformdata);
         $allocatables = $this->coursework->get_allocatables();
 
@@ -104,7 +103,6 @@ class processor {
 
         $cleandata = [];
         foreach ($dirtyformdata as $allocatableid => $dirtyrowsforuser) {
-
             // Should be the id of a student.
             if (!$this->allocatable_id_is_valid(clean_param($allocatableid, PARAM_INT))) {
                 continue;
@@ -157,4 +155,3 @@ class processor {
         }
     }
 }
-

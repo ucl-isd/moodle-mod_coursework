@@ -33,7 +33,6 @@ use mod_coursework\stages\base as stage_base;
  * feedback into a row in the assessor feedbacks table of the grading report.
  */
 class assessor_feedback_row {
-
     /**
      * @var int So we can have a row with no feedback, but still see who is allocated to mark it.
      */
@@ -236,4 +235,3 @@ class assessor_feedback_row {
         return (bool)$this->get_allocation();
     }
 }
-

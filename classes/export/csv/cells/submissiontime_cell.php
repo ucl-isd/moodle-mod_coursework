@@ -28,7 +28,6 @@ use coding_exception;
  * Class submissiontime_cell
  */
 class submissiontime_cell extends cell_base {
-
     /**
      * @param $submission
      * @param $student
@@ -46,7 +45,5 @@ class submissiontime_cell extends cell_base {
      */
     public function get_header($stage) {
         return  get_string('submissiontime', 'coursework');
-
     }
-
 }

@@ -34,7 +34,6 @@ use Behat\Mink\Exception\ExpectationException;
  *
  */
 class mod_coursework_behat_student_page extends mod_coursework_behat_page_base {
-
     public function should_have_two_submission_files() {
 
         $files = $this->getpage()->findAll('css', '.submissionfile');
@@ -57,7 +56,7 @@ class mod_coursework_behat_student_page extends mod_coursework_behat_page_base {
         $numberoffiles = count($files);
 
         if (!$numberoffiles == $expectednumberoffiles) {
-            $message = 'Expected '.$expectednumberoffiles.' feedback files but there were ' . $numberoffiles;
+            $message = 'Expected ' . $expectednumberoffiles . ' feedback files but there were ' . $numberoffiles;
             throw new ExpectationException($message, $this->getsession());
         }
     }

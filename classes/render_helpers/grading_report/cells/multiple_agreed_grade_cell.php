@@ -35,7 +35,6 @@ use pix_icon;
  * Class feedback_cell
  */
 class multiple_agreed_grade_cell extends cell_base {
-
     /**
      * @var stage_base
      */
@@ -88,22 +87,21 @@ class multiple_agreed_grade_cell extends cell_base {
         $iconlink = '';
 
         if ($existingfeedback && $ability->can('edit', $existingfeedback)) {
-
             $feedbackrouteparams = [
                 'feedback' => $finalfeedback,
             ];
             $link = $this->get_router()->get_path('ajax edit feedback', $feedbackrouteparams);
 
-            $iconlink = $OUTPUT->action_icon($link,
-                                             $icon,
-                                             null,
-                                             [
+            $iconlink = $OUTPUT->action_icon(
+                $link,
+                $icon,
+                null,
+                [
                                                  'class' => 'edit_final_feedback',
                                                  'id' => 'edit_final_feedback_' . $rowobject->get_coursework()
-                                                     ->get_allocatable_identifier_hash($rowobject->get_allocatable())]);
-
+                                                     ->get_allocatable_identifier_hash($rowobject->get_allocatable())]
+            );
         } else if ($rowobject->has_submission()) { // New
-
             $feedbackparams = [
                 'submissionid' => $rowobject->get_submission()->id,
                 'assessorid' => $USER->id,
@@ -121,24 +119,26 @@ class multiple_agreed_grade_cell extends cell_base {
                 ];
                 $link = $this->get_router()->get_path('ajax new final feedback', $feedbackrouteparams);
 
-                $iconlink = $OUTPUT->action_link($link,
-                                                 $title,
-                                                 null,
-                                                 ['class' => 'new_final_feedback',
+                $iconlink = $OUTPUT->action_link(
+                    $link,
+                    $title,
+                    null,
+                    ['class' => 'new_final_feedback',
                                                        'id' => 'new_final_feedback_' . $rowobject->get_coursework()
-                                                           ->get_allocatable_identifier_hash($rowobject->get_allocatable())]);
-
+                                                           ->get_allocatable_identifier_hash($rowobject->get_allocatable())]
+                );
             } else if ($existingfeedback && $ability->can('show', $existingfeedback)) {
-
                 $linktitle = get_string('viewfeedback', 'mod_coursework');
                 $linkid = "show_feedback_" . $rowobject->get_coursework()
                     ->get_allocatable_identifier_hash($rowobject->get_allocatable());
                 $link = $this->get_router()
                     ->get_path('show feedback', ['feedback' => $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable())]);
-                $iconlink = $OUTPUT->action_link($link,
-                                                 $linktitle,
-                                                 null,
-                                                 ['class' => 'show_feedback', 'id' => $linkid]);
+                $iconlink = $OUTPUT->action_link(
+                    $link,
+                    $linktitle,
+                    null,
+                    ['class' => 'show_feedback', 'id' => $linkid]
+                );
             }
         }
 
@@ -148,10 +148,12 @@ class multiple_agreed_grade_cell extends cell_base {
 
         if ($finalfeedback !== false) {
             $content .= html_writer::empty_tag('br');
-            if ((!$this->coursework->sampling_enabled() || $rowobject->get_submission()->sampled_feedback_exists()) && ($finalfeedback->get_feedbacks_assessorid() == 0
+            if (
+                (!$this->coursework->sampling_enabled() || $rowobject->get_submission()->sampled_feedback_exists()) && ($finalfeedback->get_feedbacks_assessorid() == 0
                  && $finalfeedback->timecreated == $finalfeedback->timemodified)
-                 || $finalfeedback->lasteditedbyuser == 0) { // if the grade was automatically agreed
-                $content .= "(".get_string('automaticagreement', 'coursework').")";
+                 || $finalfeedback->lasteditedbyuser == 0
+            ) { // if the grade was automatically agreed
+                $content .= "(" . get_string('automaticagreement', 'coursework') . ")";
             } else {
                 $content .= ' by: ' . $finalfeedback->get_assesor_username();
             }
@@ -163,7 +165,7 @@ class multiple_agreed_grade_cell extends cell_base {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options  = []) {
+    public function get_table_header($options = []) {
 
         // Adding this line so that the sortable heading function will make a sortable link unique to the table
         // If tablename is set

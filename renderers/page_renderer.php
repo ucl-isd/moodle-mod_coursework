@@ -43,7 +43,6 @@ use mod_coursework\warnings;
  * Makes the pages
  */
 class mod_coursework_page_renderer extends plugin_renderer_base {
-
     /**
      * @param feedback $feedback
      */
@@ -128,7 +127,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $submiturl = $this->get_router()->get_path('update feedback', ['feedback' => $teacherfeedback]);
         $simpleform = new assessor_feedback_mform(
-            $submiturl, ['feedback' => $teacherfeedback]
+            $submiturl,
+            ['feedback' => $teacherfeedback]
         );
 
         $teacherfeedback->feedbackcomment = [
@@ -138,11 +138,13 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         // Load any files into the file manager.
         $draftitemid = file_get_submitted_draft_itemid('feedback_manager');
-        file_prepare_draft_area($draftitemid,
-                                $teacherfeedback->get_context()->id,
-                                'mod_coursework',
-                                'feedback',
-                                $teacherfeedback->id);
+        file_prepare_draft_area(
+            $draftitemid,
+            $teacherfeedback->get_context()->id,
+            'mod_coursework',
+            'feedback',
+            $teacherfeedback->id
+        );
         $teacherfeedback->feedback_manager = $draftitemid;
 
         $simpleform->set_data($teacherfeedback);
@@ -252,7 +254,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         // This should probably not be in the renderer.
-        if ($coursework->has_individual_autorelease_feedback_enabled() &&
+        if (
+            $coursework->has_individual_autorelease_feedback_enabled() &&
             $coursework->individual_feedback_deadline_has_passed() &&
             !$submission->is_published() && $submission->ready_to_publish()
         ) {
@@ -356,7 +359,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $files = $submission->get_submission_files();
         $objectrenderer = $this->get_object_renderer();
         $template->submission = $objectrenderer->render_submission_files_with_plagiarism_links(
-            new mod_coursework_submission_files($files), false
+            new mod_coursework_submission_files($files),
+            false
         );
 
         $submiturl = $this->get_router()->get_path('create feedback', ['feedback' => $newfeedback]);
@@ -377,7 +381,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $feedbackcomment .= get_string('assessorcomments', 'mod_coursework', $count);
                 $feedbackcomment .= $initialfeedback->feedbackcomment;
                 $feedbackcomment .= '<br>';
-                $count ++;
+                $count++;
             }
 
             $teacherfeedback->feedbackcomment = ['text' => $feedbackcomment];
@@ -456,7 +460,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         echo $html;
         $simpleform->display();
         echo $this->output->footer();
-
     }
 
     /**
@@ -487,7 +490,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         echo $this->output->header();
         $simpleform->display();
         echo $this->output->footer();
-
     }
 
     /**
@@ -700,7 +702,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $html = '<div>';
 
-        $html .= '<p class="small">'. get_string('finalise_button_info', 'mod_coursework') .'</p>';
+        $html .= '<p class="small">' . get_string('finalise_button_info', 'mod_coursework') . '</p>';
 
         $stringname = $coursework->is_configured_to_have_group_submissions() ? 'finalisegroupsubmission' : 'finaliseyoursubmission';
         $finalisesubmissionpath =
@@ -713,7 +715,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= '</div>';
 
         return $html;
-
     }
 
     /**
@@ -774,7 +775,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= $this->output->footer();
 
         return $html;
-
     }
 
     /**
@@ -792,19 +792,18 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $html .= $this->output->header();
 
-        $title = get_string('process'.$csvtype, 'mod_coursework');
+        $title = get_string('process' . $csvtype, 'mod_coursework');
         $html .= html_writer::start_tag('h3');
         $html .= $title;
         $html .= html_writer::end_tag('h3');
         $html .= html_writer::start_tag('p');
-        $html .= get_string('process'.$csvtype.'desc', 'mod_coursework');
+        $html .= get_string('process' . $csvtype . 'desc', 'mod_coursework');
         $html .= html_writer::end_tag('p');
 
         $html .= html_writer::start_tag('p');
 
         if (!empty($processingresults)) {
-
-            $html .= get_string('followingerrors', 'mod_coursework')."<br />";
+            $html .= get_string('followingerrors', 'mod_coursework') . "<br />";
             if (!is_array($processingresults)) {
                 $html .= $processingresults . "<br />";
             } else {
@@ -820,12 +819,11 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $html .= get_string('noallocationerrorsfound', 'mod_coursework');
         }
 
-        $html .= html_writer::tag('p', html_writer::link('/mod/coursework/view.php?id='.$this->page->cm->id, get_string('continuetocoursework', 'coursework')));
+        $html .= html_writer::tag('p', html_writer::link('/mod/coursework/view.php?id=' . $this->page->cm->id, get_string('continuetocoursework', 'coursework')));
 
         $html .= $this->output->footer();
 
         return $html;
-
     }
 
     public function feedback_upload($form) {
@@ -844,7 +842,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= $this->output->footer();
 
         return $html;
-
     }
 
     public function process_feedback_upload($processingresults) {
@@ -868,22 +865,20 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $html .= html_writer::start_tag('p');
 
         if (!empty($processingresults)) {
-
-            $html .= get_string('fileuploadresults', 'mod_coursework')."<br />";
+            $html .= get_string('fileuploadresults', 'mod_coursework') . "<br />";
             foreach ($processingresults as $file => $result) {
-                $html .= get_string('fileuploadresult', 'mod_coursework', ['filename' => $file, 'result' => $result]). "<br />";
+                $html .= get_string('fileuploadresult', 'mod_coursework', ['filename' => $file, 'result' => $result]) . "<br />";
             }
             $html .= html_writer::end_tag('p');
         } else {
             $html .= get_string('nofilesfound', 'mod_coursework');
         }
 
-        $html .= html_writer::tag('p', html_writer::link('/mod/coursework/view.php?id='.$this->page->cm->id, get_string('continuetocoursework', 'coursework')));
+        $html .= html_writer::tag('p', html_writer::link('/mod/coursework/view.php?id=' . $this->page->cm->id, get_string('continuetocoursework', 'coursework')));
 
         $html .= $this->output->footer();
 
         return $html;
-
     }
     /**
      * View a summary listing of all courseworks in the current course.
@@ -955,13 +950,15 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 }
             }
             $gradinginfo = grade_get_grades($course->id, 'mod', 'coursework', $cm->instance, $USER->id);
-            if (isset($gradinginfo->items[0]->grades[$USER->id]) &&
-                !$gradinginfo->items[0]->grades[$USER->id]->hidden ) {
+            if (
+                isset($gradinginfo->items[0]->grades[$USER->id]) &&
+                !$gradinginfo->items[0]->grades[$USER->id]->hidden
+            ) {
                 $grade = $gradinginfo->items[0]->grades[$USER->id]->str_grade;
             } else {
                 $grade = '-';
             }
-            $url = $CFG->wwwroot.'/mod/coursework/view.php';
+            $url = $CFG->wwwroot . '/mod/coursework/view.php';
             $link = "<a href=\"{$url}?id={$coursework->coursemodule->id}\">{$coursework->name}</a>";
             $table->data[] = [
                 'sectionname' => $printsection,
@@ -1037,7 +1034,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $this->page->set_pagelayout('standard');
         $templatedata = (object)[
             'submission' => $objectrenderer->render_submission_files_with_plagiarism_links(
-                new mod_coursework_submission_files($files), false
+                new mod_coursework_submission_files($files),
+                false
             ),
             'title' => get_string('gradingfor', 'coursework', $submission->get_allocatable_name()),
         ];

@@ -31,7 +31,6 @@ use mod_coursework\models\submission;
  * Class assessorgrade_cell
  */
 class assessorgrade_cell extends cell_base {
-
     /**
      * @param submission$submission
      * @param $student
@@ -55,27 +54,22 @@ class assessorgrade_cell extends cell_base {
         $feedback = feedback::find($feedbackparams);
 
         if (($submission->get_agreed_grade() || ($feedback && $ability->can('show', $feedback))) || !$submission->any_editable_feedback_exists() || is_siteadmin($USER->id)) {
-
             if ($this->coursework->is_using_rubric()) {
                 $gradedata = [];
                 $this->get_rubric_scores_gradedata($grade, $gradedata); // multiple parts are handled here
             } else {
                 $gradedata = (!$grade) ? '' : $this->get_actual_grade($grade->grade);
-
             }
-
         } else {
-
             if ($this->coursework->is_using_rubric()) {
                 $criterias = $this->coursework->get_rubric_criteria();
                 foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
-                    $gradedata['assessor'.$stageidentifier.'_'.$criteria['id']] = get_string('grade_hidden_manager', 'mod_coursework');
-                    $gradedata['assessor'.$stageidentifier.'_'.$criteria['id']. 'comment'] = '';
+                    $gradedata['assessor' . $stageidentifier . '_' . $criteria['id']] = get_string('grade_hidden_manager', 'mod_coursework');
+                    $gradedata['assessor' . $stageidentifier . '_' . $criteria['id'] . 'comment'] = '';
                 }
             } else {
                 $gradedata = get_string('grade_hidden_manager', 'mod_coursework');
             }
-
         }
 
         return $gradedata;
@@ -88,22 +82,21 @@ class assessorgrade_cell extends cell_base {
      */
     public function get_header($stage) {
 
-        if ($this->coursework->is_using_rubric() ) {
+        if ($this->coursework->is_using_rubric()) {
             $strings = [];
             $criterias = $this->coursework->get_rubric_criteria();
             foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
-                $strings['assessorgrade'.$stage.'_'.$criteria['id']] = 'Assessor '.$stage.' - '.$criteria['description'];
-                $strings['assessorgrade'.$stage.'_'.$criteria['id'] . 'comment'] = 'Comment for:  Assessor '.$stage.' - '.$criteria['description'];
+                $strings['assessorgrade' . $stage . '_' . $criteria['id']] = 'Assessor ' . $stage . ' - ' . $criteria['description'];
+                $strings['assessorgrade' . $stage . '_' . $criteria['id'] . 'comment'] = 'Comment for:  Assessor ' . $stage . ' - ' . $criteria['description'];
             }
         } else {
             $strings = get_string('assessorgradecsv', 'coursework', $stage);
         }
 
         return  $strings;
-
     }
 
-    public function validate_cell($value, $submissionid, $stageidentifier='', $uploadedgradecells  = []) {
+    public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells = []) {
         global $DB, $PAGE, $USER;
 
         if (empty($value)) {
@@ -115,10 +108,10 @@ class assessorgrade_cell extends cell_base {
         $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
         $submission = submission::find($subdbrecord);
 
-        if (has_any_capability($agreedgradecap, $PAGE->context) && has_any_capability($initialgradecap, $PAGE->context)
+        if (
+            has_any_capability($agreedgradecap, $PAGE->context) && has_any_capability($initialgradecap, $PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context)
         ) {
-
             $errormsg = '';
 
             if (!$this->coursework->is_using_rubric()) {
@@ -127,11 +120,10 @@ class assessorgrade_cell extends cell_base {
                     $errormsg = get_string('valuenotincourseworkscale', 'coursework');
                     if (is_numeric($value)) {
                         // if scale is numeric get max allowed scale
-                        $errormsg .= ' '. get_string('max_cw_mark', 'coursework').' '. $this->coursework->grade;
+                        $errormsg .= ' ' . get_string('max_cw_mark', 'coursework') . ' ' . $this->coursework->grade;
                     }
                 }
             } else {
-
                 // We won't be processing this line if it has no values, empty wont tell us this as it thinks that an array with
                 // Keys isnt. We will use array_filter whhich will return all values from the array if this is empty then we have
                 // Nothing to do
@@ -140,24 +132,19 @@ class assessorgrade_cell extends cell_base {
 
                 // If there are no values we don't need to do anything
                 if (!empty($arrayvalues)) {
-
                     $i = 0;
                     $s = 0;
 
                     $criterias = $this->coursework->get_rubric_criteria();
 
                     foreach ($value as $data) {
-
                         // Check if the value is empty however it can be 0
                         if (empty($data) && $data != 0) {
-
                             $errormsg .= ' ' . get_string('rubric_grade_cannot_be_empty', 'coursework');
-
                         }
 
                         // Only check grades fields that will be even numbered
                         if ($i % 2 == 0) {
-
                             // Get the current criteria
                             $criteria = array_shift($criterias);
 
@@ -171,7 +158,6 @@ class assessorgrade_cell extends cell_base {
                         $i++;
                     }
                 }
-
             }
 
             if (!empty($errormsg)) {
@@ -208,14 +194,11 @@ class assessorgrade_cell extends cell_base {
                 if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('new', $feedback)) {
                     return get_string('nopermissiontoeditgrade', 'coursework');
                 }
-
             } else {
-
                 // This is a new feedback check it against the edit ability checks
                 if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit', $feedback)) {
                     return get_string('nopermissiontoeditgrade', 'coursework');
                 }
-
             }
 
             if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
@@ -223,7 +206,6 @@ class assessorgrade_cell extends cell_base {
                 if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $PAGE->context)) {
                     return get_string('nopermissiontogradesubmission', 'coursework');
                 }
-
             }
 
             if ($this->coursework->allocation_enabled()) {
@@ -235,7 +217,8 @@ class assessorgrade_cell extends cell_base {
                     'stageidentifier' => $stageidentifier,
                 ];
 
-                if (!has_capability('mod/coursework:administergrades', $PAGE->context)
+                if (
+                    !has_capability('mod/coursework:administergrades', $PAGE->context)
                     && !$DB->get_record('coursework_allocation_pairs', $allocationparams)
                 ) {
                     return get_string('nopermissiontogradesubmission', 'coursework');
@@ -243,10 +226,10 @@ class assessorgrade_cell extends cell_base {
             }
 
             // Check for coursework without allocations - with/without samplings
-            if (has_capability('mod/coursework:addinitialgrade', $PAGE->context) && !has_capability('mod/coursework:editinitialgrade', $PAGE->context)
+            if (
+                has_capability('mod/coursework:addinitialgrade', $PAGE->context) && !has_capability('mod/coursework:editinitialgrade', $PAGE->context)
                 && $this->coursework->get_max_markers() > 1 && !$this->coursework->allocation_enabled()
             ) {
-
                 // check how many feedbacks for this submission
                 $feedbacks = $DB->count_records('coursework_feedbacks', ['submissionid' => $submissionid]);
 
@@ -262,13 +245,10 @@ class assessorgrade_cell extends cell_base {
                     return get_string('gradealreadyexists', 'coursework');
                 }
             }
-
         } else if (has_any_capability($agreedgradecap, $PAGE->context)) {
-
             // If you have the add agreed or edit agreed grades capabilities then you may have the grades on your export sheet
             // We will return true as we will ignore them
             return true;
-
         } else {
             return get_string('nopermissiontoimportgrade', 'coursework');
         }
@@ -281,20 +261,17 @@ class assessorgrade_cell extends cell_base {
      * @param $value the value that should be checked to see if it is valid
      * @return bool
      */
-    public function value_in_rubric($criteria,    $value) {
+    public function value_in_rubric($criteria, $value) {
         $valuefound = false;
 
         $levels = $criteria['levels'];
 
-        if (is_numeric($value) ) {
+        if (is_numeric($value)) {
             foreach ($levels as $level) {
-
                 if ((int)$level['score'] == (int)$value) {
-
                     $valuefound = true;
                     break;
                 }
-
             }
         }
 

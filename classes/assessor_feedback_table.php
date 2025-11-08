@@ -31,7 +31,6 @@ use mod_coursework_assessor_feedback_row;
  * Used in the grading report for multiple assessor courseworks.
  */
 class assessor_feedback_table {
-
     /**
      * @var allocatable
      */

@@ -27,5 +27,4 @@ namespace mod_coursework\render_helpers\grading_report\cells;
  * @package mod_coursework\render_helpers\grading_report\cells
  */
 interface allocatable_cell extends cell_interface {
-
 }

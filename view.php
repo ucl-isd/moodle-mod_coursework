@@ -80,8 +80,10 @@ if (!isset($SESSION->displayallstudents[$coursemoduleid])) {
 }
 
 // If a session variable holding page preference for the specific coursework is not set, set default value (0).
-if (isset($SESSION->perpage[$coursemoduleid]) && optional_param('per_page', 0, PARAM_INT) != $SESSION->perpage[$coursemoduleid]
-    && optional_param('per_page', 0, PARAM_INT) != 0) { // prevent blank pages if not in correct page
+if (
+    isset($SESSION->perpage[$coursemoduleid]) && optional_param('per_page', 0, PARAM_INT) != $SESSION->perpage[$coursemoduleid]
+    && optional_param('per_page', 0, PARAM_INT) != 0
+) { // prevent blank pages if not in correct page
     $page = 0;
     $SESSION->page[$coursemoduleid] = $page;
 } else if (!(isset($SESSION->page[$coursemoduleid]))) {
@@ -149,8 +151,10 @@ if (!(isset($SESSION->coursework_groupname_alpha[$coursemoduleid]))) {
 }
 
 // We will use the same defaults as page (above) defaulting to page setting if no specific viewallstudents_page has been set
-if (isset($SESSION->viewallstudents_perpage[$coursemoduleid]) && optional_param('viewallstudents_per_page', 0, PARAM_INT) != $SESSION->viewallstudents_perpage[$coursemoduleid]
-    && optional_param('viewallstudents_per_page', 0, PARAM_INT) != 0) { // prevent blank pages if not in correct page
+if (
+    isset($SESSION->viewallstudents_perpage[$coursemoduleid]) && optional_param('viewallstudents_per_page', 0, PARAM_INT) != $SESSION->viewallstudents_perpage[$coursemoduleid]
+    && optional_param('viewallstudents_per_page', 0, PARAM_INT) != 0
+) { // prevent blank pages if not in correct page
     $viewallstudentspage = 0;
     $SESSION->viewallstudents_page[$coursemoduleid] = $viewallstudentspage;
 } else if (!(isset($SESSION->viewallstudents_page[$coursemoduleid]))) {
@@ -222,31 +226,41 @@ if (!($sorthow === 'ASC' || $sorthow === 'DESC')) {
 $courseworkrecord = new stdClass();
 
 if ($coursemoduleid) {
-    $coursemodule = get_coursemodule_from_id('coursework',
-                                              $coursemoduleid,
-                                              0,
-                                              false,
-                                              MUST_EXIST);
+    $coursemodule = get_coursemodule_from_id(
+        'coursework',
+        $coursemoduleid,
+        0,
+        false,
+        MUST_EXIST
+    );
     $course = $DB->get_record('course', ['id' => $coursemodule->course], '*', MUST_EXIST);
-    $courseworkrecord = $DB->get_record('coursework',
-                                         ['id' => $coursemodule->instance],
-                                         '*',
-                                         MUST_EXIST);
+    $courseworkrecord = $DB->get_record(
+        'coursework',
+        ['id' => $coursemodule->instance],
+        '*',
+        MUST_EXIST
+    );
 } else {
     if ($courseworkid) {
-        $courseworkrecord = $DB->get_record('coursework',
-                                             ['id' => $courseworkid],
-                                             '*',
-                                             MUST_EXIST);
-        $course = $DB->get_record('course',
-                                  ['id' => $courseworkrecord->course],
-                                  '*',
-                                  MUST_EXIST);
-        $coursemodule = get_coursemodule_from_instance('coursework',
-                                                        $courseworkrecord->id,
-                                                        $course->id,
-                                                        false,
-                                                        MUST_EXIST);
+        $courseworkrecord = $DB->get_record(
+            'coursework',
+            ['id' => $courseworkid],
+            '*',
+            MUST_EXIST
+        );
+        $course = $DB->get_record(
+            'course',
+            ['id' => $courseworkrecord->course],
+            '*',
+            MUST_EXIST
+        );
+        $coursemodule = get_coursemodule_from_instance(
+            'coursework',
+            $courseworkrecord->id,
+            $course->id,
+            false,
+            MUST_EXIST
+        );
     } else {
         die('You must specify a course_module ID or an instance ID');
     }
@@ -279,7 +293,6 @@ if ($download && $zipfile = $coursework->pack_files()) {
 }
 
 if ($exportgrades) {
-
     // Headers and data for csv.
     $csvcells = ['name', 'username', 'idnumber', 'email'];
 
@@ -310,18 +323,16 @@ if ($exportgrades) {
     $csvcells[] = 'finalgrade';
 
     $timestamp = date('d_m_y @ H-i');
-    $filename = get_string('finalgradesfor', 'coursework'). $coursework->name .' '.$timestamp;
+    $filename = get_string('finalgradesfor', 'coursework') . $coursework->name . ' ' . $timestamp;
     $csv = new csv($coursework, $csvcells, $filename);
     $csv->export();
-
 }
 
 if ($downloadgradingsheet) {
-
     $csvcells = grading_sheet::cells_array($coursework);
 
     $timestamp = date('d_m_y @ H-i');
-    $filename = get_string('gradingsheetfor', 'coursework'). $coursework->name .' '.$timestamp;
+    $filename = get_string('gradingsheetfor', 'coursework') . $coursework->name . ' ' . $timestamp;
     $gradingsheet = new grading_sheet($coursework, $csvcells, $filename);
     $gradingsheet->export();
 }
@@ -349,7 +360,6 @@ $capabilities = ['addinstance',
                       'grade'];
 
 foreach ($capabilities as $capability) {
-
     if (has_capability('mod/coursework:' . $capability, $PAGE->context)) {
         $canviewstudents = true;
         break;
@@ -368,7 +378,6 @@ $event->trigger();
 if ($coursework->is_configured_to_have_group_submissions()) {
     $sortby = optional_param('sortby', 'groupname', PARAM_ALPHA);
     $viewallstudentssortby = optional_param('viewallstudents_sortby', 'groupname', PARAM_ALPHA);
-
 }
 $params = ['id' => $coursemodule->id,
                 'sortby' => $sortby,
@@ -387,18 +396,17 @@ $PAGE->set_title($coursework->name);
 $PAGE->set_heading($course->shortname);
 
 // Auto publish after the deadline.
-if ($coursework->has_individual_autorelease_feedback_enabled() &&
+if (
+    $coursework->has_individual_autorelease_feedback_enabled() &&
     $coursework->individual_feedback_deadline_has_passed() &&
     $coursework->has_stuff_to_publish()
 ) {
-
     $coursework->publish_grades();
 }
 
 // Create automatic feedback.
 if ($coursework->automaticagreement_enabled()) {
     $coursework->create_automatic_feedback();
-
 }
 
 // Output starts here.
@@ -420,7 +428,6 @@ $html .= $objectrenderer->render(new mod_coursework_coursework($coursework));
 
 // Display the submissions table of all the students.
 if ($canviewstudents) {
-
     // If the resubmit button was pressed (for plagiarism), we need to fire a new event.
     if ($resubmit && $submissionid) {
 
@@ -468,8 +475,16 @@ if ($canviewstudents) {
     }
 
     $html .= $pagerenderer->teacher_grading_page(
-        $coursework, $page, $perpage, $sortby, $sorthow, $group,
-        $courseworkfirstnamealpha, $courseworklastnamealpha, $courseworkgroupnamealpha, $resettable
+        $coursework,
+        $page,
+        $perpage,
+        $sortby,
+        $sorthow,
+        $group,
+        $courseworkfirstnamealpha,
+        $courseworklastnamealpha,
+        $courseworkgroupnamealpha,
+        $resettable
     );
 }
 

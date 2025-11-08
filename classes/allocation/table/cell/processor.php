@@ -35,7 +35,6 @@ use mod_coursework\stages\base as stage_base;
  * @package mod_coursework\allocation\table\cell
  */
 class processor {
-
     /**
      * @var coursework
      */
@@ -57,7 +56,7 @@ class processor {
      * @param stage_base $stage
      * @param array $dataarray incoming data from the allocation form
      */
-    public function __construct($coursework, $allocatable, $stage, $dataarray  = []) {
+    public function __construct($coursework, $allocatable, $stage, $dataarray = []) {
         $this->coursework = $coursework;
         $this->allocatable = $allocatable;
         $this->stage = $stage;
@@ -181,5 +180,4 @@ class processor {
 
         return $DB->record_exists('coursework_sample_set_mbrs', $params);
     }
-
 }

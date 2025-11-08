@@ -31,7 +31,6 @@ use core\event\base;
  * @package mod_coursework\event
  */
 class extension_deleted extends base {
-
     /**
      * Override in subclass.
      *

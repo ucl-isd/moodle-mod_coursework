@@ -29,10 +29,8 @@ use mod_coursework\framework\table_base;
  * @property mixed username
  */
 class framework_user_table extends table_base {
-
     /**
      * @var string
      */
     protected static $tablename = 'user';
-
 }

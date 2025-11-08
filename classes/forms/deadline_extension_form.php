@@ -38,7 +38,6 @@ use moodle_url;
  *
  */
 class deadline_extension_form extends dynamic_form {
-
     /**
      * Coursework object.
      * @var coursework
@@ -106,11 +105,15 @@ class deadline_extension_form extends dynamic_form {
         $this->_form->disabledIf('extended_deadline', 'deleteextension', 'eq', 1);
 
         if (!empty($this->extensionreasons)) {
-            $this->_form->addElement('select',
-                                     'pre_defined_reason',
-                                     get_string('extension_reason',
-                                                'mod_coursework'),
-                $this->extensionreasons);
+            $this->_form->addElement(
+                'select',
+                'pre_defined_reason',
+                get_string(
+                    'extension_reason',
+                    'mod_coursework'
+                ),
+                $this->extensionreasons
+            );
             $this->_form->disabledIf('pre_defined_reason', 'deleteextension', 'eq', 1);
             if ($this->extension) {
                 $this->_form->setDefault('pre_defined_reason', $this->extension->pre_defined_reason);
@@ -122,7 +125,8 @@ class deadline_extension_form extends dynamic_form {
             'maxfiles' => 0, 'maxbytes' => 0, 'noclean' => 0, 'trusttext' => 0, 'autosave' => false,
         ];
         $this->_form->addElement(
-            'editor', 'extra_information',
+            'editor',
+            'extra_information',
             get_string('extra_information', 'mod_coursework'),
             null,
             $editoroptions
@@ -194,7 +198,9 @@ class deadline_extension_form extends dynamic_form {
         if ($this->allocatable->name() ?? false) {
             $titlestringkey = $this->extension->id ?? false ? 'editing' : 'adding';
             $data->title = get_string(
-                "extension_$titlestringkey", 'mod_coursework', $this->allocatable->name()
+                "extension_$titlestringkey",
+                'mod_coursework',
+                $this->allocatable->name()
             );
         }
 
@@ -367,7 +373,6 @@ class deadline_extension_form extends dynamic_form {
                     'warnings' => $warnings,
                 ];
             }
-
         }
         // If we reach this far with no errors, we can update the extension.
         if (empty($errors)) {

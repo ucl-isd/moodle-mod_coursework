@@ -27,7 +27,6 @@
  *
  */
 class mod_coursework_behat_new_extension_page extends mod_coursework_behat_page_base {
-
     /**
      * @param int $time
      * @throws \Behat\Mink\Exception\ElementNotFoundException
@@ -55,5 +54,4 @@ class mod_coursework_behat_new_extension_page extends mod_coursework_behat_page_
     public function submit_form() {
         $this->getpage()->find('css', '#id_submitbutton')->click();
     }
-
 }

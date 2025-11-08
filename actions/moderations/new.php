@@ -26,9 +26,9 @@ global $CFG, $USER;
 
 $submissionid = required_param('submissionid', PARAM_INT);
 $cmid = optional_param('cmid', 0, PARAM_INT);
-$feedbackid = required_param('feedbackid',  PARAM_INT);
+$feedbackid = required_param('feedbackid', PARAM_INT);
 $moderatorid = optional_param('moderatorid', $USER->id, PARAM_INT);
-$stageidentifier = optional_param('stageidentifier', 'uh-oh',  PARAM_RAW);
+$stageidentifier = optional_param('stageidentifier', 'uh-oh', PARAM_RAW);
 
 $params = [
     'submissionid' => $submissionid,

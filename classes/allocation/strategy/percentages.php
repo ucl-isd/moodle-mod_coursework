@@ -36,7 +36,6 @@ use stdClass;
  * Allocates all students equally between teachers.
  */
 class percentages extends base {
-
     /**
      * This is where the core logic of the allocation strategy lives. Given a list of teachers and a student, which teacher
      * is best suited to be the next assessor for this student.
@@ -51,7 +50,6 @@ class percentages extends base {
         $teacherids = $this->list_of_allocatable_teachers_and_their_current_number_of_allocations($teachers, $student);
 
         return $this->get_teacher_with_smallest_number_of_current_allocations($teacherids);
-
     }
 
     /**
@@ -82,14 +80,12 @@ class percentages extends base {
             $html .= get_string('nomoderators', 'mod_coursework');
             $html .= html_writer::end_tag('div');
         } else {
-
             // Get existing settings.
             $settings = $this->get_existing_config_data($strategypurpose);
 
             // Loop to make inputs.
             $htmltable = new html_table();
             foreach ($teachers as $teacher) {
-
                 $row = new html_table_row();
 
                 $currentsetting = false;
@@ -101,7 +97,7 @@ class percentages extends base {
                 }
 
                 $attributes = [
-                    'name' => 'assessorstrategy'.$this->get_name().'['.$teacher->id.']',
+                    'name' => 'assessorstrategy' . $this->get_name() . '[' . $teacher->id . ']',
                     'size' => 3,
                 ];
                 if ($currentsetting) {
@@ -123,7 +119,6 @@ class percentages extends base {
         }
 
         return $html;
-
     }
 
     /**
@@ -137,7 +132,7 @@ class percentages extends base {
 
         // Get the data from the form.
         $name = $this->get_name();
-        $data = optional_param_array('assessorstrategy'.$name, [], PARAM_RAW); // Array[teacherid] => value.
+        $data = optional_param_array('assessorstrategy' . $name, [], PARAM_RAW); // Array[teacherid] => value.
 
         if (!is_array($data)) {
             return true;
@@ -189,7 +184,6 @@ class percentages extends base {
         }
 
         return true;
-
     }
 
     /**
@@ -210,7 +204,6 @@ class percentages extends base {
         $setting = $DB->get_field('coursework_allocation_config', 'value', $params);
 
         return $setting ? $setting : 0; // Default to 0 percent.
-
     }
 
     /**
@@ -244,7 +237,6 @@ class percentages extends base {
     protected function list_of_allocatable_teachers_and_their_current_number_of_allocations($teachers, $student) {
         $teacherids = [];
         foreach ($teachers as $teacher) {
-
             if ($this->teacher_already_has_an_allocation_for_this_allocatable($student, $teacher)) {
                 continue;
             }

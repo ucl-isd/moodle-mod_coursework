@@ -44,7 +44,6 @@ use mod_coursework\models\user;
  * @package mod_coursework\stages
  */
 abstract class base {
-
     /**
      * @var coursework
      */
@@ -109,7 +108,7 @@ abstract class base {
             return;
         }
 
-        if ($this->get_coursework()->assessorallocationstrategy == 'group_assessor' &&  $this->identifier() == 'assessor_1' ) {
+        if ($this->get_coursework()->assessorallocationstrategy == 'group_assessor' &&  $this->identifier() == 'assessor_1') {
             $teacher = $this->get_assessor_from_moodle_course_group($allocatable);
         } else {
             $teacher = $this->get_next_teacher($allocatable);
@@ -352,7 +351,6 @@ abstract class base {
         global $DB;
         $feedback = $this->get_single_feedback($submission);
         if ($feedback) {
-
             $sql = "SELECT *
                     FROM {coursework_mod_agreements}
                     WHERE feedbackid = ?";
@@ -524,7 +522,8 @@ abstract class base {
         $record = assessment_set_membership::get_object(
             $this->coursework->id,
             'allocatableid-allocatabletype-stageidentifier',
-            [$allocatable->id(), $allocatable->type(), $this->stageidentifier]);
+            [$allocatable->id(), $allocatable->type(), $this->stageidentifier]
+        );
         return !empty($record);
     }
 
@@ -660,14 +659,14 @@ abstract class base {
         submission::fill_pool_coursework($courseworkid);
 
         foreach ($allstages as $stage) {
-
             // if coursework has sampling enabled, each stage must be checked if it uses sampling
             if ($this->get_coursework()->sampling_enabled()) {
-
                 $submission = submission::get_object($courseworkid, 'allocatableid-allocatabletype', [$allocatable->id(), $allocatable->type()]);
 
-                if (count($submission->get_assessor_feedbacks()) >= $submission->max_number_of_feedbacks()
-                    && $submission->sampled_feedback_exists()) {
+                if (
+                    count($submission->get_assessor_feedbacks()) >= $submission->max_number_of_feedbacks()
+                    && $submission->sampled_feedback_exists()
+                ) {
                     break;
                 }
             }
@@ -784,7 +783,8 @@ abstract class base {
             'class' => 'assessor_id_dropdown',
         ];
 
-        if ($this->identifier() != 'assessor_1' && !$this->currently_allocated_assessor($allocatable)
+        if (
+            $this->identifier() != 'assessor_1' && !$this->currently_allocated_assessor($allocatable)
             && $this->coursework->sampling_enabled() && !$this->allocatable_is_in_sample($allocatable)
         ) {
             $htmlattributes['disabled'] = 'disabled';
@@ -803,11 +803,12 @@ abstract class base {
 
         $selected = $this->selected_allocation_in_session($dropdownname);
 
-        $assessordropdown = html_writer::select($this->assessor_dropdown_options,
-                                                 $dropdownname,
-                                                 $selected,
-                                                  $optionfornothingchosenyet,
-                                                  $htmlattributes
+        $assessordropdown = html_writer::select(
+            $this->assessor_dropdown_options,
+            $dropdownname,
+            $selected,
+            $optionfornothingchosenyet,
+            $htmlattributes
         );
 
         return $assessordropdown;
@@ -829,11 +830,13 @@ abstract class base {
 
         $selected = $this->selected_allocation_in_session($dropdownname);
 
-        return  $moderatordropdown = html_writer::select($this->potential_moderators_as_options_array(),
+        return  $moderatordropdown = html_writer::select(
+            $this->potential_moderators_as_options_array(),
             'allocatables[' . $allocatable->id . '][moderator][assessor_id]',
             $selected,
             $optionfornothingchosenyet,
-            $htmlattributes);
+            $htmlattributes
+        );
     }
 
     /**
@@ -915,15 +918,12 @@ abstract class base {
         $cm = $this->coursework->get_course_module();
 
         if (!empty($SESSION->coursework_allocationsessions[$cm->id])) {
-
             if (!empty($SESSION->coursework_allocationsessions[$cm->id][$dropdownname])) {
                 return  $SESSION->coursework_allocationsessions[$cm->id][$dropdownname];
             }
-
         }
 
         return  '';
-
     }
 
     public function get_assessor_from_moodle_course_group($allocatable) {

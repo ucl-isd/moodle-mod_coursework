@@ -28,7 +28,6 @@ use mod_coursework\user_row;
  * Interface cell_interface makes sure that all of the grading report cells are the same.
  */
 interface cell_interface {
-
     /**
      * @param user_row $rowobject
      * @return string
@@ -39,7 +38,7 @@ interface cell_interface {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options  = []);
+    public function get_table_header($options = []);
 
     /**
      * @return string

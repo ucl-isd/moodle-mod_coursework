@@ -40,7 +40,6 @@ require_once($CFG->dirroot . '/mod/coursework/lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class generator_test extends \advanced_testcase {
-
     /**
      * Sets things up for every test. We want all to clean up after themselves.
      */
@@ -86,11 +85,13 @@ final class generator_test extends \advanced_testcase {
         $this->assertEquals(coursework::find($coursework)->get_coursemodule_id(), $context->instanceid);
 
         // Test gradebook integration using low level DB access - DO NOT USE IN PLUGIN CODE!
-        $gitem = $DB->get_record('grade_items',
-                                 ['courseid' => $course->id,
+        $gitem = $DB->get_record(
+            'grade_items',
+            ['courseid' => $course->id,
                                        'itemtype' => 'mod',
                                        'itemmodule' => 'coursework',
-                                       'iteminstance' => $coursework->id]);
+            'iteminstance' => $coursework->id]
+        );
         $this->assertNotEmpty($gitem);
         $this->assertEquals(100, $gitem->grademax);
         $this->assertEquals(0, $gitem->grademin);
@@ -129,7 +130,6 @@ final class generator_test extends \advanced_testcase {
         $this->assertEquals(5, $allocation->allocatableid);
         $this->assertEquals(65, $allocation->courseworkid);
         $this->assertEquals(0, $allocation->ismanual);
-
     }
 
     /**
@@ -188,5 +188,4 @@ final class generator_test extends \advanced_testcase {
         $this->assertEquals($coursework->id, $submission->courseworkid);
         $this->assertEquals($user->id, $submission->userid);
     }
-
 }

@@ -30,7 +30,6 @@ use mod_coursework\allocation\allocatable;
  * Makes sure the renderer can use the row to get user details.
  */
 interface user_row {
-
     public function get_allocatable_id();
 
     public function get_user_name();
@@ -45,5 +44,4 @@ interface user_row {
      * @return allocatable
      */
     public function get_allocatable();
-
 }

@@ -28,7 +28,6 @@ use coding_exception;
  * Class group_cell
  */
 class group_cell extends cell_base {
-
     /**
      * @param $submission
      * @param $group

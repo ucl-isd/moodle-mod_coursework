@@ -37,7 +37,6 @@ use mod_coursework\render_helpers\grading_report\sub_rows\sub_rows_interface;
  * Renderable component containing all the data needed to display the grading report
  */
 class grading_report {
-
     // Added constants to determine in what manner the report is loaded.
     const MODE_GET_ALL = 1;
     const MODE_GET_FIRST_RECORDS = 2;
@@ -169,7 +168,6 @@ class grading_report {
         $desc = $this->options['sorthow'] == 'DESC';
 
         switch (true) {
-
             case $afield == $bfield:
                 $result = 0;
                 break;
@@ -366,7 +364,6 @@ class grading_report {
             $participantsfound = 0;
 
             foreach ($participants as $key => $participant) {
-
                 // handle 'Group mode' - unset groups/individuals thaat are not in the chosen group
                 if (!empty($options['group']) && $options['group'] != -1) {
                     if ($this->coursework->is_configured_to_have_group_submissions()) {
@@ -423,14 +420,15 @@ class grading_report {
                 if (!empty($rowcount) && $participantsfound >= $rowcount) {
                     break;
                 }
-
             }
             // Sort the rows.
             $methodname = 'sort_by_' . $options['sortby'];
             if (method_exists($this, $methodname)) {
-                usort($rows,
+                usort(
+                    $rows,
                     [$this,
-                        $methodname]);
+                    $methodname]
+                );
             }
 
             // Some will have submissions and therefore data fields. Others will have those fields null.
@@ -462,5 +460,4 @@ class grading_report {
     public function get_options() {
         return $this->options;
     }
-
 }

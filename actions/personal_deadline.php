@@ -57,7 +57,6 @@ if ($selectedtype != 'unfinalise') {
     $controller = new mod_coursework\controllers\personaldeadlines_controller($params);
     $controller->new_personaldeadline();
 } else {
-
     if (!has_capability('mod/coursework:revertfinalised', $PAGE->context)) {
         $message = 'You do not have permission to revert submissions';
         redirect(new moodle_url('mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]), $message);

@@ -32,7 +32,6 @@ use mod_coursework\models\submission;
  * Class agreedfeedback_cell
  */
 class agreedfeedback_cell extends cell_base {
-
     /**
      * @param submission$submission
      * @param $student
@@ -63,7 +62,7 @@ class agreedfeedback_cell extends cell_base {
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells  = []) {
+    public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells = []) {
         global $DB, $PAGE, $USER;
         $stageidentfinal = 'final_agreed_1';
         $agreedgradecap = [
@@ -71,9 +70,10 @@ class agreedfeedback_cell extends cell_base {
             'mod/coursework:addallocatedagreedgrade', 'mod/coursework:editallocatedagreedgrade',
         ];
 
-        if (has_any_capability($agreedgradecap, $PAGE->context)
-            || has_capability('mod/coursework:administergrades', $PAGE->context)) {
-
+        if (
+            has_any_capability($agreedgradecap, $PAGE->context)
+            || has_capability('mod/coursework:administergrades', $PAGE->context)
+        ) {
             $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
             $submission = submission::find($subdbrecord);
 
@@ -112,9 +112,11 @@ class agreedfeedback_cell extends cell_base {
                 $newfeedback = feedback::build($feedbackparams);
 
                 // This is a new feedback check it against the new ability checks.
-                if (!has_capability('mod/coursework:administergrades', $PAGE->context)
+                if (
+                    !has_capability('mod/coursework:administergrades', $PAGE->context)
                     && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context)
-                    && !$ability->can('new', $newfeedback)) {
+                    && !$ability->can('new', $newfeedback)
+                ) {
                     return get_string('nopermissiontogradesubmission', 'coursework');
                 }
             } else {

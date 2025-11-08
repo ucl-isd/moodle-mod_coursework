@@ -27,7 +27,7 @@ use mod_coursework\forms\choose_student_for_submission_mform;
 use mod_coursework\models\coursework;
 use mod_coursework\models\user;
 
-require_once(dirname(__FILE__).'/../../../config.php');
+require_once(dirname(__FILE__) . '/../../../config.php');
 
 global $CFG, $DB, $PAGE, $OUTPUT;
 
@@ -85,8 +85,14 @@ $submitform->handle($coursework);
 // Add any existing files if they're there.
 if (!$submission->persisted()) {
     $draftitemid = file_get_submitted_draft_itemid('submission');
-    file_prepare_draft_area($draftitemid, $PAGE->context->id, 'mod_coursework', 'submission', $submission->id,
-                            $coursework->get_file_options());
+    file_prepare_draft_area(
+        $draftitemid,
+        $PAGE->context->id,
+        'mod_coursework',
+        'submission',
+        $submission->id,
+        $coursework->get_file_options()
+    );
     $submission->submission_manager = $draftitemid;
     $submitform->set_data($submission);
 }

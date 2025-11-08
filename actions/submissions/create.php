@@ -38,8 +38,10 @@ $submissionid = optional_param('submissionid', 0, PARAM_INT);
 $finalised = (bool)optional_param('finalisebutton', 0, PARAM_TEXT);
 
 if (!in_array($allocatabletype, ['user', 'group'])) {
-    throw new access_denied(coursework::find($courseworkid),
-                                                       'Bad alloctable type');
+    throw new access_denied(
+        coursework::find($courseworkid),
+        'Bad alloctable type'
+    );
 }
 
 $params = [

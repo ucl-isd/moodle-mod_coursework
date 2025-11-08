@@ -34,7 +34,6 @@ require_once($CFG->dirroot . '/mod/coursework/tests/behat/pages/page_base.php');
  *
  */
 class mod_coursework_behat_login_page extends mod_coursework_behat_page_base {
-
     public function load() {
         $this->getcontext()->visit_page('login');
     }
@@ -63,9 +62,7 @@ class mod_coursework_behat_login_page extends mod_coursework_behat_page_base {
             $this->should_have_text('Log out');
         } catch (ExpectationException $e) {
             $this->getcontext()->show_me_the_page();
-            throw new ExpectationException('User '.$user->username.' could not be logged in', $this->getsession());
+            throw new ExpectationException('User ' . $user->username . ' could not be logged in', $this->getsession());
         }
-
     }
-
 }

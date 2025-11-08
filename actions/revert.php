@@ -27,7 +27,7 @@ use core\output\notification;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
 
-require_once(dirname(__FILE__).'/../../../config.php');
+require_once(dirname(__FILE__) . '/../../../config.php');
 
 global $DB, $PAGE, $CFG;
 
@@ -52,7 +52,9 @@ if (!has_capability('mod/coursework:revertfinalised', $PAGE->context)) {
 if ($submission->is_late() && !$coursework->allow_late_submissions()) {
     redirect(
         $url,
-        get_string('extendbeforerevert', 'coursework'), null, notification::NOTIFY_ERROR
+        get_string('extendbeforerevert', 'coursework'),
+        null,
+        notification::NOTIFY_ERROR
     );
 }
 

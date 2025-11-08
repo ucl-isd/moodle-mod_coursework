@@ -45,7 +45,6 @@ use mod_coursework_coursework;
  */
 #[AllowDynamicProperties]
 class deadline_extension extends table_base {
-
     /**
      * @var coursework
      */
@@ -208,7 +207,11 @@ class deadline_extension extends table_base {
         $record = $DB->get_record(self::$tablename, ['id' => $this->id]);
         if ($record) {
             $cm = get_coursemodule_from_instance(
-                'coursework', $this->coursework->id, 0, false, MUST_EXIST
+                'coursework',
+                $this->coursework->id,
+                0,
+                false,
+                MUST_EXIST
             );
             $DB->delete_records(self::$tablename, ['id' => $this->id]);
             self::after_destroy();

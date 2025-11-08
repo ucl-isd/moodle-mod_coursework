@@ -27,7 +27,6 @@ namespace mod_coursework\event;
 use core\event\base;
 
 class coursework_plagiarism_flag_updated extends base {
-
     /**
      * Init method.
      *
@@ -39,5 +38,4 @@ class coursework_plagiarism_flag_updated extends base {
         $this->data['edulevel'] = self::LEVEL_TEACHING;
         $this->data['objecttable'] = 'coursework';
     }
-
 }

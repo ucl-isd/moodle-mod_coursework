@@ -43,7 +43,6 @@ use stdClass;
  * need to be included in the set e.g. lowest 40%.
  */
 abstract class moderation_set_rule extends table_base implements renderable {
-
     /**
      * @var string DB table this class relates to.
      */
@@ -167,9 +166,9 @@ abstract class moderation_set_rule extends table_base implements renderable {
      */
     public function save_form_data() {
 
-        $upperlimit = optional_param('rule_'.self::get_name().'_upperlimit', '', PARAM_INT);
-        $lowerlimit = optional_param('rule_'.self::get_name().'_lowerlimit', '', PARAM_INT);
-        $minimum = optional_param('rule_'.self::get_name().'_minimum', '', PARAM_INT);
+        $upperlimit = optional_param('rule_' . self::get_name() . '_upperlimit', '', PARAM_INT);
+        $lowerlimit = optional_param('rule_' . self::get_name() . '_lowerlimit', '', PARAM_INT);
+        $minimum = optional_param('rule_' . self::get_name() . '_minimum', '', PARAM_INT);
 
         // Validate.
         // Make sure we get a percentage as a whole number.
@@ -183,10 +182,11 @@ abstract class moderation_set_rule extends table_base implements renderable {
         $cleanminimum = min($minimum, 100);
 
         // TODO error message for duff data.
-        if ($upperlimit !== '' && $cleanupperlimit !== 0 &&
+        if (
+            $upperlimit !== '' && $cleanupperlimit !== 0 &&
             $lowerlimit !== '' && $cleanlowerlimit !== 0 &&
-            $upperlimit > $lowerlimit) {
-
+            $upperlimit > $lowerlimit
+        ) {
             $this->rulename = self::get_name();
             $this->upperlimit = $cleanupperlimit;
             $this->lowerlimit = $cleanlowerlimit;

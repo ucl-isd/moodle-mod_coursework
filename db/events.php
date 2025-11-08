@@ -64,4 +64,3 @@ $observers = [
         'callback' => 'mod_coursework_observer::remove_teacher_from_dropdown_when_unenrolled',
     ],
 ];
-

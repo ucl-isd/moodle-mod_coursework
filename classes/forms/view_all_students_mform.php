@@ -29,10 +29,9 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot.'/lib/formslib.php');
+require_once($CFG->dirroot . '/lib/formslib.php');
 
 class view_all_students_mform extends moodleform {
-
     public function definition() {
 
         $this->_form->addElement('hidden', 'id', $this->_customdata['cmid']);
@@ -43,7 +42,6 @@ class view_all_students_mform extends moodleform {
         $this->_form->addElement('submit', 'displayallstudentbutton', $buttontext);
         $this->_form->addElement('hidden', 'displayallstudents', $hiddenvalue);
         $this->_form->setType('displayallstudents', PARAM_INT);
-
     }
 
     /**
@@ -54,5 +52,4 @@ class view_all_students_mform extends moodleform {
     public function display() {
         return $this->_form->toHtml();
     }
-
 }

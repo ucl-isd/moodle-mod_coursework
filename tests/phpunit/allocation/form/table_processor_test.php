@@ -41,7 +41,6 @@ use mod_coursework\models\coursework;
  * @group mod_coursework
  */
 final class table_processor_test extends \advanced_testcase {
-
     use test_helpers\factory_mixin;
 
     public function setUp(): void {
@@ -86,7 +85,6 @@ final class table_processor_test extends \advanced_testcase {
         ];
         $allocations = $DB->get_records('coursework_allocation_pairs', $params);
         $this->assertEquals(2, count($allocations));
-
     }
 
     public function test_process_rows_sets_the_stageidentifiers_for_new_assessor_allocation(): void {
@@ -162,7 +160,8 @@ final class table_processor_test extends \advanced_testcase {
         ];
         $records = $DB->get_records('coursework_allocation_pairs', $params);
         $this->assertEquals(
-            1, count($records),
+            1,
+            count($records),
             'Too many allocations ' . json_encode($records)
         );
         $this->assertEquals($this->otherteacher->id, reset($records)->assessorid, 'Wrong teacher id');

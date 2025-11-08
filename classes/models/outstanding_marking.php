@@ -25,7 +25,6 @@ namespace mod_coursework\models;
 use context_course;
 
 class outstanding_marking {
-
     /**
      * @param $cwkrecord
      * @param $userid
@@ -38,17 +37,12 @@ class outstanding_marking {
         $initialsubmissions = [];
 
         if ($this->should_get_to_mark_initial_grade_info($coursework->id, $userid)) {
-
             if (!$coursework->has_multiple_markers()) {
                 $initialsubmissions = $this->get_single_marker_initial_grade_submissions_to_mark($coursework->id, $userid, $coursework->allocation_enabled());
-
             } else if ($coursework->sampling_enabled() && !$coursework->allocation_enabled()) {
-
                 $initialsubmissions = $this->get_multiple_to_mark_sampled_initial_grade_submissions($coursework->id, $userid);
-
             } else {
                 $initialsubmissions = $this->get_multiple_to_mark_initial_grade_submissions($coursework->id, $userid, $coursework->get_max_markers(), $coursework->allocation_enabled());
-
             }
         }
 
@@ -85,7 +79,7 @@ class outstanding_marking {
      * @param bool $allocationenabled
      * @return array
      */
-    private function get_single_marker_initial_grade_submissions_to_mark($courseworkid, $userid=false, $allocationenabled=false) {
+    private function get_single_marker_initial_grade_submissions_to_mark($courseworkid, $userid = false, $allocationenabled = false) {
 
         global  $DB;
 
@@ -318,6 +312,5 @@ class outstanding_marking {
         $userhasagreedgradecapability = $this->has_agreed_grade($coursework->get_course()->id, $userid);
 
         return  $userhasagreedgradecapability;
-
     }
 }

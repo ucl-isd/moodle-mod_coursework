@@ -34,7 +34,6 @@ use mod_coursework\models\coursework;
  * @group mod_coursework
  */
 final class auto_allocator_test extends \advanced_testcase {
-
     use test_helpers\factory_mixin;
 
     public function setUp(): void {
@@ -76,7 +75,6 @@ final class auto_allocator_test extends \advanced_testcase {
             'allocatabletype' => 'user',
         ];
         $this->assertEquals(1, $DB->count_records('coursework_allocation_pairs', $params));
-
     }
 
     public function test_process_allocations_does_not_delete_other_coursework_allocations(): void {

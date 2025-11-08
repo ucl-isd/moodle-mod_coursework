@@ -30,7 +30,6 @@ use mod_coursework\models\feedback;
  * Represents the files a student has submitted.
  */
 class feedback_files extends files {
-
     /**
      * @var feedback
      */

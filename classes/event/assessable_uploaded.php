@@ -25,7 +25,6 @@ use moodle_url;
 use stdClass;
 
 class assessable_uploaded extends \core\event\assessable_uploaded {
-
     /**
      * Legacy event files.
      *

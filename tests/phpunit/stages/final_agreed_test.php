@@ -26,7 +26,6 @@ namespace mod_coursework;
  * @group mod_coursework
  */
 final class final_agreed_test extends \advanced_testcase {
-
     use test_helpers\factory_mixin;
 
     public function setUp(): void {
@@ -48,7 +47,6 @@ final class final_agreed_test extends \advanced_testcase {
         $this->create_a_submission_for_the_student();
 
         $this->assertFalse($stage->prerequisite_stages_have_feedback($student));
-
     }
 
     public function test_prerequisite_stages_is_false_with_one_assessor_feedback(): void {
@@ -82,5 +80,4 @@ final class final_agreed_test extends \advanced_testcase {
 
         $this->assertTrue($stage->prerequisite_stages_have_feedback($student));
     }
-
 }

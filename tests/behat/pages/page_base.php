@@ -30,7 +30,6 @@ use Behat\Mink\Exception\ExpectationException;
  * use lives in this base class.
  */
 class mod_coursework_behat_page_base {
-
     /**
      * @var behat_mod_coursework
      */
@@ -79,9 +78,8 @@ class mod_coursework_behat_page_base {
 
         $pagetext = $this->getpage()->getText();
         if (substr_count($pagetext, $text) == 0) {
-            throw new ExpectationException('Page did not have text "'.$text.'"', $this->getsession());
+            throw new ExpectationException('Page did not have text "' . $text . '"', $this->getsession());
         }
-
     }
 
     /**
@@ -144,7 +142,7 @@ class mod_coursework_behat_page_base {
         }
 
         if (empty($ok)) {
-            $message = 'Tried to click a thing that is not there: ' . $thingcss. ' '. $text;
+            $message = 'Tried to click a thing that is not there: ' . $thingcss . ' ' . $text;
             throw new ExpectationException($message, $this->getsession());
         }
     }

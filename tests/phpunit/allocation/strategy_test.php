@@ -27,7 +27,6 @@ namespace mod_coursework;
  * @group mod_coursework
  */
 final class strategy_test extends \advanced_testcase {
-
     /**
      * @var \mod_coursework\models\coursework
      */
@@ -74,7 +73,5 @@ final class strategy_test extends \advanced_testcase {
         // Check that there are now three allocations.
 
         // Check that the original one is still OK.
-
     }
-
 }

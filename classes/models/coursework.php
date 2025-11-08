@@ -85,7 +85,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
 require_once($CFG->libdir . '/gradelib.php');
-require_once($CFG->dirroot.'/grade/grading/lib.php');
+require_once($CFG->dirroot . '/grade/grading/lib.php');
 
 /**
  * Class representing a coursework instance.
@@ -98,7 +98,6 @@ require_once($CFG->dirroot.'/grade/grading/lib.php');
  */
 #[AllowDynamicProperties]
 class coursework extends table_base {
-
     /**
      * Event type for due or extension dates in mdl_event.
      */
@@ -463,7 +462,6 @@ class coursework extends table_base {
 
         $modinfo = get_fast_modinfo($this->get_course_id());
         return $this->coursemodule = $modinfo->get_cm($coursemodule->id);
-
     }
 
     /**
@@ -629,7 +627,6 @@ class coursework extends table_base {
         }
 
         return $allusers;
-
     }
 
     /**
@@ -690,7 +687,7 @@ class coursework extends table_base {
     public function get_file_options() {
         global $CFG;
 
-        require_once($CFG->dirroot. '/repository/lib.php');
+        require_once($CFG->dirroot . '/repository/lib.php');
 
         $turnitinenabled = $this->tii_enabled();
 
@@ -720,7 +717,7 @@ class coursework extends table_base {
                     continue;
                 }
                 if (strpos($filetype, '.') === false) {
-                    $filetype = '.' .$filetype; // Add dot if not there
+                    $filetype = '.' . $filetype; // Add dot if not there
                 } else {
                     $filetype = strrchr($filetype, '.'); // Remove leading characters e.g. *.doc => .doc
                 }
@@ -787,7 +784,7 @@ class coursework extends table_base {
             return $this->generalfeedback;
         } else {
             if ($CFG->coursework_generalfeedback) {
-                return strtotime('+ '.$CFG->coursework_generalfeedback.' weeks', $this->deadline);
+                return strtotime('+ ' . $CFG->coursework_generalfeedback . ' weeks', $this->deadline);
             } else { // If site setting is 0.
                 return strtotime('+ 2 weeks', $this->deadline);
             }
@@ -945,8 +942,10 @@ class coursework extends table_base {
 
         $context = context_module::instance($this->get_coursemodule_id());
 
-        $submissions = $DB->get_records('coursework_submissions',
-                                        ['courseworkid' => $this->id, 'finalisedstatus' => submission::FINALISED_STATUS_FINALISED]);
+        $submissions = $DB->get_records(
+            'coursework_submissions',
+            ['courseworkid' => $this->id, 'finalisedstatus' => submission::FINALISED_STATUS_FINALISED]
+        );
         if (!$submissions) {
             return false;
         }
@@ -958,14 +957,18 @@ class coursework extends table_base {
         $submissions = $gradingsheet->get_submissions();
 
         foreach ($submissions as $submission) {
-
             // If allocations are in use, then we don't supply files that are not allocated.
             $submission = submission::find($submission);
 
-            $files = $fs->get_area_files($context->id, 'mod_coursework', 'submission',
-                                         $submission->id, "id", false);
+            $files = $fs->get_area_files(
+                $context->id,
+                'mod_coursework',
+                'submission',
+                $submission->id,
+                "id",
+                false
+            );
             foreach ($files as $f) {
-
                 $filename = basename($f->get_filename());
 
                 $foldername = '';
@@ -981,14 +984,14 @@ class coursework extends table_base {
 
                 $foldername .= $this->get_username_hash($submission->get_allocatable()->id());
 
-                $filename = $foldername.'/'.$filename;
+                $filename = $foldername . '/' . $filename;
 
                 $filesforzipping[$filename] = $f;
             }
         }
 
         // Create path for new zip file.
-        $tempzip = tempnam($CFG->dataroot.'/temp/', 'ocm_');
+        $tempzip = tempnam($CFG->dataroot . '/temp/', 'ocm_');
         // Zip files.
         $zipper = new zip_packer();
         if ($zipper->archive_to_pathname($filesforzipping, $tempzip)) {
@@ -1141,7 +1144,7 @@ class coursework extends table_base {
      * @return void
      */
     public function save_allocation_strategy_options($shortname) {
-        $classname = '\mod_coursework\allocation\strategy\\'.$shortname;
+        $classname = '\mod_coursework\allocation\strategy\\' . $shortname;
 
         $strategy = new $classname($this);
 
@@ -1157,7 +1160,6 @@ class coursework extends table_base {
     public function get_user_deadline($userid) {
 
         return $this->deadline;
-
     }
 
     /**
@@ -1201,7 +1203,7 @@ class coursework extends table_base {
      * @param allocatable $allocatable
      * @return bool
      */
-    public function assessor_has_any_allocation_for_student($allocatable, $userid=false) {
+    public function assessor_has_any_allocation_for_student($allocatable, $userid = false) {
 
         global $DB, $USER;
 
@@ -1291,17 +1293,14 @@ class coursework extends table_base {
         $submissions = $this->get_finalised_submissions();
 
         foreach ($submissions as $submission) {
-
             $stageidentifier = ($this->has_multiple_markers()) ? 'final_agreed_1' : 'assessor_1';
             $submission = submission::find($submission);
             if (!$feedback = $submission->get_assessor_feedback_by_stage($stageidentifier)) {
                 $needsgrading[] = $submission;
             }
-
         }
 
         return $needsgrading;
-
     }
 
     /**
@@ -1385,7 +1384,7 @@ class coursework extends table_base {
      * @param int $userid
      * @return string
      */
-    public static function get_name_hash($id, $userid, $time=1440000609) {
+    public static function get_name_hash($id, $userid, $time = 1440000609) {
         if ($id < 1) {
             return '';
         }
@@ -1491,7 +1490,6 @@ class coursework extends table_base {
         }
 
         return false;
-
     }
 
     /**
@@ -1521,7 +1519,7 @@ class coursework extends table_base {
         submission::fill_pool_coursework($this->id);
         $alreadyfinalised = submission::$pool[$this->id]['finalisedstatus'][submission::FINALISED_STATUS_FINALISED] ?? [];
         foreach ($alreadyfinalised as $submission) {
-            unset ($students[$submission->userid]);
+            unset($students[$submission->userid]);
         }
 
         return $students;
@@ -1568,7 +1566,6 @@ class coursework extends table_base {
                AND rulename LIKE '%grade%'
         ";
         if ($DB->record_exists_sql($sql, $params)) {
-
             // Re-do it.
             $manager = $this->get_allocation_manager();
             $manager->auto_generate_moderation_set();
@@ -1679,11 +1676,11 @@ class coursework extends table_base {
          */
         $grades = grade_get_grades($this->get_course_id(), 'mod', 'coursework', $this->id, $userid);
 
-        if (isset($grades->items[0]->grades[$userid]) &&
+        if (
+            isset($grades->items[0]->grades[$userid]) &&
             isset($grades->items[0]->grades[$userid]->grade) &&
             $grades->items[0]->grades[$userid]->grade != -1
         ) {
-
             return true;
         }
         return false;
@@ -1735,7 +1732,6 @@ class coursework extends table_base {
         }
         $group = $DB->get_record_sql($sql, $params);
         return group::find($group);
-
     }
 
     /**
@@ -1751,7 +1747,6 @@ class coursework extends table_base {
         }
 
         return $this->get_allocatable_submission($allocatable);
-
     }
 
     /**
@@ -1981,7 +1976,6 @@ class coursework extends table_base {
             }
         }
         return array_unique($assessors);
-
     }
 
     public function disable_general_feedback() {
@@ -2050,7 +2044,6 @@ class coursework extends table_base {
             ];
             return $DB->record_exists_sql($sql, $params);
         } else {
-
             $sql = "SELECT 1
                       FROM {groups_members} m
                 INNER JOIN {groups} g
@@ -2059,9 +2052,11 @@ class coursework extends table_base {
                        AND g.courseid = :courseid
                 ";
 
-            return $DB->record_exists_sql($sql,
-                                          ['userid' => $student->id,
-                                                'courseid' => $this->get_course()->id]);
+            return $DB->record_exists_sql(
+                $sql,
+                ['userid' => $student->id,
+                'courseid' => $this->get_course()->id]
+            );
         }
     }
 
@@ -2180,7 +2175,6 @@ class coursework extends table_base {
     public function marking_stages() {
 
         if (empty($this->stages)) {
-
             for ($i = 1; $i <= $this->get_max_markers(); $i++) {
                 $identifier = 'assessor_' . $i;
                 $this->stages[$identifier] = new assessor($this, $identifier);
@@ -2194,7 +2188,6 @@ class coursework extends table_base {
             if ($this->moderation_agreement_enabled()) {
                 $identifier = 'moderator';
                 $this->stages[$identifier] = new moderator($this, $identifier);
-
             }
         }
 
@@ -2259,10 +2252,12 @@ class coursework extends table_base {
     final public static function get_image($text, $imagename) {
         global $CFG;
         $url = $CFG->wwwroot . '/theme/image.php?image=t/' . $imagename;
-        return html_writer::empty_tag('img',
-                                      ['alt' => $text,
+        return html_writer::empty_tag(
+            'img',
+            ['alt' => $text,
                                             'title' => $text,
-                                            'src' => $url]);
+            'src' => $url]
+        );
     }
 
     /**
@@ -2309,9 +2304,7 @@ class coursework extends table_base {
                 }
                 $allocatables[$group->id] = $group;
             }
-
         } else {
-
             $allocatables = $this->get_students();
         }
         return $allocatables;
@@ -2424,15 +2417,18 @@ class coursework extends table_base {
     public function get_finalised_submissions() {
         global $DB;
 
-        $submissions = $DB->get_records('coursework_submissions',
-            ['courseworkid' => $this->id, 'finalisedstatus' => submission::FINALISED_STATUS_FINALISED], '', 'id');
+        $submissions = $DB->get_records(
+            'coursework_submissions',
+            ['courseworkid' => $this->id, 'finalisedstatus' => submission::FINALISED_STATUS_FINALISED],
+            '',
+            'id'
+        );
 
         foreach ($submissions as &$submission) {
             $submission = submission::find($submission);
         }
 
         return $submissions;
-
     }
 
     /**
@@ -2557,9 +2553,10 @@ class coursework extends table_base {
             $sql .= ($CFG->dbtype == 'pgsql') ? " ORDER BY RANDOM() " : " ORDER BY RAND() ";
         }
 
-        return $DB->get_records_sql($sql,
-            ['courseworkid' => $this->id, "stage" => $stage]);
-
+        return $DB->get_records_sql(
+            $sql,
+            ['courseworkid' => $this->id, "stage" => $stage]
+        );
     }
 
     /*
@@ -2587,16 +2584,16 @@ class coursework extends table_base {
                 /**
                  * @var auto_grader $auto_grader
                  */
-                $autograder = new $autofeedbackclassname($submission->get_coursework(),
+                $autograder = new $autofeedbackclassname(
+                    $submission->get_coursework(),
                     $submission->get_allocatable(),
-                    $submission->get_coursework()->automaticagreementrange);
+                    $submission->get_coursework()->automaticagreementrange
+                );
                 $autograder->create_auto_grade_if_rules_match();
             }
-
         }
         unset($SESSION->keep_cache_data);
         feedback::remove_cache($this->id);
-
     }
 
     /** Function to check it Turnitin is enabled for the particular coursework
@@ -2672,7 +2669,6 @@ class coursework extends table_base {
         }
 
         return $allocatable;
-
     }
 
     /** Check is courseowrk kas any users added to sample
@@ -2683,7 +2679,6 @@ class coursework extends table_base {
         global $DB;
 
         return $DB->record_exists('coursework_sample_set_mbrs', ['courseworkid' => $this->id]);
-
     }
 
     /**
@@ -2704,8 +2699,10 @@ class coursework extends table_base {
      * @return bool
      */
     public function can_grade() {
-        if (has_capability('mod/coursework:addinitialgrade', $this->get_context()) || has_capability('mod/coursework:addagreedgrade', $this->get_context())
-        || has_capability('mod/coursework:addallocatedagreedgrade', $this->get_context())) {
+        if (
+            has_capability('mod/coursework:addinitialgrade', $this->get_context()) || has_capability('mod/coursework:addagreedgrade', $this->get_context())
+            || has_capability('mod/coursework:addallocatedagreedgrade', $this->get_context())
+        ) {
             return true;
         }
         return false;
@@ -2909,7 +2906,7 @@ class coursework extends table_base {
         global  $DB;
         $extension = false;
 
-        if ($this->extensions_enabled() ) {
+        if ($this->extensions_enabled()) {
             $extensionrecord = $DB->get_record('coursework_extensions', ['courseworkid' => $this->id, 'allocatableid' => $allocatable->id]);
 
             if (!empty($extensionrecord)) {
@@ -2960,7 +2957,6 @@ class coursework extends table_base {
             $visible = false;
         }
         return $visible;
-
     }
 
     /**

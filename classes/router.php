@@ -38,7 +38,6 @@ use moodle_url;
  * Destroy
  */
 class router {
-
     /**
      * @var router
      */
@@ -89,7 +88,6 @@ class router {
         $url = false;
 
         switch ($pathname) {
-
             case 'create feedback':
                 $url = new moodle_url('/mod/coursework/actions/feedbacks/create.php');
                 break;
@@ -111,17 +109,20 @@ class router {
                 break;
 
             case 'allocations':
-                $url = new moodle_url('/mod/coursework/actions/allocate.php',
-                                      ['id' => $coursemoduleid]);
+                $url = new moodle_url(
+                    '/mod/coursework/actions/allocate.php',
+                    ['id' => $coursemoduleid]
+                );
                 break;
 
             case 'assessor grading':
-
             case 'new feedback':
-                $url = new moodle_url('/mod/coursework/actions/feedbacks/new.php',
-                                          ['submissionid' => $items['submission']->id,
+                $url = new moodle_url(
+                    '/mod/coursework/actions/feedbacks/new.php',
+                    ['submissionid' => $items['submission']->id,
                                                 'stageidentifier' => $items['stage']->identifier(),
-                                                'assessorid' => $items['assessor']->id]);
+                    'assessorid' => $items['assessor']->id]
+                );
                 break;
 
             case 'new final feedback':
@@ -132,42 +133,56 @@ class router {
                 break;
 
             case 'new submission':
-                $url = new moodle_url('/mod/coursework/actions/submissions/new.php',
-                                      [
+                $url = new moodle_url(
+                    '/mod/coursework/actions/submissions/new.php',
+                    [
                                           'allocatableid' => $items['submission']->allocatableid,
                                           'allocatabletype' => $items['submission']->allocatabletype,
                                           'courseworkid' => $items['submission']->courseworkid,
-                                      ]);
+                    ]
+                );
                 break;
 
             case 'edit feedback':
-                $url = new moodle_url('/mod/coursework/actions/feedbacks/edit.php',
-                                      ['feedbackid' => $items['feedback']->id]);
+                $url = new moodle_url(
+                    '/mod/coursework/actions/feedbacks/edit.php',
+                    ['feedbackid' => $items['feedback']->id]
+                );
                 break;
 
             case 'update feedback':
-                $url = new moodle_url('/mod/coursework/actions/feedbacks/update.php',
-                                      ['feedbackid' => $items['feedback']->id]);
+                $url = new moodle_url(
+                    '/mod/coursework/actions/feedbacks/update.php',
+                    ['feedbackid' => $items['feedback']->id]
+                );
                 break;
 
             case 'new deadline extension':
-                $url = new moodle_url('/mod/coursework/actions/deadline_extensions/new.php',
-                                      $items);
+                $url = new moodle_url(
+                    '/mod/coursework/actions/deadline_extensions/new.php',
+                    $items
+                );
                 break;
 
             case 'edit deadline extension':
-                $url = new moodle_url('/mod/coursework/actions/deadline_extensions/edit.php',
-                                      $items);
+                $url = new moodle_url(
+                    '/mod/coursework/actions/deadline_extensions/edit.php',
+                    $items
+                );
                 break;
 
             case 'edit personal deadline':
-                $url = new moodle_url('/mod/coursework/actions/personaldeadline.php',
-                    $items);
+                $url = new moodle_url(
+                    '/mod/coursework/actions/personaldeadline.php',
+                    $items
+                );
                 break;
 
             case 'set personal deadlines':
-                $url = new moodle_url('/mod/coursework/actions/set_personaldeadlines.php',
-                    ['id' => $coursemoduleid]);
+                $url = new moodle_url(
+                    '/mod/coursework/actions/set_personaldeadlines.php',
+                    ['id' => $coursemoduleid]
+                );
                 break;
 
             case 'new moderations':
@@ -182,9 +197,11 @@ class router {
                 break;
 
             case 'edit moderation':
-                $url = new moodle_url('/mod/coursework/actions/moderations/edit.php',
-                                      ['moderationid' => $items['moderation']->id,
-                                           'feedbackid' => $items['moderation']->feedbackid]);
+                $url = new moodle_url(
+                    '/mod/coursework/actions/moderations/edit.php',
+                    ['moderationid' => $items['moderation']->id,
+                    'feedbackid' => $items['moderation']->feedbackid]
+                );
                 break;
 
             case 'update moderation':
@@ -192,15 +209,19 @@ class router {
                 break;
 
             case 'show moderation':
-                $url = new moodle_url('/mod/coursework/actions/moderations/show.php',
-                                        ['moderationid' => $items['moderation']->id,
-                                        'feedbackid' => $items['moderation']->feedbackid]);
+                $url = new moodle_url(
+                    '/mod/coursework/actions/moderations/show.php',
+                    ['moderationid' => $items['moderation']->id,
+                    'feedbackid' => $items['moderation']->feedbackid]
+                );
 
                 break;
 
             case 'new plagiarism flag':
-                $url = new moodle_url('/mod/coursework/actions/plagiarism_flagging/new.php',
-                                        ['submissionid' => $items['submission']->id ]);
+                $url = new moodle_url(
+                    '/mod/coursework/actions/plagiarism_flagging/new.php',
+                    ['submissionid' => $items['submission']->id ]
+                );
 
                 break;
 
@@ -210,20 +231,22 @@ class router {
                 break;
 
             case 'edit plagiarism flag':
-                $url = new moodle_url('/mod/coursework/actions/plagiarism_flagging/edit.php',
-                                        ['flagid' => $items['flag']->id ]);
+                $url = new moodle_url(
+                    '/mod/coursework/actions/plagiarism_flagging/edit.php',
+                    ['flagid' => $items['flag']->id ]
+                );
 
                 break;
 
             case 'update plagiarism flag':
-                $url = new moodle_url('/mod/coursework/actions/plagiarism_flagging/update.php',
-                                        ['flagid' => $items['flag']->id]);
+                $url = new moodle_url(
+                    '/mod/coursework/actions/plagiarism_flagging/update.php',
+                    ['flagid' => $items['flag']->id]
+                );
                 break;
-
         }
 
         if (!$url) {
-
             // Try to auto construct it.
             $bits = explode(' ', $pathname);
             $action = array_shift($bits);
@@ -231,10 +254,9 @@ class router {
 
             $autopath = '/mod/coursework/actions/' . $this->pluralise($type) . '/' . $action . '.php';
             if (file_exists($CFG->dirroot . $autopath)) {
-
                 $params = [];
                 if (array_key_exists($type, $items)) {
-                    $params[$type.'id'] = $items[$type]->id;
+                    $params[$type . 'id'] = $items[$type]->id;
                 } else if (array_key_exists('coursework', $items)) {
                     $params['courseworkid'] = $items['coursework']->id;
                 } else if (array_key_exists('courseworkid', $items)) {
@@ -261,5 +283,4 @@ class router {
     protected function pluralise($string) {
         return $string . 's';
     }
-
 }

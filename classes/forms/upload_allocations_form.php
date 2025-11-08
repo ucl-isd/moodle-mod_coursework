@@ -22,10 +22,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 class upload_allocations_form extends moodleform {
-
     private $cmid;
 
     public function __construct($cmid) {
@@ -63,5 +62,4 @@ class upload_allocations_form extends moodleform {
     public function display() {
         return $this->_form->toHtml();
     }
-
 }

@@ -44,7 +44,6 @@ use stdClass;
  *
  */
 class grading_report_renderer extends plugin_renderer_base {
-
     /**
      * Renders the grading report.
      *
@@ -302,9 +301,9 @@ class grading_report_renderer extends plugin_renderer_base {
      * @return void
      */
     protected static function prepare_actions_cell_data(
-        coursework             $coursework,
+        coursework $coursework,
         grading_table_row_base $rowobject,
-        stdClass               $trdata
+        stdClass $trdata
     ): void {
         $dataprovider = new actions_cell_data($coursework);
         $actions = $dataprovider->get_table_cell_data($rowobject);

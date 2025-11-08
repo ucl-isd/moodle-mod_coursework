@@ -30,7 +30,6 @@ use mod_coursework\models\coursework;
  */
 
 class unenrol_task extends scheduled_task {
-
     /**
      * Get a descriptive name for this task (shown to admins).
      *

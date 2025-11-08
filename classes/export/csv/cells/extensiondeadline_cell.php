@@ -28,7 +28,6 @@ use coding_exception;
  * Class extensiondeadline_cell
  */
 class extensiondeadline_cell extends cell_base {
-
     /**
      * @param $submission
      * @param $student
@@ -53,5 +52,4 @@ class extensiondeadline_cell extends cell_base {
     public function get_header($stage) {
         return  get_string('extensiondeadline', 'coursework');
     }
-
 }

@@ -38,13 +38,12 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot.'/lib/formslib.php');
+require_once($CFG->dirroot . '/lib/formslib.php');
 
 /**
  * Allows files to be submitted by the student
  */
 class student_submission_form extends moodleform {
-
     /**
      * Defines the form structure
      *
@@ -56,7 +55,6 @@ class student_submission_form extends moodleform {
 
         // if TII plagiarism enabled check if user agreed/disagreed EULA
         if (!$this->get_coursework()->plagiarism_enbled() || has_user_seen_tii_eula_agreement()) {
-
             $this->add_instructions_to_form();
 
             $this->add_file_manager_to_form();
@@ -68,10 +66,9 @@ class student_submission_form extends moodleform {
             $this->add_submit_buttons_to_form();
         } else {
             $plagdisclosure = plagiarism_similarity_information($this->get_coursework()->get_course_module());
-            $p = html_writer::tag('p', $plagdisclosure );
+            $p = html_writer::tag('p', $plagdisclosure);
             $this->_form->addElement('html', $p);
         }
-
     }
 
     /**
@@ -94,7 +91,7 @@ class student_submission_form extends moodleform {
         }
 
         $cmid = $coursework->get_coursemodule_id();
-        $link = $CFG->wwwroot.'/mod/coursework/view.php?id='.$cmid;
+        $link = $CFG->wwwroot . '/mod/coursework/view.php?id=' . $cmid;
 
         if ($this->is_cancelled()) {
             redirect(new moodle_url('/mod/coursework/view.php', ['id' => $cmid]));
@@ -117,8 +114,14 @@ class student_submission_form extends moodleform {
             // Once the submission is saved we can check whether this included any submitted files.
             $context = context_module::instance($cmid);
             $fs = get_file_storage();
-            $existingfiles = $fs->get_area_files($context->id, 'mod_coursework',
-                                                 'submission', $submission->id, "id", false);
+            $existingfiles = $fs->get_area_files(
+                $context->id,
+                'mod_coursework',
+                'submission',
+                $submission->id,
+                "id",
+                false
+            );
             $filecount = count($existingfiles);
 
             if (!isset($data->finalisebutton)) {
@@ -128,7 +131,6 @@ class student_submission_form extends moodleform {
                     redirect($link, $message);
                 }
             } else { // Finalise it!
-
                 if ($filecount > 0) { // Check that there is a file before updating to finalised.
                     // Confirm finalise state.
                     $submission->finalisedstatus = submission::FINALISED_STATUS_FINALISED;
@@ -147,16 +149,18 @@ class student_submission_form extends moodleform {
                     $extension = $bits['extension'];
                     // Can we get an empty extension? Just in case...
                     if (!empty($extension)) {
-                        $extension = '.'.$extension;
+                        $extension = '.' . $extension;
                     }
-                    $fileinformation->filename = $coursework->get_username_hash($submission->userid).$extension;
+                    $fileinformation->filename = $coursework->get_username_hash($submission->userid) . $extension;
 
-                    $pathnamehash = file_storage::get_pathname_hash($file->get_contextid(),
-                                                                    $file->get_component(),
-                                                                    $file->get_filearea(),
-                                                                    $file->get_itemid(),
-                                                                    $file->get_filepath(),
-                                                                    $fileinformation->filename);
+                    $pathnamehash = file_storage::get_pathname_hash(
+                        $file->get_contextid(),
+                        $file->get_component(),
+                        $file->get_filearea(),
+                        $file->get_itemid(),
+                        $file->get_filepath(),
+                        $fileinformation->filename
+                    );
 
                     $fileinformation->pathnamehash = $pathnamehash;
 
@@ -167,7 +171,6 @@ class student_submission_form extends moodleform {
                     $submission->get_submission_files(true);
 
                     if (!$submission->get_coursework()->has_deadline()) {
-
                         $useridcommaseparatedlist = $submission->get_coursework()->get_submission_notification_users();
 
                         if (!empty($useridcommaseparatedlist)) {
@@ -181,7 +184,6 @@ class student_submission_form extends moodleform {
                                 }
                             }
                         }
-
                     }
 
                     // Must happen AFTER file attributes have been fiddled with, otherwise we get
@@ -193,12 +195,10 @@ class student_submission_form extends moodleform {
                         $message = get_string('changessavedemail', 'mod_coursework');
                     }
                     redirect($link, $message);
-
                 } else if ($filecount == 0) {
                     $message = get_string('nofinalfile', 'coursework');
                     redirect($link, $message);
                 }
-
             }
 
             if ($CFG->coursework_allsubmissionreceipt || $data->finalisebutton) {
@@ -210,7 +210,6 @@ class student_submission_form extends moodleform {
                     $mailer->send_submission_receipt($student, $data->finalisebutton);
                 }
             }
-
         } else { // Feedback already exists, or already finalised - allow no changes.
             if (!$coursework->allowed_to_submit()) {
                 $message = get_string('latesubmissionsnotallowed', 'mod_coursework');
@@ -237,12 +236,14 @@ class student_submission_form extends moodleform {
         // params.
         $draftitemid = file_get_submitted_draft_itemid('submission_manager');
         // Put them into a draft area.
-        file_prepare_draft_area($draftitemid,
-                                $this->get_coursework()->get_context_id(),
-                                'mod_coursework',
-                                'submission',
-                                $this->get_submission()->id,
-                                $this->get_coursework()->get_file_options());
+        file_prepare_draft_area(
+            $draftitemid,
+            $this->get_coursework()->get_context_id(),
+            'mod_coursework',
+            'submission',
+            $this->get_submission()->id,
+            $this->get_coursework()->get_file_options()
+        );
         // Load that area into the form.
         $submission->submission_manager = $draftitemid;
 
@@ -253,7 +254,6 @@ class student_submission_form extends moodleform {
         $data->submissionid = $this->get_submission()->id;
 
         parent::set_data($data);
-
     }
 
     /**
@@ -299,8 +299,10 @@ class student_submission_form extends moodleform {
         // If submitting on behalf of someone else, we want to make sure that we don't have people leaving it in a draft
         // state because the reason for doing submit on behalf of in the first place is that the student cannot use the
         // interface themselves, so they are unable to come back later to finalise it themselves.
-        if (($ability->can('create', $this->get_submission()) || $ability->can('update', $this->get_submission()))
-            &&  $this->get_submission()->get_coursework()->has_deadline() ) {
+        if (
+            ($ability->can('create', $this->get_submission()) || $ability->can('update', $this->get_submission()))
+            &&  $this->get_submission()->get_coursework()->has_deadline()
+        ) {
             $buttonarray[] = $this->_form->createElement('submit', 'submitbutton', get_string('submit'));
         }
         if ($ability->can('finalise', $this->get_submission())) {
@@ -345,13 +347,14 @@ class student_submission_form extends moodleform {
      */
     protected function add_file_manager_to_form() {
         $uploadfilestring = get_string('uploadafile');
-        $this->_form->addElement('filemanager',
-                                 'submission_manager',
-                                 $uploadfilestring,
-                                 null,
-                                 $this->get_file_manager_options());
+        $this->_form->addElement(
+            'filemanager',
+            'submission_manager',
+            $uploadfilestring,
+            null,
+            $this->get_file_manager_options()
+        );
         $this->_form->addRule('submission_manager', 'You must upload file(s) into the box below before you can save', 'required', null, 'server', false, true);
-
     }
 
     /**

@@ -33,7 +33,6 @@ use stdClass;
  * @package mod_coursework
  */
 class warnings {
-
     /**
      * @var coursework
      */
@@ -76,7 +75,6 @@ class warnings {
         }
 
         return $html;
-
     }
 
     /**
@@ -133,13 +131,11 @@ class warnings {
         if ($studentsinmultigroups) {
             $studentmessage = '';
             foreach ($studentsinmultigroups as $student) {
-
                 if (!has_capability('mod/coursework:addinitialgrade', $this->coursework->get_context(), $student->userid)) {
                     $studentmessage .= '<li>' . $student->firstname . ' ' . $student->lastname;
 
                     // Get group ids of these students
                     if ($this->coursework->grouping_id) {
-
                         $sql = "SELECT g.id, g.name
                                FROM {groups} g
                          INNER JOIN {groupings_groups} groupings
@@ -155,7 +151,6 @@ class warnings {
                             'courseid' => $this->coursework->get_course()->id,
                             'userid' => $student->userid];
                     } else {
-
                         $sql = "SELECT g.id, g.name
                                 FROM {groups} g
                           INNER JOIN {groups_members} gm
@@ -230,13 +225,12 @@ class warnings {
 
         $courseworkstages = $coursework->numberofmarkers;
         for ($i = 1; $i <= $courseworkstages; $i++) {
-             $assessor = 'assessor_'.$i;
+             $assessor = 'assessor_' . $i;
 
             if ($coursework->samplingenabled == 0 || $assessor == 'assessor_1') {
                 $allocatables = $coursework->get_allocatables();
 
                 foreach ($allocatables as $allocatable) {
-
                     $params = ['courseworkid' => $coursework->id,
                                     'stageidentifier' => $assessor,
                                     'allocatableid' => $allocatable->id];
@@ -248,7 +242,6 @@ class warnings {
                     }
                 }
             } else {
-
                 $params = ['courseworkid' => $coursework->id];
                 $sql = "SELECT id, stageidentifier, allocatableid
                          FROM {coursework_sample_set_mbrs}
@@ -284,7 +277,6 @@ class warnings {
                 AND allocatableid = :allocatableid";
 
         return $existingallocations = $DB->get_records_sql($sql, $params);
-
     }
 
     /**
@@ -306,22 +298,21 @@ class warnings {
             return '';
         }
 
-        list($studentsql, $studentparams) = $DB->get_in_or_equal($studentids, SQL_PARAMS_NAMED);
+        [$studentsql, $studentparams] = $DB->get_in_or_equal($studentids, SQL_PARAMS_NAMED);
 
         if ($this->coursework->grouping_id != 0) {
             $students =
                 $this->students_who_are_not_in_any_grouping_group($studentsql, $studentparams);
             if ($students) {
                 $names = $this->make_list_of_student_names($students);
-                return $this->alert_div(get_string('students_in_no_group_warning', 'mod_coursework').$names);
+                return $this->alert_div(get_string('students_in_no_group_warning', 'mod_coursework') . $names);
             }
         } else {
-
             $students = $this->students_who_are_not_in_any_group($studentsql, $studentparams);
 
             if ($students) {
                 $names = $this->make_list_of_student_names($students);
-                return $this->alert_div(get_string('students_in_no_group_warning', 'mod_coursework'). $names);
+                return $this->alert_div(get_string('students_in_no_group_warning', 'mod_coursework') . $names);
             }
         }
 
@@ -376,10 +367,12 @@ class warnings {
 
                 ";
 
-        $params = array_merge($studentparams,
-                              [
+        $params = array_merge(
+            $studentparams,
+            [
                                   'courseid' => $this->coursework->get_course()->id,
-                              ]);
+            ]
+        );
         $students = $DB->get_records_sql($sql, $params);
         return $students;
     }
@@ -408,11 +401,13 @@ class warnings {
                    AND u.id $studentsql
                 ";
 
-        $params = array_merge($studentparams,
-                              [
+        $params = array_merge(
+            $studentparams,
+            [
                                   'courseid' => $this->coursework->get_course()->id,
                                   'groupingid' => $this->coursework->grouping_id,
-                              ]);
+            ]
+        );
         $students = $DB->get_records_sql($sql, $params);
         return $students;
     }

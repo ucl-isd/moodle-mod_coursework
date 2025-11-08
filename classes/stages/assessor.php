@@ -35,7 +35,6 @@ use mod_coursework\models\submission;
  */
 #[AllowDynamicProperties]
 class assessor extends base {
-
     /**
      * Value for mdl_coursework_feedbacks.stageidentifier for feedback from assessor 1.
      */
@@ -125,5 +124,4 @@ class assessor extends base {
             return parent::uses_sampling();
         }
     }
-
 }

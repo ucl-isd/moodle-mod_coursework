@@ -28,7 +28,7 @@ $submissionid = required_param('submissionid', PARAM_INT);
 $cmid = optional_param('cmid', 0, PARAM_INT);
 $feedbackid = optional_param('feedbackid', 0, PARAM_INT);
 $assessorid = optional_param('assessorid', $USER->id, PARAM_INT);
-$stageidentifier = optional_param('stageidentifier', 'uh-oh',  PARAM_RAW);
+$stageidentifier = optional_param('stageidentifier', 'uh-oh', PARAM_RAW);
 
 $params = [
     'submissionid' => $submissionid,

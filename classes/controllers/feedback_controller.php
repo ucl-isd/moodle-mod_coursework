@@ -50,7 +50,6 @@ require_once($CFG->dirroot . '/mod/coursework/renderer.php');
  *
  */
 class feedback_controller extends controller_base {
-
     /**
      * @var feedback
      */
@@ -131,7 +130,6 @@ class feedback_controller extends controller_base {
 
         $renderer = $this->get_page_renderer();
         $renderer->new_feedback_page($teacherfeedback);
-
     }
 
     /**
@@ -197,7 +195,6 @@ class feedback_controller extends controller_base {
         $conditions = ['submissionid' => $this->params['submissionid'],
                             'stageidentifier' => $this->params['stageidentifier']];
         if (feedback::exists($conditions)) {
-
             if ($this->space_for_another_feedback($teacherfeedback)) {
                 $teacherfeedback->stageidentifier = $this->next_available_stage($teacherfeedback);
             } else {
@@ -235,7 +232,8 @@ class feedback_controller extends controller_base {
 
             $this->try_auto_feedback_creation($teacherfeedback->get_submission());
 
-            redirect($courseworkpageurl,
+            redirect(
+                $courseworkpageurl,
                 get_string('changessaved', 'mod_coursework'),
                 null,
                 notification::NOTIFY_SUCCESS
@@ -264,7 +262,6 @@ class feedback_controller extends controller_base {
         // remove feedback comments and associated feedback files if 'Remove feedback' button pressed
         if ($this->params['remove']) {
             if (!$this->params['confirm']) {
-
                 $urlparams = ['confirm' => $this->params['confirm'],
                     'remove' => $this->params['remove'], 'feedbackid' => $this->params['feedbackid'], 'finalised' => $this->params['finalised']];
 
@@ -341,19 +338,23 @@ class feedback_controller extends controller_base {
         global $DB;
 
         if (!empty($this->params['feedbackid'])) {
-            $feedback = $DB->get_record('coursework_feedbacks',
-                                          ['id' => $this->params['feedbackid']],
-                                          '*',
-                                          MUST_EXIST);
+            $feedback = $DB->get_record(
+                'coursework_feedbacks',
+                ['id' => $this->params['feedbackid']],
+                '*',
+                MUST_EXIST
+            );
             $this->feedback = new feedback($feedback);
             $this->params['courseworkid'] = $this->feedback->get_coursework()->id;
         }
 
         if (!empty($this->params['submissionid'])) {
-            $submission = $DB->get_record('coursework_submissions',
-                                          ['id' => $this->params['submissionid']],
-                                          '*',
-                                          MUST_EXIST);
+            $submission = $DB->get_record(
+                'coursework_submissions',
+                ['id' => $this->params['submissionid']],
+                '*',
+                MUST_EXIST
+            );
             $this->submission = submission::find($submission);
             $this->params['courseworkid'] = $this->submission->courseworkid;
         }
@@ -379,10 +380,13 @@ class feedback_controller extends controller_base {
 
         $stage = $this->coursework->get_stage($identifier);
         if (!$stage->user_is_assessor($USER->id)) {
-            if (!(has_capability('mod/coursework:administergrades', $this->coursework->get_context()) ||
-                  has_capability('mod/coursework:addallocatedagreedgrade', $this->coursework->get_context())) ) {
+            if (
+                !(has_capability('mod/coursework:administergrades', $this->coursework->get_context()) ||
+                  has_capability('mod/coursework:addallocatedagreedgrade', $this->coursework->get_context()))
+            ) {
                 throw new access_denied(
-                    $this->coursework, 'You are not authorised to add feedback at this stage'
+                    $this->coursework,
+                    'You are not authorised to add feedback at this stage'
                 );
             }
         }
@@ -429,7 +433,7 @@ class feedback_controller extends controller_base {
 
         $usedstages = $DB->get_record_sql($sql);
         $newstage = $usedstages->total + 1;
-        $stageidentifier = 'assessor_'.$newstage;
+        $stageidentifier = 'assessor_' . $newstage;
 
         return $stageidentifier;
     }
@@ -443,8 +447,10 @@ class feedback_controller extends controller_base {
         /**
          * @var auto_grader $auto_grader
          */
-        $autograder = new $autofeedbackclassname($this->coursework,
-                                                    $submission->get_allocatable());
+        $autograder = new $autofeedbackclassname(
+            $this->coursework,
+            $submission->get_allocatable()
+        );
         $autograder->create_auto_grade_if_rules_match();
     }
 }

@@ -48,7 +48,6 @@ use mod_coursework\render_helpers\grading_report\cells\time_submitted_cell;
  */
 #[AllowDynamicProperties]
 class deadline_extensions_controller extends controller_base {
-
     protected function show_deadline_extension() {
         global $USER, $PAGE;
 
@@ -71,15 +70,16 @@ class deadline_extensions_controller extends controller_base {
         $createurl = $this->get_router()->get_path('create deadline extension');
 
         $this->form = new deadline_extension_form(
-            $createurl, array_merge(
-                $params, ['courseworkid' => $this->coursework->id]
+            $createurl,
+            array_merge(
+                $params,
+                ['courseworkid' => $this->coursework->id]
             )
         );
 
         $this->form->set_data($this->deadlineextension);
 
         $this->render_page('new');
-
     }
 
     /**
@@ -140,7 +140,6 @@ class deadline_extensions_controller extends controller_base {
             $this->set_default_current_deadline();
             $this->render_page('new');
         }
-
     }
 
     /**
@@ -278,7 +277,7 @@ class deadline_extensions_controller extends controller_base {
             $deadline = $this->coursework->deadline;
         }
 
-        if ( $data['extended_deadline'] <= $deadline) {
+        if ($data['extended_deadline'] <= $deadline) {
             return get_string('alert_validate_deadline', 'coursework');
         }
 
@@ -288,7 +287,7 @@ class deadline_extensions_controller extends controller_base {
     public function personaldeadline() {
         global $DB;
 
-        $extensionid = optional_param('id', 0,  PARAM_INT);
+        $extensionid = optional_param('id', 0, PARAM_INT);
 
         if ($extensionid != 0) {
             $ext = $DB->get_record('coursework_extensions', ['id' => $extensionid]);
@@ -296,7 +295,6 @@ class deadline_extensions_controller extends controller_base {
             $allocatabletype = $ext->allocatabletype;
             $courseworkid = $ext->courseworkid;
         } else {
-
             $allocatableid = required_param('allocatableid', PARAM_INT);
             $allocatabletype = required_param('allocatabletype', PARAM_ALPHANUMEXT);
             $courseworkid = required_param('courseworkid', PARAM_INT);
@@ -334,5 +332,4 @@ class deadline_extensions_controller extends controller_base {
 
         return $content;
     }
-
 }

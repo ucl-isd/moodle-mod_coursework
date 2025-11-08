@@ -34,7 +34,6 @@ use pix_icon;
  * Class feedback_cell
  */
 class submission_cell extends cell_base {
-
     /**
      * @param grading_table_row_base $rowobject
      * @throws coding_exception
@@ -56,9 +55,11 @@ class submission_cell extends cell_base {
             }
 
             if ($ability->can('revert', $rowobject->get_submission())) {
-                $url = new moodle_url('/mod/coursework/actions/revert.php',
-                                      ['cmid' => $rowobject->get_course_module_id(),
-                                            'submissionid' => $rowobject->get_submission_id()]);
+                $url = new moodle_url(
+                    '/mod/coursework/actions/revert.php',
+                    ['cmid' => $rowobject->get_course_module_id(),
+                    'submissionid' => $rowobject->get_submission_id()]
+                );
                 $content .= html_writer::empty_tag('br');
                 $revertstring = get_string('revert', 'coursework');
                 $content .= html_writer::link($url, $revertstring);
@@ -83,12 +84,12 @@ class submission_cell extends cell_base {
             ||
             !$rowobject->get_submission()
         ) {
-
-            if ($ability->can('new', $submissiononbehalfofallocatable) && (!$rowobject->get_coursework()->has_deadline()
+            if (
+                $ability->can('new', $submissiononbehalfofallocatable) && (!$rowobject->get_coursework()->has_deadline()
                     || $rowobject->get_coursework()->allow_late_submissions()
                     || (($rowobject->get_personaldeadline_time() ?? $this->coursework->get_deadline()) >= time()
-                        || ($rowobject->has_extension() && $rowobject->get_extension()->extended_deadline > time())))) {
-
+                        || ($rowobject->has_extension() && $rowobject->get_extension()->extended_deadline > time())))
+            ) {
                 // New submission on behalf of button
 
                 $url = $this->get_router()
@@ -97,14 +98,17 @@ class submission_cell extends cell_base {
                 $label =
                     'Submit on behalf';
 
-                $content .= $OUTPUT->action_link($url,
-                                                 $label,
-                                                 null,
-                                                 ['class' => 'new_submission']);
-            } else if ($rowobject->has_submission() &&
+                $content .= $OUTPUT->action_link(
+                    $url,
+                    $label,
+                    null,
+                    ['class' => 'new_submission']
+                );
+            } else if (
+                $rowobject->has_submission() &&
                        $ability->can('edit', $rowobject->get_submission()) &&
-                       !$rowobject->has_feedback() ) {
-
+                       !$rowobject->has_feedback()
+            ) {
                 // Edit submission on behalf of button
 
                 $url = $this->get_router()
@@ -116,10 +120,12 @@ class submission_cell extends cell_base {
                         'group' : 'student');
                 $icon = new pix_icon('edit', $label, 'coursework');
 
-                $content .= ' '.$OUTPUT->action_icon($url,
-                                                 $icon,
-                                                 null,
-                                                 ['class' => 'edit_submission']);
+                $content .= ' ' . $OUTPUT->action_icon(
+                    $url,
+                    $icon,
+                    null,
+                    ['class' => 'edit_submission']
+                );
             }
         }
 
@@ -136,17 +142,19 @@ class submission_cell extends cell_base {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options  = []) {
+    public function get_table_header($options = []) {
 
         $tablename = (isset($options['tablename'])) ? $options['tablename'] : '';
 
-        $fileid = $this->helper_sortable_heading(get_string('tableheadid', 'coursework'),
-                                                 'hash',
-                                                  $options['sorthow'],
-                                                  $options['sortby'],
-                                                  $tablename);
+        $fileid = $this->helper_sortable_heading(
+            get_string('tableheadid', 'coursework'),
+            'hash',
+            $options['sorthow'],
+            $options['sortby'],
+            $tablename
+        );
 
-        return get_string('tableheadfilename', 'coursework') .' /<br>' . $fileid;
+        return get_string('tableheadfilename', 'coursework') . ' /<br>' . $fileid;
     }
 
     /**

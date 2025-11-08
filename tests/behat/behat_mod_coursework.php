@@ -25,7 +25,7 @@
  */
 
 use Behat\Gherkin\Node\TableNode;
-use Behat\Mink\Exception\ExpectationException as ExpectationException;
+use Behat\Mink\Exception\ExpectationException;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\group;
@@ -57,7 +57,6 @@ foreach ($files as $filename) {
  * @property mixed group
  */
 class behat_mod_coursework extends behat_base {
-
     /**
      * @var int numbers prepended to 'user' in order to create different roles
      * without username/email collisions.
@@ -105,7 +104,7 @@ class behat_mod_coursework extends behat_base {
 
         $pagename = str_replace(' ', '_', $pagename);
 
-        $filepath = $CFG->dirroot.'/mod/coursework/tests/behat/pages/'.$pagename.'.php';
+        $filepath = $CFG->dirroot . '/mod/coursework/tests/behat/pages/' . $pagename . '.php';
 
         if (file_exists($filepath)) {
             require_once($filepath);
@@ -113,8 +112,7 @@ class behat_mod_coursework extends behat_base {
             return new $classname($this);
         }
 
-        throw new coding_exception('Asked for a behat page class which does not exist: '.$pagename);
-
+        throw new coding_exception('Asked for a behat page class which does not exist: ' . $pagename);
     }
 
     /**
@@ -128,7 +126,7 @@ class behat_mod_coursework extends behat_base {
      */
     protected function locate_path($path, $escape = true) {
 
-        switch($path) {
+        switch ($path) {
             case 'course':
                 return parent::locate_path('/course/view.php?id=' . $this->course->id);
                 break;
@@ -142,27 +140,31 @@ class behat_mod_coursework extends behat_base {
                 break;
 
             case 'coursework':
-                return parent::locate_path('/mod/coursework/view.php?id='. $this->get_coursework()->get_course_module()->id);
+                return parent::locate_path('/mod/coursework/view.php?id=' . $this->get_coursework()->get_course_module()->id);
                 break;
 
             case 'allocations':
-                return parent::locate_path('/mod/coursework/actions/allocate.php?id='.$this->get_coursework()->get_course_module()->id);
+                return parent::locate_path('/mod/coursework/actions/allocate.php?id=' . $this->get_coursework()->get_course_module()->id);
 
             case 'assessor grading':
-                return parent::locate_path('/mod/coursework/actions/feedback/new.php?submissionid=' . $this->submission->id.'&assessorid='.$this->teacher->id);
+                return parent::locate_path('/mod/coursework/actions/feedback/new.php?submissionid=' . $this->submission->id . '&assessorid=' . $this->teacher->id);
 
             case 'new feedback':
-                return $this->get_router()->get_path('new feedback',
-                                                     ['submission' => $this->submission,
+                return $this->get_router()->get_path(
+                    'new feedback',
+                    ['submission' => $this->submission,
                                                            'assessor' => $this->teacher,
                                                            'stage' => $this->get_first_assesor_stage()],
-                                                     false,
-                                                     $escape);
+                    false,
+                    $escape
+                );
             case 'create feedback':
-                return $this->get_router()->get_path('create feedback',
-                                                     ['coursework' => $this->coursework],
-                                                     false,
-                                                     $escape);
+                return $this->get_router()->get_path(
+                    'create feedback',
+                    ['coursework' => $this->coursework],
+                    false,
+                    $escape
+                );
 
             case 'new submission':
                 $submission = submission::build([
@@ -170,26 +172,36 @@ class behat_mod_coursework extends behat_base {
                                                     'allocatableid' => $this->student->id,
                                                     'allocatabletype' => 'user',
                                                 ]);
-                return $this->get_router()->get_path('new submission',
-                                                     ['submission' => $submission], false, $escape);
+                return $this->get_router()->get_path(
+                    'new submission',
+                    ['submission' => $submission],
+                    false,
+                    $escape
+                );
 
             case 'create submission':
-                return $this->get_router()->get_path('create submission',
-                                                     ['coursework' => $this->coursework],
-                                                     false,
-                                                     $escape);
+                return $this->get_router()->get_path(
+                    'create submission',
+                    ['coursework' => $this->coursework],
+                    false,
+                    $escape
+                );
 
             case 'edit submission':
-                return $this->get_router()->get_path('edit submission',
-                                                     ['submission' => $this->submission],
-                                                     false,
-                                                     $escape);
+                return $this->get_router()->get_path(
+                    'edit submission',
+                    ['submission' => $this->submission],
+                    false,
+                    $escape
+                );
 
             case 'update submission':
-                return $this->get_router()->get_path('update submission',
-                                                     ['submission' => $this->submission],
-                                                     false,
-                                                     $escape);
+                return $this->get_router()->get_path(
+                    'update submission',
+                    ['submission' => $this->submission],
+                    false,
+                    $escape
+                );
 
             case 'edit feedback':
                 if (empty($this->feedback)) {
@@ -207,9 +219,7 @@ class behat_mod_coursework extends behat_base {
 
             default:
                 return parent::locate_path($path);
-
         }
-
     }
 
     /**
@@ -237,7 +247,7 @@ class behat_mod_coursework extends behat_base {
         $filecount = count($this->getsession()->getpage()->findAll('css', '.submissionfile'));
 
         if ($numberoffiles != $filecount) {
-            throw new ExpectationException($filecount.' files found, but there should be '.$numberoffiles, $this->getsession());
+            throw new ExpectationException($filecount . ' files found, but there should be ' . $numberoffiles, $this->getsession());
         }
     }
 
@@ -286,7 +296,6 @@ class behat_mod_coursework extends behat_base {
         }
 
         return $this->coursework;
-
     }
 
     /**
@@ -575,7 +584,6 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
         $page->click_assessor_new_feedback_button($assessornumber, $this->student);
-
     }
 
     /**
@@ -587,7 +595,6 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
         $page->click_assessor_new_feedback_button(null, $this->student);
-
     }
 
     /**
@@ -601,7 +608,6 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
         $page->click_assessor_edit_feedback_button($assessornumber, $this->student);
-
     }
 
     /**
@@ -633,7 +639,8 @@ class behat_mod_coursework extends behat_base {
         $countvisible = count($visible);
         if ($countvisible !== 1) {
             throw new ExpectationException(
-                "Expected one '$linktitle' visible link but found $countvisible", $this->getsession()
+                "Expected one '$linktitle' visible link but found $countvisible",
+                $this->getsession()
             );
         }
         reset($visible)->click();
@@ -922,7 +929,6 @@ class behat_mod_coursework extends behat_base {
         } else {
             $page->should_have_add_button_for_final_feedback($this->student->id());
         }
-
     }
 
     /**
@@ -1045,10 +1051,12 @@ class behat_mod_coursework extends behat_base {
 
         $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
 
-        role_change_permission($teacherrole->id,
-                               $this->get_coursework()->get_context(),
-                               'mod/coursework:addinitialgrade',
-                               CAP_ALLOW);
+        role_change_permission(
+            $teacherrole->id,
+            $this->get_coursework()->get_context(),
+            'mod/coursework:addinitialgrade',
+            CAP_ALLOW
+        );
     }
 
     /**
@@ -1059,9 +1067,12 @@ class behat_mod_coursework extends behat_base {
 
         $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
 
-        role_change_permission($teacherrole->id, $this->get_coursework()->get_context(),
-                               'mod/coursework:editinitialgrade', CAP_ALLOW);
-
+        role_change_permission(
+            $teacherrole->id,
+            $this->get_coursework()->get_context(),
+            'mod/coursework:editinitialgrade',
+            CAP_ALLOW
+        );
     }
 
     /**
@@ -1071,10 +1082,12 @@ class behat_mod_coursework extends behat_base {
         global $DB;
 
         $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
-        role_change_permission($teacherrole->id,
-                               $this->get_coursework()->get_context(),
-                               'mod/coursework:editagreedgrade',
-                               CAP_ALLOW);
+        role_change_permission(
+            $teacherrole->id,
+            $this->get_coursework()->get_context(),
+            'mod/coursework:editagreedgrade',
+            CAP_ALLOW
+        );
     }
 
     /**
@@ -1111,7 +1124,6 @@ class behat_mod_coursework extends behat_base {
         } else {
             $page->should_have_new_feedback_button($this->submission);
         }
-
     }
 
     /**
@@ -1223,7 +1235,8 @@ class behat_mod_coursework extends behat_base {
         $text = $node->getText();
         if (!str_contains($text, $expectedtimestring)) {
             throw new ExpectationException(
-                "Expected to see extension '$expectedtimestring' got '$text'", $this->getsession()
+                "Expected to see extension '$expectedtimestring' got '$text'",
+                $this->getsession()
             );
         }
     }
@@ -1311,7 +1324,8 @@ class behat_mod_coursework extends behat_base {
          */
         $multigraderpage = $this->get_page('multiple grading interface');
         $multigraderpage->should_show_extension_for_allocatable(
-            $this->student, $this->extensiondeadline
+            $this->student,
+            $this->extensiondeadline
         );
     }
 
@@ -1447,7 +1461,7 @@ class behat_mod_coursework extends behat_base {
      * the HTML. We use the filename hash instead.
      */
     protected function get_submission_grading_table_row_id() {
-        return '#submission_'. $this->student_hash();
+        return '#submission_' . $this->student_hash();
     }
 
     /**
@@ -1575,8 +1589,10 @@ class behat_mod_coursework extends behat_base {
         $match = $page->find('xpath', "//h3[text() = 'Description']/following-sibling::*[1][text() = 'Test coursework 1']");
 
         if (!$match) {
-            throw new ExpectationException("Should have seen expected description 'Test coursework 1', but it was not there",
-            $this->getsession());
+            throw new ExpectationException(
+                "Should have seen expected description 'Test coursework 1', but it was not there",
+                $this->getsession()
+            );
         }
     }
 
@@ -1625,8 +1641,10 @@ class behat_mod_coursework extends behat_base {
         $numberindatabase = $DB->count_records('coursework');
 
         if ($numberindatabase > (int)$expectedcount) {
-            throw new ExpectationException("Too many courseworks! There should be {$expectedcount}, but there were {$DB->countrecords('coursework')}",
-                                           $this->getsession());
+            throw new ExpectationException(
+                "Too many courseworks! There should be {$expectedcount}, but there were {$DB->countrecords('coursework')}",
+                $this->getsession()
+            );
         }
     }
 
@@ -1759,7 +1777,6 @@ class behat_mod_coursework extends behat_base {
         // guess the type properly as it is a select tag.
         $field = behat_field_manager::get_form_field($node, $this->getsession());
         $field->set_value($this->otherteacher->id);
-
     }
 
     /**
@@ -1772,7 +1789,6 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('allocations page');
         $page->manually_allocate($this->student, $this->teacher, 'assessor_1');
-
     }
 
     /**
@@ -2002,8 +2018,10 @@ class behat_mod_coursework extends behat_base {
         $xpath = "//div/h4[text()='General feedback']/../../p[text()='Some comments']";
 
         if (!$page->find('xpath', $xpath)) {
-            throw new ExpectationException("Should have seen expected general feedback, but it was not there",
-            $this->getsession());
+            throw new ExpectationException(
+                "Should have seen expected general feedback, but it was not there",
+                $this->getsession()
+            );
         }
     }
 
@@ -2024,7 +2042,6 @@ class behat_mod_coursework extends behat_base {
         } else {
             $page->assessor_grade_should_be_present($this->student, $assessornumber, '50');
         }
-
     }
 
     /**
@@ -2139,7 +2156,6 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
         $page->click_edit_moderator_feedback_button($this->student);
-
     }
 
     /**
@@ -2339,7 +2355,7 @@ class behat_mod_coursework extends behat_base {
         if (strpos($celltext, '50') === false) {
             throw new ExpectationException(
                 "Expected rubric grade 50 got '$celltext'",
-               $this->getsession()
+                $this->getsession()
             );
         }
     }
@@ -2416,7 +2432,8 @@ class behat_mod_coursework extends behat_base {
         $visiblegrade = $page->get_visible_grade();
         if ($visiblegrade != 45) {
             throw new ExpectationException(
-                "Expected the final grade to be '45', but got '{$visiblegrade}'", $this->getsession()
+                "Expected the final grade to be '45', but got '{$visiblegrade}'",
+                $this->getsession()
             );
         }
     }
@@ -2432,7 +2449,8 @@ class behat_mod_coursework extends behat_base {
         $visiblefeedback = $page->get_visible_feedback('blah');
         if ($visiblefeedback != 'blah') {
             throw new ExpectationException(
-                "Expected the feedback to be 'blah', but got '{$visiblefeedback}'", $this->getsession()
+                "Expected the feedback to be 'blah', but got '{$visiblefeedback}'",
+                $this->getsession()
             );
         }
     }
@@ -2598,7 +2616,7 @@ class behat_mod_coursework extends behat_base {
         global $CFG;
 
         $htmldata = $this->getsession()->getDriver()->getContent();
-        $fileandpath = $CFG->dataroot . '/temp/'.$filename;
+        $fileandpath = $CFG->dataroot . '/temp/' . $filename;
         file_put_contents($fileandpath, $htmldata);
         $this->open_html_page($fileandpath);
     }
@@ -2739,15 +2757,16 @@ class behat_mod_coursework extends behat_base {
 
         // Behat generates button type submit whereas code does input.
         $page = $this->getsession()->getpage();
-        $inputtype = $page->find('xpath', $locator ."//input[@type='submit']");
-        $buttontype = $page->find('xpath',  $locator ."//button[@type='submit']");
+        $inputtype = $page->find('xpath', $locator . "//input[@type='submit']");
+        $buttontype = $page->find('xpath', $locator . "//button[@type='submit']");
 
         // Check how element was created and use it to find the button.
         $button = ($inputtype !== null) ? $inputtype : $buttontype;
 
         if (!$button) {
             throw new ExpectationException(
-                "Button not found ($action): " . $button->getXpath(), $this->getsession()
+                "Button not found ($action): " . $button->getXpath(),
+                $this->getsession()
             );
         }
 
@@ -2889,9 +2908,11 @@ class behat_mod_coursework extends behat_base {
             throw new coding_exception('Must have a course to enrol the user onto');
         }
 
-        $generator->enrol_user($user->id,
-                               $this->course->id,
-                               $roleid);
+        $generator->enrol_user(
+            $user->id,
+            $this->course->id,
+            $roleid
+        );
 
         return $user;
     }
@@ -2989,7 +3010,8 @@ class behat_mod_coursework extends behat_base {
         $page = $this->get_page('coursework page');
         if (!$page->general_feedback_date_present()) {
             throw new ExpectationException(
-                'I do not see the general feedback release date when I should', $this->getsession()
+                'I do not see the general feedback release date when I should',
+                $this->getsession()
             );
         }
     }
@@ -3034,7 +3056,7 @@ class behat_mod_coursework extends behat_base {
      */
     private function open_screenshot($filename, $filepath) {
         if (PHP_OS === "Darwin" && PHP_SAPI === "cli") {
-            exec('open -a "Preview.app" ' . $filepath.'/'.$filename);
+            exec('open -a "Preview.app" ' . $filepath . '/' . $filename);
         }
     }
 
@@ -3208,10 +3230,12 @@ class behat_mod_coursework extends behat_base {
         global $DB;
 
         $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
-        role_change_permission($teacherrole->id,
-                               $this->get_coursework()->get_context(),
-                               'mod/coursework:administergrades',
-                               CAP_ALLOW);
+        role_change_permission(
+            $teacherrole->id,
+            $this->get_coursework()->get_context(),
+            'mod/coursework:administergrades',
+            CAP_ALLOW
+        );
     }
 
     /**
@@ -3229,8 +3253,10 @@ class behat_mod_coursework extends behat_base {
         $due = $page->find('xpath', "//h3[text() = '$date']/following-sibling::p[starts-with(text(), '$value')]");
 
         if (!$due) {
-            throw new ExpectationException('Should have seen due date, but it was not there',
-            $this->getsession());
+            throw new ExpectationException(
+                'Should have seen due date, but it was not there',
+                $this->getsession()
+            );
         }
     }
 
@@ -3267,8 +3293,10 @@ class behat_mod_coursework extends behat_base {
         $match = $page->find('xpath', "//li[normalize-space(string()) = 'Status $status']");
 
         if (!$match) {
-            throw new ExpectationException('Should have seen expected submission status, but it was not there',
-            $this->getsession());
+            throw new ExpectationException(
+                'Should have seen expected submission status, but it was not there',
+                $this->getsession()
+            );
         }
     }
 
@@ -3287,8 +3315,10 @@ class behat_mod_coursework extends behat_base {
         $match = $page->find('xpath', "//li[normalize-space(string()) = 'Mark $mark']");
 
         if (!$match) {
-            throw new ExpectationException('Should have seen expected mark, but it was not there',
-            $this->getsession());
+            throw new ExpectationException(
+                'Should have seen expected mark, but it was not there',
+                $this->getsession()
+            );
         }
     }
 
@@ -3303,8 +3333,10 @@ class behat_mod_coursework extends behat_base {
         $match = $page->find('xpath', "//li[starts-with(normalize-space(string()), 'Submitted $date')]");
 
         if (!$match) {
-            throw new ExpectationException("Should have seen expected submitted date $date, but it was not there",
-            $this->getsession());
+            throw new ExpectationException(
+                "Should have seen expected submitted date $date, but it was not there",
+                $this->getsession()
+            );
         }
     }
 
@@ -3329,8 +3361,10 @@ class behat_mod_coursework extends behat_base {
         $match = $page->find('css', "#marking-summary-title");
 
         if (!$match) {
-            throw new ExpectationException("Should have seen expected \"Marking summary\" heading, but it was not there",
-            $this->getsession());
+            throw new ExpectationException(
+                "Should have seen expected \"Marking summary\" heading, but it was not there",
+                $this->getsession()
+            );
         }
 
         $datahash = $table->getRowsHash();
@@ -3339,8 +3373,10 @@ class behat_mod_coursework extends behat_base {
             $match = $page->find('xpath', "//li[normalize-space(string()) = '$locator $value']");
 
             if (!$match) {
-                throw new ExpectationException("Should have seen expected value for $locator, but it was not there",
-                $this->getsession());
+                throw new ExpectationException(
+                    "Should have seen expected value for $locator, but it was not there",
+                    $this->getsession()
+                );
             }
         }
     }

@@ -33,7 +33,6 @@ use mod_coursework\stages\base;
  * the total grade.
  */
 class minimum_range_grade_percent extends moderation_set_rule {
-
     /**
      * @var int keeps track of how many we've added so we don't do too many.
      */
@@ -60,19 +59,19 @@ class minimum_range_grade_percent extends moderation_set_rule {
         $lowerlimit = ($this->lowerlimit / 100) * $maxgrade;
 
         foreach ($potentialallocatables as $id => $allocatable) {
-
             if ($this->allocatable_is_not_yet_graded($allocatable)) {
                 continue;
             }
 
             $grade = $this->get_allocatable_final_grade($allocatable);
 
-            if ($this->grade_is_below_upper_limit($grade, $upperlimit) &&
+            if (
+                $this->grade_is_below_upper_limit($grade, $upperlimit) &&
                 $this->grade_is_above_lower_limit($grade, $lowerlimit) &&
-                ($this->counter < $this->minimum)) {
-
+                ($this->counter < $this->minimum)
+            ) {
                 $moderationset[$id] = $allocatable;
-                unset ($potentialallocatables[$id]);
+                unset($potentialallocatables[$id]);
                 $this->counter++;
             }
         }
@@ -83,8 +82,8 @@ class minimum_range_grade_percent extends moderation_set_rule {
      * @return string
      */
     public function get_numeric_boundaries() {
-        $lower = empty($this->lowerlimit) ? '0' : $this->lowerlimit.'%';
-        return $lower.' - '.$this->upperlimit.'% '.get_string('minimumis', 'mod_coursework', $this->minimum);
+        $lower = empty($this->lowerlimit) ? '0' : $this->lowerlimit . '%';
+        return $lower . ' - ' . $this->upperlimit . '% ' . get_string('minimumis', 'mod_coursework', $this->minimum);
     }
 
     /**
@@ -121,27 +120,27 @@ class minimum_range_grade_percent extends moderation_set_rule {
 
         // Upper limit.
         $html .= html_writer::start_tag('p');
-        $html .= get_string('upperlimit', 'mod_coursework').' ';
+        $html .= get_string('upperlimit', 'mod_coursework') . ' ';
         $attributes = [
-            'name' => 'rule_'.self::get_name().'_upperlimit',
+            'name' => 'rule_' . self::get_name() . '_upperlimit',
             'size' => 3,
         ];
         $html .= html_writer::empty_tag('input', $attributes);
         $html .= html_writer::end_tag('p');
         // Lower limit.
         $html .= html_writer::start_tag('p');
-        $html .= get_string('lowerlimit', 'mod_coursework').' ';
+        $html .= get_string('lowerlimit', 'mod_coursework') . ' ';
         $attributes = [
-            'name' => self::get_name().'_lowerlimit',
+            'name' => self::get_name() . '_lowerlimit',
             'size' => 3,
         ];
         $html .= html_writer::empty_tag('input', $attributes);
         $html .= html_writer::end_tag('p');
         // Lower limit.
         $html .= html_writer::start_tag('p');
-        $html .= get_string('modsetminimum', 'mod_coursework').' ';
+        $html .= get_string('modsetminimum', 'mod_coursework') . ' ';
         $attributes = [
-            'name' => self::get_name().'_minimum',
+            'name' => self::get_name() . '_minimum',
             'size' => 4,
         ];
         $html .= html_writer::empty_tag('input', $attributes);
@@ -166,5 +165,4 @@ class minimum_range_grade_percent extends moderation_set_rule {
     protected function grade_is_above_lower_limit($grade, $lowerlimit) {
         return $grade >= $lowerlimit;
     }
-
 }

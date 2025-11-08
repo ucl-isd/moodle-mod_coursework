@@ -33,7 +33,6 @@ use pix_icon;
  * Class feedback_cell
  */
 class time_submitted_cell extends cell_base {
-
     /**
      * @param grading_table_row_base $rowobject
      * @throws coding_exception
@@ -56,7 +55,6 @@ class time_submitted_cell extends cell_base {
         $submission = $rowobject->get_submission();
 
         if ($submission) {
-
             // If we have groups enabled and this is not the student who submitted the
             // group files, show who did.
             if ($coursework->is_configured_to_have_group_submissions() && !$rowobject->has_submission()) {
@@ -84,12 +82,11 @@ class time_submitted_cell extends cell_base {
 
                 $content .= html_writer::start_span('late_submission');
                 $content .= get_string('late', 'coursework');
-                $content .= ' ('.$days . get_string('timedays', 'coursework') . ', ';
+                $content .= ' (' . $days . get_string('timedays', 'coursework') . ', ';
                 $content .= $hours . get_string('timehours', 'coursework') . ', ';
                 $content .= $minutes . get_string('timeminutes', 'coursework') . ', ';
                 $content .= $seconds . get_string('timeseconds', 'coursework') . ')';
                 $content .= html_writer::end_span();
-
             } else {
                 $content .= html_writer::span('(' . get_string('ontime', 'mod_coursework') . ')', 'ontime_submission');
             }
@@ -115,7 +112,7 @@ class time_submitted_cell extends cell_base {
         $ability = new ability($USER->id, $rowobject->get_coursework());
 
         if ($extension->persisted()) {
-            $content .= 'Extension: </br>'.userdate($extension->extended_deadline, '%a, %d %b %Y, %H:%M');
+            $content .= 'Extension: </br>' . userdate($extension->extended_deadline, '%a, %d %b %Y, %H:%M');
             $displayeddeadline = $extension->extended_deadline;
         }
 
@@ -136,19 +133,22 @@ class time_submitted_cell extends cell_base {
         if ($ability->can('new', $extension) && $coursework->extensions_enabled()) {
             $link = $this->get_router()->get_path('new deadline extension', $newextensionparams);
             $title = 'New extension';
-            $content .= $OUTPUT->action_link($link,
+            $content .= $OUTPUT->action_link(
+                $link,
                 $title,
                 null,
-                ['class' => 'new_deadline_extension', 'data-name' => $rowobject->get_allocatable()->name(), 'data-params' => json_encode($newextensionparams), 'data-time' => json_encode($contenttime) ]);
-
+                ['class' => 'new_deadline_extension', 'data-name' => $rowobject->get_allocatable()->name(), 'data-params' => json_encode($newextensionparams), 'data-time' => json_encode($contenttime) ]
+            );
         } else if ($ability->can('edit', $extension) && $coursework->extensions_enabled()) {
             $link = $this->get_router()->get_path('edit deadline extension', ['id' => $extension->id]);
             $icon = new pix_icon('edit', 'Edit extension', 'coursework');
 
-            $content .= $OUTPUT->action_icon($link,
+            $content .= $OUTPUT->action_icon(
+                $link,
                 $icon,
                 null,
-                ['class' => 'edit_deadline_extension', 'data-name' => $rowobject->get_allocatable()->name(), 'data-params' => json_encode($newextensionparams), 'data-time' => json_encode($contenttime)]);
+                ['class' => 'edit_deadline_extension', 'data-name' => $rowobject->get_allocatable()->name(), 'data-params' => json_encode($newextensionparams), 'data-time' => json_encode($contenttime)]
+            );
         }
 
         $content .= '</div>';
@@ -180,17 +180,19 @@ class time_submitted_cell extends cell_base {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options  = []) {
+    public function get_table_header($options = []) {
 
         // Adding this line so that the sortable heading function will make a sortable link unique to the table
         // If tablename is set
         $tablename = (!empty($options['tablename'])) ? $options['tablename'] : '';
 
-        return $this->helper_sortable_heading(get_string('tableheadsubmissiondate', 'coursework'),
+        return $this->helper_sortable_heading(
+            get_string('tableheadsubmissiondate', 'coursework'),
             'timesubmitted',
             $options['sorthow'],
             $options['sortby'],
-            $tablename);
+            $tablename
+        );
     }
 
     /**

@@ -30,7 +30,6 @@ use mod_coursework\models\deadline_extension;
  * @group mod_coursework
  */
 final class deadline_extension_test extends \advanced_testcase {
-
     use test_helpers\factory_mixin;
 
     public function setUp(): void {
@@ -86,5 +85,4 @@ final class deadline_extension_test extends \advanced_testcase {
         $extension = deadline_extension::create($params);
         $this->assertEquals($extension->get_coursework(), $coursework);
     }
-
 }

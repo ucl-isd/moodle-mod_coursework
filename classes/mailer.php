@@ -36,7 +36,6 @@ use stdClass;
  * @package mod_coursework
  */
 class mailer {
-
     /**
      * @var models\coursework
      */
@@ -63,7 +62,6 @@ class mailer {
         $submission = $this->coursework->get_user_submission($user);
 
         if ($this->coursework && $this->coursework->is_coursework_visible()) {// check if coursework exists and is not hidden
-
             $emaildata = new stdClass();
             $emaildata->name = $user->name();
             $dateformat = '%a, %d %b %Y, %H:%M';
@@ -98,7 +96,6 @@ class mailer {
 
             message_send($eventdata);
         }
-
     }
 
     /**
@@ -111,14 +108,13 @@ class mailer {
         $studentorgroup = $submission->get_allocatable();
         $recipients = $coursework->initial_assessors($studentorgroup);
         foreach ($recipients as $recipient) {
-
             // New approach.
             $eventdata = new message();
             $eventdata->component = 'mod_coursework';
             $eventdata->name = 'submission_receipt';
             $eventdata->userfrom = core_user::get_noreply_user();
             $eventdata->userto = $recipient;
-            $eventdata->subject = 'Late submission for '.$coursework->name;
+            $eventdata->subject = 'Late submission for ' . $coursework->name;
             $messagetext =
                 'A late submission was just submitted for ' . $studentorgroup->type() . ' ' . $studentorgroup->name();
             $eventdata->fullmessage = $messagetext;
@@ -247,7 +243,6 @@ class mailer {
         global $CFG;
 
         if ($this->coursework && $this->coursework->is_coursework_visible()) {// check if coursework exists and is not hidden
-
             $emaildata = new stdClass();
             $emaildata->coursework_name = $this->coursework->name;
 
@@ -276,6 +271,5 @@ class mailer {
 
             message_send($eventdata);
         }
-
     }
 }

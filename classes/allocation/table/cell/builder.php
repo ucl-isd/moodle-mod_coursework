@@ -40,7 +40,6 @@ use mod_coursework\stages\base as stage_base;
  * @package mod_coursework\allocation\table\cell
  */
 class builder {
-
     /**
      * @var coursework
      */
@@ -62,7 +61,7 @@ class builder {
      * @param stage_base $stage
      * @param array $dataarray incoming data from the allocation form
      */
-    public function __construct($coursework, $allocatable, $stage, $dataarray  = []) {
+    public function __construct($coursework, $allocatable, $stage, $dataarray = []) {
         $this->coursework = $coursework;
         $this->allocatable = $allocatable;
         $this->stage = $stage;
@@ -97,7 +96,6 @@ class builder {
         }
 
         return $this->get_stage()->potential_marker_dropdown($this->get_allocatable());
-
     }
 
     /**
@@ -174,7 +172,6 @@ class builder {
 
         if ($this->coursework->sampling_enabled() && $class !== 'final_agreed_1') {
             if ($this->get_stage()->uses_sampling()) {
-
                 if ($this->has_automatic_sampling()) {
                     $contents .= $this->get_automatically_in_sample_label();
                     $contents .= $this->sampling_hidden_checkbox();
@@ -207,7 +204,7 @@ class builder {
             $assessorname .= 'Grade: ';
             $assessorname .= $this->get_feedback()->get_grade();
         } else if ($this->has_allocation()) {
-            $assessorname .= ' '.$this->pinned_checkbox($assessordropdown);
+            $assessorname .= ' ' . $this->pinned_checkbox($assessordropdown);
             $assessorname .= $this->get_stage()->get_allocated_assessor_name($this->get_allocatable());
         }
 
@@ -224,7 +221,7 @@ class builder {
 
         return '
             <td class="' . $class . '">
-            '.$contents.'
+            ' . $contents . '
             </td>
         ';
     }
@@ -268,7 +265,7 @@ class builder {
         }
         return '
             <td class="' . $class . '">
-            '.$contents.'
+            ' . $contents . '
             </td>
         ';
     }
@@ -303,7 +300,7 @@ class builder {
         $checkboxtitle = 'Included in sample';
 
         $attributes = ['class' => 'sampling_set_checkbox',
-                            'id' => $this->get_allocatable()->type().'_' . $this->get_allocatable()->id() . '_'.$this->get_stage()->identifier() .'_samplecheckbox',
+                            'id' => $this->get_allocatable()->type() . '_' . $this->get_allocatable()->id() . '_' . $this->get_stage()->identifier() . '_samplecheckbox',
                             'title' => $checkboxtitle];
 
         // if agreed grade given or grade published to students disable remaining sampling checkbox
@@ -312,11 +309,13 @@ class builder {
             $attributes['disabled'] = 'true';
         }
 
-        return html_writer::checkbox($checkboxname,
-                                      1,
-                                      $checkboxchecked,
-                                      get_string('includedinsample', 'mod_coursework'),
-                                      $attributes);
+        return html_writer::checkbox(
+            $checkboxname,
+            1,
+            $checkboxchecked,
+            get_string('includedinsample', 'mod_coursework'),
+            $attributes
+        );
     }
 
     /**
@@ -327,13 +326,16 @@ class builder {
             'allocatables[' . $this->get_allocatable()->id . '][' . $this->get_stage()->identifier() . '][in_set]';
         $checkboxtitle = 'Included in sample';
 
-        return html_writer::checkbox($checkboxname,
+        return html_writer::checkbox(
+            $checkboxname,
             1,
             1,
-           '',
+            '',
             ['class' => 'sampling_set_checkbox',
-                'id' => $this->get_allocatable()->type().'_' . $this->get_allocatable()->id() . '_'.$this->get_stage()->identifier() .'_samplecheckbox',
-                'title' => $checkboxtitle, 'hidden' => true]);
+                'id' => $this->get_allocatable()->type() . '_' . $this->get_allocatable()->id() . '_' . $this->get_stage()->identifier() . '_samplecheckbox',
+            'title' => $checkboxtitle,
+            'hidden' => true]
+        );
     }
 
     /**
@@ -372,12 +374,14 @@ class builder {
 
         $stage = substr($this->get_stage()->identifier(), -1);
         $checkboxtitle = 'Pinned (auto allocations will not alter this)';
-        return html_writer::checkbox($checkboxname,
-                                                     1,
-                                                     $checkboxchecked,
-                                                     '',
-                                                     ['class' => "pinned pin_$stage",
-                                                           'title' => $checkboxtitle]);
+        return html_writer::checkbox(
+            $checkboxname,
+            1,
+            $checkboxchecked,
+            '',
+            ['class' => "pinned pin_$stage",
+            'title' => $checkboxtitle]
+        );
     }
 
     private function checkbox_checked_in_session($checkboxname, $checkboxstate) {
@@ -390,11 +394,9 @@ class builder {
             if (isset($SESSION->coursework_allocationsessions[$cm->id][$checkboxname])) {
                 return  $SESSION->coursework_allocationsessions[$cm->id][$checkboxname];
             }
-
         }
 
         return $checkboxstate;
-
     }
 
     /**

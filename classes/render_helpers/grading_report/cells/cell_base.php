@@ -32,7 +32,6 @@ use mod_coursework_object_renderer;
  * Class cell_base
  */
 abstract class cell_base implements cell_interface {
-
     /**
      * @var coursework
      */
@@ -41,7 +40,7 @@ abstract class cell_base implements cell_interface {
     /**
      * @param array $items
      */
-    public function __construct($items  = []) {
+    public function __construct($items = []) {
         $this->coursework = $items['coursework'];
         $this->after_initialisation($items);
     }
@@ -57,7 +56,7 @@ abstract class cell_base implements cell_interface {
      * @return string
      * @throws coding_exception
      */
-    protected function helper_sortable_heading($displayname, $field, $sorthow, $sortby = '', $tablename='') {
+    protected function helper_sortable_heading($displayname, $field, $sorthow, $sortby = '', $tablename = '') {
         return $displayname;
     }
 
@@ -92,7 +91,7 @@ abstract class cell_base implements cell_interface {
      */
     protected function get_new_cell_with_class($content = '') {
         return '
-        <td data-class-name="' . get_class($this) . '" class="'. $this->cell_name().'">'.$content.'
+        <td data-class-name="' . get_class($this) . '" class="' . $this->cell_name() . '">' . $content . '
         </td>
         ';
     }
@@ -102,7 +101,7 @@ abstract class cell_base implements cell_interface {
      * @return html_table_cell
      */
     protected function get_new_cell_with_order_data($data) {
-        return '<td class="' . $this->cell_name() .'" data-order="' . $data['@data-order'] . '">' . $data['display'] . '</td>';
+        return '<td class="' . $this->cell_name() . '" data-order="' . $data['@data-order'] . '">' . $data['display'] . '</td>';
     }
 
     /**
@@ -112,14 +111,11 @@ abstract class cell_base implements cell_interface {
      * @return void
      */
     protected function after_initialisation($items) {
-
     }
 
     /**
      * Override for the header help message
      */
     public function get_table_header_help_icon() {
-
     }
-
 }

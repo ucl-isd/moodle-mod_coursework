@@ -42,7 +42,6 @@ use stdClass;
  * that the final comment for the gradebook can be added.
  */
 class assessor_feedback_mform extends moodleform {
-
     /**
      * @var int the id of the submission that the grade pertains to
      */
@@ -111,10 +110,15 @@ class assessor_feedback_mform extends moodleform {
         if (feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)) {
             $this->_grading_controller = $this->coursework->get_advanced_grading_active_controller();
             $this->_grading_instance = $this->_grading_controller->get_or_create_instance(
-                0, $this->feedback->assessorid, $this->feedback->id
+                0,
+                $this->feedback->assessorid,
+                $this->feedback->id
             );
             $mform->addElement(
-                'grading', 'advancedgrading', get_string('grade', 'mod_coursework'), ['gradinginstance' => $this->_grading_instance]
+                'grading',
+                'advancedgrading',
+                get_string('grade', 'mod_coursework'),
+                ['gradinginstance' => $this->_grading_instance]
             );
 
             // This link is required by the core behat step to complete a rubric.
@@ -125,14 +129,20 @@ class assessor_feedback_mform extends moodleform {
             $mform->addElement('text', 'grade', get_string('grade', 'mod_coursework'));
             $mform->setType('grade', PARAM_RAW);
             $mform->addRule(
-                'grade', get_string('err_valueoutofrange', 'mod_coursework'), 'numeric', null, 'client'
+                'grade',
+                get_string('err_valueoutofrange', 'mod_coursework'),
+                'numeric',
+                null,
+                'client'
             );
         } else {
-            $mform->addElement('select',
-                               'grade',
-                               get_string('grade', 'mod_coursework'),
-                               $grademenu,
-                               ['id' => 'feedback_grade']);
+            $mform->addElement(
+                'select',
+                'grade',
+                get_string('grade', 'mod_coursework'),
+                $grademenu,
+                ['id' => 'feedback_grade']
+            );
         }
 
         // Useful to keep the overall comments even if we have a rubric or something. There may be a place
@@ -147,14 +157,15 @@ class assessor_feedback_mform extends moodleform {
         ];
 
         $uploadfilestring = get_string('uploadafile');
-        $this->_form->addElement('filemanager',
-                                 'feedback_manager',
-                                 $uploadfilestring,
-                                 null,
-                                 $filemanageroptions);
+        $this->_form->addElement(
+            'filemanager',
+            'feedback_manager',
+            $uploadfilestring,
+            null,
+            $filemanageroptions
+        );
 
         $this->add_submit_buttons($this->feedback->id);
-
     }
     /**
      *
@@ -181,13 +192,14 @@ class assessor_feedback_mform extends moodleform {
 
         if ($feedbackid &&  !$ispublished) {
             $buttonarray[] = $this->_form->createElement(
-                'submit', 'removefeedbackbutton', get_string('removefeedback', 'coursework')
+                'submit',
+                'removefeedbackbutton',
+                get_string('removefeedback', 'coursework')
             );
         }
         $buttonarray[] = $this->_form->createElement('cancel');
         $this->_form->addGroup($buttonarray, 'buttonar', '', [' '], false);
         $this->_form->closeHeaderBefore('buttonar');
-
     }
 
     /**
@@ -219,9 +231,9 @@ class assessor_feedback_mform extends moodleform {
             $controller = $this->coursework->get_advanced_grading_active_controller();
             $gradinginstance = $controller->get_or_create_instance(0, $this->feedback->assessorid, $this->feedback->id);
             $this->feedback->grade = $gradinginstance->submit_and_get_grade(
-                $formdata->advancedgrading, $this->feedback->id
+                $formdata->advancedgrading,
+                $this->feedback->id
             );
-
         } else if ($this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1) {
             $this->feedback->grade = format_float($formdata->grade, $this->coursework->get_grade_item()->get_decimals());
         } else {
@@ -248,11 +260,13 @@ class assessor_feedback_mform extends moodleform {
 
         $formdata = $this->get_data();
 
-        file_save_draft_area_files($formdata->feedback_manager,
-                                   $this->feedback->get_coursework()->get_context()->id,
-                                   'mod_coursework',
-                                   'feedback',
-                                   $this->feedback->id);
+        file_save_draft_area_files(
+            $formdata->feedback_manager,
+            $this->feedback->get_coursework()->get_context()->id,
+            'mod_coursework',
+            'feedback',
+            $this->feedback->id
+        );
     }
 
     /**
@@ -310,8 +324,11 @@ class assessor_feedback_mform extends moodleform {
 
         if ($isnewagreedfeedback || $isexistingagreedfeedback) {
             $data = (new grading_guide_agreed_grades(
-                $this->_form->getAttributes(), $this->_form->_elements, $this->_grading_controller, $this->submission
-                ))->export_for_template($OUTPUT);
+                $this->_form->getAttributes(),
+                $this->_form->_elements,
+                $this->_grading_controller,
+                $this->submission
+            ))->export_for_template($OUTPUT);
             echo $OUTPUT->render_from_template('coursework/marking_guide_agree_grades_form', $data);
             return;
         }
@@ -348,4 +365,3 @@ class assessor_feedback_mform extends moodleform {
         return is_numeric($grade) && $grade >= min($gradeoptions) && $grade <= max($gradeoptions);
     }
 }
-

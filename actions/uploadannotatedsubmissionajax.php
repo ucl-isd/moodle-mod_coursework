@@ -138,7 +138,7 @@ if ($maxupload !== USER_CAN_IGNORE_FILE_SIZE_LIMITS && $totalsize > $maxupload) 
     throw new file_exception('userquotalimit');
 }
 
-$filerecord = new stdClass;
+$filerecord = new stdClass();
 $filerecord->component = 'mod_coursework';
 $filerecord->contextid = $context->id;
 $filerecord->userid = $USER->id;
@@ -152,8 +152,14 @@ $filerecord->source = $fileid;
 $filerecord->filesize = $file->size;
 
 // Check if the file already exist.
-$existingfile = $fs->get_file($filerecord->contextid, $filerecord->component, $filerecord->filearea,
-    $filerecord->itemid, $filerecord->filepath, $filerecord->filename);
+$existingfile = $fs->get_file(
+    $filerecord->contextid,
+    $filerecord->component,
+    $filerecord->filearea,
+    $filerecord->itemid,
+    $filerecord->filepath,
+    $filerecord->filename
+);
 
 if ($existingfile && $existingfile->get_userid() == $USER->id) {
     $existingfile->delete();

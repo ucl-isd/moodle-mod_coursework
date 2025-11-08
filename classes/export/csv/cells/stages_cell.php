@@ -28,7 +28,6 @@ use mod_coursework\models\submission;
  * Class stages_cell
  */
 class stages_cell extends cell_base {
-
     /**
      * @param submission $submission
      * @param $student
@@ -50,7 +49,7 @@ class stages_cell extends cell_base {
         $gradedata = [];
         // go through each stage and get a grade, if grade not present then put  a placeholder
         for ($i = 1; $i <= $this->stages; $i++) {
-            $stageident = 'assessor_'.$i;
+            $stageident = 'assessor_' . $i;
             $grade = $submission->get_assessor_feedback_by_stage($stageident);
 
             if ($this->coursework->allocation_enabled()) {
@@ -126,8 +125,8 @@ class stages_cell extends cell_base {
             if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()) {
                 $criteria = $this->coursework->get_rubric_criteria();
                 foreach ($criteria as $id => $record) {
-                    $fields['assessor' .$i. 'description' . $id] = 'Assessor '. $i . ' - '.$record['description'];
-                    $fields['assessor' .$i. 'description' . $id . 'comment'] = 'Comment for: Assessor '. $i . ' - '.$record['description'];
+                    $fields['assessor' . $i . 'description' . $id] = 'Assessor ' . $i . ' - ' . $record['description'];
+                    $fields['assessor' . $i . 'description' . $id . 'comment'] = 'Comment for: Assessor ' . $i . ' - ' . $record['description'];
                 }
             }
 
@@ -137,12 +136,11 @@ class stages_cell extends cell_base {
             $fields['assessor' . $i . 'markingtime'] = 'Assessor ' . $i . ' marked on';
         }
         if ($this->stages >= 2) { // if there are two or more stages for a submission, we will have agreed grade
-
             if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()) {
                 $criteria = $this->coursework->get_rubric_criteria();
                 foreach ($criteria as $id => $record) {
-                    $fields['agreedgrade_description_' . $id] = 'Agreed grade - '.$record['description'];
-                    $fields['agreedgrade_description_' . $id. 'comment'] = 'Comment for: Agreed grade - '.$record['description'];
+                    $fields['agreedgrade_description_' . $id] = 'Agreed grade - ' . $record['description'];
+                    $fields['agreedgrade_description_' . $id . 'comment'] = 'Comment for: Agreed grade - ' . $record['description'];
                 }
             }
 
@@ -154,5 +152,4 @@ class stages_cell extends cell_base {
 
         return $fields;
     }
-
 }

@@ -34,7 +34,6 @@ use stdClass;
  * @package mod_coursework\allocation
  */
 interface allocatable {
-
     /**
      * @return string
      */

@@ -44,7 +44,6 @@ use stdClass;
  * @package mod_coursework\framework
  */
 abstract class ability {
-
     /**
      * @var ?user $user;
      */
@@ -103,7 +102,6 @@ abstract class ability {
         }
 
         return false;
-
     }
 
     /**
@@ -209,5 +207,4 @@ abstract class ability {
 
         $this->rules[] = $rule;
     }
-
 }

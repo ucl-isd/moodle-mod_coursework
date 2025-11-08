@@ -29,14 +29,13 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot.'/lib/formslib.php');
+require_once($CFG->dirroot . '/lib/formslib.php');
 
 /**
  * This is the non-javascript form that will pop up and allow people to add grades to
  * individual submissions.
  */
 class general_feedback_form extends moodleform {
-
     /**
      * Defines the elements of the form.
      */

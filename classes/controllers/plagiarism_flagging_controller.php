@@ -48,7 +48,6 @@ require_once($CFG->dirroot . '/mod/coursework/renderer.php');
  */
 #[AllowDynamicProperties]
 class plagiarism_flagging_controller extends controller_base {
-
     /**
      * @var plagiarism_flag
      */
@@ -77,7 +76,6 @@ class plagiarism_flagging_controller extends controller_base {
 
         $renderer = $this->get_page_renderer();
         $renderer->new_plagiarism_flag_page($plagiarismflag);
-
     }
 
     /**
@@ -200,28 +198,34 @@ class plagiarism_flagging_controller extends controller_base {
         global $DB;
 
         if (!empty($this->params['flagid'])) {
-            $plagiarismflag = $DB->get_record('coursework_plagiarism_flags',
+            $plagiarismflag = $DB->get_record(
+                'coursework_plagiarism_flags',
                 ['id' => $this->params['flagid']],
                 '*',
-                MUST_EXIST);
+                MUST_EXIST
+            );
             $this->flag = new plagiarism_flag($plagiarismflag);
             $this->params['courseworkid'] = $this->flag->get_coursework()->id;
         }
 
         if (!empty($this->params['submissionid'])) {
-            $submission = $DB->get_record('coursework_submissions',
+            $submission = $DB->get_record(
+                'coursework_submissions',
                 ['id' => $this->params['submissionid']],
                 '*',
-                MUST_EXIST);
+                MUST_EXIST
+            );
             $this->submission = submission::find($submission);
             $this->params['courseworkid'] = $this->submission->courseworkid;
         }
 
         if (!empty($this->params['moderationid'])) {
-            $moderation = $DB->get_record('coursework_mod_agreements',
+            $moderation = $DB->get_record(
+                'coursework_mod_agreements',
                 ['id' => $this->params['moderationid']],
                 '*',
-                MUST_EXIST);
+                MUST_EXIST
+            );
             $this->moderation = moderation::find($moderation);
             $this->params['courseworkid'] = $this->moderation->get_coursework()->id;
         }

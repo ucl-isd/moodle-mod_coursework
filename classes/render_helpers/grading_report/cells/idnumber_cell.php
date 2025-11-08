@@ -27,7 +27,6 @@ use mod_coursework\user_row;
  * Class idnumber_cell
  */
 class idnumber_cell extends cell_base implements allocatable_cell {
-
     /**
      * @param user_row $rowobject
      * @return string
@@ -43,7 +42,7 @@ class idnumber_cell extends cell_base implements allocatable_cell {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options  = []) {
+    public function get_table_header($options = []) {
 
         $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->coursework->get_context());
 
@@ -53,12 +52,13 @@ class idnumber_cell extends cell_base implements allocatable_cell {
 
         // allow to sort users only if CW is not set to blind marking or a user has capability to view anonymous
         if ($viewanonymous || !$this->coursework->blindmarking) {
-            $sortheader = $this->helper_sortable_heading(get_string('idnumber'),
+            $sortheader = $this->helper_sortable_heading(
+                get_string('idnumber'),
                 'idnumber',
                 $options['sorthow'],
                 $options['sortby'],
-                $tablename);
-
+                $tablename
+            );
         } else { // otherwise display header without sorting
             $sortheader = get_string('idnumber');
         }

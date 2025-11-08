@@ -47,7 +47,6 @@ require_once($CFG->dirroot . '/mod/coursework/renderer.php');
  *
  */
 class moderations_controller extends controller_base {
-
     /**
      * @var moderation
      */
@@ -88,7 +87,6 @@ class moderations_controller extends controller_base {
 
         $renderer = $this->get_page_renderer();
         $renderer->new_moderation_page($moderatoragreement);
-
     }
 
     /**
@@ -222,28 +220,34 @@ class moderations_controller extends controller_base {
         global $DB;
 
         if (!empty($this->params['feedbackid'])) {
-            $feedback = $DB->get_record('coursework_feedbacks',
+            $feedback = $DB->get_record(
+                'coursework_feedbacks',
                 ['id' => $this->params['feedbackid']],
                 '*',
-                MUST_EXIST);
+                MUST_EXIST
+            );
             $this->feedback = new feedback($feedback);
             $this->params['courseworkid'] = $this->feedback->get_coursework()->id;
         }
 
         if (!empty($this->params['submissionid'])) {
-            $submission = $DB->get_record('coursework_submissions',
+            $submission = $DB->get_record(
+                'coursework_submissions',
                 ['id' => $this->params['submissionid']],
                 '*',
-                MUST_EXIST);
+                MUST_EXIST
+            );
             $this->submission = submission::find($submission);
             $this->params['courseworkid'] = $this->submission->courseworkid;
         }
 
         if (!empty($this->params['moderationid'])) {
-            $moderation = $DB->get_record('coursework_mod_agreements',
+            $moderation = $DB->get_record(
+                'coursework_mod_agreements',
                 ['id' => $this->params['moderationid']],
                 '*',
-                MUST_EXIST);
+                MUST_EXIST
+            );
             $this->moderation = moderation::find($moderation);
             $this->params['courseworkid'] = $this->moderation->get_coursework()->id;
         }
@@ -260,7 +264,7 @@ class moderations_controller extends controller_base {
 
         $stage = $this->coursework->get_stage($identifier);
         if (!$stage->user_is_moderator($USER)) {
-            if (!(has_capability('mod/coursework:moderate', $this->coursework->get_context()) ) ) {
+            if (!(has_capability('mod/coursework:moderate', $this->coursework->get_context()) )) {
                 throw new access_denied($this->coursework, 'You are not authorised to moderte this feedback');
             }
         }

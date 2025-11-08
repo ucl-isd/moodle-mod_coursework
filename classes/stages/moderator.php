@@ -30,7 +30,6 @@ namespace mod_coursework\stages;
  * @package mod_coursework
  */
 class moderator extends base {
-
     /**
      * Value for mdl_coursework_feedbacks.stageidentifier for feedback from moderator 1.
      */
@@ -55,5 +54,4 @@ class moderator extends base {
     protected function strategy_name(): string {
         return 'none';
     }
-
 }

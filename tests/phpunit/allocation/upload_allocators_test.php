@@ -28,7 +28,7 @@ use mod_coursework\models\coursework;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir.'/csvlib.class.php');
+require_once($CFG->libdir . '/csvlib.class.php');
 
 /**
  * Class upload_allocators_test.

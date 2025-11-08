@@ -39,7 +39,6 @@ use mod_coursework\stages\base as stage_base;
  */
 #[AllowDynamicProperties]
 class builder {
-
     /**
      * @var coursework
      */
@@ -77,13 +76,14 @@ class builder {
         $sorting = new mod_coursework\grading_report($this->options, $this->coursework);
         $methodname = 'sort_by_' . $this->options['sortby'];
         if (method_exists($sorting, $methodname)) {
-            usort($rows,
+            usort(
+                $rows,
                 [$sorting,
-                    $methodname]);
+                $methodname]
+            );
         }
 
         return $rows;
-
     }
 
     /**
@@ -115,9 +115,11 @@ class builder {
         $sorting = new mod_coursework\grading_report($this->options, $this->coursework);
         $methodname = 'sort_by_' . $this->options['sortby'];
         if (method_exists($sorting, $methodname)) {
-            usort($rows,
+            usort(
+                $rows,
                 [$sorting,
-                    $methodname]);
+                $methodname]
+            );
         }
 
         // Now, we remove the ones who should not be visible on this page. Must happen AFTER the sort!
@@ -131,7 +133,6 @@ class builder {
         $end = (empty($end)) ? count($rows) : $end;
         $counter = 0; // Begin from the first one that the user could see.
         foreach ($rows as $allocatableid => $row) {
-
             $counter++;
 
             if ($counter <= $start || $counter > $end) { // Taking care not to include the same ones in two pages.
@@ -143,7 +144,6 @@ class builder {
         $this->totalcount = $counter;
 
         return $this->totalrows;
-
     }
 
     /**

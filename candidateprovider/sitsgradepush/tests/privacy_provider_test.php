@@ -27,7 +27,6 @@ use courseworkcandidateprovider_sitsgradepush\privacy\provider;
  * @author     Alex Yeung <k.yeung@ucl.ac.uk>
  */
 final class privacy_provider_test extends \advanced_testcase {
-
     protected function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();

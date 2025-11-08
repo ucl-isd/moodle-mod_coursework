@@ -33,13 +33,12 @@ require_once($CFG->dirroot . '/mod/coursework/tests/behat/pages/page_base.php');
  *
  */
 class mod_coursework_behat_single_grading_interface extends mod_coursework_behat_page_base {
-
     /**
      * @param $studenthash
      * @return bool
      */
     public function student_has_a_final_grade($studenthash): bool {
-        $studentgradecell = $this->getpage()->find('css', '#submission_'. $studenthash.' .single_final_grade_cell');
+        $studentgradecell = $this->getpage()->find('css', '#submission_' . $studenthash . ' .single_final_grade_cell');
         return !empty($studentgradecell->getText());
     }
 
@@ -51,7 +50,7 @@ class mod_coursework_behat_single_grading_interface extends mod_coursework_behat
         $locator = '[data-allocateble-id="' . $this->allocatable_identifier_hash($allocatable) . '"]';
 
         if (isset($assessornumber)) {
-            $locator .= ' [data-behat-markstage="'. $assessornumber . '"]';
+            $locator .= ' [data-behat-markstage="' . $assessornumber . '"]';
         }
 
         $locator .= ' [data-mark-action="addfeedback"]';
@@ -66,7 +65,7 @@ class mod_coursework_behat_single_grading_interface extends mod_coursework_behat
         $locator = '[data-allocateble-id="' . $this->allocatable_identifier_hash($allocatable) . '"]';
 
         if (isset($assessornumber)) {
-            $locator .= ' [data-behat-markstage="'. $assessornumber . '"]';
+            $locator .= ' [data-behat-markstage="' . $assessornumber . '"]';
         }
 
         $locator .= ' [data-mark-action="editfeedback"]';

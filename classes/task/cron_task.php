@@ -28,7 +28,6 @@ use mod_coursework\cron;
  */
 
 class cron_task extends scheduled_task {
-
     /**
      * Get a descriptive name for this task (shown to admins).
      *

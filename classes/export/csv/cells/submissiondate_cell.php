@@ -28,7 +28,6 @@ use mod_coursework\models\submission;
  * Class submissiondate_cell
  */
 class submissiondate_cell extends cell_base {
-
     /**
      * @param submission $submission
      * @param $student
@@ -47,5 +46,4 @@ class submissiondate_cell extends cell_base {
     public function get_header($stage) {
         return  get_string('submissiondate', 'coursework');
     }
-
 }

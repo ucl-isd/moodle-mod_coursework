@@ -34,7 +34,6 @@ use mod_coursework\models\submission;
  * Class cell_base
  */
 abstract class cell_base implements cell_interface {
-
     /**
      * @var coursework
      */
@@ -52,9 +51,8 @@ abstract class cell_base implements cell_interface {
         $this->coursework = new coursework($coursework->id);
         $this->dateformat = '%a, %d %b %Y, %H:%M';
         $this->stages = $this->coursework->get_max_markers();
-        $this->extension = new deadline_extension;
-        $this->plagiarismflag = new plagiarism_flag;
-
+        $this->extension = new deadline_extension();
+        $this->plagiarismflag = new plagiarism_flag();
     }
 
     /**
@@ -165,7 +163,7 @@ abstract class cell_base implements cell_interface {
 
         $flag = $this->plagiarismflag->get_plagiarism_flag($submission);
 
-        return get_string('plagiarism_'.$flag->status, 'mod_coursework');
+        return get_string('plagiarism_' . $flag->status, 'mod_coursework');
     }
 
     /**
@@ -202,7 +200,7 @@ abstract class cell_base implements cell_interface {
 
         $assessor = $DB->get_record('user', ['id' => $assessorid], 'firstname, lastname');
 
-        return $assessor->lastname .' '. $assessor->firstname;
+        return $assessor->lastname . ' ' . $assessor->firstname;
     }
 
     /**
@@ -268,7 +266,7 @@ abstract class cell_base implements cell_interface {
      * Function to validate cell for the file upload
      * @return mixed
      */
-    public function validate_cell($value, $submissions, $stageidentifier='', $uploadedgradecells  = []) {
+    public function validate_cell($value, $submissions, $stageidentifier = '', $uploadedgradecells = []) {
         return true;
     }
 
@@ -279,7 +277,6 @@ abstract class cell_base implements cell_interface {
     public function get_rubric_scores_gradedata($grade, &$gradedata) {
 
         if ($grade) {
-
             $controller = $this->coursework->get_advanced_grading_active_controller();
             $gradinginstance = $controller->get_or_create_instance(0, $grade->assessorid, $grade->id);
             /**
@@ -290,7 +287,6 @@ abstract class cell_base implements cell_interface {
             foreach ($rubricmarks['criteria'] as $id => $record) {
                 $gradedata[] = $controller->get_definition()->rubric_criteria[$id]['levels'][$record['levelid']]['score'];
                 $gradedata[] = $record['remark'];
-
             }
         } else {
             $criterias = $this->coursework->get_rubric_criteria();

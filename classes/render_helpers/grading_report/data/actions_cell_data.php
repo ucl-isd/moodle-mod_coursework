@@ -191,7 +191,8 @@ class actions_cell_data extends cell_data_base {
                 [
                     'cmid' => $rowsbase->get_course_module_id(),
                     'submissionid' => $rowsbase->get_submission_id(),
-                ]);
+                ]
+            );
             $data->unfinalise = new stdClass();
             $data->unfinalise->url = $url->out(false);
             $data->unfinalise->studentname = $rowsbase->can_see_user_name()
@@ -207,9 +208,11 @@ class actions_cell_data extends cell_data_base {
      */
     protected function set_plagiarism_data(stdClass $data, grading_table_row_base $rowsbase): void {
         // Early returns for conditions where plagiarism data should not be shown.
-        if (!$this->coursework->plagiarism_flagging_enbled() ||
+        if (
+            !$this->coursework->plagiarism_flagging_enbled() ||
             !$rowsbase->get_submission() ||
-            !$rowsbase->get_submission()->is_finalised()) {
+            !$rowsbase->get_submission()->is_finalised()
+        ) {
             return;
         }
 
@@ -274,7 +277,9 @@ class actions_cell_data extends cell_data_base {
                 'date' => $personaldeadlineobject->personaldeadline,
                 'time' => userdate($personaldeadlineobject->personaldeadline, '%d-%m-%Y %I:%M', fixday: false),
                 'time_content' => userdate(
-                    $personaldeadlineobject->personaldeadline, get_string('strftimedaydatetime', 'langconfig'), fixday: false
+                    $personaldeadlineobject->personaldeadline,
+                    get_string('strftimedaydatetime', 'langconfig'),
+                    fixday: false
                 ),
                 'exists' => $personaldeadlineobject->personaldeadline > 0 ? 1 : 0,
                 // Disable deadline edit link if extension also exists (as ability class will throw error if edit attempted).

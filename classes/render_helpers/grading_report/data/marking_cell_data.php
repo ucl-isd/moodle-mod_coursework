@@ -131,10 +131,10 @@ class marking_cell_data extends cell_data_base {
         // Mark URL.
         if ($action) {
             $marker->markurl = $this->get_mark_url(
-                    $action,
-                    $rowsbase->get_submission(),
-                    $row->get_stage(),
-                    $feedback
+                $action,
+                $rowsbase->get_submission(),
+                $row->get_stage(),
+                $feedback
             );
         } else {
             // User cannot see the mark.
@@ -317,9 +317,11 @@ class marking_cell_data extends cell_data_base {
      */
     public function get_final_feedback_data(grading_table_row_base $rowsbase): ?stdClass {
         // Early return if sampling is enabled but no sampled feedback exists.
-        if ($rowsbase->get_coursework()->sampling_enabled() &&
+        if (
+            $rowsbase->get_coursework()->sampling_enabled() &&
             $rowsbase->get_submission() &&
-            !$rowsbase->get_submission()->sampled_feedback_exists()) {
+            !$rowsbase->get_submission()->sampled_feedback_exists()
+        ) {
             return null;
         }
 

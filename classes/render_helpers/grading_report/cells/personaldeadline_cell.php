@@ -31,7 +31,6 @@ use pix_icon;
  * Class personaldeadline_cell
  */
 class personaldeadline_cell extends cell_base {
-
     /**
      * @param grading_table_row_base $rowobject
      * @throws coding_exception
@@ -55,7 +54,7 @@ class personaldeadline_cell extends cell_base {
             $deadline = $personaldeadline->personaldeadline;
         }
         $date = userdate($deadline, '%a, %d %b %Y, %H:%M');
-        $content .= '<div class="content_personaldeadline">'.$date.'</div>';
+        $content .= '<div class="content_personaldeadline">' . $date . '</div>';
         $ability = new ability($USER->id, $rowobject->get_coursework());
         $class = 'edit_personaldeadline';
         if (!$ability->can('edit', $personaldeadline)) {
@@ -66,7 +65,8 @@ class personaldeadline_cell extends cell_base {
         $icon = new pix_icon('edit', 'Edit personal deadline', 'coursework');
         $newpersonaldeadlineparams['multipleuserdeadlines'] = 0;
 
-        $content .= $OUTPUT->action_icon($link,
+        $content .= $OUTPUT->action_icon(
+            $link,
             $icon,
             null,
             [
@@ -85,15 +85,17 @@ class personaldeadline_cell extends cell_base {
      * @param array $options
      * @return string
      */
-    public function get_table_header($options  = []) {
+    public function get_table_header($options = []) {
 
         $tablename = (!empty($options['tablename'])) ? $options['tablename'] : '';
 
-        return $this->helper_sortable_heading(get_string('tableheadpersonaldeadline', 'coursework'),
+        return $this->helper_sortable_heading(
+            get_string('tableheadpersonaldeadline', 'coursework'),
             'personaldeadline',
             $options['sorthow'],
             $options['sortby'],
-            $tablename);
+            $tablename
+        );
     }
 
     /**

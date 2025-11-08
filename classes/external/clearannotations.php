@@ -35,7 +35,6 @@ use mod_coursework\models\user;
  * @since     Moodle 4.5
  */
 class clearannotations extends external_api {
-
     /**
      * Describes the parameters.
      *

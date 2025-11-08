@@ -29,7 +29,6 @@ use stored_file;
  * Renderable files list object.
  */
 abstract class files implements countable {
-
     /**
      * @var stored_file[]
      */
@@ -43,7 +42,7 @@ abstract class files implements countable {
     /**
      * @param array $files
      */
-    public function __construct($files  = []) {
+    public function __construct($files = []) {
         $this->files = $files;
     }
 
@@ -87,5 +86,4 @@ abstract class files implements countable {
     public function count(): int {
         return is_countable($this->files) ? count($this->files) : 0;
     }
-
 }
