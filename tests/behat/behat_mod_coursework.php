@@ -1515,6 +1515,13 @@ class behat_mod_coursework extends behat_base {
         $this->ensure_element_exists($element, 'css_element');
     }
 
+    /**
+     * @return bool
+     */
+    public function running_javascript() {
+        return parent::running_javascript();
+    }
+
     // Course steps
 
     /**
