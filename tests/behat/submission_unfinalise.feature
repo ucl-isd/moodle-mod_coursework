@@ -44,7 +44,6 @@ Feature: Manager manually un-finalising a student submission
     And I should see "Draft" in the table row containing "student student1"
     And I log out
 
-
     And I log in as a student
     And I visit the coursework page
     And I should see "Submitted"

@@ -1,10 +1,10 @@
 @mod @mod_coursework @mod_coursework_feedback_rubrics
 Feature: Adding feedback using the built in Moodle rubrics
 
-    As a teacher
-    I want to be able to give detailed feedback about specific parts of the students work
-    in a standardised way
-    So that I can grade the work faster, give more consistent responses and make the process more fair
+  As a teacher
+  I want to be able to give detailed feedback about specific parts of the students work
+  in a standardised way
+  So that I can grade the work faster, give more consistent responses and make the process more fair
 
   Background:
     Given there is a course
@@ -39,8 +39,8 @@ Feature: Adding feedback using the built in Moodle rubrics
     Given there is a rubric defined for the coursework
     Given I visit the coursework page
     When I click on the add feedback button
-     And I grade by filling the rubric with:
-       | first criterion | 2 | Very good |
+    And I grade by filling the rubric with:
+      | first criterion | 2 | Very good |
     And I press "Save and finalise"
     And I log out
     And I log in as a manager
