@@ -278,8 +278,8 @@ class feedback_controller extends controller_base {
                 $cancelurl->param('removefeedbackbutton', 0);
                 $cancelurl->param('feedbackid', $this->params['feedbackid']);
                 $cancelurl->param('finalised', $this->params['finalised']);
-                $renderer = $this->get_page_renderer();
-                return  $renderer->confirm_feedback_removal_page($teacherfeedback, $confirmurl);
+                $this->get_page_renderer()->confirm_feedback_removal_page($teacherfeedback, $confirmurl);
+                return;
             } else {
                 feedback::remove_cache($teacherfeedback->get_courseworkid());
                 submission::remove_cache($teacherfeedback->get_courseworkid());
