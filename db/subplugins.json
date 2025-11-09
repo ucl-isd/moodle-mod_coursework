@@ -1,5 +1,8 @@
 {
-  "plugintypes" : {
-    "courseworkcandidateprovider" : "mod\/coursework\/candidateprovider"
+  "plugintypes": {
+    "courseworkcandidateprovider": "mod\/coursework\/candidateprovider"
+  },
+  "subplugintypes": {
+    "courseworkcandidateprovider": "candidateprovider"
   }
 }
