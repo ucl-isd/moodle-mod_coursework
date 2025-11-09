@@ -101,11 +101,9 @@ class plagiarism_flag extends table_base {
             case self::INVESTIGATION:
             case self::NOTCLEARED:
                 return false;
-                break;
             case self::RELEASED:
             case self::CLEARED:
                 return true;
-            break;
         }
     }
 
