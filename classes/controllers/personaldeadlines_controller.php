@@ -214,7 +214,6 @@ class personaldeadlines_controller extends controller_base {
      */
     protected function set_default_current_deadline() {
         $params = [
-            'allocatableid' => $this->params['allocatableid'],
             'allocatabletype' => $this->params['allocatabletype'],
             'courseworkid' => $this->params['courseworkid'],
         ];
