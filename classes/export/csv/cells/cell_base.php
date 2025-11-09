@@ -297,7 +297,7 @@ abstract class cell_base implements cell_interface {
             }
         } else {
             $criterias = $this->coursework->get_rubric_criteria();
-            foreach ($criterias as $criteria) { // if no marks we need same amount of empty holders
+            foreach ($criterias as $unused) { // if no marks we need same amount of empty holders
                 $gradedata[] = '';
                 $gradedata[] = '';
             }

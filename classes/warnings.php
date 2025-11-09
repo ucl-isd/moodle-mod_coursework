@@ -286,7 +286,7 @@ class warnings {
                 AND stageidentifier = :stageidentifier
                 AND allocatableid = :allocatableid";
 
-        return $existingallocations = $DB->get_records_sql($sql, $params);
+        return $DB->get_records_sql($sql, $params);
     }
 
     /**

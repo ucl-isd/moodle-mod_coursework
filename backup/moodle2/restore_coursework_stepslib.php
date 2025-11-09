@@ -162,22 +162,20 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
     }
 
     protected function process_coursework_reminder($data) {
-        $data = (object)$data;
-        $oldid = $data->id;
+        global $DB;
 
+        $data = (object)$data;
         $data->courseworkid = $this->get_new_parentid('coursework');
         $data->userid = $this->get_mappingid('user', $data->userid);
 
         $this->set_defaults(['remindernumber' => 0], $data);
 
-        global $DB;
-        $newitemid = $DB->insert_record('coursework_reminder', $data);
+        $DB->insert_record('coursework_reminder', $data);
     }
 
     protected function process_coursework_allocation_pair($data) {
         global $DB;
         $data = (object)$data;
-        $oldid = $data->id;
 
         $data->courseworkid = $this->get_new_parentid('coursework');
         $data->assessorid = $this->get_mappingid('user', $data->assessorid);
@@ -204,13 +202,12 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
             ],
             $data
         );
-        $newitemid = $DB->insert_record('coursework_allocation_pairs', $data);
+        $DB->insert_record('coursework_allocation_pairs', $data);
     }
 
     protected function process_coursework_mod_set_rule($data) {
+        global $DB;
         $data = (object)$data;
-        $oldid = $data->id;
-
         $data->courseworkid = $this->get_new_parentid('coursework');
 
         $this->set_defaults(['rulename' => '',
@@ -218,14 +215,13 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'upperlimit' => 0,
                                   'lowerlimit' => 0,
                                   'minimum' => 0], $data);
-
-        global $DB;
-        $newitemid = $DB->insert_record('coursework_mod_set_members', $data);
+        $DB->insert_record('coursework_mod_set_members', $data);
     }
 
     protected function process_coursework_sample_set_rule($data) {
+        global $DB;
+
         $data = (object)$data;
-        $oldid = $data->id;
 
         $data->courseworkid = $this->get_new_parentid('coursework');
 
@@ -235,14 +231,13 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
             'lowerlimit' => 0,
             'samplesetpluginid' => 0,
             'stageidentifier' => ''], $data);
-
-        global $DB;
-        $newitemid = $DB->insert_record('coursework_sample_set_rules', $data);
+        $DB->insert_record('coursework_sample_set_rules', $data);
     }
 
     protected function process_coursework_allocation_config($data) {
+        global $DB;
+
         $data = (object)$data;
-        $oldid = $data->id;
 
         $data->courseworkid = $this->get_new_parentid('coursework');
         $data->assessorid = $this->get_mappingid('user', $data->assessorid);
@@ -254,24 +249,23 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
             $data
         );
 
-        global $DB;
-        $newitemid = $DB->insert_record('coursework_allocation_config', $data);
+        $DB->insert_record('coursework_allocation_config', $data);
     }
 
     protected function process_coursework_mod_set_member($data) {
+        global $DB;
+
         $data = (object)$data;
-
         $data->courseworkid = $this->get_new_parentid('coursework');
-
         $this->fixallocatable($data);
-
         $this->set_defaults(['stageidentifier' => ''], $data);
 
-        global $DB;
-        $newitemid = $DB->insert_record('coursework_mod_set_members', $data);
+        $DB->insert_record('coursework_mod_set_members', $data);
     }
 
     protected function process_coursework_sample_set_mbr($data) {
+        global $DB;
+
         $data = (object)$data;
 
         $data->courseworkid = $this->get_new_parentid('coursework');
@@ -285,11 +279,12 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'stageidentifier' => '',
                                   'selectiontype' => ''], $data);
 
-        global $DB;
-        $newitemid = $DB->insert_record('coursework_sample_set_mbrs', $data);
+        $DB->insert_record('coursework_sample_set_mbrs', $data);
     }
 
     protected function process_coursework_extension($data) {
+        global $DB;
+
         $data = (object)$data;
 
         $data->courseworkid = $this->get_new_parentid('coursework');
@@ -304,11 +299,12 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'extrainformationtext' => '',
                                   'extrainformationformat' => FORMAT_HTML], $data);
 
-        global $DB;
-        $newitemid = $DB->insert_record('coursework_extensions', $data);
+        $DB->insert_record('coursework_extensions', $data);
     }
 
     protected function process_coursework_person_deadline($data) {
+        global $DB;
+
         $data = (object)$data;
 
         $data->courseworkid = $this->get_new_parentid('coursework');
@@ -327,11 +323,12 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'timemodified' => 0,
                                   'lastmodifiedbyid' => 0], $data);
 
-        global $DB;
-        $newitemid = $DB->insert_record('coursework_person_deadlines', $data);
+        $DB->insert_record('coursework_person_deadlines', $data);
     }
 
     protected function process_coursework_mod_agreement($data) {
+        global $DB;
+
         $data = (object)$data;
 
         $data->feedbackid = $this->get_new_parentid('coursework_feedback');
@@ -350,11 +347,12 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'modcomment' => '',
                                   'modcommentformat' => 1], $data);
 
-        global $DB;
-        $newitemid = $DB->insert_record('coursework_mod_agreements', $data);
+        $DB->insert_record('coursework_mod_agreements', $data);
     }
 
     protected function process_coursework_plagiarism_flag($data) {
+        global $DB;
+
         $data = (object)$data;
 
         $data->submissionid = $this->get_new_parentid('coursework_submission');
@@ -373,8 +371,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'comment' => '',
                                   'commentformat' => 1], $data);
 
-        global $DB;
-        $newitemid = $DB->insert_record('coursework_plagiarism_flags', $data);
+        $DB->insert_record('coursework_plagiarism_flags', $data);
     }
 
     /**
@@ -389,7 +386,6 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         global $DB;
 
         $data = (object)$data;
-        $oldid = $data->id;
         $data->course = $this->get_courseid();
 
         $this->updatedate(['timemodified',

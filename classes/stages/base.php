@@ -850,7 +850,7 @@ abstract class base {
 
         $selected = $this->selected_allocation_in_session($dropdownname);
 
-        return  $moderatordropdown = html_writer::select(
+        return html_writer::select(
             $this->potential_moderators_as_options_array(),
             'allocatables[' . $allocatable->id . '][moderator][assessor_id]',
             $selected,

@@ -526,8 +526,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws moodle_exception
      */
     public function teacher_grading_page($coursework, $page, $perpage, $sortby, $sorthow, $group, $firstnamealpha, $lastnamealpha, $groupnamealpha) {
-        $html = '';
-
         // Grading report display options.
         $reportoptions = [];
         $reportoptions['page'] = $page;
@@ -545,7 +543,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $gradingreport = $coursework->renderable_grading_report_factory($reportoptions);
         $gradingsheet = new grading_sheet($coursework, null, null);
         // get only submissions that user can grade
-        $submissions = $gradingsheet->get_submissions();
+        $gradingsheet->get_submissions();
         /**
          * @var grading_report_renderer $grading_report_renderer
          */
@@ -929,7 +927,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $o = '';
         $course = $DB->get_record('course', ['id' => $courseid]);
         $strplural = get_string('modulenameplural', 'assign');
-        if (!$cms = get_coursemodules_in_course('coursework', $course->id, 'm.deadline')) {
+        if (!get_coursemodules_in_course('coursework', $course->id, 'm.deadline')) {
             $o .= $this->get_renderer()->notification(get_string('thereareno', 'moodle', $strplural));
             $o .= $this->get_renderer()->continue_button(new moodle_url('/course/view.php', ['id' => $course->id]));
             return $o;
@@ -951,7 +949,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 continue;
             }
             $coursework = coursework::find($cm->instance);
-            $sectionname = '';
             if ($usesections && $cm->sectionnum) {
                 $sectionname = get_section_name($course, $sections[$cm->sectionnum]);
                 if ($sectionname !== $currentsection) {

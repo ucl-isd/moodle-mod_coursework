@@ -259,13 +259,7 @@ class manager {
     public function auto_generate_sample_set() {
         global $DB;
 
-        $sampleplugins = $DB->get_records('coursework_sample_set_plugin', null, 'pluginorder');
-        $order = 0;
-
-        $sampleset = [];
-
         $allocatables = $this->get_coursework()->get_allocatables();
-
         $finalagreedallocatables = $this->get_allocatables_with_final_agreed();
 
         // Remove any allocatables that have a status of final agreed as these can not be sampled

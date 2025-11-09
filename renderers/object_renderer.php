@@ -1171,11 +1171,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     protected function render_mod_coursework_personaldeadlines_table(mod_coursework_personaldeadlines_table $personaldeadlinestable) {
         $courseworkpageurl = $this->get_router()->get_path('coursework', ['coursework' => $personaldeadlinestable->get_coursework()]);
         $tablehtml = '<div class="return_to_page">' . html_writer::link($courseworkpageurl, get_string('returntocourseworkpage', 'mod_coursework')) . '</div>';
-
         $tablehtml .= '<div class="alert">' . get_string('nopersonaldeadlineforextensionwarning', 'mod_coursework') . '</div>';
-
-        $usergroups = $personaldeadlinestable->get_coursework()->get_allocatable_type();
-
         $tablehtml .= '<div class="largelink">' . html_writer::link('#', get_string('setdateforselected', 'mod_coursework', $personaldeadlinestable->get_coursework()->get_allocatable_type()), ['id' => 'selected_dates']) . '</div>';
 
         if (has_capability('mod/coursework:revertfinalised', $this->page->context)) {

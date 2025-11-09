@@ -41,8 +41,7 @@ require_once($CFG->libdir . '/csvlib.class.php');
 
 class import extends grading_sheet {
     public function validate_submissionfileid() {
-
-        $submissions = $this->get_submissions();
+        $this->get_submissions();
     }
 
     /**
@@ -60,7 +59,7 @@ class import extends grading_sheet {
         $iid = csv_import_reader::get_new_iid('courseworkgradingdata');
         $csvreader = new csv_import_reader($iid, 'courseworkgradingdata');
 
-        $readcount = $csvreader->load_csv_content($content, $encoding, $delimeter);
+        $csvreader->load_csv_content($content, $encoding, $delimeter);
         $csvloaderror = $csvreader->get_error();
 
         if (!is_null($csvloaderror)) {
@@ -80,16 +79,12 @@ class import extends grading_sheet {
         $errors = [];
         $s = 0;
 
-        $submissions = $this->get_submissions();
+        $this->get_submissions();
 
         while ($line = $csvreader->next()) {
             $csv = $this->remove_other_assessors_grade($csvcells, $line);
-
             $cells = $csv;
-
             $i = 0;
-
-            $id = false;
             $submissionid = false;
 
             // if the csv headers count is different than expected return error
@@ -259,7 +254,7 @@ class import extends grading_sheet {
         $iid = csv_import_reader::get_new_iid('courseworkgradingdata');
         $csvreader = new csv_import_reader($iid, 'courseworkgradingdata');
 
-        $readcount = $csvreader->load_csv_content($content, $encoding, $delimiter);
+        $csvreader->load_csv_content($content, $encoding, $delimiter);
         $csvloaderror = $csvreader->get_error();
 
         if (!is_null($csvloaderror)) {
@@ -304,7 +299,7 @@ class import extends grading_sheet {
 
             $idfound = false;
 
-            foreach ($line as $keynum => $value) {
+            foreach ($line as $value) {
                 if (empty($idfound) && $cells[$i] == 'submissionid') {
                     $submissionid = $value;
                     $idfound = true;
@@ -395,11 +390,7 @@ class import extends grading_sheet {
                         // Array that will hold the advanced grade data
                         $criteriagradedata = [];
                         $criteriagradedata['criteria'] = [];
-
                         $criterias = $this->coursework->get_rubric_criteria();
-
-                        $criteriacount = 0;
-
                         $numberofrubrics = count($criterias) * 2;
 
                     // If the stage is final a grade we need to make sure the offset is set to the position of the
@@ -779,9 +770,6 @@ class import extends grading_sheet {
     }
 
     public function remove_other_assessors_grade($csvcells, &$line) {
-
-        $otherassessors = false;
-
         if (in_array('otherassessors', $csvcells)) {
             // find position of otherassesors so we know from which key to unset
             $key = array_search('otherassessors', $csvcells);

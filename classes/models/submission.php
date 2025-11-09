@@ -1063,7 +1063,7 @@ class submission extends table_base implements renderable {
             return;
         }
 
-        foreach ($studentgradestoupdate as $userid => &$grade) {
+        foreach ($studentgradestoupdate as &$grade) {
             $cappedgrade = $judge->get_grade_for_gradebook($this);
             // Not sure why it needs both.
             $grade->grade = $cappedgrade;
@@ -1489,15 +1489,11 @@ class submission extends table_base implements renderable {
     * Determines whether the current user is able to add a turnitin grademark to this submission
     */
     public function can_add_tii_grademark() {
-        $canadd = false;
-
         if ($this->get_coursework()->get_max_markers() == 1) {
-            $canadd = (has_any_capability(['mod/coursework:addinitialgrade', 'mod/coursework:addministergrades'], $this->get_context()) && $this->ready_to_grade());
+            return (has_any_capability(['mod/coursework:addinitialgrade', 'mod/coursework:addministergrades'], $this->get_context()) && $this->ready_to_grade());
         } else {
-            $canadd = (has_any_capability(['mod/coursework:addagreedgrade', 'mod/coursework:addallocatedagreedgrade', 'mod/coursework:addministergrades'], $this->get_context()) && $this->all_initial_graded());
+            return (has_any_capability(['mod/coursework:addagreedgrade', 'mod/coursework:addallocatedagreedgrade', 'mod/coursework:addministergrades'], $this->get_context()) && $this->all_initial_graded());
         }
-
-        return  $canadd;
     }
 
     /**

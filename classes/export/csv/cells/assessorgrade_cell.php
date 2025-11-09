@@ -157,7 +157,6 @@ class assessorgrade_cell extends cell_base {
                                 // if scale is numeric get max allowed scale
                                 $errormsg .= ' ' . get_string('rubric_invalid_value', 'coursework') . ' ' . $data;
                             }
-                            $s++;
                         }
                         $i++;
                     }

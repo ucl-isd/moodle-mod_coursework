@@ -60,7 +60,7 @@ class upload {
         $iid = csv_import_reader::get_new_iid('courseworkallocationsdata');
         $csvreader = new csv_import_reader($iid, 'courseworkallocationsdata');
 
-        $readcount = $csvreader->load_csv_content($content, $encoding, $delimeter);
+        $csvreader->load_csv_content($content, $encoding, $delimeter);
         $csvloaderror = $csvreader->get_error();
 
         if (!is_null($csvloaderror)) {
@@ -197,7 +197,7 @@ class upload {
         $iid = csv_import_reader::get_new_iid('courseworkallocationsdata');
         $csvreader = new csv_import_reader($iid, 'courseworkallocationsdata');
 
-        $readcount = $csvreader->load_csv_content($content, $encoding, $delimiter);
+        $csvreader->load_csv_content($content, $encoding, $delimiter);
         $csvloaderror = $csvreader->get_error();
 
         if (!is_null($csvloaderror)) {

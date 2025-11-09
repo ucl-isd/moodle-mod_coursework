@@ -346,8 +346,6 @@ class provider implements core_userlist_provider, \core_privacy\local\metadata\p
         $coursework = self::get_coursework_instance($context);
         $userids = $userlist->get_userids();
         foreach ($userids as $userid) {
-            // Get the coursework related to this context.
-            $coursework = self::get_coursework_instance($context);
             // Retrieve all submissions by user-id to remove relating data
             $submissions = $coursework->retrieve_submissions_by_user($userid);
             foreach ($submissions as $submission) {

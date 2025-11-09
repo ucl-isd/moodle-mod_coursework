@@ -1103,8 +1103,6 @@ function coursework_send_deadline_changed_emails($eventdata) {
     $individualdeadlinechanged = $eventdata->other['oldindividualdeadline'] != $eventdata->other['newindividualdeadline'];
 
     foreach ($users as $user) {
-        $counter++;
-
         $submission = $coursework->get_user_submission($user);
 
         if (empty($submission)) {

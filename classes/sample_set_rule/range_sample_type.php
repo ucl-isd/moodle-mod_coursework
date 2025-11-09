@@ -56,8 +56,6 @@ class range_sample_type extends sample_base {
                      AND        sr.stageidentifier = 'assessor_{$assessornumber}'
                      AND        sp.rulename = 'range_sample_type'";
 
-        $rulesfound = false;
-
         $samplerecords = $DB->get_records_sql($sql);
 
         if (!empty($samplerecords)) {

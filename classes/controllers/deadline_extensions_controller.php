@@ -324,7 +324,7 @@ class deadline_extensions_controller extends controller_base {
             'courseworkid' => $courseworkid ?? 0,
         ];
 
-        return  $personaldeadline = $DB->get_record('coursework_person_deadlines', $params);
+        return $DB->get_record('coursework_person_deadlines', $params);
     }
 
     /**

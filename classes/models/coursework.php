@@ -1310,7 +1310,7 @@ class coursework extends table_base {
         foreach ($submissions as $submission) {
             $stageidentifier = ($this->has_multiple_markers()) ? 'final_agreed_1' : 'assessor_1';
             $submission = submission::find($submission);
-            if (!$feedback = $submission->get_assessor_feedback_by_stage($stageidentifier)) {
+            if (!$submission->get_assessor_feedback_by_stage($stageidentifier)) {
                 $needsgrading[] = $submission;
             }
         }
@@ -1333,7 +1333,7 @@ class coursework extends table_base {
 
         foreach ($submissions as $submission) {
             $submission = submission::find($submission);
-            if ($feedback = $submission->get_assessor_feedback_by_stage($stageidentifier)) {
+            if ($submission->get_assessor_feedback_by_stage($stageidentifier)) {
                 $graded[$submission->id] = $submission;
             }
         }
@@ -2607,7 +2607,6 @@ class coursework extends table_base {
         if (empty($submissions)) {
             return;
         }
-        $current = time();
         $SESSION->keep_cache_data = 1;
         foreach ($submissions as $submission) {
             if (!$submission->editable_feedbacks_exist()) {

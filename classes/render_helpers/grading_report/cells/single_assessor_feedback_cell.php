@@ -74,8 +74,6 @@ class single_assessor_feedback_cell extends cell_base {
         $ability = new ability($USER->id, $rowobject->get_coursework());
 
         $content = '';
-        $submission = $rowobject->get_submission();
-        $allocatable = $rowobject->get_allocatable();
 
         // Add new feedback
         if (

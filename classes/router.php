@@ -75,7 +75,6 @@ class router {
 
         global $CFG;
 
-        $contextid = false;
         $coursemoduleid = false;
 
         if (array_key_exists('coursework', $items)) {
@@ -83,7 +82,6 @@ class router {
              * @var coursework $coursework
              */
             $coursework = $items['coursework'];
-            $contextid = $coursework->get_context_id();
             $coursemoduleid = $coursework->get_coursemodule_id();
         }
 

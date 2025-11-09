@@ -231,7 +231,7 @@ class cron {
             }
         }
 
-        $counts['emails'] += array_sum($usercounter);
+        $counts['emails'] += $emailcounter;
         $counts['users'] += count($usercounter);
     }
 

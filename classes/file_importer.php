@@ -107,10 +107,6 @@ class coursework_file_zip_importer {
         set_time_limit(120);
 
         $results = [];
-
-        $feedbackfilesupdated = 0;
-        $feedbackfilesadded = 0;
-        $userswithnewfeedback = [];
         $contextid = $coursework->get_context_id();
 
         $fs = get_file_storage();
@@ -152,7 +148,6 @@ class coursework_file_zip_importer {
                             if (!empty($overwritecurrent)) {
                                 // Update existing feedback file.
                                 $oldfile->replace_file_with($file);
-                                $feedbackfilesupdated++;
 
                                 $results[$filename] = get_string('feedbackfileupdated', 'mod_coursework');
                             } else {
@@ -168,7 +163,6 @@ class coursework_file_zip_importer {
                             $newfilerecord->filepath = '/';
                             $newfilerecord->itemid = $feedback->id;
                             $fs->create_file_from_storedfile($newfilerecord, $file);
-                            $feedbackfilesadded++;
                             $results[$filename] = get_string('feedbackfilecreated', 'mod_coursework');
                         }
                     } else {

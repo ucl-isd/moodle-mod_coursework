@@ -114,9 +114,6 @@ class builder implements user_row {
      * @throws \dml_exception
      */
     public function get_student_firstname() {
-
-        global $DB;
-
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->firstname)) {
             $this->allocatable = user::find($allocatable);
@@ -131,9 +128,6 @@ class builder implements user_row {
      * @throws \dml_exception
      */
     public function get_student_lastname() {
-
-        global $DB;
-
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->lastname)) {
             $this->allocatable = user::find($allocatable);

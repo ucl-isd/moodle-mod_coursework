@@ -99,7 +99,7 @@ class candidatenumber_provider extends candidateprovider {
 
         try {
             return scnmanager::get_instance()->is_fetch_candidate_numbers_enabled();
-        } catch (Exception $e) {
+        } catch (Exception $unused) {
             return false;
         }
     }
