@@ -22,7 +22,6 @@
 
 use mod_coursework\ability;
 use mod_coursework\allocation\manager;
-use mod_coursework\allocation\strategy\base;
 use mod_coursework\grade_judge;
 use mod_coursework\grading_report;
 use mod_coursework\models\coursework;

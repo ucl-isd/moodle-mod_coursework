@@ -24,7 +24,6 @@
 namespace mod_coursework\forms;
 
 use core_user\fields;
-use mod_coursework\models\coursework;
 use moodleform;
 
 defined('MOODLE_INTERNAL' || die());
