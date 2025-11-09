@@ -439,8 +439,7 @@ class builder {
             [$this->allocatable->id(), $this->allocatable->type()]
         );
         if ($submission) {
-            $feedbacks = isset(feedback::$pool[$this->coursework->id]['submissionid'][$submission->id]) ?
-            feedback::$pool[$this->coursework->id]['submissionid'][$submission->id] : [];
+            $feedbacks = feedback::$pool[$this->coursework->id]['submissionid'][$submission->id] ?? [];
 
             foreach ($feedbacks as $feedback) {
                 if ($feedback->stageidentifier == 'final_agreed_1') {

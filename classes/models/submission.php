@@ -503,8 +503,7 @@ class submission extends table_base implements renderable {
             // Sort here is on ID so that if there's any need to get the first one chronologically, we can use reset().
 
             feedback::fill_pool_coursework($this->courseworkid);
-            $this->feedbacks = isset(feedback::$pool[$this->courseworkid]['submissionid'][$this->id]) ?
-                feedback::$pool[$this->courseworkid]['submissionid'][$this->id] : [];
+            $this->feedbacks = feedback::$pool[$this->courseworkid]['submissionid'][$this->id] ?? [];
         }
 
         return $this->feedbacks;
@@ -1414,8 +1413,7 @@ class submission extends table_base implements renderable {
         global $USER;
 
         feedback::fill_pool_coursework($this->courseworkid);
-        $feedbacks = isset(feedback::$pool[$this->courseworkid]['submissionid-assessorid'][$this->id . '-' . $USER->id]) ?
-            feedback::$pool[$this->courseworkid]['submissionid-assessorid'][$this->id . '-' . $USER->id] : [];
+        $feedbacks = feedback::$pool[$this->courseworkid]['submissionid-assessorid'][$this->id . '-' . $USER->id] ?? [];
         foreach ($feedbacks as $feedback) {
             if ($feedback->stageidentifier != 'final_agreed_1') {
                 return true;
@@ -1434,8 +1432,7 @@ class submission extends table_base implements renderable {
         $editablefeedbacks = [];
         $coursework = $this->get_coursework();
         if ($coursework->numberofmarkers > 1 && $this->is_finalised()) {
-            $editablefeedbacks = isset(feedback::$pool[$coursework->id]['submissionid-finalised'][$this->id . '-0']) ?
-                feedback::$pool[$coursework->id]['submissionid-finalised'][$this->id . '-0'] : [];
+            $editablefeedbacks = feedback::$pool[$coursework->id]['submissionid-finalised'][$this->id . '-0'] ?? [];
         }
 
         return (empty($editablefeedbacks)) ? false : $editablefeedbacks;

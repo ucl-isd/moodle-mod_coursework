@@ -58,7 +58,7 @@ function coursework_process_form_submissions(coursework $coursework, $coursemodu
     // SHAME.
     // Variable $_POST['allocatables'] comes as array of arrays which is not supported by optional_param_array.
     // However, we clean this later in process_data() function.
-    $dirtyformdata = isset($_POST['allocatables']) ? $_POST['allocatables'] : [];
+    $dirtyformdata = $_POST['allocatables'] ?? [];
 
     if ($formsavebutton) {
         // Save allocation strategy settings if a strategy was submitted.

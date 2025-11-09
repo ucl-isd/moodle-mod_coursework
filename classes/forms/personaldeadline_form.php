@@ -65,7 +65,7 @@ class personaldeadline_form extends dynamic_form {
     protected function definition() {
         global $OUTPUT;
 
-        $customdata = isset($this->_customdata) ? $this->_customdata : $this->_ajaxformdata;
+        $customdata = $this->_customdata ?? $this->_ajaxformdata;
 
         $this->coursework = $this->get_coursework();
 
@@ -238,7 +238,7 @@ class personaldeadline_form extends dynamic_form {
         if ($this->coursework) {
             return $this->coursework;
         } else {
-            $datasource = isset($this->_customdata) ? $this->_customdata : $this->_ajaxformdata;
+            $datasource = $this->_customdata ?? $this->_ajaxformdata;
             $this->coursework = coursework::find($datasource['courseworkid']);
         }
         return $this->coursework;
@@ -262,7 +262,7 @@ class personaldeadline_form extends dynamic_form {
      */
     protected function can_edit(): bool {
         global $USER;
-        $datasource = isset($this->_customdata) ? $this->_customdata : $this->_ajaxformdata;
+        $datasource = $this->_customdata ?? $this->_ajaxformdata;
         $deadline = personaldeadlines_controller::get_personaldeadline(
             $datasource['allocatableid'],
             $datasource['allocatabletype'],

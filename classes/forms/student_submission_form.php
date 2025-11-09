@@ -114,7 +114,7 @@ class student_submission_form extends moodleform {
             $submission->createdby = $USER->id;
             $submission->lastupdatedby = $USER->id;
             $submission->submissionfiles = $data->submission_manager;
-            $submission->manualsrscode = isset($data->manualsrscode) ? $data->manualsrscode : '';
+            $submission->manualsrscode = $data->manualsrscode ?? '';
             $submission->save(); // Get an id.
 
             // Once the submission is saved we can check whether this included any submitted files.

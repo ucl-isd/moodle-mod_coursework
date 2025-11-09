@@ -1691,9 +1691,7 @@ class coursework extends table_base {
         $grades = grade_get_grades($this->get_course_id(), 'mod', 'coursework', $this->id, $userid);
 
         if (
-            isset($grades->items[0]->grades[$userid]) &&
-            isset($grades->items[0]->grades[$userid]->grade) &&
-            $grades->items[0]->grades[$userid]->grade != -1
+            isset($grades->items[0]->grades[$userid]->grade) && $grades->items[0]->grades[$userid]->grade != -1
         ) {
             return true;
         }

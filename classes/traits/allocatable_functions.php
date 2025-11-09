@@ -163,8 +163,7 @@ trait allocatable_functions {
         $result = [];
         $submission = $this->get_submission($coursework);
         if ($submission) {
-            $result = isset(feedback::$pool[$coursework->id]['submissionid-stageidentifier_index'][$submission->id . '-others']) ?
-                feedback::$pool[$coursework->id]['submissionid-stageidentifier_index'][$submission->id . '-others'] : [];
+            $result = feedback::$pool[$coursework->id]['submissionid-stageidentifier_index'][$submission->id . '-others'] ?? [];
         }
         return $result;
     }
