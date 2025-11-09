@@ -706,10 +706,8 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $groupsoptionsresult = $DB->get_records('groupings', ['courseid' => $COURSE->id], 'name', 'id, name');
         $groupsoptions = [];
-        if ($groupsoptionsresult !== false) {
-            foreach ($groupsoptionsresult as $result) {
-                $groupsoptions[$result->id] = $result->name;
-            }
+        foreach ($groupsoptionsresult as $result) {
+            $groupsoptions[$result->id] = $result->name;
         }
 
         // Not calling it groupingid as this conflicts with the groupingid field in the common module
