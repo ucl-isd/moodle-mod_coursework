@@ -206,7 +206,6 @@ class grading_report {
      * @param grading_table_row_base $a
      * @param grading_table_row_base $b
      * @return int
-     * @noinspection PhpUnusedPrivateMethodInspection
      */
     private function sort_by_finalgrade($a, $b) {
         return $this->sort_by_numberfield($a->get_final_grade(), $b->get_final_grade());
@@ -219,7 +218,6 @@ class grading_report {
      * @param grading_table_row_base $a
      * @param grading_table_row_base $b
      * @return int
-     * @noinspection PhpUnusedPrivateMethodInspection
      */
     private function sort_by_timesubmitted($a, $b) {
         return $this->sort_by_numberfield($a->get_time_submitted(), $b->get_time_submitted());
@@ -232,7 +230,6 @@ class grading_report {
      * @param grading_table_row_base $a
      * @param grading_table_row_base $b
      * @return int
-     * @noinspection PhpUnusedPrivateMethodInspection
      */
     private function sort_by_hash($a, $b) {
         return $this->sort_by_stringfield($a->get_filename_hash(), $b->get_filename_hash());
