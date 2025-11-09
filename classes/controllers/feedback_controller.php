@@ -433,9 +433,7 @@ class feedback_controller extends controller_base {
 
         $usedstages = $DB->get_record_sql($sql);
         $newstage = $usedstages->total + 1;
-        $stageidentifier = 'assessor_' . $newstage;
-
-        return $stageidentifier;
+        return 'assessor_' . $newstage;
     }
 
     /**

@@ -426,14 +426,12 @@ class submissions_controller extends controller_base {
     protected function submissions_exists($submission) {
         global $DB;
 
-        $subexists = $DB->record_exists(
+        return $DB->record_exists(
             'coursework_submissions',
             ['courseworkid' => $submission->courseworkid,
                                            'allocatableid' => $submission->allocatableid,
             'allocatabletype' => $submission->allocatabletype]
         );
-
-        return $subexists;
     }
 
     /**

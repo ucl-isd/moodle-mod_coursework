@@ -66,8 +66,7 @@ class multiple_agreed_grade_cell extends cell_base {
 
         // If coursework uses sampling check if any enabled for this submission, otherwise there is no agreed grade
         if ($rowobject->get_coursework()->sampling_enabled() && $rowobject->get_submission() && !$rowobject->get_submission()->sampled_feedback_exists()) {
-            $content = get_string('singlemarker', 'coursework');
-            return $content;
+            return get_string('singlemarker', 'coursework');
         }
         $ability = new ability($USER->id, $rowobject->get_coursework());
 

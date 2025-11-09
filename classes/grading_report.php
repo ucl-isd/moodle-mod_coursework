@@ -123,8 +123,7 @@ class grading_report {
      * @return string
      */
     protected function construct_sort_function_name($options) {
-        $methodname = 'sort_by_' . $options['sortby'];
-        return $methodname;
+        return 'sort_by_' . $options['sortby'];
     }
 
     /**
@@ -197,8 +196,7 @@ class grading_report {
      * @return int
      */
     public function sort_by_firstname($a, $b) {
-        $sort = $this->sort_by_stringfield($a->get_student_firstname(), $b->get_student_firstname());
-        return $sort;
+        return $this->sort_by_stringfield($a->get_student_firstname(), $b->get_student_firstname());
     }
 
     /**
@@ -210,8 +208,7 @@ class grading_report {
      * @return int
      */
     private function sort_by_finalgrade($a, $b) {
-        $sort = $this->sort_by_numberfield($a->get_final_grade(), $b->get_final_grade());
-        return $sort;
+        return $this->sort_by_numberfield($a->get_final_grade(), $b->get_final_grade());
     }
 
     /**
@@ -223,8 +220,7 @@ class grading_report {
      * @return int
      */
     private function sort_by_timesubmitted($a, $b) {
-        $sort = $this->sort_by_numberfield($a->get_time_submitted(), $b->get_time_submitted());
-        return $sort;
+        return $this->sort_by_numberfield($a->get_time_submitted(), $b->get_time_submitted());
     }
 
     /**
@@ -236,8 +232,7 @@ class grading_report {
      * @return int
      */
     private function sort_by_hash($a, $b) {
-        $sort = $this->sort_by_stringfield($a->get_filename_hash(), $b->get_filename_hash());
-        return $sort;
+        return $this->sort_by_stringfield($a->get_filename_hash(), $b->get_filename_hash());
     }
 
     /**
@@ -274,11 +269,10 @@ class grading_report {
      */
     public function sort_by_personaldeadline($a, $b) {
         $courseworkdeadline = $this->get_coursework()->deadline;
-        $sort = $this->sort_by_numberfield(
+        return $this->sort_by_numberfield(
             $a->get_personaldeadline_time() ?? $courseworkdeadline,
             $b->get_personaldeadline_time() ?? $courseworkdeadline
         );
-        return $sort;
     }
 
     /**

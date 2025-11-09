@@ -381,8 +381,7 @@ class provider implements core_userlist_provider, \core_privacy\local\metadata\p
         $modinfo = get_fast_modinfo($course);
         $coursemodule = $modinfo->get_cm($context->instanceid);
         $courseworkid = ['id' => $coursemodule->instance];
-        $coursework = new \mod_coursework\models\coursework($courseworkid);
-        return $coursework;
+        return new \mod_coursework\models\coursework($courseworkid);
     }
     /**
      * Exports coursework submission data for a user.
@@ -426,8 +425,7 @@ class provider implements core_userlist_provider, \core_privacy\local\metadata\p
     protected static function get_user_submissions($userid, $courseworkid) {
         global $DB;
         $params = ['courseworkid' => $courseworkid, 'authorid' => $userid];
-        $submissions = $DB->get_records('coursework_submissions', $params);
-        return $submissions;
+        return $DB->get_records('coursework_submissions', $params);
     }
     /**
      * Formats and then exports the user's submission data.
@@ -460,8 +458,7 @@ class provider implements core_userlist_provider, \core_privacy\local\metadata\p
     protected static function get_submission_feedbacks($submissionid) {
         global $DB;
         $params = ['submissionid' => $submissionid];
-        $feedbacks = $DB->get_records('coursework_feedbacks', $params);
-        return $feedbacks;
+        return $DB->get_records('coursework_feedbacks', $params);
     }
     protected static function export_submissions_feedbacks($feedbacks, $context, $path) {
         $feedbacksdata = [];
@@ -496,7 +493,7 @@ class provider implements core_userlist_provider, \core_privacy\local\metadata\p
      * @param  stdClass $feedback The coursework submission grade object
      */
     protected static function format_submissions_feedback(stdClass $feedback) {
-        $feedbackdata = [
+        return [
             'assessorid' => $feedback->assessorid,
             'timecreated' => transform::datetime($feedback->timecreated),
             'timemodified' => transform::datetime($feedback->timemodified),
@@ -505,7 +502,6 @@ class provider implements core_userlist_provider, \core_privacy\local\metadata\p
             'stageidentifier' => $feedback->stageidentifier,
             'finalised' => transform::yesno($feedback->finalised),
         ];
-        return $feedbackdata;
     }
     protected static function export_coursework_extension($courseworkid, $userid, $context, $path) {
         $extension = self::get_coursework_extension($courseworkid, $userid);
@@ -516,8 +512,7 @@ class provider implements core_userlist_provider, \core_privacy\local\metadata\p
     protected static function get_coursework_extension($courseworkid, $userid) {
         global $DB;
         $params = ['courseworkid' => $courseworkid, 'allocatableid' => $userid];
-        $extension = $DB->get_record('coursework_extensions', $params);
-        return $extension;
+        return $DB->get_record('coursework_extensions', $params);
     }
     protected static function export_coursework_extension_data($extension, $context, $path) {
         $extensiondata = [
@@ -537,8 +532,7 @@ class provider implements core_userlist_provider, \core_privacy\local\metadata\p
     protected static function get_person_deadline($courseworkid, $userid) {
         global $DB;
         $params = ['courseworkid' => $courseworkid, 'allocatableid' => $userid];
-        $persondeadline = $DB->get_record('coursework_person_deadlines', $params);
-        return $persondeadline;
+        return $DB->get_record('coursework_person_deadlines', $params);
     }
     protected static function export_person_deadline_data($persondeadline, $context, $path) {
         $persondeadlinedata = [
@@ -563,9 +557,7 @@ class provider implements core_userlist_provider, \core_privacy\local\metadata\p
 
         $param = ['courseworkid' => $courseworkid];
 
-        $plagiarism = $DB->get_record('coursework_plagiarism_flags', $param);
-
-        return $plagiarism;
+        return $DB->get_record('coursework_plagiarism_flags', $param);
     }
 
     protected static function export_plagiarism_flags_data($plagiarism, $context, $path) {
@@ -615,8 +607,7 @@ class provider implements core_userlist_provider, \core_privacy\local\metadata\p
     protected static function get_mod_agreement($feedbackid) {
         global $DB;
         $param = ['feedbackid' => $feedbackid];
-        $agreement = $DB->get_record('coursework_mod_agreements', $param);
-        return $agreement;
+        return $DB->get_record('coursework_mod_agreements', $param);
     }
     protected static function export_mod_agreement_data($agreement, $context, $path) {
         $agreementdata = [

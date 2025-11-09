@@ -967,8 +967,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 'submissioninfo' => $submitted,
                 'gradeinfo' => $grade];
         }
-        $o = html_writer::table($table);
-        return $o;
+        return html_writer::table($table);
     }
 
     /**

@@ -328,8 +328,6 @@ class deadline_extensions_controller extends controller_base {
 
         $timesubmittedcell = new  time_submitted_cell(['coursework' => $this->coursework]);
 
-        $content = $timesubmittedcell->prepare_content_cell($rowobject);
-
-        return $content;
+        return $timesubmittedcell->prepare_content_cell($rowobject);
     }
 }

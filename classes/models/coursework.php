@@ -550,9 +550,7 @@ class coursework extends table_base {
      */
     public function get_all_raw_feedbacks() {
         feedback::fill_pool_coursework($this->id);
-        $feedbacks = feedback::$pool[$this->id]['id'];
-
-        return $feedbacks;
+        return feedback::$pool[$this->id]['id'];
     }
 
     /**
@@ -1273,9 +1271,7 @@ class coursework extends table_base {
      */
     public function get_all_submissions() {
         submission::fill_pool_coursework($this->id);
-        $submissions = submission::$pool[$this->id]['id'];
-
-        return $submissions;
+        return submission::$pool[$this->id]['id'];
     }
 
     /**
@@ -1394,9 +1390,7 @@ class coursework extends table_base {
         // Hash with zero have the potential to become changed in outside programs
         // So we generate a hash without a leading zero
         $uhash = substr(md5($uhash), 0, 8);
-        $uhash = 'X' . $uhash;
-
-        return $uhash;
+        return 'X' . $uhash;
     }
 
     public function get_username_hash($userid) {
@@ -1453,9 +1447,7 @@ class coursework extends table_base {
             'stageidentifier' => $stageidentifier,
             'allocatabletype' => $allocatable->allocatabletype,
         ];
-        $allocation = $DB->get_record('coursework_allocation_pairs', $params);
-
-        return $allocation;
+        return $DB->get_record('coursework_allocation_pairs', $params);
     }
 
     public function get_assessors_stageidentifier($allocatableid, $assessorid) {
@@ -2765,8 +2757,7 @@ class coursework extends table_base {
      */
     public function retrieve_feedbacks_by_submission($submissionid) {
         feedback::fill_pool_coursework($this->id);
-        $result = isset(feedback::$pool[$this->id][$submissionid]) ? feedback::$pool[$this->id][$submissionid] : [];
-        return $result;
+        return isset(feedback::$pool[$this->id][$submissionid]) ? feedback::$pool[$this->id][$submissionid] : [];
     }
     /**
      * Function to remove all submissions submitted by a user

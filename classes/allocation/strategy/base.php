@@ -116,8 +116,7 @@ abstract class base {
     protected function get_name() {
         $name = get_class($this);
         $bits = explode('\\', $name);
-        $name = end($bits);
-        return $name;
+        return end($bits);
     }
 
     /**

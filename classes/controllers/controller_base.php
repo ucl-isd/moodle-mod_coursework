@@ -262,15 +262,13 @@ class controller_base {
      * @return table_base
      */
     protected function model_class() {
-        $rendererclassname = "\\mod_coursework\\models\\{$this->model_name()}";
-        return $rendererclassname;
+        return "\\mod_coursework\\models\\{$this->model_name()}";
     }
 
     /**
      * @return string
      */
     protected function renderer_class() {
-        $rendererclassname = "\\mod_coursework\\renderers\\{$this->model_name()}_renderer";
-        return $rendererclassname;
+        return "\\mod_coursework\\renderers\\{$this->model_name()}_renderer";
     }
 }

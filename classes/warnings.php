@@ -373,8 +373,7 @@ class warnings {
                                   'courseid' => $this->coursework->get_course()->id,
             ]
         );
-        $students = $DB->get_records_sql($sql, $params);
-        return $students;
+        return $DB->get_records_sql($sql, $params);
     }
 
     /**
@@ -408,8 +407,7 @@ class warnings {
                                   'groupingid' => $this->coursework->grouping_id,
             ]
         );
-        $students = $DB->get_records_sql($sql, $params);
-        return $students;
+        return $DB->get_records_sql($sql, $params);
     }
 
     /**

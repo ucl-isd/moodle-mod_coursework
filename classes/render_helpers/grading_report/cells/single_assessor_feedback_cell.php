@@ -196,14 +196,12 @@ class single_assessor_feedback_cell extends cell_base {
             ->get_allocatable_identifier_hash($rowobject->get_allocatable());
         $link = $this->get_router()
             ->get_path('show feedback', ['feedback' => $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable())]);
-        $iconlink = $OUTPUT->action_link(
+        return $OUTPUT->action_link(
             $link,
             $linktitle,
             null,
             ['class' => 'show_feedback', 'id' => $linkid]
         );
-
-        return $iconlink;
     }
 
     /**

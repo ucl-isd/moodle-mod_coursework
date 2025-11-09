@@ -32,7 +32,6 @@ class grading_table_row_multi extends grading_table_row_base {
      * @return assessor_feedback_table
      */
     public function get_assessor_feedback_table() {
-        $table = new assessor_feedback_table($this->coursework, $this->get_allocatable(), $this->get_submission());
-        return $table;
+        return new assessor_feedback_table($this->coursework, $this->get_allocatable(), $this->get_submission());
     }
 }

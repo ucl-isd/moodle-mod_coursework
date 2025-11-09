@@ -167,11 +167,10 @@ class percentage_distance implements auto_grader {
      */
     private function grades_as_percentages() {
         $initialfeedbacks = $this->get_allocatable()->get_initial_feedbacks($this->get_coursework());
-        $grades = array_map(function ($feedback) {
+        return array_map(function ($feedback) {
             return ($feedback->get_grade() / $this->get_coursework()->get_max_grade()) * 100;
         },
             $initialfeedbacks);
-        return $grades;
     }
 
     /**

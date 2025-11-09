@@ -374,8 +374,7 @@ class student_submission_form extends moodleform {
      * @return array
      */
     protected function get_file_manager_options() {
-        $filemanageroptions = $this->get_coursework()->get_file_options();
-        return $filemanageroptions;
+        return $this->get_coursework()->get_file_options();
     }
 
     /**
@@ -391,8 +390,7 @@ class student_submission_form extends moodleform {
         }
         $plagiarisminstructions = implode(' ', $plagiarisminstructions);
         if ($plagiarisminstructions) {
-            $plagiarisminstructions = '<br>' . $plagiarisminstructions;
-            return $plagiarisminstructions;
+            return '<br>' . $plagiarisminstructions;
         }
         return $plagiarisminstructions;
     }

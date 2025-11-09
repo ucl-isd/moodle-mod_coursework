@@ -166,8 +166,7 @@ trait allocatable_functions {
      */
     public function get_submission($coursework) {
         $this->fill_submission_and_feedback($coursework);
-        $result = submission::get_object($coursework->id, 'allocatableid', [$this->id]);
-        return $result;
+        return submission::get_object($coursework->id, 'allocatableid', [$this->id]);
     }
 
     /**

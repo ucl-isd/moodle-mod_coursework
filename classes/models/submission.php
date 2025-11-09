@@ -428,8 +428,7 @@ class submission extends table_base implements renderable {
             return $this->submissionfiles;
         }
 
-        $files = new submission_files([], $this);
-        return $files;
+        return new submission_files([], $this);
     }
 
     public function get_file_annotations() {
@@ -508,8 +507,7 @@ class submission extends table_base implements renderable {
         }
         // Get all other feedbacks whose stageidentifier is not "final_agreed_1"
         // In case of loops, we would like empty array instead of false.
-        $res = feedback::$pool[$this->courseworkid]['submissionid-stageidentifier_index']["$this->id-others"] ?? [];
-        return $res;
+        return feedback::$pool[$this->courseworkid]['submissionid-stageidentifier_index']["$this->id-others"] ?? [];
     }
 
     /**
@@ -526,8 +524,7 @@ class submission extends table_base implements renderable {
             'stageidentifier' => $stageidentifier,
         ];
         feedback::fill_pool_coursework($this->courseworkid);
-        $feedback = feedback::get_object($this->courseworkid, 'submissionid-ismoderation-isfinalgrade-stageidentifier', $params);
-        return $feedback;
+        return feedback::get_object($this->courseworkid, 'submissionid-ismoderation-isfinalgrade-stageidentifier', $params);
     }
 
     /**
@@ -541,12 +538,11 @@ class submission extends table_base implements renderable {
 
         $courseworkid = $this->get_coursework()->id;
         allocation::fill_pool_coursework($courseworkid);
-        $allocation = allocation::get_object(
+        return allocation::get_object(
             $courseworkid,
             'allocatableid-allocatabletype-stageidentifier',
             [$this->get_allocatable()->id(), $this->get_allocatable()->type(), $stageidentifier]
         );
-        return $allocation;
     }
 
     /**
@@ -567,8 +563,7 @@ class submission extends table_base implements renderable {
             'stageidentifier' => 'final_agreed_1',
         ];
         feedback::fill_pool_coursework($this->courseworkid);
-        $feedback = feedback::get_object($this->courseworkid, 'submissionid-ismoderation-isfinalgrade-stageidentifier', $params);
-        return $feedback;
+        return feedback::get_object($this->courseworkid, 'submissionid-ismoderation-isfinalgrade-stageidentifier', $params);
     }
 
     /**
@@ -1158,7 +1153,7 @@ class submission extends table_base implements renderable {
     private function get_files() {
         $fs = get_file_storage();
 
-        $submissionfiles = $fs->get_area_files(
+        return $fs->get_area_files(
             $this->get_context_id(),
             'mod_coursework',
             'submission',
@@ -1166,7 +1161,6 @@ class submission extends table_base implements renderable {
             "id",
             false
         );
-        return $submissionfiles;
     }
 
     public function rename_files() {
@@ -1260,8 +1254,7 @@ class submission extends table_base implements renderable {
      */
     public function students_for_gradebook(): array {
         if ($this->get_coursework()->is_configured_to_have_group_submissions()) {
-            $students = groups_get_members($this->allocatableid);
-            return $students;
+            return groups_get_members($this->allocatableid);
         } else {
             $allocatable = $this->get_allocatable();
             if ($allocatable) {
@@ -1277,11 +1270,9 @@ class submission extends table_base implements renderable {
      */
     private function students_for_gradng() {
         if ($this->get_coursework()->is_configured_to_have_group_submissions()) {
-            $students = groups_get_members($this->allocatableid);
-            return $students;
+            return groups_get_members($this->allocatableid);
         } else {
-            $students = [$this->get_allocatable()->id() => $this->get_allocatable()];
-            return $students;
+            return [$this->get_allocatable()->id() => $this->get_allocatable()];
         }
     }
 
@@ -1307,9 +1298,8 @@ class submission extends table_base implements renderable {
     public function get_submissions_in_sample() {
         assessment_set_membership::fill_pool_coursework($this->courseworkid);
         $allocatable = $this->get_allocatable();
-        $records = isset(assessment_set_membership::$pool[$this->courseworkid]['allocatableid-allocatabletype'][$allocatable->id . '-' . $allocatable->type()]) ?
+        return isset(assessment_set_membership::$pool[$this->courseworkid]['allocatableid-allocatabletype'][$allocatable->id . '-' . $allocatable->type()]) ?
             assessment_set_membership::$pool[$this->courseworkid]['allocatableid-allocatabletype'][$allocatable->id . '-' . $allocatable->type()] : [];
-        return $records;
     }
 
     /**
@@ -1320,12 +1310,11 @@ class submission extends table_base implements renderable {
 
     public function get_submissions_in_sample_by_stage($stageidentifier) {
         assessment_set_membership::fill_pool_coursework($this->courseworkid);
-        $record = assessment_set_membership::get_object(
+        return assessment_set_membership::get_object(
             $this->courseworkid,
             'allocatableid-allocatabletype-stageidentifier',
             [$this->allocatableid, $this->allocatabletype, $stageidentifier]
         );
-        return $record;
     }
 
     /**
@@ -1356,8 +1345,7 @@ class submission extends table_base implements renderable {
         }
 
         deadline_extension::fill_pool_coursework($this->courseworkid);
-        $extension = deadline_extension::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$this->allocatableid, $this->allocatabletype]);
-        return $extension;
+        return deadline_extension::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$this->allocatableid, $this->allocatabletype]);
     }
 
     /**

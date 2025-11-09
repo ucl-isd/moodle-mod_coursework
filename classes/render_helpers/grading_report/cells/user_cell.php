@@ -96,8 +96,7 @@ class user_cell extends cell_base implements allocatable_cell {
         } else {
             $sortbyname = $sortbyfirstname . $sortbylastname;
         }
-        $sort = $sortbyname . "<br>" . $sortbyemail;
-        return $sort;
+        return $sortbyname . "<br>" . $sortbyemail;
     }
 
     /**

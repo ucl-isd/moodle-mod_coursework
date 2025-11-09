@@ -130,9 +130,9 @@ abstract class ability {
 
         $classnamewithnamespace = get_class($thing);
         $bits = explode('\\', $classnamewithnamespace); // 'mod_coursework\models\submission'
-        $classname = end($bits); // 'submission'
+        // 'submission'
 
-        return $classname;
+        return end($bits);
     }
 
     /**

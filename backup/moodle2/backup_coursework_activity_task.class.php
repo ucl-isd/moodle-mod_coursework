@@ -35,9 +35,7 @@ class backup_coursework_activity_task extends backup_activity_task {
         $content = preg_replace($search, '$@COURSEWORKINDEX*$2@$', $content);
 
         $search = "/(" . $base . "\/mod\/coursework\/view.php\?id\=)([0-9]+)/";
-        $content = preg_replace($search, '$@COURSEWORKBYID*$2@$', $content);
-
-        return $content;
+        return preg_replace($search, '$@COURSEWORKBYID*$2@$', $content);
     }
 
     protected function define_my_settings() {

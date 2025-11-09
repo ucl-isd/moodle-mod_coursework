@@ -81,8 +81,7 @@ class deadline_extension extends table_base {
         }
         if ($allocatable) {
             self::fill_pool_coursework($coursework->id);
-            $extension = self::get_object($coursework->id, 'allocatableid-allocatabletype', [$allocatable->id(), $allocatable->type()]);
-            return $extension;
+            return self::get_object($coursework->id, 'allocatableid-allocatabletype', [$allocatable->id(), $allocatable->type()]);
         }
     }
 

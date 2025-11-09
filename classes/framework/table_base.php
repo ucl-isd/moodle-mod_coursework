@@ -85,8 +85,7 @@ abstract class table_base {
             if (!$data) {
                 return false;
             }
-            $record = new $klass($data);
-            return $record;
+            return new $klass($data);
         }
 
         $dbrecord = (array)$dbrecord;

@@ -257,9 +257,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
 
         $br = html_writer::empty_tag('br');
-        $out = implode($br, $filesarray);
-
-        return $out;
+        return implode($br, $filesarray);
     }
 
     /**
@@ -276,9 +274,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
 
         $br = html_writer::empty_tag('br');
-        $out = implode($br, $filesarray);
-
-        return $out;
+        return implode($br, $filesarray);
     }
 
     /**
@@ -315,9 +311,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
 
         $br = html_writer::empty_tag('br');
-        $out = implode($br, $filesarray);
-
-        return $out;
+        return implode($br, $filesarray);
     }
 
     /**
@@ -349,9 +343,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
 
         $br = html_writer::empty_tag('br');
-        $out = implode($br, $filesarray);
-
-        return $out;
+        return implode($br, $filesarray);
     }
 
     /**
@@ -955,9 +947,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             'coursework' => $coursework->id,
             'modname' => 'coursework',
         ];
-        $plagiarsmlinks = plagiarism_get_links($plagiarismlinksparams);
-
-        return $plagiarsmlinks;
+        return plagiarism_get_links($plagiarismlinksparams);
     }
 
     /**

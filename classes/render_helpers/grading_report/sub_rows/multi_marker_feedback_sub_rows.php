@@ -91,8 +91,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
             : '';
         $editable = (!$feedbackrow->has_feedback() || $feedbackrow->get_feedback()->finalised)
             ? '' : '</br>' . get_string('notfinalised', 'coursework');
-        $result = $this->comment_for_row($feedbackrow, $ability) . $gradedby . $editable;
-        return $result;
+        return $this->comment_for_row($feedbackrow, $ability) . $gradedby . $editable;
     }
 
     /**
@@ -191,8 +190,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         $linkid = "edit_feedback_" . $feedbackrow->get_feedback()->id;
         $link = $this->get_router()
             ->get_path('ajax edit feedback', ['feedback' => $feedbackrow->get_feedback()]);
-        $iconlink = $OUTPUT->action_icon($link, $icon, null, ['id' => $linkid, 'class' => 'edit_feedback']);
-        return $iconlink;
+        return $OUTPUT->action_icon($link, $icon, null, ['id' => $linkid, 'class' => 'edit_feedback']);
     }
 
     /**
@@ -210,8 +208,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         if ($submission) {
             $params['submissionid'] = $submission->id;
         }
-        $newfeedback = feedback::build($params);
-        return $newfeedback;
+        return feedback::build($params);
     }
 
     /**
@@ -226,13 +223,12 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
         $linkid = "show_feedback_" . $feedbackrow->get_feedback()->id;
         $link = $this->get_router()
             ->get_path('show feedback', ['feedback' => $feedbackrow->get_feedback()]);
-        $iconlink = $OUTPUT->action_link(
+        return $OUTPUT->action_link(
             $link,
             $linktitle,
             null,
             ['class' => 'show_feedback', 'id' => $linkid]
         );
-        return $iconlink;
     }
 
     /**
@@ -254,13 +250,12 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
             'stage' => $feedbackrow->get_stage(),
         ];
         $link = $this->get_router()->get_path('ajax new feedback', $newfeedbackparams);
-        $iconlink = $OUTPUT->action_link(
+        return $OUTPUT->action_link(
             $link,
             $linktitle,
             null,
             ['class' => 'new_feedback']
         );
-        return $iconlink;
     }
 
     /**
@@ -283,9 +278,8 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
      */
     protected function row_class($feedbackrow) {
         $assessor = $feedbackrow->get_assessor();
-        $rowclass = 'feedback-' . $assessor->id() . '-' . $feedbackrow->get_allocatable()
+        return 'feedback-' . $assessor->id() . '-' . $feedbackrow->get_allocatable()
             ->id() . ' ' . $feedbackrow->get_stage()->identifier();
-        return $rowclass;
     }
 
     /**

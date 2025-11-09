@@ -1407,9 +1407,7 @@ function can_delete_allocation($courseworkid, $allocatableid) {
             AND f.stageidentifier = p.stageidentifier
         )";
 
-    $ungradedallocations = $DB->get_record_sql($sql, ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid]);
-
-    return $ungradedallocations;
+    return $DB->get_record_sql($sql, ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid]);
 }
 
 /**

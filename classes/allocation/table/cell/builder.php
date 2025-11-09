@@ -458,11 +458,10 @@ class builder {
      */
     private function get_submission() {
         submission::fill_pool_coursework($this->coursework->id);
-        $submission = submission::get_object(
+        return submission::get_object(
             $this->coursework->id,
             'allocatableid-allocatabletype',
             [$this->allocatable->id(), $this->allocatable->type()]
         );
-        return $submission;
     }
 }

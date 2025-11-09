@@ -394,9 +394,7 @@ abstract class base {
      */
     public function get_single_feedback($submission) {
         feedback::fill_pool_coursework($submission->courseworkid);
-        $result = feedback::get_object($submission->courseworkid, 'submissionid-stageidentifier', [$submission->id, 'assessor_1']);
-
-        return $result;
+        return feedback::get_object($submission->courseworkid, 'submissionid-stageidentifier', [$submission->id, 'assessor_1']);
     }
 
     /**
@@ -443,8 +441,7 @@ abstract class base {
     public function get_allocation($allocatable) {
         $courseworkid = $this->coursework->id;
         $params = [$allocatable->id(), $allocatable->type(), $this->identifier()];
-        $allocation = allocation::get_object($courseworkid, 'allocatableid-allocatabletype-stageidentifier', $params);
-        return $allocation;
+        return allocation::get_object($courseworkid, 'allocatableid-allocatabletype-stageidentifier', $params);
     }
 
     /**
@@ -600,8 +597,7 @@ abstract class base {
             'allocatableid-allocatabletype-stageidentifier',
             [$allocatable->id(), $allocatable->type(), $this->stageidentifier]
         );
-        $result = ($allocation && $allocation->assessorid == $USER->id);
-        return $result;
+        return ($allocation && $allocation->assessorid == $USER->id);
     }
 
     /**
@@ -715,8 +711,7 @@ abstract class base {
      */
     public function get_feedback_for_submission($submission) {
         $stageidentifier = $this->identifier();
-        $feedback = feedback::get_object($submission->courseworkid, 'submissionid-stageidentifier', [$submission->id, $stageidentifier]);
-        return $feedback;
+        return feedback::get_object($submission->courseworkid, 'submissionid-stageidentifier', [$submission->id, $stageidentifier]);
     }
 
     /**
@@ -803,15 +798,13 @@ abstract class base {
 
         $selected = $this->selected_allocation_in_session($dropdownname);
 
-        $assessordropdown = html_writer::select(
+        return html_writer::select(
             $this->assessor_dropdown_options,
             $dropdownname,
             $selected,
             $optionfornothingchosenyet,
             $htmlattributes
         );
-
-        return $assessordropdown;
     }
 
     /**
@@ -896,9 +889,7 @@ abstract class base {
      * @return string
      */
     private function assessor_dropdown_name($allocatable) {
-        $inputname =
-            'allocatables[' . $allocatable->id . '][' . $this->identifier() . '][assessor_id]';
-        return $inputname;
+        return 'allocatables[' . $allocatable->id . '][' . $this->identifier() . '][assessor_id]';
     }
 
     /**

@@ -294,9 +294,7 @@ class outstanding_marking {
         $coursework = new coursework($courseworkid);
 
         // Findout if the user can create an initial grade
-        $userhasinitialgradecapability = $this->has_initial_grade($coursework->get_course()->id, $userid);
-
-        return  $userhasinitialgradecapability;
+        return $this->has_initial_grade($coursework->get_course()->id, $userid);
     }
 
     /**
@@ -309,8 +307,6 @@ class outstanding_marking {
         $coursework = new coursework($courseworkid);
 
         // Findout if the user can create an initial grade
-        $userhasagreedgradecapability = $this->has_agreed_grade($coursework->get_course()->id, $userid);
-
-        return  $userhasagreedgradecapability;
+        return $this->has_agreed_grade($coursework->get_course()->id, $userid);
     }
 }

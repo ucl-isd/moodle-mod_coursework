@@ -914,8 +914,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $cm = get_coursemodule_from_id('coursework', $upcmid);
         $courseworkid = 0;
         if ($cm) {
-            $courseworkid = $cm->instance;
-            return $courseworkid;
+            return $cm->instance;
         }
         return $courseworkid;
     }

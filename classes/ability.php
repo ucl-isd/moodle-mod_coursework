@@ -747,8 +747,7 @@ class ability extends framework\ability {
             'edit',
             'mod_coursework\models\moderation',
             function (moderation $moderation) {
-                $isallocated = $moderation->is_moderator_allocated();
-                return  $isallocated;
+                return $moderation->is_moderator_allocated();
             }
         );
     }

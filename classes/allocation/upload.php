@@ -309,9 +309,7 @@ class upload {
         $addallocation->allocatableid = $allocatable->id();
         $addallocation->allocatabletype = $allocatable->type();
 
-        $allocationid = $DB->insert_record('coursework_allocation_pairs', $addallocation, true);
-
-        return $allocationid;
+        return $DB->insert_record('coursework_allocation_pairs', $addallocation, true);
     }
 
     /**
@@ -329,7 +327,6 @@ class upload {
         $updateallocation->ismanual = 1;
         $updateallocation->assessorid = $assessorid;
 
-        $update = $DB->update_record('coursework_allocation_pairs', $updateallocation);
-        return $update;
+        return $DB->update_record('coursework_allocation_pairs', $updateallocation);
     }
 }
