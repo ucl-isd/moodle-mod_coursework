@@ -836,21 +836,14 @@ function coursework_get_extra_capabilities() {
  */
 function coursework_supports($feature) {
     switch ($feature) {
-        case FEATURE_ADVANCED_GRADING:
-            return true;
-        case FEATURE_GROUPS:
-            return true;
-        case FEATURE_GROUPINGS:
-            return true;
-        case FEATURE_MOD_INTRO:
-            return true;
-        case FEATURE_COMPLETION_TRACKS_VIEWS:
-            return true;
-        case FEATURE_GRADE_HAS_GRADE:
-            return true;
-        case FEATURE_GRADE_OUTCOMES:
-            return true;
         case FEATURE_BACKUP_MOODLE2:
+        case FEATURE_GRADE_OUTCOMES:
+        case FEATURE_GRADE_HAS_GRADE:
+        case FEATURE_COMPLETION_TRACKS_VIEWS:
+        case FEATURE_MOD_INTRO:
+        case FEATURE_GROUPINGS:
+        case FEATURE_GROUPS:
+        case FEATURE_ADVANCED_GRADING:
             return true;
 
         default:
@@ -1216,28 +1209,19 @@ function coursework_records_to_menu($records, $field1, $field2) {
  */
 function mod_coursework_supports($feature) {
     switch ($feature) {
+        case FEATURE_PLAGIARISM:
+        case FEATURE_ADVANCED_GRADING:
+        case FEATURE_SHOW_DESCRIPTION:
+        case FEATURE_BACKUP_MOODLE2:
+        case FEATURE_GRADE_HAS_GRADE:
+        case FEATURE_MOD_INTRO:
+        case FEATURE_GROUPINGS:
         case FEATURE_GROUPS:
             return true;
-        case FEATURE_GROUPINGS:
-            return true;
-        case FEATURE_MOD_INTRO:
-            return true;
+        case FEATURE_GRADE_OUTCOMES:
+        case FEATURE_COMPLETION_HAS_RULES:
         case FEATURE_COMPLETION_TRACKS_VIEWS:
             return false;
-        case FEATURE_COMPLETION_HAS_RULES:
-            return false;
-        case FEATURE_GRADE_HAS_GRADE:
-            return true;
-        case FEATURE_GRADE_OUTCOMES:
-            return false;
-        case FEATURE_BACKUP_MOODLE2:
-            return true;
-        case FEATURE_SHOW_DESCRIPTION:
-            return true;
-        case FEATURE_ADVANCED_GRADING:
-            return true;
-        case FEATURE_PLAGIARISM:
-            return true;
 
         default:
             return null;
