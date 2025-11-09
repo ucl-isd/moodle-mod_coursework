@@ -875,11 +875,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string
      */
     protected function resubmit_to_plagiarism_button($coursework, $submission) {
-        $html = '';
-        $html .= html_writer::start_tag(
+        $html = html_writer::start_tag(
             'form',
             ['action' => $this->page->url,
-            'method' => 'POST']
+                'method' => 'POST']
         );
         $html .= html_writer::empty_tag(
             'input',

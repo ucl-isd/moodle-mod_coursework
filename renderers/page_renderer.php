@@ -322,9 +322,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     public function choose_student_to_submit_for($coursemoduleid, $chooseform) {
         // Drop down to choose the student if we have no student id.
         // We don't really need to process this form, we just get the studentid as a param and use it.
-        $html = '';
 
-        $html .= $this->output->header();
+        $html = $this->output->header();
 
         $chooseform->set_data(['cmid' => $coursemoduleid]);
         ob_start(); // Forms library echos stuff.
@@ -438,9 +437,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $this->page->set_title($SITE->fullname);
         $this->page->set_heading($SITE->fullname);
 
-        $html = '';
-
-        $html .= $this->output->heading($gradingtitle);
+        $html = $this->output->heading($gradingtitle);
         $html .= '<table class = "moderating-details">';
         $moderator = $DB->get_record('user', ['id' => $newmoderation->moderatorid]);
         $html .= '<tr><th>' . get_string('moderator', 'coursework') . '</th><td>' . fullname($moderator) . '</td></tr>';
@@ -469,9 +466,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $this->page->set_title($SITE->fullname);
         $this->page->set_heading($SITE->fullname);
 
-        $html = '';
-
-        $html .= $this->output->heading($gradingtitle);
+        $html = $this->output->heading($gradingtitle);
 
         $submiturl = $this->get_router()->get_path('create plagiarism flag', ['plagiarism_flag' => $newplagiarismflag]);
         $simpleform = new plagiarism_flagging_mform($submiturl, ['submissionid' => $submission->id()]);
@@ -693,9 +688,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      */
     public function submit_on_behalf_of_student_interface($student, $submitform) {
         // Allow submission on behalf of the student.
-        $html = '';
 
-        $html .= $this->output->header();
+        $html = $this->output->header();
 
         $title = get_string('submitonbehalfofstudent', 'mod_coursework', fullname($student));
         $html .= html_writer::start_tag('h3');
@@ -792,9 +786,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      */
     public function csv_upload($uploadform, $csvtype) {
 
-        $html = '';
-
-        $html .= $this->output->header();
+        $html = $this->output->header();
 
         $title = get_string($csvtype, 'mod_coursework');
         $html .= html_writer::start_tag('h3');
@@ -819,9 +811,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      */
     public function process_csv_upload($processingresults, $csvcontent, $csvtype) {
 
-        $html = '';
-
-        $html .= $this->output->header();
+        $html = $this->output->header();
 
         $title = get_string('process' . $csvtype, 'mod_coursework');
         $html .= html_writer::start_tag('h3');
@@ -859,9 +849,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
     public function feedback_upload($form) {
 
-        $html = '';
-
-        $html .= $this->output->header();
+        $html = $this->output->header();
 
         $title = get_string('feedbackupload', 'mod_coursework');
         $html .= html_writer::start_tag('h3');
@@ -881,9 +869,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $this->page->set_pagelayout('standard');
         $this->page->navbar->add($title);
 
-        $html = '';
-
-        $html .= $this->output->header($title);
+        $html = $this->output->header($title);
 
         $html .= html_writer::start_tag('h3');
         $html .= $title;

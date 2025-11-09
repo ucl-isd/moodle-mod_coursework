@@ -109,8 +109,7 @@ class moderation_cell extends cell_base {
      */
     protected function add_existing_moderator_feedback_details_to_cell($rowobject) {
         $feedback = $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable());
-        $html = '';
-        $html .= $feedback->assessor()->profile_link();
+        $html = $feedback->assessor()->profile_link();
         $html .= '<br>';
         $html .= $feedback->get_grade();
         return $html;

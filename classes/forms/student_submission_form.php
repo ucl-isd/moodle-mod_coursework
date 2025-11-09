@@ -282,8 +282,7 @@ class student_submission_form extends moodleform {
     protected function add_agree_terms_elements_to_form() {
         global $CFG;
 
-        $termshtml = '';
-        $termshtml .= html_writer::start_tag('h4');
+        $termshtml = html_writer::start_tag('h4');
         $termshtml .= get_string('youmustagreetotheterms', 'mod_coursework');
         $termshtml .= html_writer::end_tag('h4');
         $termshtml .= $CFG->coursework_agree_terms_text;
