@@ -1307,18 +1307,6 @@ class submission extends table_base implements renderable {
     }
 
     /**
-     * @return array
-     * @throws coding_exception
-     */
-    private function students_for_gradng() {
-        if ($this->get_coursework()->is_configured_to_have_group_submissions()) {
-            return groups_get_members($this->allocatableid);
-        } else {
-            return [$this->get_allocatable()->id() => $this->get_allocatable()];
-        }
-    }
-
-    /**
      * @return bool
      */
     private function is_submission_on_behalf() {

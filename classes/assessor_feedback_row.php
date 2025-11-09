@@ -229,11 +229,4 @@ class assessor_feedback_row {
     private function get_allocation() {
         return $this->stage->get_allocation($this->get_allocatable());
     }
-
-    /**
-     * @return bool
-     */
-    private function has_allocation(): bool {
-        return (bool)$this->get_allocation();
-    }
 }

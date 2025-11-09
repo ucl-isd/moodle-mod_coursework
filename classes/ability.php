@@ -1502,16 +1502,6 @@ class ability extends framework\ability {
         );
     }
 
-    private function prevent_show_grading_table_row_if_user_can_submit_on_behalf_of_and_view_all_students() {
-        $this->prevent(
-            'show',
-            'mod_coursework\models\submission',
-            function (submission $submission) {
-                return (has_capability('mod/coursework:submitonbehalfof', $submission->get_context()) && has_capability('mod/coursework:viewallstudents', $submission->get_context())) ? false : true;
-            }
-        );
-    }
-
     private function allow_edit_personaldeadline_with_capability() {
         $this->allow(
             'edit',

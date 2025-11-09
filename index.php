@@ -32,7 +32,7 @@ global $CFG, $DB, $PAGE, $OUTPUT;
 $id = required_param('id', PARAM_INT);   // course
 
 if (! $course = $DB->get_record('course', ['id' => $id])) {
-    error('Course ID is incorrect');
+    throw new \core\exception\moodle_exception('Course ID is incorrect');
 }
 
 require_course_login($course);

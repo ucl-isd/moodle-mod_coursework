@@ -157,13 +157,6 @@ class builder {
     }
 
     /**
-     * @return allocation|bool
-     */
-    private function get_allocation() {
-        return $this->get_stage()->get_allocation($this->get_allocatable());
-    }
-
-    /**
      */
     private function prepare_allocation_table_cell() {
 

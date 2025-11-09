@@ -765,42 +765,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Deals with grades which may be unset as yet, or which may be scales.
-     * @param $grade
-     * @param $maxgrade
-     * @return float|string
-     * @throws coding_exception
-     * @throws dml_exception
-     */
-    private function output_grade_as_string($grade, $maxgrade) {
-
-        global $DB;
-
-        // String.
-        $out = '';
-
-        if ($maxgrade < -1) { // Coursework is graded with a scale.
-            // TODO cache these.
-            $scalegrade = -$maxgrade;
-            $scale = $DB->get_record('scale', ['id' => ($scalegrade)]);
-
-            if ($scale) {
-                $items = explode(',', $scale->scale);
-                $out = $items[$grade - 1]; // Scales always start fom 1.
-            }
-        } else {
-            if ($grade == -1 || $grade === false || is_null($grade)) {
-                $out = get_string('nograde');
-            } else {
-                // Grade has been set, although it may be zero.
-                $out = round($grade, 2);
-            }
-        }
-
-        return $out;
-    }
-
-    /**
      * Outputs a rule object on screen so we can see what it does.
      *
      * @param moderation_set_rule $rule

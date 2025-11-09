@@ -388,16 +388,6 @@ class submissions_controller extends controller_base {
     }
 
     /**
-     * Tells us whether the agree to terms checkbox was used.
-     *
-     * @return bool
-     * @throws coding_exception
-     */
-    private function terms_were_agreed_to() {
-        return (bool)optional_param('termsagreed', 0, PARAM_INT);
-    }
-
-    /**
      * Is the coursework open?
      * @param coursework $coursework
      * @throws coding_exception
