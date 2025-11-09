@@ -303,17 +303,13 @@ class warnings {
         if ($this->coursework->grouping_id != 0) {
             $students =
                 $this->students_who_are_not_in_any_grouping_group($studentsql, $studentparams);
-            if ($students) {
-                $names = $this->make_list_of_student_names($students);
-                return $this->alert_div(get_string('students_in_no_group_warning', 'mod_coursework') . $names);
-            }
         } else {
             $students = $this->students_who_are_not_in_any_group($studentsql, $studentparams);
 
-            if ($students) {
-                $names = $this->make_list_of_student_names($students);
-                return $this->alert_div(get_string('students_in_no_group_warning', 'mod_coursework') . $names);
-            }
+        }
+        if ($students) {
+            $names = $this->make_list_of_student_names($students);
+            return $this->alert_div(get_string('students_in_no_group_warning', 'mod_coursework') . $names);
         }
 
         return '';

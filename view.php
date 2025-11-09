@@ -99,11 +99,10 @@ if (
 if (!(isset($SESSION->perpage[$coursemoduleid]))) {
     $perpage = optional_param('per_page', 0, PARAM_INT);
     $perpage = $perpage ?: ($CFG->coursework_per_page ?? 10);
-    $SESSION->perpage[$coursemoduleid] = $perpage;
 } else {
     $perpage = optional_param('per_page', $SESSION->perpage[$coursemoduleid], PARAM_INT);
-    $SESSION->perpage[$coursemoduleid] = $perpage;
 }
+$SESSION->perpage[$coursemoduleid] = $perpage;
 
 // If a session variable holding sortby preference for the specific coursework is not set, set default value ('lastname').
 if (!(isset($SESSION->sortby[$coursemoduleid]))) {

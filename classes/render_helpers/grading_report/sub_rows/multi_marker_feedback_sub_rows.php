@@ -155,7 +155,6 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
                 $tablehtml .= '
                         </table>';
 
-            return $tablehtml;
         } else {
             if (
                 $assessorfeedbacktable->get_submission() &&
@@ -166,8 +165,8 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
                 $tablehtml .= '<tr>' . get_string('nogradescomments', 'mod_coursework') . '</tr>';
                 $tablehtml .= '</table></td></tr>';
             }
-            return $tablehtml;
         }
+        return $tablehtml;
     }
 
     /**

@@ -172,11 +172,10 @@ if (
 if (!(isset($SESSION->allocate_perpage[$coursemoduleid]))) {
     $perpage = optional_param('per_page', 0, PARAM_INT);
     $perpage = $perpage ?: ($CFG->coursework_per_page ?? 10);
-    $SESSION->allocate_perpage[$coursemoduleid] = $perpage;
 } else {
     $perpage = optional_param('per_page', $SESSION->allocate_perpage[$coursemoduleid], PARAM_INT);
-    $SESSION->allocate_perpage[$coursemoduleid] = $perpage;
 }
+$SESSION->allocate_perpage[$coursemoduleid] = $perpage;
 
 // SQL sort for allocation table.
 $sortby = optional_param('sortby', '', PARAM_ALPHA);
