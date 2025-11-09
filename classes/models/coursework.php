@@ -1676,6 +1676,8 @@ class coursework extends table_base {
      * who needs to be a student.
      */
     public function allowed_to_submit() {
+        global $USER;
+
         return (time() < $this->get_user_deadline($USER->id)) || $this->allow_late_submissions();
     }
 
