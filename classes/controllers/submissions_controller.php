@@ -154,7 +154,7 @@ class submissions_controller extends controller_base {
 
         $validated = $this->new_submission();
 
-        if ($validated == true) {
+        if ($validated) {
             return;
         }
 
@@ -254,7 +254,7 @@ class submissions_controller extends controller_base {
 
          $validated = $this->edit_submission();
 
-        if ($validated == true) {
+        if ($validated) {
             return;
         }
 
