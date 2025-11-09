@@ -109,7 +109,7 @@ class manager {
         $fullclassnames = glob($classdir . '/*.php');
         $options = [];
         foreach ($fullclassnames as $fullclassname) {
-            if (strpos($fullclassname, 'base') !== false) {
+            if (str_contains($fullclassname, 'base')) {
                 continue;
             }
             preg_match('/([^\/]+).php/', $fullclassname, $matches);

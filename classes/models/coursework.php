@@ -714,7 +714,7 @@ class coursework extends table_base {
                     unset($filetypes[$key]);
                     continue;
                 }
-                if (strpos($filetype, '.') === false) {
+                if (!str_contains($filetype, '.')) {
                     $filetype = '.' . $filetype; // Add dot if not there
                 } else {
                     $filetype = strrchr($filetype, '.'); // Remove leading characters e.g. *.doc => .doc

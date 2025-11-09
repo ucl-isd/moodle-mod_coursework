@@ -108,7 +108,7 @@ class import extends grading_sheet {
                 $stageidentifier = $this->get_stageidentifier($submissionid, $cells[$i]);
 
                 // remove numbers from cell names so they can be dynamically validated
-                if (substr($cells[$i], 0, 8) == 'assessor') {
+                if (str_starts_with($cells[$i], 'assessor')) {
                     $cells[$i] = substr($cells[$i], 0, -1);
                 }
 
@@ -181,7 +181,7 @@ class import extends grading_sheet {
                 $i = 0;
 
                 foreach ($csvheader as $ch) {
-                    if (strpos($ch, $type) !== false) {
+                    if (str_contains($ch, $type)) {
                         if (empty($typepositions)) {
                             $typepositions = [];
                         }
@@ -334,9 +334,9 @@ class import extends grading_sheet {
                 }
             } else {
                 foreach ($csvline as $k => $v) {
-                    if (substr($k, 0, 13) == 'assessorgrade' || substr($k, 0, 11) == 'singlegrade') {
+                    if (str_starts_with($k, 'assessorgrade') || str_starts_with($k, 'singlegrade')) {
                         $stages[$k] = $this->get_stageidentifier($csvline['submissionid'], $k);
-                    } else if (substr($k, 0, 11) == 'agreedgrade') {
+                    } else if (str_starts_with($k, 'agreedgrade')) {
                         $stages[$k] = 'final_agreed_1';
                     }
                 }
@@ -743,9 +743,9 @@ class import extends grading_sheet {
 
         // double marked - multiplegrade - allocated/notallocated
         if ($this->coursework->get_max_markers() > 1 && ($cellidentifier != 'singlegrade' && $cellidentifier != 'feedbackcomments')) {
-            if (substr($cellidentifier, 0, 8) == 'assessor') {
+            if (str_starts_with($cellidentifier, 'assessor')) {
                 $stageidentifier = 'assessor_' . (substr($cellidentifier, -1));
-            } else if (substr($cellidentifier, 0, 6) == 'agreed') {
+            } else if (str_starts_with($cellidentifier, 'agreed')) {
                 $stageidentifier = 'final_agreed_1';
             }
         }

@@ -140,7 +140,7 @@ class upload {
 
                 // validate assessor if exists in the coursework and has one of the capabilities allowing them to grade
                 // in initial stage
-                if (substr($cells[$keynum], 0, 8) == 'assessor') {
+                if (str_starts_with($cells[$keynum], 'assessor')) {
                     // skip empty assessors fields
                     if (empty($value)) {
                         continue;
@@ -256,7 +256,7 @@ class upload {
                         $allocatable = ($suballocatable) ? group::find($suballocatable->id) : '';
                     }
                 }
-                if ($allocatable && substr($cells[$keynum], 0, 8) == 'assessor' && !empty($value)) {
+                if ($allocatable && str_starts_with($cells[$keynum], 'assessor') && !empty($value)) {
                     $assessor = $DB->get_record('user', [$assessoridentifier => $value]);
 
                     $params = ['courseworkid' => $this->coursework->id,

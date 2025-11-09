@@ -163,7 +163,7 @@ class mod_coursework_mod_form extends moodleform_mod {
             // stuff. Just having a static element pre-fills with defaults, but won't get
             // resubmitted, so we have to use a hidden value, then another static one with
             // 'html' suffixed (arbitrarily) which we add the same default data to here.
-            if (isset($element->_attributes['name']) && substr($element->_attributes['name'], -6) == 'static') {
+            if (isset($element->_attributes['name']) && str_ends_with($element->_attributes['name'], 'static')) {
                 // TODO this is using private attributes directly. Need to switch to proper
                 // Getters and setters.
                 if (isset($defaultvalues[substr($element->_attributes['name'], 0, -6)])) {

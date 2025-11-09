@@ -230,7 +230,7 @@ class feedback extends table_base {
      */
     public function get_assessor_stage_no() {
         $no = '';
-        if (substr($this->stageidentifier, 0, 9) == 'assessor_') {
+        if (str_starts_with($this->stageidentifier, 'assessor_')) {
             $no = substr($this->stageidentifier, -1);
         }
         return $no;

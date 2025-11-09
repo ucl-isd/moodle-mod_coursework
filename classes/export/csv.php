@@ -113,13 +113,13 @@ class csv {
     public function add_cells_to_array($submission, $student, $csvcells) {
         $row = [];
         foreach ($csvcells as $csvcell) {
-            if (substr($csvcell, 0, 8) == 'assessor') {
+            if (str_starts_with($csvcell, 'assessor')) {
                 $stageidentifier = 'assessor_' . (substr($csvcell, -1));
                 $csvcell = substr($csvcell, 0, -1);
             }
             $class = "mod_coursework\\export\\csv\\cells\\" . $csvcell . "_cell";
             $cell = new $class($this->coursework);
-            if (substr($csvcell, 0, 8) == 'assessor') {
+            if (str_starts_with($csvcell, 'assessor')) {
                 $cell = $cell->get_cell($submission, $student, $stageidentifier);
                 if (is_array($cell)) {
                     $row = array_merge($row, $cell);
@@ -148,13 +148,13 @@ class csv {
     public function add_headers($csvheaders) {
         $headers = [];
         foreach ($csvheaders as $header) {
-            if (substr($header, 0, 8) == 'assessor') {
+            if (str_starts_with($header, 'assessor')) {
                 $stage = (substr($header, -1));
                 $header = substr($header, 0, -1);
             }
             $class = "mod_coursework\\export\\csv\\cells\\" . $header . "_cell";
             $cell = new $class($this->coursework);
-            if (substr($header, 0, 8) == 'assessor') {
+            if (str_starts_with($header, 'assessor')) {
                 $head = $cell->get_header($stage);
                 if (is_array($head)) {
                     $headers = array_merge($headers, $head);

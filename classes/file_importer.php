@@ -194,11 +194,11 @@ class coursework_file_zip_importer {
         }
 
         // Ignore hidden files.
-        if (strpos($filename, '.') === 0) {
+        if (str_starts_with($filename, '.')) {
             return $result;
         }
         // Ignore hidden files.
-        if (strpos($filename, '~') === 0) {
+        if (str_starts_with($filename, '~')) {
             return $result;
         }
 

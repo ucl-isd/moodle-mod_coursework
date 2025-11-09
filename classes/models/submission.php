@@ -1177,7 +1177,7 @@ class submission extends table_base implements renderable {
      * @return string
      */
     public function extract_extension_from_file_name($filename) {
-        if (strpos($filename, '.') === false) {
+        if (!str_contains($filename, '.')) {
             return '';
         } else {
             return substr(strrchr($filename, '.'), 1);

@@ -837,7 +837,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $classdir = $CFG->dirroot . '/mod/coursework/classes/allocation/strategy';
         $fullclasspaths = glob($classdir . '/*.php');
         foreach ($fullclasspaths as $fullclassname) {
-            if (strpos($fullclassname, 'base') !== false) {
+            if (str_contains($fullclassname, 'base')) {
                 continue;
             }
             preg_match('/([^\/]+).php/', $fullclassname, $matches);
