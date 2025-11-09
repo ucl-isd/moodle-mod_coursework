@@ -53,14 +53,14 @@ class assessor_feedback_mform extends moodleform {
     public $assessorid;
 
     /**
-     * @var bool|gradingform_controller|null $_grading_controller
+     * @var bool|gradingform_controller|null $gradingcontroller
      */
-    private $_grading_controller;
+    private $gradingcontroller;
 
     /**
-     * @var gradingform_instance $_grading_instance
+     * @var gradingform_instance $gradinginstance
      */
-    private $_grading_instance;
+    private $gradinginstance;
 
     /**
      * @var feedback $feedback
@@ -108,8 +108,8 @@ class assessor_feedback_mform extends moodleform {
         $grademenu = make_grades_menu($this->coursework->grade);
 
         if (feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)) {
-            $this->_grading_controller = $this->coursework->get_advanced_grading_active_controller();
-            $this->_grading_instance = $this->_grading_controller->get_or_create_instance(
+            $this->gradingcontroller = $this->coursework->get_advanced_grading_active_controller();
+            $this->gradinginstance = $this->gradingcontroller->get_or_create_instance(
                 0,
                 $this->feedback->assessorid,
                 $this->feedback->id
@@ -118,7 +118,7 @@ class assessor_feedback_mform extends moodleform {
                 'grading',
                 'advancedgrading',
                 get_string('grade', 'mod_coursework'),
-                ['gradinginstance' => $this->_grading_instance]
+                ['gradinginstance' => $this->gradinginstance]
             );
 
             // This link is required by the core behat step to complete a rubric.
@@ -171,8 +171,8 @@ class assessor_feedback_mform extends moodleform {
      *
      * @return mixed
      */
-    public function get_grading_controller() {
-        return $this->_grading_controller;
+    public function get_gradingcontroller() {
+        return $this->gradingcontroller;
     }
 
     /**
@@ -208,8 +208,8 @@ class assessor_feedback_mform extends moodleform {
      * @return bool
      */
     public function validate_grade($data): bool {
-        if (!empty($this->_grading_instance) && property_exists($data, 'advancedgrading')) {
-            return $this->_grading_instance->validate_grading_element($data->advancedgrading);
+        if (!empty($this->gradinginstance) && property_exists($data, 'advancedgrading')) {
+            return $this->gradinginstance->validate_grading_element($data->advancedgrading);
         } else {
             $errors = self::validation($data, []);
             if (!empty($errors)) {
@@ -326,7 +326,7 @@ class assessor_feedback_mform extends moodleform {
             $data = (new grading_guide_agreed_grades(
                 $this->_form->getAttributes(),
                 $this->_form->_elements,
-                $this->_grading_controller,
+                $this->gradingcontroller,
                 $this->submission
             ))->export_for_template($OUTPUT);
             echo $OUTPUT->render_from_template('coursework/marking_guide_agree_grades_form', $data);

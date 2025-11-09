@@ -1518,6 +1518,7 @@ class behat_mod_coursework extends behat_base {
     /**
      * @return bool
      */
+    // phpcs:disable Generic.CodeAnalysis.UselessOverridingMethod
     public function running_javascript() {
         return parent::running_javascript();
     }

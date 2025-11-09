@@ -88,7 +88,7 @@ jobs:
 
       - name: Moodle Code Checker
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci phpcs --exclude=moodle.Commenting.InlineComment,moodle.Commenting.MissingDocblock,moodle.Commenting.DocblockDescription,moodle.Files.LineLength,moodle.PHPUnit.TestCaseCovers,moodle.Commenting.VariableComment --max-warnings 0
+        run: moodle-plugin-ci phpcs --exclude=moodle.Commenting.InlineComment,moodle.Commenting.MissingDocblock,moodle.Commenting.DocblockDescription,moodle.Files.LineLength,moodle.PHPUnit.TestCaseCovers,moodle.Commenting.VariableComment,PSR12.Files.FileHeader --max-warnings 0
 
       - name: Validating
         if: ${{ !cancelled() }}

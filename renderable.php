@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+// phpcs:disable PSR1.Classes.ClassDeclaration
+
 /**
  * @package    mod_coursework
  * @copyright  2017 University of London Computer Centre {@link https://www.cosector.com}
@@ -25,17 +27,7 @@
  * autoloaded class definitions in /classes because the renderer cannot deal with namespaces.
  */
 
-use mod_coursework\allocation\widget;
-use mod_coursework\assessor_feedback_row;
-use mod_coursework\assessor_feedback_table;
-use mod_coursework\feedback_files;
 use mod_coursework\framework\decorator;
-use mod_coursework\grading_table_row_multi;
-use mod_coursework\grading_table_row_single;
-use mod_coursework\models\coursework;
-use mod_coursework\personaldeadline\table\builder;
-use mod_coursework\sampling_set_widget;
-use mod_coursework\submission_files;
 
 defined('MOODLE_INTERNAL') || die();
 
