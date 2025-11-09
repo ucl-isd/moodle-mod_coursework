@@ -459,7 +459,7 @@ function coursework_update_grades(stdClass $moduleinstance, int $userid = 0, $nu
     } else if ($grades = coursework_get_user_grades($moduleinstance, $userid)) {
         foreach ($grades as $k => $v) {
             if ($v->rawgrade == -1) {
-                $grades[$k]->rawgrade = null;
+                $v->rawgrade = null;
             }
         }
         coursework_grade_item_update($moduleinstance, $grades);

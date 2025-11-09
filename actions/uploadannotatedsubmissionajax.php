@@ -78,8 +78,8 @@ foreach ($_FILES as $fieldname => $uploadedfile) {
     }
 
     // Check upload errors.
-    if (!empty($_FILES[$fieldname]['error'])) {
-        switch ($_FILES[$fieldname]['error']) {
+    if (!empty($uploadedfile['error'])) {
+        switch ($uploadedfile['error']) {
             case UPLOAD_ERR_INI_SIZE:
                 throw new moodle_exception('upload_error_ini_size', 'repository_upload');
             case UPLOAD_ERR_FORM_SIZE:
@@ -100,21 +100,21 @@ foreach ($_FILES as $fieldname => $uploadedfile) {
     }
 
     // Scan for viruses.
-    manager::scan_file($_FILES[$fieldname]['tmp_name'], $_FILES[$fieldname]['name'], true);
+    manager::scan_file($uploadedfile['tmp_name'], $uploadedfile['name'], true);
 
     $file = new stdClass();
-    $file->filename = clean_param($_FILES[$fieldname]['name'], PARAM_FILE);
+    $file->filename = clean_param($uploadedfile['name'], PARAM_FILE);
     // Check system maxbytes setting.
-    if (($_FILES[$fieldname]['size'] > get_max_upload_file_size($CFG->maxbytes))) {
+    if (($uploadedfile['size'] > get_max_upload_file_size($CFG->maxbytes))) {
         // Oversize file will be ignored, error added to array to notify
         // web service client.
         throw new moodle_exception('maxbytes', 'error');
     } else {
-        $file->filepath = $_FILES[$fieldname]['tmp_name'];
+        $file->filepath = $uploadedfile['tmp_name'];
         // Calculate total size of upload.
-        $totalsize += $_FILES[$fieldname]['size'];
+        $totalsize += $uploadedfile['size'];
         // Size of individual file.
-        $file->size = $_FILES[$fieldname]['size'];
+        $file->size = $uploadedfile['size'];
     }
     $files[] = $file;
 }
