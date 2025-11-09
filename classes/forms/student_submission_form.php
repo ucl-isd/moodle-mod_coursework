@@ -24,6 +24,7 @@ namespace mod_coursework\forms;
 
 use coding_exception;
 use context_module;
+use core\exception\moodle_exception;
 use file_storage;
 use html_writer;
 use mod_coursework\ability;
@@ -48,6 +49,10 @@ class student_submission_form extends moodleform {
      * Defines the form structure
      *
      * @return void
+     * @throws \ddl_exception
+     * @throws \dml_exception
+     * @throws \moodle_exception
+     * @throws coding_exception
      */
     public function definition() {
 
@@ -72,10 +77,11 @@ class student_submission_form extends moodleform {
     }
 
     /**
-     * @throws coding_exception
-     * @param \coursework $coursework
-     * @param \submission $submission
      * @return void
+     * @throws \dml_exception
+     * @throws \moodle_exception
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     public function handle() {
 

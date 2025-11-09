@@ -22,6 +22,7 @@
 
 namespace mod_coursework\render_helpers\grading_report\cells;
 
+use core\exception\moodle_exception;
 use html_table_cell;
 use html_writer;
 use mod_coursework\ability;
@@ -58,7 +59,9 @@ class multiple_agreed_grade_cell extends cell_base {
 
     /**
      * @param $rowobject
-     * @return html_table_cell|string
+     * @return \lang_string|string
+     * @throws \coding_exception
+     * @throws moodle_exception
      */
     public function get_content($rowobject) {
 
@@ -163,6 +166,7 @@ class multiple_agreed_grade_cell extends cell_base {
     /**
      * @param array $options
      * @return string
+     * @throws \coding_exception
      */
     public function get_table_header($options = []) {
 

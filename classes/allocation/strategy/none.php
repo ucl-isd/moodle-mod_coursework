@@ -46,6 +46,7 @@ class none extends base {
      *
      * @param string $strategypurpose
      * @return string
+     * @throws \coding_exception
      */
     public function add_form_elements($strategypurpose = 'assessor'): string {
         global $PAGE, $CFG;
@@ -59,7 +60,7 @@ class none extends base {
     /**
      * Saves the form data associated with the instance of this strategy.
      *
-     * @return mixed
+     * @return void
      */
     public function save_allocation_strategy_options() {
         // Nothing to do here as there are no form elements.
@@ -68,7 +69,7 @@ class none extends base {
     /**
      * @param $teachers
      * @param $student
-     * @return mixed
+     * @return array
      */
     protected function list_of_allocatable_teachers_and_their_current_number_of_allocations($teachers, $student) {
         return [];

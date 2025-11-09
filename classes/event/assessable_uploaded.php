@@ -21,6 +21,7 @@
  */
 
 namespace mod_coursework\event;
+use core\exception\moodle_exception;
 use moodle_url;
 use stdClass;
 
@@ -46,6 +47,7 @@ class assessable_uploaded extends \core\event\assessable_uploaded {
      * Return localised event name.
      *
      * @return string
+     * @throws \coding_exception
      */
     public static function get_name() {
         return get_string('eventassessableuploaded', 'coursework');
@@ -55,6 +57,7 @@ class assessable_uploaded extends \core\event\assessable_uploaded {
      * Get URL related to the action.
      *
      * @return moodle_url
+     * @throws moodle_exception
      */
     public function get_url() {
         return new moodle_url('/mod/coursework/view.php', ['id' => $this->contextinstanceid]);

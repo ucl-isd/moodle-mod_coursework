@@ -58,6 +58,7 @@ class general_feedback_form extends moodleform {
      * Updates the DB once the form has been submitted.
      *
      * @param $feedback
+     * @throws \dml_exception
      */
     public function process_data($feedback) {
         global $DB;

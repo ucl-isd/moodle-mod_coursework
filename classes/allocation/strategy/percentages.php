@@ -67,6 +67,7 @@ class percentages extends base {
      *
      * @param string $strategypurpose moderator or assessor
      * @return string
+     * @throws \coding_exception
      */
     public function add_form_elements($strategypurpose = 'assessor') {
 
@@ -124,7 +125,9 @@ class percentages extends base {
     /**
      * Saves the form data associated with the instance of this strategy.
      *
-     * @return mixed
+     * @return true
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function save_allocation_strategy_options() {
 
@@ -189,6 +192,7 @@ class percentages extends base {
     /**
      * @param $teacher
      * @return int|mixed
+     * @throws \dml_exception
      */
     private function percentage_for_teacher($teacher) {
 

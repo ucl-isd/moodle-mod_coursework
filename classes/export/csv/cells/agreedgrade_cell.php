@@ -35,7 +35,7 @@ class agreedgrade_cell extends cell_base {
      * @param $submission
      * @param $student
      * @param $stageidentifier
-     * @return array|mixed|null|string
+     * @return array|string|null
      */
 
     public function get_cell($submission, $student, $stageidentifier) {
@@ -53,7 +53,7 @@ class agreedgrade_cell extends cell_base {
 
     /**
      * @param $stage
-     * @return array|mixed|string
+     * @return array|\lang_string|string
      * @throws coding_exception
      */
     public function get_header($stage) {

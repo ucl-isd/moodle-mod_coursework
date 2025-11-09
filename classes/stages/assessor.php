@@ -51,7 +51,6 @@ class assessor extends base {
     const STAGE_ASSESSOR_3 = 'assessor_3';
 
     /**
-     * @throws coding_exception
      * @return string
      */
     protected function strategy_name(): string {
@@ -86,6 +85,7 @@ class assessor extends base {
      * @param int $assessorid
      * @param submission $submission
      * @return bool
+     * @throws \dml_exception
      */
     public function other_parallel_stage_has_feedback_from_this_assessor(int $assessorid, $submission) {
         global $DB;
@@ -102,6 +102,7 @@ class assessor extends base {
 
     /**
      * @return bool
+     * @throws coding_exception
      */
     public function auto_allocation_enabled() {
         return $this->get_coursework()->allocation_enabled() && parent::auto_allocation_enabled();

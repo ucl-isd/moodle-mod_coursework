@@ -60,7 +60,7 @@ class null_user implements allocatable {
 
     /**
      * @param stdClass $course
-     * @return mixed
+     * @return true
      */
     public function is_valid_for_course($course) {
         return true;
@@ -100,7 +100,7 @@ class null_user implements allocatable {
 
     /**
      * @param coursework $coursework
-     * @return submission
+     * @return void
      */
     public function get_submission($coursework) {
     }

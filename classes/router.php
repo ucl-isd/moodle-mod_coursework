@@ -22,6 +22,7 @@
 
 namespace mod_coursework;
 use coding_exception;
+use core\exception\moodle_exception;
 use mod_coursework\models\coursework;
 use moodle_url;
 
@@ -66,8 +67,9 @@ class router {
      * @param array $items named array keys so we can construct meaningful paths.
      * @param bool $asurlobject return the moodle_url or a string of the path?
      * @param bool $escaped
-     * @throws coding_exception
      * @return moodle_url|string url
+     * @throws moodle_exception
+     * @throws coding_exception
      */
     public function get_path($pathname, $items = [], $asurlobject = false, $escaped = true) {
 
@@ -278,7 +280,7 @@ class router {
      * Might need more complex pluralisation rules later.
      *
      * @param $string
-     * @return mixed
+     * @return string
      */
     protected function pluralise($string) {
         return $string . 's';

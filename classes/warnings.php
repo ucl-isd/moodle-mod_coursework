@@ -55,6 +55,8 @@ class warnings {
      * need to notify the managers.
      *
      * @return string
+     * @throws \core\exception\coding_exception
+     * @throws coding_exception
      */
     public function not_enough_assessors() {
 
@@ -79,6 +81,8 @@ class warnings {
 
     /**
      * @return bool|string
+     * @throws \core\exception\coding_exception
+     * @throws \dml_exception
      * @throws coding_exception
      */
     public function students_in_mutiple_groups() {
@@ -194,6 +198,9 @@ class warnings {
      * Warns us if percentage allocations are enabled and so not add up to 100%
      *
      * @return string
+     * @throws \core\exception\coding_exception
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function percentage_allocations_not_complete() {
         global $DB;
@@ -216,6 +223,8 @@ class warnings {
 
     /** Warning if allocation is selected but no assessor is chosen
      * @return string
+     * @throws \core\exception\coding_exception
+     * @throws \dml_exception
      * @throws coding_exception
      */
     public function manual_allocation_not_completed() {
@@ -267,6 +276,7 @@ class warnings {
     /** Function to check if allocation exists
      * @param $params
      * @return array
+     * @throws \dml_exception
      */
     public function check_existing_allocations($params) {
         global $DB;
@@ -284,6 +294,9 @@ class warnings {
      * not be able to submit anything.
      *
      * @return string
+     * @throws \core\exception\coding_exception
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function student_in_no_group() {
         global $DB;
@@ -305,7 +318,6 @@ class warnings {
                 $this->students_who_are_not_in_any_grouping_group($studentsql, $studentparams);
         } else {
             $students = $this->students_who_are_not_in_any_group($studentsql, $studentparams);
-
         }
         if ($students) {
             $names = $this->make_list_of_student_names($students);
@@ -320,6 +332,7 @@ class warnings {
      *
      * @param string $message
      * @return string
+     * @throws \core\exception\coding_exception
      */
     private function alert_div($message) {
         global $OUTPUT;
@@ -344,7 +357,8 @@ class warnings {
     /**
      * @param $studentsql
      * @param $studentparams
-     * @return mixed
+     * @return array
+     * @throws \dml_exception
      */
     private function students_who_are_not_in_any_group($studentsql, $studentparams) {
         global $DB;
@@ -375,7 +389,8 @@ class warnings {
     /**
      * @param $studentsql
      * @param $studentparams
-     * @return mixed
+     * @return array
+     * @throws \dml_exception
      */
     private function students_who_are_not_in_any_grouping_group($studentsql, $studentparams) {
         global $DB;
@@ -428,7 +443,10 @@ class warnings {
      * Alert markers there may be more submissions to grade due to group mode
      * settings.
      *
+     * @param int $group
      * @return string
+     * @throws \moodle_exception
+     * @throws coding_exception
      */
     public function group_mode_chosen_warning(int $group): string {
         if (groups_get_activity_groupmode($this->coursework->get_course_module()) != 0 && $group != 0) {

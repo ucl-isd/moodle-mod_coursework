@@ -35,11 +35,6 @@ abstract class files implements countable {
     protected $files;
 
     /**
-     * Can be either submission or feedbackfiles.
-     * @var string
-     */
-
-    /**
      * @param array $files
      */
     public function __construct($files = []) {

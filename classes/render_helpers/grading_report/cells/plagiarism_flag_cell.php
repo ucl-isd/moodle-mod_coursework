@@ -34,8 +34,9 @@ use pix_icon;
 class plagiarism_flag_cell extends cell_base {
     /**
      * @param grading_table_row_base $rowobject
-     * @throws coding_exception
      * @return string
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function get_table_cell($rowobject) {
 
@@ -75,6 +76,7 @@ class plagiarism_flag_cell extends cell_base {
     /**
      * @param array $options
      * @return string
+     * @throws coding_exception
      */
     public function get_table_header($options = []) {
         return (get_string('tableheadplagiarismalert', 'coursework'));

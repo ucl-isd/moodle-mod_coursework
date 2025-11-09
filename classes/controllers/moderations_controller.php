@@ -258,6 +258,7 @@ class moderations_controller extends controller_base {
     /**
      * @param string $identifier
      * @throws access_denied
+     * @throws coding_exception
      */
     protected function check_stage_permissions($identifier) {
         global $USER;

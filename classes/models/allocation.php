@@ -23,6 +23,7 @@
 namespace mod_coursework\models;
 
 use AllowDynamicProperties;
+use core\exception\coding_exception;
 use mod_coursework\framework\table_base;
 
 /**
@@ -89,7 +90,9 @@ class allocation extends table_base {
     ];
 
     /**
-     * @return coursework|mixed
+     * @return bool|coursework|table_base
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function get_coursework() {
 
@@ -101,7 +104,7 @@ class allocation extends table_base {
     }
 
     /**
-     * @return user|bool
+     * @return user
      */
     public function assessor() {
         return user::get_object($this->assessorid);
@@ -157,6 +160,7 @@ class allocation extends table_base {
      *
      * @param int $courseworkid
      * @return array
+     * @throws \dml_exception
      */
     protected static function get_cache_array($courseworkid) {
         global $DB;
@@ -187,6 +191,7 @@ class allocation extends table_base {
      * @param $key
      * @param $params
      * @return bool
+     * @throws coding_exception
      */
     public static function get_object($courseworkid, $key, $params) {
         if (!isset(self::$pool[$courseworkid])) {

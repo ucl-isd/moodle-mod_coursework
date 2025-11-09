@@ -58,6 +58,8 @@ class mod_coursework_observer {
 
     /**
      * @param group_member_added $event
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public static function process_allocations_when_group_member_added(group_member_added $event) {
         course_group_member_added($event);
@@ -65,6 +67,8 @@ class mod_coursework_observer {
 
     /**
      * @param group_member_removed $event
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public static function process_allocations_when_group_member_removed(group_member_removed $event) {
         course_group_member_removed($event);
@@ -79,6 +83,7 @@ class mod_coursework_observer {
 
     /**
      * @param role_unassigned $event
+     * @throws dml_exception
      */
     public static function remove_teacher_from_dropdown_when_unenrolled(core\event\role_unassigned $event) {
         teacher_removed_allocated_not_graded($event);

@@ -24,6 +24,7 @@ namespace mod_coursework\models;
 
 use AllowDynamicProperties;
 use context_module;
+use core\exception\coding_exception;
 use core\exception\invalid_parameter_exception;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\event\extension_created;
@@ -59,6 +60,7 @@ class deadline_extension extends table_base {
      * @param allocatable $allocatable
      * @param coursework $coursework
      * @return bool
+     * @throws coding_exception
      */
     public static function allocatable_extension_allows_submission($allocatable, $coursework) {
         self::fill_pool_coursework($coursework->id);
@@ -72,6 +74,8 @@ class deadline_extension extends table_base {
      * @param allocatable $student
      * @param coursework $coursework
      * @return deadline_extension|bool
+     * @throws \coding_exception
+     * @throws coding_exception
      */
     public static function get_extension_for_student($student, $coursework) {
         if ($coursework->is_configured_to_have_group_submissions()) {
@@ -86,7 +90,7 @@ class deadline_extension extends table_base {
     }
 
     /**
-     * @return mixed|mod_coursework_coursework
+     * @return bool|coursework
      */
     public function get_coursework() {
         if (!isset($this->coursework)) {
@@ -129,6 +133,7 @@ class deadline_extension extends table_base {
      *
      * @param int $courseworkid
      * @return array
+     * @throws \dml_exception
      */
     protected static function get_cache_array($courseworkid) {
         global $DB;
@@ -151,6 +156,7 @@ class deadline_extension extends table_base {
      * @param $key
      * @param $params
      * @return mixed
+     * @throws coding_exception
      */
     public static function get_object($courseworkid, $key, $params) {
         if (!isset(self::$pool[$courseworkid])) {
@@ -177,6 +183,8 @@ class deadline_extension extends table_base {
     /**
      * Check if the current extension is already in use - if yes, block deletion.
      * @return bool
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function can_be_deleted(): bool {
         global $DB;
@@ -200,6 +208,8 @@ class deadline_extension extends table_base {
     /**
      * Delete an extension.
      * @return void
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function delete() {
         global $DB;
@@ -238,6 +248,9 @@ class deadline_extension extends table_base {
      * Trigger an event when extension is created or updated.
      * @param string $eventtype create, or update.
      * @return void
+     * @throws \coding_exception
+     * @throws \moodle_exception
+     * @throws invalid_parameter_exception
      */
     public function trigger_created_updated_event(string $eventtype): void {
         global $USER;
@@ -274,6 +287,7 @@ class deadline_extension extends table_base {
      * Get all extensions for a particular coursework from the database.
      * @param int $courseworkid
      * @return array
+     * @throws \dml_exception
      */
     public static function get_all_for_coursework(int $courseworkid): array {
         global $DB;
@@ -286,6 +300,7 @@ class deadline_extension extends table_base {
      * @param int $allocatableid
      * @param string $allocatabletype
      * @return ?self
+     * @throws \dml_exception
      */
     public static function get_for_allocatable(int $courseworkid, int $allocatableid, string $allocatabletype): ?self {
         global $DB;

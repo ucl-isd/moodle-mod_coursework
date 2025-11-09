@@ -23,6 +23,7 @@
 namespace mod_coursework\allocation\strategy;
 
 use mod_coursework\allocation\allocatable;
+use mod_coursework\framework\table_base;
 use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 use mod_coursework\models\user;
@@ -85,7 +86,7 @@ abstract class base {
      *
      * @param array $teachers
      * @param allocatable $student
-     * @return int
+     * @return bool|user
      */
     public function next_assessor_from_list($teachers, $student) {
         $teacherids = $this->list_of_allocatable_teachers_and_their_current_number_of_allocations($teachers, $student);
@@ -129,9 +130,10 @@ abstract class base {
     /**
      * Fetches any data from the DB associated with this coursework and class.
      *
-     * @param $type
+     * @param string $type
      * @param bool $reset we cache this stuff, so reset = true will wipe the cache
      * @return stdClass[]
+     * @throws \dml_exception
      */
     final protected function get_existing_config_data($type = 'assessor', $reset = false) {
 
@@ -187,7 +189,9 @@ abstract class base {
 
     /**
      * @param array $teachercounts teacherid => number_of_allocations_so_far
-     * @return user|bool
+     * @return bool|table_base
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     protected function get_teacher_with_smallest_number_of_current_allocations($teachercounts) {
         // What if there aren't any e.g. only one teacher, but two are needed?

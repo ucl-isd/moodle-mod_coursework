@@ -42,6 +42,8 @@ class student_cell_data extends cell_data_base {
      *
      * @param grading_table_row_base $rowsbase
      * @return stdClass|null The data object for template rendering.
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function get_table_cell_data(grading_table_row_base $rowsbase): ?stdClass {
         $submissiontype = new stdClass();
@@ -80,6 +82,9 @@ class student_cell_data extends cell_data_base {
      * @param group $group The group object
      * @param bool $hidden Whether identity should be hidden
      * @return array
+     * @throws \dml_exception
+     * @throws \moodle_exception
+     * @throws coding_exception
      */
     private function get_group_members(group $group, bool $hidden): array {
         $members = [];
@@ -102,6 +107,8 @@ class student_cell_data extends cell_data_base {
      * @param grading_table_row_base $rowsbase The row base object
      * @param bool $hidden Whether identity should be hidden
      * @return stdClass
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     private function get_user_data(user $user, grading_table_row_base $rowsbase, bool $hidden): stdClass {
         if ($hidden) {
@@ -129,6 +136,8 @@ class student_cell_data extends cell_data_base {
      * @param int $userid The user ID
      * @param string $fallbackstring The fallback string identifier
      * @return string
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     private function get_candidate_or_fallback(int $userid, string $fallbackstring): string {
         if (!get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')) {
@@ -156,6 +165,7 @@ class student_cell_data extends cell_data_base {
      * @param int $userid The user ID
      * @param string $realname The real name of the user
      * @return string
+     * @throws \dml_exception
      */
     private function get_enhanced_name_with_candidate_number(int $userid, string $realname): string {
         if (!get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')) {

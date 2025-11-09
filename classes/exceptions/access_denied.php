@@ -38,7 +38,9 @@ class access_denied extends moodle_exception {
     /**
      * Constructor.
      * @param coursework $coursework
-     * @param string $message
+     * @param null $message
+     * @throws \coding_exception
+     * @throws moodle_exception
      */
     public function __construct($coursework, $message = null) {
         $link = router::instance()->get_path('coursework', ['coursework' => $coursework]);

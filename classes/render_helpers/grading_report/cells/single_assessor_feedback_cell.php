@@ -23,6 +23,7 @@
 namespace mod_coursework\render_helpers\grading_report\cells;
 
 use coding_exception;
+use core\exception\moodle_exception;
 use core_user;
 use html_writer;
 use mod_coursework\ability;
@@ -57,7 +58,6 @@ class single_assessor_feedback_cell extends cell_base {
 
     /**
      * @param grading_table_row_base $rowobject
-     * @throws coding_exception
      * @return string
      */
     public function get_table_cell($rowobject) {
@@ -137,6 +137,7 @@ class single_assessor_feedback_cell extends cell_base {
     /**
      * @param array $options
      * @return string
+     * @throws coding_exception
      */
     public function get_table_header($options = []) {
         return get_string('feedbackandgrading', 'coursework');
@@ -186,6 +187,8 @@ class single_assessor_feedback_cell extends cell_base {
     /**
      * @param $rowobject
      * @return string
+     * @throws coding_exception
+     * @throws moodle_exception
      */
 
     private function show_feedback_button($rowobject) {

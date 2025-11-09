@@ -49,6 +49,7 @@ class courseworkcandidateprovider extends base {
      * Defines whether there should be a way to uninstall the plugin via the administration UI.
      *
      * @return bool
+     * @throws \dml_exception
      */
     public function uninstall_cleanup(): bool {
         // Clean up any configuration related to this provider

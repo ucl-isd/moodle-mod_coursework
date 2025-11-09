@@ -47,6 +47,10 @@ class delete_extension extends external_api {
      * Execute the function.
      *
      * @param int $extensionid
+     * @return array
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws \invalid_parameter_exception
      */
     public static function execute(int $extensionid): array {
         global $USER;

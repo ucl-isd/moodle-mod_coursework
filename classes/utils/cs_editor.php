@@ -35,7 +35,8 @@ use stdClass;
 class cs_editor extends editor {
     /**
      *
-     * @return array
+     * @return false|string
+     * @throws \dml_exception
      */
     public function get_options() {
         // The code below is copied from editor_tiny\editor->use_editor() and

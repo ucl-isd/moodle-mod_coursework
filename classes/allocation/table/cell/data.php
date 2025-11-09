@@ -76,7 +76,9 @@ class data {
     }
 
     /**
-     * @return mixed
+     * @return void
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     protected function preprocess_data() {
         if (array_key_exists(self::ASSESSOR_ID_KEY, $this->data) && !empty($this->data[self::ASSESSOR_ID_KEY])) {

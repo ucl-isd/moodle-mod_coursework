@@ -102,7 +102,7 @@ class builder implements user_row {
     }
 
     /**
-     * @return coursework
+     * @return \mod_coursework\render_helpers\grading_report\cells\personaldeadline_cell
      */
     public function get_personaldeadline_cell() {
         return $this->personaldeadlinetable->get_personaldeadline_cell();
@@ -110,6 +110,8 @@ class builder implements user_row {
 
     /**
      * @return string
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function get_student_firstname() {
 
@@ -125,6 +127,8 @@ class builder implements user_row {
 
     /**
      * @return string
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function get_student_lastname() {
 
@@ -140,6 +144,8 @@ class builder implements user_row {
 
     /**
      * @return string
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function get_idnumber() {
         $allocatable = $this->get_allocatable();
@@ -152,6 +158,8 @@ class builder implements user_row {
 
     /**
      * @return string
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function get_email() {
         $allocatable = $this->get_allocatable();
@@ -166,6 +174,7 @@ class builder implements user_row {
      * Getter for personal deadline time
      *
      * @return int|mixed|string
+     * @throws \dml_exception
      */
     public function get_personaldeadlines() {
         global $DB;

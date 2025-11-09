@@ -105,6 +105,7 @@ class average_grade implements auto_grader {
 
     /**
      * @return int
+     * @throws \coding_exception
      */
     private function automatic_grade() {
 

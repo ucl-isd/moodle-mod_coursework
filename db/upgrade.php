@@ -40,6 +40,10 @@ require_once($CFG->dirroot . '/mod/coursework/lib.php');
  *
  * @param int $oldversion
  * @return bool
+ * @throws ddl_change_structure_exception
+ * @throws ddl_exception
+ * @throws ddl_field_missing_exception
+ * @throws ddl_table_missing_exception
  */
 function xmldb_coursework_upgrade($oldversion) {
 

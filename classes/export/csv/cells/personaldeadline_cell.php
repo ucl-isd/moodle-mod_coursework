@@ -33,6 +33,7 @@ class personaldeadline_cell extends cell_base {
      * @param $student
      * @param $stageidentifier
      * @return string
+     * @throws coding_exception
      */
     public function get_cell($submission, $student, $stageidentifier) {
 

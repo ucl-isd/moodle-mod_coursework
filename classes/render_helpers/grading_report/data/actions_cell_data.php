@@ -26,6 +26,7 @@
 namespace mod_coursework\render_helpers\grading_report\data;
 
 use coding_exception;
+use core\exception\moodle_exception;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
@@ -42,6 +43,8 @@ class actions_cell_data extends cell_data_base {
      *
      * @param grading_table_row_base $rowsbase
      * @return stdClass|null The data object for template rendering.
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     public function get_table_cell_data(grading_table_row_base $rowsbase): ?stdClass {
         $data = new stdClass();
@@ -82,6 +85,8 @@ class actions_cell_data extends cell_data_base {
      * @param stdClass $data
      * @param grading_table_row_base $rowsbase
      * @return void
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     protected function set_extension_data(stdClass $data, grading_table_row_base $rowsbase): void {
         if (!$this->coursework->get_deadline() || !$this->coursework->extensions_enabled()) {
@@ -122,6 +127,8 @@ class actions_cell_data extends cell_data_base {
      *
      * @param stdClass $data The data object
      * @param grading_table_row_base $rowsbase The row base object
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     protected function set_submission_data(stdClass $data, grading_table_row_base $rowsbase): void {
         global $USER;
@@ -161,6 +168,8 @@ class actions_cell_data extends cell_data_base {
      *
      * @param stdClass $data The data object
      * @param grading_table_row_base $rowsbase The row base object
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     protected function set_finalise_data(stdClass $data, grading_table_row_base $rowsbase): void {
         if (!$rowsbase->get_submission() || $rowsbase->get_submission()->is_finalised()) {
@@ -180,6 +189,8 @@ class actions_cell_data extends cell_data_base {
      *
      * @param stdClass $data The data object
      * @param grading_table_row_base $rowsbase The row base object
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     protected function set_unfinalise_data(stdClass $data, grading_table_row_base $rowsbase): void {
         if (!$rowsbase->get_submission() || !$rowsbase->get_submission()->is_finalised()) {
@@ -205,6 +216,7 @@ class actions_cell_data extends cell_data_base {
      *
      * @param stdClass $data The data object
      * @param grading_table_row_base $rowsbase The row base object
+     * @throws coding_exception
      */
     protected function set_plagiarism_data(stdClass $data, grading_table_row_base $rowsbase): void {
         // Early returns for conditions where plagiarism data should not be shown.
@@ -246,6 +258,8 @@ class actions_cell_data extends cell_data_base {
      *
      * @param submission $submission The submission object
      * @return string The URL or empty string if no permissions
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     private function get_new_flag_url(submission $submission): string {
         $params = ['courseworkid' => $this->coursework->id, 'submissionid' => $submission->id];
@@ -261,6 +275,7 @@ class actions_cell_data extends cell_data_base {
      * @param stdClass $data
      * @param grading_table_row_base $rowsbase
      * @return void
+     * @throws coding_exception
      */
     protected function set_personaldeadline_data(stdClass $data, grading_table_row_base $rowsbase): void {
         // We avoid using $this->ability->can() in this context as it creates multiple DB queries per row.
@@ -296,6 +311,7 @@ class actions_cell_data extends cell_data_base {
      *
      * @param grading_table_row_base $rowsbase
      * @return bool
+     * @throws coding_exception
      */
     private function can_submit_new(grading_table_row_base $rowsbase): bool {
         if (!has_capability('mod/coursework:submitonbehalfof', $this->coursework->get_context())) {

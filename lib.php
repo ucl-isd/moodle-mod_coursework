@@ -54,6 +54,7 @@ require_once($CFG->dirroot . '/mod/coursework/renderable.php');
  * @param object $cm
  * @param context $context
  * @return array
+ * @throws coding_exception
  */
 function coursework_get_file_areas($course, $cm, $context) {
     $areas = [];
@@ -73,6 +74,11 @@ function coursework_get_file_areas($course, $cm, $context) {
  * @param $args
  * @param $forcedownload
  * @return bool
+ * @throws access_denied
+ * @throws coding_exception
+ * @throws dml_exception
+ * @throws moodle_exception
+ * @throws require_login_exception
  */
 function mod_coursework_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload) {
 
@@ -156,6 +162,9 @@ function mod_coursework_pluginfile($course, $cm, $context, $filearea, $args, $fo
  *
  * @param object $formdata An object from the form in mod_form.php
  * @return int The id of the newly inserted coursework record
+ * @throws coding_exception
+ * @throws dml_exception
+ * @throws invalid_parameter_exception
  */
 function coursework_add_instance($formdata) {
     global $DB;
@@ -228,6 +237,9 @@ function coursework_add_instance($formdata) {
  *
  * @param calendar_event $event
  * @return bool Returns true if the event is visible to the current user, false otherwise.
+ * @throws coding_exception
+ * @throws dml_exception
+ * @throws moodle_exception
  */
 function mod_coursework_core_calendar_is_event_visible(calendar_event $event): bool {
     global $DB, $USER;
@@ -263,6 +275,10 @@ function mod_coursework_core_calendar_is_event_visible(calendar_event $event): b
  * @param calendar_event $event
  * @param action_factory $factory
  * @return action_interface|action|null
+ * @throws \core\exception\moodle_exception
+ * @throws coding_exception
+ * @throws dml_exception
+ * @throws moodle_exception
  */
 function mod_coursework_core_calendar_provide_event_action(
     calendar_event $event,
@@ -342,6 +358,9 @@ function mod_coursework_core_calendar_provide_event_action(
  * @param calendar_event $event The calendar event.
  * @param int $itemcount The item count associated with the action event.
  * @return bool
+ * @throws coding_exception
+ * @throws dml_exception
+ * @throws moodle_exception
  */
 function mod_coursework_core_calendar_event_action_shows_item_count(calendar_event $event, $itemcount = 0) {
     global $DB;
@@ -361,8 +380,11 @@ function mod_coursework_core_calendar_event_action_shows_item_count(calendar_eve
 /**
  * Create grade item for given coursework
  * @param coursework|stdClass $coursework object with extra cmid number
- * @param null|array $grades array/object of grade(s); 'reset' means reset grades in gradebook
+ * @param null $grades array/object of grade(s); 'reset' means reset grades in gradebook
  * @return int 0 if ok, error code otherwise
+ * @throws coding_exception
+ * @throws dml_exception
+ * @throws invalid_parameter_exception
  */
 function coursework_grade_item_update($coursework, $grades = null) {
     global $CFG;
@@ -425,6 +447,7 @@ function coursework_grade_item_update($coursework, $grades = null) {
  * @param stdClass $moduleinstance Instance object with extra cmidnumber and modname property.
  * @param int $userid Update grade of specific user only, 0 means all participants.
  * @param bool $nullifnone If true and the user has no grade then a grade item with rawgrade == null
+ * @throws invalid_parameter_exception
  */
 function coursework_update_grades(stdClass $moduleinstance, int $userid = 0, $nullifnone = true) {
     // Code adapted from mod_assign.
@@ -494,6 +517,9 @@ function coursework_grade_item_delete(coursework $coursework) {
  *
  * @param object $coursework An object from the form in mod_form.php
  * @return boolean Success/Fail
+ * @throws coding_exception
+ * @throws dml_exception
+ * @throws moodle_exception
  */
 function coursework_update_instance($coursework) {
 
@@ -593,6 +619,9 @@ function coursework_update_instance($coursework) {
  * @param $coursework
  * @param $eventtype
  * @return void
+ * @throws coding_exception
+ * @throws dml_exception
+ * @throws moodle_exception
  */
 function coursework_update_events($coursework, $eventtype) {
     global $DB;
@@ -648,6 +677,7 @@ function coursework_update_events($coursework, $eventtype) {
  *
  * @param int $id Id of the module instance
  * @return boolean Success/Failure
+ * @throws dml_exception
  */
 function coursework_delete_instance($id) {
     global $DB;
@@ -742,7 +772,7 @@ function coursework_print_recent_activity($course, $viewfullnames, $timestart) {
  * @todo make this work.
  *
  * @param int $courseworkid ID of an instance of this module
- * @return boolean|array false if no participants, array of objects otherwise
+ * @return false false if no participants, array of objects otherwise
  */
 function coursework_get_participants($courseworkid) {
     return false;
@@ -757,6 +787,7 @@ function coursework_get_participants($courseworkid) {
  * @param int $courseworkid ID of an instance of this module
  * @param $scaleid
  * @return bool
+ * @throws dml_exception
  */
 function coursework_scale_used($courseworkid, $scaleid) {
 
@@ -778,6 +809,7 @@ function coursework_scale_used($courseworkid, $scaleid) {
  * This is used to find out if scale used anywhere
  * @param $scaleid int
  * @return boolean True if the scale is used by any coursework
+ * @throws dml_exception
  */
 function coursework_scale_used_anywhere($scaleid) {
     global $DB;
@@ -800,7 +832,7 @@ function coursework_get_extra_capabilities() {
 
 /**
  * @param string $feature FEATURE_xx constant for requested feature
- * @return mixed True if module supports feature, null if doesn't know
+ * @return true|null True if module supports feature, null if doesn't know
  */
 function coursework_supports($feature) {
     switch ($feature) {
@@ -831,6 +863,8 @@ function coursework_supports($feature) {
  *
  * @param int $cmid
  * @return array
+ * @throws coding_exception
+ * @throws dml_exception
  */
 function coursework_plagiarism_dates($cmid) {
 
@@ -850,6 +884,9 @@ function coursework_plagiarism_dates($cmid) {
  * @param settings_navigation $settings
  * @param navigation_node $navref
  * @return void
+ * @throws \core\exception\moodle_exception
+ * @throws coding_exception
+ * @throws dml_exception
  */
 function coursework_extend_settings_navigation(settings_navigation $settings, navigation_node $navref) {
 
@@ -898,6 +935,8 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
  *
  * @param $roleassignment - record from role_assignments table
  * @return bool
+ * @throws coding_exception
+ * @throws dml_exception
  */
 function coursework_role_assigned_event_handler($roleassignment) {
     global $DB;
@@ -915,8 +954,9 @@ function coursework_role_assigned_event_handler($roleassignment) {
  * Auto allocates when a student or teacher leaves.
  *
  * @param $roleassignment
- * @throws coding_exception
  * @return bool
+ * @throws coding_exception
+ * @throws dml_exception
  */
 function coursework_role_unassigned_event_handler($roleassignment) {
 
@@ -937,6 +977,8 @@ function coursework_role_unassigned_event_handler($roleassignment) {
  *
  * @param $contextid
  * @return array
+ * @throws coding_exception
+ * @throws dml_exception
  */
 function coursework_get_courseworkids_from_context_id($contextid) {
 
@@ -973,6 +1015,7 @@ function coursework_get_courseworkids_from_context_id($contextid) {
  *
  * @param int $seconds
  * @return string
+ * @throws coding_exception
  */
 function coursework_seconds_to_string($seconds) {
 
@@ -1008,6 +1051,7 @@ function coursework_seconds_to_string($seconds) {
  *
  * @param int $courseworkid
  * @return int
+ * @throws dml_exception
  */
 function coursework_get_current_max_feedbacks($courseworkid) {
 
@@ -1042,6 +1086,7 @@ function coursework_get_current_max_feedbacks($courseworkid) {
  * @param  $eventdata
  * @return bool
  * @throws coding_exception
+ * @throws dml_exception
  */
 function coursework_send_deadline_changed_emails($eventdata) {
 
@@ -1202,6 +1247,8 @@ function mod_coursework_supports($feature) {
 /**
  * @param $eventdata
  * @return bool
+ * @throws coding_exception
+ * @throws dml_exception
  */
 function coursework_mod_updated($eventdata) {
     if ($eventdata->other['modulename'] == 'coursework') {
@@ -1426,6 +1473,8 @@ function plagiarism_similarity_information($coursemodule) {
 
 /**
  * @return bool
+ * @throws ddl_exception
+ * @throws dml_exception
  */
 function has_user_seen_tii_eula_agreement() {
     global $CFG, $DB, $USER;
@@ -1470,6 +1519,7 @@ function coursework_is_ulcc_digest_coursework_plugin_installed() {
 /**
  * @param int $courseworkid
  * @return bool
+ * @throws dml_exception
  */
 function coursework_personaldeadline_passed($courseworkid) {
     global $DB;
@@ -1506,6 +1556,7 @@ function teacher_allocation_cache_purge($eventdata) {
  *
  * @param $eventdata
  * @return bool
+ * @throws coding_exception
  * @throws dml_exception
  */
 function teacher_removed_allocated_not_graded($eventdata) {

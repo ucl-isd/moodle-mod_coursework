@@ -27,6 +27,7 @@ namespace mod_coursework;
 
 use html_writer;
 use mod_coursework\models\coursework;
+use mod_coursework\models\moderation_set_rule;
 
 /**
  * Acts as a holder for the data needed to render a widget where the user can define a moderation set.
@@ -82,7 +83,9 @@ class sampling_set_widget {
     /**
      * Return a list of class name suffixes from the directory that has all the rules in.
      *
-     * @return models\moderation_set_rule[]
+     * @return moderation_set_rule[]
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function get_potential_rules() {
 
@@ -101,6 +104,7 @@ class sampling_set_widget {
      * Return a list of class name suffixes from the directory that has all the rules in.
      *
      * @return array of classnames keyed by shortname
+     * @throws \dml_exception
      */
     public function get_potential_rule_class_names() {
 

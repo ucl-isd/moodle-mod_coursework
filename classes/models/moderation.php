@@ -113,6 +113,8 @@ class moderation extends table_base {
      * Chained getter for loose coupling.
      *
      * @return coursework
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function get_coursework() {
         return $this->get_submission()->get_coursework();
@@ -136,7 +138,9 @@ class moderation extends table_base {
     /**
      * Memoized getter
      *
-     * @return bool|submission
+     * @return bool|table_base
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function get_submission() {
         $feedback = $this->get_feedback();
@@ -195,6 +199,7 @@ class moderation extends table_base {
     /**
      * @param  $feedback
      * @return moderation|null
+     * @throws \dml_exception
      */
     public static function get_moderator_agreement($feedback) {
         global $DB;

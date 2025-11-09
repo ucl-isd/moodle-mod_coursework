@@ -55,6 +55,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      *
      * @param feedback $feedback
      * @return string
+     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
      */
     public function render_feedback(feedback $feedback) {
         $template = new stdClass();
@@ -123,6 +125,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      *
      * @param submission $submission
      * @return string
+     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
      */
     public function render_viewpdf(submission $submission) {
         $template = new stdClass();
@@ -169,6 +173,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      *
      * @param moderation $moderation
      * @return string
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function render_moderation(moderation $moderation) {
 
@@ -351,6 +357,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      *
      * @param mod_coursework_coursework $coursework
      * @return string html
+     * @throws ReflectionException
+     * @throws \core\exception\coding_exception
+     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
+     * @throws dml_exception
      */
     protected function render_mod_coursework_coursework(mod_coursework_coursework $coursework): string {
         global $USER;
@@ -417,6 +428,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      *
      * @param mod_coursework_allocation_table $allocationtable
      * @return string
+     * @throws \core\exception\coding_exception
+     * @throws coding_exception
      */
     protected function render_mod_coursework_allocation_table(mod_coursework_allocation_table $allocationtable) {
         $tablehtml = $allocationtable->get_hidden_elements();
@@ -556,8 +569,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * Outputs the buttons etc to choose and trigger the auto allocation mechanism. Do this as part of the main form so we
      * can choose some allocations, then click a button to auto-allocate the rest.
      * @param mod_coursework_allocation_widget $allocationwidget
-     * @throws coding_exception
      * @return string
+     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
      */
     public function render_mod_coursework_allocation_widget(mod_coursework_allocation_widget $allocationwidget) {
         $coursework = $allocationwidget->get_coursework();
@@ -754,8 +768,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * Deals with grades which may be unset as yet, or which may be scales.
      * @param $grade
      * @param $maxgrade
-     * @throws coding_exception
      * @return float|string
+     * @throws coding_exception
+     * @throws dml_exception
      */
     private function output_grade_as_string($grade, $maxgrade) {
 
@@ -998,6 +1013,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param stored_file $file
      * @param string $classname
      * @return string
+     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
      */
     private function make_pdfjs_link($file, $classname = 'submissionfile') {
         $filename = $file->get_filename();
@@ -1023,6 +1040,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param coursework $coursework
      * @param submission $submission
      * @return string
+     * @throws coding_exception
      */
     protected function render_resubmit_to_plagiarism_button($coursework, $submission) {
         global $USER;
@@ -1039,8 +1057,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     /**
      * Get marking guide URL when advanced marking is in use.
      *
-     * @param mod_coursework_coursework $coursework
+     * @param mod_coursework_coursework|coursework $coursework
      * @return moodle_url|null Null if there's no advanced grading form set up.
+     * @throws ReflectionException
+     * @throws \core\exception\moodle_exception
      */
     public static function get_marking_guide_url(mod_coursework_coursework|mod_coursework\models\coursework $coursework): ?moodle_url {
 
@@ -1068,6 +1088,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     /**
      * @param mod_coursework_coursework $coursework
      * @return stdClass
+     * @throws coding_exception
+     * @throws dml_exception
      */
     private function add_intro_dates(mod_coursework_coursework $coursework) {
         global $USER;
@@ -1112,6 +1134,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     /**
      * @param submission $submission
      * @return string
+     * @throws coding_exception
      */
     protected function existing_feedback_from_teachers($submission) {
 
@@ -1177,6 +1200,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      *
      * @param mod_coursework_personaldeadlines_table $personaldeadlinestable
      * @return string
+     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
+     * @throws dml_exception
      */
     protected function render_mod_coursework_personaldeadlines_table(mod_coursework_personaldeadlines_table $personaldeadlinestable) {
         $courseworkpageurl = $this->get_router()->get_path('coursework', ['coursework' => $personaldeadlinestable->get_coursework()]);
@@ -1250,6 +1276,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * This is used on the old bulk personal deadlines page i.e. actions/set_personaldeadlines.php.
      * @param builder $personaldeadlinerow
      * @return string
+     * @throws coding_exception
+     * @throws dml_exception
      */
     private function render_personaldeadline_table_row($personaldeadlinerow) {
 
@@ -1297,8 +1325,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * submitted, needing marking, and published submissions, as well as details
      * for assessors and dropdown menus for export and upload actions.
      *
-     * @param mod_coursework_coursework $coursework The coursework activity object.
+     * @param coursework $coursework The coursework activity object.
      * @return stdClass Template data for the marking summary.
+     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
      */
     private function coursework_marking_summary(coursework $coursework): stdClass {
         $reportoptions = [
@@ -1320,8 +1350,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     /**
      * Generates the dropdown data for export and upload links.
      *
-     * @param mod_coursework_coursework $coursework The coursework activity object.
+     * @param coursework $coursework The coursework activity object.
      * @return array An array containing the structured dropdown data.
+     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
      */
     private function get_export_upload_links(coursework $coursework): array {
         $cmid = $this->page->cm->id;
@@ -1399,6 +1431,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     /**
      * Get number of participants assessor can see on the grading page
      * @param coursework $coursework
+     * @return int
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_allocatables_count_per_assessor($coursework) {
         global $USER;
@@ -1445,6 +1480,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      *
      * @param $submissions
      * @return mixed
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function remove_unfinalised_submissions($submissions) {
 
@@ -1464,6 +1501,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      *
      * @param $submissions
      * @return mixed
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function removed_final_graded_submissions($submissions) {
 
@@ -1484,6 +1523,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param $submissions
      * @return mixed
      * @throws coding_exception
+     * @throws dml_exception
      */
     public function remove_ungradable_submissions($submissions) {
 
@@ -1503,6 +1543,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      *
      * @param $submissions
      * @return mixed
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function remove_final_gradable_submissions($submissions) {
 
@@ -1522,6 +1564,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param $submissions
      * @return mixed
      * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_assessor_initial_graded_submissions($submissions) {
         global $USER;
@@ -1568,6 +1611,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param $submissions
      * @return array
      * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_submissions_for_assessor($coursework, $submissions) {
         global $USER;

@@ -116,6 +116,8 @@ class processor {
 
     /**
      * @param data $data
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     private function process_sampling_membership($data) {
         if ($data->allocatable_should_be_in_sampling()) {
@@ -167,6 +169,7 @@ class processor {
      * returns whether the current record was automatically included in the sample set at the current stage
      *
      * @return bool
+     * @throws \dml_exception
      * @throws coding_exception
      */
     private function has_automatic_sampling() {

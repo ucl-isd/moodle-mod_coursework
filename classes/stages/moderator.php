@@ -37,6 +37,7 @@ class moderator extends base {
 
     /**
      * @return string
+     * @throws \coding_exception
      */
     public function allocation_table_header() {
         return get_string('moderations', 'mod_coursework');

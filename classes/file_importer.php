@@ -93,7 +93,13 @@ class coursework_file_zip_importer {
      * Process an uploaded zip file
      *
      * @param coursework $coursework
-     * @return string - The html response
+     * @param $feedbackstage
+     * @param $overwritecurrent
+     * @return array - The html response
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws \file_exception
+     * @throws \stored_file_creation_exception
      */
     public function import_zip_files($coursework, $feedbackstage, $overwritecurrent) {
         global $DB, $USER;

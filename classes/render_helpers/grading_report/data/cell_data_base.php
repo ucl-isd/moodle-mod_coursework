@@ -63,6 +63,7 @@ abstract class cell_data_base implements cell_data_interface {
      *
      * @param submission $submission
      * @return string|bool
+     * @throws \coding_exception
      */
     protected function get_flagged_plagiarism_status(submission $submission): string|bool {
         $flag = plagiarism_flag::get_plagiarism_flag($submission);

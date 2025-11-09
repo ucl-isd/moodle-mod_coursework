@@ -24,6 +24,7 @@ namespace mod_coursework\render_helpers\grading_report\sub_rows;
 
 use AllowDynamicProperties;
 use coding_exception;
+use core\exception\moodle_exception;
 use html_table_row;
 use html_writer;
 use mod_coursework\ability;
@@ -65,7 +66,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     }
 
     /**
-     * @return mod_coursework_object_renderer
+     * @return \renderer_base
      */
     protected function get_renderer() {
         global $PAGE;
@@ -77,6 +78,8 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
      * @param $coursework
      * @param null $ability
      * @return string
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function get_grade_cell_content($feedbackrow, $coursework, $ability = null) {
         global $USER;
@@ -99,7 +102,9 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
      * grading report of the multiple marker courseworks.
      *
      * @param assessor_feedback_table $assessorfeedbacktable
-     * @return html_table_row
+     * @return string
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     protected function render_assessor_feedback_table(assessor_feedback_table $assessorfeedbacktable) {
         global $USER;
@@ -154,7 +159,6 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
 
                 $tablehtml .= '
                         </table>';
-
         } else {
             if (
                 $assessorfeedbacktable->get_submission() &&
@@ -233,7 +237,9 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     /**
      * @param assessor_feedback_row $feedbackrow
      * @return string
+     * @throws \dml_exception
      * @throws coding_exception
+     * @throws moodle_exception
      */
     protected function new_feedaback_link($feedbackrow) {
         global $USER, $OUTPUT;
@@ -260,6 +266,8 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     /**
      * @param assessor_feedback_row $feedbackrow
      * @return string
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     public function profile_link($feedbackrow) {
         global $COURSE;
@@ -274,6 +282,7 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
     /**
      * @param assessor_feedback_row $feedbackrow
      * @return string
+     * @throws coding_exception
      */
     protected function row_class($feedbackrow) {
         $assessor = $feedbackrow->get_assessor();
@@ -296,6 +305,8 @@ class multi_marker_feedback_sub_rows implements sub_rows_interface {
      * @param assessor_feedback_row $feedbackrow
      * @param ability $ability
      * @return string
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     protected function comment_for_row($feedbackrow, $ability) {
         global $USER;

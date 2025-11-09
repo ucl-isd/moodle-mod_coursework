@@ -44,7 +44,7 @@ class range_grade_percent extends moderation_set_rule {
      * @param allocatable[] $moderationset
      * @param allocatable[] $potentialallocatables
      * @param base $stage
-     * @return mixed
+     * @return void
      */
     public function adjust_set(array &$moderationset, array &$potentialallocatables, $stage) {
 
@@ -83,7 +83,7 @@ class range_grade_percent extends moderation_set_rule {
      * Tells us where this ought to be in relation to other rules. The one for percent of total must happen last,
      * so this is how we enforce it.
      *
-     * @return mixed
+     * @return int
      */
     public function get_default_rule_order() {
         return 0;
@@ -92,7 +92,7 @@ class range_grade_percent extends moderation_set_rule {
     /**
      * Some rules make no sens when there are multiple e.g. 'include at least x% of the total number'.
      *
-     * @return mixed
+     * @return true
      */
     public static function allow_multiple() {
         return true;
@@ -100,7 +100,8 @@ class range_grade_percent extends moderation_set_rule {
 
     /**
      * Each rule may have different form elements that we need to add in order for a new one to be
-     * @return mixed
+     * @return string
+     * @throws \coding_exception
      */
     public function get_form_elements() {
 

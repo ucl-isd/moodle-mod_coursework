@@ -93,7 +93,7 @@ class assessor_feedback_row {
     /**
      * Gets the assessor id from the feedback.
      *
-     * @return mixed
+     * @return int
      */
     public function get_assessor_id() {
         return $this->assessorid;
@@ -157,7 +157,7 @@ class assessor_feedback_row {
     /**
      * When was this feedback last altered?
      *
-     * @return mixed
+     * @return int
      */
     public function get_time_modified() {
         return $this->get_feedback()->timemodified;
@@ -184,7 +184,9 @@ class assessor_feedback_row {
     /**
      * Getter
      *
-     * @return models\submission|null
+     * @return submission|null
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function get_submission() {
 

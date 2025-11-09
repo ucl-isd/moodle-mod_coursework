@@ -195,7 +195,6 @@ class feedback extends table_base {
     /**
      * This function is used for student view, it determines if assessors' names should be displayed or should be hidden
      * @return string assessor's name
-     * @throws coding_exception
      */
     public function display_assessor_name() {
 
@@ -244,6 +243,9 @@ class feedback extends table_base {
      * Chained getter for loose coupling.
      *
      * @return coursework
+     * @throws \core\exception\coding_exception
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_coursework() {
         return $this->get_submission()->get_coursework();
@@ -260,14 +262,13 @@ class feedback extends table_base {
 
     /**
      * Returns a feedback instance
-     * @todo get rid of this.
-     *
      * @param submission $submission
-     * @param int $assessorid
      * @param int $isfinalgrade do we want the final grade (in case this assessor did a component
      * one and a final one
-     * @param $assessorid
+     * @param int $assessorid
      * @return feedback|null
+     * @throws dml_exception
+     * @todo get rid of this.
      */
     public static function get_teacher_feedback(
         submission $submission,
@@ -305,6 +306,7 @@ class feedback extends table_base {
     /**
      * @param $contextid
      * @return void
+     * @throws coding_exception
      */
     public function set_feedback_files($contextid) {
 
@@ -330,7 +332,7 @@ class feedback extends table_base {
     /**
      * Fetches all the files for this feedback and returns them as an array
      *
-     * @return array
+     * @return false|feedback_files
      */
     public function get_feedback_files() {
 
@@ -344,7 +346,8 @@ class feedback extends table_base {
     }
 
     /**
-     * @return mixed
+     * @return void
+     * @throws dml_exception
      */
     public function set_student() {
         global $DB;
@@ -419,7 +422,7 @@ class feedback extends table_base {
     /**
      * Chained getter.
      *
-     * @return mixed
+     * @return int
      */
     public function get_courseworkid() {
         return $this->get_coursework()->id;
@@ -463,6 +466,8 @@ class feedback extends table_base {
      * Memoized getter
      *
      * @return bool|submission
+     * @throws \core\exception\coding_exception
+     * @throws dml_exception
      */
     public function get_submission() {
 
@@ -485,7 +490,7 @@ class feedback extends table_base {
     /**
      * Getter for the feedback grade.
      *
-     * @return int
+     * @return string
      */
     public function get_grade() {
         return $this->grade;
@@ -617,6 +622,9 @@ class feedback extends table_base {
     /**
      * @param int $courseworkid
      * @param $submissionids
+     * @throws \core\exception\coding_exception
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public static function fill_pool_submissions($courseworkid, $submissionids) {
         global $DB;
@@ -666,6 +674,7 @@ class feedback extends table_base {
      * @param $key
      * @param $params
      * @return self|bool
+     * @throws dml_exception
      */
     public static function get_object($courseworkid, $key, $params) {
         if (!isset(self::$pool[$courseworkid])) {

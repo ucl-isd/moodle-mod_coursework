@@ -54,7 +54,6 @@ abstract class cell_base implements cell_interface {
      * @param string $sortby The current sort from the URL.
      * @param string $tablename
      * @return string
-     * @throws coding_exception
      */
     protected function helper_sortable_heading($displayname, $field, $sorthow, $sortby = '', $tablename = '') {
         return $displayname;
@@ -68,7 +67,7 @@ abstract class cell_base implements cell_interface {
     }
 
     /**
-     * @return mod_coursework_object_renderer
+     * @return \renderer_base
      */
     protected function get_renderer() {
         global $PAGE;
@@ -77,7 +76,7 @@ abstract class cell_base implements cell_interface {
     }
 
     /**
-     * @return string|void
+     * @return false|string
      */
     public function cell_name() {
         $namespacedclass = get_class($this);
@@ -87,7 +86,7 @@ abstract class cell_base implements cell_interface {
 
     /**
      * @param string $content
-     * @return html_table_cell
+     * @return string
      */
     protected function get_new_cell_with_class($content = '') {
         return '
@@ -98,7 +97,7 @@ abstract class cell_base implements cell_interface {
 
     /**
      * @param array $data
-     * @return html_table_cell
+     * @return string
      */
     protected function get_new_cell_with_order_data($data) {
         return '<td class="' . $this->cell_name() . '" data-order="' . $data['@data-order'] . '">' . $data['display'] . '</td>';

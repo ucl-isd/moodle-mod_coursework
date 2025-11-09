@@ -29,6 +29,7 @@
 namespace mod_coursework\models;
 
 use AllowDynamicProperties;
+use core\exception\coding_exception;
 use mod_coursework\allocation\moderatable;
 use mod_coursework\framework\table_base;
 
@@ -56,6 +57,7 @@ class assessment_set_membership extends table_base implements moderatable {
      *
      * @param int $courseworkid
      * @return array
+     * @throws \dml_exception
      */
     protected static function get_cache_array($courseworkid) {
         global $DB;
@@ -82,6 +84,7 @@ class assessment_set_membership extends table_base implements moderatable {
      * @param $key
      * @param $params
      * @return mixed
+     * @throws coding_exception
      */
     public static function get_object($courseworkid, $key, $params) {
         if (!isset(self::$pool[$courseworkid])) {

@@ -82,6 +82,7 @@ class grading_guide_agreed_grades implements renderable, templatable {
      *
      * @param renderer_base $output Renderer base.
      * @return stdClass
+     * @throws \coding_exception
      * @see gradingform_controller for $gradingcontroller class.
      */
     public function export_for_template(renderer_base $output): stdClass {

@@ -30,6 +30,7 @@ use mod_coursework\allocation\strategy\base as strategy_base;
 use mod_coursework\allocation\table\cell\builder;
 use mod_coursework\allocation\table\cell\data;
 use mod_coursework\allocation\table\cell\processor;
+use mod_coursework\framework\table_base;
 use mod_coursework\models\allocation;
 use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\coursework;
@@ -55,7 +56,7 @@ abstract class base {
     protected $stageidentifier;
 
     /**
-     * @var array
+     * @var array|null
      */
     protected ?array $teachers = null;
 
@@ -92,6 +93,7 @@ abstract class base {
 
     /**
      * @return strategy_base
+     * @throws coding_exception
      */
     private function get_allocation_strategy() {
         $strategyname = $this->strategy_name();
@@ -101,7 +103,7 @@ abstract class base {
 
     /**
      * @param allocatable $allocatable
-     * @return mixed|void
+     * @return void
      */
     public function make_auto_allocation_if_necessary($allocatable) {
         if ($this->already_allocated($allocatable)) {
@@ -129,6 +131,7 @@ abstract class base {
     /**
      * @param allocatable $allocatable
      * @return bool
+     * @throws \core\exception\coding_exception
      */
     private function already_allocated($allocatable) {
         $courseworkid = $this->get_courseworkid();
@@ -145,6 +148,7 @@ abstract class base {
      * @param allocatable $allocatable
      * @param $assessor
      * @return bool
+     * @throws \core\exception\coding_exception
      */
     public function assessor_already_allocated_for_this_submission($allocatable, $assessor) {
 
@@ -186,7 +190,10 @@ abstract class base {
      * @param $allocatable
      * @param $teacher
      *
-     * @return mixed|void
+     * @return allocation
+     * @throws \core\exception\coding_exception
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function make_manual_allocation($allocatable, $teacher) {
         $allocation = $this->prepare_allocation_to_save($allocatable, $teacher);
@@ -221,7 +228,7 @@ abstract class base {
      * @param $allocatable
      * @param $teacher
      *
-     * @return mixed|void
+     * @return void
      */
     private function make_auto_allocation($allocatable, $teacher) {
         $allocation = $this->prepare_allocation_to_save($allocatable, $teacher);
@@ -237,7 +244,7 @@ abstract class base {
 
     /**
      * @param allocatable $allocatable
-     * @return mixed|void
+     * @return bool|int|user
      */
     private function get_next_teacher($allocatable) {
 
@@ -254,6 +261,7 @@ abstract class base {
     /**
      * Get ids of teachers who have percentage allocated to them
      * @return array
+     * @throws \dml_exception
      */
     private function get_percentage_allocated_teachers() {
         global $DB;
@@ -280,6 +288,7 @@ abstract class base {
     /**
      * @param allocatable $allocatable
      * @return bool
+     * @throws \core\exception\coding_exception
      */
     public function allocation_is_manual($allocatable) {
 
@@ -301,6 +310,8 @@ abstract class base {
      * Used to populate drop down of teachers on marker allocation page.
      * Also called repeatedly by auto allocation process to get list of possible markers.
      * @return user[]
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function get_teachers(): array {
         if ($this->teachers === null) {
@@ -329,6 +340,8 @@ abstract class base {
      *
      * @param allocatable $allocatable
      * @return bool
+     * @throws \core\exception\coding_exception
+     * @throws \dml_exception
      */
     public function has_feedback($allocatable) {
         $feedback = null;
@@ -345,6 +358,7 @@ abstract class base {
     /**
      * @param $submission
      * @return bool
+     * @throws \dml_exception
      */
     public function has_moderation($submission) {
 
@@ -362,7 +376,9 @@ abstract class base {
 
     /**
      * @param $submission
-     * @return bool|moderation
+     * @return bool|table_base
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function get_moderation($submission) {
         $feedback = $this->get_single_feedback($submission);
@@ -391,6 +407,7 @@ abstract class base {
     /**
      * @param $submission
      * @return feedback|bool
+     * @throws \dml_exception
      */
     public function get_single_feedback($submission) {
         feedback::fill_pool_coursework($submission->courseworkid);
@@ -400,6 +417,7 @@ abstract class base {
     /**
      * @param allocatable $allocatable
      * @return bool
+     * @throws \core\exception\coding_exception
      */
     public function has_allocation($allocatable) {
         if (!isset($this->allocatableswithallocations)) {
@@ -417,6 +435,7 @@ abstract class base {
      * Check if current marking stage has any allocation
      *
      * @return bool
+     * @throws \core\exception\coding_exception
      */
     public function stage_has_allocation() {
         $courseworkid = $this->get_courseworkid();
@@ -436,7 +455,7 @@ abstract class base {
 
     /**
      * @param allocatable $allocatable
-     * @return allocation|bool
+     * @return bool
      */
     public function get_allocation($allocatable) {
         $courseworkid = $this->coursework->id;
@@ -447,6 +466,7 @@ abstract class base {
     /**
      * @param allocatable $allocatable
      * @return user
+     * @throws \core\exception\coding_exception
      */
     public function allocated_teacher_for($allocatable) {
         $courseworkid = $this->get_courseworkid();
@@ -477,7 +497,7 @@ abstract class base {
 
     /**
      * @param array $rowdata
-     * @return mixed
+     * @return data
      */
     private function get_cell_data($rowdata) {
         if (array_key_exists($this->identifier(), $rowdata)) {
@@ -505,6 +525,7 @@ abstract class base {
     /**
      * @param allocatable $allocatable
      * @return bool
+     * @throws \core\exception\coding_exception
      */
     public function allocatable_is_in_sample($allocatable) {
         if (!$this->uses_sampling()) {
@@ -546,6 +567,7 @@ abstract class base {
 
     /**
      * @param allocatable $allocatable
+     * @throws \dml_exception
      */
     public function remove_allocatable_from_sampling($allocatable) {
         global $DB;
@@ -563,6 +585,7 @@ abstract class base {
      * Is the specified user an assessor?
      * @param int $userid
      * @return bool
+     * @throws coding_exception
      */
     public function user_is_assessor(int $userid): bool {
         if (!isset(self::$selfcache['user_is_assessor'][$this->coursework->id][$userid])) {
@@ -588,6 +611,7 @@ abstract class base {
      * Check if a user has any allocation in this stage
      * @param allocatable $allocatable
      * @return bool
+     * @throws \core\exception\coding_exception
      */
     public function assessor_has_allocation($allocatable) {
         global $USER;
@@ -629,7 +653,7 @@ abstract class base {
 
     /**
      * @param allocatable $allocatable
-     * @return string
+     * @return bool|null_user|user
      */
     public function get_allocated_assessor($allocatable) {
         if ($this->has_allocation($allocatable)) {
@@ -643,6 +667,7 @@ abstract class base {
     /**
      * @param allocatable $allocatable
      * @return bool
+     * @throws \core\exception\coding_exception
      */
     public function prerequisite_stages_have_feedback($allocatable) {
         $allstages = $this->get_coursework()->marking_stages();
@@ -716,7 +741,9 @@ abstract class base {
 
     /**
      * @param $feedback
-     * @return moderation|bool
+     * @return bool|table_base
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function get_moderation_for_feedback($feedback) {
         $moderationparams = [
@@ -860,6 +887,7 @@ abstract class base {
     /**
      * @param array $options
      * @param allocatable $allocatable
+     * @throws coding_exception
      */
     private function remove_currently_allocated_assessor_from_options_array($options, $allocatable) {
         if ($this->has_allocation($allocatable)) {

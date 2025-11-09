@@ -68,14 +68,14 @@ class builder {
     }
 
     /**
-     * @return html_table_cell
+     * @return string
      */
     public function get_renderable_allocation_table_cell() {
         return $this->prepare_allocation_table_cell();
     }
 
     /**
-     * @return html_table_cell
+     * @return string
      */
     public function get_renderable_moderation_table_cell() {
         return $this->prepare_moderation_table_cell();
@@ -85,6 +85,7 @@ class builder {
      * Makes the dropdown showing what teachers can mark this coursework.
      *
      * @return string
+     * @throws coding_exception
      */
     private function get_potential_marker_dropdown() {
 
@@ -228,6 +229,7 @@ class builder {
 
     /**
      * @return string
+     * @throws coding_exception
      */
     private function prepare_moderation_table_cell() {
 
@@ -342,6 +344,7 @@ class builder {
      * returns whether the current record was automatically included in the sample set at the current stage
      *
      * @return bool
+     * @throws \dml_exception
      * @throws coding_exception
      */
     private function has_automatic_sampling() {
@@ -431,6 +434,8 @@ class builder {
 
     /**
      * @return bool
+     * @throws \core\exception\coding_exception
+     * @throws \dml_exception
      */
     private function has_final_feedback() {
         submission::fill_pool_coursework($this->coursework->id);
@@ -454,7 +459,8 @@ class builder {
     }
 
     /**
-     * @return static
+     * @return bool
+     * @throws \core\exception\coding_exception
      */
     private function get_submission() {
         submission::fill_pool_coursework($this->coursework->id);

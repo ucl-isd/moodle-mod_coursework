@@ -100,6 +100,7 @@ class manager {
      *
      * @param string $type e.g. coursework::ASSESSOR
      * @return array $classname => human readable name
+     * @throws coding_exception
      */
     public static function get_allocation_classnames($type = coursework::ASSESSOR) {
 
@@ -132,7 +133,7 @@ class manager {
      * @param allocatable[] $allocatables
      * @param stage_base $stage
      * @param allocatable[] $moderationset
-     * @return mixed
+     * @return allocatable[]
      */
     protected function add_already_moderated_allocatables_to_set($allocatables, $stage, $moderationset) {
         foreach ($allocatables as $allocatableid => $allocatable) {
@@ -184,6 +185,7 @@ class manager {
      * Gets the sampling rules as an array of classes.
      *
      * @return moderation_set_rule[] array
+     * @throws \dml_exception
      */
     public function get_sampling_set_rules() {
 

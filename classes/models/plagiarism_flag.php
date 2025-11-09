@@ -23,6 +23,7 @@
 namespace mod_coursework\models;
 
 use AllowDynamicProperties;
+use core\exception\coding_exception;
 use mod_coursework\framework\table_base;
 use mod_coursework_coursework;
 
@@ -57,7 +58,8 @@ class plagiarism_flag extends table_base {
     const NOTCLEARED = 3;
 
     /**
-     * @return mixed|mod_coursework_coursework
+     * @return bool|coursework
+     * @throws \dml_exception
      */
     public function get_coursework() {
         if (!isset($this->coursework)) {
@@ -72,6 +74,7 @@ class plagiarism_flag extends table_base {
      * Memoized getter
      *
      * @return bool|submission
+     * @throws coding_exception
      */
     public function get_submission() {
         if (!isset($this->submission) && !empty($this->submissionid)) {
@@ -86,6 +89,7 @@ class plagiarism_flag extends table_base {
     /**
      * @param $submission
      * @return static
+     * @throws coding_exception
      */
     public static function get_plagiarism_flag($submission) {
         self::fill_pool_coursework($submission->courseworkid);
@@ -118,6 +122,7 @@ class plagiarism_flag extends table_base {
      *
      * @param int $courseworkid
      * @return array
+     * @throws \dml_exception
      */
     protected static function get_cache_array($courseworkid) {
         global $DB;
@@ -140,6 +145,7 @@ class plagiarism_flag extends table_base {
      * @param $key
      * @param $params
      * @return self|bool
+     * @throws coding_exception
      */
     public static function get_object($courseworkid, $key, $params) {
         if (!isset(self::$pool[$courseworkid])) {

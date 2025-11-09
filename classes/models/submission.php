@@ -26,6 +26,7 @@ use AllowDynamicProperties;
 use coding_exception;
 use context;
 use context_module;
+use core\exception\moodle_exception;
 use core_user\fields;
 use dml_exception;
 use dml_missing_record_exception;
@@ -240,7 +241,8 @@ class submission extends table_base implements renderable {
      * Constructor: takes a DB row from the coursework_submissions table. We don't retrieve it first
      * as we may want to overwrite with submitted data or make a new one.
      *
-     * @param string|int|stdClass|null $dbrecord
+     * @param null $dbrecord
+     * @throws dml_exception
      */
     public function __construct($dbrecord = null) {
 
@@ -267,7 +269,10 @@ class submission extends table_base implements renderable {
 
     /**
      * Get an array of submissions that need to be finalised.
+     * @param null $courseworkid
      * @return submission[]
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public static function not_finalised_past_deadline($courseworkid = null) {
         global $DB;
@@ -332,6 +337,8 @@ class submission extends table_base implements renderable {
      * coursework.
      *
      * @return array
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_file_options() {
         return $this->get_coursework()->get_file_options();
@@ -350,6 +357,8 @@ class submission extends table_base implements renderable {
      * Gets course id from the associated coursework.
      *
      * @return int
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_course_id() {
         return $this->get_coursework()->get_course_id();
@@ -359,6 +368,8 @@ class submission extends table_base implements renderable {
      * Gets the course module id from the parent coursework.
      *
      * @return int
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_course_module_id() {
         return $this->get_coursework()->get_coursemodule_id();
@@ -370,6 +381,9 @@ class submission extends table_base implements renderable {
      *
      * @param null $type
      * @return void
+     * @throws \moodle_exception
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function submit_plagiarism($type = null) {
 
@@ -460,6 +474,8 @@ class submission extends table_base implements renderable {
      * Gets the context id from the parent coursework
      *
      * @return int
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_context_id() {
         return $this->get_coursework()->get_context()->id;
@@ -469,6 +485,8 @@ class submission extends table_base implements renderable {
      * Chained getter.
      *
      * @return context
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_context() {
         return $this->get_coursework()->get_context();
@@ -478,6 +496,7 @@ class submission extends table_base implements renderable {
      * Gets all attached feedbacks, fetching from DB if not already there.
      *
      * @return feedback[] array of raw db records
+     * @throws dml_exception
      */
     public function get_feedbacks() {
         if (!is_array($this->feedbacks)) {
@@ -495,6 +514,7 @@ class submission extends table_base implements renderable {
      * This will return the feedbacks that have been added, but which are not the final feedback.
      *
      * @return feedback[]
+     * @throws dml_exception
      */
     public function get_assessor_feedbacks() {
         if (!$this->id) {
@@ -546,9 +566,8 @@ class submission extends table_base implements renderable {
     }
 
     /**
-     * @return mixed|feedback|string
-     * @throws dml_missing_record_exception
-     * @throws dml_multiple_records_exception
+     * @return array|bool|feedback
+     * @throws dml_exception
      */
     public function get_agreed_grade() {
         if (!$this->id) {
@@ -606,6 +625,7 @@ class submission extends table_base implements renderable {
      * Gets the final grade from the final feedback record and returns it.
      *
      * @return int|bool false if there isn't one
+     * @throws exception
      */
     public function get_final_grade() {
 
@@ -624,6 +644,8 @@ class submission extends table_base implements renderable {
      * display the submission.
      *
      * @return int
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_state() {
 
@@ -688,6 +710,9 @@ class submission extends table_base implements renderable {
      *
      * @param bool $aslink
      * @return string
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
      */
     public function get_allocatable_name($aslink = false) {
 
@@ -712,7 +737,7 @@ class submission extends table_base implements renderable {
     }
 
     /**
-     * @return mixed
+     * @return user
      */
     public function get_last_updated_by_user() {
         return user::get_object($this->lastupdatedby);
@@ -721,7 +746,7 @@ class submission extends table_base implements renderable {
     /**
      * Tells us whether this has been given its final grade
      *
-     * @return int|null
+     * @return bool
      */
     public function has_final_agreed_grade() {
         $stage = $this->coursework->get_final_agreed_marking_stage();
@@ -740,8 +765,9 @@ class submission extends table_base implements renderable {
     /**
      * Getter for the coursework instance. Memoized.
      *
-     * @throws coding_exception
      * @return coursework
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_coursework() {
 
@@ -762,6 +788,7 @@ class submission extends table_base implements renderable {
      * Prevents tight coupling by returning the marker status from the associated coursework.
      *
      * @return bool
+     * @throws coding_exception
      */
     public function has_multiple_markers() {
         return $this->get_coursework()->has_multiple_markers();
@@ -772,6 +799,7 @@ class submission extends table_base implements renderable {
      *
      * @param int $userid
      * @return bool
+     * @throws dml_exception
      */
     public function user_has_submitted_feedback($userid = 0) {
         global $USER;
@@ -830,6 +858,7 @@ class submission extends table_base implements renderable {
      *
      * @param $groupid
      * @return mixed a fieldset object containing the first matching record
+     * @throws dml_exception
      */
     public function get_tii_group_member_with_eula($groupid) {
 
@@ -852,6 +881,7 @@ class submission extends table_base implements renderable {
      * Return human readable language string for the row's status.
      *
      * @return string
+     * @throws coding_exception
      */
     public function get_status_text() {
 
@@ -968,6 +998,9 @@ class submission extends table_base implements renderable {
 
     /**
      * @return user[]
+     * @throws \moodle_exception
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_students() {
         $allocatables = [];
@@ -987,6 +1020,8 @@ class submission extends table_base implements renderable {
 
     /**
      * @return bool
+     * @throws \core\exception\coding_exception
+     * @throws coding_exception
      */
     public function ready_to_publish() {
         if ($this->get_coursework()->plagiarism_flagging_enbled()) {
@@ -1012,7 +1047,10 @@ class submission extends table_base implements renderable {
     }
 
     /**
+     * @throws \invalid_parameter_exception
+     * @throws \moodle_exception
      * @throws coding_exception
+     * @throws dml_exception
      */
     public function publish() {
 
@@ -1047,6 +1085,7 @@ class submission extends table_base implements renderable {
 
     /**
      * @return array
+     * @throws coding_exception
      */
     private function get_grades_to_update() {
         $students = $this->students_for_gradebook();
@@ -1066,7 +1105,7 @@ class submission extends table_base implements renderable {
     }
 
     /**
-     * @return user|false
+     * @return user
      */
     public function get_last_submitter() {
         return user::get_object($this->lastupdatedby);
@@ -1130,6 +1169,7 @@ class submission extends table_base implements renderable {
 
     /**
      * @param int $filesid
+     * @throws coding_exception
      */
     public function save_files($filesid) {
 
@@ -1149,6 +1189,7 @@ class submission extends table_base implements renderable {
 
     /**
      * @return stored_file[]
+     * @throws coding_exception
      */
     private function get_files() {
         $fs = get_file_storage();
@@ -1187,6 +1228,7 @@ class submission extends table_base implements renderable {
     /**
      * @param stored_file $file
      * @param int $counter
+     * @throws \file_exception
      */
     private function rename_file($file, $counter) {
 
@@ -1265,7 +1307,7 @@ class submission extends table_base implements renderable {
     }
 
     /**
-     * @return array|bool
+     * @return array
      * @throws coding_exception
      */
     private function students_for_gradng() {
@@ -1292,7 +1334,7 @@ class submission extends table_base implements renderable {
     /**
      *  Function to get samplings for the submission
      * @return array
-     * @throws coding_exception
+     * @throws \core\exception\coding_exception
      */
 
     public function get_submissions_in_sample() {
@@ -1304,8 +1346,9 @@ class submission extends table_base implements renderable {
 
     /**
      *  Function to get samplings for the submission
+     * @param $stageidentifier
      * @return array
-     * @throws coding_exception
+     * @throws \core\exception\coding_exception
      */
 
     public function get_submissions_in_sample_by_stage($stageidentifier) {
@@ -1321,7 +1364,7 @@ class submission extends table_base implements renderable {
      * Check if submission has an extension
      *
      * @return bool
-     * @throws coding_exception
+     * @throws \core\exception\coding_exception
      */
     public function has_extension() {
         if (!$this->coursework->extensions_enabled()) {
@@ -1337,7 +1380,7 @@ class submission extends table_base implements renderable {
      * Retrieve details of submission's extension
      *
      * @return mixed
-     * @throws coding_exception
+     * @throws \core\exception\coding_exception
      */
     public function submission_extension() {
         if (!$this->coursework->extensions_enabled()) {
@@ -1483,6 +1526,7 @@ class submission extends table_base implements renderable {
      * Function to check if submission has a valid extension
      *
      * @return bool
+     * @throws \core\exception\coding_exception
      */
     public function has_valid_extension() {
         $validextension = false;
@@ -1531,6 +1575,7 @@ class submission extends table_base implements renderable {
      *
      * @param int $courseworkid
      * @return array
+     * @throws dml_exception
      */
     protected static function get_cache_array($courseworkid) {
         global $DB;
@@ -1559,6 +1604,7 @@ class submission extends table_base implements renderable {
      * @param $key
      * @param $params
      * @return bool
+     * @throws \core\exception\coding_exception
      */
     public static function get_object($courseworkid, $key, $params) {
         if (!isset(self::$pool[$courseworkid])) {

@@ -25,6 +25,7 @@
 namespace mod_coursework\forms;
 
 use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use form_filemanager;
 use gradingform_controller;
 use gradingform_instance;
@@ -169,7 +170,7 @@ class assessor_feedback_mform extends moodleform {
     }
     /**
      *
-     * @return mixed
+     * @return bool|gradingform_controller|null
      */
     public function get_gradingcontroller() {
         return $this->gradingcontroller;
@@ -223,6 +224,8 @@ class assessor_feedback_mform extends moodleform {
      * This is just to grab the data and add it to the feedback object.
      *
      * @return feedback
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function process_data() {
         $formdata = $this->get_data();
@@ -250,7 +253,7 @@ class assessor_feedback_mform extends moodleform {
      * Saves any of the files that may have been attached. Needs a feedback that has an id.
      *
      * @throws coding_exception
-     * @return bool|void
+     * @return void
      */
     public function save_feedback_files() {
 
@@ -305,6 +308,8 @@ class assessor_feedback_mform extends moodleform {
     /**
      * Override the form display in specific circumstances.
      * @return void
+     * @throws \coding_exception
+     * @throws moodle_exception
      */
     public function display() {
         global $OUTPUT;
@@ -344,6 +349,7 @@ class assessor_feedback_mform extends moodleform {
      * @param array $files array of uploaded files "element_name"=>tmp_file_path
      * @return array of "element_name"=>"error_description" if there are errors,
      *         or an empty array if everything is OK (true allowed for backwards compatibility too).
+     * @throws \coding_exception
      */
     public function validation($data, $files) {
         $data = (array)$data;

@@ -24,6 +24,7 @@ namespace mod_coursework;
 
 use grade_scale;
 use mod_coursework\allocation\allocatable;
+use mod_coursework\framework\table_base;
 use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
@@ -52,7 +53,7 @@ class grade_judge {
 
     /**
      * @param submission $submission
-     * @return mixed
+     * @return int|null
      */
     public function get_grade_capped_by_submission_time($submission) {
 
@@ -123,7 +124,9 @@ class grade_judge {
 
     /**
      * @param submission $submission
-     * @return bool|feedback|null|static
+     * @return table_base|null_feedback
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function get_feedback_that_is_promoted_to_gradebook($submission) {
 
@@ -168,6 +171,7 @@ class grade_judge {
     /**
      * @param allocatable $allocatable
      * @return bool
+     * @throws \dml_exception
      */
     public function allocatable_needs_more_than_one_feedback($allocatable) {
 

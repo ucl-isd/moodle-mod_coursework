@@ -34,6 +34,7 @@ class unenrol_task extends scheduled_task {
      * Get a descriptive name for this task (shown to admins).
      *
      * @return string
+     * @throws \coding_exception
      */
     public function get_name() {
         return get_string('unenroltask', 'mod_coursework');

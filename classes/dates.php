@@ -42,6 +42,8 @@ class dates extends activity_dates {
      * Returns a list of important dates in mod_coursework
      *
      * @return array
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     protected function get_dates(): array {
         global $USER;

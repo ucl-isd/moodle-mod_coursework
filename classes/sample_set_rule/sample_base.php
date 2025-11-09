@@ -120,7 +120,7 @@ abstract class sample_base {
     /**
      * Some rules make no sense when there are multiple e.g. 'include at least x% of the total number'.
      *
-     * @return mixed
+     * @return true
      */
     public static function allow_multiple() {
         return true;
@@ -141,6 +141,7 @@ abstract class sample_base {
     /**
      *
      * @return array
+     * @throws \dml_exception
      */
     protected function finalised_submissions() {
         global $DB;
@@ -158,6 +159,7 @@ abstract class sample_base {
     /**
      *
      * @return array
+     * @throws \dml_exception
      */
     protected function released_submissions() {
         global $DB;

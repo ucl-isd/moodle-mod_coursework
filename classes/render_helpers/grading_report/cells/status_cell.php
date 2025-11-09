@@ -44,6 +44,7 @@ class status_cell extends cell_base {
     /**
      * @param array $options
      * @return string
+     * @throws \coding_exception
      */
     public function get_table_header($options = []) {
         return get_string('tableheadstatus', 'coursework');

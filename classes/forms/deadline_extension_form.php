@@ -23,8 +23,10 @@
 namespace mod_coursework\forms;
 use context;
 use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
 use core_form\dynamic_form;
 use mod_coursework\ability;
+use mod_coursework\exceptions\access_denied;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
 use mod_coursework\models\group;
@@ -164,6 +166,7 @@ class deadline_extension_form extends dynamic_form {
     /**
      * Add mustache data for form header template.
      * @return object
+     * @throws \coding_exception
      */
     private function get_header_mustache_data(): object {
         $data = (object)[
@@ -212,6 +215,7 @@ class deadline_extension_form extends dynamic_form {
      * @param array $data
      * @param array $files
      * @return array
+     * @throws \coding_exception
      */
     public function validation($data, $files) {
         global $CFG;
@@ -241,6 +245,8 @@ class deadline_extension_form extends dynamic_form {
     /**
      * If user has a personal deadline, get the object.
      * @return personaldeadline|null
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function personaldeadline(): ?personaldeadline {
         global $DB;
@@ -255,6 +261,8 @@ class deadline_extension_form extends dynamic_form {
     /**
      * Set instance variables for this object.
      * @return void
+     * @throws \coding_exception
+     * @throws \dml_exception
      * @throws invalid_parameter_exception
      */
     private function set_instance_vars() {
@@ -302,7 +310,8 @@ class deadline_extension_form extends dynamic_form {
      * by calling $this->optional_param()
      *
      * @return context
-     **/
+     * @throws invalid_parameter_exception
+     */
     protected function get_context_for_dynamic_submission(): context {
         $this->set_instance_vars();
         return $this->coursework->get_context();
@@ -322,11 +331,14 @@ class deadline_extension_form extends dynamic_form {
         }
     }
 
-     /**
-      * Process the form submission, used if form was submitted via AJAX.
-      * Can return scalar values or arrays json-encoded, will be passed to the caller JS.
-      * @return array
-      */
+    /**
+     * Process the form submission, used if form was submitted via AJAX.
+     * Can return scalar values or arrays json-encoded, will be passed to the caller JS.
+     * @return array
+     * @throws \coding_exception
+     * @throws access_denied
+     * @throws invalid_parameter_exception
+     */
     public function process_dynamic_submission(): array {
         global $USER;
         // By the time we reach here, $this->validation has already happened so no need to repeat.
@@ -399,6 +411,7 @@ class deadline_extension_form extends dynamic_form {
     /**
      * Set the data that the modal form needs to display.
      * @return void
+     * @throws \coding_exception
      */
     public function set_data_for_dynamic_submission(): void {
         $data = [
@@ -427,6 +440,7 @@ class deadline_extension_form extends dynamic_form {
      *  If the form has arguments (such as 'id' of the element being edited), the URL should
      *  also have respective argument.
      * @return moodle_url
+     * @throws moodle_exception
      */
     protected function get_page_url_for_dynamic_submission(): moodle_url {
         return new moodle_url('/mod/coursework/view.php', ['id' => $this->coursework->id]);

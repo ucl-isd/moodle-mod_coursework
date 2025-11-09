@@ -250,7 +250,7 @@ class import extends grading_sheet {
      * @param $delimiter
      * @param $csvcells
      * @param $processingresults
-     * @return array|bool
+     * @return false|\lang_string|string
      * @throws moodle_exception
      */
     public function process_csv($content, $encoding, $delimiter, $csvcells, $processingresults) {
@@ -596,6 +596,7 @@ class import extends grading_sheet {
      * @param $submissionid
      * @param $stageidentifier
      * @return mixed
+     * @throws dml_exception
      */
     public function get_coursework_feedback_id($submissionid, $stageidentifier) {
         global $DB;
@@ -665,8 +666,8 @@ class import extends grading_sheet {
      * @param $submissionid
      * @param $cellidentifier
      * @return string
-     * @throws dml_missing_record_exception
-     * @throws dml_multiple_records_exception
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_stageidentifier($submissionid, $cellidentifier) {
 
@@ -756,6 +757,8 @@ class import extends grading_sheet {
     /**
      * Create agreed grade if all initial grade are present
      * @param $cwfeedbackid
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function auto_agreement($cwfeedbackid) {
         global $DB;

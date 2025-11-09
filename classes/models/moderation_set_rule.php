@@ -147,7 +147,7 @@ abstract class moderation_set_rule extends table_base implements renderable {
     /**
      * Some rules make no sense when there are multiple e.g. 'include at least x% of the total number'.
      *
-     * @return mixed
+     * @return bool
      */
     public static function allow_multiple() {
         return true;
@@ -162,7 +162,9 @@ abstract class moderation_set_rule extends table_base implements renderable {
     /**
      * Validates and saves data from the form elements defined by {@link get_form_elements()}.
      *
-     * @return mixed
+     * @return void
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function save_form_data() {
 
@@ -197,7 +199,9 @@ abstract class moderation_set_rule extends table_base implements renderable {
     }
 
     /**
-     * @return mixed|mod_coursework_coursework
+     * @return bool|table_base
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     protected function get_coursework() {
         if (!isset($this->coursework)) {

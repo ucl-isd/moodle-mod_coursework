@@ -158,6 +158,7 @@ abstract class cell_base implements cell_interface {
      * Function to get student's plagiarism status
      * @param $submission
      * @return string
+     * @throws coding_exception
      */
     public function get_plagiarism_flag_status_for_csv($submission) {
 
@@ -194,6 +195,7 @@ abstract class cell_base implements cell_interface {
      * Function to get assessor's full name
      * @param $assessorid
      * @return string
+     * @throws \dml_exception
      */
     public function get_assessor_name($assessorid) {
         global $DB;
@@ -207,6 +209,7 @@ abstract class cell_base implements cell_interface {
      * Function to get assessor's username
      * @param $assessorid
      * @return string
+     * @throws \dml_exception
      */
     public function get_assessor_username($assessorid) {
         global $DB;
@@ -219,6 +222,8 @@ abstract class cell_base implements cell_interface {
     /**
      * Function to get a message if submission was made withihn the deadline
      * @param submission $submission
+     * @return \lang_string|string
+     * @throws coding_exception
      */
     protected function submission_time($submission) {
 
@@ -236,6 +241,7 @@ abstract class cell_base implements cell_interface {
      * @param $submission
      * @param $student
      * @return string
+     * @throws \dml_exception
      */
     public function get_stageidentifier_for_assessor($submission, $student) {
         global $DB, $USER;
@@ -273,6 +279,7 @@ abstract class cell_base implements cell_interface {
     /**
      * @param $grade
      * @param $gradedata
+     * @throws \dml_exception
      */
     public function get_rubric_scores_gradedata($grade, &$gradedata) {
 

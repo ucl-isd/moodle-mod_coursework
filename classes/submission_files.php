@@ -25,6 +25,7 @@ namespace mod_coursework;
  */
 
 use context;
+use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
 use stored_file;
 
@@ -96,7 +97,8 @@ class submission_files extends files {
     }
 
     /**
-     * @return models\coursework
+     * @return coursework
+     * @throws \coding_exception
      */
     public function get_coursework() {
         return $this->get_submission()->get_coursework();

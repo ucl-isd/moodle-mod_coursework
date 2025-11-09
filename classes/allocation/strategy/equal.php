@@ -36,7 +36,7 @@ class equal extends base {
      *
      * @param array $teachers
      * @param allocatable $student
-     * @return int
+     * @return bool|\mod_coursework\models\user
      */
     public function next_assessor_from_list($teachers, $student) {
 
@@ -69,7 +69,7 @@ class equal extends base {
     /**
      * Saves the form data associated with the instance of this strategy.
      *
-     * @return mixed
+     * @return true
      */
     public function save_allocation_strategy_options() {
         // Nothing to here as there are no form elements.
@@ -79,7 +79,7 @@ class equal extends base {
     /**
      * @param $teachers
      * @param $student
-     * @return mixed
+     * @return array
      */
     protected function list_of_allocatable_teachers_and_their_current_number_of_allocations($teachers, $student) {
         $teacherids = [];

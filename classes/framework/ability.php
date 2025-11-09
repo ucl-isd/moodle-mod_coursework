@@ -68,7 +68,7 @@ abstract class ability {
     /**
      * We use a different instance of the class for each user. This makes it a bit cleaner.
      *
-     * @param $user
+     * @param int $userid
      */
     public function __construct(int $userid) {
         $this->userid = $userid;
@@ -120,7 +120,7 @@ abstract class ability {
      * a string.
      *
      * @param $thing
-     * @return mixed
+     * @return false|string
      */
     protected function get_action_type($thing) {
 
@@ -155,7 +155,9 @@ abstract class ability {
     }
 
     /**
-     * @return table_base|stdClass
+     * @return bool|table_base|user|null
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     protected function get_user() {
         if ($this->user === null) {

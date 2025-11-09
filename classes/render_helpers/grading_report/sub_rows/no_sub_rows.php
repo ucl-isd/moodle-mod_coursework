@@ -31,7 +31,7 @@ class no_sub_rows implements sub_rows_interface {
     /**
      * @param grading_table_row_base $rowobject
      * @param int $columnwidth
-     * @return mixed
+     * @return string
      */
     public function get_row_with_assessor_feedback_table($rowobject, $columnwidth) {
         return '';

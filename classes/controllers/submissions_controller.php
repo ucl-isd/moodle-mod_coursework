@@ -24,6 +24,7 @@ namespace mod_coursework\controllers;
 
 use coding_exception;
 use context_module;
+use core\exception\moodle_exception;
 use Exception;
 use mod_coursework\ability;
 use mod_coursework\event\assessable_submitted;
@@ -73,8 +74,10 @@ class submissions_controller extends controller_base {
     /**
      * Makes the page where a user can create a new submission.
      *
+     * @return bool|null
+     * @throws access_denied
      * @throws coding_exception
-     * @throws unauthorized_access_exception
+     * @throws moodle_exception
      */
     protected function new_submission() {
         global $USER, $PAGE;
@@ -110,8 +113,11 @@ class submissions_controller extends controller_base {
      * Might be someone editing the group feedback thing too, so we load based on the submission
      * user, not the current user.
      *
+     * @return bool|null
+     * @throws moodle_exception
+     * @throws \dml_exception
+     * @throws access_denied
      * @throws coding_exception
-     * @throws unauthorized_access_exception
      */
     protected function edit_submission() {
         global $USER, $PAGE;
@@ -395,7 +401,6 @@ class submissions_controller extends controller_base {
      * Is the coursework open?
      * @param coursework $coursework
      * @throws coding_exception
-     * @throws access_denied
      */
     protected function check_coursework_is_open($coursework) {
         if (!$coursework->start_date_has_passed()) {
@@ -404,6 +409,9 @@ class submissions_controller extends controller_base {
     }
 
     /**
+     * @param $submission
+     * @throws \dml_exception
+     * @throws coding_exception
      * @throws late_submission
      */
     private function exception_if_late($submission) {
@@ -437,6 +445,7 @@ class submissions_controller extends controller_base {
     /**
      * @param $submission
      * @return bool
+     * @throws \dml_exception
      */
     protected function has_valid_extension($submission) {
         global $DB;
@@ -461,6 +470,7 @@ class submissions_controller extends controller_base {
     /**
      * @param $submission
      * @return bool
+     * @throws \dml_exception
      */
     protected function has_valid_personaldeadline($submission) {
         global $DB;

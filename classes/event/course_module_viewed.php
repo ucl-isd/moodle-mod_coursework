@@ -22,6 +22,7 @@
 
 namespace mod_coursework\event;
 
+use core\exception\moodle_exception;
 use moodle_url;
 
 /**
@@ -37,6 +38,7 @@ class course_module_viewed extends \core\event\course_module_viewed {
 
     /**
      * @return moodle_url
+     * @throws moodle_exception
      */
     public function get_url() {
         return new moodle_url("/mod/$this->objecttable/view.php", ['id' => $this->contextinstanceid]);

@@ -22,6 +22,8 @@
 
 namespace mod_coursework\forms;
 use context;
+use core\exception\invalid_parameter_exception;
+use core\exception\moodle_exception;
 use core_form\dynamic_form;
 use mod_coursework\ability;
 use mod_coursework\controllers\personaldeadlines_controller;
@@ -53,7 +55,7 @@ class personaldeadline_form extends dynamic_form {
 
     /**
      * Allocatable object.
-     * @var user|group
+     * @var user|group|null
      */
     protected user|group|null $allocatable = null;
 
@@ -133,6 +135,8 @@ class personaldeadline_form extends dynamic_form {
     /**
      * Add mustache data for form header template.
      * @return object
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     private function get_header_mustache_data(): object {
         global $DB;
@@ -198,6 +202,7 @@ class personaldeadline_form extends dynamic_form {
      * @param array $data
      * @param array $files
      * @return array
+     * @throws \coding_exception
      */
     public function validation($data, $files) {
         $errors = [];
@@ -226,6 +231,8 @@ class personaldeadline_form extends dynamic_form {
     /**
      * Get the coursework object.
      * @return coursework
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     protected function get_coursework(): coursework {
         if ($this->coursework) {
@@ -250,6 +257,8 @@ class personaldeadline_form extends dynamic_form {
     /**
      * Can the user edit this personal deadline or create one?
      * @return bool
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     protected function can_edit(): bool {
         global $USER;
@@ -269,6 +278,9 @@ class personaldeadline_form extends dynamic_form {
      * Process the form submission, used if form was submitted via AJAX.
      * Can return scalar values or arrays json-encoded, will be passed to the caller JS.
      * @return array
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws invalid_parameter_exception
      */
     public function process_dynamic_submission(): array {
         global $USER;
@@ -328,6 +340,7 @@ class personaldeadline_form extends dynamic_form {
     /**
      * Set the data that the modal form needs to display.
      * @return void
+     * @throws \coding_exception
      */
     public function set_data_for_dynamic_submission(): void {
         $data = [
@@ -352,6 +365,7 @@ class personaldeadline_form extends dynamic_form {
      *  If the form has arguments (such as 'id' of the element being edited), the URL should
      *  also have respective argument.
      * @return moodle_url
+     * @throws moodle_exception
      */
     protected function get_page_url_for_dynamic_submission(): moodle_url {
         return new moodle_url('/mod/coursework/view.php', ['id' => $this->coursework->id]);

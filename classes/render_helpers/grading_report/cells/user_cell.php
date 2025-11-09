@@ -41,6 +41,7 @@ class user_cell extends cell_base implements allocatable_cell {
     /**
      * @param array $options
      * @return string
+     * @throws \coding_exception
      */
     public function get_table_header($options = []) {
 
@@ -110,6 +111,7 @@ class user_cell extends cell_base implements allocatable_cell {
      * Tries to guess the full name format set at the site.
      *
      * @return string fl|lf
+     * @throws \coding_exception
      */
     private function fullname_format() {
         $fake = new stdclass(); // Fake user.

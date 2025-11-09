@@ -160,6 +160,7 @@ abstract class table_base {
      * number, change it to a DB row and then do it.
      *
      * @param object|bool $dbrecord
+     * @throws dml_exception
      */
     public function __construct($dbrecord = false) {
 
@@ -179,6 +180,7 @@ abstract class table_base {
     /**
      * @param $params
      * @return array
+     * @throws dml_exception
      */
     protected static function instantiate_objects($params) {
         global $DB;
@@ -209,6 +211,8 @@ abstract class table_base {
      *
      * @param array $params
      * @return object
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public static function find_or_build($params) {
         $object = self::find($params);
@@ -266,6 +270,7 @@ abstract class table_base {
      *
      * @param bool $sneakily If true, do not update the timemodified stamp. Useful for cron.
      * @return void
+     * @throws dml_exception
      */
     final public function save($sneakily = false) {
 
@@ -290,7 +295,6 @@ abstract class table_base {
 
     /**
      * Returns the table in the DB that this data object will be written to.
-     * @throws coding_exception
      * @return string
      */
     final public static function get_table_name() {
@@ -323,6 +327,7 @@ abstract class table_base {
      * Tells us whether this record has been saved to the DB yet.
      *
      * @return bool
+     * @throws dml_exception
      */
     public function persisted() {
         global $DB;
@@ -333,7 +338,8 @@ abstract class table_base {
     /**
      * Returns the most recently created record
      *
-     * @return mixed
+     * @return table_base
+     * @throws dml_exception
      */
     final public static function last() {
         global $DB;
@@ -351,6 +357,7 @@ abstract class table_base {
      * Returns the most recently created record
      *
      * @return mixed
+     * @throws dml_exception
      */
     final public static function first() {
         global $DB;
@@ -397,7 +404,7 @@ abstract class table_base {
      * Reloads the data from the DB columns.
      * @param bool $complainifnotfound
      * @return $this
-     * @throws coding_exception
+     * @throws dml_exception
      */
     public function reload($complainifnotfound = true) {
         global $DB;
@@ -424,6 +431,7 @@ abstract class table_base {
      * @param mixed $value
      * @param bool $sneakily If true, do not update the timemodified stamp. Useful for cron.
      * @return void
+     * @throws coding_exception
      */
     public function update_attribute($name, $value, $sneakily = false): void {
         $this->apply_column_value_to_self($name, $value);
@@ -435,6 +443,7 @@ abstract class table_base {
      *
      * @param mixed $values key-value pairs
      * @return void
+     * @throws coding_exception
      */
     public function update_attributes($values) {
         foreach ($values as $col => $val) {
@@ -447,6 +456,7 @@ abstract class table_base {
      * Wipes out the record from the database.
      *
      * @throws coding_exception
+     * @throws dml_exception
      */
     public function destroy() {
         global $DB;
@@ -509,8 +519,10 @@ abstract class table_base {
     }
 
     /**
-     * @param array|table_base $conditions key value pairs of DB columns
+     * @param array $conditions key value pairs of DB columns
      * @return bool
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public static function exists($conditions = []) {
         global $DB;
@@ -531,6 +543,8 @@ abstract class table_base {
     /**
      * @param array $conditions
      * @return int
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public static function count($conditions = []) {
         global $DB;
@@ -543,7 +557,7 @@ abstract class table_base {
 
     /**
      * @return stdClass|bool
-     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_raw_record() {
         global $DB;
@@ -564,9 +578,7 @@ abstract class table_base {
      * @param string $sql The bit after WHERE
      * @param array $params
      * @return array
-     * @throws coding_exception
-     * @throws dml_missing_record_exception
-     * @throws dml_multiple_records_exception
+     * @throws dml_exception
      */
     public static function find_by_sql($sql, $params) {
         global $DB;
@@ -628,7 +640,7 @@ abstract class table_base {
     /**
      *
      * @param int $courseworkid
-     * @throws dml_exception
+     * @throws \core\exception\coding_exception
      */
     public static function fill_pool_coursework($courseworkid) {
         if (isset(static::$pool[$courseworkid])) {
@@ -649,6 +661,7 @@ abstract class table_base {
 
     /**
      * @param int $courseworkid
+     * @throws \core\exception\coding_exception
      */
     public static function remove_cache($courseworkid) {
         global $SESSION;

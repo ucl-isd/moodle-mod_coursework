@@ -34,6 +34,8 @@ class moderationagreement_cell extends cell_base {
      * @param $student
      * @param $stageidentifier
      * @return array
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function get_cell($submission, $student, $stageidentifier) {
         $data = [];
@@ -76,7 +78,6 @@ class moderationagreement_cell extends cell_base {
     /**
      * @param $stage
      * @return array
-     * @throws coding_exception
      */
     public function get_header($stage) {
 

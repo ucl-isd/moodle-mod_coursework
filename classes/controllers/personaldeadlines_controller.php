@@ -22,6 +22,8 @@
 
 namespace mod_coursework\controllers;
 use AllowDynamicProperties;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core\notification;
 use Exception;
 use mod_coursework\ability;
@@ -47,6 +49,11 @@ class personaldeadlines_controller extends controller_base {
     /**
      * Handle the generation of personal deadline form and processing data.
      * @return void
+     * @throws \coding_exception
+     * @throws coding_exception
+     * @throws moodle_exception
+     * @throws \dml_exception
+     * @throws \moodle_exception
      * @throws access_denied
      */
     protected function new_personaldeadline() {
@@ -243,7 +250,11 @@ class personaldeadlines_controller extends controller_base {
 
     /**
      * Get the personal deadline
+     * @param int $allocatableid
+     * @param string $allocatabletype
+     * @param int $courseworkid
      * @return mixed
+     * @throws \dml_exception
      */
     public static function get_personaldeadline(int $allocatableid, string $allocatabletype, int $courseworkid) {
         global $DB;

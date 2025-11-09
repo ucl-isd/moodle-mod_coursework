@@ -52,6 +52,10 @@ class clearannotations extends external_api {
      *
      * @param int $submissionid
      * @param int $fileid
+     * @return array
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws \invalid_parameter_exception
      */
     public static function execute(int $submissionid, int $fileid): array {
         global $PAGE, $USER;

@@ -35,6 +35,7 @@ class feedbackcomments_cell extends cell_base {
      * @param $student
      * @param $stageidentifier
      * @return string
+     * @throws \dml_exception
      */
     public function get_cell($submission, $student, $stageidentifier) {
 

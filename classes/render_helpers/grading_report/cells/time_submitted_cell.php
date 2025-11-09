@@ -35,7 +35,6 @@ use pix_icon;
 class time_submitted_cell extends cell_base {
     /**
      * @param grading_table_row_base $rowobject
-     * @throws coding_exception
      * @return string
      */
     public function get_table_cell($rowobject) {
@@ -160,7 +159,7 @@ class time_submitted_cell extends cell_base {
      * return 11-char string
      *
      * @param $time
-     * @return mixed
+     * @return string
      */
     private function standardize_time_for_compare($time) {
         $zerotoadd = 10;
@@ -179,6 +178,7 @@ class time_submitted_cell extends cell_base {
     /**
      * @param array $options
      * @return string
+     * @throws coding_exception
      */
     public function get_table_header($options = []) {
 

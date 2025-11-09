@@ -23,10 +23,12 @@
 namespace mod_coursework;
 
 use coding_exception;
+use core\exception\moodle_exception;
 use html_writer;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
+use mod_coursework\models\feedback;
 use mod_coursework\models\group;
 use mod_coursework\models\personaldeadline;
 use mod_coursework\models\plagiarism_flag;
@@ -58,7 +60,7 @@ class grading_table_row_base implements user_row {
     protected $allocatable;
 
     /**
-     * @var deadline_extension $extension
+     * @var deadline_extension|null $extension
      */
     protected ?deadline_extension $extension;
 
@@ -71,7 +73,9 @@ class grading_table_row_base implements user_row {
      * Constructor
      *
      * @param coursework $coursework $coursework
-     * @param allocatable $user
+     * @param user|group $user
+     * @param deadline_extension|null $extension
+     * @param personaldeadline|null $personaldeadline
      */
     public function __construct(coursework $coursework, user|group $user, ?deadline_extension $extension, ?personaldeadline $personaldeadline) {
         $this->coursework = $coursework;
@@ -109,6 +113,7 @@ class grading_table_row_base implements user_row {
     /**
      * Can the current user see the row user's name?
      * @return bool
+     * @throws coding_exception
      */
     public function can_see_user_name(): bool {
         if (!$this->get_coursework()->blindmarking || $this->is_published()) {
@@ -126,8 +131,10 @@ class grading_table_row_base implements user_row {
      * submission::get_user_name() function as there may not be a submission.
      *
      * @param bool $link
-     * @throws coding_exception
      * @return string
+     * @throws moodle_exception
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function get_user_name($link = false) {
 
@@ -153,8 +160,9 @@ class grading_table_row_base implements user_row {
     /**
      * Will return the idnumber if permissions allow, otherwise, an anonymous placeholder.
      *
-     * @throws coding_exception
      * @return string
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function get_idnumber() {
         global $DB;
@@ -171,8 +179,9 @@ class grading_table_row_base implements user_row {
     /**
      * Will return the email if permissions allow, otherwise, an anonymous placeholder.
      *
-     * @throws coding_exception
      * @return string
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function get_email() {
         global $DB;
@@ -189,7 +198,7 @@ class grading_table_row_base implements user_row {
     /**
      * Returns the id of the student who's submission this is
      *
-     * @return mixed
+     * @return float|int|string
      */
     public function get_allocatable_id() {
         return $this->get_allocatable()->id;
@@ -229,7 +238,7 @@ class grading_table_row_base implements user_row {
     /**
      * Returns the id of the coursework instance.
      *
-     * @return mixed
+     * @return int
      */
     public function get_courseworkid() {
         return $this->get_coursework()->id;
@@ -245,7 +254,8 @@ class grading_table_row_base implements user_row {
     }
 
     /**
-     * @return models\submission
+     * @return submission
+     * @throws coding_exception
      */
     public function get_submission() {
 
@@ -260,7 +270,9 @@ class grading_table_row_base implements user_row {
     }
 
     /**
-     * @return models\plagiarism_flag
+     * @return plagiarism_flag
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function get_plagiarism_flag() {
 
@@ -294,7 +306,7 @@ class grading_table_row_base implements user_row {
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function get_submission_id() {
         if (!$this->get_submission()) {
@@ -351,6 +363,8 @@ class grading_table_row_base implements user_row {
 
     /**
      * @return string
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function get_student_firstname() {
         $allocatable = $this->get_allocatable();
@@ -363,6 +377,8 @@ class grading_table_row_base implements user_row {
 
     /**
      * @return string
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function get_student_lastname() {
         $allocatable = $this->get_allocatable();
@@ -383,7 +399,7 @@ class grading_table_row_base implements user_row {
     /**
      * Tells us whether this submission has any feedback
      *
-     * @return bool|int|null
+     * @return false|feedback[]
      */
     public function has_feedback() {
         if (!$this->get_submission()) {
@@ -393,7 +409,8 @@ class grading_table_row_base implements user_row {
     }
 
     /**
-     * @return models\feedback
+     * @return feedback
+     * @throws \dml_exception
      */
     public function get_single_feedback() {
         return $this->get_submission()->get_assessor_feedback_by_stage('assessor_1');

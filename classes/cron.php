@@ -48,6 +48,9 @@ class cron {
      * Standard Moodle API function to get things going
      *
      * @return bool
+     * @throws \dml_exception
+     * @throws \moodle_exception
+     * @throws coding_exception
      */
     public static function run() {
         if (!self::in_test_environment()) {
@@ -64,10 +67,12 @@ class cron {
      * This function searches for things that need to be done, such
      * as sending out mail, toggling flags etc ...
      *
-     * @todo this really needs refactoring :(
-     *
      * @return boolean
-     **/
+     * @throws \dml_exception
+     * @throws \moodle_exception
+     * @throws coding_exception
+     * @todo this really needs refactoring :(
+     */
     private static function send_reminders_to_students() {
         global $DB;
 
@@ -165,6 +170,8 @@ class cron {
      * This will tell teachers that they have students who's deadlines are approaching.
      *
      * @return bool
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     private static function send_first_reminders_to_admins() {
 
@@ -303,9 +310,9 @@ class cron {
      *
      * @param array $users
      * @param array $counts user and email cumulative counts so we can set log messages.
-     * @param string $email_type Check class constants
-     * @param int $type Check class constants
      * @return void
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     private static function send_email_reminders_to_students(array $users, array &$counts) {
 
@@ -374,6 +381,7 @@ class cron {
 
     /**
      * Auto release feedback of marked submission if the coursework has individual feedback enabled
+     * @throws \dml_exception
      * @throws coding_exception
      */
 
@@ -412,6 +420,8 @@ class cron {
      * Get admins and teachers.
      * @param $context
      * @return array
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public static function get_admins_and_teachers($context): array {
         $result = [];

@@ -66,6 +66,7 @@ class auto_allocator {
 
     /**
      * @param stage_base $stage
+     * @throws \coding_exception
      */
     private function process_marking_stage($stage) {
         if (!$stage->auto_allocation_enabled()) {

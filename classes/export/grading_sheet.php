@@ -118,6 +118,8 @@ class grading_sheet extends csv {
      * Function to add data to csv
      * @param submission $submission
      * @return array
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function add_csv_data($submission) {
 

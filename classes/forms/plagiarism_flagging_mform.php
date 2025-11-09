@@ -25,9 +25,12 @@
 namespace mod_coursework\forms;
 
 use context;
+use core\exception\coding_exception;
+use core\exception\moodle_exception;
 use core_form\dynamic_form;
 use mod_coursework\ability;
 use mod_coursework\exceptions\access_denied;
+use mod_coursework\framework\table_base;
 use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
 use moodle_url;
@@ -134,6 +137,9 @@ class plagiarism_flagging_mform extends dynamic_form {
     /**
      * Get the submission for this flag.
      * @return bool|submission|object
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function get_submission() {
         if ($this->submission === null) {
@@ -150,7 +156,9 @@ class plagiarism_flagging_mform extends dynamic_form {
 
     /**
      * Get the flag.
-     * @return bool|submission|object
+     * @return bool|table_base|plagiarism_flag
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function get_flag() {
         if ($this->plagiarismflag === null) {
@@ -190,7 +198,8 @@ class plagiarism_flagging_mform extends dynamic_form {
      * by calling $this->optional_param()
      *
      * @return context
-     **/
+     * @throws \coding_exception
+     */
     protected function get_context_for_dynamic_submission(): context {
         return $this->get_submission()->get_coursework()->get_context();
     }
@@ -198,6 +207,7 @@ class plagiarism_flagging_mform extends dynamic_form {
     /**
      * Can the user edit this personal deadline or create one?
      * @return bool
+     * @throws \coding_exception
      */
     protected function can_edit(): bool {
         global $USER;
@@ -211,6 +221,7 @@ class plagiarism_flagging_mform extends dynamic_form {
 
     /**
      * Checks if current user has access to this form, otherwise throws exception.
+     * @throws \coding_exception
      * @throws access_denied
      */
     protected function check_access_for_dynamic_submission(): void {
@@ -223,6 +234,8 @@ class plagiarism_flagging_mform extends dynamic_form {
      * Process the form submission, used if form was submitted via AJAX.
      * Can return scalar values or arrays json-encoded, will be passed to the caller JS.
      * @return array
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function process_dynamic_submission() {
         global $USER;
@@ -285,6 +298,8 @@ class plagiarism_flagging_mform extends dynamic_form {
      *  If the form has arguments (such as 'id' of the element being edited), the URL should
      *  also have respective argument.
      * @return moodle_url
+     * @throws \coding_exception
+     * @throws moodle_exception
      */
     protected function get_page_url_for_dynamic_submission(): moodle_url {
         return new moodle_url('/mod/coursework/view.php', ['id' => $this->get_submission()->get_coursework()->id]);
@@ -295,6 +310,7 @@ class plagiarism_flagging_mform extends dynamic_form {
      * @param $data
      * @param $files
      * @return array
+     * @throws \coding_exception
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);

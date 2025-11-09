@@ -183,6 +183,8 @@ class mod_coursework_mod_form extends moodleform_mod {
      * @param array $data
      * @param array $files
      * @return array
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function validation($data, $files) {
 
@@ -331,6 +333,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
     /**
      * @throws coding_exception
+     * @throws dml_exception
      */
     protected function add_submission_deadline_field() {
         global $CFG;
@@ -694,6 +697,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
     /**
      * @throws coding_exception
+     * @throws dml_exception
      */
     protected function add_grouping_field() {
         global $COURSE, $DB;
@@ -992,6 +996,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
     /**
      * @throws coding_exception
+     * @throws dml_exception
      */
     protected function add_enable_blind_marking_field() {
         global $CFG;
@@ -1216,6 +1221,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
     /**
      * @throws coding_exception
+     * @throws dml_exception
      */
     private function add_enable_sampling_checkbox() {
         $moodleform =& $this->_form;

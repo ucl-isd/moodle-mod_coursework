@@ -31,6 +31,7 @@ namespace mod_coursework\models;
 use AllowDynamicProperties;
 use coding_exception;
 use context_course;
+use core\exception\moodle_exception;
 use core\output\user_picture;
 use core_user;
 use core_user\fields;
@@ -69,6 +70,7 @@ class user extends table_base implements allocatable, moderatable {
     /**
      * Get the user's full name.
      * @return string
+     * @throws \dml_exception
      */
     public function name(): string {
         // If we already have properties to get the name without going to database, use them.
@@ -98,6 +100,8 @@ class user extends table_base implements allocatable, moderatable {
 
     /**
      * @return string
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     public function profile_link() {
         return html_writer::link(new moodle_url('/user/view.php', ['id' => $this->id()]), $this->name(), ['data-assessorid' => $this->id()]);
@@ -105,7 +109,8 @@ class user extends table_base implements allocatable, moderatable {
 
     /**
      * @param stdClass $course
-     * @return mixed
+     * @return bool
+     * @throws coding_exception
      */
     public function is_valid_for_course($course) {
         $coursecontext = context_course::instance($course->id);
@@ -143,6 +148,8 @@ class user extends table_base implements allocatable, moderatable {
      *
      * @param int $size
      * @return string
+     * @throws \core\exception\coding_exception
+     * @throws \dml_exception
      */
     public function get_user_picture_url(int $size = 100): string {
         global $PAGE;
@@ -182,6 +189,8 @@ class user extends table_base implements allocatable, moderatable {
      * Get user profile url.
      *
      * @return string
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     public function get_user_profile_url(): string {
         $url = new moodle_url('/user/profile.php', ['id' => $this->id()]);
@@ -210,6 +219,7 @@ class user extends table_base implements allocatable, moderatable {
     /**
      * @param $id
      * @return self
+     * @throws \dml_exception
      */
     public static function get_object($id) {
         if (!isset(self::$pool['id'][$id])) {
@@ -224,6 +234,7 @@ class user extends table_base implements allocatable, moderatable {
      * To save multiple queries to get user picture data, get relevant user context IDs for course in one hit.
      * @param int $courseid
      * @return array
+     * @throws \dml_exception
      */
     public static function get_user_picture_context_ids(int $courseid): array {
         global $DB;

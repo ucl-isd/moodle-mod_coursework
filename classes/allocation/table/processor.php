@@ -29,6 +29,7 @@ namespace mod_coursework\allocation\table;
 use invalid_parameter_exception;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\allocation\table\cell\data;
+use mod_coursework\framework\table_base;
 use mod_coursework\models\coursework;
 use mod_coursework\models\group;
 use mod_coursework\models\user;
@@ -53,6 +54,9 @@ class processor {
     /**
      * Process form data received from /actions/allocate.php form.
      * @param array $dirtyformdata
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws invalid_parameter_exception
      */
     public function process_data($dirtyformdata = []) {
         $cleandata = $this->clean_data($dirtyformdata);
@@ -85,6 +89,8 @@ class processor {
      *
      * @param array $dirtyformdata
      * @return array
+     * @throws \coding_exception
+     * @throws invalid_parameter_exception
      */
     private function clean_data(array $dirtyformdata): array {
         // Raw data looks like this - 4543 is student ID.
@@ -145,7 +151,9 @@ class processor {
 
     /**
      * @param int $allocatableid
-     * @return allocatable
+     * @return bool|table_base
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     private function get_allocatable_from_id($allocatableid) {
         if ($this->coursework->is_configured_to_have_group_submissions()) {

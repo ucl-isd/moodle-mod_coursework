@@ -22,6 +22,7 @@
 
 namespace mod_coursework\render_helpers\grading_report\cells;
 use coding_exception;
+use core\exception\moodle_exception;
 use html_writer;
 use mod_coursework\ability;
 use mod_coursework\grading_table_row_base;
@@ -36,8 +37,9 @@ use pix_icon;
 class submission_cell extends cell_base {
     /**
      * @param grading_table_row_base $rowobject
-     * @throws coding_exception
      * @return string
+     * @throws moodle_exception
+     * @throws coding_exception
      */
     public function get_table_cell($rowobject) {
 
@@ -141,6 +143,7 @@ class submission_cell extends cell_base {
     /**
      * @param array $options
      * @return string
+     * @throws coding_exception
      */
     public function get_table_header($options = []) {
 

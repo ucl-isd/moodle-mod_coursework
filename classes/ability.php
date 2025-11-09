@@ -613,9 +613,6 @@ class ability extends framework\ability {
             'finalise',
             'mod_coursework\models\submission',
             function (submission $submission) {
-                /**
-                 * @var submission $submission
-                 */
                 $notalreadyfinalised = !$submission->ready_to_grade();
                 $earlyfinalisationallowed = $submission->get_coursework()->early_finalisation_allowed();
                 $courseworkhasnodeadline = !$submission->get_coursework()->has_deadline();

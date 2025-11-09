@@ -95,6 +95,7 @@ class candidateprovider_manager {
      * Get the currently selected provider instance.
      *
      * @return candidateprovider|null Provider instance or null if none selected
+     * @throws \dml_exception
      */
     public function get_selected_provider(): ?candidateprovider {
         // Return mock provider if set (for testing).

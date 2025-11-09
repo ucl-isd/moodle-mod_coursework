@@ -198,6 +198,7 @@ class grading_report_renderer extends plugin_renderer_base {
     /**
      * Export the data for a single table row to make it accessible from JS.
      * Enables a table row to be re-rendered from JS when updated via modal form.
+     * @param coursework $coursework
      * @param int $allocatableid
      * @param string $allocatabletype
      * @return ?object

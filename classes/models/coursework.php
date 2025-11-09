@@ -473,6 +473,7 @@ class coursework extends table_base {
 
     /**
      * @return bool
+     * @throws dml_exception
      */
     public function enablepdfjs() {
         static $enabled;
@@ -487,6 +488,7 @@ class coursework extends table_base {
      * Returns the id of the associated coursemodule, if there is one. Otherwise false.
      *
      * @return int
+     * @throws moodle_exception
      */
     public function get_coursemodule_id() {
         $coursemodule = $this->get_course_module();
@@ -497,6 +499,7 @@ class coursework extends table_base {
      * Returns the idnumber of the associated coursemodule, if there is one. Otherwise false.
      *
      * @return int
+     * @throws moodle_exception
      */
     public function get_coursemodule_idnumber() {
         $coursemodule = $this->get_course_module();
@@ -507,6 +510,7 @@ class coursework extends table_base {
      * Getter function for the coursework's course object.
      *
      * @return object
+     * @throws dml_exception
      */
     public function get_course() {
         return get_course($this->get_course_id());
@@ -536,7 +540,7 @@ class coursework extends table_base {
      * that property).
      *
      * @param $courseid
-     * @return int
+     * @return void
      */
     public function set_course_id($courseid) {
         $this->course = $courseid;
@@ -545,8 +549,8 @@ class coursework extends table_base {
     /**
      * Gets all the feedbacks for this coursework as DB rows.
      *
-     * @param array $userids visible users (paged results) only
      * @return array
+     * @throws dml_exception
      */
     public function get_all_raw_feedbacks() {
         feedback::fill_pool_coursework($this->id);
@@ -556,6 +560,8 @@ class coursework extends table_base {
     /**
      * @param $cangrade bool
      * @return int number of ungraded assessments, 0
+     * @throws \core\exception\coding_exception
+     * @throws dml_exception
      */
     public function get_ungraded_assessments_number($cangrade) {
         global $USER;
@@ -580,7 +586,7 @@ class coursework extends table_base {
     /**
      * Getter for DB deadline field.
      *
-     * @return mixed
+     * @return int
      */
     public function get_deadline() {
         return $this->deadline;
@@ -589,7 +595,7 @@ class coursework extends table_base {
     /**
      * Getter for DB deadline field.
      *
-     * @return mixed
+     * @return bool
      */
     public function deadline_has_passed() {
         return ($this->has_deadline() && $this->deadline < time());
@@ -605,10 +611,6 @@ class coursework extends table_base {
      * issues.
      *
      * @param array $groups array of group ids
-     * @param int $page
-     * @param int $perpage
-     * @param string $sortby
-     * @param string $sorthow
      * @return stdClass[] array of objects
      */
     public function get_participants($groups = [0]) {
@@ -681,6 +683,7 @@ class coursework extends table_base {
      * Returns array of file storage options to be used across the whole coursework
      *
      * @return array
+     * @throws dml_exception
      */
     public function get_file_options() {
         global $CFG;
@@ -881,6 +884,10 @@ class coursework extends table_base {
      * Pushes all grades form the coursework into the gradebook. Will overwrite any older grades.
      *
      * @return void
+     * @throws \invalid_parameter_exception
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
      */
     public function publish_grades() {
         $submissions = $this->get_submissions_to_publish();
@@ -894,6 +901,7 @@ class coursework extends table_base {
      *
      * @param int $submissionid
      * @return bool|mixed
+     * @throws dml_exception
      */
     public function set_coursework_submission_student($submissionid) {
         global $DB;
@@ -914,6 +922,7 @@ class coursework extends table_base {
     /**
      * @param $params
      * @return array
+     * @throws coding_exception
      */
     public static function get_view_params($params) {
         if (optional_param('page', 0, PARAM_INT) > 0) {
@@ -931,9 +940,10 @@ class coursework extends table_base {
     /**
      * Generate zip file from array of given files
      *
-     * @param int $context_id
      * @return bool | string path of temp file - note this returned file does not have a .zip
      * extension - it is a temp file.
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function pack_files() {
         global $CFG, $DB;
@@ -1101,6 +1111,8 @@ class coursework extends table_base {
      *
      * @param user $user
      * @return allocatable
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function submiting_allocatable_for_student($user) {
         if ($this->is_configured_to_have_group_submissions()) {
@@ -1199,7 +1211,9 @@ class coursework extends table_base {
      * Checks whether the current user is an assessor allocated to mark this submission.
      *
      * @param allocatable $allocatable
+     * @param bool $userid
      * @return bool
+     * @throws dml_exception
      */
     public function assessor_has_any_allocation_for_student($allocatable, $userid = false) {
 
@@ -1222,7 +1236,10 @@ class coursework extends table_base {
      * Check if current assessor is not already allocated for this submission in different stage
      *
      * @param allocatable $allocatable
+     * @param $userid
+     * @param $stage
      * @return bool
+     * @throws \core\exception\coding_exception
      */
     public function assessor_has_allocation_for_student_not_in_current_stage($allocatable, $userid, $stage) {
 
@@ -1248,6 +1265,7 @@ class coursework extends table_base {
      *
      * @param allocatable $allocatable
      * @return bool
+     * @throws dml_exception
      */
     public function current_user_is_moderator_for_student($allocatable) {
 
@@ -1268,6 +1286,7 @@ class coursework extends table_base {
      * Gets all the submissions at once for the grading table.
      *
      * @return submission[]
+     * @throws \core\exception\coding_exception
      */
     public function get_all_submissions() {
         submission::fill_pool_coursework($this->id);
@@ -1279,9 +1298,9 @@ class coursework extends table_base {
      * For multiple marker coursework if final grade is not given it is assumed that submission may need grading in
      * either initial, final or both stages
      *
+     * @return array
+     * @throws coding_exception
      * @throws dml_exception
-     * @throws dml_missing_record_exception
-     * @throws dml_multiple_records_exception
      */
     public function get_submissions_needing_grading() {
 
@@ -1304,8 +1323,8 @@ class coursework extends table_base {
      *
      * @param $stageidentifier
      * @return array
-     * @throws dml_missing_record_exception
-     * @throws dml_multiple_records_exception
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_graded_submissions_by_stage($stageidentifier) {
 
@@ -1326,6 +1345,7 @@ class coursework extends table_base {
      *
      * @param $assessorid
      * @return array
+     * @throws coding_exception
      * @throws dml_exception
      */
     public function get_assessor_graded_submissions($assessorid) {
@@ -1353,6 +1373,7 @@ class coursework extends table_base {
      * Get all published submissions in the coursework
      *
      * @return array
+     * @throws coding_exception
      * @throws dml_exception
      */
     public function get_published_submissions() {
@@ -1402,6 +1423,7 @@ class coursework extends table_base {
      *
      * @param int $studentid
      * @return bool|allocation
+     * @throws dml_exception
      */
     public function get_moderator_allocation($studentid) {
 
@@ -1504,6 +1526,7 @@ class coursework extends table_base {
      *
      * @param string $fields
      * @return array
+     * @throws \core\exception\coding_exception
      */
     public function get_unfinalised_students($fields = 'u.id, u.firstname, u.lastname') {
 
@@ -1572,7 +1595,7 @@ class coursework extends table_base {
     /**
      * Tells us if the coursework is set to allow students to see component feedbacks.
      *
-     * @return bool
+     * @return int
      */
     public function students_can_view_component_feedbacks() {
         return ($this->studentviewcomponentfeedbacks);
@@ -1581,7 +1604,7 @@ class coursework extends table_base {
     /**
      * Tells us whether students are allowed to see moderator feedbacks for this coursework.
      *
-     * @return bool
+     * @return int
      */
     public function students_can_view_moderator_feedbacks() {
         return ($this->studentviewmoderatorfeedbacks);
@@ -1663,9 +1686,6 @@ class coursework extends table_base {
     public function user_grade_is_published($userid) {
         // Get the gradebook grade.
 
-        /**
-         * @var stdClass $grades
-         */
         $grades = grade_get_grades($this->get_course_id(), 'mod', 'coursework', $this->id, $userid);
 
         if (
@@ -1680,8 +1700,9 @@ class coursework extends table_base {
 
     /**
      * @param user $student
-     * @return group
+     * @return bool|table_base
      * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_student_group($student) {
         global $DB;
@@ -1729,6 +1750,8 @@ class coursework extends table_base {
     /**
      * @param user|null $user
      * @return submission
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_user_submission($user) {
 
@@ -1751,7 +1774,9 @@ class coursework extends table_base {
 
     /**
      * @param allocatable $allocatable
-     * @return submission
+     * @return bool|table_base
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_allocatable_submission($allocatable) {
 
@@ -1770,6 +1795,7 @@ class coursework extends table_base {
     /**
      * @param user $user
      * @return table_base
+     * @throws coding_exception
      */
     public function build_own_submission($user) {
         if ($this->is_configured_to_have_group_submissions()) {
@@ -1791,6 +1817,7 @@ class coursework extends table_base {
      *
      * @param array $reportoptions
      * @return grading_report
+     * @throws coding_exception
      */
     public function renderable_grading_report_factory($reportoptions) {
 
@@ -1909,6 +1936,7 @@ class coursework extends table_base {
 
     /**
      * @return user[]
+     * @throws moodle_exception
      */
     public function get_students() {
         $users = [];
@@ -1928,7 +1956,7 @@ class coursework extends table_base {
     }
 
     /**
-     * @return user[]
+     * @return int[]|string[]
      */
     public function get_student_ids() {
         $rawusers = get_enrolled_users($this->get_context(), 'mod/coursework:submit', 0, 'u.id');
@@ -2013,6 +2041,7 @@ class coursework extends table_base {
      * @param user $student
      *
      * @return bool
+     * @throws dml_exception
      */
     public function student_is_in_any_group($student) {
         global $DB;
@@ -2075,6 +2104,7 @@ class coursework extends table_base {
 
     /**
      * @param stdClass $dbgrade
+     * @throws dml_exception
      */
     protected function update_feedback_timepublished($dbgrade) {
         global $DB;
@@ -2142,7 +2172,7 @@ class coursework extends table_base {
     /**
      * Get advanced grading method used in the current coursework.
      *
-     * @return bool
+     * @return string|null
      */
     public function get_advanced_grading_method(): ?string {
         $gradingmanager = $this->get_advanced_grading_manager();
@@ -2254,6 +2284,9 @@ class coursework extends table_base {
 
     /**
      * @return allocatable[]
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
      */
     public function get_allocatables() {
         global $DB;
@@ -2375,6 +2408,7 @@ class coursework extends table_base {
 
     /**
      * @return bool
+     * @throws coding_exception
      */
     public function has_stuff_to_publish() {
         $submissions = $this->get_submissions_to_publish();
@@ -2405,6 +2439,8 @@ class coursework extends table_base {
 
     /**
      * @return array
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_finalised_submissions() {
         global $DB;
@@ -2519,6 +2555,7 @@ class coursework extends table_base {
      *
      * @param $stage
      * @return bool
+     * @throws dml_exception
      */
     public function has_automatic_sampling_at_stage($stage) {
         global  $DB;
@@ -2529,7 +2566,10 @@ class coursework extends table_base {
     /**
      * Returns all allocatables in the current coursework that have feedback
      *
+     * @param $stage
+     * @param bool $random
      * @return allocatable[]
+     * @throws dml_exception
      */
     public function get_allocatables_with_feedback($stage, $random = false) {
         global $DB, $CFG;
@@ -2646,6 +2686,7 @@ class coursework extends table_base {
      * @param $allocatable
      *
      * @return array
+     * @throws \core\exception\coding_exception
      */
     private function get_allocatable_personaldeadline($allocatable) {
         $allocatable->deadline = $this->deadline;
@@ -2666,6 +2707,7 @@ class coursework extends table_base {
     /** Check is courseowrk kas any users added to sample
      *
      * @return bool
+     * @throws dml_exception
      */
     public function has_samples() {
         global $DB;
@@ -2677,6 +2719,7 @@ class coursework extends table_base {
      * Check if the user in this coursework is a student (has capability to submit)
      *
      * @return bool
+     * @throws coding_exception
      */
     public function can_submit() {
         if (has_capability('mod/coursework:submit', $this->get_context())) {
@@ -2689,6 +2732,7 @@ class coursework extends table_base {
      * Check if the user in this coursework is a marker (has any capability to grade)
      *
      * @return bool
+     * @throws coding_exception
      */
     public function can_grade() {
         if (
@@ -2729,20 +2773,24 @@ class coursework extends table_base {
             'groupid' => $groupid];
         return $DB->record_exists_sql($sql, $params);
     }
+
     /**
      * Function to retrieve all submissions by coursework
      *
-     * @return submissions
+     * @return array
+     * @throws dml_exception
      */
     public function retrieve_submissions_by_coursework() {
         global $DB;
         return $DB->get_records('coursework_submissions', ['courseworkid' => $this->id, 'allocatabletype' => 'user']);
     }
+
     /**
      * Function to retrieve all submissions submitted by a user
      *
      * @param $userid
-     * @return submissions
+     * @return array
+     * @throws dml_exception
      */
     public function retrieve_submissions_by_user($userid) {
         global $DB;
@@ -2754,24 +2802,29 @@ class coursework extends table_base {
      *
      * @param $submissionid
      * @return feedbacks
+     * @throws dml_exception
      */
     public function retrieve_feedbacks_by_submission($submissionid) {
         feedback::fill_pool_coursework($this->id);
         return isset(feedback::$pool[$this->id][$submissionid]) ? feedback::$pool[$this->id][$submissionid] : [];
     }
+
     /**
      * Function to remove all submissions submitted by a user
      *
      * @param $userid
+     * @throws dml_exception
      */
     public function remove_submissions_by_user($userid) {
         global $DB;
         $DB->delete_records('coursework_submissions', ['courseworkid' => $this->id, 'authorid' => $userid, 'allocatabletype' => 'user']);
     }
+
     /**
      * Function to remove all submissions by this coursework
      *
-     * @return submissions
+     * @return void
+     * @throws dml_exception
      */
     public function remove_submissions_by_coursework() {
         global $DB;
@@ -2789,28 +2842,34 @@ class coursework extends table_base {
         $fs = get_file_storage();
         $fs->delete_area_files($contextid, $component, $filearea, $itemid);
     }
+
     /**
      * Function to Remove all feedbacks by a submission
      *
      * @param $submissionid
+     * @throws dml_exception
      */
     public function remove_feedbacks_by_submission($submissionid) {
         global $DB;
         $DB->delete_records('coursework_feedbacks', ['submissionid' => $submissionid]);
     }
+
     /**
      * Function to Remove all agreements by a feedback
      *
      * @param $feedbackid
+     * @throws dml_exception
      */
     public function remove_agreements_by_feedback($feedbackid) {
         global $DB;
         $DB->delete_records('coursework_mod_agreements', ['feedbackid' => $feedbackid]);
     }
+
     /**
      * Function to Remove all deadline extensions by user
      *
      * @param $userid
+     * @throws dml_exception
      */
     public function remove_deadline_extensions_by_user($userid) {
         global $DB;
@@ -2858,6 +2917,8 @@ class coursework extends table_base {
      *
      * @param int $allocatableid
      * @return int
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_allocatable_deadline($allocatableid) {
         $deadline = $this->deadline;
@@ -2891,6 +2952,7 @@ class coursework extends table_base {
      * * This function returns allocatable extension if given
      * @param $allocatable
      * @return bool/int
+     * @throws dml_exception
      */
     private function get_allocatable_extension($allocatable) {
 
@@ -2912,6 +2974,7 @@ class coursework extends table_base {
      * Function to Remove all plagiarisms by a submission
      *
      * @param $submissionid
+     * @throws dml_exception
      */
     public function remove_plagiarisms_by_submission($submissionid) {
         global $DB;
@@ -3003,6 +3066,7 @@ class coursework extends table_base {
      *
      * @param int $courseworkid
      * @return bool
+     * @throws dml_exception
      */
     public static function get_object($courseworkid) {
         if (!isset(self::$pool['id'][$courseworkid])) {
@@ -3034,6 +3098,7 @@ class coursework extends table_base {
      * Get the primary grade item for this coursework instance.
      *
      * @return grade_item The grade_item record
+     * @throws coding_exception
      */
     public function get_grade_item() {
         $params = ['itemtype' => 'mod',
@@ -3086,6 +3151,7 @@ class coursework extends table_base {
      * This determines if the candidate number setting can be changed.
      *
      * @return bool
+     * @throws dml_exception
      */
     public function has_submissions_with_files(): bool {
         global $DB;
@@ -3143,6 +3209,7 @@ class coursework extends table_base {
      *
      * @param int $userid
      * @return string
+     * @throws moodle_exception
      */
     public function get_file_identifier_for_user(int $userid): string {
         // If candidate number feature is not enabled for this coursework or blind marking not enabled, use hash.
@@ -3177,6 +3244,9 @@ class coursework extends table_base {
      * @param string $allocatabletype
      * @param int $newdate
      * @return bool
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
      */
     public function update_user_calendar_event(int $allocatableid, string $allocatabletype, int $newdate): bool {
         global $DB, $CFG;

@@ -39,6 +39,12 @@ require_once($CFG->dirroot . '/mod/coursework/lib.php');
  *
  * @param coursework $coursework The coursework object.
  * @param stdClass $coursemodule The coursemodule object.
+ * @throws \core\exception\coding_exception
+ * @throws \core\exception\moodle_exception
+ * @throws coding_exception
+ * @throws dml_exception
+ * @throws invalid_parameter_exception
+ * @throws moodle_exception
  */
 function coursework_process_form_submissions(coursework $coursework, $coursemodule) {
     global $DB, $PAGE;
@@ -104,6 +110,10 @@ function coursework_process_form_submissions(coursework $coursework, $coursemodu
  *
  * @param coursework $coursework The coursework object.
  * @param mod_coursework_allocation_table $allocationtable The renderable table object.
+ * @throws \core\exception\coding_exception
+ * @throws \core\exception\moodle_exception
+ * @throws coding_exception
+ * @throws dml_exception
  */
 function coursework_render_page(coursework $coursework, mod_coursework_allocation_table $allocationtable) {
     global $PAGE, $OUTPUT;

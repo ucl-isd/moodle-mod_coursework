@@ -39,6 +39,7 @@ class calendar {
      * @param string $eventtype
      * @param int|null $deadline
      * @return stdClass
+     * @throws \coding_exception
      */
     public static function coursework_event(object $coursework, string $eventtype, ?int $deadline): stdClass {
 

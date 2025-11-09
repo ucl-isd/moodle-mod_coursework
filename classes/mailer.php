@@ -25,6 +25,7 @@ use coding_exception;
 use core\message\message;
 use core_user;
 use html_writer;
+use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
 use stdClass;
@@ -42,7 +43,7 @@ class mailer {
     protected $coursework;
 
     /**
-     * @param models/coursework $coursework
+     * @param coursework $coursework
      */
     public function __construct($coursework) {
         $this->coursework = $coursework;
@@ -53,6 +54,8 @@ class mailer {
      *
      * @param user $user
      * @param bool $finalised
+     * @throws \dml_exception
+     * @throws \moodle_exception
      * @throws coding_exception
      */
 
@@ -100,6 +103,7 @@ class mailer {
 
     /**
      * @param submission $submission
+     * @throws coding_exception
      */
     public function send_late_submission_notification($submission) {
         global $CFG;
@@ -135,6 +139,8 @@ class mailer {
      * Send feedback notifications to users whose feedback was released
      *
      * @param submission $submission
+     * @throws \dml_exception
+     * @throws \moodle_exception
      * @throws coding_exception
      */
     public function send_feedback_notification($submission) {
@@ -187,6 +193,8 @@ class mailer {
      *
      * @param $user
      * @return mixed
+     * @throws \dml_exception
+     * @throws \moodle_exception
      * @throws coding_exception
      */
     public function send_student_deadline_reminder($user) {

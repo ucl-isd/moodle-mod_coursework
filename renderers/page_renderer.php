@@ -45,6 +45,8 @@ use mod_coursework\warnings;
 class mod_coursework_page_renderer extends plugin_renderer_base {
     /**
      * @param feedback $feedback
+     * @return string
+     * @throws \core\exception\coding_exception
      */
     public function show_feedback_page($feedback) {
         $html = '';
@@ -56,7 +58,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param submission $feedback
+     * @param $submission
+     * @return string
+     * @throws \core\exception\coding_exception
      */
     public function show_viewpdf_page($submission) {
         $this->page->set_pagelayout('popup');
@@ -71,6 +75,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
     /**
      * @param moderation $moderation
+     * @throws \core\exception\coding_exception
      */
     public function show_moderation_page($moderation) {
         $html = '';
@@ -89,6 +94,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param feedback $teacherfeedback
      * @param $assessor
      * @param $editor
+     * @throws \core\exception\coding_exception
+     * @throws \core\exception\moodle_exception
      * @throws coding_exception
      */
     public function edit_feedback_page(feedback $teacherfeedback, $assessor, $editor) {
@@ -186,6 +193,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param moderation $moderatoragreement
      * @param $assessor
      * @param $editor
+     * @throws \core\exception\coding_exception
+     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
      */
     public function edit_moderation_page(moderation $moderatoragreement, $assessor, $editor) {
 
@@ -229,6 +239,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param coursework $coursework
      * @param user $student
      * @return stdClass Template data for rendering.
+     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function student_view_page($coursework, $student): stdClass {
         // Coursework not yet open for submissions.
@@ -303,8 +316,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      *
      * @param int $coursemoduleid
      * @param choose_student_for_submission_mform $chooseform
-     * @param \coursework $coursework
      * @return string HTML
+     * @throws \core\exception\coding_exception
      */
     public function choose_student_to_submit_for($coursemoduleid, $chooseform) {
         // Drop down to choose the student if we have no student id.
@@ -325,8 +338,11 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param $newfeedback
+     * @param feedback $newfeedback
+     * @throws \core\exception\coding_exception
+     * @throws \core\exception\moodle_exception
      * @throws coding_exception
+     * @throws dml_exception
      */
     public function new_feedback_page(feedback $newfeedback) {
         global $SITE, $DB;
@@ -405,7 +421,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
     /**
      * @param moderation $newmoderation
+     * @throws \core\exception\coding_exception
+     * @throws \core\exception\moodle_exception
      * @throws coding_exception
+     * @throws dml_exception
      */
     public function new_moderation_page($newmoderation) {
 
@@ -579,6 +598,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      *
      * @param submission $submission
      * @return stdClass
+     * @throws coding_exception
+     * @throws dml_exception
      */
     private function coursework_student_overview($submission): stdClass {
         $template = new stdClass();
@@ -619,6 +640,12 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      *
      * @param student_submission_form $submitform
      * @param submission $submission
+     * @param bool $isnew
+     * @throws ReflectionException
+     * @throws \core\exception\coding_exception
+     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     public function submission_page($submitform, $submission, $isnew = true) {
         $template = new stdClass();
@@ -663,6 +690,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param $student
      * @param student_submission_form $submitform
      * @return string
+     * @throws \core\exception\coding_exception
+     * @throws coding_exception
      */
     public function submit_on_behalf_of_student_interface($student, $submitform) {
         // Allow submission on behalf of the student.
@@ -686,7 +715,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @return mod_coursework_object_renderer
+     * @return renderer_base
      */
     private function get_object_renderer() {
         return $this->page->get_renderer('mod_coursework', 'object');
@@ -723,6 +752,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param coursework $coursework
      * @param submission $submission
      * @return stdClass with 'label' and 'url' properties.
+     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
      */
     protected function edit_submission_button($coursework, $submission) {
         $submissionbutton = new stdClass();
@@ -740,6 +771,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      *
      * @param submission $submission
      * @return stdClass with 'label' and 'url' properties.
+     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
      */
     protected function new_submission_button($submission): stdClass {
         $submissionbutton = new stdClass();
@@ -880,10 +913,16 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         return $html;
     }
+
     /**
      * View a summary listing of all courseworks in the current course.
      *
+     * @param $courseid
      * @return string
+     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
      */
     public function view_course_index($courseid) {
         global $CFG, $DB, $USER;
@@ -977,6 +1016,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param stdClass $template Existing data object to be rendered.
      * @param submission $submission Submission instance whose status is to be
      * displayed.
+     * @throws coding_exception
      */
     private function add_submission_status(stdClass $template, submission $submission): void {
         $template->submission = new stdClass();
@@ -1023,6 +1063,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @param submission $submission
      * @param assessor_feedback_mform $form
      * @return void
+     * @throws \core\exception\coding_exception
+     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
      */
     public function redisplay_form(submission $submission, assessor_feedback_mform $form) {
         $coursework = $submission->get_coursework();

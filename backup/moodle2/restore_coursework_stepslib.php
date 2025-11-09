@@ -27,6 +27,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
      * Define the structure of the restore workflow.
      *
      * @return restore_path_element $structure
+     * @throws base_step_exception
      */
     protected function define_structure() {
         $paths = [];
@@ -381,6 +382,8 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
      *
      * @param object $data The data in object form
      * @return void
+     * @throws base_step_exception
+     * @throws dml_exception
      */
     protected function process_coursework($data) {
         global $DB;

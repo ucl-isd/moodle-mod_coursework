@@ -79,6 +79,7 @@ class moderation_cell extends cell_base {
     /**
      * @param array $options
      * @return string
+     * @throws coding_exception
      */
     public function get_table_header($options = []) {
 

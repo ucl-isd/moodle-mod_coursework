@@ -170,6 +170,8 @@ class controller_base {
      * @param $methodname
      * @param $arguments
      * @throws coding_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
      */
     public function __call($methodname, $arguments) {
 
@@ -183,7 +185,7 @@ class controller_base {
     }
 
     /**
-     * @return context|mixed
+     * @return context
      */
     protected function get_context() {
         return $this->coursework->get_context();
@@ -210,7 +212,7 @@ class controller_base {
     }
 
     /**
-     * @return mod_coursework_object_renderer
+     * @return \renderer_base
      */
     protected function get_object_renderer() {
         global $PAGE;
@@ -219,7 +221,7 @@ class controller_base {
     }
 
     /**
-     * @return mod_coursework_page_renderer
+     * @return \renderer_base
      */
     protected function get_page_renderer() {
         global $PAGE;
@@ -259,7 +261,7 @@ class controller_base {
     }
 
     /**
-     * @return table_base
+     * @return string
      */
     protected function model_class() {
         return "\\mod_coursework\\models\\{$this->model_name()}";

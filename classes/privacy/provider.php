@@ -390,7 +390,7 @@ class provider implements core_userlist_provider, \core_privacy\local\metadata\p
      * @param  stdClass       $user             The user object
      * @param  context_module $context          The context
      * @param  array           $path             The path for exporting data
-     * @param  bool|boolean    $exportforteacher A flag for if this is exporting data as a teacher.
+     * @param  bool $exportforteacher A flag for if this is exporting data as a teacher.
      */
     protected static function export_coursework_submissions($coursework, $user, $context, $path, $exportforteacher = false) {
         $submissions = self::get_user_submissions($user->id, $coursework->id);
@@ -416,23 +416,27 @@ class provider implements core_userlist_provider, \core_privacy\local\metadata\p
             }
         }
     }
+
     /**
      * Gets all the submissions at once for user.
      * @param $userid
      * @param int $courseworkid
      * @return submissions[]
+     * @throws \dml_exception
      */
     protected static function get_user_submissions($userid, $courseworkid) {
         global $DB;
         $params = ['courseworkid' => $courseworkid, 'authorid' => $userid];
         return $DB->get_records('coursework_submissions', $params);
     }
+
     /**
      * Formats and then exports the user's submission data.
      *
-     * @param  stdClass $submission The coursework submission DB record.
-     * @param  context $context The context object
-     * @param  array $currentpath Current directory path that we are exporting to.
+     * @param stdClass $submission The coursework submission DB record.
+     * @param context $context The context object
+     * @param array $currentpath Current directory path that we are exporting to.
+     * @throws \coding_exception
      */
     protected static function export_coursework_submission(stdClass $submission, context $context, array $currentpath) {
         $status = self::get_submissions_status($submission->id);

@@ -75,7 +75,11 @@ class group extends table_base implements allocatable, moderatable {
     }
 
     /**
+     * @param $context
+     * @param $cm
      * @return user[]
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function get_members($context, $cm) {
         $members = groups_get_members($this->id());
@@ -95,7 +99,7 @@ class group extends table_base implements allocatable, moderatable {
 
     /**
      * @param bool $withpicture
-     * @return string
+     * @return void
      */
     public function profile_link($withpicture = false) {
         // TODO: Implement profle_link() method.
@@ -103,7 +107,7 @@ class group extends table_base implements allocatable, moderatable {
 
     /**
      * @param stdClass $course
-     * @return mixed
+     * @return bool
      */
     public function is_valid_for_course($course) {
         return $this->courseid == $course->id;
@@ -131,6 +135,7 @@ class group extends table_base implements allocatable, moderatable {
     /**
      * @param $id
      * @return mixed
+     * @throws \dml_exception
      */
     public static function get_object($id) {
         if (!isset(self::$pool['id'][$id])) {

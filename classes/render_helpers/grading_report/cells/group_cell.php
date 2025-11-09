@@ -32,8 +32,9 @@ use mod_coursework\models\user;
 class group_cell extends cell_base implements allocatable_cell {
     /**
      * @param grading_table_row_base $rowobject
-     * @throws coding_exception
      * @return string
+     * @throws \moodle_exception
+     * @throws coding_exception
      */
     public function get_table_cell($rowobject) {
         $content = '';
@@ -66,6 +67,7 @@ class group_cell extends cell_base implements allocatable_cell {
     /**
      * @param array $options
      * @return string
+     * @throws coding_exception
      */
     public function get_table_header($options = []) {
 
@@ -90,9 +92,10 @@ class group_cell extends cell_base implements allocatable_cell {
     }
 
     /**
-     * @param grading_table_row_base $rowobject
      * @param user $groupmember
+     * @param grading_table_row_base $rowobject
      * @return string
+     * @throws coding_exception
      */
     protected function add_group_member_name($groupmember, $rowobject) {
         $text = '<option>';

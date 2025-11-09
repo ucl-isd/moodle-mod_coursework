@@ -26,6 +26,7 @@
 namespace mod_coursework\render_helpers\grading_report\data;
 
 use coding_exception;
+use core\exception\moodle_exception;
 use core_user;
 use dml_exception;
 use mod_coursework\allocation\allocatable;
@@ -55,6 +56,8 @@ class marking_cell_data extends cell_data_base {
      *
      * @param grading_table_row_base $rowsbase
      * @return stdClass|null The data object for template rendering.
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_table_cell_data(grading_table_row_base $rowsbase): ?stdClass {
         $table = new assessor_feedback_table($this->coursework, $rowsbase->get_allocatable(), $rowsbase->get_submission());
@@ -76,7 +79,9 @@ class marking_cell_data extends cell_data_base {
      *
      * @param user|null_user $assessor
      * @param int $markingstage
+     * @param bool $canaddfeedback
      * @return stdClass
+     * @throws coding_exception
      */
     private function create_marker_data($assessor, int $markingstage, bool $canaddfeedback): stdClass {
         global $OUTPUT;
@@ -103,6 +108,8 @@ class marking_cell_data extends cell_data_base {
      * @param feedback $feedback Feedback object
      * @param grading_table_row_base $rowsbase Base row data
      * @param assessor_feedback_row $row Current row being processed
+     * @throws coding_exception
+     * @throws dml_exception
      */
     private function process_feedback_data(stdClass $marker, feedback $feedback, grading_table_row_base $rowsbase, assessor_feedback_row $row): void {
         // Get feedback mark.
@@ -314,6 +321,8 @@ class marking_cell_data extends cell_data_base {
      *
      * @param grading_table_row_base $rowsbase
      * @return stdClass|null
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public function get_final_feedback_data(grading_table_row_base $rowsbase): ?stdClass {
         // Early return if sampling is enabled but no sampled feedback exists.
@@ -377,6 +386,9 @@ class marking_cell_data extends cell_data_base {
      *
      * @param grading_table_row_base $rowsbase
      * @return stdClass|null
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
      */
     private function get_moderation_data(grading_table_row_base $rowsbase): ?stdClass {
         global $USER;

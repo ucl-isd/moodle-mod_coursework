@@ -21,6 +21,7 @@
  */
 
 namespace mod_coursework\traits;
+use core\exception\coding_exception;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
@@ -34,6 +35,8 @@ trait allocatable_functions {
      * For when a student leaves. All assessment and moderation stuff can be taken away.
      *
      * @param $coursework
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function delete_all_submission_allocations($coursework) {
 
@@ -65,6 +68,8 @@ trait allocatable_functions {
     /**
      * @param coursework $coursework
      * @return bool
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function has_agreed_feedback($coursework) {
         global $DB;
@@ -84,6 +89,8 @@ trait allocatable_functions {
     /**
      * @param coursework $coursework
      * @return bool
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function get_agreed_feedback($coursework) {
         global $DB;
@@ -102,6 +109,8 @@ trait allocatable_functions {
     /**
      * @param coursework $coursework
      * @return bool
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function has_all_initial_feedbacks($coursework) {
         global $DB;
@@ -162,7 +171,7 @@ trait allocatable_functions {
 
     /**
      * @param $coursework
-     * @return submission
+     * @return bool
      */
     public function get_submission($coursework) {
         $this->fill_submission_and_feedback($coursework);
@@ -172,6 +181,8 @@ trait allocatable_functions {
     /**
      *
      * @param $coursework
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     private function fill_submission_and_feedback($coursework) {
         $courseworkid = $coursework->id;

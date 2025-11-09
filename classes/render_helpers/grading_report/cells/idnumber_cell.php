@@ -41,6 +41,7 @@ class idnumber_cell extends cell_base implements allocatable_cell {
     /**
      * @param array $options
      * @return string
+     * @throws \coding_exception
      */
     public function get_table_header($options = []) {
 

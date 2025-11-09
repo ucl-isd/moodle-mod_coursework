@@ -49,7 +49,13 @@ class get_grading_table_row_data extends external_api {
     /**
      * Execute the function.
      *
-     * @param int $extensionid
+     * @param int $courseworkid
+     * @param int $allocatableid
+     * @param string $allocatabletype
+     * @return array
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws \invalid_parameter_exception
      */
     public static function execute(int $courseworkid, int $allocatableid, string $allocatabletype): array {
         global $PAGE;

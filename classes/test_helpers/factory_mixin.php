@@ -86,6 +86,8 @@ trait factory_mixin {
 
     /**
      * @return user
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     protected function create_a_student() {
         $generator = testing_util::get_data_generator();
@@ -101,6 +103,8 @@ trait factory_mixin {
 
     /**
      * @return stdClass
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     protected function create_another_student() {
         $generator = testing_util::get_data_generator();
@@ -115,6 +119,8 @@ trait factory_mixin {
 
     /**
      * @return user
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     protected function create_a_teacher() {
         $generator = testing_util::get_data_generator();
@@ -130,6 +136,8 @@ trait factory_mixin {
 
     /**
      * @return stdClass
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     protected function create_another_teacher() {
         $generator = testing_util::get_data_generator();
@@ -194,7 +202,7 @@ trait factory_mixin {
     }
 
     /**
-     * @return mod_coursework_generator
+     * @return \component_generator_base|\default_block_generator
      */
     protected function get_coursework_generator() {
         return $this->getDataGenerator()->get_plugin_generator('mod_coursework');
@@ -205,6 +213,8 @@ trait factory_mixin {
      *
      * @param array $params
      * @return coursework
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     protected function create_a_coursework(array $params = []) {
         $generator = $this->get_coursework_generator();
@@ -217,7 +227,6 @@ trait factory_mixin {
     /**
      * Makes a course and saves it as $this->course
      *
-     * @throws coding_exception
      */
     protected function create_a_course() {
         $generator = phpunit_util::get_data_generator();
@@ -268,7 +277,7 @@ trait factory_mixin {
 
     /**
      * @param user $assessor
-     * @return stdClass
+     * @return feedback
      * @throws coding_exception
      */
     public function create_an_assessor_feedback_for_the_submission($assessor) {
@@ -285,6 +294,7 @@ trait factory_mixin {
 
     /**
      * @return mixed
+     * @throws \dml_exception
      */
     private function get_teacher_role_id() {
         global $DB;
@@ -294,6 +304,7 @@ trait factory_mixin {
 
     /**
      * @return mixed
+     * @throws \dml_exception
      */
     private function get_student_role_id() {
         global $DB;
@@ -303,6 +314,7 @@ trait factory_mixin {
 
     /**
      * @return mixed
+     * @throws \dml_exception
      */
     private function get_manager_role_id() {
         global $DB;
@@ -408,7 +420,8 @@ trait factory_mixin {
     }
 
     /**
-     * @return user
+     * @return submission
+     * @throws coding_exception
      */
     protected function get_submission() {
         if (!isset($this->submission)) {

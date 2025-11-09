@@ -162,6 +162,7 @@ class submission_cell_data extends cell_data_base {
      *
      * @param stdClass $submissiondata Data object to add late submission data to.
      * @param submission $submission The submission to check.
+     * @throws \coding_exception
      */
     protected function add_late_submission_data(stdClass $submissiondata, submission $submission): void {
         $submissiondata->submittedlate = ($submission->was_late() !== false);

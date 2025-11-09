@@ -21,6 +21,7 @@
  */
 
 namespace mod_coursework\render_helpers\grading_report\cells;
+use core\exception\moodle_exception;
 use core_user;
 use html_writer;
 use mod_coursework\ability;
@@ -55,6 +56,9 @@ class moderation_agreement_cell extends cell_base {
     /**
      * @param grading_table_row_base $rowobject
      * @return string
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws moodle_exception
      */
     public function get_table_cell($rowobject) {
         global $USER;
@@ -125,6 +129,7 @@ class moderation_agreement_cell extends cell_base {
     /**
      * @param array $options
      * @return string
+     * @throws \coding_exception
      */
     public function get_table_header($options = []) {
         return get_string('tableheadmoderationagreement', 'coursework');
@@ -157,6 +162,8 @@ class moderation_agreement_cell extends cell_base {
      * @param user $assessor
      * @return string
      * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws moodle_exception
      */
     private function new_moderation_button($rowobject, $assessor) {
         global $OUTPUT;
@@ -215,6 +222,8 @@ class moderation_agreement_cell extends cell_base {
     /**
      * @param $rowobject
      * @return string
+     * @throws \coding_exception
+     * @throws moodle_exception
      */
 
     private function show_moderation_button($rowobject) {

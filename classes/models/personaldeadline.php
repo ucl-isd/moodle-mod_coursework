@@ -24,6 +24,7 @@ namespace mod_coursework\models;
 
 use AllowDynamicProperties;
 use context_module;
+use core\exception\coding_exception;
 use core\exception\invalid_parameter_exception;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\event\personaldeadline_created;
@@ -54,7 +55,8 @@ class personaldeadline extends table_base {
     protected static $tablename = 'coursework_person_deadlines';
 
     /**
-     * @return mixed|mod_coursework_coursework
+     * @return bool|coursework
+     * @throws \dml_exception
      */
     public function get_coursework() {
         if (!isset($this->coursework)) {
@@ -72,7 +74,9 @@ class personaldeadline extends table_base {
 
     /**
      * Function to check if extension for this personal deadline (alloctable) exists
-     * @return static
+     * @return bool|table_base
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function extension_exists() {
         $coursework = $this->get_coursework();
@@ -88,7 +92,9 @@ class personaldeadline extends table_base {
      * Get any personal deadline for this student.
      * @param allocatable|user $student
      * @param coursework $coursework
-     * @return personaldeadline|bool
+     * @return bool|table_base|void
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public static function get_personaldeadline_for_student($student, $coursework) {
         if ($coursework->is_configured_to_have_group_submissions()) {
@@ -115,6 +121,7 @@ class personaldeadline extends table_base {
      *
      * @param int $courseworkid
      * @return array
+     * @throws \dml_exception
      */
     protected static function get_cache_array($courseworkid) {
         global $DB;
@@ -137,6 +144,7 @@ class personaldeadline extends table_base {
      * @param $key
      * @param $params
      * @return mixed
+     * @throws coding_exception
      */
     public static function get_object($courseworkid, $key, $params) {
         if (!isset(self::$pool[$courseworkid])) {
@@ -164,6 +172,9 @@ class personaldeadline extends table_base {
      * Trigger an event when deadline is created or updated.
      * @param string $eventtype create, or update.
      * @return void
+     * @throws \coding_exception
+     * @throws \moodle_exception
+     * @throws invalid_parameter_exception
      */
     public function trigger_created_updated_event(string $eventtype): void {
         global $USER;
@@ -200,6 +211,7 @@ class personaldeadline extends table_base {
      * Get all personal deadlines for a particular coursework from the database.
      * @param int $courseworkid
      * @return array
+     * @throws \dml_exception
      */
     public static function get_all_for_coursework(int $courseworkid): array {
         global $DB;
@@ -212,6 +224,7 @@ class personaldeadline extends table_base {
      * @param int $allocatableid
      * @param string $allocatabletype
      * @return ?self
+     * @throws \dml_exception
      */
     public static function get_for_allocatable(int $courseworkid, int $allocatableid, string $allocatabletype): ?self {
         global $DB;

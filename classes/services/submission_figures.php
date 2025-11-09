@@ -35,6 +35,8 @@ class submission_figures {
      *
      * @param int $instance
      * @return array
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public static function get_submissions_for_assessor(int $instance): array {
 
@@ -88,6 +90,8 @@ class submission_figures {
      *
      * @param int $instance
      * @return int
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public static function calculate_needsgrading_for_assessor(int $instance): int {
         $coursework = coursework::find($instance);
@@ -139,6 +143,7 @@ class submission_figures {
      *
      * @param array $submissions
      * @return array
+     * @throws \coding_exception
      */
     private static function remove_ungradable_submissions(array $submissions): array {
         foreach ($submissions as $submission) {
@@ -174,6 +179,7 @@ class submission_figures {
      *
      * @param array $submissions
      * @return array
+     * @throws \coding_exception
      */
     private static function get_assessor_initial_graded_submissions(array $submissions): array {
 

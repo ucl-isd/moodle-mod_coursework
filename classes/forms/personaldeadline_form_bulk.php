@@ -81,6 +81,7 @@ class personaldeadline_form_bulk extends moodleform {
      * @param array $data
      * @param array $files
      * @return array
+     * @throws \coding_exception
      */
     public function validation($data, $files) {
         $errors = [];
@@ -93,9 +94,11 @@ class personaldeadline_form_bulk extends moodleform {
 
     /**
      * Add mustache data for form header template.
-     * @param $allocatableids[] the user IDs or group IDs.
+     * @param array $allocatableids [] the user IDs or group IDs.
      * @param string $allocatabletype whethe user or group.
      * @return object
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     private function get_header_mustache_data(array $allocatableids, string $allocatabletype): object {
         global $DB;

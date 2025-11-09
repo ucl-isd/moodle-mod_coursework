@@ -78,6 +78,7 @@ class outstanding_marking {
      * @param bool $userid
      * @param bool $allocationenabled
      * @return array
+     * @throws \dml_exception
      */
     private function get_single_marker_initial_grade_submissions_to_mark($courseworkid, $userid = false, $allocationenabled = false) {
 
@@ -119,6 +120,7 @@ class outstanding_marking {
      * @param int $courseworkid
      * @param $userid
      * @return array
+     * @throws \dml_exception
      */
     private function get_multiple_to_mark_sampled_initial_grade_submissions($courseworkid, $userid) {
 
@@ -159,6 +161,7 @@ class outstanding_marking {
      * @param $numberofmarkers
      * @param $allocationenabled
      * @return array
+     * @throws \dml_exception
      */
     private function get_multiple_to_mark_initial_grade_submissions($courseworkid, $userid, $numberofmarkers, $allocationenabled) {
 
@@ -210,6 +213,7 @@ class outstanding_marking {
      * @param int $courseworkid
      * @param $numberofmarkers
      * @return array
+     * @throws \dml_exception
      */
     private function get_to_grade_agreed_grade_submissions($courseworkid, $numberofmarkers) {
 
@@ -234,6 +238,7 @@ class outstanding_marking {
     /**
      * @param int $courseworkid
      * @return array
+     * @throws \dml_exception
      */
     private function get_to_grade_agreed_grade_sampled_submissions($courseworkid) {
 
@@ -264,6 +269,7 @@ class outstanding_marking {
      * @param $courseid
      * @param $userid
      * @return bool
+     * @throws \coding_exception
      */
     private function has_agreed_grade($courseid, $userid) {
 
@@ -276,6 +282,7 @@ class outstanding_marking {
      * @param $courseid
      * @param $userid
      * @return bool
+     * @throws \coding_exception
      */
     private function has_initial_grade($courseid, $userid) {
 

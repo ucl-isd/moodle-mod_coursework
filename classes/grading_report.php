@@ -334,7 +334,10 @@ class grading_report {
     /**
      * Gets data for all students. Use bulk queries to aid performance
      *
+     * @param bool $rowcount
      * @return grading_table_row_base[] row objects
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
     public function get_table_rows_for_page($rowcount = false) {
 

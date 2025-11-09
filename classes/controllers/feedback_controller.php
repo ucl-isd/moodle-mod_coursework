@@ -373,6 +373,7 @@ class feedback_controller extends controller_base {
     /**
      * Check permissions.
      * @param string $identifier
+     * @throws \coding_exception
      * @throws access_denied
      */
     protected function check_stage_permissions($identifier) {
@@ -421,7 +422,8 @@ class feedback_controller extends controller_base {
 
     /**
      * @param feedback $feedback
-     * @return mixed
+     * @return string
+     * @throws \dml_exception
      */
     private function next_available_stage($feedback) {
         global $DB;

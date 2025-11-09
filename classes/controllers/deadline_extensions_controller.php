@@ -22,6 +22,7 @@
 
 namespace mod_coursework\controllers;
 use AllowDynamicProperties;
+use core\exception\moodle_exception;
 use core\output\notification;
 use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
@@ -87,7 +88,11 @@ class deadline_extensions_controller extends controller_base {
      * I.e. they are visiting /mod/coursework/actions/deadline_extensions/edit.php or new.php.
      * If using the modal form, this is done by the form itself.
      * @return void
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws \moodle_exception
      * @throws access_denied
+     * @throws moodle_exception
      * @see deadline_extension_form::process_dynamic_submission
      */
     protected function create_deadline_extension() {
@@ -152,6 +157,10 @@ class deadline_extensions_controller extends controller_base {
      * I.e. they are visiting /mod/coursework/actions/deadline_extensions/edit.php or new.php.
      * If using the modal form, this is done by the form itself.
      * @return void
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws access_denied
+     * @throws moodle_exception
      * @see deadline_extension_form::process_dynamic_submission
      */
     protected function edit_deadline_extension() {
@@ -182,6 +191,9 @@ class deadline_extensions_controller extends controller_base {
     /**
      * Delete a deadline extension from the database.
      * @return bool
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws access_denied
      */
     public function delete_deadline_extension(): bool {
         global $USER;
@@ -202,6 +214,11 @@ class deadline_extensions_controller extends controller_base {
      * Those pages in turn seem to be requested when the user is submitting form data or displaying it.
      * Not ideal and could do with refactoring.
      * @return void
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws \moodle_exception
+     * @throws access_denied
+     * @throws moodle_exception
      */
     protected function update_deadline_extension() {
         global $USER;
@@ -249,6 +266,7 @@ class deadline_extensions_controller extends controller_base {
     /**
      * Set the deadline to default current deadline if the extension was never given before
      * @return array
+     * @throws \dml_exception
      */
     protected function set_default_current_deadline() {
         global $DB;
@@ -314,8 +332,9 @@ class deadline_extensions_controller extends controller_base {
      * @param array $dataparams
      *
      * Generate html cell base on time_submitted_cell
-     * @return string $content
-     *
+     * @return string[] $content
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
 
     public function table_cell_response($dataparams) {

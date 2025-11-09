@@ -26,6 +26,7 @@ namespace mod_coursework\event;
 
 use coding_exception;
 use core\event\base;
+use core\exception\moodle_exception;
 use moodle_url;
 
 /**
@@ -55,6 +56,7 @@ class personaldeadline_created extends base {
      * Returns localised general event name.
      *
      * @return string
+     * @throws coding_exception
      */
     public static function get_name() {
         return get_string('personaldeadlinecreated', 'mod_coursework');
@@ -75,6 +77,7 @@ class personaldeadline_created extends base {
      * Returns relevant URL.
      *
      * @return moodle_url
+     * @throws moodle_exception
      */
     public function get_url() {
         return new moodle_url('/mod/coursework/view.php', ['id' => $this->contextinstanceid]);

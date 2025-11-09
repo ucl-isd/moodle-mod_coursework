@@ -33,7 +33,9 @@ class otherassessors_cell extends cell_base {
      * @param submission $submission
      * @param $student
      * @param $stageidentifier
-     * @return null|string
+     * @return array
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function get_cell($submission, $student, $stageidentifier) {
         global $DB, $USER;
@@ -117,7 +119,7 @@ class otherassessors_cell extends cell_base {
 
     /**
      * @param $stage
-     * @return string
+     * @return array
      * @throws coding_exception
      */
     public function get_header($stage) {

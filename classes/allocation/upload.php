@@ -185,7 +185,7 @@ class upload {
      * @param $encoding
      * @param $delimiter
      * @param $processingresults
-     * @return array|bool
+     * @return false|\lang_string|string
      * @throws moodle_exception
      */
     public function process_csv($content, $encoding, $delimiter, $processingresults) {
@@ -296,6 +296,7 @@ class upload {
      * @param $stageidentifier
      * @param $allocatable
      * @return bool|int
+     * @throws \dml_exception
      */
     public function add_allocation($assessorid, $stageidentifier, $allocatable) {
         global $DB;
@@ -318,6 +319,7 @@ class upload {
      * @param $allocationid
      * @param $assessorid
      * @return bool
+     * @throws \dml_exception
      */
     public function update_allocation($allocationid, $assessorid) {
         global $DB;

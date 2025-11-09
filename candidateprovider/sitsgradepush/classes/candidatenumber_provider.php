@@ -65,6 +65,7 @@ class candidatenumber_provider extends candidateprovider {
      * Get the human-readable name of this provider.
      *
      * @return string Provider name
+     * @throws \coding_exception
      */
     public function get_provider_name(): string {
         return get_string('pluginname', 'courseworkcandidateprovider_sitsgradepush');

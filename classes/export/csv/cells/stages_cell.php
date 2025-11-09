@@ -33,6 +33,10 @@ class stages_cell extends cell_base {
      * @param $student
      * @param $stageidentifier
      * @return array
+     * @throws \dml_exception
+     * @throws \dml_missing_record_exception
+     * @throws \dml_multiple_records_exception
+     * @throws coding_exception
      */
     public function get_cell($submission, $student, $stageidentifier) {
         global $DB;
