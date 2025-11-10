@@ -40,6 +40,7 @@ $string['agree_marking'] = 'Agree marking';
 $string['agreed'] = 'Agreed';
 $string['agreed_marking_deadline_default'] = 'Agreed grade marking deadline';
 $string['agreed_marking_deadline_default_desc'] = 'Select the default agreed grade marking deadline applied to coursework activities';
+$string['agreedgrade'] = 'Agreed grade';
 $string['agreedgradeby'] = 'Agreed grade by';
 $string['agreedgradebyusername'] = 'Agreed grade by username';
 $string['agreedgradefeedback'] = 'Agreed grade feedback';
