@@ -59,12 +59,9 @@ use mod_coursework\render_helpers\grading_report\cells\first_name_cell;
 use mod_coursework\render_helpers\grading_report\cells\group_cell;
 use mod_coursework\render_helpers\grading_report\cells\idnumber_cell;
 use mod_coursework\render_helpers\grading_report\cells\last_name_cell;
-use mod_coursework\render_helpers\grading_report\cells\moderation_agreement_cell;
-use mod_coursework\render_helpers\grading_report\cells\multiple_agreed_grade_cell;
 use mod_coursework\render_helpers\grading_report\cells\personaldeadline_cell;
 use mod_coursework\render_helpers\grading_report\cells\plagiarism_cell;
 use mod_coursework\render_helpers\grading_report\cells\plagiarism_flag_cell;
-use mod_coursework\render_helpers\grading_report\cells\single_assessor_feedback_cell;
 use mod_coursework\render_helpers\grading_report\cells\status_cell;
 use mod_coursework\render_helpers\grading_report\cells\submission_cell;
 use mod_coursework\render_helpers\grading_report\cells\time_submitted_cell;
@@ -1849,29 +1846,6 @@ class coursework extends table_base {
 
         if ($this->plagiarism_enbled()) {
             $report->add_cell(new plagiarism_cell($cellitems));
-        }
-
-        if ($this->has_multiple_markers()) {
-            $itemswithstage = [
-                'stage' => $this->get_final_grade_stage(),
-                'coursework' => $this,
-            ];
-            $report->add_cell(new multiple_agreed_grade_cell($itemswithstage));
-        } else {
-            $assessorstages = $this->get_assessor_marking_stages();
-
-            $itemswithstage = [
-                'stage' => reset($assessorstages),
-                'coursework' => $this,
-            ];
-            $report->add_cell(new single_assessor_feedback_cell($itemswithstage));
-        }
-        if ($this->moderation_agreement_enabled()) {
-            $itemswithstage = [
-                'stage' => $this->get_moderator_grade_stage(),
-                'coursework' => $this,
-            ];
-            $report->add_cell(new moderation_agreement_cell($itemswithstage));
         }
 
         return $report;
