@@ -56,7 +56,6 @@ use mod_coursework\grading_report;
 use mod_coursework\plagiarism_helpers\base as plagiarism_base;
 use mod_coursework\render_helpers\grading_report\cells\email_cell;
 use mod_coursework\render_helpers\grading_report\cells\first_name_cell;
-use mod_coursework\render_helpers\grading_report\cells\grade_for_gradebook_cell;
 use mod_coursework\render_helpers\grading_report\cells\group_cell;
 use mod_coursework\render_helpers\grading_report\cells\idnumber_cell;
 use mod_coursework\render_helpers\grading_report\cells\last_name_cell;
@@ -70,8 +69,6 @@ use mod_coursework\render_helpers\grading_report\cells\status_cell;
 use mod_coursework\render_helpers\grading_report\cells\submission_cell;
 use mod_coursework\render_helpers\grading_report\cells\time_submitted_cell;
 use mod_coursework\render_helpers\grading_report\cells\user_cell;
-use mod_coursework\render_helpers\grading_report\sub_rows\multi_marker_feedback_sub_rows;
-use mod_coursework\render_helpers\grading_report\sub_rows\no_sub_rows;
 use mod_coursework\stages\assessor;
 use mod_coursework\stages\base as stage_base;
 use mod_coursework\stages\final_agreed;
@@ -1875,15 +1872,6 @@ class coursework extends table_base {
                 'coursework' => $this,
             ];
             $report->add_cell(new moderation_agreement_cell($itemswithstage));
-        }
-
-        $report->add_cell(new grade_for_gradebook_cell($cellitems));
-
-        // Sub rows helper for assessor feedbacks (or not).
-        if ($this->has_multiple_markers()) {
-            $report->add_sub_rows(new multi_marker_feedback_sub_rows());
-        } else {
-            $report->add_sub_rows(new no_sub_rows());
         }
 
         return $report;
