@@ -50,6 +50,6 @@ class plagiarismflagcomment_cell extends cell_base {
      * @throws coding_exception
      */
     public function get_header($stage) {
-        return  get_string('plagiarismcomment', 'coursework');
+        return  get_string('plagiarismcommentcsv', 'coursework');
     }
 }
