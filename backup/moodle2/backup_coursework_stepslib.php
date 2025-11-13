@@ -188,7 +188,6 @@ class backup_coursework_activity_structure_step extends backup_activity_structur
                                                      "isfinalgrade",
                                                      "ismoderation",
                                                      "feedbackcommentformat",
-                                                     "entry_id",
                                                      "markernumber",
                                                      "stageidentifier",
                                                      "finalised",

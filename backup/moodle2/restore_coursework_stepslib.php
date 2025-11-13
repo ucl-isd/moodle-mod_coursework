@@ -151,7 +151,6 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'isfinalgrade' => 0,
                                   'ismoderation' => 0,
                                   'feedbackcommentformat' => FORMAT_HTML,
-                                  'entry_id' => 0,
                                   'markernumber' => 0,
                                   'stageidentifier' => '',
                                   'finalised' => 0], $data);

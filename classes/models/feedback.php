@@ -173,7 +173,6 @@ class feedback extends table_base {
         'lasteditedbyuser',
         'isfinalgrade',
         'ismoderation',
-        'entry_id',
         'markernumber',
     ];
 
