@@ -102,6 +102,7 @@ $string['automaticagreement'] = "Automatic agreement";
 $string['automaticagreement_help'] = "Automatic grade agreement strategy for the final grade. The final grade is worked out from the initial grades based on the strategy chosen";
 $string['automaticagreementofgrades'] = "Automatic agreement of grades";
 $string['automaticagreementrange'] = "Automatic agreement range";
+$string['automaticallyagreed'] = 'Automatically agreed';
 $string['automaticallyinsample'] = 'Automatically included in sample';
 $string['autopopulatefeedbackcomment'] = "Auto-populate agreed feedback comment";
 $string['autopopulatefeedbackcomment_help'] = "Pre-populate agreed feedback comment field with comments from initial marking. Please note these comments are not saved until 'Save changes' button is pressed.";
