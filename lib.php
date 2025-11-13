@@ -304,7 +304,7 @@ function mod_coursework_core_calendar_provide_event_action(
         if ($event->eventtype == 'initialgradingdue') {
             // Initial grades
             $togradeinitialcount = $outstandingmarking->get_to_grade_initial_count($dbcoursework, $USER->id);
-            $name = ($coursework->has_multiple_markers()) ? get_string('initialgrade', 'coursework') : get_string('grade', 'mod_coursework');
+            $name = ($coursework->has_multiple_markers()) ? get_string('initialmark', 'coursework') : get_string('mark', 'mod_coursework');
             $itemcount = $togradeinitialcount;
         } else if ($event->eventtype == 'agreedgradingdue') {
             // Agreed grades
@@ -919,7 +919,7 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
             && has_capability('mod/coursework:allocate', $context)
     ) {
         $link = new moodle_url('/admin/roles/assign.php', ['contextid' => $context->id]);
-        $navref->add(get_string('addassessors', 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
+        $navref->add(get_string('addmarkers', 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
     }
 }
 

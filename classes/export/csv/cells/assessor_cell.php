@@ -54,6 +54,6 @@ class assessor_cell extends cell_base {
      * @throws coding_exception
      */
     public function get_header($stage) {
-        return  get_string('assessorcsv', 'coursework', $stage);
+        return  get_string('markercsv', 'coursework', $stage);
     }
 }

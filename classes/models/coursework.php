@@ -3093,7 +3093,7 @@ class coursework extends table_base {
         if (!$this->has_stuff_to_publish()) {
             return [
                 false,
-                get_string('nofinalgradedworkyet', 'mod_coursework'),
+                get_string('nofinalmarkedworkyet', 'mod_coursework'),
             ];
         }
 

@@ -31,9 +31,9 @@ Feature: Download and upload buttons on submissions page
     And I visit the coursework page
     And I click on "Download" "button"
     And I wait until the page is ready
-    Then I should see "Download submitted files"
-    And I should see "Download grading sheet"
-    But I should not see "Download grades"
+    Then I should see "Submitted files"
+    And I should see "Marking spreadsheet"
+    But I should not see "Final marks"
 
   @javascript
   Scenario: An admin should see the expected download menu items
@@ -43,9 +43,9 @@ Feature: Download and upload buttons on submissions page
     And I visit the coursework page
     And I click on "Download" "button"
     And I wait until the page is ready
-    Then I should see "Download submitted files"
-    And I should see "Download grades"
-    And I should see "Download grading sheet"
+    Then I should see "Submitted files"
+    And I should see "Final marks"
+    And I should see "Marking spreadsheet"
 
   @javascript
   Scenario: A teacher should see the expect upload menu items
@@ -54,5 +54,5 @@ Feature: Download and upload buttons on submissions page
     And I log in as a teacher
     And I visit the coursework page
     And I click on "Upload" "button"
-    Then I should see "Upload grading sheet"
-    And I should see "Upload feedback files in a zip"
+    Then I should see "Marking spreadsheet"
+    And I should see "Feedback files in a zip"

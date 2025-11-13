@@ -104,8 +104,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $areagreeing = $teacherfeedback->stageidentifier == 'final_agreed_1';
         $gradingtitle = $areagreeing
-            ? get_string('gradingforagree', 'coursework', $teacherfeedback->get_submission()->get_allocatable_name())
-            : get_string('gradingfor', 'coursework', $teacherfeedback->get_submission()->get_allocatable_name());
+            ? get_string('markingforagree', 'coursework', $teacherfeedback->get_submission()->get_allocatable_name())
+            : get_string('markingfor', 'coursework', $teacherfeedback->get_submission()->get_allocatable_name());
 
         $this->page->navbar->add($gradingtitle);
         $this->page->set_title($SITE->fullname);
@@ -175,7 +175,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         global $SITE;
 
         $gradingtitle =
-            get_string('gradingfor', 'coursework', $teacherfeedback->get_submission()->get_allocatable_name());
+            get_string('markingfor', 'coursework', $teacherfeedback->get_submission()->get_allocatable_name());
 
         $this->page->set_pagelayout('standard');
         $this->page->navbar->add($gradingtitle);
@@ -349,8 +349,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $submission = $newfeedback->get_submission();
         $areagreeing = optional_param('stageidentifier', '', PARAM_TEXT) == 'final_agreed_1';
         $gradingtitle = $areagreeing
-            ? get_string('gradingforagree', 'coursework', $submission->get_allocatable_name())
-            : get_string('gradingfor', 'coursework', $submission->get_allocatable_name());
+            ? get_string('markingforagree', 'coursework', $submission->get_allocatable_name())
+            : get_string('markingfor', 'coursework', $submission->get_allocatable_name());
 
         $this->page->navbar->add($gradingtitle);
         $this->page->set_title($SITE->fullname);
@@ -393,7 +393,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $count = 1;
             foreach ($initialfeedbacks as $initialfeedback) {
                 // put all initial feedbacks together for the comment field
-                $feedbackcomment .= get_string('assessorcomments', 'mod_coursework', $count);
+                $feedbackcomment .= get_string('markercomments', 'mod_coursework', $count);
                 $feedbackcomment .= $initialfeedback->feedbackcomment;
                 $feedbackcomment .= '<br>';
                 $count++;
@@ -1062,7 +1062,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 new mod_coursework_submission_files($files),
                 false
             ),
-            'title' => get_string('gradingfor', 'coursework', $submission->get_allocatable_name()),
+            'title' => get_string('markingfor', 'coursework', $submission->get_allocatable_name()),
         ];
         echo $this->output->header();
         echo $this->render_from_template('mod_coursework/marking_details', $templatedata);

@@ -247,7 +247,7 @@ class warnings {
                     $existingallocations = $this->check_existing_allocations($params);
 
                     if (!$existingallocations) {
-                        return $this->alert_div(get_string('assessors_no_allocated_warning', 'mod_coursework'));
+                        return $this->alert_div(get_string('markers_no_allocated_warning', 'mod_coursework'));
                     }
                 }
             } else {
@@ -265,7 +265,7 @@ class warnings {
                     $existingallocations = $this->check_existing_allocations($params);
 
                     if (!$existingallocations) {
-                        return $this->alert_div(get_string('assessors_no_allocated_warning', 'mod_coursework'));
+                        return $this->alert_div(get_string('markers_no_allocated_warning', 'mod_coursework'));
                     }
                 }
             }

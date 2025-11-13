@@ -65,8 +65,8 @@ class stages_cell extends cell_base {
                     $gradedata[] = get_string('notincludedinsample', 'mod_coursework');
                     $gradedata[] = get_string('notincludedinsample', 'mod_coursework');
                 } else {
-                    $gradedata[] = get_string('assessornotallocated', 'mod_coursework');
-                    $gradedata[] = get_string('assessornotallocated', 'mod_coursework');
+                    $gradedata[] = get_string('markernotallocated', 'mod_coursework');
+                    $gradedata[] = get_string('markernotallocated', 'mod_coursework');
                 }
             }
 
@@ -148,10 +148,10 @@ class stages_cell extends cell_base {
                 }
             }
 
-            $fields['agreedgrade'] = get_string('agreedgrade', 'coursework');
-            $fields['agreedgradeby'] = get_string('agreedgradeby', 'coursework');
-            $fields['agreedgradebyusername'] = get_string('agreedgradebyusername', 'coursework');
-            $fields['agreedgradeon'] = get_string('agreedgradeon', 'coursework');
+            $fields['agreedgrade'] = get_string('agreedmark', 'coursework');
+            $fields['agreedgradeby'] = get_string('agreedmarkby', 'coursework');
+            $fields['agreedgradebyusername'] = get_string('agreedmarkbyusername', 'coursework');
+            $fields['agreedgradeon'] = get_string('agreedmarkon', 'coursework');
         }
 
         return $fields;

@@ -149,7 +149,7 @@ class upload {
                     $assessor = $DB->get_record('user', [$assessoridentifier => $value]);
 
                     if (!$assessor || !in_array($assessor->id, $assessors)) {
-                        $errors[$s] = get_string('assessornotincoursework', 'coursework', $keynum);
+                        $errors[$s] = get_string('markernotincoursework', 'coursework', $keynum);
                         continue;
                     }
 
@@ -165,7 +165,7 @@ class upload {
                             )
                             || in_array($assessor->id, $assessorsinfile);
                         if ($iserror) {
-                            $errors[$s] = get_string('assessoralreadyallocated', 'coursework', $keynum);
+                            $errors[$s] = get_string('markeralreadyallocated', 'coursework', $keynum);
                             continue;
                         }
                     }

@@ -35,10 +35,10 @@ class upload_grading_sheet_form extends moodleform {
     public function definition() {
         $mform =& $this->_form;
 
-        $mform->addElement('filepicker', 'gradingdata', get_string('gradingsheetfile', 'coursework'), null, [ 'accepted_types' => '*.csv']);
+        $mform->addElement('filepicker', 'gradingdata', get_string('markingsheetfile', 'coursework'), null, [ 'accepted_types' => '*.csv']);
         $mform->addRule('gradingdata', null, 'required');
 
-        $mform->addElement('checkbox', 'overwrite', '', get_string('overwritegrades', 'coursework'));
+        $mform->addElement('checkbox', 'overwrite', '', get_string('overwritemarks', 'coursework'));
         $mform->addElement('hidden', 'cmid', $this->cmid);
 
         $mform->setType('cmid', PARAM_RAW);
@@ -57,7 +57,7 @@ class upload_grading_sheet_form extends moodleform {
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
         $mform->setDefault('encoding', 'UTF-8');
 
-        $this->add_action_buttons(true, get_string('uploadgradingsheet', 'coursework'));
+        $this->add_action_buttons(true, get_string('uploadmarkingsheet', 'coursework'));
     }
 
     public function display() {

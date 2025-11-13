@@ -613,7 +613,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         // Prepare headers.
         for ($i = 0; $i < $samplingwidget->get_coursework()->get_max_markers(); $i++) {
-            $template->headers[] = get_string('assessorheading', 'mod_coursework', $i + 1);
+            $template->headers[] = get_string('markerheading', 'mod_coursework', $i + 1);
         }
 
         // Prepare scale input.
@@ -633,7 +633,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // Prepare columns.
         // Assessor 1 column is always manual.
         $assessor1cell = html_writer::start_tag('div', ['class' => 'samples_strategy']);
-        $assessor1cell  .= get_string('assessoronedefault', 'mod_coursework');
+        $assessor1cell  .= get_string('markeronedefault', 'mod_coursework');
         $assessor1cell  .= html_writer::end_tag('div');
         $template->columns[]['html'] = $assessor1cell;
 
@@ -662,7 +662,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             }
 
             $graderules = html_writer::start_tag('h4');
-            $graderules .= get_string('graderules', 'mod_coursework');
+            $graderules .= get_string('markrules', 'mod_coursework');
             $graderules .= html_writer::end_tag('h4');
             $graderules .= $this->get_sampling_strategy_form_elements($coursework, $i, $javascript);
             $samplingcell .= html_writer::div($graderules, '', ['id' => "assessor_{$i}_automatic_rules"]);
@@ -1244,12 +1244,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                     ],
                     [
                         'url' => new moodle_url($viewurl, ['id' => $cmid, 'export' => 1]),
-                        'lang' => 'downloadgrades',
+                        'lang' => 'finalmarks',
                         'cap' => ($can('mod/coursework:viewallgradesatalltimes') && $can('mod/coursework:canexportfinalgrades') && $hasfinalised),
                     ],
                     [
                         'url' => new moodle_url($viewurl, ['id' => $cmid, 'export_grading_sheet' => 1]),
-                        'lang' => 'downloadgradingsheets',
+                        'lang' => 'markingspreadsheet',
                         'cap' => $canmark,
                     ],
                 ],
@@ -1259,7 +1259,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 'actions' => [
                     [
                         'url' => new moodle_url('/mod/coursework/actions/upload_grading_sheet.php', ['cmid' => $cmid]),
-                        'lang' => 'uploadgradingsheet',
+                        'lang' => 'markingspreadsheet',
                         'cap' => $canmark,
                     ],
                     [

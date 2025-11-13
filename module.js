@@ -64,7 +64,7 @@ M.mod_coursework = {
 
                 if ($currentselection != $celldropdown_id && ($celldropdown_val == $selected_val || $id_from_label == $selected_val)) {
                     // alert('Assessor already allocated. \n Choose different assessor.');
-                    $('<div id="same_assessor" class="alert">' + M.util.get_string('sameassessorerror', 'coursework') + '</div>').insertAfter($('#' + $currentselection));
+                    $('<div id="same_assessor" class="alert">' + M.util.get_string('samemarkererror', 'coursework') + '</div>').insertAfter($('#' + $currentselection));
                     $dropdown.val('');
                 } else if ($dropdown.val() != '') {
                     $("#same_assessor").remove();

@@ -69,7 +69,7 @@ class feedbackcomments_cell extends cell_base {
 
             // Is this submission ready to be graded
             if (!$submission->ready_to_grade()) {
-                return get_string('submissionnotreadytograde', 'coursework');
+                return get_string('submissionnotreadytomark', 'coursework');
             }
 
             // If you have administer grades you can grade anything
@@ -79,7 +79,7 @@ class feedbackcomments_cell extends cell_base {
 
             // Is the current user an assessor at any of this submissions grading stages or do they have administer grades
             if (!$this->coursework->is_assessor($USER->id) && !has_capability('mod/coursework:administergrades', $PAGE->context)) {
-                return get_string('nopermissiontogradesubmission', 'coursework');
+                return get_string('nopermissiontomarksubmission', 'coursework');
             }
 
             $ability = new ability($USER->id, $this->coursework);
@@ -101,16 +101,16 @@ class feedbackcomments_cell extends cell_base {
 
                 // This is a new feedback check it against the new ability checks
                 if (!$ability->can('new', $newfeedback)) {
-                    return get_string('nopermissiontogradesubmission', 'coursework');
+                    return get_string('nopermissiontomarksubmission', 'coursework');
                 }
             } else {
                 // This is a new feedback check it against the edit ability checks
                 if (!$ability->can('edit', $feedback)) {
-                    return get_string('nopermissiontoeditgrade', 'coursework');
+                    return get_string('nopermissiontoeditmark', 'coursework');
                 }
             }
         } else {
-            return get_string('nopermissiontoimportgrade', 'coursework');
+            return get_string('nopermissiontoimportmark', 'coursework');
         }
 
         return true;

@@ -51,14 +51,14 @@ class upload_feedback_form extends moodleform {
         if ($this->coursework->get_max_markers() > 1) {
             $capability = ['mod/coursework:addinitialgrade', 'mod/coursework:editinitialgrade'];
             if (has_any_capability($capability, $this->coursework->get_context()) && !has_capability('mod/coursework:administergrades', $this->coursework->get_context())) {
-                $options['initialassessor'] = get_string('initialassessor', 'coursework');
+                $options['initialassessor'] = get_string('initialmarker', 'coursework');
             } else if (has_capability('mod/coursework:administergrades', $this->coursework->get_context())) {
-                $options['assessor_1'] = get_string('assessorupload', 'coursework', '1');
+                $options['assessor_1'] = get_string('markerupload', 'coursework', '1');
                 if ($this->coursework->get_max_markers() >= 2) {
-                    $options['assessor_2'] = get_string('assessorupload', 'coursework', '2');
+                    $options['assessor_2'] = get_string('markerupload', 'coursework', '2');
                 }
                 if ($this->coursework->get_max_markers() >= 3) {
-                    $options['assessor_3'] = get_string('assessorupload', 'coursework', '3');
+                    $options['assessor_3'] = get_string('markerupload', 'coursework', '3');
                 }
             }
 

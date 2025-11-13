@@ -110,7 +110,7 @@ final class csv_test extends \advanced_testcase {
         $csvcells[] = 'finalgrade';
 
         $timestamp = date('d_m_y @ H-i');
-        $filename = get_string('finalgradesfor', 'coursework') . $coursework->name . ' ' . $timestamp;
+        $filename = get_string('finalmarksfor', 'coursework') . $coursework->name . ' ' . $timestamp;
         $csv = new \mod_coursework\export\csv($coursework, $csvcells, $filename);
         $csvgrades = $csv->add_cells_to_array($submission, $student, $csvcells);
 
@@ -199,7 +199,7 @@ final class csv_test extends \advanced_testcase {
         $csvcells[] = 'finalgrade';
 
         $timestamp = date('d_m_y @ H-i');
-        $filename = get_string('finalgradesfor', 'coursework') . $coursework->name . ' ' . $timestamp;
+        $filename = get_string('finalmarksfor', 'coursework') . $coursework->name . ' ' . $timestamp;
         $csv = new \mod_coursework\export\csv($coursework, $csvcells, $filename);
         $csvgrades = $csv->add_cells_to_array($submission, $student, $csvcells);
 
@@ -277,7 +277,7 @@ final class csv_test extends \advanced_testcase {
         $csvcells[] = 'finalgrade';
 
         $timestamp = date('d_m_y @ H-i');
-        $filename = get_string('finalgradesfor', 'coursework') . $coursework->name . ' ' . $timestamp;
+        $filename = get_string('finalmarksfor', 'coursework') . $coursework->name . ' ' . $timestamp;
         $csv = new \mod_coursework\export\csv($coursework, $csvcells, $filename);
         $csvgrades = $csv->add_cells_to_array($submission, $student, $csvcells);
 
@@ -395,7 +395,7 @@ final class csv_test extends \advanced_testcase {
         $csvcells[] = 'finalgrade';
 
         $timestamp = date('d_m_y @ H-i');
-        $filename = get_string('finalgradesfor', 'coursework') . $coursework->name . ' ' . $timestamp;
+        $filename = get_string('finalmarksfor', 'coursework') . $coursework->name . ' ' . $timestamp;
         $csv = new \mod_coursework\export\csv($coursework, $csvcells, $filename);
         $array1 = $csv->add_cells_to_array($submission1, $student1, $csvcells);
         $array2 = $csv->add_cells_to_array($submission2, $student2, $csvcells);

@@ -68,11 +68,11 @@ class assessorgrade_cell extends cell_base {
             if ($this->coursework->is_using_rubric()) {
                 $criterias = $this->coursework->get_rubric_criteria();
                 foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
-                    $gradedata['assessor' . $stageidentifier . '_' . $criteria['id']] = get_string('grade_hidden_manager', 'mod_coursework');
+                    $gradedata['assessor' . $stageidentifier . '_' . $criteria['id']] = get_string('mark_hidden_manager', 'mod_coursework');
                     $gradedata['assessor' . $stageidentifier . '_' . $criteria['id'] . 'comment'] = '';
                 }
             } else {
-                $gradedata = get_string('grade_hidden_manager', 'mod_coursework');
+                $gradedata = get_string('mark_hidden_manager', 'mod_coursework');
             }
         }
 
@@ -94,7 +94,7 @@ class assessorgrade_cell extends cell_base {
                 $strings['assessorgrade' . $stage . '_' . $criteria['id'] . 'comment'] = 'Comment for:  Assessor ' . $stage . ' - ' . $criteria['description'];
             }
         } else {
-            $strings = get_string('assessorgradecsv', 'coursework', $stage);
+            $strings = get_string('markermarkcsv', 'coursework', $stage);
         }
 
         return  $strings;
@@ -144,7 +144,7 @@ class assessorgrade_cell extends cell_base {
                     foreach ($value as $data) {
                         // Check if the value is empty however it can be 0
                         if (empty($data) && $data != 0) {
-                            $errormsg .= ' ' . get_string('rubric_grade_cannot_be_empty', 'coursework');
+                            $errormsg .= ' ' . get_string('rubric_mark_cannot_be_empty', 'coursework');
                         }
 
                         // Only check grades fields that will be even numbered
@@ -169,7 +169,7 @@ class assessorgrade_cell extends cell_base {
 
             // Is the submission in question ready to grade?
             if (!$submission->ready_to_grade()) {
-                return get_string('submissionnotreadytograde', 'coursework');
+                return get_string('submissionnotreadytomark', 'coursework');
             }
 
             // Has the submission been published if yes then no further grades are allowed
@@ -195,19 +195,19 @@ class assessorgrade_cell extends cell_base {
             if (!empty($feedback)) {
                 // This is a new feedback check it against the new ability checks
                 if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('new', $feedback)) {
-                    return get_string('nopermissiontoeditgrade', 'coursework');
+                    return get_string('nopermissiontoeditmark', 'coursework');
                 }
             } else {
                 // This is a new feedback check it against the edit ability checks
                 if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit', $feedback)) {
-                    return get_string('nopermissiontoeditgrade', 'coursework');
+                    return get_string('nopermissiontoeditmark', 'coursework');
                 }
             }
 
             if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
                 // Was this user the one who last graded this submission if not then user cannot grade
                 if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $PAGE->context)) {
-                    return get_string('nopermissiontogradesubmission', 'coursework');
+                    return get_string('nopermissiontomarksubmission', 'coursework');
                 }
             }
 
@@ -224,7 +224,7 @@ class assessorgrade_cell extends cell_base {
                     !has_capability('mod/coursework:administergrades', $PAGE->context)
                     && !$DB->get_record('coursework_allocation_pairs', $allocationparams)
                 ) {
-                    return get_string('nopermissiontogradesubmission', 'coursework');
+                    return get_string('nopermissiontomarksubmission', 'coursework');
                 }
             }
 
@@ -245,7 +245,7 @@ class assessorgrade_cell extends cell_base {
                     $assessors = $this->coursework->get_max_markers();
                 }
                 if ($assessors == $feedbacks) {
-                    return get_string('gradealreadyexists', 'coursework');
+                    return get_string('markalreadyexists', 'coursework');
                 }
             }
         } else if (has_any_capability($agreedgradecap, $PAGE->context)) {
@@ -253,7 +253,7 @@ class assessorgrade_cell extends cell_base {
             // We will return true as we will ignore them
             return true;
         } else {
-            return get_string('nopermissiontoimportgrade', 'coursework');
+            return get_string('nopermissiontoimportmark', 'coursework');
         }
     }
 
