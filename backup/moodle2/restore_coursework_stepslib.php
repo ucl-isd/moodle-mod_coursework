@@ -79,6 +79,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
     protected function process_coursework_submission($data) {
         global $DB;
         $data = (object)$data;
+        $this->fixlegacybackupfields($data);
         $oldid = $data->id;
 
         $data->courseworkid = $this->get_new_parentid('coursework');
@@ -125,6 +126,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         global $DB;
 
         $data = (object)$data;
+        $this->fixlegacybackupfields($data);
         $oldid = $data->id;
 
         $data->submissionid = $this->get_mappingid('coursework_submission', $data->submissionid);
@@ -164,6 +166,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         global $DB;
 
         $data = (object)$data;
+        $this->fixlegacybackupfields($data);
         $data->courseworkid = $this->get_new_parentid('coursework');
         $data->userid = $this->get_mappingid('user', $data->userid);
 
@@ -175,6 +178,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
     protected function process_coursework_allocation_pair($data) {
         global $DB;
         $data = (object)$data;
+        $this->fixlegacybackupfields($data);
 
         $data->courseworkid = $this->get_new_parentid('coursework');
         $data->assessorid = $this->get_mappingid('user', $data->assessorid);
@@ -207,6 +211,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
     protected function process_coursework_mod_set_rule($data) {
         global $DB;
         $data = (object)$data;
+        $this->fixlegacybackupfields($data);
         $data->courseworkid = $this->get_new_parentid('coursework');
 
         $this->set_defaults(['rulename' => '',
@@ -221,6 +226,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         global $DB;
 
         $data = (object)$data;
+        $this->fixlegacybackupfields($data);
 
         $data->courseworkid = $this->get_new_parentid('coursework');
 
@@ -237,6 +243,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         global $DB;
 
         $data = (object)$data;
+        $this->fixlegacybackupfields($data);
 
         $data->courseworkid = $this->get_new_parentid('coursework');
         $data->assessorid = $this->get_mappingid('user', $data->assessorid);
@@ -255,6 +262,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         global $DB;
 
         $data = (object)$data;
+        $this->fixlegacybackupfields($data);
         $data->courseworkid = $this->get_new_parentid('coursework');
         $this->fixallocatable($data);
         $this->set_defaults(['stageidentifier' => ''], $data);
@@ -266,6 +274,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         global $DB;
 
         $data = (object)$data;
+        $this->fixlegacybackupfields($data);
 
         $data->courseworkid = $this->get_new_parentid('coursework');
 
@@ -285,6 +294,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         global $DB;
 
         $data = (object)$data;
+        $this->fixlegacybackupfields($data);
 
         $data->courseworkid = $this->get_new_parentid('coursework');
         $data->createdbyid = $this->get_mappingid('user', $data->createdbyid);
@@ -305,6 +315,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         global $DB;
 
         $data = (object)$data;
+        $this->fixlegacybackupfields($data);
 
         $data->courseworkid = $this->get_new_parentid('coursework');
         $data->createdbyid = $this->get_mappingid('user', $data->createdbyid);
@@ -329,6 +340,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         global $DB;
 
         $data = (object)$data;
+        $this->fixlegacybackupfields($data);
 
         $data->feedbackid = $this->get_new_parentid('coursework_feedback');
         $data->moderatorid = $this->get_mappingid('user', $data->moderatorid);
@@ -353,6 +365,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         global $DB;
 
         $data = (object)$data;
+        $this->fixlegacybackupfields($data);
 
         $data->submissionid = $this->get_new_parentid('coursework_submission');
         $data->createdby = $this->get_mappingid('user', $data->createdby);
@@ -385,6 +398,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
         global $DB;
 
         $data = (object)$data;
+        $this->fixlegacybackupfields($data);
         $data->course = $this->get_courseid();
 
         $this->updatedate(['timemodified',
@@ -511,6 +525,27 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
 
                 $submission = submission::find($entry->id);
                 $submission->rename_files(); // use cw function to handle file renaming as submission may have few files
+            }
+        }
+    }
+
+    private function fixlegacybackupfields($data): void {
+        unset($data->entry_id);
+
+        foreach ([
+                     'use_groups',
+                     'stage_identifier',
+                     'coursework_id',
+                     'extra_information_text',
+                     'extra_information_format',
+                     'sample_set_plugin_id',
+                     'personal_deadline',
+                     'comment_format',
+                 ] as $legacyfield) {
+            if (isset($data->$legacyfield)) {
+                $newfield = str_replace('_', '', $legacyfield);
+                $data->$newfield = $data->$legacyfield;
+                unset($data->$legacyfield);
             }
         }
     }
