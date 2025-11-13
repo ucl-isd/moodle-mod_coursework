@@ -97,10 +97,5 @@ class extension_created extends base {
         if (!isset($this->other['deadline'])) {
             throw new coding_exception('The \'deadline\' value must be set in other.');
         }
-        if (!$this->anonymous ?? false) {
-            throw new coding_exception(
-                'The \'anonymous\' value must be set to prevent potential de-anonymisation of users via course reports.'
-            );
-        }
     }
 }
