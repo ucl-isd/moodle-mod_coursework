@@ -451,4 +451,35 @@ final class csv_test extends \advanced_testcase {
         ];
         $this->assertEquals($assessorsgrades, $csvgrades);
     }
+
+    /**
+     * Check expected fields are present when "Enable Plagiarism flagging" =
+     * Yes.
+     */
+    public function test_plagiarism_flagging_enabled(): void {
+        $dateformat = '%a, %d %b %Y, %H:%M';
+        $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
+
+        $params = [
+            'grade' => 100,
+            'numberofmarkers' => 1,
+            'deadline' => time() + 86400,
+            'plagiarismflagenabled' => 1,
+        ];
+        $coursework = $this->create_a_coursework($params);
+        $submission = new \stdClass();
+        $submission->userid = $this->student->id;
+        $submission->allocatableid = $this->student->id;
+        $submission = $generator->create_submission($submission, $coursework);
+
+        $timestamp = date('d_m_y @ H-i');
+        $filename = get_string('finalgradesfor', 'coursework') . $coursework->name . ' ' . $timestamp;
+        $csvcells = ['name', 'username', 'idnumber', 'email', 'submissiondate', 'submissiontime', 'submissionfileid', 'plagiarismflagstatus', 'plagiarismflagcomment', 'stages', 'finalgrade'];
+        $gradingsheet = new \mod_coursework\export\grading_sheet($coursework, $csvcells, $filename);
+        $csv = new \mod_coursework\export\csv($coursework, $csvcells, $filename);
+        $headers = $gradingsheet->add_headers($csvcells);
+        $expected = ['name', 'username', 'idnumber', 'email', 'submissiondate', 'submissiontime', 'submissionfileid', 'plagiarismflagstatus', 'plagiarismflagcomment', 'assessor1', 'assessor1name', 'assessor1username', 'assessor1markingtime', 'finalgrade'];
+
+        $this->assertEquals($expected, array_keys($headers));
+    }
 }

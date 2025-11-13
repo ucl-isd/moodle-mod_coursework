@@ -467,6 +467,7 @@ $string['plagiarismflagging'] = 'Plagiarism flagging';
 $string['plagiarismflaggingfor'] = 'Plagiarism flagging for \'{$a}\'';
 $string['plagiarismflagnotsavedfor'] = 'Plagiarism flag not saved for \'{$a}\'';
 $string['plagiarismflagsavedfor'] = 'Plagiarism flag saved for \'{$a}\'';
+$string['plagiarismstatuscsv'] = 'Plagiarism status';
 $string['pluginadministration'] = 'Coursework administration';
 $string['pluginname'] = 'Coursework';
 $string['privacy:extensionpath'] = 'Extension';
