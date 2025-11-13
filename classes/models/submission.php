@@ -409,6 +409,7 @@ class submission extends table_base implements renderable {
             'objectid' => $this->id,
             'relateduserid' => $this->get_author_id(),
             'userid' => $USER->id,
+            'anonymous' => $this->get_coursework()->blindmarking_enabled() ? 1 : 0,
             'other' => [
                 'content' => '',
                 'pathnamehashes' => array_keys($files),
