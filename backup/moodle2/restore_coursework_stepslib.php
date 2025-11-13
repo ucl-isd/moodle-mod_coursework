@@ -532,7 +532,8 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
     private function fixlegacybackupfields($data): void {
         unset($data->entry_id);
 
-        foreach ([
+        foreach (
+            [
                      'use_groups',
                      'stage_identifier',
                      'coursework_id',
@@ -541,7 +542,8 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                      'sample_set_plugin_id',
                      'personal_deadline',
                      'comment_format',
-                 ] as $legacyfield) {
+                 ] as $legacyfield
+        ) {
             if (isset($data->$legacyfield)) {
                 $newfield = str_replace('_', '', $legacyfield);
                 $data->$newfield = $data->$legacyfield;

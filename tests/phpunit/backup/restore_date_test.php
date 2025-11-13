@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * @package mod_coursework
+ * @author Andrew Hancox <andrewdchancox@googlemail.com>
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2025 UCL
+ */
+
 namespace mod_coursework;
 
 use mod_coursework\models\coursework;
@@ -54,7 +61,6 @@ final class restore_date_test extends \restore_date_testcase {
         $data->userid = $user->id;
         $submission = $generator->create_submission($data, coursework::find($coursework));
 
-
         $data = new \stdClass();
         $data->submissionid = $submission->id;
         $data->assessorid = 65;
@@ -73,6 +79,5 @@ final class restore_date_test extends \restore_date_testcase {
         $feedbacks = $DB->get_records('coursework_feedbacks', ['submissionid' => $submission->id]);
         $this->assertCount(1, $feedbacks);
         $this->assertEquals(2, $DB->count_records('coursework_feedbacks'));
-
     }
 }
