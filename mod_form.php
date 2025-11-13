@@ -361,6 +361,8 @@ class mod_coursework_mod_form extends moodleform_mod {
         if ($courseworkid) {
             $coursework = mod_coursework\models\coursework::find($courseworkid);
             if ($coursework->extension_exists()) {
+                // An extension already exists for this coursework.
+                // So no longer possible to uncheck the box for coursework deadline - a deadline must apply.
                 $optional = false;
             }
         }
@@ -392,6 +394,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $courseworkid = $this->get_courseworkid();
         $disabled = [];
+        // If any personal deadline exists and has passed for any user, option to toggle personal deadlines on/off is hidden.
         if (coursework_personaldeadline_passed($courseworkid)) {
             $moodleform->hideif('personaldeadlineenabled', 'deadline[enabled]', 'notchecked');
             $disabled = ['disabled' => true];

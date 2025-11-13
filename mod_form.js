@@ -36,21 +36,17 @@ M.mod_coursework.init   =   function()      {
 
 
 M.mod_coursework.elementEnable      =   function()      {
-
-    console.log($('#id_deadline_enabled').is(':checked'));
-
-
-
-    if ($('#id_deadline_enabled').is(':checked') == false) {
-
+    const deadlineEnabledCheckbox = $('#id_deadline_enabled');
+    const deadlineEnabled = deadlineEnabledCheckbox.length === 0 || deadlineEnabledCheckbox.is(':checked');
+    // The deadline enabled checkbox will be hidden on the form if the deadline date field is forced on.
+    // This would happen if an extension has already been granted to a user in this coursework.
+    if (!deadlineEnabled) {
         M.mod_coursework.initialGradeDisable(true);
         M.mod_coursework.agreedGradeDisable(true);
         M.mod_coursework.personalDeadlineDisable(true);
         M.mod_coursework.relativeInitalGradeDisable(false);
         M.mod_coursework.relativeAgreedGradeDisable(false);
-
-    } else if ($('#id_deadline_enabled').is(':checked') == true) {
-
+    } else {
         M.mod_coursework.initialGradeDisable(false);
         M.mod_coursework.agreedGradeDisable(false);
         M.mod_coursework.personalDeadlineDisable(false);
