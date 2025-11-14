@@ -175,6 +175,10 @@ final class grading_sheet_download_test extends \advanced_testcase {
         $timestamp = date('d_m_y @ H-i');
         $filename = get_string('gradingsheetfor', 'coursework') . $coursework->name . ' ' . $timestamp;
         $gradingsheet = new \mod_coursework\export\grading_sheet($coursework, $csvcells, $filename);
+        $headers = $gradingsheet->add_headers($csvcells);
+
+        $this->assertEquals($csvcells, array_keys($headers));
+
         $actualsubmission1 = $gradingsheet->add_csv_data($submission1);
         $actualsubmission2 = $gradingsheet->add_csv_data($submission2);
         $actualsubmission = array_merge($actualsubmission1, $actualsubmission2);

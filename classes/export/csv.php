@@ -80,7 +80,7 @@ class csv {
 
         $csvdata = [];
         // headers
-        $this->add_headers($this->csvcells);
+        $this->csvexport->add_data($this->add_headers($this->csvcells));
 
         /**
          * @var submission[] $submissions
@@ -174,7 +174,7 @@ class csv {
             }
         }
 
-        $this->csvexport->add_data($headers);
+        return $headers;
     }
 
     /**
