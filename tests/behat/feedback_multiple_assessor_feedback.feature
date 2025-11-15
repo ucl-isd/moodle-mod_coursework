@@ -20,13 +20,13 @@ Feature: Multiple assessors simple grading form
     Given I am logged in as a teacher
     And the submission is finalised
     And I visit the coursework page
-    And I click on "Add feedback" "link"
-    And I set the field "Grade" to "52"
+    And I click on "Add mark" "link"
+    And I set the field "Mark" to "52"
     And I set the field "Comment" to "Some new comment 3"
     And I click on "Save and finalise" "button"
     And I wait until "OK" "button" exists
     And I visit the edit feedback page
-    And the field "Grade" matches value "52"
+    And the field "Mark" matches value "52"
     And the field "Comment" matches value "Some new comment 3"
 
   @javascript @_file_upload
@@ -34,7 +34,7 @@ Feature: Multiple assessors simple grading form
     Given I am logged in as a teacher
     And the submission is finalised
     And I visit the coursework page
-    And I click on "Add feedback" "link"
+    And I click on "Add mark" "link"
     When I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I press "Save and finalise"
     And I visit the coursework page
@@ -65,7 +65,7 @@ Feature: Multiple assessors simple grading form
     Given I am logged in as a teacher
     And the submission is finalised
     And I visit the coursework page
-    And I click on "Add feedback" "link"
+    And I click on "Add mark" "link"
     When I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I press "Save and finalise"
     And I visit the coursework page
@@ -87,7 +87,7 @@ Feature: Multiple assessors simple grading form
     Given I am logged in as a manager
     And the submission is finalised
     And I visit the coursework page
-    And I click on "Add feedback" "link"
+    And I click on "Add mark" "link" in the "Submissions table" "table"
     When I grade the submission as 56 using the simple form with comment "A test comment 9"
     And I visit the coursework page
     Then I should see the grade on the page

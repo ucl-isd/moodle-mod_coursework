@@ -21,7 +21,7 @@ Feature: Automatic agreement for simple grades
     Given I am logged in as a teacher
     And I visit the coursework page
     And I click on the add feedback button for assessor 1
-    When I set the field "Grade" to "56"
+    When I set the field "Mark" to "56"
     And I press "Save and finalise"
     Then I should not see the final grade on the student page
 
@@ -31,14 +31,14 @@ Feature: Automatic agreement for simple grades
     And I am logged in as a teacher
     And I visit the coursework page
     And I click on the add feedback button for assessor 1
-    When I set the field "Grade" to "67"
+    When I set the field "Mark" to "67"
     And I press "Save and finalise"
     And I log out
 
     And I log in as the other teacher
     And I visit the coursework page
     And I click on the add feedback button for assessor 2
-    When I set the field "Grade" to "63"
+    When I set the field "Mark" to "63"
     And I press "Save and finalise"
     And I visit the coursework page
     Then I should see the final agreed grade as 67
@@ -53,7 +53,7 @@ Feature: Automatic agreement for simple grades
     And I visit the coursework page
     When I click the edit final feedback button
     And I wait until the page is ready
-    Then the grade comment textarea field matches "Assessor 1 comment:New comment hereAssessor 2 comment:New comment here"
+    Then the grade comment textarea field matches "Marker 1 comment:New comment hereMarker 2 comment:New comment here"
 
   Scenario: Simple grades within 10% boundaries takes higher mark as a final grade once all feedback is finalised
     Given the coursework "automaticagreementstrategy" setting is "percentage_distance" in the database
@@ -61,14 +61,14 @@ Feature: Automatic agreement for simple grades
     And I am logged in as a teacher
     And I visit the coursework page
     And I click on the add feedback button for assessor 1
-    And I set the field "Grade" to "67"
+    And I set the field "Mark" to "67"
     And I press "Save as draft"
     And I log out
 
     And I log in as the other teacher
     And I visit the coursework page
     And I click on the add feedback button for assessor 2
-    When I set the field "Grade" to "63"
+    When I set the field "Mark" to "63"
     And I press "Save as draft"
     And I visit the coursework page
     Then I should not see the final grade on the multiple marker page

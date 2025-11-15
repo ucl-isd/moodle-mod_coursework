@@ -109,7 +109,7 @@ class range_grade_percent extends moderation_set_rule {
 
         // Explain that this won't happen until some grades appear.
         $html .= html_writer::start_tag('div class="message"');
-        $html .= get_string('modsetgradeexplain', 'mod_coursework');
+        $html .= get_string('modsetmarkexplain', 'mod_coursework');
         $html .= html_writer::end_tag('div');
 
         // Upper limit.

@@ -21,5 +21,5 @@ Feature: Collisions: two people try to create feedback at the same time
     And I have an assessor feedback at grade 67
     And I visit the coursework page
     And I click on the add feedback button for assessor 2
-    And I set the field "Grade" to "56"
+    And I set the field "Mark" to "56"
     And I press "Save and finalise"

@@ -79,7 +79,7 @@ final class grading_sheet_download_test extends \advanced_testcase {
         $csvcells = ['submissionid', 'submissionfileid', 'name', 'username', 'submissiontime', 'singlegrade', 'feedbackcomments'];
 
         $timestamp = date('d_m_y @ H-i');
-        $filename = get_string('gradingsheetfor', 'coursework') . $coursework->name . ' ' . $timestamp;
+        $filename = get_string('markingsheetfor', 'coursework') . $coursework->name . ' ' . $timestamp;
         $gradingsheet = new \mod_coursework\export\grading_sheet($coursework, $csvcells, $filename);
         $actualsubmission = $gradingsheet->add_csv_data($submission);
 
@@ -173,7 +173,7 @@ final class grading_sheet_download_test extends \advanced_testcase {
                            'agreedgrade', 'agreedfeedback'];
 
         $timestamp = date('d_m_y @ H-i');
-        $filename = get_string('gradingsheetfor', 'coursework') . $coursework->name . ' ' . $timestamp;
+        $filename = get_string('markingsheetfor', 'coursework') . $coursework->name . ' ' . $timestamp;
         $gradingsheet = new \mod_coursework\export\grading_sheet($coursework, $csvcells, $filename);
         $headers = $gradingsheet->add_headers($csvcells);
 

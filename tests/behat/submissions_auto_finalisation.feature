@@ -16,7 +16,7 @@ Feature: Auto finalising before cron runs
   Scenario: Teacher visits the page and sees the submission is finalised when the deadline has passed
     Given I am logged in as a teacher
     And I visit the coursework page
-    Then I should not see "Add feedback" in the table row containing "student student1"
+    Then I should not see "Add mark" in the table row containing "student student1"
     And the coursework deadline has passed
     When I reload the page
-    Then I should see "Add feedback" in the table row containing "student student1"
+    Then I should see "Add mark" in the table row containing "student student1"

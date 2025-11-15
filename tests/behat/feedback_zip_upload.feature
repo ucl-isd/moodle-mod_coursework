@@ -12,7 +12,7 @@ Feature: Upload feedback files
     And I log in as a manager
     And I visit the coursework page
     And I click on "Upload" "button"
-    And I click on "Upload feedback files in a zip" "link"
+    And I click on "Feedback files in a zip" "link"
     And I upload "mod/coursework/tests/files_for_uploading/test_invalid_feedback_upload.zip" file to "Feedback zip file" filemanager
     And I click on "Upload feedback zip" "button"
     # File is successfully uploaded and processed, albeit unsuccessfully for reason below.

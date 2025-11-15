@@ -117,7 +117,8 @@ class plagiarism_flagging_mform extends dynamic_form {
 
         $mform->addHelpButton('status', 'status', 'mod_coursework');
 
-        $mform->addElement('editor', 'plagiarismcomment', get_string('comment', 'mod_coursework'), ['id' => 'plagiarism_comment']);
+        $mform->addElement('editor', 'plagiarismcomment', get_string('plagiarismcomment', 'mod_coursework'), ['id' => 'plagiarism_comment']);
+        $mform->addHelpButton('plagiarismcomment', 'plagiarismcomment', 'mod_coursework');
         $mform->setType('editor', PARAM_RAW);
 
         if ($flag) {

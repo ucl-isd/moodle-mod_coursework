@@ -613,7 +613,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         // Prepare headers.
         for ($i = 0; $i < $samplingwidget->get_coursework()->get_max_markers(); $i++) {
-            $template->headers[] = get_string('assessorheading', 'mod_coursework', $i + 1);
+            $template->headers[] = get_string('markerheading', 'mod_coursework', $i + 1);
         }
 
         // Prepare scale input.
@@ -633,7 +633,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // Prepare columns.
         // Assessor 1 column is always manual.
         $assessor1cell = html_writer::start_tag('div', ['class' => 'samples_strategy']);
-        $assessor1cell  .= get_string('assessoronedefault', 'mod_coursework');
+        $assessor1cell  .= get_string('markeronedefault', 'mod_coursework');
         $assessor1cell  .= html_writer::end_tag('div');
         $template->columns[]['html'] = $assessor1cell;
 
@@ -662,7 +662,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             }
 
             $graderules = html_writer::start_tag('h4');
-            $graderules .= get_string('graderules', 'mod_coursework');
+            $graderules .= get_string('markrules', 'mod_coursework');
             $graderules .= html_writer::end_tag('h4');
             $graderules .= $this->get_sampling_strategy_form_elements($coursework, $i, $javascript);
             $samplingcell .= html_writer::div($graderules, '', ['id' => "assessor_{$i}_automatic_rules"]);
@@ -671,96 +671,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
 
         return $this->render_from_template('mod_coursework/allocate/samplingwidget', $template);
-    }
-
-    private function sampling_strategy_column($samplingwidget, $suffix = '') {
-
-        $percentageoptions = [];
-
-        for ($i = 0; $i < 110; $i = $i + 10) {
-            $percentageoptions[$i] = "{$i}%";
-        }
-
-        // Hidden input containing scale values
-        $scale = [];
-        $samplingcolumn = "<input id='scale_values' type='hidden' value='" . implode(',', $scale) . "' />";
-
-        $samplingcolumn  .= html_writer::tag('br', '');
-        $samplingcolumn  .= html_writer::tag('strong', get_string('selectrules', 'mod_coursework'));
-        $samplingcolumn  .= html_writer::tag('br', '');
-
-        $samplingcolumn  .= html_writer::start_tag('div');
-
-        for ($i = 0; $i < 1; $i++) {
-            $samplingcolumn .= html_writer::start_tag('span', ['class' => "assessor_{$suffix}_grade_rules", 'id' => "assessor_{$suffix}_grade_rules"]);
-
-            $samplingcolumn .= html_writer::checkbox(
-                "assessor_{$suffix}_samplerules[]",
-                1,
-                false,
-                get_string('grade', 'mod_coursework'),
-                ['id' => "assessor_{$suffix}_samplerules_{$i}", 'class' => "assessor_{$suffix} sampling_strategy_detail"]
-            );
-
-            $options = ['0' => get_string('percentagesign', 'mod_coursework'),
-                '1' => get_string('gradescale', 'mod_coursework')];
-
-            $samplingcolumn .= html_writer::select(
-                $options,
-                "assessor_{$suffix}_sampletype[]",
-                $samplingwidget->get_sampling_strategy(),
-                false,
-                ['id' => "assessor_{$suffix}_sampletype_{$i}", 'class' => "grade_type assessor_{$suffix} sampling_strategy_detail"]
-            );
-
-            $samplingcolumn .= html_writer::label(get_string('from', 'mod_coursework'), 'assessortwo_samplefrom[0]');
-
-            $ruleoptions = $percentageoptions;
-
-            $samplingcolumn .= html_writer::select(
-                $ruleoptions,
-                "assessor_{$suffix}_samplefrom[]",
-                $samplingwidget->get_sampling_strategy(),
-                false,
-                ['id' => "assessor_{$suffix}_samplefrom_{$i}", 'class' => "assessor_{$suffix} sampling_strategy_detail"]
-            );
-
-            $samplingcolumn .= html_writer::label(get_string('to', 'mod_coursework'), "assessor_{$suffix}_sampleto[0]");
-
-            $samplingcolumn .= html_writer::select(
-                $ruleoptions,
-                "assessor_{$suffix}_sampleto[]",
-                $samplingwidget->get_sampling_strategy(),
-                false,
-                ['id' => "assessor_{$suffix}_sampleto_{$i}", 'class' => "assessor_{$suffix} sampling_strategy_detail"]
-            );
-
-            $samplingcolumn .= html_writer::end_tag('span', '');
-        }
-
-        $samplingcolumn  .= html_writer::end_tag('div');
-
-        $samplingcolumn  .= html_writer::link('#', get_string('addgraderule', 'mod_coursework'), ['id' => "assessor_{$suffix}_addgradderule", 'class' => 'addgradderule sampling_strategy_detail']);
-        $samplingcolumn  .= html_writer::link('#', get_string('removegraderule', 'mod_coursework'), ['id' => "assessor_{$suffix}_removegradderule", 'class' => 'removegradderule sampling_strategy_detail']);
-
-        $samplingcolumn  .= html_writer::checkbox(
-            "assessor_{$suffix}_samplertopup",
-            1,
-            false,
-            get_string('topupto', 'mod_coursework'),
-            ['id' => "assessor_{$suffix}_samplerules[]", 'class' => "assessor_{$suffix} sampling_strategy_detail"]
-        );
-
-        $samplingcolumn .= html_writer::select(
-            $percentageoptions,
-            "assessor_{$suffix}_sampletopup",
-            $samplingwidget->get_sampling_strategy(),
-            false,
-            ['id' => "assessor_{$suffix}_sampletopup", 'class' => "assessor_{$suffix} sampling_strategy_detail"]
-        );
-        $samplingcolumn  .= html_writer::label(get_string('ofallstudents', 'mod_coursework'), 'assessortwo_sampleto[]');
-
-        return $samplingcolumn;
     }
 
     /**
@@ -1334,12 +1244,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                     ],
                     [
                         'url' => new moodle_url($viewurl, ['id' => $cmid, 'export' => 1]),
-                        'lang' => 'downloadgrades',
+                        'lang' => 'finalmarks',
                         'cap' => ($can('mod/coursework:viewallgradesatalltimes') && $can('mod/coursework:canexportfinalgrades') && $hasfinalised),
                     ],
                     [
                         'url' => new moodle_url($viewurl, ['id' => $cmid, 'export_grading_sheet' => 1]),
-                        'lang' => 'downloadgradingsheets',
+                        'lang' => 'markingspreadsheet',
                         'cap' => $canmark,
                     ],
                 ],
@@ -1349,7 +1259,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 'actions' => [
                     [
                         'url' => new moodle_url('/mod/coursework/actions/upload_grading_sheet.php', ['cmid' => $cmid]),
-                        'lang' => 'uploadgradingsheet',
+                        'lang' => 'markingspreadsheet',
                         'cap' => $canmark,
                     ],
                     [

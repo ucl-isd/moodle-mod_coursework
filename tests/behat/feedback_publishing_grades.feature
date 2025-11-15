@@ -27,7 +27,7 @@ Feature: publishing grades to the students
     And I grade the submission as 56 using the simple form
     Then I visit the coursework page
     And I click the edit final feedback button
-    And the field "Grade" matches value "56"
+    And the field "Mark" matches value "56"
     And the grade comment textarea field matches "New comment"
     And I log out
 

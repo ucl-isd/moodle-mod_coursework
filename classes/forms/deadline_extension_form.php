@@ -111,7 +111,7 @@ class deadline_extension_form extends dynamic_form {
                 'select',
                 'pre_defined_reason',
                 get_string(
-                    'extension_reason',
+                    'extensionreason',
                     'mod_coursework'
                 ),
                 $this->extensionreasons

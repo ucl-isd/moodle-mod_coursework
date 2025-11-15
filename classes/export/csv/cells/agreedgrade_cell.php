@@ -62,11 +62,11 @@ class agreedgrade_cell extends cell_base {
             $strings = [];
             $criterias = $this->coursework->get_rubric_criteria();
             foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
-                $strings['agreedgrade' . $criteria['id']] = 'Agreed grade - ' . $criteria['description'];
-                $strings['agreedgrade' . $criteria['id'] . 'comment'] = 'Comment for: Agreed grade - ' . $criteria['description'];
+                $strings['agreedgrade' . $criteria['id']] = get_string('csvagreedmark', 'mod_coursework', $criteria['description']);
+                $strings['agreedgrade' . $criteria['id'] . 'comment'] = get_string('csvagreedmarkcomment', 'mod_coursework', $criteria['description']);
             }
         } else {
-            $strings = get_string('agreedgrade', 'coursework');
+            $strings = get_string('agreedmark', 'coursework');
         }
 
         return $strings;
@@ -117,7 +117,7 @@ class agreedgrade_cell extends cell_base {
                     foreach ($value as $data) {
                         // Check if the value is empty however it can be 0
                         if (empty($data) && $data != 0) {
-                            $errormsg .= ' ' . get_string('rubric_grade_cannot_be_empty', 'coursework');
+                            $errormsg .= ' ' . get_string('rubric_mark_cannot_be_empty', 'coursework');
                         }
 
                         // Only check grades fields that will be even numbered
@@ -148,7 +148,7 @@ class agreedgrade_cell extends cell_base {
 
             // Is the submission in question ready to grade?
             if (!$submission->all_initial_graded() && !empty($value) && count($uploadedgradecells) < $submission->max_number_of_feedbacks()) {
-                return get_string('submissionnotreadyforagreedgrade', 'coursework');
+                return get_string('submissionnotreadyforagreedmark', 'coursework');
             }
 
             // Has the submission been published if yes then no further grades are allowed
@@ -182,16 +182,16 @@ class agreedgrade_cell extends cell_base {
 
                 // This is a new feedback check it against the new ability checks
                 if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context) && !$ability->can('new', $newfeedback)) {
-                    return get_string('nopermissiontogradesubmission', 'coursework');
+                    return get_string('nopermissiontomarksubmission', 'coursework');
                 }
             } else {
                 // This is a new feedback check it against the edit ability checks
                 if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit', $feedback)) {
-                    return get_string('nopermissiontoeditgrade', 'coursework');
+                    return get_string('nopermissiontoeditmark', 'coursework');
                 }
             }
         } else {
-            return get_string('nopermissiontoimportgrade', 'coursework');
+            return get_string('nopermissiontoimportmark', 'coursework');
         }
 
         return true;

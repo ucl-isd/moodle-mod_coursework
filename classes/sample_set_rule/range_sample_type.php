@@ -68,9 +68,9 @@ class range_sample_type extends sample_base {
             $html .= $this->range_elements($assessornumber, 0, false);
         }
 
-        $html  .= html_writer::link('#', get_string('addgraderule', 'mod_coursework'), ['id' => "assessor_{$assessornumber}_addgradderule", 'class' => 'addgradderule sample_set_rule']);
+        $html  .= html_writer::link('#', get_string('addrule', 'mod_coursework'), ['id' => "assessor_{$assessornumber}_addgradderule", 'class' => 'addgradderule sample_set_rule']);
         $html  .= "  ";
-        $html  .= html_writer::link('#', get_string('removegraderule', 'mod_coursework'), ['id' => "assessor_{$assessornumber}_removegradderule", 'class' => 'removegradderule sample_set_rule']);
+        $html  .= html_writer::link('#', get_string('removerule', 'mod_coursework'), ['id' => "assessor_{$assessornumber}_removegradderule", 'class' => 'removegradderule sample_set_rule']);
 
         return $html;
     }
@@ -121,7 +121,7 @@ class range_sample_type extends sample_base {
             ['id' => "assessor_{$assessornumber}_samplerules_{$sequence}", 'class' => "assessor_{$assessornumber} range_grade_checkbox sample_set_rule"]
         );
 
-        $gradescaletext = ($this->coursework->grade < 0) ? get_string('scale', 'mod_coursework') : get_string('grade', 'mod_coursework');
+        $gradescaletext = ($this->coursework->grade < 0) ? get_string('scale') : get_string('gradenoun');
         $gradescaleval = ($this->coursework->grade < 0) ? 'scale' : 'grade';
 
         $options = ['percentage' => get_string('percentage', 'mod_coursework'),

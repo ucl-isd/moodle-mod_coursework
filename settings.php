@@ -128,10 +128,10 @@ if ($ADMIN->fulltree) {
     }
 
     // Assessor anonymity
-    $assessoranonymityheader = new admin_setting_heading('assessoranonymity_header', get_string('assessoranonymity', 'mod_coursework'), '');
+    $assessoranonymityheader = new admin_setting_heading('assessoranonymity_header', get_string('markeranonymity', 'mod_coursework'), '');
     $settings->add($assessoranonymityheader);
-    $assessoranonymityname = get_string('assessoranonymity', 'coursework');
-    $assessoranonymitydescription = get_string('assessoranonymity_desc', 'coursework');
+    $assessoranonymityname = get_string('markeranonymity', 'coursework');
+    $assessoranonymitydescription = get_string('markeranonymity_desc', 'coursework');
     $options = [ 0 => get_string('no'), 1 => get_string('yes')];
     $settings->add(new admin_setting_configselect('coursework_assessoranonymity', $assessoranonymityname, $assessoranonymitydescription, 0, $options));
 
@@ -256,20 +256,6 @@ if ($ADMIN->fulltree) {
         2
     ));
 
-    // Default per page
-
-    $options = ['3' => '3', '10' => '10', '20' => '20', '30' => '30', '40' => '40', '50' => '50', '100' => '100'];
-
-    $gradingpageheader = new admin_setting_heading('grading_page_header', get_string('grading_page', 'mod_coursework'), '');
-    $settings->add($gradingpageheader);
-
-    $perpage = get_string('per_page', 'coursework');
-    $perpagedescription = get_string('per_page_desc', 'coursework');
-    $settings->add(new admin_setting_configselect('coursework_per_page', $perpage, $perpagedescription, '10', $options));
-
-    $gradeeditingheader = new admin_setting_heading('grade_editing_header', get_string('grade_editing', 'mod_coursework'), '');
-    $settings->add($gradeeditingheader);
-
     // Deadline defaults
     $deadlinedefaultsheader = new admin_setting_heading('deadline_defaults_header', get_string('deadline_defaults', 'mod_coursework'), '');
     $settings->add($deadlinedefaultsheader);
@@ -319,11 +305,17 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect('coursework_submission_deadline', $submissiondeadlinename, $submissiondeadlinedescription, '0', $options));
 
     // Assessor allocations
-    $assessorallocationsheader = new admin_setting_heading('assessor_allocations_header_header', get_string('assessorallocations', 'mod_coursework'), '');
+    $assessorallocationsheader = new admin_setting_heading('assessor_allocations_header_header', get_string('markerallocations', 'mod_coursework'), '');
     $settings->add($assessorallocationsheader);
 
     $options = [ 'username' => get_string('username'), 'email' => get_string('email')];
     $settings->add(new admin_setting_configselect('coursework_allocation_identifier', get_string('allocationidentifier', 'coursework'), get_string('allocationidentifier_desc', 'coursework'), 'username', $options));
+
+    // Default per page.
+    $options = ['3' => '3', '10' => '10', '20' => '20', '30' => '30', '40' => '40', '50' => '50', '100' => '100'];
+    $perpage = get_string('per_page', 'coursework');
+    $perpagedescription = get_string('per_page_desc', 'coursework');
+    $settings->add(new admin_setting_configselect('coursework_per_page', $perpage, $perpagedescription, '10', $options));
 
     $settingsheader = new admin_setting_heading('featuresunderdevelopment_header', get_string('featuresunderdevelopment_header', 'mod_coursework'), '');
     $settings->add($settingsheader);

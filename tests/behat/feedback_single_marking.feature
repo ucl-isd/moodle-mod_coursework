@@ -25,7 +25,7 @@ Feature: Adding and editing single feedback
     Then I visit the coursework page
     And I should see the final grade as 56
     And I click the edit feedback button
-    And the field "Grade" matches value "56"
+    And the field "Mark" matches value "56"
     And the grade comment textarea field matches "New comment"
 
   Scenario: I should not see the feedback icon when the submission has not been finalised
@@ -37,5 +37,5 @@ Feature: Adding and editing single feedback
     And there is feedback for the submission from the teacher
     And I visit the coursework page
     When I click the edit feedback button
-    And the field "Grade" matches value "58"
+    And the field "Mark" matches value "58"
     And the field with xpath "//textarea[@id='id_feedbackcomment']" matches value "Blah"

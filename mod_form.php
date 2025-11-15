@@ -191,43 +191,43 @@ class mod_coursework_mod_form extends moodleform_mod {
         $errors = [];
 
         if ($data['startdate'] != 0 && !empty($data['deadline']) && $data['startdate'] > $data['deadline']) {
-            $errors['startdate'] = get_string('must_be_before_dealdine', 'mod_coursework');
+            $errors['startdate'] = get_string('must_be_before_deadline', 'mod_coursework');
         }
 
         if ($data['individualfeedback'] != 0 && !empty($data['deadline']) && $data['individualfeedback'] < $data['deadline']) {
-            $errors['individualfeedback'] = get_string('must_be_after_dealdine', 'mod_coursework');
+            $errors['individualfeedback'] = get_string('must_be_after_deadline', 'mod_coursework');
         }
 
         if ($data['generalfeedback'] != 0 && !empty($data['deadline']) && $data['generalfeedback'] < $data['deadline']) {
-            $errors['generalfeedback'] = get_string('must_be_after_dealdine', 'mod_coursework');
+            $errors['generalfeedback'] = get_string('must_be_after_deadline', 'mod_coursework');
         }
 
         if (isset($data['initialmarkingdeadline']) && $data['initialmarkingdeadline'] != 0 && !empty($data['deadline']) && $data['initialmarkingdeadline'] < $data['deadline']) {
-            $errors['initialmarkingdeadline'] = get_string('must_be_after_dealdine', 'mod_coursework');
+            $errors['initialmarkingdeadline'] = get_string('must_be_after_deadline', 'mod_coursework');
         }
 
         if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0 && !empty($data['deadline']) && $data['agreedgrademarkingdeadline'] < $data['deadline']) {
-            $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_dealdine', 'mod_coursework');
+            $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_deadline', 'mod_coursework');
         }
 
         if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0 &&  $data['agreedgrademarkingdeadline'] < $data['initialmarkingdeadline']) {
-            $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_initial_grade_dealdine', 'mod_coursework');
+            $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_initial_mark_deadline', 'mod_coursework');
         }
 
         if (isset($data['initialmarkingdeadline']) && $data['initialmarkingdeadline'] != 0 && !empty($data['deadline']) && $data['deadline'] && $data['initialmarkingdeadline'] < $data['deadline']) {
-            $errors['initialmarkingdeadline'] = get_string('must_be_after_dealdine', 'mod_coursework');
+            $errors['initialmarkingdeadline'] = get_string('must_be_after_deadline', 'mod_coursework');
         }
 
         if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0 && !empty($data['deadline']) && $data['agreedgrademarkingdeadline'] < $data['deadline']) {
-            $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_dealdine', 'mod_coursework');
+            $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_deadline', 'mod_coursework');
         }
 
         if (isset($data['agreedgrademarkingdeadline']) && $data['agreedgrademarkingdeadline'] != 0 &&  $data['agreedgrademarkingdeadline'] < $data['initialmarkingdeadline']) {
-            $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_initial_grade_dealdine', 'mod_coursework');
+            $errors['agreedgrademarkingdeadline'] = get_string('must_be_after_initial_mark_deadline', 'mod_coursework');
         }
 
         if (isset($data['relativeagreedmarkingdeadline']) && $data['relativeagreedmarkingdeadline'] != 0 && $data['relativeagreedmarkingdeadline'] < $data['relativeinitialmarkingdeadline']) {
-            $errors['relativeagreedmarkingdeadline'] = get_string('must_be_after_or_equal_to_relative_initial_grade_dealdine', 'mod_coursework');
+            $errors['relativeagreedmarkingdeadline'] = get_string('must_be_after_or_equal_to_relative_initial_mark_deadline', 'mod_coursework');
         }
 
         $courseworkid = $this->get_courseworkid();
@@ -239,7 +239,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         }
 
         if (isset($data['numberofmarkers']) && $data['numberofmarkers'] == 1 && isset($data['samplingenabled']) && $data['samplingenabled'] == 1) {
-            $errors['numberofmarkers'] = get_string('not_enough_assessors_for_sampling', 'mod_coursework');
+            $errors['numberofmarkers'] = get_string('not_enough_markers_for_sampling', 'mod_coursework');
         }
 
         // Validate candidate number setting changes.
@@ -552,14 +552,14 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->addElement(
             'date_time_selector',
             'agreedgrademarkingdeadline',
-            get_string('agreedgrademarkingdeadline', 'coursework'),
+            get_string('agreedmarkmarkingdeadline', 'coursework'),
             ['optional' => true, 'disabled' => $disabled]
         );
 
         if (!empty($CFG->coursework_agreed_marking_deadline)) {
             $moodleform->setDefault('agreedgrademarkingdeadline', $defaulttimestamp);
         }
-        $moodleform->addHelpButton('agreedgrademarkingdeadline', 'agreedgrademarkingdeadline', 'mod_coursework');
+        $moodleform->addHelpButton('agreedgrademarkingdeadline', 'agreedmarkmarkingdeadline', 'mod_coursework');
     }
 
     /********
@@ -946,8 +946,8 @@ class mod_coursework_mod_form extends moodleform_mod {
         foreach ($keys as $key) {
             $radioarray[] =& $moodleform->createElement('radio', 'assessorallocationstrategy', '', $options[$key], $key, '');
         }
-        $moodleform->addGroup($radioarray, 'radioarray', get_string('assessorallocationstrategy', 'mod_coursework'), [' '], false);
-        $moodleform->addHelpButton('radioarray', 'assessorallocationstrategy', 'mod_coursework');
+        $moodleform->addGroup($radioarray, 'radioarray', get_string('markerallocationstrategy', 'mod_coursework'), [' '], false);
+        $moodleform->addHelpButton('radioarray', 'markerallocationstrategy', 'mod_coursework');
         $moodleform->hideif('radioarray', 'allocationenabled', 'eq', 0);
     }
 
@@ -956,8 +956,8 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $options = mod_coursework\allocation\manager::get_allocation_classnames();
 
-        $moodleform->addElement('select', 'assessorallocationstrategy', get_string('assessorallocationstrategy', 'mod_coursework'), $options);
-        $moodleform->addHelpButton('assessorallocationstrategy', 'assessorallocationstrategy', 'mod_coursework');
+        $moodleform->addElement('select', 'assessorallocationstrategy', get_string('markerallocationstrategy', 'mod_coursework'), $options);
+        $moodleform->addHelpButton('assessorallocationstrategy', 'markerallocationstrategy', 'mod_coursework');
         $moodleform->hideif('assessorallocationstrategy', 'allocationenabled', 'eq', 0);
     }
 
@@ -983,11 +983,11 @@ class mod_coursework_mod_form extends moodleform_mod {
     protected function add_assessor_anonymity_header() {
         $moodleform =& $this->_form;
 
-        $moodleform->addElement('header', 'assessoranonymityheader', get_string('assessoranonymity', 'mod_coursework'));
+        $moodleform->addElement('header', 'assessoranonymityheader', get_string('markeranonymity', 'mod_coursework'));
         $moodleform->addElement('html', '<div class ="assessor_anonymity_info">');
         $moodleform->addElement(
             'html',
-            get_string('assessoranonymity_desc', 'mod_coursework')
+            get_string('markeranonymity_desc', 'mod_coursework')
         );
         $moodleform->addElement('html', '</div>');
     }
@@ -1037,8 +1037,8 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodleform =& $this->_form;
         $options = [0 => get_string('no'), 1 => get_string('yes')];
-        $moodleform->addElement('select', 'assessoranonymity', get_string('assessoranonymity', 'mod_coursework'), $options);
-        $moodleform->addHelpButton('assessoranonymity', 'assessoranonymity', 'mod_coursework');
+        $moodleform->addElement('select', 'assessoranonymity', get_string('markeranonymity', 'mod_coursework'), $options);
+        $moodleform->addHelpButton('assessoranonymity', 'markeranonymity', 'mod_coursework');
         $moodleform->setDefault('assessoranonymity', $CFG->coursework_assessoranonymity);
     }
 
@@ -1240,8 +1240,8 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $moodleform =& $this->_form;
 
-        $moodleform->addElement('selectyesno', 'viewinitialgradeenabled', get_string('viewinitialgradeenabled', 'mod_coursework'));
-        $moodleform->addHelpButton('viewinitialgradeenabled', 'viewinitialgradeenabled', 'mod_coursework');
+        $moodleform->addElement('selectyesno', 'viewinitialgradeenabled', get_string('viewinitialmarkenabled', 'mod_coursework'));
+        $moodleform->addHelpButton('viewinitialgradeenabled', 'viewinitialmarkenabled', 'mod_coursework');
 
         $moodleform->hideif('viewinitialgradeenabled', 'numberofmarkers', 'eq', 1);
     }
@@ -1310,7 +1310,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->form()->addelement(
             'select',
             'automaticagreementstrategy',
-            get_string('automaticagreementofgrades', 'mod_coursework'),
+            get_string('automaticagreementofmarks', 'mod_coursework'),
             $options
         );
         $this->form()->settype('automaticagreementstrategy', PARAM_ALPHAEXT);

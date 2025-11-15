@@ -63,10 +63,10 @@ class singlegrade_cell extends cell_base {
             $criterias = $this->coursework->get_rubric_criteria();
             foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
                 $strings['singlegrade' . $criteria['id']] = $criteria['description'];
-                $strings['singlegrade' . $criteria['id'] . 'comment'] = 'Comment for: ' . $criteria['description'];
+                $strings['singlegrade' . $criteria['id'] . 'comment'] = get_string('csvcommentfor', 'mod_coursework', $criteria['description']);
             }
         } else {
-            $strings = get_string('grade', 'coursework');
+            $strings = get_string('mark', 'coursework');
         }
             return $strings;
     }
@@ -107,7 +107,7 @@ class singlegrade_cell extends cell_base {
                     foreach ($value as $data) {
                         // Check if the value is empty however it can be 0
                         if (empty($data) && $data != 0) {
-                            $errormsg .= ' ' . get_string('rubric_grade_cannot_be_empty', 'coursework');
+                            $errormsg .= ' ' . get_string('rubric_mark_cannot_be_empty', 'coursework');
                         }
 
                         // Only check grades fields that will be even numbered
@@ -136,7 +136,7 @@ class singlegrade_cell extends cell_base {
 
             // Is this submission ready to be graded
             if (!$submission->ready_to_grade() && $submission->get_state() < submission::FULLY_GRADED) {
-                return get_string('submissionnotreadytograde', 'coursework');
+                return get_string('submissionnotreadytomark', 'coursework');
             }
 
             // If you have administer grades you can grade anything
@@ -146,7 +146,7 @@ class singlegrade_cell extends cell_base {
 
             // Is the current user an assessor at any of this submissions grading stages or do they have administer grades
             if ($this->coursework->allocation_enabled() && !$this->coursework->is_assessor($USER->id) && !has_capability('mod/coursework:administergrades', $PAGE->context)) {
-                return get_string('nopermissiontogradesubmission', 'coursework');
+                return get_string('nopermissiontomarksubmission', 'coursework');
             }
 
                         // Has the submission been published if yes then no further grades are allowed
@@ -164,7 +164,7 @@ class singlegrade_cell extends cell_base {
             if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
                 // Was this user the one who last graded this submission if not then user cannot grade
                 if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $PAGE->context) && !has_capability('mod/coursework:administergrades', $PAGE->context)) {
-                    return get_string('nopermissiontoeditgrade', 'coursework');
+                    return get_string('nopermissiontoeditmark', 'coursework');
                 }
             }
 
@@ -181,16 +181,16 @@ class singlegrade_cell extends cell_base {
 
                 // This is a new feedback check it against the new ability checks
                 if (!$ability->can('new', $newfeedback)) {
-                    return get_string('nopermissiontogradesubmission', 'coursework');
+                    return get_string('nopermissiontomarksubmission', 'coursework');
                 }
             } else {
                 // This is a new feedback check it against the edit ability checks
                 if (!$ability->can('edit', $feedback)) {
-                    return get_string('nopermissiontoeditgrade', 'coursework');
+                    return get_string('nopermissiontoeditmark', 'coursework');
                 }
             }
         } else {
-            return get_string('nopermissiontoimportgrade', 'coursework');
+            return get_string('nopermissiontoimportmark', 'coursework');
         }
 
         return true;

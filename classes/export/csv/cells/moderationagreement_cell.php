@@ -83,14 +83,14 @@ class moderationagreement_cell extends cell_base {
 
         $fields = [];
         if ($this->coursework->allocation_enabled()) {
-            $fields['allocatedmoderatorname'] = 'Allocated moderator name';
-            $fields['allocatedmoderatorusername'] = 'Allocated moderator username';
+            $fields['allocatedmoderatorname'] = get_string('csvallocatedmoderatorname', 'mod_coursework');
+            $fields['allocatedmoderatorusername'] = get_string('csvallocatedmoderatorusername', 'mod_coursework');
         }
 
-        $fields['moderatoragreement'] = 'Moderator agreement';
-        $fields['moderatorname'] = 'Moderator name';
-        $fields['moderatorusername'] = 'Moderator username';
-        $fields['moderatedon'] = 'Moderated on';
+        $fields['moderatoragreement'] = get_string('csvmoderatoragreement', 'mod_coursework');
+        $fields['moderatorname'] = get_string('csvmoderatorname', 'mod_coursework');
+        $fields['moderatorusername'] = get_string('csvmoderatorusername', 'mod_coursework');
+        $fields['moderatedon'] = get_string('csvmoderatedon', 'mod_coursework');
 
         return $fields;
     }
