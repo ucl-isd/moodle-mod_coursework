@@ -75,7 +75,7 @@ class assessorfeedback_cell extends cell_base {
      * @throws coding_exception
      */
     public function get_header($stage) {
-        return  get_string('markerfeedbackcsv', 'coursework', $stage);
+        return  get_string('csvmarkerfeedback', 'coursework', $stage);
     }
 
     public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells = []) {

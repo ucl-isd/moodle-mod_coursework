@@ -63,7 +63,7 @@ class singlegrade_cell extends cell_base {
             $criterias = $this->coursework->get_rubric_criteria();
             foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
                 $strings['singlegrade' . $criteria['id']] = $criteria['description'];
-                $strings['singlegrade' . $criteria['id'] . 'comment'] = 'Comment for: ' . $criteria['description'];
+                $strings['singlegrade' . $criteria['id'] . 'comment'] = get_string('csvcommentfor', 'mod_coursework', $criteria['description']);
             }
         } else {
             $strings = get_string('mark', 'coursework');

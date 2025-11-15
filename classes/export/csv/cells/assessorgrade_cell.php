@@ -90,11 +90,11 @@ class assessorgrade_cell extends cell_base {
             $strings = [];
             $criterias = $this->coursework->get_rubric_criteria();
             foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
-                $strings['assessorgrade' . $stage . '_' . $criteria['id']] = 'Assessor ' . $stage . ' - ' . $criteria['description'];
-                $strings['assessorgrade' . $stage . '_' . $criteria['id'] . 'comment'] = 'Comment for:  Assessor ' . $stage . ' - ' . $criteria['description'];
+                $strings['assessorgrade' . $stage . '_' . $criteria['id']] = get_string('csvmarkerstage', 'mod_coursework', ['stage' => $stage, 'description' => $criteria['description']]);
+                $strings['assessorgrade' . $stage . '_' . $criteria['id'] . 'comment'] = get_string('csvmarkerstagecomment', 'mod_coursework', ['stage' => $stage, 'description' => $criteria['description']]);
             }
         } else {
-            $strings = get_string('markermarkcsv', 'coursework', $stage);
+            $strings = get_string('csvmarkermark', 'coursework', $stage);
         }
 
         return  $strings;

@@ -62,8 +62,8 @@ class agreedgrade_cell extends cell_base {
             $strings = [];
             $criterias = $this->coursework->get_rubric_criteria();
             foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
-                $strings['agreedgrade' . $criteria['id']] = 'Agreed grade - ' . $criteria['description'];
-                $strings['agreedgrade' . $criteria['id'] . 'comment'] = 'Comment for: Agreed grade - ' . $criteria['description'];
+                $strings['agreedgrade' . $criteria['id']] = get_string('csvagreedmark', 'mod_coursework', $criteria['description']);
+                $strings['agreedgrade' . $criteria['id'] . 'comment'] = get_string('csvagreedmarkcomment', 'mod_coursework', $criteria['description']);
             }
         } else {
             $strings = get_string('agreedmark', 'coursework');
