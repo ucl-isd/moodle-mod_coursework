@@ -473,7 +473,7 @@ final class csv_test extends \advanced_testcase {
         $submission = $generator->create_submission($submission, $coursework);
 
         $timestamp = date('d_m_y @ H-i');
-        $filename = get_string('finalgradesfor', 'coursework') . $coursework->name . ' ' . $timestamp;
+        $filename = get_string('finalmarksfor', 'coursework') . $coursework->name . ' ' . $timestamp;
         $csvcells = ['name', 'username', 'idnumber', 'email', 'submissiondate', 'submissiontime', 'submissionfileid', 'plagiarismflagstatus', 'plagiarismflagcomment', 'stages', 'finalgrade'];
         $gradingsheet = new \mod_coursework\export\grading_sheet($coursework, $csvcells, $filename);
         $csv = new \mod_coursework\export\csv($coursework, $csvcells, $filename);
