@@ -708,25 +708,41 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Then /^I should not see the student's name in the user cell$/
+     * @Then /^I should( not)? see the student's name in the user cell$/
+     *
+     * @param bool $negate
      */
-    public function i_should_not_see_the_students_name_in_the_user_cell() {
+    public function i_should_see_the_students_name_in_the_user_cell(bool $negate = false) {
         /**
          * @var $page mod_coursework_behat_single_grading_interface
          */
         $page = $this->get_page('single grading interface');
-        $page->should_not_have_user_name_in_user_cell($this->student);
+        $found = $page->should_have_user_name_in_user_cell($this->student);
+
+        if ($negate && $found) {
+            throw new ExpectationException('User name unexpectedly found in cell', $this->getsession());
+        } else if (!$negate && !$found) {
+            throw new ExpectationException('User name not found in cell', $this->getsession());
+        }
     }
 
     /**
-     * @Then /^I should see the student's name in the user cell$/
+     * @Then /^I should( not)? see the student's picture in the user cell$/
+     *
+     * @param bool $negate
      */
-    public function i_should_see_the_students_name_in_the_user_cell() {
+    public function i_should_see_the_students_picture_in_the_user_cell($negate = false) {
         /**
          * @var $page mod_coursework_behat_single_grading_interface
          */
         $page = $this->get_page('single grading interface');
-        $page->should_have_user_name_in_user_cell($this->student);
+        $found = $page->should_have_user_picture_in_user_cell();
+
+        if ($negate && $found) {
+            throw new ExpectationException('User picture unexpectedly found in cell', $this->getsession());
+        } else if (!$negate && !$found) {
+            throw new ExpectationException('User picture not found in cell', $this->getsession());
+        }
     }
 
     /**
