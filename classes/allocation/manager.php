@@ -52,6 +52,11 @@ class manager {
     private $assessorallocationstrategy;
 
     /**
+     * @var strategy\base
+     */
+    private $moderatorallocationstrategy;
+
+    /**
      * New instance created with references to the coursework stored.
      *
      * @param coursework $coursework
