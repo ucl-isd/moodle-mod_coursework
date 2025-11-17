@@ -130,7 +130,7 @@ class coursework_file_zip_importer {
                         if ($feedback) {
                             $feedbackstage = $feedback->stageidentifier;
                         } else {
-                            $results[$filename] = get_string('assessorfeedbacknotfound', 'mod_coursework');
+                            $results[$filename] = get_string('markerfeedbacknotfound', 'mod_coursework');
                         }
                     }
 
@@ -166,7 +166,7 @@ class coursework_file_zip_importer {
                             $results[$filename] = get_string('feedbackfilecreated', 'mod_coursework');
                         }
                     } else {
-                        $results[$filename] = get_string('assessorfeedbacknotfound', 'mod_coursework');
+                        $results[$filename] = get_string('markerfeedbacknotfound', 'mod_coursework');
                     }
                 } else {
                     $results[$filename] = get_string('feedbacksubmissionpublished', 'mod_coursework');

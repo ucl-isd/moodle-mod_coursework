@@ -65,8 +65,8 @@ class stages_cell extends cell_base {
                     $gradedata[] = get_string('notincludedinsample', 'mod_coursework');
                     $gradedata[] = get_string('notincludedinsample', 'mod_coursework');
                 } else {
-                    $gradedata[] = get_string('assessornotallocated', 'mod_coursework');
-                    $gradedata[] = get_string('assessornotallocated', 'mod_coursework');
+                    $gradedata[] = get_string('markernotallocated', 'mod_coursework');
+                    $gradedata[] = get_string('markernotallocated', 'mod_coursework');
                 }
             }
 
@@ -122,36 +122,36 @@ class stages_cell extends cell_base {
 
         for ($i = 1; $i <= $this->stages; $i++) {
             if ($this->coursework->allocation_enabled()) {
-                $fields['allocatedassessor' . $i . 'name'] = 'Allocated assessor ' . $i . ' name';
-                $fields['allocated' . $i . 'userame'] = 'Allocated assessor ' . $i . ' username';
+                $fields['allocatedassessor' . $i . 'name'] = get_string('csvallocatedmarkernamestage', 'mod_coursework', $i);
+                $fields['allocated' . $i . 'userame'] = get_string('csvallocatedmarkerusernamestage', 'mod_coursework', $i);
             }
 
             if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()) {
                 $criteria = $this->coursework->get_rubric_criteria();
                 foreach ($criteria as $id => $record) {
-                    $fields['assessor' . $i . 'description' . $id] = 'Assessor ' . $i . ' - ' . $record['description'];
-                    $fields['assessor' . $i . 'description' . $id . 'comment'] = 'Comment for: Assessor ' . $i . ' - ' . $record['description'];
+                    $fields['assessor' . $i . 'description' . $id] = get_string('csvmarkerdesciptionstage', 'mod_coursework', ['stage' => $i, 'description' => $record['description']]);
+                    $fields['assessor' . $i . 'description' . $id . 'comment'] = get_string('csvmarkerdesciptioncommentstage', 'mod_coursework', ['stage' => $i, 'description' => $record['description']]);
                 }
             }
 
-            $fields['assessor' . $i] = 'Assessor ' . $i . ' grade';
-            $fields['assessor' . $i . 'name'] = 'Assessor ' . $i . ' name';
-            $fields['assessor' . $i . 'username'] = 'Assessor ' . $i . ' username';
-            $fields['assessor' . $i . 'markingtime'] = 'Assessor ' . $i . ' marked on';
+            $fields['assessor' . $i] = get_string('csvmarkermark', 'mod_coursework', $i);
+            $fields['assessor' . $i . 'name'] = get_string('csvmarkername', 'mod_coursework', $i);
+            $fields['assessor' . $i . 'username'] = get_string('csvmarkerusername', 'mod_coursework', $i);
+            $fields['assessor' . $i . 'markingtime'] = get_string('csvmarkermarkedon', 'mod_coursework', $i);
         }
         if ($this->stages >= 2) { // if there are two or more stages for a submission, we will have agreed grade
             if ($this->coursework->is_using_advanced_grading() && $this->coursework->is_using_rubric()) {
                 $criteria = $this->coursework->get_rubric_criteria();
                 foreach ($criteria as $id => $record) {
-                    $fields['agreedgrade_description_' . $id] = 'Agreed grade - ' . $record['description'];
-                    $fields['agreedgrade_description_' . $id . 'comment'] = 'Comment for: Agreed grade - ' . $record['description'];
+                    $fields['agreedgrade_description_' . $id] = get_string('csvagreedmark', 'mod_coursework', $record['description']);
+                    $fields['agreedgrade_description_' . $id . 'comment'] = get_string('csvagreedmarkcomment', 'mod_coursework', $record['description']);
                 }
             }
 
-            $fields['agreedgrade'] = get_string('agreedgrade', 'coursework');
-            $fields['agreedgradeby'] = get_string('agreedgradeby', 'coursework');
-            $fields['agreedgradebyusername'] = get_string('agreedgradebyusername', 'coursework');
-            $fields['agreedgradeon'] = get_string('agreedgradeon', 'coursework');
+            $fields['agreedgrade'] = get_string('agreedmark', 'coursework');
+            $fields['agreedgradeby'] = get_string('agreedmarkby', 'coursework');
+            $fields['agreedgradebyusername'] = get_string('agreedmarkbyusername', 'coursework');
+            $fields['agreedgradeon'] = get_string('agreedmarkon', 'coursework');
         }
 
         return $fields;

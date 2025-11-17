@@ -322,7 +322,7 @@ if ($exportgrades) {
     $csvcells[] = 'finalgrade';
 
     $timestamp = date('d_m_y @ H-i');
-    $filename = get_string('finalgradesfor', 'coursework') . $coursework->name . ' ' . $timestamp;
+    $filename = get_string('finalmarksfor', 'coursework') . $coursework->name . ' ' . $timestamp;
     $csv = new csv($coursework, $csvcells, $filename);
     $csv->export();
 }
@@ -331,7 +331,7 @@ if ($downloadgradingsheet) {
     $csvcells = grading_sheet::cells_array($coursework);
 
     $timestamp = date('d_m_y @ H-i');
-    $filename = get_string('gradingsheetfor', 'coursework') . $coursework->name . ' ' . $timestamp;
+    $filename = get_string('markingsheetfor', 'coursework') . $coursework->name . ' ' . $timestamp;
     $gradingsheet = new grading_sheet($coursework, $csvcells, $filename);
     $gradingsheet->export();
 }

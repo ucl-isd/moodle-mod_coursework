@@ -78,14 +78,14 @@ class otherassessors_cell extends cell_base {
                     }
                     $gradedata[] = cell_base::clean_cell($grade->feedbackcomment);
                 } else {
-                    $gradedata[] = get_string('grade_hidden_manager', 'mod_coursework');
+                    $gradedata[] = get_string('mark_hidden_manager', 'mod_coursework');
                     $gradedata[] = '';
                 }
             } else {
                 if ($this->coursework->is_using_rubric()) {
                     $criterias = $this->coursework->get_rubric_criteria();
                     foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
-                        $gradedata['assessor' . $stageidentifier . '_' . $criteria['id']] = get_string('grade_hidden_manager', 'mod_coursework');
+                        $gradedata['assessor' . $stageidentifier . '_' . $criteria['id']] = get_string('mark_hidden_manager', 'mod_coursework');
                         $gradedata['assessor' . $stageidentifier . '_' . $criteria['id'] . 'comment'] = '';
                     }
                 } else {
@@ -130,13 +130,13 @@ class otherassessors_cell extends cell_base {
             if ($this->coursework->is_using_rubric()) {
                 $criterias = $this->coursework->get_rubric_criteria();
                 foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
-                    $fields['otherassessorgrade' . $i . $stage . '_' . $criteria['id']] = 'Other assessor (' . $i . ') - ' . $criteria['description'];
-                    $fields['otherassessorgrade' . $i . $stage . '_' . $criteria['id'] . 'comment'] = 'Comment for: Other assessor (' . $i . ') - ' . $criteria['description'];
+                    $fields['otherassessorgrade' . $i . $stage . '_' . $criteria['id']] = get_string('csvothermarkermarkstage', 'mod_coursework', ['stage' => $i, 'description' => $criteria['description']]);
+                    $fields['otherassessorgrade' . $i . $stage . '_' . $criteria['id'] . 'comment'] = get_string('csvothermarkermarkstagecomment', 'mod_coursework', ['stage' => $i, 'description' => $criteria['description']]);
                 }
             } else {
-                $fields['otherassessorgrade' . $i] = get_string('otherassessorgrade', 'coursework', $i);
+                $fields['otherassessorgrade' . $i] = get_string('othermarkermark', 'coursework', $i);
             }
-                $fields['otherassessorfeedback' . $i] = get_string('otherassessorfeedback', 'coursework', $i);
+                $fields['otherassessorfeedback' . $i] = get_string('othermarkerfeedback', 'coursework', $i);
         }
         return $fields;
     }

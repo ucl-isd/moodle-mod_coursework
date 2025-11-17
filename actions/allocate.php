@@ -218,7 +218,7 @@ $PAGE->requires->js_init_call(
     $jsmodule
 );
 
-$PAGE->requires->string_for_js('sameassessorerror', 'coursework');
+$PAGE->requires->string_for_js('samemarkererror', 'coursework');
 
 // Process any form submissions. This may redirect away from the page.
 coursework_process_form_submissions($coursework, $coursemodule);

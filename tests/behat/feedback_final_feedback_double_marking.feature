@@ -20,7 +20,7 @@ Feature: Adding and editing final feedback
     And I am logged in as a manager
     And I visit the coursework page
     And I click the new multiple final feedback button for the student
-    And I set the field "Grade" to "57"
+    And I set the field "Mark" to "57"
     And I press "Save and finalise"
     Then I visit the coursework page
     And I should see the final agreed grade as 57
@@ -32,7 +32,7 @@ Feature: Adding and editing final feedback
     And I am logged in as a manager
     And I visit the coursework page
     And I click the new multiple final feedback button for the student
-    And I set the field "Grade" to "57"
+    And I set the field "Mark" to "57"
     And I press "Save as draft"
     Then I visit the coursework page
     And I should see the final agreed grade as 57
@@ -50,14 +50,14 @@ Feature: Adding and editing final feedback
     And I am logged in as a manager
     And I visit the coursework page
     And I click the new multiple final feedback button for the student
-    And I set the field "Grade" to "58"
+    And I set the field "Mark" to "58"
     And I set the field "Comment" to "New comment"
     And I press "Save and finalise"
     Then I visit the coursework page
     When I click the edit final feedback button
     And I wait until the page is ready
     And I wait "1" seconds
-    And the field "Grade" matches value "58"
+    And the field "Mark" matches value "58"
     And the grade comment textarea field matches "New comment"
 
   Scenario: I can be both an initial assessor and the manager who agrees grades
@@ -66,7 +66,7 @@ Feature: Adding and editing final feedback
     And there are feedbacks from both me and another teacher
     And I visit the coursework page
     When I click the new multiple final feedback button for the student
-    And I set the field "Grade" to "59"
+    And I set the field "Mark" to "59"
     And I press "Save and finalise"
 
   Scenario: Editing final feedback from others
@@ -79,4 +79,4 @@ Feature: Adding and editing final feedback
     And I wait until the page is ready
     And I wait "2" seconds
     And I wait until the page is ready
-    And the field "Grade" matches value "45"
+    And the field "Mark" matches value "45"

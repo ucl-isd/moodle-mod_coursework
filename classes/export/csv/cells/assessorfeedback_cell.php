@@ -75,7 +75,7 @@ class assessorfeedback_cell extends cell_base {
      * @throws coding_exception
      */
     public function get_header($stage) {
-        return  get_string('assessorfeedbackcsv', 'coursework', $stage);
+        return  get_string('csvmarkerfeedback', 'coursework', $stage);
     }
 
     public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells = []) {
@@ -104,7 +104,7 @@ class assessorfeedback_cell extends cell_base {
         ) {
             // Is the submission in question ready to grade?
             if (!$submission->ready_to_grade()) {
-                return get_string('submissionnotreadytograde', 'coursework');
+                return get_string('submissionnotreadytomark', 'coursework');
             }
 
             // Has the submission been published if yes then no further grades are allowed
@@ -130,19 +130,19 @@ class assessorfeedback_cell extends cell_base {
             if (!empty($feedback)) {
                 // This is a new feedback check it against the new ability checks
                 if (!has_capability('mod/coursework:administergrades', $modulecontext) && !$ability->can('new', $feedback)) {
-                    return get_string('nopermissiontoeditgrade', 'coursework');
+                    return get_string('nopermissiontoeditmark', 'coursework');
                 }
             } else {
                 // This is a new feedback check it against the edit ability checks
                 if (!has_capability('mod/coursework:administergrades', $modulecontext) && !$ability->can('edit', $feedback)) {
-                    return get_string('nopermissiontoeditgrade', 'coursework');
+                    return get_string('nopermissiontoeditmark', 'coursework');
                 }
             }
 
             if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
                 // Was this user the one who last graded this submission if not then user cannot grade
                 if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $modulecontext)) {
-                    return get_string('nopermissiontogradesubmission', 'coursework');
+                    return get_string('nopermissiontomarksubmission', 'coursework');
                 }
             }
 
@@ -159,7 +159,7 @@ class assessorfeedback_cell extends cell_base {
                     !has_capability('mod/coursework:administergrades', $modulecontext)
                     && !$DB->get_record('coursework_allocation_pairs', $allocationparams)
                 ) {
-                    return get_string('nopermissiontogradesubmission', 'coursework');
+                    return get_string('nopermissiontomarksubmission', 'coursework');
                 }
             }
 
@@ -180,7 +180,7 @@ class assessorfeedback_cell extends cell_base {
                     $assessors = $this->coursework->get_max_markers();
                 }
                 if ($assessors == $feedbacks) {
-                    return get_string('gradealreadyexists', 'coursework');
+                    return get_string('markalreadyexists', 'coursework');
                 }
             }
         } else if (has_any_capability($agreedgradecap, $modulecontext)) {
@@ -188,7 +188,7 @@ class assessorfeedback_cell extends cell_base {
             // We will return true as we will ignore them
             return true;
         } else {
-            return get_string('nopermissiontoimportgrade', 'coursework');
+            return get_string('nopermissiontoimportmark', 'coursework');
         }
     }
 }

@@ -40,7 +40,7 @@ $course = $DB->get_record('course', ['id' => $coursemodule->course]);
 
 require_login($course, false, $coursemodule);
 
-$csvtype = 'gradingsheetupload';
+$csvtype = 'markingsheetupload';
 $title = get_string($csvtype, 'mod_coursework');
 
 $PAGE->set_url(new moodle_url('/mod/coursework/actions/upload_grading_sheet.php'));

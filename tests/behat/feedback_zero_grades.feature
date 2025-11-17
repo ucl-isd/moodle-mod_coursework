@@ -19,7 +19,7 @@ Feature: Zero grades should show up just like the others
     And the coursework "numberofmarkers" setting is "1" in the database
     When I visit the coursework page
     And I click on the add feedback button
-    And I set the field "Grade" to "0"
+    And I set the field "Mark" to "0"
     And I press "Save and finalise"
     Then I visit the coursework page
     And I wait until the page is ready

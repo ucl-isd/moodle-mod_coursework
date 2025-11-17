@@ -118,7 +118,7 @@ class assessor_feedback_mform extends moodleform {
             $mform->addElement(
                 'grading',
                 'advancedgrading',
-                get_string('grade', 'mod_coursework'),
+                get_string('mark', 'mod_coursework'),
                 ['gradinginstance' => $this->gradinginstance]
             );
 
@@ -127,7 +127,7 @@ class assessor_feedback_mform extends moodleform {
                 $mform->addElement('html', '<a href="#">' . get_string('togglezoom', 'mod_assign') . '</a>');
             }
         } else if ($this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1) {
-            $mform->addElement('text', 'grade', get_string('grade', 'mod_coursework'));
+            $mform->addElement('text', 'grade', get_string('mark', 'mod_coursework'));
             $mform->setType('grade', PARAM_RAW);
             $mform->addRule(
                 'grade',
@@ -140,7 +140,7 @@ class assessor_feedback_mform extends moodleform {
             $mform->addElement(
                 'select',
                 'grade',
-                get_string('grade', 'mod_coursework'),
+                get_string('mark', 'mod_coursework'),
                 $grademenu,
                 ['id' => 'feedback_grade']
             );

@@ -310,10 +310,10 @@ class marking_cell_data extends cell_data_base {
             ||
             has_capability('mod/coursework:addallocatedagreedgrade', $this->coursework->get_context())
         ) {
-            return get_string('grade_hidden_manager', 'mod_coursework');
+            return get_string('mark_hidden_manager', 'mod_coursework');
         }
 
-        return get_string('grade_hidden_teacher', 'mod_coursework');
+        return get_string('mark_hidden_teacher', 'mod_coursework');
     }
 
     /**

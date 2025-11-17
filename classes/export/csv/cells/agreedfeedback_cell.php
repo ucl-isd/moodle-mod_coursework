@@ -51,7 +51,7 @@ class agreedfeedback_cell extends cell_base {
      * @throws coding_exception
      */
     public function get_header($stage) {
-        return get_string('agreedgradefeedback', 'coursework');
+        return get_string('agreedmarkfeedback', 'coursework');
     }
 
     /**
@@ -81,7 +81,7 @@ class agreedfeedback_cell extends cell_base {
 
             // Is the submission in question ready to grade?
             if (!$submission->all_initial_graded() && !empty($value)) {
-                return get_string('submissionnotreadyforagreedgrade', 'coursework');
+                return get_string('submissionnotreadyforagreedmark', 'coursework');
             }
 
             // Has the submission been published if yes then no further grades are allowed.
@@ -119,16 +119,16 @@ class agreedfeedback_cell extends cell_base {
                     && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context)
                     && !$ability->can('new', $newfeedback)
                 ) {
-                    return get_string('nopermissiontogradesubmission', 'coursework');
+                    return get_string('nopermissiontomarksubmission', 'coursework');
                 }
             } else {
                 // This is a new feedback check it against the edit ability checks.
                 if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit', $feedback)) {
-                    return get_string('nopermissiontoeditgrade', 'coursework');
+                    return get_string('nopermissiontoeditmark', 'coursework');
                 }
             }
         } else {
-            return get_string('nopermissiontoimportgrade', 'coursework');
+            return get_string('nopermissiontoimportmark', 'coursework');
         }
         return true;
     }
