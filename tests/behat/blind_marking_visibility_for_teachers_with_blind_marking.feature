@@ -8,16 +8,25 @@ Feature: Visibility for teachers with blind marking
   Background:
     Given there is a course
     And there is a coursework
-    And blind marking is enabled
 
   Scenario: The student names are hidden from teachers in the user cells
-    Given I am logged in as a teacher
+    Given blind marking is enabled
+    And I am logged in as a teacher
     And there is a student
     When I visit the coursework page
     Then I should not see the student's name in the user cell
+    And I should not see the student's picture in the user cell
+
+  Scenario: The student names are not hidden from teachers in the user cells
+    Given I am logged in as a teacher
+    And there is a student
+    When I visit the coursework page
+    Then I should see the student's name in the user cell
+    And I should see the student's picture in the user cell
 
   Scenario: The user names are hidden from teachers in the group cells
-    Given I am logged in as a teacher
+    Given blind marking is enabled
+    And I am logged in as a teacher
     And there is a student
     And group submissions are enabled
     And the student is a member of a group
@@ -26,7 +35,8 @@ Feature: Visibility for teachers with blind marking
     Then I should not see the student's name in the group cell
 
   Scenario: Teachers cannot see other initial grades before final grading happens
-    Given the coursework "numberofmarkers" setting is "2" in the database
+    Given blind marking is enabled
+    And the coursework "numberofmarkers" setting is "2" in the database
     And there is a teacher
     And there is another teacher
     And there is a student

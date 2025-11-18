@@ -54,29 +54,30 @@ class grading_report_renderer extends plugin_renderer_base {
     public function render_grading_report(grading_report $gradingreport) {
 
         $tablerows = $gradingreport->get_table_rows_for_page();
+        $coursework = $gradingreport->get_coursework();
+        $blindmarking = $coursework->blindmarking_enabled() && !has_capability('mod/coursework:viewanonymous', $coursework->get_context());
         $participantcontextids = user::get_user_picture_context_ids(
-            $gradingreport->get_coursework()->get_course_id()
+            $coursework->get_course_id()
         );
 
         // Sort the table rows.
         $tablerows = $this->sort_table_rows($tablerows);
 
         $template = new stdClass();
-        $template->coursework = self::prepare_coursework_data($gradingreport->get_coursework());
-        $template->blindmarkingenabled = $gradingreport->get_coursework()->blindmarking_enabled() &&
-            !has_capability('mod/coursework:viewanonymous', $gradingreport->get_coursework()->get_context());
-        $template->releasemarks = $this->prepare_release_marks_button($gradingreport->get_coursework());
+        $template->coursework = self::prepare_coursework_data($coursework);
+        $template->blindmarkingenabled = $blindmarking;
+        $template->releasemarks = $this->prepare_release_marks_button($coursework);
 
         // Populate template tr data.
         $template->tr = [];
         $markersarray = []; // Collect list of allocated markers while we are iterating.
 
         foreach ($tablerows as $rowobject) {
-            $trdata = $this->get_table_row_data($gradingreport->get_coursework(), $rowobject);
+            $trdata = $this->get_table_row_data($coursework, $rowobject);
 
             // If this row represents a user (not a group), add the user picture.
             $allocatable = $rowobject->get_allocatable();
-            if ($allocatable->type() === 'user') {
+            if ($allocatable->type() === 'user' && !$blindmarking) {
                 $participantcontextid = $participantcontextids[$allocatable->id()] ?? null;
                 $trdata->submissiontype->user->picture =
                     user::get_picture_url_from_context_id($participantcontextid, $allocatable->picture);
@@ -230,9 +231,14 @@ class grading_report_renderer extends plugin_renderer_base {
         // We need to add some to this because the tr and actions templates both use fields from parent as well as row.
         // Otherwise some action menu elements may be incomplete.
         $data->coursework = self::prepare_coursework_data($coursework);
-        $participantcontextid = $allocatabletype === 'user' ? context_user::instance($allocatableid)->id : null;
-        $data->submissiontype->user->picture =
-            user::get_picture_url_from_context_id($participantcontextid, $allocatable->picture);
+
+        if ($allocatabletype === "user" && (!$coursework->blindmarking_enabled() || has_capability('mod/coursework:viewanonymous', $coursework->get_context()))) {
+            $data->submissiontype->user->picture = user::get_picture_url_from_context_id(
+                context_user::instance($allocatableid)->id,
+                $allocatable->picture
+            );
+        }
+
         return $data;
     }
 

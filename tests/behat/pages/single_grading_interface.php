@@ -103,17 +103,17 @@ class mod_coursework_behat_single_grading_interface extends mod_coursework_behat
     /**
      * @param allocatable $student
      */
-    public function should_not_have_user_name_in_user_cell($student) {
-        $css = '.user_cell';
-        $this->should_not_have_css($css, $student->name());
+    public function should_have_user_name_in_user_cell($student) {
+        $studentname = $student->name();
+        $xpath = "//td[@class='mod-coursework-submissions-user-col']//a[normalize-space(string()) = '$studentname']";
+        return $this->getpage()->find('xpath', $xpath) !== null;
     }
 
     /**
-     * @param allocatable $student
      */
-    public function should_have_user_name_in_user_cell($student) {
-        $css = '.user_cell';
-        $this->should_have_css($css, $student->name());
+    public function should_have_user_picture_in_user_cell() {
+        $xpath = "//td[@class='mod-coursework-submissions-user-col']//div[contains(@style,'background-image: url')]";
+        return $this->getpage()->find('xpath', $xpath) !== null;
     }
 
     /**
