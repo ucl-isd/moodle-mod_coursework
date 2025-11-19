@@ -1,6 +1,7 @@
 Coursework Activity
 ======================================================================
-Copyright University of London.
+Copyright 2011-2019 University of London.
+Copyright 2024-2025 University College London
 
 Part of the [Double Marking Project led by UCL](https://www.catalyst-eu.net/blog/2025/04/29/enhancing-assessment-in-moodle-the-double-marking-project)
 This is allowing us to take a blank slate approach about what the ideal marker experience should look like.
