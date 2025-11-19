@@ -352,6 +352,10 @@ class marking_cell_data extends cell_data_base {
         $action = $this->ability->can('edit', $finalfeedback) ? 'edit' :
                  ($this->ability->can('show', $finalfeedback) ? 'show' : null);
 
+        // If this is an auto generated feedback, lasteditedbyuser will be zero.
+        $assessorname = $finalfeedback->lasteditedbyuser
+            ? user::find($finalfeedback->lasteditedbyuser, false)->name()
+            : get_string('automaticallyagreed', 'mod_coursework');
         return $action ? (object)[
             'mark' => (object)[
                 'markvalue' => $finalgrade,
@@ -363,7 +367,8 @@ class marking_cell_data extends cell_data_base {
                 'readyforrelease' => !$rowsbase->get_submission()->is_published() &&
                     $rowsbase->get_submission()->ready_to_publish(),
                 'released' => $rowsbase->get_submission()->is_published(),
-                'timemodified' => $rowsbase->get_submission()->lastpublished,
+                'timemodified' => $finalfeedback->timemodified,
+                'markername' => $assessorname,
             ],
         ] : null;
     }

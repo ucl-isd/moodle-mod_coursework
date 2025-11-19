@@ -111,6 +111,14 @@
         <div>
             <div>{{#str}} agreedmark, mod_coursework {{/str}}</div>
             {{#mark}}
+                <div class="small text-muted">
+                    {{{markername}}} &middot;
+                    {{#timemodified}}
+                        {{#userdate}}
+                            {{.}}, {{#str}} strftimedatetime, langconfig {{/str}}
+                        {{/userdate}}
+                    {{/timemodified}}
+                </div>
                 {{#released}}
                 <div class="small text-muted">
                     {{#timemodified}}
