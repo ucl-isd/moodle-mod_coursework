@@ -1,4 +1,4 @@
-@mod @mod_coursework @workbench @javascript
+@mod @mod_coursework @workbench
 Feature: Double marking - blind
   In order to ensure double marking works correctly
   As an admin
@@ -26,10 +26,10 @@ Feature: Double marking - blind
       | student1  | Student   | 1        | student1@example.com |
     And the following "course enrolments" exist:
       | user      | course | role             |
-      | teacher1  | C1     | editingteacher   |
-      | marker1   | C1     | courseworkmarker |
-      | marker2   | C1     | courseworkmarker |
-      | marker3   | C1     | courseworkmarker |
+      | teacher1  | C1     | teacher          |
+      | marker1   | C1     | teacher          |
+      | marker2   | C1     | teacher          |
+      | marker3   | C1     | teacher          |
       | student1  | C1     | student          |
 
   Scenario: Create coursework assignment with double marking
@@ -57,7 +57,7 @@ Feature: Double marking - blind
 
     Then I should see "Coursework – Double marking blind"
 
-  Scenario: Add assessors
+  Scenario: Add markers
     Given I am on the "Course 1" "course" page logged in as "admin"
     When I add a coursework activity to course "Course 1" section "2" and I fill the form with:
       | Coursework title                                            | Coursework – Double marking blind                 |
@@ -79,15 +79,25 @@ Feature: Double marking - blind
       | Blind marking                                               | Yes |
       | Marker anonymity                                            | Yes |
       | Blind marking                                               | Yes |
+
     And I follow "Coursework – Double marking blind"
     And I follow "Add markers"
     And I follow "courseworkmarker"
 
-    When I set the field "Existing users" to "marker 1 (marker1@example.com)"
-    When I set the field "Existing users" to "marker 2 (marker2@example.com)"
-    When I set the field "Existing users" to "marker 3 (marker3@example.com)"
+    Then I should see "marker 1" in the "Potential users" "field"
+    And I should see "marker 2" in the "Potential users" "field"
+    And I should see "marker 3" in the "Potential users" "field"
+
+    When I set the field "Potential users" to "marker 1 (marker1@example.com)"
+    And I press "Add"
+    And I set the field "Potential users" to "marker 2 (marker2@example.com)"
+    And I press "Add"
+    And I set the field "Potential users" to "marker 3 (marker3@example.com)"
     And I press "Add"
 
-    Then I should see "Assign role 'courseworkmarker' in Coursework"
-    
-    And I wait "30" seconds
+    Then I should see "marker 1" in the "Existing users" "field"
+    And I should see "marker 2" in the "Existing users" "field"
+    And I should see "marker 3" in the "Existing users" "field"
+    And I should not see "marker 1" in the "Potential users" "field"
+    And I should not see "marker 2" in the "Potential users" "field"
+    And I should not see "marker 3" in the "Potential users" "field"
