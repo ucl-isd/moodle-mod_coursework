@@ -168,13 +168,6 @@ class assessor_feedback_mform extends moodleform {
 
         $this->add_submit_buttons($this->feedback->id);
     }
-    /**
-     *
-     * @return bool|gradingform_controller|null
-     */
-    public function get_gradingcontroller() {
-        return $this->gradingcontroller;
-    }
 
     /**
      * Add submit buttons.
@@ -270,39 +263,6 @@ class assessor_feedback_mform extends moodleform {
             'feedback',
             $this->feedback->id
         );
-    }
-
-    /**
-     *
-     * @return stdClass|null
-     */
-    public function get_file_options() {
-        global $PAGE, $CFG;
-        require_once("$CFG->dirroot/lib/form/filemanager.php");
-        $options = null;
-        $filemanager = $this->_form->getElement('feedback_manager');
-        if ($filemanager) {
-            $params = (object) [
-                'maxfiles' => $filemanager->getMaxfiles(),
-                'subdirs' => $filemanager->getSubdirs(),
-                'areamaxbytes' => $filemanager->getAreamaxbytes(),
-                'target' => 'id_' . $filemanager->getName(),
-                'context' => $PAGE->context,
-                'itemid' => $filemanager->getValue(),
-            ];
-            $fm = new form_filemanager($params);
-            $options = $fm->options;
-        }
-        return $options;
-    }
-
-    /**
-     *
-     * @return array
-     */
-    public function get_editor_options() {
-        $editor = new cs_editor();
-        return $editor->get_options();
     }
 
     /**
