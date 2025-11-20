@@ -1582,6 +1582,28 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * @Given /^there is a double-blind marking coursework$/
+     */
+    public function there_is_a_double_blind_marking_coursework() {
+
+        /**
+         * @var $generator mod_coursework_generator
+         */
+        $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
+
+        $coursework = new stdClass();
+        $coursework->course = $this->course;
+        $coursework->startdate = time();
+        $coursework->deadline = strtotime('+15 minutes');
+        $coursework->numberofgraders = 2;
+        $coursework->blindmarking = true;
+        $coursework->allocationenabled = true;
+        $coursework->filetypes = "pdf";
+
+        $this->coursework = coursework::find($generator->create_instance($coursework)->id);
+    }
+
+    /**
      * @Then /^I should see the title of the coursework on the page$/
      */
     public function i_should_see_the_title_of_the_coursework_on_the_page() {
