@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @double-marking-blind
 Feature: Double marking - blind
   In order to ensure double marking works correctly
   As an admin
@@ -11,9 +11,6 @@ Feature: Double marking - blind
     And the following "custom fields" exist:
       | name        | shortname   | category | type |
       | Course Year | course_year | CLC      | text |
-    And the following "courses" exist:
-      | fullname | shortname | format | customfield_course_year |
-      | Course 1 | C1        | topics | ##now##%Y##             |
     And the following "roles" exist:
       | shortname           | name                | archetype |
       | courseworkmarker    | courseworkmarker    | teacher   |
@@ -27,18 +24,10 @@ Feature: Double marking - blind
       | student1  | Student   | 1        | student1@example.com |
       | student2  | Student   | 2        | student2@example.com |
       | student3  | Student   | 3        | student3@example.com |
-    And the following "course enrolments" exist:
-      | user      | course | role             |
-      | teacher1  | C1     | teacher          |
-      | marker1   | C1     | teacher          |
-      | marker2   | C1     | teacher          |
-      | marker3   | C1     | teacher          |
-      | student1  | C1     | student          |
-      | student2  | C1     | student          |
-      | student3  | C1     | student          |
 
   Scenario: Create coursework assignment with double marking
-    Given I am on the "Course 1" "course" page logged in as "admin"
+    Given there is a course
+    And I am on the "Course 1" "course" page logged in as "admin"
     And I add a coursework activity to course "Course 1" section "2" and I fill the form with:
       | Coursework title                                            | Coursework – Double marking blind                 |
       | Formative or summative?                                     | Summative - counts towards the final module mark  |
@@ -62,28 +51,16 @@ Feature: Double marking - blind
     Then I should see "Coursework – Double marking blind"
 
   Scenario: Add markers
-    Given I am on the "Course 1" "course" page logged in as "admin"
-    And I add a coursework activity to course "Course 1" section "2" and I fill the form with:
-      | Coursework title                                            | Coursework – Double marking blind                 |
-      | Formative or summative?                                     | Summative - counts towards the final module mark  |
-      | Description                                                 | Test coursework description                       |
-      | Display description on course page                          | Yes                                               |
-      | Start date                                                  | ##now##                                           |
-      | Deadline for submissions:                                   | ##now + 15 minutes##                              |
-      | Use marking deadline                                        | Yes                                               |
-      | Types of file that students are allowed to submit           | pdf                                               |
-      | Enable plagiarism flagging                                  | Yes                                               |
-      | Number of times each submission should initially be marked. | 2                                                 |
-      | Marker allocation enabled                                   | Yes                                               |
-      | Marker allocation strategy                                  | Manual                                            |
-      | Automatic agreement of marks                                | percentage distance                               |
-      | Automatic agreement range                                   | 10                                                |
-      | View initial markers' grades                                | No                                                |
-      | Auto-populate agreed feedback comment                       | Yes                                               |
-      | Blind marking                                               | Yes                                               |
-      | Marker anonymity                                            | Yes                                               |
+    Given there is a course
+    And there is a double-blind marking coursework
+    And the following "course enrolments" exist:
+      | user      | course | role             |
+      | marker1   | C1     | teacher          |
+      | marker2   | C1     | teacher          |
+      | marker3   | C1     | teacher          |
 
-    And I follow "Coursework – Double marking blind"
+    And I am on the "Course 1" "course" page logged in as "admin"
+    And I follow "Coursework 1"
     And I follow "Add markers"
     And I follow "courseworkmarker"
 
@@ -106,28 +83,19 @@ Feature: Double marking - blind
     And I should not see "marker 3" in the "Potential users" "field"
 
   Scenario: Allocate markers
-    Given I am on the "Course 1" "course" page logged in as "admin"
-    And I add a coursework activity to course "Course 1" section "2" and I fill the form with:
-      | Coursework title                                            | Coursework – Double marking blind                 |
-      | Formative or summative?                                     | Summative - counts towards the final module mark  |
-      | Description                                                 | Test coursework description                       |
-      | Display description on course page                          | Yes                                               |
-      | Start date                                                  | ##now##                                           |
-      | Deadline for submissions:                                   | ##now + 15 minutes##                              |
-      | Use marking deadline                                        | Yes                                               |
-      | Types of file that students are allowed to submit           | pdf                                               |
-      | Enable plagiarism flagging                                  | Yes                                               |
-      | Number of times each submission should initially be marked. | 2                                                 |
-      | Marker allocation enabled                                   | Yes                                               |
-      | Marker allocation strategy                                  | Manual                                            |
-      | Automatic agreement of marks                                | percentage distance                               |
-      | Automatic agreement range                                   | 10                                                |
-      | View initial markers' grades                                | No                                                |
-      | Auto-populate agreed feedback comment                       | Yes                                               |
-      | Blind marking                                               | Yes                                               |
-      | Marker anonymity                                            | Yes                                               |
+    Given there is a course
+    And there is a double-blind marking coursework
+    And the following "course enrolments" exist:
+      | user      | course | role             |
+      | marker1   | C1     | teacher          |
+      | marker2   | C1     | teacher          |
+      | marker3   | C1     | teacher          |
+      | student1  | C1     | student          |
+      | student2  | C1     | student          |
+      | student3  | C1     | student          |
 
-    And I follow "Coursework – Double marking blind"
+    And I am on the "Course 1" "course" page logged in as "admin"
+    And I follow "Coursework 1"
     And I follow "Add markers"
     And I follow "courseworkmarker"
 
@@ -162,28 +130,19 @@ Feature: Double marking - blind
     And I should not see "marker 3" in the "Student 3" "table_row"
 
   Scenario: Check anonymity
-    Given I am on the "Course 1" "course" page logged in as "admin"
-    And I add a coursework activity to course "Course 1" section "2" and I fill the form with:
-      | Coursework title                                            | Coursework – Double marking blind                 |
-      | Formative or summative?                                     | Summative - counts towards the final module mark  |
-      | Description                                                 | Test coursework description                       |
-      | Display description on course page                          | Yes                                               |
-      | Start date                                                  | ##now##                                           |
-      | Deadline for submissions:                                   | ##now + 15 minutes##                              |
-      | Use marking deadline                                        | Yes                                               |
-      | Types of file that students are allowed to submit           | pdf                                               |
-      | Enable plagiarism flagging                                  | Yes                                               |
-      | Number of times each submission should initially be marked. | 2                                                 |
-      | Marker allocation enabled                                   | Yes                                               |
-      | Marker allocation strategy                                  | Manual                                            |
-      | Automatic agreement of marks                                | percentage distance                               |
-      | Automatic agreement range                                   | 10                                                |
-      | View initial markers' grades                                | No                                                |
-      | Auto-populate agreed feedback comment                       | Yes                                               |
-      | Blind marking                                               | Yes                                               |
-      | Marker anonymity                                            | Yes                                               |
+    Given there is a course
+    And there is a double-blind marking coursework
+    And the following "course enrolments" exist:
+      | user      | course | role             |
+      | marker1   | C1     | teacher          |
+      | marker2   | C1     | teacher          |
+      | marker3   | C1     | teacher          |
+      | student1  | C1     | student          |
+      | student2  | C1     | student          |
+      | student3  | C1     | student          |
+    And I am on the "Course 1" "course" page logged in as "admin"
 
-    Then I follow "Coursework – Double marking blind"
+    Then I follow "Coursework 1"
     And I follow "Add markers"
     And I follow "courseworkmarker"
 
@@ -209,7 +168,7 @@ Feature: Double marking - blind
 
     And I log out
     And I am on the "Course 1" "course" page logged in as "marker1"
-    And I follow "Coursework – Double marking blind"
+    And I follow "Coursework 1"
     Then I should see "Submissions"
     And I should see "Hidden"
     And I should not see "Student 1"
