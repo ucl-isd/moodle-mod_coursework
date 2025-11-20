@@ -21,4 +21,5 @@ Feature: Teachers should be able to add and edit plagiarism flags for group subm
     And I set the field "Status" to "Under Investigation"
     And I set the field "Internal comment" to "Test comment"
     And I click on "Save" "button"
+    And I wait until the page is ready
     Then I should see "Flagged for plagiarism"
