@@ -316,9 +316,11 @@ class assessor_feedback_mform extends moodleform {
         // We only use the custom override if using a marking guide for a final agreed feedback on a multiple marker coursework.
         // Otherwise use the parent method.
 
-        $ismarkingguidegrading = $this->coursework->is_using_advanced_grading()
-            && $this->coursework->is_using_marking_guide();
-        if (!$ismarkingguidegrading) {
+        if (
+            !feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)
+            ||
+            !$this->coursework->is_using_marking_guide()
+        ) {
             parent::display();
             return;
         }
