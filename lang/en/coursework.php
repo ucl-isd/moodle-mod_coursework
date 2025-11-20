@@ -81,6 +81,7 @@ $string['automaticagreement'] = "Automatic agreement";
 $string['automaticagreement_help'] = "Automatic agreement strategy for the final mark. The final mark is worked out from the initial marks based on the strategy chosen";
 $string['automaticagreementofmarks'] = "Automatic agreement of marks";
 $string['automaticagreementrange'] = "Automatic agreement range";
+$string['automaticallyagreed'] = 'Automatically agreed';
 $string['automaticallyinsample'] = 'Automatically included in sample';
 $string['autopopulatefeedbackcomment'] = "Auto-populate agreed feedback comment";
 $string['autopopulatefeedbackcomment_help'] = "Pre-populate agreed feedback comment field with comments from initial marking. Please note these comments are not saved until 'Save changes' button is pressed.";

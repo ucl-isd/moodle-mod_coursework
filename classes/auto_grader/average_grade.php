@@ -145,7 +145,7 @@ class average_grade implements auto_grader {
             'stageidentifier' => 'final_agreed_1',
             'submissionid' => $this->get_allocatable()->get_submission($this->get_coursework())->id(),
             'grade' => $this->automatic_grade(),
-
+            'lasteditedbyuser' => 0, // Grade was auto generated - zero here shows no user involved.
         ];
 
         if ($this->coursework->autopopulatefeedbackcomment_enabled()) {
