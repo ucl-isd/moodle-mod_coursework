@@ -234,7 +234,7 @@ class grading_guide_agreed_grades implements renderable, templatable {
             );
         }
         $existingagreedfeedback = !empty($existingagreedfeedbacks) ? $existingagreedfeedbacks[0] : null;
-        $gradingcontrollerinstance =
+        $gradingcontrollerinstance = !$existingagreedfeedback ? null :
             $gradingcontroller->get_current_instance($existingagreedfeedback->assessorid, $existingagreedfeedback->id);
         // Check for grading controller instance first.
         // It will be null if we have an automatic agreed grade (percentage distance) with no detailed marks breakdown (CTP-5278).

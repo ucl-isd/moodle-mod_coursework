@@ -181,6 +181,7 @@ $string['csvmoderatorusername'] = 'Moderator username';
 $string['csvothermarkermarkstage'] = 'Other marker ({$a->stage}) - {$a->description}';
 $string['csvothermarkermarkstagecomment'] = 'Comment for: Other marker ({$a->stage}) - {$a->description}';
 $string['csvplagiarismcomment'] = 'Plagiarism comment';
+$string['custom'] = 'Custom';
 $string['customentertext'] = 'Enter custom feedback';
 $string['day'] = 'Day';
 $string['days'] = 'Days';
