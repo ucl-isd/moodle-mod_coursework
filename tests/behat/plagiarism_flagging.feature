@@ -20,4 +20,5 @@ Feature: Teachers and course administrators should be able to add and edit
     And I set the field "Status" to "Under Investigation"
     And I set the field "Internal comment" to "Test comment"
     And I click on "Save" "button"
+    And I wait until the page is ready
     Then I should see "Flagged for plagiarism"
