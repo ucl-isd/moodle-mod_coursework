@@ -106,8 +106,6 @@ class assessor_feedback_mform extends moodleform {
         $mform->addElement('hidden', 'stageidentifier', $this->feedback->stageidentifier ?? '');
         $mform->setType('stageidentifier', PARAM_ALPHANUMEXT);
 
-        $grademenu = make_grades_menu($this->coursework->grade);
-
         if (feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)) {
             $this->gradingcontroller = $this->coursework->get_advanced_grading_active_controller();
             $this->gradinginstance = $this->gradingcontroller->get_or_create_instance(
@@ -126,24 +124,34 @@ class assessor_feedback_mform extends moodleform {
             if (defined('BEHAT_SITE_RUNNING')) {
                 $mform->addElement('html', '<a href="#">' . get_string('togglezoom', 'mod_assign') . '</a>');
             }
-        } else if ($this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1) {
-            $mform->addElement('text', 'grade', get_string('mark', 'mod_coursework'));
-            $mform->setType('grade', PARAM_RAW);
-            $mform->addRule(
-                'grade',
-                get_string('err_valueoutofrange', 'mod_coursework'),
-                'numeric',
-                null,
-                'client'
-            );
         } else {
-            $mform->addElement(
-                'select',
-                'grade',
-                get_string('mark', 'mod_coursework'),
-                $grademenu,
-                ['id' => 'feedback_grade']
-            );
+            // If $this->coursework->grade is greater than zero, it represents the maximum point grade for this assignment.
+            // However, if it's less than zero, it represents a scale - specifically the ID in mdl_scale. See make_grades_menu().
+            if ($this->coursework->grade > 0) {
+                // We are using a point grade e.g. 100/100, so use a text input.
+                $mform->addElement('text', 'grade', get_string('mark', 'mod_coursework'));
+                $mform->setType(
+                    'grade',
+                    $this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1 ? PARAM_RAW : PARAM_INT
+                );
+                $mform->addRule(
+                    'grade',
+                    get_string('err_valueoutofrange', 'mod_coursework'),
+                    'numeric',
+                    null,
+                    'client'
+                );
+            } else if ($this->coursework->grade < 0) {
+                // We are using a grading scale e.g. competent/not yet competent, so we need a select menu for the grade.
+                $grademenu = make_grades_menu($this->coursework->grade);
+                $mform->addElement(
+                    'select',
+                    'grade',
+                    get_string('mark', 'mod_coursework'),
+                    $grademenu,
+                    ['id' => 'feedback_grade']
+                );
+            }
         }
 
         // Useful to keep the overall comments even if we have a rubric or something. There may be a place
@@ -317,7 +325,7 @@ class assessor_feedback_mform extends moodleform {
         $data = (array)$data;
         $errors = parent::validation($data, $files);
         $hasadvancedgrading = $data['advancedgrading'] ?? null;
-        if (!$hasadvancedgrading && isset($data['stageidentifier']) && $data['stageidentifier'] == 'final_agreed_1') {
+        if (!$hasadvancedgrading && $this->coursework->grade > 0) {
             if (!$this->grade_in_range($data['grade'])) {
                 $errors['grade'] = get_string('err_valueoutofrange', 'coursework');
             }
@@ -331,5 +339,19 @@ class assessor_feedback_mform extends moodleform {
     public function grade_in_range(string $grade): bool {
         $gradeoptions = array_keys(make_grades_menu($this->coursework->grade));
         return is_numeric($grade) && $grade >= min($gradeoptions) && $grade <= max($gradeoptions);
+    }
+
+    /**
+     * Load in existing data as form defaults.
+     * @param stdClass|array $defaultvalues object or array of default values
+     */
+    public function set_data($defaultvalues) {
+        parent::set_data($defaultvalues);
+        $defaultvalues = (array)$defaultvalues;
+        if (isset($defaultvalues['grade']) && $this->feedback->stageidentifier !== final_agreed::STAGE_FINAL_AGREED_1) {
+            // Override parent method to display grade as an integer, unless it's final agreed grade.
+            // (It will come from DB as a float, but users will expect an integer).
+            $this->_form->setDefault('grade', floor($defaultvalues['grade']));
+        }
     }
 }
