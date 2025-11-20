@@ -32,7 +32,6 @@ use mod_coursework\models\coursework;
  * @package mod_coursework\auto_grader
  */
 class average_grade_no_straddle extends average_grade {
-
     /**
      * @var coursework
      */
