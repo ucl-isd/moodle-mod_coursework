@@ -1598,6 +1598,7 @@ class behat_mod_coursework extends behat_base {
         $coursework->numberofgraders = 2;
         $coursework->blindmarking = true;
         $coursework->allocationenabled = true;
+        $coursework->extensionsenabled = true;
         $coursework->filetypes = "pdf";
 
         $this->coursework = coursework::find($generator->create_instance($coursework)->id);

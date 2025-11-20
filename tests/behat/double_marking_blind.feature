@@ -174,3 +174,58 @@ Feature: Double marking - blind
     And I should not see "Student 1"
     And I should not see "Student 2"
     And I should not see "Student 3"
+
+  @javascript
+  Scenario: Add extension to a student
+    Given there is a course
+    And there is a double-blind marking coursework
+    And the following "course enrolments" exist:
+      | user      | course | role             |
+      | teacher1  | C1     | teacher          |
+      | marker1   | C1     | teacher          |
+      | marker2   | C1     | teacher          |
+      | marker3   | C1     | teacher          |
+      | student1  | C1     | student          |
+      | student2  | C1     | student          |
+      | student3  | C1     | student          |
+    And I am on the "Course 1" "course" page logged in as "admin"
+
+    Then I follow "Coursework 1"
+    And I follow "Add markers"
+    And I follow "courseworkmarker"
+
+    And I set the field "Potential users" to "marker 1 (marker1@example.com)"
+    And I press "Add"
+    And I set the field "Potential users" to "marker 2 (marker2@example.com)"
+    And I press "Add"
+    And I set the field "Potential users" to "marker 3 (marker3@example.com)"
+    And I press "Add"
+
+    Then I follow "Allocate markers"
+    And I set the field "Allocation strategy" to "Manual"
+    And I press "Apply"
+    Then I should see "Please make sure markers are allocated"
+
+    Then I set the field with xpath "//tr[contains(.,'Student 1')]//td[@class='assessor_1']//select" to "marker 1"
+    And I set the field with xpath "//tr[contains(.,'Student 1')]//td[@class='assessor_2']//select" to "marker 2"
+    And I set the field with xpath "//tr[contains(.,'Student 2')]//td[@class='assessor_1']//select" to "marker 1"
+    And I set the field with xpath "//tr[contains(.,'Student 2')]//td[@class='assessor_2']//select" to "marker 2"
+    And I set the field with xpath "//tr[contains(.,'Student 3')]//td[@class='assessor_1']//select" to "marker 1"
+    And I set the field with xpath "//tr[contains(.,'Student 3')]//td[@class='assessor_2']//select" to "marker 2"
+    And I press "Save"
+
+    And I press "Actions"
+    And I wait until the page is ready
+    And I click on "Submission extension" "link"
+    And I wait until the page is ready
+    And I set the following fields to these values:
+      | extended_deadline[day]    | 1       |
+      | extended_deadline[month]  | January |
+      | extended_deadline[year]   | 2027    |
+      | extended_deadline[hour]   | 08      |
+      | extended_deadline[minute] | 00      |
+    And I click on "Save" "button" in the "Extended deadline" "dialogue"
+    And I should see "1 January 2027, 8:00 AM" in the "Student 1" "table_row"
+    Then I visit the coursework page
+    And I should see "1 January 2027, 8:00 AM" in the "Student 1" "table_row"
+
