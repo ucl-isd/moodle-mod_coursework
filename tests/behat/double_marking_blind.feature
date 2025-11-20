@@ -49,16 +49,15 @@ Feature: Double marking - blind
       | Use marking deadline                                        | Yes                                               |
       | Types of file that students are allowed to submit           | pdf                                               |
       | Enable plagiarism flagging                                  | Yes                                               |
-      | Number of times each submission should initially be marked. | 2 |
-      | Marker allocation enabled                                   | Yes |
-      | Marker allocation strategy                                  | Manual |
-      | Automatic agreement of marks                                  | percentage distance |
-      | Automatic agreement range                                   | 10 |
-      | View initial markers' grades                                | No |
-      | Auto-populate agreed feedback comment                       | Yes |
-      | Blind marking                                               | Yes |
-      | Marker anonymity                                            | Yes |
-      | Blind marking                                               | Yes |
+      | Number of times each submission should initially be marked. | 2                                                 |
+      | Marker allocation enabled                                   | Yes                                               |
+      | Marker allocation strategy                                  | Manual                                            |
+      | Automatic agreement of marks                                | percentage distance                               |
+      | Automatic agreement range                                   | 10                                                |
+      | View initial markers' grades                                | No                                                |
+      | Auto-populate agreed feedback comment                       | Yes                                               |
+      | Blind marking                                               | Yes                                               |
+      | Marker anonymity                                            | Yes                                               |
 
     Then I should see "Coursework – Double marking blind"
 
@@ -74,16 +73,15 @@ Feature: Double marking - blind
       | Use marking deadline                                        | Yes                                               |
       | Types of file that students are allowed to submit           | pdf                                               |
       | Enable plagiarism flagging                                  | Yes                                               |
-      | Number of times each submission should initially be marked. | 2 |
-      | Marker allocation enabled                                   | Yes |
-      | Marker allocation strategy                                  | Manual |
-      | Automatic agreement of marks                                  | percentage distance |
-      | Automatic agreement range                                   | 10 |
-      | View initial markers' grades                                | No |
-      | Auto-populate agreed feedback comment                       | Yes |
-      | Blind marking                                               | Yes |
-      | Marker anonymity                                            | Yes |
-      | Blind marking                                               | Yes |
+      | Number of times each submission should initially be marked. | 2                                                 |
+      | Marker allocation enabled                                   | Yes                                               |
+      | Marker allocation strategy                                  | Manual                                            |
+      | Automatic agreement of marks                                | percentage distance                               |
+      | Automatic agreement range                                   | 10                                                |
+      | View initial markers' grades                                | No                                                |
+      | Auto-populate agreed feedback comment                       | Yes                                               |
+      | Blind marking                                               | Yes                                               |
+      | Marker anonymity                                            | Yes                                               |
 
     And I follow "Coursework – Double marking blind"
     And I follow "Add markers"
@@ -119,16 +117,15 @@ Feature: Double marking - blind
       | Use marking deadline                                        | Yes                                               |
       | Types of file that students are allowed to submit           | pdf                                               |
       | Enable plagiarism flagging                                  | Yes                                               |
-      | Number of times each submission should initially be marked. | 2 |
-      | Marker allocation enabled                                   | Yes |
-      | Marker allocation strategy                                  | Manual |
-      | Automatic agreement of marks                                  | percentage distance |
-      | Automatic agreement range                                   | 10 |
-      | View initial markers' grades                                | No |
-      | Auto-populate agreed feedback comment                       | Yes |
-      | Blind marking                                               | Yes |
-      | Marker anonymity                                            | Yes |
-      | Blind marking                                               | Yes |
+      | Number of times each submission should initially be marked. | 2                                                 |
+      | Marker allocation enabled                                   | Yes                                               |
+      | Marker allocation strategy                                  | Manual                                            |
+      | Automatic agreement of marks                                | percentage distance                               |
+      | Automatic agreement range                                   | 10                                                |
+      | View initial markers' grades                                | No                                                |
+      | Auto-populate agreed feedback comment                       | Yes                                               |
+      | Blind marking                                               | Yes                                               |
+      | Marker anonymity                                            | Yes                                               |
 
     And I follow "Coursework – Double marking blind"
     And I follow "Add markers"
@@ -176,16 +173,15 @@ Feature: Double marking - blind
       | Use marking deadline                                        | Yes                                               |
       | Types of file that students are allowed to submit           | pdf                                               |
       | Enable plagiarism flagging                                  | Yes                                               |
-      | Number of times each submission should initially be marked. | 2 |
-      | Marker allocation enabled                                   | Yes |
-      | Marker allocation strategy                                  | Manual |
-      | Automatic agreement of marks                                  | percentage distance |
-      | Automatic agreement range                                   | 10 |
-      | View initial markers' grades                                | No |
-      | Auto-populate agreed feedback comment                       | Yes |
-      | Blind marking                                               | Yes |
-      | Marker anonymity                                            | Yes |
-      | Blind marking                                               | Yes |
+      | Number of times each submission should initially be marked. | 2                                                 |
+      | Marker allocation enabled                                   | Yes                                               |
+      | Marker allocation strategy                                  | Manual                                            |
+      | Automatic agreement of marks                                | percentage distance                               |
+      | Automatic agreement range                                   | 10                                                |
+      | View initial markers' grades                                | No                                                |
+      | Auto-populate agreed feedback comment                       | Yes                                               |
+      | Blind marking                                               | Yes                                               |
+      | Marker anonymity                                            | Yes                                               |
 
     Then I follow "Coursework – Double marking blind"
     And I follow "Add markers"
