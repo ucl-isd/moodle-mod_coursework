@@ -179,9 +179,10 @@ class average_grade implements auto_grader {
     }
 
     /**
+     * Get grades as percentages.
      * @return array
      */
-    private function grades_as_percentages() {
+    protected function grades_as_percentages() {
         $initialfeedbacks = $this->get_allocatable()->get_initial_feedbacks($this->get_coursework());
         return array_map(function ($feedback) {
             return ($feedback->get_grade() / $this->get_coursework()->get_max_grade()) * 100;

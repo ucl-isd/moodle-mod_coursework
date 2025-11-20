@@ -21,6 +21,8 @@
  */
 
 use mod_coursework\candidateprovider_manager;
+use mod_coursework\admin_setting_autogradeboundaries;
+use mod_coursework\auto_grader\average_grade_no_straddle;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -316,6 +318,25 @@ if ($ADMIN->fulltree) {
     $perpage = get_string('per_page', 'coursework');
     $perpagedescription = get_string('per_page_desc', 'coursework');
     $settings->add(new admin_setting_configselect('coursework_per_page', $perpage, $perpagedescription, '10', $options));
+
+    $settingsheader = new admin_setting_heading(
+        'automaticagreementofmarksheader',
+        get_string('automaticagreementofmarks', 'mod_coursework'),
+        ''
+    );
+    $settings->add($settingsheader);
+    $settings->add(
+        new admin_setting_autogradeboundaries(
+            'coursework/autogradeclassboundaries',
+            get_string('automaticagreementaveragegradenostraddling', 'mod_coursework'),
+            get_string(
+                'gradeboundarysettingdesc',
+                'mod_coursework',
+                '<pre class="ms-3 p-3 bg-light d-inline-block">' . average_grade_no_straddle::get_example_setting() . '</pre>'
+            ),
+            ''
+        )
+    );
 
     $settingsheader = new admin_setting_heading('featuresunderdevelopment_header', get_string('featuresunderdevelopment_header', 'mod_coursework'), '');
     $settings->add($settingsheader);
