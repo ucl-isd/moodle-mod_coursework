@@ -1582,6 +1582,10 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * Create a coursework assessment with double-blind marking enabled.
+     *
+     * Example: And there is a double-blind marking coursework
+     *
      * @Given /^there is a double-blind marking coursework$/
      */
     public function there_is_a_double_blind_marking_coursework() {
@@ -1599,6 +1603,7 @@ class behat_mod_coursework extends behat_base {
         $coursework->blindmarking = true;
         $coursework->allocationenabled = true;
         $coursework->extensionsenabled = true;
+        $coursework->allowlatesubmissions = true;
         $coursework->filetypes = "pdf";
 
         $this->coursework = coursework::find($generator->create_instance($coursework)->id);
@@ -3384,6 +3389,25 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * For matching a late submitted date ignoring the time part
+     *
+     * Exmple: I should see late submitted date 4 July 2025
+     *
+     * @Given /^I should see late submitted date "(?P<date>(?:[^"]|\\")*)"$/
+     */
+    public function i_should_see_late_submitted_date($date) {
+        $page = $this->getsession()->getpage();
+        $match = $page->find('xpath', "//li[starts-with(normalize-space(string()), 'Submitted Late $date')]");
+
+        if (!$match) {
+            throw new ExpectationException(
+                "Should have seen expected submitted date $date, but it was not there",
+                $this->getsession()
+            );
+        }
+    }
+
+    /**
      * @Given /^sample marking includes student for stage (\d)$/
      */
     public function sample_marking_includes_student_for_stage($stage) {
@@ -3643,5 +3667,59 @@ class behat_mod_coursework extends behat_base {
     public function i_set_the_field_to_replacing_line_breaks($field, $value) {
         $value = str_replace('\n', chr(10), $value);
         $this->execute([behat_forms::class, 'i_set_the_field_to'], [$field, $value]);
+    }
+
+    /**
+     * Sets an extension deadline for a student in a coursework.
+     *
+     * Example: And the coursework extension for "Student 1" in "Coursework 1" is "1 January 2027 08:00"
+     * Example: And the coursework extension for "Student 1" in "Coursework 1" is "## + 1 month ##"
+     *
+     * @Given /^the coursework extension for "(?P<fullname_string>(?:[^"]|\\")*)" in "(?P<cwname>(?:[^"]|\\")*)" is "(?P<datestr>(?:[^"]|\\")*)"$/
+     */
+    public function set_extension_for_user($fullname, $cwname, $datestr) {
+        global $DB;
+
+        // Find the coursework by name.
+        $cw = $DB->get_record('coursework', ['name' => $cwname], '*', MUST_EXIST);
+
+        // Find user by full name (firstname + lastname).
+        [$first, $last] = explode(' ', $fullname, 2);
+
+        $user = $DB->get_record('user', [
+            'firstname' => $first,
+            'lastname'  => $last
+        ]);
+
+        if (!$user) {
+            throw new Exception("Could not find user with name '{$fullname}'.");
+        }
+
+        if (is_int($datestr)) {
+            $timestamp = $datestr;
+        } else {
+            $timestamp = strtotime($datestr);
+        }
+
+        // See if an extension already exists.
+        $existing = $DB->get_record('coursework_extensions', [
+            'courseworkid' => $cw->id,
+            'allocatableid' => $user->id,
+            'allocatabletype' => 'user'
+        ]);
+
+        $record = new stdClass();
+        $record->courseworkid     = $cw->id;
+        $record->allocatableid    = $user->id;
+        $record->allocatabletype  = 'user';
+        $record->extended_deadline = $timestamp;
+        $record->createdbyid        = 2;  // Admin ID.
+
+        if ($existing) {
+            $record->id = $existing->id;
+            $DB->update_record('coursework_extensions', $record);
+        } else {
+            $DB->insert_record('coursework_extensions', $record);
+        }
     }
 }
