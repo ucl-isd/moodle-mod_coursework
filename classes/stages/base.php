@@ -588,14 +588,15 @@ abstract class base {
      * @throws coding_exception
      */
     public function user_is_assessor(int $userid): bool {
-        if (!isset(self::$selfcache['user_is_assessor'][$this->coursework->id][$userid])) {
+        if (!isset(self::$selfcache['user_is_assessor'][$this->stageidentifier][$this->coursework->id][$userid])) {
             $enrolled = is_enrolled($this->coursework->get_course_context(), $userid);
             $hasmoduleassessorcapability =
                 ($enrolled && has_capability($this->assessor_capability(), $this->coursework->get_context(), $userid))
                 || is_primary_admin($userid);
-            self::$selfcache['user_is_assessor'][$this->coursework->id][$userid] = $hasmoduleassessorcapability;
+            self::$selfcache['user_is_assessor'][$this->stageidentifier][$this->coursework->id][$userid]
+                = $hasmoduleassessorcapability;
         }
-        return self::$selfcache['user_is_assessor'][$this->coursework->id][$userid];
+        return self::$selfcache['user_is_assessor'][$this->stageidentifier][$this->coursework->id][$userid];
     }
 
     /**
