@@ -1207,8 +1207,13 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $gradingreport = $coursework->renderable_grading_report_factory($reportoptions);
         $tablerows = $gradingreport->get_table_rows_for_page();
 
+        $trdatalist = [];
         $gradingreportrenderer = new grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
-        $summarydata = $gradingreportrenderer->get_marking_summary_data($tablerows, $coursework);
+        foreach ($tablerows as $row) {
+            $trdatalist[] = $gradingreportrenderer->get_table_row_data($coursework, $row);
+        }
+
+        $summarydata = $gradingreportrenderer->get_marking_summary_data($trdatalist, $coursework);
         $summarydata->canmark = true;
         $summarydata->dropdown = $this->get_export_upload_links($coursework);
 
