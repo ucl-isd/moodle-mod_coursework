@@ -1307,9 +1307,15 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     private function add_automatic_agreement_enabled() {
-        $options = ['none' => 'none',
-                         'percentage_distance' => 'percentage distance',
-                         'average_grade' => 'average grade'];
+        $options = [
+            'none' => get_string('none'),
+            'percentage_distance' => get_string('automaticagreementpercentagedistance', 'coursework'),
+            'average_grade' => get_string('automaticagreementaveragegrade', 'coursework'),
+        ];
+        if (get_config('coursework', 'autogradeclassboundaries')) {
+            $options['average_grade_no_straddle'] = get_string('automaticagreementaveragegradenostraddling', 'coursework');
+        }
+
         $this->form()->addelement(
             'select',
             'automaticagreementstrategy',
@@ -1320,7 +1326,9 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->form()->addhelpbutton('automaticagreementstrategy', 'automaticagreement', 'mod_coursework');
 
         $this->form()->hideif('automaticagreementstrategy', 'numberofmarkers', 'eq', 1);
-        $this->form()->hideif('automaticagreementrange', 'automaticagreementstrategy', 'neq', 'percentage_distance');
+        $this->form()->hideif('automaticagreementrange', 'automaticagreementstrategy', 'eq', 'average_grade');
+        $this->form()->hideif('automaticagreementrange', 'automaticagreementstrategy', 'eq', 'none');
+        $this->form()->hideif('automaticagreementrange', 'advancedgradingmethod_submissions', 'neq', '');
 
         // If guide or rubric grading in use, none of the existing auto agreement options will work correctly, so hide for now.
         $this->form()->hideif('automaticagreementstrategy', 'advancedgradingmethod_submissions', 'neq', "");
@@ -1349,7 +1357,8 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $this->form()->setType('roundingrule', PARAM_ALPHAEXT);
         $this->form()->setDefault('roundingrule', 'mid');
-        $this->form()->hideif('roundingrule', 'automaticagreementstrategy', 'neq', 'average_grade');
+        $this->form()->hideif('roundingrule', 'automaticagreementstrategy', 'eq', 'percentage_distance');
+        $this->form()->hideif('roundingrule', 'automaticagreementstrategy', 'eq', 'none');
     }
 
     private function add_enable_plagiarism_flag_field() {
