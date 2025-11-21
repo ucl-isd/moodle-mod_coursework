@@ -167,6 +167,7 @@ Feature: Double marking - blind
     And I press "Save"
 
     And I log out
+
     And I am on the "Course 1" "course" page logged in as "marker1"
     And I follow "Coursework 1"
     Then I should see "Submissions"
@@ -181,7 +182,6 @@ Feature: Double marking - blind
     And there is a double-blind marking coursework
     And the following "course enrolments" exist:
       | user      | course | role             |
-      | teacher1  | C1     | teacher          |
       | marker1   | C1     | teacher          |
       | marker2   | C1     | teacher          |
       | marker3   | C1     | teacher          |
@@ -228,4 +228,74 @@ Feature: Double marking - blind
     And I should see "1 January 2027, 8:00 AM" in the "Student 1" "table_row"
     Then I visit the coursework page
     And I should see "1 January 2027, 8:00 AM" in the "Student 1" "table_row"
+
+  @javascript @_file_upload
+  Scenario: Student can submit a PDF file
+    Given there is a course
+    And there is a double-blind marking coursework
+    And the following "course enrolments" exist:
+      | user      | course | role             |
+      | student1  | C1     | student          |
+
+    When I am on the "Course 1" "course" page logged in as "student1"
+
+    And I follow "Coursework 1"
+    When I visit the coursework page
+    And I click on "Upload your submission" "link"
+    And I upload "mod/coursework/tests/files_for_uploading/Test_document.pdf" file to "Upload a file" filemanager
+    And I save the submission
+    Then I should be on the coursework page
+    And I should see the file on the page
+    And I should see the edit submission button
+    And I should see submission status "Submitted"
+    And I should see submitted date "##today##%d %B %Y##"
+
+  @javascript @_file_upload
+  Scenario: Student with extension can submit after deadline w/o being late
+    Given there is a course
+    And there is a double-blind marking coursework
+    And the following "course enrolments" exist:
+      | user      | course | role             |
+      | student1  | C1     | student          |
+
+    # The coursework deadline has passed
+    Given the coursework deadline date is "##-5 minutes##"
+    And the coursework extension for "Student 1" in "Coursework 1" is "## + 1 month ##"
+
+    # Student has extension so late submission is in time
+    When I am on the "Course 1" "course" page logged in as "student1"
+    And I follow "Coursework 1"
+    When I visit the coursework page
+    And I click on "Upload your submission" "link"
+    And I upload "mod/coursework/tests/files_for_uploading/Test_document.pdf" file to "Upload a file" filemanager
+    And I save the submission
+    Then I should be on the coursework page
+    And I should see the file on the page
+    And I should see the edit submission button
+    And I should see submission status "Submitted"
+    And I should see submitted date "##today##%d %B %Y##"
+
+  @javascript @_file_upload
+  Scenario: Student has no extension so submission is late
+    Given there is a course
+    And there is a double-blind marking coursework
+    And the following "course enrolments" exist:
+      | user      | course | role             |
+      | student1  | C1     | student          |
+
+    # The coursework deadline has passed
+    And the coursework deadline date is "##-5 minutes##"
+
+    When I am on the "Course 1" "course" page logged in as "student1"
+    And I follow "Coursework 1"
+    When I visit the coursework page
+    And I click on "Upload your submission" "link"
+    And I upload "mod/coursework/tests/files_for_uploading/Test_document.pdf" file to "Upload a file" filemanager
+    And I save the submission
+    Then I should be on the coursework page
+    And I should see the file on the page
+    And I should see submission status "Submitted"
+    And I should see "late"
+    And I should see late submitted date "##today##%d %B %Y##"
+
 
