@@ -133,47 +133,6 @@ class grading_report_renderer extends plugin_renderer_base {
         }
 
         return $template;
-
-        // return $this->render_from_template('mod_coursework/submissions/table', $template);
-    }
-
-    /**
-     * Get marking summary data.
-     *
-     * @param array $trdatalist Array of tr data objects.
-     * @param coursework $coursework
-     * @return stdClass
-     */
-    public function get_marking_summary_data(array $trdatalist, coursework $coursework): stdClass {
-        $template = new stdClass();
-        $template->submitted = 0;
-        $template->participants = 0;
-        $template->readyforagreement = 0;
-        $template->readyforrelease = 0;
-        $template->published = 0;
-
-        foreach ($trdatalist as $trdata) {
-            $template->participants++;
-            empty($trdata->submission->submissiondata) ?: $template->submitted++;
-
-            if ($coursework->has_multiple_markers()) {
-                empty($trdata->agreedmark->mark->readyforrelease) ?: $template->readyforrelease++;
-                empty($trdata->agreedmark->mark->released) ?: $template->published++;
-                empty($trdata->agreedmark->addfinalfeedback) ?: $template->readyforagreement++;
-            } else if ($coursework->moderation_enabled()) {
-                empty($trdata->moderation->mark->readyforrelease) ?: $template->readyforrelease++;
-                empty($trdata->moderation->mark->released) ?: $template->published++;
-                empty($trdata->moderation->mark->addmoderation) ?: $template->readyforagreement++;
-            } else if (!empty($trdata->markers[0]->showmark) && $trdata->markers[0]->showmark === true && $trdata->markers[0]->draft === false) {
-                if ($trdata->markers[0]->readyforrelease) {
-                    $template->readyforrelease++;
-                } else {
-                    $template->published++;
-                }
-            }
-        }
-
-        return $template;
     }
 
     /**
