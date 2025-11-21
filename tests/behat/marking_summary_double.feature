@@ -91,4 +91,4 @@ Feature: When a coursework uses double marking the marking summary table should 
     Then I should see marking summary:
       | Submissions           | 1/1 |
       | Ready for release     | 1   |
-      | Released            | 0   |
+      | Released              | 0   |
