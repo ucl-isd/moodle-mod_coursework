@@ -91,3 +91,27 @@ Feature: Multiple assessors simple grading form
     When I grade the submission as 56 using the simple form with comment "A test comment 9"
     And I visit the coursework page
     Then I should see the grade on the page
+
+  Scenario: Teachers do not see the agree marking button unless they have the specific permission awarded
+    Given there is a teacher
+    And there is another teacher
+    And the submission is finalised
+    And there is finalised feedback for the submission from the teacher
+    And I am logged in as the other teacher
+    And I visit the coursework page
+    And I follow "Add mark"
+    And I set the field "Mark" to "59"
+    And I press "Save and finalise"
+    And I visit the coursework page
+    # Cannot see agree marking until specific capability awarded.
+    Then I should not see "Agree marking"
+    And the following "permission overrides" exist:
+      | capability                      | permission | role    | contextlevel | reference |
+      | mod/coursework:addagreedgrade   | Allow      | teacher | Course       | C1        |
+    And I visit the coursework page
+    And I follow "Agree marking"
+    And I wait until the page is ready
+    And I set the field "Mark" to "71.1"
+    And I press "Save and finalise"
+    And I visit the coursework page
+    And I should see "71.1"
