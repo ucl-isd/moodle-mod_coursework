@@ -1011,11 +1011,23 @@ class coursework extends table_base {
     }
 
     /**
+     * Does this coursework use a numeric grade or something else (e.g. no grade, scale)?
+     * @see make_grades_menu() in core which shows the logic behind this.
+     * @return bool
+     */
+    public function uses_numeric_grade(): bool {
+        return $this->grade > 0;
+    }
+
+    /**
      * Returns the maximum grade a student can achieve.
      *
      * @return int
      */
-    public function get_max_grade() {
+    public function get_max_grade(): int {
+        if (!$this->uses_numeric_grade()) {
+            throw new \core\exception\coding_exception("This coursework does not use numeric grades");
+        }
         return $this->grade;
     }
 

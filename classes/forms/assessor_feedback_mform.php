@@ -125,10 +125,8 @@ class assessor_feedback_mform extends moodleform {
                 $mform->addElement('html', '<a href="#">' . get_string('togglezoom', 'mod_assign') . '</a>');
             }
         } else {
-            // If $this->coursework->grade is greater than zero, it represents the maximum point grade for this assignment.
-            // However, if it's less than zero, it represents a scale - specifically the ID in mdl_scale. See make_grades_menu().
-            if ($this->coursework->grade > 0) {
-                // We are using a point grade e.g. 100/100, so use a text input.
+            if ($this->coursework->uses_numeric_grade()) {
+                // We are using a point grade e.g. 100/100, so use a text input not a menu.
                 $mform->addElement('text', 'grade', get_string('mark', 'mod_coursework'));
                 $mform->setType(
                     'grade',
@@ -141,14 +139,13 @@ class assessor_feedback_mform extends moodleform {
                     null,
                     'client'
                 );
-            } else if ($this->coursework->grade < 0) {
+            } else {
                 // We are using a grading scale e.g. competent/not yet competent, so we need a select menu for the grade.
-                $grademenu = make_grades_menu($this->coursework->grade);
                 $mform->addElement(
                     'select',
                     'grade',
                     get_string('mark', 'mod_coursework'),
-                    $grademenu,
+                    make_grades_menu($this->coursework->grade),
                     ['id' => 'feedback_grade']
                 );
             }
@@ -325,10 +322,8 @@ class assessor_feedback_mform extends moodleform {
         $data = (array)$data;
         $errors = parent::validation($data, $files);
         $hasadvancedgrading = $data['advancedgrading'] ?? null;
-        if (!$hasadvancedgrading && $this->coursework->grade > 0) {
-            if (!$this->grade_in_range($data['grade'])) {
-                $errors['grade'] = get_string('err_valueoutofrange', 'coursework');
-            }
+        if (!$hasadvancedgrading && $this->coursework->uses_numeric_grade() && !$this->grade_in_range($data['grade'])) {
+            $errors['grade'] = get_string('err_valueoutofrange', 'coursework');
         }
         return $errors;
     }
@@ -337,8 +332,9 @@ class assessor_feedback_mform extends moodleform {
      * Agreed grade can be entered as text field (float or int) so need to validate it.
      */
     public function grade_in_range(string $grade): bool {
-        $gradeoptions = array_keys(make_grades_menu($this->coursework->grade));
-        return is_numeric($grade) && $grade >= min($gradeoptions) && $grade <= max($gradeoptions);
+        $mingrade = 0;
+        $maxgrade = $this->coursework->get_max_grade();
+        return is_numeric($grade) && $grade >= $mingrade && $maxgrade && $grade <= $maxgrade;
     }
 
     /**
