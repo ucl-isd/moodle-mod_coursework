@@ -15,17 +15,17 @@ Feature: When a coursework uses double marking the marking summary table should 
     Given I log in as the teacher
     And I visit the coursework page
     Then I should see marking summary:
-      | Submissions         | 0/1 |
+      | Submissions       | 0/1 |
       | Ready for release | 0   |
-      | Released    | 0   |
+      | Released          | 0   |
 
   Scenario: Manager's view when there are no submissions
     Given I log in as the manager
     And I visit the coursework page
     Then I should see marking summary:
       | Submissions         | 0/1 |
-      | Ready for release | 0   |
-      | Released    | 0   |
+      | Ready for release   | 0   |
+      | Released            | 0   |
 
   Scenario: Teacher's view when there is a submission
     Given the student has a submission
@@ -34,8 +34,8 @@ Feature: When a coursework uses double marking the marking summary table should 
     And I visit the coursework page
     Then I should see marking summary:
       | Submissions         | 1/1 |
-      | Ready for release | 0   |
-      | Released    | 0   |
+      | Ready for release   | 0   |
+      | Released            | 0   |
 
   Scenario: Manager's view when there is a submission
     Given the student has a submission
@@ -44,8 +44,8 @@ Feature: When a coursework uses double marking the marking summary table should 
     And I visit the coursework page
     Then I should see marking summary:
       | Submissions         | 1/1 |
-      | Ready for release | 0   |
-      | Released    | 0   |
+      | Ready for release   | 0   |
+      | Released            | 0   |
 
   Scenario: Teacher's view when submission is marked once
     Given the student has a submission
@@ -55,8 +55,8 @@ Feature: When a coursework uses double marking the marking summary table should 
     And I visit the coursework page
     Then I should see marking summary:
       | Submissions         | 1/1 |
-      | Ready for release | 0   |
-      | Released    | 0   |
+      | Ready for release   | 0   |
+      | Released            | 0   |
 
   Scenario: Manager's view when submission is marked once
     Given the student has a submission
@@ -66,8 +66,8 @@ Feature: When a coursework uses double marking the marking summary table should 
     And I visit the coursework page
     Then I should see marking summary:
       | Submissions         | 1/1 |
-      | Ready for release | 0   |
-      | Released    | 0   |
+      | Ready for release   | 0   |
+      | Released            | 0   |
 
   Scenario: Manager's view when submission is marked twice
     Given the student has a submission
@@ -77,9 +77,9 @@ Feature: When a coursework uses double marking the marking summary table should 
     And I visit the coursework page
     Then I should see marking summary:
       | Submissions           | 1/1 |
-      | Ready for release   | 0   |
-      | Ready for agreement | 1   |
-      | Released      | 0   |
+      | Ready for release     | 0   |
+      | Ready for agreement   | 1   |
+      | Released              | 0   |
 
   Scenario: Manager's view when submission has final mark
     Given the student has a submission
@@ -90,5 +90,5 @@ Feature: When a coursework uses double marking the marking summary table should 
     And I visit the coursework page
     Then I should see marking summary:
       | Submissions           | 1/1 |
-      | Ready for release   | 1   |
-      | Released      | 0   |
+      | Ready for release     | 1   |
+      | Released            | 0   |
