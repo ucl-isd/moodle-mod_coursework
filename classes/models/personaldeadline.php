@@ -185,7 +185,7 @@ class personaldeadline extends table_base {
             'userid' => $USER->id ?? 0,
             'relateduserid' => $allocatable->type() == 'user' ? $allocatable->id() : null,
             'context' => context_module::instance($coursework->get_course_module()->id),
-            'anonymous' => 1, // To prevent potential de-anonymisation of users via course reports.
+            'anonymous' => $coursework->blindmarking_enabled() ? 1 : 0,
             'other' => [
                 'allocatabletype' => $allocatable->type(),
                 'courseworkid' => $coursework->id,

@@ -204,6 +204,7 @@ class submissions_controller extends controller_base {
         $params = [
             'context' => $context,
             'objectid' => $submission->id,
+            'anonymous' => $submission->get_coursework()->blindmarking_enabled() ? 1 : 0,
             'other' => [
                 'courseworkid' => $this->coursework->id,
             ],
@@ -285,6 +286,7 @@ class submissions_controller extends controller_base {
         $params = [
             'context' => $context,
             'objectid' => $submission->id,
+            'anonymous' => $submission->get_coursework()->blindmarking_enabled() ? 1 : 0,
             'other' => [
                 'courseworkid' => $this->coursework->id,
             ],
