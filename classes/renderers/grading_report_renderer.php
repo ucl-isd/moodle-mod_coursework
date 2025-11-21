@@ -111,11 +111,11 @@ class grading_report_renderer extends plugin_renderer_base {
     /**
      * Get marking summary data.
      *
-     * @param array $tablerows
+     * @param array $trdatalist Array of tr data objects.
      * @param coursework $coursework
      * @return stdClass
      */
-    public function get_marking_summary_data(array $tablerows, coursework $coursework): stdClass {
+    public function get_marking_summary_data(array $trdatalist, coursework $coursework): stdClass {
         $template = new stdClass();
         $template->submitted = 0;
         $template->participants = 0;
@@ -123,9 +123,7 @@ class grading_report_renderer extends plugin_renderer_base {
         $template->readyforrelease = 0;
         $template->published = 0;
 
-        foreach ($tablerows as $tr) {
-            $trdata = $this->get_table_row_data($coursework, $tr);
-
+        foreach ($trdatalist as $trdata) {
             $template->participants++;
             empty($trdata->submission->submissiondata) ?: $template->submitted++;
 
