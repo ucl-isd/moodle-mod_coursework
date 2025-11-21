@@ -148,13 +148,6 @@ class assessor_feedback_row {
     }
 
     /**
-     * Returns the maximum grade that this coursework will allow for a feedback.
-     */
-    public function get_max_grade() {
-        return $this->get_coursework()->get_max_grade();
-    }
-
-    /**
      * When was this feedback last altered?
      *
      * @return int

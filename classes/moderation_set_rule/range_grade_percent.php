@@ -25,6 +25,7 @@
 
 namespace mod_coursework\moderation_set_rule;
 
+use core\exception\coding_exception;
 use html_writer;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\moderation_set_rule;
@@ -47,6 +48,10 @@ class range_grade_percent extends moderation_set_rule {
      * @return void
      */
     public function adjust_set(array &$moderationset, array &$potentialallocatables, $stage) {
+
+        if ($this->get_coursework()->uses_numeric_grade()) {
+            throw new coding_exception("This coursework does not use numeric grade (e.g. grade type is scale or none");
+        }
 
         $maxgrade = $this->get_coursework()->get_max_grade();
         // Convert percentages to raw grades for comparison.
