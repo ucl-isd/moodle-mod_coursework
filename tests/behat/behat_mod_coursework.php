@@ -2684,6 +2684,36 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * Named student has a submission.
+     * @Given /^the student called "([\w]+)" has a( finalised)? submission*$/
+     */
+    public function named_student_has_a_submission(string $firstname, bool $finalised = false) {
+        global $DB;
+        $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
+        $userid = $DB->get_field_sql(
+            "SELECT id FROM {user} WHERE firstname = ? AND lastname LIKE 'student%'",
+            [$firstname]
+        );
+        if ($userid) {
+            $submission = new stdClass();
+            $submission->allocatableid = $userid;
+            $submission->allocatabletype = 'user';
+            $this->submission = $generator->create_submission($submission, $this->coursework);
+            if ($finalised) {
+                $this->submission->finalisedstatus = submission::FINALISED_STATUS_FINALISED;
+                $DB->set_field(
+                    'coursework_submissions',
+                    'finalisedstatus',
+                    submission::FINALISED_STATUS_FINALISED,
+                    ['id' => $this->submission->id]
+                );
+            }
+        } else {
+            throw new ExpectationException("User $firstname not found", $this->getsession());
+        }
+    }
+
+    /**
      * @Given /^another student has another submission$/
      */
     public function another_student_has_another_submission() {
@@ -2883,20 +2913,20 @@ class behat_mod_coursework extends behat_base {
      * Role names might be fed through from another step that has already removed the spaces, so
      * make sure you add both options. Don't use a wildcard, as it causes collisions with other steps.
      *
-     * @Given /^there is (a|another|an) (teacher|editing teacher|editingteacher|manager|student)$/
+     * @Given /^there is (a|another|an) (teacher|editing teacher|editingteacher|manager|student)(?: called "([\w]+)")*$/
      * @param $other
      * @param $rolename
+     * @param string $firstname optional arg to set the user's first name to enable their row to be identifed in grading table.
      * @throws coding_exception
      */
-    public function there_is_another_teacher($other, $rolename) {
+    public function there_is_a_user($other, $rolename, $firstname = '') {
 
         $other = ($other == 'another');
 
         $rolename = str_replace(' ', '', $rolename);
 
         $rolenametosave = $other ? 'other' . $rolename : $rolename;
-
-        $this->$rolenametosave = $this->create_user($rolename, $rolenametosave);
+        $this->$rolenametosave = $this->create_user($rolename, $firstname ?: $rolenametosave);
     }
 
     /**
