@@ -244,7 +244,8 @@ class user extends table_base implements allocatable, moderatable {
             JOIN {context} ctx on ctx.instanceid = u.id AND ctx.contextlevel = ?
             JOIN {user_enrolments} ue ON ue.userid = u.id
             JOIN {enrol} e ON ue.enrolid = e.id AND e.courseid = ?
-            WHERE u.picture <> 0",
+            WHERE u.picture <> 0
+            GROUP BY u.id, ctx.id",
             [CONTEXT_USER, $courseid]
         );
     }
