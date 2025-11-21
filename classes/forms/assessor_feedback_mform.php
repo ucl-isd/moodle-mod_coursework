@@ -130,7 +130,7 @@ class assessor_feedback_mform extends moodleform {
                 $mform->addElement('text', 'grade', get_string('mark', 'mod_coursework'));
                 $mform->setType(
                     'grade',
-                    $this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1 ? PARAM_RAW : PARAM_INT
+                    $this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1 ? PARAM_LOCALISEDFLOAT : PARAM_INT
                 );
                 $mform->addRule(
                     'grade',
