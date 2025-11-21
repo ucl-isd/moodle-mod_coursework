@@ -67,6 +67,12 @@ class grading_report_renderer extends plugin_renderer_base {
         $template->coursework = self::prepare_coursework_data($coursework);
         $template->blindmarkingenabled = $blindmarking;
         $template->releasemarks = $this->prepare_release_marks_button($coursework);
+        // Marking summary data.
+        $template->submitted = 0;
+        $template->participants = 0;
+        $template->readyforagreement = 0;
+        $template->readyforrelease = 0;
+        $template->published = 0;
 
         // Populate template tr data.
         $template->tr = [];
@@ -93,6 +99,27 @@ class grading_report_renderer extends plugin_renderer_base {
                     $markersarray[$marker->markerid] = $marker;
                 }
             }
+
+            // Marking summary data.
+            $template->participants++;
+            empty($trdata->submission->submissiondata) ?: $template->submitted++;
+
+            if ($coursework->has_multiple_markers()) {
+                empty($trdata->agreedmark->mark->readyforrelease) ?: $template->readyforrelease++;
+                empty($trdata->agreedmark->mark->released) ?: $template->published++;
+                empty($trdata->agreedmark->addfinalfeedback) ?: $template->readyforagreement++;
+            } else if ($coursework->moderation_enabled()) {
+                empty($trdata->moderation->mark->readyforrelease) ?: $template->readyforrelease++;
+                empty($trdata->moderation->mark->released) ?: $template->published++;
+                empty($trdata->moderation->mark->addmoderation) ?: $template->readyforagreement++;
+            } else if (!empty($trdata->markers[0]->showmark) && $trdata->markers[0]->showmark === true && $trdata->markers[0]->draft === false) {
+                if ($trdata->markers[0]->readyforrelease) {
+                    $template->readyforrelease++;
+                } else {
+                    $template->published++;
+                }
+            }
+
             $template->tr[] = $trdata;
         }
 
@@ -105,7 +132,9 @@ class grading_report_renderer extends plugin_renderer_base {
             $template->markerfilter = $markersarray;
         }
 
-        return $this->render_from_template('mod_coursework/submissions/table', $template);
+        return $template;
+
+        // return $this->render_from_template('mod_coursework/submissions/table', $template);
     }
 
     /**
