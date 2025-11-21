@@ -67,6 +67,12 @@ class grading_report_renderer extends plugin_renderer_base {
         $template->coursework = self::prepare_coursework_data($coursework);
         $template->blindmarkingenabled = $blindmarking;
         $template->releasemarks = $this->prepare_release_marks_button($coursework);
+        // Marking summary data.
+        $template->submitted = 0;
+        $template->participants = 0;
+        $template->readyforagreement = 0;
+        $template->readyforrelease = 0;
+        $template->published = 0;
 
         // Populate template tr data.
         $template->tr = [];
@@ -93,39 +99,8 @@ class grading_report_renderer extends plugin_renderer_base {
                     $markersarray[$marker->markerid] = $marker;
                 }
             }
-            $template->tr[] = $trdata;
-        }
 
-        // Sort and add markers to template.
-        if ($markersarray) {
-            usort($markersarray, function ($a, $b) {
-                return strnatcasecmp($a->markername, $b->markername);
-            });
-            $template->hasmarkers = true;
-            $template->markerfilter = $markersarray;
-        }
-
-        return $this->render_from_template('mod_coursework/submissions/table', $template);
-    }
-
-    /**
-     * Get marking summary data.
-     *
-     * @param array $tablerows
-     * @param coursework $coursework
-     * @return stdClass
-     */
-    public function get_marking_summary_data(array $tablerows, coursework $coursework): stdClass {
-        $template = new stdClass();
-        $template->submitted = 0;
-        $template->participants = 0;
-        $template->readyforagreement = 0;
-        $template->readyforrelease = 0;
-        $template->published = 0;
-
-        foreach ($tablerows as $tr) {
-            $trdata = $this->get_table_row_data($coursework, $tr);
-
+            // Marking summary data.
             $template->participants++;
             empty($trdata->submission->submissiondata) ?: $template->submitted++;
 
@@ -144,6 +119,17 @@ class grading_report_renderer extends plugin_renderer_base {
                     $template->published++;
                 }
             }
+
+            $template->tr[] = $trdata;
+        }
+
+        // Sort and add markers to template.
+        if ($markersarray) {
+            usort($markersarray, function ($a, $b) {
+                return strnatcasecmp($a->markername, $b->markername);
+            });
+            $template->hasmarkers = true;
+            $template->markerfilter = $markersarray;
         }
 
         return $template;
