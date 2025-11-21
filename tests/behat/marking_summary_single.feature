@@ -13,9 +13,9 @@ Feature: When a coursework uses single marking the marking summary table should 
     Given I log in as the teacher
     And I visit the coursework page
     Then I should see marking summary:
-      | Submitted         | 0/1 |
+      | Submissions         | 0/1 |
       | Ready for release | 0   |
-      | Marks released    | 0   |
+      | Released    | 0   |
 
   Scenario: Teacher's view when student has uploaded submission
     Given the student has a submission
@@ -23,9 +23,9 @@ Feature: When a coursework uses single marking the marking summary table should 
     And I log in as the teacher
     And I visit the coursework page
     Then I should see marking summary:
-      | Submitted         | 1/1 |
+      | Submissions         | 1/1 |
       | Ready for release | 0   |
-      | Marks released    | 0   |
+      | Released    | 0   |
 
   Scenario: Teacher's view when submission is marked
     Given the student has a submission
@@ -34,9 +34,9 @@ Feature: When a coursework uses single marking the marking summary table should 
     And I log in as the teacher
     And I visit the coursework page
     Then I should see marking summary:
-      | Submitted         | 1/1 |
+      | Submissions         | 1/1 |
       | Ready for release | 1   |
-      | Marks released    | 0   |
+      | Released    | 0   |
 
   @javascript
   Scenario: Manager's view when marks are released
@@ -47,6 +47,6 @@ Feature: When a coursework uses single marking the marking summary table should 
     And I visit the coursework page
     And I press the release marks button
     Then I should see marking summary:
-      | Submitted         | 1/1 |
+      | Submissions         | 1/1 |
       | Ready for release | 0   |
-      | Marks released    | 1   |
+      | Released    | 1   |
