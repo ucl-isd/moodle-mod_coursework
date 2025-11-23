@@ -3688,7 +3688,7 @@ class behat_mod_coursework extends behat_base {
 
         $user = $DB->get_record('user', [
             'firstname' => $first,
-            'lastname'  => $last
+            'lastname'  => $last,
         ]);
 
         if (!$user) {
@@ -3705,7 +3705,7 @@ class behat_mod_coursework extends behat_base {
         $existing = $DB->get_record('coursework_extensions', [
             'courseworkid' => $cw->id,
             'allocatableid' => $user->id,
-            'allocatabletype' => 'user'
+            'allocatabletype' => 'user',
         ]);
 
         $record = new stdClass();
