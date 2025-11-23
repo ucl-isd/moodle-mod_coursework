@@ -296,5 +296,3 @@ Feature: Double marking - blind
     And I should see submission status "Submitted"
     And I should see "late"
     And I should see late submitted date "##today##%d %B %Y##"
-
-
