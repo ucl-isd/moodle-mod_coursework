@@ -30,7 +30,6 @@ Feature: Double marking - blind
     And I am on the "Course 1" "course" page logged in as "admin"
     And I add a coursework activity to course "Course 1" section "2" and I fill the form with:
       | Coursework title                                            | Coursework – Double marking blind                 |
-      | Formative or summative?                                     | Summative - counts towards the final module mark  |
       | Description                                                 | Test coursework description                       |
       | Display description on course page                          | Yes                                               |
       | Start date                                                  | ##now##                                           |
