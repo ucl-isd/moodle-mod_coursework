@@ -363,7 +363,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @throws dml_exception
      */
     protected function render_mod_coursework_coursework(mod_coursework_coursework $coursework): string {
-        global $USER, $PAGE;
+        global $USER;
         $student = user::find($USER);
         $template = new stdClass();
 
@@ -380,7 +380,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         if ($canallocate) {
             $warnings->not_enough_assessors();
             $warnings->percentage_allocations_not_complete();
-
         }
         // Groups.
         if ($coursework->usegroups == 1) {
@@ -392,7 +391,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // Teacher data.
         $submissionstable = '';
         if ($cangrade || $canpublish) {
-
             // Submissions table.
             $pagerenderer = $this->page->get_renderer('mod_coursework', 'page');
             $submissionstabledata = $pagerenderer->submissions_table_data($coursework);
