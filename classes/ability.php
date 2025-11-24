@@ -289,6 +289,10 @@ class ability extends framework\ability {
             'new',
             'mod_coursework\models\submission',
             function (submission $submission) {
+                global $USER;
+                if($submission->allocatableid !== $USER->id) {
+                    return false;
+                }
                 $existsparams = [
                     'courseworkid' => $submission->courseworkid,
                     'allocatableid' => $submission->allocatableid,
