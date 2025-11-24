@@ -523,13 +523,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         ];
 
         $gradingreport = $coursework->renderable_grading_report_factory($reportoptions);
-
-        // TODO - what is all this?
-        $gradingsheet = new grading_sheet($coursework, null, null);
-        $gradingsheet->get_submissions();
-
         $gradingreportrenderer = new grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
-
         $template = $gradingreportrenderer->render_grading_report($gradingreport);
 
         foreach (['modal_handler_extensions', 'modal_handler_personaldeadlines', 'modal_handler_plagiarism'] as $amd) {
