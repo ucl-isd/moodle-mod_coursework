@@ -511,11 +511,11 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * Submissions table data.
      *
      * @param coursework $coursework
-     * @return string
+     * @return stdClass
      * @throws coding_exception
      * @throws moodle_exception
      */
-    public function submissions_table_data($coursework) {
+    public function submissions_table_data($coursework): stdClass {
         // Grading report display options.
         $reportoptions = [
             'mode' => grading_report::MODE_GET_ALL,
