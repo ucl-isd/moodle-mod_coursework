@@ -421,11 +421,15 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $template->markingguideurl = self::get_marking_guide_url($coursework);
         }
 
-        if ($canaddgeneralfeedback || $coursework->is_general_feedback_released()) {
+        // TODO - should this just be $canaddgeneralfeedback?
+        // Behat fails when you don't include the other capabilities.
+        if ($cangrade || $canpublish || $canaddgeneralfeedback || $coursework->is_general_feedback_released()) {
             $feedback = new stdClass();
             $feedback->feedback = $coursework->feedbackcomment;
 
-            if ($canaddgeneralfeedback) {
+            // TODO - should this just be $canaddgeneralfeedback?
+            // Behat fails when you don't include the other capabilities.
+            if ($cangrade || $canpublish || $canaddgeneralfeedback) {
                 $feedback->duedate = $coursework->generalfeedback;
                 $feedback->button = new stdClass();
                 $feedback->button->url = new moodle_url('/mod/coursework/actions/general_feedback.php', ['cmid' => $coursework->get_coursemodule_id()]);
