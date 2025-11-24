@@ -421,7 +421,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $template->markingguideurl = self::get_marking_guide_url($coursework);
         }
 
-        // Genral feedback.
+        // General feedback.
         // TODO - update this as part of https://ucldata.atlassian.net/browse/CTP-5316
         // TODO - this should just be $canaddgeneralfeedback || $coursework->is_general_feedback_released().
         // Behat fails when you don't include the other capabilities.
