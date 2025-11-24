@@ -375,22 +375,33 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $cansubmit = has_capability('mod/coursework:submit', $this->page->context);
 
         // Warnings.
+        $warnings = new warnings($coursework);
+        // Allocations.
         if ($canallocate) {
-            $warnings = new warnings($coursework);
-            $template->notenoughassessors = $warnings->not_enough_assessors();
+            $warnings->not_enough_assessors();
+            $warnings->percentage_allocations_not_complete();
+
         }
+        // Groups.
+        if ($coursework->usegroups == 1) {
+            $warnings->students_in_mutiple_groups();
+            $warnings->student_in_no_group();
+        }
+        $template->warnings = $warnings->get_warnings();
 
         // Teacher data.
         $submissionstable = '';
         if ($cangrade || $canpublish) {
-            // Submissions data.
+
+            // Submissions table.
             $pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
             $submissionstabledata = $pagerenderer->submissions_table_data($coursework);
             $submissionstable = $this->render_from_template('mod_coursework/submissions/table', $submissionstabledata);
+
+            // Marking summary.
             $template->canmark = true;
+            $template->markingsummary = $submissionstabledata; // TODO - should we pass less data around?
             $template->dropdown = $this->get_export_upload_links($coursework);
-            // TODO - pass less data around...
-            $template->markingsummary = $submissionstabledata;
         }
 
         // Student summary col.

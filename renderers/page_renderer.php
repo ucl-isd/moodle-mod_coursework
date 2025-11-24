@@ -507,6 +507,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
+     *
+     * Submissions table data.
+     *
      * @param coursework $coursework
      * @return string
      * @throws coding_exception
@@ -520,12 +523,13 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         ];
 
         $gradingreport = $coursework->renderable_grading_report_factory($reportoptions);
-        // TODO - what is this?
-        // Get submissions that user can grade.
+
+        // TODO - what is all this?
         $gradingsheet = new grading_sheet($coursework, null, null);
         $gradingsheet->get_submissions();
 
         $gradingreportrenderer = new grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
+
         $template = $gradingreportrenderer->render_grading_report($gradingreport);
 
         foreach (['modal_handler_extensions', 'modal_handler_personaldeadlines', 'modal_handler_plagiarism'] as $amd) {
@@ -537,37 +541,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         return $template;
-    }
-
-    /**
-     *
-     * Warnings and groups stuff - probably needs splitting up.
-     * @param coursework $coursework
-     * @param $group
-     * @return string
-     * @throws coding_exception
-     * @throws moodle_exception
-     */
-    public function warnings_and_groups($coursework, $group) {
-        $template = new stdClass();
-        $warnings = new warnings($coursework);
-
-        // Show any warnings that may need to be here.
-        if ($coursework->usegroups == 1) {
-            $warnings->students_in_mutiple_groups();
-        }
-        $warnings->student_in_no_group();
-
-        // Display 'Group mode' with the relevant groups.
-        $currenturl = new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]);
-        $template->groupmenu = groups_print_activity_menu($coursework->get_course_module(), $currenturl, true);
-        $warnings->group_mode_chosen_warning($group);
-
-        // TODO - move this out of here if its not about groups.
-        $warnings->percentage_allocations_not_complete();
-
-        $template->warnings = $warnings->get_warnings();
-        return $this->render_from_template('mod_coursework/submissions/beforetable', $template);
     }
 
     /**
