@@ -2723,6 +2723,35 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * Creates a submission for a given student.
+     *
+     * Example: And the student "Student 1" has a submission
+     *
+     * @Given /^the student "(?P<studentname>(?:[^"]|\\")*)" has a submission$/
+     */
+    public function student_has_a_submission($studentname) {
+        global $DB;
+
+        // Find the user by full name (or username if you prefer)
+        [$firstname, $lastname] = explode(' ', $studentname, 2);
+        $user = $DB->get_record('user', [
+            'firstname' => $firstname,
+            'lastname' => $lastname
+        ], '*', MUST_EXIST);
+
+        /**
+         * @var $generator mod_coursework_generator
+         */
+        $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
+
+        $submission = new stdClass();
+        $submission->allocatableid = $user->id;
+        $submission->allocatabletype = 'user'; // Always 'user' for a student.
+
+        $this->submission = $generator->create_submission($submission, $this->coursework);
+    }
+
+    /**
      * @Given /^the group has a submission$/
      */
     public function ithe_group_has_a_submission() {
@@ -2778,6 +2807,42 @@ class behat_mod_coursework extends behat_base {
         $this->submission->save();
     }
 
+    /**
+     * Finalises (or un-finalises) a submission for a given student.
+     *
+     * Example: And the submission for "Student 1" is finalised
+     * Example: And the submission for "Student 1" is not finalised
+     *
+     * @Given /^the submission for "(?P<studentname>(?:[^"]|\\")*)" is (not )?finalised$/
+     */
+    public function submission_for_student_is_finalised($studentname, $negate = false) {
+        global $DB;
+
+        // Find the user by full name (first + last)
+        [$firstname, $lastname] = explode(' ', $studentname, 2);
+        $user = $DB->get_record('user', [
+            'firstname' => $firstname,
+            'lastname'  => $lastname
+        ], '*', MUST_EXIST);
+
+        // Find the submission record
+        $record = $DB->get_record('coursework_submissions', [
+            'allocatableid' => $user->id,
+            'allocatabletype' => 'user',
+            'courseworkid' => $this->coursework->id
+        ], '*', MUST_EXIST);
+
+        // Load the submission object
+        $submission = submission::build($record);
+
+        // Set finalised status
+        $submission->finalisedstatus = $negate
+            ? submission::FINALISED_STATUS_NOT_FINALISED
+            : submission::FINALISED_STATUS_FINALISED;
+
+        // Save using the submission class
+        $submission->save();
+    }
     /**
      * @Then /^the file upload button should not be visible$/
      */

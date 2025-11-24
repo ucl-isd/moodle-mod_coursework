@@ -287,7 +287,6 @@ Feature: Double marking - blind
 
     When I am on the "Course 1" "course" page logged in as "student1"
     And I follow "Coursework 1"
-    When I visit the coursework page
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.pdf" file to "Upload a file" filemanager
     And I save the submission
