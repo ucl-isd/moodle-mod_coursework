@@ -67,12 +67,14 @@ class grading_report_renderer extends plugin_renderer_base {
         $template->coursework = self::prepare_coursework_data($coursework);
         $template->blindmarkingenabled = $blindmarking;
         $template->releasemarks = $this->prepare_release_marks_button($coursework);
+
         // Marking summary data.
-        $template->submitted = 0;
-        $template->participants = 0;
-        $template->readyforagreement = 0;
-        $template->readyforrelease = 0;
-        $template->published = 0;
+        $markingsummary = new stdClass();
+        $markingsummary->submitted = 0;
+        $markingsummary->participants = 0;
+        $markingsummary->readyforagreement = 0;
+        $markingsummary->readyforrelease = 0;
+        $markingsummary->published = 0;
 
         // Populate template tr data.
         $template->tr = [];
@@ -101,22 +103,22 @@ class grading_report_renderer extends plugin_renderer_base {
             }
 
             // Marking summary data.
-            $template->participants++;
-            empty($trdata->submission->submissiondata) ?: $template->submitted++;
+            $markingsummary->participants++;
+            empty($trdata->submission->submissiondata) ?: $markingsummary->submitted++;
 
             if ($coursework->has_multiple_markers()) {
-                empty($trdata->agreedmark->mark->readyforrelease) ?: $template->readyforrelease++;
-                empty($trdata->agreedmark->mark->released) ?: $template->published++;
-                empty($trdata->agreedmark->addfinalfeedback) ?: $template->readyforagreement++;
+                empty($trdata->agreedmark->mark->readyforrelease) ?: $markingsummary->readyforrelease++;
+                empty($trdata->agreedmark->mark->released) ?: $markingsummary->published++;
+                empty($trdata->agreedmark->addfinalfeedback) ?: $markingsummary->readyforagreement++;
             } else if ($coursework->moderation_enabled()) {
-                empty($trdata->moderation->mark->readyforrelease) ?: $template->readyforrelease++;
-                empty($trdata->moderation->mark->released) ?: $template->published++;
-                empty($trdata->moderation->mark->addmoderation) ?: $template->readyforagreement++;
+                empty($trdata->moderation->mark->readyforrelease) ?: $markingsummary->readyforrelease++;
+                empty($trdata->moderation->mark->released) ?: $markingsummary->published++;
+                empty($trdata->moderation->mark->addmoderation) ?: $markingsummary->readyforagreement++;
             } else if (!empty($trdata->markers[0]->showmark) && $trdata->markers[0]->showmark === true && $trdata->markers[0]->draft === false) {
                 if ($trdata->markers[0]->readyforrelease) {
-                    $template->readyforrelease++;
+                    $markingsummary->readyforrelease++;
                 } else {
-                    $template->published++;
+                    $markingsummary->published++;
                 }
             }
 
@@ -131,6 +133,9 @@ class grading_report_renderer extends plugin_renderer_base {
             $template->hasmarkers = true;
             $template->markerfilter = $markersarray;
         }
+
+        // Add marking summary data to template.
+        $template->markingsummary = $markingsummary;
 
         return $template;
     }
