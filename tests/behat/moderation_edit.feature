@@ -1,4 +1,4 @@
-@mod @mod_coursework_moderation_edit
+@mod @mod_coursework @mod_coursework_moderation_edit
 Feature: Moderation of feedback
 
   Scenario: When I moderate feedback then edit the moderation by clicking the pencil button the moderation form should load with no error
