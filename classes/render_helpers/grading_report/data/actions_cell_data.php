@@ -139,6 +139,15 @@ class actions_cell_data extends cell_data_base {
             return;
         }
 
+        // Check if we can edit existing submission.
+        if ($submission && $this->ability->can('edit', $submission) && !$rowsbase->has_feedback()) {
+            $data->submission = new stdClass();
+            $data->submission->url = router::instance()->get_path('edit submission', ['submission' => $submission], false, false);
+            $entitytype = $rowsbase->get_coursework()->is_configured_to_have_group_submissions() ? 'group' : 'student';
+            $data->submission->label = "Edit submission on behalf of this {$entitytype}";
+            return;
+        }
+
         // Check if we can create new submission.
         if ($this->can_submit_new($rowsbase)) {
             $submissiondata = submission::build([
@@ -151,15 +160,6 @@ class actions_cell_data extends cell_data_base {
             $data->submission->url = router::instance()
                 ->get_path('new submission', ['submission' => $submissiondata], false, false);
             $data->submission->label = get_string('submitonbehalf', 'coursework');
-            return;
-        }
-
-        // Check if we can edit existing submission.
-        if ($submission && $this->ability->can('edit', $submission) && !$rowsbase->has_feedback()) {
-            $data->submission = new stdClass();
-            $data->submission->url = router::instance()->get_path('edit submission', ['submission' => $submission], false, false);
-            $entitytype = $rowsbase->get_coursework()->is_configured_to_have_group_submissions() ? 'group' : 'student';
-            $data->submission->label = "Edit submission on behalf of this {$entitytype}";
         }
     }
 
