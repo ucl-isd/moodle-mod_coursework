@@ -36,12 +36,13 @@ final class cron_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
         $this->preventResetByRollback();
-        $this->redirectMessages();
         // If we don't do this, we end up with the same cached objects for all tests and they may have incorrect/missing properties.
         \mod_coursework\models\coursework::$pool = null;
     }
 
     public function test_cron_auto_finalises_after_deadline(): void {
+        $this->redirectMessages();
+
         // Given there is a student.
         $this->create_a_course();
         $student = $this->create_a_student();
@@ -67,6 +68,8 @@ final class cron_test extends \advanced_testcase {
     }
 
     public function test_cron_does_not_auto_finalise_before_deadline(): void {
+        $this->redirectMessages();
+
         // Given there is a student.
         $this->create_a_course();
         $student = $this->create_a_student();
@@ -91,6 +94,7 @@ final class cron_test extends \advanced_testcase {
     }
 
     public function test_admins_and_graders(): void {
+        $this->redirectMessages();
         $this->create_a_course();
         $this->create_a_coursework();
         $teacher = $this->create_a_teacher();
@@ -100,6 +104,7 @@ final class cron_test extends \advanced_testcase {
     }
 
     public function test_auto_finalising_does_not_alter_time_submitted(): void {
+        $this->redirectMessages();
         $this->create_a_course();
         $coursework = $this->create_a_coursework();
         $this->create_a_student();
@@ -114,6 +119,7 @@ final class cron_test extends \advanced_testcase {
     }
 
     public function test_auto_releasing_does_not_alter_time_submitted(): void {
+        $this->redirectMessages();
         $this->create_a_course();
         $coursework = $this->create_a_coursework();
         $this->create_a_student();
@@ -129,6 +135,7 @@ final class cron_test extends \advanced_testcase {
     }
 
     public function test_auto_releasing_does_not_happen_before_deadline(): void {
+        $this->redirectMessages();
         $this->create_a_course();
         $coursework = $this->create_a_coursework();
         $this->create_a_student();
@@ -142,6 +149,7 @@ final class cron_test extends \advanced_testcase {
     }
 
     public function test_auto_releasing_happens_after_deadline(): void {
+        $this->redirectMessages();
         $this->create_a_course();
         $coursework = $this->create_a_coursework();
         $this->create_a_student();
@@ -153,5 +161,27 @@ final class cron_test extends \advanced_testcase {
         \mod_coursework\cron::run();
         $submission = $submission->reload();
         $this->assertNotEmpty($submission->firstpublished);
+    }
+
+    /**
+     * Student receives reminder email when submission due.
+     */
+    public function test_send_reminders_to_students(): void {
+        $this->create_a_course();
+        $this->create_a_student();
+        $coursework = $this->create_a_coursework();
+
+        // Set deadline within $CFG->coursework_day_reminder, 7 days by default.
+        $coursework->update_attribute('deadline', strtotime('+6 days'));
+
+        $sink = $this->redirectEmails();
+        \mod_coursework\cron::run();
+        $messages = $sink->get_messages();
+        $this->assertEquals(1, count($messages));
+        $message = reset($messages);
+        $this->assertStringStartsWith(
+            "Reminder: your assignment for $coursework->name is due",
+            $message->subject
+        );
     }
 }
