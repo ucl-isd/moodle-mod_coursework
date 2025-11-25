@@ -15,6 +15,7 @@ Feature: Teachers and course administrators should be able to add and edit
     Given I am logged in as a teacher
     And I visit the coursework page
     And I should not see "Flagged for plagiarism"
+    And "Actions" "button" should exist
     And I click on "Actions" "button"
     And I click on "Plagiarism action" "link"
     And I set the field "Status" to "Under Investigation"
@@ -22,3 +23,4 @@ Feature: Teachers and course administrators should be able to add and edit
     And I click on "Save" "button"
     And I wait until the page is ready
     Then I should see "Flagged for plagiarism"
+    And "Actions" "button" should not exist
