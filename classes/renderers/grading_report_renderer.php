@@ -69,12 +69,13 @@ class grading_report_renderer extends plugin_renderer_base {
         $template->releasemarks = $this->prepare_release_marks_button($coursework);
 
         // Marking summary data.
-        $markingsummary = new stdClass();
-        $markingsummary->submitted = 0;
-        $markingsummary->participants = 0;
-        $markingsummary->readyforagreement = 0;
-        $markingsummary->readyforrelease = 0;
-        $markingsummary->published = 0;
+        $markingsummary = (object) [
+            'submitted' => 0,
+            'participants' => 0,
+            'readyforagreement' => 0,
+            'readyforrelease' => 0,
+            'published' => 0
+        ];
 
         // Populate template tr data.
         $template->tr = [];
@@ -96,9 +97,11 @@ class grading_report_renderer extends plugin_renderer_base {
                 // Tr.mustache - csv list for data-marker used by js filtering.
                 $trdata->markerfilter = implode(', ', array_column($trdata->markers, 'markeridentifier'));
 
-                // Create markers array by id to ensure unique.
-                foreach (array_filter($trdata->markers, fn($m) => isset($m->markerid)) as $marker) {
-                    $markersarray[$marker->markerid] = $marker;
+                // Dropdown filter markers array by id to ensure unique.
+                foreach ($trdata->markers as $marker) {
+                    if (isset($marker->markerid)) {
+                        $markersarray[$marker->markerid] = $marker;
+                    }
                 }
             }
 
@@ -125,7 +128,7 @@ class grading_report_renderer extends plugin_renderer_base {
             $template->tr[] = $trdata;
         }
 
-        // Sort and add markers to template.
+        // Sort markers a-z for dropdown filter.
         if ($markersarray) {
             usort($markersarray, function ($a, $b) {
                 return strnatcasecmp($a->markername, $b->markername);
