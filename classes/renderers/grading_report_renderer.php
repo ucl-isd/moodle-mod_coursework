@@ -74,7 +74,7 @@ class grading_report_renderer extends plugin_renderer_base {
             'participants' => 0,
             'readyforagreement' => 0,
             'readyforrelease' => 0,
-            'published' => 0
+            'published' => 0,
         ];
 
         // Populate template tr data.
