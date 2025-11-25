@@ -205,6 +205,7 @@ $string['editedtime'] = 'Edited: {$a}';
 $string['editflagplagiarism'] = 'Edit status';
 $string['editgeneralfeedback'] = 'Edit <span class="sr-only">general feedback</span>';
 $string['editgroupsubmission'] = 'Edit the submission for your group';
+$string['editsubmissiononbehalfofthis'] = 'Edit submission on behalf of this {$a}';
 $string['edityoursubmission'] = 'Edit your submission';
 $string['email'] = 'Email';
 $string['emptysubmissionid'] = 'Empty submission id';

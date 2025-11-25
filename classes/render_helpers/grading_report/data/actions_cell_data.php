@@ -144,7 +144,7 @@ class actions_cell_data extends cell_data_base {
             $data->submission = new stdClass();
             $data->submission->url = router::instance()->get_path('edit submission', ['submission' => $submission], false, false);
             $entitytype = $rowsbase->get_coursework()->is_configured_to_have_group_submissions() ? 'group' : 'student';
-            $data->submission->label = "Edit submission on behalf of this {$entitytype}";
+            $data->submission->label = get_string('editsubmissiononbehalfofthis', 'coursework', $entitytype);
             return;
         }
 
