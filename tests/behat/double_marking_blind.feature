@@ -295,3 +295,50 @@ Feature: Double marking - blind
     And I should see submission status "Submitted"
     And I should see "late"
     And I should see late submitted date "##today##%d %B %Y##"
+
+  @javascript @_file_upload
+  Scenario: Manager can submit on behalf of students.
+    Given there is a course
+    And there is a double-blind marking coursework
+    And the following "course enrolments" exist:
+      | user      | course | role             |
+      | marker1   | C1     | teacher          |
+      | marker2   | C1     | teacher          |
+      | marker3   | C1     | teacher          |
+      | student1  | C1     | student          |
+
+    And the student "Student 1" has a submission
+    And the submission for "Student 1" is finalised
+
+    When I am on the "Course 1" "course" page logged in as "admin"
+    And I follow "Coursework 1"
+    Then I should see "Agree marking"
+
+    # Unfinalise a submission.
+    And I press "Actions"
+    And I wait until the page is ready
+    And I click on "Unfinalise submission" "link"
+    And I wait until the page is ready
+    Then I should see "Are you sure you want to unfinalise the submission"
+    And I press "Yes"
+    Then I should not see "Agree marking"
+
+    # Submit on behalf.
+    When I press "Actions"
+    And I wait until the page is ready
+    And I click on "Edit submission on behalf of this student" "link"
+    And I wait until the page is ready
+    Then I should see "Edit your submission"
+    And I should see "myfile.txt"
+    And I follow "myfile.txt"
+    And I wait until "Delete" "button" exists
+    # Delete previous file
+    # And I click on "Delete" "button" - does not work
+    And I click on "//div[contains(@class,'fp-select')]//button[contains(@class,'fp-file-delete')]" "xpath"
+    Then I should see "Are you sure you want to delete this file?"
+    And I press "Yes"
+    # Now upload a new file
+    And I upload "mod/coursework/tests/files_for_uploading/TestPDF1.pdf" file to "Upload a file" filemanager
+    And I save the submission
+    Then I should be on the coursework page
+    And I should not see "myfile.txt"
