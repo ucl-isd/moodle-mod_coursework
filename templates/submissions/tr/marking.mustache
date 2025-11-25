@@ -194,6 +194,15 @@
 
                     <a class="ml-1" href="{{{url}}}" data-behat-mark="{{markvalue}}">{{markvalue}}</a>
                 {{/mark}}
+                {{^mark}}
+                {{! Un-moderated submissions may still be released }}
+                    {{#submission.submissiondata.released}}
+                        <span class="badge badge-pill badge-success">
+                            <i class="fa-solid fa-circle-check my-1 mr-1"></i>
+                            {{#str}} statusreleased, mod_coursework {{/str}}
+                        </span>
+                    {{/submission.submissiondata.released}}
+                {{/mark}}
 
                 {{#addmoderation}}
                     <a class="btn btn-sm btn-success" href="{{{url}}}" data-behat-mark-action="addmoderation">{{#str}} agree_marking, mod_coursework {{/str}}</a>

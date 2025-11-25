@@ -73,6 +73,7 @@ class submission_cell_data extends cell_data_base {
         $data->submissiondata = new stdClass();
         $data->submissiondata->files = $this->get_submission_files_data($rowobject);
         $data->submissiondata->finalised = $submission->is_finalised();
+        $data->submissiondata->released = $submission->is_published();
 
         $this->add_plagiarism_data($data->submissiondata, $submission);
         $this->add_late_submission_data($data->submissiondata, $submission);
