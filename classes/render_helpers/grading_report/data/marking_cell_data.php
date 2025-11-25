@@ -410,8 +410,12 @@ class marking_cell_data extends cell_data_base {
 
         // Existing moderation.
         if ($moderation) {
-            if (!$this->ability->can('show', $moderation)) {
-                return $moderationdata; // Exit: Cannot view moderation data.
+            $canseeallgrades = $this->ability->can('show', $moderation);
+            if (!$canseeallgrades) {
+                $gradedbyme = $rowsbase->get_single_feedback()->lasteditedbyuser == $USER->id;
+                if (!$gradedbyme) {
+                    return null; // Exit: Cannot view moderation data.
+                }
             }
 
             // Mark data.
@@ -429,12 +433,15 @@ class marking_cell_data extends cell_data_base {
             // It should show what the user is moderating/agreeing on.
             // Ideally this could be combined with the agree feedback process.
 
-            // Default show url.
-            $markdata->url = router::instance()->get_path('show moderation', ['moderation' => $moderation]);
+            if ($canseeallgrades) {
+                // If user can see all grades and/or edit moderations, they may see moderation result as a link.
+                // Default show url.
+                $markdata->url = router::instance()->get_path('show moderation', ['moderation' => $moderation]);
 
-            // Edit url (overwrites default if user can edit).
-            if (!$submission->is_published() && $this->ability->can('edit', $moderation)) {
-                $markdata->url = router::instance()->get_path('edit moderation', ['moderation' => $moderation]);
+                // Edit url (overwrites default if user can edit).
+                if (!$submission->is_published() && $this->ability->can('edit', $moderation)) {
+                    $markdata->url = router::instance()->get_path('edit moderation', ['moderation' => $moderation]);
+                }
             }
 
             $moderationdata->mark = $markdata;

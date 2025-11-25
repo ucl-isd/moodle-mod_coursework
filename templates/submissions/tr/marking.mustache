@@ -193,7 +193,13 @@
                 </div>
             <div class="text-right ml-auto">
                 {{#mark}}
-                    <a class="ml-1" href="{{{url}}}" data-behat-mark="{{markvalue}}">{{markvalue}}</a>
+                    {{#url}}
+                        <a class="ml-1" href="{{{url}}}" data-behat-mark="{{markvalue}}">{{markvalue}}</a>
+                    {{/url}}
+                    {{^url}}
+                    {{! User can see but not edit/add moderation }}
+                        <span>{{{markvalue}}}</span>
+                    {{/url}}
                 {{/mark}}
                 {{#addmoderation}}
                     <a class="btn btn-sm btn-success" href="{{{url}}}" data-behat-mark-action="addmoderation">{{#str}} agree_marking, mod_coursework {{/str}}</a>
