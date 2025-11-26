@@ -408,24 +408,6 @@ if ($coursework->automaticagreement_enabled()) {
     $coursework->create_automatic_feedback();
 }
 
-// Output starts here.
-$html = '';
-
-/**
- * @var mod_coursework_object_renderer $object_renderer
- */
-$objectrenderer = $PAGE->get_renderer('mod_coursework', 'object');
-/**
- * @var mod_coursework_page_renderer $page_renderer
- */
-$pagerenderer = $PAGE->get_renderer('mod_coursework', 'page');
-
-$html .= $objectrenderer->render(new mod_coursework_coursework($coursework));
-
-// Allow tutors to upload files as part of the coursework task? Easily done via the main
-// course thing, so not necessary.
-
-// Display the submissions table of all the students.
 if ($canviewstudents) {
     // If the resubmit button was pressed (for plagiarism), we need to fire a new event.
     if ($resubmit && $submissionid) {
@@ -460,37 +442,14 @@ if ($canviewstudents) {
         $submission->submit_plagiarism('final'); // Must happen AFTER files have been updated.
         redirect($PAGE->url, get_string('resubmitted', 'coursework', $submission->get_allocatable_name()));
     }
-
-    if ($resettable) {
-        $courseworkfirstnamealpha = $SESSION->coursework_firstname_alpha[$coursemoduleid] = "";
-        $courseworklastnamealpha = $SESSION->coursework_lastname_alpha[$coursemoduleid] = "";
-        $courseworkgroupnamealpha = $SESSION->coursework_groupname_alpha[$coursemoduleid] = "";
-    }
-
-    if ($allresettable) {
-        $viewallstudentsfirstnamealpha = $SESSION->viewallstudents_firstname_alpha[$coursemoduleid] = "";
-        $viewallstudentslastnamealpha = $SESSION->viewallstudents_lastname_alpha[$coursemoduleid] = "";
-        $viewallstudentsgroupnamealpha = $SESSION->viewallstudents_groupname_alpha[$coursemoduleid] = "";
-    }
-
-    $html .= $pagerenderer->teacher_grading_page(
-        $coursework,
-        $page,
-        $perpage,
-        $sortby,
-        $sorthow,
-        $group,
-        $courseworkfirstnamealpha,
-        $courseworklastnamealpha,
-        $courseworkgroupnamealpha,
-        $resettable
-    );
 }
 
 if ($cangrade || $canviewstudents) {
     $PAGE->requires->js_call_amd('mod_coursework/coursework_edit', 'init');
 }
 
+// Output coursework page.
+$objectrenderer = $PAGE->get_renderer('mod_coursework', 'object');
 echo $OUTPUT->header();
-echo $html;
+echo $objectrenderer->render(new mod_coursework_coursework($coursework));
 echo $OUTPUT->footer();
