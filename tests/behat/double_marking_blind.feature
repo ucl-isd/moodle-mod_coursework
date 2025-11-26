@@ -86,26 +86,16 @@ Feature: Double marking - blind
     And there is a double-blind marking coursework
     And the following "course enrolments" exist:
       | user      | course | role             |
-      | marker1   | C1     | teacher          |
-      | marker2   | C1     | teacher          |
-      | marker3   | C1     | teacher          |
+      | marker1   | C1     | courseworkmarker |
+      | marker2   | C1     | courseworkmarker |
+      | marker3   | C1     | courseworkmarker |
       | student1  | C1     | student          |
       | student2  | C1     | student          |
       | student3  | C1     | student          |
 
     And I am on the "Course 1" "course" page logged in as "admin"
     And I follow "Coursework 1"
-    And I follow "Add markers"
-    And I follow "courseworkmarker"
-
-    When I set the field "Potential users" to "marker 1 (marker1@example.com)"
-    And I press "Add"
-    And I set the field "Potential users" to "marker 2 (marker2@example.com)"
-    And I press "Add"
-    And I set the field "Potential users" to "marker 3 (marker3@example.com)"
-    And I press "Add"
-
-    When I follow "Allocate markers"
+    And I follow "Allocate markers"
     And I set the field "Allocation strategy" to "Manual"
     And I press "Apply"
     Then I should see "Please make sure markers are allocated"
@@ -133,37 +123,20 @@ Feature: Double marking - blind
     And there is a double-blind marking coursework
     And the following "course enrolments" exist:
       | user      | course | role             |
-      | marker1   | C1     | teacher          |
-      | marker2   | C1     | teacher          |
-      | marker3   | C1     | teacher          |
+      | marker1   | C1     | courseworkmarker |
+      | marker2   | C1     | courseworkmarker |
+      | marker3   | C1     | courseworkmarker |
       | student1  | C1     | student          |
       | student2  | C1     | student          |
       | student3  | C1     | student          |
     And I am on the "Course 1" "course" page logged in as "admin"
 
-    Then I follow "Coursework 1"
-    And I follow "Add markers"
-    And I follow "courseworkmarker"
-
-    And I set the field "Potential users" to "marker 1 (marker1@example.com)"
-    And I press "Add"
-    And I set the field "Potential users" to "marker 2 (marker2@example.com)"
-    And I press "Add"
-    And I set the field "Potential users" to "marker 3 (marker3@example.com)"
-    And I press "Add"
-
-    Then I follow "Allocate markers"
-    And I set the field "Allocation strategy" to "Manual"
-    And I press "Apply"
-    Then I should see "Please make sure markers are allocated"
-
-    Then I set the field with xpath "//tr[contains(.,'Student 1')]//td[@class='assessor_1']//select" to "marker 1"
-    And I set the field with xpath "//tr[contains(.,'Student 1')]//td[@class='assessor_2']//select" to "marker 2"
-    And I set the field with xpath "//tr[contains(.,'Student 2')]//td[@class='assessor_1']//select" to "marker 1"
-    And I set the field with xpath "//tr[contains(.,'Student 2')]//td[@class='assessor_2']//select" to "marker 2"
-    And I set the field with xpath "//tr[contains(.,'Student 3')]//td[@class='assessor_1']//select" to "marker 1"
-    And I set the field with xpath "//tr[contains(.,'Student 3')]//td[@class='assessor_2']//select" to "marker 2"
-    And I press "Save"
+    And I assign user "marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
+    And I assign user "marker 2" as "Assessor 2" for "Student 1" in coursework "Coursework 1"
+    And I assign user "marker 1" as "Assessor 1" for "Student 2" in coursework "Coursework 1"
+    And I assign user "marker 2" as "Assessor 2" for "Student 2" in coursework "Coursework 1"
+    And I assign user "marker 1" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
+    And I assign user "marker 2" as "Assessor 2" for "Student 3" in coursework "Coursework 1"
 
     And I log out
 
@@ -181,38 +154,22 @@ Feature: Double marking - blind
     And there is a double-blind marking coursework
     And the following "course enrolments" exist:
       | user      | course | role             |
-      | marker1   | C1     | teacher          |
-      | marker2   | C1     | teacher          |
-      | marker3   | C1     | teacher          |
+      | marker1   | C1     | courseworkmarker |
+      | marker2   | C1     | courseworkmarker |
+      | marker3   | C1     | courseworkmarker |
       | student1  | C1     | student          |
       | student2  | C1     | student          |
       | student3  | C1     | student          |
     And I am on the "Course 1" "course" page logged in as "admin"
 
-    Then I follow "Coursework 1"
-    And I follow "Add markers"
-    And I follow "courseworkmarker"
+    And I assign user "marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
+    And I assign user "marker 2" as "Assessor 2" for "Student 1" in coursework "Coursework 1"
+    And I assign user "marker 1" as "Assessor 1" for "Student 2" in coursework "Coursework 1"
+    And I assign user "marker 2" as "Assessor 2" for "Student 2" in coursework "Coursework 1"
+    And I assign user "marker 1" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
+    And I assign user "marker 2" as "Assessor 2" for "Student 3" in coursework "Coursework 1"
 
-    And I set the field "Potential users" to "marker 1 (marker1@example.com)"
-    And I press "Add"
-    And I set the field "Potential users" to "marker 2 (marker2@example.com)"
-    And I press "Add"
-    And I set the field "Potential users" to "marker 3 (marker3@example.com)"
-    And I press "Add"
-
-    Then I follow "Allocate markers"
-    And I set the field "Allocation strategy" to "Manual"
-    And I press "Apply"
-    Then I should see "Please make sure markers are allocated"
-
-    Then I set the field with xpath "//tr[contains(.,'Student 1')]//td[@class='assessor_1']//select" to "marker 1"
-    And I set the field with xpath "//tr[contains(.,'Student 1')]//td[@class='assessor_2']//select" to "marker 2"
-    And I set the field with xpath "//tr[contains(.,'Student 2')]//td[@class='assessor_1']//select" to "marker 1"
-    And I set the field with xpath "//tr[contains(.,'Student 2')]//td[@class='assessor_2']//select" to "marker 2"
-    And I set the field with xpath "//tr[contains(.,'Student 3')]//td[@class='assessor_1']//select" to "marker 1"
-    And I set the field with xpath "//tr[contains(.,'Student 3')]//td[@class='assessor_2']//select" to "marker 2"
-    And I press "Save"
-
+    And I follow "Coursework 1"
     And I press "Actions"
     And I wait until the page is ready
     And I click on "Submission extension" "link"
@@ -302,9 +259,9 @@ Feature: Double marking - blind
     And there is a double-blind marking coursework
     And the following "course enrolments" exist:
       | user      | course | role             |
-      | marker1   | C1     | teacher          |
-      | marker2   | C1     | teacher          |
-      | marker3   | C1     | teacher          |
+      | marker1   | C1     | courseworkmarker |
+      | marker2   | C1     | courseworkmarker |
+      | marker3   | C1     | courseworkmarker |
       | student1  | C1     | student          |
 
     And the student "Student 1" has a submission

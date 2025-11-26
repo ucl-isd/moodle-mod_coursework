@@ -3748,17 +3748,7 @@ class behat_mod_coursework extends behat_base {
         // Find the coursework by name.
         $cw = $DB->get_record('coursework', ['name' => $cwname], '*', MUST_EXIST);
 
-        // Find user by full name (firstname + lastname).
-        [$first, $last] = explode(' ', $fullname, 2);
-
-        $user = $DB->get_record('user', [
-            'firstname' => $first,
-            'lastname'  => $last,
-        ]);
-
-        if (!$user) {
-            throw new Exception("Could not find user with name '{$fullname}'.");
-        }
+        $user = $this->get_user_from_username($fullname);
 
         if (is_int($datestr)) {
             $timestamp = $datestr;
@@ -3774,11 +3764,11 @@ class behat_mod_coursework extends behat_base {
         ]);
 
         $record = new stdClass();
-        $record->courseworkid     = $cw->id;
-        $record->allocatableid    = $user->id;
-        $record->allocatabletype  = 'user';
+        $record->courseworkid = $cw->id;
+        $record->allocatableid = $user->id;
+        $record->allocatabletype = 'user';
         $record->extended_deadline = $timestamp;
-        $record->createdbyid        = 2;  // Admin ID.
+        $record->createdbyid = 2;  // Admin ID.
 
         if ($existing) {
             $record->id = $existing->id;
@@ -3786,5 +3776,74 @@ class behat_mod_coursework extends behat_base {
         } else {
             $DB->insert_record('coursework_extensions', $record);
         }
+    }
+
+    /**
+     * Assigns a user as a given assessor slot for a student within a coursework.
+     *
+     * Example:
+     *   And I assign user "marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
+     *
+     * @Given /^I assign user "(?P<marker_string>(?:[^"]|\\")*)" as "(?P<role_string>(?:[^"]|\\")*)" for "(?P<student_string>(?:[^"]|\\")*)" in coursework "(?P<coursework_string>(?:[^"]|\\")*)"$/
+     */
+    public function i_assign_user_as_role_for_student_in_coursework($marker, $role, $student, $cwname) {
+        global $DB;
+
+        // Find the coursework by name.
+        $cw = $DB->get_record('coursework', ['name' => $cwname], '*', MUST_EXIST);
+
+        $assignnr = (strstr($role, '2') || strstr($role, 'two')) ? 2 : 1;
+
+        $marker = $this->get_user_from_username($marker);
+        $student = $this->get_user_from_username($student);
+
+        // See if an allocation already exists.
+        $existing = $DB->get_record('coursework_allocation_pairs', [
+            'courseworkid' => $cw->id,
+            'allocatableid' => $student->id,
+            'allocatableuser' => $student->id,
+            'stageidentifier' => 'assessor_' . $assignnr,
+            'allocatabletype' => 'user',
+        ]);
+
+        $record = new stdClass();
+        $record->courseworkid = $cw->id;
+        $record->allocatableid = $student->id;
+        $record->allocatableuser = $student->id;
+        $record->assessorid = $marker->id;
+        $record->stageidentifier = 'assessor_' . $assignnr;
+        $record->allocatabletype = 'user';
+        $record->ismanual = 1;
+
+        if ($existing) {
+            $record->id = $existing->id;
+            $DB->update_record('coursework_allocation_pairs', $record);
+        } else {
+            $DB->insert_record('coursework_allocation_pairs', $record);
+        }
+    }
+
+    /**
+     * Return a user record from a given full name ("firstname lastname")
+     *
+     * @param $fullname
+     * @return mixed|stdClass
+     * @throws dml_exception
+     */
+    private function get_user_from_username($fullname) {
+        global $DB;
+
+        // Find user by full name (firstname + lastname).
+        [$first, $last] = explode(' ', $fullname, 2);
+
+        $user = $DB->get_record('user', [
+            'firstname' => $first,
+            'lastname'  => $last,
+        ]);
+
+        if (!$user) {
+            throw new Exception("Could not find user with name '{$fullname}'.");
+        }
+        return $user;
     }
 }
