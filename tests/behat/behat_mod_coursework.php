@@ -3852,11 +3852,11 @@ class behat_mod_coursework extends behat_base {
      *
      * Example: And I click the "Add mark" button for marker "Marker 2" in row "1"
      *
-     * @Given /^I click the "Add mark" button for marker "(?P<marker_name>(?:[^"]|\\")*)" in row "(?P<row_number>\d+)"$/
+     * @Given /^I click the "Add mark" button for marker "(?P<markername>(?:[^"]|\\")*)" in row "(?P<rownumber>\d+)"$/
      */
-    public function i_click_add_mark_for_marker_in_row($marker_name, $row_number) {
-        $xpath = "(//tr[contains(@class,'mod-coursework-submissions-row')])[$row_number]".
-            "//li[.//a[normalize-space()='$marker_name']]".
+    public function i_click_add_mark_for_marker_in_row($markername, $rownumber) {
+        $xpath = "(//tr[contains(@class,'mod-coursework-submissions-row')])[$rownumber]" .
+            "//li[.//a[normalize-space()='$markername']]" .
             "//a[@data-mark-action='addfeedback']";
 
         $this->getSession()->getPage()->find('xpath', $xpath)->click();
@@ -3879,7 +3879,7 @@ class behat_mod_coursework extends behat_base {
         }
 
         if (trim($element->getText()) !== $mark) {
-            throw new Exception("Expected mark '$mark' but found '".$element->getText()."' in row $rownumber");
+            throw new Exception("Expected mark '$mark' but found '" . $element->getText() . "' in row $rownumber");
         }
     }
 }
