@@ -1214,12 +1214,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     /**
      * Generates the dropdown data for export and upload links.
      *
-     * @param coursework $coursework The coursework activity object.
+     * @param mod_coursework_coursework $coursework The coursework activity object.
      * @return array An array containing the structured dropdown data.
      * @throws \core\exception\moodle_exception
      * @throws coding_exception
      */
-    private function get_export_upload_links($coursework): array {
+    private function get_export_upload_links(mod_coursework_coursework $coursework): array {
         $cmid = $this->page->cm->id;
         $viewurl = '/mod/coursework/view.php';
         $submissions = $coursework->get_all_submissions();
