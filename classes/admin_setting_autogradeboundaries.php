@@ -23,6 +23,8 @@
 
 namespace mod_coursework;
 
+use mod_coursework\auto_grader\average_grade_no_straddle;
+
 /**
  * Admin setting for auto grade class boundaries.
  * @package    mod_coursework
@@ -37,9 +39,6 @@ class admin_setting_autogradeboundaries extends \admin_setting_configtextarea {
 
     /** How many values (bottom and top) are expected per line. */
     const EXPECTED_VALUES_PER_LINE = 2;
-
-    /** Maximum number of decimal places allowed in a value. */
-    const MAX_DECIMAL_PLACES = 2;
 
     /**
      * Expected increment between grade classes (i.e. one band must immediately follow the other).
@@ -65,23 +64,26 @@ class admin_setting_autogradeboundaries extends \admin_setting_configtextarea {
             if (count($parts) != self::EXPECTED_VALUES_PER_LINE) {
                 return get_string('gradeboundaryerrorpartcount', 'mod_coursework', $index + 1);
             }
-            foreach ($parts as $part) {
-                $part = clean_param($part, PARAM_LOCALISEDFLOAT);
+            foreach ($parts as $dirtypart) {
+                $part = clean_param($dirtypart, PARAM_LOCALISEDFLOAT);
                 if ($part === false) {
                     return get_string(
                         'gradeboundaryerrorinvalidvalue',
                         'mod_coursework',
-                        ['value' => $part, 'line' => $index + 1]
+                        ['value' => $dirtypart, 'line' => $index + 1]
                     );
                 }
                 if ($part < 0) {
                     return get_string('gradeboundaryerrornegativevalue', 'mod_coursework', $index + 1);
                 }
-                if (str_contains((string)$part, '.') && strlen(explode('.', $part)[1]) > self::MAX_DECIMAL_PLACES) {
+                if (
+                    str_contains((string)$part, '.')
+                    && strlen(explode('.', $part)[1]) > average_grade_no_straddle::MAX_DECIMAL_PLACES
+                ) {
                     return get_string(
                         'gradeboundaryerrorinvalidvalue',
                         'mod_coursework',
-                        ['value' => $part, 'line' => $index + 1]
+                        ['value' => $dirtypart, 'line' => $index + 1]
                     );
                 }
             }
@@ -92,7 +94,8 @@ class admin_setting_autogradeboundaries extends \admin_setting_configtextarea {
             }
             if (
                 $previousbottom !== null
-                && round($previousbottom - $top, self::MAX_DECIMAL_PLACES) !== self::EXPECTED_INCREMENT_BETWEEN_BANDS
+                && round($previousbottom - $top, average_grade_no_straddle::MAX_DECIMAL_PLACES)
+                    !== self::EXPECTED_INCREMENT_BETWEEN_BANDS
             ) {
                 return get_string(
                     'gradeboundaryerrorinvalidincrement',

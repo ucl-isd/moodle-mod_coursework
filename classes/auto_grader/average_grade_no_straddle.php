@@ -22,6 +22,7 @@
 
 namespace mod_coursework\auto_grader;
 
+use mod_coursework\admin_setting_autogradeboundaries;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
 
@@ -32,6 +33,9 @@ use mod_coursework\models\coursework;
  * @package mod_coursework\auto_grader
  */
 class average_grade_no_straddle extends average_grade {
+    /** Maximum number of decimal places allowed in a grade. */
+    const MAX_DECIMAL_PLACES = 2;
+
     /**
      * @var coursework
      */
@@ -68,7 +72,26 @@ class average_grade_no_straddle extends average_grade {
             return;
         }
 
-        if ($this->grades_straddle_class_boundaries($gradeclassesadminsetting)) {
+        $grades = $this->grades_as_percentages();
+        if (empty($grades)) {
+            // No grades found, so we are not applying this rule.
+            return;
+        }
+
+        $gradeclassesseen = [];
+        foreach ($grades as $gradepercentage) {
+            $index = $this->get_grade_range_index($gradepercentage, $gradeclassesadminsetting);
+            if ($index === null) {
+                // The grade falls outside all of the ranges in the admin setting.
+                // Not sure if admin has set up ranges deliberately/accidentally to allow this, but do not create auto grade anyway.
+                return;
+            }
+            if (!in_array($index, $gradeclassesseen)) {
+                $gradeclassesseen[] = $index;
+            }
+        }
+        if (count($gradeclassesseen) > 1) {
+            // We have seen more than one grade class, so the grades straddle class boundaries - no auto grade.
             return;
         }
 
@@ -86,41 +109,30 @@ class average_grade_no_straddle extends average_grade {
         if (empty($grades)) {
             return false;
         }
-        $maxgrade = max($grades);
-        $mingrade = min($grades);
-        return ($maxgrade - $mingrade) <= $this->percentage;
+        $maxgrade = round(max($grades), self::MAX_DECIMAL_PLACES);
+        $mingrade = round(min($grades), self::MAX_DECIMAL_PLACES);
+        return $maxgrade - $mingrade <= $this->percentage;
     }
 
     /**
-     * Do the grades awarded for this assessment straddle class boundaries?
-     * @param array $gradeclassesadminsetting the grade classes and boundaries as defined by site admin setting.
-     * @return bool
+     * In which of the grade class boundary ranges does this grade fall?
+     * @param float $gradepercentage
+     * @param array $gradeclassesadminsetting
+     * @return ?int the index of the range or null if none of them.
      */
-    public function grades_straddle_class_boundaries(array $gradeclassesadminsetting): bool {
-        $grades = $this->grades_as_percentages();
-        if (empty($grades)) {
-            // No grades found, so we are not applying this rule.
-            return false;
-        }
-
-        $gradeclassesseen = [];
-        foreach ($grades as $grade) {
-            foreach ($gradeclassesadminsetting as $index => $gradeclassboundaries) {
-                $boundarybottom = $gradeclassboundaries[0];
-                $boundarytop = $gradeclassboundaries[1];
-                if ($grade >= $boundarybottom && $grade <= $boundarytop) {
-                    // Grade is within this class.
-                    if (!in_array($index, $gradeclassesseen)) {
-                        $gradeclassesseen[] = $index;
-                    }
-                    if (count($gradeclassesseen) > 1) {
-                        // We have seen more than one grade class, so the grades straddle class boundaries.
-                        return true;
-                    }
-                }
+    public function get_grade_range_index(float $gradepercentage, array $gradeclassesadminsetting): ?int {
+        foreach ($gradeclassesadminsetting as $index => $gradeclassboundaries) {
+            $boundarybottom = $gradeclassboundaries[0];
+            $boundarytop = $gradeclassboundaries[1];
+            $roundeddowngradepercentage = floor($gradepercentage * 100) / 100;
+            // For grade band classification purposes, we round $gradepercentage down to 2 decimal places.
+            // E.g. a percentage grade of 59.999% would be rounded down to 59.99% to determine which band it was in.
+            if ($roundeddowngradepercentage >= $boundarybottom && $roundeddowngradepercentage <= $boundarytop) {
+                // Grade is within this class.
+                return $index;
             }
         }
-        return false;
+        return null;
     }
 
 
@@ -144,7 +156,6 @@ class average_grade_no_straddle extends average_grade {
         }
         return $result;
     }
-
 
     /**
      * Get an example (default) setting text.
