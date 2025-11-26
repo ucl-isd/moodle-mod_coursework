@@ -80,7 +80,22 @@
                 {{#str}} draft, mod_coursework {{/str}}
             </span>
             {{/draft}}
-
+            {{#moderation}}
+                {{#mark}}
+                    {{#readyforrelease}}
+                        <span class="badge badge-pill badge-warning">
+                        <i class="fa-solid fa-circle-check my-1 mr-1"></i>
+                            {{#str}} ready_release, mod_coursework {{/str}}</span>
+                    {{/readyforrelease}}
+                {{/mark}}
+                {{! Un-moderated submissions in a moderated coursework may still be released }}
+                {{#submission.submissiondata.released}}
+                    <span class="badge badge-pill badge-success">
+                        <i class="fa-solid fa-circle-check my-1 mr-1"></i>
+                        {{#str}} statusreleased, mod_coursework {{/str}}
+                    </span>
+                {{/submission.submissiondata.released}}
+            {{/moderation}}
             {{#markurl}}
             <a data-mark-action="editfeedback" data-behat-feedbackid="{{feedbackid}}" href="{{{markurl}}}" class="font-weight-bold pl-1">{{{mark}}}</a>
             {{/markurl}}
@@ -178,23 +193,14 @@
                 </div>
             <div class="text-right ml-auto">
                 {{#mark}}
-                    {{#readyforrelease}}
-                        <span class="badge badge-pill badge-warning">
-                        <i class="fa-solid fa-circle-check my-1 mr-1"></i>
-                        {{#str}} ready_release, mod_coursework {{/str}}</span>
-                    {{/readyforrelease}}
-
-                    {{! Released. }}
-                    {{#released}}
-                        <span class="badge badge-pill badge-success">
-                            <i class="fa-solid fa-circle-check my-1 mr-1"></i>
-                            {{#str}} statusreleased, mod_coursework {{/str}}
-                        </span>
-                    {{/released}}
-
-                    <a class="ml-1" href="{{{url}}}" data-behat-mark="{{markvalue}}">{{markvalue}}</a>
+                    {{#url}}
+                        <a class="ml-1" href="{{{url}}}" data-behat-mark="{{markvalue}}">{{markvalue}}</a>
+                    {{/url}}
+                    {{^url}}
+                    {{! User can see but not edit/add moderation }}
+                        <span>{{{markvalue}}}</span>
+                    {{/url}}
                 {{/mark}}
-
                 {{#addmoderation}}
                     <a class="btn btn-sm btn-success" href="{{{url}}}" data-behat-mark-action="addmoderation">{{#str}} agree_marking, mod_coursework {{/str}}</a>
                 {{/addmoderation}}
