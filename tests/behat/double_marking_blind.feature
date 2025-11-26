@@ -299,3 +299,62 @@ Feature: Double marking - blind
     And I save the submission
     Then I should be on the coursework page
     And I should not see "myfile.txt"
+
+  @javascript @_file_upload
+  Scenario: Mark the assignments
+    Given there is a course
+    And there is a double-blind marking coursework
+    And the following "course enrolments" exist:
+      | user      | course | role             |
+      | marker1   | C1     | courseworkmarker |
+      | marker2   | C1     | courseworkmarker |
+      | marker3   | C1     | courseworkmarker |
+      | student1  | C1     | student          |
+      | student2  | C1     | student          |
+      | student3  | C1     | student          |
+
+    And I am on the "Course 1" "course" page logged in as "admin"
+    And I assign user "marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
+    And I assign user "marker 2" as "Assessor 2" for "Student 1" in coursework "Coursework 1"
+    And I assign user "marker 1" as "Assessor 1" for "Student 2" in coursework "Coursework 1"
+    And I assign user "marker 2" as "Assessor 2" for "Student 2" in coursework "Coursework 1"
+    And I assign user "marker 1" as "Assessor 2" for "Student 3" in coursework "Coursework 1"
+    And I assign user "marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
+
+    And the student "Student 1" has a submission
+    And the submission for "Student 1" is finalised
+    And the student "Student 2" has a submission
+    And the submission for "Student 2" is finalised
+    And the student "Student 3" has a submission
+    And the submission for "Student 3" is finalised
+
+    And I log out
+    And I am on the "Course 1" "course" page logged in as "marker1"
+    And I follow "Coursework 1"
+
+    When I click the "Add mark" button for marker "marker 1" in row "1"
+    Then I should see "Marking for Hidden"
+    When I set the following fields to these values:
+      | Mark    | 70              |
+      | Comment | Test comment 1  |
+    And I upload "mod/coursework/tests/files_for_uploading/Test_document.pdf" file to "Upload a file" filemanager
+    And I press "Save as draft"
+
+    When I click the "Add mark" button for marker "marker 1" in row "2"
+    Then I should see "Marking for Hidden"
+    When I set the following fields to these values:
+      | Mark    | 70              |
+      | Comment | Test comment 2  |
+    And I press "Save as draft"
+
+    When I click the "Add mark" button for marker "marker 1" in row "3"
+    Then I should see "Marking for Hidden"
+    When I set the following fields to these values:
+      | Mark    | 70              |
+      | Comment | Test comment 3  |
+    And I press "Save as draft"
+
+    Then I should see "Submissions"
+    Then I should see the mark "70" in row "1"
+    Then I should see the mark "70" in row "2"
+    Then I should see the mark "70" in row "3"
