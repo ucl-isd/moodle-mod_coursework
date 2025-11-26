@@ -2772,7 +2772,7 @@ class behat_mod_coursework extends behat_base {
         [$firstname, $lastname] = explode(' ', $studentname, 2);
         $user = $DB->get_record('user', [
             'firstname' => $firstname,
-            'lastname' => $lastname
+            'lastname' => $lastname,
         ], '*', MUST_EXIST);
 
         /**
@@ -2858,14 +2858,14 @@ class behat_mod_coursework extends behat_base {
         [$firstname, $lastname] = explode(' ', $studentname, 2);
         $user = $DB->get_record('user', [
             'firstname' => $firstname,
-            'lastname'  => $lastname
+            'lastname'  => $lastname,
         ], '*', MUST_EXIST);
 
         // Find the submission record
         $record = $DB->get_record('coursework_submissions', [
             'allocatableid' => $user->id,
             'allocatabletype' => 'user',
-            'courseworkid' => $this->coursework->id
+            'courseworkid' => $this->coursework->id,
         ], '*', MUST_EXIST);
 
         // Load the submission object
