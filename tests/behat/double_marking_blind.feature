@@ -214,11 +214,11 @@ Feature: Double marking - blind
       | user      | course | role             |
       | student1  | C1     | student          |
 
-    # The coursework deadline has passed
+    # The coursework deadline has passed 5 minutes ago
     Given the coursework deadline date is "##-5 minutes##"
-    And the coursework extension for "Student 1" in "Coursework 1" is "## + 1 month ##"
 
     # Student has extension so late submission is in time
+    And the coursework extension for "Student 1" in "Coursework 1" is "## + 1 month ##"
     When I am on the "Course 1" "course" page logged in as "student1"
     And I follow "Coursework 1"
     When I visit the coursework page
@@ -239,7 +239,7 @@ Feature: Double marking - blind
       | user      | course | role             |
       | student1  | C1     | student          |
 
-    # The coursework deadline has passed
+    # The coursework deadline has passed 5 minutes ago
     And the coursework deadline date is "##-5 minutes##"
 
     When I am on the "Course 1" "course" page logged in as "student1"
