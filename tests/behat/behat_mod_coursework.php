@@ -3846,4 +3846,40 @@ class behat_mod_coursework extends behat_base {
         }
         return $user;
     }
+
+    /**
+     * Clicks the "Add mark" button for a specific marker in a row.
+     *
+     * Example: And I click the "Add mark" button for marker "Marker 2" in row "1"
+     *
+     * @Given /^I click the "Add mark" button for marker "(?P<marker_name>(?:[^"]|\\")*)" in row "(?P<row_number>\d+)"$/
+     */
+    public function i_click_add_mark_for_marker_in_row($marker_name, $row_number) {
+        $xpath = "(//tr[contains(@class,'mod-coursework-submissions-row')])[$row_number]".
+            "//li[.//a[normalize-space()='$marker_name']]".
+            "//a[@data-mark-action='addfeedback']";
+
+        $this->getSession()->getPage()->find('xpath', $xpath)->click();
+    }
+
+    /**
+     * Checks for a specific mark in a specific row.
+     *
+     * Example: Then I should see the mark "70" in row "1"
+     *
+     * @Then /^I should see the mark "(?P<mark>\d+)" in row "(?P<row_number>\d+)"$/
+     */
+    public function i_should_see_mark_in_row($mark, $rownumber) {
+        $xpath = "(//table[contains(@class,'mod-coursework-submissions-table')]/tbody/tr)[$rownumber]//a[@data-mark-action='editfeedback']";
+
+        $element = $this->getSession()->getPage()->find('xpath', $xpath);
+
+        if (!$element) {
+            throw new Exception("Mark element not found in row $rownumber");
+        }
+
+        if (trim($element->getText()) !== $mark) {
+            throw new Exception("Expected mark '$mark' but found '".$element->getText()."' in row $rownumber");
+        }
+    }
 }
