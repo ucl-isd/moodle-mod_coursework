@@ -595,8 +595,12 @@ class coursework extends table_base {
         return ($this->has_deadline() && $this->deadline < time());
     }
 
-    public function has_deadline() {
-        return !empty($this->deadline);
+    /**
+     * Does the coursework have a deadline?
+     * @return bool
+     */
+    public function has_deadline(): bool {
+        return !empty($this->deadline) && $this->deadline > 0;
     }
 
     /**

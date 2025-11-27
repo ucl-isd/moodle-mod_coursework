@@ -553,12 +553,23 @@ class ability extends framework\ability {
             'finalise',
             'mod_coursework\models\submission',
             function (submission $submission) {
-                $notalreadyfinalised = !$submission->ready_to_grade();
-                $earlyfinalisationallowed = $submission->get_coursework()->early_finalisation_allowed();
-                $courseworkhasnodeadline = !$submission->get_coursework()->has_deadline();
-                $allowedto = $this->can('new', $submission) || $this->can('edit', $submission);
-
-                return $allowedto && $notalreadyfinalised && ($earlyfinalisationallowed || $courseworkhasnodeadline);
+                if ($submission->get_state() >= submission::FINALISED) {
+                    $this->set_message("Submission finalised");
+                    return false;
+                }
+                if ($submission->get_state() >= submission::SUBMITTED && !$this->can('edit', $submission)) {
+                    $this->set_message("Cannot edit submission");
+                    return false;
+                }
+                if (!$submission->get_coursework()->has_deadline()) {
+                    $this->set_message("Coursework has no deadline");
+                    return true;
+                }
+                if ($submission->get_coursework()->early_finalisation_allowed()) {
+                    $this->set_message("Early finalisation allowed");
+                    return true;
+                }
+                return false;
             }
         );
     }
