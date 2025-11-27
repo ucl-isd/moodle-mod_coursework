@@ -30,19 +30,35 @@ Feature: Marking guide
 
     And I click on the add feedback button for assessor 1
     And I set the field with xpath "//input[@aria-labelledby='advancedgrading-score-label']" to "6"
+    And I set the field with xpath "//textarea[contains(@class,'markingguideremark')]" to "Grader one likes it"
     And I press "Save and finalise"
 
     And I click on the add feedback button for assessor 2
     And I set the field with xpath "//input[@aria-labelledby='advancedgrading-score-label']" to "8"
+    And I set the field with xpath "//textarea[contains(@class,'markingguideremark')]" to "Grader two really likes it"
     And I press "Save and finalise"
 
   @javascript
   Scenario: Submit final stage as marking guide.
     Given I visit the coursework page
     And I follow "Agree marking"
+    Then the following fields match these values:
+      | Feedback: |  |
+
+    Given the coursework "autopopulatefeedbackcomment" setting is "1" in the database
+    And I visit the coursework page
+    And I follow "Agree marking"
     And I should see "A criteria"
     And I should see "6" in the "A criteria" "table_row"
     And I should see "8" in the "A criteria" "table_row"
+    And I should see "Grader one likes it" in the "Feedback" "table_row"
+    And I should see "Grader two really likes it" in the "Feedback" "table_row"
+    And the field "Feedback:" matches multiline:
+"""
+Grader one likes it
+
+Grader two really likes it
+"""
     And I set the field "Mark" to "10"
     And I press "Save and finalise"
     Then I should see the final agreed grade status "Ready for release"
