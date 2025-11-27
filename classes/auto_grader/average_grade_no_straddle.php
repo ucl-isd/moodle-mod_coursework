@@ -80,10 +80,13 @@ class average_grade_no_straddle extends average_grade {
 
         $gradeclassesseen = [];
         foreach ($grades as $gradepercentage) {
-            $index = $this->get_grade_range_index($gradepercentage, $gradeclassesadminsetting);
+            $index = self::get_grade_range_index($gradepercentage, $gradeclassesadminsetting);
             if ($index === null) {
-                // The grade falls outside all of the ranges in the admin setting.
-                // Not sure if admin has set up ranges deliberately/accidentally to allow this, but do not create auto grade anyway.
+                // This is not expected to happen, so emit debugging and do not create an auto grade in this case.
+                debugging(
+                    "Cannot determine whether to assign agreed average grade for coursework " . $this->coursework->id
+                    . ". Grade '$gradepercentage'falls outside known class boundaries"
+                );
                 return;
             }
             if (!in_array($index, $gradeclassesseen)) {
@@ -120,7 +123,7 @@ class average_grade_no_straddle extends average_grade {
      * @param array $gradeclassesadminsetting
      * @return ?int the index of the range or null if none of them.
      */
-    public function get_grade_range_index(float $gradepercentage, array $gradeclassesadminsetting): ?int {
+    public static function get_grade_range_index(float $gradepercentage, array $gradeclassesadminsetting): ?int {
         foreach ($gradeclassesadminsetting as $index => $gradeclassboundaries) {
             $boundarybottom = $gradeclassboundaries[0];
             $boundarytop = $gradeclassboundaries[1];

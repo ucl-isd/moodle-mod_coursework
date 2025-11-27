@@ -25,6 +25,8 @@
 
 use mod_coursework\candidateprovider_manager;
 use mod_coursework\models\coursework;
+use mod_coursework\models\user;
+use mod_coursework\auto_grader\average_grade_no_straddle;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -187,7 +189,6 @@ class mod_coursework_mod_form extends moodleform_mod {
      * @throws dml_exception
      */
     public function validation($data, $files) {
-
         $errors = [];
 
         if ($data['startdate'] != 0 && !empty($data['deadline']) && $data['startdate'] > $data['deadline']) {
@@ -255,6 +256,22 @@ class mod_coursework_mod_form extends moodleform_mod {
                     (empty($data['usecandidate']) && $currentvalue)
                 ) {
                     $errors['usecandidate'] = get_string('cannot_change_candidate', 'mod_coursework');
+                }
+            }
+        }
+
+        if (($data['automaticagreementstrategy'] ?? null) == 'average_grade_no_straddle') {
+            // Check that the coursework is being set to use a numeric grade.
+            if ($data['grade'] <= 0) {
+                $errors['automaticagreementstrategy'] = get_string('gradeboundaryerrorinvalidgradetype', 'coursework');
+            }
+            // Check that the max grade for the coursework falls within the grade class boundaries defined by site admin (if any).
+            $boundaries = average_grade_no_straddle::get_config_setting('autogradeclassboundaries');
+            if (!empty($boundaries)) {
+                $gradeclassboundary = average_grade_no_straddle::get_grade_range_index($data['grade'], $boundaries);
+                if ($gradeclassboundary === null) {
+                    $errors['automaticagreementstrategy'] =
+                        get_string('gradeboundaryerrormaxgradeoutofrange', 'coursework', $data['grade']);
                 }
             }
         }

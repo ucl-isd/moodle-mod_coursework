@@ -110,6 +110,16 @@ class admin_setting_autogradeboundaries extends \admin_setting_configtextarea {
             }
             $previousbottom = $bottom;
         }
+
+        // Last line must cover the range down to zero.
+        $bottomofrange = explode('|', end($lines))[0];
+        if ($bottomofrange != 0) {
+            return get_string(
+                'gradeboundaryerrorzeronotcovered',
+                'mod_coursework',
+                ['value' => $bottomofrange, 'line' => count($lines)]
+            );
+        }
         return parent::validate($data);
     }
 }
