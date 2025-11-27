@@ -3646,7 +3646,7 @@ class behat_mod_coursework extends behat_base {
         if (!$row) {
             throw new Exception("Row containing '{$rowtext}' not found");
         }
-        $link = $this->find('named_exact', array('button', $linktext));
+        $link = $this->find('named_exact', ['button', $linktext]);
         if (!$link) {
             throw new Exception("Link '{$linktext}' not found in the row containing '{$rowtext}'");
         }
