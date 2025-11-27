@@ -124,31 +124,29 @@ class assessor_feedback_mform extends moodleform {
             if (defined('BEHAT_SITE_RUNNING')) {
                 $mform->addElement('html', '<a href="#">' . get_string('togglezoom', 'mod_assign') . '</a>');
             }
+        } else if ($this->coursework->uses_numeric_grade()) {
+            // We are using a point grade e.g. 100/100, so use a text input not a menu.
+            $mform->addElement('text', 'grade', get_string('mark', 'mod_coursework'));
+            $mform->setType(
+                'grade',
+                $this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1 ? PARAM_LOCALISEDFLOAT : PARAM_INT
+            );
+            $mform->addRule(
+                'grade',
+                get_string('err_valueoutofrange', 'mod_coursework'),
+                'numeric',
+                null,
+                'client'
+            );
         } else {
-            if ($this->coursework->uses_numeric_grade()) {
-                // We are using a point grade e.g. 100/100, so use a text input not a menu.
-                $mform->addElement('text', 'grade', get_string('mark', 'mod_coursework'));
-                $mform->setType(
-                    'grade',
-                    $this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1 ? PARAM_LOCALISEDFLOAT : PARAM_INT
-                );
-                $mform->addRule(
-                    'grade',
-                    get_string('err_valueoutofrange', 'mod_coursework'),
-                    'numeric',
-                    null,
-                    'client'
-                );
-            } else {
-                // We are using a grading scale e.g. competent/not yet competent, so we need a select menu for the grade.
-                $mform->addElement(
-                    'select',
-                    'grade',
-                    get_string('mark', 'mod_coursework'),
-                    make_grades_menu($this->coursework->grade),
-                    ['id' => 'feedback_grade']
-                );
-            }
+            // We are using a grading scale e.g. competent/not yet competent, so we need a select menu for the grade.
+            $mform->addElement(
+                'select',
+                'grade',
+                get_string('mark', 'mod_coursework'),
+                make_grades_menu($this->coursework->grade),
+                ['id' => 'feedback_grade']
+            );
         }
 
         // Useful to keep the overall comments even if we have a rubric or something. There may be a place
