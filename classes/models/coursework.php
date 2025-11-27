@@ -1119,16 +1119,16 @@ class coursework extends table_base {
      * Returns the user that was supplied if groups are not enabled, or the correct group
      * if groups are enabled.
      *
-     * @param user $user
-     * @return allocatable
+     * @param int $userid
+     * @return table_base
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function submiting_allocatable_for_student($user) {
+    public function submiting_allocatable_for_student(int $userid) {
         if ($this->is_configured_to_have_group_submissions()) {
-            return $this->get_student_group($user);
+            return $this->get_student_group($userid);
         } else {
-            return $user;
+            return user::find($userid);
         }
     }
 
@@ -1709,12 +1709,12 @@ class coursework extends table_base {
     }
 
     /**
-     * @param user $student
+     * @param int $studentid
      * @return bool|table_base
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function get_student_group($student) {
+    public function get_student_group(int $studentid) {
         global $DB;
 
         if (!$this->is_configured_to_have_group_submissions() && $this->assessorallocationstrategy != 'group_assessor') {
@@ -1738,7 +1738,7 @@ class coursework extends table_base {
             $params = [
                 'grouping_id' => $this->grouping_id,
                 'courseid' => $this->get_course()->id,
-                'userid' => $student->id()];
+                'userid' => $studentid];
         } else {
             $sql = "
                 SELECT g.*
@@ -1749,7 +1749,7 @@ class coursework extends table_base {
                    AND g.courseid = :courseid
                  LIMIT 1";
             $params = [
-                'userid' => $student->id(),
+                'userid' => $studentid,
                 'courseid' => $this->get_course()->id,
             ];
         }
@@ -1766,7 +1766,7 @@ class coursework extends table_base {
     public function get_user_submission($user) {
 
         if ($this->is_configured_to_have_group_submissions()) {
-            $allocatable = $this->get_student_group($user);
+            $allocatable = $this->get_student_group($user->id());
         } else {
             $allocatable = $user;
         }
@@ -1809,7 +1809,7 @@ class coursework extends table_base {
      */
     public function build_own_submission($user) {
         if ($this->is_configured_to_have_group_submissions()) {
-            $allocatable = $this->get_student_group($user);
+            $allocatable = $this->get_student_group($user->id());
         } else {
             $allocatable = $user;
         }

@@ -60,7 +60,7 @@ final class deadline_extension_test extends \advanced_testcase {
                         'courseworkid' => $coursework->id,
                         'extended_deadline' => strtotime('+ 1 week')];
         deadline_extension::create($params);
-        $this->assertTrue(deadline_extension::allocatable_extension_allows_submission($user, $coursework));
+        $this->assertTrue(deadline_extension::allocatable_extension_allows_submission($coursework->id, $user->id(), $user->type()));
     }
 
     public function test_user_extension_allows_submission_when_passed(): void {
@@ -71,7 +71,7 @@ final class deadline_extension_test extends \advanced_testcase {
                         'courseworkid' => $coursework->id,
                         'extended_deadline' => strtotime('- 1 week')];
         deadline_extension::create($params);
-        $this->assertFalse(deadline_extension::allocatable_extension_allows_submission($user, $coursework));
+        $this->assertFalse(deadline_extension::allocatable_extension_allows_submission($coursework->id, $user->id(), $user->type()));
     }
 
     public function test_get_coursework(): void {

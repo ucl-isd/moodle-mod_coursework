@@ -953,7 +953,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $submitted = count($coursework->get_all_submissions());
             } else if ($coursework->can_submit()) { // Students
                 if ($coursework->usegroups) {
-                    $allocatable = $coursework->get_student_group($USER);
+                    $allocatable = $coursework->get_student_group($USER->id);
                 } else {
                     $allocatable = $USER;
                     $allocatable = user::find($allocatable);

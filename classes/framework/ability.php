@@ -155,18 +155,6 @@ abstract class ability {
     }
 
     /**
-     * @return bool|table_base|user|null
-     * @throws \dml_exception
-     * @throws coding_exception
-     */
-    protected function get_user() {
-        if ($this->user === null) {
-            $this->user = user::find($this->userid);
-        }
-        return $this->user;
-    }
-
-    /**
      * @return string
      */
     public function get_last_message() {

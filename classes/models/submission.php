@@ -936,16 +936,17 @@ class submission extends table_base implements renderable {
     }
 
     /**
-     * @param user $user
+     * Does this submission belong to the specified user ID?
+     * @param int $userid
      * @return bool
      * @throws coding_exception
      */
-    public function belongs_to_user($user) {
+    public function belongs_to_user(int $userid): bool {
         if ($this->get_coursework()->is_configured_to_have_group_submissions()) {
-            $group = $this->get_coursework()->get_student_group($user);
+            $group = $this->get_coursework()->get_student_group($userid);
             return $group && $group->id == $this->allocatableid;
         } else {
-            return $user->id() == $this->allocatableid;
+            return $userid == $this->allocatableid;
         }
     }
 
@@ -987,7 +988,7 @@ class submission extends table_base implements renderable {
     public function is_not_editable_reason(): ?string {
         global $USER;
         $cansubmitonbehalf = has_capability('mod/coursework:submitonbehalfof', $this->get_context());
-        $belongstouser = $this->belongs_to_user(user::find($USER, false));
+        $belongstouser = $this->belongs_to_user($USER->id);
 
         if (!$belongstouser && !$cansubmitonbehalf) {
             return "Cannot submit on behalf of";

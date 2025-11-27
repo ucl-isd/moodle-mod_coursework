@@ -954,7 +954,7 @@ abstract class base {
             $groupid = $allocatable->id;
         } else {
             $user = user::get_object($allocatable->id);
-            $group = $this->coursework->get_student_group($user);
+            $group = $this->coursework->get_student_group($user->id());
             $groupid = ($group) ? $group->id : 0;
         }
 

@@ -57,14 +57,15 @@ class deadline_extension extends table_base {
     protected static $tablename = 'coursework_extensions';
 
     /**
-     * @param allocatable $allocatable
-     * @param coursework $coursework
+     * @param int $courseworkid
+     * @param int $allocatableid
+     * @param string $allocatabletype
      * @return bool
      * @throws coding_exception
      */
-    public static function allocatable_extension_allows_submission($allocatable, $coursework) {
-        self::fill_pool_coursework($coursework->id);
-        $extension = self::get_object($coursework->id, 'allocatableid-allocatabletype', [$allocatable->id(), $allocatable->type()]);
+    public static function allocatable_extension_allows_submission(int $courseworkid, int $allocatableid, string $allocatabletype): bool {
+        self::fill_pool_coursework($courseworkid);
+        $extension = self::get_object($courseworkid, 'allocatableid-allocatabletype', [$allocatableid, $allocatabletype]);
 
         return !empty($extension) && $extension->extended_deadline > time();
     }
@@ -79,7 +80,7 @@ class deadline_extension extends table_base {
      */
     public static function get_extension_for_student($student, $coursework) {
         if ($coursework->is_configured_to_have_group_submissions()) {
-            $allocatable = $coursework->get_student_group($student);
+            $allocatable = $coursework->get_student_group($student->id());
         } else {
             $allocatable = $student;
         }

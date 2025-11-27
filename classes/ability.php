@@ -67,7 +67,7 @@ class ability extends framework\ability {
             'show',
             'mod_coursework\models\coursework',
             function (coursework $coursework) {
-                return has_capability('mod/coursework:view', $coursework->get_context(), $this->get_user());
+                return has_capability('mod/coursework:view', $coursework->get_context(), $this->userid);
             }
         );
 
@@ -255,7 +255,7 @@ class ability extends framework\ability {
             'new',
             'mod_coursework\models\submission',
             function (submission $submission) {
-                return !$submission->belongs_to_user($this->get_user());
+                return !$submission->belongs_to_user($this->userid);
             }
         );
     }
@@ -321,10 +321,10 @@ class ability extends framework\ability {
             'mod_coursework\models\submission',
             function (submission $submission) {
                 $coursework = $submission->get_coursework();
-                $submittingallocatable = $coursework->submiting_allocatable_for_student($this->get_user());
                 return deadline_extension::allocatable_extension_allows_submission(
-                    $submittingallocatable,
-                    $coursework
+                    $coursework->id,
+                    $this->userid,
+                    'user',
                 );
             }
         );
@@ -335,7 +335,7 @@ class ability extends framework\ability {
             'new',
             'mod_coursework\models\submission',
             function (submission $submission) {
-                return !has_capability('mod/coursework:submit', $submission->get_context(), $this->get_user());
+                return !has_capability('mod/coursework:submit', $submission->get_context(), $this->userid);
             }
         );
     }
@@ -355,7 +355,7 @@ class ability extends framework\ability {
             'show',
             'mod_coursework\models\submission',
             function (submission $submission) {
-                return $submission->belongs_to_user($this->get_user());
+                return $submission->belongs_to_user($this->userid);
             }
         );
     }
@@ -365,8 +365,7 @@ class ability extends framework\ability {
             'show',
             'mod_coursework\models\submission',
             function (submission $submission) {
-                return feedback::exists(['submissionid' => $submission->id,
-                                              'assessorid' => $this->get_user()->id()]);
+                return feedback::exists(['submissionid' => $submission->id, 'assessorid' => $this->userid]);
             }
         );
     }
@@ -513,7 +512,7 @@ class ability extends framework\ability {
             'revert',
             'mod_coursework\models\submission',
             function (submission $submission) {
-                return has_capability('mod/coursework:revertfinalised', $submission->get_context(), $this->get_user());
+                return has_capability('mod/coursework:revertfinalised', $submission->get_context(), $this->userid);
             }
         );
     }
@@ -630,7 +629,7 @@ class ability extends framework\ability {
             'view_plagiarism',
             'mod_coursework\models\submission',
             function (submission $submission) {
-                return !$submission->belongs_to_user($this->get_user());
+                return !$submission->belongs_to_user($this->userid);
             }
         );
     }
@@ -684,7 +683,7 @@ class ability extends framework\ability {
             function (moderation $moderation) {
                    $hascapability = has_capability('mod/coursework:moderate', $moderation->get_coursework()
                        ->get_context());
-                $iscreator = $moderation->moderatorid == $this->get_user()->id;
+                $iscreator = $moderation->moderatorid == $this->userid;
                 return $hascapability && ($iscreator || is_siteadmin());
             }
         );
@@ -756,7 +755,7 @@ class ability extends framework\ability {
             'new',
             'mod_coursework\models\feedback',
             function (feedback $feedback) {
-                return $feedback->assessorid != $this->get_user()->id();
+                return $feedback->assessorid != $this->userid;
             }
         );
     }
@@ -875,7 +874,7 @@ class ability extends framework\ability {
                 if ($stage->uses_allocation() && $feedback->get_coursework()->allocation_enabled()) {
                     $allocatedteacher = $stage->allocated_teacher_for($allocatable);
                     if ($allocatedteacher) {
-                        if ($allocatedteacher->id() != $this->get_user()->id()) {
+                        if ($allocatedteacher->id() != $this->userid) {
                             return true;
                         }
                     }
@@ -960,7 +959,7 @@ class ability extends framework\ability {
             function (feedback $feedback) {
                 $isinitialgrade = $feedback->is_initial_assessor_feedback();
                 $hascapability = has_capability('mod/coursework:editinitialgrade', $feedback->get_context());
-                $iscreator = $feedback->assessorid == $this->get_user()->id;
+                $iscreator = $feedback->assessorid == $this->userid;
                 $isallocated = $feedback->is_assessor_allocated();
 
                 return $isinitialgrade && $hascapability && ($iscreator || $isallocated);
@@ -997,7 +996,7 @@ class ability extends framework\ability {
             'edit',
             'mod_coursework\models\feedback',
             function (feedback $feedback) {
-                $iscreator = $feedback->assessorid == $this->get_user()->id;
+                $iscreator = $feedback->assessorid == $this->userid;
                 $stage = $feedback->get_stage();
                 return  $iscreator && ($feedback->get_submission()->editable_feedbacks_exist() || $feedback->get_submission()->editable_final_feedback_exist()
                         && ((!$feedback->get_coursework()->has_multiple_markers() && $stage->is_initial_assesor_stage() ) || !$stage->is_initial_assesor_stage()));
@@ -1020,7 +1019,7 @@ class ability extends framework\ability {
             'show',
             'mod_coursework\models\feedback',
             function (feedback $feedback) {
-                return $feedback->assessorid == $this->get_user()->id;
+                return $feedback->assessorid == $this->userid;
             }
         );
     }
@@ -1092,7 +1091,7 @@ class ability extends framework\ability {
                 $judge = new grade_judge($feedback->get_coursework());
                 return $feedback->get_submission()->is_published() &&
                 $judge->is_feedback_that_is_promoted_to_gradebook($feedback) &&
-                $feedback->get_submission()->belongs_to_user($this->get_user());
+                $feedback->get_submission()->belongs_to_user($this->userid);
             }
         );
     }
@@ -1104,7 +1103,7 @@ class ability extends framework\ability {
             function (feedback $feedback) {
                 return $feedback->get_submission()->is_published() &&
                 $feedback->get_coursework()->students_can_view_all_feedbacks() &&
-                $feedback->get_submission()->belongs_to_user($this->get_user());
+                $feedback->get_submission()->belongs_to_user($this->userid);
             }
         );
     }
@@ -1200,8 +1199,7 @@ class ability extends framework\ability {
             function (grading_table_row_base $gradingtablerow) {
                 if ($gradingtablerow->has_submission()) {
                     if (
-                        feedback::exists(['submissionid' => $gradingtablerow->get_submission()->id,
-                                               'assessorid' => $this->get_user()->id()])
+                        feedback::exists(['submissionid' => $gradingtablerow->get_submission()->id, 'assessorid' => $this->userid])
                     ) {
                         return true;
                     }
