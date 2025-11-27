@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_student_submission
 Feature: Students can submit files
 
     In order to submit work to my tutor for grading
@@ -24,7 +24,18 @@ Feature: Students can submit files
     And I should see submitted date "##today##%d %B %Y##"
 
   @javascript @_file_upload
-  Scenario: I upload a file and save it and I see it when I come back
+  Scenario: As a student I cannot see a link to upload a file if I do not have the capability
+    When I visit the coursework page
+    And I should see submission status "Not submitted"
+    And I should see "Upload your submission"
+    And the following "permission overrides" exist:
+      | capability                      | permission | role    | contextlevel | reference |
+      | mod/coursework:submit           | Prohibit   | student | Course       | C1        |
+    And I visit the coursework page
+    And I should not see "Upload your submission"
+
+  @javascript @_file_upload
+  Scenario: I upload a file and save it and I see it when I come back, and cannot see an edit submission link if I do not have permission
     When I visit the coursework page
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
@@ -34,3 +45,10 @@ Feature: Students can submit files
     And I visit the coursework page
     And I click on "Edit your submission" "link"
     Then I should see "1" elements in "Upload a file" filemanager
+
+    # Remove capability and check cannot see link.
+    And the following "permission overrides" exist:
+      | capability                      | permission | role    | contextlevel | reference |
+      | mod/coursework:submit           | Prohibit   | student | Course       | C1        |
+    And I visit the coursework page
+    And I should not see "Edit your submission"
