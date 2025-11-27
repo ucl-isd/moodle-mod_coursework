@@ -98,11 +98,7 @@ class ability extends framework\ability {
         $this->allow_show_submission_if_user_can_view_all_grades_at_all_times();
 
         // Edit submission
-        $this->prevent_edit_submission_for_unsaved_records();
-        $this->allow_edit_submissions_if_can_submit_on_behalf_of();
-        $this->prevent_edit_submission_past_deadline_and_no_extension();
-        $this->prevent_edit_submission_when_finalised();
-        $this->allow_edit_submission_when_permitted_and_own_submission();
+        $this->allow_edit_submission();
 
         // Update submission
         $this->allow_update_submission_if_can_edit();
@@ -267,16 +263,6 @@ class ability extends framework\ability {
     protected function allow_new_submissions_if_can_submit_on_behalf_of() {
         $this->allow(
             'new',
-            'mod_coursework\models\submission',
-            function (submission $submission) {
-                return has_capability('mod/coursework:submitonbehalfof', $submission->get_coursework()->get_context());
-            }
-        );
-    }
-
-    protected function allow_edit_submissions_if_can_submit_on_behalf_of() {
-        $this->allow(
-            'edit',
             'mod_coursework\models\submission',
             function (submission $submission) {
                 return has_capability('mod/coursework:submitonbehalfof', $submission->get_coursework()->get_context());
@@ -492,68 +478,22 @@ class ability extends framework\ability {
         );
     }
 
-
-    protected function prevent_edit_submission_for_unsaved_records() {
-        $this->prevent(
-            'edit',
-            'mod_coursework\models\submission',
-            function (submission $submission) {
-                return !$submission->persisted();
-            }
-        );
-    }
-
-    protected function prevent_edit_submission_past_deadline_and_no_extension() {
-        $this->prevent(
-            'edit',
-            'mod_coursework\models\submission',
-            function (submission $submission) {
-                // take into account courseworks with personal deadlines
-                if ($submission->get_coursework()->personaldeadlines_enabled()) {
-                    $deadlinepassed = (bool)$submission->submission_personaldeadline() < time();
-                } else {
-                    $deadlinepassed = $submission->get_coursework()->deadline_has_passed();
-                }
-                $oktosubmitlate = $submission->get_coursework()->allow_late_submissions();
-                $coursework = $submission->get_coursework();
-                $submittingallocatable = $coursework->submiting_allocatable_for_student($this->get_user());
-                if ($deadlinepassed && !deadline_extension::allocatable_extension_allows_submission($submittingallocatable, $coursework)) {
-                    if (!$oktosubmitlate) {
-                        $this->set_message('Cannot submit past the deadline');
-                        return true;
-                    } else {
-                        if (
-                            $submission->persisted()
-                            &&
-                            $submission->finalisedstatus != submission::FINALISED_STATUS_MANUALLY_UNFINALISED
-                        ) {
-                            $this->set_message('Cannot update submissions past the deadline');
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-        );
-    }
-
-    protected function prevent_edit_submission_when_finalised() {
-        $this->prevent(
-            'edit',
-            'mod_coursework\models\submission',
-            function (submission $submission) {
-                return $submission->ready_to_grade();
-            }
-        );
-    }
-
-    protected function allow_edit_submission_when_permitted_and_own_submission() {
+    /**
+     * Allow a submission to be edited / re-uploaded.
+     * @return void
+     */
+    protected function allow_edit_submission() {
         $this->allow(
             'edit',
             'mod_coursework\models\submission',
             function (submission $submission) {
-                $cansubmit = has_capability('mod/coursework:submit', $submission->get_context(), $this->get_user());
-                return $cansubmit && $submission->belongs_to_user($this->get_user());
+                $preventedreason = $submission->is_not_editable_reason();
+                if ($preventedreason === null) {
+                    // If there is no reason debug message returned here, the submission is editable.
+                    return true;
+                } else {
+                    $this->set_message($preventedreason);
+                }
             }
         );
     }

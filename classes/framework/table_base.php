@@ -330,9 +330,7 @@ abstract class table_base {
      * @throws dml_exception
      */
     public function persisted() {
-        global $DB;
-
-        return !empty($this->id) && $DB->record_exists(static::$tablename, ['id' => $this->id]);
+        return !empty($this->id);
     }
 
     /**

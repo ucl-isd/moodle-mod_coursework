@@ -328,8 +328,8 @@ class submission extends table_base implements renderable {
      *
      * @return bool
      */
-    public function has_feedback() {
-        return (count($this->feedbacks) > 0);
+    public function has_feedback(): bool {
+        return !empty($this->feedbacks);
     }
 
     /**
@@ -976,6 +976,67 @@ class submission extends table_base implements renderable {
      */
     public function is_finalised(): bool {
         return $this->finalisedstatus == self::FINALISED_STATUS_FINALISED;
+    }
+
+    /**
+     * Is this submission editable - if not why not?
+     * @see \mod_coursework\ability::prevent_edit_submission_past_deadline_and_no_extension() and similar legacy methods
+     * This aims to cover the same ground with fewer DB calls.
+     * @return ?string a debug string saying why the submission is not editable, or null if the submission is editable.
+     */
+    public function is_not_editable_reason(): ?string {
+        global $USER;
+        $cansubmitonbehalf = has_capability('mod/coursework:submitonbehalfof', $this->get_context());
+        $belongstouser = $this->belongs_to_user(user::find($USER, false));
+
+        if (!$belongstouser && !$cansubmitonbehalf) {
+            return "Cannot submit on behalf of";
+        }
+
+        if ($belongstouser && !has_capability('mod/coursework:submit', $this->get_context())) {
+            return "No capability to submit own";
+        }
+
+        if ($this->has_feedback()) {
+            return "Already has feedback";
+        }
+
+        if ($this->ready_to_grade()) {
+            return "Is ready to grade";
+        }
+
+        if (!$this->persisted()) {
+            return "Is not persisted";
+        }
+
+        // Adapted from old method ability::prevent_edit_submission_past_deadline_and_no_extension().
+        if (!$this->get_coursework()->allow_late_submissions()) {
+            $deadlinepassed = $this->get_coursework()->personaldeadlines_enabled()
+                ? (bool)$this->submission_personaldeadline() < time()
+                : $this->get_coursework()->deadline_has_passed();
+            if ($deadlinepassed) {
+                if ($this->finalisedstatus != self::FINALISED_STATUS_MANUALLY_UNFINALISED) {
+                    $extension = deadline_extension::get_for_allocatable(
+                        $this->get_coursework()->id(),
+                        $this->get_allocatable()->id(),
+                        $this->get_allocatable()->type()
+                    );
+                    if (!$extension || $extension->extended_deadline <= time()) {
+                        return "Deadline has passed and no extension";
+                    }
+                }
+            }
+        }
+        // No reason exists why not, so submission is editable.
+        return null;
+    }
+
+    /**
+     * Is the submission editable?
+     * @return bool
+     */
+    public function is_editable(): bool {
+        return $this->is_not_editable_reason() === null;
     }
 
     /**

@@ -139,8 +139,8 @@ class actions_cell_data extends cell_data_base {
             return;
         }
 
-        // Check if we can edit existing submission.
-        if ($submission && $this->ability->can('edit', $submission) && !$rowsbase->has_feedback()) {
+        // Edit existing submission.
+        if ($submission && $submission->is_editable()) {
             $data->submission = new stdClass();
             $data->submission->url = router::instance()->get_path('edit submission', ['submission' => $submission], false, false);
             $entitytype = $rowsbase->get_coursework()->is_configured_to_have_group_submissions() ? 'group' : 'student';
@@ -148,8 +148,8 @@ class actions_cell_data extends cell_data_base {
             return;
         }
 
-        // Check if we can create new submission.
-        if ($this->can_submit_new($rowsbase)) {
+        // Create new submission.
+        if (!$submission && $this->can_submit_new($rowsbase)) {
             $submissiondata = submission::build([
                 'allocatableid' => $rowsbase->get_allocatable()->id(),
                 'allocatabletype' => $rowsbase->get_allocatable()->type(),
