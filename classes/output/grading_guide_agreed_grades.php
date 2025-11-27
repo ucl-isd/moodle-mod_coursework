@@ -308,6 +308,16 @@ class grading_guide_agreed_grades implements renderable, templatable {
                 if (!empty($existingfeedbackthiscriterion)) {
                     $criterion->existing_agreed_feedback = $existingfeedbackthiscriterion[0];
                 }
+            } else if ($this->submission->get_coursework()->autopopulatefeedbackcomment_enabled()) {
+                $prefill = [];
+                foreach ($criterion->criterion_grades as $criteriongrade) {
+                    if ($criteriongrade['remark']) {
+                        $prefill[] = $criteriongrade['remark'];
+                    }
+                }
+                if ($prefill) {
+                    $criterion->existing_agreed_feedback = (object)['remark' => implode("\n\n", $prefill)];
+                }
             }
         }
         return $templatedata;
