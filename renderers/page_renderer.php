@@ -364,6 +364,20 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         echo $this->output->header();
         echo $this->render_from_template('mod_coursework/marking_details', $template);
 
+        if ($areagreeing && !$feedback->get_coursework()->is_using_advanced_grading()) {
+            $feedbacks = [];
+            $modcourseworkobjectrenderer = new mod_coursework_object_renderer($this->page, $this->target);
+            foreach ($feedback->submission->get_assessor_feedbacks() as $previousfeedbacks) {
+                $feedbacks[] = $modcourseworkobjectrenderer->render_feedback($previousfeedbacks, false);
+            }
+
+            if (!empty($feedbacks)) {
+                echo '<h3 class="h5">' . get_string('markerfeedback', 'mod_coursework') . '</h3>';
+                echo implode('', $feedbacks);
+                echo '<h3 class="h5">' . get_string('agreefeedback', 'mod_coursework') . '</h3>';
+            }
+        }
+
         // SHAME - Can we add an id to the form.
         echo "<div id='coursework-markingform'>";
 
