@@ -57,21 +57,25 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @throws \core\exception\moodle_exception
      * @throws coding_exception
      */
-    public function render_feedback(feedback $feedback) {
+    public function render_feedback(feedback $feedback, $showtitle = true) {
         $template = new stdClass();
+
+        $template->markingstage = $feedback->stageidentifier;
 
         $submission = $feedback->get_submission();
         $coursework = $feedback->get_coursework();
         $studentname = $submission->get_allocatable_name();
 
-        // Determine the feedback title.
-        if ($feedback->is_agreed_grade()) {
-            $template->title = get_string('finalfeedback', 'mod_coursework', $studentname);
-        } else if ($feedback->is_moderation()) {
-            $template->title = get_string('moderatorfeedback', 'mod_coursework', $studentname);
-        } else {
-            $stage = $feedback->get_assessor_stage_no();
-            $template->title = get_string('componentfeedback', 'mod_coursework', ['stage' => $stage, 'student' => $studentname]);
+        if ($showtitle) {
+            // Determine the feedback title.
+            if ($feedback->is_agreed_grade()) {
+                $template->title = get_string('finalfeedback', 'mod_coursework', $studentname);
+            } else if ($feedback->is_moderation()) {
+                $template->title = get_string('moderatorfeedback', 'mod_coursework', $studentname);
+            } else {
+                $stage = $feedback->get_assessor_stage_no();
+                $template->title = get_string('componentfeedback', 'mod_coursework', ['stage' => $stage, 'student' => $studentname]);
+            }
         }
 
         $gradejudge = new grade_judge($coursework);

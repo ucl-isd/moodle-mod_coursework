@@ -42,7 +42,7 @@ use moodle_url;
  * logic relating the what ought to be rendered. The renderer methods then decide how the decision
  * will be translated into a page.
  */
-class grading_table_row_base implements user_row {
+abstract class grading_table_row_base implements user_row {
     /**
      * Using this as a delegate
      * @var submission

@@ -129,7 +129,7 @@ class feedback_controller extends controller_base {
         $PAGE->set_url('/mod/coursework/actions/feedbacks/new.php', $urlparams);
 
         $renderer = $this->get_page_renderer();
-        $renderer->new_feedback_page($teacherfeedback);
+        $renderer->edit_feedback_page($teacherfeedback);
     }
 
     /**
@@ -150,18 +150,11 @@ class feedback_controller extends controller_base {
         $urlparams = ['feedbackid' => $this->params['feedbackid']];
         $PAGE->set_url('/mod/coursework/actions/feedbacks/edit.php', $urlparams);
 
-        $assessor = $DB->get_record('user', ['id' => $teacherfeedback->assessorid]);
-        if (!empty($teacherfeedback->lasteditedbyuser)) {
-            $editor = $DB->get_record('user', ['id' => $teacherfeedback->lasteditedbyuser]);
-        } else {
-            $editor = $assessor;
-        }
-
         $teacherfeedback->grade = is_numeric($teacherfeedback->grade)
             ? format_float($teacherfeedback->grade, $this->coursework->get_grade_item()->get_decimals())
             : null;
         $renderer = $this->get_page_renderer();
-        $renderer->edit_feedback_page($teacherfeedback, $assessor, $editor);
+        $renderer->edit_feedback_page($teacherfeedback);
     }
 
     /**
@@ -199,7 +192,7 @@ class feedback_controller extends controller_base {
                 $teacherfeedback->stageidentifier = $this->next_available_stage($teacherfeedback);
             } else {
                 $renderer = $this->get_page_renderer();
-                $renderer->new_feedback_page($teacherfeedback);
+                $renderer->edit_feedback_page($teacherfeedback);
                 return;
             }
         }

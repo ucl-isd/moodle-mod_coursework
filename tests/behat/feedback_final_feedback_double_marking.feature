@@ -50,6 +50,10 @@ Feature: Adding and editing final feedback
     And I am logged in as a manager
     And I visit the coursework page
     And I click the new multiple final feedback button for the student
+    And I should see "New comment here" in the "[data-behat-markstage='assessor_1']" "css_element"
+    And I should see "67" in the "[data-behat-markstage='assessor_1']" "css_element"
+    And I should see "New comment here" in the "[data-behat-markstage='assessor_2']" "css_element"
+    And I should see "63" in the "[data-behat-markstage='assessor_2']" "css_element"
     And I set the field "Mark" to "58"
     And I set the field "Comment" to "New comment"
     And I press "Save and finalise"
