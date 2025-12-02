@@ -987,15 +987,12 @@ class submission extends table_base implements renderable {
      */
     public function is_not_editable_reason(): ?string {
         global $USER;
-        $cansubmitonbehalf = has_capability('mod/coursework:submitonbehalfof', $this->get_context());
-        $belongstouser = $this->belongs_to_user($USER->id);
-
-        if (!$belongstouser && !$cansubmitonbehalf) {
-            return "Cannot submit on behalf of";
-        }
-
-        if ($belongstouser && !has_capability('mod/coursework:submit', $this->get_context())) {
-            return "No capability to submit own";
+        if ($this->belongs_to_user($USER->id)){
+            if (!has_capability('mod/coursework:submit', $this->get_context())) {
+                return "No capability to submit own";
+            }
+        } else if (!has_capability('mod/coursework:submitonbehalfof', $this->get_context())) {
+            return "No capability to submit on behalf of";
         }
 
         if ($this->has_feedback()) {
