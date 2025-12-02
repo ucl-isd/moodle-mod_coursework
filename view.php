@@ -492,5 +492,7 @@ if ($cangrade || $canviewstudents) {
 }
 
 echo $OUTPUT->header();
+//TODO remove this
+echo "Testing CTP-5490 v1";
 echo $html;
 echo $OUTPUT->footer();
