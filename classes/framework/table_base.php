@@ -334,15 +334,8 @@ abstract class table_base {
      * @return bool
      * @throws dml_exception
      */
-    public function persisted(): bool {
-        global $DB;
-        // TODO temporary check during development that record exists when ID is set - remove before merge.
-        $idisset = !empty($this->id);
-        $recordexists = $idisset ? $DB->record_exists(static::$tablename, ['id' => $this->id]) : false;
-        if ($idisset && !$recordexists) {
-            throw new invalid_parameter_exception("Invalid ID $this->id table " . self::$tablename);
-        }
-        return $idisset && $recordexists;
+    public function persisted() {
+        return !empty($this->id);
     }
 
     /**
