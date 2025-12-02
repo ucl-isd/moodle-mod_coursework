@@ -136,7 +136,7 @@ final class coursework_test extends \advanced_testcase {
             'grouping_id' => 543,
         ];
         $coursework = $this->create_a_coursework($params);
-        $this->assertFalse($coursework->get_group_from_user_id($this->student->id));
+        $this->assertNull($coursework->get_group_from_user_id($this->student->id));
     }
 
     public function test_marking_stages_does_single_marker(): void {

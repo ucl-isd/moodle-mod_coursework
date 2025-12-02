@@ -187,7 +187,6 @@ function xmldb_coursework_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025120200) {
-
         // Define key coursework_fk (foreign) to be added to coursework_allocation_pairs.
         $table = new xmldb_table('coursework_allocation_pairs');
         $key = new xmldb_key('coursework_fk', XMLDB_KEY_FOREIGN, ['courseworkid'], 'coursework', ['id']);

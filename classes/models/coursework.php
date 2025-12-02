@@ -1714,7 +1714,7 @@ class coursework extends table_base {
      * @return ?table_base
      */
     public function get_group_from_user_id(int $userid): ?table_base {
-        $group = $this->get_student_group($userid)  ?? null;
+        $group = $this->get_student_group($userid) ?? null;
         return $group ?: null;
     }
 
@@ -1757,7 +1757,7 @@ class coursework extends table_base {
             $params = [
                 'grouping_id' => $this->grouping_id,
                 'courseid' => $this->get_course()->id,
-                'userid' => $userorid
+                'userid' => $userorid,
             ];
         } else {
             $sql = "
@@ -3305,7 +3305,7 @@ class coursework extends table_base {
         global $DB;
         $contextid = $this->get_context()->id;
         $filerecords = $DB->get_recordset_sql(
-        "SELECT cs.id as submissionid, cs.allocatableid, cs.allocatabletype, cs.authorid, f.*
+            "SELECT cs.id as submissionid, cs.allocatableid, cs.allocatabletype, cs.authorid, f.*
                 FROM {files} f
                 JOIN {coursework_submissions} cs ON cs.id = f.itemid
                 WHERE f.contextid = :ctxid
