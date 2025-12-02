@@ -25,6 +25,7 @@ namespace mod_coursework\framework;
 use AllowDynamicProperties;
 use cache;
 use coding_exception;
+use core\exception\invalid_parameter_exception;
 use dml_exception;
 use dml_missing_record_exception;
 use dml_multiple_records_exception;
@@ -159,10 +160,10 @@ abstract class table_base {
      * Takes the supplied DB record (one row of the table) and applies it to this object. If it's a
      * number, change it to a DB row and then do it.
      *
-     * @param object|bool $dbrecord
+     * @param object|int|null $dbrecord
      * @throws dml_exception
      */
-    public function __construct($dbrecord = false) {
+    public function __construct(object|array|int|null $dbrecord = null) {
 
         // Allow the option to supply an id if this is not being generated as part of a massive list
         // of courseworks. If the id isn't there, throw an error. Weirdly, everything comes through
@@ -171,6 +172,10 @@ abstract class table_base {
             $this->id = $dbrecord;
             $this->reload();
         } else if (is_object($dbrecord) || is_array($dbrecord)) {
+            // We have been supplied with a purported DB record - check that it has an ID.
+            if (!is_numeric($dbrecord->id ?? null) && !is_numeric($dbrecord['id'] ?? null)) {
+                throw new invalid_parameter_exception("Not a valid DB record - ID not found " . json_encode($dbrecord));
+            }
             // Add all of the DB row fields to this object (if the object has a matching property).
             $this->apply_data($dbrecord);
             $this->dataloaded = true;
@@ -329,8 +334,15 @@ abstract class table_base {
      * @return bool
      * @throws dml_exception
      */
-    public function persisted() {
-        return !empty($this->id);
+    public function persisted(): bool {
+        global $DB;
+        // TODO temporary check during development that record exists when ID is set - remove before merge.
+        $idisset = !empty($this->id);
+        $recordexists = $idisset ? $DB->record_exists(static::$tablename, ['id' => $this->id]) : false;
+        if ($idisset && !$recordexists) {
+            throw new invalid_parameter_exception("Invalid ID $this->id table " . self::$tablename);
+        }
+        return $idisset && $recordexists;
     }
 
     /**
