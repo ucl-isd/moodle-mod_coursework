@@ -653,8 +653,6 @@ class submission extends table_base implements renderable {
             return -1;
         }
 
-        $courseworkfiles = $this->get_submission_files();
-
         $assessorfeedbacks = $this->get_assessor_feedbacks();
 
         if ($this->is_published()) {
@@ -691,6 +689,7 @@ class submission extends table_base implements renderable {
         }
 
         // Submitted, but not graded.
+        $courseworkfiles = $this->get_submission_files();
         if (!empty($this->id) && $courseworkfiles->has_files()) {
             return self::SUBMITTED;
         }
