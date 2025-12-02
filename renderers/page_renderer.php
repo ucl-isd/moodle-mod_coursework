@@ -536,9 +536,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $reportoptions['groupnamealpha'] = $groupnamealpha;
 
         $gradingreport = $coursework->renderable_grading_report_factory($reportoptions);
-        $gradingsheet = new grading_sheet($coursework, null, null);
-        // get only submissions that user can grade
-        $gradingsheet->get_submissions();
         /**
          * @var grading_report_renderer $grading_report_renderer
          */
