@@ -25,13 +25,14 @@
  */
 
 use Behat\Gherkin\Node\TableNode;
-use Behat\Mink\Exception\ExpectationException;
+use Behat\Mink\Exception\{ElementNotFoundException, ExpectationException};
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\group;
 use mod_coursework\models\submission;
 use mod_coursework\router;
 use mod_coursework\stages\base as stage_base;
+use mod_coursework\auto_grader\average_grade_no_straddle;
 
 require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
 
@@ -3626,5 +3627,34 @@ class behat_mod_coursework extends behat_base {
                 );
             }
         }
+    }
+
+    /**
+     * Default auto grading grade class boundaries admin setting exists.
+     *
+     * @Then /^the admin setting for auto grade class boundaries is set using the example$/
+     */
+    public function default_grade_class_boundary_admin_setting_exists() {
+        set_config(
+            'autogradeclassboundaries',
+            average_grade_no_straddle::get_example_setting(),
+            'coursework'
+        );
+    }
+
+
+    /**
+     * Override this to replace "\n" with chr(10) otherwise populating textarea with text including line break chars fails.
+     * Sets the specified value to the field.
+     *
+     * @Given /^I set the field "(?P<field_string>(?:[^"]|\\")*)" to "(?P<field_value_string>(?:[^"]|\\")*)" replacing line breaks$/
+     * @param string $field
+     * @param string $value
+     * @return void
+     * @throws ElementNotFoundException Thrown by behat_base::find
+     */
+    public function i_set_the_field_to_replacing_line_breaks($field, $value) {
+        $value = str_replace('\n', chr(10), $value);
+        $this->execute([behat_forms::class, 'i_set_the_field_to'], [$field, $value]);
     }
 }

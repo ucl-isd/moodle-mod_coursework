@@ -25,6 +25,8 @@
 
 use mod_coursework\candidateprovider_manager;
 use mod_coursework\models\coursework;
+use mod_coursework\models\user;
+use mod_coursework\auto_grader\average_grade_no_straddle;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -187,7 +189,6 @@ class mod_coursework_mod_form extends moodleform_mod {
      * @throws dml_exception
      */
     public function validation($data, $files) {
-
         $errors = [];
 
         if ($data['startdate'] != 0 && !empty($data['deadline']) && $data['startdate'] > $data['deadline']) {
@@ -255,6 +256,22 @@ class mod_coursework_mod_form extends moodleform_mod {
                     (empty($data['usecandidate']) && $currentvalue)
                 ) {
                     $errors['usecandidate'] = get_string('cannot_change_candidate', 'mod_coursework');
+                }
+            }
+        }
+
+        if (($data['automaticagreementstrategy'] ?? null) == 'average_grade_no_straddle') {
+            // Check that the coursework is being set to use a numeric grade.
+            if ($data['grade'] <= 0) {
+                $errors['automaticagreementstrategy'] = get_string('gradeboundaryerrorinvalidgradetype', 'coursework');
+            }
+            // Check that the max grade for the coursework falls within the grade class boundaries defined by site admin (if any).
+            $boundaries = average_grade_no_straddle::get_config_setting('autogradeclassboundaries');
+            if (!empty($boundaries)) {
+                $gradeclassboundary = average_grade_no_straddle::get_grade_range_index($data['grade'], $boundaries);
+                if ($gradeclassboundary === null) {
+                    $errors['automaticagreementstrategy'] =
+                        get_string('gradeboundaryerrormaxgradeoutofrange', 'coursework', $data['grade']);
                 }
             }
         }
@@ -1307,9 +1324,15 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     private function add_automatic_agreement_enabled() {
-        $options = ['none' => 'none',
-                         'percentage_distance' => 'percentage distance',
-                         'average_grade' => 'average grade'];
+        $options = [
+            'none' => get_string('none'),
+            'percentage_distance' => get_string('automaticagreementpercentagedistance', 'coursework'),
+            'average_grade' => get_string('automaticagreementaveragegrade', 'coursework'),
+        ];
+        if (get_config('coursework', 'autogradeclassboundaries')) {
+            $options['average_grade_no_straddle'] = get_string('automaticagreementaveragegradenostraddling', 'coursework');
+        }
+
         $this->form()->addelement(
             'select',
             'automaticagreementstrategy',
@@ -1320,7 +1343,9 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->form()->addhelpbutton('automaticagreementstrategy', 'automaticagreement', 'mod_coursework');
 
         $this->form()->hideif('automaticagreementstrategy', 'numberofmarkers', 'eq', 1);
-        $this->form()->hideif('automaticagreementrange', 'automaticagreementstrategy', 'neq', 'percentage_distance');
+        $this->form()->hideif('automaticagreementrange', 'automaticagreementstrategy', 'eq', 'average_grade');
+        $this->form()->hideif('automaticagreementrange', 'automaticagreementstrategy', 'eq', 'none');
+        $this->form()->hideif('automaticagreementrange', 'advancedgradingmethod_submissions', 'neq', '');
 
         // If guide or rubric grading in use, none of the existing auto agreement options will work correctly, so hide for now.
         $this->form()->hideif('automaticagreementstrategy', 'advancedgradingmethod_submissions', 'neq', "");
@@ -1349,7 +1374,8 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $this->form()->setType('roundingrule', PARAM_ALPHAEXT);
         $this->form()->setDefault('roundingrule', 'mid');
-        $this->form()->hideif('roundingrule', 'automaticagreementstrategy', 'neq', 'average_grade');
+        $this->form()->hideif('roundingrule', 'automaticagreementstrategy', 'eq', 'percentage_distance');
+        $this->form()->hideif('roundingrule', 'automaticagreementstrategy', 'eq', 'none');
     }
 
     private function add_enable_plagiarism_flag_field() {
