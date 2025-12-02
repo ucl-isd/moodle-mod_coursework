@@ -1126,7 +1126,7 @@ class coursework extends table_base {
      */
     public function submiting_allocatable_for_student(int $userid) {
         if ($this->is_configured_to_have_group_submissions()) {
-            return $this->get_student_group($userid);
+            return $this->get_group_from_user_id($userid);
         } else {
             return user::find($userid);
         }
@@ -1709,16 +1709,35 @@ class coursework extends table_base {
     }
 
     /**
-     * @param int $studentid
+     * Get a user's coursework group from their user ID.
+     * @param int $userid
+     * @return ?table_base
+     */
+    public function get_group_from_user_id(int $userid): ?table_base {
+        return $this->get_student_group($userid) ?? null;
+    }
+
+    /**
+     * Get student group from numeric user ID or user object.
+     * @param int|user $userorid numeric ID or user object.
      * @return bool|table_base
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function get_student_group(int $studentid) {
+    public function get_student_group(int|user $userorid) {
         global $DB;
 
         if (!$this->is_configured_to_have_group_submissions() && $this->assessorallocationstrategy != 'group_assessor') {
             throw new coding_exception('Asking for a student group when groups are disabled.');
+        }
+
+        if (!is_numeric($userorid)) {
+            // User ID is expected now, to save DB queries elsewhere.
+            // Turnitin plagiarism plugin may call this with user object, depending on fork/version, so both accepted.
+            debugging(
+                "Passing coursework user object to get_student_group() is deprecated.  Please pass user ID to get_group_from_user_id() instead"
+            );
+            $userorid = $userorid->id();
         }
 
         if ($this->grouping_id) {
@@ -1732,13 +1751,13 @@ class coursework extends table_base {
                  WHERE gm.userid = :userid
                    AND g.courseid = :courseid
                    AND groupings.groupingid = :grouping_id
-
                  LIMIT 1
             ";
             $params = [
                 'grouping_id' => $this->grouping_id,
                 'courseid' => $this->get_course()->id,
-                'userid' => $studentid];
+                'userid' => $userorid
+            ];
         } else {
             $sql = "
                 SELECT g.*
@@ -1749,12 +1768,12 @@ class coursework extends table_base {
                    AND g.courseid = :courseid
                  LIMIT 1";
             $params = [
-                'userid' => $studentid,
+                'userid' => $userorid,
                 'courseid' => $this->get_course()->id,
             ];
         }
         $group = $DB->get_record_sql($sql, $params);
-        return group::find($group);
+        return group::find($group, false);
     }
 
     /**
@@ -1766,7 +1785,7 @@ class coursework extends table_base {
     public function get_user_submission($user) {
 
         if ($this->is_configured_to_have_group_submissions()) {
-            $allocatable = $this->get_student_group($user->id());
+            $allocatable = $this->get_group_from_user_id($user->id());
         } else {
             $allocatable = $user;
         }
@@ -1809,7 +1828,7 @@ class coursework extends table_base {
      */
     public function build_own_submission($user) {
         if ($this->is_configured_to_have_group_submissions()) {
-            $allocatable = $this->get_student_group($user->id());
+            $allocatable = $this->get_group_from_user_id($user->id());
         } else {
             $allocatable = $user;
         }

@@ -942,7 +942,7 @@ class submission extends table_base implements renderable {
      */
     public function belongs_to_user(int $userid): bool {
         if ($this->get_coursework()->is_configured_to_have_group_submissions()) {
-            $group = $this->get_coursework()->get_student_group($userid);
+            $group = $this->get_coursework()->get_group_from_user_id($userid);
             return $group && $group->id == $this->allocatableid;
         } else {
             return $userid == $this->allocatableid;

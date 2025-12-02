@@ -80,7 +80,7 @@ class deadline_extension extends table_base {
      */
     public static function get_extension_for_student($student, $coursework) {
         if ($coursework->is_configured_to_have_group_submissions()) {
-            $allocatable = $coursework->get_student_group($student->id());
+            $allocatable = $coursework->get_group_from_user_id($student->id());
         } else {
             $allocatable = $student;
         }

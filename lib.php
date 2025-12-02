@@ -317,7 +317,7 @@ function mod_coursework_core_calendar_provide_event_action(
     } else if ($student) { // for students
         $user = user::find($USER->id);
         // if group cw check if student is in group, if not then don't display 'Add submission' link
-        if ($coursework->is_configured_to_have_group_submissions() && !$coursework->get_student_group($user->id())) {
+        if ($coursework->is_configured_to_have_group_submissions() && !$coursework->get_group_from_user_id($user->id())) {
             $submissionurl = new moodle_url('/mod/coursework/view.php', ['id' => $cm->id]);
             $itemcount = 1;
         } else {
