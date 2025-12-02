@@ -124,10 +124,10 @@ class average_grade_no_straddle extends average_grade {
      * @return ?int the index of the range or null if none of them.
      */
     public static function get_grade_range_index(float $gradepercentage, array $gradeclassesadminsetting): ?int {
+        $roundeddowngradepercentage = floor($gradepercentage * 100) / 100;
         foreach ($gradeclassesadminsetting as $index => $gradeclassboundaries) {
             $boundarybottom = $gradeclassboundaries[0];
             $boundarytop = $gradeclassboundaries[1];
-            $roundeddowngradepercentage = floor($gradepercentage * 100) / 100;
             // For grade band classification purposes, we round $gradepercentage down to 2 decimal places.
             // E.g. a percentage grade of 59.999% would be rounded down to 59.99% to determine which band it was in.
             if ($roundeddowngradepercentage >= $boundarybottom && $roundeddowngradepercentage <= $boundarytop) {
