@@ -386,6 +386,16 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $warnings->students_in_mutiple_groups();
             $warnings->student_in_no_group();
         }
+
+        if (groups_get_activity_groupmode($coursework->get_course_module()) != NOGROUPS) {
+            $group = groups_get_activity_group($coursework->get_course_module(), true);
+            $warnings->group_mode_chosen_warning($group);
+
+            if ($group != 0) {
+                $warnings->filters_warning();
+            }
+        }
+
         $template->warnings = $warnings->get_warnings();
 
         // Teacher data.

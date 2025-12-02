@@ -30,6 +30,14 @@
         }
     }
 }}
+
+{{! Separate groups/Visible groups menu. }}
+{{#groupmenu}}
+    <div class="pb-3">
+        {{{.}}}
+    </div>
+{{/groupmenu}}
+
 <form id="filter-form" action="#" method="get">
     <div class="d-flex pb-3">
         {{! Filter options. }}

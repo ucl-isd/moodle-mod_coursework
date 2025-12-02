@@ -68,6 +68,13 @@ class grading_report_renderer extends plugin_renderer_base {
         $template->blindmarkingenabled = $blindmarking;
         $template->releasemarks = $this->prepare_release_marks_button($coursework);
 
+        $currenturl = new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]);
+
+        if ($groupmenu = groups_print_activity_menu($coursework->get_course_module(), $currenturl, true)) {
+            // Display group mode menu with the relevant groups.
+            $template->groupmenu = $groupmenu;
+        }
+
         // Marking summary data.
         $markingsummary = (object) [
             'submitted' => 0,

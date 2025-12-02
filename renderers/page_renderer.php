@@ -521,6 +521,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             'sortby' => '',
         ];
 
+        if (groups_get_activity_groupmode($coursework->get_course_module()) != NOGROUPS) {
+            $reportoptions['group'] = groups_get_activity_group($coursework->get_course_module(), true);
+        }
+
         $gradingreport = $coursework->renderable_grading_report_factory($reportoptions);
         $gradingreportrenderer = new grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
 
