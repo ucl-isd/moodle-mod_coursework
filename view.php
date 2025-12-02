@@ -493,8 +493,8 @@ if ($cangrade || $canviewstudents) {
 
 echo $OUTPUT->header();
 //TODO remove this
-if (is_siteadmin()) {
-    echo "Testing CTP-5490 v2";
+if (is_siteadmin() && $CFG->debugdisplay && $CFG->debug === DEBUG_DEVELOPER ) {
+    echo "Testing CTP-5490 v3";
 }
 echo $html;
 echo $OUTPUT->footer();

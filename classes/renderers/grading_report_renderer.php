@@ -104,7 +104,6 @@ class grading_report_renderer extends plugin_renderer_base {
             $template->hasmarkers = true;
             $template->markerfilter = $markersarray;
         }
-
         return $this->render_from_template('mod_coursework/submissions/table', $template);
     }
 

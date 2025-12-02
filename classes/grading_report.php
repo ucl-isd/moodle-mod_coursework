@@ -352,6 +352,8 @@ class grading_report {
             $personaldeadlines = $this->coursework->personaldeadlines_enabled()
                 ? personaldeadline::get_all_for_coursework($this->coursework->id) : [];
 
+            $submissionfiles = $this->coursework->get_all_submission_files_data();
+
             // Make tablerow objects so we can use the methods to check permissions and set things.
             $rows = [];
             $rowclass = $this->coursework->has_multiple_markers()
@@ -393,13 +395,18 @@ class grading_report {
                 );
                 $personaldeadline = array_pop($personaldeadline);
 
+                // If there is a submission, add the files.
+                $submissionskey = $participant->type()  . "-" . $participant->id();
+                $usersubmissionfiles = isset($submissionfiles[$submissionskey])
+                    ? $submissionfiles[$submissionskey] : [];
+
                 // New grading_table_row_base.
                 $row = new $rowclass(
                     $this->coursework,
                     $participant,
                     $extension ? deadline_extension::find($extension, false) : null,
                     $personaldeadline ? personaldeadline::find($personaldeadline, false) : null,
-                    $personaldeadline,
+                    $usersubmissionfiles
                 );
 
                 // Now, we skip the ones who should not be visible on this page.

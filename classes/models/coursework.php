@@ -1714,7 +1714,8 @@ class coursework extends table_base {
      * @return ?table_base
      */
     public function get_group_from_user_id(int $userid): ?table_base {
-        return $this->get_student_group($userid) ?? null;
+        $group = $this->get_student_group($userid)  ?? null;
+        return $group ?: null;
     }
 
     /**
@@ -3293,5 +3294,73 @@ class coursework extends table_base {
             $event->priority = CALENDAR_EVENT_USER_OVERRIDE_PRIORITY;
             return (bool)calendar_event::create($event, false);
         }
+    }
+
+    /**
+     * Get an array of data for all submission files for this coursework, by participantID-participantType.
+     * @see submission::get_submission_files()
+     * @return array Each user may have multiple files (i.e. nested array).
+     */
+    public function get_all_submission_files_data(): array {
+        global $DB;
+        $contextid = $this->get_context()->id;
+        $filerecords = $DB->get_recordset_sql(
+        "SELECT cs.id as submissionid, cs.allocatableid, cs.allocatabletype, cs.authorid, f.*
+                FROM {files} f
+                JOIN {coursework_submissions} cs ON cs.id = f.itemid
+                WHERE f.contextid = :ctxid
+                AND f.component = 'mod_coursework'
+                AND f.filearea = 'submission'
+                AND f.filename != '.'
+                ORDER BY f.id",
+            ['ctxid' => $contextid]
+        );
+
+        if (!$filerecords->valid()) {
+            return [];
+        }
+        $results = [];
+
+        $fs = get_file_storage();
+        $turnitinenabled = $this->tii_enabled();
+
+        // We return a nested array by allocatable ID.
+        foreach ($filerecords as $filerecord) {
+            $submissionskey = $filerecord->allocatabletype . "-" . $filerecord->allocatableid;
+            if (!isset($results[$submissionskey])) {
+                $results[$submissionskey] = [];
+            }
+            $result = (object)[
+                'submissionid' => $filerecord->submissionid,
+                'allocatableid' => $filerecord->allocatableid,
+                'allocatabletype' => $filerecord->allocatabletype,
+                'authorid' => $filerecord->authorid,
+                'filename' => $filerecord->filename,
+                'url' => \moodle_url::make_file_url('/pluginfile.php', '/' . implode('/', [
+                        $contextid,
+                        'mod_coursework',
+                        'submission',
+                        $filerecord->submissionid,
+                        $filerecord->filename,
+                    ])),
+            ];
+
+            if ($turnitinenabled) {
+                //todo get these all at end via web service?
+                $result->plagiarismlinks = plagiarism_get_links(
+                    [
+                        'userid' => $filerecord->authorid, // User or for group submissions, first member of group.
+                        'file' => $fs->get_file_instance($filerecord),
+                        'cmid' => $this->get_coursemodule_id(),
+                        'course' => $this->get_course(),
+                        'coursework' => $this->id,
+                        'modname' => 'coursework',
+                    ]
+                );
+            }
+            $results[$submissionskey][] = $result;
+        }
+        $filerecords->close();
+        return $results;
     }
 }
