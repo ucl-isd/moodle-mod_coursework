@@ -68,6 +68,22 @@ class grading_report_renderer extends plugin_renderer_base {
         $template->blindmarkingenabled = $blindmarking;
         $template->releasemarks = $this->prepare_release_marks_button($coursework);
 
+        $currenturl = new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]);
+
+        if ($groupmenu = groups_print_activity_menu($coursework->get_course_module(), $currenturl, true)) {
+            // Display group mode menu with the relevant groups.
+            $template->groupmenu = $groupmenu;
+        }
+
+        // Marking summary data.
+        $markingsummary = (object) [
+            'submitted' => 0,
+            'participants' => 0,
+            'readyforagreement' => 0,
+            'readyforrelease' => 0,
+            'published' => 0,
+        ];
+
         // Populate template tr data.
         $template->tr = [];
         $markersarray = []; // Collect list of allocated markers while we are iterating.
@@ -88,15 +104,38 @@ class grading_report_renderer extends plugin_renderer_base {
                 // Tr.mustache - csv list for data-marker used by js filtering.
                 $trdata->markerfilter = implode(', ', array_column($trdata->markers, 'markeridentifier'));
 
-                // Create markers array by id to ensure unique.
-                foreach (array_filter($trdata->markers, fn($m) => isset($m->markerid)) as $marker) {
-                    $markersarray[$marker->markerid] = $marker;
+                // Dropdown filter markers array by id to ensure unique.
+                foreach ($trdata->markers as $marker) {
+                    if (isset($marker->markerid)) {
+                        $markersarray[$marker->markerid] = $marker;
+                    }
                 }
             }
+
+            // Marking summary data.
+            $markingsummary->participants++;
+            empty($trdata->submission->submissiondata) ?: $markingsummary->submitted++;
+
+            if ($coursework->has_multiple_markers()) {
+                empty($trdata->agreedmark->mark->readyforrelease) ?: $markingsummary->readyforrelease++;
+                empty($trdata->agreedmark->mark->released) ?: $markingsummary->published++;
+                empty($trdata->agreedmark->addfinalfeedback) ?: $markingsummary->readyforagreement++;
+            } else if ($coursework->moderation_enabled()) {
+                empty($trdata->moderation->mark->readyforrelease) ?: $markingsummary->readyforrelease++;
+                empty($trdata->moderation->mark->released) ?: $markingsummary->published++;
+                empty($trdata->moderation->mark->addmoderation) ?: $markingsummary->readyforagreement++;
+            } else if (!empty($trdata->markers[0]->showmark) && $trdata->markers[0]->showmark === true && $trdata->markers[0]->draft === false) {
+                if ($trdata->markers[0]->readyforrelease) {
+                    $markingsummary->readyforrelease++;
+                } else {
+                    $markingsummary->published++;
+                }
+            }
+
             $template->tr[] = $trdata;
         }
 
-        // Sort and add markers to template.
+        // Sort markers a-z for dropdown filter.
         if ($markersarray) {
             usort($markersarray, function ($a, $b) {
                 return strnatcasecmp($a->markername, $b->markername);
@@ -105,46 +144,8 @@ class grading_report_renderer extends plugin_renderer_base {
             $template->markerfilter = $markersarray;
         }
 
-        return $this->render_from_template('mod_coursework/submissions/table', $template);
-    }
-
-    /**
-     * Get marking summary data.
-     *
-     * @param array $tablerows
-     * @param coursework $coursework
-     * @return stdClass
-     */
-    public function get_marking_summary_data(array $tablerows, coursework $coursework): stdClass {
-        $template = new stdClass();
-        $template->submitted = 0;
-        $template->participants = 0;
-        $template->readyforagreement = 0;
-        $template->readyforrelease = 0;
-        $template->published = 0;
-
-        foreach ($tablerows as $tr) {
-            $trdata = $this->get_table_row_data($coursework, $tr);
-
-            $template->participants++;
-            empty($trdata->submission->submissiondata) ?: $template->submitted++;
-
-            if ($coursework->has_multiple_markers()) {
-                empty($trdata->agreedmark->mark->readyforrelease) ?: $template->readyforrelease++;
-                empty($trdata->agreedmark->mark->released) ?: $template->published++;
-                empty($trdata->agreedmark->addfinalfeedback) ?: $template->readyforagreement++;
-            } else if ($coursework->moderation_enabled()) {
-                empty($trdata->moderation->mark->readyforrelease) ?: $template->readyforrelease++;
-                empty($trdata->moderation->mark->released) ?: $template->published++;
-                empty($trdata->moderation->mark->addmoderation) ?: $template->readyforagreement++;
-            } else if (!empty($trdata->markers[0]->showmark) && $trdata->markers[0]->showmark === true && $trdata->markers[0]->draft === false) {
-                if ($trdata->markers[0]->readyforrelease) {
-                    $template->readyforrelease++;
-                } else {
-                    $template->published++;
-                }
-            }
-        }
+        // Add marking summary data to template.
+        $template->markingsummary = $markingsummary;
 
         return $template;
     }

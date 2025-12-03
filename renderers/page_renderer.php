@@ -99,7 +99,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws coding_exception
      */
     public function edit_feedback_page(feedback $teacherfeedback, $assessor, $editor) {
-
         global $SITE;
 
         $areagreeing = $teacherfeedback->stageidentifier == 'final_agreed_1';
@@ -507,73 +506,27 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param coursework $coursework
-     * @param $page
-     * @param $perpage
-     * @param $sortby
-     * @param $sorthow
-     * @param $group
-     * @param $firstnamealpha
-     * @param $lastnamealpha
-     * @param $groupnamealpha
-     * @return string
+     *
+     * Submissions table data.
+     *
+     * @param mod_coursework_coursework $coursework
+     * @return stdClass
      * @throws coding_exception
      * @throws moodle_exception
      */
-    public function teacher_grading_page($coursework, $page, $perpage, $sortby, $sorthow, $group, $firstnamealpha, $lastnamealpha, $groupnamealpha) {
+    public function submissions_table_data(mod_coursework_coursework $coursework): stdClass {
         // Grading report display options.
-        $reportoptions = [];
-        $reportoptions['page'] = $page;
-        $reportoptions['group'] = $group;
-        $reportoptions['perpage'] = $perpage;
-        $reportoptions['mode'] = grading_report::MODE_GET_ALL; // Load all students as pagination is removed for now.
-        $reportoptions['sortby'] = $sortby;
-        $reportoptions['sorthow'] = $sorthow;
-        $reportoptions['showsubmissiongrade'] = false;
-        $reportoptions['showgradinggrade'] = false;
-        $reportoptions['firstnamealpha'] = $firstnamealpha;
-        $reportoptions['lastnamealpha'] = $lastnamealpha;
-        $reportoptions['groupnamealpha'] = $groupnamealpha;
+        $reportoptions = [
+            'mode' => grading_report::MODE_GET_ALL,
+            'sortby' => '',
+        ];
+
+        if (groups_get_activity_groupmode($coursework->get_course_module()) != NOGROUPS) {
+            $reportoptions['group'] = groups_get_activity_group($coursework->get_course_module(), true);
+        }
 
         $gradingreport = $coursework->renderable_grading_report_factory($reportoptions);
-        $gradingsheet = new grading_sheet($coursework, null, null);
-        // get only submissions that user can grade
-        $gradingsheet->get_submissions();
-        /**
-         * @var grading_report_renderer $grading_report_renderer
-         */
         $gradingreportrenderer = new grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
-
-        $template = new stdClass();
-        $warnings = new warnings($coursework);
-        // Show any warnings that may need to be here
-        if ($coursework->usegroups == 1) {
-            $warnings->students_in_mutiple_groups();
-        }
-        $warnings->percentage_allocations_not_complete();
-        $warnings->student_in_no_group();
-
-        // Display 'Group mode' with the relevant groups.
-        $currenturl = new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]);
-        $template->groupmenu = groups_print_activity_menu($coursework->get_course_module(), $currenturl, true);
-        $warnings->group_mode_chosen_warning($group);
-
-        // reset table preferences
-        if ($firstnamealpha || $lastnamealpha || $groupnamealpha) {
-            $template->resettableurl = new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id, 'treset' => 1]);
-        }
-
-        if ($firstnamealpha || $lastnamealpha || $groupnamealpha || $group != -1) {
-            $warnings->filters_warning();
-        }
-        $template->warnings = $warnings->get_warnings();
-        $html = $this->render_from_template('mod_coursework/submissions/beforetable', $template);
-
-        /**
-         * @var grading_report_renderer $grading_report_renderer
-         */
-
-        $html .= $gradingreportrenderer->render_grading_report($gradingreport);
 
         foreach (['modal_handler_extensions', 'modal_handler_personaldeadlines', 'modal_handler_plagiarism'] as $amd) {
             $this->page->requires->js_call_amd(
@@ -583,7 +536,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             );
         }
 
-        return $html;
+        return $gradingreportrenderer->render_grading_report($gradingreport);
     }
 
     /**

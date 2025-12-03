@@ -375,15 +375,41 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $cansubmit = has_capability('mod/coursework:submit', $this->page->context);
 
         // Warnings.
+        $warnings = new warnings($coursework);
+        // Allocation.
         if ($canallocate) {
-            $warnings = new warnings($coursework);
-            $template->notenoughassessors = $warnings->not_enough_assessors();
+            $warnings->not_enough_assessors();
+            $warnings->percentage_allocations_not_complete();
+        }
+        // Groups.
+        if ($coursework->usegroups == 1) {
+            $warnings->students_in_mutiple_groups();
+            $warnings->student_in_no_group();
         }
 
-        // Teacher summary col.
+        if (groups_get_activity_groupmode($coursework->get_course_module()) != NOGROUPS) {
+            $group = groups_get_activity_group($coursework->get_course_module(), true);
+            $warnings->group_mode_chosen_warning($group);
+
+            if ($group != 0) {
+                $warnings->filters_warning();
+            }
+        }
+
+        $template->warnings = $warnings->get_warnings();
+
+        // Teacher data.
+        $submissionstable = '';
         if ($cangrade || $canpublish) {
-            $courseworkmodel = coursework::find($coursework->id);
-            $template->markingsummary = $this->coursework_marking_summary($courseworkmodel);
+            // Submissions table.
+            $pagerenderer = $this->page->get_renderer('mod_coursework', 'page');
+            $submissionstabledata = $pagerenderer->submissions_table_data($coursework);
+            $submissionstable = $this->render_from_template('mod_coursework/submissions/table', $submissionstabledata);
+
+            // Marking summary.
+            $template->canmark = true;
+            $template->markingsummary = $submissionstabledata->markingsummary;
+            $template->dropdown = $this->get_export_upload_links($coursework);
         }
 
         // Student summary col.
@@ -405,9 +431,16 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $template->markingguideurl = self::get_marking_guide_url($coursework);
         }
 
+        // General feedback.
+        // TODO - update this as part of https://ucldata.atlassian.net/browse/CTP-5316
+        // TODO - this should just be $canaddgeneralfeedback || $coursework->is_general_feedback_released().
+        // Behat fails when you don't include the other capabilities.
         if ($cangrade || $canpublish || $canaddgeneralfeedback || $coursework->is_general_feedback_released()) {
             $feedback = new stdClass();
             $feedback->feedback = $coursework->feedbackcomment;
+
+            // TODO - this should just be in the next $canaddgeneralfeedback.
+            // Behat fails when you don't include the other capabilities.
             if ($cangrade || $canpublish || $canaddgeneralfeedback) {
                 $feedback->duedate = $coursework->generalfeedback;
             }
@@ -419,7 +452,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $template->generalfeedback = $feedback;
         }
 
-        return $this->render_from_template('mod_coursework/intro', $template);
+        $intro = $this->render_from_template('mod_coursework/intro', $template);
+
+        return $intro . $submissionstable;
     }
 
     /**
@@ -1187,43 +1222,14 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Provides a summary of the marking progress for a coursework activity.
-     *
-     * This function generates the HTML for a marking summary, including counts of
-     * submitted, needing marking, and published submissions, as well as details
-     * for assessors and dropdown menus for export and upload actions.
-     *
-     * @param coursework $coursework The coursework activity object.
-     * @return stdClass Template data for the marking summary.
-     * @throws \core\exception\moodle_exception
-     * @throws coding_exception
-     */
-    private function coursework_marking_summary(coursework $coursework): stdClass {
-        $reportoptions = [
-            'mode' => grading_report::MODE_GET_ALL,
-            'sortby' => '',
-        ];
-
-        $gradingreport = $coursework->renderable_grading_report_factory($reportoptions);
-        $tablerows = $gradingreport->get_table_rows_for_page();
-
-        $gradingreportrenderer = new grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
-        $summarydata = $gradingreportrenderer->get_marking_summary_data($tablerows, $coursework);
-        $summarydata->canmark = true;
-        $summarydata->dropdown = $this->get_export_upload_links($coursework);
-
-        return $summarydata;
-    }
-
-    /**
      * Generates the dropdown data for export and upload links.
      *
-     * @param coursework $coursework The coursework activity object.
+     * @param mod_coursework_coursework $coursework The coursework activity object.
      * @return array An array containing the structured dropdown data.
      * @throws \core\exception\moodle_exception
      * @throws coding_exception
      */
-    private function get_export_upload_links(coursework $coursework): array {
+    private function get_export_upload_links(mod_coursework_coursework $coursework): array {
         $cmid = $this->page->cm->id;
         $viewurl = '/mod/coursework/view.php';
         $submissions = $coursework->get_all_submissions();
