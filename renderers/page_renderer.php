@@ -29,15 +29,12 @@ use mod_coursework\forms\plagiarism_flagging_mform;
 use mod_coursework\forms\student_submission_form;
 use mod_coursework\grade_judge;
 use mod_coursework\grading_report;
-use mod_coursework\grading_table_row_multi;
-use mod_coursework\grading_table_row_single;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\moderation;
 use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
-use mod_coursework\render_helpers\grading_report\data\marking_cell_data;
 use mod_coursework\renderers\grading_report_renderer;
 use mod_coursework\router;
 use mod_coursework\warnings;
@@ -341,7 +338,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                         get_string('automaticagreement', 'mod_coursework')
                         :
                         fullname($editor),
-                'date' => userdate($feedback->timemodified, '%a, %d %b %Y, %H:%M'),
+                'date' => userdate($feedback->timemodified, get_string('strftimerecentfull', 'langconfig')),
             ];
 
             $feedback->feedbackcomment = [
