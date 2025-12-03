@@ -28,8 +28,10 @@
         "markername": "Denise Soto"
     }
 }}
-<div class="coursework-feedback py-3">
-    <h3 class="h5">{{title}}</h3>
+<div class="coursework-feedback py-3" data-behat-markstage="{{markingstage}}">
+    {{#title}}
+        <h3 class="h5">{{title}}</h3>
+    {{/title}}
 
     <div class="py-3">
         {{#markername}}
