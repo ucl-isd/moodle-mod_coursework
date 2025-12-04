@@ -3657,4 +3657,28 @@ class behat_mod_coursework extends behat_base {
         $value = str_replace('\n', chr(10), $value);
         $this->execute([behat_forms::class, 'i_set_the_field_to'], [$field, $value]);
     }
+
+    /**
+     * Clicks on a specific button within a table row.
+     * Good for clicking button on tables where links have repeated text in diiferent rows.
+     *
+     * Example:
+     * - I click on the "Actions" button in the row containing "John1"
+     *
+     * @Given /^I click on the "(?P<linktext>(?:[^"]|\\")*)" button in the table row containing "(?P<rowtext>(?:[^"]|\\")*)"$/
+     * @param string $linktext
+     * @param string $rowtext
+     * @see behat_general::i_click_on_the_link_in_the_table_row_containing
+     */
+    public function i_click_on_the_button_in_the_table_row_containing(string $linktext, string $rowtext): void {
+        $row = $this->getSession()->getPage()->find('xpath', "//tr[contains(., '{$rowtext}')]");
+        if (!$row) {
+            throw new Exception("Row containing '{$rowtext}' not found");
+        }
+        $link = $this->find('named_exact', ['button', $linktext]);
+        if (!$link) {
+            throw new Exception("Link '{$linktext}' not found in the row containing '{$rowtext}'");
+        }
+        $link->click();
+    }
 }
