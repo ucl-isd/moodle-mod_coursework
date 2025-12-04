@@ -34,7 +34,7 @@ $functions = [
         'loginrequired' => true,
         'capabilities' => '', // Handled within the class.
     ],
-    'get_grading_table_row_data' => [
+    'mod_coursework_get_grading_table_row_data' => [
         'classname' => 'mod_coursework\external\get_grading_table_row_data',
         'description' => 'Get grading table row data to re-render from JS when edited via modal',
         'type' => 'read',
