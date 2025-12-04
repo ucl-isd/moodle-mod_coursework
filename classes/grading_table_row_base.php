@@ -70,7 +70,8 @@ abstract class grading_table_row_base implements user_row {
     protected ?personaldeadline $personaldeadline;
 
     /**
-     * @var ?array
+     * Array of objects representing submission files this row's user (DB query results)
+     * @var ?object[]
      */
     protected ?array $submissionfiles;
 
@@ -294,7 +295,7 @@ abstract class grading_table_row_base implements user_row {
     /**
      * Chained getter to prevent tight coupling.
      *
-     * @return array
+     * @return object[] array of objects - one for each of this row's user's submission files.
      */
     public function get_submission_files(): array {
         if (!$this->get_submission()) {
