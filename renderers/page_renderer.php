@@ -260,7 +260,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function edit_feedback_page(feedback $feedback) {
+    public function edit_feedback_page(feedback $feedback, assessor_feedback_mform $simpleform) {
         global $SITE, $DB;
 
         $submission = $feedback->get_submission();
@@ -291,41 +291,13 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             false
         );
 
-        if (empty($feedback->id)) {
-            $submiturl = $this->get_router()->get_path('create feedback', ['feedback' => $feedback]);
-            // auto-populate Agreed Feedback with comments from initial marking
-            if ($coursework && $coursework->autopopulatefeedbackcomment_enabled() && $feedback->stageidentifier == 'final_agreed_1') {
-                // get all initial stages feedbacks for this submission
-                $initialfeedbacks = $DB->get_records('coursework_feedbacks', ['submissionid' => $feedback->submissionid]);
-
-                $count = 1;
-                $feedbackcomments = [];
-                // put all initial feedbacks together for the comment field
-                foreach ($initialfeedbacks as $initialfeedback) {
-                    $feedbackcomments[] = get_string('markercomments', 'mod_coursework', $count) . $initialfeedback->feedbackcomment;
-                    $count++;
-                }
-
-                $feedback->feedbackcomment = ['text' => implode('<br/>', $feedbackcomments)];
-            }
-
-            // Warning in case there is already some feedback from another teacher.
-            if (
-                feedback::exists([
-                'submissionid' => $feedback->submissionid,
-                'stageidentifier' => $feedback->stageidentifier,
-                ])
-            ) {
-                $template->alert = 'Another user has already submitted feedback for this student. Your changes will not be saved.';
-            }
-        } else {
+        if (!empty($feedback->id)) {
             if (!empty($feedback->lasteditedbyuser)) {
                 $editor = $DB->get_record('user', ['id' => $feedback->lasteditedbyuser]);
             } else {
                 $editor = $assessor;
             }
 
-            $submiturl = $this->get_router()->get_path('update feedback', ['feedback' => $feedback]);
             // Last edit.
             $template->lasteditedby = (object)[
                 'name' =>
@@ -340,22 +312,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                         fullname($editor),
                 'date' => userdate($feedback->timemodified, get_string('strftimerecentfull', 'langconfig')),
             ];
-
-            $feedback->feedbackcomment = [
-                'text' => $feedback->feedbackcomment,
-                'format' => $feedback->feedbackcommentformat,
-            ];
-
-            // Load any files into the file manager.
-            $draftitemid = file_get_submitted_draft_itemid('feedback_manager');
-            file_prepare_draft_area(
-                $draftitemid,
-                $feedback->get_context()->id,
-                'mod_coursework',
-                'feedback',
-                $feedback->id
-            );
-            $feedback->feedback_manager = $draftitemid;
         }
 
         echo $this->output->header();
@@ -377,11 +333,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         // SHAME - Can we add an id to the form.
         echo "<div id='coursework-markingform'>";
-
-        $simpleform = new assessor_feedback_mform($submiturl, ['feedback' => $feedback]);
-        $simpleform->set_data($feedback);
         $simpleform->display();
-
         echo "</div>";
         echo $this->output->footer();
     }
@@ -961,35 +913,5 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $template->submission->status = get_string('statusreleased', 'mod_coursework');
                 break;
         }
-    }
-
-    /**
-     * Where there is a validation failure, redisplay form and allow Moodle to explain what error is for user.
-     * @param submission $submission
-     * @param assessor_feedback_mform $form
-     * @return void
-     * @throws \core\exception\coding_exception
-     * @throws \core\exception\moodle_exception
-     * @throws coding_exception
-     */
-    public function redisplay_form(submission $submission, assessor_feedback_mform $form) {
-        $coursework = $submission->get_coursework();
-        $files = $submission->get_submission_files();
-        $objectrenderer = $this->get_object_renderer();
-
-        $this->page->set_context($coursework->get_context());
-        $this->page->set_pagelayout('standard');
-        $templatedata = (object)[
-            'submission' => $objectrenderer->render_submission_files_with_plagiarism_links(
-                new mod_coursework_submission_files($files),
-                false
-            ),
-            'title' => get_string('markingfor', 'coursework', $submission->get_allocatable_name()),
-        ];
-        echo $this->output->header();
-        echo $this->render_from_template('mod_coursework/marking_details', $templatedata);
-        $form->display();
-        echo $this->output->footer();
-        die();
     }
 }

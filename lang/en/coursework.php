@@ -77,6 +77,7 @@ $string['annotationssaved'] = 'Annotations saved';
 $string['anonymity_warning_group'] = 'The anonymity may be compromised if only some groups have their marks published.';
 $string['anonymity_warning_user'] = 'The anonymity may be compromised if only some students have their marks published.';
 $string['anonymitydescription'] = '<p>Blind marking - You will not see students names';
+$string['anotheruseralreadysubmittedfeedback'] = 'Another user has already submitted feedback for this student. Your changes will not be saved.';
 $string['assessor'] = 'Marker';
 $string['automaticagreement'] = "Automatic agreement";
 $string['automaticagreement_help'] = "Automatic agreement strategy for the final mark. The final mark is worked out from the initial marks based on the strategy chosen";
