@@ -316,6 +316,10 @@ class grading_guide_agreed_grades implements renderable, templatable {
                     }
                 }
                 if ($prefill) {
+                    if (!empty($criterion->dropdownoptions)) {
+                        $criterion->dropdownoptions[$customoptionindex]['selected'] = true;
+                        $criterion->customisselected = true;
+                    }
                     $criterion->existing_agreed_feedback = (object)['remark' => implode("\n\n", $prefill)];
                 }
             }
