@@ -186,6 +186,43 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025110601, 'coursework');
     }
 
+    if ($oldversion < 2025120401) {
+        // Define key coursework_fk (foreign) to be added to coursework_allocation_pairs.
+        $table = new xmldb_table('coursework_allocation_pairs');
+        $key = new xmldb_key('coursework_fk', XMLDB_KEY_FOREIGN, ['courseworkid'], 'coursework', ['id']);
+
+        // Launch add key coursework_fk.
+        $dbman->add_key($table, $key);
+
+        // Define key assessor_fk (foreign) to be added to coursework_allocation_pairs.
+        $table = new xmldb_table('coursework_allocation_pairs');
+        $key = new xmldb_key('assessor_fk', XMLDB_KEY_FOREIGN, ['assessorid'], 'user', ['id']);
+
+        // Launch add key assessor_fk.
+        $dbman->add_key($table, $key);
+
+        // Define index courseworkid-ix (not unique) to be added to coursework_allocation_pairs.
+        $table = new xmldb_table('coursework_allocation_pairs');
+        $index = new xmldb_index('courseworkid-ix', XMLDB_INDEX_NOTUNIQUE, ['courseworkid']);
+
+        // Conditionally launch add index courseworkid-ix.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Define index courseworkid-allocatableid-allocatabletype-ix (not unique) to be added to coursework_allocation_pairs.
+        $table = new xmldb_table('coursework_allocation_pairs');
+        $index = new xmldb_index('courseworkid-allocatableid-allocatabletype-ix', XMLDB_INDEX_NOTUNIQUE, ['courseworkid', 'allocatableid', 'allocatabletype']);
+
+        // Conditionally launch add index courseworkid-allocatableid-allocatabletype-ix.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2025120401, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }

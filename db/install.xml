@@ -164,7 +164,13 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="coursework_fk" TYPE="foreign" FIELDS="courseworkid" REFTABLE="coursework" REFFIELDS="id"/>
+        <KEY NAME="assessor_fk" TYPE="foreign" FIELDS="assessorid" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
+      <INDEXES>
+          <INDEX NAME="courseworkid-ix" UNIQUE="false" FIELDS="courseworkid"/>
+          <INDEX NAME="courseworkid-allocatableid-allocatabletype-ix" UNIQUE="false" FIELDS="courseworkid, allocatableid, allocatabletype"/>
+      </INDEXES>
     </TABLE>
     <TABLE NAME="coursework_mod_set_rules" COMMENT="Moderation sets for each coursework need to include certain groups e.g. all students with grades less than 40%. This allows us to keep track of which rules have been added. The order matters as some will be top-up rules.">
       <FIELDS>
