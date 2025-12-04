@@ -77,7 +77,7 @@ class user extends table_base implements allocatable, moderatable {
         $data = new stdClass();
         $hasallfields = true;
         foreach (fields::get_name_fields() as $field) {
-            if ($this->$field ?? false) {
+            if (isset($this->$field)) {
                 $data->$field = $this->$field;
             } else {
                 $hasallfields = false;
