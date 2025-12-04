@@ -34,7 +34,7 @@ import Templates from 'core/templates';
  */
 export const replaceRow = async(rowElement, dataSet, successMessage) => {
     const templateDataResult = await Ajax.call([{
-        methodname: 'get_grading_table_row_data',
+        methodname: 'mod_coursework_get_grading_table_row_data',
         args: {
             courseworkid: dataSet.courseworkId,
             allocatableid: dataSet.allocatableId,
