@@ -228,14 +228,14 @@ class deadline_extension_form extends dynamic_form {
                 return [];
             }
         }
-        $maxdeadline = $CFG->coursework_max_extension_deadline;
+        $maxdeadline = $CFG->coursework_max_extension_deadline ?? 0;
         $deadline = $this->get_user_latest_deadline();
 
         if ($data['extended_deadline']) {
             if ($data['extended_deadline'] <= $deadline) {
                 $errors['extended_deadline'] = get_string('alert_validate_deadline', 'coursework');
             }
-            if ($data['extended_deadline'] >= strtotime("+$maxdeadline months", $deadline)) {
+            if ($maxdeadline && $data['extended_deadline'] >= strtotime("+$maxdeadline months", $deadline)) {
                 $errors['extended_deadline'] = get_string('alert_validate_deadline_months', 'coursework', $maxdeadline);
             }
         }
