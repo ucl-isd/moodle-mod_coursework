@@ -59,8 +59,12 @@ Grader one likes it
 
 Grader two really likes it
 """
+    And I set the field "Mark" to ""
+    And I press "Save and finalise"
+    And I should see "Please provide a valid grade for each criterion"
     And I set the field "Mark" to "10"
     And I press "Save and finalise"
+    And I should not see "Please provide a valid grade for each criterion"
     Then I should see the final agreed grade status "Ready for release"
     And I should see the final agreed grade as 10
     And I follow "Release the marks"
