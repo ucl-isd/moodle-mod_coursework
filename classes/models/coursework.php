@@ -1752,7 +1752,7 @@ class coursework extends table_base {
                  WHERE gm.userid = :userid
                    AND g.courseid = :courseid
                  LIMIT 1";
-            $params = ['userid' => $userid, 'courseid' => $this->get_course()->id,];
+            $params = ['userid' => $userid, 'courseid' => $this->get_course()->id];
         }
         $group = $DB->get_record_sql($sql, $params);
         return group::find($group);
