@@ -256,9 +256,7 @@ class feedback_controller extends controller_base {
             redirect($courseworkpageurl, get_string('cancelled'), null, notification::NOTIFY_SUCCESS);
         }
 
-        $data = $form->get_data();
-
-        if ($data && $form->validate_grade($data)) {
+        if ($form->get_data()) {
             $teacherfeedback->save(); // Need an id so we can save the advanced grading here.
 
             $teacherfeedback = $form->process_data();

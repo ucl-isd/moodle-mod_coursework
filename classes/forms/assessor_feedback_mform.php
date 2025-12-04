@@ -26,6 +26,7 @@ namespace mod_coursework\forms;
 
 use core\exception\coding_exception;
 use core\exception\moodle_exception;
+use core\notification;
 use form_filemanager;
 use gradingform_controller;
 use gradingform_instance;
@@ -200,23 +201,6 @@ class assessor_feedback_mform extends moodleform {
     }
 
     /**
-     *
-     * @param $data
-     * @return bool
-     */
-    public function validate_grade($data): bool {
-        if (!empty($this->gradinginstance) && property_exists($data, 'advancedgrading')) {
-            return $this->gradinginstance->validate_grading_element($data->advancedgrading);
-        } else {
-            $errors = self::validation($data, []);
-            if (!empty($errors)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * This is just to grab the data and add it to the feedback object.
      *
      * @return feedback
@@ -276,33 +260,32 @@ class assessor_feedback_mform extends moodleform {
      */
     public function display() {
         global $OUTPUT;
-        // We only use the custom override if using a marking guide for a final agreed feedback on a multiple marker coursework.
-        // Otherwise use the parent method.
 
-        if (
-            !feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)
-            ||
-            !$this->coursework->is_using_marking_guide()
-        ) {
-            parent::display();
-            return;
-        }
-        $isexistingagreedfeedback = $this->coursework->has_multiple_markers()
-            && $this->feedback->is_agreed_grade() ?? false;
-        $isnewagreedfeedback = !$isexistingagreedfeedback
-            && optional_param('stageidentifier', '', PARAM_TEXT) == final_agreed::STAGE_FINAL_AGREED_1;
-
-        if ($isnewagreedfeedback || $isexistingagreedfeedback) {
-            $data = (new grading_guide_agreed_grades(
+        if ($this->agreeing_final_marking_guide()) {
+            $data = new grading_guide_agreed_grades(
                 $this->_form->getAttributes(),
                 $this->_form->_elements,
                 $this->gradingcontroller,
                 $this->submission
-            ))->export_for_template($OUTPUT);
-            echo $OUTPUT->render_from_template('coursework/marking_guide_agree_grades_form', $data);
-            return;
+            );
+            echo $OUTPUT->render_from_template(
+                'coursework/marking_guide_agree_grades_form',
+                $data->export_for_template($OUTPUT)
+            );
+        } else {
+            parent::display();
         }
-        parent::display();
+    }
+
+    private function agreeing_final_marking_guide(): bool {
+        return
+            feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)
+            &&
+            $this->coursework->is_using_marking_guide()
+            &&
+            $this->coursework->has_multiple_markers()
+            &&
+            $this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1;
     }
 
     /**
@@ -317,12 +300,26 @@ class assessor_feedback_mform extends moodleform {
      * @throws \coding_exception
      */
     public function validation($data, $files) {
-        $data = (array)$data;
         $errors = parent::validation($data, $files);
-        $hasadvancedgrading = $data['advancedgrading'] ?? null;
-        if (!$hasadvancedgrading && $this->coursework->uses_numeric_grade() && !$this->grade_in_range($data['grade'])) {
+
+        if (
+            $this->agreeing_final_marking_guide()
+            &&
+            $this->coursework->uses_numeric_grade()
+            &&
+            !$this->gradinginstance->validate_grading_element($data['advancedgrading'])
+        ) {
+            notification::error(get_string('guidenotcompleted', 'gradingform_guide'));
+        } else if (
+            !feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)
+            &&
+            isset($data['grade'])
+            &&
+            !$this->grade_in_range($data['grade'])
+        ) {
             $errors['grade'] = get_string('err_valueoutofrange', 'coursework');
         }
+
         return $errors;
     }
 
