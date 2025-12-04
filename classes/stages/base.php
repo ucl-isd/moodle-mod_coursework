@@ -953,8 +953,7 @@ abstract class base {
         if ($this->coursework->is_configured_to_have_group_submissions()) {
             $groupid = $allocatable->id;
         } else {
-            $user = user::get_object($allocatable->id);
-            $group = $this->coursework->get_student_group($user);
+            $group = $this->coursework->get_coursework_group_from_user_id($allocatable->id);
             $groupid = ($group) ? $group->id : 0;
         }
 

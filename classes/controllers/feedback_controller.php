@@ -77,8 +77,7 @@ class feedback_controller extends controller_base {
         $urlparams = ['submissionid' => $this->params['submissionid']];
         $PAGE->set_url('/mod/coursework/actions/feedbacks/viewpdf.php', $urlparams);
 
-        $user = user::find($USER);
-        $ability = new ability($user->id(), $this->coursework);
+        $ability = new ability($USER->id, $this->coursework);
         $submission = submission::find($this->params['submissionid']);
 
         if ($ability->cannot('show', $submission)) {

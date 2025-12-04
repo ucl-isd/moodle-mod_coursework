@@ -875,10 +875,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $submitted = count($coursework->get_all_submissions());
             } else if ($coursework->can_submit()) { // Students
                 if ($coursework->usegroups) {
-                    $allocatable = $coursework->get_student_group($USER);
+                    $allocatable = $coursework->get_coursework_group_from_user_id($USER->id);
                 } else {
-                    $allocatable = $USER;
-                    $allocatable = user::find($allocatable);
+                    $allocatable = user::find($USER->id, false);
                 }
                 if ($allocatable) {
                     $timedue = $coursework->get_allocatable_deadline($allocatable->id); // get deadline based on user taking into considerations personal deadline and extension

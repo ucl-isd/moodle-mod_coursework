@@ -106,7 +106,7 @@ final class coursework_test extends \advanced_testcase {
             'usegroups' => true,
         ];
         $coursework = $this->create_a_coursework($params);
-        $this->assertEquals($this->group->id, $coursework->get_student_group($this->student)->id);
+        $this->assertEquals($this->group->id, $coursework->get_coursework_group_from_user_id($this->student->id)->id);
     }
 
     public function test_get_user_group_with_grouping(): void {
@@ -121,7 +121,7 @@ final class coursework_test extends \advanced_testcase {
             'grouping_id' => $this->grouping->id,
         ];
         $coursework = $this->create_a_coursework($params);
-        $this->assertEquals($this->group->id, $coursework->get_student_group($this->student)->id);
+        $this->assertEquals($this->group->id, $coursework->get_coursework_group_from_user_id($this->student->id)->id);
     }
 
     public function test_get_user_group_with_wrong_grouping(): void {
@@ -136,7 +136,7 @@ final class coursework_test extends \advanced_testcase {
             'grouping_id' => 543,
         ];
         $coursework = $this->create_a_coursework($params);
-        $this->assertFalse($coursework->get_student_group($this->student));
+        $this->assertFalse($coursework->get_coursework_group_from_user_id($this->student->id));
     }
 
     public function test_marking_stages_does_single_marker(): void {
