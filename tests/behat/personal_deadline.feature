@@ -35,7 +35,7 @@ Feature: When "Use the personal deadline" is enabled the deadline date should re
     Given the coursework deadline has passed
     And I log in as a manager
     And I visit the coursework page
-    And I click on the "Actions" button in the table row containing "John1"
+    And I click on "Actions" "button" in the "John1" "table_row"
     And I wait until the page is ready
     And I wait "1" seconds
     And I click on "Personal deadline" "link"
