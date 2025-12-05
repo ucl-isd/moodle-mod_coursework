@@ -24,6 +24,7 @@
 
 namespace mod_coursework;
 
+use mod_coursework\models\submission;
 use stdClass;
 
 /**
@@ -124,11 +125,13 @@ final class grading_sheet_download_test extends \advanced_testcase {
         $submission1 = new stdClass();
         $submission1->userid = $student1->id;
         $submission1->allocatableid = $student1->id;
+        $submission1->finalisedstatus = submission::FINALISED_STATUS_FINALISED;
         $submission1 = $generator->create_submission($submission1, $coursework);
 
         $submission2 = new stdClass();
         $submission2->userid = $student2->id;
         $submission2->allocatableid = $student2->id;
+        $submission2->finalisedstatus = submission::FINALISED_STATUS_FINALISED;
         $submission2 = $generator->create_submission($submission2, $coursework);
 
         // Assessor2 feedback for student1.
