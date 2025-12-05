@@ -130,6 +130,7 @@ $string['coursework:editagreedgrade'] = 'Edit own agreed marks';
 $string['coursework:editallocatedagreedgrade'] = 'Edit agreed marks for allocated submissions';
 $string['coursework:editinitialgrade'] = 'Edit own initial marker marks';
 $string['coursework:editpersonaldeadline'] = 'Edit personal deadlines';
+// The key for this capability string appears to be misleading, but it is being left for now, as it may be an expectation of the Turnitin plagiarism plugin in some versions.
 $string['coursework:grade'] = 'View Turnitin similarity report as marker';
 $string['coursework:grantextensions'] = 'Grant deadline extensions';
 $string['coursework:moderate'] = 'Moderate marks';

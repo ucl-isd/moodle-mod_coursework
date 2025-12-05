@@ -216,6 +216,9 @@ $capabilities = [
         ],
     ],
 
+    // They key for this capability appears to be misleading.
+    // It is not used to determine whether a user can grade, but whether they can see the TII similarity report (see lang strings).
+    // It is being left for now, as it may be an expectation of the Turnitin plagiarism plugin in some versions.
     'mod/coursework:grade' => [
         'riskbitmask' => RISK_MANAGETRUST | RISK_PERSONAL,
         'captype' => 'write',
