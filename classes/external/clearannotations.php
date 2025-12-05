@@ -85,9 +85,7 @@ class clearannotations extends external_api {
 
         // The export function contains a capability check so we don't have an extra one here.
         $PAGE->set_context($coursework->get_context());
-
-        $user = user::find($USER);
-        $ability = new ability($user, $coursework);
+        $ability = new ability($USER->id, $coursework);
         if ($ability->cannot('show', $submission)) {
             return [
                 'success' => false,

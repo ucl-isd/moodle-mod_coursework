@@ -1122,7 +1122,7 @@ class coursework extends table_base {
      */
     public function submiting_allocatable_for_student($user) {
         if ($this->is_configured_to_have_group_submissions()) {
-            return $this->get_student_group($user);
+            return $this->get_coursework_group_from_user_id($user->id());
         } else {
             return $user;
         }
@@ -1705,12 +1705,24 @@ class coursework extends table_base {
     }
 
     /**
+     * Get the coursework group from a user object.
+     * We pass this directly to get_coursework_group_from_user_id(), but keep this because plagiarism/turnitin/lib.php uses it.
      * @param user $student
+     * @return bool|table_base
+     * @throws dml_exception
+     */
+    public function get_student_group($student) {
+        return $this->get_coursework_group_from_user_id($student->id());
+    }
+
+    /**
+     * Get the coursework group from a user ID.
+     * @param int $userid
      * @return bool|table_base
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function get_student_group($student) {
+    public function get_coursework_group_from_user_id(int $userid) {
         global $DB;
 
         if (!$this->is_configured_to_have_group_submissions() && $this->assessorallocationstrategy != 'group_assessor') {
@@ -1718,8 +1730,7 @@ class coursework extends table_base {
         }
 
         if ($this->grouping_id) {
-                $sql = "
-                SELECT g.*
+                $sql = "SELECT g.*
                   FROM {groups} g
             INNER JOIN {groupings_groups} groupings
                     ON g.id = groupings.groupid
@@ -1728,26 +1739,20 @@ class coursework extends table_base {
                  WHERE gm.userid = :userid
                    AND g.courseid = :courseid
                    AND groupings.groupingid = :grouping_id
-
-                 LIMIT 1
-            ";
+                 LIMIT 1";
             $params = [
                 'grouping_id' => $this->grouping_id,
                 'courseid' => $this->get_course()->id,
-                'userid' => $student->id()];
+                'userid' => $userid];
         } else {
-            $sql = "
-                SELECT g.*
+            $sql = "SELECT g.*
                   FROM {groups} g
             INNER JOIN {groups_members} gm
                     ON gm.groupid = g.id
                  WHERE gm.userid = :userid
                    AND g.courseid = :courseid
                  LIMIT 1";
-            $params = [
-                'userid' => $student->id(),
-                'courseid' => $this->get_course()->id,
-            ];
+            $params = ['userid' => $userid, 'courseid' => $this->get_course()->id];
         }
         $group = $DB->get_record_sql($sql, $params);
         return group::find($group);
@@ -1762,7 +1767,7 @@ class coursework extends table_base {
     public function get_user_submission($user) {
 
         if ($this->is_configured_to_have_group_submissions()) {
-            $allocatable = $this->get_student_group($user);
+            $allocatable = $this->get_coursework_group_from_user_id($user->id());
         } else {
             $allocatable = $user;
         }
@@ -1805,7 +1810,7 @@ class coursework extends table_base {
      */
     public function build_own_submission($user) {
         if ($this->is_configured_to_have_group_submissions()) {
-            $allocatable = $this->get_student_group($user);
+            $allocatable = $this->get_coursework_group_from_user_id($user->id());
         } else {
             $allocatable = $user;
         }

@@ -232,7 +232,7 @@ class marking_cell_data extends cell_data_base {
                 'path' => 'new ' . ($final ? 'final ' : '') . 'feedback',
                 'params' => [
                     'submission' => $submission,
-                    'assessor' => user::find($USER),
+                    'assessor' => user::find($USER, false),
                     'stage' => $stage,
                 ],
             ],

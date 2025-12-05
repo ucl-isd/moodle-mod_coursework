@@ -368,7 +368,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      */
     protected function render_mod_coursework_coursework(mod_coursework_coursework $coursework): string {
         global $USER;
-        $student = user::find($USER);
+        $student = user::find($USER, false);
         $template = new stdClass();
 
         // Capability checks
@@ -1008,7 +1008,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $template = new stdClass();
 
         // Fetch student and deadline information.
-        $user = user::find($USER);
+        $user = user::find($USER, false);
 
         // Handle coursework deadline details.
         if ($coursework->has_deadline()) {
