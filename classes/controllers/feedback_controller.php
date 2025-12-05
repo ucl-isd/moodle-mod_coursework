@@ -94,8 +94,7 @@ class feedback_controller extends controller_base {
      * @throws \moodle_exception
      */
     protected function new_feedback() {
-
-        global $PAGE, $USER;
+        global $PAGE, $USER, $DB;
 
         $teacherfeedback = new feedback();
         $teacherfeedback->submissionid = $this->params['submissionid'];
@@ -105,11 +104,21 @@ class feedback_controller extends controller_base {
         $teacherfeedback->stageidentifier = $this->params['stageidentifier'];
         $teacherfeedback->courseworkid = $this->params['courseworkid'];
 
-        $conditions = ['submissionid' => $this->params['submissionid'],
-                            'stageidentifier' => $this->params['stageidentifier']];
-        if (feedback::exists($conditions)) {
+        $coursework = $teacherfeedback->get_coursework();
+
+        if (
+            feedback::exists([
+            'submissionid' => $teacherfeedback->submissionid,
+            'stageidentifier' => $teacherfeedback->stageidentifier,
+            ])
+        ) {
             if ($this->space_for_another_feedback($teacherfeedback)) {
                 $teacherfeedback->stageidentifier = $this->next_available_stage($teacherfeedback);
+            } else {
+                redirect(
+                    new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]),
+                    get_string('anotheruseralreadysubmittedfeedback', 'mod_coursework')
+                );
             }
         }
 
@@ -127,8 +136,28 @@ class feedback_controller extends controller_base {
         $urlparams['stageidentifier'] = $teacherfeedback->stageidentifier;
         $PAGE->set_url('/mod/coursework/actions/feedbacks/new.php', $urlparams);
 
+        // auto-populate Agreed Feedback with comments from initial marking
+        if ($coursework && $coursework->autopopulatefeedbackcomment_enabled() && $teacherfeedback->stageidentifier == 'final_agreed_1') {
+            // get all initial stages feedbacks for this submission
+            $initialfeedbacks = $DB->get_records('coursework_feedbacks', ['submissionid' => $teacherfeedback->submissionid]);
+
+            $count = 1;
+            $feedbackcomments = [];
+            // put all initial feedbacks together for the comment field
+            foreach ($initialfeedbacks as $initialfeedback) {
+                $feedbackcomments[] = get_string('markercomments', 'mod_coursework', $count) . $initialfeedback->feedbackcomment;
+                $count++;
+            }
+
+            $teacherfeedback->feedbackcomment = ['text' => implode('<br/>', $feedbackcomments)];
+        }
+
+        $submiturl = $this->get_router()->get_path('create feedback', ['feedback' => $teacherfeedback]);
+        $simpleform = new assessor_feedback_mform($submiturl, ['feedback' => $teacherfeedback]);
+        $simpleform->set_data($teacherfeedback);
+
         $renderer = $this->get_page_renderer();
-        $renderer->edit_feedback_page($teacherfeedback);
+        $renderer->edit_feedback_page($teacherfeedback, $simpleform);
     }
 
     /**
@@ -137,8 +166,7 @@ class feedback_controller extends controller_base {
      * @throws moodle_exception
      */
     protected function edit_feedback() {
-
-        global $DB, $PAGE, $USER;
+        global $PAGE, $USER;
 
         $teacherfeedback = new feedback($this->params['feedbackid']);
         $this->check_stage_permissions($teacherfeedback->stageidentifier);
@@ -152,8 +180,28 @@ class feedback_controller extends controller_base {
         $teacherfeedback->grade = is_numeric($teacherfeedback->grade)
             ? format_float($teacherfeedback->grade, $this->coursework->get_grade_item()->get_decimals())
             : null;
+
+        $teacherfeedback->feedbackcomment = [
+            'text' => $teacherfeedback->feedbackcomment,
+            'format' => $teacherfeedback->feedbackcommentformat,
+        ];
+
+        // Load any files into the file manager.
+        $teacherfeedback->feedback_manager = file_get_submitted_draft_itemid('feedback_manager');
+        file_prepare_draft_area(
+            $teacherfeedback->feedback_manager,
+            $teacherfeedback->get_context()->id,
+            'mod_coursework',
+            'feedback',
+            $teacherfeedback->id
+        );
+
+        $submiturl = $this->get_router()->get_path('update feedback', ['feedback' => $teacherfeedback]);
+        $simpleform = new assessor_feedback_mform($submiturl, ['feedback' => $teacherfeedback]);
+        $simpleform->set_data($teacherfeedback);
+
         $renderer = $this->get_page_renderer();
-        $renderer->edit_feedback_page($teacherfeedback);
+        $renderer->edit_feedback_page($teacherfeedback, $simpleform);
     }
 
     /**
@@ -190,8 +238,9 @@ class feedback_controller extends controller_base {
             if ($this->space_for_another_feedback($teacherfeedback)) {
                 $teacherfeedback->stageidentifier = $this->next_available_stage($teacherfeedback);
             } else {
+                $form = new assessor_feedback_mform(null, ['feedback' => $teacherfeedback]);
                 $renderer = $this->get_page_renderer();
-                $renderer->edit_feedback_page($teacherfeedback);
+                $renderer->edit_feedback_page($teacherfeedback, $form);
                 return;
             }
         }
@@ -206,9 +255,7 @@ class feedback_controller extends controller_base {
             redirect($courseworkpageurl, get_string('cancelled'), null, notification::NOTIFY_SUCCESS);
         }
 
-        $data = $form->get_data();
-
-        if ($data && $form->validate_grade($data)) {
+        if ($form->get_data()) {
             $teacherfeedback->save(); // Need an id so we can save the advanced grading here.
 
             $teacherfeedback = $form->process_data();
@@ -232,7 +279,7 @@ class feedback_controller extends controller_base {
             );
         } else {
             $renderer = $this->get_page_renderer();
-            $renderer->redisplay_form($teacherfeedback->get_submission(), $form);
+            $renderer->edit_feedback_page($teacherfeedback, $form);
         }
     }
 
@@ -318,7 +365,7 @@ class feedback_controller extends controller_base {
         } else {
             // Grade validation error - redisplay form with messages.
             $renderer = $this->get_page_renderer();
-            $renderer->redisplay_form($teacherfeedback->get_submission(), $form);
+            $renderer->edit_feedback_page($teacherfeedback, $form);
             die();
         }
     }
