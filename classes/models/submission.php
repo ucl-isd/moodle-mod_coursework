@@ -1075,6 +1075,13 @@ class submission extends table_base implements renderable {
         if (coursework_grade_item_update($this->get_coursework(), $studentgradestoupdate) == GRADE_UPDATE_OK) {
             if (!$this->is_published()) {
                 $this->update_attribute('firstpublished', time());
+                // If the agreed grade is still in draft and is an auto grade, mark it as finalised now.
+                foreach ($this->get_feedbacks() as $feedback) {
+                    if ($feedback->is_auto_grade() && !$feedback->finalised) {
+                        $feedback->update_attribute('finalised', 1);
+                    }
+                }
+                $this->update_attribute('firstpublished', time());
                 // Send feedback released notification only when first published.
                 $mailer = new mailer($this->get_coursework());
                 $mailer->send_feedback_notification($this);

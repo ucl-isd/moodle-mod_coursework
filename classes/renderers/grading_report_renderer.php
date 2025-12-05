@@ -333,7 +333,7 @@ class grading_report_renderer extends plugin_renderer_base {
         }
 
         $releasemarks = new stdClass();
-        $releasemarks->warning = '';
+        $warnings = [];
         $releasemarks->url = new moodle_url(
             '/mod/coursework/actions/releasemarks.php',
             ['cmid' => $coursework->get_coursemodule_id()]
@@ -341,9 +341,12 @@ class grading_report_renderer extends plugin_renderer_base {
 
         if ($coursework->blindmarking_enabled()) {
             $submissiontype = $coursework->is_configured_to_have_group_submissions() ? 'group' : 'user';
-            $releasemarks->warning = get_string('anonymity_warning_' . $submissiontype, 'mod_coursework');
+            $warnings[] = get_string('anonymity_warning_' . $submissiontype, 'mod_coursework');
         }
-
+        if ($coursework->automaticagreement_enabled()) {
+            $warnings[] = get_string('confirmpublishautogradewarning', 'mod_coursework');
+        }
+        $releasemarks->warning = implode(' ', $warnings);
         return $releasemarks;
     }
 
