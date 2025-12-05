@@ -71,78 +71,12 @@ class submission_cell_data extends cell_data_base {
         $data->id = $submission->id;
         $data->datemodified = $submission->time_submitted();
         $data->submissiondata = new stdClass();
-        $data->submissiondata->files = $this->get_submission_files_data($rowobject);
+        $data->submissiondata->files = $submission ? $rowobject->get_submission_files() : [];
         $data->submissiondata->finalised = $submission->is_finalised();
         $data->submissiondata->released = $submission->is_published();
 
         $this->add_plagiarism_data($data->submissiondata, $submission);
         $this->add_late_submission_data($data->submissiondata, $submission);
-    }
-
-    /**
-     * Get data for submission files.
-     *
-     * @param grading_table_row_base $rowsbase Row object containing submission files.
-     * @return array Array of file data objects.
-     */
-    protected function get_submission_files_data(grading_table_row_base $rowsbase): array {
-        $files = [];
-        $submissionfiles = $rowsbase->get_submission_files();
-
-        if ($submissionfiles) {
-            $coursework = $rowsbase->get_coursework();
-            foreach ($submissionfiles->get_files() as $file) {
-                $files[] = $this->prepare_file_data($file, $coursework, $rowsbase->get_submission()->id);
-            }
-        }
-
-        return $files;
-    }
-
-    /**
-     * Prepare data for a single file.
-     *
-     * @param stored_file $file The file to prepare data for.
-     * @param coursework $coursework The coursework instance.
-     * @param int $submissionid The submission id.
-     * @return stdClass File data object.
-     */
-    protected function prepare_file_data(stored_file $file, coursework $coursework, int $submissionid): stdClass {
-        $fileinfo = new stdClass();
-        $fileinfo->filename = $file->get_filename();
-        $fileinfo->url = moodle_url::make_file_url('/pluginfile.php', '/' . implode('/', [
-                $file->get_contextid(),
-                'mod_coursework',
-                'submission',
-                $submissionid,
-                $file->get_filename(),
-            ]));
-
-        $fileinfo->plagiarismlinks = $this->get_plagiarism_links($file, $coursework);
-
-        return $fileinfo;
-    }
-
-    /**
-     * Get plagiarism links for a file.
-     *
-     * @param stored_file $file The file to get plagiarism links for.
-     * @param coursework $coursework The coursework instance.
-     * @return string HTML of plagiarism links.
-     */
-    protected function get_plagiarism_links(stored_file $file, coursework $coursework): string {
-        global $CFG;
-        require_once("$CFG->libdir/plagiarismlib.php");
-        $params = [
-            'userid' => $file->get_userid(),
-            'file' => $file,
-            'cmid' => $coursework->get_coursemodule_id(),
-            'course' => $coursework->get_course(),
-            'coursework' => $coursework->id,
-            'modname' => 'coursework',
-        ];
-
-        return plagiarism_get_links($params);
     }
 
     /**

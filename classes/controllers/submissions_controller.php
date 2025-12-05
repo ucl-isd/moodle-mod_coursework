@@ -215,7 +215,7 @@ class submissions_controller extends controller_base {
         $submission->submit_plagiarism();
 
         $mailer = new mailer($this->coursework);
-        if ($CFG->coursework_allsubmissionreceipt || $submission->is_finalised()) {
+        if (($CFG->coursework_allsubmissionreceipt ?? false) || $submission->is_finalised()) {
             foreach ($submission->get_students() as $student) {
                 $mailer->send_submission_receipt($student, $submission->is_finalised());
             }

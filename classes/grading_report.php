@@ -351,6 +351,7 @@ class grading_report {
                 ? deadline_extension::get_all_for_coursework($this->coursework->id) : [];
             $personaldeadlines = $this->coursework->personaldeadlines_enabled()
                 ? personaldeadline::get_all_for_coursework($this->coursework->id) : [];
+            $allsubmissionfiles = submission::get_all_submission_files_data($this->coursework);
 
             // Make tablerow objects so we can use the methods to check permissions and set things.
             $rows = [];
@@ -399,7 +400,7 @@ class grading_report {
                     $participant,
                     $extension ? deadline_extension::find($extension, false) : null,
                     $personaldeadline ? personaldeadline::find($personaldeadline, false) : null,
-                    $personaldeadline,
+                    $allsubmissionfiles[$participant->type() . "-" . $participant->id()] ?? [],
                 );
 
                 // Now, we skip the ones who should not be visible on this page.
