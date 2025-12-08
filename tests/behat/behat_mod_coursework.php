@@ -3882,4 +3882,49 @@ class behat_mod_coursework extends behat_base {
             throw new Exception("Expected mark '$mark' but found '" . $element->getText() . "' in row $rownumber");
         }
     }
+
+    /**
+     * Assigns capabilities to a role.
+     *
+     * Example usage in .feature:
+     * And the role "courseworkmarker" has the following capabilities:
+     *   | capability                     | permission |
+     *   | mod/coursework:addgeneralfeedback | allow      |
+     *
+     * @Given /^the role "(?P<rolename_string>(?:[^"]|\\")*)" has the following capabilities:$/
+     * @param string $rolename Role shortname
+     * @param Behat\Gherkin\Node\TableNode $table
+     */
+    public function role_has_capabilities($rolename, \Behat\Gherkin\Node\TableNode $table) {
+        global $DB;
+
+        $role = $DB->get_record('role', ['shortname' => $rolename]);
+        if (!$role) {
+            throw new Exception("Role with shortname '$rolename' does not exist.");
+        }
+
+        $context = context_system::instance();
+
+        foreach ($table->getHash() as $row) {
+            $capability = $row['capability'];
+            $permission = strtolower($row['permission'] ?? 'allow');
+
+            switch ($permission) {
+                case 'allow':
+                    $permissionvalue = CAP_ALLOW;
+                    break;
+                case 'prevent':
+                    $permissionvalue = CAP_PREVENT;
+                    break;
+                case 'prohibit':
+                    $permissionvalue = CAP_PROHIBIT;
+                    break;
+                default:
+                    throw new Exception("Unknown permission '$permission' for capability '$capability'.");
+            }
+
+            // Assign the capability to the role in system context.
+            assign_capability($capability, $permissionvalue, $role->id, $context->id);
+        }
+    }
 }
