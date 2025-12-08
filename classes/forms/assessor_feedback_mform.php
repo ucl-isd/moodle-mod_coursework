@@ -26,6 +26,7 @@ namespace mod_coursework\forms;
 
 use core\exception\coding_exception;
 use core\exception\moodle_exception;
+use core\notification;
 use form_filemanager;
 use gradingform_controller;
 use gradingform_instance;
@@ -124,31 +125,29 @@ class assessor_feedback_mform extends moodleform {
             if (defined('BEHAT_SITE_RUNNING')) {
                 $mform->addElement('html', '<a href="#">' . get_string('togglezoom', 'mod_assign') . '</a>');
             }
+        } else if ($this->coursework->uses_numeric_grade()) {
+            // We are using a point grade e.g. 100/100, so use a text input not a menu.
+            $mform->addElement('text', 'grade', get_string('mark', 'mod_coursework'));
+            $mform->setType(
+                'grade',
+                $this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1 ? PARAM_LOCALISEDFLOAT : PARAM_INT
+            );
+            $mform->addRule(
+                'grade',
+                get_string('err_valueoutofrange', 'mod_coursework'),
+                'numeric',
+                null,
+                'client'
+            );
         } else {
-            if ($this->coursework->uses_numeric_grade()) {
-                // We are using a point grade e.g. 100/100, so use a text input not a menu.
-                $mform->addElement('text', 'grade', get_string('mark', 'mod_coursework'));
-                $mform->setType(
-                    'grade',
-                    $this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1 ? PARAM_LOCALISEDFLOAT : PARAM_INT
-                );
-                $mform->addRule(
-                    'grade',
-                    get_string('err_valueoutofrange', 'mod_coursework'),
-                    'numeric',
-                    null,
-                    'client'
-                );
-            } else {
-                // We are using a grading scale e.g. competent/not yet competent, so we need a select menu for the grade.
-                $mform->addElement(
-                    'select',
-                    'grade',
-                    get_string('mark', 'mod_coursework'),
-                    make_grades_menu($this->coursework->grade),
-                    ['id' => 'feedback_grade']
-                );
-            }
+            // We are using a grading scale e.g. competent/not yet competent, so we need a select menu for the grade.
+            $mform->addElement(
+                'select',
+                'grade',
+                get_string('mark', 'mod_coursework'),
+                make_grades_menu($this->coursework->grade),
+                ['id' => 'feedback_grade']
+            );
         }
 
         // Useful to keep the overall comments even if we have a rubric or something. There may be a place
@@ -199,23 +198,6 @@ class assessor_feedback_mform extends moodleform {
         $buttonarray[] = $this->_form->createElement('cancel');
         $this->_form->addGroup($buttonarray, 'buttonar', '', [' '], false);
         $this->_form->closeHeaderBefore('buttonar');
-    }
-
-    /**
-     *
-     * @param $data
-     * @return bool
-     */
-    public function validate_grade($data): bool {
-        if (!empty($this->gradinginstance) && property_exists($data, 'advancedgrading')) {
-            return $this->gradinginstance->validate_grading_element($data->advancedgrading);
-        } else {
-            $errors = self::validation($data, []);
-            if (!empty($errors)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -278,33 +260,32 @@ class assessor_feedback_mform extends moodleform {
      */
     public function display() {
         global $OUTPUT;
-        // We only use the custom override if using a marking guide for a final agreed feedback on a multiple marker coursework.
-        // Otherwise use the parent method.
 
-        if (
-            !feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)
-            ||
-            !$this->coursework->is_using_marking_guide()
-        ) {
-            parent::display();
-            return;
-        }
-        $isexistingagreedfeedback = $this->coursework->has_multiple_markers()
-            && $this->feedback->is_agreed_grade() ?? false;
-        $isnewagreedfeedback = !$isexistingagreedfeedback
-            && optional_param('stageidentifier', '', PARAM_TEXT) == final_agreed::STAGE_FINAL_AGREED_1;
-
-        if ($isnewagreedfeedback || $isexistingagreedfeedback) {
-            $data = (new grading_guide_agreed_grades(
+        if ($this->agreeing_final_marking_guide()) {
+            $data = new grading_guide_agreed_grades(
                 $this->_form->getAttributes(),
                 $this->_form->_elements,
                 $this->gradingcontroller,
                 $this->submission
-            ))->export_for_template($OUTPUT);
-            echo $OUTPUT->render_from_template('coursework/marking_guide_agree_grades_form', $data);
-            return;
+            );
+            echo $OUTPUT->render_from_template(
+                'coursework/marking_guide_agree_grades_form',
+                $data->export_for_template($OUTPUT)
+            );
+        } else {
+            parent::display();
         }
-        parent::display();
+    }
+
+    private function agreeing_final_marking_guide(): bool {
+        return
+            feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)
+            &&
+            $this->coursework->is_using_marking_guide()
+            &&
+            $this->coursework->has_multiple_markers()
+            &&
+            $this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1;
     }
 
     /**
@@ -319,12 +300,26 @@ class assessor_feedback_mform extends moodleform {
      * @throws \coding_exception
      */
     public function validation($data, $files) {
-        $data = (array)$data;
         $errors = parent::validation($data, $files);
-        $hasadvancedgrading = $data['advancedgrading'] ?? null;
-        if (!$hasadvancedgrading && $this->coursework->uses_numeric_grade() && !$this->grade_in_range($data['grade'])) {
+
+        if (
+            $this->agreeing_final_marking_guide()
+            &&
+            $this->coursework->uses_numeric_grade()
+            &&
+            !$this->gradinginstance->validate_grading_element($data['advancedgrading'])
+        ) {
+            notification::error(get_string('guidenotcompleted', 'gradingform_guide'));
+        } else if (
+            !feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)
+            &&
+            isset($data['grade'])
+            &&
+            !$this->grade_in_range($data['grade'])
+        ) {
             $errors['grade'] = get_string('err_valueoutofrange', 'coursework');
         }
+
         return $errors;
     }
 

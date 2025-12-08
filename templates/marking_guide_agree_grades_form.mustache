@@ -38,7 +38,13 @@
                     {{/criterion_grades}}
                     <td>
 
-                        <label for="agreed_feedback_select_criterion_{{id}}">{{#str}} feedback, mod_coursework {{/str}}:</label>
+                        {{#hasfrequentcomments}}
+                            <label for="agreed_feedback_select_criterion_{{id}}">{{#str}} feedback, mod_coursework {{/str}}:</label>
+                            <label for="agreed_feedback_criterion_{{id}}" class="sr-only">{{#str}} customentertext, mod_coursework {{/str}}:</label>
+                        {{/hasfrequentcomments}}
+                        {{^hasfrequentcomments}}
+                            <label for="agreed_feedback_criterion_{{id}}">{{#str}} feedback, mod_coursework {{/str}}:</label>
+                        {{/hasfrequentcomments}}
                         <div class="form-group">
                             {{#hasfrequentcomments}}
                                 <select class="form-control mod_coursework_custom_comment_select" advancedgrading[criteria][{{id}}][select] style="height: auto;" id="agreed_feedback_select_criterion_{{id}}">

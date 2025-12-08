@@ -1,6 +1,6 @@
 @mod @mod_coursework
-Feature: Marking guide
-  Users can make use of the marking guide to submit grades for final approval.
+Feature: Marking guide with frequent comments
+  Users can make use of the marking guide to submit grades for final approval based on frequently used comments.
 
   Background:
     Given there is a course
@@ -24,13 +24,23 @@ Feature: Marking guide
     And I define the following marking guide:
       | Criterion name | Description for students | Description for markers | Maximum score |
       | A criteria     | Description for students | Description for markers | 100           |
+    And I define the following frequently used comments:
+      | Comment 1 |
+      | Comment 2 |
+      | Comment 3 |
     And I press "Save marking guide and make it ready"
 
     And I visit the coursework page
 
     And I click on the add feedback button for assessor 1
     And I grade by filling the marking guide with:
-      | A criteria | 6 | Grader one likes it |
+      | A criteria | 6 |  |
+
+    And I click on "Insert frequently used comment" "button" in the "A criteria" "table_row"
+    And I wait "1" seconds
+    And I press "Comment 3"
+    And I wait "1" seconds
+    Then the field "A criteria criterion remark" matches value "Comment 3"
     And I press "Save and finalise"
 
     And I click on the add feedback button for assessor 2
@@ -40,31 +50,24 @@ Feature: Marking guide
 
   @javascript
   Scenario: Submit final stage as marking guide.
-    Given I visit the coursework page
-    And I follow "Agree marking"
-    Then the following fields match these values:
-      | Feedback: |  |
-
     Given the coursework "autopopulatefeedbackcomment" setting is "1" in the database
     And I visit the coursework page
     And I follow "Agree marking"
     And I should see "A criteria"
     And I should see "6" in the "A criteria" "table_row"
     And I should see "8" in the "A criteria" "table_row"
-    And I should see "Grader one likes it" in the "Feedback" "table_row"
+    And I should see "Comment 3" in the "Feedback" "table_row"
     And I should see "Grader two really likes it" in the "Feedback" "table_row"
-    And the field "Feedback:" matches multiline:
+    Then the following fields match these values:
+      | Feedback: | Custom |
+    And the field "Enter custom feedback" matches multiline:
 """
-Grader one likes it
+Comment 3
 
 Grader two really likes it
 """
-    And I set the field "Mark" to ""
-    And I press "Save and finalise"
-    And I should see "Please provide a valid grade for each criterion"
     And I set the field "Mark" to "10"
     And I press "Save and finalise"
-    And I should not see "Please provide a valid grade for each criterion"
     Then I should see the final agreed grade status "Ready for release"
     And I should see the final agreed grade as 10
     And I follow "Release the marks"
@@ -73,16 +76,5 @@ Grader two really likes it
 
     When I log in as a student
     And I visit the coursework page
-    Then I should see "Grader one likes it" in the ".advancedgrade td.remark" "css_element"
+    Then I should see "Comment 3" in the ".advancedgrade td.remark" "css_element"
     And I should see "Grader two really likes it" in the ".advancedgrade td.remark" "css_element"
-
-  @javascript
-  Scenario: Submit final stage as simple direct grading.
-    Given the coursework "finalstagegrading" setting is "1" in the database
-    And I visit the coursework page
-    And I follow "Agree marking"
-    And I should not see "A criteria"
-    And I set the field "Mark" to "10"
-    And I press "Save and finalise"
-    Then I should see the final agreed grade status "Ready for release"
-    And I should see the final agreed grade as 10
