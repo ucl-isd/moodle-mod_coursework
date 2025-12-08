@@ -102,7 +102,7 @@ class personaldeadline_form extends dynamic_form {
         $this->_form->addElement(
             'html',
             $OUTPUT->render_from_template(
-                'coursework/form_header_personaldeadline',
+                'coursework/form_header_personal_deadline',
                 $this->get_header_mustache_data()
             )
         );
@@ -296,7 +296,7 @@ class personaldeadline_form extends dynamic_form {
 
         // If we reach this far with no errors, we can create/update the deadline.
         if (empty($errors)) {
-            if ($this->existingdeadline->id) {
+            if ($this->existingdeadline->id ?? null) {
                 if ($this->existingdeadline->personaldeadline != $data->personaldeadline) {
                     // Updating.
                     $data->id = $this->existingdeadline->id;
@@ -349,7 +349,7 @@ class personaldeadline_form extends dynamic_form {
             'allocatabletype' => $this->allocatable->type(),
         ];
 
-        if ($this->existingdeadline->id) {
+        if ($this->existingdeadline->id ?? null) {
             // If editing existing deadline.
             $data['deadlineid'] = $this->existingdeadline->id;
             $data['personaldeadline'] = $this->existingdeadline->personaldeadline;

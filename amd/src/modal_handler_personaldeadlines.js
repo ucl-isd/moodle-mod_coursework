@@ -64,7 +64,7 @@ export const init = (courseworkid) => {
         };
         const modalForm = new ModalForm({
             modalConfig: {
-                title: getString('extended_deadline', 'mod_coursework'),
+                title: getString('personaldeadline', 'mod_coursework'),
             },
             formClass: 'mod_coursework\\forms\\personaldeadline_form',
             saveButtonText: getString('save', 'core'),

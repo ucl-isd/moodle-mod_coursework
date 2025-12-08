@@ -1,7 +1,7 @@
 @mod @mod_coursework @RVC_PT_83106618 @mod_coursework_deadline_extension
 Feature: Deadlines extensions for submissions
 
-  As an OCM admin
+  As a manager
   I can add allow students to submit after the deadline
   So that late work can still be given a grade
 
@@ -27,7 +27,7 @@ Feature: Deadlines extensions for submissions
     Then I should not see "Upload your submission"
 
   @javascript
-  Scenario: The teacher can add a deadline extension to an individual submission
+  Scenario: The manager can add a deadline extension to an individual submission
     Given the coursework deadline has passed
     And I log in as a manager
     And I visit the coursework page
@@ -35,19 +35,14 @@ Feature: Deadlines extensions for submissions
     And I wait until the page is ready
     And I click on "Submission extension" "link"
     And I wait until the page is ready
-    And I set the following fields to these values:
-      | extended_deadline[day]    | 1       |
-      | extended_deadline[month]  | January |
-      | extended_deadline[year]   | 2027    |
-      | extended_deadline[hour]   | 08      |
-      | extended_deadline[minute] | 00      |
+    And I set the field "Extended deadline" to "##+2 weeks, 8:00 AM##"
     And I click on "Save" "button" in the "Extended deadline" "dialogue"
-    And I should see "1 January 2027, 8:00 AM" in the "student student1" "table_row"
+    And I should see "##+2 weeks##%d %B %Y, 8:00 AM##" in the "student student1" "table_row"
     Then I visit the coursework page
-    And I should see "1 January 2027, 8:00 AM" in the "student student1" "table_row"
+    And I should see "##+2 weeks##%d %B %Y, 8:00 AM##" in the "student student1" "table_row"
 
   @javascript
-  Scenario: The teacher can edit a deadline extension to an individual submission
+  Scenario: The manager can edit a deadline extension to an individual submission
     Given the coursework deadline has passed
     And there is an extension for the student which has expired
     And I log in as a manager
@@ -56,13 +51,8 @@ Feature: Deadlines extensions for submissions
     And I wait until the page is ready
     And I click on "Submission extension" "link"
     And I wait until the page is ready
-    And I set the following fields to these values:
-      | extended_deadline[day]    | 1       |
-      | extended_deadline[month]  | January |
-      | extended_deadline[year]   | 2027    |
-      | extended_deadline[hour]   | 08      |
-      | extended_deadline[minute] | 00      |
+    And I set the field "Extended deadline" to "##+2 weeks, 8:00 AM##"
     And I click on "Save" "button" in the "Extended deadline" "dialogue"
-    And I should see "1 January 2027, 8:00 AM" in the "student student1" "table_row"
+    And I should see "##+2 weeks##%d %B %Y, 8:00 AM##" in the "student student1" "table_row"
     Then I visit the coursework page
-    And I should see "1 January 2027, 8:00 AM" in the "student student1" "table_row"
+    And I should see "##+2 weeks##%d %B %Y, 8:00 AM##" in the "student student1" "table_row"

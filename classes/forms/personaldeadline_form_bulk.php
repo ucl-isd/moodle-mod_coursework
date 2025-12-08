@@ -55,7 +55,7 @@ class personaldeadline_form_bulk extends moodleform {
         );
         $this->_form->addElement(
             'html',
-            $OUTPUT->render_from_template('coursework/form_header_personaldeadline', $mustachedata)
+            $OUTPUT->render_from_template('coursework/form_header_personal_deadline', $mustachedata)
         );
 
         // Date and time picker.
