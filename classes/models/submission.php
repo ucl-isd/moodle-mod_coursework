@@ -44,6 +44,7 @@ use moodle_url;
 use renderable;
 use stdClass;
 use stored_file;
+use core_cache\cache;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -1638,7 +1639,7 @@ class submission extends table_base implements renderable {
      * @return array Each user may have multiple files (i.e. nested array).
      */
     public static function get_all_submission_files_data(coursework $coursework, ?allocatable $allocatable = null): array {
-        global $DB;
+        global $DB, $CFG;
         $contextid = $coursework->get_context_id();
         $sqlparams = ['ctxid' => $contextid];
         if ($allocatable) {
@@ -1665,10 +1666,18 @@ class submission extends table_base implements renderable {
         }
         $results = [];
 
-        $fs = get_file_storage();
-        $cmid = $coursework->get_coursemodule_id();
-        $course = $coursework->get_course();
 
+        // Get Turnitin plugin object if appropriate, to check for TII links later.
+        $turnitinplugin = null;
+        if ($CFG->enableplagiarism && $coursework->tii_enabled()) {
+            $plagiarismplugins = plagiarism_load_available_plugins();
+            if ($plagiarismplugins['turnitin'] ?? false) {
+                require_once($plagiarismplugins['turnitin']);
+                $turnitinplugin = new \plagiarism_plugin_turnitin();
+            }
+        }
+
+        $fs = get_file_storage();
         // We return a nested array by allocatable ID.
         foreach ($filerecords as $filerecord) {
             $submissionskey = $filerecord->allocatabletype . "-" . $filerecord->allocatableid;
@@ -1690,17 +1699,13 @@ class submission extends table_base implements renderable {
                     ]))->out(),
             ];
 
-            if ($coursework->tii_enabled()) {
-                //todo get these all at end via web service?
-                $result->plagiarismlinks = plagiarism_get_links(
-                    [
-                        'userid' => $filerecord->authorid, // User or for group submissions, first member of group.
-                        'file' => $fs->get_file_instance($filerecord),
-                        'cmid' => $cmid,
-                        'course' => $course,
-                        'coursework' => $coursework->id,
-                        'modname' => 'coursework',
-                    ]
+            if ($turnitinplugin) {
+                $result->plagiarismlinks = self::turnitin_get_links_html(
+                    $turnitinplugin,
+                    $coursework->id,
+                    $filerecord->authorid, // User or for group submissions, first member of group.
+                    $coursework->get_coursemodule_id(),
+                    $fs->get_file_instance($filerecord),
                 );
             }
             $results[$submissionskey][] = $result;
@@ -1712,5 +1717,56 @@ class submission extends table_base implements renderable {
             return $results[$allocatable->type() . "-" . $allocatable->id()] ?? [];
         }
         return $results;
+    }
+
+    /**
+     * Get the Turnitin plagiarism links for a given submission file.
+     * Use cache since is called repeatedly from grading page and involves TII API call.
+     * @param \plagiarism_plugin_turnitin $turnitinplugin
+     * @param int $courseworkid
+     * @param int $userid
+     * @param int $cmid
+     * @param stored_file $submissionfile
+     * @return string
+     */
+    public static function turnitin_get_links_html(\plagiarism_plugin_turnitin $turnitinplugin, int $courseworkid, int $userid, int $cmid, stored_file $submissionfile): string {
+        $cache = cache::make('mod_coursework', 'turnitinlinksbyfileid');
+        $cachedvalue = $cache->get($submissionfile->get_id());
+        if ($cachedvalue === false) {
+            $newvalue = $turnitinplugin->get_links([
+                'userid' => $userid,
+                'file' => $submissionfile,
+                'cmid' => $cmid,
+                'coursework' => $courseworkid,
+                'modname' => 'coursework',
+            ]);
+            $cache->set($submissionfile->get_id(), $newvalue);
+            return $newvalue;
+        }
+        return $cachedvalue;
+    }
+
+    /**
+     * Clear Turnitin submission file plagiarism links cache for this submission.
+     * @return void
+     * @throws \core\exception\coding_exception
+     */
+    public function turnitin_clear_cached_links():void {
+        global $CFG;
+        if (!$CFG->enableplagiarism && !$this->get_coursework()->tii_enabled()) {
+            return;
+        }
+        $cache = cache::make('mod_coursework', 'turnitinlinksbyfileid');
+        $files = $this->get_files();
+        if (empty($files)) {
+            return;
+        }
+        $fileids = array_map(
+            function ($file) {
+                return $file->get_id();
+            },
+            $files
+        );
+        $cache->delete_many(array_values($fileids));
     }
 }

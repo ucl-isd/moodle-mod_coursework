@@ -213,6 +213,7 @@ class submissions_controller extends controller_base {
         $event->trigger();
 
         $submission->submit_plagiarism();
+        $submission->turnitin_clear_cached_links();
 
         $mailer = new mailer($this->coursework);
         if (($CFG->coursework_allsubmissionreceipt ?? false) || $submission->is_finalised()) {
@@ -295,6 +296,7 @@ class submissions_controller extends controller_base {
         $event->trigger();
 
         $submission->submit_plagiarism();
+        $submission->turnitin_clear_cached_links();
 
         if ($CFG->coursework_allsubmissionreceipt || $notifyaboutfinalisation) {
             $mailer = new mailer($this->coursework);
@@ -327,6 +329,7 @@ class submissions_controller extends controller_base {
 
         $submission->finalisedstatus = submission::FINALISED_STATUS_FINALISED;
         $submission->save();
+        $submission->turnitin_clear_cached_links();
 
         // Email the user. Best to do this as an event after 2.7 so as to keep the page fast.
         $mailer = new mailer($this->coursework);
