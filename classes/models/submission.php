@@ -642,20 +642,16 @@ class submission extends table_base implements renderable {
      * The submission is on one of 6 states, depending on what activity has taken place. this will
      * both set and return the current state. This is good for the renderer so it knows how to
      * display the submission.
-     *
+     * @param bool $includefilescheck only include if need to distinguish between SUBMITTED and NOT_SUBMITTED (see notes below).
      * @return int
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function get_state() {
+    public function get_state(bool $includefilescheck = false): int {
 
         if ($this->get_coursework() == null) {
             return -1;
         }
-
-        $courseworkfiles = $this->get_submission_files();
-
-        $assessorfeedbacks = $this->get_assessor_feedbacks();
 
         if ($this->is_published()) {
             return self::PUBLISHED;
@@ -663,13 +659,14 @@ class submission extends table_base implements renderable {
 
         // Final grade is done.
         $hasfinalfeedback = (bool)$this->get_final_feedback();
-        $maxfeedbacksreached = count($assessorfeedbacks) >= $this->max_number_of_feedbacks();
 
         if ($hasfinalfeedback) {
             return self::FINAL_GRADED;
         }
 
         // All feedbacks in.
+        $countassessorfeedbacks = count($this->get_assessor_feedbacks());
+        $maxfeedbacksreached = $countassessorfeedbacks >= $this->max_number_of_feedbacks();
         if ($maxfeedbacksreached && !$this->editable_feedbacks_exist() && !$this->editable_final_feedback_exist()) {
             return self::FULLY_GRADED;
         }
@@ -678,9 +675,9 @@ class submission extends table_base implements renderable {
         if (
             $this->is_finalised()
             &&
-            count($assessorfeedbacks) > 0
+            $countassessorfeedbacks > 0
             &&
-            (count($assessorfeedbacks) < $this->get_coursework()->numberofmarkers || $this->any_editable_feedback_exists())
+            ($countassessorfeedbacks < $this->get_coursework()->numberofmarkers || $this->any_editable_feedback_exists())
         ) {
             return self::PARTIALLY_GRADED;
         }
@@ -690,19 +687,41 @@ class submission extends table_base implements renderable {
             return self::FINALISED;
         }
 
-        // Submitted, but not graded.
-        if (!empty($this->id) && $courseworkfiles->has_files()) {
+        if (empty($this->id)) {
+            // Not saved / submitted yet.
+            return self::NOT_SUBMITTED;
+        } else if (!$includefilescheck || $this->has_files()) {
+            // Submitted but not yet graded - we have files or are not bothering to check that the submission has files attached.
             return self::SUBMITTED;
         }
+        debugging(
+            "Submission ID '$this->id' unexpectedly has submitted state with no files attached."
+                . " Form validation in mod_coursework/forms/student_submission_form::add_file_manager_to_form() should have prevented this"
+        );
+        // We have no files attached to this submission so we can treat it as not submitted allowing user to submit with files.
+        return self::NOT_SUBMITTED;
+    }
 
-        // No submission yet. We count files in case they have been deleted after being earlier
-        // submitted, which will leave us with an id but nothing else.
-        if (empty($this->id) || !$courseworkfiles->has_files()) {
-            return self::NOT_SUBMITTED;
+    /**
+     * Check in DB - does this submission have any uploaded files?
+     * Avoid checking this repeatedly (e.g. from ability class) as it will not be particularly fast.
+     * @return bool
+     */
+    public function has_files(): bool {
+        global $DB;
+        if (!$this->id) {
+            return false;
         }
-
-        // New submission, not in DB yet.
-        return 0;
+        return $DB->record_exists_sql(
+            "SELECT id FROM {files}
+                WHERE component = 'mod_coursework'
+                  AND filearea = 'submission' AND contextid = :contextid
+                  AND itemid = :submissionid AND filename <> '.'",
+            [
+                'contextid' => $this->get_coursework()->get_context_id(),
+                'submissionid' => $this->id,
+            ]
+        );
     }
 
     /**
@@ -887,7 +906,7 @@ class submission extends table_base implements renderable {
 
         $statustext = '';
 
-        switch ($this->get_state()) {
+        switch ($this->get_state(true)) {
             case self::NOT_SUBMITTED:
                 $statustext = get_string('statusnotsubmitted', 'coursework');
                 break;

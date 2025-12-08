@@ -634,6 +634,7 @@ $string['submissiondeadline'] = 'Submissions deadline';
 $string['submissionextension'] = 'Submission extension';
 $string['submissionfileid'] = 'Submission file id';
 $string['submissionfiles'] = 'Submission files';
+$string['submissionfilesrequired'] = 'You must upload file(s) into the box before you can save';
 $string['submissionid'] = 'Sub ID';
 $string['submissionnotfound'] = 'Submission not found';
 $string['submissionnotfoundincoursework'] = 'Submission not found in coursework';

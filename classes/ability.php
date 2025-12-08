@@ -650,7 +650,7 @@ class ability extends framework\ability {
             'view_plagiarism',
             'mod_coursework\models\submission',
             function (submission $submission) {
-                return $submission->get_state() === submission::SUBMITTED;
+                return $submission->get_state(true) === submission::SUBMITTED;
             }
         );
     }

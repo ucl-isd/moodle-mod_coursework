@@ -211,7 +211,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             }
 
             // Finalise.
-            if ($submission && $submission->id && $ability->can('finalise', $submission)) {
+            if ($submission && $submission->id && $ability->can('finalise', $submission) && $submission->has_files()) {
                 $template->final = $this->finalise_submission_button($coursework, $submission);
             }
         }
@@ -877,7 +877,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     private function add_submission_status(stdClass $template, submission $submission): void {
         $template->submission = new stdClass();
 
-        switch ($submission->get_state()) {
+        switch ($submission->get_state(true)) {
             case submission::NOT_SUBMITTED:
                 $template->submission->badge = 'warning';
                 $template->submission->status = get_string('statusnotsubmitted', 'mod_coursework');
