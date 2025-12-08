@@ -31,6 +31,7 @@ use mod_coursework\grading_table_row_base;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
 use mod_coursework\models\personaldeadline;
+use mod_coursework\models\submission;
 use mod_coursework\models\user;
 use mod_coursework\render_helpers\grading_report\data\actions_cell_data;
 use mod_coursework\render_helpers\grading_report\data\marking_cell_data;
@@ -212,6 +213,7 @@ class grading_report_renderer extends plugin_renderer_base {
         if (!$allocatable) {
             return null;
         }
+        $submissionfiles = submission::get_all_submission_files_data($coursework, $allocatable);
         $rowclass = $coursework->has_multiple_markers()
             ? 'mod_coursework\grading_table_row_multi'
             : 'mod_coursework\grading_table_row_single';
@@ -223,6 +225,7 @@ class grading_report_renderer extends plugin_renderer_base {
             $allocatable,
             deadline_extension::get_for_allocatable($coursework->id, $allocatableid, $allocatabletype),
             personaldeadline::get_for_allocatable($coursework->id, $allocatableid, $allocatabletype),
+            $submissionfiles
         );
         if (!$ability->can('show', $row)) {
             return null;

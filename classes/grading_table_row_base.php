@@ -70,18 +70,26 @@ abstract class grading_table_row_base implements user_row {
     protected ?personaldeadline $personaldeadline;
 
     /**
+     * Array of objects representing submission files this row's user (DB query results)
+     * @var ?object[]
+     */
+    protected ?array $submissionfiles;
+
+    /**
      * Constructor
      *
      * @param coursework $coursework $coursework
      * @param user|group $user
      * @param deadline_extension|null $extension
      * @param personaldeadline|null $personaldeadline
+     * @param array $submissionfiles
      */
-    public function __construct(coursework $coursework, user|group $user, ?deadline_extension $extension, ?personaldeadline $personaldeadline) {
+    public function __construct(coursework $coursework, user|group $user, ?deadline_extension $extension, ?personaldeadline $personaldeadline, array $submissionfiles) {
         $this->coursework = $coursework;
         $this->allocatable = $user;
         $this->extension = $extension;
         $this->personaldeadline = $personaldeadline;
+        $this->submissionfiles = $submissionfiles;
     }
 
     /**
@@ -287,13 +295,13 @@ abstract class grading_table_row_base implements user_row {
     /**
      * Chained getter to prevent tight coupling.
      *
-     * @return string|submission_files empty string if no submission
+     * @return object[] array of objects - one for each of this row's user's submission files.
      */
-    public function get_submission_files() {
+    public function get_submission_files(): array {
         if (!$this->get_submission()) {
-            return '';
+            return [];
         }
-        return $this->get_submission()->get_submission_files();
+        return $this->submissionfiles ?? [];
     }
 
     /**
