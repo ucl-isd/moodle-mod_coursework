@@ -13,8 +13,22 @@ Feature: Double marking - blind
       | Course Year | course_year | CLC      | text |
     And the following "roles" exist:
       | shortname           | name                | archetype |
-      | courseworkmarker    | courseworkmarker    | teacher   |
-      | uclnoneditingtutor  | uclnoneditingtutor  | teacher   |
+      | courseworkmarker    | courseworkmarker    |           |
+      | norole              | norole              |           |
+    And the role "courseworkmarker" has the following capabilities:
+      | capability                                    | permission  |
+      | mod/coursework:addallocatedagreedgrade        | allow       |
+      | mod/coursework:addgeneralfeedback             | allow       |
+      | mod/coursework:addinitialgrade                | allow       |
+      | mod/coursework:addplagiarismflag              | allow       |
+      | mod/coursework:editagreedgrade                | allow       |
+      | mod/coursework:editallocatedagreedgrade       | allow       |
+      | mod/coursework:editinitialgrade               | allow       |
+      | mod/coursework:grade                          | allow       |
+      | mod/coursework:receivesubmissionnotifications | allow       |
+      | mod/coursework:updateplagiarismflag           | allow       |
+      | mod/coursework:view                           | allow       |
+      | mod/coursework:viewextensions                 | allow       |
     And the following "users" exist:
       | username  | firstname | lastname | email                |
       | teacher1  | teacher   | 1        | teacher1@example.com |
@@ -53,10 +67,10 @@ Feature: Double marking - blind
     Given there is a course
     And there is a double-blind marking coursework
     And the following "course enrolments" exist:
-      | user      | course | role             |
-      | marker1   | C1     | teacher          |
-      | marker2   | C1     | teacher          |
-      | marker3   | C1     | teacher          |
+      | user      | course | role     |
+      | marker1   | C1     | teacher  |
+      | marker2   | C1     | student  |
+      | marker3   | C1     | norole   |
 
     And I am on the "Course 1" "course" page logged in as "admin"
     And I follow "Coursework 1"
