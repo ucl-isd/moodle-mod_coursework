@@ -54,7 +54,7 @@ Feature: Double marking - blind
       | Number of times each submission should initially be marked. | 2                                                 |
       | Marker allocation enabled                                   | Yes                                               |
       | Marker allocation strategy                                  | Manual                                            |
-      | Automatic agreement of marks                                | percentage distance                               |
+      | Automatic agreement of marks                                | Percentage distance                               |
       | Automatic agreement range                                   | 10                                                |
       | View initial markers' grades                                | No                                                |
       | Auto-populate agreed feedback comment                       | Yes                                               |
