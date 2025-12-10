@@ -684,7 +684,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws coding_exception
      */
     public function process_csv_upload($processingresults, $csvcontent, $csvtype) {
-        global $PAGE;
         $html = $this->output->header();
 
         // Likely to get string key 'processmarkingsheetupload' or 'processallocationsupload'.
@@ -715,7 +714,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             $html .= get_string('noallocationerrorsfound', 'mod_coursework');
         }
 
-        $html .= html_writer::tag('p', html_writer::link($PAGE->url, $PAGE->heading));
+        $html .= html_writer::tag('p', html_writer::link($this->page->url, $this->page->heading));
         $html .= html_writer::tag('p', html_writer::link('/mod/coursework/view.php?id=' . $this->page->cm->id, get_string('continuetocoursework', 'coursework')));
 
         $html .= $this->output->footer();

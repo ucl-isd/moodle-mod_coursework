@@ -327,6 +327,7 @@ $string['hours'] = 'Hours';
 $string['iagreetotheterms'] = 'I agree to the terms';
 $string['includedinsample'] = 'Included in sample';
 $string['incorrectfileformat'] = 'Incorrect file format';
+$string['incorrectnumberofcolumns'] = 'Incorrect number of columns - expected {$a->expected} columns but found {$a->found}';
 $string['individual_extension'] = 'Enable individual extensions';
 $string['individual_extension_desc'] = 'This option enables individual deadline extensions across all courseworks. It can be overwritten for individual instance.';
 $string['individual_extension_help'] = 'If enabled, it will be possible to add an individual extension to each of the users.';

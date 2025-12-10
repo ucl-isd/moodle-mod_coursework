@@ -102,7 +102,7 @@ class upload {
             $assessorsinfile = [];
 
             if (count($line) != count($csvcells)) {
-                $errors = get_string('incorrectfileformat', 'coursework');
+                $errors = get_string('incorrectnumberofcolumns', 'coursework', (object)['expected' => count($csvcells), 'found' => count($line)]);
                 break;
             }
             foreach ($line as $keynum => $value) {
@@ -236,7 +236,7 @@ class upload {
             $cells = $csvcells;
 
             if (count($line) != count($csvcells)) {
-                $errors = get_string('incorrectfileformat', 'coursework');
+                $errors = get_string('incorrectnumberofcolumns', 'coursework', (object)['expected' => count($csvcells), 'found' => count($line)]);
                 break;
             }
 
