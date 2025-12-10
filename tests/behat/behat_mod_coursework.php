@@ -3927,4 +3927,131 @@ class behat_mod_coursework extends behat_base {
             assign_capability($capability, $permissionvalue, $role->id, $context->id);
         }
     }
+
+    /**
+     * Inserts a grade directly into coursework_feedbacks table.
+     *
+     * @When /^the submission from "(?P<studentfullname>[^"]*)" for coursework "(?P<courseworkname>[^"]*)" is marked by "(?P<markerfullname>[^"]*)" with:$/
+     */
+    public function mark_coursework_submission_directly(
+        string $studentfullname,
+        string $courseworkname,
+        string $markerfullname,
+        TableNode $table
+    ) {
+        global $DB;
+
+        // Resolve student.
+        [$studentfirstname, $studentlastname] = explode(' ', $studentfullname, 2);
+        if (!$student = $DB->get_record('user', ['firstname' => $studentfirstname, 'lastname' => $studentlastname])) {
+            throw new ExpectationException("Student '$studentfullname' not found", $this->getSession());
+        }
+
+        // Resolve marker.
+        [$markerfirstname, $markerlastname] = explode(' ', $markerfullname, 2);
+        if (!$marker = $DB->get_record('user', ['firstname' => $markerfirstname, 'lastname' => $markerlastname])) {
+            throw new ExpectationException("Marker '$markerfullname' not found", $this->getSession());
+        }
+
+        // Resolve coursework module by name.
+        if (!$coursework = $DB->get_record('coursework', ['name' => $courseworkname])) {
+            throw new ExpectationException("Coursework '$courseworkname' not found", $this->getSession());
+        }
+
+        // Resolve submission for this student.
+        $submission = $DB->get_record('coursework_submissions', [
+            'courseworkid' => $coursework->id,
+            'allocatableid' => $student->id,
+        ]);
+        if (!$submission) {
+            throw new ExpectationException("Submission for '$studentfullname' not found", $this->getSession());
+        }
+
+        // Resolve marker allocation.
+        $allocation = $DB->get_record('coursework_allocation_pairs', [
+            'courseworkid' => $coursework->id,
+            'assessorid' => $marker->id,
+            'allocatableid' => $student->id,
+        ]);
+        if (!$allocation) {
+            throw new ExpectationException("Marker '$markerfullname' for '$studentfullname' not found", $this->getSession());
+        }
+
+        // Extract the provided table values
+        $data = $table->getRowsHash();
+
+        $mark = isset($data['Mark']) ? floatval($data['Mark']) : null;
+        $comment = $data['Comment'] ?? '';
+
+        if ($mark === null) {
+            throw new ExpectationException("Missing 'Mark' value in table", $this->getSession());
+        }
+
+        // Check if there is already a feedback record.
+        $existing = $DB->get_record('coursework_feedbacks', [
+            'submissionid' => $submission->id,
+            'assessorid' => $marker->id,
+            'stageidentifier' => $allocation->stageidentifier,
+        ]);
+
+        // Insert/update feedback record.
+        $feedback = new stdClass();
+        $feedback->submissionid = $submission->id;
+        $feedback->assessorid = $marker->id;
+        $feedback->stageidentifier = $allocation->stageidentifier;
+        $feedback->grade = $mark;
+        $feedback->feedbackcomment = $comment;
+        $feedback->lasteditedbyuser = $marker->id;
+        $feedback->timecreated = time();
+        $feedback->timemodified = time();
+
+        if ($existing) {
+            $feedback->id = $existing->id;
+            $DB->update_record('coursework_feedbacks', $feedback);
+        } else {
+            $DB->insert_record('coursework_feedbacks', $feedback);
+        }
+    }
+
+    /**
+     * Allows one role to assign another role.
+     *
+     * Example:
+     * Given the role "Manager" is allowed to assign role "Teacher".
+     *
+     * @Given /^the role "(?P<fromrole_string>(?:[^"]|\\")*)" is allowed to assign role "(?P<trole_string>(?:[^"]|\\")*)"$/
+     */
+    public function allow_role_to_assign_role(string $fromrolename, string $torolename) {
+        global $DB;
+
+        // Get roles by shortname or fullname.
+        $fromrole = $DB->get_record('role', ['shortname' => $fromrolename]);
+        if (!$fromrole) {
+            $fromrole = $DB->get_record('role', ['name' => $fromrolename]);
+        }
+        if (!$fromrole) {
+            throw new Exception("Role '$fromrole' could not be found.");
+        }
+
+        $torole = $DB->get_record('role', ['shortname' => $torolename]);
+        if (!$torole) {
+            $torole = $DB->get_record('role', ['name' => $torolename]);
+        }
+        if (!$torole) {
+            throw new Exception("Role '$torole' could not be found.");
+        }
+
+        // Check if record already exists.
+        $exists = $DB->record_exists('role_allow_assign', [
+            'roleid'        => $fromrole->id,
+            'allowassign'   => $torole->id,
+        ]);
+
+        if (!$exists) {
+            $record = new stdClass();
+            $record->roleid      = $fromrole->id;
+            $record->allowassign = $torole->id;
+            $DB->insert_record('role_allow_assign', $record);
+        }
+    }
 }
