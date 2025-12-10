@@ -127,12 +127,13 @@ class upload {
 
                     // check if allocatable exists in this coursework
                     if (!$allocatable || !in_array($allocatable->id, $allocatables)) {
-                        $errors[$s] = get_string($allocatabletype . 'notincoursework', 'coursework');
+                        // E.g. string key 'usernotincoursework'.
+                        $errors[$s] = get_string($allocatabletype . 'notincoursework', 'coursework', $value) . $assessoridentifier;
                         break;
                     }
                     // duplicate user or group
                     if ($allocatable && in_array($allocatable->id, $allocatablesinfile)) {
-                        $errors[$s] = get_string('duplicate' . $allocatabletype, 'coursework');
+                        $errors[$s] = get_string('duplicate' . $allocatabletype, 'coursework', $value);
                         break;
                     }
                     $allocatablesinfile[] = $allocatable->id;
@@ -149,7 +150,7 @@ class upload {
                     $assessor = $DB->get_record('user', [$assessoridentifier => $value]);
 
                     if (!$assessor || !in_array($assessor->id, $assessors)) {
-                        $errors[$s] = get_string('markernotincoursework', 'coursework', $keynum);
+                        $errors[$s] = get_string('markernotincoursework', 'coursework', $value);
                         continue;
                     }
 

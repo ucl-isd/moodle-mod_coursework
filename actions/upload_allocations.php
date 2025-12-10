@@ -40,7 +40,8 @@ require_login($course, false, $coursemodule);
 
 $csvtype = 'allocationsupload';
 $title = get_string($csvtype, 'coursework');
-$PAGE->set_url(new moodle_url('/mod/coursework/actions/upload_allocations.php'));
+$PAGE->set_url(new moodle_url('/mod/coursework/actions/upload_allocations.php', ['cmid' => $coursemoduleid]));
+$PAGE->navbar->add($title, $PAGE->url);
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
 

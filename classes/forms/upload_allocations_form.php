@@ -34,7 +34,19 @@ class upload_allocations_form extends moodleform {
     }
 
     public function definition() {
+        global $CFG;
         $mform =& $this->_form;
+
+        // The identifier used could be email or username depending on plugin settings.
+        $useridentifierfield = $CFG->coursework_allocation_identifier;
+        $mform->addElement(
+            'html',
+            get_string('uploadallocationsintro', 'coursework')
+            . "<pre class=\"m-3 p-3 bg-light\">user_$useridentifierfield,assessor_{$useridentifierfield}_1,assessor_{$useridentifierfield}_2"
+            . "\nstudent1@example.com,assessor1@example.com,assessor2@example.com"
+            . "\nstudent2@example.com,assessor1@example.com,assessor2@example.com"
+            . "</pre>"
+        );
 
         $mform->addElement('filepicker', 'allocationsdata', get_string('allocationsfile', 'coursework'), null, [ 'accepted_types' => '*.csv']);
         $mform->addRule('allocationsdata', null, 'required');
