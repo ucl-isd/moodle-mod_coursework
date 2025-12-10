@@ -690,6 +690,7 @@ $string['uploadallocations'] = 'Upload allocations';
 $string['uploadallocationsintro'] = 'Marker allocations can be uploaded as a CSV file, with columns as in the example below.  Values used must match the users\' profiles.';
 $string['uploadfeedbackfiles'] = 'Feedback files in a zip';
 $string['uploadfeedbackzip'] = 'Upload feedback zip';
+$string['uploadmarkingsheet'] = 'Upload marking sheet';
 $string['upperlimit'] = 'Upper limit';
 $string['use_candidate'] = 'Use candidate numbers for file naming';
 $string['use_candidate_disabled'] = 'User ID hash file naming is enabled.';
