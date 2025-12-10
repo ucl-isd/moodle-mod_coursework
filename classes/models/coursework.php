@@ -186,6 +186,7 @@ class coursework extends table_base {
     public $individualfeedback;
 
     /**
+     * The general feedback comment
      * @var string
      */
     public $feedbackcomment;
@@ -2402,11 +2403,23 @@ class coursework extends table_base {
      * false otherwise.
      */
     public function is_general_feedback_released() {
-        if ($this->feedbackcomment && ($this->generalfeedback == 0 || time() > $this->generalfeedback)) {
+        if ($this->get_general_feedback() && ($this->generalfeedback == 0 || time() > $this->generalfeedback)) {
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * Get the general feedback comment if set.
+     * Return null if it's just HTML tags.
+     * @return string|null
+     */
+    public function get_general_feedback(): ?string {
+        if (!$this->feedbackcomment || !(trim(strip_tags($this->feedbackcomment)))) {
+            return null;
+        }
+        return trim($this->feedbackcomment);
     }
 
     /**

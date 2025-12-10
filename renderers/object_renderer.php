@@ -441,7 +441,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         // Behat fails when you don't include the other capabilities.
         if ($cangrade || $canpublish || $canaddgeneralfeedback || $coursework->is_general_feedback_released()) {
             $feedback = new stdClass();
-            $feedback->feedback = $coursework->feedbackcomment;
+            $feedback->feedback = $coursework->get_general_feedback();
 
             // TODO - this should just be in the next $canaddgeneralfeedback.
             // Behat fails when you don't include the other capabilities.
@@ -451,7 +451,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             if ($canaddgeneralfeedback) {
                 $feedback->button = new stdClass();
                 $feedback->button->url = new moodle_url('/mod/coursework/actions/general_feedback.php', ['cmid' => $coursework->get_coursemodule_id()]);
-                $feedback->button->label = get_string($coursework->feedbackcomment ? 'editgeneralfeedback' : 'addgeneralfeedback', 'coursework');
+                $feedback->button->label = get_string($coursework->get_general_feedback() ? 'editgeneralfeedback' : 'addgeneralfeedback', 'coursework');
                 $feedback->helpicon = $this->output->help_icon('generalfeedbackdesc', 'coursework');
             }
             $template->generalfeedback = $feedback;
