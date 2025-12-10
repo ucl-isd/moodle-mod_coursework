@@ -102,6 +102,7 @@ $string['changeassessor'] = 'Change marker';
 $string['changessaved'] = 'Changes saved';
 $string['changessavedemail'] = 'Changes saved. The student will receive a confirmation email.';
 $string['chooseassessor'] = 'Choose marker';
+$string['choosemoderator'] = 'Choose moderator';
 $string['choosestudent'] = 'Choose student';
 $string['clearannotations'] = 'Clear annotations';
 $string['comment'] = 'Comment';
