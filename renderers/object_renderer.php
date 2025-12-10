@@ -452,6 +452,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 $feedback->button = new stdClass();
                 $feedback->button->url = new moodle_url('/mod/coursework/actions/general_feedback.php', ['cmid' => $coursework->get_coursemodule_id()]);
                 $feedback->button->label = get_string($coursework->feedbackcomment ? 'editgeneralfeedback' : 'addgeneralfeedback', 'coursework');
+                $feedback->helpicon = $this->output->help_icon('generalfeedbackdesc', 'coursework');
             }
             $template->generalfeedback = $feedback;
         }
