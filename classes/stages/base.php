@@ -841,7 +841,7 @@ abstract class base {
      */
     public function potential_moderator_dropdown($allocatable) {
 
-        $optionfornothingchosenyet = ['' => 'Choose Moderator'];
+        $optionfornothingchosenyet = ['' => get_string('choosemoderator', 'coursework')];
         $htmlattributes = [
             'id' => $this->moderator_dropdown_id($allocatable),
             'class' => 'moderator_id_dropdown',
