@@ -39,6 +39,7 @@ use mod_coursework\event\assessable_uploaded;
 use mod_coursework\framework\table_base;
 use mod_coursework\grade_judge;
 use mod_coursework\mailer;
+use mod_coursework\stages\final_agreed;
 use mod_coursework\submission_files;
 use moodle_url;
 use renderable;
@@ -589,15 +590,12 @@ class submission extends table_base implements renderable {
      * This will return the final feedback if the record exists, or false if not.
      *
      * @throws exception
-     * @return bool|feedback
+     * @return ?feedback
      */
-    public function get_final_feedback() {
-
-        global $DB;
-
+    public function get_final_feedback(): ?feedback {
         if (!$this->id) {
             // No submission yet - empty placeholder.
-            return false;
+            return null;
         }
 
         // Temp - will be replaced with asking the appropriate stage for the feedback.
@@ -606,19 +604,14 @@ class submission extends table_base implements renderable {
         } else {
             $identifier = 'assessor_1';
         }
-
-        $params = [
-            'submissionid' => $this->id,
-            'stageidentifier' => $identifier,
-        ];
-
-        $feedback = $DB->get_record('coursework_feedbacks', $params);
-
-        if (!$feedback) {
-            return false;
-        } else {
-            return new feedback($feedback, $this);
-        }
+        // Find using $this->get_feedbacks() as it's cached.
+        $filteredfeedbacks = array_filter(
+            $this->get_feedbacks(),
+            function ($feedback) use ($identifier) {
+                return $feedback->get_stage()->identifier() == $identifier;
+            }
+        );
+        return !empty($filteredfeedbacks) ? reset($filteredfeedbacks) : null;
     }
 
     /**
@@ -1712,5 +1705,33 @@ class submission extends table_base implements renderable {
             return $results[$allocatable->type() . "-" . $allocatable->id()] ?? [];
         }
         return $results;
+    }
+
+
+    /**
+     * Get the next available feedback stage identifier for this submission.
+     * @return string|null if null then there is no additional stage available.
+     * @throws \dml_exception
+     */
+    public function next_available_feedback_stage(): ?string {
+        global $DB;
+        if (!$this->coursework->has_multiple_markers() || $this->coursework->allocation_enabled()) {
+            return null;
+        }
+
+        // Get count of feedbacks that already exist.
+        $usedstages = $DB->count_records_sql(
+            "SELECT COUNT(*)
+                FROM {coursework_feedbacks}
+                WHERE submissionid = ? AND stageidentifier <> ?",
+            [$this->id, final_agreed::STAGE_FINAL_AGREED_1]
+        );
+        $maxmarkers = $this->get_coursework()->get_max_markers();
+        if ($usedstages > $maxmarkers) {
+            throw new \core\exception\coding_exception("Too many non-final feedbacks found ($usedstages expected max $maxmarkers)");
+        } else if ($usedstages == $maxmarkers) {
+            return final_agreed::STAGE_FINAL_AGREED_1;
+        }
+        return 'assessor_' . ($usedstages + 1);
     }
 }

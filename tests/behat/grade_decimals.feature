@@ -42,7 +42,7 @@ Feature: For the final grade the mark should be to the decimal point
     And I log out
     And I log in as a manager
     And I visit the coursework page
-    And I click the new multiple final feedback button for the student
+    And I click on "Agree marking" "link"
     And I grade the submission as 56.12 using the grading form
     Then I should see the final agreed grade as 56.12
 

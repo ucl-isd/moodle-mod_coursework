@@ -89,11 +89,11 @@ class grading_report_renderer extends plugin_renderer_base {
         $template->tr = [];
         $markersarray = []; // Collect list of allocated markers while we are iterating.
 
-        foreach ($tablerows as $rowobject) {
-            $trdata = $this->get_table_row_data($coursework, $rowobject);
+        foreach ($tablerows as $tablerow) {
+            $trdata = $this->get_table_row_data($coursework, $tablerow);
 
             // If this row represents a user (not a group), add the user picture.
-            $allocatable = $rowobject->get_allocatable();
+            $allocatable = $tablerow->get_allocatable();
             if ($allocatable->type() === 'user' && !$blindmarking) {
                 $participantcontextid = $participantcontextids[$allocatable->id()] ?? null;
                 $trdata->submissiontype->user->picture =
@@ -184,7 +184,7 @@ class grading_report_renderer extends plugin_renderer_base {
     /**
      * Get the data for a single row in the table (representing one "allocatable").
      * @param coursework $coursework
-     * @param grading_table_row_base $rowobject
+     * @param grading_table_row_base $rowobject data for this <tr>
      * @return stdClass
      */
     public static function get_table_row_data(coursework $coursework, grading_table_row_base $rowobject): object {

@@ -700,4 +700,25 @@ class feedback extends table_base {
         $courseworkid = $this->get_submission()->courseworkid;
         self::remove_cache($courseworkid);
     }
+
+    /**
+     * Get the edit URL for an existing feedback.
+     * @return \moodle_url
+     */
+    public function url_edit(): \moodle_url {
+        return new \moodle_url('/mod/coursework/actions/feedbacks/edit.php', ['feedbackid' => $this->id]);
+    }
+
+    /**
+     * Get the URL for a new feedback.
+     * @param int $submissionid
+     * @param string $stageidentifier
+     * @return \moodle_url
+     */
+    public static function url_new(int $submissionid, string $stageidentifier): \moodle_url {
+        return new \moodle_url(
+            '/mod/coursework/actions/feedbacks/new.php',
+            ['submissionid' => $submissionid, 'stageidentifier' => $stageidentifier]
+        );
+    }
 }

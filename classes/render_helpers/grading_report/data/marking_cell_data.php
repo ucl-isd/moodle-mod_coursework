@@ -102,62 +102,14 @@ class marking_cell_data extends cell_data_base {
     }
 
     /**
-     * Processes feedback data for a marker.
-     *
-     * @param stdClass $marker Marker object to update
-     * @param feedback $feedback Feedback object
-     * @param grading_table_row_base $rowsbase Base row data
-     * @param assessor_feedback_row $row Current row being processed
-     * @throws coding_exception
-     * @throws dml_exception
-     */
-    private function process_feedback_data(stdClass $marker, feedback $feedback, grading_table_row_base $rowsbase, assessor_feedback_row $row): void {
-        // Get feedback mark.
-        $marker->mark = $this->get_mark_for_feedback($feedback);
-        // Return early if no marking.
-        if (!isset($marker->mark) || ($marker->mark === '')) {
-            return;
-        }
-        $marker->showmark = true;
-
-        // Marker template data.
-        $marker->draft = !$feedback->finalised;
-        $marker->readyforrelease = $rowsbase->get_submission()->ready_to_publish();
-        $marker->timemodified = $feedback->timemodified;
-
-        // Actions - show, edit.
-        $action = null;
-        if ($this->ability->can('show', $feedback)) {
-            $action = 'show';
-        }
-        if ($this->ability->can('edit', $feedback)) {
-            $action = 'edit';
-            $marker->feedbackid = $feedback->id;
-        }
-
-        // Mark URL.
-        if ($action) {
-            $marker->markurl = $this->get_mark_url(
-                $action,
-                $rowsbase->get_submission(),
-                $row->get_stage(),
-                $feedback
-            );
-        } else {
-            // User cannot see the mark.
-            $marker->markhidden = true;
-        }
-    }
-
-    /**
      * Get marker data for both single and multiple marker scenarios.
      *
-     * @param array $tablerows Each TR row in the table
-     * @param grading_table_row_base $rowsbase Row base object containing general data
+     * @param assessor_feedback_row[] $tablerows Array of feedback rows for this submission
+     * @param grading_table_row_base $rowsbase Row base object containing general data relating to this <tr>
      * @param bool $ismultiple Whether this is for multiple markers
      * @return stdClass
      * @throws coding_exception
-     * @throws dml_exception
+     * @throws dml_exception|moodle_exception
      */
     protected function get_marker_data(array $tablerows, grading_table_row_base $rowsbase, bool $ismultiple = false): stdClass {
         $rowdata = new stdClass();
@@ -173,138 +125,100 @@ class marking_cell_data extends cell_data_base {
             // Get the assessor to last edit user if feedback exists, otherwise use the allocated assessor.
             $assessor = !empty($feedback) ? user::find($feedback->lasteditedbyuser) : $row->get_assessor();
 
-            $canaddfeedback = $this->can_add_new_feedback($row, $rowsbase);
+            $canaddfeedback = $rowsbase->get_submission()
+                && $this->can_add_new_feedback($rowsbase->get_submission()->id, $row->get_stage()->identifier());
+            $canshowfeedback = $feedback && $this->ability->can('show', $feedback);
             $marker = $this->create_marker_data($assessor, $markernumber, $canaddfeedback);
             if ($feedback) {
-                $this->process_feedback_data($marker, $feedback, $rowsbase, $row);
-            }
+                // Get feedback mark.
+                $marker->mark = $this->get_mark_for_feedback($feedback, $canshowfeedback);
+                $marker->showmark = true;
 
-            if ($canaddfeedback) {
+                // Marker template data.
+                $marker->draft = !$feedback->finalised;
+                $marker->readyforrelease = $rowsbase->get_submission()->ready_to_publish();
+                $marker->timemodified = $feedback->timemodified;
+
+                // Mark URL.
+                if ($canaddfeedback || $canshowfeedback) {
+                    $marker->markurl = $feedback->url_edit();
+                } else {
+                    // User cannot see the mark.
+                    $marker->markhidden = true;
+                }
+            } else if ($canaddfeedback) {
                 $marker->addfeedback = (object)[
-                    'markurl' => $this->get_mark_url(
-                        'new',
-                        $rowsbase->get_submission(),
-                        $row->get_stage(),
-                        null,
-                        !$ismultiple
-                    ),
+                    'markurl' => feedback::url_new($rowsbase->get_submission()->id(), $row->get_stage()->identifier()),
                     'allocatablehash' => $this->get_allocatable_hash($rowsbase->get_allocatable()),
                 ];
             }
-
             $rowdata->markers[] = $marker;
             $markernumber++;
         }
 
-        // Set the agreed mark if this is for multiple markers.
-        if ($ismultiple) {
-            $rowdata->agreedmark = $this->get_final_feedback_data($rowsbase);
+        // If this is for multiple markers, agreed mark or button to add agreed mark.
+        if ($ismultiple && $rowsbase->get_submission()) {
+            // Skip this if sampling is enabled but no sampled feedback exists.
+            $samplingrequireshidden =
+                $rowsbase->get_coursework()->sampling_enabled() && !$rowsbase->get_submission()->sampled_feedback_exists();
+            if (!$samplingrequireshidden) {
+                $finalfeedback = $rowsbase->get_submission()->get_final_feedback();
+                if ($canshowfeedback && $finalfeedback) {
+                    $rowdata->agreedmark = $this->get_final_feedback_data($finalfeedback, $rowsbase->get_allocatable(), $rowsbase->get_submission());
+                } else if ($this->can_add_new_feedback($rowsbase->get_submission()->id, final_agreed::STAGE_FINAL_AGREED_1)) {
+                    // No feedback exists yet - add button.
+                    $rowdata->agreedmark = (object)[
+                        'addfinalfeedback' => (object)[
+                            'url' => feedback::url_new(
+                                $rowsbase->get_submission()->id(),
+                                final_agreed::STAGE_FINAL_AGREED_1
+                            ),
+                            'allocatablehash' => $this->get_allocatable_hash($rowsbase->get_allocatable()),
+                        ],
+                    ];
+                }
+            }
         }
-
         return $rowdata;
-    }
-
-    /**
-     * Get the mark URL for a particular action.
-     *
-     * @param string $action 'edit', 'show' or 'new'
-     * @param submission $submission the submission
-     * @param stage $stage the stage of the row
-     * @param feedback|null $feedback $feedback the feedback
-     * @param bool $final whether this is for a final mark
-     * @return string
-     * @throws coding_exception
-     * @throws dml_exception
-     */
-    public function get_mark_url(
-        string $action,
-        submission $submission,
-        stage $stage,
-        ?feedback $feedback = null,
-        bool $final = false
-    ): string {
-        global $USER;
-
-        $paths = [
-            'edit' => ['path' => 'edit feedback', 'params' => ['feedback' => $feedback]],
-            'show' => ['path' => 'show feedback', 'params' => ['feedback' => $feedback]],
-            'new' => [
-                'path' => 'new ' . ($final ? 'final ' : '') . 'feedback',
-                'params' => [
-                    'submission' => $submission,
-                    'assessor' => user::find($USER, false),
-                    'stage' => $stage,
-                ],
-            ],
-        ];
-
-        return isset($paths[$action]) ?
-            router::instance()->get_path($paths[$action]['path'], $paths[$action]['params']) :
-            '#';
     }
 
     /**
      * Check if the user can add a new feedback.
      *
-     * @param assessor_feedback_row $feedbackrow
-     * @param grading_table_row_base $rowsbase
+     * @param int $submissionid
+     * @param string $stage
      * @return bool
      */
-    public function can_add_new_feedback(assessor_feedback_row $feedbackrow, grading_table_row_base $rowsbase): bool {
+    public function can_add_new_feedback(int $submissionid, string $stage): bool {
         global $USER;
-
-        if (!$rowsbase->get_submission()) {
-            return false;
-        }
-
-        $feedbackparams = [
-            'submissionid' => $rowsbase->get_submission()->id,
-            'assessorid' => $USER->id,
-            'stageidentifier' => $feedbackrow->get_stage()->identifier(),
-        ];
-
-        return $this->ability->can('new', feedback::build($feedbackparams));
-    }
-
-    /**
-     * Check if the user can add a new final feedback.
-     *
-     * @param final_agreed $finalstage
-     * @param grading_table_row_base $rowsbase
-     * @return bool
-     */
-    public function can_add_new_final_feedback(final_agreed $finalstage, grading_table_row_base $rowsbase): bool {
-        global $USER;
-
-        if (!$rowsbase->get_submission()) {
-            return false;
-        }
-
-        $newfeedback = feedback::build([
-            'submissionid' => $rowsbase->get_submission()->id,
-            'assessorid' => $USER->id,
-            'stageidentifier' => $finalstage->identifier(),
-        ]);
-
-        return $this->ability->can('new', $newfeedback);
+        return $this->ability->can(
+            'new',
+            feedback::build(
+                [
+                    'submissionid' => $submissionid,
+                    'assessorid' => $USER->id,
+                    'stageidentifier' => $stage,
+                ]
+            )
+        );
     }
 
     /**
      * Get the mark for a particular feedback.
      *
      * @param feedback $feedback
+     * @param bool $canshowfeedback
      * @return ?string
      * @throws coding_exception
      */
-    public function get_mark_for_feedback(feedback $feedback): ?string {
+    public function get_mark_for_feedback(feedback $feedback, bool $canshowfeedback): ?string {
         global $USER;
 
         $judge = new grade_judge($this->coursework);
 
-        if ($this->ability->can('show', $feedback) || is_siteadmin($USER->id)) {
+        if ($canshowfeedback || is_siteadmin($USER->id)) {
             return $judge->grade_to_display($feedback->get_grade());
         }
-
         if (
             has_capability('mod/coursework:addagreedgrade', $this->coursework->get_context())
             ||
@@ -312,65 +226,40 @@ class marking_cell_data extends cell_data_base {
         ) {
             return get_string('mark_hidden_manager', 'mod_coursework');
         }
-
         return get_string('mark_hidden_teacher', 'mod_coursework');
     }
 
     /**
      * Get the final feedback data.
      *
-     * @param grading_table_row_base $rowsbase
+     * @param feedback $finalfeedback
+     * @param allocatable $allocatable
+     * @param submission $submission
      * @return stdClass|null
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function get_final_feedback_data(grading_table_row_base $rowsbase): ?stdClass {
-        // Early return if sampling is enabled but no sampled feedback exists.
-        if (
-            $rowsbase->get_coursework()->sampling_enabled() &&
-            $rowsbase->get_submission() &&
-            !$rowsbase->get_submission()->sampled_feedback_exists()
-        ) {
-            return null;
-        }
-
-        $finalstage = $this->coursework->get_final_agreed_marking_stage();
-        $finalfeedback = $finalstage->get_feedback_for_allocatable($rowsbase->get_allocatable());
-
-        if ($finalfeedback === false) {
-            // Handle case when no feedback exists yet.
-            return $this->can_add_new_final_feedback($finalstage, $rowsbase) ?
-                (object)['addfinalfeedback' => (object)[
-                    'url' => $this->get_mark_url('new', $rowsbase->get_submission(), $finalstage, null, true),
-                    'allocatablehash' => $this->get_allocatable_hash($rowsbase->get_allocatable()),
-                ]] :
-                null;
-        }
-
-        // Handle existing feedback.
-        $finalgrade = $this->get_mark_for_feedback($finalfeedback);
-        $action = $this->ability->can('edit', $finalfeedback) ? 'edit' :
-                 ($this->ability->can('show', $finalfeedback) ? 'show' : null);
-
+    public function get_final_feedback_data(feedback $finalfeedback, allocatable $allocatable, submission $submission): ?stdClass {
+        $finalgrade = $this->get_mark_for_feedback($finalfeedback, true);
         // If this is an auto generated feedback, lasteditedbyuser will be zero.
         $assessorname = $finalfeedback->lasteditedbyuser
             ? user::find($finalfeedback->lasteditedbyuser, false)->name()
             : get_string('automaticallyagreed', 'mod_coursework');
-        return $action ? (object)[
+        return (object)[
             'mark' => (object)[
                 'markvalue' => $finalgrade,
-                'allocatablehash' => $this->get_allocatable_hash($rowsbase->get_allocatable()),
-                'url' => $this->get_mark_url($action, $rowsbase->get_submission(), $finalstage, $finalfeedback),
+                'allocatablehash' => $this->get_allocatable_hash($allocatable),
+                'url' => $finalfeedback->url_edit(),
                 // Only show draft label if final feedback is not finalised and submission is not ready for release.
                 // Final feedback is still unfinalised if it is agreed automatically.
-                'draft' => !$finalfeedback->finalised && !$rowsbase->get_submission()->ready_to_publish(),
-                'readyforrelease' => !$rowsbase->get_submission()->is_published() &&
-                    $rowsbase->get_submission()->ready_to_publish(),
-                'released' => $rowsbase->get_submission()->is_published(),
+                'draft' => !$finalfeedback->finalised && !$submission->ready_to_publish(),
+                'readyforrelease' => !$submission->is_published() &&
+                    $submission->ready_to_publish(),
+                'released' => $submission->is_published(),
                 'timemodified' => $finalfeedback->timemodified,
                 'markername' => $assessorname,
             ],
-        ] : null;
+        ];
     }
 
     /**

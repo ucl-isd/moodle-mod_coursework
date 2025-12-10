@@ -24,6 +24,7 @@ namespace mod_coursework;
 use coding_exception;
 use core\exception\moodle_exception;
 use mod_coursework\models\coursework;
+use mod_coursework\models\feedback;
 use moodle_url;
 
 /**
@@ -115,23 +116,6 @@ class router {
                 );
                 break;
 
-            case 'assessor grading':
-            case 'new feedback':
-                $url = new moodle_url(
-                    '/mod/coursework/actions/feedbacks/new.php',
-                    ['submissionid' => $items['submission']->id,
-                                                'stageidentifier' => $items['stage']->identifier(),
-                    'assessorid' => $items['assessor']->id]
-                );
-                break;
-
-            case 'new final feedback':
-                $params = ['submissionid' => $items['submission']->id,
-                                'stageidentifier' => $items['stage']->identifier(),
-                                'isfinalgrade' => 1];
-                $url = new moodle_url('/mod/coursework/actions/feedbacks/new.php', $params);
-                break;
-
             case 'new submission':
                 $url = new moodle_url(
                     '/mod/coursework/actions/submissions/new.php',
@@ -140,13 +124,6 @@ class router {
                                           'allocatabletype' => $items['submission']->allocatabletype,
                                           'courseworkid' => $items['submission']->courseworkid,
                     ]
-                );
-                break;
-
-            case 'edit feedback':
-                $url = new moodle_url(
-                    '/mod/coursework/actions/feedbacks/edit.php',
-                    ['feedbackid' => $items['feedback']->id]
                 );
                 break;
 

@@ -28,7 +28,7 @@ namespace mod_coursework\models;
 use AllowDynamicProperties;
 use calendar_event;
 use cm_info;
-use coding_exception;
+use core\exception\coding_exception;
 use context;
 use context_course;
 use context_module;
@@ -2331,10 +2331,13 @@ class coursework extends table_base {
     /**
      * We cache these so that we can cache result sets inside the stages for calls like has_alloction()
      *
-     * @param $identifier
+     * @param string $identifier
      * @return stage_base
      */
-    public function get_stage($identifier) {
+    public function get_stage(string $identifier) {
+        if (!$identifier) {
+            throw new coding_exception("Must provide identifier");
+        }
 
         if (!array_key_exists($identifier, $this->stages)) {
             if ($identifier != 'moderator') {

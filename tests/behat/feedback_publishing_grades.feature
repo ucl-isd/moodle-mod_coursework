@@ -23,7 +23,7 @@ Feature: publishing grades to the students
     And there are feedbacks from both teachers
     And I am logged in as a manager
     When I visit the coursework page
-    And I click the new multiple final feedback button for the student
+    And I click on "Agree marking" "link"
     And I grade the submission as 56 using the simple form
     Then I visit the coursework page
     And I click the edit final feedback button
@@ -45,7 +45,7 @@ Feature: publishing grades to the students
     And I am logged in as a manager
 
     When I visit the coursework page
-    And I click the new multiple final feedback button for the student
+    And I click on "Agree marking" "link"
     And I grade the submission as 56 using the simple form
     And I visit the coursework page
     And I press the release marks button

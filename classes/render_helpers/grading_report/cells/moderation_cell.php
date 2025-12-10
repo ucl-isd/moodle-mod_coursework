@@ -126,11 +126,7 @@ class moderation_cell extends cell_base {
 
         $title = get_string('moderatethis', 'coursework');
         $icon = new pix_icon('moderate', $title, 'coursework', ['width' => '20px']);
-
-        $feedbackparams = [
-            'feedback' => $feedback,
-        ];
-        $link = $this->get_router()->get_path('edit feedback', $feedbackparams);
+        $link = $feedback->url_edit();
         $htmlattributes = [
             'id' => 'edit_moderator_feedback_' . $rowobject->get_filename_hash(),
             'class' => 'edit_feedback',

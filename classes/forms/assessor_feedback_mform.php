@@ -92,9 +92,6 @@ class assessor_feedback_mform extends moodleform {
         $mform->addElement('hidden', 'submissionid', $this->submission->id ?? 0);
         $mform->setType('submissionid', PARAM_INT);
 
-        $mform->addElement('hidden', 'isfinalgrade', $this->feedback->isfinalgrade ?? 0);
-        $mform->setType('isfinalgrade', PARAM_INT);
-
         $mform->addElement('hidden', 'ismoderation', $this->feedback->ismoderation ?? 0);
         $mform->setType('ismoderation', PARAM_INT);
 

@@ -19,7 +19,7 @@ Feature: Adding and editing final feedback
     Given there are feedbacks from both teachers
     And I am logged in as a manager
     And I visit the coursework page
-    And I click the new multiple final feedback button for the student
+    And I click on "Agree marking" "link"
     And I set the field "Mark" to "57"
     And I press "Save and finalise"
     Then I visit the coursework page
@@ -31,7 +31,7 @@ Feature: Adding and editing final feedback
     And the coursework "draftfeedbackenabled" setting is "1" in the database
     And I am logged in as a manager
     And I visit the coursework page
-    And I click the new multiple final feedback button for the student
+    And I click on "Agree marking" "link"
     And I set the field "Mark" to "57"
     And I press "Save as draft"
     Then I visit the coursework page
@@ -44,12 +44,11 @@ Feature: Adding and editing final feedback
     And I press "Confirm"
     And I should see the final agreed grade status "Released"
 
-  @javascript
   Scenario: Setting the final feedback comment
     Given there are feedbacks from both teachers
     And I am logged in as a manager
     And I visit the coursework page
-    And I click the new multiple final feedback button for the student
+    And I click on "Agree marking" "link"
     And I should see "New comment here" in the "[data-behat-markstage='assessor_1']" "css_element"
     And I should see "67" in the "[data-behat-markstage='assessor_1']" "css_element"
     And I should see "New comment here" in the "[data-behat-markstage='assessor_2']" "css_element"
@@ -62,14 +61,14 @@ Feature: Adding and editing final feedback
     And I wait until the page is ready
     And I wait "1" seconds
     And the field "Mark" matches value "58"
-    And the grade comment textarea field matches "New comment"
+    And I should see "New comment"
 
   Scenario: I can be both an initial assessor and the manager who agrees grades
     And managers do not have the manage capability
     Given I am logged in as a manager
     And there are feedbacks from both me and another teacher
     And I visit the coursework page
-    When I click the new multiple final feedback button for the student
+    And I click on "Agree marking" "link"
     And I set the field "Mark" to "59"
     And I press "Save and finalise"
 

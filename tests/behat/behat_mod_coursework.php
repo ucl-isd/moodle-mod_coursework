@@ -147,18 +147,6 @@ class behat_mod_coursework extends behat_base {
             case 'allocations':
                 return parent::locate_path('/mod/coursework/actions/allocate.php?id=' . $this->get_coursework()->get_course_module()->id);
 
-            case 'assessor grading':
-                return parent::locate_path('/mod/coursework/actions/feedback/new.php?submissionid=' . $this->submission->id . '&assessorid=' . $this->teacher->id);
-
-            case 'new feedback':
-                return $this->get_router()->get_path(
-                    'new feedback',
-                    ['submission' => $this->submission,
-                                                           'assessor' => $this->teacher,
-                                                           'stage' => $this->get_first_assesor_stage()],
-                    false,
-                    $escape
-                );
             case 'create feedback':
                 return $this->get_router()->get_path(
                     'create feedback',
@@ -203,12 +191,6 @@ class behat_mod_coursework extends behat_base {
                     false,
                     $escape
                 );
-
-            case 'edit feedback':
-                if (empty($this->feedback)) {
-                    $this->feedback = feedback::last();
-                }
-                return $this->get_router()->get_path('edit feedback', ['feedback' => $this->feedback], false, $escape);
 
             case 'gradebook':
                 return parent::locate_path('/grade/report/user/index.php?id=' . $this->course->id);
