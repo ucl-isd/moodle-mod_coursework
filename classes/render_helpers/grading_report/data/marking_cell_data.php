@@ -125,7 +125,7 @@ class marking_cell_data extends cell_data_base {
             // Get the assessor to last edit user if feedback exists, otherwise use the allocated assessor.
             $assessor = !empty($feedback) ? user::find($feedback->lasteditedbyuser) : $row->get_assessor();
 
-            $canaddfeedback = $rowsbase->get_submission()
+            $canaddfeedback = !$feedback && $rowsbase->get_submission()
                 && $this->can_add_new_feedback($rowsbase->get_submission()->id, $row->get_stage()->identifier());
             $canshowfeedback = $feedback && $this->ability->can('show', $feedback);
             $marker = $this->create_marker_data($assessor, $markernumber, $canaddfeedback);
@@ -165,7 +165,7 @@ class marking_cell_data extends cell_data_base {
                 $finalfeedback = $rowsbase->get_submission()->get_final_feedback();
                 if ($canshowfeedback && $finalfeedback) {
                     $rowdata->agreedmark = $this->get_final_feedback_data($finalfeedback, $rowsbase->get_allocatable(), $rowsbase->get_submission());
-                } else if ($this->can_add_new_feedback($rowsbase->get_submission()->id, final_agreed::STAGE_FINAL_AGREED_1)) {
+                } else if (!$finalfeedback && $this->can_add_new_feedback($rowsbase->get_submission()->id, final_agreed::STAGE_FINAL_AGREED_1)) {
                     // No feedback exists yet - add button.
                     $rowdata->agreedmark = (object)[
                         'addfinalfeedback' => (object)[
