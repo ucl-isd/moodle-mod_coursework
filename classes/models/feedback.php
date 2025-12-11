@@ -51,11 +51,6 @@ class feedback extends table_base {
     /**
      * @var int
      */
-    public $id;
-
-    /**
-     * @var int
-     */
     public $submissionid;
 
     /**

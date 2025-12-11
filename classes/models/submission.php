@@ -93,11 +93,6 @@ class submission extends table_base implements renderable {
     /**
      * @var int
      */
-    public $id;
-
-    /**
-     * @var int
-     */
     public $courseworkid;
 
     /**
@@ -257,7 +252,7 @@ class submission extends table_base implements renderable {
             $this->timecreated = time();
         }
 
-        if ($this->id > 0 && !$this->firstname && !empty($this->userid)) {
+        if ($this->persisted() && !$this->firstname && !empty($this->userid)) {
             // Get the real first and last name from the user table. We use fullname($this), which needs it,
             // so we can't lazy-load.
             $user = $DB->get_record('user', ['id' => $this->userid]);
@@ -432,7 +427,7 @@ class submission extends table_base implements renderable {
             return $this->submissionfiles;
         }
 
-        if ($this->id < 1 || $this->get_context_id() < 1) {
+        if (!$this->persisted() || !$this->get_context_id()) {
             return new submission_files([], $this);
         }
 

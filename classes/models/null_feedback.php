@@ -34,7 +34,7 @@ class null_feedback {
     /**
      * @var int
      */
-    public $id = 0;
+    protected $id = 0;
 
     /**
      * @return string

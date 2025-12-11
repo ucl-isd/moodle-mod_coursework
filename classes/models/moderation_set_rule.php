@@ -51,11 +51,6 @@ abstract class moderation_set_rule extends table_base implements renderable {
     /**
      * @var int
      */
-    public $id;
-
-    /**
-     * @var int
-     */
     public $courseworkid;
 
     /**

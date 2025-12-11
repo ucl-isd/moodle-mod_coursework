@@ -24,7 +24,7 @@ namespace mod_coursework\framework;
 
 use AllowDynamicProperties;
 use cache;
-use coding_exception;
+use \core\exception\coding_exception;
 use dml_exception;
 use dml_missing_record_exception;
 use dml_multiple_records_exception;
@@ -57,9 +57,11 @@ abstract class table_base {
     private $dataloaded = false;
 
     /**
+     * The database record ID.
+     * Protected because we only want this to be set from within this class from DB record.
      * @var int
      */
-    public $id;
+    protected int $id;
 
     /**
      * Makes a new instance. Can be overridden to provide a factory
@@ -168,7 +170,7 @@ abstract class table_base {
         // of courseworks. If the id isn't there, throw an error. Weirdly, everything comes through
         // as a string here.
         if (!empty($dbrecord) && is_numeric($dbrecord)) {
-            $this->id = $dbrecord;
+            $this->id = (int)$dbrecord;
             $this->reload();
         } else if (is_object($dbrecord) || is_array($dbrecord)) {
             // Add all of the DB row fields to this object (if the object has a matching property).
@@ -260,7 +262,8 @@ abstract class table_base {
         $data = (array)$dataobject;
         foreach (static::get_column_names() as $columnname) {
             if (isset($data[$columnname])) {
-                $this->{$columnname} = $data[$columnname];
+                $this->{$columnname} = ($columnname == 'id')
+                    ? (int)$data[$columnname] : $data[$columnname];
             }
         }
     }
@@ -329,10 +332,10 @@ abstract class table_base {
      * @return bool
      * @throws dml_exception
      */
-    public function persisted() {
-        global $DB;
-
-        return !empty($this->id) && $DB->record_exists(static::$tablename, ['id' => $this->id]);
+    public function persisted(): bool {
+        // Previously was a check against DB here but this results in thousands of queries from grading report page via ability->can().
+        // ID should only be set from a DB record anyway so that check is now removed.
+        return !empty($this->id);
     }
 
     /**
@@ -409,8 +412,8 @@ abstract class table_base {
     public function reload($complainifnotfound = true) {
         global $DB;
 
-        if (empty($this->id)) {
-            return $this;
+        if (!$this->persisted()) {
+            throw new coding_exception("Cannot reload - never persisted so nothing to reload");
         }
 
         $strictness = $complainifnotfound ? MUST_EXIST : IGNORE_MISSING;
@@ -461,7 +464,7 @@ abstract class table_base {
     public function destroy() {
         global $DB;
 
-        if (empty($this->id)) {
+        if (!$this->persisted()) {
             throw new coding_exception('Cannot destroy an object that has not yet been saved');
         }
 
@@ -502,7 +505,7 @@ abstract class table_base {
 
         // Only save the non-null fields.
         foreach (static::get_column_names() as $columnname) {
-            if (!is_null($this->$columnname)) {
+            if (!empty($this->$columnname) && !is_null($this->$columnname)) {
                 $savedata->$columnname = $this->$columnname;
             }
         }
@@ -620,11 +623,11 @@ abstract class table_base {
     }
 
     /**
-     * @return int|string
+     * @return int
      * @throws coding_exception
      */
-    public function id() {
-        if (empty($this->id)) {
+    public function id(): int {
+        if (!$this->persisted()) {
             throw new coding_exception('Asking for the id of an unsaved object');
         }
         return $this->id;

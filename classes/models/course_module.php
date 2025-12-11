@@ -36,11 +36,6 @@ class course_module extends table_base {
     protected static $tablename = 'course_modules';
 
     /**
-     * @var int
-     */
-    public $id;
-
-    /**
      * cache array
      *
      * @var

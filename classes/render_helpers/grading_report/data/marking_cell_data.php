@@ -160,7 +160,8 @@ class marking_cell_data extends cell_data_base {
         if ($ismultiple && $rowsbase->get_submission()) {
             // Skip this if sampling is enabled but no sampled feedback exists.
             $samplingrequireshidden =
-                $rowsbase->get_coursework()->sampling_enabled() && !$rowsbase->get_submission()->sampled_feedback_exists();
+                $rowsbase->get_coursework()->sampling_enabled()
+                    && !$rowsbase->get_submission()->sampled_feedback_exists();
             if (!$samplingrequireshidden) {
                 $finalfeedback = $rowsbase->get_submission()->get_final_feedback();
                 if ($canshowfeedback && $finalfeedback) {

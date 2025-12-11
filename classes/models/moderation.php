@@ -37,11 +37,6 @@ class moderation extends table_base {
     /**
      * @var int
      */
-    public $id;
-
-    /**
-     * @var int
-     */
     public $feedbackid;
 
     /**
