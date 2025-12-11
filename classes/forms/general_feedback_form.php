@@ -44,7 +44,7 @@ class general_feedback_form extends moodleform {
         $this->_form->addElement('html', get_string('generalfeedbackdesc_help', 'coursework'));
 
         // Add comment thing.
-        $this->_form->addElement('editor', 'feedbackcomment_editor',  get_string('generalfeedback', 'coursework'));
+        $this->_form->addElement('editor', 'feedbackcomment_editor', get_string('generalfeedback', 'coursework'));
         $this->_form->setType('feedbackcomment_editor', PARAM_RAW);
 
         $this->_form->addElement('hidden', 'id', null);
