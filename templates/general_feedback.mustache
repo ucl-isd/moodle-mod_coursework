@@ -16,36 +16,40 @@
 {{!
     @template mod_coursework/general_feedback
 
-    Template for displaying general feedback section.
+    Template for displaying general feedback section (AKA "Insights")
 
     Example context (json):
     {
-        "button" {
-            "url": "https://example.moodle.org/edit.php?id=134",
-            "label": "Add <span class="sr-only">general feedback</span>"
-        },
-        "feedback": "<div><p>This is the feedback</p></div>"
+        "content": "<div><p>This is the feedback</p></div>",
+        "isreleased": true,
+        "editable": true,
+        "publicationdateunix": 1234567890,
+        "teacherviewallowed": true,
+        "uservisible": true,
+        "helpicon": "<a>...help icon HTML .. </a>",
     }
 }}
-<div class="d-flex">
-    <h4 class="h5">{{#str}} generalfeedback, mod_coursework {{/str}}</h4>
-    <span class="ms-2">{{{helpicon}}}</span>
-    {{#button}}
-        <div class="ml-auto">
-            <a href="{{url}}" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-pen-to-square mr-2"></i>{{{label}}}</a>
-        </div>
-    {{/button}}
-</div>
+{{#uservisible}}
+    <div class="d-flex">
+        <h4 class="h5">{{#str}} generalfeedback, mod_coursework {{/str}}</h4>
+        <span class="ms-2">{{{helpicon}}}</span>
+        {{#editable}}
+            <div class="ml-auto">
+                <a href="{{config.wwwroot}}/mod/coursework/actions/general_feedback.php?cmid={{cmid}}" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-pen-to-square mr-2"></i>{{#content}}{{#str}}insightsedit, coursework{{/str}}{{/content}}{{^content}}{{#str}}insightsadd, coursework{{/str}}{{/content}}</a>
+            </div>
+        {{/editable}}
+    </div>
+    {{#teacherviewallowed}}
+        {{#publicationdateunix}}
+            <p>
+                <b>{{#str}} publishedtostudentson, mod_coursework, {{#userdate}}{{.}}, {{#str}} strftimedatetime, langconfig {{/str}}{{/userdate}} {{/str}}</b>
+            </p>
+        {{/publicationdateunix}}
+    {{/teacherviewallowed}}
 
-{{#duedate}}
-    <p>
-    <b>{{#str}} due, mod_coursework {{/str}}</b>
-    {{#userdate}}{{.}}, {{#str}} strftimedatetime, langconfig {{/str}}{{/userdate}}
-    </p>
-{{/duedate}}
+    {{{content}}}
 
-{{{feedback}}}
-
-{{^feedback}}
-<p>{{#str}} nofeedbackyet, mod_coursework {{/str}}</p>
-{{/feedback}}
+    {{^content}}
+        <p>{{#str}} nofeedbackyet, mod_coursework {{/str}}</p>
+    {{/content}}
+{{/uservisible}}

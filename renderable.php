@@ -28,6 +28,7 @@
  */
 
 use mod_coursework\framework\decorator;
+use mod_coursework\models\coursework;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -57,6 +58,12 @@ class mod_coursework_assessor_feedback_table extends mod_coursework_renderable {
 }
 
 class mod_coursework_coursework extends mod_coursework_renderable {
+    /**
+     * @return coursework
+     */
+    public function wrapped_object(): coursework {
+        return parent::wrapped_object();
+    }
 }
 
 class mod_coursework_grading_table_row_multi extends mod_coursework_renderable {

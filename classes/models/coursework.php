@@ -176,6 +176,7 @@ class coursework extends table_base {
     public $maxbytes;
 
     /**
+     * The general feedback release date or 0 if not restricted by date.
      * @var string
      */
     public $generalfeedback;
@@ -765,26 +766,6 @@ class coursework extends table_base {
         }
         return false;
         // Get them for this whole coursework.
-    }
-
-    /**
-     * If not set for this coursework, use the one from the site settings.
-     *
-     * @return int timestamp
-     */
-    public function get_general_feedback_deadline() {
-
-        global $CFG;
-
-        if ($this->generalfeedback > 0) {
-            return $this->generalfeedback;
-        } else {
-            if ($CFG->coursework_generalfeedback) {
-                return strtotime('+ ' . $CFG->coursework_generalfeedback . ' weeks', $this->deadline);
-            } else { // If site setting is 0.
-                return strtotime('+ 2 weeks', $this->deadline);
-            }
-        }
     }
 
     /**
