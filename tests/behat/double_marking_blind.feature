@@ -1,4 +1,4 @@
-@mod @mod_coursework @double-marking-blind
+@mod @mod_coursework @double-marking-blind @mod_coursework_dmb
 Feature: Double marking - blind
   In order to ensure double marking works correctly
   As an admin
@@ -327,8 +327,8 @@ Feature: Double marking - blind
       | marker3   | C1     | courseworkmarker     |
       | student1  | C1     | student              |
 
-    And the student "Student 1" has a submission
-    And the submission for "Student 1" is finalised
+    And the student "Student 1" has a submission for coursework "Coursework 1"
+    And the submission for "Student 1" in "Coursework 1" is finalised
 
     When I am on the "Course 1" "course" page logged in as "manager"
     And I follow "Coursework 1"
@@ -383,12 +383,12 @@ Feature: Double marking - blind
     And I assign user "Marker 1" as "Assessor 2" for "Student 3" in coursework "Coursework 1"
     And I assign user "Marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
 
-    And the student "Student 1" has a submission
-    And the submission for "Student 1" is finalised
-    And the student "Student 2" has a submission
-    And the submission for "Student 2" is finalised
-    And the student "Student 3" has a submission
-    And the submission for "Student 3" is finalised
+    And the student "Student 1" has a submission for coursework "Coursework 1"
+    And the submission for "Student 1" in "Coursework 1" is finalised
+    And the student "Student 2" has a submission for coursework "Coursework 1"
+    And the submission for "Student 2" in "Coursework 1" is finalised
+    And the student "Student 3" has a submission for coursework "Coursework 1"
+    And the submission for "Student 3" in "Coursework 1" is finalised
 
     And I log out
     And I am on the "Course 1" "course" page logged in as "marker1"
@@ -432,8 +432,8 @@ Feature: Double marking - blind
     And I assign user "Marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
     And I assign user "Marker 2" as "Assessor 2" for "Student 1" in coursework "Coursework 1"
 
-    And the student "Student 1" has a submission
-    And the submission for "Student 1" is finalised
+    And the student "Student 1" has a submission for coursework "Coursework 1"
+    And the submission for "Student 1" in "Coursework 1" is finalised
 
     And the submission from "Student 1" for coursework "Coursework 1" is marked by "Marker 1" with:
       | Mark    | 70              |
@@ -448,3 +448,64 @@ Feature: Double marking - blind
     Then I should see "Submission"
     And I should see "In marking"
     And I should not see "Edit your submission"
+
+  Scenario: Moderate the assessment
+    Given there is a blind marking moderation coursework
+    And the following "course enrolments" exist:
+      | user        | course | role                 |
+      | moderator1  | C1     | courseworkmoderator  |
+      | marker1     | C1     | courseworkmarker     |
+      | marker2     | C1     | courseworkmarker     |
+      | marker3     | C1     | courseworkmarker     |
+      | student1    | C1     | student              |
+      | student2    | C1     | student              |
+      | student3    | C1     | student              |
+
+    And I assign user "Marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
+    And I assign user "Moderator 1" as "Moderator" for "Student 1" in coursework "Coursework 1"
+    And I assign user "Marker 1" as "Assessor 1" for "Student 2" in coursework "Coursework 1"
+    And I assign user "Moderator 1" as "Moderator" for "Student 2" in coursework "Coursework 1"
+    And I assign user "Marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
+    And I assign user "Moderator 1" as "Moderator" for "Student 3" in coursework "Coursework 1"
+
+    And the student "Student 1" has a submission for coursework "Coursework 1"
+    And the submission for "Student 1" in "Coursework 1" is finalised
+    And the student "Student 2" has a submission for coursework "Coursework 1"
+    And the submission for "Student 2" in "Coursework 1" is finalised
+    And the student "Student 3" has a submission for coursework "Coursework 1"
+    And the submission for "Student 3" in "Coursework 1" is finalised
+
+    And the submission from "Student 1" for coursework "Coursework 1" is marked by "Marker 1" with:
+      | Mark      | 70              |
+      | Comment   | Excellent work! |
+      | Finalised | 1               |
+
+    And the submission from "Student 2" for coursework "Coursework 1" is marked by "Marker 1" with:
+      | Mark      | 75              |
+      | Comment   | Superb work!    |
+      | Finalised | 1               |
+
+    And the submission from "Student 3" for coursework "Coursework 1" is marked by "Marker 2" with:
+      | Mark      | 50                  |
+      | Comment   | I've seen worse...  |
+      | Finalised | 1                   |
+
+#    Alternative separate step to finalise a feedback.
+#    And the feedback for "Student 1" by "Marker 1" in "Coursework 1" is finalised
+
+    And I am on the "Course 1" "course" page logged in as "moderator1"
+    And I follow "Coursework 1"
+    And I follow "Agree marking" in row "1"
+    Then I should see "Moderation for"
+    And I set the field "Moderation agreement" to "Agreed"
+    And I press "Save changes"
+    And I follow "Agree marking" in row "2"
+    Then I should see "Moderation for"
+    And I set the field "Moderation agreement" to "Disagreed"
+    And I set the field "Comment" to "I don't like it!"
+    And I press "Save changes"
+    Then I should see "Agreed" in row "1"
+    Then I should see "Disagreed" in row "2"
+    When I follow "Disagreed"
+    And I wait until the page is ready
+    Then I should see "I don't like it!"

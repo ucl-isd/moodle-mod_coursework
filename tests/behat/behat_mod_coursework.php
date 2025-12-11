@@ -1599,11 +1599,40 @@ class behat_mod_coursework extends behat_base {
         $coursework->course = $this->course;
         $coursework->startdate = time();
         $coursework->deadline = strtotime('+15 minutes');
-        $coursework->numberofgraders = 2;
+        $coursework->numberofmarkers = 2;
         $coursework->blindmarking = true;
         $coursework->allocationenabled = true;
         $coursework->extensionsenabled = true;
         $coursework->allowlatesubmissions = true;
+        $coursework->filetypes = "pdf";
+
+        $this->coursework = coursework::find($generator->create_instance($coursework)->id);
+    }
+
+    /**
+     * Create a coursework assessment with moderation and blind marking enabled.
+     *
+     * Example: And there is a blind marking moderation coursework
+     *
+     * @Given /^there is a blind marking moderation coursework$/
+     */
+    public function there_is_a_blind_marking_moderation_coursework() {
+
+        /**
+         * @var $generator mod_coursework_generator
+         */
+        $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
+
+        $coursework = new stdClass();
+        $coursework->course = $this->course;
+        $coursework->startdate = time();
+        $coursework->deadline = strtotime('+30 minutes');
+        $coursework->numberofmarkers = 1;
+        $coursework->blindmarking = true;
+        $coursework->allocationenabled = true;
+        $coursework->extensionsenabled = true;
+        $coursework->allowlatesubmissions = true;
+        $coursework->moderationagreementenabled = true;
         $coursework->filetypes = "pdf";
 
         $this->coursework = coursework::find($generator->create_instance($coursework)->id);
@@ -2723,35 +2752,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * Creates a submission for a given student.
-     *
-     * Example: And the student "Student 1" has a submission
-     *
-     * @Given /^the student "(?P<studentname>(?:[^"]|\\")*)" has a submission$/
-     */
-    public function student_has_a_submission($studentname) {
-        global $DB;
-
-        // Find the user by full name (or username if you prefer)
-        [$firstname, $lastname] = explode(' ', $studentname, 2);
-        $user = $DB->get_record('user', [
-            'firstname' => $firstname,
-            'lastname' => $lastname,
-        ], '*', MUST_EXIST);
-
-        /**
-         * @var $generator mod_coursework_generator
-         */
-        $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
-
-        $submission = new stdClass();
-        $submission->allocatableid = $user->id;
-        $submission->allocatabletype = 'user'; // Always 'user' for a student.
-
-        $this->submission = $generator->create_submission($submission, $this->coursework);
-    }
-
-    /**
      * @Given /^the group has a submission$/
      */
     public function ithe_group_has_a_submission() {
@@ -2807,42 +2807,6 @@ class behat_mod_coursework extends behat_base {
         $this->submission->save();
     }
 
-    /**
-     * Finalises (or un-finalises) a submission for a given student.
-     *
-     * Example: And the submission for "Student 1" is finalised
-     * Example: And the submission for "Student 1" is not finalised
-     *
-     * @Given /^the submission for "(?P<studentname>(?:[^"]|\\")*)" is (not )?finalised$/
-     */
-    public function submission_for_student_is_finalised($studentname, $negate = false) {
-        global $DB;
-
-        // Find the user by full name (first + last)
-        [$firstname, $lastname] = explode(' ', $studentname, 2);
-        $user = $DB->get_record('user', [
-            'firstname' => $firstname,
-            'lastname'  => $lastname,
-        ], '*', MUST_EXIST);
-
-        // Find the submission record
-        $record = $DB->get_record('coursework_submissions', [
-            'allocatableid' => $user->id,
-            'allocatabletype' => 'user',
-            'courseworkid' => $this->coursework->id,
-        ], '*', MUST_EXIST);
-
-        // Load the submission object
-        $submission = submission::build($record);
-
-        // Set finalised status
-        $submission->finalisedstatus = $negate
-            ? submission::FINALISED_STATUS_NOT_FINALISED
-            : submission::FINALISED_STATUS_FINALISED;
-
-        // Save using the submission class
-        $submission->save();
-    }
     /**
      * @Then /^the file upload button should not be visible$/
      */
@@ -3782,7 +3746,7 @@ class behat_mod_coursework extends behat_base {
      * Assigns a user as a given assessor slot for a student within a coursework.
      *
      * Example:
-     *   And I assign user "marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
+     *   And I assign user "Marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
      *
      * @Given /^I assign user "(?P<marker_string>(?:[^"]|\\")*)" as "(?P<role_string>(?:[^"]|\\")*)" for "(?P<student_string>(?:[^"]|\\")*)" in coursework "(?P<coursework_string>(?:[^"]|\\")*)"$/
      */
@@ -3792,7 +3756,12 @@ class behat_mod_coursework extends behat_base {
         // Find the coursework by name.
         $cw = $DB->get_record('coursework', ['name' => $cwname], '*', MUST_EXIST);
 
-        $assignnr = (strstr($role, '2') || strstr($role, 'two')) ? 2 : 1;
+        if (strtolower($role) === "moderator") {
+            $stageidentifier = "moderator";
+        } else {
+            $assignnr = (strstr($role, '2') || strstr($role, 'two')) ? 2 : 1;
+            $stageidentifier = 'assessor_' . $assignnr;
+        }
 
         $marker = $this->get_user_from_username($marker);
         $student = $this->get_user_from_username($student);
@@ -3802,7 +3771,7 @@ class behat_mod_coursework extends behat_base {
             'courseworkid' => $cw->id,
             'allocatableid' => $student->id,
             'allocatableuser' => $student->id,
-            'stageidentifier' => 'assessor_' . $assignnr,
+            'stageidentifier' => $stageidentifier,
             'allocatabletype' => 'user',
         ]);
 
@@ -3811,7 +3780,7 @@ class behat_mod_coursework extends behat_base {
         $record->allocatableid = $student->id;
         $record->allocatableuser = $student->id;
         $record->assessorid = $marker->id;
-        $record->stageidentifier = 'assessor_' . $assignnr;
+        $record->stageidentifier = $stageidentifier;
         $record->allocatabletype = 'user';
         $record->ismanual = 1;
 
@@ -3941,17 +3910,8 @@ class behat_mod_coursework extends behat_base {
     ) {
         global $DB;
 
-        // Resolve student.
-        [$studentfirstname, $studentlastname] = explode(' ', $studentfullname, 2);
-        if (!$student = $DB->get_record('user', ['firstname' => $studentfirstname, 'lastname' => $studentlastname])) {
-            throw new ExpectationException("Student '$studentfullname' not found", $this->getSession());
-        }
-
-        // Resolve marker.
-        [$markerfirstname, $markerlastname] = explode(' ', $markerfullname, 2);
-        if (!$marker = $DB->get_record('user', ['firstname' => $markerfirstname, 'lastname' => $markerlastname])) {
-            throw new ExpectationException("Marker '$markerfullname' not found", $this->getSession());
-        }
+        $student = $this->get_user_from_username($studentfullname);
+        $marker = $this->get_user_from_username($markerfullname);
 
         // Resolve coursework module by name.
         if (!$coursework = $DB->get_record('coursework', ['name' => $courseworkname])) {
@@ -3982,6 +3942,7 @@ class behat_mod_coursework extends behat_base {
 
         $mark = isset($data['Mark']) ? floatval($data['Mark']) : null;
         $comment = $data['Comment'] ?? '';
+        $finalised = $data['Finalised'] ?? '';
 
         if ($mark === null) {
             throw new ExpectationException("Missing 'Mark' value in table", $this->getSession());
@@ -4002,6 +3963,7 @@ class behat_mod_coursework extends behat_base {
         $feedback->grade = $mark;
         $feedback->feedbackcomment = $comment;
         $feedback->lasteditedbyuser = $marker->id;
+        $feedback->finalised = $finalised;
         $feedback->timecreated = time();
         $feedback->timemodified = time();
 
@@ -4052,6 +4014,190 @@ class behat_mod_coursework extends behat_base {
             $record->roleid      = $fromrole->id;
             $record->allowassign = $torole->id;
             $DB->insert_record('role_allow_assign', $record);
+        }
+    }
+
+    /**
+     * Creates a submission for a given student and coursework.
+     *
+     * Example: And the student "Student 1" has a submission for coursework "Coursework 1"
+     *
+     * @Given /^the student "(?P<studentname>(?:[^"]|\\")*)" has a submission for coursework "(?P<courseworkname>[^"]+)"$/
+     */
+    public function student_has_a_submission_for_coursework($studentfullname, $courseworkname) {
+        global $DB;
+
+        $student = $this->get_user_from_username($studentfullname);
+
+        // Resolve coursework.
+        if (!$coursework = $DB->get_record('coursework', ['name' => $courseworkname], '*')) {
+            throw new \moodle_exception("Coursework '{$courseworkname}' not found.");
+        }
+        // Get a coursework object.
+        $coursework = coursework::build($coursework);
+
+        /**
+         * @var $generator mod_coursework_generator
+         */
+        $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
+
+        $submission = new stdClass();
+        $submission->allocatableid = $student->id;
+        $submission->allocatabletype = 'user'; // Always 'user' for a student.
+
+        $this->submission = $generator->create_submission($submission, $coursework);
+    }
+
+    /**
+     * Finalises (or un-finalises) a submission to a coursework for a given student.
+     *
+     * Example: And the submission for "Student 1" in "Coursework 1" is finalised
+     * Example: And the submission for "Student 1" in "Coursework 1" is not finalised
+     *
+     * @Given /^the submission for "(?P<studentname>(?:[^"]|\\")*)" in "(?P<courseworkname>[^"]+)" is (not )?finalised$/
+     */
+    public function submission_for_student_in_coursework_is_finalised($studentfullname, $courseworkname, $negate = false) {
+        global $DB;
+
+        $student = $this->get_user_from_username($studentfullname);
+
+        // Resolve coursework.
+        if (!$coursework = $DB->get_record('coursework', ['name' => $courseworkname], '*')) {
+            throw new \moodle_exception("Coursework '{$courseworkname}' not found.");
+        }
+
+        // Get student's submission.
+        if (!$submission = $DB->get_record('coursework_submissions', [
+            'allocatableid' => $student->id,
+            'allocatabletype' => 'user',
+            'courseworkid' => $coursework->id,
+        ])) {
+            throw new \moodle_exception("Submission for '{$studentfullname}' not found in '{$courseworkname}'.");
+        }
+
+        // Set finalised status.
+        $submission->finalisedstatus = $negate
+            ? submission::FINALISED_STATUS_NOT_FINALISED
+            : submission::FINALISED_STATUS_FINALISED;
+
+        // Save using the submission class.
+        $DB->update_record('coursework_submissions', $submission);
+    }
+
+    /**
+     * Finalise a marker's feedback for a student's submission.
+     *
+     * Example:
+     * And the feedback for "Student 1" by "Marker 1" in "Coursework 1" is finalised
+     *
+     * @Given /^the feedback for "(?P<studentfullname>[^"]+)" by "(?P<markerfullname>[^"]+)" in "(?P<courseworkname>[^"]+)" is finalised$/
+     */
+    public function finalise_feedback($studentfullname, $markerfullname, $courseworkname) {
+        global $DB;
+
+        $student = $this->get_user_from_username($studentfullname);
+        $marker = $this->get_user_from_username($markerfullname);
+
+        // Resolve coursework.
+        if (!$coursework = $DB->get_record('coursework', ['name' => $courseworkname], '*')) {
+            throw new \moodle_exception("Coursework '{$courseworkname}' not found.");
+        }
+
+        // Get student's submission.
+        if (!$submission = $DB->get_record('coursework_submissions', [
+            'allocatableid' => $student->id,
+            'allocatabletype' => 'user',
+            'courseworkid' => $coursework->id,
+        ])) {
+            throw new \moodle_exception("Submission for '{$studentfullname}' not found in '{$courseworkname}'.");
+        }
+
+        // Get marker’s feedback record.
+        if (!$feedback = $DB->get_record('coursework_feedbacks', [
+            'submissionid' => $submission->id,
+            'assessorid'     => $marker->id
+        ])) {
+            throw new \moodle_exception("Feedback by '{$markerfullname}' for '{$studentfullname}' not found.");
+        }
+
+        // Update field.
+        $feedback->finalised = 1;
+        $DB->update_record('coursework_feedbacks', $feedback);
+    }
+
+    /**
+     * Clicks a link inside the given table row.
+     *
+     * Example:
+     *   Given I follow "Agree marking" in row "2"
+     *
+     * @Given /^I follow "(?P<linktext_string>[^"]*)" in row "(?P<rownumber>\d+)"$/
+     */
+    public function i_follow_in_row($linktext, $rownumber) {
+        $session = $this->getSession();
+        $page = $session->getPage();
+
+        // Find the table — assume there is only one submissions table on screen.
+        $table = $page->find('css', 'table.mod-coursework-submissions-table');
+        if (!$table) {
+            throw new ExpectationException("Could not find submissions table.", $session);
+        }
+
+        // Get all table body rows.
+        $rows = $table->findAll('css', 'tbody tr');
+        if (empty($rows)) {
+            throw new ExpectationException("No table rows found in submissions table.", $session);
+        }
+
+        $index = (int)$rownumber - 1;
+        if (!isset($rows[$index])) {
+            throw new ExpectationException("Row {$rownumber} does not exist.", $session);
+        }
+
+        $row = $rows[$index];
+
+        // Try to find the link by exact text.
+        $link = $row->findLink($linktext);
+        if (!$link) {
+            // Maybe it's a button with that label.
+            $link = $row->find('named', ['button', $linktext]);
+        }
+
+        if (!$link) {
+            throw new ExpectationException(
+                "Could not find a link or button '{$linktext}' in row {$rownumber}.",
+                $session
+            );
+        }
+
+        // Click it.
+        $link->click();
+    }
+
+    /**
+     * @Then /^I should see "(?P<text>[^"]*)" in row "(?P<row>\d+)"$/
+     */
+    public function i_should_see_text_in_row($text, $rownumber) {
+        $session = $this->getSession();
+        $page = $session->getPage();
+
+        // Find the table body.
+        $tbody = $page->find('css', 'table.mod-coursework-submissions-table tbody');
+        if (!$tbody) {
+            throw new Exception('Could not find coursework submissions table.');
+        }
+
+        // Get all rows.
+        $rows = $tbody->findAll('css', 'tr');
+        if (!isset($rows[$rownumber - 1])) {
+            throw new Exception("Row {$rownumber} does not exist in the submissions table.");
+        }
+
+        $row = $rows[$rownumber - 1];
+
+        // Check text inside the row.
+        if (strpos($row->getText(), $text) === false) {
+            throw new Exception("The text '{$text}' was not found in row {$rownumber}.\nRow contents: " . $row->getText());
         }
     }
 }
