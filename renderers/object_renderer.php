@@ -480,7 +480,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 $template->publishdate = $coursework->generalfeedback;
             }
 
-            // Uservisible check.
+            // Only show if released, or thr tutors is we have data.
             $template->uservisible = $isreleased || ($istutor && !empty($template->feedback));
         }
 
