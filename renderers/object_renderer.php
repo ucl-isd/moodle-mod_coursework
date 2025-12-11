@@ -436,19 +436,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
 
         // General feedback.
-        // TODO - update this as part of https://ucldata.atlassian.net/browse/CTP-5316
-        // TODO - this should just be $canaddgeneralfeedback || $coursework->is_general_feedback_released().
-        // Behat fails when you don't include the other capabilities.
-        if ($cangrade || $canpublish || $canaddgeneralfeedback || $coursework->is_general_feedback_released()) {
+        if ($canaddgeneralfeedback || $coursework->is_general_feedback_released()) {
             $feedback = new stdClass();
             $feedback->feedback = $coursework->get_general_feedback();
 
-            // TODO - this should just be in the next $canaddgeneralfeedback.
-            // Behat fails when you don't include the other capabilities.
-            if ($cangrade || $canpublish || $canaddgeneralfeedback) {
-                $feedback->duedate = $coursework->generalfeedback;
-            }
             if ($canaddgeneralfeedback) {
+                $feedback->duedate = $coursework->generalfeedback;
                 $feedback->button = new stdClass();
                 $feedback->button->url = new moodle_url('/mod/coursework/actions/general_feedback.php', ['cmid' => $coursework->get_coursemodule_id()]);
                 $feedback->button->label = get_string($coursework->get_general_feedback() ? 'editgeneralfeedback' : 'addgeneralfeedback', 'coursework');
