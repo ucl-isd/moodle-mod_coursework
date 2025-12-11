@@ -28,19 +28,20 @@
 }}
 
 {{#uservisible}}
+<div>
     <h4 class="h5">{{#str}} generalfeedback, mod_coursework {{/str}}</h4>
-    {{#publicationdateunix}}
+    {{#publishdate}}
         <p>
             <small class="text-muted">
                 {{#str}} publishedtostudentsfrom, mod_coursework, {{#userdate}}{{.}}, {{#str}} strftimedatetime, langconfig {{/str}}{{/userdate}} {{/str}}
             </small>
         </p>
-    {{/publicationdateunix}}
+    {{/publishdate}}
 
 
-    {{{content}}}
+    {{{feedback}}}
 
-     {{#editable}}
+     {{#canedit}}
         <div>
             <a href="{{config.wwwroot}}/mod/coursework/actions/general_feedback.php?cmid={{cmid}}" class="btn btn-outline-primary btn-sm">
                 <i class="fa-solid fa-pen-to-square mr-2"></i>
@@ -48,6 +49,6 @@
                 {{^content}}{{#str}}insightsadd, coursework{{/str}}{{/content}}
             </a>
         </div>
-    {{/editable}}
-
+    {{/canedit}}
+</div>
 {{/uservisible}}

@@ -455,20 +455,36 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @throws moodle_exception
      */
     public function get_general_feedback_data(coursework $coursework, bool $cangrade, bool $canpublish): stdClass {
-        $generalfeedback = new stdClass();
-        $generalfeedback->content = $coursework->get_general_feedback();
-        $generalfeedback->isreleased = $coursework->is_general_feedback_released();
-        $generalfeedback->editable = has_capability('mod/coursework:addgeneralfeedback', $this->page->context);
-        $generalfeedback->publicationdateunix = $coursework->generalfeedback;
-        // Even if not yet released, teachers can see but not edit, if it has content.
-        $generalfeedback->teacherviewallowed = $generalfeedback->editable
-            || (($cangrade || $canpublish) && $generalfeedback->content);
-        $generalfeedback->uservisible =
-            $generalfeedback->editable
-            || $generalfeedback->isreleased // Everyone can see after release date.
-            || $generalfeedback->teacherviewallowed;
-        $generalfeedback->helpicon = $generalfeedback->editable ? $this->output->help_icon('generalfeedbackdesc', 'coursework') : null;
-        return $generalfeedback;
+
+        $template = new stdClass();
+        $template->feedback = '';
+        $template->publishdate = '';
+        $template->canedit = has_capability('mod/coursework:addgeneralfeedback', $this->page->context);
+
+        $istutor = $cangrade || $canpublish;
+
+        if ($template->canedit) {
+            // Editor.
+            $template->isreleased = true;
+            $template->uservisible = true;
+            $template->feedback = $coursework->get_general_feedback();
+            $template->publishdate = $coursework->generalfeedback;
+
+        } else {
+            // Not an editor, check release status.
+            $template->isreleased = $coursework->is_general_feedback_released();
+            $showfeedback = $isreleased || $istutor;
+
+            if ($showfeedback) {
+                $template->feedback = $coursework->get_general_feedback();
+                $template->publishdate = $coursework->generalfeedback;
+            }
+
+            // Uservisible check.
+            $template->uservisible = $isreleased || ($istutor && !empty($template->feedback));
+        }
+
+        return $template;
     }
 
     /**
