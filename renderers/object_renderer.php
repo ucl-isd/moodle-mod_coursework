@@ -461,13 +461,13 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $generalfeedback->editable = has_capability('mod/coursework:addgeneralfeedback', $this->page->context);;
         $generalfeedback->publicationdateunix = $coursework->generalfeedback;
         // Even if not yet released, teachers can see but not edit, if it has content.
-        $generalfeedback->teacherviewallowed = $generalfeedback->editable && (($cangrade || $canpublish) && $generalfeedback->content);
+        $generalfeedback->teacherviewallowed = $generalfeedback->editable
+            || (($cangrade || $canpublish) && $generalfeedback->content);
         $generalfeedback->uservisible =
             $generalfeedback->editable
             || $generalfeedback->isreleased // Everyone can see after release date.
             || $generalfeedback->teacherviewallowed;
         $generalfeedback->helpicon = $generalfeedback->editable ? $this->output->help_icon('generalfeedbackdesc', 'coursework') : null;
-
         return $generalfeedback;
     }
 
