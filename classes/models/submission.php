@@ -513,7 +513,7 @@ class submission extends table_base implements renderable {
      * @throws dml_exception
      */
     public function get_assessor_feedbacks() {
-        if (!$this->id) {
+        if (!$this->persisted()) {
             // No submission - empty placeholder.
             return [];
         }
@@ -588,7 +588,7 @@ class submission extends table_base implements renderable {
      * @return ?feedback
      */
     public function get_final_feedback(): ?feedback {
-        if (!$this->id) {
+        if (!$this->persisted()) {
             // No submission yet - empty placeholder.
             return null;
         }

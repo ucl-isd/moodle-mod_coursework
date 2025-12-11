@@ -148,7 +148,7 @@ class grade_judge {
      * @return bool
      */
     public function has_feedback_that_is_promoted_to_gradebook($submission) {
-        return $this->get_feedback_that_is_promoted_to_gradebook($submission)->id != 0;
+        return $this->get_feedback_that_is_promoted_to_gradebook($submission)->id() != 0;
     }
 
     /**

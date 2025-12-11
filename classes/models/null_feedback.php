@@ -42,4 +42,8 @@ class null_feedback {
     public function get_grade() {
         return '';
     }
+
+    public function id(): int {
+        return $this->id;
+    }
 }

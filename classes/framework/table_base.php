@@ -58,10 +58,10 @@ abstract class table_base {
 
     /**
      * The database record ID.
-     * Protected because we only want this to be set from within this class from DB record.
+     * Protected and readonly because we only want this to be set from within this class from DB record.
      * @var int
      */
-    protected int $id;
+    protected readonly int $id;
 
     /**
      * Makes a new instance. Can be overridden to provide a factory
@@ -175,6 +175,7 @@ abstract class table_base {
         } else if (is_object($dbrecord) || is_array($dbrecord)) {
             // Add all of the DB row fields to this object (if the object has a matching property).
             $this->apply_data($dbrecord);
+            $this->id = $dbrecord->id ?? $dbrecord['id'];
             $this->dataloaded = true;
         }
     }
@@ -262,8 +263,11 @@ abstract class table_base {
         $data = (array)$dataobject;
         foreach (static::get_column_names() as $columnname) {
             if (isset($data[$columnname])) {
-                $this->{$columnname} = ($columnname == 'id')
-                    ? (int)$data[$columnname] : $data[$columnname];
+                if ($columnname == 'id') {
+                    // This prop is read only - set once and never from here.
+                    continue;
+                }
+                $this->{$columnname} = $data[$columnname];
             }
         }
     }
@@ -413,7 +417,7 @@ abstract class table_base {
         global $DB;
 
         if (!$this->persisted()) {
-            throw new coding_exception("Cannot reload - never persisted so nothing to reload");
+            return $this;
         }
 
         $strictness = $complainifnotfound ? MUST_EXIST : IGNORE_MISSING;
@@ -505,7 +509,10 @@ abstract class table_base {
 
         // Only save the non-null fields.
         foreach (static::get_column_names() as $columnname) {
-            if (!empty($this->$columnname) && !is_null($this->$columnname)) {
+            if ($columnname == 'id' && !$this->persisted()) {
+                continue;
+            }
+            if (isset($this->$columnname) && !is_null($this->$columnname)) {
                 $savedata->$columnname = $this->$columnname;
             }
         }
