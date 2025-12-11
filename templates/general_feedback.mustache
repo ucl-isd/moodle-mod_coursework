@@ -20,36 +20,34 @@
 
     Example context (json):
     {
-        "content": "<div><p>This is the feedback</p></div>",
-        "isreleased": true,
-        "editable": true,
-        "publicationdateunix": 1234567890,
-        "teacherviewallowed": true,
         "uservisible": true,
-        "helpicon": "<a>...help icon HTML .. </a>",
+        "publicationdateunix": 1234567890,
+        "content": "<div><p>This is the feedback</p></div>",
+        "editable": true,
     }
 }}
+
 {{#uservisible}}
-    <div class="d-flex">
-        <h4 class="h5">{{#str}} generalfeedback, mod_coursework {{/str}}</h4>
-        <span class="ms-2">{{{helpicon}}}</span>
-        {{#editable}}
-            <div class="ml-auto">
-                <a href="{{config.wwwroot}}/mod/coursework/actions/general_feedback.php?cmid={{cmid}}" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-pen-to-square mr-2"></i>{{#content}}{{#str}}insightsedit, coursework{{/str}}{{/content}}{{^content}}{{#str}}insightsadd, coursework{{/str}}{{/content}}</a>
-            </div>
-        {{/editable}}
-    </div>
-    {{#teacherviewallowed}}
-        {{#publicationdateunix}}
-            <p>
-                <b>{{#str}} publishedtostudentson, mod_coursework, {{#userdate}}{{.}}, {{#str}} strftimedatetime, langconfig {{/str}}{{/userdate}} {{/str}}</b>
-            </p>
-        {{/publicationdateunix}}
-    {{/teacherviewallowed}}
+    <h4 class="h5">{{#str}} generalfeedback, mod_coursework {{/str}}</h4>
+    {{#publicationdateunix}}
+        <p>
+            <small class="text-muted">
+                {{#str}} publishedtostudentsfrom, mod_coursework, {{#userdate}}{{.}}, {{#str}} strftimedatetime, langconfig {{/str}}{{/userdate}} {{/str}}
+            </small>
+        </p>
+    {{/publicationdateunix}}
+
 
     {{{content}}}
 
-    {{^content}}
-        <p>{{#str}} nofeedbackyet, mod_coursework {{/str}}</p>
-    {{/content}}
+     {{#editable}}
+        <div>
+            <a href="{{config.wwwroot}}/mod/coursework/actions/general_feedback.php?cmid={{cmid}}" class="btn btn-outline-primary btn-sm">
+                <i class="fa-solid fa-pen-to-square mr-2"></i>
+                {{#content}}{{#str}}insightsedit, coursework{{/str}}{{/content}}
+                {{^content}}{{#str}}insightsadd, coursework{{/str}}{{/content}}
+            </a>
+        </div>
+    {{/editable}}
+
 {{/uservisible}}
