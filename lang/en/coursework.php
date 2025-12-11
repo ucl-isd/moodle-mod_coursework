@@ -294,12 +294,12 @@ $string['forcedglobalsetting'] = 'You cannot change this setting for this course
 $string['fourteendays'] = '14 days';
 $string['fourweeksoption'] = '4 weeks';
 $string['from'] = 'from';
-$string['generalfeedback'] = 'Insights: key takeaways for all students';
-$string['generalfeedback_help'] = 'Please confirm the date that "Insights: key takeaways for all students" on this assignment' . ' will be available to all students. If not enabled, any insights will be visible to all students as soon as it is added.';
-$string['generalfeedbackdesc'] = 'Insights: key takeaways for all students';
-$string['generalfeedbackdesc_help'] = '<p>The release date for this is set via Coursework settings > "Insights: key takeaways for all students" release date (field only visible if the coursework has a submission deadline set).</p>
+$string['generalfeedback'] = 'Insights: key feedback for all students';
+$string['generalfeedback_help'] = 'Please confirm the date that "Insights: key feedback for all students" on this assignment' . ' will be available to all students. If not enabled, any insights will be visible to all students as soon as it is added.';
+$string['generalfeedbackdesc'] = 'Insights: key feedback for all students';
+$string['generalfeedbackdesc_help'] = '<p>The release date for this is set via Coursework settings > "Insights: key feedback for all students" release date (field only visible if the coursework has a submission deadline set).</p>
 <p>Leave blank to hide from students.</p>';
-$string['generalfeedbackreleasedate'] = 'Insights: key takeaways for all students release date';
+$string['generalfeedbackreleasedate'] = 'Insights: key feedback for all students release date';
 $string['grade'] = 'Grade';
 $string['grade_editing'] = 'Grade editing time';
 $string['grade_help'] = 'Select the grade scale on which this coursework will be marked';
