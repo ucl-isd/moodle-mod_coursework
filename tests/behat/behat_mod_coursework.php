@@ -4175,9 +4175,9 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Then /^I should see "(?P<text>[^"]*)" in row "(?P<row>\d+)"$/
+     * @Then /^I should( not)? see "(?P<text>[^"]*)" in row "(?P<row>\d+)"$/
      */
-    public function i_should_see_text_in_row($text, $rownumber) {
+    public function i_should_see_text_in_row($not, $text, $rownumber) {
         $session = $this->getSession();
         $page = $session->getPage();
 
@@ -4194,10 +4194,21 @@ class behat_mod_coursework extends behat_base {
         }
 
         $row = $rows[$rownumber - 1];
+        $rowtext = $row->getText();
+        $contains = strpos($rowtext, $text) !== false;
 
         // Check text inside the row.
-        if (strpos($row->getText(), $text) === false) {
-            throw new Exception("The text '{$text}' was not found in row {$rownumber}.\nRow contents: " . $row->getText());
+        // If "not" was present in the step.
+        if (trim($not) === 'not') {
+            if ($contains) {
+                throw new Exception("'{$text}' text was found in row {$rownumber}.\nRow contents: {$rowtext}");
+            }
+            return; // OK.
+        }
+
+        // Normal positive check.
+        if (!$contains) {
+            throw new Exception("'{$text}' was not found in row {$rownumber}.\nRow contents: {$rowtext}");
         }
     }
 
