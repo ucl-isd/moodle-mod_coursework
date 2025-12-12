@@ -638,3 +638,66 @@ Feature: Double marking - blind
     And I should see "Released" in row "1"
     And I should see "Released" in row "2"
     And I should see "Released" in row "3"
+
+  @javascript
+  Scenario: Student 1 sees the released grades
+    Given there is a blind marking moderation coursework
+    And the following "course enrolments" exist:
+      | user        | course | role                 |
+      | moderator1  | C1     | courseworkmoderator  |
+      | marker1     | C1     | courseworkmarker     |
+      | marker2     | C1     | courseworkmarker     |
+      | marker3     | C1     | courseworkmarker     |
+      | student1    | C1     | student              |
+      | student2    | C1     | student              |
+      | student3    | C1     | student              |
+
+    And I assign user "Marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
+    And I assign user "Moderator 1" as "Moderator" for "Student 1" in coursework "Coursework 1"
+    And I assign user "Marker 1" as "Assessor 1" for "Student 2" in coursework "Coursework 1"
+    And I assign user "Moderator 1" as "Moderator" for "Student 2" in coursework "Coursework 1"
+    And I assign user "Marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
+    And I assign user "Moderator 1" as "Moderator" for "Student 3" in coursework "Coursework 1"
+
+    And the student "Student 1" has a submission for coursework "Coursework 1"
+    And the submission for "Student 1" in "Coursework 1" is finalised
+    And the student "Student 2" has a submission for coursework "Coursework 1"
+    And the submission for "Student 2" in "Coursework 1" is finalised
+    And the student "Student 3" has a submission for coursework "Coursework 1"
+    And the submission for "Student 3" in "Coursework 1" is finalised
+
+    And the submission from "Student 1" for coursework "Coursework 1" is marked by "Marker 1" with:
+      | Mark      | 70              |
+      | Comment   | Excellent work! |
+      | Finalised | 1               |
+
+    And the submission from "Student 2" for coursework "Coursework 1" is marked by "Marker 1" with:
+      | Mark      | 75              |
+      | Comment   | Superb work!    |
+      | Finalised | 1               |
+
+    And the submission from "Student 3" for coursework "Coursework 1" is marked by "Marker 2" with:
+      | Mark      | 50                  |
+      | Comment   | I've seen worse...  |
+      | Finalised | 1                   |
+
+    And the submission from "Student 1" for coursework "Coursework 1" is moderated by "Moderator 1" with:
+      | Agreement | agreed               |
+
+    And the submission from "Student 2" for coursework "Coursework 1" is moderated by "Moderator 1" with:
+      | Agreement | disagreed               |
+      | Comment   | I don't like it at all! |
+
+    And I am on the "Course 1" "course" page logged in as "manager"
+    And I follow "Coursework 1"
+    And I press the release marks button
+
+    And I log out
+
+    And I am on the "Course 1" "course" page logged in as "student1"
+    And I follow "Coursework 1"
+    Then I should see "Agreed feedback for Student 1"
+    And I should see "Marker 1"
+    And I should see "Excellent work!"
+    And I should see "70"
+    And I should see "Released"
