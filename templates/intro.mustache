@@ -59,9 +59,11 @@
                 <hr>
             {{/description}}
 
-            {{#generalfeedback}}
-                {{> mod_coursework/general_feedback}}
-            {{/generalfeedback}}
+            {{#studentview}}
+                {{#generalfeedback}}
+                    {{> mod_coursework/general_feedback}}
+                {{/generalfeedback}}
+            {{/studentview}}
         </div>
 
         {{#markingsummary}}

@@ -1131,6 +1131,7 @@ class mod_coursework_mod_form extends moodleform_mod {
     }
 
     /**
+     * Feedback for all students release date.
      * @throws coding_exception
      */
     protected function add_general_feedback_release_date_field() {

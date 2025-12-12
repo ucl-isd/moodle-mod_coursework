@@ -16,35 +16,13 @@
 {{!
     @template mod_coursework/general_feedback
 
-    Template for displaying general feedback section.
+    Template for displaying feedback for all students.
 
     Example context (json):
     {
-        "button" {
-            "url": "https://example.moodle.org/edit.php?id=134",
-            "label": "Add <span class="sr-only">general feedback</span>"
-        },
-        "feedback": "<div><p>This is the feedback</p></div>"
+        "feedback": "<div><p>This is the feedback</p></div>",
     }
 }}
-<div class="d-flex">
-    <h4 class="h5">{{#str}} generalfeedback, mod_coursework {{/str}}</h4>
-    {{#button}}
-        <div class="ml-auto">
-            <a href="{{url}}" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-pen-to-square mr-2"></i>{{{label}}}</a>
-        </div>
-    {{/button}}
-</div>
 
-{{#duedate}}
-    <p>
-    <b>{{#str}} due, mod_coursework {{/str}}</b>
-    {{#userdate}}{{.}}, {{#str}} strftimedatetime, langconfig {{/str}}{{/userdate}}
-    </p>
-{{/duedate}}
-
-{{{feedback}}}
-
-{{^feedback}}
-<p>{{#str}} nofeedbackyet, mod_coursework {{/str}}</p>
-{{/feedback}}
+<h4 class="h5">{{#str}} generalfeedback, mod_coursework {{/str}}</h4>
+<div>{{{feedback}}}</div>
