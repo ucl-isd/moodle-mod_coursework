@@ -921,6 +921,14 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
         $link = new moodle_url('/admin/roles/assign.php', ['contextid' => $context->id]);
         $navref->add(get_string('addmarkers', 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
     }
+
+    // Link to feedback for all students.
+    if (
+        has_capability('mod/coursework:addgeneralfeedback', $context)
+    ) {
+        $link = new moodle_url('/mod/coursework/actions/general_feedback.php', ['cmid' => $cm->id]);
+        $navref->add(get_string('generalfeedback', 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
+    }
 }
 
 /**

@@ -16,39 +16,13 @@
 {{!
     @template mod_coursework/general_feedback
 
-    Template for displaying general feedback section (AKA "Insights")
+    Template for displaying feedback for all students.
 
     Example context (json):
     {
-        "uservisible": true,
-        "publicationdateunix": 1234567890,
-        "content": "<div><p>This is the feedback</p></div>",
-        "editable": true,
+        "feedback": "<div><p>This is the feedback</p></div>",
     }
 }}
 
-{{#uservisible}}
-<div>
-    <h4 class="h5">{{#str}} generalfeedback, mod_coursework {{/str}}</h4>
-    {{#publishdate}}
-        <p>
-            <small class="text-muted">
-                {{#str}} publishedtostudentsfrom, mod_coursework, {{#userdate}}{{.}}, {{#str}} strftimedatetime, langconfig {{/str}}{{/userdate}} {{/str}}
-            </small>
-        </p>
-    {{/publishdate}}
-
-
-    {{{feedback}}}
-
-     {{#canedit}}
-        <div>
-            <a href="{{config.wwwroot}}/mod/coursework/actions/general_feedback.php?cmid={{cmid}}" class="btn btn-outline-primary btn-sm">
-                <i class="fa-solid fa-pen-to-square mr-2"></i>
-                {{#content}}{{#str}}insightsedit, coursework{{/str}}{{/content}}
-                {{^content}}{{#str}}insightsadd, coursework{{/str}}{{/content}}
-            </a>
-        </div>
-    {{/canedit}}
-</div>
-{{/uservisible}}
+<h4 class="h5">{{#str}} generalfeedback, mod_coursework {{/str}}</h4>
+<div>{{{feedback}}}</div>

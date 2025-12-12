@@ -64,6 +64,11 @@ if ($gradingform->is_cancelled()) {
     $PAGE->navbar->add($title);
     echo $OUTPUT->header();
     echo $OUTPUT->heading($title);
+    if ($coursework->generalfeedback > 0) {
+        $date = userdate($coursework->generalfeedback, get_string('strftimedatetime', 'langconfig'));
+        echo '<p>' . get_string('publishedtostudentsfrom', 'mod_coursework', $date) . '</p>';
+    }
+    echo '<p>' . get_string('generalfeedbackinfo', 'mod_coursework') . '</p>';
 
     $customdata->feedbackcomment_editor['text'] = $coursework->get_general_feedback() ?? '';
     $gradingform->set_data($customdata);

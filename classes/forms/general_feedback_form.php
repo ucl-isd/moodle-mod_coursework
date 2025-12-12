@@ -32,8 +32,7 @@ global $CFG;
 require_once($CFG->dirroot . '/lib/formslib.php');
 
 /**
- * This is the non-javascript form that will pop up and allow people to add grades to
- * individual submissions.
+ * General feedback form.
  */
 class general_feedback_form extends moodleform {
     /**
@@ -41,9 +40,6 @@ class general_feedback_form extends moodleform {
      */
     public function definition() {
 
-        $this->_form->addElement('html', get_string('generalfeedbackdesc_help', 'coursework'));
-
-        // Add comment thing.
         $this->_form->addElement('editor', 'feedbackcomment_editor', get_string('generalfeedback', 'coursework'));
         $this->_form->setType('feedbackcomment_editor', PARAM_RAW);
 
@@ -53,7 +49,6 @@ class general_feedback_form extends moodleform {
         $this->_form->addElement('hidden', 'cmid');
         $this->_form->setType('cmid', PARAM_INT);
 
-        // Add action buttons.
         $this->add_action_buttons();
     }
 

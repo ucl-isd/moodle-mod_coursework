@@ -436,55 +436,13 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $template->markingguideurl = self::get_marking_guide_url($coursework);
         }
 
-        $template->generalfeedback = $this->get_general_feedback_data($coursework, $cangrade, $canpublish);
+        if ($coursework->is_general_feedback_released()) {
+            $template->generalfeedback = $coursework->get_general_feedback();
+        }
 
         $intro = $this->render_from_template('mod_coursework/intro', $template);
 
         return $intro . $submissionstable;
-    }
-
-    /**
-     * Get the data for mustache to render the general feedback.
-     * AKA "Insights: Key Takeaways for All Students".
-     * @param coursework $coursework
-     * @param bool $cangrade
-     * @param bool $canpublish
-     * @return stdClass
-     * @throws \core\exception\moodle_exception
-     * @throws coding_exception
-     * @throws moodle_exception
-     */
-    public function get_general_feedback_data(coursework $coursework, bool $cangrade, bool $canpublish): stdClass {
-
-        $template = new stdClass();
-        $template->feedback = '';
-        $template->publishdate = '';
-        $template->canedit = has_capability('mod/coursework:addgeneralfeedback', $this->page->context);
-
-        $istutor = $cangrade || $canpublish;
-
-        if ($template->canedit) {
-            // Editor.
-            $template->isreleased = true;
-            $template->uservisible = true;
-            $template->feedback = $coursework->get_general_feedback();
-            $template->publishdate = $coursework->generalfeedback;
-
-        } else {
-            // Not an editor, check release status.
-            $template->isreleased = $coursework->is_general_feedback_released();
-            $showfeedback = $isreleased || $istutor;
-
-            if ($showfeedback) {
-                $template->feedback = $coursework->get_general_feedback();
-                $template->publishdate = $coursework->generalfeedback;
-            }
-
-            // Only show if released, or thr tutors is we have data.
-            $template->uservisible = $isreleased || ($istutor && !empty($template->feedback));
-        }
-
-        return $template;
     }
 
     /**
