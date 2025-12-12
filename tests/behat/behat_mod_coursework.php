@@ -3937,7 +3937,7 @@ class behat_mod_coursework extends behat_base {
             throw new ExpectationException("Marker '$markerfullname' for '$studentfullname' not found", $this->getSession());
         }
 
-        // Extract the provided table values
+        // Extract the provided table values.
         $data = $table->getRowsHash();
 
         $mark = isset($data['Mark']) ? floatval($data['Mark']) : null;
@@ -4198,6 +4198,89 @@ class behat_mod_coursework extends behat_base {
         // Check text inside the row.
         if (strpos($row->getText(), $text) === false) {
             throw new Exception("The text '{$text}' was not found in row {$rownumber}.\nRow contents: " . $row->getText());
+        }
+    }
+
+    /**
+     * Inserts a moderation directly into coursework_mod_agreements table.
+     *
+     * @When /^the submission from "(?P<studentfullname>[^"]*)" for coursework "(?P<courseworkname>[^"]*)" is moderated by "(?P<moderatorfullname>[^"]*)" with:$/
+     */
+    public function moderate_coursework_submission_directly(
+        string $studentfullname,
+        string $courseworkname,
+        string $moderatorfullname,
+        TableNode $table
+    ) {
+        global $DB;
+
+        $student = $this->get_user_from_username($studentfullname);
+        $moderator = $this->get_user_from_username($moderatorfullname);
+
+        // Resolve coursework module by name.
+        if (!$coursework = $DB->get_record('coursework', ['name' => $courseworkname])) {
+            throw new ExpectationException("Coursework '$courseworkname' not found", $this->getSession());
+        }
+
+        // Resolve submission for this student.
+        $submission = $DB->get_record('coursework_submissions', [
+            'courseworkid' => $coursework->id,
+            'allocatableid' => $student->id,
+        ]);
+        if (!$submission) {
+            throw new ExpectationException("Submission for '$studentfullname' not found", $this->getSession());
+        }
+
+        // Resolve moderator allocation.
+        $allocation = $DB->get_record('coursework_allocation_pairs', [
+            'courseworkid' => $coursework->id,
+            'assessorid' => $moderator->id,
+            'allocatableid' => $student->id,
+            'stageidentifier' => 'moderator',
+        ]);
+        if (!$allocation) {
+            throw new ExpectationException("Moderator '$moderatorfullname' for '$studentfullname' not found", $this->getSession());
+        }
+
+        // Resolve feedback.
+        $params = ['submissionid' => $submission->id];
+        $sql = "SELECT *
+                FROM {coursework_feedbacks}
+                WHERE submissionid = :submissionid
+                AND stageidentifier LIKE 'assessor_%'";
+        $feedback = $DB->get_record_sql($sql, $params);
+
+        if (!$feedback) {
+            throw new ExpectationException("Feedback for '$studentfullname' not found", $this->getSession());
+        }
+
+        // Extract the provided table values.
+        $data = $table->getRowsHash();
+        $agreementtext = $data['Agreement'] ?? '';
+        $comment = $data['Comment'] ?? '';
+
+        // Check if there is already an agreement record.
+        $existing = $DB->get_record('coursework_mod_agreements', [
+            'feedbackid' => $feedback->id,
+            'moderatorid' => $moderator->id,
+        ]);
+
+        // Insert/update agreement record.
+        $agreement = new stdClass();
+        $agreement->feedbackid = $feedback->id;
+        $agreement->moderatorid = $moderator->id;
+        $agreement->agreement = $agreementtext;
+        $agreement->modcomment = $comment;
+        $agreement->modcommentformat = 1;
+        $agreement->lasteditedby = $moderator->id;
+        $agreement->timecreated = time();
+        $agreement->timemodified = time();
+
+        if ($existing) {
+            $agreement->id = $existing->id;
+            $DB->update_record('coursework_mod_agreements', $agreement);
+        } else {
+            $DB->insert_record('coursework_mod_agreements', $agreement);
         }
     }
 }
