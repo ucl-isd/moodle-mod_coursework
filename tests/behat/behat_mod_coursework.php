@@ -3420,7 +3420,7 @@ class behat_mod_coursework extends behat_base {
     /**
      * For matching a late submitted date ignoring the time part
      *
-     * Exmple: I should see late submitted date 4 July 2025
+     * Example: I should see late submitted date 4 July 2025
      *
      * @Given /^I should see late submitted date "(?P<date>(?:[^"]|\\")*)"$/
      */
@@ -3732,7 +3732,7 @@ class behat_mod_coursework extends behat_base {
         $record->allocatableid = $user->id;
         $record->allocatabletype = 'user';
         $record->extended_deadline = $timestamp;
-        $record->createdbyid = 2;  // Admin ID.
+        $record->createdbyid = get_admin()->id;  // Admin ID.
 
         if ($existing) {
             $record->id = $existing->id;
@@ -3992,7 +3992,7 @@ class behat_mod_coursework extends behat_base {
             $fromrole = $DB->get_record('role', ['name' => $fromrolename]);
         }
         if (!$fromrole) {
-            throw new Exception("Role '$fromrole' could not be found.");
+            throw new Exception("Role '$fromrolename' could not be found.");
         }
 
         $torole = $DB->get_record('role', ['shortname' => $torolename]);
@@ -4000,7 +4000,7 @@ class behat_mod_coursework extends behat_base {
             $torole = $DB->get_record('role', ['name' => $torolename]);
         }
         if (!$torole) {
-            throw new Exception("Role '$torole' could not be found.");
+            throw new Exception("Role '$torolename' could not be found.");
         }
 
         // Check if record already exists.
@@ -4307,7 +4307,7 @@ class behat_mod_coursework extends behat_base {
         // Find input[type=submit] elements.
         $button = $page->find('xpath', "//input[@type='submit' and @value='{$label}']");
 
-        if($not) {
+        if ($not) {
             if ($button) {
                 throw new \Exception("Submit button '{$label}' found on the page.");
             }
