@@ -101,7 +101,14 @@ final class user_test extends \advanced_testcase {
         $this->assertTrue($this->get_student()->has_all_initial_feedbacks($this->get_coursework()));
     }
 
-    public function test_persisted() {
+    /**
+     * Test that user::find() and user->persisted() working as expected.
+     * @covers \mod_coursework\models\user::find()
+     * @covers \mod_coursework\framework\table_base::find()
+     * @covers \mod_coursework\framework\table_base::persisted()
+     * @throws \core\exception\invalid_parameter_exception
+     */
+    public function test_persisted(): void {
         $generator = testing_util::get_data_generator();
 
         $user = new stdClass();
