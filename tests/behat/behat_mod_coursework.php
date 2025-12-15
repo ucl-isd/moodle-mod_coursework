@@ -3732,7 +3732,7 @@ class behat_mod_coursework extends behat_base {
         $record->allocatableid = $user->id;
         $record->allocatabletype = 'user';
         $record->extended_deadline = $timestamp;
-        $record->createdbyid = get_admin()->id;  // Admin ID.
+        $record->createdbyid = 2;  // Admin ID.
 
         if ($existing) {
             $record->id = $existing->id;
@@ -3803,6 +3803,9 @@ class behat_mod_coursework extends behat_base {
         global $DB;
 
         // Find user by full name (firstname + lastname).
+        if (strpos($fullname, ' ') === false) {
+            throw new Exception("Full name '{$fullname}' must contain a space separating first and last name.");
+        }
         [$first, $last] = explode(' ', $fullname, 2);
 
         $user = $DB->get_record('user', [
@@ -3828,8 +3831,16 @@ class behat_mod_coursework extends behat_base {
             "//li[.//a[normalize-space()='$markername']]" .
             "//a[@data-mark-action='addfeedback']";
 
-        $this->getSession()->getPage()->find('xpath', $xpath)->click();
-    }
+        $element = $this->getSession()->getPage()->find('xpath', $xpath);
+        if (!$element) {
+            throw new ElementNotFoundException(
+                $this->getSession(),
+                "'Add mark' button for marker '{$markername}' in row '{$rownumber}'",
+                'xpath',
+                $xpath
+            );
+        }
+        $element->click();    }
 
     /**
      * Checks for a specific mark in a specific row.
