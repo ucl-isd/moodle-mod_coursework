@@ -79,21 +79,24 @@ class marking_cell_data extends cell_data_base {
      *
      * @param user|null_user $assessor
      * @param int $markingstage
-     * @param bool $canaddfeedback
+     * @param bool $canseeothermarkerdetails
      * @return stdClass
      * @throws coding_exception
      */
-    private function create_marker_data($assessor, int $markingstage, bool $canaddfeedback): stdClass {
-        global $OUTPUT;
+    private function create_marker_data($assessor, int $markingstage, bool $canseeothermarkerdetails): stdClass {
+        global $OUTPUT, $USER;
         $marker = new stdClass();
         $marker->markingstage = $markingstage;
-        if ($assessor instanceof user) {
+        if (
+            ($canseeothermarkerdetails || $assessor->id() == $USER->id)
+            && $assessor instanceof user
+        ) {
             $marker->markerid = $assessor->id();
             $marker->markername = $assessor->name();
             $marker->markerimg = $assessor->get_user_picture_url();
             $marker->markerurl = $assessor->get_user_profile_url();
             $marker->markeridentifier = sprintf('marker-%d', $assessor->id());
-        } else if ($canaddfeedback) {
+        } else {
             // Just a placeholder to show "Marker 1" etc. until a marker is allocated.
             $marker->markername = get_string('markerdefaultname', 'mod_coursework', $markingstage);
             $marker->markerimg = $OUTPUT->image_url('u/f2');
@@ -152,7 +155,7 @@ class marking_cell_data extends cell_data_base {
     /**
      * Get marker data for both single and multiple marker scenarios.
      *
-     * @param array $tablerows Each TR row in the table
+     * @param assessor_feedback_row[] $tablerows Each TR row in the table
      * @param grading_table_row_base $rowsbase Row base object containing general data
      * @param bool $ismultiple Whether this is for multiple markers
      * @return stdClass
@@ -162,6 +165,17 @@ class marking_cell_data extends cell_data_base {
     protected function get_marker_data(array $tablerows, grading_table_row_base $rowsbase, bool $ismultiple = false): stdClass {
         $rowdata = new stdClass();
         $rowdata->markers = [];
+
+        // Count initial feedbacks using table rows to avoid additional DB queries.
+        // Then we know from the outset if we have all initial feedbacks or not.
+        $intialfeedbacks = array_filter(
+            $tablerows,
+            function ($row) {
+                return $row->get_feedback() && !$row->get_feedback()->is_agreed_grade();
+            }
+        );
+        $rowdata->countinitialfeedbacks = count($intialfeedbacks);
+        $rowdata->hasallinitialfeedbacks = $rowdata->countinitialfeedbacks == $this->coursework->get_max_markers();
 
         $markernumber = 1;
         foreach ($tablerows as $row) {
@@ -173,13 +187,15 @@ class marking_cell_data extends cell_data_base {
             // Get the assessor to last edit user if feedback exists, otherwise use the allocated assessor.
             $assessor = !empty($feedback) ? user::find($feedback->lasteditedbyuser) : $row->get_assessor();
 
-            $canaddfeedback = $this->can_add_new_feedback($row, $rowsbase);
-            $marker = $this->create_marker_data($assessor, $markernumber, $canaddfeedback);
+            $canseeothermarkerdetails = $rowdata->hasallinitialfeedbacks
+                || $this->coursework->viewinitialgradeenabled
+                || has_capability('mod/coursework:administergrades', $this->coursework->get_context());
+            $marker = $this->create_marker_data($assessor, $markernumber, $canseeothermarkerdetails);
             if ($feedback) {
                 $this->process_feedback_data($marker, $feedback, $rowsbase, $row);
             }
 
-            if ($canaddfeedback) {
+            if ($this->can_add_new_feedback($row, $rowsbase)) {
                 $marker->addfeedback = (object)[
                     'markurl' => $this->get_mark_url(
                         'new',
@@ -195,7 +211,6 @@ class marking_cell_data extends cell_data_base {
             $rowdata->markers[] = $marker;
             $markernumber++;
         }
-
         // Set the agreed mark if this is for multiple markers.
         if ($ismultiple) {
             $rowdata->agreedmark = $this->get_final_feedback_data($rowsbase);
