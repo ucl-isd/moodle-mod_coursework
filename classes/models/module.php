@@ -35,10 +35,6 @@ class module extends table_base {
      */
     protected static $tablename = 'modules';
 
-    /**
-     * @var int
-     */
-    public $id;
 
     /**
      * cache array

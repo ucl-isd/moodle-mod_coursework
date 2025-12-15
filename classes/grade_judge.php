@@ -130,14 +130,14 @@ class grade_judge {
      */
     public function get_feedback_that_is_promoted_to_gradebook($submission) {
 
-        if (!isset($submission->id)) {
+        if (!$submission->id()) {
             return new null_feedback();
         }
 
         if ($this->allocatable_needs_more_than_one_feedback($submission->get_allocatable())) {
-            $feedback = feedback::find(['submissionid' => $submission->id, 'stageidentifier' => 'final_agreed_1']);
+            $feedback = feedback::find(['submissionid' => $submission->id(), 'stageidentifier' => 'final_agreed_1']);
         } else {
-            $feedback = feedback::find(['submissionid' => $submission->id, 'stageidentifier' => 'assessor_1']);
+            $feedback = feedback::find(['submissionid' => $submission->id(), 'stageidentifier' => 'assessor_1']);
         }
 
         return $feedback ? $feedback : new null_feedback();
@@ -148,7 +148,7 @@ class grade_judge {
      * @return bool
      */
     public function has_feedback_that_is_promoted_to_gradebook($submission) {
-        return $this->get_feedback_that_is_promoted_to_gradebook($submission)->id != 0;
+        return $this->get_feedback_that_is_promoted_to_gradebook($submission)->id() != 0;
     }
 
     /**
@@ -165,7 +165,7 @@ class grade_judge {
      */
     public function is_feedback_that_is_promoted_to_gradebook(feedback $feedback) {
         $gradebookfeedback = $this->get_feedback_that_is_promoted_to_gradebook($feedback->get_submission());
-        return $gradebookfeedback && $gradebookfeedback->id == $feedback->id;
+        return $gradebookfeedback && $gradebookfeedback->id() == $feedback->id;
     }
 
     /**

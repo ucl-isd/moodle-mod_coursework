@@ -105,11 +105,6 @@ class coursework extends table_base {
     /**
      * @var int
      */
-    public $id;
-
-    /**
-     * @var int
-     */
     public $formid;
 
     /**

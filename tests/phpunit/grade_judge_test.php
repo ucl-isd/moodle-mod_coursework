@@ -45,7 +45,7 @@ final class grade_judge_test extends \advanced_testcase {
         $assessor = $this->create_a_teacher();
         $feedback = $this->create_an_assessor_feedback_for_the_submission($assessor);
 
-        $this->assertEquals($feedback->id, $gradejudge->get_feedback_that_is_promoted_to_gradebook($submission)->id);
+        $this->assertEquals($feedback->id(), $gradejudge->get_feedback_that_is_promoted_to_gradebook($submission)->id());
     }
 
     public function test_sampling_disabled_one_marker(): void {

@@ -60,19 +60,19 @@ final class renderer_test extends \advanced_testcase {
 
         $coursework = $this->create_a_coursework($courseworkparams);
 
-        // Create student and cast to stdClass.
-        $student = (object) (array) $this->create_a_student();
+        $student = $this->create_a_student();
 
         if ($extensiondate !== 0) {
-            $extension = deadline_extension::create([
+            $extension = deadline_extension::build([
                 'allocatableid' => $student->id,
                 'allocatabletype' => 'user',
                 'courseworkid' => $coursework->id,
                 'extended_deadline' => $extensiondate,
             ]);
+            $extension->save();
         }
 
-        $this->setUser($student);
+        $this->setUser((object)['id' => $student->id]);
         $objectrenderer = $PAGE->get_renderer('mod_coursework', 'object');
         $html = $objectrenderer->render(new \mod_coursework_coursework($coursework));
 
@@ -156,9 +156,9 @@ final class renderer_test extends \advanced_testcase {
         $coursework = $this->create_a_coursework($courseworkparams);
 
         // Create teacher and cast to stdClass.
-        $teacher = (object) (array) $this->create_a_teacher();
+        $teacher = $this->create_a_teacher();
 
-        $this->setUser($teacher);
+        $this->setUser((object)['id' => $teacher->id]);
         $objectrenderer = $PAGE->get_renderer('mod_coursework', 'object');
         $html = $objectrenderer->render(new \mod_coursework_coursework($coursework));
 

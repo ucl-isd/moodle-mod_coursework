@@ -50,6 +50,7 @@ final class deadline_extension_test extends \advanced_testcase {
                         'extended_deadline' => time()];
         $newthing = deadline_extension::create($params);
         $this->assertInstanceOf('mod_coursework\models\deadline_extension', $newthing);
+        $this->assertTrue($newthing->persisted());
     }
 
     public function test_user_extension_allows_submission_when_active(): void {

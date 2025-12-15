@@ -16,6 +16,10 @@
 
 namespace mod_coursework;
 
+use mod_coursework\models\user;
+use stdClass;
+use testing_util;
+
 /**
  * @package    mod_coursework
  * @copyright  2017 University of London Computer Centre {@link https://www.cosector.com}
@@ -95,5 +99,33 @@ final class user_test extends \advanced_testcase {
         $teacher = $this->create_a_teacher();
         $this->create_an_assessor_feedback_for_the_submission($teacher);
         $this->assertTrue($this->get_student()->has_all_initial_feedbacks($this->get_coursework()));
+    }
+
+    public function test_persisted() {
+        $generator = testing_util::get_data_generator();
+
+        $user = new stdClass();
+        $user->firstname = 'Rare name';
+        $user->Lastname = 'Smith';
+        $dbstudent = $generator->create_user($user);
+        $this->assertNotFalse($dbstudent);
+
+        // Find the user coursework object without providing their ID, using an array.
+        $courseworkuser = user::find((array)$user);
+        $this->assertNotFalse($courseworkuser);
+        $this->assertTrue($courseworkuser->persisted());
+        $this->assertEquals($dbstudent->id, $courseworkuser->id());
+
+        // Find the user coursework object without providing their ID, using an object.
+        $courseworkuser = user::find($user);
+        $this->assertNotFalse($courseworkuser);
+        $this->assertTrue($courseworkuser->persisted());
+        $this->assertEquals($dbstudent->id, $courseworkuser->id());
+
+        // Find the user coursework object providing their ID.
+        $courseworkuser2 = user::find($dbstudent, true);
+        $this->assertNotFalse($courseworkuser2);
+        $this->assertTrue($courseworkuser2->persisted());
+        $this->assertEquals($dbstudent->id, $courseworkuser2->id());
     }
 }

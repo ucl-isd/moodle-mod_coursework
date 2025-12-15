@@ -641,7 +641,7 @@ function coursework_update_events($coursework, $eventtype) {
 
     // Update/create event for coursework deadline [due].
     if ($eventtype == coursework::COURSEWORK_EVENT_TYPE_DUE) {
-        $data = calendar::coursework_event($coursework, $eventtype, $coursework->deadline);
+        $data = calendar::coursework_event(coursework::find($coursework), $eventtype, $coursework->deadline);
         if ($event) {
             $event->update($data); // Update if event exists.
         } else {

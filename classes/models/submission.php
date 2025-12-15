@@ -92,11 +92,6 @@ class submission extends table_base implements renderable {
     /**
      * @var int
      */
-    public $id;
-
-    /**
-     * @var int
-     */
     public $courseworkid;
 
     /**
@@ -256,7 +251,7 @@ class submission extends table_base implements renderable {
             $this->timecreated = time();
         }
 
-        if ($this->id > 0 && !$this->firstname && !empty($this->userid)) {
+        if ($this->persisted() && !$this->firstname && !empty($this->userid)) {
             // Get the real first and last name from the user table. We use fullname($this), which needs it,
             // so we can't lazy-load.
             $user = $DB->get_record('user', ['id' => $this->userid]);
@@ -431,7 +426,7 @@ class submission extends table_base implements renderable {
             return $this->submissionfiles;
         }
 
-        if ($this->id < 1 || $this->get_context_id() < 1) {
+        if (!$this->persisted() || !$this->get_context_id()) {
             return new submission_files([], $this);
         }
 
@@ -517,7 +512,7 @@ class submission extends table_base implements renderable {
      * @throws dml_exception
      */
     public function get_assessor_feedbacks() {
-        if (!$this->id) {
+        if (!$this->persisted()) {
             // No submission - empty placeholder.
             return [];
         }
@@ -589,15 +584,14 @@ class submission extends table_base implements renderable {
      * This will return the final feedback if the record exists, or false if not.
      *
      * @throws exception
-     * @return bool|feedback
+     * @return ?feedback
      */
-    public function get_final_feedback() {
-
+    public function get_final_feedback(): ?feedback {
         global $DB;
 
-        if (!$this->id) {
+        if (!$this->persisted()) {
             // No submission yet - empty placeholder.
-            return false;
+            return null;
         }
 
         // Temp - will be replaced with asking the appropriate stage for the feedback.
@@ -613,12 +607,7 @@ class submission extends table_base implements renderable {
         ];
 
         $feedback = $DB->get_record('coursework_feedbacks', $params);
-
-        if (!$feedback) {
-            return false;
-        } else {
-            return new feedback($feedback, $this);
-        }
+        return $feedback ? new feedback($feedback) : null;
     }
 
     /**
