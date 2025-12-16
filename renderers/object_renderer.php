@@ -437,7 +437,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
 
         if ($coursework->is_general_feedback_released()) {
-            $template->generalfeedback = $coursework->get_general_feedback();
+            $template->generalfeedback = ['feedback' => $coursework->get_general_feedback()];
         }
 
         $intro = $this->render_from_template('mod_coursework/intro', $template);
