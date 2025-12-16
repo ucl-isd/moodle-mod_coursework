@@ -321,8 +321,14 @@ abstract class table_base {
      * @throws dml_exception
      */
     final public function save($sneakily = false) {
-
         global $DB;
+        if (static::get_table_name() !== 'coursework' && !str_starts_with(static::get_table_name(), 'coursework_')) {
+            // Some child classes e.g. user, group, modules do not use coursework_ tables but core tables.
+            // Prevent accidental data modification.
+            throw new coding_exception(
+                "Cannot modify non-coursework data, in table '" . static::get_table_name() . "', from this class"
+            );
+        }
 
         $this->pre_save_hook();
 
