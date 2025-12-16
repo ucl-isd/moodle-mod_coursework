@@ -109,9 +109,9 @@ abstract class table_base {
 
             $dbrecords = $DB->get_records(static::get_table_name(), $filteredparams, '', '*', 0, 2);
             if (count($dbrecords) > 1) {
-                throw new invalid_parameter_exception("Found multiple records with supplied properties " . json_encode($dbrecord) . "||" . json_encode($dbrecords));
+                throw new coding_exception("Found multiple records with supplied properties " . json_encode($filteredparams));
             }
-            if (!$dbrecords) {
+            if (empty($dbrecords)) {
                 return false;
             }
             return new $klass(array_pop($dbrecords));
