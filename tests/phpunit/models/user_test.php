@@ -109,6 +109,7 @@ final class user_test extends \advanced_testcase {
      * @throws \core\exception\invalid_parameter_exception
      */
     public function test_persisted(): void {
+        global $DB;
         $generator = testing_util::get_data_generator();
 
         $user = new stdClass();
@@ -124,15 +125,22 @@ final class user_test extends \advanced_testcase {
         $this->assertEquals($dbstudent->id, $courseworkuser->id());
 
         // Find the user coursework object without providing their ID, using an object.
-        $courseworkuser = user::find($user);
-        $this->assertNotFalse($courseworkuser);
-        $this->assertTrue($courseworkuser->persisted());
-        $this->assertEquals($dbstudent->id, $courseworkuser->id());
-
-        // Find the user coursework object providing their ID.
-        $courseworkuser2 = user::find($dbstudent, true);
+        $courseworkuser2 = user::find($user);
         $this->assertNotFalse($courseworkuser2);
         $this->assertTrue($courseworkuser2->persisted());
         $this->assertEquals($dbstudent->id, $courseworkuser2->id());
+
+        // Find the user coursework object providing their ID.
+        $courseworkuser3 = user::find($dbstudent);
+        $this->assertNotFalse($courseworkuser3);
+        $this->assertTrue($courseworkuser3->persisted());
+        $this->assertEquals($dbstudent->id, $courseworkuser3->id());
+
+        // Find the user coursework object providing a fresh DB record ID, preventing reload.
+        $dbrecord = $DB->get_record('user', ['id' => $dbstudent->id], '*', MUST_EXIST);
+        $courseworkuser4 = user::find($dbrecord, false);
+        $this->assertNotFalse($courseworkuser4);
+        $this->assertTrue($courseworkuser4->persisted());
+        $this->assertEquals($dbrecord->id, $courseworkuser4->id());
     }
 }
