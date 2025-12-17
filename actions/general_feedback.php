@@ -65,10 +65,12 @@ if ($gradingform->is_cancelled()) {
     echo $OUTPUT->header();
     echo $OUTPUT->heading($title);
 
-    $releasedatestring = $coursework->generalfeedback
-        ? userdate($coursework->generalfeedback, get_string('strftimedatetime', 'langconfig'))
-        : get_string('now');
-    echo '<p>' . get_string('publishedtostudentsfrom', 'mod_coursework', $releasedatestring) . '</p>';
+    // N.B. generalfeedback is actually the release date when set.
+    if ($coursework->generalfeedback) {
+        echo '<p>' .
+        get_string('publishedtostudentsfrom', 'mod_coursework', userdate($coursework->generalfeedback, get_string('strftimedatetime', 'langconfig')))
+        . '</p>';
+    }
 
     echo '<p>' . get_string('generalfeedbackinfo', 'mod_coursework') . '</p>';
 
