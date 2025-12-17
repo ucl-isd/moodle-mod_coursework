@@ -3876,7 +3876,8 @@ class behat_mod_coursework extends behat_base {
                 $xpath
             );
         }
-        $element->click();    }
+        $element->click();
+    }
 
     /**
      * Checks for a specific mark in a specific row.
@@ -4284,7 +4285,7 @@ class behat_mod_coursework extends behat_base {
         $agreement->moderatorid = $moderator->id;
         $agreement->agreement = $agreementtext;
         $agreement->modcomment = $comment;
-        $agreement->modcommentformat = 1;
+        $agreement->modcommentformat = FORMAT_HTML;
         $agreement->lasteditedby = $moderator->id;
         $agreement->timecreated = time();
         $agreement->timemodified = time();
