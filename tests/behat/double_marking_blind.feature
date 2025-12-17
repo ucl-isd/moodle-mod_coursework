@@ -20,62 +20,62 @@ Feature: Double marking - blind
       | courseworkmoderator   | courseworkmoderator   |           |
       | norole                | norole                |           |
 
-    And the role "courseworkexamoffice" has the following capabilities:
-      | capability                                    | permission  |
-      | mod/coursework:addinstance                    | allow       |
-      | moodle/role:assign                            | allow       |
-      | mod/coursework:addagreedgrade                 | allow       |
-      | mod/coursework:addallocatedagreedgrade        | allow       |
-      | mod/coursework:addgeneralfeedback             | allow       |
-      | mod/coursework:addinitialgrade                | allow       |
-      | mod/coursework:addplagiarismflag              | allow       |
-      | mod/coursework:administergrades               | allow       |
-      | mod/coursework:allocate                       | allow       |
-      | mod/coursework:canexportfinalgrades           | allow       |
-      | mod/coursework:editagreedgrade                | allow       |
-      | mod/coursework:editallocatedagreedgrade       | allow       |
-      | mod/coursework:editinitialgrade               | allow       |
-      | mod/coursework:editpersonaldeadline           | allow       |
-      | mod/coursework:grade                          | allow       |
-      | mod/coursework:grantextensions                | allow       |
-      | mod/coursework:moderate                       | allow       |
-      | mod/coursework:publish                        | allow       |
-      | mod/coursework:receivesubmissionnotifications | allow       |
-      | mod/coursework:revertfinalised                | allow       |
-      | mod/coursework:submitonbehalfof               | allow       |
-      | mod/coursework:updateplagiarismflag           | allow       |
-      | mod/coursework:view                           | allow       |
-      | mod/coursework:viewallgradesatalltimes        | allow       |
-      | mod/coursework:viewallstudents                | allow       |
-      | mod/coursework:viewanonymous                  | allow       |
-      | mod/coursework:viewextensions                 | allow       |
-      | moodle/course:manageactivities                | allow       |
-      | moodle/calendar:manageentries                 | allow       |
+    And the following "role capability" exists:
+      | role                                          | courseworkexamoffice  |
+      | mod/coursework:addinstance                    | allow                 |
+      | moodle/role:assign                            | allow                 |
+      | mod/coursework:addagreedgrade                 | allow                 |
+      | mod/coursework:addallocatedagreedgrade        | allow                 |
+      | mod/coursework:addgeneralfeedback             | allow                 |
+      | mod/coursework:addinitialgrade                | allow                 |
+      | mod/coursework:addplagiarismflag              | allow                 |
+      | mod/coursework:administergrades               | allow                 |
+      | mod/coursework:allocate                       | allow                 |
+      | mod/coursework:canexportfinalgrades           | allow                 |
+      | mod/coursework:editagreedgrade                | allow                 |
+      | mod/coursework:editallocatedagreedgrade       | allow                 |
+      | mod/coursework:editinitialgrade               | allow                 |
+      | mod/coursework:editpersonaldeadline           | allow                 |
+      | mod/coursework:grade                          | allow                 |
+      | mod/coursework:grantextensions                | allow                 |
+      | mod/coursework:moderate                       | allow                 |
+      | mod/coursework:publish                        | allow                 |
+      | mod/coursework:receivesubmissionnotifications | allow                 |
+      | mod/coursework:revertfinalised                | allow                 |
+      | mod/coursework:submitonbehalfof               | allow                 |
+      | mod/coursework:updateplagiarismflag           | allow                 |
+      | mod/coursework:view                           | allow                 |
+      | mod/coursework:viewallgradesatalltimes        | allow                 |
+      | mod/coursework:viewallstudents                | allow                 |
+      | mod/coursework:viewanonymous                  | allow                 |
+      | mod/coursework:viewextensions                 | allow                 |
+      | moodle/course:manageactivities                | allow                 |
+      | moodle/calendar:manageentries                 | allow                 |
 
-    And the role "courseworkmarker" has the following capabilities:
-      | capability                                    | permission  |
-      | mod/coursework:addallocatedagreedgrade        | allow       |
-      | mod/coursework:addgeneralfeedback             | allow       |
-      | mod/coursework:addinitialgrade                | allow       |
-      | mod/coursework:addplagiarismflag              | allow       |
-      | mod/coursework:editagreedgrade                | allow       |
-      | mod/coursework:editallocatedagreedgrade       | allow       |
-      | mod/coursework:editinitialgrade               | allow       |
-      | mod/coursework:grade                          | allow       |
-      | mod/coursework:receivesubmissionnotifications | allow       |
-      | mod/coursework:updateplagiarismflag           | allow       |
-      | mod/coursework:view                           | allow       |
-      | mod/coursework:viewextensions                 | allow       |
+    And the following "role capability" exists:
+      | role                                          | courseworkmarker  |
+      | mod/coursework:addallocatedagreedgrade        | allow             |
+      | mod/coursework:addgeneralfeedback             | allow             |
+      | mod/coursework:addinitialgrade                | allow             |
+      | mod/coursework:addplagiarismflag              | allow             |
+      | mod/coursework:editagreedgrade                | allow             |
+      | mod/coursework:editallocatedagreedgrade       | allow             |
+      | mod/coursework:editinitialgrade               | allow             |
+      | mod/coursework:grade                          | allow             |
+      | mod/coursework:receivesubmissionnotifications | allow             |
+      | mod/coursework:updateplagiarismflag           | allow             |
+      | mod/coursework:view                           | allow             |
+      | mod/coursework:viewextensions                 | allow             |
 
-    And the role "courseworkmoderator" has the following capabilities:
-      | capability                                    | permission  |
-      | mod/coursework:addplagiarismflag              | allow       |
-      | mod/coursework:grade                          | allow       |
-      | mod/coursework:moderate                       | allow       |
-      | mod/coursework:updateplagiarismflag           | allow       |
-      | mod/coursework:view                           | allow       |
-      | mod/coursework:viewallgradesatalltimes        | allow       |
-      | mod/coursework:viewextensions                 | allow       |
+    And the following "role capability" exists:
+      | role                                          | courseworkmoderator |
+      | mod/coursework:addplagiarismflag              | allow               |
+      | mod/coursework:grade                          | allow               |
+      | mod/coursework:moderate                       | allow               |
+      | mod/coursework:updateplagiarismflag           | allow               |
+      | mod/coursework:view                           | allow               |
+      | mod/coursework:viewallgradesatalltimes        | allow               |
+      | mod/coursework:viewextensions                 | allow               |
 
     And the role "courseworkexamoffice" is allowed to assign role "courseworkmoderator"
     And the role "courseworkexamoffice" is allowed to assign role "courseworkmarker"
