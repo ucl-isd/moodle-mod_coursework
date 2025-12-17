@@ -180,9 +180,9 @@ Coursework.
         .chat-bubble-bordered {
             position: relative;
             background-color: white;
-            border: 2px solid var(--primary);
-            box-shadow: .3em .3em 0 0 var(--primary);
-            padding: 1.5rem;
+            border: 2px solid var(--dark);
+            box-shadow: .3em .3em 0 0 var(--dark);
+            padding: 1rem;
             margin-top: 25px; /* Added space at the top for the arrow */
         }
 
@@ -194,7 +194,7 @@ Coursework.
             height: 0;
             border-left: 1rem solid transparent;  /* Base of the outer triangle */
             border-right: 1rem solid transparent; /* Base of the outer triangle */
-            border-bottom: 1.1rem solid var(--primary); /* Color of the border, pointing up */
+            border-bottom: 1.1rem solid var(--dark); /* Color of the border, pointing up */
             top: -18px; /* Position above the bubble, accounting for border and triangle height */
             left: 1rem; /* Horizontal position from the left */
             z-index: 1;
