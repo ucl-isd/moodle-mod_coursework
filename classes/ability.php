@@ -903,7 +903,7 @@ class ability extends framework\ability {
                 if ($stage->uses_allocation() && $feedback->get_coursework()->allocation_enabled()) {
                     $allocatedteacher = $stage->allocated_teacher_for($allocatable);
                     if ($allocatedteacher) {
-                        if ($allocatedteacher->id == $this->user->id) {
+                        if ($allocatedteacher->id == $this->userid) {
                             return true;
                         }
                     }
@@ -1164,7 +1164,7 @@ class ability extends framework\ability {
             'show',
             'mod_coursework\models\allocation',
             function (allocation $allocation) {
-                return $this->user->id == $allocation->assessorid;
+                return $this->userid == $allocation->assessorid;
             }
         );
     }

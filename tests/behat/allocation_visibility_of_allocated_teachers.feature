@@ -9,6 +9,8 @@ Feature: Visibility of allocated teachers
     Given there is a course
     And there is a coursework
     And there is a student
+    And the student has a submission
+    And the submission is finalised
 
   Scenario: I should see the name of the allocated teacher in the assessor feedback cell
     Given there is a teacher
@@ -17,4 +19,9 @@ Feature: Visibility of allocated teachers
     And the student is manually allocated to the teacher
     When I log in as a manager
     And I visit the coursework page
-    Then I should see the name of the teacher in the assessor feedback cell
+    Then I should see "teacher teacher2" in the "student1" "table_row"
+    And I log out
+
+    Given I am logged in as a teacher
+    And I visit the coursework page
+    Then I should see "Add mark" in the "student1" "table_row"
