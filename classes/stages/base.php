@@ -616,7 +616,6 @@ abstract class base {
      */
     public function assessor_has_allocation($allocatable) {
         global $USER;
-        allocation::fill_pool_coursework($this->coursework->id);
         $allocation = allocation::get_object(
             $this->coursework->id,
             'allocatableid-allocatabletype-stageidentifier',
