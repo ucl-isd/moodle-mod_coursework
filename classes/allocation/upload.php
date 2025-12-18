@@ -127,15 +127,10 @@ class upload {
 
                     // check if allocatable exists in this coursework
                     $allocatableid = $allocatable ? $allocatable->id() : null;
-                    $allocatablefound = $allocatableid
-                        && !empty(
-                            array_filter($allocatables, function ($a) use ($allocatableid) {
-                                return $a->id() == $allocatableid;
-                            })
-                        );
-                    if (!$allocatablefound) {
+                    $allocatableincoursework = $allocatableid ? $allocatables[$allocatableid] : null;
+                    if (!$allocatableincoursework) {
                         // E.g. string key 'usernotincoursework'.
-                        $errors[$s] = get_string($allocatabletype . 'notincoursework', 'coursework', $value) . $assessoridentifier;
+                        $errors[$s] = get_string($allocatabletype . 'notincoursework', 'coursework', $value);
                         break;
                     }
                     // duplicate user or group
