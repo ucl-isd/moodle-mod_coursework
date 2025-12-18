@@ -4034,11 +4034,16 @@ class behat_mod_coursework extends behat_base {
         }
 
         // Get student's submission.
-        if (!$submission = $DB->get_record('coursework_submissions', [
-            'allocatableid' => $student->id,
-            'allocatabletype' => 'user',
-            'courseworkid' => $coursework->id,
-        ])) {
+        if (
+                !$submission = $DB->get_record(
+                    'coursework_submissions',
+                    [
+                    'allocatableid' => $student->id,
+                    'allocatabletype' => 'user',
+                    'courseworkid' => $coursework->id,
+                    ]
+                )
+        ) {
             throw new \moodle_exception("Submission for '{$studentfullname}' not found in '{$courseworkname}'.");
         }
 
@@ -4071,19 +4076,29 @@ class behat_mod_coursework extends behat_base {
         }
 
         // Get student's submission.
-        if (!$submission = $DB->get_record('coursework_submissions', [
-            'allocatableid' => $student->id,
-            'allocatabletype' => 'user',
-            'courseworkid' => $coursework->id,
-        ])) {
+        if (
+            !$submission = $DB->get_record(
+                'coursework_submissions',
+                [
+                'allocatableid' => $student->id,
+                'allocatabletype' => 'user',
+                'courseworkid' => $coursework->id,
+                ]
+            )
+        ) {
             throw new \moodle_exception("Submission for '{$studentfullname}' not found in '{$courseworkname}'.");
         }
 
         // Get marker’s feedback record.
-        if (!$feedback = $DB->get_record('coursework_feedbacks', [
-            'submissionid' => $submission->id,
-            'assessorid'     => $marker->id
-        ])) {
+        if (
+            !$feedback = $DB->get_record(
+                'coursework_feedbacks',
+                [
+                    'submissionid' => $submission->id,
+                    'assessorid'     => $marker->id,
+                ]
+            )
+        ) {
             throw new \moodle_exception("Feedback by '{$markerfullname}' for '{$studentfullname}' not found.");
         }
 
