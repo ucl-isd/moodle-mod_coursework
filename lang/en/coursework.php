@@ -114,6 +114,7 @@ $string['configindividualfeedback'] = 'Sets the number of weeks after the deadli
 $string['configmaxbytes'] = 'Default maximum assignment size for all assignments on the site ' . '(subject to course limits and other local settings)';
 $string['confirm_finalise'] = 'Are you sure you want to {$a->action} the submission for {$a->studentname}?';
 $string['confirmpublish'] = 'Are you sure you want to release all marks? This action cannot be undone. {$a->warning}';
+$string['confirmpublishautogradewarning'] = '!!! Warning: any draft automatic agreed grades will be marked as final and the grades released !!!';
 $string['confirmremoveextension'] = 'Are you sure you want to delete the extension for \'{$a}\'? This action cannot be undone.';
 $string['confirmremovefeedback'] = 'Are you sure you want to remove this feedback? This action cannot be undone';
 $string['continuetocoursework'] = 'Continue to coursework';

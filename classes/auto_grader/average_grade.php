@@ -25,6 +25,7 @@ namespace mod_coursework\auto_grader;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
+use mod_coursework\stages\final_agreed;
 use mod_coursework\traits\autoagreement_functions;
 use stdClass;
 
@@ -147,10 +148,11 @@ class average_grade implements auto_grader {
      */
     private function create_final_feedback() {
         $feedback = [
-            'stageidentifier' => 'final_agreed_1',
+            'stageidentifier' => final_agreed::STAGE_FINAL_AGREED_1,
             'submissionid' => $this->get_allocatable()->get_submission($this->get_coursework())->id(),
             'grade' => $this->automatic_grade(),
             'lasteditedbyuser' => 0, // Grade was auto generated - zero here shows no user involved.
+            'isfinalgrade' => 1, // This is an "agreed" final grade.
         ];
 
         if ($this->coursework->autopopulatefeedbackcomment_enabled()) {
