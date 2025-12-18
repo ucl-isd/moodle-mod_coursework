@@ -26,6 +26,7 @@ namespace mod_coursework\allocation;
  */
 
 use coding_exception;
+use core_cache\cache;
 use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\coursework;
 use mod_coursework\models\moderation_set_rule;
@@ -329,8 +330,7 @@ class manager {
                         $sample->stageidentifier = "assessor_{$stagenumber}";
                         $sample->selectiontype = "automatic";
 
-                        // If this a manually selected allocatable check to see if the allocatable is already in the table
-                        $DB->insert_record("coursework_sample_set_mbrs", $sample);
+                        assessment_set_membership::create($sample);
                     }
                 }
             }
@@ -382,23 +382,36 @@ class manager {
 
     public function remove_unmarked_automatic_allocatables($stage) {
         global $DB;
+        $sql = "FROM {coursework_sample_set_mbrs}
+                 WHERE selectiontype = 'automatic'
+                 AND stageidentifier = :stage
+                 AND courseworkid = :courseworkid
+                 AND allocatableid NOT IN (
+                    SELECT s.allocatableid
+                    FROM {coursework_submissions} s,
+                         {coursework_feedbacks} f
+                    WHERE s.id = f.submissionid
+                     AND s.courseworkid = :cwid
+                     AND f.stageidentifier = :stg
+                 )";
 
-        $sql = "DELETE
-                     FROM     {coursework_sample_set_mbrs}
-                     WHERE    selectiontype = 'automatic'
-                     AND      stageidentifier = '{$stage}'
-                     AND      courseworkid = {$this->coursework->id}
-                     AND      allocatableid NOT IN (
-                        SELECT    s.allocatableid
-                        FROM      {coursework_submissions} s,
-                                  {coursework_feedbacks}    f
-                        WHERE     s.id = f.submissionid
-                         AND      s.courseworkid = {$this->coursework->id}
-                         AND      f.stageidentifier = '{$stage}'
+        $params = [
+            'stage' => $stage,
+            'stg' => $stage,
+            'courseworkid' => $this->coursework->id,
+            'cwid' => $this->coursework->id,
+        ];
 
-                     )";
-
-        return $DB->execute($sql);
+        $concatcachekeys = $DB->sql_concat('courseworkid', "'_'", 'allocatabletype', "'_'", 'allocatableid');
+        $cachekeys = $DB->get_records_sql(
+            "SELECT $concatcachekeys $sql GROUP BY courseworkid, allocatableid, allocatabletype",
+            $params
+        );
+        if (!empty($cachekeys)) {
+            $cache = cache::make('mod_coursework', assessment_set_membership::CACHE_AREA_MEMBER_COUNT);
+            $cache->delete_many($cachekeys);
+            return $DB->execute("DELETE $sql", $params);
+        }
     }
 
     public function get_allocatables_with_final_agreed() {

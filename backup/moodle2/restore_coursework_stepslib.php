@@ -21,6 +21,7 @@
  */
 
 use mod_coursework\models\submission;
+use mod_coursework\models\assessment_set_membership;
 
 class restore_coursework_activity_structure_step extends restore_activity_structure_step {
     /**
@@ -287,7 +288,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'stageidentifier' => '',
                                   'selectiontype' => ''], $data);
 
-        $DB->insert_record('coursework_sample_set_mbrs', $data);
+        assessment_set_membership::create($data);
     }
 
     protected function process_coursework_extension($data) {

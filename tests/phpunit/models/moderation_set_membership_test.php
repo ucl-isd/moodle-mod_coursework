@@ -16,6 +16,8 @@
 
 namespace mod_coursework;
 
+use mod_coursework\models\assessment_set_membership;
+
 /**
  * @package    mod_coursework
  * @copyright  2017 University of London Computer Centre {@link https://www.cosector.com}
@@ -33,14 +35,12 @@ final class moderation_set_membership_test extends \advanced_testcase {
     }
 
     public function test_find(): void {
-        global $DB;
-
         $record = new \stdClass();
         $record->allocatableid = 22;
         $record->allocatabletype = 'user';
         $record->courseworkid = 44;
-        $record->id = $DB->insert_record('coursework_sample_set_mbrs', $record);
+        $membership = assessment_set_membership::create($record);
 
-        $this->assertEquals(22, \mod_coursework\models\assessment_set_membership::find($record->id)->allocatableid);
+        $this->assertEquals(22, \mod_coursework\models\assessment_set_membership::find($membership->id())->allocatableid);
     }
 }
