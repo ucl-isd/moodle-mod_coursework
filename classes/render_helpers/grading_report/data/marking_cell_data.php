@@ -89,7 +89,8 @@ class marking_cell_data extends cell_data_base {
         $marker->markingstage = $markingstage;
         if (
             ($canseeothermarkerdetails || $assessor->id() == $USER->id)
-            && $assessor instanceof user
+            &&
+            $assessor instanceof user
         ) {
             $marker->markerid = $assessor->id();
             $marker->markername = $assessor->name();
@@ -175,7 +176,7 @@ class marking_cell_data extends cell_data_base {
             }
         );
         $rowdata->countinitialfeedbacks = count($intialfeedbacks);
-        $rowdata->hasallinitialfeedbacks = $rowdata->countinitialfeedbacks == $this->coursework->get_max_markers();
+        $rowdata->hasallinitialfeedbacks = $rowdata->countinitialfeedbacks >= $this->coursework->get_max_markers();
 
         $markernumber = 1;
         foreach ($tablerows as $row) {
