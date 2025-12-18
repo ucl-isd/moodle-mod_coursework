@@ -501,6 +501,9 @@ abstract class table_base {
      */
     public function update_attributes($values) {
         foreach ($values as $col => $val) {
+            if ($col == 'id') {
+                continue;
+            }
             $this->apply_column_value_to_self($col, $val, false);
         }
         $this->save();

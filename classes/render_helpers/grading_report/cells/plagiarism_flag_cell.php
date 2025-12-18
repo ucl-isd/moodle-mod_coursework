@@ -52,18 +52,14 @@ class plagiarism_flag_cell extends cell_base {
             $plagiarismflag = plagiarism_flag::find($plagiarismflagparams);
 
             if (!$plagiarismflag) {  // if plagiarism flag for this submission doesn't exist, we can create one
-                $plagiarismflagparams = ['courseworkid' => $rowobject->get_coursework()->id,
-                                                'submissionid' => $rowobject->get_submission()->id];
-                $newplagiarismflag = plagiarism_flag::build($plagiarismflagparams);
-
-                if ($ability->can('new', $newplagiarismflag)) {
+                if (has_capability('mod/coursework:addplagiarismflag', $this->coursework->get_context())) {
                     $content .= $this->new_flag_plagiarism_button($rowobject); // new button
                     $content .= html_writer::empty_tag('br');
                 }
             } else {
                 $content .= "<div class = plagiarism_" . $plagiarismflag->status . ">" . get_string('plagiarism_' . $plagiarismflag->status, 'coursework') . " ";
 
-                if ($ability->can('edit', $plagiarismflag)) { // Edit
+                if (has_capability('mod/coursework:updateplagiarismflag', $this->coursework->get_context())) { // Edit
                     $content .= $this->edit_flag_plagiarism_button($rowobject); // edit button
                 }
                 $content .= "</div>";

@@ -206,25 +206,17 @@ class plagiarism_flagging_mform extends dynamic_form {
     }
 
     /**
-     * Can the user edit this personal deadline or create one?
-     * @return bool
-     * @throws \coding_exception
-     */
-    protected function can_edit(): bool {
-        return has_capability(
-            'mod/coursework:addplagiarismflag',
-            $this->get_submission()->get_coursework()->get_context()
-        );
-    }
-
-    /**
      * Checks if current user has access to this form, otherwise throws exception.
      * @throws \coding_exception
      * @throws access_denied
      */
     protected function check_access_for_dynamic_submission(): void {
-        if (!$this->can_edit()) {
-            throw new access_denied($this->get_submission()->get_coursework(), 'No permission to edit plagiarism flag');
+        if (
+            !has_capability('mod/coursework:addplagiarismflag', $this->get_submission()->get_coursework()->get_context())
+            &&
+            !has_capability('mod/coursework:addplagiarismflag', $this->get_submission()->get_coursework()->get_context())
+        ) {
+            throw new access_denied($this->get_submission()->get_coursework(), 'No permission to edit/create plagiarism flag');
         }
     }
 
@@ -243,20 +235,22 @@ class plagiarism_flagging_mform extends dynamic_form {
         $errors = [];
         $warnings = [];
 
-        if (!$this->can_edit()) {
-            $errors[] = get_string('nopermissiongeneral', 'mod_coursework');
-        }
-
         // If we reach this far with no errors, we can create/update the flag.
         if (empty($errors)) {
             $iscreating = !$this->get_flag();
             if ($iscreating) {
                 // Creating.
+                if (!has_capability('mod/coursework:addplagiarismflag', $this->get_submission()->get_coursework()->get_context())) {
+                    $errors[] = get_string('nopermissiongeneral', 'mod_coursework');
+                }
                 $data->createdby = $USER->id;
                 $data->timecreated = time();
                 $data->courseworkid = $this->get_submission()->get_coursework()->id();
                 $this->plagiarismflag = plagiarism_flag::build($data);
             } else {
+                if (!has_capability('mod/coursework:updateplagiarismflag', $this->get_submission()->get_coursework()->get_context())) {
+                    $errors[] = get_string('nopermissiongeneral', 'mod_coursework');
+                }
                 $this->plagiarismflag->timemodified = time();
                 $this->plagiarismflag->lasteditedby = $USER->id;
             }
