@@ -34,12 +34,16 @@ class null_feedback {
     /**
      * @var int
      */
-    public $id = 0;
+    protected $id = 0;
 
     /**
      * @return string
      */
     public function get_grade() {
         return '';
+    }
+
+    public function id(): int {
+        return $this->id;
     }
 }

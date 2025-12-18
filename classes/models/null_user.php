@@ -39,7 +39,7 @@ class null_user implements allocatable {
     /**
      * @return int
      */
-    public function id() {
+    public function id(): int {
         return 0;
     }
 

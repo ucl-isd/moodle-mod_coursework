@@ -63,7 +63,7 @@ class group extends table_base implements allocatable, moderatable {
     /**
      * @return int
      */
-    public function id() {
+    public function id(): int {
         return $this->id;
     }
 

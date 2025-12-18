@@ -91,11 +91,15 @@ final class submission_test extends \advanced_testcase {
     public function test_save_courseworkid(): void {
         $submission = new submission();
         $submission->courseworkid = $this->coursework->id;
+
+        $this->assertFalse($submission->persisted());
         $submission->save();
+        $this->assertTrue($submission->persisted());
 
         $retrieved = submission::find($submission->id);
+        $this->assertequals($submission->id(), $retrieved->id());
 
-        $this->assertNotEmpty($retrieved->courseworkid);
+        $this->assertEquals($this->coursework->id, $retrieved->courseworkid);
     }
 
     public function test_group_decorator_is_not_added(): void {

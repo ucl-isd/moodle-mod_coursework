@@ -24,7 +24,8 @@ namespace mod_coursework\framework;
 
 use AllowDynamicProperties;
 use cache;
-use coding_exception;
+use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
 use dml_exception;
 use dml_missing_record_exception;
 use dml_multiple_records_exception;
@@ -57,9 +58,11 @@ abstract class table_base {
     private $dataloaded = false;
 
     /**
+     * The database record ID.
+     * Protected and readonly because we only want this to be set from within this class from DB record.
      * @var int
      */
-    public $id;
+    protected readonly int $id;
 
     /**
      * Makes a new instance. Can be overridden to provide a factory
@@ -67,10 +70,9 @@ abstract class table_base {
      * @param stdClass|int|array $dbrecord
      * @param bool $reload
      * @return bool|self
-     * @throws coding_exception
-     * @throws dml_exception
+     * @throws dml_exception|invalid_parameter_exception
      */
-    public static function find($dbrecord, $reload = true) {
+    public static function find($dbrecord, $reload = true): self|bool {
 
         global $DB;
 
@@ -88,26 +90,64 @@ abstract class table_base {
             return new $klass($data);
         }
 
+        $recordid = self::get_id_from_record($dbrecord);
+        // Cast to array in case it's stdClass.
         $dbrecord = (array)$dbrecord;
+        if (!$recordid && $reload) {
+            // Supplied data without record ID - treat as query params and try to get full record.
+            // Filter to valid DB table columns.
+            $allowedkeys = array_keys($DB->get_columns(static::$tablename));
+            $filteredparams = [];
+            foreach (array_keys($dbrecord) as $key) {
+                if (in_array($key, $allowedkeys)) {
+                    $filteredparams[$key] = $dbrecord[$key];
+                }
+            }
+            if (empty($filteredparams)) {
+                throw new coding_exception("No valid fields from table " . static::$tablename . " in params " . json_encode($dbrecord));
+            }
 
-        // Supplied a partial DB stdClass record
-        if (!array_key_exists('id', $dbrecord)) {
-            $dbrecord = $DB->get_record(static::get_table_name(), $dbrecord);
+            $dbrecords = $DB->get_records(static::get_table_name(), $filteredparams, '', '*', 0, 2);
+            if (count($dbrecords) > 1) {
+                throw new coding_exception("Found multiple records with supplied properties " . json_encode($filteredparams));
+            }
+            if (empty($dbrecords)) {
+                return false;
+            }
+            return new $klass(array_pop($dbrecords));
+        } else {
+            // Supplied data with object ID.
+            if ($reload) {
+                // Reload all data from ID.
+                $dbrecord = $DB->get_record(static::get_table_name(), ['id' => $recordid]);
+            }
             if (!$dbrecord) {
                 return false;
             }
+            // No reload required, populate object from data provided.
             return new $klass($dbrecord);
         }
+    }
 
-        if ($dbrecord) {
-            $record = new $klass($dbrecord);
-            if ($reload) {
-                $record->reload();
-            }
-            return $record;
+    /**
+     * Get the record ID from supplied data (which may be of various types).
+     * @param stdClass|array|table_base $record
+     * @return int|null
+     */
+    public static function get_id_from_record($record): ?int {
+        if (!$record) {
+            throw new coding_exception("No record");
         }
-
-        return false;
+        if (is_object($record) && isset($record->id)) {
+            return (int)$record->id;
+        }
+        if (is_array($record) && isset($record['id'])) {
+            return (int)$record['id'];
+        }
+        if (is_object($record) && method_exists($record, 'id')) {
+            return $record->id();
+        }
+        return null;
     }
 
     /**
@@ -164,16 +204,20 @@ abstract class table_base {
      */
     public function __construct($dbrecord = false) {
 
-        // Allow the option to supply an id if this is not being generated as part of a massive list
-        // of courseworks. If the id isn't there, throw an error. Weirdly, everything comes through
-        // as a string here.
-        if (!empty($dbrecord) && is_numeric($dbrecord)) {
-            $this->id = $dbrecord;
-            $this->reload();
-        } else if (is_object($dbrecord) || is_array($dbrecord)) {
-            // Add all of the DB row fields to this object (if the object has a matching property).
-            $this->apply_data($dbrecord);
-            $this->dataloaded = true;
+        if ($dbrecord) {
+            // If we do not have a DB record here, we must be building a new object (does not yet exist in DB).
+            // That is allowed, but obviously we do not yet have any data in the DB for this object.
+            // Allow option to supply an id e.g. if this is not being generated as part of a massive list of objects.
+            if (is_numeric($dbrecord)) {
+                $this->id = (int)$dbrecord;
+                $this->reload();
+            } else if ($id = self::get_id_from_record($dbrecord)) {
+                // We have an object or array and have been provided with the ID.
+                // Add all of the DB row fields to this object (if the object has a matching property).
+                $this->apply_data($dbrecord);
+                $this->id = $id;
+                $this->dataloaded = true;
+            }
         }
     }
 
@@ -260,6 +304,10 @@ abstract class table_base {
         $data = (array)$dataobject;
         foreach (static::get_column_names() as $columnname) {
             if (isset($data[$columnname])) {
+                if ($columnname == 'id') {
+                    // This prop is read only - set once and never from here.
+                    continue;
+                }
                 $this->{$columnname} = $data[$columnname];
             }
         }
@@ -273,8 +321,14 @@ abstract class table_base {
      * @throws dml_exception
      */
     final public function save($sneakily = false) {
-
         global $DB;
+        if (static::get_table_name() !== 'coursework' && !str_starts_with(static::get_table_name(), 'coursework_')) {
+            // Some child classes e.g. user, group, modules do not use coursework_ tables but core tables.
+            // Prevent accidental data modification.
+            throw new coding_exception(
+                "Cannot modify non-coursework data, in table '" . static::get_table_name() . "', from this class"
+            );
+        }
 
         $this->pre_save_hook();
 
@@ -329,10 +383,10 @@ abstract class table_base {
      * @return bool
      * @throws dml_exception
      */
-    public function persisted() {
-        global $DB;
-
-        return !empty($this->id) && $DB->record_exists(static::$tablename, ['id' => $this->id]);
+    public function persisted(): bool {
+        // Previously was a check against DB here but this results in thousands of queries from grading report page via ability->can().
+        // ID should only be set from a DB record anyway so that check is now removed.
+        return !empty($this->id);
     }
 
     /**
@@ -409,7 +463,7 @@ abstract class table_base {
     public function reload($complainifnotfound = true) {
         global $DB;
 
-        if (empty($this->id)) {
+        if (!$this->persisted()) {
             return $this;
         }
 
@@ -461,7 +515,7 @@ abstract class table_base {
     public function destroy() {
         global $DB;
 
-        if (empty($this->id)) {
+        if (!$this->persisted()) {
             throw new coding_exception('Cannot destroy an object that has not yet been saved');
         }
 
@@ -502,7 +556,10 @@ abstract class table_base {
 
         // Only save the non-null fields.
         foreach (static::get_column_names() as $columnname) {
-            if (!is_null($this->$columnname)) {
+            if ($columnname == 'id' && !$this->persisted()) {
+                continue;
+            }
+            if (isset($this->$columnname) && !is_null($this->$columnname)) {
                 $savedata->$columnname = $this->$columnname;
             }
         }
@@ -620,11 +677,11 @@ abstract class table_base {
     }
 
     /**
-     * @return int|string
+     * @return int
      * @throws coding_exception
      */
-    public function id() {
-        if (empty($this->id)) {
+    public function id(): int {
+        if (!$this->persisted()) {
             throw new coding_exception('Asking for the id of an unsaved object');
         }
         return $this->id;

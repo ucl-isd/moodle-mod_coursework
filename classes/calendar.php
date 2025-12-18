@@ -26,6 +26,7 @@ namespace mod_coursework;
 use calendar_event;
 use dml_exception;
 use stdClass;
+use mod_coursework\models\coursework;
 
 /**
  * Class to handle interaction with core calendar.
@@ -35,13 +36,13 @@ use stdClass;
 class calendar {
     /**
      * Get an object to create a calendar event for coursework.
-     * @param object $coursework
+     * @param coursework $coursework
      * @param string $eventtype
      * @param int|null $deadline
      * @return stdClass
      * @throws \coding_exception
      */
-    public static function coursework_event(object $coursework, string $eventtype, ?int $deadline): stdClass {
+    public static function coursework_event(coursework $coursework, string $eventtype, ?int $deadline): stdClass {
 
         $event = new stdClass();
         $event->type = CALENDAR_EVENT_TYPE_ACTION;
@@ -55,7 +56,7 @@ class calendar {
             $intro = $coursework->intro;
         }
 
-        $cm = get_coursemodule_from_instance('coursework', $coursework->id);
+        $cm = $coursework->get_course_module();
 
         // We need to remove the links to files as the calendar is not ready
         // to support module events with file areas.

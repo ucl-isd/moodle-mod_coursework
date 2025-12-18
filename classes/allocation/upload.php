@@ -126,17 +126,19 @@ class upload {
                     }
 
                     // check if allocatable exists in this coursework
-                    if (!$allocatable || !in_array($allocatable->id, $allocatables)) {
+                    $allocatableid = $allocatable ? $allocatable->id() : null;
+                    $allocatableincoursework = $allocatableid ? $allocatables[$allocatableid] : null;
+                    if (!$allocatableincoursework) {
                         // E.g. string key 'usernotincoursework'.
-                        $errors[$s] = get_string($allocatabletype . 'notincoursework', 'coursework', $value) . $assessoridentifier;
+                        $errors[$s] = get_string($allocatabletype . 'notincoursework', 'coursework', $value);
                         break;
                     }
                     // duplicate user or group
-                    if ($allocatable && in_array($allocatable->id, $allocatablesinfile)) {
+                    if ($allocatable && in_array($allocatableid, $allocatablesinfile)) {
                         $errors[$s] = get_string('duplicate' . $allocatabletype, 'coursework', $value);
                         break;
                     }
-                    $allocatablesinfile[] = $allocatable->id;
+                    $allocatablesinfile[] = $allocatableid;
                 }
 
                 // validate assessor if exists in the coursework and has one of the capabilities allowing them to grade

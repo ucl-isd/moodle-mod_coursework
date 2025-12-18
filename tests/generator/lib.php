@@ -48,7 +48,7 @@ class mod_coursework_generator extends testing_module_generator {
      *                               - all else is optional and defaults will be supplied
      * @param array|null $options extra stuff for the coursemodule. idnumber, section, visible, etc.
      * @throws coding_exception
-     * @return \mod_coursework\models\coursework activity record with extra cmid field
+     * @return coursework
      */
     public function create_instance($record = null, ?array $options = null) {
 
@@ -104,7 +104,8 @@ class mod_coursework_generator extends testing_module_generator {
             $record->moderatorallocationstrategy = 'none';
         }
 
-        return parent::create_instance($record, $options);
+        $instance = parent::create_instance($record, $options);
+        return coursework::find($instance);
     }
 
     /**
