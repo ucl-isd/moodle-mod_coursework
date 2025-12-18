@@ -211,13 +211,10 @@ class plagiarism_flagging_mform extends dynamic_form {
      * @throws \coding_exception
      */
     protected function can_edit(): bool {
-        global $USER;
-        $plagiarismflag = new plagiarism_flag();
-        $plagiarismflag->submissionid = $this->get_submission()->id();
-        $plagiarismflag->courseworkid = $this->get_submission()->get_coursework()->id();
-
-        $ability = new ability($USER->id, $this->get_submission()->get_coursework());
-        return $ability->can('new', $plagiarismflag);
+        return has_capability(
+            'mod/coursework:addplagiarismflag',
+            $this->get_submission()->get_coursework()->get_context()
+        );
     }
 
     /**
