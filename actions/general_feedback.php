@@ -21,6 +21,7 @@
  */
 
 use mod_coursework\forms\general_feedback_form;
+use mod_coursework\models\coursework;
 
 require_once(dirname(__FILE__) . '/../../../config.php');
 
@@ -32,7 +33,8 @@ $cm = get_coursemodule_from_id('coursework', $cmid, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', ['id' => $cm->course]);
 require_login($course, false, $cm);
 
-$coursework = $DB->get_record('coursework', ['id' => $cm->instance]);
+$courseworkrecord = $DB->get_record('coursework', ['id' => $cm->instance], '*', MUST_EXIST);
+$coursework = coursework::find($courseworkrecord, false);
 
 if (!has_capability('mod/coursework:addinitialgrade', $PAGE->context)) {
     throw new moodle_exception('access_denied', 'coursework');
@@ -45,7 +47,7 @@ $title = get_string('generalfeedback', 'mod_coursework');
 $PAGE->set_title($title);
 
 $customdata = new stdClass();
-$customdata->id = $coursework->id;
+$customdata->id = $coursework->id();
 $customdata->cmid = $cmid;
 
 $gradingform = new general_feedback_form(null, $customdata);
@@ -56,15 +58,23 @@ if ($gradingform->is_cancelled()) {
     redirect(new moodle_url('/mod/coursework/view.php', ['id' => $cmid]));
 } else if ($returneddata) {
     $gradingform->process_data($returneddata);
-    // TODO should not echo before header.
     redirect(new moodle_url('/mod/coursework/view.php', ['id' => $cmid]), get_string('changessaved'));
 } else {
     // Display the form.
-    $PAGE->navbar->add('General Feedback');
+    $PAGE->navbar->add($title);
     echo $OUTPUT->header();
-    echo $OUTPUT->heading('General Feedback');
+    echo $OUTPUT->heading($title);
 
-    $customdata->feedbackcomment_editor['text'] = $coursework->feedbackcomment;
+    // N.B. generalfeedback here is actually the release date when set.
+    if ($coursework->generalfeedback) {
+        echo '<p>' .
+        get_string('publishedtostudentsfrom', 'mod_coursework', userdate($coursework->generalfeedback, get_string('strftimedatetime', 'langconfig')))
+        . '</p>';
+    }
+
+    echo '<p>' . get_string('generalfeedbackinfo', 'mod_coursework') . '</p>';
+
+    $customdata->feedbackcomment_editor['text'] = $coursework->get_general_feedback() ?? '';
     $gradingform->set_data($customdata);
     $gradingform->display();
     echo $OUTPUT->footer();
