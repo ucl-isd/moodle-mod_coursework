@@ -22,6 +22,7 @@
 
 namespace mod_coursework\traits;
 use core\exception\coding_exception;
+use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
@@ -135,20 +136,11 @@ trait allocatable_functions {
 
         // when sampling is enabled, calculate how many stages are in sample
         if ($coursework->sampling_enabled()) {
-            $sql = "SELECT COUNT(*)
-                  FROM {coursework_sample_set_mbrs}
-                  WHERE courseworkid = :courseworkid
-                  AND allocatableid = :allocatableid
-                  AND allocatabletype = :allocatabletype";
-
-            $markers = $DB->count_records_sql(
-                $sql,
-                ['courseworkid' => $coursework->id(),
-                    'allocatableid' => $this->id(),
-                'allocatabletype' => $this->type()]
-            );
-
-            $expectedmarkers = $markers + 1; // there is always a marker for stage 1
+            $expectedmarkers = assessment_set_membership::membership_count(
+                $coursework->id(),
+                $this->id(),
+                $this->type()
+            ) + 1;  // Add one as there is always a marker for stage 1.
         }
 
         return $feedbacks == $expectedmarkers;

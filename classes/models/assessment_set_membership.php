@@ -32,6 +32,7 @@ use AllowDynamicProperties;
 use core\exception\coding_exception;
 use mod_coursework\allocation\moderatable;
 use mod_coursework\framework\table_base;
+use core_cache\cache;
 
 /**
  * @property int courseworkid
@@ -52,6 +53,8 @@ class assessment_set_membership extends table_base implements moderatable {
      * @var string
      */
     protected static $tablename = 'coursework_sample_set_mbrs';
+
+    const CACHE_AREA_MEMBER_COUNT = 'samplesetmembershipcount';
 
     /**
      *
@@ -102,9 +105,99 @@ class assessment_set_membership extends table_base implements moderatable {
     }
 
     /**
+     * Allows subclasses to alter data before it hits the DB.
+     * @return void
+     * @throws \dml_exception
+     */
+    protected function pre_save_hook() {
+        $this->membership_count_clear_cache_for_coursework();
+        parent::pre_save_hook();
+    }
+
+    /**
      *
      */
     protected function after_destroy() {
         self::remove_cache($this->courseworkid);
+    }
+
+    /**
+     * How many times does an allocatable appear in coursework_sample_set_mbrs table for a coursework?
+     * We expect them to appear once for each stage (with a different stageidentifier field each time).
+     * @param int $courseworkid
+     * @param string $allocatabletype
+     * @param int $allocatableid
+     * @return int
+     * @throws coding_exception
+     * @throws \dml_exception
+     */
+    public static function membership_count(int $courseworkid, string $allocatabletype, int $allocatableid): int {
+        global $DB;
+        // This is called over and over during rendering of the grading page, so cache the result.
+        $cachekey = $courseworkid . "_" . $allocatabletype . "_" . $allocatableid;
+
+        $cache = cache::make('mod_coursework', self::CACHE_AREA_MEMBER_COUNT);
+        $cachedvalue = $cache->get($cachekey);
+        if ($cachedvalue === false) {
+            $sql = "SELECT COUNT(id)
+                    FROM {coursework_sample_set_mbrs}
+                    WHERE courseworkid = :courseworkid
+                    AND allocatableid = :allocatableid
+                    AND allocatabletype = :allocatabletype";
+
+            $cachedvalue = $DB->count_records_sql(
+                $sql,
+                [
+                    'courseworkid' => $courseworkid,
+                    'allocatableid' => $allocatableid,
+                    'allocatabletype' => $allocatabletype,
+                ]
+            );
+            $cache->set($cachekey, $cachedvalue);
+        }
+        return $cachedvalue;
+    }
+
+    /**
+     * Clear membership count cache for all membership records we have for this coursework.
+     * @return void
+     * @throws \dml_exception
+     * @throws coding_exception
+     */
+    public function membership_count_clear_cache_for_coursework() {
+        global $DB;
+        $concat = $DB->sql_concat('courseworkid', "'_'", 'allocatabletype', "'_'", 'allocatableid');
+        $cachekeys = $DB->get_fieldset_sql(
+            "SELECT $concat FROM {coursework_sample_set_mbrs} WHERE courseworkid = ?
+                GROUP BY courseworkid, allocatabletype, allocatableid",
+            [$this->courseworkid]
+        );
+        if (!empty($cachekeys)) {
+            $cache = cache::make('mod_coursework', self::CACHE_AREA_MEMBER_COUNT);
+            $cache->delete_many($cachekeys);
+        }
+    }
+
+
+    /**
+     * Makes a new instance and saves it.
+     *
+     * @param \stdClass|array $params
+     * @return table_base
+     */
+    public static function create($params) {
+        $cache = cache::make('mod_coursework', self::CACHE_AREA_MEMBER_COUNT);
+        $params = (array)$params;
+        $cache->delete($params['courseworkid'] . "_" . $params['allocatabletype'] . "_" . $params['allocatableid']);
+        return parent::create($params);
+    }
+
+    /**
+     * Hook method to allow subclasses to get stuff done like destruction of dependent records.
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
+    public function before_destroy(): void {
+        $this->membership_count_clear_cache_for_coursework();
     }
 }

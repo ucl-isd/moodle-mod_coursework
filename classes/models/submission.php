@@ -1276,31 +1276,35 @@ class submission extends table_base implements renderable {
         return $this->timesubmitted;
     }
 
-    public function sampled_feedback_exists() {
-        global $DB;
-        return $DB->record_exists('coursework_sample_set_mbrs', ['courseworkid' => $this->courseworkid,
-                                                                     'allocatableid' => $this->get_allocatable()->id(),
-                                                                     'allocatabletype' => $this->get_allocatable()->type()]);
+    /**
+     * The name sampled_feedback_exists for this seems suboptimal, as it does not check existence of a feedback.
+     * Rather, it checks that a sample set exists / is populated for a given allocatable.
+     * @return bool
+     * @throws \core\exception\coding_exception|dml_exception
+     */
+    public function sampled_feedback_exists(): bool {
+        return assessment_set_membership::membership_count(
+            $this->get_coursework()->id(),
+            $this->get_allocatable()->type(),
+            $this->get_allocatable()->id()
+        ) > 0;
     }
 
-    public function max_number_of_feedbacks() {
-        global $DB;
-
+    /**
+     * How many feedbacks do we expect for this submission?
+     * @return int
+     * @throws \core\exception\coding_exception
+     * @throws coding_exception
+     * @throws dml_exception
+     */
+    public function max_number_of_feedbacks(): int {
         if ($this->get_coursework()->sampling_enabled()) {
-            // calculate how many stages(markers) are enabled for this submission
-            $parameters = ['courseworkid' => $this->coursework->id,
-                                 'allocatableid' => $this->get_allocatable()->id(),
-                                 'allocatabletype' => $this->get_allocatable()->type()];
-
-            $sql = "SELECT count(id) as total
-                    FROM {coursework_sample_set_mbrs}
-                    WHERE courseworkid = :courseworkid
-                    AND allocatableid = :allocatableid
-                    AND allocatabletype = :allocatabletype";
-
-            $count = $DB->get_record_sql($sql, $parameters);
-            return $count->total + 1; // we add one as by default 1st stage is always marked
-        } else { // if samplings are not enabled
+            return assessment_set_membership::membership_count(
+                $this->get_coursework()->id(),
+                $this->get_allocatable()->type(),
+                $this->get_allocatable()->id()
+            ) + 1;  // We add one as by default 1st stage is always marked.
+        } else {
             return $this->get_coursework()->get_max_markers();
         }
     }
@@ -1600,7 +1604,7 @@ class submission extends table_base implements renderable {
      * @param int $courseworkid
      * @param $key
      * @param $params
-     * @return bool
+     * @return self|bool
      * @throws \core\exception\coding_exception
      */
     public static function get_object($courseworkid, $key, $params) {

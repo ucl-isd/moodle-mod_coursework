@@ -25,6 +25,7 @@ namespace mod_coursework;
  */
 
 use mod_coursework\models\deadline_extension;
+use mod_coursework\models\assessment_set_membership;
 
 /**
  * @property mixed feedback_data
@@ -346,8 +347,7 @@ final class csv_test extends \advanced_testcase {
         $setmembersdata->allocatableid = $submission2->allocatableid;
         $setmembersdata->allocatabletype = 'user';
         $setmembersdata->stageidentifier = 'assessor_2';
-
-        $DB->insert_record('coursework_sample_set_mbrs', $setmembersdata);
+        assessment_set_membership::create($setmembersdata);
 
         // Assessor one feedback for student 1.
         $feedbackdata1 = new \stdClass();
