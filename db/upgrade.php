@@ -147,40 +147,91 @@ function xmldb_coursework_upgrade($oldversion) {
     if ($oldversion < 2025110600) {
         // Align column names with coding standards.
 
-        $dbman->drop_field(new xmldb_table('coursework_feedbacks'), new xmldb_field('entry_id'));
+        $table = new xmldb_table('coursework_feedbacks');
+        $field = new xmldb_field('entry_id');
 
-        $xmldbfield = new xmldb_field('stage_identifier', XMLDB_TYPE_CHAR, 20);
-        $dbman->rename_field(new xmldb_table('coursework_feedbacks'), $xmldbfield, 'stageidentifier');
-        $dbman->rename_field(new xmldb_table('coursework_allocation_pairs'), $xmldbfield, 'stageidentifier');
-        $dbman->rename_field(new xmldb_table('coursework_mod_set_members'), $xmldbfield, 'stageidentifier');
-        $dbman->rename_field(new xmldb_table('coursework_sample_set_rules'), $xmldbfield, 'stageidentifier');
-        $dbman->rename_field(new xmldb_table('coursework_sample_set_mbrs'), $xmldbfield, 'stageidentifier');
+        // Conditionally launch drop field entry_id.
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // Conditionally rename stage_identifier to stageidentifier for various tables.
+        $tables = [
+            'coursework_feedbacks',
+            'coursework_allocation_pairs',
+            'coursework_mod_set_members',
+            'coursework_sample_set_rules',
+            'coursework_sample_set_mbrs',
+        ];
+        $field = new xmldb_field('stage_identifier', XMLDB_TYPE_CHAR, 20);
+        $newname = 'stageidentifier';
+        foreach ($tables as $table) {
+            $table = new xmldb_table($table);
+
+            if ($dbman->field_exists($table, $field) && !$dbman->field_exists($table, $newname)) {
+                $dbman->rename_field($table, $field, $newname);
+            }
+        }
 
         // Coursework savepoint reached.
         upgrade_mod_savepoint(true, 2025110600, 'coursework');
     }
 
     if ($oldversion < 2025110601) {
-        $xmldbfield = new xmldb_field('use_groups', XMLDB_TYPE_INTEGER, 1);
-        $dbman->rename_field(new xmldb_table('coursework'), $xmldbfield, 'usegroups');
+        $table = new xmldb_table('coursework');
+        $field = new xmldb_field('use_groups', XMLDB_TYPE_INTEGER, 1);
+        $newname = 'usegroups';
 
-        $xmldbfield = new xmldb_field('coursework_id', XMLDB_TYPE_INTEGER, 11);
-        $dbman->rename_field(new xmldb_table('coursework_reminder'), $xmldbfield, 'courseworkid');
+        if ($dbman->field_exists($table, $field) && !$dbman->field_exists($table, $newname)) {
+            $dbman->rename_field($table, $field, $newname);
+        }
 
-        $xmldbfield = new xmldb_field('extra_information_text', XMLDB_TYPE_TEXT);
-        $dbman->rename_field(new xmldb_table('coursework_extensions'), $xmldbfield, 'extrainformationtext');
+        $table = new xmldb_table('coursework_reminder');
+        $field = new xmldb_field('coursework_id', XMLDB_TYPE_INTEGER, 1);
+        $newname = 'courseworkid';
 
-        $xmldbfield = new xmldb_field('extra_information_format', XMLDB_TYPE_INTEGER, 2);
-        $dbman->rename_field(new xmldb_table('coursework_extensions'), $xmldbfield, 'extrainformationformat');
+        if ($dbman->field_exists($table, $field) && !$dbman->field_exists($table, $newname)) {
+            $dbman->rename_field($table, $field, $newname);
+        }
 
-        $xmldbfield = new xmldb_field('sample_set_plugin_id', XMLDB_TYPE_INTEGER, 10);
-        $dbman->rename_field(new xmldb_table('coursework_sample_set_rules'), $xmldbfield, 'samplesetpluginid');
+        $table = new xmldb_table('coursework_extensions');
+        $field = new xmldb_field('extra_information_text', XMLDB_TYPE_TEXT);
+        $newname = 'extrainformationtext';
 
-        $xmldbfield = new xmldb_field('personal_deadline', XMLDB_TYPE_INTEGER, 10);
-        $dbman->rename_field(new xmldb_table('coursework_person_deadlines'), $xmldbfield, 'personaldeadline');
+        if ($dbman->field_exists($table, $field) && !$dbman->field_exists($table, $newname)) {
+            $dbman->rename_field($table, $field, $newname);
+        }
 
-        $xmldbfield = new xmldb_field('comment_format', XMLDB_TYPE_INTEGER, 2);
-        $dbman->rename_field(new xmldb_table('coursework_plagiarism_flags'), $xmldbfield, 'commentformat');
+        $field = new xmldb_field('extra_information_format', XMLDB_TYPE_INTEGER, 2);
+        $newname = 'extrainformationformat';
+
+        if ($dbman->field_exists($table, $field) && !$dbman->field_exists($table, $newname)) {
+            $dbman->rename_field($table, $field, $newname);
+        }
+
+        $table = new xmldb_table('coursework_sample_set_rules');
+        $field = new xmldb_field('sample_set_plugin_id', XMLDB_TYPE_INTEGER, 10);
+        $newname = 'samplesetpluginid';
+
+        if ($dbman->field_exists($table, $field) && !$dbman->field_exists($table, $newname)) {
+            $dbman->rename_field($table, $field, $newname);
+        }
+
+        $table = new xmldb_table('coursework_person_deadlines');
+        $field = new xmldb_field('personal_deadline', XMLDB_TYPE_INTEGER, 10);
+        $newname = 'personaldeadline';
+
+        if ($dbman->field_exists($table, $field) && !$dbman->field_exists($table, $newname)) {
+            $dbman->rename_field($table, $field, $newname);
+        }
+
+        $table = new xmldb_table('coursework_plagiarism_flags');
+        $field = new xmldb_field('comment_format', XMLDB_TYPE_INTEGER, 2);
+        $newname = 'commentformat';
+
+        if ($dbman->field_exists($table, $field) && !$dbman->field_exists($table, $newname)) {
+            $dbman->rename_field($table, $field, $newname);
+        }
 
         // Coursework savepoint reached.
         upgrade_mod_savepoint(true, 2025110601, 'coursework');
