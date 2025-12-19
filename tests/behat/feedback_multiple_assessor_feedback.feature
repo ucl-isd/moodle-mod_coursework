@@ -7,17 +7,19 @@ Feature: Multiple assessors simple grading form
 
   Background:
     Given there is a course
+    And there is a student
+    And there is a teacher
+    And there is another teacher
     And the following "permission overrides" exist:
             | capability                      | permission | role    | contextlevel | reference |
             | mod/coursework:editinitialgrade | Allow      | teacher | Course       | C1        |
     And there is a coursework
     And the coursework "numberofmarkers" setting is "2" in the database
     And the coursework "allocationenabled" setting is "0" in the database
-    And there is a student
     And the student has a submission
 
   Scenario: Grade and comments can be saved
-    Given I am logged in as a teacher
+    Given I am logged in as the teacher
     And the submission is finalised
     And I visit the coursework page
     And I click on "Add mark" "link"
@@ -51,9 +53,7 @@ Feature: Multiple assessors simple grading form
     And the grade comment textarea field matches "New comment here"
 
   Scenario: Grades can not be edited by other teachers
-    Given there is a teacher
-    And there is another teacher
-    And there is feedback for the submission from the teacher
+    Given there is feedback for the submission from the teacher
     And I am logged in as the other teacher
     And the submission is finalised
     When I visit the coursework page
@@ -115,3 +115,64 @@ Feature: Multiple assessors simple grading form
     And I press "Save and finalise"
     And I visit the coursework page
     And I should see "71.1"
+
+  Scenario: As a teacher I should not be able to see who else is grading a submission until all grades are in added to it if viewinitialgradeenabled is no
+    Given the coursework "viewinitialgradeenabled" setting is "0" in the database
+    And I am logged in as the teacher
+    And the submission is finalised
+    And I visit the coursework page
+    And I should not see "teacher3" in the "student1" "table_row"
+    And I click on "Add mark" "link"
+    And I set the field "Mark" to "52"
+    And I set the field "Comment" to "Some new comment 3"
+    And I click on "Save and finalise" "button"
+    And I visit the coursework page
+    And I should see "teacher2" in the "student1" "table_row"
+    And I should not see "teacher3" in the "student1" "table_row"
+    And I log out
+    # Manager should also see the marker's name.
+    And I log in as a manager
+    And I visit the coursework page
+    And I should see "teacher2" in the "student1" "table_row"
+    And I log out
+    # Teacher 2 should not see the teacher1's name until both grades are in.
+    And I log in as the other teacher
+    And I visit the coursework page
+    And I should not see "teacher2" in the "student1" "table_row"
+    And I click on "Add mark" "link"
+    And I set the field "Mark" to "55"
+    And I set the field "Comment" to "Some new comment 8"
+    And I click on "Save and finalise" "button"
+    And I visit the coursework page
+    # Now that both grades have been added, should also see teacher 1 identity
+    And I should see "teacher2" in the "student1" "table_row"
+    And I should see "teacher3" in the "student1" "table_row"
+
+  Scenario: As a teacher I should be able to see who else has graded a submission if viewinitialgradeenabled is yes
+    Given the coursework "viewinitialgradeenabled" setting is "1" in the database
+    And I log in as the teacher
+    And the submission is finalised
+    And I visit the coursework page
+    And I click on "Add mark" "link"
+    And I set the field "Mark" to "52"
+    And I set the field "Comment" to "Some new comment 3"
+    And I click on "Save and finalise" "button"
+    And I visit the coursework page
+    And I should see "teacher2" in the "student1" "table_row"
+    And I log out
+    # Manager should see the marker's name.
+    And I log in as a manager
+    And I visit the coursework page
+    And I should see "teacher2" in the "student1" "table_row"
+    And I log out
+    # Teacher 2 should also see teacher1's name even if both grades are not yet in.
+    And I log in as the other teacher
+    And I visit the coursework page
+    And I should see "teacher2" in the "student1" "table_row"
+    And I click on "Add mark" "link"
+    And I set the field "Mark" to "55"
+    And I set the field "Comment" to "Some new comment 8"
+    And I click on "Save and finalise" "button"
+    And I visit the coursework page
+    And I should see "teacher2" in the "student1" "table_row"
+    And I should see "teacher3" in the "student1" "table_row"
