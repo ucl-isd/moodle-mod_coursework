@@ -124,6 +124,9 @@ class plagiarism_flagging_mform extends dynamic_form {
         if ($flag) {
             $mform->setDefault('status', $flag->status);
             $mform->setDefault('plagiarismcomment', ['text' => $flag->comment, 'format' => $flag->commentformat]);
+            if (!has_capability('mod/coursework:updateplagiarismflag', $this->get_submission()->get_coursework()->get_context())) {
+                $mform->hardFreeze('status,plagiarismcomment');
+            }
         }
         $mform->hideIf('plagiarismcomment', 'status', 'eq', "1");
 
