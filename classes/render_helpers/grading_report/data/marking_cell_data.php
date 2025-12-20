@@ -96,7 +96,7 @@ class marking_cell_data extends cell_data_base {
         } else if ($canaddfeedback) {
             // Just a placeholder to show "Marker 1" etc. until a marker is allocated.
             $marker->markername = get_string('markerdefaultname', 'mod_coursework', $markingstage);
-            $marker->markerimg = $OUTPUT->image_url('u/f2');
+            $marker->markerimg = $OUTPUT->image_url('u/f2')->out();
         }
         return $marker;
     }

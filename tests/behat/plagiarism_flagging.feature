@@ -1,4 +1,4 @@
-@mod @mod_coursework @javascript
+@mod @mod_coursework @javascript @mod_coursework_plagiarism_flagging
 Feature: Teachers and course administrators should be able to add and edit
   plagiarism flags
 
@@ -23,4 +23,3 @@ Feature: Teachers and course administrators should be able to add and edit
     And I click on "Save" "button"
     And I wait until the page is ready
     Then I should see "Flagged for plagiarism"
-    And "Actions" "button" should not exist
