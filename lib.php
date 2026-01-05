@@ -927,7 +927,14 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
         has_capability('mod/coursework:addgeneralfeedback', $context)
     ) {
         $link = new moodle_url('/mod/coursework/actions/general_feedback.php', ['cmid' => $cm->id]);
-        $navref->add(get_string('generalfeedback', 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
+        $child = $navref->add(
+            get_string('generalfeedback', 'mod_coursework'),
+            $link,
+            navigation_node::TYPE_SETTING,
+            null,
+            'generalfeedback'
+        );
+        $child->set_force_into_more_menu(true);
     }
 }
 
