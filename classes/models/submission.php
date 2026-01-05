@@ -1633,18 +1633,18 @@ class submission extends table_base implements renderable {
      * Get an array of data for all submission files for this coursework, by participantID-participantType.
      * Used from the grading page to get all at once / avoid getting files once for each row.
      * @param coursework $coursework
-     * @param ?allocatable $allocatable optional allocatable if we only want data for one user.
+     * @param int[] $submissionids optional submission IDs if we only want data for specific users.
      * @see submission::get_submission_files()
      * @return array Each user may have multiple files (i.e. nested array).
      */
-    public static function get_all_submission_files_data(coursework $coursework, ?allocatable $allocatable = null): array {
+    public static function get_all_submission_files_data(coursework $coursework, array $submissionids = []): array {
         global $DB;
         $contextid = $coursework->get_context_id();
         $sqlparams = ['ctxid' => $contextid];
-        if ($allocatable) {
-            $wheresql = "AND cs.allocatabletype = :allocatabletype AND cs.allocatableid = :allocatableid";
-            $sqlparams['allocatabletype'] = $allocatable->type();
-            $sqlparams['allocatableid'] = $allocatable->ID();
+        if (!empty($submissionids)) {
+            [$wheresql, $inparams] = $DB->get_in_or_equal($submissionids, SQL_PARAMS_NAMED);
+            $sqlparams = array_merge($sqlparams, $inparams);
+            $wheresql = "AND cs.id $wheresql";
         } else {
             $wheresql = '';
         }
@@ -1656,7 +1656,7 @@ class submission extends table_base implements renderable {
                 AND f.component = 'mod_coursework'
                 AND f.filearea = 'submission'
                 AND f.filename != '.' $wheresql
-                ORDER BY f.id",
+                ORDER BY cs.id, f.id",
             $sqlparams
         );
 
@@ -1664,10 +1664,7 @@ class submission extends table_base implements renderable {
             return [];
         }
         $results = [];
-
         $fs = get_file_storage();
-        $cmid = $coursework->get_coursemodule_id();
-        $course = $coursework->get_course();
 
         // We return a nested array by allocatable ID.
         foreach ($filerecords as $filerecord) {
@@ -1680,6 +1677,7 @@ class submission extends table_base implements renderable {
                 'allocatableid' => $filerecord->allocatableid,
                 'allocatabletype' => $filerecord->allocatabletype,
                 'authorid' => $filerecord->authorid,
+                'file' => $fs->get_file_instance($filerecord),
                 'filename' => $filerecord->filename,
                 'url' => \moodle_url::make_file_url('/pluginfile.php', '/' . implode('/', [
                         $contextid,
@@ -1689,28 +1687,10 @@ class submission extends table_base implements renderable {
                         $filerecord->filename,
                     ]))->out(),
             ];
-
-            if ($coursework->tii_enabled()) {
-                //todo get these all at end via web service?
-                $result->plagiarismlinks = plagiarism_get_links(
-                    [
-                        'userid' => $filerecord->authorid, // User or for group submissions, first member of group.
-                        'file' => $fs->get_file_instance($filerecord),
-                        'cmid' => $cmid,
-                        'course' => $course,
-                        'coursework' => $coursework->id,
-                        'modname' => 'coursework',
-                    ]
-                );
-            }
+            // We no longer get Turnitin similarity report here as they are fetched after page load to improve load time.
             $results[$submissionskey][] = $result;
         }
         $filerecords->close();
-
-        // If we only want results for one user, extract them from the nested array.
-        if ($allocatable) {
-            return $results[$allocatable->type() . "-" . $allocatable->id()] ?? [];
-        }
         return $results;
     }
 }

@@ -456,6 +456,13 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 ['courseworkId' => $coursework->id]
             );
         }
+        if ($coursework->tii_enabled()) {
+            $this->page->requires->js_call_amd(
+                "mod_coursework/turnitin_similarity_fetcher",
+                'init',
+                ['courseworkId' => $coursework->id]
+            );
+        }
 
         return $gradingreportrenderer->render_grading_report($gradingreport);
     }

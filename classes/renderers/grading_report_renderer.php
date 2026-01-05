@@ -68,6 +68,7 @@ class grading_report_renderer extends plugin_renderer_base {
         $template->coursework = self::prepare_coursework_data($coursework);
         $template->blindmarkingenabled = $blindmarking;
         $template->releasemarks = $this->prepare_release_marks_button($coursework);
+        $template->tiienabled = $coursework->tii_enabled();
 
         $currenturl = new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]);
 
@@ -213,7 +214,10 @@ class grading_report_renderer extends plugin_renderer_base {
         if (!$allocatable) {
             return null;
         }
-        $submissionfiles = submission::get_all_submission_files_data($coursework, $allocatable);
+        $submission = submission::find(
+            ['courseworkid' => $coursework->id, 'allocatableid' => $allocatableid, 'allocatabletype' => $allocatabletype]
+        );
+        $submissionfilesarray = $submission ? submission::get_all_submission_files_data($coursework, [$submission->id()]) : [];
         $rowclass = $coursework->has_multiple_markers()
             ? 'mod_coursework\grading_table_row_multi'
             : 'mod_coursework\grading_table_row_single';
@@ -225,7 +229,7 @@ class grading_report_renderer extends plugin_renderer_base {
             $allocatable,
             deadline_extension::get_for_allocatable($coursework->id, $allocatableid, $allocatabletype),
             personaldeadline::get_for_allocatable($coursework->id, $allocatableid, $allocatabletype),
-            $submissionfiles
+            reset($submissionfilesarray)
         );
         if (!$ability->can('show', $row)) {
             return null;
