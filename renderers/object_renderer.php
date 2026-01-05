@@ -358,7 +358,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     /**
      * Displays a coursework so that we can see the intro, deadlines etc at the top of view.php
      *
-     * @param mod_coursework_coursework $coursework
+     * @param mod_coursework_coursework $coursework renderable object containing coursework
      * @return string html
      * @throws ReflectionException
      * @throws \core\exception\coding_exception
@@ -369,13 +369,14 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     protected function render_mod_coursework_coursework(mod_coursework_coursework $coursework): string {
         global $USER;
         $student = user::find($USER, false);
+        $coursework = $coursework->wrapped_object();
         $template = new stdClass();
+        $template->cmid = $coursework->get_coursemodule_id();
 
         // Capability checks
         $canallocate = has_capability('mod/coursework:allocate', $coursework->get_context());
         $cangrade = has_capability('mod/coursework:addinitialgrade', $this->page->context);
         $canpublish = has_capability('mod/coursework:publish', $this->page->context);
-        $canaddgeneralfeedback = has_capability('mod/coursework:addgeneralfeedback', $this->page->context);
         $cansubmit = has_capability('mod/coursework:submit', $this->page->context);
 
         // Warnings.
@@ -428,32 +429,15 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         if (!$cangrade && $submission && $submission->is_published()) {
             $template->feedbackfromteachers = $this->existing_feedback_from_teachers($submission);
         } else {
-            $template->introdates = $this->add_intro_dates($coursework, $template);
+            $template->introdates = $this->add_intro_dates($coursework);
             $template->description = format_module_intro('coursework', $coursework, $coursework->get_coursemodule_id());
 
             // Marking guide - from advanced grading.
             $template->markingguideurl = self::get_marking_guide_url($coursework);
         }
 
-        // General feedback.
-        // TODO - update this as part of https://ucldata.atlassian.net/browse/CTP-5316
-        // TODO - this should just be $canaddgeneralfeedback || $coursework->is_general_feedback_released().
-        // Behat fails when you don't include the other capabilities.
-        if ($cangrade || $canpublish || $canaddgeneralfeedback || $coursework->is_general_feedback_released()) {
-            $feedback = new stdClass();
-            $feedback->feedback = $coursework->feedbackcomment;
-
-            // TODO - this should just be in the next $canaddgeneralfeedback.
-            // Behat fails when you don't include the other capabilities.
-            if ($cangrade || $canpublish || $canaddgeneralfeedback) {
-                $feedback->duedate = $coursework->generalfeedback;
-            }
-            if ($canaddgeneralfeedback) {
-                $feedback->button = new stdClass();
-                $feedback->button->url = new moodle_url('/mod/coursework/actions/general_feedback.php', ['cmid' => $coursework->get_coursemodule_id()]);
-                $feedback->button->label = get_string($coursework->feedbackcomment ? 'editgeneralfeedback' : 'addgeneralfeedback', 'coursework');
-            }
-            $template->generalfeedback = $feedback;
+        if ($coursework->is_general_feedback_released()) {
+            $template->generalfeedback = $coursework->get_general_feedback();
         }
 
         $intro = $this->render_from_template('mod_coursework/intro', $template);
@@ -997,12 +981,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param mod_coursework_coursework $coursework
+     * @param coursework $coursework
      * @return stdClass
      * @throws coding_exception
      * @throws dml_exception
      */
-    private function add_intro_dates(mod_coursework_coursework $coursework) {
+    private function add_intro_dates(coursework $coursework) {
         global $USER;
 
         $template = new stdClass();
@@ -1228,12 +1212,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     /**
      * Generates the dropdown data for export and upload links.
      *
-     * @param mod_coursework_coursework $coursework The coursework activity object.
+     * @param coursework $coursework The coursework activity object.
      * @return array An array containing the structured dropdown data.
      * @throws \core\exception\moodle_exception
      * @throws coding_exception
      */
-    private function get_export_upload_links(mod_coursework_coursework $coursework): array {
+    private function get_export_upload_links(coursework $coursework): array {
         $cmid = $this->page->cm->id;
         $viewurl = '/mod/coursework/view.php';
         $submissions = $coursework->get_all_submissions();

@@ -59,9 +59,12 @@
                 <hr>
             {{/description}}
 
-            {{#generalfeedback}}
-                {{> mod_coursework/general_feedback}}
-            {{/generalfeedback}}
+            {{#studentview}}
+                {{#generalfeedback}}
+                    <h4 class="h5">{{#str}} generalfeedback, mod_coursework {{/str}}</h4>
+                    <div>{{{.}}}</div>
+                {{/generalfeedback}}
+            {{/studentview}}
         </div>
 
         {{#markingsummary}}

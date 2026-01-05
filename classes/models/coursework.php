@@ -171,6 +171,7 @@ class coursework extends table_base {
     public $maxbytes;
 
     /**
+     * The general feedback release date or 0 if not restricted by date.
      * @var string
      */
     public $generalfeedback;
@@ -181,6 +182,7 @@ class coursework extends table_base {
     public $individualfeedback;
 
     /**
+     * The general feedback comment
      * @var string
      */
     public $feedbackcomment;
@@ -759,26 +761,6 @@ class coursework extends table_base {
         }
         return false;
         // Get them for this whole coursework.
-    }
-
-    /**
-     * If not set for this coursework, use the one from the site settings.
-     *
-     * @return int timestamp
-     */
-    public function get_general_feedback_deadline() {
-
-        global $CFG;
-
-        if ($this->generalfeedback > 0) {
-            return $this->generalfeedback;
-        } else {
-            if ($CFG->coursework_generalfeedback) {
-                return strtotime('+ ' . $CFG->coursework_generalfeedback . ' weeks', $this->deadline);
-            } else { // If site setting is 0.
-                return strtotime('+ 2 weeks', $this->deadline);
-            }
-        }
     }
 
     /**
@@ -2397,11 +2379,23 @@ class coursework extends table_base {
      * false otherwise.
      */
     public function is_general_feedback_released() {
-        if ($this->feedbackcomment && ($this->generalfeedback == 0 || time() > $this->generalfeedback)) {
+        if ($this->get_general_feedback() && ($this->generalfeedback == 0 || time() > $this->generalfeedback)) {
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * Get the general feedback comment if set.
+     * Return null if it's just HTML tags.
+     * @return string|null
+     */
+    public function get_general_feedback(): ?string {
+        if (!$this->feedbackcomment || !trim(strip_tags($this->feedbackcomment))) {
+            return null;
+        }
+        return trim($this->feedbackcomment);
     }
 
     /**
