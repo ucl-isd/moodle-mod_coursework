@@ -61,7 +61,8 @@
 
             {{#studentview}}
                 {{#generalfeedback}}
-                    {{> mod_coursework/general_feedback}}
+                    <h4 class="h5">{{#str}} generalfeedback, mod_coursework {{/str}}</h4>
+                    <div>{{{.}}}</div>
                 {{/generalfeedback}}
             {{/studentview}}
         </div>

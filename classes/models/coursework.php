@@ -2397,7 +2397,7 @@ class coursework extends table_base {
      * @return string|null
      */
     public function get_general_feedback(): ?string {
-        if (!$this->feedbackcomment || !(trim(strip_tags($this->feedbackcomment)))) {
+        if (!$this->feedbackcomment || !trim(strip_tags($this->feedbackcomment))) {
             return null;
         }
         return trim($this->feedbackcomment);
