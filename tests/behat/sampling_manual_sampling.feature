@@ -1,4 +1,4 @@
-@mod @mod_coursework @mod_coursework_sampling_manual
+@mod @mod_coursework @mod_coursework_sampling
 Feature: Manual sampling
 
     As a teacher
@@ -42,3 +42,18 @@ Feature: Manual sampling
     And I log in as the teacher
     And I visit the coursework page
     Then I should see the grade given by the initial teacher in the provisional grade column
+
+  @javascript
+  Scenario: Manual sampling should include student when selected
+    When I visit the allocations page
+    And I select a student as a part of the sample for the second stage
+    And I save everything
+    And I log out
+    And I log in as the teacher
+    And I visit the coursework page
+    # I should be able to grade the user
+    And I wait "1" seconds
+    And I should see "Add mark"
+    And I click on the add feedback button for assessor 2
+    And I set the field "Mark" to "67"
+    And I press "Save and finalise"
