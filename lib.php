@@ -1218,7 +1218,7 @@ function coursework_records_to_menu($records, $field1, $field2) {
 
 /**
  * @param $feature
- * @return bool|null
+ * @return mixed True if module supports feature, false if not, null if doesn't know or string for the module purpose.
  */
 function mod_coursework_supports($feature) {
     switch ($feature) {
