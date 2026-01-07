@@ -23,7 +23,7 @@ import Ajax from "../../../../lib/amd/src/ajax";
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-const processTurnitin = async (courseworkId) => {
+const processTurnitin = async(courseworkId) => {
     const plagiarismLinks = document.querySelectorAll('.mod-coursework-plagiarism-tii-links');
     const submissionIds = Array.from(plagiarismLinks).map(elem => {
         return parseInt(elem.closest('.mod-coursework-submissions-submission-col').dataset.submissionId);

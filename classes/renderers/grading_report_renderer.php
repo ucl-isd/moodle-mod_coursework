@@ -229,7 +229,7 @@ class grading_report_renderer extends plugin_renderer_base {
             $allocatable,
             deadline_extension::get_for_allocatable($coursework->id, $allocatableid, $allocatabletype),
             personaldeadline::get_for_allocatable($coursework->id, $allocatableid, $allocatabletype),
-            reset($submissionfilesarray)
+            !empty($submissionfilesarray) ? array_pop($submissionfilesarray) : []
         );
         if (!$ability->can('show', $row)) {
             return null;
