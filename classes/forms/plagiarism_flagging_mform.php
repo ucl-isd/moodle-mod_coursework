@@ -124,7 +124,12 @@ class plagiarism_flagging_mform extends dynamic_form {
         if ($flag) {
             $mform->setDefault('status', $flag->status);
             $mform->setDefault('plagiarismcomment', ['text' => $flag->comment, 'format' => $flag->commentformat]);
-            if (!has_capability('mod/coursework:updateplagiarismflag', $this->get_submission()->get_coursework()->get_context())) {
+            if (
+                !has_capability(
+                    'mod/coursework:updateplagiarismflag',
+                    $this->get_submission()->get_coursework()->get_context()
+                )
+            ) {
                 $mform->hardFreeze('status,plagiarismcomment');
             }
         }
@@ -210,17 +215,13 @@ class plagiarism_flagging_mform extends dynamic_form {
 
     /**
      * Checks if current user has access to this form, otherwise throws exception.
-     * @throws \coding_exception
-     * @throws access_denied
+     * @throws \required_capability_exception
      */
     protected function check_access_for_dynamic_submission(): void {
-        if (
-            !has_capability('mod/coursework:addplagiarismflag', $this->get_submission()->get_coursework()->get_context())
-            &&
-            !has_capability('mod/coursework:addplagiarismflag', $this->get_submission()->get_coursework()->get_context())
-        ) {
-            throw new access_denied($this->get_submission()->get_coursework(), 'No permission to edit/create plagiarism flag');
-        }
+        require_capability(
+            'mod/coursework:addplagiarismflag',
+            $this->get_submission()->get_coursework()->get_context()
+        );
     }
 
     /**
