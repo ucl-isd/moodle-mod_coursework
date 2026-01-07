@@ -134,7 +134,7 @@ class assessment_set_membership extends table_base implements moderatable {
     public static function membership_count(int $courseworkid, string $allocatabletype, int $allocatableid): int {
         global $DB;
         // This is called over and over during rendering of the grading page, so cache the result.
-        $cachekey = $courseworkid . "_" . $allocatabletype . "_" . $allocatableid;
+        $cachekey = self::membership_count_cache_key($courseworkid, $allocatabletype, $allocatableid);
 
         $cache = cache::make('mod_coursework', self::CACHE_AREA_MEMBER_COUNT);
         $cachedvalue = $cache->get($cachekey);
@@ -178,6 +178,16 @@ class assessment_set_membership extends table_base implements moderatable {
         }
     }
 
+    /**
+     * Get the cache key used for membership count cache.
+     * @param int $courseworkid
+     * @param string $allocatabletype
+     * @param int $allocatableid
+     * @return string
+     */
+    private static function membership_count_cache_key(int $courseworkid, string $allocatabletype, int $allocatableid): string {
+        return $courseworkid . "_" . $allocatabletype . "_" . $allocatableid;
+    }
 
     /**
      * Makes a new instance and saves it.
@@ -188,7 +198,7 @@ class assessment_set_membership extends table_base implements moderatable {
     public static function create($params) {
         $cache = cache::make('mod_coursework', self::CACHE_AREA_MEMBER_COUNT);
         $params = (array)$params;
-        $cache->delete($params['courseworkid'] . "_" . $params['allocatabletype'] . "_" . $params['allocatableid']);
+        $cache->delete(self::membership_count_cache_key($params['courseworkid'], $params['allocatabletype'], $params['allocatableid']));
         return parent::create($params);
     }
 
