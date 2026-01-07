@@ -49,7 +49,7 @@ require_once($CFG->dirroot . '/mod/coursework/renderable.php');
 
 
 /**
- * @param $feature
+ * @param string $feature
  * @return mixed True if module supports feature, false if not, null if doesn't know or string for the module purpose.
  */
 function coursework_supports(string $feature): mixed {
