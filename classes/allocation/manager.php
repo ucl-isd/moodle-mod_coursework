@@ -26,6 +26,7 @@ namespace mod_coursework\allocation;
  */
 
 use coding_exception;
+use core_cache\cache;
 use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\coursework;
 use mod_coursework\models\moderation_set_rule;
@@ -280,9 +281,7 @@ class manager {
         }
 
         for ($stagenumber = 2; $stagenumber <= $this->get_coursework()->get_max_markers(); $stagenumber++) {
-            $stage = "assessor_{$stagenumber}";
-
-            $this->remove_unmarked_automatic_allocatables($stage);
+            assessment_set_membership::remove_unmarked_automatic_allocatables($this->coursework->id, $stagenumber);
 
             $sql = "SELECT DISTINCT rulename
                          FROM (SELECT         rulename,ruleorder
@@ -293,11 +292,17 @@ class manager {
                                AND            stageidentifier = :stage
                                ORDER BY       ruleorder)a";
 
-            if ($sampleplugins = $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id, 'stage' => $stage])) {
+            if ($sampleplugins = $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id, 'stage' => "assessor_$stagenumber"])) {
                 $allocatables = $this->get_coursework()->get_allocatables();
-                $manualsampleset = $this->get_include_in_sample_set($stagenumber);
+                $manualsampleset = assessment_set_membership::get_manually_selected_allocatables_for_stage(
+                    $this->coursework->id,
+                    $stagenumber
+                );
 
-                $autowithfeedback = $this->get_automatic_with_feedback($stage);
+                $autowithfeedback = assessment_set_membership::get_automatic_with_feedback(
+                    $this->coursework->id,
+                    $stagenumber
+                );
 
                 // Ok this array merge is being carried out using an foreach rather than array_merge as we want to preserve keys
                 // I am also not using add the two arrays as using the overloaded + can produce dubious results when a key exists
@@ -329,76 +334,11 @@ class manager {
                         $sample->stageidentifier = "assessor_{$stagenumber}";
                         $sample->selectiontype = "automatic";
 
-                        // If this a manually selected allocatable check to see if the allocatable is already in the table
-                        $DB->insert_record("coursework_sample_set_mbrs", $sample);
+                        assessment_set_membership::create($sample);
                     }
                 }
             }
         }
-    }
-
-    public function get_include_in_sample_set($stagenumber) {
-
-        global  $DB;
-
-        $stage = "assessor_{$stagenumber}";
-
-        $sql = "SELECT     allocatableid,
-                                courseworkid,
-                                allocatabletype,
-                                stageidentifier,
-                                selectiontype
-                     FROM       {coursework_sample_set_mbrs}
-                     WHERE      courseworkid = :courseworkid
-                     AND        stageidentifier = :stageidentifier
-                     AND        selectiontype = 'manual'";
-
-        // Get all users in manually selected for stage in coursework
-        return $DB->get_records_sql(
-            $sql,
-            ['courseworkid' => $this->coursework->id, 'stageidentifier' => $stage]
-        );
-    }
-
-    public function get_automatic_with_feedback($stage) {
-
-        global $DB;
-
-        $sql = "SELECT         s.allocatableid, f.*
-                         FROM       {coursework_submissions}  s,
-                                    {coursework_feedbacks}    f,
-                                    {coursework_sample_set_mbrs} m
-                         WHERE      s.id = f.submissionid
-                         AND        s.courseworkid = :courseworkid
-                         AND        f.stageidentifier = :stage
-                         AND        s.courseworkid = m.courseworkid
-                         AND        s.allocatableid = m.allocatableid
-                         AND        s.allocatabletype = m.allocatabletype
-                         AND        f.stageidentifier = m.stageidentifier
-                         ";
-
-        return $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id, 'stage' => $stage]);
-    }
-
-    public function remove_unmarked_automatic_allocatables($stage) {
-        global $DB;
-
-        $sql = "DELETE
-                     FROM     {coursework_sample_set_mbrs}
-                     WHERE    selectiontype = 'automatic'
-                     AND      stageidentifier = '{$stage}'
-                     AND      courseworkid = {$this->coursework->id}
-                     AND      allocatableid NOT IN (
-                        SELECT    s.allocatableid
-                        FROM      {coursework_submissions} s,
-                                  {coursework_feedbacks}    f
-                        WHERE     s.id = f.submissionid
-                         AND      s.courseworkid = {$this->coursework->id}
-                         AND      f.stageidentifier = '{$stage}'
-
-                     )";
-
-        return $DB->execute($sql);
     }
 
     public function get_allocatables_with_final_agreed() {

@@ -566,19 +566,21 @@ abstract class base {
     }
 
     /**
+     * Remove allocatable from sampling.
      * @param allocatable $allocatable
-     * @throws \dml_exception
+     * @throws \dml_exception|coding_exception
      */
     public function remove_allocatable_from_sampling($allocatable) {
-        global $DB;
-
         $params = [
             'courseworkid' => $this->coursework->id,
             'allocatableid' => $allocatable->id(),
             'allocatabletype' => $allocatable->type(),
             'stageidentifier' => $this->stageidentifier,
         ];
-        $DB->delete_records('coursework_sample_set_mbrs', $params);
+        $membership = assessment_set_membership::find($params, false);
+        if ($membership) {
+            $membership->destroy();
+        }
     }
 
     /**

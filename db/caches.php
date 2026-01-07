@@ -16,6 +16,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use mod_coursework\models\assessment_set_membership;
+
 /**
  * @package    mod_coursework
  * @copyright  2017 University of London Computer Centre {@link https://www.cosector.com}
@@ -25,5 +27,10 @@ defined('MOODLE_INTERNAL') || die();
 $definitions = [
     'courseworkdata' => [
         'mode' => cache_store::MODE_APPLICATION,
+    ],
+    assessment_set_membership::CACHE_AREA_MEMBER_COUNT => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => true,
     ],
 ];
