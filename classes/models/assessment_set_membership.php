@@ -210,4 +210,87 @@ class assessment_set_membership extends table_base implements moderatable {
     public function before_destroy(): void {
         $this->membership_count_clear_cache_for_coursework();
     }
+
+    /**
+     * @param int $courseworkid
+     * @param int $stagenumber
+     * @return \stdClass[]
+     * @throws \dml_exception
+     */
+    public static function get_manually_selected_allocatables_for_stage(int $courseworkid, int $stagenumber): array {
+        global  $DB;
+        return $DB->get_records(
+            self::$tablename,
+            ['courseworkid' => $courseworkid, 'stageidentifier' => "assessor_$stagenumber", 'selectiontype' => 'manual'],
+            'id',
+            'allocatableid, courseworkid, allocatabletype, stageidentifier, selectiontype'
+        );
+    }
+
+    /**
+     * Get automatic allocatables with feedback.
+     * @param int $courseworkid
+     * @param int $stagenumber
+     * @return array
+     * @throws \dml_exception
+     */
+    public static function get_automatic_with_feedback(int $courseworkid, int $stagenumber) {
+        global $DB;
+        return $DB->get_records_sql(
+            "SELECT s.allocatableid, f.*
+            FROM {coursework_submissions} s,
+                {coursework_feedbacks} f,
+                {coursework_sample_set_mbrs} m
+            WHERE s.id = f.submissionid
+                AND s.courseworkid = :courseworkid
+                AND f.stageidentifier = :stageidentifier
+                AND s.courseworkid = m.courseworkid
+                AND s.allocatableid = m.allocatableid
+                AND s.allocatabletype = m.allocatabletype
+                AND f.stageidentifier = m.stageidentifier",
+            ['courseworkid' => $courseworkid, 'stageidentifier' => "assessor_{$stagenumber}"]
+        );
+    }
+
+    /**
+     * Remove unmarked automatic allocatables.
+     * @param int $courseworkid
+     * @param int $stagenumber
+     * @return bool|void
+     * @throws \dml_exception
+     * @throws coding_exception
+     */
+    public static function remove_unmarked_automatic_allocatables(int $courseworkid, int $stagenumber) {
+        global $DB;
+        $sql = "FROM {coursework_sample_set_mbrs}
+            WHERE selectiontype = 'automatic'
+            AND stageidentifier = :stage
+            AND courseworkid = :courseworkid
+            AND allocatableid NOT IN (
+                SELECT s.allocatableid
+                FROM {coursework_submissions} s,
+                     {coursework_feedbacks} f
+                WHERE s.id = f.submissionid
+                 AND s.courseworkid = :cwid
+                 AND f.stageidentifier = :stg
+            )";
+
+        $params = [
+            'stage' => "assessor_$stagenumber",
+            'stg' => "assessor_$stagenumber",
+            'courseworkid' => $courseworkid,
+            'cwid' => $courseworkid,
+        ];
+
+        $concatcachekeys = $DB->sql_concat('courseworkid', "'_'", 'allocatabletype', "'_'", 'allocatableid');
+        $cachekeys = $DB->get_records_sql(
+            "SELECT $concatcachekeys $sql GROUP BY courseworkid, allocatableid, allocatabletype",
+            $params
+        );
+        if (!empty($cachekeys)) {
+            $cache = cache::make('mod_coursework', self::CACHE_AREA_MEMBER_COUNT);
+            $cache->delete_many($cachekeys);
+            return $DB->execute("DELETE $sql", $params);
+        }
+    }
 }

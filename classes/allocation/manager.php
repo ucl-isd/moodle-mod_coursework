@@ -281,9 +281,7 @@ class manager {
         }
 
         for ($stagenumber = 2; $stagenumber <= $this->get_coursework()->get_max_markers(); $stagenumber++) {
-            $stage = "assessor_{$stagenumber}";
-
-            $this->remove_unmarked_automatic_allocatables($stage);
+            assessment_set_membership::remove_unmarked_automatic_allocatables($this->coursework->id, $stagenumber);
 
             $sql = "SELECT DISTINCT rulename
                          FROM (SELECT         rulename,ruleorder
@@ -294,11 +292,17 @@ class manager {
                                AND            stageidentifier = :stage
                                ORDER BY       ruleorder)a";
 
-            if ($sampleplugins = $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id, 'stage' => $stage])) {
+            if ($sampleplugins = $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id, 'stage' => "assessor_$stagenumber"])) {
                 $allocatables = $this->get_coursework()->get_allocatables();
-                $manualsampleset = $this->get_include_in_sample_set($stagenumber);
+                $manualsampleset = assessment_set_membership::get_manually_selected_allocatables_for_stage(
+                    $this->coursework->id,
+                    $stagenumber
+                );
 
-                $autowithfeedback = $this->get_automatic_with_feedback($stage);
+                $autowithfeedback = assessment_set_membership::get_automatic_with_feedback(
+                    $this->coursework->id,
+                    $stagenumber
+                );
 
                 // Ok this array merge is being carried out using an foreach rather than array_merge as we want to preserve keys
                 // I am also not using add the two arrays as using the overloaded + can produce dubious results when a key exists
@@ -334,83 +338,6 @@ class manager {
                     }
                 }
             }
-        }
-    }
-
-    public function get_include_in_sample_set($stagenumber) {
-
-        global  $DB;
-
-        $stage = "assessor_{$stagenumber}";
-
-        $sql = "SELECT     allocatableid,
-                                courseworkid,
-                                allocatabletype,
-                                stageidentifier,
-                                selectiontype
-                     FROM       {coursework_sample_set_mbrs}
-                     WHERE      courseworkid = :courseworkid
-                     AND        stageidentifier = :stageidentifier
-                     AND        selectiontype = 'manual'";
-
-        // Get all users in manually selected for stage in coursework
-        return $DB->get_records_sql(
-            $sql,
-            ['courseworkid' => $this->coursework->id, 'stageidentifier' => $stage]
-        );
-    }
-
-    public function get_automatic_with_feedback($stage) {
-
-        global $DB;
-
-        $sql = "SELECT         s.allocatableid, f.*
-                         FROM       {coursework_submissions}  s,
-                                    {coursework_feedbacks}    f,
-                                    {coursework_sample_set_mbrs} m
-                         WHERE      s.id = f.submissionid
-                         AND        s.courseworkid = :courseworkid
-                         AND        f.stageidentifier = :stage
-                         AND        s.courseworkid = m.courseworkid
-                         AND        s.allocatableid = m.allocatableid
-                         AND        s.allocatabletype = m.allocatabletype
-                         AND        f.stageidentifier = m.stageidentifier
-                         ";
-
-        return $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id, 'stage' => $stage]);
-    }
-
-    public function remove_unmarked_automatic_allocatables($stage) {
-        global $DB;
-        $sql = "FROM {coursework_sample_set_mbrs}
-                 WHERE selectiontype = 'automatic'
-                 AND stageidentifier = :stage
-                 AND courseworkid = :courseworkid
-                 AND allocatableid NOT IN (
-                    SELECT s.allocatableid
-                    FROM {coursework_submissions} s,
-                         {coursework_feedbacks} f
-                    WHERE s.id = f.submissionid
-                     AND s.courseworkid = :cwid
-                     AND f.stageidentifier = :stg
-                 )";
-
-        $params = [
-            'stage' => $stage,
-            'stg' => $stage,
-            'courseworkid' => $this->coursework->id,
-            'cwid' => $this->coursework->id,
-        ];
-
-        $concatcachekeys = $DB->sql_concat('courseworkid', "'_'", 'allocatabletype', "'_'", 'allocatableid');
-        $cachekeys = $DB->get_records_sql(
-            "SELECT $concatcachekeys $sql GROUP BY courseworkid, allocatableid, allocatabletype",
-            $params
-        );
-        if (!empty($cachekeys)) {
-            $cache = cache::make('mod_coursework', assessment_set_membership::CACHE_AREA_MEMBER_COUNT);
-            $cache->delete_many($cachekeys);
-            return $DB->execute("DELETE $sql", $params);
         }
     }
 
