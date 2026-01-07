@@ -47,6 +47,31 @@ require_once($CFG->dirroot . '/calendar/lib.php');
 require_once($CFG->dirroot . '/lib/gradelib.php');
 require_once($CFG->dirroot . '/mod/coursework/renderable.php');
 
+
+/**
+ * @param string $feature
+ * @return mixed True if module supports feature, false if not, null if doesn't know or string for the module purpose.
+ */
+function coursework_supports(string $feature): mixed {
+    $supportstatus = match ($feature) {
+        FEATURE_GROUPS => true,
+        FEATURE_GROUPINGS => true,
+        FEATURE_MOD_INTRO => true,
+        FEATURE_BACKUP_MOODLE2 => true,
+        FEATURE_GRADE_HAS_GRADE => true,
+        FEATURE_SHOW_DESCRIPTION => true,
+        FEATURE_ADVANCED_GRADING => true,
+        FEATURE_PLAGIARISM => true,
+        FEATURE_GRADE_OUTCOMES => false,
+        FEATURE_COMPLETION_HAS_RULES => false,
+        FEATURE_COMPLETION_TRACKS_VIEWS => false,
+        FEATURE_MOD_PURPOSE => MOD_PURPOSE_ASSESSMENT,
+        default => null,
+    };
+
+    return $supportstatus;
+}
+
 /**
  * Lists all file areas current user may browse
  *
@@ -831,27 +856,6 @@ function coursework_get_extra_capabilities() {
 }
 
 /**
- * @param string $feature FEATURE_xx constant for requested feature
- * @return true|null True if module supports feature, null if doesn't know
- */
-function coursework_supports($feature) {
-    switch ($feature) {
-        case FEATURE_BACKUP_MOODLE2:
-        case FEATURE_GRADE_OUTCOMES:
-        case FEATURE_GRADE_HAS_GRADE:
-        case FEATURE_COMPLETION_TRACKS_VIEWS:
-        case FEATURE_MOD_INTRO:
-        case FEATURE_GROUPINGS:
-        case FEATURE_GROUPS:
-        case FEATURE_ADVANCED_GRADING:
-            return true;
-
-        default:
-            return null;
-    }
-}
-
-/**
  * Returns submission details for a plagiarism file submission.
  *
  * @param int $cmid
@@ -1214,31 +1218,6 @@ function coursework_records_to_menu($records, $field1, $field2) {
         }
     }
     return $menu;
-}
-
-/**
- * @param $feature
- * @return bool|null
- */
-function mod_coursework_supports($feature) {
-    switch ($feature) {
-        case FEATURE_PLAGIARISM:
-        case FEATURE_ADVANCED_GRADING:
-        case FEATURE_SHOW_DESCRIPTION:
-        case FEATURE_BACKUP_MOODLE2:
-        case FEATURE_GRADE_HAS_GRADE:
-        case FEATURE_MOD_INTRO:
-        case FEATURE_GROUPINGS:
-        case FEATURE_GROUPS:
-            return true;
-        case FEATURE_GRADE_OUTCOMES:
-        case FEATURE_COMPLETION_HAS_RULES:
-        case FEATURE_COMPLETION_TRACKS_VIEWS:
-            return false;
-
-        default:
-            return null;
-    }
 }
 
 /**
