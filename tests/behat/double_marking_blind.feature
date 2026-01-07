@@ -327,8 +327,8 @@ Feature: Double marking - blind
       | marker3   | C1     | courseworkmarker     |
       | student1  | C1     | student              |
 
-    And the student "Student 1" has a submission for coursework "Coursework 1"
-    And the submission for "Student 1" in "Coursework 1" is finalised
+    And the student "Student 1" has a submission
+    And the submission for "Student 1" is finalised
 
     When I am on the "Course 1" "course" page logged in as "manager"
     And I follow "Coursework 1"
@@ -383,12 +383,12 @@ Feature: Double marking - blind
     And I assign user "Marker 1" as "Assessor 2" for "Student 3" in coursework "Coursework 1"
     And I assign user "Marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
 
-    And the student "Student 1" has a submission for coursework "Coursework 1"
-    And the submission for "Student 1" in "Coursework 1" is finalised
-    And the student "Student 2" has a submission for coursework "Coursework 1"
-    And the submission for "Student 2" in "Coursework 1" is finalised
-    And the student "Student 3" has a submission for coursework "Coursework 1"
-    And the submission for "Student 3" in "Coursework 1" is finalised
+    And the student "Student 1" has a submission
+    And the submission for "Student 1" is finalised
+    And the student "Student 2" has a submission
+    And the submission for "Student 2" is finalised
+    And the student "Student 3" has a submission
+    And the submission for "Student 3" is finalised
 
     And I log out
     And I am on the "Course 1" "course" page logged in as "marker1"
@@ -432,14 +432,14 @@ Feature: Double marking - blind
     And I assign user "Marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
     And I assign user "Marker 2" as "Assessor 2" for "Student 1" in coursework "Coursework 1"
 
-    And the student "Student 1" has a submission for coursework "Coursework 1"
-    And the submission for "Student 1" in "Coursework 1" is finalised
+    And the student "Student 1" has a submission
+    And the submission for "Student 1" is finalised
 
-    And the submission from "Student 1" for coursework "Coursework 1" is marked by "Marker 1" with:
+    And the submission from "Student 1" is marked by "Marker 1" with:
       | Mark    | 70              |
       | Comment | Excellent work! |
 
-    And the submission from "Student 1" for coursework "Coursework 1" is marked by "Marker 2" with:
+    And the submission from "Student 1" is marked by "Marker 2" with:
       | Mark    | 65              |
       | Comment | Nice! |
 
@@ -468,30 +468,27 @@ Feature: Double marking - blind
     And I assign user "Marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
     And I assign user "Moderator 1" as "Moderator" for "Student 3" in coursework "Coursework 1"
 
-    And the student "Student 1" has a submission for coursework "Coursework 1"
-    And the submission for "Student 1" in "Coursework 1" is finalised
-    And the student "Student 2" has a submission for coursework "Coursework 1"
-    And the submission for "Student 2" in "Coursework 1" is finalised
-    And the student "Student 3" has a submission for coursework "Coursework 1"
-    And the submission for "Student 3" in "Coursework 1" is finalised
+    And the student "Student 1" has a submission
+    And the submission for "Student 1" is finalised
+    And the student "Student 2" has a submission
+    And the submission for "Student 2" is finalised
+    And the student "Student 3" has a submission
+    And the submission for "Student 3" is finalised
 
-    And the submission from "Student 1" for coursework "Coursework 1" is marked by "Marker 1" with:
+    And the submission from "Student 1" is marked by "Marker 1" with:
       | Mark      | 70              |
       | Comment   | Excellent work! |
       | Finalised | 1               |
 
-    And the submission from "Student 2" for coursework "Coursework 1" is marked by "Marker 1" with:
+    And the submission from "Student 2" is marked by "Marker 1" with:
       | Mark      | 75              |
       | Comment   | Superb work!    |
       | Finalised | 1               |
 
-    And the submission from "Student 3" for coursework "Coursework 1" is marked by "Marker 2" with:
+    And the submission from "Student 3" is marked by "Marker 2" with:
       | Mark      | 50                  |
       | Comment   | I've seen worse...  |
       | Finalised | 1                   |
-
-#    Alternative separate step to finalise a feedback.
-#    And the feedback for "Student 1" by "Marker 1" in "Coursework 1" is finalised
 
     And I am on the "Course 1" "course" page logged in as "moderator1"
     And I follow "Coursework 1"
@@ -529,32 +526,32 @@ Feature: Double marking - blind
     And I assign user "Marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
     And I assign user "Moderator 1" as "Moderator" for "Student 3" in coursework "Coursework 1"
 
-    And the student "Student 1" has a submission for coursework "Coursework 1"
-    And the submission for "Student 1" in "Coursework 1" is finalised
-    And the student "Student 2" has a submission for coursework "Coursework 1"
-    And the submission for "Student 2" in "Coursework 1" is finalised
-    And the student "Student 3" has a submission for coursework "Coursework 1"
-    And the submission for "Student 3" in "Coursework 1" is finalised
+    And the student "Student 1" has a submission
+    And the submission for "Student 1" is finalised
+    And the student "Student 2" has a submission
+    And the submission for "Student 2" is finalised
+    And the student "Student 3" has a submission
+    And the submission for "Student 3" is finalised
 
-    And the submission from "Student 1" for coursework "Coursework 1" is marked by "Marker 1" with:
+    And the submission from "Student 1" is marked by "Marker 1" with:
       | Mark      | 70              |
       | Comment   | Excellent work! |
       | Finalised | 1               |
 
-    And the submission from "Student 2" for coursework "Coursework 1" is marked by "Marker 1" with:
+    And the submission from "Student 2" is marked by "Marker 1" with:
       | Mark      | 75              |
       | Comment   | Superb work!    |
       | Finalised | 1               |
 
-    And the submission from "Student 3" for coursework "Coursework 1" is marked by "Marker 2" with:
+    And the submission from "Student 3" is marked by "Marker 2" with:
       | Mark      | 50                  |
       | Comment   | I've seen worse...  |
       | Finalised | 1                   |
 
-    And the submission from "Student 1" for coursework "Coursework 1" is moderated by "Moderator 1" with:
+    And the submission from "Student 1" is moderated by "Moderator 1" with:
       | Agreement | agreed               |
 
-    And the submission from "Student 2" for coursework "Coursework 1" is moderated by "Moderator 1" with:
+    And the submission from "Student 2" is moderated by "Moderator 1" with:
       | Agreement | disagreed               |
       | Comment   | I don't like it at all! |
 
@@ -597,32 +594,32 @@ Feature: Double marking - blind
     And I assign user "Marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
     And I assign user "Moderator 1" as "Moderator" for "Student 3" in coursework "Coursework 1"
 
-    And the student "Student 1" has a submission for coursework "Coursework 1"
-    And the submission for "Student 1" in "Coursework 1" is finalised
-    And the student "Student 2" has a submission for coursework "Coursework 1"
-    And the submission for "Student 2" in "Coursework 1" is finalised
-    And the student "Student 3" has a submission for coursework "Coursework 1"
-    And the submission for "Student 3" in "Coursework 1" is finalised
+    And the student "Student 1" has a submission
+    And the submission for "Student 1" is finalised
+    And the student "Student 2" has a submission
+    And the submission for "Student 2" is finalised
+    And the student "Student 3" has a submission
+    And the submission for "Student 3" is finalised
 
-    And the submission from "Student 1" for coursework "Coursework 1" is marked by "Marker 1" with:
+    And the submission from "Student 1" is marked by "Marker 1" with:
       | Mark      | 70              |
       | Comment   | Excellent work! |
       | Finalised | 1               |
 
-    And the submission from "Student 2" for coursework "Coursework 1" is marked by "Marker 1" with:
+    And the submission from "Student 2" is marked by "Marker 1" with:
       | Mark      | 75              |
       | Comment   | Superb work!    |
       | Finalised | 1               |
 
-    And the submission from "Student 3" for coursework "Coursework 1" is marked by "Marker 2" with:
+    And the submission from "Student 3" is marked by "Marker 2" with:
       | Mark      | 50                  |
       | Comment   | I've seen worse...  |
       | Finalised | 1                   |
 
-    And the submission from "Student 1" for coursework "Coursework 1" is moderated by "Moderator 1" with:
+    And the submission from "Student 1" is moderated by "Moderator 1" with:
       | Agreement | agreed               |
 
-    And the submission from "Student 2" for coursework "Coursework 1" is moderated by "Moderator 1" with:
+    And the submission from "Student 2" is moderated by "Moderator 1" with:
       | Agreement | disagreed               |
       | Comment   | I don't like it at all! |
 
@@ -659,32 +656,32 @@ Feature: Double marking - blind
     And I assign user "Marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
     And I assign user "Moderator 1" as "Moderator" for "Student 3" in coursework "Coursework 1"
 
-    And the student "Student 1" has a submission for coursework "Coursework 1"
-    And the submission for "Student 1" in "Coursework 1" is finalised
-    And the student "Student 2" has a submission for coursework "Coursework 1"
-    And the submission for "Student 2" in "Coursework 1" is finalised
-    And the student "Student 3" has a submission for coursework "Coursework 1"
-    And the submission for "Student 3" in "Coursework 1" is finalised
+    And the student "Student 1" has a submission
+    And the submission for "Student 1" is finalised
+    And the student "Student 2" has a submission
+    And the submission for "Student 2" is finalised
+    And the student "Student 3" has a submission
+    And the submission for "Student 3" is finalised
 
-    And the submission from "Student 1" for coursework "Coursework 1" is marked by "Marker 1" with:
+    And the submission from "Student 1" is marked by "Marker 1" with:
       | Mark      | 70              |
       | Comment   | Excellent work! |
       | Finalised | 1               |
 
-    And the submission from "Student 2" for coursework "Coursework 1" is marked by "Marker 1" with:
+    And the submission from "Student 2" is marked by "Marker 1" with:
       | Mark      | 75              |
       | Comment   | Superb work!    |
       | Finalised | 1               |
 
-    And the submission from "Student 3" for coursework "Coursework 1" is marked by "Marker 2" with:
+    And the submission from "Student 3" is marked by "Marker 2" with:
       | Mark      | 50                  |
       | Comment   | I've seen worse...  |
       | Finalised | 1                   |
 
-    And the submission from "Student 1" for coursework "Coursework 1" is moderated by "Moderator 1" with:
+    And the submission from "Student 1" is moderated by "Moderator 1" with:
       | Agreement | agreed               |
 
-    And the submission from "Student 2" for coursework "Coursework 1" is moderated by "Moderator 1" with:
+    And the submission from "Student 2" is moderated by "Moderator 1" with:
       | Agreement | disagreed               |
       | Comment   | I don't like it at all! |
 
@@ -722,32 +719,32 @@ Feature: Double marking - blind
     And I assign user "Marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
     And I assign user "Moderator 1" as "Moderator" for "Student 3" in coursework "Coursework 1"
 
-    And the student "Student 1" has a submission for coursework "Coursework 1"
-    And the submission for "Student 1" in "Coursework 1" is finalised
-    And the student "Student 2" has a submission for coursework "Coursework 1"
-    And the submission for "Student 2" in "Coursework 1" is finalised
-    And the student "Student 3" has a submission for coursework "Coursework 1"
-    And the submission for "Student 3" in "Coursework 1" is finalised
+    And the student "Student 1" has a submission
+    And the submission for "Student 1" is finalised
+    And the student "Student 2" has a submission
+    And the submission for "Student 2" is finalised
+    And the student "Student 3" has a submission
+    And the submission for "Student 3" is finalised
 
-    And the submission from "Student 1" for coursework "Coursework 1" is marked by "Marker 1" with:
+    And the submission from "Student 1" is marked by "Marker 1" with:
       | Mark      | 70              |
       | Comment   | Excellent work! |
       | Finalised | 1               |
 
-    And the submission from "Student 2" for coursework "Coursework 1" is marked by "Marker 1" with:
+    And the submission from "Student 2" is marked by "Marker 1" with:
       | Mark      | 75              |
       | Comment   | Superb work!    |
       | Finalised | 1               |
 
-    And the submission from "Student 3" for coursework "Coursework 1" is marked by "Marker 2" with:
+    And the submission from "Student 3" is marked by "Marker 2" with:
       | Mark      | 50                  |
       | Comment   | I've seen worse...  |
       | Finalised | 1                   |
 
-    And the submission from "Student 1" for coursework "Coursework 1" is moderated by "Moderator 1" with:
+    And the submission from "Student 1" is moderated by "Moderator 1" with:
       | Agreement | agreed               |
 
-    And the submission from "Student 2" for coursework "Coursework 1" is moderated by "Moderator 1" with:
+    And the submission from "Student 2" is moderated by "Moderator 1" with:
       | Agreement | disagreed               |
       | Comment   | I don't like it at all! |
 
@@ -788,32 +785,32 @@ Feature: Double marking - blind
     And I assign user "Marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
     And I assign user "Moderator 1" as "Moderator" for "Student 3" in coursework "Coursework 1"
 
-    And the student "Student 1" has a submission for coursework "Coursework 1"
-    And the submission for "Student 1" in "Coursework 1" is finalised
-    And the student "Student 2" has a submission for coursework "Coursework 1"
-    And the submission for "Student 2" in "Coursework 1" is finalised
-    And the student "Student 3" has a submission for coursework "Coursework 1"
-    And the submission for "Student 3" in "Coursework 1" is finalised
+    And the student "Student 1" has a submission
+    And the submission for "Student 1" is finalised
+    And the student "Student 2" has a submission
+    And the submission for "Student 2" is finalised
+    And the student "Student 3" has a submission
+    And the submission for "Student 3" is finalised
 
-    And the submission from "Student 1" for coursework "Coursework 1" is marked by "Marker 1" with:
+    And the submission from "Student 1" is marked by "Marker 1" with:
       | Mark      | 70              |
       | Comment   | Excellent work! |
       | Finalised | 1               |
 
-    And the submission from "Student 2" for coursework "Coursework 1" is marked by "Marker 1" with:
+    And the submission from "Student 2" is marked by "Marker 1" with:
       | Mark      | 75              |
       | Comment   | Superb work!    |
       | Finalised | 1               |
 
-    And the submission from "Student 3" for coursework "Coursework 1" is marked by "Marker 2" with:
+    And the submission from "Student 3" is marked by "Marker 2" with:
       | Mark      | 50                  |
       | Comment   | I've seen worse...  |
       | Finalised | 1                   |
 
-    And the submission from "Student 1" for coursework "Coursework 1" is moderated by "Moderator 1" with:
+    And the submission from "Student 1" is moderated by "Moderator 1" with:
       | Agreement | agreed               |
 
-    And the submission from "Student 2" for coursework "Coursework 1" is moderated by "Moderator 1" with:
+    And the submission from "Student 2" is moderated by "Moderator 1" with:
       | Agreement | disagreed               |
       | Comment   | I don't like it at all! |
 

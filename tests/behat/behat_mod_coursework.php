@@ -3879,11 +3879,10 @@ class behat_mod_coursework extends behat_base {
     /**
      * Inserts a grade directly into coursework_feedbacks table.
      *
-     * @When /^the submission from "(?P<studentfullname>[^"]*)" for coursework "(?P<courseworkname>[^"]*)" is marked by "(?P<markerfullname>[^"]*)" with:$/
+     * @When /^the submission from "(?P<studentfullname>[^"]*)" is marked by "(?P<markerfullname>[^"]*)" with:$/
      */
     public function mark_coursework_submission_directly(
         string $studentfullname,
-        string $courseworkname,
         string $markerfullname,
         TableNode $table
     ) {
@@ -3892,14 +3891,9 @@ class behat_mod_coursework extends behat_base {
         $student = $this->get_user_from_username($studentfullname);
         $marker = $this->get_user_from_username($markerfullname);
 
-        // Resolve coursework module by name.
-        if (!$coursework = $DB->get_record('coursework', ['name' => $courseworkname])) {
-            throw new ExpectationException("Coursework '$courseworkname' not found", $this->getSession());
-        }
-
         // Resolve submission for this student.
         $submission = $DB->get_record('coursework_submissions', [
-            'courseworkid' => $coursework->id,
+            'courseworkid' => $this->coursework->id,
             'allocatableid' => $student->id,
         ]);
         if (!$submission) {
@@ -3908,7 +3902,7 @@ class behat_mod_coursework extends behat_base {
 
         // Resolve marker allocation.
         $allocation = $DB->get_record('coursework_allocation_pairs', [
-            'courseworkid' => $coursework->id,
+            'courseworkid' => $this->coursework->id,
             'assessorid' => $marker->id,
             'allocatableid' => $student->id,
         ]);
@@ -3997,23 +3991,14 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * Creates a submission for a given student and coursework.
+     * Creates a submission for a given student.
      *
-     * Example: And the student "Student 1" has a submission for coursework "Coursework 1"
+     * Example: And the student "Student 1" has a submission
      *
-     * @Given /^the student "(?P<studentname>(?:[^"]|\\")*)" has a submission for coursework "(?P<courseworkname>[^"]+)"$/
+     * @Given /^the student "(?P<studentname>(?:[^"]|\\")*)" has a submission$/
      */
-    public function student_has_a_submission_for_coursework($studentfullname, $courseworkname) {
-        global $DB;
-
+    public function student_has_a_submission($studentfullname) {
         $student = $this->get_user_from_username($studentfullname);
-
-        // Resolve coursework.
-        if (!$coursework = $DB->get_record('coursework', ['name' => $courseworkname], '*')) {
-            throw new \moodle_exception("Coursework '{$courseworkname}' not found.");
-        }
-        // Get a coursework object.
-        $coursework = coursework::build($coursework);
 
         /**
          * @var $generator mod_coursework_generator
@@ -4024,37 +4009,32 @@ class behat_mod_coursework extends behat_base {
         $submission->allocatableid = $student->id;
         $submission->allocatabletype = 'user'; // Always 'user' for a student.
 
-        $this->submission = $generator->create_submission($submission, $coursework);
+        $this->submission = $generator->create_submission($submission, $this->coursework);
     }
 
     /**
      * Finalises (or un-finalises) a submission to a coursework for a given student.
      *
-     * Example: And the submission for "Student 1" in "Coursework 1" is finalised
-     * Example: And the submission for "Student 1" in "Coursework 1" is not finalised
+     * Example: And the submission for "Student 1" is finalised
+     * Example: And the submission for "Student 1" is not finalised
      *
-     * @Given /^the submission for "(?P<studentname>(?:[^"]|\\")*)" in "(?P<courseworkname>[^"]+)" is (not )?finalised$/
+     * @Given /^the submission for "(?P<studentname>(?:[^"]|\\")*)" is (not )?finalised$/
      */
-    public function submission_for_student_in_coursework_is_finalised($studentfullname, $courseworkname, $negate = false) {
+    public function submission_for_student_is_finalised($studentfullname, $negate = false) {
         global $DB;
 
         $student = $this->get_user_from_username($studentfullname);
 
-        // Resolve coursework.
-        if (!$coursework = $DB->get_record('coursework', ['name' => $courseworkname], '*')) {
-            throw new \moodle_exception("Coursework '{$courseworkname}' not found.");
-        }
-
         // Get student's submission.
         if (
-                !$submission = $DB->get_record(
-                    'coursework_submissions',
-                    [
+            !$submission = $DB->get_record(
+                'coursework_submissions',
+                [
                     'allocatableid' => $student->id,
                     'allocatabletype' => 'user',
-                    'courseworkid' => $coursework->id,
-                    ]
-                )
+                    'courseworkid' => $this->coursework->id,
+                ]
+            )
         ) {
             throw new \moodle_exception("Submission for '{$studentfullname}' not found in '{$courseworkname}'.");
         }
@@ -4066,57 +4046,6 @@ class behat_mod_coursework extends behat_base {
 
         // Save using the submission class.
         $DB->update_record('coursework_submissions', $submission);
-    }
-
-    /**
-     * Finalise a marker's feedback for a student's submission.
-     *
-     * Example:
-     * And the feedback for "Student 1" by "Marker 1" in "Coursework 1" is finalised
-     *
-     * @Given /^the feedback for "(?P<studentfullname>[^"]+)" by "(?P<markerfullname>[^"]+)" in "(?P<courseworkname>[^"]+)" is finalised$/
-     */
-    public function finalise_feedback($studentfullname, $markerfullname, $courseworkname) {
-        global $DB;
-
-        $student = $this->get_user_from_username($studentfullname);
-        $marker = $this->get_user_from_username($markerfullname);
-
-        // Resolve coursework.
-        if (!$coursework = $DB->get_record('coursework', ['name' => $courseworkname], '*')) {
-            throw new \moodle_exception("Coursework '{$courseworkname}' not found.");
-        }
-
-        // Get student's submission.
-        if (
-            !$submission = $DB->get_record(
-                'coursework_submissions',
-                [
-                'allocatableid' => $student->id,
-                'allocatabletype' => 'user',
-                'courseworkid' => $coursework->id,
-                ]
-            )
-        ) {
-            throw new \moodle_exception("Submission for '{$studentfullname}' not found in '{$courseworkname}'.");
-        }
-
-        // Get marker’s feedback record.
-        if (
-            !$feedback = $DB->get_record(
-                'coursework_feedbacks',
-                [
-                    'submissionid' => $submission->id,
-                    'assessorid'     => $marker->id,
-                ]
-            )
-        ) {
-            throw new \moodle_exception("Feedback by '{$markerfullname}' for '{$studentfullname}' not found.");
-        }
-
-        // Update field.
-        $feedback->finalised = 1;
-        $DB->update_record('coursework_feedbacks', $feedback);
     }
 
     /**
@@ -4209,11 +4138,10 @@ class behat_mod_coursework extends behat_base {
     /**
      * Inserts a moderation directly into coursework_mod_agreements table.
      *
-     * @When /^the submission from "(?P<studentfullname>[^"]*)" for coursework "(?P<courseworkname>[^"]*)" is moderated by "(?P<moderatorfullname>[^"]*)" with:$/
+     * @When /^the submission from "(?P<studentfullname>[^"]*)" is moderated by "(?P<moderatorfullname>[^"]*)" with:$/
      */
-    public function moderate_coursework_submission_directly(
+    public function moderate_submission_directly(
         string $studentfullname,
-        string $courseworkname,
         string $moderatorfullname,
         TableNode $table
     ) {
@@ -4222,14 +4150,9 @@ class behat_mod_coursework extends behat_base {
         $student = $this->get_user_from_username($studentfullname);
         $moderator = $this->get_user_from_username($moderatorfullname);
 
-        // Resolve coursework module by name.
-        if (!$coursework = $DB->get_record('coursework', ['name' => $courseworkname])) {
-            throw new ExpectationException("Coursework '$courseworkname' not found", $this->getSession());
-        }
-
         // Resolve submission for this student.
         $submission = $DB->get_record('coursework_submissions', [
-            'courseworkid' => $coursework->id,
+            'courseworkid' => $this->coursework->id,
             'allocatableid' => $student->id,
         ]);
         if (!$submission) {
@@ -4238,7 +4161,7 @@ class behat_mod_coursework extends behat_base {
 
         // Resolve moderator allocation.
         $allocation = $DB->get_record('coursework_allocation_pairs', [
-            'courseworkid' => $coursework->id,
+            'courseworkid' => $this->coursework->id,
             'assessorid' => $moderator->id,
             'allocatableid' => $student->id,
             'stageidentifier' => 'moderator',
