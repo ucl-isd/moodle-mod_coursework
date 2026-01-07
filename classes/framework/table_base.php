@@ -93,7 +93,7 @@ abstract class table_base {
         $recordid = self::get_id_from_record($dbrecord);
         // Cast to array in case it's stdClass.
         $dbrecord = (array)$dbrecord;
-        if (!$recordid && $reload) {
+        if (!isset($recordid)) {
             // Supplied data without record ID - treat as query params and try to get full record.
             // Filter to valid DB table columns.
             $allowedkeys = array_keys($DB->get_columns(static::$tablename));
@@ -114,19 +114,16 @@ abstract class table_base {
             if (empty($dbrecords)) {
                 return false;
             }
-            return new $klass(array_pop($dbrecords));
-        } else {
-            // Supplied data with object ID.
-            if ($reload) {
-                // Reload all data from ID.
-                $dbrecord = $DB->get_record(static::get_table_name(), ['id' => $recordid]);
-            }
+
+            $dbrecord = array_pop($dbrecords);
+        } else if ($reload) {
+            $dbrecord = $DB->get_record(static::get_table_name(), ['id' => $recordid]);
+
             if (!$dbrecord) {
                 return false;
             }
-            // No reload required, populate object from data provided.
-            return new $klass($dbrecord);
         }
+        return new $klass($dbrecord);
     }
 
     /**

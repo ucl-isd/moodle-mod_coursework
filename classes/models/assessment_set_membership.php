@@ -283,7 +283,7 @@ class assessment_set_membership extends table_base implements moderatable {
         ];
 
         $concatcachekeys = $DB->sql_concat('courseworkid', "'_'", 'allocatabletype', "'_'", 'allocatableid');
-        $cachekeys = $DB->get_records_sql(
+        $cachekeys = $DB->get_fieldset_sql(
             "SELECT $concatcachekeys $sql GROUP BY courseworkid, allocatableid, allocatabletype",
             $params
         );
