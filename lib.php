@@ -1235,7 +1235,8 @@ function mod_coursework_supports($feature) {
         case FEATURE_COMPLETION_HAS_RULES:
         case FEATURE_COMPLETION_TRACKS_VIEWS:
             return false;
-
+        case FEATURE_MOD_PURPOSE:
+            return MOD_PURPOSE_ASSESSMENT;
         default:
             return null;
     }
