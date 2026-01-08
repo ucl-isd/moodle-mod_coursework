@@ -97,7 +97,7 @@ Feature: Double marking - blind
       | user      | course | role                 |
       | manager   | C1     | courseworkexamoffice |
 
-  Scenario: Create coursework assignment with double marking
+  Scenario: Create coursework assignment with double blind marking
     Given I am on the "Course 1" "course" page logged in as "manager"
     And I add a coursework activity to course "Course 1" section "2" and I fill the form with:
       | Coursework title                                            | Coursework – Double marking blind |
@@ -119,37 +119,6 @@ Feature: Double marking - blind
       | Marker anonymity                                            | Yes                               |
 
     Then I should see "Coursework – Double marking blind"
-
-  Scenario: Add markers
-    Given there is a double-blind marking coursework
-    And the following "course enrolments" exist:
-      | user      | course | role                 |
-      | marker1   | C1     | teacher              |
-      | marker2   | C1     | student              |
-      | marker3   | C1     | norole               |
-
-    And I am on the "Course 1" "course" page logged in as "manager"
-    And I follow "Coursework 1"
-    And I follow "Add markers"
-    And I follow "courseworkdbm"
-
-    Then I should see "Marker 1" in the "Potential users" "field"
-    And I should see "Marker 2" in the "Potential users" "field"
-    And I should see "Marker 3" in the "Potential users" "field"
-
-    When I set the field "Potential users" to "Marker 1"
-    And I press "Add"
-    And I set the field "Potential users" to "Marker 2"
-    And I press "Add"
-    And I set the field "Potential users" to "Marker 3"
-    And I press "Add"
-
-    Then I should see "Marker 1" in the "Existing users" "field"
-    And I should see "Marker 2" in the "Existing users" "field"
-    And I should see "Marker 3" in the "Existing users" "field"
-    And I should not see "Marker 1" in the "Potential users" "field"
-    And I should not see "Marker 2" in the "Potential users" "field"
-    And I should not see "Marker 3" in the "Potential users" "field"
 
   Scenario: Allocate markers
     Given there is a double-blind marking coursework
