@@ -274,6 +274,97 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025120401, 'coursework');
     }
 
+    if ($oldversion < 2026010801) {
+        // CTP-5490 performance improvements:
+        // Table coursework_extensions - add courseworkid-fk.
+        // Table coursework_mod_agreements - add feedbackid-fk, moderatorid-fk.
+        // Table coursework_plagiarism_flags - add courseworkid-fk, submissionid-fk.
+        // Table coursework_reminder - add courseworkid-fk, userid-fk.
+        // Table coursework_sample_set_rules - add courseworkid-fk.
+        // Table coursework_sample_set_mbrs - add courseworkid-fk, allocatableid-ix.
+
+        // TABLE coursework_extensions.
+        // Define key courseworkid-fk (foreign) to be added to coursework_extensions.
+        $table = new xmldb_table('coursework_extensions');
+        $key = new xmldb_key('courseworkid-fk', XMLDB_KEY_FOREIGN, ['courseworkid'], 'coursework', ['id']);
+
+        // Launch add key courseworkid-fk.
+        $dbman->add_key($table, $key);
+
+        // TABLE coursework_mod_agreements.
+        // Define key feedbackid-fk (foreign) to be added to coursework_mod_agreements.
+        $table = new xmldb_table('coursework_mod_agreements');
+        $key = new xmldb_key('feedbackid-fk', XMLDB_KEY_FOREIGN, ['feedbackid'], 'coursework_feedbacks', ['id']);
+
+        // Launch add key feedbackid-fk.
+        $dbman->add_key($table, $key);
+
+        // Define key moderatorid-fk (foreign) to be added to coursework_mod_agreements.
+        $table = new xmldb_table('coursework_mod_agreements');
+        $key = new xmldb_key('moderatorid-fk', XMLDB_KEY_FOREIGN, ['moderatorid'], 'user', ['id']);
+
+        // Launch add key moderatorid-fk.
+        $dbman->add_key($table, $key);
+
+        // TABLE coursework_plagiarism_flags.
+        // Define key courseworkid-fk (foreign) to be added to coursework_plagiarism_flags.
+        $table = new xmldb_table('coursework_plagiarism_flags');
+        $key = new xmldb_key('courseworkid-fk', XMLDB_KEY_FOREIGN, ['courseworkid'], 'coursework', ['id']);
+
+        // Launch add key courseworkid-fk.
+        $dbman->add_key($table, $key);
+
+        // Define key submissionid-fk (foreign) to be added to coursework_plagiarism_flags.
+        $table = new xmldb_table('coursework_plagiarism_flags');
+        $key = new xmldb_key('submissionid-fk', XMLDB_KEY_FOREIGN, ['submissionid'], 'coursework_submissions', ['id']);
+
+        // Launch add key submissionid-fk.
+        $dbman->add_key($table, $key);
+
+        // TABLE coursework_reminder.
+        // Define key courseworkid-fk (foreign) to be added to coursework_reminder.
+        $table = new xmldb_table('coursework_reminder');
+        $key = new xmldb_key('courseworkid-fk', XMLDB_KEY_FOREIGN, ['courseworkid'], 'coursework', ['id']);
+
+        // Launch add key courseworkid-fk.
+        $dbman->add_key($table, $key);
+
+        // Define key userid-fk (foreign) to be added to coursework_reminder.
+        $table = new xmldb_table('coursework_reminder');
+        $key = new xmldb_key('userid-fk', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
+
+        // Launch add key userid-fk.
+        $dbman->add_key($table, $key);
+
+        // TABLE coursework_sample_set_rules.
+        // Define key courseworkid-fk (foreign) to be added to coursework_sample_set_rules.
+        $table = new xmldb_table('coursework_sample_set_rules');
+        $key = new xmldb_key('courseworkid-fk', XMLDB_KEY_FOREIGN, ['courseworkid'], 'coursework', ['id']);
+
+        // Launch add key courseworkid-fk.
+        $dbman->add_key($table, $key);
+
+        // TABLE coursework_sample_set_mbrs.
+        // Define key courseworkid-fk (foreign) to be added to coursework_sample_set_mbrs.
+        $table = new xmldb_table('coursework_sample_set_mbrs');
+        $key = new xmldb_key('courseworkid-fk', XMLDB_KEY_FOREIGN, ['courseworkid'], 'coursework', ['id']);
+
+        // Launch add key courseworkid-fk.
+        $dbman->add_key($table, $key);
+
+        // Define index allocatableid-ix (not unique) to be added to coursework_sample_set_mbrs.
+        $table = new xmldb_table('coursework_sample_set_mbrs');
+        $index = new xmldb_index('allocatableid-ix', XMLDB_INDEX_NOTUNIQUE, ['allocatableid']);
+
+        // Conditionally launch add index allocatableid-ix.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2026010801, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }
