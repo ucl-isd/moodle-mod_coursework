@@ -1,4 +1,4 @@
-@mod @mod_coursework @javascript
+@mod @mod_coursework @javascript @mod_coursework_plagiarism_flagging_group
 Feature: Teachers should be able to add and edit plagiarism flags for group submissions
 
   Background:
