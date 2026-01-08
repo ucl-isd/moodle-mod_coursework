@@ -3956,44 +3956,24 @@ class behat_mod_coursework extends behat_base {
      * @Given /^I follow "(?P<linktext_string>[^"]*)" in row "(?P<rownumber>\d+)"$/
      */
     public function i_follow_in_row($linktext, $rownumber) {
-        $session = $this->getSession();
-        $page = $session->getPage();
+        $xpath = "(//table[contains(@class,'mod-coursework-submissions-table')]/tbody/tr)[$rownumber]//a[text()='$linktext']";
 
-        // Find the table — assume there is only one submissions table on screen.
-        $table = $page->find('css', 'table.mod-coursework-submissions-table');
-        if (!$table) {
-            throw new ExpectationException("Could not find submissions table.", $session);
+        $element = $this->getSession()->getPage()->find('xpath', $xpath);
+
+        if (!$element) {
+            $xpath = "(//table[contains(@class,'mod-coursework-submissions-table')]/tbody/tr)[$rownumber]//button[text()='$linktext']";
+            $element = $this->getSession()->getPage()->find('xpath', $xpath);
         }
 
-        // Get all table body rows.
-        $rows = $table->findAll('css', 'tbody tr');
-        if (empty($rows)) {
-            throw new ExpectationException("No table rows found in submissions table.", $session);
-        }
-
-        $index = (int)$rownumber - 1;
-        if (!isset($rows[$index])) {
-            throw new ExpectationException("Row {$rownumber} does not exist.", $session);
-        }
-
-        $row = $rows[$index];
-
-        // Try to find the link by exact text.
-        $link = $row->findLink($linktext);
-        if (!$link) {
-            // Maybe it's a button with that label.
-            $link = $row->find('named', ['button', $linktext]);
-        }
-
-        if (!$link) {
+        if (!$element) {
             throw new ExpectationException(
                 "Could not find a link or button '{$linktext}' in row {$rownumber}.",
-                $session
+                $this->getSession()
             );
         }
 
         // Click it.
-        $link->click();
+        $element->click();
     }
 
     /**

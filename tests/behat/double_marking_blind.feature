@@ -417,6 +417,7 @@ Feature: Double marking - blind
     Then I should see the mark "70" in row "2"
     Then I should see the mark "70" in row "3"
 
+  @javascript
   Scenario: Verify assignment shows in marking
     Given there is a double-blind marking coursework
     And the following "course enrolments" exist:
@@ -441,6 +442,7 @@ Feature: Double marking - blind
 
     And I am on the "Course 1" "course" page logged in as "student1"
     And I follow "Coursework 1"
+    And I wait until the page is ready
     Then I should see "Submission"
     And I should see "In marking"
     And I should not see "Edit your submission"
