@@ -3710,52 +3710,45 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * Assigns a user as a given assessor slot for a student within a coursework.
+     * @Given /^I allocate the following markers:$/
      *
-     * Example:
-     *   And I assign user "Marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
-     *
-     * @Given /^I assign user "(?P<marker_string>(?:[^"]|\\")*)" as "(?P<role_string>(?:[^"]|\\")*)" for "(?P<student_string>(?:[^"]|\\")*)" in coursework "(?P<coursework_string>(?:[^"]|\\")*)"$/
+     * @param TableNode $allocations Students and their markers.
      */
-    public function i_assign_user_as_role_for_student_in_coursework($marker, $role, $student, $cwname) {
+    public function i_allocate_the_following_markers(TableNode $allocations) {
         global $DB;
 
-        // Find the coursework by name.
-        $cw = $DB->get_record('coursework', ['name' => $cwname], '*', MUST_EXIST);
+        $datahash = $allocations->getHash();
 
-        if (strtolower($role) === "moderator") {
-            $stageidentifier = "moderator";
-        } else {
-            $assignnr = (strstr($role, '2') || strstr($role, 'two')) ? 2 : 1;
-            $stageidentifier = 'assessor_' . $assignnr;
-        }
+        foreach ($datahash as $allocate) {
+            $stages = ['assessor_1'];
+            $stages[] = isset($allocate['moderator']) ? 'moderator' : 'assessor_2';
+            $student = $this->get_user_from_username($allocate['student']);
+            foreach ($stages as $stage) {
+                $marker = $this->get_user_from_username($allocate[$stage]);
 
-        $marker = $this->get_user_from_username($marker);
-        $student = $this->get_user_from_username($student);
-
-        // See if an allocation already exists.
-        $existing = $DB->get_record('coursework_allocation_pairs', [
-            'courseworkid' => $cw->id,
-            'allocatableid' => $student->id,
-            'allocatableuser' => $student->id,
-            'stageidentifier' => $stageidentifier,
-            'allocatabletype' => 'user',
-        ]);
-
-        $record = new stdClass();
-        $record->courseworkid = $cw->id;
-        $record->allocatableid = $student->id;
-        $record->allocatableuser = $student->id;
-        $record->assessorid = $marker->id;
-        $record->stageidentifier = $stageidentifier;
-        $record->allocatabletype = 'user';
-        $record->ismanual = 1;
-
-        if ($existing) {
-            $record->id = $existing->id;
-            $DB->update_record('coursework_allocation_pairs', $record);
-        } else {
-            $DB->insert_record('coursework_allocation_pairs', $record);
+                $record = $DB->get_record('coursework_allocation_pairs', [
+                    'courseworkid' => $this->coursework->id,
+                    'allocatableid' => $student->id,
+                    'allocatableuser' => $student->id,
+                    'stageidentifier' => $stage,
+                    'allocatabletype' => 'user',
+                ]);
+                if ($record) {
+                    $record->assessorid = $marker->id;
+                    $record->ismanual = 1;
+                    $DB->update_record('coursework_allocation_pairs', $record);
+                } else {
+                    $record = new stdClass();
+                    $record->courseworkid = $this->coursework->id;
+                    $record->allocatableid = $student->id;
+                    $record->allocatableuser = $student->id;
+                    $record->assessorid = $marker->id;
+                    $record->stageidentifier = $stage;
+                    $record->allocatabletype = 'user';
+                    $record->ismanual = 1;
+                    $DB->insert_record('coursework_allocation_pairs', $record);
+                }
+            }
         }
     }
 

@@ -199,12 +199,11 @@ Feature: Double marking - blind
       | student3  | C1     | student              |
     And I am on the "Course 1" "course" page logged in as "manager"
 
-    And I assign user "Marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Marker 2" as "Assessor 2" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Marker 1" as "Assessor 1" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Marker 2" as "Assessor 2" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Marker 1" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
-    And I assign user "Marker 2" as "Assessor 2" for "Student 3" in coursework "Coursework 1"
+    And I allocate the following markers:
+      | student   | assessor_1 | assessor_2 |
+      | Student 1 | Marker 1   | Marker 2   |
+      | Student 2 | Marker 1   | Marker 2   |
+      | Student 3 | Marker 1   | Marker 2   |
 
     And I log out
 
@@ -229,12 +228,11 @@ Feature: Double marking - blind
       | student3  | C1     | student              |
     And I am on the "Course 1" "course" page logged in as "manager"
 
-    And I assign user "Marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Marker 2" as "Assessor 2" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Marker 1" as "Assessor 1" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Marker 2" as "Assessor 2" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Marker 1" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
-    And I assign user "Marker 2" as "Assessor 2" for "Student 3" in coursework "Coursework 1"
+    And I allocate the following markers:
+      | student   | assessor_1 | assessor_2 |
+      | Student 1 | Marker 1   | Marker 2   |
+      | Student 2 | Marker 1   | Marker 2   |
+      | Student 3 | Marker 1   | Marker 2   |
 
     And I follow "Coursework 1"
     And I press "Actions"
@@ -376,12 +374,12 @@ Feature: Double marking - blind
       | student3  | C1     | student              |
 
     And I am on the "Course 1" "course" page logged in as "manager"
-    And I assign user "Marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Marker 2" as "Assessor 2" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Marker 1" as "Assessor 1" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Marker 2" as "Assessor 2" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Marker 1" as "Assessor 2" for "Student 3" in coursework "Coursework 1"
-    And I assign user "Marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
+
+    And I allocate the following markers:
+      | student   | assessor_1 | assessor_2 |
+      | Student 1 | Marker 1   | Marker 2   |
+      | Student 2 | Marker 1   | Marker 2   |
+      | Student 3 | Marker 1   | Marker 2   |
 
     And the student "Student 1" has a submission
     And the submission for "Student 1" is finalised
@@ -429,8 +427,9 @@ Feature: Double marking - blind
       | marker2   | C1     | courseworkmarker |
       | student1  | C1     | student          |
 
-    And I assign user "Marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Marker 2" as "Assessor 2" for "Student 1" in coursework "Coursework 1"
+    And I allocate the following markers:
+      | student   | assessor_1 | assessor_2 |
+      | Student 1 | Marker 1   | Marker 2   |
 
     And the student "Student 1" has a submission
     And the submission for "Student 1" is finalised
@@ -461,12 +460,11 @@ Feature: Double marking - blind
       | student2    | C1     | student              |
       | student3    | C1     | student              |
 
-    And I assign user "Marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Marker 1" as "Assessor 1" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 3" in coursework "Coursework 1"
+    And I allocate the following markers:
+      | student   | assessor_1 | moderator   |
+      | Student 1 | Marker 1   | Moderator 1 |
+      | Student 2 | Marker 1   | Moderator 1 |
+      | Student 3 | Marker 2   | Moderator 1 |
 
     And the student "Student 1" has a submission
     And the submission for "Student 1" is finalised
@@ -519,12 +517,11 @@ Feature: Double marking - blind
       | student2    | C1     | student              |
       | student3    | C1     | student              |
 
-    And I assign user "Marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Marker 1" as "Assessor 1" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 3" in coursework "Coursework 1"
+    And I allocate the following markers:
+      | student   | assessor_1 | moderator   |
+      | Student 1 | Marker 1   | Moderator 1 |
+      | Student 2 | Marker 1   | Moderator 1 |
+      | Student 3 | Marker 2   | Moderator 1 |
 
     And the student "Student 1" has a submission
     And the submission for "Student 1" is finalised
@@ -587,12 +584,11 @@ Feature: Double marking - blind
       | student2    | C1     | student              |
       | student3    | C1     | student              |
 
-    And I assign user "Marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Marker 1" as "Assessor 1" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 3" in coursework "Coursework 1"
+    And I allocate the following markers:
+      | student   | assessor_1 | moderator   |
+      | Student 1 | Marker 1   | Moderator 1 |
+      | Student 2 | Marker 1   | Moderator 1 |
+      | Student 3 | Marker 2   | Moderator 1 |
 
     And the student "Student 1" has a submission
     And the submission for "Student 1" is finalised
@@ -649,12 +645,11 @@ Feature: Double marking - blind
       | student2    | C1     | student              |
       | student3    | C1     | student              |
 
-    And I assign user "Marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Marker 1" as "Assessor 1" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 3" in coursework "Coursework 1"
+    And I allocate the following markers:
+      | student   | assessor_1 | moderator   |
+      | Student 1 | Marker 1   | Moderator 1 |
+      | Student 2 | Marker 1   | Moderator 1 |
+      | Student 3 | Marker 2   | Moderator 1 |
 
     And the student "Student 1" has a submission
     And the submission for "Student 1" is finalised
@@ -712,12 +707,11 @@ Feature: Double marking - blind
       | student2    | C1     | student              |
       | student3    | C1     | student              |
 
-    And I assign user "Marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Marker 1" as "Assessor 1" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 3" in coursework "Coursework 1"
+    And I allocate the following markers:
+      | student   | assessor_1 | moderator   |
+      | Student 1 | Marker 1   | Moderator 1 |
+      | Student 2 | Marker 1   | Moderator 1 |
+      | Student 3 | Marker 2   | Moderator 1 |
 
     And the student "Student 1" has a submission
     And the submission for "Student 1" is finalised
@@ -778,12 +772,11 @@ Feature: Double marking - blind
       | student2    | C1     | student              |
       | student3    | C1     | student              |
 
-    And I assign user "Marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 1" in coursework "Coursework 1"
-    And I assign user "Marker 1" as "Assessor 1" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 2" in coursework "Coursework 1"
-    And I assign user "Marker 2" as "Assessor 1" for "Student 3" in coursework "Coursework 1"
-    And I assign user "Moderator 1" as "Moderator" for "Student 3" in coursework "Coursework 1"
+    And I allocate the following markers:
+      | student   | assessor_1 | moderator   |
+      | Student 1 | Marker 1   | Moderator 1 |
+      | Student 2 | Marker 1   | Moderator 1 |
+      | Student 3 | Marker 2   | Moderator 1 |
 
     And the student "Student 1" has a submission
     And the submission for "Student 1" is finalised
