@@ -4035,28 +4035,4 @@ class behat_mod_coursework extends behat_base {
             $DB->insert_record('coursework_mod_agreements', $agreement);
         }
     }
-
-    /**
-     * Checks whether a submit button with the given label exists on the page.
-     *
-     * @Then /^I should( not)? see a submit button "(?P<label>[^"]*)"$/
-     */
-    public function should_see_submit_button($not, $label) {
-        $session = $this->getSession();
-        $page = $session->getPage();
-
-        // Find input[type=submit] elements.
-        $button = $page->find('xpath', "//input[@type='submit' and @value='{$label}']");
-
-        if ($not) {
-            if ($button) {
-                throw new \Exception("Submit button '{$label}' found on the page.");
-            }
-            return; // OK.
-        }
-
-        if (!$button) {
-            throw new \Exception("Submit button '{$label}' not found on the page.");
-        }
-    }
 }

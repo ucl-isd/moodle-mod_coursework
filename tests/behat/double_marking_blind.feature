@@ -799,4 +799,4 @@ Feature: Double marking - blind
     And I follow "Agreed" in row "1"
     Then I should see "Moderation for "
     And I should see "Moderator 1"
-    Then I should not see a submit button "Save changes"
+    And "Save changes" "button" should not exist
