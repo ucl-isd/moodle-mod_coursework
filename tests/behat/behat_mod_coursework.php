@@ -3988,37 +3988,13 @@ class behat_mod_coursework extends behat_base {
      * @throws coding_exception
      */
     public function i_should_see_text_in_row(bool $not, string $text, int $rownumber) {
-        $session = $this->getSession();
-        $page = $session->getPage();
+        $xpath = "(//table[contains(@class,'mod-coursework-submissions-table')]/tbody/tr)[$rownumber]//*[contains(text(), '$text')]";
+        $element = $this->getSession()->getPage()->find('xpath', $xpath);
 
-        // Find the table body.
-        $tbody = $page->find('css', 'table.mod-coursework-submissions-table tbody');
-        if (!$tbody) {
-            throw new coding_exception('Could not find coursework submissions table.');
-        }
-
-        // Get all rows.
-        $rows = $tbody->findAll('css', 'tr');
-        if (!isset($rows[$rownumber - 1])) {
-            throw new coding_exception("Row {$rownumber} does not exist in the submissions table.");
-        }
-
-        $row = $rows[$rownumber - 1];
-        $rowtext = $row->getText();
-        $contains = strpos($rowtext, $text) !== false;
-
-        // Check text inside the row.
-        // If "not" was present in the step.
-        if (trim($not) === 'not') {
-            if ($contains) {
-                throw new coding_exception("'{$text}' text was found in row {$rownumber}.\nRow contents: {$rowtext}");
-            }
-            return; // OK.
-        }
-
-        // Normal positive check.
-        if (!$contains) {
-            throw new coding_exception("'{$text}' was not found in row {$rownumber}.\nRow contents: {$rowtext}");
+        if ($not && $element) {
+            throw new Exception("'$text' text was found in row $rownumber.");
+        } else if (!$element) {
+            throw new Exception("'$text' was not found in row $rownumber.");
         }
     }
 
