@@ -196,7 +196,13 @@ class marking_cell_data extends cell_data_base {
                 $this->process_feedback_data($marker, $feedback, $rowsbase, $row);
             }
 
-            if ($this->can_add_new_feedback($row, $rowsbase)) {
+            $canaddfeedback = !$feedback
+                && $rowsbase->get_submission()
+                && $this->ability->can(
+                    'new',
+                    feedback::build_for_ability_check($rowsbase->get_submission(), $row->get_stage()->identifier())
+                );
+            if ($canaddfeedback) {
                 $marker->addfeedback = (object)[
                     'markurl' => $this->get_mark_url(
                         'new',
@@ -257,23 +263,6 @@ class marking_cell_data extends cell_data_base {
         return isset($paths[$action]) ?
             router::instance()->get_path($paths[$action]['path'], $paths[$action]['params']) :
             '#';
-    }
-
-    /**
-     * Check if the user can add a new feedback.
-     *
-     * @param assessor_feedback_row $feedbackrow
-     * @param grading_table_row_base $rowsbase
-     * @return bool
-     */
-    public function can_add_new_feedback(assessor_feedback_row $feedbackrow, grading_table_row_base $rowsbase): bool {
-        if (!$rowsbase->get_submission()) {
-            return false;
-        }
-        return $this->ability->can(
-            'new',
-            feedback::build_for_ability_check($rowsbase->get_submission(), $feedbackrow->get_stage()->identifier())
-        );
     }
 
     /**

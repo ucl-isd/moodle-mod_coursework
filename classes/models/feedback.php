@@ -689,7 +689,7 @@ class feedback extends table_base {
      *
      */
     protected function post_save_hook() {
-        $submission = $this->get_submission();
+        $submission = $this->submissionid ? $this->get_submission() : null;
         if ($submission && $submission->courseworkid ?? false) {
             self::remove_cache($submission->courseworkid);
         }
@@ -732,7 +732,7 @@ class feedback extends table_base {
         }
 
         $obj = self::build(
-            ['submissionid' => $submission->id, 'assessorid' => $USER->id, 'stage' => $stageidentifier]
+            ['submissionid' => $submission->id, 'assessorid' => $USER->id, 'stageidentifier' => $stageidentifier]
         );
 
         // Add the submission object and coursework ID to the feedback object.
