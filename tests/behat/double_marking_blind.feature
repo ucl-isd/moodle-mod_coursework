@@ -100,23 +100,23 @@ Feature: Double marking - blind
   Scenario: Create coursework assignment with double marking
     Given I am on the "Course 1" "course" page logged in as "manager"
     And I add a coursework activity to course "Course 1" section "2" and I fill the form with:
-      | Coursework title                                            | Coursework – Double marking blind                 |
-      | Description                                                 | Test coursework description                       |
-      | Display description on course page                          | Yes                                               |
-      | Start date                                                  | ##now##                                           |
-      | Deadline for submissions:                                   | ##now + 15 minutes##                              |
-      | Use marking deadline                                        | Yes                                               |
-      | Types of file that students are allowed to submit           | pdf                                               |
-      | Enable plagiarism flagging                                  | Yes                                               |
-      | Number of times each submission should initially be marked. | 2                                                 |
-      | Marker allocation enabled                                   | Yes                                               |
-      | Marker allocation strategy                                  | Manual                                            |
-      | Automatic agreement of marks                                | Percentage distance                               |
-      | Automatic agreement range                                   | 10                                                |
-      | View initial markers' grades                                | No                                                |
-      | Auto-populate agreed feedback comment                       | Yes                                               |
-      | Blind marking                                               | Yes                                               |
-      | Marker anonymity                                            | Yes                                               |
+      | Coursework title                                            | Coursework – Double marking blind |
+      | Description                                                 | Test coursework description       |
+      | Display description on course page                          | Yes                               |
+      | Start date                                                  | ##now##                           |
+      | Deadline for submissions:                                   | ##now + 15 minutes##              |
+      | Use marking deadline                                        | Yes                               |
+      | Types of file that students are allowed to submit           | pdf                               |
+      | Enable plagiarism flagging                                  | Yes                               |
+      | Number of times each submission should initially be marked. | 2                                 |
+      | Marker allocation enabled                                   | Yes                               |
+      | Marker allocation strategy                                  | Manual                            |
+      | Automatic agreement of marks                                | Percentage distance               |
+      | Automatic agreement range                                   | 10                                |
+      | View initial markers' grades                                | No                                |
+      | Auto-populate agreed feedback comment                       | Yes                               |
+      | Blind marking                                               | Yes                               |
+      | Marker anonymity                                            | Yes                               |
 
     Then I should see "Coursework – Double marking blind"
 
@@ -392,7 +392,7 @@ Feature: Double marking - blind
 
     Then I should see "Marking for Hidden"
     When I set the following fields to these values:
-      | Mark    | 70              |
+      | Mark    | 71              |
       | Comment | Test comment 1  |
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.pdf" file to "Upload a file" filemanager
     And I press "Save as draft"
@@ -401,21 +401,21 @@ Feature: Double marking - blind
 
     Then I should see "Marking for Hidden"
     When I set the following fields to these values:
-      | Mark    | 70              |
+      | Mark    | 72              |
       | Comment | Test comment 2  |
     And I press "Save as draft"
 
     And I click on "Add mark" "link" in the "(//tr[contains(@class,'mod-coursework-submissions-row')])[3]" "xpath_element"
     Then I should see "Marking for Hidden"
     When I set the following fields to these values:
-      | Mark    | 70              |
+      | Mark    | 73              |
       | Comment | Test comment 3  |
     And I press "Save as draft"
 
     Then I should see "Submissions"
-    Then I should see the mark "70" in row "1"
-    Then I should see the mark "70" in row "2"
-    Then I should see the mark "70" in row "3"
+    And "71" "link" should exist
+    And "72" "link" should exist
+    And "73" "link" should exist
 
   @javascript
   Scenario: Verify assignment shows in marking

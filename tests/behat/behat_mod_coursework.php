@@ -3780,32 +3780,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * Checks for a specific mark in a specific row.
-     *
-     * Example: Then I should see the mark "70" in row "1"
-     *
-     * @Then /^I should see the mark "(?P<mark>\d+)" in row "(?P<row_number>\d+)"$/
-     *
-     * @param $mark
-     * @param $rownumber
-     * @return void
-     * @throws coding_exception
-     */
-    public function i_should_see_mark_in_row($mark, $rownumber) {
-        $xpath = "(//table[contains(@class,'mod-coursework-submissions-table')]/tbody/tr)[$rownumber]//a[@data-mark-action='editfeedback']";
-
-        $element = $this->getSession()->getPage()->find('xpath', $xpath);
-
-        if (!$element) {
-            throw new coding_exception("Mark element not found in row $rownumber");
-        }
-
-        if (trim($element->getText()) !== $mark) {
-            throw new coding_exception("Expected mark '$mark' but found '" . $element->getText() . "' in row $rownumber");
-        }
-    }
-
-    /**
      * Inserts a grade directly into coursework_feedbacks table.
      *
      * @When /^the submission from "(?P<studentfullname>[^"]*)" is marked by "(?P<markerfullname>[^"]*)" with:$/
