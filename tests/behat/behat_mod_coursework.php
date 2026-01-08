@@ -3714,12 +3714,6 @@ class behat_mod_coursework extends behat_base {
 
         $user = $this->get_user_from_username($fullname);
 
-        if (is_int($datestr)) {
-            $timestamp = $datestr;
-        } else {
-            $timestamp = strtotime($datestr);
-        }
-
         // See if an extension already exists.
         $existing = $DB->get_record('coursework_extensions', [
             'courseworkid' => $cw->id,
@@ -3731,7 +3725,7 @@ class behat_mod_coursework extends behat_base {
         $record->courseworkid = $cw->id;
         $record->allocatableid = $user->id;
         $record->allocatabletype = 'user';
-        $record->extended_deadline = $timestamp;
+        $record->extended_deadline = is_int($datestr) ? $datestr : strtotime($datestr);
         $record->createdbyid = 2;  // Admin ID.
 
         if ($existing) {
