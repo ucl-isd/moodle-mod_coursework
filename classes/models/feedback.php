@@ -478,11 +478,11 @@ class feedback extends table_base {
             }
             if (!isset($this->submission)) {
                 // We still do not have submission so try to get it from DB using ID.
-                $this->submission = submission::find(['id' => $this->submissionid]) ?: null;
+                $this->submission = submission::find($this->submissionid) ?: null;
             }
         }
         if (!isset($this->submission)) {
-            throw new coding_exception("Could not find submission for feedback ID $this->id");
+            throw new coding_exception("Could not find submission for feedback ID $this->id submission ID $this->submissionid");
         }
 
         return $this->submission;
