@@ -3804,7 +3804,7 @@ class behat_mod_coursework extends behat_base {
 
         // Find user by full name (firstname + lastname).
         if (strpos($fullname, ' ') === false) {
-            throw new Exception("Full name '{$fullname}' must contain a space separating first and last name.");
+            throw new Exception("Full name '{$fullname}' must be in format 'Firstname Lastname' (space-separated).");
         }
         [$first, $last] = explode(' ', $fullname, 2);
 
