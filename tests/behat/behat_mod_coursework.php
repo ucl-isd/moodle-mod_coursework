@@ -3917,10 +3917,7 @@ class behat_mod_coursework extends behat_base {
         ]);
 
         if (!$exists) {
-            $record = new stdClass();
-            $record->roleid      = $fromrole->id;
-            $record->allowassign = $torole->id;
-            $DB->insert_record('role_allow_assign', $record);
+            core_role_set_assign_allowed($fromrole->id, $torole->id);
         }
     }
 
