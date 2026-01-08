@@ -242,15 +242,15 @@ Feature: Double marking - blind
     And I click on "Submission extension" "link"
     And I wait until the page is ready
     And I set the following fields to these values:
-      | extended_deadline[day]    | 1       |
-      | extended_deadline[month]  | January |
-      | extended_deadline[year]   | 2027    |
-      | extended_deadline[hour]   | 08      |
-      | extended_deadline[minute] | 00      |
+      | extended_deadline[day]    | ##tomorrow##%d##  |
+      | extended_deadline[month]  | ##tomorrow##%B##  |
+      | extended_deadline[year]   | ##tomorrow##%Y##  |
+      | extended_deadline[hour]   | 08                |
+      | extended_deadline[minute] | 00                |
     And I click on "Save" "button" in the "Extended deadline" "dialogue"
-    And I should see "1 January 2027, 8:00 AM" in the "Student 1" "table_row"
+    And I should see "##tomorrow##%d %B %Y, 8:00 AM##" in the "Student 1" "table_row"
     Then I visit the coursework page
-    And I should see "1 January 2027, 8:00 AM" in the "Student 1" "table_row"
+    And I should see "##tomorrow##%d %B %Y, 8:00 AM##" in the "Student 1" "table_row"
 
   @javascript @_file_upload
   Scenario: Student can submit a PDF file
