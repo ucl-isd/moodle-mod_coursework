@@ -392,7 +392,8 @@ Feature: Double marking - blind
     And I am on the "Course 1" "course" page logged in as "marker1"
     And I follow "Coursework 1"
 
-    When I click the "Add mark" button for marker "Marker 1" in row "1"
+    And I click on "Add mark" "link" in the "(//tr[contains(@class,'mod-coursework-submissions-row')])[1]" "xpath_element"
+
     Then I should see "Marking for Hidden"
     When I set the following fields to these values:
       | Mark    | 70              |
@@ -400,14 +401,15 @@ Feature: Double marking - blind
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.pdf" file to "Upload a file" filemanager
     And I press "Save as draft"
 
-    When I click the "Add mark" button for marker "Marker 1" in row "2"
+    And I click on "Add mark" "link" in the "(//tr[contains(@class,'mod-coursework-submissions-row')])[2]" "xpath_element"
+
     Then I should see "Marking for Hidden"
     When I set the following fields to these values:
       | Mark    | 70              |
       | Comment | Test comment 2  |
     And I press "Save as draft"
 
-    When I click the "Add mark" button for marker "Marker 1" in row "3"
+    And I click on "Add mark" "link" in the "(//tr[contains(@class,'mod-coursework-submissions-row')])[3]" "xpath_element"
     Then I should see "Marking for Hidden"
     When I set the following fields to these values:
       | Mark    | 70              |

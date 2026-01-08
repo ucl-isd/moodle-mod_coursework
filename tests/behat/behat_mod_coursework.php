@@ -3780,30 +3780,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * Clicks the "Add mark" button for a specific marker in a row.
-     *
-     * Example: And I click the "Add mark" button for marker "Marker 2" in row "1"
-     *
-     * @Given /^I click the "Add mark" button for marker "(?P<markername>(?:[^"]|\\")*)" in row "(?P<rownumber>\d+)"$/
-     */
-    public function i_click_add_mark_for_marker_in_row($markername, $rownumber) {
-        $xpath = "(//tr[contains(@class,'mod-coursework-submissions-row')])[$rownumber]" .
-            "//li[.//a[normalize-space()='$markername']]" .
-            "//a[@data-mark-action='addfeedback']";
-
-        $element = $this->getSession()->getPage()->find('xpath', $xpath);
-        if (!$element) {
-            throw new ElementNotFoundException(
-                $this->getSession(),
-                "'Add mark' button for marker '{$markername}' in row '{$rownumber}'",
-                'xpath',
-                $xpath
-            );
-        }
-        $element->click();
-    }
-
-    /**
      * Checks for a specific mark in a specific row.
      *
      * Example: Then I should see the mark "70" in row "1"
