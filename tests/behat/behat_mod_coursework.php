@@ -3925,13 +3925,13 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * Creates a submission for a given student.
+     * Creates a finalised submission for a given student.
      *
-     * Example: And the student "Student 1" has a submission
+     * Example: And the student "Student 1" has a finalised submission
      *
-     * @Given /^the student "(?P<studentname>(?:[^"]|\\")*)" has a submission$/
+     * @Given /^the student "(?P<studentname>(?:[^"]|\\")*)" has a finalised submission$/
      */
-    public function student_has_a_submission($studentfullname) {
+    public function student_has_a_finalised_submission($studentfullname) {
         $student = $this->get_user_from_username($studentfullname);
 
         /**
@@ -3942,49 +3942,9 @@ class behat_mod_coursework extends behat_base {
         $submission = new stdClass();
         $submission->allocatableid = $student->id;
         $submission->allocatabletype = 'user'; // Always 'user' for a student.
+        $submission->finalisedstatus = submission::FINALISED_STATUS_FINALISED;
 
         $this->submission = $generator->create_submission($submission, $this->coursework);
-    }
-
-    /**
-     * Finalises (or un-finalises) a submission to a coursework for a given student.
-     *
-     * Example: And the submission for "Student 1" is finalised
-     * Example: And the submission for "Student 1" is not finalised
-     *
-     * @Given /^the submission for "(?P<studentname>(?:[^"]|\\")*)" is (not )?finalised$/
-     *
-     * @param string $studentfullname
-     * @param bool $negate
-     * @return void
-     * @throws coding_exception
-     */
-    public function submission_for_student_is_finalised(string $studentfullname, bool $negate = false) {
-        global $DB;
-
-        $student = $this->get_user_from_username($studentfullname);
-
-        // Get student's submission.
-        if (
-            !$submission = $DB->get_record(
-                'coursework_submissions',
-                [
-                    'allocatableid' => $student->id,
-                    'allocatabletype' => 'user',
-                    'courseworkid' => $this->coursework->id,
-                ]
-            )
-        ) {
-            throw new coding_exception("Submission for '{$studentfullname}' not found in '{$this->coursework->name}'.");
-        }
-
-        // Set finalised status.
-        $submission->finalisedstatus = $negate
-            ? submission::FINALISED_STATUS_NOT_FINALISED
-            : submission::FINALISED_STATUS_FINALISED;
-
-        // Save using the submission class.
-        $DB->update_record('coursework_submissions', $submission);
     }
 
     /**
