@@ -290,8 +290,6 @@ class builder {
             $checkboxchecked = 1;
         }
 
-        $checkboxchecked = $this->checkbox_checked_in_session($checkboxname, $checkboxchecked);
-
         $checkboxtitle = 'Included in sample';
 
         $attributes = ['class' => 'sampling_set_checkbox',
@@ -366,8 +364,6 @@ class builder {
             }
         }
 
-        $checkboxchecked = $this->checkbox_checked_in_session($checkboxname, $checkboxchecked);
-
         $stage = substr($this->get_stage()->identifier(), -1);
         $checkboxtitle = 'Pinned (auto allocations will not alter this)';
         return html_writer::checkbox(
@@ -378,21 +374,6 @@ class builder {
             ['class' => "pinned pin_$stage",
             'title' => $checkboxtitle]
         );
-    }
-
-    private function checkbox_checked_in_session($checkboxname, $checkboxstate) {
-
-        global  $SESSION;
-
-        $cm = $this->coursework->get_course_module();
-
-        if (!empty($SESSION->coursework_allocationsessions[$cm->id])) {
-            if (isset($SESSION->coursework_allocationsessions[$cm->id][$checkboxname])) {
-                return  $SESSION->coursework_allocationsessions[$cm->id][$checkboxname];
-            }
-        }
-
-        return $checkboxstate;
     }
 
     /**

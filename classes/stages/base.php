@@ -826,12 +826,10 @@ abstract class base {
 
         $dropdownname = $this->assessor_dropdown_name($allocatable);
 
-        $selected = $this->selected_allocation_in_session($dropdownname);
-
         return html_writer::select(
             $this->assessor_dropdown_options,
             $dropdownname,
-            $selected,
+            '',
             $optionfornothingchosenyet,
             $htmlattributes
         );
@@ -849,14 +847,10 @@ abstract class base {
             'class' => 'moderator_id_dropdown',
         ];
 
-        $dropdownname = $this->assessor_dropdown_name($allocatable);
-
-        $selected = $this->selected_allocation_in_session($dropdownname);
-
         return html_writer::select(
             $this->potential_moderators_as_options_array(),
-            'allocatables[' . $allocatable->id . '][moderator][assessor_id]',
-            $selected,
+            $this->assessor_dropdown_name($allocatable),
+            '',
             $optionfornothingchosenyet,
             $htmlattributes
         );
@@ -932,20 +926,6 @@ abstract class base {
             return $this->get_allocation($allocatable)->assessor();
         }
         return false;
-    }
-
-    private function selected_allocation_in_session($dropdownname) {
-        global  $SESSION;
-
-        $cm = $this->coursework->get_course_module();
-
-        if (!empty($SESSION->coursework_allocationsessions[$cm->id])) {
-            if (!empty($SESSION->coursework_allocationsessions[$cm->id][$dropdownname])) {
-                return  $SESSION->coursework_allocationsessions[$cm->id][$dropdownname];
-            }
-        }
-
-        return  '';
     }
 
     public function get_assessor_from_moodle_course_group($allocatable) {
