@@ -3789,16 +3789,16 @@ class behat_mod_coursework extends behat_base {
     /**
      * Return a user record from a given full name ("firstname lastname")
      *
-     * @param $fullname
+     * @param string $fullname
      * @return mixed|stdClass
-     * @throws dml_exception
+     * @throws coding_exception
      */
-    private function get_user_from_username($fullname) {
+    private function get_user_from_username(string $fullname) {
         global $DB;
 
         // Find user by full name (firstname + lastname).
         if (strpos($fullname, ' ') === false) {
-            throw new Exception("Full name '{$fullname}' must be in format 'Firstname Lastname' (space-separated).");
+            throw new coding_exception("Full name '{$fullname}' must be in format 'Firstname Lastname' (space-separated).");
         }
         [$first, $last] = explode(' ', $fullname, 2);
 
@@ -3808,7 +3808,7 @@ class behat_mod_coursework extends behat_base {
         ]);
 
         if (!$user) {
-            throw new Exception("Could not find user with name '{$fullname}'.");
+            throw new coding_exception("Could not find user with name '{$fullname}'.");
         }
         return $user;
     }
@@ -3843,6 +3843,11 @@ class behat_mod_coursework extends behat_base {
      * Example: Then I should see the mark "70" in row "1"
      *
      * @Then /^I should see the mark "(?P<mark>\d+)" in row "(?P<row_number>\d+)"$/
+     *
+     * @param $mark
+     * @param $rownumber
+     * @return void
+     * @throws coding_exception
      */
     public function i_should_see_mark_in_row($mark, $rownumber) {
         $xpath = "(//table[contains(@class,'mod-coursework-submissions-table')]/tbody/tr)[$rownumber]//a[@data-mark-action='editfeedback']";
@@ -3850,11 +3855,11 @@ class behat_mod_coursework extends behat_base {
         $element = $this->getSession()->getPage()->find('xpath', $xpath);
 
         if (!$element) {
-            throw new Exception("Mark element not found in row $rownumber");
+            throw new coding_exception("Mark element not found in row $rownumber");
         }
 
         if (trim($element->getText()) !== $mark) {
-            throw new Exception("Expected mark '$mark' but found '" . $element->getText() . "' in row $rownumber");
+            throw new coding_exception("Expected mark '$mark' but found '" . $element->getText() . "' in row $rownumber");
         }
     }
 
@@ -3937,6 +3942,11 @@ class behat_mod_coursework extends behat_base {
      * Given the role "Manager" is allowed to assign role "Teacher".
      *
      * @Given /^the role "(?P<fromrole_string>(?:[^"]|\\")*)" is allowed to assign role "(?P<trole_string>(?:[^"]|\\")*)"$/
+     *
+     * @param string $fromrolename
+     * @param string $torolename
+     * @return void
+     * @throws coding_exception
      */
     public function allow_role_to_assign_role(string $fromrolename, string $torolename) {
         global $DB;
@@ -3947,7 +3957,7 @@ class behat_mod_coursework extends behat_base {
             $fromrole = $DB->get_record('role', ['name' => $fromrolename]);
         }
         if (!$fromrole) {
-            throw new Exception("Role '$fromrolename' could not be found.");
+            throw new coding_exception("Role '$fromrolename' could not be found.");
         }
 
         $torole = $DB->get_record('role', ['shortname' => $torolename]);
@@ -3955,7 +3965,7 @@ class behat_mod_coursework extends behat_base {
             $torole = $DB->get_record('role', ['name' => $torolename]);
         }
         if (!$torole) {
-            throw new Exception("Role '$torolename' could not be found.");
+            throw new coding_exception("Role '$torolename' could not be found.");
         }
 
         // Check if record already exists.
@@ -4001,8 +4011,13 @@ class behat_mod_coursework extends behat_base {
      * Example: And the submission for "Student 1" is not finalised
      *
      * @Given /^the submission for "(?P<studentname>(?:[^"]|\\")*)" is (not )?finalised$/
+     *
+     * @param string $studentfullname
+     * @param bool $negate
+     * @return void
+     * @throws coding_exception
      */
-    public function submission_for_student_is_finalised($studentfullname, $negate = false) {
+    public function submission_for_student_is_finalised(string $studentfullname, bool $negate = false) {
         global $DB;
 
         $student = $this->get_user_from_username($studentfullname);
@@ -4018,7 +4033,7 @@ class behat_mod_coursework extends behat_base {
                 ]
             )
         ) {
-            throw new \moodle_exception("Submission for '{$studentfullname}' not found in '{$courseworkname}'.");
+            throw new coding_exception("Submission for '{$studentfullname}' not found in '{$this->coursework->name}'.");
         }
 
         // Set finalised status.
@@ -4080,22 +4095,30 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * Confirm that text is not showing in a row
+     *
      * @Then /^I should( not)? see "(?P<text>[^"]*)" in row "(?P<row>\d+)"$/
+     *
+     * @param bool $not
+     * @param string $text
+     * @param int $rownumber
+     * @return void
+     * @throws coding_exception
      */
-    public function i_should_see_text_in_row($not, $text, $rownumber) {
+    public function i_should_see_text_in_row(bool $not, string $text, int $rownumber) {
         $session = $this->getSession();
         $page = $session->getPage();
 
         // Find the table body.
         $tbody = $page->find('css', 'table.mod-coursework-submissions-table tbody');
         if (!$tbody) {
-            throw new Exception('Could not find coursework submissions table.');
+            throw new coding_exception('Could not find coursework submissions table.');
         }
 
         // Get all rows.
         $rows = $tbody->findAll('css', 'tr');
         if (!isset($rows[$rownumber - 1])) {
-            throw new Exception("Row {$rownumber} does not exist in the submissions table.");
+            throw new coding_exception("Row {$rownumber} does not exist in the submissions table.");
         }
 
         $row = $rows[$rownumber - 1];
@@ -4106,14 +4129,14 @@ class behat_mod_coursework extends behat_base {
         // If "not" was present in the step.
         if (trim($not) === 'not') {
             if ($contains) {
-                throw new Exception("'{$text}' text was found in row {$rownumber}.\nRow contents: {$rowtext}");
+                throw new coding_exception("'{$text}' text was found in row {$rownumber}.\nRow contents: {$rowtext}");
             }
             return; // OK.
         }
 
         // Normal positive check.
         if (!$contains) {
-            throw new Exception("'{$text}' was not found in row {$rownumber}.\nRow contents: {$rowtext}");
+            throw new coding_exception("'{$text}' was not found in row {$rownumber}.\nRow contents: {$rowtext}");
         }
     }
 
