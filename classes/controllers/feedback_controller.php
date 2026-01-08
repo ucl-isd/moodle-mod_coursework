@@ -123,7 +123,12 @@ class feedback_controller extends controller_base {
         }
 
         $ability = new ability($USER->id, $this->coursework);
-        if (!$ability->can('new', $teacherfeedback)) {
+        if (
+            !$ability->can(
+                'new',
+                feedback::build_for_ability_check(submission::find($this->params['submissionid']), $teacherfeedback->stageidentifier)
+            )
+        ) {
             throw new access_denied($this->coursework, $ability->get_last_message());
         }
         $this->check_stage_permissions($this->params['stageidentifier']);

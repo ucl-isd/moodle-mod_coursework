@@ -106,18 +106,11 @@ class agreedfeedback_cell extends cell_base {
 
             // Does a feedback exist for this stage.
             if (empty($feedback)) {
-                $feedbackparams = [
-                    'submissionid' => $submissionid,
-                    'assessorid' => $USER->id,
-                    'stageidentifier' => $stageidentfinal,
-                ];
-                $newfeedback = feedback::build($feedbackparams);
-
                 // This is a new feedback check it against the new ability checks.
                 if (
                     !has_capability('mod/coursework:administergrades', $PAGE->context)
                     && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context)
-                    && !$ability->can('new', $newfeedback)
+                    && !$ability->can('new', feedback::build_for_ability_check($submission, $stageidentfinal))
                 ) {
                     return get_string('nopermissiontomarksubmission', 'coursework');
                 }

@@ -24,7 +24,7 @@ namespace mod_coursework\models;
 
 use AllowDynamicProperties;
 use cache;
-use coding_exception;
+use core\exception\coding_exception;
 use context;
 use dml_exception;
 use mod_coursework\allocation\allocatable;
@@ -125,9 +125,10 @@ class feedback extends table_base {
     public $student;
 
     /**
-     * @var submission
+     * The submission object that this feedback relates to.
+     * @var ?submission
      */
-    public $submission;
+    protected ?submission $submission;
 
     /**
      * @var int 1 = it is a final grade, 0 is default in the DB. Used only for multiple marked things.
@@ -459,23 +460,29 @@ class feedback extends table_base {
     /**
      * Memoized getter
      *
-     * @return bool|submission
-     * @throws \core\exception\coding_exception
-     * @throws dml_exception
+     * @return submission
+     * @throws coding_exception|dml_exception
      */
-    public function get_submission() {
+    public function get_submission(): submission {
 
-        if (!isset($this->submission) && !empty($this->submissionid)) {
-            global $DB;
-            $courseworkid = $this->courseworkid
-                ?? $DB->get_field(submission::$tablename, 'courseworkid', ['id' => $this->submissionid]);
-            if (!$courseworkid) {
-                return false;
+        if (!isset($this->submission)) {
+            if (!$this->submissionid) {
+                throw new coding_exception("Cannot get submission without ID");
             }
-            if (!isset(submission::$pool[$courseworkid])) {
-                submission::fill_pool_coursework($courseworkid);
+            if ($this->courseworkid) {
+                // We have coursework ID so try to get it from pool.
+                if (!isset(submission::$pool[$this->courseworkid])) {
+                    submission::fill_pool_coursework($this->courseworkid);
+                }
+                $this->submission = submission::$pool[$this->courseworkid]['id'][$this->submissionid] ?? null;
             }
-            $this->submission = submission::$pool[$courseworkid]['id'][$this->submissionid] ?? false;
+            if (!isset($this->submission)) {
+                // We still do not have submission so try to get it from DB using ID.
+                $this->submission = submission::find(['id' => $this->submissionid]) ?: null;
+            }
+        }
+        if (!isset($this->submission)) {
+            throw new coding_exception("Could not find submission for feedback ID $this->id");
         }
 
         return $this->submission;
@@ -705,5 +712,33 @@ class feedback extends table_base {
     public function is_auto_grade(): bool {
         // Value of $this->lasteditedbyuser will be a user ID if the feedback was not auto generated.
         return $this->is_agreed_grade() && !$this->lasteditedbyuser;
+    }
+
+    /**
+     * This is used when we are building a new (empty) feedback object, to pass to ability class.
+     * I.e. $ability->can('new', $feedback).
+     * For DB efficiency, we require a submission object to be passed in here, as it's usually already held by caller.
+     * Otherwise, on the grading page, there are repeated queries to get submission from ID.
+     * @param submission $submission
+     * @param string $stageidentifier
+     * @return table_base
+     */
+    public static function build_for_ability_check(submission $submission, string $stageidentifier) {
+        global $USER;
+        if (!$submission || get_class($submission) !== 'mod_coursework\models\submission') {
+            throw new coding_exception(
+                "For DB efficiency, must include submission object in data passed to feedback::build_for_ability_check()"
+            );
+        }
+
+        $obj = self::build(
+            ['submissionid' => $submission->id, 'assessorid' => $USER->id, 'stage' => $stageidentifier]
+        );
+
+        // Add the submission object and coursework ID to the feedback object.
+        // (These are not fields in the coursework_feedbacks table so self::build() will not add them).
+        $obj->submission = $submission;
+        $obj->courseworkid = $submission->courseworkid;
+        return $obj;
     }
 }

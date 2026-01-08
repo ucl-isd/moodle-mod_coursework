@@ -172,15 +172,8 @@ class singlegrade_cell extends cell_base {
 
             // Does a feedback exist for this stage
             if (empty($feedback)) {
-                $feedbackparams = [
-                    'submissionid' => $submissionid,
-                    'assessorid' => $USER->id,
-                    'stageidentifier' => $stageidentifier,
-                ];
-                $newfeedback = feedback::build($feedbackparams);
-
                 // This is a new feedback check it against the new ability checks
-                if (!$ability->can('new', $newfeedback)) {
+                if (!$ability->can('new', feedback::build_for_ability_check($submission, $stageidentifier))) {
                     return get_string('nopermissiontomarksubmission', 'coursework');
                 }
             } else {

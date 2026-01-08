@@ -267,19 +267,13 @@ class marking_cell_data extends cell_data_base {
      * @return bool
      */
     public function can_add_new_feedback(assessor_feedback_row $feedbackrow, grading_table_row_base $rowsbase): bool {
-        global $USER;
-
         if (!$rowsbase->get_submission()) {
             return false;
         }
-
-        $feedbackparams = [
-            'submissionid' => $rowsbase->get_submission()->id,
-            'assessorid' => $USER->id,
-            'stageidentifier' => $feedbackrow->get_stage()->identifier(),
-        ];
-
-        return $this->ability->can('new', feedback::build($feedbackparams));
+        return $this->ability->can(
+            'new',
+            feedback::build_for_ability_check($rowsbase->get_submission(), $feedbackrow->get_stage()->identifier())
+        );
     }
 
     /**
@@ -290,19 +284,14 @@ class marking_cell_data extends cell_data_base {
      * @return bool
      */
     public function can_add_new_final_feedback(final_agreed $finalstage, grading_table_row_base $rowsbase): bool {
-        global $USER;
-
         if (!$rowsbase->get_submission()) {
             return false;
         }
 
-        $newfeedback = feedback::build([
-            'submissionid' => $rowsbase->get_submission()->id,
-            'assessorid' => $USER->id,
-            'stageidentifier' => $finalstage->identifier(),
-        ]);
-
-        return $this->ability->can('new', $newfeedback);
+        return $this->ability->can(
+            'new',
+            feedback::build_for_ability_check($rowsbase->get_submission(), $finalstage->identifier())
+        );
     }
 
     /**
@@ -317,7 +306,7 @@ class marking_cell_data extends cell_data_base {
 
         $judge = new grade_judge($this->coursework);
 
-        if ($this->ability->can('show', $feedback) || is_siteadmin($USER->id)) {
+        if (is_siteadmin($USER->id) || $this->ability->can('show', $feedback)) {
             return $judge->grade_to_display($feedback->get_grade());
         }
 

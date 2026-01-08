@@ -157,7 +157,7 @@ class mod_coursework_generator extends testing_module_generator {
 
         global $USER;
 
-        $feedback = \mod_coursework\models\feedback::build($feedback);
+        $feedback = \mod_coursework\models\feedback::create($feedback);
 
         if (!isset($feedback->submissionid) || !is_numeric($feedback->submissionid) || empty($feedback->submissionid)) {
             throw new coding_exception('Coursework generator needs a submissionid for a new feedback');
