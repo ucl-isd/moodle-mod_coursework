@@ -82,7 +82,6 @@ Feature: Double marking - blind
 
     And the following "users" exist:
       | username    | firstname   | lastname | email                  |
-      | teacher1    | Teacher     | 1        | teacher1@example.com   |
       | manager     | Assessment  | Manager  | manager@example.com    |
       | marker1     | Marker      | 1        | marker1@example.com    |
       | marker2     | Marker      | 2        | marker2@example.com    |
