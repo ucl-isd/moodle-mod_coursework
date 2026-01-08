@@ -157,15 +157,12 @@ Feature: Double marking - blind
       | student1  | C1     | student        |
       | student2  | C1     | student        |
       | student3  | C1     | student        |
-    And I am on the "Course 1" "course" page logged in as "manager"
 
-    And I allocate the following markers:
+    And the following markers are allocated:
       | student   | assessor_1 | assessor_2 |
       | Student 1 | Marker 1   | Marker 2   |
       | Student 2 | Marker 1   | Marker 2   |
       | Student 3 | Marker 1   | Marker 2   |
-
-    And I log out
 
     And I am on the "Course 1" "course" page logged in as "marker1"
     And I follow "Coursework 1"
@@ -186,13 +183,14 @@ Feature: Double marking - blind
       | student1  | C1     | student        |
       | student2  | C1     | student        |
       | student3  | C1     | student        |
-    And I am on the "Course 1" "course" page logged in as "manager"
 
-    And I allocate the following markers:
+    And the following markers are allocated:
       | student   | assessor_1 | assessor_2 |
       | Student 1 | Marker 1   | Marker 2   |
       | Student 2 | Marker 1   | Marker 2   |
       | Student 3 | Marker 1   | Marker 2   |
+
+    And I am on the "Course 1" "course" page logged in as "manager"
 
     And I follow "Coursework 1"
     And I press "Actions"
@@ -332,9 +330,7 @@ Feature: Double marking - blind
       | student2  | C1     | student        |
       | student3  | C1     | student        |
 
-    And I am on the "Course 1" "course" page logged in as "manager"
-
-    And I allocate the following markers:
+    And the following markers are allocated:
       | student   | assessor_1 | assessor_2 |
       | Student 1 | Marker 1   | Marker 2   |
       | Student 2 | Marker 1   | Marker 2   |
@@ -344,7 +340,6 @@ Feature: Double marking - blind
     And the student called "Student 2" has a finalised submission
     And the student called "Student 3" has a finalised submission
 
-    And I log out
     And I am on the "Course 1" "course" page logged in as "marker1"
     And I follow "Coursework 1"
 
@@ -386,7 +381,7 @@ Feature: Double marking - blind
       | marker2   | C1     | courseworkdbm  |
       | student1  | C1     | student        |
 
-    And I allocate the following markers:
+    And the following markers are allocated:
       | student   | assessor_1 | assessor_2 |
       | Student 1 | Marker 1   | Marker 2   |
 
@@ -419,7 +414,7 @@ Feature: Double marking - blind
       | student2    | C1     | student              |
       | student3    | C1     | student              |
 
-    And I allocate the following markers:
+    And the following markers are allocated:
       | student   | assessor_1 | moderator   |
       | Student 1 | Marker 1   | Moderator 1 |
       | Student 2 | Marker 1   | Moderator 1 |
@@ -473,7 +468,7 @@ Feature: Double marking - blind
       | student2    | C1     | student              |
       | student3    | C1     | student              |
 
-    And I allocate the following markers:
+    And the following markers are allocated:
       | student   | assessor_1 | moderator   |
       | Student 1 | Marker 1   | Moderator 1 |
       | Student 2 | Marker 1   | Moderator 1 |
@@ -537,7 +532,7 @@ Feature: Double marking - blind
       | student2    | C1     | student              |
       | student3    | C1     | student              |
 
-    And I allocate the following markers:
+    And the following markers are allocated:
       | student   | assessor_1 | moderator   |
       | Student 1 | Marker 1   | Moderator 1 |
       | Student 2 | Marker 1   | Moderator 1 |
@@ -595,7 +590,7 @@ Feature: Double marking - blind
       | student2    | C1     | student              |
       | student3    | C1     | student              |
 
-    And I allocate the following markers:
+    And the following markers are allocated:
       | student   | assessor_1 | moderator   |
       | Student 1 | Marker 1   | Moderator 1 |
       | Student 2 | Marker 1   | Moderator 1 |
@@ -654,7 +649,7 @@ Feature: Double marking - blind
       | student2    | C1     | student              |
       | student3    | C1     | student              |
 
-    And I allocate the following markers:
+    And the following markers are allocated:
       | student   | assessor_1 | moderator   |
       | Student 1 | Marker 1   | Moderator 1 |
       | Student 2 | Marker 1   | Moderator 1 |
@@ -716,7 +711,7 @@ Feature: Double marking - blind
       | student2    | C1     | student              |
       | student3    | C1     | student              |
 
-    And I allocate the following markers:
+    And the following markers are allocated:
       | student   | assessor_1 | moderator   |
       | Student 1 | Marker 1   | Moderator 1 |
       | Student 2 | Marker 1   | Moderator 1 |

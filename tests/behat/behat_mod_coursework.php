@@ -3723,11 +3723,11 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I allocate the following markers:$/
+     * @Given /^the following markers are allocated:$/
      *
      * @param TableNode $allocations Students and their markers.
      */
-    public function i_allocate_the_following_markers(TableNode $allocations) {
+    public function the_following_markers_are_allocated(TableNode $allocations) {
         global $DB;
 
         $datahash = $allocations->getHash();
