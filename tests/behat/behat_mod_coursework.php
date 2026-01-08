@@ -1375,17 +1375,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I click on the new submission button for the student$/
-     */
-    public function i_click_on_the_new_submission_button_for_the_student() {
-        /**
-         * @var mod_coursework_behat_multiple_grading_interface $multigrader_page
-         */
-        $multigraderpage = $this->get_page('multiple grading interface');
-        $multigraderpage->click_new_submission_button_for($this->student);
-    }
-
-    /**
      * @Given /^I click on the edit submission button for the student$/
      */
     public function i_click_on_the_edit_submission_button_for_the_student() {

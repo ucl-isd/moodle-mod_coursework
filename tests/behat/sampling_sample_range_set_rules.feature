@@ -1,4 +1,4 @@
-@mod @mod_coursework @mod_coursework_sampling_range_set_rules @javascript
+@mod @mod_coursework @mod_coursework_sampling @javascript
 Feature: Automatic sample based on range set grades using marking of students in stage 1 and 2
 
   As a manager, I want to be able to automatically allocate assessors to students
@@ -22,14 +22,14 @@ Feature: Automatic sample based on range set grades using marking of students in
     And I visit the coursework page
     And I wait "1" seconds
     And I click on the add feedback button for assessor 1
-    And I set the field "Grade" to "56"
+    And I set the field "Mark" to "56"
     And I press "Save and finalise"
     And I wait "1" seconds
-    And I should see "Your data has been saved."
+    And I should see "Changes saved"
 
     And I visit the coursework page
     And I click on the add feedback button for assessor 1 for another student
-    And I set the field "Grade" to "45"
+    And I set the field "Mark" to "45"
     And I press "Save and finalise"
     And I log out
 
@@ -49,15 +49,15 @@ Feature: Automatic sample based on range set grades using marking of students in
     Then a student should be automatically included in sample for stage 2
     And another student should not be automatically included in sample for stage 2
 
-    #Then I add grade range rule for stage 2
-    #And I enable grade range rule 2 for stage 2
-    #And I select limit type for grade range rule 2 in stage 2 as "grade"
-    #And I select "from" grade limit for grade range rule 1 in stage 2 as "40"
-    #And I select "to" grade limit for grade range rule 1 in stage 2 as "50"
-    #And show me the page
-    #And I save sampling strategy
-    #Then a student should be automatically included in sample for stage 2
-    #And another student should be automatically included in sample for stage 2
+    Then I add grade range rule for stage 2
+    And I enable grade range rule 2 for stage 2
+    And I select limit type for grade range rule 2 in stage 2 as "grade"
+    And I select "from" grade limit for grade range rule 1 in stage 2 as "40"
+    And I select "to" grade limit for grade range rule 1 in stage 2 as "50"
+    And show me the page
+    And I save sampling strategy
+    Then a student should be automatically included in sample for stage 2
+    And another student should be automatically included in sample for stage 2
 
   @javascript
   Scenario: Automatically allocating a set of students within specified percentage rule range in stage 3 based on stage 2 grades
@@ -70,11 +70,11 @@ Feature: Automatic sample based on range set grades using marking of students in
     And I visit the coursework page
     And I wait "1" seconds
     And I click on the add feedback button for assessor 2
-    And I set the field "Grade" to "60"
+    And I set the field "Mark" to "60"
     And I press "Save and finalise"
     And I visit the coursework page
     And I click on the add feedback button for assessor 2 for another student
-    And I set the field "Grade" to "40"
+    And I set the field "Mark" to "40"
     And I press "Save and finalise"
     And I log out
     And I am logged in as a manager
