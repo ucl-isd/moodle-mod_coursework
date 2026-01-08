@@ -5,14 +5,6 @@ Feature: Double marking - blind
   I want to perform the full coursework workflow with blind marking.
 
   Background:
-    Given the following "custom field categories" exist:
-      | name | component   | area   | itemid |
-      | CLC  | core_course | course | 0      |
-
-    And the following "custom fields" exist:
-      | name        | shortname   | category | type |
-      | Course Year | course_year | CLC      | text |
-
     And the following "roles" exist:
       | shortname             | name                  | archetype |
       | courseworkexamoffice  | courseworkexamoffice  |           |
