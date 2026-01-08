@@ -450,7 +450,7 @@ Feature: Double marking - blind
     And I should not see "Edit your submission"
 
   Scenario: Moderate the assessment
-    Given there is a blind marking moderation coursework
+    Given there is a blind marking moderated coursework
     And the following "course enrolments" exist:
       | user        | course | role                 |
       | moderator1  | C1     | courseworkmoderator  |
@@ -508,7 +508,7 @@ Feature: Double marking - blind
     Then I should see "I don't like it!"
 
   Scenario: Check moderation
-    Given there is a blind marking moderation coursework
+    Given there is a blind marking moderated coursework
     And the following "course enrolments" exist:
       | user        | course | role                 |
       | moderator1  | C1     | courseworkmoderator  |
@@ -576,7 +576,7 @@ Feature: Double marking - blind
 
   @javascript
   Scenario: Release the grades
-    Given there is a blind marking moderation coursework
+    Given there is a blind marking moderated coursework
     And the following "course enrolments" exist:
       | user        | course | role                 |
       | moderator1  | C1     | courseworkmoderator  |
@@ -638,7 +638,7 @@ Feature: Double marking - blind
 
   @javascript
   Scenario: Student 1 sees the released grades
-    Given there is a blind marking moderation coursework
+    Given there is a blind marking moderated coursework
     And the following "course enrolments" exist:
       | user        | course | role                 |
       | moderator1  | C1     | courseworkmoderator  |
@@ -701,7 +701,7 @@ Feature: Double marking - blind
 
   @javascript
   Scenario: Student 2 sees disagreed released grades
-    Given there is a blind marking moderation coursework
+    Given there is a blind marking moderated coursework
     And the following "course enrolments" exist:
       | user        | course | role                 |
       | moderator1  | C1     | courseworkmoderator  |
@@ -767,7 +767,7 @@ Feature: Double marking - blind
 
   @javascript
   Scenario: Check moderation form
-    Given there is a blind marking moderation coursework
+    Given there is a blind marking moderated coursework
     And the following "course enrolments" exist:
       | user        | course | role                 |
       | moderator1  | C1     | courseworkmoderator  |

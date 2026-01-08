@@ -1582,13 +1582,14 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * Create a coursework assessment with double-blind marking enabled.
+     * Create a coursework assessment with double-blind marking or moderation and blind marking enabled.
      *
      * Example: And there is a double-blind marking coursework
+     * Example: And there is a blind marking moderated coursework
      *
-     * @Given /^there is a double-blind marking coursework$/
+     * @Given /^there is a (double-)?blind marking( moderated)? coursework$/
      */
-    public function there_is_a_double_blind_marking_coursework() {
+    public function there_is_a_blind_marking_coursework(bool $double = false, bool $moderated = false) {
 
         /**
          * @var $generator mod_coursework_generator
@@ -1599,40 +1600,12 @@ class behat_mod_coursework extends behat_base {
         $coursework->course = $this->course;
         $coursework->startdate = time();
         $coursework->deadline = strtotime('+15 minutes');
-        $coursework->numberofmarkers = 2;
+        $coursework->numberofmarkers = ($double ? 2 : 1);
         $coursework->blindmarking = true;
         $coursework->allocationenabled = true;
         $coursework->extensionsenabled = true;
         $coursework->allowlatesubmissions = true;
-        $coursework->filetypes = "pdf";
-
-        $this->coursework = coursework::find($generator->create_instance($coursework)->id);
-    }
-
-    /**
-     * Create a coursework assessment with moderation and blind marking enabled.
-     *
-     * Example: And there is a blind marking moderation coursework
-     *
-     * @Given /^there is a blind marking moderation coursework$/
-     */
-    public function there_is_a_blind_marking_moderation_coursework() {
-
-        /**
-         * @var $generator mod_coursework_generator
-         */
-        $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
-
-        $coursework = new stdClass();
-        $coursework->course = $this->course;
-        $coursework->startdate = time();
-        $coursework->deadline = strtotime('+30 minutes');
-        $coursework->numberofmarkers = 1;
-        $coursework->blindmarking = true;
-        $coursework->allocationenabled = true;
-        $coursework->extensionsenabled = true;
-        $coursework->allowlatesubmissions = true;
-        $coursework->moderationagreementenabled = true;
+        $coursework->moderationagreementenabled = $moderated;
         $coursework->filetypes = "pdf";
 
         $this->coursework = coursework::find($generator->create_instance($coursework)->id);
