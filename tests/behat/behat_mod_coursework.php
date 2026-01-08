@@ -1581,6 +1581,63 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * Create a coursework assessment with double-blind marking enabled.
+     *
+     * Example: And there is a double-blind marking coursework
+     *
+     * @Given /^there is a double-blind marking coursework$/
+     */
+    public function there_is_a_double_blind_marking_coursework() {
+
+        /**
+         * @var $generator mod_coursework_generator
+         */
+        $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
+
+        $coursework = new stdClass();
+        $coursework->course = $this->course;
+        $coursework->startdate = time();
+        $coursework->deadline = strtotime('+15 minutes');
+        $coursework->numberofmarkers = 2;
+        $coursework->blindmarking = true;
+        $coursework->allocationenabled = true;
+        $coursework->extensionsenabled = true;
+        $coursework->allowlatesubmissions = true;
+        $coursework->filetypes = "pdf";
+
+        $this->coursework = coursework::find($generator->create_instance($coursework)->id);
+    }
+
+    /**
+     * Create a coursework assessment with moderation and blind marking enabled.
+     *
+     * Example: And there is a blind marking moderation coursework
+     *
+     * @Given /^there is a blind marking moderation coursework$/
+     */
+    public function there_is_a_blind_marking_moderation_coursework() {
+
+        /**
+         * @var $generator mod_coursework_generator
+         */
+        $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
+
+        $coursework = new stdClass();
+        $coursework->course = $this->course;
+        $coursework->startdate = time();
+        $coursework->deadline = strtotime('+30 minutes');
+        $coursework->numberofmarkers = 1;
+        $coursework->blindmarking = true;
+        $coursework->allocationenabled = true;
+        $coursework->extensionsenabled = true;
+        $coursework->allowlatesubmissions = true;
+        $coursework->moderationagreementenabled = true;
+        $coursework->filetypes = "pdf";
+
+        $this->coursework = coursework::find($generator->create_instance($coursework)->id);
+    }
+
+    /**
      * @Then /^I should see the title of the coursework on the page$/
      */
     public function i_should_see_the_title_of_the_coursework_on_the_page() {
@@ -3362,6 +3419,25 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * For matching a late submitted date ignoring the time part
+     *
+     * Example: I should see late submitted date 4 July 2025
+     *
+     * @Given /^I should see late submitted date "(?P<date>(?:[^"]|\\")*)"$/
+     */
+    public function i_should_see_late_submitted_date($date) {
+        $page = $this->getsession()->getpage();
+        $match = $page->find('xpath', "//li[starts-with(normalize-space(string()), 'Submitted Late $date')]");
+
+        if (!$match) {
+            throw new ExpectationException(
+                "Should have seen expected submitted date $date, but it was not there",
+                $this->getsession()
+            );
+        }
+    }
+
+    /**
      * @Given /^sample marking includes student for stage (\d)$/
      */
     public function sample_marking_includes_student_for_stage($stage) {
@@ -3621,5 +3697,531 @@ class behat_mod_coursework extends behat_base {
     public function i_set_the_field_to_replacing_line_breaks($field, $value) {
         $value = str_replace('\n', chr(10), $value);
         $this->execute([behat_forms::class, 'i_set_the_field_to'], [$field, $value]);
+    }
+
+    /**
+     * Sets an extension deadline for a student in a coursework.
+     *
+     * Example: And the coursework extension for "Student 1" in "Coursework 1" is "1 January 2027 08:00"
+     * Example: And the coursework extension for "Student 1" in "Coursework 1" is "## + 1 month ##"
+     *
+     * @Given /^the coursework extension for "(?P<fullname_string>(?:[^"]|\\")*)" in "(?P<cwname>(?:[^"]|\\")*)" is "(?P<datestr>(?:[^"]|\\")*)"$/
+     */
+    public function set_extension_for_user($fullname, $cwname, $datestr) {
+        global $DB;
+
+        // Find the coursework by name.
+        $cw = $DB->get_record('coursework', ['name' => $cwname], '*', MUST_EXIST);
+
+        $user = $this->get_user_from_username($fullname);
+
+        if (is_int($datestr)) {
+            $timestamp = $datestr;
+        } else {
+            $timestamp = strtotime($datestr);
+        }
+
+        // See if an extension already exists.
+        $existing = $DB->get_record('coursework_extensions', [
+            'courseworkid' => $cw->id,
+            'allocatableid' => $user->id,
+            'allocatabletype' => 'user',
+        ]);
+
+        $record = new stdClass();
+        $record->courseworkid = $cw->id;
+        $record->allocatableid = $user->id;
+        $record->allocatabletype = 'user';
+        $record->extended_deadline = $timestamp;
+        $record->createdbyid = 2;  // Admin ID.
+
+        if ($existing) {
+            $record->id = $existing->id;
+            $DB->update_record('coursework_extensions', $record);
+        } else {
+            $DB->insert_record('coursework_extensions', $record);
+        }
+    }
+
+    /**
+     * Assigns a user as a given assessor slot for a student within a coursework.
+     *
+     * Example:
+     *   And I assign user "Marker 1" as "Assessor 1" for "Student 1" in coursework "Coursework 1"
+     *
+     * @Given /^I assign user "(?P<marker_string>(?:[^"]|\\")*)" as "(?P<role_string>(?:[^"]|\\")*)" for "(?P<student_string>(?:[^"]|\\")*)" in coursework "(?P<coursework_string>(?:[^"]|\\")*)"$/
+     */
+    public function i_assign_user_as_role_for_student_in_coursework($marker, $role, $student, $cwname) {
+        global $DB;
+
+        // Find the coursework by name.
+        $cw = $DB->get_record('coursework', ['name' => $cwname], '*', MUST_EXIST);
+
+        if (strtolower($role) === "moderator") {
+            $stageidentifier = "moderator";
+        } else {
+            $assignnr = (strstr($role, '2') || strstr($role, 'two')) ? 2 : 1;
+            $stageidentifier = 'assessor_' . $assignnr;
+        }
+
+        $marker = $this->get_user_from_username($marker);
+        $student = $this->get_user_from_username($student);
+
+        // See if an allocation already exists.
+        $existing = $DB->get_record('coursework_allocation_pairs', [
+            'courseworkid' => $cw->id,
+            'allocatableid' => $student->id,
+            'allocatableuser' => $student->id,
+            'stageidentifier' => $stageidentifier,
+            'allocatabletype' => 'user',
+        ]);
+
+        $record = new stdClass();
+        $record->courseworkid = $cw->id;
+        $record->allocatableid = $student->id;
+        $record->allocatableuser = $student->id;
+        $record->assessorid = $marker->id;
+        $record->stageidentifier = $stageidentifier;
+        $record->allocatabletype = 'user';
+        $record->ismanual = 1;
+
+        if ($existing) {
+            $record->id = $existing->id;
+            $DB->update_record('coursework_allocation_pairs', $record);
+        } else {
+            $DB->insert_record('coursework_allocation_pairs', $record);
+        }
+    }
+
+    /**
+     * Return a user record from a given full name ("firstname lastname")
+     *
+     * @param $fullname
+     * @return mixed|stdClass
+     * @throws dml_exception
+     */
+    private function get_user_from_username($fullname) {
+        global $DB;
+
+        // Find user by full name (firstname + lastname).
+        if (strpos($fullname, ' ') === false) {
+            throw new Exception("Full name '{$fullname}' must contain a space separating first and last name.");
+        }
+        [$first, $last] = explode(' ', $fullname, 2);
+
+        $user = $DB->get_record('user', [
+            'firstname' => $first,
+            'lastname'  => $last,
+        ]);
+
+        if (!$user) {
+            throw new Exception("Could not find user with name '{$fullname}'.");
+        }
+        return $user;
+    }
+
+    /**
+     * Clicks the "Add mark" button for a specific marker in a row.
+     *
+     * Example: And I click the "Add mark" button for marker "Marker 2" in row "1"
+     *
+     * @Given /^I click the "Add mark" button for marker "(?P<markername>(?:[^"]|\\")*)" in row "(?P<rownumber>\d+)"$/
+     */
+    public function i_click_add_mark_for_marker_in_row($markername, $rownumber) {
+        $xpath = "(//tr[contains(@class,'mod-coursework-submissions-row')])[$rownumber]" .
+            "//li[.//a[normalize-space()='$markername']]" .
+            "//a[@data-mark-action='addfeedback']";
+
+        $element = $this->getSession()->getPage()->find('xpath', $xpath);
+        if (!$element) {
+            throw new ElementNotFoundException(
+                $this->getSession(),
+                "'Add mark' button for marker '{$markername}' in row '{$rownumber}'",
+                'xpath',
+                $xpath
+            );
+        }
+        $element->click();
+    }
+
+    /**
+     * Checks for a specific mark in a specific row.
+     *
+     * Example: Then I should see the mark "70" in row "1"
+     *
+     * @Then /^I should see the mark "(?P<mark>\d+)" in row "(?P<row_number>\d+)"$/
+     */
+    public function i_should_see_mark_in_row($mark, $rownumber) {
+        $xpath = "(//table[contains(@class,'mod-coursework-submissions-table')]/tbody/tr)[$rownumber]//a[@data-mark-action='editfeedback']";
+
+        $element = $this->getSession()->getPage()->find('xpath', $xpath);
+
+        if (!$element) {
+            throw new Exception("Mark element not found in row $rownumber");
+        }
+
+        if (trim($element->getText()) !== $mark) {
+            throw new Exception("Expected mark '$mark' but found '" . $element->getText() . "' in row $rownumber");
+        }
+    }
+
+    /**
+     * Inserts a grade directly into coursework_feedbacks table.
+     *
+     * @When /^the submission from "(?P<studentfullname>[^"]*)" is marked by "(?P<markerfullname>[^"]*)" with:$/
+     */
+    public function mark_coursework_submission_directly(
+        string $studentfullname,
+        string $markerfullname,
+        TableNode $table
+    ) {
+        global $DB;
+
+        $student = $this->get_user_from_username($studentfullname);
+        $marker = $this->get_user_from_username($markerfullname);
+
+        // Resolve submission for this student.
+        $submission = $DB->get_record('coursework_submissions', [
+            'courseworkid' => $this->coursework->id,
+            'allocatableid' => $student->id,
+        ]);
+        if (!$submission) {
+            throw new ExpectationException("Submission for '$studentfullname' not found", $this->getSession());
+        }
+
+        // Resolve marker allocation.
+        $allocation = $DB->get_record('coursework_allocation_pairs', [
+            'courseworkid' => $this->coursework->id,
+            'assessorid' => $marker->id,
+            'allocatableid' => $student->id,
+        ]);
+        if (!$allocation) {
+            throw new ExpectationException("Marker '$markerfullname' for '$studentfullname' not found", $this->getSession());
+        }
+
+        // Extract the provided table values.
+        $data = $table->getRowsHash();
+
+        $mark = isset($data['Mark']) ? floatval($data['Mark']) : null;
+        $comment = $data['Comment'] ?? '';
+        $finalised = $data['Finalised'] ?? '';
+
+        if ($mark === null) {
+            throw new ExpectationException("Missing 'Mark' value in table", $this->getSession());
+        }
+
+        // Check if there is already a feedback record.
+        $existing = $DB->get_record('coursework_feedbacks', [
+            'submissionid' => $submission->id,
+            'assessorid' => $marker->id,
+            'stageidentifier' => $allocation->stageidentifier,
+        ]);
+
+        // Insert/update feedback record.
+        $feedback = new stdClass();
+        $feedback->submissionid = $submission->id;
+        $feedback->assessorid = $marker->id;
+        $feedback->stageidentifier = $allocation->stageidentifier;
+        $feedback->grade = $mark;
+        $feedback->feedbackcomment = $comment;
+        $feedback->lasteditedbyuser = $marker->id;
+        $feedback->finalised = $finalised;
+        $feedback->timecreated = time();
+        $feedback->timemodified = time();
+
+        if ($existing) {
+            $feedback->id = $existing->id;
+            $DB->update_record('coursework_feedbacks', $feedback);
+        } else {
+            $DB->insert_record('coursework_feedbacks', $feedback);
+        }
+    }
+
+    /**
+     * Allows one role to assign another role.
+     *
+     * Example:
+     * Given the role "Manager" is allowed to assign role "Teacher".
+     *
+     * @Given /^the role "(?P<fromrole_string>(?:[^"]|\\")*)" is allowed to assign role "(?P<trole_string>(?:[^"]|\\")*)"$/
+     */
+    public function allow_role_to_assign_role(string $fromrolename, string $torolename) {
+        global $DB;
+
+        // Get roles by shortname or fullname.
+        $fromrole = $DB->get_record('role', ['shortname' => $fromrolename]);
+        if (!$fromrole) {
+            $fromrole = $DB->get_record('role', ['name' => $fromrolename]);
+        }
+        if (!$fromrole) {
+            throw new Exception("Role '$fromrolename' could not be found.");
+        }
+
+        $torole = $DB->get_record('role', ['shortname' => $torolename]);
+        if (!$torole) {
+            $torole = $DB->get_record('role', ['name' => $torolename]);
+        }
+        if (!$torole) {
+            throw new Exception("Role '$torolename' could not be found.");
+        }
+
+        // Check if record already exists.
+        $exists = $DB->record_exists('role_allow_assign', [
+            'roleid'        => $fromrole->id,
+            'allowassign'   => $torole->id,
+        ]);
+
+        if (!$exists) {
+            $record = new stdClass();
+            $record->roleid      = $fromrole->id;
+            $record->allowassign = $torole->id;
+            $DB->insert_record('role_allow_assign', $record);
+        }
+    }
+
+    /**
+     * Creates a submission for a given student.
+     *
+     * Example: And the student "Student 1" has a submission
+     *
+     * @Given /^the student "(?P<studentname>(?:[^"]|\\")*)" has a submission$/
+     */
+    public function student_has_a_submission($studentfullname) {
+        $student = $this->get_user_from_username($studentfullname);
+
+        /**
+         * @var $generator mod_coursework_generator
+         */
+        $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
+
+        $submission = new stdClass();
+        $submission->allocatableid = $student->id;
+        $submission->allocatabletype = 'user'; // Always 'user' for a student.
+
+        $this->submission = $generator->create_submission($submission, $this->coursework);
+    }
+
+    /**
+     * Finalises (or un-finalises) a submission to a coursework for a given student.
+     *
+     * Example: And the submission for "Student 1" is finalised
+     * Example: And the submission for "Student 1" is not finalised
+     *
+     * @Given /^the submission for "(?P<studentname>(?:[^"]|\\")*)" is (not )?finalised$/
+     */
+    public function submission_for_student_is_finalised($studentfullname, $negate = false) {
+        global $DB;
+
+        $student = $this->get_user_from_username($studentfullname);
+
+        // Get student's submission.
+        if (
+            !$submission = $DB->get_record(
+                'coursework_submissions',
+                [
+                    'allocatableid' => $student->id,
+                    'allocatabletype' => 'user',
+                    'courseworkid' => $this->coursework->id,
+                ]
+            )
+        ) {
+            throw new \moodle_exception("Submission for '{$studentfullname}' not found in '{$courseworkname}'.");
+        }
+
+        // Set finalised status.
+        $submission->finalisedstatus = $negate
+            ? submission::FINALISED_STATUS_NOT_FINALISED
+            : submission::FINALISED_STATUS_FINALISED;
+
+        // Save using the submission class.
+        $DB->update_record('coursework_submissions', $submission);
+    }
+
+    /**
+     * Clicks a link inside the given table row.
+     *
+     * Example:
+     *   Given I follow "Agree marking" in row "2"
+     *
+     * @Given /^I follow "(?P<linktext_string>[^"]*)" in row "(?P<rownumber>\d+)"$/
+     */
+    public function i_follow_in_row($linktext, $rownumber) {
+        $session = $this->getSession();
+        $page = $session->getPage();
+
+        // Find the table — assume there is only one submissions table on screen.
+        $table = $page->find('css', 'table.mod-coursework-submissions-table');
+        if (!$table) {
+            throw new ExpectationException("Could not find submissions table.", $session);
+        }
+
+        // Get all table body rows.
+        $rows = $table->findAll('css', 'tbody tr');
+        if (empty($rows)) {
+            throw new ExpectationException("No table rows found in submissions table.", $session);
+        }
+
+        $index = (int)$rownumber - 1;
+        if (!isset($rows[$index])) {
+            throw new ExpectationException("Row {$rownumber} does not exist.", $session);
+        }
+
+        $row = $rows[$index];
+
+        // Try to find the link by exact text.
+        $link = $row->findLink($linktext);
+        if (!$link) {
+            // Maybe it's a button with that label.
+            $link = $row->find('named', ['button', $linktext]);
+        }
+
+        if (!$link) {
+            throw new ExpectationException(
+                "Could not find a link or button '{$linktext}' in row {$rownumber}.",
+                $session
+            );
+        }
+
+        // Click it.
+        $link->click();
+    }
+
+    /**
+     * @Then /^I should( not)? see "(?P<text>[^"]*)" in row "(?P<row>\d+)"$/
+     */
+    public function i_should_see_text_in_row($not, $text, $rownumber) {
+        $session = $this->getSession();
+        $page = $session->getPage();
+
+        // Find the table body.
+        $tbody = $page->find('css', 'table.mod-coursework-submissions-table tbody');
+        if (!$tbody) {
+            throw new Exception('Could not find coursework submissions table.');
+        }
+
+        // Get all rows.
+        $rows = $tbody->findAll('css', 'tr');
+        if (!isset($rows[$rownumber - 1])) {
+            throw new Exception("Row {$rownumber} does not exist in the submissions table.");
+        }
+
+        $row = $rows[$rownumber - 1];
+        $rowtext = $row->getText();
+        $contains = strpos($rowtext, $text) !== false;
+
+        // Check text inside the row.
+        // If "not" was present in the step.
+        if (trim($not) === 'not') {
+            if ($contains) {
+                throw new Exception("'{$text}' text was found in row {$rownumber}.\nRow contents: {$rowtext}");
+            }
+            return; // OK.
+        }
+
+        // Normal positive check.
+        if (!$contains) {
+            throw new Exception("'{$text}' was not found in row {$rownumber}.\nRow contents: {$rowtext}");
+        }
+    }
+
+    /**
+     * Inserts a moderation directly into coursework_mod_agreements table.
+     *
+     * @When /^the submission from "(?P<studentfullname>[^"]*)" is moderated by "(?P<moderatorfullname>[^"]*)" with:$/
+     */
+    public function moderate_submission_directly(
+        string $studentfullname,
+        string $moderatorfullname,
+        TableNode $table
+    ) {
+        global $DB;
+
+        $student = $this->get_user_from_username($studentfullname);
+        $moderator = $this->get_user_from_username($moderatorfullname);
+
+        // Resolve submission for this student.
+        $submission = $DB->get_record('coursework_submissions', [
+            'courseworkid' => $this->coursework->id,
+            'allocatableid' => $student->id,
+        ]);
+        if (!$submission) {
+            throw new ExpectationException("Submission for '$studentfullname' not found", $this->getSession());
+        }
+
+        // Resolve moderator allocation.
+        $allocation = $DB->get_record('coursework_allocation_pairs', [
+            'courseworkid' => $this->coursework->id,
+            'assessorid' => $moderator->id,
+            'allocatableid' => $student->id,
+            'stageidentifier' => 'moderator',
+        ]);
+        if (!$allocation) {
+            throw new ExpectationException("Moderator '$moderatorfullname' for '$studentfullname' not found", $this->getSession());
+        }
+
+        // Resolve feedback.
+        $params = ['submissionid' => $submission->id];
+        $sql = "SELECT *
+                FROM {coursework_feedbacks}
+                WHERE submissionid = :submissionid
+                AND stageidentifier LIKE 'assessor_%'";
+        $feedback = $DB->get_record_sql($sql, $params);
+
+        if (!$feedback) {
+            throw new ExpectationException("Feedback for '$studentfullname' not found", $this->getSession());
+        }
+
+        // Extract the provided table values.
+        $data = $table->getRowsHash();
+        $agreementtext = $data['Agreement'] ?? '';
+        $comment = $data['Comment'] ?? '';
+
+        // Check if there is already an agreement record.
+        $existing = $DB->get_record('coursework_mod_agreements', [
+            'feedbackid' => $feedback->id,
+            'moderatorid' => $moderator->id,
+        ]);
+
+        // Insert/update agreement record.
+        $agreement = new stdClass();
+        $agreement->feedbackid = $feedback->id;
+        $agreement->moderatorid = $moderator->id;
+        $agreement->agreement = $agreementtext;
+        $agreement->modcomment = $comment;
+        $agreement->modcommentformat = FORMAT_HTML;
+        $agreement->lasteditedby = $moderator->id;
+        $agreement->timecreated = time();
+        $agreement->timemodified = time();
+
+        if ($existing) {
+            $agreement->id = $existing->id;
+            $DB->update_record('coursework_mod_agreements', $agreement);
+        } else {
+            $DB->insert_record('coursework_mod_agreements', $agreement);
+        }
+    }
+
+    /**
+     * Checks whether a submit button with the given label exists on the page.
+     *
+     * @Then /^I should( not)? see a submit button "(?P<label>[^"]*)"$/
+     */
+    public function should_see_submit_button($not, $label) {
+        $session = $this->getSession();
+        $page = $session->getPage();
+
+        // Find input[type=submit] elements.
+        $button = $page->find('xpath', "//input[@type='submit' and @value='{$label}']");
+
+        if ($not) {
+            if ($button) {
+                throw new \Exception("Submit button '{$label}' found on the page.");
+            }
+            return; // OK.
+        }
+
+        if (!$button) {
+            throw new \Exception("Submit button '{$label}' not found on the page.");
+        }
     }
 }
