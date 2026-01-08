@@ -270,6 +270,7 @@ trait factory_mixin {
         $feedback->assessorid = 11; // Dummy
         $feedback->stageidentifier = 'final_agreed_1';
         $feedback->grade = 45;
+        $feedback->finalised = 1;
         $this->finalfeedback = $generator->create_feedback($feedback);
 
         return $this->finalfeedback;
@@ -289,6 +290,7 @@ trait factory_mixin {
         $feedback->assessorid = $assessor->id;
         $feedback->stageidentifier = 'assessor_' . ($count + 1);
         $feedback->grade = 45;
+        $feedback->finalised = 1;
         return $generator->create_feedback($feedback);
     }
 
