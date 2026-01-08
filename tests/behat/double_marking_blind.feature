@@ -16,7 +16,7 @@ Feature: Double marking - blind
     And the following "roles" exist:
       | shortname             | name                  | archetype |
       | courseworkexamoffice  | courseworkexamoffice  |           |
-      | courseworkmarker      | courseworkmarker      |           |
+      | courseworkdbm         | courseworkdbm         |           |
       | courseworkmoderator   | courseworkmoderator   |           |
       | norole                | norole                |           |
 
@@ -53,19 +53,19 @@ Feature: Double marking - blind
       | moodle/calendar:manageentries                 | allow                 |
 
     And the following "role capability" exists:
-      | role                                          | courseworkmarker  |
-      | mod/coursework:addallocatedagreedgrade        | allow             |
-      | mod/coursework:addgeneralfeedback             | allow             |
-      | mod/coursework:addinitialgrade                | allow             |
-      | mod/coursework:addplagiarismflag              | allow             |
-      | mod/coursework:editagreedgrade                | allow             |
-      | mod/coursework:editallocatedagreedgrade       | allow             |
-      | mod/coursework:editinitialgrade               | allow             |
-      | mod/coursework:grade                          | allow             |
-      | mod/coursework:receivesubmissionnotifications | allow             |
-      | mod/coursework:updateplagiarismflag           | allow             |
-      | mod/coursework:view                           | allow             |
-      | mod/coursework:viewextensions                 | allow             |
+      | role                                          | courseworkdbm |
+      | mod/coursework:addallocatedagreedgrade        | allow         |
+      | mod/coursework:addgeneralfeedback             | allow         |
+      | mod/coursework:addinitialgrade                | allow         |
+      | mod/coursework:addplagiarismflag              | allow         |
+      | mod/coursework:editagreedgrade                | allow         |
+      | mod/coursework:editallocatedagreedgrade       | allow         |
+      | mod/coursework:editinitialgrade               | allow         |
+      | mod/coursework:grade                          | allow         |
+      | mod/coursework:receivesubmissionnotifications | allow         |
+      | mod/coursework:updateplagiarismflag           | allow         |
+      | mod/coursework:view                           | allow         |
+      | mod/coursework:viewextensions                 | allow         |
 
     And the following "role capability" exists:
       | role                                          | courseworkmoderator |
@@ -78,7 +78,7 @@ Feature: Double marking - blind
       | mod/coursework:viewextensions                 | allow               |
 
     And the role "courseworkexamoffice" is allowed to assign role "courseworkmoderator"
-    And the role "courseworkexamoffice" is allowed to assign role "courseworkmarker"
+    And the role "courseworkexamoffice" is allowed to assign role "courseworkdbm"
 
     And the following "users" exist:
       | username    | firstname   | lastname | email                  |
@@ -131,7 +131,7 @@ Feature: Double marking - blind
     And I am on the "Course 1" "course" page logged in as "manager"
     And I follow "Coursework 1"
     And I follow "Add markers"
-    And I follow "courseworkmarker"
+    And I follow "courseworkdbm"
 
     Then I should see "Marker 1" in the "Potential users" "field"
     And I should see "Marker 2" in the "Potential users" "field"
@@ -154,13 +154,13 @@ Feature: Double marking - blind
   Scenario: Allocate markers
     Given there is a double-blind marking coursework
     And the following "course enrolments" exist:
-      | user      | course | role                 |
-      | marker1   | C1     | courseworkmarker     |
-      | marker2   | C1     | courseworkmarker     |
-      | marker3   | C1     | courseworkmarker     |
-      | student1  | C1     | student              |
-      | student2  | C1     | student              |
-      | student3  | C1     | student              |
+      | user      | course | role           |
+      | marker1   | C1     | courseworkdbm  |
+      | marker2   | C1     | courseworkdbm  |
+      | marker3   | C1     | courseworkdbm  |
+      | student1  | C1     | student        |
+      | student2  | C1     | student        |
+      | student3  | C1     | student        |
 
     And I am on the "Course 1" "course" page logged in as "manager"
     And I follow "Coursework 1"
@@ -190,13 +190,13 @@ Feature: Double marking - blind
   Scenario: Check anonymity
     Given there is a double-blind marking coursework
     And the following "course enrolments" exist:
-      | user      | course | role                 |
-      | marker1   | C1     | courseworkmarker     |
-      | marker2   | C1     | courseworkmarker     |
-      | marker3   | C1     | courseworkmarker     |
-      | student1  | C1     | student              |
-      | student2  | C1     | student              |
-      | student3  | C1     | student              |
+      | user      | course | role           |
+      | marker1   | C1     | courseworkdbm  |
+      | marker2   | C1     | courseworkdbm  |
+      | marker3   | C1     | courseworkdbm  |
+      | student1  | C1     | student        |
+      | student2  | C1     | student        |
+      | student3  | C1     | student        |
     And I am on the "Course 1" "course" page logged in as "manager"
 
     And I allocate the following markers:
@@ -219,13 +219,13 @@ Feature: Double marking - blind
   Scenario: Add extension to a student
     Given there is a double-blind marking coursework
     And the following "course enrolments" exist:
-      | user      | course | role                 |
-      | marker1   | C1     | courseworkmarker     |
-      | marker2   | C1     | courseworkmarker     |
-      | marker3   | C1     | courseworkmarker     |
-      | student1  | C1     | student              |
-      | student2  | C1     | student              |
-      | student3  | C1     | student              |
+      | user      | course | role           |
+      | marker1   | C1     | courseworkdbm  |
+      | marker2   | C1     | courseworkdbm  |
+      | marker3   | C1     | courseworkdbm  |
+      | student1  | C1     | student        |
+      | student2  | C1     | student        |
+      | student3  | C1     | student        |
     And I am on the "Course 1" "course" page logged in as "manager"
 
     And I allocate the following markers:
@@ -319,11 +319,11 @@ Feature: Double marking - blind
   Scenario: Manager can submit on behalf of students.
     Given there is a double-blind marking coursework
     And the following "course enrolments" exist:
-      | user      | course | role                 |
-      | marker1   | C1     | courseworkmarker     |
-      | marker2   | C1     | courseworkmarker     |
-      | marker3   | C1     | courseworkmarker     |
-      | student1  | C1     | student              |
+      | user      | course | role           |
+      | marker1   | C1     | courseworkdbm  |
+      | marker2   | C1     | courseworkdbm  |
+      | marker3   | C1     | courseworkdbm  |
+      | student1  | C1     | student        |
 
     And the student "Student 1" has a finalised submission
 
@@ -364,13 +364,13 @@ Feature: Double marking - blind
   Scenario: Mark the assignments
     Given there is a double-blind marking coursework
     And the following "course enrolments" exist:
-      | user      | course | role                 |
-      | marker1   | C1     | courseworkmarker     |
-      | marker2   | C1     | courseworkmarker     |
-      | marker3   | C1     | courseworkmarker     |
-      | student1  | C1     | student              |
-      | student2  | C1     | student              |
-      | student3  | C1     | student              |
+      | user      | course | role           |
+      | marker1   | C1     | courseworkdbm  |
+      | marker2   | C1     | courseworkdbm  |
+      | marker3   | C1     | courseworkdbm  |
+      | student1  | C1     | student        |
+      | student2  | C1     | student        |
+      | student3  | C1     | student        |
 
     And I am on the "Course 1" "course" page logged in as "manager"
 
@@ -421,10 +421,10 @@ Feature: Double marking - blind
   Scenario: Verify assignment shows in marking
     Given there is a double-blind marking coursework
     And the following "course enrolments" exist:
-      | user      | course | role             |
-      | marker1   | C1     | courseworkmarker |
-      | marker2   | C1     | courseworkmarker |
-      | student1  | C1     | student          |
+      | user      | course | role           |
+      | marker1   | C1     | courseworkdbm  |
+      | marker2   | C1     | courseworkdbm  |
+      | student1  | C1     | student        |
 
     And I allocate the following markers:
       | student   | assessor_1 | assessor_2 |
@@ -452,9 +452,9 @@ Feature: Double marking - blind
     And the following "course enrolments" exist:
       | user        | course | role                 |
       | moderator1  | C1     | courseworkmoderator  |
-      | marker1     | C1     | courseworkmarker     |
-      | marker2     | C1     | courseworkmarker     |
-      | marker3     | C1     | courseworkmarker     |
+      | marker1     | C1     | courseworkdbm        |
+      | marker2     | C1     | courseworkdbm        |
+      | marker3     | C1     | courseworkdbm        |
       | student1    | C1     | student              |
       | student2    | C1     | student              |
       | student3    | C1     | student              |
@@ -506,9 +506,9 @@ Feature: Double marking - blind
     And the following "course enrolments" exist:
       | user        | course | role                 |
       | moderator1  | C1     | courseworkmoderator  |
-      | marker1     | C1     | courseworkmarker     |
-      | marker2     | C1     | courseworkmarker     |
-      | marker3     | C1     | courseworkmarker     |
+      | marker1     | C1     | courseworkdbm        |
+      | marker2     | C1     | courseworkdbm        |
+      | marker3     | C1     | courseworkdbm        |
       | student1    | C1     | student              |
       | student2    | C1     | student              |
       | student3    | C1     | student              |
@@ -570,9 +570,9 @@ Feature: Double marking - blind
     And the following "course enrolments" exist:
       | user        | course | role                 |
       | moderator1  | C1     | courseworkmoderator  |
-      | marker1     | C1     | courseworkmarker     |
-      | marker2     | C1     | courseworkmarker     |
-      | marker3     | C1     | courseworkmarker     |
+      | marker1     | C1     | courseworkdbm        |
+      | marker2     | C1     | courseworkdbm        |
+      | marker3     | C1     | courseworkdbm        |
       | student1    | C1     | student              |
       | student2    | C1     | student              |
       | student3    | C1     | student              |
@@ -628,9 +628,9 @@ Feature: Double marking - blind
     And the following "course enrolments" exist:
       | user        | course | role                 |
       | moderator1  | C1     | courseworkmoderator  |
-      | marker1     | C1     | courseworkmarker     |
-      | marker2     | C1     | courseworkmarker     |
-      | marker3     | C1     | courseworkmarker     |
+      | marker1     | C1     | courseworkdbm        |
+      | marker2     | C1     | courseworkdbm        |
+      | marker3     | C1     | courseworkdbm        |
       | student1    | C1     | student              |
       | student2    | C1     | student              |
       | student3    | C1     | student              |
@@ -687,9 +687,9 @@ Feature: Double marking - blind
     And the following "course enrolments" exist:
       | user        | course | role                 |
       | moderator1  | C1     | courseworkmoderator  |
-      | marker1     | C1     | courseworkmarker     |
-      | marker2     | C1     | courseworkmarker     |
-      | marker3     | C1     | courseworkmarker     |
+      | marker1     | C1     | courseworkdbm        |
+      | marker2     | C1     | courseworkdbm        |
+      | marker3     | C1     | courseworkdbm        |
       | student1    | C1     | student              |
       | student2    | C1     | student              |
       | student3    | C1     | student              |
@@ -749,9 +749,9 @@ Feature: Double marking - blind
     And the following "course enrolments" exist:
       | user        | course | role                 |
       | moderator1  | C1     | courseworkmoderator  |
-      | marker1     | C1     | courseworkmarker     |
-      | marker2     | C1     | courseworkmarker     |
-      | marker3     | C1     | courseworkmarker     |
+      | marker1     | C1     | courseworkdbm        |
+      | marker2     | C1     | courseworkdbm        |
+      | marker3     | C1     | courseworkdbm        |
       | student1    | C1     | student              |
       | student2    | C1     | student              |
       | student3    | C1     | student              |
