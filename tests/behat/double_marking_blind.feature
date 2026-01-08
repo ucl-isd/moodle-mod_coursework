@@ -325,7 +325,7 @@ Feature: Double marking - blind
       | marker3   | C1     | courseworkdbm  |
       | student1  | C1     | student        |
 
-    And the student "Student 1" has a finalised submission
+    And the student called "Student 1" has a finalised submission
 
     When I am on the "Course 1" "course" page logged in as "manager"
     And I follow "Coursework 1"
@@ -380,9 +380,9 @@ Feature: Double marking - blind
       | Student 2 | Marker 1   | Marker 2   |
       | Student 3 | Marker 1   | Marker 2   |
 
-    And the student "Student 1" has a finalised submission
-    And the student "Student 2" has a finalised submission
-    And the student "Student 3" has a finalised submission
+    And the student called "Student 1" has a finalised submission
+    And the student called "Student 2" has a finalised submission
+    And the student called "Student 3" has a finalised submission
 
     And I log out
     And I am on the "Course 1" "course" page logged in as "marker1"
@@ -430,14 +430,14 @@ Feature: Double marking - blind
       | student   | assessor_1 | assessor_2 |
       | Student 1 | Marker 1   | Marker 2   |
 
-    And the student "Student 1" has a finalised submission
+    And the student called "Student 1" has a finalised submission
 
     And the submission from "Student 1" is marked by "Marker 1" with:
       | Mark    | 70              |
       | Comment | Excellent work! |
 
     And the submission from "Student 1" is marked by "Marker 2" with:
-      | Mark    | 65              |
+      | Mark    | 65    |
       | Comment | Nice! |
 
     And I am on the "Course 1" "course" page logged in as "student1"
@@ -465,9 +465,9 @@ Feature: Double marking - blind
       | Student 2 | Marker 1   | Moderator 1 |
       | Student 3 | Marker 2   | Moderator 1 |
 
-    And the student "Student 1" has a finalised submission
-    And the student "Student 2" has a finalised submission
-    And the student "Student 3" has a finalised submission
+    And the student called "Student 1" has a finalised submission
+    And the student called "Student 2" has a finalised submission
+    And the student called "Student 3" has a finalised submission
 
     And the submission from "Student 1" is marked by "Marker 1" with:
       | Mark      | 70              |
@@ -519,9 +519,9 @@ Feature: Double marking - blind
       | Student 2 | Marker 1   | Moderator 1 |
       | Student 3 | Marker 2   | Moderator 1 |
 
-    And the student "Student 1" has a finalised submission
-    And the student "Student 2" has a finalised submission
-    And the student "Student 3" has a finalised submission
+    And the student called "Student 1" has a finalised submission
+    And the student called "Student 2" has a finalised submission
+    And the student called "Student 3" has a finalised submission
 
     And the submission from "Student 1" is marked by "Marker 1" with:
       | Mark      | 70              |
@@ -583,9 +583,9 @@ Feature: Double marking - blind
       | Student 2 | Marker 1   | Moderator 1 |
       | Student 3 | Marker 2   | Moderator 1 |
 
-    And the student "Student 1" has a finalised submission
-    And the student "Student 2" has a finalised submission
-    And the student "Student 3" has a finalised submission
+    And the student called "Student 1" has a finalised submission
+    And the student called "Student 2" has a finalised submission
+    And the student called "Student 3" has a finalised submission
 
     And the submission from "Student 1" is marked by "Marker 1" with:
       | Mark      | 70              |
@@ -641,9 +641,9 @@ Feature: Double marking - blind
       | Student 2 | Marker 1   | Moderator 1 |
       | Student 3 | Marker 2   | Moderator 1 |
 
-    And the student "Student 1" has a finalised submission
-    And the student "Student 2" has a finalised submission
-    And the student "Student 3" has a finalised submission
+    And the student called "Student 1" has a finalised submission
+    And the student called "Student 2" has a finalised submission
+    And the student called "Student 3" has a finalised submission
 
     And the submission from "Student 1" is marked by "Marker 1" with:
       | Mark      | 70              |
@@ -700,9 +700,9 @@ Feature: Double marking - blind
       | Student 2 | Marker 1   | Moderator 1 |
       | Student 3 | Marker 2   | Moderator 1 |
 
-    And the student "Student 1" has a finalised submission
-    And the student "Student 2" has a finalised submission
-    And the student "Student 3" has a finalised submission
+    And the student called "Student 1" has a finalised submission
+    And the student called "Student 2" has a finalised submission
+    And the student called "Student 3" has a finalised submission
 
     And the submission from "Student 1" is marked by "Marker 1" with:
       | Mark      | 70              |
@@ -762,9 +762,9 @@ Feature: Double marking - blind
       | Student 2 | Marker 1   | Moderator 1 |
       | Student 3 | Marker 2   | Moderator 1 |
 
-    And the student "Student 1" has a finalised submission
-    And the student "Student 2" has a finalised submission
-    And the student "Student 3" has a finalised submission
+    And the student called "Student 1" has a finalised submission
+    And the student called "Student 2" has a finalised submission
+    And the student called "Student 3" has a finalised submission
 
     And the submission from "Student 1" is marked by "Marker 1" with:
       | Mark      | 70              |

@@ -2681,15 +2681,28 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * Named student has a submission.
-     * @Given /^the student called "([\w]+)" has a( finalised)? submission*$/
+     * @Given /^the student called "(?P<name>(?:[^"]|\\")*)" has a( finalised)? submission*$/
      */
-    public function named_student_has_a_submission(string $firstname, bool $finalised = false) {
+    public function named_student_has_a_submission(string $name, bool $finalised = false) {
         global $DB;
         $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
-        $userid = $DB->get_field_sql(
-            "SELECT id FROM {user} WHERE firstname = ? AND lastname LIKE 'student%'",
-            [$firstname]
-        );
+
+        // Check if the name consists of first- and lastname.
+        $username = explode(' ', $name, 2);
+        $firstname = $username[0];
+        $lastname = $username[1] ?? '';
+
+        if (!$lastname) {
+            $userid = $DB->get_field_sql(
+                "SELECT id FROM {user} WHERE firstname = ? AND lastname LIKE 'student%'",
+                [$firstname]
+            );
+        } else {
+            $userid = $DB->get_field_sql(
+                "SELECT id FROM {user} WHERE firstname = ? AND lastname = ?",
+                [$firstname, $lastname]
+            );
+        }
         if ($userid) {
             $submission = new stdClass();
             $submission->allocatableid = $userid;
@@ -3893,29 +3906,6 @@ class behat_mod_coursework extends behat_base {
         if (!$exists) {
             core_role_set_assign_allowed($fromrole->id, $torole->id);
         }
-    }
-
-    /**
-     * Creates a finalised submission for a given student.
-     *
-     * Example: And the student "Student 1" has a finalised submission
-     *
-     * @Given /^the student "(?P<studentname>(?:[^"]|\\")*)" has a finalised submission$/
-     */
-    public function student_has_a_finalised_submission($studentfullname) {
-        $student = $this->get_user_from_username($studentfullname);
-
-        /**
-         * @var $generator mod_coursework_generator
-         */
-        $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
-
-        $submission = new stdClass();
-        $submission->allocatableid = $student->id;
-        $submission->allocatabletype = 'user'; // Always 'user' for a student.
-        $submission->finalisedstatus = submission::FINALISED_STATUS_FINALISED;
-
-        $this->submission = $generator->create_submission($submission, $this->coursework);
     }
 
     /**
