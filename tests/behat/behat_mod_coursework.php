@@ -1607,6 +1607,7 @@ class behat_mod_coursework extends behat_base {
         $coursework->allowlatesubmissions = true;
         $coursework->moderationagreementenabled = $moderated;
         $coursework->filetypes = "pdf";
+        $coursework->assessorallocationstrategy = "none";
 
         $this->coursework = coursework::find($generator->create_instance($coursework)->id);
     }
