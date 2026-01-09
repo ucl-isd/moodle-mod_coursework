@@ -76,7 +76,7 @@ class auto_allocator {
         $allocatables = $this->get_allocatables();
 
         foreach ($allocatables as $allocatable) { // Allocatable = user or group
-            if ($stage->uses_sampling() && $stage->allocatable_is_not_in_sampling($allocatable)) {
+            if ($stage->uses_sampling() && !$stage->allocatable_is_in_sample($allocatable)) {
                 continue;
             }
 

@@ -121,7 +121,7 @@ class processor {
      */
     private function process_sampling_membership($data) {
         if ($data->allocatable_should_be_in_sampling()) {
-            if ($this->get_stage()->allocatable_is_not_in_sampling($this->get_allocatable())) {
+            if (!$this->get_stage()->allocatable_is_in_sample($this->get_allocatable())) {
                 $this->get_stage()->add_allocatable_to_sampling($this->get_allocatable());
             }
             if ($this->get_stage()->has_allocation($this->get_allocatable())) {

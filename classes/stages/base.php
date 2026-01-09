@@ -536,21 +536,21 @@ abstract class base {
             return true;
         }
 
-        assessment_set_membership::fill_pool_coursework($this->coursework->id);
-        $record = assessment_set_membership::get_object(
-            $this->coursework->id,
-            'allocatableid-allocatabletype-stageidentifier',
-            [$allocatable->id(), $allocatable->type(), $this->stageidentifier]
-        );
-        return !empty($record);
+        return !empty($this->get_assessment_set_membership($allocatable));
     }
 
     /**
      * @param allocatable $allocatable
-     * @return bool
+     * @return assessment_set_membership|bool
+     * @throws \core\exception\coding_exception
      */
-    public function allocatable_is_not_in_sampling($allocatable) {
-        return !$this->allocatable_is_in_sample($allocatable);
+    public function get_assessment_set_membership($allocatable) {
+        assessment_set_membership::fill_pool_coursework($this->coursework->id);
+        return assessment_set_membership::get_object(
+            $this->coursework->id,
+            'allocatableid-allocatabletype-stageidentifier',
+            [$allocatable->id(), $allocatable->type(), $this->stageidentifier]
+        );
     }
 
     /**
