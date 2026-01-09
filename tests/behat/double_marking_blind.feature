@@ -646,12 +646,20 @@ Feature: Double marking - blind
       | Agreement | disagreed               |
       | Comment   | I don't like it at all! |
 
+    # Before marks have been released moderator can view and edit moderation.
+    And I am on the "Course 1" "course" page logged in as "moderator1"
+    And I follow "Coursework 1"
+    And I follow "Agreed" in row "1"
+    Then I should see "Moderation for "
+    And I should see "Moderator 1"
+    And "Save changes" "button" should exist
+
     And I am on the "Course 1" "course" page logged in as "manager"
     And I follow "Coursework 1"
     And I press the release marks button
     And I log out
 
-    # Moderator can view but not edit moderation.
+    # After marks have been released moderator can view but not edit moderation.
     And I am on the "Course 1" "course" page logged in as "moderator1"
     And I follow "Coursework 1"
     And I follow "Agreed" in row "1"
