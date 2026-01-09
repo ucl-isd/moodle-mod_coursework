@@ -85,8 +85,16 @@ Feature: Double marking - blind
 
     Given there is a course
     And the following "course enrolments" exist:
-      | user      | course | role                 |
-      | manager   | C1     | courseworkexamoffice |
+      | user        | course | role                 |
+      | manager     | C1     | courseworkexamoffice |
+      | moderator1  | C1     | courseworkmoderator  |
+      | moderator1  | C1     | teacher              |
+      | marker1     | C1     | courseworkdbm        |
+      | marker2     | C1     | courseworkdbm        |
+      | marker3     | C1     | courseworkdbm        |
+      | student1    | C1     | student              |
+      | student2    | C1     | student              |
+      | student3    | C1     | student              |
 
   Scenario: Create coursework assignment with double blind marking
     Given I am on the "Course 1" "course" page logged in as "manager"
@@ -113,14 +121,6 @@ Feature: Double marking - blind
 
   Scenario: Allocate markers
     Given there is a double-blind marking coursework
-    And the following "course enrolments" exist:
-      | user      | course | role           |
-      | marker1   | C1     | courseworkdbm  |
-      | marker2   | C1     | courseworkdbm  |
-      | marker3   | C1     | courseworkdbm  |
-      | student1  | C1     | student        |
-      | student2  | C1     | student        |
-      | student3  | C1     | student        |
 
     And I am on the "Course 1" "course" page logged in as "manager"
     And I follow "Coursework 1"
@@ -149,14 +149,6 @@ Feature: Double marking - blind
 
   Scenario: Check anonymity
     Given there is a double-blind marking coursework
-    And the following "course enrolments" exist:
-      | user      | course | role           |
-      | marker1   | C1     | courseworkdbm  |
-      | marker2   | C1     | courseworkdbm  |
-      | marker3   | C1     | courseworkdbm  |
-      | student1  | C1     | student        |
-      | student2  | C1     | student        |
-      | student3  | C1     | student        |
 
     And the following markers are allocated:
       | student   | assessor_1 | assessor_2 |
@@ -175,14 +167,6 @@ Feature: Double marking - blind
   @javascript
   Scenario: Add extension to a student
     Given there is a double-blind marking coursework
-    And the following "course enrolments" exist:
-      | user      | course | role           |
-      | marker1   | C1     | courseworkdbm  |
-      | marker2   | C1     | courseworkdbm  |
-      | marker3   | C1     | courseworkdbm  |
-      | student1  | C1     | student        |
-      | student2  | C1     | student        |
-      | student3  | C1     | student        |
 
     And the following markers are allocated:
       | student   | assessor_1 | assessor_2 |
@@ -211,9 +195,6 @@ Feature: Double marking - blind
   @javascript @_file_upload
   Scenario: Student can submit a PDF file
     Given there is a double-blind marking coursework
-    And the following "course enrolments" exist:
-      | user      | course | role             |
-      | student1  | C1     | student          |
 
     When I am on the "Course 1" "course" page logged in as "student1"
 
@@ -231,9 +212,6 @@ Feature: Double marking - blind
   @javascript @_file_upload
   Scenario: Student with extension can submit after deadline w/o being late
     Given there is a double-blind marking coursework
-    And the following "course enrolments" exist:
-      | user      | course | role             |
-      | student1  | C1     | student          |
 
     # The coursework deadline has passed 5 minutes ago
     Given the coursework deadline date is "##-5 minutes##"
@@ -255,9 +233,6 @@ Feature: Double marking - blind
   @javascript @_file_upload
   Scenario: Student has no extension so submission is late
     Given there is a double-blind marking coursework
-    And the following "course enrolments" exist:
-      | user      | course | role             |
-      | student1  | C1     | student          |
 
     # The coursework deadline has passed 5 minutes ago
     And the coursework deadline date is "##-5 minutes##"
@@ -276,12 +251,6 @@ Feature: Double marking - blind
   @javascript @_file_upload
   Scenario: Manager can submit on behalf of students.
     Given there is a double-blind marking coursework
-    And the following "course enrolments" exist:
-      | user      | course | role           |
-      | marker1   | C1     | courseworkdbm  |
-      | marker2   | C1     | courseworkdbm  |
-      | marker3   | C1     | courseworkdbm  |
-      | student1  | C1     | student        |
 
     And the student called "Student 1" has a finalised submission
 
@@ -321,14 +290,6 @@ Feature: Double marking - blind
   @javascript @_file_upload
   Scenario: Mark the assignments
     Given there is a double-blind marking coursework
-    And the following "course enrolments" exist:
-      | user      | course | role           |
-      | marker1   | C1     | courseworkdbm  |
-      | marker2   | C1     | courseworkdbm  |
-      | marker3   | C1     | courseworkdbm  |
-      | student1  | C1     | student        |
-      | student2  | C1     | student        |
-      | student3  | C1     | student        |
 
     And the following markers are allocated:
       | student   | assessor_1 | assessor_2 |
@@ -375,11 +336,6 @@ Feature: Double marking - blind
   @javascript
   Scenario: Verify assignment shows in marking
     Given there is a double-blind marking coursework
-    And the following "course enrolments" exist:
-      | user      | course | role           |
-      | marker1   | C1     | courseworkdbm  |
-      | marker2   | C1     | courseworkdbm  |
-      | student1  | C1     | student        |
 
     And the following markers are allocated:
       | student   | assessor_1 | assessor_2 |
@@ -404,15 +360,6 @@ Feature: Double marking - blind
 
   Scenario: Moderate the assessment
     Given there is a blind marking moderated coursework
-    And the following "course enrolments" exist:
-      | user        | course | role                 |
-      | moderator1  | C1     | courseworkmoderator  |
-      | marker1     | C1     | courseworkdbm        |
-      | marker2     | C1     | courseworkdbm        |
-      | marker3     | C1     | courseworkdbm        |
-      | student1    | C1     | student              |
-      | student2    | C1     | student              |
-      | student3    | C1     | student              |
 
     And the following markers are allocated:
       | student   | assessor_1 | moderator   |
@@ -458,15 +405,6 @@ Feature: Double marking - blind
 
   Scenario: Check moderation
     Given there is a blind marking moderated coursework
-    And the following "course enrolments" exist:
-      | user        | course | role                 |
-      | moderator1  | C1     | courseworkmoderator  |
-      | marker1     | C1     | courseworkdbm        |
-      | marker2     | C1     | courseworkdbm        |
-      | marker3     | C1     | courseworkdbm        |
-      | student1    | C1     | student              |
-      | student2    | C1     | student              |
-      | student3    | C1     | student              |
 
     And the following markers are allocated:
       | student   | assessor_1 | moderator   |
@@ -522,15 +460,6 @@ Feature: Double marking - blind
   @javascript
   Scenario: Release the grades
     Given there is a blind marking moderated coursework
-    And the following "course enrolments" exist:
-      | user        | course | role                 |
-      | moderator1  | C1     | courseworkmoderator  |
-      | marker1     | C1     | courseworkdbm        |
-      | marker2     | C1     | courseworkdbm        |
-      | marker3     | C1     | courseworkdbm        |
-      | student1    | C1     | student              |
-      | student2    | C1     | student              |
-      | student3    | C1     | student              |
 
     And the following markers are allocated:
       | student   | assessor_1 | moderator   |
@@ -573,6 +502,7 @@ Feature: Double marking - blind
     Then I should see "Are you sure you want to release all marks?"
     And I press "Confirm"
     Then I should see "Marks released"
+    And I should see "Released"
     And I should see "Released" in row "1"
     And I should see "Released" in row "2"
     And I should see "Released" in row "3"
@@ -580,15 +510,6 @@ Feature: Double marking - blind
   @javascript
   Scenario: Student 1 sees the released grades
     Given there is a blind marking moderated coursework
-    And the following "course enrolments" exist:
-      | user        | course | role                 |
-      | moderator1  | C1     | courseworkmoderator  |
-      | marker1     | C1     | courseworkdbm        |
-      | marker2     | C1     | courseworkdbm        |
-      | marker3     | C1     | courseworkdbm        |
-      | student1    | C1     | student              |
-      | student2    | C1     | student              |
-      | student3    | C1     | student              |
 
     And the following markers are allocated:
       | student   | assessor_1 | moderator   |
@@ -639,15 +560,6 @@ Feature: Double marking - blind
   @javascript
   Scenario: Student 2 sees disagreed released grades
     Given there is a blind marking moderated coursework
-    And the following "course enrolments" exist:
-      | user        | course | role                 |
-      | moderator1  | C1     | courseworkmoderator  |
-      | marker1     | C1     | courseworkdbm        |
-      | marker2     | C1     | courseworkdbm        |
-      | marker3     | C1     | courseworkdbm        |
-      | student1    | C1     | student              |
-      | student2    | C1     | student              |
-      | student3    | C1     | student              |
 
     And the following markers are allocated:
       | student   | assessor_1 | moderator   |
@@ -701,15 +613,6 @@ Feature: Double marking - blind
   @javascript
   Scenario: Check moderation form
     Given there is a blind marking moderated coursework
-    And the following "course enrolments" exist:
-      | user        | course | role                 |
-      | moderator1  | C1     | courseworkmoderator  |
-      | marker1     | C1     | courseworkdbm        |
-      | marker2     | C1     | courseworkdbm        |
-      | marker3     | C1     | courseworkdbm        |
-      | student1    | C1     | student              |
-      | student2    | C1     | student              |
-      | student3    | C1     | student              |
 
     And the following markers are allocated:
       | student   | assessor_1 | moderator   |
@@ -748,7 +651,7 @@ Feature: Double marking - blind
     And I press the release marks button
     And I log out
 
-    # Student cannot see released feedback as moderation is still missing.
+    # Moderator can view but not edit moderation.
     And I am on the "Course 1" "course" page logged in as "moderator1"
     And I follow "Coursework 1"
     And I follow "Agreed" in row "1"
