@@ -3712,7 +3712,7 @@ class behat_mod_coursework extends behat_base {
         $record->courseworkid = $cw->id;
         $record->allocatableid = $user->id;
         $record->allocatabletype = 'user';
-        $record->extended_deadline = is_int($datestr) ? $datestr : strtotime($datestr);
+        $record->extended_deadline = strtotime($datestr);
         $record->createdbyid = 2;  // Admin ID.
 
         if ($existing) {
@@ -3735,7 +3735,12 @@ class behat_mod_coursework extends behat_base {
 
         foreach ($datahash as $allocate) {
             $stages = ['assessor_1'];
-            $stages[] = isset($allocate['moderator']) ? 'moderator' : 'assessor_2';
+            if (isset($allocate['moderator'])) {
+                $stages[] = 'moderator';
+            } else if (isset($allocate['assessor_2'])) {
+                $stages[] = 'assessor_2';
+            }
+
             $student = $this->get_user_from_username($allocate['student']);
             foreach ($stages as $stage) {
                 $marker = $this->get_user_from_username($allocate[$stage]);
@@ -3779,7 +3784,9 @@ class behat_mod_coursework extends behat_base {
 
         // Find user by full name (firstname + lastname).
         if (strpos($fullname, ' ') === false) {
-            throw new coding_exception("Full name '{$fullname}' must be in format 'Firstname Lastname' (space-separated).");
+            throw new coding_exception(
+                "Full name '{$fullname}' must be in format 'Firstname Lastname' and contain at least one space " .
+                "between first and last name.");
         }
         [$first, $last] = explode(' ', $fullname, 2);
 
@@ -3944,7 +3951,7 @@ class behat_mod_coursework extends behat_base {
      *
      * @Then /^I should( not)? see "(?P<text>[^"]*)" in row "(?P<row>\d+)"$/
      *
-     * @param bool $not
+     * @param string $not
      * @param string $text
      * @param int $rownumber
      * @return void
