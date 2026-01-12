@@ -2688,7 +2688,7 @@ class behat_mod_coursework extends behat_base {
         global $DB;
         $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
 
-        // Check if the name consists of first- and lastname.
+        // Check if the name consists of first- and last name.
         $username = explode(' ', $name, 2);
         $firstname = $username[0];
         $lastname = $username[1] ?? '';
@@ -3784,9 +3784,7 @@ class behat_mod_coursework extends behat_base {
 
         // Find user by full name (firstname + lastname).
         if (strpos($fullname, ' ') === false) {
-            throw new coding_exception(
-                "Full name '{$fullname}' must be in format 'Firstname Lastname' and contain at least one space " .
-                "between first and last name.");
+            throw new coding_exception("Full name '{$fullname}' must contain at least one space between first and last name.");
         }
         [$first, $last] = explode(' ', $fullname, 2);
 
