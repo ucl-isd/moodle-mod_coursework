@@ -101,19 +101,22 @@ final class average_grade_no_straddle_test extends \advanced_testcase {
             ->with($this->get_coursework())
             ->will($this->returnValue(true));
 
+        $submission = $this->createMock('\mod_coursework\models\submission');
+        $user->expects($this->any())->method('get_submission')
+            ->with($this->anything())
+            ->will($this->returnValue($submission));
+
         $feedbackone = $this->createMock('\mod_coursework\models\feedback');
         $feedbackone->expects($this->any())->method('get_grade')->will($this->returnValue($gradeone));
+        $feedbackone->expects($this->any())->method('get_submission')->will($this->returnValue($submission));
 
         $feedbacktwo = $this->createMock('\mod_coursework\models\feedback');
         $feedbacktwo->expects($this->any())->method('get_grade')->will($this->returnValue($gradetwo));
+        $feedbacktwo->expects($this->any())->method('get_submission')->will($this->returnValue($submission));
 
         $user->expects($this->any())->method('get_initial_feedbacks')
             ->with($this->get_coursework())
             ->will($this->returnValue([$feedbackone, $feedbacktwo]));
-
-        $submission = $this->createMock('\mod_coursework\models\submission');
-
-        $user->expects($this->any())->method('get_submission')->will($this->returnValue($submission));
 
         $autograder = new average_grade_no_straddle($this->get_coursework(), $user);
         $autograder->create_auto_grade_if_rules_match();

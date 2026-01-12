@@ -316,7 +316,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         if ($areagreeing && !$feedback->get_coursework()->is_using_advanced_grading()) {
             $feedbacks = [];
             $modcourseworkobjectrenderer = new mod_coursework_object_renderer($this->page, $this->target);
-            foreach ($feedback->submission->get_assessor_feedbacks() as $previousfeedbacks) {
+            foreach ($feedback->get_submission()->get_assessor_feedbacks() as $previousfeedbacks) {
                 $feedbacks[] = $modcourseworkobjectrenderer->render_feedback($previousfeedbacks, false);
             }
 
