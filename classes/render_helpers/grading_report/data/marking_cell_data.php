@@ -94,7 +94,8 @@ class marking_cell_data extends cell_data_base {
         ) {
             $marker->markerid = $assessor->id();
             $marker->markername = $assessor->name();
-            $marker->markerimg = $assessor->get_user_picture_url();
+            // Marker image "markerimg" is not set here as it would involve an extra DB query.
+            $marker->picture = $assessor->picture;
             $marker->markerurl = $assessor->get_user_profile_url();
             $marker->markeridentifier = sprintf('marker-%d', $assessor->id());
         } else {
