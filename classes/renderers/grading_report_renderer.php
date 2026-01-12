@@ -25,7 +25,6 @@ namespace mod_coursework\renderers;
 use context_user;
 use core\exception\moodle_exception;
 use core\output\plugin_renderer_base;
-use core\output\user_picture;
 use mod_coursework\ability;
 use mod_coursework\grading_report;
 use mod_coursework\grading_table_row_base;
