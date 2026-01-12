@@ -130,7 +130,7 @@ class feedback extends table_base {
      * The submission object that this feedback relates to.
      * @var submission
      */
-    protected submission $submission;
+    protected readonly submission $submission;
 
     /**
      * @var int 1 = it is a final grade, 0 is default in the DB. Used only for multiple marked things.
@@ -793,7 +793,7 @@ class feedback extends table_base {
      * @param submission $submission
      * @return void
      */
-    private function set_submission(submission $submission) {
+    public function set_submission(submission $submission) {
         if (!isset($this->submission)) {
             $this->submission = $submission;
             $this->submissionid = $submission->id;

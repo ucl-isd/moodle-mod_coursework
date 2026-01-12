@@ -47,7 +47,7 @@ abstract class grading_table_row_base implements user_row {
      * Using this as a delegate
      * @var submission
      */
-    protected $submission;
+    protected ?submission $submission;
 
     /**
      * @var coursework
@@ -271,7 +271,7 @@ abstract class grading_table_row_base implements user_row {
             $allocatableid = $this->get_allocatable()->id();
             $allocatabletype = $this->get_allocatable()->type();
             $params = [$allocatableid, $allocatabletype];
-            $this->submission = submission::get_object($this->get_courseworkid(), 'allocatableid-allocatabletype', $params);
+            $this->submission = submission::get_object($this->get_courseworkid(), 'allocatableid-allocatabletype', $params) ?: null;
         }
 
         return $this->submission;

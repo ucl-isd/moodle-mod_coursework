@@ -65,27 +65,6 @@ class assessor_feedback_table {
     }
 
     /**
-     * The renderer will need row objects to render. This provides them. We may have allocations which
-     * have not yet been turned into feedbacks, so we want to show these as empty rows in order to let
-     * managers know what is going on.
-     *
-     * @return assessor_feedback_row[]
-     */
-    public function get_renderable_feedback_rows() {
-
-        // Makes a new result set every time, so we can modify this array without worrying about
-        // messing up the cache.
-
-        $feedbackobjects = [];
-        foreach ($this->coursework->get_assessor_marking_stages() as $stage) {
-            $renderablerow = new assessor_feedback_row($stage, $this->get_allocatable(), $this->coursework);
-            $feedbackobjects[] = $renderablerow;
-        }
-
-        return $feedbackobjects;
-    }
-
-    /**
      * Has the current user already submitted feedback for this submission? If so, we know not to add
      * an option for them to do it again.
      *

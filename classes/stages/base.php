@@ -392,16 +392,20 @@ abstract class base {
 
     /**
      * @param allocatable $allocatable
-     * @return bool|feedback
+     * @return feedback|null
      */
-    public function get_feedback_for_allocatable($allocatable) {
+    public function get_feedback_for_allocatable($allocatable): ?feedback {
         $params = [$allocatable->id(), $allocatable->type()];
         $submission = submission::get_object($this->get_coursework()->id, 'allocatableid-allocatabletype', $params);
 
         if ($submission) {
-            return $this->get_feedback_for_submission($submission);
+            return feedback::get_object(
+                $submission->courseworkid,
+                'submissionid-stageidentifier',
+                [$submission->id, $this->identifier()]
+            ) ?: null;
         }
-        return false;
+        return null;
     }
 
     /**
@@ -729,15 +733,6 @@ abstract class base {
      */
     public function group_assessor_enabled() {
         return $this->strategy_name() == 'group_assessor';
-    }
-
-    /**
-     * @param submission $submission
-     * @return feedback|bool
-     */
-    public function get_feedback_for_submission($submission) {
-        $stageidentifier = $this->identifier();
-        return feedback::get_object($submission->courseworkid, 'submissionid-stageidentifier', [$submission->id, $stageidentifier]);
     }
 
     /**

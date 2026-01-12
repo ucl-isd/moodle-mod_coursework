@@ -26,6 +26,7 @@ use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
+use mod_coursework\models\feedback;
 use mod_coursework\stages\base as stage_base;
 
 /**
@@ -41,7 +42,7 @@ class assessor_feedback_row {
     /**
      * @var models\submission|null
      */
-    private $submission;
+    private ?submission $submission;
 
     /**
      * @var stage_base
@@ -63,10 +64,11 @@ class assessor_feedback_row {
      * @param allocatable $allocatable
      * @param coursework $coursework
      */
-    public function __construct($stage, $allocatable, $coursework) {
+    public function __construct($stage, $allocatable, $coursework, ?submission $submission) {
         $this->stage = $stage;
         $this->allocatable = $allocatable;
         $this->coursework = $coursework;
+        $this->submission = $submission;
     }
 
     /**
@@ -168,10 +170,15 @@ class assessor_feedback_row {
     /**
      * Getter
      *
-     * @return models\feedback|null
+     * @return feedback|null
      */
-    public function get_feedback() {
-        return $this->stage->get_feedback_for_allocatable($this->allocatable);
+    public function get_feedback(): ?feedback {
+        $feedback = $this->stage->get_feedback_for_allocatable($this->allocatable);
+        if ($feedback) {
+            // Set the submission object to the feedback given that we have it (to avoid repeated DB queries on grading report).
+            $feedback->set_submission($this->submission);
+        }
+        return $feedback;
     }
 
     /**
