@@ -3712,7 +3712,7 @@ class behat_mod_coursework extends behat_base {
         $record->courseworkid = $cw->id;
         $record->allocatableid = $user->id;
         $record->allocatabletype = 'user';
-        $record->extended_deadline = strtotime($datestr);
+        $record->extended_deadline = is_int($datestr) ? $datestr : strtotime($datestr);
         $record->createdbyid = 2;  // Admin ID.
 
         if ($existing) {
