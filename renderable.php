@@ -68,12 +68,6 @@ class mod_coursework_coursework extends mod_coursework_renderable {
     }
 }
 
-class mod_coursework_grading_table_row_multi extends mod_coursework_renderable {
-}
-
-class mod_coursework_grading_table_row_single extends mod_coursework_renderable {
-}
-
 class mod_coursework_sampling_set_widget extends mod_coursework_renderable {
 }
 

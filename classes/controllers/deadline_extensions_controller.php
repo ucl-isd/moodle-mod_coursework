@@ -29,14 +29,9 @@ use mod_coursework\allocation\allocatable;
 use mod_coursework\exceptions\access_denied;
 use mod_coursework\forms\deadline_extension_form;
 use mod_coursework\framework\table_base;
-use mod_coursework\grading_table_row_multi;
-use mod_coursework\grading_table_row_single;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
-use mod_coursework\models\group;
 use mod_coursework\models\personaldeadline;
-use mod_coursework\models\user;
-use mod_coursework\render_helpers\grading_report\cells\time_submitted_cell;
 
 /**
  * Class deadline_extensions_controller is responsible for handling restful requests related
@@ -325,28 +320,5 @@ class deadline_extensions_controller extends controller_base {
         ];
 
         return $DB->get_record('coursework_person_deadlines', $params);
-    }
-
-    /**
-     * function table_cell_response
-     * @param array $dataparams
-     *
-     * Generate html cell base on time_submitted_cell
-     * @return string[] $content
-     * @throws \coding_exception
-     * @throws \dml_exception
-     */
-
-    public function table_cell_response($dataparams) {
-        $participant = ($dataparams['allocatabletype'] && $dataparams['allocatabletype'] == 'group') ? group::find($dataparams['allocatableid']) : user::find($dataparams['allocatableid']);
-        if ($this->coursework->has_multiple_markers()) {
-            $rowobject = new grading_table_row_multi($this->coursework, $participant);
-        } else {
-            $rowobject = new grading_table_row_single($this->coursework, $participant);
-        }
-
-        $timesubmittedcell = new  time_submitted_cell(['coursework' => $this->coursework]);
-
-        return $timesubmittedcell->prepare_content_cell($rowobject);
     }
 }

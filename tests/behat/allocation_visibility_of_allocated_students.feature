@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_allocation
 Feature: Visibility of allocated students
 
     In order to make sure that the right assessors grade the right students

@@ -31,7 +31,6 @@ use core_user;
 use dml_exception;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\assessor_feedback_row;
-use mod_coursework\assessor_feedback_table;
 use mod_coursework\grade_judge;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\feedback;

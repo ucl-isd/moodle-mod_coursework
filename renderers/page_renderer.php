@@ -427,40 +427,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     *
-     * Submissions table data.
-     *
-     * @param coursework $coursework
-     * @return stdClass
-     * @throws coding_exception
-     * @throws moodle_exception
-     */
-    public function submissions_table_data(coursework $coursework): stdClass {
-        // Grading report display options.
-        $reportoptions = [
-            'mode' => grading_report::MODE_GET_ALL,
-            'sortby' => '',
-        ];
-
-        if (groups_get_activity_groupmode($coursework->get_course_module()) != NOGROUPS) {
-            $reportoptions['group'] = groups_get_activity_group($coursework->get_course_module(), true);
-        }
-
-        $gradingreport = $coursework->renderable_grading_report_factory($reportoptions);
-        $gradingreportrenderer = new grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
-
-        foreach (['modal_handler_extensions', 'modal_handler_personaldeadlines', 'modal_handler_plagiarism'] as $amd) {
-            $this->page->requires->js_call_amd(
-                "mod_coursework/$amd",
-                'init',
-                ['courseworkId' => $coursework->id]
-            );
-        }
-
-        return $gradingreportrenderer->render_grading_report($gradingreport);
-    }
-
-    /**
      * Return submission output data for Mustache.
      *
      * @param submission $submission
