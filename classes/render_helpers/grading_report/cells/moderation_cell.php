@@ -51,26 +51,22 @@ class moderation_cell extends cell_base {
      * @return string
      */
     public function get_table_cell($rowobject) {
-        global $USER;
-
         $content = '';
 
         if ($this->stage->has_feedback($rowobject->get_allocatable())) {
             $content .= $this->add_existing_moderator_feedback_details_to_cell($rowobject);
         }
 
-        $ability = new ability($USER->id, $rowobject->get_coursework());
         $existingfeedback = $this->stage->get_feedback_for_allocatable($rowobject->get_allocatable());
-        $newfeedback = feedback::build([
-            'submissionid' => $rowobject->get_submission_id(),
-            'stageidentifier' => $this->stage->identifier(),
-            'assessorid' => $USER->id,
-        ]);
         // New or edit for moderators
-        if ($existingfeedback && $ability->can('edit', $existingfeedback)) { // Edit
-            $content .= $this->add_edit_feedback_link_to_cell($rowobject, $existingfeedback);
-        } else if ($ability->can('new', $newfeedback)) { // New
-            $content .= $this->add_new_feedback_link_to_cell($rowobject);
+        if ($existingfeedback) {
+            if ($existingfeedback->can_edit($this->coursework, $rowobject->get_submission())) {
+                $content .= $this->add_edit_feedback_link_to_cell($rowobject, $existingfeedback);
+            }
+        } else {
+            if (feedback::can_add_new($rowobject->get_coursework(), $rowobject->get_submission(), $this->stage->identifier())) {
+                $content .= $this->add_new_feedback_link_to_cell($rowobject);
+            }
         }
 
         return $this->get_new_cell_with_class($content);

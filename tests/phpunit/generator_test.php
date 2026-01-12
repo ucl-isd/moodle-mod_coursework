@@ -139,25 +139,30 @@ final class generator_test extends \advanced_testcase {
         global $DB;
 
         $data = new \stdClass();
-        $data->submissionid = 5;
         $data->assessorid = 65;
 
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
+        // Feedback must have a coursework and submission to relate to.
+        $this->getDataGenerator()->create_user();
+        $course = $this->getDataGenerator()->create_course();
+        $this->setAdminUser(); // Calendar complains otherwise.
 
-        // Should fail because we have no assessorid and we have no logged ourselves in.
-        // Surrounding this with a try catch given that previous line says we expect it to fail.
-        // Otherwise we get PHPUnit exception.
-        try {
-            $feedback = $generator->create_feedback($data);
-            $feedback = $DB->get_record('coursework_feedbacks', ['id' => $feedback->id]);
+        $coursework = new \stdClass();
+        $coursework->course = $course;
+        $coursework = $generator->create_instance($coursework);
 
-            $this->assertNotEmpty($feedback);
+        $submission = new \stdClass();
+        $submission->userid = 2;
+        $submission = $generator->create_submission($submission, $coursework);
+        $data->submissionid = $submission->id;
 
-            $this->assertEquals(5, $feedback->submissionid);
-            $this->assertEquals(65, $feedback->assessorid);
-        } catch (\dml_missing_record_exception) {
-            return;
-        }
+        $feedback = $generator->create_feedback($data);
+        $feedback = $DB->get_record('coursework_feedbacks', ['id' => $feedback->id]);
+
+        $this->assertNotEmpty($feedback);
+
+        $this->assertEquals($data->submissionid, $feedback->submissionid);
+        $this->assertEquals($data->assessorid, $feedback->assessorid);
     }
 
     /**

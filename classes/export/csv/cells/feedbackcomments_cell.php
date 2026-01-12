@@ -82,8 +82,6 @@ class feedbackcomments_cell extends cell_base {
                 return get_string('nopermissiontomarksubmission', 'coursework');
             }
 
-            $ability = new ability($USER->id, $this->coursework);
-
             $feedbackparams = [
                 'submissionid' => $submission->id,
                 'stageidentifier' => $stageidentifier,
@@ -92,20 +90,13 @@ class feedbackcomments_cell extends cell_base {
 
             // Does a feedback exist for this stage
             if (empty($feedback)) {
-                $feedbackparams = [
-                    'submissionid' => $submissionid,
-                    'assessorid' => $USER->id,
-                    'stageidentifier' => $stageidentifier,
-                ];
-                $newfeedback = feedback::build($feedbackparams);
-
                 // This is a new feedback check it against the new ability checks
-                if (!$ability->can('new', $newfeedback)) {
+                if (!feedback::can_add_new($this->coursework, $submission, $stageidentifier)) {
                     return get_string('nopermissiontomarksubmission', 'coursework');
                 }
             } else {
-                // This is a new feedback check it against the edit ability checks
-                if (!$ability->can('edit', $feedback)) {
+                // This is a new feedback check it against the edit ability checks.
+                if (!$feedback->can_edit($this->coursework, $submission)) {
                     return get_string('nopermissiontoeditmark', 'coursework');
                 }
             }

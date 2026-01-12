@@ -618,7 +618,6 @@ abstract class base {
      */
     public function assessor_has_allocation($allocatable) {
         global $USER;
-        allocation::fill_pool_coursework($this->coursework->id);
         $allocation = allocation::get_object(
             $this->coursework->id,
             'allocatableid-allocatabletype-stageidentifier',
@@ -680,7 +679,6 @@ abstract class base {
         $currentstage = false;
         $currentstageok = true;
         $courseworkid = $this->get_courseworkid();
-        submission::fill_pool_coursework($courseworkid);
 
         foreach ($allstages as $stage) {
             // if coursework has sampling enabled, each stage must be checked if it uses sampling

@@ -24,7 +24,6 @@ namespace mod_coursework\export\csv\cells;
 use coding_exception;
 use dml_exception;
 use lang_string;
-use mod_coursework\ability;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 
@@ -65,7 +64,7 @@ class agreedfeedback_cell extends cell_base {
      * @throws dml_exception
      */
     public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells = []) {
-        global $DB, $PAGE, $USER;
+        global $DB, $PAGE;
         $stageidentfinal = 'final_agreed_1';
         $agreedgradecap = [
             'mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade',
@@ -102,28 +101,22 @@ class agreedfeedback_cell extends cell_base {
 
             $feedback = feedback::find($feedbackparams);
 
-            $ability = new ability($USER->id, $this->coursework);
-
             // Does a feedback exist for this stage.
             if (empty($feedback)) {
-                $feedbackparams = [
-                    'submissionid' => $submissionid,
-                    'assessorid' => $USER->id,
-                    'stageidentifier' => $stageidentfinal,
-                ];
-                $newfeedback = feedback::build($feedbackparams);
-
                 // This is a new feedback check it against the new ability checks.
                 if (
                     !has_capability('mod/coursework:administergrades', $PAGE->context)
                     && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context)
-                    && !$ability->can('new', $newfeedback)
+                    && !feedback::can_add_new($this->coursework, $submission, $stageidentfinal)
                 ) {
                     return get_string('nopermissiontomarksubmission', 'coursework');
                 }
             } else {
-                // This is a new feedback check it against the edit ability checks.
-                if (!has_capability('mod/coursework:administergrades', $PAGE->context) && !$ability->can('edit', $feedback)) {
+                // This is an existing feedback check it against the edit ability checks.
+                if (
+                    !has_capability('mod/coursework:administergrades', $PAGE->context)
+                    && !$feedback->can_edit($this->coursework, submission::find($submissionid))
+                ) {
                     return get_string('nopermissiontoeditmark', 'coursework');
                 }
             }
