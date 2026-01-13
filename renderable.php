@@ -54,9 +54,6 @@ class mod_coursework_allocation_widget extends mod_coursework_renderable {
 class mod_coursework_assessor_feedback_row extends mod_coursework_renderable {
 }
 
-class mod_coursework_assessor_feedback_table extends mod_coursework_renderable {
-}
-
 class mod_coursework_coursework extends mod_coursework_renderable {
     /**
      * Return coursework object not parent.
