@@ -3976,8 +3976,8 @@ class behat_mod_coursework extends behat_base {
         $contains = strpos($rowtext, $text) !== false;
 
         // Check text inside the row.
-        // If "not" was present in the step.
-        if (trim($not) === 'not') {
+        // If a negation (e.g. "not") was present in the step.
+        if (!empty($not)) {
             if ($contains) {
                 throw new ExpectationException(
                     "'{$text}' text was found in row {$rownumber}.\nRow contents: {$rowtext}",
