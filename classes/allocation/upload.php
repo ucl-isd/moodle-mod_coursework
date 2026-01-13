@@ -128,7 +128,7 @@ class upload {
 
                     // check if allocatable exists in this coursework
                     $allocatableid = $allocatable ? $allocatable->id() : null;
-                    $allocatableincoursework = $allocatableid ? $allocatables[$allocatableid] : null;
+                    $allocatableincoursework = $allocatableid ? ($allocatables[$allocatableid] ?? null) : null;
                     if (!$allocatableincoursework) {
                         // E.g. string key 'usernotincoursework'.
                         $errors[$s] = get_string($allocatabletype . 'notincoursework', 'coursework', $value);
@@ -193,7 +193,6 @@ class upload {
      * @throws moodle_exception
      */
     public function process_csv($content, $encoding, $delimiter, $processingresults) {
-        \core\notification::info("upload");
         global $CFG, $DB;
 
         $assessoridentifier = $CFG->coursework_allocation_identifier;

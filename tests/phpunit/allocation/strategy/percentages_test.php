@@ -16,6 +16,8 @@
 
 namespace mod_coursework;
 
+use mod_coursework\models\allocation;
+
 /**
  * @package    mod_coursework
  * @copyright  2017 University of London Computer Centre {@link https://www.cosector.com}
@@ -159,7 +161,7 @@ final class percentages_test extends \advanced_testcase {
 
     private function delete_all_allocations() {
         global $DB;
-
         $DB->delete_records('coursework_allocation_pairs');
+        allocation::remove_cache($this->coursework->id);
     }
 }

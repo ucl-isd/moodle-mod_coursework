@@ -22,6 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
@@ -140,9 +141,8 @@ class mod_coursework_generator extends testing_module_generator {
         if (empty($allocation->allocatabletype)) {
             $allocation->allocatabletype = 'user';
         }
-
-        $allocation->id = $DB->insert_record('coursework_allocation_pairs', $allocation);
-
+        $allocation = allocation::build((array)$allocation);
+        $allocation->save();
         return $allocation;
     }
 

@@ -31,6 +31,7 @@ use mod_coursework\allocation\auto_allocator;
 use mod_coursework\calendar;
 use mod_coursework\event\coursework_deadline_changed;
 use mod_coursework\exceptions\access_denied;
+use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\group;
@@ -1335,6 +1336,7 @@ function course_group_member_removed($eventdata) {
             if ($coursework->is_configured_to_have_group_submissions()) {
                 if (can_delete_allocation($coursework->id(), $groupid)) {
                     $DB->delete_records('coursework_allocation_pairs', ['courseworkid' => $coursework->id(), 'assessorid' => $removeduserid, 'allocatableid' => $groupid, 'stageidentifier' => 'assessor_1']);
+                    allocation::remove_cache($coursework->id);
                 }
             } else {
                 // find all individual students in the group
@@ -1343,6 +1345,7 @@ function course_group_member_removed($eventdata) {
                     foreach ($students as $student) {
                         if (can_delete_allocation($coursework->id(), $student->id)) {
                             $DB->delete_records('coursework_allocation_pairs', ['courseworkid' => $coursework->id(), 'assessorid' => $removeduserid, 'allocatableid' => $student->id, 'stageidentifier' => 'assessor_1']);
+                            allocation::remove_cache($coursework->id);
                         }
                     }
                 } else {
@@ -1388,6 +1391,7 @@ function course_group_member_removed($eventdata) {
 
             if (can_delete_allocation($coursework->id(), $allocatableid)) {
                 $DB->delete_records('coursework_allocation_pairs', ['courseworkid' => $coursework->id(), 'allocatableid' => $allocatableid, 'stageidentifier' => 'assessor_1']);
+                allocation::remove_cache($coursework->id);
             }
 
             // check if the student was in a different group and allocate them to the first found group
@@ -1564,6 +1568,7 @@ function teacher_removed_allocated_not_graded($eventdata) {
                                                                               'assessorid' => $userid,
                                                                               'allocatableid' => $allocatable->id]);
             }
+            allocation::remove_cache($coursework->id);
         }
     }
 

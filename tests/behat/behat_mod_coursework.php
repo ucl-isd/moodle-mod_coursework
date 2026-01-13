@@ -26,6 +26,7 @@
 
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\{ElementNotFoundException, ExpectationException};
+use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\group;
@@ -1945,8 +1946,8 @@ class behat_mod_coursework extends behat_base {
      */
     public function there_are_no_allocations_in_the_db() {
         global $DB;
-
         $DB->delete_records('coursework_allocation_pairs');
+        allocation::remove_cache($this->coursework->id);
     }
 
     /**

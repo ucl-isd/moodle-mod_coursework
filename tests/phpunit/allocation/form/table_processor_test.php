@@ -23,6 +23,7 @@ namespace mod_coursework;
  */
 
 use mod_coursework\allocation\table\processor;
+use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 
 
@@ -57,6 +58,7 @@ final class table_processor_test extends \advanced_testcase {
 
         // Delete all auto allocations caused by enrol hooks.
         $DB->delete_records('coursework_allocation_pairs');
+        allocation::remove_cache($this->coursework->id);
     }
 
     public function test_process_rows_makes_a_new_assessor_allocation(): void {
