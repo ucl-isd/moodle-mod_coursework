@@ -581,14 +581,12 @@ class submission extends table_base implements renderable {
     }
 
     /**
-     * This will return the final feedback if the record exists, or false if not.
+     * This will return the final feedback if the record exists, null if not.
      *
      * @throws exception
      * @return ?feedback
      */
     public function get_final_feedback(): ?feedback {
-        global $DB;
-
         if (!$this->persisted()) {
             // No submission yet - empty placeholder.
             return null;
@@ -600,14 +598,11 @@ class submission extends table_base implements renderable {
         } else {
             $identifier = 'assessor_1';
         }
-
-        $params = [
-            'submissionid' => $this->id,
-            'stageidentifier' => $identifier,
-        ];
-
-        $feedback = $DB->get_record('coursework_feedbacks', $params);
-        return $feedback ? new feedback($feedback) : null;
+        return feedback::get_object(
+            $this->courseworkid,
+            'submissionid-stageidentifier',
+            [$this->id, $identifier]
+        ) ?: null;
     }
 
     /**
