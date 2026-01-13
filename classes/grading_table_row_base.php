@@ -42,7 +42,7 @@ use moodle_url;
  * logic relating the what ought to be rendered. The renderer methods then decide how the decision
  * will be translated into a page.
  */
-class grading_table_row_base implements user_row {
+class grading_table_row_base {
     /**
      * Using this as a delegate
      * @var ?submission
@@ -106,22 +106,6 @@ class grading_table_row_base implements user_row {
         $this->plagiarismflag = $this->submission && $coursework->plagiarism_flagging_enabled()
             ? (plagiarism_flag::get_object($coursework->id, 'submissionid', [$this->submission->id()]) ?: null)
             : null;
-    }
-
-    /**
-     * Gets the grade agreed by the markers based ont he component marks. Not capped!
-     * Chained getter for loose coupling.
-     *
-     * @return int
-     */
-    public function get_final_grade() {
-
-        $submission = $this->get_submission();
-
-        if (!$submission) {
-            return '';
-        }
-        return $submission->get_final_grade();
     }
 
     /**
@@ -229,34 +213,12 @@ class grading_table_row_base implements user_row {
     }
 
     /**
-     * Getter for submission timesubmitted.
-     *
-     * @return int
-     */
-    public function get_time_submitted() {
-
-        $submission = $this->get_submission();
-
-        if (!$submission) {
-            return '';
-        }
-        return $submission->time_submitted();
-    }
-
-    /**
      * Getter for personal deadline time
      *
      * @return ?int
      */
     public function get_personaldeadline_time(): ?int {
         return $this->personaldeadline->personaldeadline ?? null;
-    }
-
-    /**
-     * Returns the hash used to name files anonymously for this user/coursework combination
-     */
-    public function get_filename_hash() {
-        return $this->get_coursework()->get_username_hash($this->get_allocatable_id());
     }
 
     /**
@@ -344,70 +306,6 @@ class grading_table_row_base implements user_row {
     }
 
     /**
-     * Empty - the subclass will override if needed. Really only here for Liskov principle.
-     * @return assessor_feedback_table|bool
-     */
-    public function get_assessor_feedback_table() {
-        return false;
-    }
-
-    /**
-     * Checks to see whether we should show the current user who this student is.
-     */
-    public function can_view_username() {
-
-        if (has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context())) {
-            return true;
-        }
-
-        if ($this->get_coursework()->blindmarking) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Tells us whether this user has a final grade yet.
-     *
-     * @return bool|int|null
-     */
-    public function has_final_agreed_grade() {
-        if (!$this->get_submission()) {
-            return false;
-        }
-        return $this->get_submission()->has_final_agreed_grade();
-    }
-
-    /**
-     * @return string
-     * @throws \dml_exception
-     * @throws coding_exception
-     */
-    public function get_student_firstname() {
-        $allocatable = $this->get_allocatable();
-        if (empty($allocatable->firstname)) {
-            $this->allocatable = user::find($allocatable);
-        }
-
-        return $this->get_allocatable()->firstname;
-    }
-
-    /**
-     * @return string
-     * @throws \dml_exception
-     * @throws coding_exception
-     */
-    public function get_student_lastname() {
-        $allocatable = $this->get_allocatable();
-        if (empty($allocatable->lastname)) {
-            $this->allocatable = user::find($allocatable);
-        }
-
-        return $this->get_allocatable()->lastname;
-    }
-
-    /**
      * @return allocatable
      */
     public function get_allocatable() {
@@ -471,33 +369,5 @@ class grading_table_row_base implements user_row {
         }
 
         return $this->personaldeadline;
-    }
-
-    public function get_user_firstname() {
-        /**
-         * @var user $user
-         */
-        $user = $this->get_allocatable();
-
-        $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context());
-        if (!$this->get_coursework()->blindmarking || $viewanonymous || $this->is_published()) {
-            return $user->firstname;
-        } else {
-            return get_string('hidden', 'mod_coursework');
-        }
-    }
-
-    public function get_user_lastname() {
-        /**
-         * @var user $user
-         */
-        $user = $this->get_allocatable();
-
-        $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context());
-        if (!$this->get_coursework()->blindmarking || $viewanonymous || $this->is_published()) {
-            return $user->lastname;
-        } else {
-            return get_string('hidden', 'mod_coursework');
-        }
     }
 }
