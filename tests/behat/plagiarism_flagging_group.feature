@@ -23,3 +23,6 @@ Feature: Teachers should be able to add and edit plagiarism flags for group subm
     And I click on "Save" "button"
     And I wait until the page is ready
     Then I should see "Flagged for plagiarism"
+    # Check that change still appears after page refresh (cache in use).
+    Then I visit the coursework page
+    And I should see "Flagged for plagiarism"

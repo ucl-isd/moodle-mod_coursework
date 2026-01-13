@@ -37,17 +37,16 @@ Feature: When "Use the personal deadline" is enabled the deadline date should re
     And I visit the coursework page
     And I click on "Actions" "button" in the "John1" "table_row"
     And I wait until the page is ready
-    And I wait "1" seconds
     And I click on "Personal deadline" "link"
     And I wait until the page is ready
     And I should see "New personal deadline for John1 student1"
     And I set the field "Personal deadline" to "##+2 weeks, 8:00 AM##"
-    And I wait "2" seconds
+    And I wait until the page is ready
     And I click on "Save" "button" in the "Personal deadline" "dialogue"
     And I wait until the page is ready
     And I should see "Personal deadline" in the table row containing "John1"
     And I should see "##+2 weeks##%d %B %Y, 8:00 AM##" in the table row containing "John1"
-    # Check still appears on page re-load
+    # Check that change still appears after page refresh (cache in use).
     Then I visit the coursework page
     And I should see "Personal deadline" in the table row containing "John1"
     And I should see "##+2 weeks##%d %B %Y, 8:00 AM##" in the table row containing "John1"
