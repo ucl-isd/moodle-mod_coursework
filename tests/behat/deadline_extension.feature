@@ -38,6 +38,7 @@ Feature: Deadlines extensions for submissions
     And I set the field "Extended deadline" to "##+2 weeks, 8:00 AM##"
     And I click on "Save" "button" in the "Extended deadline" "dialogue"
     And I should see "##+2 weeks##%d %B %Y, 8:00 AM##" in the "student student1" "table_row"
+    # Check that change still appears after page refresh (cache in use).
     Then I visit the coursework page
     And I should see "##+2 weeks##%d %B %Y, 8:00 AM##" in the "student student1" "table_row"
 
