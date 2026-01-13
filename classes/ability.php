@@ -393,10 +393,11 @@ class ability extends framework\ability {
             function (submission $submission) {
 
                 // Should be visible to those who are OK to mark it.
-                $allocationenabled = $submission->get_coursework()->allocation_enabled();
-                $userhasanyallocation = $submission->get_coursework()
-                    ->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable());
-                return $allocationenabled && $userhasanyallocation;
+                if (!$submission->get_coursework()->allocation_enabled()) {
+                    return true;
+                }
+                return $submission->get_coursework()
+                    ->assessor_has_any_allocation_for_student($submission->get_allocatable());
             }
         );
     }
