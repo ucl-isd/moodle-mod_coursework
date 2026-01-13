@@ -828,7 +828,7 @@ class coursework extends table_base {
     /**
      * @return bool
      */
-    public function plagiarism_flagging_enbled() {
+    public function plagiarism_flagging_enabled() {
         return (bool)$this->plagiarismflagenabled;
     }
 

@@ -45,7 +45,7 @@ use moodle_url;
 class grading_table_row_base implements user_row {
     /**
      * Using this as a delegate
-     * @var submission
+     * @var ?submission
      */
     protected ?submission $submission;
 
@@ -70,6 +70,11 @@ class grading_table_row_base implements user_row {
     protected ?personaldeadline $personaldeadline;
 
     /**
+     * @var ?plagiarism_flag
+     */
+    protected ?plagiarism_flag $plagiarismflag;
+
+    /**
      * Array of objects representing submission files this row's user (DB query results)
      * @var ?object[]
      */
@@ -79,17 +84,28 @@ class grading_table_row_base implements user_row {
      * Constructor
      *
      * @param coursework $coursework $coursework
-     * @param user|group $user
-     * @param deadline_extension|null $extension
-     * @param personaldeadline|null $personaldeadline
+     * @param user|group $allocatable
      * @param array $submissionfiles
      */
-    public function __construct(coursework $coursework, user|group $user, ?deadline_extension $extension, ?personaldeadline $personaldeadline, array $submissionfiles) {
+    public function __construct(
+        coursework $coursework,
+        user|group $allocatable,
+        array $submissionfiles
+    ) {
         $this->coursework = $coursework;
-        $this->allocatable = $user;
-        $this->extension = $extension;
-        $this->personaldeadline = $personaldeadline;
+        $this->allocatable = $allocatable;
         $this->submissionfiles = $submissionfiles;
+
+        $this->submission = $allocatable->get_submission($coursework) ?: null;
+        $this->extension = $coursework->extensions_enabled()
+            ? (deadline_extension::get_object($coursework->id, 'allocatableid-allocatabletype', [$allocatable->id, $allocatable->type()]) ?: null)
+            : null;
+        $this->personaldeadline = $coursework->personaldeadlines_enabled()
+            ? (personaldeadline::get_object($coursework->id, 'allocatableid-allocatabletype', [$allocatable->id, $allocatable->type()]) ?: null)
+            : null;
+        $this->plagiarismflag = $this->submission && $coursework->plagiarism_flagging_enabled()
+            ? (plagiarism_flag::get_object($coursework->id, 'submissionid', [$this->submission->id()]) ?: null)
+            : null;
     }
 
     /**
@@ -283,13 +299,7 @@ class grading_table_row_base implements user_row {
      * @throws coding_exception
      */
     public function get_plagiarism_flag() {
-
-        $submission = $this->get_submission();
-        $params = [
-            'submissionid' => $submission->id,
-        ];
-
-        return plagiarism_flag::find($params);
+        return $this->plagiarismflag;
     }
 
     /**

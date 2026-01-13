@@ -27,6 +27,7 @@ namespace mod_coursework\render_helpers\grading_report\data;
 
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\coursework;
+use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
 use moodle_url;
 use stdClass;
@@ -75,7 +76,7 @@ class submission_cell_data extends cell_data_base {
         $data->submissiondata->finalised = $submission->is_finalised();
         $data->submissiondata->released = $submission->is_published();
 
-        $this->add_plagiarism_data($data->submissiondata, $submission);
+        $this->add_plagiarism_data($data->submissiondata, $rowobject->get_plagiarism_flag());
         $this->add_late_submission_data($data->submissiondata, $submission);
     }
 
@@ -83,13 +84,13 @@ class submission_cell_data extends cell_data_base {
      * Add plagiarism flag data to submission data.
      *
      * @param stdClass $submissiondata Data object to add plagiarism data to.
-     * @param submission $submission The submission to check.
+     * @param ?plagiarism_flag $flag The flag to check.
      */
-    protected function add_plagiarism_data(stdClass $submissiondata, submission $submission): void {
-        if (!$this->coursework->plagiarism_flagging_enbled()) {
+    protected function add_plagiarism_data(stdClass $submissiondata, ?plagiarism_flag $flag): void {
+        if (!$this->coursework->plagiarism_flagging_enabled() || !$flag) {
             return;
         }
-        $submissiondata->flaggedplagiarism = $this->get_flagged_plagiarism_status($submission);
+        $submissiondata->flaggedplagiarism = $this->get_flagged_plagiarism_status($flag);
     }
 
     /**

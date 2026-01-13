@@ -61,12 +61,11 @@ abstract class cell_data_base implements cell_data_interface {
     /**
      * Check if the submission should be flagged for plagiarism.
      *
-     * @param submission $submission
+     * @param ?plagiarism_flag $flag
      * @return string|bool
      * @throws \coding_exception
      */
-    protected function get_flagged_plagiarism_status(submission $submission): string|bool {
-        $flag = plagiarism_flag::get_plagiarism_flag($submission);
+    protected function get_flagged_plagiarism_status(?plagiarism_flag $flag): string|bool {
         if (!$flag || !($flag->status == plagiarism_flag::INVESTIGATION || $flag->status == plagiarism_flag::NOTCLEARED)) {
             return false;
         }

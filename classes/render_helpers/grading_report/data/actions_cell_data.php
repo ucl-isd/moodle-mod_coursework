@@ -221,7 +221,7 @@ class actions_cell_data extends cell_data_base {
     protected function set_plagiarism_data(stdClass $data, grading_table_row_base $rowsbase): void {
         // Early returns for conditions where plagiarism data should not be shown.
         if (
-            !$this->coursework->plagiarism_flagging_enbled() ||
+            !$this->coursework->plagiarism_flagging_enabled() ||
             !$rowsbase->get_submission() ||
             !$rowsbase->get_submission()->is_finalised()
         ) {
@@ -234,7 +234,7 @@ class actions_cell_data extends cell_data_base {
             if ($url = $this->get_plagiarism_url($submission, $plagiarismflag)) {
                 $data->plagiarism = new stdClass();
                 $data->plagiarism->url = $url;
-                $data->plagiarismstatus = $this->get_flagged_plagiarism_status($submission);
+                $data->plagiarismstatus = $this->get_flagged_plagiarism_status($plagiarismflag);
                 $data->plagiarism->flagid = $plagiarismflag->id ?? null;
             }
         }
@@ -244,11 +244,11 @@ class actions_cell_data extends cell_data_base {
      * Get the appropriate plagiarism URL based on flag status.
      *
      * @param submission $submission The submission object
-     * @param plagiarism_flag|bool $flag The plagiarism flag object
+     * @param ?plagiarism_flag $flag The plagiarism flag object
      * @return string The URL or empty string if no permissions
      * @throws coding_exception
      */
-    private function get_plagiarism_url(submission $submission, plagiarism_flag|bool $flag): string {
+    private function get_plagiarism_url(submission $submission, ?plagiarism_flag $flag): string {
         if (!has_capability('mod/coursework:addplagiarismflag', $this->coursework->get_context())) {
             return '';
         }

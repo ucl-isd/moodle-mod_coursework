@@ -22,15 +22,11 @@
 
 namespace mod_coursework;
 
-use mod_coursework\models\allocation;
-use mod_coursework\models\course_module;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
-use mod_coursework\models\feedback;
-use mod_coursework\models\module;
 use mod_coursework\models\personaldeadline;
+use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
-use mod_coursework\render_helpers\grading_report\cells\cell_interface;
 
 /**
  * Renderable component containing all the data needed to display the grading report
@@ -48,46 +44,20 @@ class grading_report {
 
         global $USER;
         $participants = $coursework->get_allocatables();
-        $extensions = $coursework->extensions_enabled()
-            ? deadline_extension::get_all_for_coursework($coursework->id) : [];
-        $personaldeadlines = $coursework->personaldeadlines_enabled()
-            ? personaldeadline::get_all_for_coursework($coursework->id) : [];
         $allsubmissionfiles = submission::get_all_submission_files_data($coursework);
 
         // Make tablerow objects so we can use the methods to check permissions and set things.
         $rows = [];
         $ability = new ability($USER->id, $coursework);
-        $ability = new ability($USER->id, $coursework);
 
         $participantsfound = 0;
 
         foreach ($participants as $key => $participant) {
-            // To save multiple queries to DB for extensions and deadlines, add them here.
-            $extension = array_filter(
-                $extensions,
-                function ($ext) use ($participant) {
-                    return $participant->id() == $ext->allocatableid
-                        && $participant->type() == $ext->allocatabletype;
-                }
-            );
-            $extension = array_pop($extension);
-
-            $personaldeadline = array_filter(
-                $personaldeadlines,
-                function ($ext) use ($participant) {
-                    return $participant->id() == $ext->allocatableid
-                        && $participant->type() == $ext->allocatabletype;
-                }
-            );
-            $personaldeadline = array_pop($personaldeadline);
-
             // New grading_table_row_base.
             $row = new grading_table_row_base(
                 $coursework,
                 $participant,
-                $extension ? deadline_extension::find($extension, false) : null,
-                $personaldeadline ? personaldeadline::find($personaldeadline, false) : null,
-                $allsubmissionfiles[$participant->type() . "-" . $participant->id()] ?? [],
+                $allsubmissionfiles[$participant->type() . "-" . $participant->id()] ?? []
             );
 
             // Now, we skip the ones who should not be visible on this page.

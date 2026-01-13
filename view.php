@@ -309,7 +309,7 @@ if ($exportgrades) {
         $csvcells[] = 'extensionextrainfo';
     }
 
-    if ($coursework->plagiarism_flagging_enbled()) {
+    if ($coursework->plagiarism_flagging_enabled()) {
         $csvcells[] = 'plagiarismflagstatus';
         $csvcells[] = 'plagiarismflagcomment';
     }

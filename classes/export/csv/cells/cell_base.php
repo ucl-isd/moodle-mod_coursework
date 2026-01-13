@@ -151,7 +151,7 @@ abstract class cell_base implements cell_interface {
 
         $flag = $this->plagiarismflag->get_plagiarism_flag($submission);
 
-        return ($this->coursework->plagiarism_flagging_enbled() && !empty($flag));
+        return ($this->coursework->plagiarism_flagging_enabled() && !empty($flag));
     }
 
     /**

@@ -284,17 +284,6 @@ class deadline_extension extends table_base {
     }
 
     /**
-     * Get all extensions for a particular coursework from the database.
-     * @param int $courseworkid
-     * @return array
-     * @throws \dml_exception
-     */
-    public static function get_all_for_coursework(int $courseworkid): array {
-        global $DB;
-        return $DB->get_records(self::$tablename, ['courseworkid' => $courseworkid]);
-    }
-
-    /**
      * Get extension for a particular allocatable from the database.
      * @param int $courseworkid
      * @param int $allocatableid
