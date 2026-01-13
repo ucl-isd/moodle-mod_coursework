@@ -24,6 +24,7 @@
 
 namespace mod_coursework\services;
 
+use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 
 /**
@@ -71,12 +72,12 @@ class submission_figures {
 
                 // Case 3: Allocated assessor or allowed to add agreed grade after initial grading (and sampling if enabled).
             } else {
-                $allocated = $coursework->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable());
+                $allocatable = $submission->reload()->get_allocatable();
+                $allocated = allocation::allocatable_is_allocated_to_assessor($coursework->id, $allocatable->id(), $allocatable->type());
                 $sampled = $submission->get_coursework()->sampling_enabled();
-                $initialgraded = $submission->all_initial_graded();
                 $requiresamplingcheck = $sampled && ($submission->max_number_of_feedbacks() > 1);
 
-                if ($allocated || ($canaddagreed && $initialgraded && (!$sampled || $requiresamplingcheck))) {
+                if ($allocated || ($canaddagreed && $submission->all_initial_graded() && (!$sampled || $requiresamplingcheck))) {
                     $assessorsubmissions[$submission->id] = $submission;
                 }
             }

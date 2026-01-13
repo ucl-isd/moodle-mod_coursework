@@ -1179,31 +1179,6 @@ class coursework extends table_base {
     }
 
     /**
-     * Checks whether the current user is an assessor allocated to mark this submission.
-     *
-     * @param allocatable $allocatable
-     * @param bool $userid
-     * @return bool
-     * @throws dml_exception
-     */
-    public function assessor_has_any_allocation_for_student($allocatable, $userid = false) {
-
-        global $DB, $USER;
-
-        if (!$userid) {
-            $userid = $USER->id;
-        }
-        $params = [
-            'courseworkid' => $this->id,
-            'assessorid' => $userid,
-            'allocatableid' => $allocatable->id(),
-            'allocatabletype' => $allocatable->type(),
-        ];
-
-        return $DB->record_exists('coursework_allocation_pairs', $params);
-    }
-
-    /**
      * Check if current assessor is not already allocated for this submission in different stage
      *
      * @param allocatable $allocatable

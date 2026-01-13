@@ -209,4 +209,31 @@ class allocation extends table_base {
     protected function after_destroy() {
         self::remove_cache($this->courseworkid);
     }
+
+
+    /**
+     * Checks whether the current user or specific assessor is allocated to mark this student's submission.
+     * @param int $courseworkid
+     * @param int $allocatableid
+     * @param string $allocatabletype
+     * @param int|null $assessorid
+     * @return bool
+     */
+    public static function allocatable_is_allocated_to_assessor(
+        int $courseworkid,
+        int $allocatableid,
+        string $allocatabletype,
+        ?int $assessorid = null
+    ): bool {
+        global $USER;
+        return (bool)self::get_object(
+            $courseworkid,
+            'allocatableid-allocatabletype-assessorid',
+            [
+                $allocatableid,
+                $allocatabletype,
+                $assessorid ?? $USER->id,
+            ]
+        );
+    }
 }

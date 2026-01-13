@@ -17,6 +17,7 @@
 namespace mod_coursework\allocation;
 
 use csv_import_reader;
+use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 use mod_coursework\models\group;
 use mod_coursework\models\submission;
@@ -192,7 +193,7 @@ class upload {
      * @throws moodle_exception
      */
     public function process_csv($content, $encoding, $delimiter, $processingresults) {
-
+        \core\notification::info("upload");
         global $CFG, $DB;
 
         $assessoridentifier = $CFG->coursework_allocation_identifier;
@@ -298,12 +299,10 @@ class upload {
      * @param $assessorid
      * @param $stageidentifier
      * @param $allocatable
-     * @return bool|int
+     * @return void
      * @throws \dml_exception
      */
-    public function add_allocation($assessorid, $stageidentifier, $allocatable) {
-        global $DB;
-
+    public function add_allocation($assessorid, $stageidentifier, $allocatable): void {
         $addallocation = new stdClass();
         $addallocation->id = '';
         $addallocation->courseworkid = $this->coursework->id;
@@ -312,8 +311,8 @@ class upload {
         $addallocation->stageidentifier = $stageidentifier;
         $addallocation->allocatableid = $allocatable->id();
         $addallocation->allocatabletype = $allocatable->type();
-
-        return $DB->insert_record('coursework_allocation_pairs', $addallocation, true);
+        $allocation = \mod_coursework\models\allocation::build((array)$addallocation);
+        $allocation->save();
     }
 
     /**
@@ -321,17 +320,12 @@ class upload {
      *
      * @param $allocationid
      * @param $assessorid
-     * @return bool
-     * @throws \dml_exception
+     * @return void
      */
-    public function update_allocation($allocationid, $assessorid) {
-        global $DB;
-
-        $updateallocation = new stdClass();
-        $updateallocation->id = $allocationid;
-        $updateallocation->ismanual = 1;
-        $updateallocation->assessorid = $assessorid;
-
-        return $DB->update_record('coursework_allocation_pairs', $updateallocation);
+    public function update_allocation($allocationid, $assessorid): void {
+        $allocation = allocation::find($allocationid);
+        $allocation->ismanual = 1;
+        $allocation->assessorid = $assessorid;
+        $allocation->save();
     }
 }

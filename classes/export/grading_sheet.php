@@ -23,6 +23,7 @@
 namespace mod_coursework\export;
 use coding_exception;
 use mod_coursework\ability;
+use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 use mod_coursework\models\group;
 use mod_coursework\models\submission;
@@ -91,20 +92,42 @@ class grading_sheet extends csv {
                 // TODO - decide if already marked submissions should be displayed in single marking
                 // if not marked by a user than dont display it as it would allow them to edit it??
                 // || $submission->get_state() == submission::FINAL_GRADED
+                $allocatable = $submission->reload()->get_allocatable();
                 if (
                     !$ability->can('show', $submission)
                     || ($stages == 1 && !has_capability('mod/coursework:addinitialgrade', $PAGE->context))
-                    || ($this->coursework->allocation_enabled() && !$this->coursework
-                        ->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable())
-                       && (has_capability('mod/coursework:addinitialgrade', $PAGE->context) && !has_capability('mod/coursework:addagreedgrade', $PAGE->context)))
-                    || ($stages > 1 && $this->coursework->sampling_enabled()
-                       && !$submission->sampled_feedback_exists()
-                       && (!$this->coursework
-                           ->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable())
-                            && has_capability('mod/coursework:addinitialgrade', $PAGE->context))
-                       && (has_capability('mod/coursework:addagreedgrade', $PAGE->context)
-                           || has_capability('mod/coursework:editagreedgrade', $PAGE->context)))
-                    || ((has_capability('mod/coursework:addagreedgrade', $PAGE->context) && $submission->get_state() < submission::FULLY_GRADED ))
+                    || (
+                            $this->coursework->allocation_enabled()
+                            && !allocation::allocatable_is_allocated_to_assessor(
+                                $this->coursework->id,
+                                $allocatable->id(),
+                                $allocatable->type(),
+                            )
+                            && (
+                                has_capability('mod/coursework:addinitialgrade', $PAGE->context)
+                                && !has_capability('mod/coursework:addagreedgrade', $PAGE->context)
+                            )
+                        )
+                    || (
+                        $stages > 1 && $this->coursework->sampling_enabled()
+                        && !$submission->sampled_feedback_exists()
+                        && (
+                            !allocation::allocatable_is_allocated_to_assessor(
+                                $this->coursework->id,
+                                $allocatable->id(),
+                                $allocatable->type(),
+                            )
+                            && has_capability('mod/coursework:addinitialgrade', $PAGE->context)
+                        )
+                        && (
+                            has_capability('mod/coursework:addagreedgrade', $PAGE->context)
+                            || has_capability('mod/coursework:editagreedgrade', $PAGE->context)
+                        )
+                    )
+                    || (
+                            has_capability('mod/coursework:addagreedgrade', $PAGE->context)
+                            && $submission->get_state() < submission::FULLY_GRADED
+                    )
                 ) {
                     unset($submissions[$submission->id]);
                     continue;

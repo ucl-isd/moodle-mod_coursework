@@ -33,7 +33,6 @@ use mod_coursework\models\allocation;
  * @package mod_coursework\traits
  */
 trait allocatable_functions {
-
     /**
      * @param coursework $coursework
      * @return bool
