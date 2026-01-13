@@ -23,9 +23,6 @@
 namespace mod_coursework;
 
 use mod_coursework\models\coursework;
-use mod_coursework\models\deadline_extension;
-use mod_coursework\models\personaldeadline;
-use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
 
 /**
@@ -49,9 +46,6 @@ class grading_report {
         // Make tablerow objects so we can use the methods to check permissions and set things.
         $rows = [];
         $ability = new ability($USER->id, $coursework);
-
-        $participantsfound = 0;
-
         foreach ($participants as $key => $participant) {
             // New grading_table_row_base.
             $row = new grading_table_row_base(
@@ -62,28 +56,12 @@ class grading_report {
 
             // Now, we skip the ones who should not be visible on this page.
             $canshow = $ability->can('show', $row);
-            if (!$canshow && !isset($options['unallocated'])) {
-                unset($participants[$key]);
-                continue;
-            }
-            if ($canshow && isset($options['unallocated'])) {
+            if (!$canshow) {
                 unset($participants[$key]);
                 continue;
             }
             $rows[$participant->id()] = $row;
-            $participantsfound++;
-            if (!empty($rowcount) && $participantsfound >= $rowcount) {
-                break;
-            }
         }
         return $rows;
-    }
-
-    /**
-     *
-     * @return array rendering options
-     */
-    public function get_options() {
-        return $this->options;
     }
 }
