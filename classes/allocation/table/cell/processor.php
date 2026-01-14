@@ -36,43 +36,9 @@ use mod_coursework\stages\base as stage_base;
  */
 class processor {
     /**
-     * @var coursework
-     */
-    protected $coursework;
-
-    /**
-     * @var allocatable
-     */
-    protected $allocatable;
-
-    /**
-     * @var stage_base
-     */
-    protected $stage;
-
-    /**
-     * @param coursework $coursework
-     * @param allocatable $allocatable
-     * @param stage_base $stage
-     * @param array $dataarray incoming data from the allocation form
-     */
-    public function __construct($coursework, $allocatable, $stage, $dataarray = []) {
-        $this->coursework = $coursework;
-        $this->allocatable = $allocatable;
-        $this->stage = $stage;
-    }
-
-    /**
      * @param data $celldata
      */
     public function process($celldata) {
-
-        if ($this->get_stage()->uses_sampling()) {
-            $this->process_sampling_membership($celldata);
-        } else if ($this->get_stage()->has_allocation($this->get_allocatable())) {
-            $this->process_pin($celldata);
-        }
-
         if ($celldata->has_assessor() && $this->get_stage()->allocatable_is_in_sample($this->get_allocatable())) {
             $this->save_assessor_allocation($celldata);
         }
@@ -95,73 +61,6 @@ class processor {
             $allocation->pin();
         } else {
             $this->make_allocation($data->get_assessor(), $this->get_allocatable());
-        }
-    }
-
-    /**
-     * @param $teacher
-     * @param allocatable $student
-     * @return mixed|void
-     */
-    private function make_allocation($teacher, $student) {
-        return $this->get_stage()->make_manual_allocation($student, $teacher);
-    }
-
-    /**
-     * @return allocation|bool
-     */
-    private function get_allocation() {
-        return $this->get_stage()->get_allocation($this->get_allocatable());
-    }
-
-    /**
-     * @param data $data
-     * @throws \dml_exception
-     * @throws coding_exception
-     */
-    private function process_sampling_membership($data) {
-        if ($data->allocatable_should_be_in_sampling()) {
-            if (!$this->get_stage()->allocatable_is_in_sample($this->get_allocatable())) {
-                $this->get_stage()->add_allocatable_to_sampling($this->get_allocatable());
-            }
-            if ($this->get_stage()->has_allocation($this->get_allocatable())) {
-                $this->process_pin($data);
-            }
-        } else {
-            if ($this->get_stage()->allocatable_is_in_sample($this->get_allocatable()) && !$this->has_automatic_sampling()) {
-                $this->get_stage()->remove_allocatable_from_sampling($this->get_allocatable());
-            }
-
-            if ($this->get_stage()->has_allocation($this->get_allocatable())) {
-                $this->get_stage()->destroy_allocation($this->get_allocatable());
-            }
-        }
-    }
-
-    /**
-     * @return allocatable
-     */
-    private function get_allocatable() {
-        return $this->allocatable;
-    }
-
-    /**
-     * @return stage_base
-     */
-    private function get_stage() {
-        return $this->stage;
-    }
-
-    /**
-     * @param data $celldata
-     */
-    private function process_pin($celldata) {
-        $allocation = $this->get_allocation();
-
-        if ($celldata->is_pinned()) {
-            $allocation->pin();
-        } else {
-            $allocation->unpin();
         }
     }
 

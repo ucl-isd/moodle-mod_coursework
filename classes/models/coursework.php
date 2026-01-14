@@ -2916,6 +2916,20 @@ class coursework extends table_base {
     }
 
     /**
+     * @param int $allocatableid
+     * @return allocatable
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
+    public function get_allocatable_from_id($allocatableid): allocatable {
+        if ($this->is_configured_to_have_group_submissions()) {
+            return group::find($allocatableid);
+        } else {
+            return user::find($allocatableid);
+        }
+    }
+
+    /**
      * * This function returns allocatable extension if given
      * @param $allocatable
      * @return bool/int
@@ -3032,7 +3046,7 @@ class coursework extends table_base {
     /**
      *
      * @param int $courseworkid
-     * @return bool
+     * @return self|bool
      * @throws dml_exception
      */
     public static function get_object($courseworkid) {

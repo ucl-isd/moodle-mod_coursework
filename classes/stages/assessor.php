@@ -64,7 +64,7 @@ class assessor extends base {
      * @return string
      */
     public function allocation_table_header() {
-        return 'Assessor';
+        return 'Assessor ' . substr($this->stageidentifier, 9);
     }
 
     /**

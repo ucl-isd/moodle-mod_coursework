@@ -319,19 +319,6 @@ class grading_report {
     }
 
     /**
-     * Counts the total number of students that the current user can see.
-     *
-     * @return int
-     */
-    public function get_participant_count() {
-
-        if (!isset($this->totalrows)) {
-            $this->get_table_rows_for_page();
-        }
-        return $this->totalrows;
-    }
-
-    /**
      * Gets data for all students. Use bulk queries to aid performance
      *
      * @param bool $rowcount

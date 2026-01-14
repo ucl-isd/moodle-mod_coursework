@@ -55,11 +55,6 @@ function coursework_process_form_submissions(coursework $coursework, $coursemodu
     $deletemodsetrule = optional_param('delete-mod-set-rule', [], PARAM_RAW);
     $allocationsmanager = $coursework->get_allocation_manager();
 
-    // SHAME.
-    // Variable $_POST['allocatables'] comes as array of arrays which is not supported by optional_param_array.
-    // However, we clean this later in process_data() function.
-    $dirtyformdata = $_POST['allocatables'] ?? [];
-
     if ($formsavebutton) {
         // Save allocation strategy settings if a strategy was submitted.
         if ($assessorallocationstrategy) {
@@ -70,9 +65,6 @@ function coursework_process_form_submissions(coursework $coursework, $coursemodu
         }
         $coursework->save();
 
-        // Process manual allocations from the table.
-        $processor = new processor($coursework);
-        $processor->process_data($dirtyformdata);
         $allocationsmanager->auto_generate_sample_set();
     }
 
@@ -109,13 +101,12 @@ function coursework_process_form_submissions(coursework $coursework, $coursemodu
  * Renders the allocation page content.
  *
  * @param coursework $coursework The coursework object.
- * @param mod_coursework_allocation_table $allocationtable The renderable table object.
  * @throws \core\exception\coding_exception
  * @throws \core\exception\moodle_exception
  * @throws coding_exception
  * @throws dml_exception
  */
-function coursework_render_page(coursework $coursework, mod_coursework_allocation_table $allocationtable) {
+function coursework_render_page(coursework $coursework) {
     global $PAGE, $OUTPUT;
 
     // Prepare renderable objects.
@@ -145,8 +136,69 @@ function coursework_render_page(coursework $coursework, mod_coursework_allocatio
         $template->allocationwidget = $objectrenderer->render($allocationwidget);
     }
 
-    // Main allocation table.
-    $template->table = $objectrenderer->render($allocationtable);
+    $tablemodel = new stdClass();
+    $tablemodel->headers = [get_string('student', 'mod_coursework')];
+    foreach ($coursework->marking_stages() as $stage) {
+        if (!$stage->uses_allocation()) {
+            continue;
+        }
+        $tablemodel->headers[] = $stage->allocation_table_header();
+    }
+
+    $tablemodel->rows = [];
+
+    foreach ($coursework->get_allocatables() as $allocatable) {
+        $stages = [];
+        foreach ($coursework->marking_stages() as $stage) {
+            $feedback = $stage->get_feedback_for_allocatable($allocatable);
+            $membership = $stage->get_assessment_set_membership($allocatable);
+
+            $stagecell = [
+                'stageidentifier' => $stage->identifier(),
+            ];
+
+            if ($feedback) {
+                $stagecell['currentmarker'] = $feedback->assessor()->name();
+                $stagecell['currentgrade'] = $feedback->get_grade();
+            } else if ($stage->uses_allocation()) {
+                $allocation = $stage->get_allocation($allocatable);
+                $currentmarker = $allocation->assessorid ?? 0;
+
+                $stagecell['potentialmarkers'] = array_values(
+                    array_map(function ($marker) use ($currentmarker) {
+                        return (object)['id' => $marker->id, 'name' => $marker->name(), 'selected' => $currentmarker == $marker->id];
+                    }, $stage->get_teachers())
+                );
+
+                $stagecell['showmarkerselection'] = true;
+                $stagecell['pinned'] = (!empty($allocation) && $allocation->is_pinned());
+            }
+
+            if ($stage->uses_sampling()) {
+                if ($feedback || $stage->identifier() == 'assessor_1') {
+                    $stagecell['samplingstate'] = get_string('includedinsample', 'mod_coursework');
+                } else {
+                    if ($membership && $membership->selectiontype == 'automatic') {
+                        $stagecell['samplingstate'] = get_string('automaticallyinsample', 'mod_coursework');
+                    } else {
+                        $stagecell['samplingcheckboxdisplay'] = true;
+                        $stagecell['samplingcheckboxvalue'] = !empty($membership);
+                    }
+                }
+            }
+
+            $stages[] = $stagecell;
+        }
+
+        $tablemodel->rows[] = [
+            'allocatableid' => $allocatable->id,
+            'courseworkid' => $coursework->id,
+            'allocatablename' => $allocatable->name(),
+            'stages' => $stages,
+        ];
+    }
+
+    $template->table = $OUTPUT->render_from_template('mod_coursework/allocate/table', $tablemodel);
 
     echo $OUTPUT->header();
     echo $OUTPUT->render_from_template('mod_coursework/allocate/main', $template);
@@ -162,14 +214,9 @@ $samplingformsavebutton = optional_param('save_sampling', 0, PARAM_BOOL);
 $allocateallbutton = optional_param('auto-allocate-all', 0, PARAM_BOOL);
 $coursework = coursework::find($coursework);
 
-// SQL sort for allocation table.
-$sortby = optional_param('sortby', '', PARAM_ALPHA);
-$sorthow = optional_param('sorthow', '', PARAM_ALPHA);
-$options = compact('sortby', 'sorthow');
-
 require_login($course, true, $coursemodule);
 
-require_capability('mod/coursework:allocate', $PAGE->context, null, true, "Can't allocate here - permission denied.");
+require_capability('mod/coursework:allocate', $PAGE->context);
 
 $url = '/mod/coursework/actions/allocate.php';
 $link = new moodle_url($url, ['id' => $coursemoduleid]);
@@ -198,9 +245,5 @@ $PAGE->requires->string_for_js('samemarkererror', 'coursework');
 // Process any form submissions. This may redirect away from the page.
 coursework_process_form_submissions($coursework, $coursemodule);
 
-// Prepare the main allocation table for rendering.
-$allocationtable = new mod_coursework\allocation\table\builder($coursework, $options);
-$allocationtable = new mod_coursework_allocation_table($allocationtable);
-
 // Render the page.
-coursework_render_page($coursework, $allocationtable);
+coursework_render_page($coursework);

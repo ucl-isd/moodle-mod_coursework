@@ -1,0 +1,135 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_quiz/edit_grading_page
+
+    Display the Quiz complex grading page, from below tertiary nav, to above the footer.
+
+    Classes required for JS:
+    * none.
+
+    Data attributes required for JS:
+    * Many. See mod_quiz/edit_grading module.
+
+    Context variables required for this template:
+    * TBC
+
+    Example context (json):
+    {
+        "quizid": 42,
+        "hasgradeitems": true,
+        "gradeitems": [
+            {
+                "id": 123,
+                "sortorder": 1,
+                "name": "Reading & writing",
+                "displayname": "Reading &amp; writing",
+                "summarks": "10.00",
+                "isused": true
+            }
+        ],
+        "hasslots": true,
+        "sections": [
+            {
+                "displayname": "Section title",
+                "slots": [
+                    {
+                        "id": 234,
+                        "displaynumber": "1",
+                        "displayname": "Question name",
+                        "maxmark": "10.00",
+                        "choices": [
+                            {
+                                "id": 0,
+                                "choice": "[none]",
+                                "isselected": false
+                            },
+                            {
+                                "id": 123,
+                                "choice": "Reading &amp; writing",
+                                "isselected": true
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "nogradeitems": {
+            "message": "This quiz does not yet have any grade items defined."
+        },
+        "noslots": {
+            "message": "No questions have been added to the quiz yet. Please add the questions to the quiz before setting up grading."
+        }
+    }
+}}
+
+<table class="generaltable table-responsive" id="mod_coursework_allocatemarkers">
+    <caption class="sr-only"> {{#str}} gradeitems, grades {{/str}} </caption>
+    <thead>
+    <tr>
+        {{#headers}}
+            <th scope="col">{{{.}}}</th>
+        {{/headers}}
+    </tr>
+    </thead>
+    <tbody>
+    {{#rows}}
+        <tr>
+            <td class="align-middle text-end py-1">
+                {{allocatablename}}
+            </td>
+
+            {{#stages}}
+                <td>
+                    {{currentmarker}}
+
+                    {{currentgrade}}
+
+                    {{#showmarkerselection}}
+                        <select class="mod_coursework_allocation form-control {{#samplingcheckboxvalue}}d-none{{/samplingcheckboxvalue}}">
+                            <option value="">{{#str}} chooseassessor, mod_coursework {{/str}}</option>
+                            {{#potentialmarkers}}
+                                <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                            {{/potentialmarkers}}
+                        </select>
+                        <label>
+                            {{#str}}pinned, mod_coursework{{/str}}
+                            <input data-stageidentifier="{{stageidentifier}}"
+                                   data-allocatableid="{{allocatableid}}"
+                                   data-action="mod_coursework_allocatableinsampletoggle"
+                                   type="checkbox" {{#pinned}}checked{{/pinned}}/>
+                        </label>
+                    {{/showmarkerselection}}<!--needs hiding if not in sample .-->
+
+                    {{{samplingstate}}}
+
+                    {{#samplingcheckboxdisplay}}
+                        <label>
+                            {{#str}}includedinsample, mod_coursework{{/str}}
+                            <input data-courseworkid="{{courseworkid}}"
+                                   data-stageidentifier="{{stageidentifier}}"
+                                   data-allocatableid="{{allocatableid}}"
+                                   data-action="mod_coursework_allocatableinsampletoggle"
+                                   type="checkbox" {{#samplingcheckboxvalue}}checked{{/samplingcheckboxvalue}}/>
+                        </label>
+                    {{/samplingcheckboxdisplay}}
+                </td>
+            {{/stages}}
+        </tr>
+    {{/rows}}
+    </tbody>
+</table>

@@ -22,96 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 M.mod_coursework = {
-
-
     /**
      * This is to set up the listeners etc for the page elements on the allocations page.
      */
     init_allocate_page: function (e, wwwroot, coursemoduleid) {
         "use strict";
-
-        // Make the changes to the moderations set dropdowns set the 'in moderations set'
-        // checkboxes automatically.
-        $('.assessor_id_dropdown').change(function () {
-
-            var $dropdown = $(this);
-            var $checkbox = $dropdown.prevAll('.sampling_set_checkbox');
-
-            var $currentselection = $dropdown.attr('id');
-
-            if ($checkbox.length) {
-                if ($dropdown.val() === '') {
-                    $checkbox.prop('checked', false);
-                } else {
-                    $checkbox.prop('checked', true);
-                }
-            }
-
-            // warning if same assessors are selected in the same row
-            var $row = $dropdown.closest('tr');
-            var $selected_val = $dropdown.val();
-
-            //compare each element in the row
-            $row.find('td').each(function () {
-
-                // dropdown
-                var $celldropdown = $(this).find('.assessor_id_dropdown');
-                var $celldropdown_id = $celldropdown.attr('id');
-                var $celldropdown_val = $celldropdown.val();
-                // link
-                var $atag = $(this).find('a');
-                var $id_from_label = $atag.data('assessorid');
-
-                if ($currentselection != $celldropdown_id && ($celldropdown_val == $selected_val || $id_from_label == $selected_val)) {
-                    // alert('Assessor already allocated. \n Choose different assessor.');
-                    $('<div id="same_assessor" class="alert">' + M.util.get_string('samemarkererror', 'coursework') + '</div>').insertAfter($('#' + $currentselection));
-                    $dropdown.val('');
-                } else if ($dropdown.val() != '') {
-                    $("#same_assessor").remove();
-                }
-            });
-        });
-
-
-        // Unchecked 'Include in sample' checkbox disables
-        // dropdown automatically.
-        $('.sampling_set_checkbox').click(function () {
-
-            var $checkbox = $(this);
-            var $dropdown = $checkbox.nextAll('.assessor_id_dropdown');
-            var $pinned = $checkbox.nextAll('.existing-assessor');
-            var $child = $pinned.children('.pinned');
-
-            if ($dropdown.length) {
-                if ($checkbox.is(":checked")) {
-                    $dropdown.prop("disabled", false);
-                    $child.prop("disabled", false);
-
-                } else {
-                    $dropdown.val('');
-                    $dropdown.prop("disabled", true);
-                    $child.prop("disabled", true);
-                    $("#same_assessor").remove();
-                }
-            }
-        });
-
-
-        $('.sampling_set_checkbox').each(function () {
-
-            var $checkbox = $(this);
-
-            var $assessddname = $checkbox.attr('id').replace('_samplecheckbox', '');
-
-            var $assessdd = $('#' + $assessddname);
-
-            if ($checkbox.is(":checked")) {
-                $assessdd.prop("disabled", false)
-            } else {
-                $assessdd.prop("disabled", true);
-            }
-
-        });
 
         // default select
         var $menuassessorallocationstrategy = $('#assessorallocationstrategy');
@@ -172,40 +87,17 @@ M.mod_coursework = {
             });
         });
 
-        // Allocation widgets
-        var allPanels = $('.accordion > div').hide();
-        $('.accordion > h3').click(function () {
-            if ($(this).next().is(":visible")) {
-                allPanels.slideUp();
-            } else {
-                allPanels.slideUp();
-
-                $(this).next().slideDown();
-            }
-            return false;
-        });
-
 
         var AUTOMATIC_SAMPLING = 1;
-
-
-
-
-
-
 
         //assessor sampling strategy drop down
         $('.assessor_sampling_strategy').each(function (e, element) {
             var ele_id = $(this).attr('id').split('_');
             if ($(this).val() != AUTOMATIC_SAMPLING) {
-
-
-
                 $('.' + ele_id[0] + '_' + ele_id[1]).each(function (n, ele) {
 
                     $(ele).attr('disabled', true);
                 });
-
             }
 
             if ($(this).val() == AUTOMATIC_SAMPLING) {
@@ -213,7 +105,6 @@ M.mod_coursework = {
             } else {
                 $('#' + ele_id[0] + '_' + ele_id[1] + "_automatic_rules").hide();
             }
-
 
             $(element).on('change', function () {
 
@@ -233,59 +124,7 @@ M.mod_coursework = {
                 } else {
                     $('#' + ele_id[0] + '_' + ele_id[1] + "_automatic_rules").hide();
                 }
-
-
-
             })
-        })
-
-
-
-        if (!$('.pin_1')) {
-            $(this).hide();
-        }
-
-        $('#selectall_1').change(function () {
-
-            if ($(this).is(":checked")) {
-                $('.pin_1').prop('checked', true);
-
-            } else {
-                $('.pin_1').prop('checked', false);
-
-            }
-        })
-
-        $('#selectall_2').change(function () {
-
-            if ($(this).is(":checked")) {
-                $('.pin_2').prop('checked', true);
-
-            } else {
-                $('.pin_2').prop('checked', false);
-
-            }
-        })
-
-        $('#selectall_3').change(function () {
-
-            if ($(this).is(":checked")) {
-                $('.pin_3').prop('checked', true);
-
-            } else {
-                $('.pin_3').prop('checked', false);
-
-            }
-        })
-
-        $('#selectall_mod').change(function () {
-
-            if ($(this).is(":checked")) {
-                $('.pin_r').prop('checked', true);
-
-            } else {
-                $('.pin_r').prop('checked', false);
-            }
         })
 
 
@@ -322,11 +161,6 @@ M.mod_coursework = {
                     location.reload(true);
                 }
             });
-
-
-
-
-
         });
 
         $('#save_and_exit_assessor_allocation_strategy').click(function (e) {
@@ -368,19 +202,7 @@ M.mod_coursework = {
             setTimeout(function () {
                 window.location = wwwroot + "/mod/coursework/view.php?id=" + coursemoduleid;
             }, 5000);
-
-
-
-
-
-
-
-
         });
-
-
-
-
     },
 
 
@@ -451,12 +273,6 @@ M.mod_coursework = {
 
 
         });
-
-
-
-
-
-
     }
 };
 

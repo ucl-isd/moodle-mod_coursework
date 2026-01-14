@@ -482,6 +482,7 @@ $string['percentages_do_not_add_up'] = 'Percentage allocations are enabled, but 
 $string['personaldeadline'] = 'Personal deadline';
 $string['personaldeadlinecreated'] = 'Personal deadline created';
 $string['personaldeadlineupdated'] = 'Personal deadline updated';
+$string['pinned'] = 'Pinned';
 $string['plagiarism'] = 'Plagiarism';
 $string['plagiarism_0'] = 'Under Investigation';
 $string['plagiarism_1'] = 'Release (no action taken)';
