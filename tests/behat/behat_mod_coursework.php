@@ -2693,7 +2693,7 @@ class behat_mod_coursework extends behat_base {
         $firstname = $username[0];
         $lastname = $username[1] ?? '';
 
-        if (!$lastname) {
+        if (!isset($username[1])) {
             $userid = $DB->get_field_sql(
                 "SELECT id FROM {user} WHERE firstname = ? AND lastname LIKE 'student%'",
                 [$firstname]
@@ -3924,7 +3924,9 @@ class behat_mod_coursework extends behat_base {
      * @Given /^I follow "(?P<linktext_string>[^"]*)" in row "(?P<rownumber>\d+)"$/
      */
     public function i_follow_in_row($linktext, $rownumber) {
-        $xpath = "(//table[contains(@class,'mod-coursework-submissions-table')]/tbody/tr)[$rownumber]//a[text()='$linktext']";
+        $linktext = behat_context_helper::escape($linktext);
+        $xpath = "(//table[contains(@class,'mod-coursework-submissions-table')]/tbody/tr)[{$rownumber}]
+        //*[self::a or self::button][normalize-space(.) = {$linktext}]";
 
         $element = $this->getSession()->getPage()->find('xpath', $xpath);
 
@@ -3949,13 +3951,13 @@ class behat_mod_coursework extends behat_base {
      *
      * @Then /^I should( not)? see "(?P<text>[^"]*)" in row "(?P<row>\d+)"$/
      *
-     * @param string $not
+     * @param string $notvisible
      * @param string $text
      * @param int $rownumber
      * @return void
      * @throws coding_exception
      */
-    public function i_should_see_text_in_row($not, $text, $rownumber) {
+    public function i_should_see_text_in_row($notvisible, $text, $rownumber) {
         $session = $this->getSession();
         $page = $session->getPage();
 
@@ -3977,7 +3979,7 @@ class behat_mod_coursework extends behat_base {
 
         // Check text inside the row.
         // If a negation (e.g. "not") was present in the step.
-        if (!empty($not)) {
+        if (!empty($notvisible)) {
             if ($contains) {
                 throw new ExpectationException(
                     "'{$text}' text was found in row {$rownumber}.\nRow contents: {$rowtext}",
