@@ -407,13 +407,13 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $submissionstable = '';
         if ($cangrade || $canpublish) {
             // Submissions table.
-            $pagerenderer = $this->page->get_renderer('mod_coursework', 'page');
-            $submissionstabledata = $pagerenderer->submissions_table_data($coursework);
-            $submissionstable = $this->render_from_template('mod_coursework/submissions/table', $submissionstabledata);
+            $gradingreportrenderer = new grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
+            $templatedata = $gradingreportrenderer->get_grading_report_data($coursework);
+            $submissionstable = $this->render_from_template('mod_coursework/submissions/table', $templatedata);
 
             // Marking summary.
             $template->canmark = true;
-            $template->markingsummary = $submissionstabledata->markingsummary;
+            $template->markingsummary = $templatedata->markingsummary;
             $template->dropdown = $this->get_export_upload_links($coursework);
         }
 

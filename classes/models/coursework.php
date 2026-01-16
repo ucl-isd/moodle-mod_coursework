@@ -54,18 +54,6 @@ use mod_coursework\export\grading_sheet;
 use mod_coursework\framework\table_base;
 use mod_coursework\grading_report;
 use mod_coursework\plagiarism_helpers\base as plagiarism_base;
-use mod_coursework\render_helpers\grading_report\cells\email_cell;
-use mod_coursework\render_helpers\grading_report\cells\first_name_cell;
-use mod_coursework\render_helpers\grading_report\cells\group_cell;
-use mod_coursework\render_helpers\grading_report\cells\idnumber_cell;
-use mod_coursework\render_helpers\grading_report\cells\last_name_cell;
-use mod_coursework\render_helpers\grading_report\cells\personaldeadline_cell;
-use mod_coursework\render_helpers\grading_report\cells\plagiarism_cell;
-use mod_coursework\render_helpers\grading_report\cells\plagiarism_flag_cell;
-use mod_coursework\render_helpers\grading_report\cells\status_cell;
-use mod_coursework\render_helpers\grading_report\cells\submission_cell;
-use mod_coursework\render_helpers\grading_report\cells\time_submitted_cell;
-use mod_coursework\render_helpers\grading_report\cells\user_cell;
 use mod_coursework\stages\assessor;
 use mod_coursework\stages\base as stage_base;
 use mod_coursework\stages\final_agreed;
@@ -1797,52 +1785,6 @@ class coursework extends table_base {
             'allocatabletype' => $allocatable->type(),
         ];
         return submission::build($ownsubmissionparams);
-    }
-
-    /**
-     * Uses the knowledge of the Coursework settings to compose the object which the renderer can deal with.
-     * This is the messy wiring for the nice, reusable components in the grading report :)
-     *
-     * @param array $reportoptions
-     * @return grading_report
-     * @throws coding_exception
-     */
-    public function renderable_grading_report_factory($reportoptions) {
-
-        // Single or multiple? Compose it, so don't use inheritance.
-
-        $report = new grading_report($reportoptions, $this);
-
-        $cellitems = [
-            'coursework' => $this,
-        ];
-
-        // Add the cell objects. These are used to generate the table headers and to render each row.
-        if ($this->is_configured_to_have_group_submissions()) {
-            $report->add_cell(new group_cell($cellitems));
-        } else {
-            $report->add_cell(new first_name_cell($cellitems));
-            $report->add_cell(new last_name_cell($cellitems));
-            $report->add_cell(new email_cell($cellitems));
-            $report->add_cell(new user_cell($cellitems));
-            $report->add_cell(new idnumber_cell($cellitems));
-        }
-
-        if ($this->personaldeadlines_enabled()) {
-            $report->add_cell(new personaldeadline_cell($cellitems));
-        }
-        $report->add_cell(new status_cell($cellitems));
-        $report->add_cell(new submission_cell($cellitems));
-        $report->add_cell(new time_submitted_cell($cellitems));
-        if ($this->plagiarism_flagging_enabled()) {
-            $report->add_cell(new plagiarism_flag_cell($cellitems));
-        }
-
-        if ($this->plagiarism_enbled()) {
-            $report->add_cell(new plagiarism_cell($cellitems));
-        }
-
-        return $report;
     }
 
     /**
