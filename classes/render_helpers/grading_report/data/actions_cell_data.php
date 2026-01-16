@@ -221,7 +221,7 @@ class actions_cell_data extends cell_data_base {
     protected function set_plagiarism_data(stdClass $data, grading_table_row_base $rowsbase): void {
         // Early returns for conditions where plagiarism data should not be shown.
         if (
-            !$this->coursework->plagiarism_flagging_enbled() ||
+            !$this->coursework->plagiarism_flagging_enabled() ||
             !$rowsbase->get_submission() ||
             !$rowsbase->get_submission()->is_finalised()
         ) {

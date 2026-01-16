@@ -86,7 +86,7 @@ class submission_cell_data extends cell_data_base {
      * @param submission $submission The submission to check.
      */
     protected function add_plagiarism_data(stdClass $submissiondata, submission $submission): void {
-        if (!$this->coursework->plagiarism_flagging_enbled()) {
+        if (!$this->coursework->plagiarism_flagging_enabled()) {
             return;
         }
         $submissiondata->flaggedplagiarism = $this->get_flagged_plagiarism_status($submission);
