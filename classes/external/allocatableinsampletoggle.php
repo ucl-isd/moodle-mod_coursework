@@ -40,7 +40,7 @@ class allocatableinsampletoggle extends external_api {
         return new external_function_parameters([
             'courseworkid' => new external_value(PARAM_INT),
             'allocatableid' => new external_value(PARAM_INT),
-            'stageidentifier' => new external_value(PARAM_INT),
+            'stageidentifier' => new external_value(PARAM_TEXT),
             'togglestate' => new external_value(PARAM_BOOL),
         ]);
     }
@@ -54,7 +54,7 @@ class allocatableinsampletoggle extends external_api {
      * @throws \dml_exception
      * @throws \invalid_parameter_exception
      */
-    public static function execute(int $courseworkid, int $allocatableid, int $stageidentifier, bool $togglestate): array {
+    public static function execute(int $courseworkid, int $allocatableid, string $stageidentifier, bool $togglestate): array {
         $params = self::validate_parameters(self::execute_parameters(), [
             'courseworkid' => $courseworkid,
             'allocatableid' => $allocatableid,

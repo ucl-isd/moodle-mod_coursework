@@ -139,7 +139,7 @@ function coursework_render_page(coursework $coursework) {
     $tablemodel = new stdClass();
     $tablemodel->headers = [get_string('student', 'mod_coursework')];
     foreach ($coursework->marking_stages() as $stage) {
-        if (!$stage->uses_allocation()) {
+        if (!$stage->uses_allocation() && !$stage->uses_sampling()) {
             continue;
         }
         $tablemodel->headers[] = $stage->allocation_table_header();
@@ -166,7 +166,11 @@ function coursework_render_page(coursework $coursework) {
 
                 $stagecell['potentialmarkers'] = array_values(
                     array_map(function ($marker) use ($currentmarker) {
-                        return (object)['id' => $marker->id, 'name' => $marker->name(), 'selected' => $currentmarker == $marker->id];
+                        return (object)[
+                            'id' => $marker->id,
+                            'name' => $marker->name(),
+                            'selected' => $currentmarker == $marker->id
+                        ];
                     }, $stage->get_teachers())
                 );
 
@@ -174,15 +178,20 @@ function coursework_render_page(coursework $coursework) {
                 $stagecell['pinned'] = (!empty($allocation) && $allocation->is_pinned());
             }
 
-            if ($stage->uses_sampling()) {
-                if ($feedback || $stage->identifier() == 'assessor_1') {
+            if ($stage->identifier() == 'assessor_1') {
+                $stagecell['includedinsample'] = true;
+            } if ($stage->uses_sampling()) {
+                if ($feedback) {
                     $stagecell['samplingstate'] = get_string('includedinsample', 'mod_coursework');
+                    $stagecell['includedinsample'] = true;
                 } else {
                     if ($membership && $membership->selectiontype == 'automatic') {
                         $stagecell['samplingstate'] = get_string('automaticallyinsample', 'mod_coursework');
+                        $stagecell['includedinsample'] = true;
                     } else {
+                        $stagecell['samplingstate'] = get_string('includedinsample', 'mod_coursework');
                         $stagecell['samplingcheckboxdisplay'] = true;
-                        $stagecell['samplingcheckboxvalue'] = !empty($membership);
+                        $stagecell['includedinsample'] = !empty($membership);
                     }
                 }
             }
@@ -239,8 +248,6 @@ $PAGE->requires->js_init_call(
     false,
     $jsmodule
 );
-
-$PAGE->requires->string_for_js('samemarkererror', 'coursework');
 
 // Process any form submissions. This may redirect away from the page.
 coursework_process_form_submissions($coursework, $coursemodule);

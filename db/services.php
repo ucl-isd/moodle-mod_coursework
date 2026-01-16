@@ -66,4 +66,12 @@ $functions = [
         'loginrequired' => true,
         'capabilities' => '', // Handled within the class.
     ],
+    'mod_coursework_assessorallocation' => [
+        'classname' => 'mod_coursework\external\assessorallocation',
+        'description' => 'Toggle alloctable inclusion in sample',
+        'type' => 'write',
+        'ajax' => true,
+        'loginrequired' => true,
+        'capabilities' => '', // Handled within the class.
+    ],
 ];

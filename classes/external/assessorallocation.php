@@ -20,7 +20,8 @@ use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_single_structure;
 use core_external\external_value;
-use mod_coursework\models\allocation;
+use core_user;
+use mod_coursework\models\coursework;
 
 /**
  * External service to delete an extension.
@@ -30,7 +31,7 @@ use mod_coursework\models\allocation;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since     Moodle 4.5
  */
-class allocationpintoggle extends external_api {
+class assessorallocation extends external_api {
     /**
      * Describes the parameters.
      *
@@ -38,9 +39,10 @@ class allocationpintoggle extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
+            'courseworkid' => new external_value(PARAM_INT),
             'allocatableid' => new external_value(PARAM_INT),
             'stageidentifier' => new external_value(PARAM_TEXT),
-            'togglestate' => new external_value(PARAM_BOOL),
+            'assessorid' => new external_value(PARAM_INT),
         ]);
     }
 
@@ -53,28 +55,50 @@ class allocationpintoggle extends external_api {
      * @throws \dml_exception
      * @throws \invalid_parameter_exception
      */
-    public static function execute(int $allocatableid, string $stageidentifier, bool $togglestate): array {
+    public static function execute(int $courseworkid, int $allocatableid, string $stageidentifier, int $assessorid): array {
         $params = self::validate_parameters(self::execute_parameters(), [
+            'courseworkid' => $courseworkid,
             'allocatableid' => $allocatableid,
             'stageidentifier' => $stageidentifier,
-            'togglestate' => $togglestate,
+            'assessorid' => $assessorid,
         ]);
 
-        $allocation = allocation::find(['stageidentifier' => $params['stageidentifier'], 'allocatableid' => $params['allocatableid']]);
-        if (empty($allocation)) {
-            return [
-                'success' => false,
-            ];
-        }
+        $coursework = coursework::get_object($params['courseworkid']);
 
-        $context = $allocation->get_coursework()->get_context();
+        $assessor = core_user::get_user($params['assessorid']);
+
+        $context = $coursework->get_context();
         self::validate_context($context);
         require_capability('mod/coursework:allocate', $context);
 
-        $allocation->togglepin($params['togglestate']);
+        $stage = $coursework->get_stage($params['stageidentifier']);
+        $allocatable = $coursework->get_allocatable_from_id($params['allocatableid']);
+
+        $alreadymarkedbyassessor = false;
+        foreach ($allocatable->get_initial_feedbacks($coursework) as $feedback) {
+            if ($feedback->assessorid == $params['assessorid']) {
+                $alreadymarkedbyassessor = true;
+            }
+        }
+
+        if (
+            $alreadymarkedbyassessor
+            ||
+            $stage->assessor_already_allocated_for_this_submission($allocatable, $assessor)
+        ) {
+            return [
+                'success' => false,
+                'error' => get_string('samemarkererror', 'mod_coursework'),
+            ];
+        } else if ($assessorid == 0) {
+            $stage->destroy_allocation($allocatable);
+        } else {
+            $stage->make_manual_allocation($allocatable, $assessor);
+        }
 
         return [
             'success' => true,
+            'error' => '',
         ];
     }
 
@@ -86,6 +110,7 @@ class allocationpintoggle extends external_api {
     public static function execute_returns(): external_single_structure {
         return new external_single_structure([
             'success' => new external_value(PARAM_BOOL, 'Whether successful'),
+            'error' => new external_value(PARAM_RAW, 'The message to show user'),
         ]);
     }
 }

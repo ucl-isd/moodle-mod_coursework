@@ -89,47 +89,61 @@
     <tbody>
     {{#rows}}
         <tr>
-            <td class="align-middle text-end py-1">
-                {{allocatablename}}
-            </td>
+            <td>{{allocatablename}}</td>
 
             {{#stages}}
                 <td>
                     {{currentmarker}}
 
-                    {{currentgrade}}
+                    {{#currentgrade}}
+                        ({{#str}} grade, mod_coursework {{/str}}: {{currentgrade}})
+                    {{/currentgrade}}
 
                     {{#showmarkerselection}}
-                        <select class="mod_coursework_allocation form-control {{#samplingcheckboxvalue}}d-none{{/samplingcheckboxvalue}}">
-                            <option value="">{{#str}} chooseassessor, mod_coursework {{/str}}</option>
-                            {{#potentialmarkers}}
-                                <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
-                            {{/potentialmarkers}}
-                        </select>
-                        <label>
-                            {{#str}}pinned, mod_coursework{{/str}}
-                            <input data-stageidentifier="{{stageidentifier}}"
-                                   data-allocatableid="{{allocatableid}}"
-                                   data-action="mod_coursework_allocatableinsampletoggle"
-                                   type="checkbox" {{#pinned}}checked{{/pinned}}/>
-                        </label>
-                    {{/showmarkerselection}}<!--needs hiding if not in sample .-->
+                        <div>
+                            <select data-courseworkid="{{courseworkid}}"
+                                    data-stageidentifier="{{stageidentifier}}"
+                                    data-allocatableid="{{allocatableid}}"
+                                    data-action="mod_coursework_assessorallocation"
+                                    class="form-control {{^includedinsample}}d-none{{/includedinsample}}">
+                                <option value="0">{{#str}} chooseassessor, mod_coursework {{/str}}</option>
+                                {{#potentialmarkers}}
+                                    <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                                {{/potentialmarkers}}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="{{^includedinsample}}d-none{{/includedinsample}}">
+                                <input data-stageidentifier="{{stageidentifier}}"
+                                       data-allocatableid="{{allocatableid}}"
+                                       data-action="mod_coursework_allocationpintoggle"
+                                       type="checkbox" {{#pinned}}checked{{/pinned}}/>
+                                {{#str}}pinned, mod_coursework{{/str}}
+                            </label>
+                        </div>
+                    {{/showmarkerselection}}
 
-                    {{{samplingstate}}}
-
-                    {{#samplingcheckboxdisplay}}
+                    <div>
                         <label>
-                            {{#str}}includedinsample, mod_coursework{{/str}}
-                            <input data-courseworkid="{{courseworkid}}"
-                                   data-stageidentifier="{{stageidentifier}}"
-                                   data-allocatableid="{{allocatableid}}"
-                                   data-action="mod_coursework_allocatableinsampletoggle"
-                                   type="checkbox" {{#samplingcheckboxvalue}}checked{{/samplingcheckboxvalue}}/>
+                            {{#samplingcheckboxdisplay}}
+                                <input data-courseworkid="{{courseworkid}}"
+                                       data-stageidentifier="{{stageidentifier}}"
+                                       data-allocatableid="{{allocatableid}}"
+                                       data-action="mod_coursework_allocatableinsampletoggle"
+                                       type="checkbox" {{#includedinsample}}checked{{/includedinsample}}/>
+                            {{/samplingcheckboxdisplay}}
+                            {{{samplingstate}}}
                         </label>
-                    {{/samplingcheckboxdisplay}}
+                    </div>
                 </td>
             {{/stages}}
         </tr>
     {{/rows}}
     </tbody>
 </table>
+
+{{#js}}
+    require(['mod_coursework/markerstable'], function(markerstable) {
+    markerstable.init();
+    });
+{{/js}}

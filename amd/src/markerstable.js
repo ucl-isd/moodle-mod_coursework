@@ -23,58 +23,75 @@
 
 import Ajax from 'core/ajax';
 import {add as addToast} from 'core/toast';
-
-var controller = {
-    allocationpintoggle: async function (allocatableid, stageidentifier, togglestate) {
-        Ajax.call([{
-            methodname: 'mod_coursework_allocationpintoggle',
-            args: {
-                allocatableid: allocatableid,
-                stageidentifier: stageidentifier,
-                togglestate: togglestate
-            },
-        }])[0]
-            .catch((error) => {
-                addToast(error, {type: 'error'});
-            });
-    },
-    allocatableinsampletoggle: async function (courseworkid, allocatableid, stageidentifier, togglestate) {
-        Ajax.call([{
-            methodname: 'mod_coursework_allocatableinsampletoggle',
-            args: {
-                courseworkid: courseworkid,
-                allocatableid: allocatableid,
-                stageidentifier: stageidentifier,
-                togglestate: togglestate
-            },
-        }])[0]
-            .catch((error) => {
-                addToast(error, {type: 'error'});
-            });
-    },
-
-};
+import $ from 'jquery';
 
 export const init = async () => {
-    document.querySelectorAll('[data-action="mod_coursework_allocationpintoggle"]').forEach((node) => {
-            node.addEventListener("click", async (event) => {
-                await controller.allocationpintoggle(
-                    event.target.dataset.allocatableid,
-                    event.target.dataset.stageidentifier,
-                    event.target.checked
-                ).promise;
+    document.querySelectorAll('[data-action="mod_coursework_allocatableinsampletoggle"]').forEach((node) => {
+            node.addEventListener("change", async (event) => {
+                var cell = $(event.target).parents('td');
+
+                cell.find('[data-action="mod_coursework_assessorallocation"]')
+                    .toggleClass('d-none', !event.target.checked);
+
+                cell.find('[data-action="mod_coursework_allocationpintoggle"]')
+                    .parent()
+                    .toggleClass('d-none', !event.target.checked);
+
+                Ajax.call([{
+                    methodname: 'mod_coursework_allocatableinsampletoggle',
+                    args: {
+                        courseworkid: event.target.dataset.courseworkid,
+                        allocatableid: event.target.dataset.allocatableid,
+                        stageidentifier: event.target.dataset.stageidentifier,
+                        togglestate: event.target.checked
+                    },
+                }])[0]
+                    .catch((error) => {
+                        addToast(error, {type: 'error'});
+                    });
             });
         }
     );
 
-    document.querySelectorAll('[data-action="mod_coursework_allocatableinsampletoggle"]').forEach((node) => {
-            node.addEventListener("click", async (event) => {
-                await controller.allocatableinsampletoggle(
-                    event.target.dataset.courseworkid,
-                    event.target.dataset.allocatableid,
-                    event.target.dataset.stageidentifier,
-                    event.target.checked
-                ).promise;
+    document.querySelectorAll('[data-action="mod_coursework_allocationpintoggle"]').forEach((node) => {
+            node.addEventListener("change", async (event) => {
+                Ajax.call([{
+                    methodname: 'mod_coursework_allocationpintoggle',
+                    args: {
+                        allocatableid: event.target.dataset.allocatableid,
+                        stageidentifier: event.target.dataset.stageidentifier,
+                        togglestate: event.target.checked
+                    },
+                }])[0]
+                    .catch((error) => {
+                        addToast(error, {type: 'error'});
+                    });
+            });
+        }
+    );
+
+    document.querySelectorAll('[data-action="mod_coursework_assessorallocation"]').forEach((node) => {
+            node.addEventListener("change", async (event) => {
+                Ajax.call([{
+                    methodname: 'mod_coursework_assessorallocation',
+                    args: {
+                        courseworkid: event.target.dataset.courseworkid,
+                        allocatableid: event.target.dataset.allocatableid,
+                        stageidentifier: event.target.dataset.stageidentifier,
+                        assessorid: event.target.value
+                    },
+                }])[0]
+                    .then((result) => {
+                        if (!result.success) {
+                            event.target.value = "0";
+                            return addToast(result.error, {type: 'error'});
+                        } else {
+                            return true;
+                        }
+                    })
+                    .catch((error) => {
+                        addToast(error, {type: 'error'});
+                    });
             });
         }
     );
