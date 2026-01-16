@@ -196,8 +196,20 @@ abstract class base {
      * @throws coding_exception
      */
     public function make_manual_allocation($allocatable, $teacher) {
-        $this->destroy_allocation($allocatable);
-        $allocation = $this->prepare_allocation_to_save($allocatable, $teacher);
+        $allocation = allocation::find([
+            'courseworkid' => $this->get_courseworkid(),
+            'stageidentifier' => $this->identifier(),
+            'allocatableid' => $allocatable->id
+        ]);
+        if (empty($allocation)) {
+            $allocation = new allocation();
+            $allocation->courseworkid = $this->coursework->id;
+            $allocation->stageidentifier = $this->identifier();
+            $allocation->moderator = $this->is_moderator();
+            $allocation->allocatableid = $allocatable->id();
+            $allocation->allocatabletype = $allocatable->type();
+        }
+        $allocation->assessorid = $teacher->id;
         $allocation->ismanual = 1;
         $allocation->save();
 
@@ -212,7 +224,13 @@ abstract class base {
      * @return void
      */
     private function make_auto_allocation($allocatable, $teacher) {
-        $allocation = $this->prepare_allocation_to_save($allocatable, $teacher);
+        $allocation = new allocation();
+        $allocation->courseworkid = $this->coursework->id;
+        $allocation->assessorid = $teacher->id;
+        $allocation->stageidentifier = $this->identifier();
+        $allocation->moderator = $this->is_moderator();
+        $allocation->allocatableid = $allocatable->id();
+        $allocation->allocatabletype = $allocatable->type();
         $allocation->save();
     }
 
@@ -248,22 +266,6 @@ abstract class base {
         global $DB;
 
         return $DB->get_records('coursework_allocation_config', ['courseworkid' => $this->get_courseworkid()], '', 'assessorid as id');
-    }
-
-    /**
-     * @param allocatable $allocatable
-     * @param $teacher
-     * @return allocation
-     */
-    private function prepare_allocation_to_save($allocatable, $teacher) {
-        $allocation = new allocation();
-        $allocation->courseworkid = $this->coursework->id;
-        $allocation->assessorid = $teacher->id;
-        $allocation->stageidentifier = $this->identifier();
-        $allocation->moderator = $this->is_moderator();
-        $allocation->allocatableid = $allocatable->id();
-        $allocation->allocatabletype = $allocatable->type();
-        return $allocation;
     }
 
     /**
