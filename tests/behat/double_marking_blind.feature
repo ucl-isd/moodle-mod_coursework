@@ -440,14 +440,13 @@ Feature: Double marking - blind
 
     And I am on the "Course 1" "course" page logged in as "marker1"
     And I follow "Coursework 1"
-    Then I should see "Agreed" in row "1"
-    Then I should see "Disagreed" in row "2"
-
     # See the moderation
-    And I follow "Disagreed" in row "2"
-    And I wait until the page is ready
-    Then I should see "I don't like it at all!"
-    And I press "Cancel"
+    Then I should see "Moderation" in row "1"
+    And I should see "Moderator 1" in row "1"
+    And I should see "Agreed" in row "1"
+    And I should see "Moderation" in row "2"
+    And I should see "Moderator 1" in row "2"
+    And I should see "Disagreed" in row "2"
 
     # Update marking
     And I follow "75" in row "2"
