@@ -1,4 +1,4 @@
-@mod @mod_coursework @mod_coursework_allocation_auto_interact_manual
+@mod @mod_coursework @mod_coursework_allocation_auto_interact_manual @mod_coursework_markingallocation
 Feature: Automatically allocations interacting with manually allocated students
 
     As a manager
@@ -15,15 +15,18 @@ Feature: Automatically allocations interacting with manually allocated students
     And there is a teacher
     And I am logged in as a manager
 
+  @javascript
   Scenario: Automatic allocations should not alter the manual allocations
     Given there is another teacher
     And there are no allocations in the db
+    And I am on the "Coursework 1" "coursework activity" page
+    Then I should not see "teacher teacher2" in the "student student1" "table_row"
     When I visit the allocations page
-    And I manually allocate the student to the teacher
+    And I set the following fields in the "student student1" "table_row" to these values:
+      | Choose marker assessor_1 | teacher teacher2 |
     And I set the allocation strategy to 100 percent for the other teacher
-    And I save everything
-    When I visit the allocations page
-    Then I should see the student allocated to the teacher for the first assessor
+    And I am on the "Coursework 1" "coursework activity" page
+    Then I should see "teacher teacher2" in the "student student1" "table_row"
 
   @javascript
   Scenario: Automatic allocations should wipe the older automatic allocations

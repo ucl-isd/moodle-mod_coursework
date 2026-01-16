@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_markingallocation
 Feature: Automatic equal assessor allocations
 
     As a manager
@@ -20,16 +20,14 @@ Feature: Automatic equal assessor allocations
 
   Scenario: Automatic allocations should work
     When I visit the allocations page
-    And I save everything
-    And I log out
+        And I log out
     And I log in as the teacher
     And I visit the coursework page
     Then I should see the student's name on the page
 
   Scenario: Automatic allocations of non-manually allocated should work
     When I visit the allocations page
-    And I save everything
-    And I log out
+        And I log out
     And I log in as the teacher
     And I visit the coursework page
     Then I should see the student's name on the page

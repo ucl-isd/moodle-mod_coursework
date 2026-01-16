@@ -17,8 +17,8 @@ Feature: View of all students: allocated and non allocated students
     And there is another teacher
     And I am logged in as a manager
     And I visit the allocations page
-    And I manually allocate the student to the teacher
-    And I save everything
+    And I set the following fields in the "student student1" "table_row" to these values:
+      | Choose marker assessor_1 | teacher teacher2 |
     And I manually allocate another student to another teacher
     And I log out
 

@@ -178,9 +178,9 @@ function coursework_render_page(coursework $coursework) {
                 $stagecell['pinned'] = (!empty($allocation) && $allocation->is_pinned());
             }
 
-            if ($stage->identifier() == 'assessor_1') {
+            if ($stage->identifier() == 'assessor_1' || !$stage->uses_sampling()) {
                 $stagecell['includedinsample'] = true;
-            } if ($stage->uses_sampling()) {
+            } else if ($stage->uses_sampling()) {
                 if ($feedback) {
                     $stagecell['samplingstate'] = get_string('includedinsample', 'mod_coursework');
                     $stagecell['includedinsample'] = true;

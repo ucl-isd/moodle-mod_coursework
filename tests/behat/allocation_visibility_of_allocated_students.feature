@@ -1,9 +1,9 @@
 @mod @mod_coursework
 Feature: Visibility of allocated students
 
-    In order to make sure that the right assessors grade the right students
-    As a course leader
-    I want teachers to only see the students who have been allocated to them
+  In order to make sure that the right assessors grade the right students
+  As a course leader
+  I want teachers to only see the students who have been allocated to them
 
   Background:
     Given there is a course
@@ -18,12 +18,14 @@ Feature: Visibility of allocated students
     And I visit the coursework page
     Then I should not see the student's name on the page
 
+  @javascript
   Scenario: I can allocate a student manually and the teacher will see them
     Given I am logged in as a manager
     When I visit the allocations page
-    And I manually allocate the student to the teacher
-    And I save everything
+    And I set the following fields in the "student student1" "table_row" to these values:
+      | Choose marker assessor_1 | teacher teacher2 |
     And I log out
     And I log in as the teacher
     And I visit the coursework page
-    Then I should see the student's name on the page
+    And I am on the "Coursework 1" "coursework activity" page
+    Then I should see "teacher teacher2" in the "student student1" "table_row"

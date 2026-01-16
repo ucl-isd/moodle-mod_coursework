@@ -105,7 +105,8 @@
                                     data-stageidentifier="{{stageidentifier}}"
                                     data-allocatableid="{{allocatableid}}"
                                     data-action="mod_coursework_assessorallocation"
-                                    class="form-control {{^includedinsample}}d-none{{/includedinsample}}">
+                                    class="form-control {{^includedinsample}}d-none{{/includedinsample}}"
+                                    name="{{#str}} chooseassessor, mod_coursework {{/str}} {{stageidentifier}}">
                                 <option value="0">{{#str}} chooseassessor, mod_coursework {{/str}}</option>
                                 {{#potentialmarkers}}
                                     <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>

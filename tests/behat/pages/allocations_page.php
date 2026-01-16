@@ -55,25 +55,6 @@ class mod_coursework_behat_allocations_page extends mod_coursework_behat_page_ba
     }
 
     /**
-     * @param allocatable $allocatable
-     * @param user $assessor
-     * @param string $stageidentifier
-     */
-    public function manually_allocate($allocatable, $assessor, $stageidentifier) {
-
-        // Identify the allocation dropdown.
-        $dropdownid = $allocatable->type() . '_' . $allocatable->id . '_' . $stageidentifier;
-        $node = $this->getcontext()->find_field($dropdownid);
-
-        // We delegate to behat_form_field class, it will
-        // guess the type properly as it is a select tag.
-        $field = behat_field_manager::get_form_field($node, $this->getsession());
-        $field->set_value($assessor->id());
-
-        $this->pin_allocation($allocatable, $stageidentifier);
-    }
-
-    /**
      * @param allocatable $student
      * @param string $stageidentifier
      */

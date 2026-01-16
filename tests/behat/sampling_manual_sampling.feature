@@ -25,8 +25,7 @@ Feature: Manual sampling
   Scenario: Manual sampling should not include student when not selected
     When I visit the allocations page
     And I deselect a student as a part of the sample for the second stage
-    And I save everything
-    And I log out
+        And I log out
     And I log in as the teacher
     And I visit the coursework page
     And I wait "1" seconds
@@ -37,8 +36,7 @@ Feature: Manual sampling
   Scenario: Single grade should go to the gradebook column when only first stage is in sample
     When I visit the allocations page
     And I deselect a student as a part of the sample for the second stage
-    And I save everything
-    And I log out
+        And I log out
     And I log in as the teacher
     And I visit the coursework page
     Then I should see the grade given by the initial teacher in the provisional grade column
@@ -47,8 +45,7 @@ Feature: Manual sampling
   Scenario: Manual sampling should include student when selected
     When I visit the allocations page
     And I select a student as a part of the sample for the second stage
-    And I save everything
-    And I log out
+        And I log out
     And I log in as the teacher
     And I visit the coursework page
     # I should be able to grade the user

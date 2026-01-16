@@ -358,38 +358,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Then /^I should see the student allocated to the other teacher for the first assessor$/
-     */
-    public function i_should_see_the_student_allocated_to_the_other_teacher() {
-        /**
-         * @var mod_coursework_behat_allocations_page $page
-         */
-        $page = $this->get_page('allocations page');
-        $allocatedassessor = $page->user_allocated_assessor($this->student, 'assessor_1');
-        if ($allocatedassessor != $this->otherteacher->name()) {
-            $message = "Expected the allocated teacher name to be '{$this->otherteacher->name()}'"
-                . " but got '$allocatedassessor' instead.";
-            throw new ExpectationException($message, $this->getsession());
-        }
-    }
-
-    /**
-     * @Then /^I should see the student allocated to the teacher for the first assessor$/
-     */
-    public function i_should_see_the_student_allocated_to_the_teacher() {
-        /**
-         * @var mod_coursework_behat_allocations_page $page
-         */
-        $page = $this->get_page('allocations page');
-        $allocatedassessor = $page->user_allocated_assessor($this->student, 'assessor_1');
-        if ($allocatedassessor != $this->teacher->name()) {
-            $message = 'Expected the allocated teacher name to be ' . $this->teacher->name()
-                . ' but got ' . $allocatedassessor . ' instead.';
-            throw new ExpectationException($message, $this->getsession());
-        }
-    }
-
-    /**
      * @Then /^there should be no allocations in the db$/
      */
     public function there_should_be_no_allocations_in_the_db() {
@@ -1396,58 +1364,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Then /^I should see that the student has two allcations$/
-     */
-    public function i_should_see_that_the_student_has_two_allcations() {
-        /**
-         * @var $page mod_coursework_behat_allocations_page
-         */
-        $page = $this->get_page('allocations page');
-
-        // Teacher - assessor_1.
-        $allocatedassessor = $page->user_allocated_assessor($this->student, 'assessor_1');
-        if ($allocatedassessor != $this->teacher->name()) {
-            $message = 'Expected the allocated teacher name to be ' . $this->teacher->name()
-                . ' but got ' . $allocatedassessor . ' instead.';
-            throw new ExpectationException($message, $this->getsession());
-        }
-
-        // Other teacher - assessor_2.
-        $allocatedassessor = $page->user_allocated_assessor($this->student, 'assessor_2');
-        if ($allocatedassessor != $this->otherteacher->name()) {
-            $message = 'Expected the allocated teacher name to be ' . $this->otherteacher->name()
-                . ' but got ' . $allocatedassessor . ' instead.';
-            throw new ExpectationException($message, $this->getsession());
-        }
-    }
-
-    /**
-     * @Then /^I should see that both students are allocated to the teacher$/
-     */
-    public function i_should_see_that_both_students_are_allocated_to_the_teacher() {
-        /**
-         * @var $page mod_coursework_behat_allocations_page
-         */
-        $page = $this->get_page('allocations page');
-
-        // Student.
-        $allocatedassessor = $page->user_allocated_assessor($this->student, 'assessor_1');
-        if ($allocatedassessor != $this->teacher->name()) {
-            $message = 'Expected the allocated teacher name to be ' . $this->teacher->name()
-                . ' but got ' . $allocatedassessor . ' instead.';
-            throw new ExpectationException($message, $this->getsession());
-        }
-
-        // Other student.
-        $allocatedassessor = $page->user_allocated_assessor($this->otherstudent, 'assessor_1');
-        if ($allocatedassessor != $this->teacher->name()) {
-            $message = 'Expected the allocated teacher name to be ' . $this->teacher->name()
-                . ' but got ' . $allocatedassessor . ' instead.';
-            throw new ExpectationException($message, $this->getsession());
-        }
-    }
-
-    /**
      * @Given /^editing teachers are prevented from adding general feedback$/
      */
     public function editing_teachers_are_prevented_from_adding_general_feedback() {
@@ -1777,46 +1693,6 @@ class behat_mod_coursework extends behat_base {
         $field->set_value($this->otherteacher->id);
 
         $this->find_button('save_manual_allocations_1')->click();
-    }
-
-    /**
-     * @Given /^I manually allocate the student to the other teacher for the second assessment$/
-     */
-    public function i_manually_allocate_the_student_to_the_other_teacher_for_the_second_assessment() {
-
-        // Identify the allocation dropdown.
-        $dropdownname = 'user_' . $this->student->id . '_assessor_2';
-        $node = $this->find_field($dropdownname);
-
-        // We delegate to behat_form_field class, it will
-        // guess the type properly as it is a select tag.
-        $field = behat_field_manager::get_form_field($node, $this->getsession());
-        $field->set_value($this->otherteacher->id);
-    }
-
-    /**
-     * @Given /^I manually allocate the student to the teacher$/
-     */
-    public function i_manually_allocate_the_student_to_the_teacher() {
-
-        /**
-         * @var mod_coursework_behat_allocations_page $page
-         */
-        $page = $this->get_page('allocations page');
-        $page->manually_allocate($this->student, $this->teacher, 'assessor_1');
-    }
-
-    /**
-     * @Given /^I manually allocate the other student to the teacher$/
-     */
-    public function i_manually_allocate_the_other_student_to_the_teacher() {
-
-        /**
-         * @var mod_coursework_behat_allocations_page $page
-         */
-        $page = $this->get_page('allocations page');
-        $page->manually_allocate($this->otherstudent, $this->teacher, 'assessor_1');
-        $page->save_everything();
     }
 
     /**
