@@ -196,6 +196,7 @@ abstract class base {
      * @throws coding_exception
      */
     public function make_manual_allocation($allocatable, $teacher) {
+        $this->destroy_allocation($allocatable);
         $allocation = $this->prepare_allocation_to_save($allocatable, $teacher);
         $allocation->ismanual = 1;
         $allocation->save();
@@ -410,7 +411,11 @@ abstract class base {
      * @throws coding_exception
      */
     public function destroy_allocation($allocatable) {
-        $this->get_allocation($allocatable)->destroy();
+        $allocation = $this->get_allocation($allocatable);
+
+        if ($allocation) {
+            $allocation->destroy();
+        }
     }
 
     /**
