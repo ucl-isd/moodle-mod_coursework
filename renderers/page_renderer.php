@@ -212,7 +212,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             }
         }
 
-        if ($ability->can('new', $submission)) {
+        if (!$submission && $ability->can('new', $submission)) {
             if ($coursework->start_date_has_passed()) {
                 $template->submissionbutton = $this->new_submission_button($submission);
             }
