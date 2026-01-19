@@ -19,11 +19,16 @@ Feature: Manually assessor allocations
     Given there is another teacher
     And there are no allocations in the db
     When I visit the allocations page
-    And I manually allocate the student to the other teacher
+    And I set the following fields in the "student student1" "table_row" to these values:
+      | Choose marker assessor_1 | otherteacher teacher4 |
     And I log out
     And I log in as the teacher
     And I visit the coursework page
     Then I should not see the student's name on the page
+    And I log out
+    And I log in as the other teacher
+    And I visit the coursework page
+    Then I should see the student's name on the page
 
   @javascript
   Scenario: auto allocations should not alter the manual allocations

@@ -25,9 +25,9 @@ import Ajax from 'core/ajax';
 import {add as addToast} from 'core/toast';
 import $ from 'jquery';
 
-export const init = async () => {
+export const init = async() => {
     document.querySelectorAll('[data-action="mod_coursework_allocatableinsampletoggle"]').forEach((node) => {
-            node.addEventListener("change", async (event) => {
+            node.addEventListener("change", async(event) => {
                 var cell = $(event.target).parents('td');
 
                 cell.find('[data-action="mod_coursework_assessorallocation"]')
@@ -54,7 +54,7 @@ export const init = async () => {
     );
 
     document.querySelectorAll('[data-action="mod_coursework_allocationpintoggle"]').forEach((node) => {
-            node.addEventListener("change", async (event) => {
+            node.addEventListener("change", async(event) => {
                 Ajax.call([{
                     methodname: 'mod_coursework_allocationpintoggle',
                     args: {
@@ -71,7 +71,7 @@ export const init = async () => {
     );
 
     document.querySelectorAll('[data-action="mod_coursework_assessorallocation"]').forEach((node) => {
-            node.addEventListener("change", async (event) => {
+            node.addEventListener("change", async(event) => {
                 Ajax.call([{
                     methodname: 'mod_coursework_assessorallocation',
                     args: {

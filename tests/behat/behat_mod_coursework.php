@@ -1679,23 +1679,6 @@ class behat_mod_coursework extends behat_base {
     // Allocation steps
 
     /**
-     * @Given /^I manually allocate the student to the other teacher$/
-     */
-    public function i_manually_allocate_the_student_to_the_other_teacher() {
-
-        // Identify the allocation dropdown.
-        $dropdownname = 'user_' . $this->student->id . '_assessor_1';
-        $node = $this->find_field($dropdownname);
-
-        // We delegate to behat_form_field class, it will
-        // guess the type properly as it is a select tag.
-        $field = behat_field_manager::get_form_field($node, $this->getsession());
-        $field->set_value($this->otherteacher->id);
-
-        $this->find_button('save_manual_allocations_1')->click();
-    }
-
-    /**
      * @Given /^I manually allocate another student to another teacher$/
      */
     public function i_manually_allocate_another_student_to_another_teacher() {
