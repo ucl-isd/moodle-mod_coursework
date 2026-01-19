@@ -479,54 +479,10 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^the other student is in the moderation set$/
-     */
-    public function the_other_student_is_in_the_moderation_set() {
-        $membership = new stdClass();
-        $membership->allocatabletype = 'user';
-        $membership->allocatableid = $this->otherstudent->id;
-        $membership->courseworkid = $this->coursework->id;
-        \mod_coursework\models\assessment_set_membership::create($membership);
-    }
-
-    /**
-     * @Given /^the student is in the moderation set$/
-     */
-    public function the_student_is_in_the_moderation_set() {
-        $membership = new stdClass();
-        $membership->allocatabletype = 'user';
-        $membership->allocatableid = $this->student->id;
-        $membership->courseworkid = $this->coursework->id;
-        \mod_coursework\models\assessment_set_membership::create($membership);
-    }
-
-    /**
      * @Given /^the moderator allocation strategy is set to equal$/
      */
     public function the_moderator_allocation_strategy_is_set_to_equal() {
         $this->coursework->update_attribute('moderatorallocationstrategy', 'equal');
-    }
-
-    /**
-     * @Then /^the student should not have anyone allocated as a moderator$/
-     */
-    public function the_student_should_not_have_anyone_allocated_as_a_moderator() {
-        /**
-         * @var mod_coursework_behat_allocations_page $page
-         */
-        $page = $this->get_page('allocations page');
-        $page->should_not_have_moderator_allocated($this->student);
-    }
-
-    /**
-     * @Then /^the student should have the manager allocated as the moderator$/
-     */
-    public function the_student_should_have_the_manager_allocated_as_the_moderator() {
-        /**
-         * @var mod_coursework_behat_allocations_page $page
-         */
-        $page = $this->get_page('allocations page');
-        $page->should_have_moderator_allocated($this->student, $this->manager);
     }
 
     /**
@@ -1008,25 +964,6 @@ class behat_mod_coursework extends behat_base {
         $params = ['roleid' => $managerrole->id,
             'capability' => 'mod/coursework:sampleselection'];
         $DB->set_field('role_capabilities', 'permission', CAP_ALLOW, $params);
-    }
-
-    /**
-     *
-     * @Given /^I (select|deselect) (a|another) student as a part of the sample for the second stage$/
-     * @param string $selectordeselect
-     * @param string $other
-     */
-    public function i_select_the_student_as_a_part_of_the_sample(string $selectordeselect, string $other) {
-        /**
-         * @var mod_coursework_behat_allocations_page $page
-         */
-        $student = $other == 'another' ? 'otherstudent' : 'student';
-        $page = $this->get_page('allocations page');
-        if ($selectordeselect == 'deselect') {
-            $page->deselect_for_sample($this->$student, 'assessor_2');
-        } else {
-            $page->select_for_sample($this->$student, 'assessor_2');
-        }
     }
 
     /**
@@ -1679,19 +1616,6 @@ class behat_mod_coursework extends behat_base {
     // Allocation steps
 
     /**
-     * @Given /^I manually allocate another student to another teacher$/
-     */
-    public function i_manually_allocate_another_student_to_another_teacher() {
-
-        /**
-         * @var mod_coursework_behat_allocations_page $page
-         */
-        $page = $this->get_page('allocations page');
-        $page->manually_allocate($this->otherstudent, $this->otherteacher, 'assessor_1');
-        $page->save_everything();
-    }
-
-    /**
      * @Given /^I auto-allocate all students to assessors$/
      */
     public function i_auto_allocate_all_students() {
@@ -1806,25 +1730,6 @@ class behat_mod_coursework extends behat_base {
         global $DB;
 
         $DB->delete_records('coursework_allocation_pairs');
-    }
-
-    /**
-     * @Then /^the student should be allocated to an assessor$/
-     */
-    public function the_student_should_be_allocated_to_an_assessor() {
-        global $DB;
-
-        $params = [
-            'courseworkid' => $this->coursework->id,
-            'allocatableid' => $this->student->id,
-            'allocatabletype' => 'user',
-        ];
-
-        $result = $DB->get_record('coursework_allocation_pairs', $params);
-
-        if (empty($result)) {
-            throw new ExpectationException('Expected assessor allocation', $this->getsession());
-        }
     }
 
     // Feedback steps

@@ -1,9 +1,9 @@
 @mod @mod_coursework @mod_coursework_allocation_auto_interact_manual @mod_coursework_markingallocation
 Feature: Automatically allocations interacting with manually allocated students
 
-    As a manager
-    I want to be able to reallocate all of the non manual students
-    So that if the number of students or teachers has changed, I can make sure everything remains balanced
+  As a manager
+  I want to be able to reallocate all of the non manual students
+  So that if the number of students or teachers has changed, I can make sure everything remains balanced
 
   Background:
     Given there is a course
