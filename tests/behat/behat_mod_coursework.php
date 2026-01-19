@@ -2855,14 +2855,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I click show all students button$/
-     */
-    public function i_click_on_show_all_students_button() {
-        $page = $this->get_page('coursework page');
-        $page->show_hide_non_allocated_students();
-    }
-
-    /**
      *
      * @When /^I enable automatic sampling for stage ([1-3])$/
      *

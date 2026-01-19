@@ -15,7 +15,7 @@ Feature: Manually assessor allocations
     And there is a teacher
     And I am logged in as a manager
 
-  @javascript @oslwip
+  @javascript
   Scenario: Teachers do not see students who are allocated to other teachers
     Given there is another teacher
     And there are no allocations in the db

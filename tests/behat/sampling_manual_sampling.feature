@@ -22,7 +22,7 @@ Feature: Manual sampling
     And the submission deadline has passed
     And the submission is finalised
 
-  @javascript @oslwip
+  @javascript
   Scenario: Manual sampling should not include student when not selected
     When I visit the allocations page
     And I set the following fields in the "student student2" "table_row" to these values:
@@ -35,7 +35,7 @@ Feature: Manual sampling
     And I should not see "Add feedback"
     Then I should not be able to add the second grade for this student
 
-  @javascript @oslwip
+  @javascript
   Scenario: Single grade should go to the gradebook column when only first stage is in sample
     When I visit the allocations page
     And I set the following fields in the "student student2" "table_row" to these values:
@@ -45,7 +45,7 @@ Feature: Manual sampling
     And I visit the coursework page
     Then I should see the grade given by the initial teacher in the provisional grade column
 
-  @javascript @oslwip
+  @javascript
   Scenario: Manual sampling should include student when selected
     When I visit the allocations page
     And I set the following fields in the "student student2" "table_row" to these values:

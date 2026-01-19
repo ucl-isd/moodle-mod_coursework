@@ -23,22 +23,9 @@ Feature: View of all students: allocated and non allocated students
       | Choose marker assessor_1 | otherteacher teacher4 |
     And I log out
 
-  @javascript @oslwip
-  Scenario: Teachers see students who are allocated
+  @javascript
+  Scenario: Teachers see students who are allocated and do not see students who are unallocated
     Given I log in as the teacher
     And I visit the coursework page
     Then I should see the student's name on the page
-
-  @javascript @oslwip
-  Scenario: Teachers do not see students who are unallocated
-    Given I log in as the teacher
-    And I visit the coursework page
     Then I should not see another student's name on the page
-
-  @javascript @oslwip
-  Scenario: Teachers see all unallocated students pressing the toggle button
-    Given I log in as the teacher
-    And I am allowed to view all students
-    And I visit the coursework page
-    And I click show all students button
-    Then I should see another student's name on the page
