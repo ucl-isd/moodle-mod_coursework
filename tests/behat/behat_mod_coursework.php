@@ -2689,11 +2689,11 @@ class behat_mod_coursework extends behat_base {
         $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
 
         // Check if the name consists of first- and last name.
-        $username = explode(' ', $name, 2);
-        $firstname = $username[0];
-        $lastname = $username[1] ?? '';
+        $nameparts = explode(' ', $name, 2);
+        $firstname = $nameparts[0];
+        $lastname = $nameparts[1] ?? '';
 
-        if (!isset($username[1])) {
+        if (!isset($nameparts[1])) {
             $userid = $DB->get_field_sql(
                 "SELECT id FROM {user} WHERE firstname = ? AND lastname LIKE 'student%'",
                 [$firstname]
