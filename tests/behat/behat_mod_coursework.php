@@ -1589,7 +1589,7 @@ class behat_mod_coursework extends behat_base {
      *
      * @Given /^there is a (double-)?blind marking( moderated)? coursework$/
      */
-    public function there_is_a_blind_marking_coursework(bool $double = false, bool $moderated = false) {
+    public function there_is_a_blind_marking_coursework(bool $doubleblind = false, bool $moderated = false) {
 
         /**
          * @var $generator mod_coursework_generator
@@ -1600,7 +1600,7 @@ class behat_mod_coursework extends behat_base {
         $coursework->course = $this->course;
         $coursework->startdate = time();
         $coursework->deadline = strtotime('+15 minutes');
-        $coursework->numberofmarkers = ($double ? 2 : 1);
+        $coursework->numberofmarkers = ($doubleblind ? 2 : 1);
         $coursework->blindmarking = true;
         $coursework->allocationenabled = true;
         $coursework->extensionsenabled = true;
@@ -3696,6 +3696,16 @@ class behat_mod_coursework extends behat_base {
     public function set_extension_for_user($fullname, $cwname, $datestr) {
         global $DB;
 
+        // Check date string.
+        if (is_int($datestr) || (is_string($datestr) && ctype_digit($datestr))) {
+            $extendeddeadline = (int)$datestr;
+        } else {
+            $extendeddeadline = strtotime($datestr);
+            if ($extendeddeadline === false) {
+                throw new \InvalidArgumentException('Invalid user extension date string: ' . $datestr);
+            }
+        }
+
         // Find the coursework by name.
         $cw = $DB->get_record('coursework', ['name' => $cwname], '*', MUST_EXIST);
 
@@ -3712,7 +3722,7 @@ class behat_mod_coursework extends behat_base {
         $record->courseworkid = $cw->id;
         $record->allocatableid = $user->id;
         $record->allocatabletype = 'user';
-        $record->extended_deadline = is_int($datestr) ? $datestr : strtotime($datestr);
+        $record->extended_deadline = $extendeddeadline;
         $record->createdbyid = 2;  // Admin ID.
 
         if ($existing) {
