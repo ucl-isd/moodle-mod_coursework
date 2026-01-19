@@ -39,4 +39,5 @@ Feature: Automatically allocations interacting with manually allocated students
     # Apply button will reload page via module.js when call to /mod/coursework/actions/processallocation.php returns.
     And I wait until the page is ready
     And I wait "3" seconds
-    Then I should see the student allocated to the other teacher for the first assessor
+    When I am on the "Coursework 1" "coursework activity" page
+    Then I should see "otherteacher teacher4" in the "student student1" "table_row"

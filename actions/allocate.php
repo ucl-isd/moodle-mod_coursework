@@ -169,7 +169,7 @@ function coursework_render_page(coursework $coursework) {
                         return (object)[
                             'id' => $marker->id,
                             'name' => $marker->name(),
-                            'selected' => $currentmarker == $marker->id
+                            'selected' => $currentmarker == $marker->id,
                         ];
                     }, $stage->get_teachers())
                 );

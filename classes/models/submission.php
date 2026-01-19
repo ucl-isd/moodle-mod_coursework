@@ -1691,7 +1691,7 @@ class submission extends table_base implements renderable {
             ];
 
             if ($coursework->tii_enabled()) {
-                //todo get these all at end via web service?
+                // todo get these all at end via web service?
                 $result->plagiarismlinks = plagiarism_get_links(
                     [
                         'userid' => $filerecord->authorid, // User or for group submissions, first member of group.

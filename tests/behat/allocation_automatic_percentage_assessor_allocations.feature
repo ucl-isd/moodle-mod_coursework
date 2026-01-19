@@ -24,8 +24,8 @@ Feature: Automatic percentage assessor allocations
     When I visit the allocations page
     And I set the allocation strategy to 100 percent for the other teacher
     And I press "Apply"
-    When I visit the allocations page
-    Then I should see the student allocated to the other teacher for the first assessor
+    When I am on the "Coursework 1" "coursework activity" page
+    Then I should see "otherteacher teacher4" in the "student student1" "table_row"
 
   Scenario: percentage allocations should not allocate to the wrong teacher
     Given there is another teacher

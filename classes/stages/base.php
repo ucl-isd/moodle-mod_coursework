@@ -199,7 +199,7 @@ abstract class base {
         $allocation = allocation::find([
             'courseworkid' => $this->get_courseworkid(),
             'stageidentifier' => $this->identifier(),
-            'allocatableid' => $allocatable->id
+            'allocatableid' => $allocatable->id,
         ]);
         if (empty($allocation)) {
             $allocation = new allocation();
