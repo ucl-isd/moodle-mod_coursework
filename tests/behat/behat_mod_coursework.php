@@ -3699,7 +3699,7 @@ class behat_mod_coursework extends behat_base {
         // Find the coursework by name.
         $cw = $DB->get_record('coursework', ['name' => $cwname], '*', MUST_EXIST);
 
-        $user = $this->get_user_from_username($fullname);
+        $user = $this->get_user_from_fullname($fullname);
 
         // See if an extension already exists.
         $existing = $DB->get_record('coursework_extensions', [
@@ -3741,9 +3741,9 @@ class behat_mod_coursework extends behat_base {
                 $stages[] = 'assessor_2';
             }
 
-            $student = $this->get_user_from_username($allocate['student']);
+            $student = $this->get_user_from_fullname($allocate['student']);
             foreach ($stages as $stage) {
-                $marker = $this->get_user_from_username($allocate[$stage]);
+                $marker = $this->get_user_from_fullname($allocate[$stage]);
 
                 $record = $DB->get_record('coursework_allocation_pairs', [
                     'courseworkid' => $this->coursework->id,
@@ -3779,7 +3779,7 @@ class behat_mod_coursework extends behat_base {
      * @return mixed|stdClass
      * @throws coding_exception
      */
-    private function get_user_from_username(string $fullname) {
+    private function get_user_from_fullname(string $fullname) {
         global $DB;
 
         // Find user by full name (firstname + lastname).
@@ -3811,8 +3811,8 @@ class behat_mod_coursework extends behat_base {
     ) {
         global $DB;
 
-        $student = $this->get_user_from_username($studentfullname);
-        $marker = $this->get_user_from_username($markerfullname);
+        $student = $this->get_user_from_fullname($studentfullname);
+        $marker = $this->get_user_from_fullname($markerfullname);
 
         // Resolve submission for this student.
         $submission = $DB->get_record('coursework_submissions', [
@@ -3931,7 +3931,8 @@ class behat_mod_coursework extends behat_base {
         $element = $this->getSession()->getPage()->find('xpath', $xpath);
 
         if (!$element) {
-            $xpath = "(//table[contains(@class,'mod-coursework-submissions-table')]/tbody/tr)[$rownumber]//button[text()='$linktext']";
+            $xpath = "(//table[contains(@class,'mod-coursework-submissions-table')]/tbody/tr)[{$rownumber}]
+            //button[normalize-space(.) = {$linktext}]";
             $element = $this->getSession()->getPage()->find('xpath', $xpath);
         }
 
@@ -4010,8 +4011,8 @@ class behat_mod_coursework extends behat_base {
     ) {
         global $DB;
 
-        $student = $this->get_user_from_username($studentfullname);
-        $moderator = $this->get_user_from_username($moderatorfullname);
+        $student = $this->get_user_from_fullname($studentfullname);
+        $moderator = $this->get_user_from_fullname($moderatorfullname);
 
         // Resolve submission for this student.
         $submission = $DB->get_record('coursework_submissions', [
