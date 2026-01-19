@@ -1,0 +1,88 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+
+<table class="generaltable table-responsive" id="mod_coursework_allocatemarkers">
+    <caption class="sr-only"> {{#str}} gradeitems, grades {{/str}} </caption>
+    <thead>
+    <tr>
+        {{#headers}}
+            <th scope="col">{{{.}}}</th>
+        {{/headers}}
+    </tr>
+    </thead>
+    <tbody>
+    {{#rows}}
+        <tr>
+            <td>{{allocatablename}}</td>
+
+            {{#stages}}
+                <td>
+                    {{currentmarker}}
+
+                    {{#currentgrade}}
+                        ({{#str}} grade, mod_coursework {{/str}}: {{currentgrade}})
+                    {{/currentgrade}}
+
+                    {{#showmarkerselection}}
+                        <div>
+                            <select data-courseworkid="{{courseworkid}}"
+                                    data-stageidentifier="{{stageidentifier}}"
+                                    data-allocatableid="{{allocatableid}}"
+                                    data-action="mod_coursework_assessorallocation"
+                                    class="form-control {{^includedinsample}}d-none{{/includedinsample}}"
+                                    name="{{#str}} chooseassessor, mod_coursework {{/str}} {{stageidentifier}}">
+                                <option value="0">{{#str}} chooseassessor, mod_coursework {{/str}}</option>
+                                {{#potentialmarkers}}
+                                    <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                                {{/potentialmarkers}}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="{{^includedinsample}}d-none{{/includedinsample}}">
+                                <input data-stageidentifier="{{stageidentifier}}"
+                                       data-allocatableid="{{allocatableid}}"
+                                       data-action="mod_coursework_allocationpintoggle"
+                                       type="checkbox" {{#pinned}}checked{{/pinned}}/>
+                                {{#str}}pinned, mod_coursework{{/str}}
+                            </label>
+                        </div>
+                    {{/showmarkerselection}}
+
+                    <div>
+                        <label>
+                            {{#samplingcheckboxdisplay}}
+                                <input data-courseworkid="{{courseworkid}}"
+                                       data-stageidentifier="{{stageidentifier}}"
+                                       data-allocatableid="{{allocatableid}}"
+                                       data-action="mod_coursework_allocatableinsampletoggle"
+                                       type="checkbox" {{#includedinsample}}checked{{/includedinsample}}/>
+                            {{/samplingcheckboxdisplay}}
+                            {{{samplingstate}}}
+                        </label>
+                    </div>
+                </td>
+            {{/stages}}
+        </tr>
+    {{/rows}}
+    </tbody>
+</table>
+
+{{#js}}
+    require(['mod_coursework/markerstable'], function(markerstable) {
+    markerstable.init();
+    });
+{{/js}}

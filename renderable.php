@@ -42,12 +42,6 @@ defined('MOODLE_INTERNAL') || die();
 class mod_coursework_renderable extends decorator implements renderable {
 }
 
-class mod_coursework_allocation_table extends mod_coursework_renderable {
-}
-
-class mod_coursework_allocation_table_row extends mod_coursework_renderable {
-}
-
 class mod_coursework_allocation_widget extends mod_coursework_renderable {
 }
 

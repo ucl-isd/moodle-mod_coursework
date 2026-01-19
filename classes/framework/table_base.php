@@ -522,6 +522,8 @@ abstract class table_base {
         $this->before_destroy();
 
         $DB->delete_records(static::get_table_name(), ['id' => $this->id]);
+
+        $this->after_destroy();
     }
 
     /**

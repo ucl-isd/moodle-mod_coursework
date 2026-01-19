@@ -129,18 +129,12 @@ class allocation extends table_base {
     /**
      *
      */
-    public function pin() {
-        if (empty($this->ismanual)) {
-            $this->update_attribute('ismanual', 1);
-        }
-    }
-
-    /**
-     *
-     */
-    public function unpin() {
-        if ($this->ismanual) {
-            $this->update_attribute('ismanual', 0);
+    public function togglepin(bool $state) {
+        if ($state !== $this->is_pinned()) {
+            $this->update_attribute('ismanual', $state);
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -178,6 +172,22 @@ class allocation extends table_base {
             }
         }
         return $result;
+    }
+
+    /**
+     *
+     * @param int $courseworkid
+     * @param $key
+     * @param $params
+     * @return self|bool
+     * @throws coding_exception
+     */
+    public static function get_object($courseworkid, $key, $params) {
+        if (!isset(self::$pool[$courseworkid])) {
+            self::fill_pool_coursework($courseworkid);
+        }
+        $valuekey = implode('-', $params);
+        return self::$pool[$courseworkid][$key][$valuekey][0] ?? false;
     }
 
     /**

@@ -887,7 +887,7 @@ class ability extends framework\ability {
                 $this->set_message('Allocatable is not in sample');
                 $stage = $feedback->get_stage();
                 $allocatable = $feedback->get_submission()->get_allocatable();
-                return $stage->uses_sampling() && $stage->allocatable_is_not_in_sampling($allocatable);
+                return $stage->uses_sampling() && !$stage->allocatable_is_in_sample($allocatable);
             }
         );
     }
