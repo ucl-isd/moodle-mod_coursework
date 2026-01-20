@@ -69,9 +69,6 @@ Feature: Double marking - blind
       | mod/coursework:viewallgradesatalltimes        | allow               |
       | mod/coursework:viewextensions                 | allow               |
 
-    And the role "courseworkexamoffice" is allowed to assign role "courseworkmoderator"
-    And the role "courseworkexamoffice" is allowed to assign role "courseworkdbm"
-
     And the following "users" exist:
       | username    | firstname   | lastname | email                  |
       | manager     | Assessment  | Manager  | manager@example.com    |

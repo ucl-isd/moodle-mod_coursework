@@ -3862,50 +3862,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * Allows one role to assign another role.
-     *
-     * Example:
-     * Given the role "Manager" is allowed to assign role "Teacher".
-     *
-     * @Given /^the role "(?P<fromrole_string>(?:[^"]|\\")*)" is allowed to assign role "(?P<trole_string>(?:[^"]|\\")*)"$/
-     *
-     * @param string $fromrolename
-     * @param string $torolename
-     * @return void
-     * @throws coding_exception
-     */
-    public function allow_role_to_assign_role(string $fromrolename, string $torolename) {
-        global $DB;
-
-        // Get roles by shortname or fullname.
-        $fromrole = $DB->get_record('role', ['shortname' => $fromrolename]);
-        if (!$fromrole) {
-            $fromrole = $DB->get_record('role', ['name' => $fromrolename]);
-        }
-        if (!$fromrole) {
-            throw new coding_exception("Role '$fromrolename' could not be found.");
-        }
-
-        $torole = $DB->get_record('role', ['shortname' => $torolename]);
-        if (!$torole) {
-            $torole = $DB->get_record('role', ['name' => $torolename]);
-        }
-        if (!$torole) {
-            throw new coding_exception("Role '$torolename' could not be found.");
-        }
-
-        // Check if record already exists.
-        $exists = $DB->record_exists('role_allow_assign', [
-            'roleid'        => $fromrole->id,
-            'allowassign'   => $torole->id,
-        ]);
-
-        if (!$exists) {
-            core_role_set_assign_allowed($fromrole->id, $torole->id);
-        }
-    }
-
-    /**
      * Clicks a link inside the given table row.
      *
      * Example:
