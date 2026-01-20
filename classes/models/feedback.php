@@ -208,7 +208,7 @@ class feedback extends table_base {
      */
     public function get_assesor_username() {
         if (!$this->firstname && !empty($this->lasteditedbyuser)) {
-            $this->assessor = user::get_object($this->lasteditedbyuser);
+            $this->assessor = user::get_cached_object_from_id($this->lasteditedbyuser);
         }
 
         return $this->assessor->name();
@@ -549,7 +549,7 @@ class feedback extends table_base {
      * @return user
      */
     public function assessor() {
-        return user::get_object($this->assessorid);
+        return user::get_cached_object_from_id($this->assessorid);
     }
 
     /**

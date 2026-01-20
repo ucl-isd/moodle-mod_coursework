@@ -102,7 +102,7 @@ class allocation extends table_base {
      * @return user
      */
     public function assessor() {
-        return user::get_object($this->assessorid);
+        return user::get_cached_object_from_id($this->assessorid);
     }
 
     /**

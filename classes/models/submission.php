@@ -749,7 +749,7 @@ class submission extends table_base implements renderable {
      * @return user
      */
     public function get_last_updated_by_user() {
-        return user::get_object($this->lastupdatedby);
+        return user::get_cached_object_from_id($this->lastupdatedby);
     }
 
     /**
@@ -1004,7 +1004,7 @@ class submission extends table_base implements renderable {
          * @var table_base $classname
          */
         $classname = "\\mod_coursework\\models\\" . $this->allocatabletype;
-        return $classname::get_object($this->allocatableid);
+        return $classname::get_cached_object_from_id($this->allocatableid);
     }
 
     /**
@@ -1120,13 +1120,6 @@ class submission extends table_base implements renderable {
         }
 
         return $grades;
-    }
-
-    /**
-     * @return user
-     */
-    public function get_last_submitter() {
-        return user::get_object($this->lastupdatedby);
     }
 
     /**

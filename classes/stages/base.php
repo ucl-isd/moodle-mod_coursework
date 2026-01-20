@@ -991,7 +991,7 @@ abstract class base {
                     $assessor = array_column($user, 'id');
                     if ($assessor) {
                         $assessorid = $assessor[0];
-                        $assessor = user::get_object($assessorid);
+                        $assessor = user::get_cached_object_from_id($assessorid);
                         break;
                     }
                 }

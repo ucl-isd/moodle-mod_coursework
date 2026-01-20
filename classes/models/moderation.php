@@ -148,7 +148,7 @@ class moderation extends table_base {
      * @return user
      */
     public function moderator() {
-        return user::get_object($this->moderatorid);
+        return user::get_cached_object_from_id($this->moderatorid);
     }
 
     /**

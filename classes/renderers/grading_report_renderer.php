@@ -208,7 +208,7 @@ class grading_report_renderer extends plugin_renderer_base {
     public static function export_one_row_data(coursework $coursework, int $allocatableid, string $allocatabletype): ?object {
         global $USER;
         $classname = "\\mod_coursework\\models\\$allocatabletype";
-        $allocatable = $classname::get_object($allocatableid);
+        $allocatable = $classname::get_cached_object_from_id($allocatableid);
         if (!$allocatable) {
             return null;
         }
