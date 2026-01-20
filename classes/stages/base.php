@@ -347,7 +347,7 @@ abstract class base {
         $feedback = null;
         $courseworkid = $this->get_courseworkid();
         submission::fill_pool_coursework($courseworkid);
-        $submission = submission::get_object($courseworkid, 'allocatableid', [$allocatable->id]);
+        $submission = submission::get_cached_object($courseworkid, ['allocatableid' => $allocatable->id]);
         if ($submission) {
             feedback::fill_pool_coursework($courseworkid);
             $feedback = feedback::get_object($courseworkid, 'submissionid-stageidentifier', [$submission->id, $this->identifier()]);
@@ -395,8 +395,13 @@ abstract class base {
      * @return bool|feedback
      */
     public function get_feedback_for_allocatable($allocatable) {
-        $params = [$allocatable->id(), $allocatable->type()];
-        $submission = submission::get_object($this->get_coursework()->id, 'allocatableid-allocatabletype', $params);
+        $submission = submission::get_cached_object(
+            $this->get_coursework()->id,
+            [
+                'allocatableid' => $allocatable->id(),
+                'allocatabletype' => $allocatable->type(),
+                ]
+        );
 
         if ($submission) {
             return $this->get_feedback_for_submission($submission);
@@ -685,10 +690,17 @@ abstract class base {
         foreach ($allstages as $stage) {
             // if coursework has sampling enabled, each stage must be checked if it uses sampling
             if ($this->get_coursework()->sampling_enabled()) {
-                $submission = submission::get_object($courseworkid, 'allocatableid-allocatabletype', [$allocatable->id(), $allocatable->type()]);
+                $submission = submission::get_cached_object(
+                    $courseworkid,
+                    [
+                        'allocatableid' => $allocatable->id(),
+                        'allocatabletype' => $allocatable->type(),
+                    ]
+                );
 
                 if (
-                    count($submission->get_assessor_feedbacks()) >= $submission->max_number_of_feedbacks()
+                    $submission
+                    && count($submission->get_assessor_feedbacks()) >= $submission->max_number_of_feedbacks()
                     && $submission->sampled_feedback_exists()
                 ) {
                     break;

@@ -729,4 +729,21 @@ abstract class table_base {
         $cache = cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
         $cache->delete(static::$tablename);
     }
+
+
+    /**
+     *
+     * @param int $courseworkid
+     * @param array $params to search cache for
+     * @return static|null
+     * @throws \core\exception\coding_exception
+     */
+    public static function get_cached_object(int $courseworkid, array $params): ?static {
+        if (!isset(static::$pool[$courseworkid])) {
+            static::fill_pool_coursework($courseworkid);
+        }
+        $cachekeyone = implode('-', array_keys($params));
+        $cachekeytwo = implode('-', array_values($params));
+        return static::$pool[$courseworkid][$cachekeyone][$cachekeytwo][0] ?? null;
+    }
 }

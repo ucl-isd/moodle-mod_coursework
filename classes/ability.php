@@ -281,10 +281,12 @@ class ability extends framework\ability {
             function (submission $submission) {
                 // Check using cached object to avoid repeated DB calls on grading page.
                 if (
-                    submission::get_object(
+                    submission::get_cached_object(
                         $submission->courseworkid,
-                        'allocatableid-allocatabletype',
-                        [$submission->allocatableid, $submission->allocatabletype]
+                        [
+                            'allocatableid' => $submission->allocatableid,
+                            'allocatabletype' => $submission->allocatabletype,
+                        ]
                     )
                 ) {
                     $this->set_message('Submission already exists');
