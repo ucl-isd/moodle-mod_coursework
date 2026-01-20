@@ -3393,7 +3393,7 @@ class behat_mod_coursework extends behat_base {
 
         if (!$match) {
             throw new ExpectationException(
-                "Should have seen expected submitted date $date, but it was not there",
+                "Should have seen expected submitted late date $date, but it was not there",
                 $this->getsession()
             );
         }
