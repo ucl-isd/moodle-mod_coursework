@@ -32,6 +32,7 @@ use mod_coursework\models\personaldeadline;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
 use mod_coursework\personaldeadline\table\row\builder;
+use mod_coursework\renderers\grading_report_renderer;
 use mod_coursework\router;
 use mod_coursework\warnings;
 
