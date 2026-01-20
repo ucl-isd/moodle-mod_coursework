@@ -840,7 +840,7 @@ class coursework extends table_base {
     /**
      * @return bool
      */
-    public function plagiarism_flagging_enbled() {
+    public function plagiarism_flagging_enabled() {
         return (bool)$this->plagiarismflagenabled;
     }
 
@@ -1834,7 +1834,7 @@ class coursework extends table_base {
         $report->add_cell(new status_cell($cellitems));
         $report->add_cell(new submission_cell($cellitems));
         $report->add_cell(new time_submitted_cell($cellitems));
-        if ($this->plagiarism_flagging_enbled()) {
+        if ($this->plagiarism_flagging_enabled()) {
             $report->add_cell(new plagiarism_flag_cell($cellitems));
         }
 
