@@ -2983,7 +2983,7 @@ class coursework extends table_base {
      * @return bool
      * @throws dml_exception
      */
-    public static function get_object($courseworkid) {
+    public static function get_cached_object_from_id($courseworkid) {
         if (!isset(self::$pool['id'][$courseworkid])) {
             self::fill_pool_coursework($courseworkid);
         }
