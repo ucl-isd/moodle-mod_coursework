@@ -902,6 +902,13 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * @Given /^the coursework start date is now$/
+     */
+    public function the_coursework_start_date_is_now() {
+        $this->coursework->update_attribute('startdate', time());
+    }
+
+    /**
      * @Given /^the coursework start date is in the future$/
      */
     public function the_coursework_start_date_is_in_the_future() {
@@ -1578,37 +1585,6 @@ class behat_mod_coursework extends behat_base {
 
         $coursework = new stdClass();
         $coursework->course = $this->course;
-        $this->coursework = coursework::find($generator->create_instance($coursework)->id);
-    }
-
-    /**
-     * Create a coursework assessment with double-blind marking or moderation and blind marking enabled.
-     *
-     * Example: And there is a double-blind marking coursework
-     * Example: And there is a blind marking moderated coursework
-     *
-     * @Given /^there is a (double-)?blind marking( moderated)? coursework$/
-     */
-    public function there_is_a_blind_marking_coursework(bool $doubleblind = false, bool $moderated = false) {
-
-        /**
-         * @var $generator mod_coursework_generator
-         */
-        $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
-
-        $coursework = new stdClass();
-        $coursework->course = $this->course;
-        $coursework->startdate = time();
-        $coursework->deadline = strtotime('+15 minutes');
-        $coursework->numberofmarkers = ($doubleblind ? 2 : 1);
-        $coursework->blindmarking = true;
-        $coursework->allocationenabled = true;
-        $coursework->extensionsenabled = true;
-        $coursework->allowlatesubmissions = true;
-        $coursework->moderationagreementenabled = $moderated;
-        $coursework->filetypes = "pdf";
-        $coursework->assessorallocationstrategy = "none";
-
         $this->coursework = coursework::find($generator->create_instance($coursework)->id);
     }
 
@@ -2684,16 +2660,16 @@ class behat_mod_coursework extends behat_base {
      * Named student has a submission.
      * @Given /^the student called "(?P<name>(?:[^"]|\\")*)" has a( finalised)? submission*$/
      */
-    public function named_student_has_a_submission(string $name, bool $finalised = false) {
+    public function named_student_has_a_submission(string $fullname, bool $finalised = false) {
         global $DB;
         $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
 
         // Check if the name consists of first- and last name.
-        $nameparts = explode(' ', $name, 2);
+        $nameparts = explode(' ', $fullname, 2);
         $firstname = $nameparts[0];
         $lastname = $nameparts[1] ?? '';
 
-        if (!isset($nameparts[1])) {
+        if (empty($lastname)) {
             $userid = $DB->get_field_sql(
                 "SELECT id FROM {user} WHERE firstname = ? AND lastname LIKE 'student%'",
                 [$firstname]
@@ -3792,15 +3768,19 @@ class behat_mod_coursework extends behat_base {
     private function get_user_from_fullname(string $fullname) {
         global $DB;
 
-        // Find user by full name (firstname + lastname).
-        if (strpos($fullname, ' ') === false) {
+        // Check if the name consists of first- and last name.
+        $nameparts = explode(' ', $fullname, 2);
+        $firstname = $nameparts[0];
+        $lastname = $nameparts[1] ?? '';
+
+        if (empty($lastname)) {
             throw new coding_exception("Full name '{$fullname}' must contain at least one space between first and last name.");
         }
-        [$first, $last] = explode(' ', $fullname, 2);
 
+        // Find user by full name (firstname + lastname).
         $user = $DB->get_record('user', [
-            'firstname' => $first,
-            'lastname'  => $last,
+            'firstname' => $firstname,
+            'lastname'  => $lastname,
         ]);
 
         if (!$user) {

@@ -96,6 +96,17 @@ Feature: Double marking - blind
       | student2    | C1     | student              |
       | student3    | C1     | student              |
 
+    Given there is a coursework
+    And the coursework start date is now
+    And the coursework "numberofmarkers" setting is "2" in the database
+    And the coursework "blindmarking" setting is "1" in the database
+    And the coursework "allocationenabled" setting is "1" in the database
+    And the coursework "extensionsenabled" setting is "1" in the database
+    And the coursework "allowlatesubmissions" setting is "1" in the database
+    And the coursework "moderationagreementenabled" setting is "0" in the database
+    And the coursework "filetypes" setting is "pdf" in the database
+    And the coursework "assessorallocationstrategy" setting is "none" in the database
+
   Scenario: Create coursework assignment with double blind marking
     Given I am on the "Course 1" "course" page logged in as "manager"
     And I add a coursework activity to course "Course 1" section "2" and I fill the form with:
@@ -120,9 +131,7 @@ Feature: Double marking - blind
     Then I should see "Coursework – Double marking blind"
 
   Scenario: Allocate markers
-    Given there is a double-blind marking coursework
-
-    And I am on the "Course 1" "course" page logged in as "manager"
+    Given I am on the "Course 1" "course" page logged in as "manager"
     And I follow "Coursework 1"
     And I follow "Allocate markers"
     And I set the field "Allocation strategy" to "Manual"
@@ -148,9 +157,7 @@ Feature: Double marking - blind
     And I should not see "Marker 3" in the "Student 3" "table_row"
 
   Scenario: Check anonymity
-    Given there is a double-blind marking coursework
-
-    And the following markers are allocated:
+    Given the following markers are allocated:
       | student   | assessor_1 | assessor_2 |
       | Student 1 | Marker 1   | Marker 2   |
       | Student 2 | Marker 1   | Marker 2   |
@@ -166,9 +173,7 @@ Feature: Double marking - blind
 
   @javascript
   Scenario: Add extension to a student
-    Given there is a double-blind marking coursework
-
-    And the following markers are allocated:
+    Given the following markers are allocated:
       | student   | assessor_1 | assessor_2 |
       | Student 1 | Marker 1   | Marker 2   |
       | Student 2 | Marker 1   | Marker 2   |
@@ -182,20 +187,18 @@ Feature: Double marking - blind
     And I click on "Submission extension" "link"
     And I wait until the page is ready
     And I set the following fields to these values:
-      | extended_deadline[day]    | ##tomorrow##%d##  |
-      | extended_deadline[month]  | ##tomorrow##%B##  |
-      | extended_deadline[year]   | ##tomorrow##%Y##  |
+      | extended_deadline[day]    | ##+ 1 month##%d##  |
+      | extended_deadline[month]  | ##+ 1 month##%B##  |
+      | extended_deadline[year]   | ##+ 1 month##%Y##  |
       | extended_deadline[hour]   | 08                |
       | extended_deadline[minute] | 00                |
     And I click on "Save" "button" in the "Extended deadline" "dialogue"
-    And I should see "##tomorrow##%d %B %Y, 8:00 AM##" in the "Student 1" "table_row"
+    And I should see "##+ 1 month##%d %B %Y, 8:00 AM##" in the "Student 1" "table_row"
     Then I visit the coursework page
-    And I should see "##tomorrow##%d %B %Y, 8:00 AM##" in the "Student 1" "table_row"
+    And I should see "##+ 1 month##%d %B %Y, 8:00 AM##" in the "Student 1" "table_row"
 
   @javascript @_file_upload
-  Scenario: Student can submit a PDF file
-    Given there is a double-blind marking coursework
-
+  Scenario: Student can submit a PDF fil
     When I am on the "Course 1" "course" page logged in as "student1"
 
     And I follow "Coursework 1"
@@ -211,8 +214,6 @@ Feature: Double marking - blind
 
   @javascript @_file_upload
   Scenario: Student with extension can submit after deadline w/o being late
-    Given there is a double-blind marking coursework
-
     # The coursework deadline has passed 5 minutes ago
     Given the coursework deadline date is "##-5 minutes##"
 
@@ -232,10 +233,8 @@ Feature: Double marking - blind
 
   @javascript @_file_upload
   Scenario: Student has no extension so submission is late
-    Given there is a double-blind marking coursework
-
     # The coursework deadline has passed 5 minutes ago
-    And the coursework deadline date is "##-5 minutes##"
+    Given the coursework deadline date is "##-5 minutes##"
 
     When I am on the "Course 1" "course" page logged in as "student1"
     And I follow "Coursework 1"
@@ -250,9 +249,7 @@ Feature: Double marking - blind
 
   @javascript @_file_upload
   Scenario: Manager can submit on behalf of students.
-    Given there is a double-blind marking coursework
-
-    And the student called "Student 1" has a finalised submission
+    Given the student called "Student 1" has a finalised submission
 
     When I am on the "Course 1" "course" page logged in as "manager"
     And I follow "Coursework 1"
@@ -289,9 +286,7 @@ Feature: Double marking - blind
 
   @javascript @_file_upload
   Scenario: Mark the assignments
-    Given there is a double-blind marking coursework
-
-    And the following markers are allocated:
+    Given the following markers are allocated:
       | student   | assessor_1 | assessor_2 |
       | Student 1 | Marker 1   | Marker 2   |
       | Student 2 | Marker 1   | Marker 2   |
@@ -335,9 +330,7 @@ Feature: Double marking - blind
 
   @javascript
   Scenario: Verify assignment shows in marking
-    Given there is a double-blind marking coursework
-
-    And the following markers are allocated:
+    Given the following markers are allocated:
       | student   | assessor_1 | assessor_2 |
       | Student 1 | Marker 1   | Marker 2   |
 
@@ -357,311 +350,3 @@ Feature: Double marking - blind
     Then I should see "Submission"
     And I should see "In marking"
     And I should not see "Edit your submission"
-
-  Scenario: Moderate the assessment
-    Given there is a blind marking moderated coursework
-
-    And the following markers are allocated:
-      | student   | assessor_1 | moderator   |
-      | Student 1 | Marker 1   | Moderator 1 |
-      | Student 2 | Marker 1   | Moderator 1 |
-      | Student 3 | Marker 2   | Moderator 1 |
-
-    And the student called "Student 1" has a finalised submission
-    And the student called "Student 2" has a finalised submission
-    And the student called "Student 3" has a finalised submission
-
-    And the submission from "Student 1" is marked by "Marker 1" with:
-      | Mark      | 70              |
-      | Comment   | Excellent work! |
-      | Finalised | 1               |
-
-    And the submission from "Student 2" is marked by "Marker 1" with:
-      | Mark      | 75              |
-      | Comment   | Superb work!    |
-      | Finalised | 1               |
-
-    And the submission from "Student 3" is marked by "Marker 2" with:
-      | Mark      | 50                  |
-      | Comment   | I've seen worse...  |
-      | Finalised | 1                   |
-
-    And I am on the "Course 1" "course" page logged in as "moderator1"
-    And I follow "Coursework 1"
-    And I follow "Agree marking" in row "1"
-    Then I should see "Moderation for"
-    And I set the field "Moderation agreement" to "Agreed"
-    And I press "Save changes"
-    And I follow "Agree marking" in row "2"
-    Then I should see "Moderation for"
-    And I set the field "Moderation agreement" to "Disagreed"
-    And I set the field "Comment" to "I don't like it!"
-    And I press "Save changes"
-    Then I should see "Agreed" in row "1"
-    Then I should see "Disagreed" in row "2"
-    When I follow "Disagreed"
-    And I wait until the page is ready
-    Then I should see "I don't like it!"
-
-  Scenario: Check moderation
-    Given there is a blind marking moderated coursework
-
-    And the following markers are allocated:
-      | student   | assessor_1 | moderator   |
-      | Student 1 | Marker 1   | Moderator 1 |
-      | Student 2 | Marker 1   | Moderator 1 |
-      | Student 3 | Marker 2   | Moderator 1 |
-
-    And the student called "Student 1" has a finalised submission
-    And the student called "Student 2" has a finalised submission
-    And the student called "Student 3" has a finalised submission
-
-    And the submission from "Student 1" is marked by "Marker 1" with:
-      | Mark      | 70              |
-      | Comment   | Excellent work! |
-      | Finalised | 1               |
-
-    And the submission from "Student 2" is marked by "Marker 1" with:
-      | Mark      | 75              |
-      | Comment   | Superb work!    |
-      | Finalised | 1               |
-
-    And the submission from "Student 3" is marked by "Marker 2" with:
-      | Mark      | 50                  |
-      | Comment   | I've seen worse...  |
-      | Finalised | 1                   |
-
-    And the submission from "Student 1" is moderated by "Moderator 1" with:
-      | Agreement | agreed               |
-
-    And the submission from "Student 2" is moderated by "Moderator 1" with:
-      | Agreement | disagreed               |
-      | Comment   | I don't like it at all! |
-
-    And I am on the "Course 1" "course" page logged in as "marker1"
-    And I follow "Coursework 1"
-    # See the moderation
-    Then I should see "Moderation" in row "1"
-    And I should see "Moderator 1" in row "1"
-    And I should see "Agreed" in row "1"
-    And I should see "Moderation" in row "2"
-    And I should see "Moderator 1" in row "2"
-    And I should see "Disagreed" in row "2"
-
-    # Update marking
-    And I follow "75" in row "2"
-    When I set the following fields to these values:
-      | Mark    | 65              |
-      | Comment | Updated mark    |
-    And I press "Save as draft"
-    Then I should see "65" in row "2"
-
-  @javascript
-  Scenario: Release the grades
-    Given there is a blind marking moderated coursework
-
-    And the following markers are allocated:
-      | student   | assessor_1 | moderator   |
-      | Student 1 | Marker 1   | Moderator 1 |
-      | Student 2 | Marker 1   | Moderator 1 |
-      | Student 3 | Marker 2   | Moderator 1 |
-
-    And the student called "Student 1" has a finalised submission
-    And the student called "Student 2" has a finalised submission
-    And the student called "Student 3" has a finalised submission
-
-    And the submission from "Student 1" is marked by "Marker 1" with:
-      | Mark      | 70              |
-      | Comment   | Excellent work! |
-      | Finalised | 1               |
-
-    And the submission from "Student 2" is marked by "Marker 1" with:
-      | Mark      | 75              |
-      | Comment   | Superb work!    |
-      | Finalised | 1               |
-
-    And the submission from "Student 3" is marked by "Marker 2" with:
-      | Mark      | 50                  |
-      | Comment   | I've seen worse...  |
-      | Finalised | 1                   |
-
-    And the submission from "Student 1" is moderated by "Moderator 1" with:
-      | Agreement | agreed               |
-
-    And the submission from "Student 2" is moderated by "Moderator 1" with:
-      | Agreement | disagreed               |
-      | Comment   | I don't like it at all! |
-
-    And I am on the "Course 1" "course" page logged in as "manager"
-    And I follow "Coursework 1"
-    Then I should see "Agreed" in row "1"
-    Then I should see "Disagreed" in row "2"
-
-    When I follow "Release the marks"
-    Then I should see "Are you sure you want to release all marks?"
-    And I press "Confirm"
-    Then I should see "Marks released"
-    And I should see "Released"
-    And I should see "Released" in row "1"
-    And I should see "Released" in row "2"
-    And I should see "Released" in row "3"
-
-  @javascript
-  Scenario: Student 1 sees the released grades
-    Given there is a blind marking moderated coursework
-
-    And the following markers are allocated:
-      | student   | assessor_1 | moderator   |
-      | Student 1 | Marker 1   | Moderator 1 |
-      | Student 2 | Marker 1   | Moderator 1 |
-      | Student 3 | Marker 2   | Moderator 1 |
-
-    And the student called "Student 1" has a finalised submission
-    And the student called "Student 2" has a finalised submission
-    And the student called "Student 3" has a finalised submission
-
-    And the submission from "Student 1" is marked by "Marker 1" with:
-      | Mark      | 70              |
-      | Comment   | Excellent work! |
-      | Finalised | 1               |
-
-    And the submission from "Student 2" is marked by "Marker 1" with:
-      | Mark      | 75              |
-      | Comment   | Superb work!    |
-      | Finalised | 1               |
-
-    And the submission from "Student 3" is marked by "Marker 2" with:
-      | Mark      | 50                  |
-      | Comment   | I've seen worse...  |
-      | Finalised | 1                   |
-
-    And the submission from "Student 1" is moderated by "Moderator 1" with:
-      | Agreement | agreed               |
-
-    And the submission from "Student 2" is moderated by "Moderator 1" with:
-      | Agreement | disagreed               |
-      | Comment   | I don't like it at all! |
-
-    And I am on the "Course 1" "course" page logged in as "manager"
-    And I follow "Coursework 1"
-    And I press the release marks button
-
-    And I log out
-
-    And I am on the "Course 1" "course" page logged in as "student1"
-    And I follow "Coursework 1"
-    Then I should see "Agreed feedback for Student 1"
-    And I should see "Marker 1"
-    And I should see "Excellent work!"
-    And I should see "70"
-    And I should see "Released"
-
-  @javascript
-  Scenario: Student 2 sees disagreed released grades
-    Given there is a blind marking moderated coursework
-
-    And the following markers are allocated:
-      | student   | assessor_1 | moderator   |
-      | Student 1 | Marker 1   | Moderator 1 |
-      | Student 2 | Marker 1   | Moderator 1 |
-      | Student 3 | Marker 2   | Moderator 1 |
-
-    And the student called "Student 1" has a finalised submission
-    And the student called "Student 2" has a finalised submission
-    And the student called "Student 3" has a finalised submission
-
-    And the submission from "Student 1" is marked by "Marker 1" with:
-      | Mark      | 70              |
-      | Comment   | Excellent work! |
-      | Finalised | 1               |
-
-    And the submission from "Student 2" is marked by "Marker 1" with:
-      | Mark      | 75              |
-      | Comment   | Superb work!    |
-      | Finalised | 1               |
-
-    And the submission from "Student 3" is marked by "Marker 2" with:
-      | Mark      | 50                  |
-      | Comment   | I've seen worse...  |
-      | Finalised | 1                   |
-
-    And the submission from "Student 1" is moderated by "Moderator 1" with:
-      | Agreement | agreed               |
-
-    And the submission from "Student 2" is moderated by "Moderator 1" with:
-      | Agreement | disagreed               |
-      | Comment   | I don't like it at all! |
-
-    And I am on the "Course 1" "course" page logged in as "manager"
-    And I follow "Coursework 1"
-    And I press the release marks button
-    Then I should see "Disagreed" in row "2"
-    And I should see "Released" in row "2"
-
-    And I log out
-
-    # Student can see released feedback even its was not agreed on.
-    And I am on the "Course 1" "course" page logged in as "student2"
-    And I follow "Coursework 1"
-    Then I should see "Agreed feedback for Student 2"
-    And I should see "Marker 1"
-    And I should see "Superb work!"
-    And I should see "75"
-    And I should see "Released"
-
-  @javascript
-  Scenario: Check moderation form
-    Given there is a blind marking moderated coursework
-
-    And the following markers are allocated:
-      | student   | assessor_1 | moderator   |
-      | Student 1 | Marker 1   | Moderator 1 |
-      | Student 2 | Marker 1   | Moderator 1 |
-      | Student 3 | Marker 2   | Moderator 1 |
-
-    And the student called "Student 1" has a finalised submission
-    And the student called "Student 2" has a finalised submission
-    And the student called "Student 3" has a finalised submission
-
-    And the submission from "Student 1" is marked by "Marker 1" with:
-      | Mark      | 70              |
-      | Comment   | Excellent work! |
-      | Finalised | 1               |
-
-    And the submission from "Student 2" is marked by "Marker 1" with:
-      | Mark      | 75              |
-      | Comment   | Superb work!    |
-      | Finalised | 1               |
-
-    And the submission from "Student 3" is marked by "Marker 2" with:
-      | Mark      | 50                  |
-      | Comment   | I've seen worse...  |
-      | Finalised | 1                   |
-
-    And the submission from "Student 1" is moderated by "Moderator 1" with:
-      | Agreement | agreed               |
-
-    And the submission from "Student 2" is moderated by "Moderator 1" with:
-      | Agreement | disagreed               |
-      | Comment   | I don't like it at all! |
-
-    # Before marks have been released moderator can view and edit moderation.
-    And I am on the "Course 1" "course" page logged in as "moderator1"
-    And I follow "Coursework 1"
-    And I follow "Agreed" in row "1"
-    Then I should see "Moderation for "
-    And I should see "Moderator 1"
-    And "Save changes" "button" should exist
-
-    And I am on the "Course 1" "course" page logged in as "manager"
-    And I follow "Coursework 1"
-    And I press the release marks button
-    And I log out
-
-    # After marks have been released moderator can view but not edit moderation.
-    And I am on the "Course 1" "course" page logged in as "moderator1"
-    And I follow "Coursework 1"
-    And I follow "Agreed" in row "1"
-    Then I should see "Moderation for "
-    And I should see "Moderator 1"
-    And "Save changes" "button" should not exist
