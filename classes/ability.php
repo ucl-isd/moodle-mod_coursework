@@ -283,7 +283,7 @@ class ability extends framework\ability {
                 if (
                     submission::get_object(
                         $submission->courseworkid,
-                        'allocatableid,allocatabletype',
+                        'allocatableid-allocatabletype',
                         [$submission->allocatableid, $submission->allocatabletype]
                     )
                 ) {
@@ -1447,7 +1447,7 @@ class ability extends framework\ability {
                 // Check using cached object to avoid repeated DB calls on grading page.
                 return (bool)deadline_extension::get_object(
                     $deadlineextension->courseworkid,
-                    'allocatableid,allocatabletype',
+                    'allocatableid-allocatabletype',
                     [$deadlineextension->allocatableid, $deadlineextension->allocatabletype]
                 );
             }
