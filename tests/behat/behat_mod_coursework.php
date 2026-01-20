@@ -1945,9 +1945,7 @@ class behat_mod_coursework extends behat_base {
      * @Given /^there are no allocations in the db$/
      */
     public function there_are_no_allocations_in_the_db() {
-        global $DB;
-        $DB->delete_records('coursework_allocation_pairs');
-        allocation::remove_cache($this->coursework->id);
+        allocation::destroy_all($this->coursework->id);
     }
 
     /**

@@ -95,39 +95,57 @@ class grading_sheet extends csv {
                 $allocatable = $submission->reload()->get_allocatable();
                 if (
                     !$ability->can('show', $submission)
-                    || ($stages == 1 && !has_capability('mod/coursework:addinitialgrade', $PAGE->context))
-                    || (
-                            $this->coursework->allocation_enabled()
-                            && !allocation::allocatable_is_allocated_to_assessor(
-                                $this->coursework->id,
-                                $allocatable->id(),
-                                $allocatable->type(),
-                            )
-                            && (
-                                has_capability('mod/coursework:addinitialgrade', $PAGE->context)
-                                && !has_capability('mod/coursework:addagreedgrade', $PAGE->context)
-                            )
-                        )
-                    || (
-                        $stages > 1 && $this->coursework->sampling_enabled()
-                        && !$submission->sampled_feedback_exists()
-                        && (
-                            !allocation::allocatable_is_allocated_to_assessor(
-                                $this->coursework->id,
-                                $allocatable->id(),
-                                $allocatable->type(),
-                            )
-                            && has_capability('mod/coursework:addinitialgrade', $PAGE->context)
-                        )
-                        && (
-                            has_capability('mod/coursework:addagreedgrade', $PAGE->context)
-                            || has_capability('mod/coursework:editagreedgrade', $PAGE->context)
-                        )
+                    ||
+                    $stages == 1 && !has_capability('mod/coursework:addinitialgrade', $PAGE->context)
+                ) {
+                    unset($submissions[$submission->id]);
+                    continue;
+                }
+                if (
+                    $this->coursework->allocation_enabled()
+                    &&
+                    !allocation::allocatable_is_allocated_to_assessor(
+                        $this->coursework->id,
+                        $allocatable->id(),
+                        $allocatable->type(),
                     )
-                    || (
-                            has_capability('mod/coursework:addagreedgrade', $PAGE->context)
-                            && $submission->get_state() < submission::FULLY_GRADED
+                    &&
+                    has_capability('mod/coursework:addinitialgrade', $PAGE->context)
+                    &&
+                    !has_capability('mod/coursework:addagreedgrade', $PAGE->context)
+                ) {
+                    unset($submissions[$submission->id]);
+                    continue;
+                }
+                if (
+                    $stages > 1
+                    &&
+                    $this->coursework->sampling_enabled()
+                    &&
+                    !$submission->sampled_feedback_exists()
+                    &&
+                    (
+                        !allocation::allocatable_is_allocated_to_assessor(
+                            $this->coursework->id,
+                            $allocatable->id(),
+                            $allocatable->type(),
+                        )
+                        && has_capability('mod/coursework:addinitialgrade', $PAGE->context)
                     )
+                    &&
+                    (
+                        has_capability('mod/coursework:addagreedgrade', $PAGE->context)
+                        ||
+                        has_capability('mod/coursework:editagreedgrade', $PAGE->context)
+                    )
+                ) {
+                    unset($submissions[$submission->id]);
+                    continue;
+                }
+                if (
+                    has_capability('mod/coursework:addagreedgrade', $PAGE->context)
+                    &&
+                    $submission->get_state() < submission::FULLY_GRADED
                 ) {
                     unset($submissions[$submission->id]);
                     continue;

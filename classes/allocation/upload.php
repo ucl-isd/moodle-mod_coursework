@@ -128,7 +128,7 @@ class upload {
 
                     // check if allocatable exists in this coursework
                     $allocatableid = $allocatable ? $allocatable->id() : null;
-                    $allocatableincoursework = $allocatableid ? ($allocatables[$allocatableid] ?? null) : null;
+                    $allocatableincoursework = $allocatables[$allocatableid] ?? null;
                     if (!$allocatableincoursework) {
                         // E.g. string key 'usernotincoursework'.
                         $errors[$s] = get_string($allocatabletype . 'notincoursework', 'coursework', $value);

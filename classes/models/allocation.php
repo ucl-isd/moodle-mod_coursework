@@ -210,6 +210,16 @@ class allocation extends table_base {
         self::remove_cache($this->courseworkid);
     }
 
+    /**
+     * Destroy all allocations for a coursework.
+     * @param int $courseworkid
+     * @return void
+     */
+    public static function destroy_all(int $courseworkid) {
+        global $DB;
+        $DB->delete_records(static::$tablename, ['courseworkid' => $courseworkid]);
+        self::remove_cache($courseworkid);
+    }
 
     /**
      * Checks whether the current user or specific assessor is allocated to mark this student's submission.

@@ -1333,19 +1333,37 @@ function course_group_member_removed($eventdata) {
 
         if ($initialstageassessor) {
             // remove all assessor allocations for this group
-            if ($coursework->is_configured_to_have_group_submissions()) {
-                if (can_delete_allocation($coursework->id(), $groupid)) {
-                    $DB->delete_records('coursework_allocation_pairs', ['courseworkid' => $coursework->id(), 'assessorid' => $removeduserid, 'allocatableid' => $groupid, 'stageidentifier' => 'assessor_1']);
-                    allocation::remove_cache($coursework->id);
-                }
+            $groupallocation = $coursework->is_configured_to_have_group_submissions()
+                ? allocation::find(
+                    [
+                        'courseworkid' => $coursework->id(),
+                        'assessorid' => $removeduserid,
+                        'allocatableid' => $groupid,
+                        'allocatabletype' => 'group',
+                        'stageidentifier' => 'assessor_1'
+                    ]
+                )
+                : null;
+            if ($groupallocation && can_delete_allocation($coursework->id(), $groupid)) {
+                $groupallocation->destroy();
             } else {
                 // find all individual students in the group
                 $students = get_enrolled_users($coursework->get_context(), 'mod/coursework:submit', $groupid);
                 if ($students) {
                     foreach ($students as $student) {
                         if (can_delete_allocation($coursework->id(), $student->id)) {
-                            $DB->delete_records('coursework_allocation_pairs', ['courseworkid' => $coursework->id(), 'assessorid' => $removeduserid, 'allocatableid' => $student->id, 'stageidentifier' => 'assessor_1']);
-                            allocation::remove_cache($coursework->id);
+                            $userallocation = allocation::find(
+                                [
+                                    'courseworkid' => $coursework->id(),
+                                    'assessorid' => $removeduserid,
+                                    'allocatableid' => $student->id,
+                                    'allocatabletype' => 'user',
+                                    'stageidentifier' => 'assessor_1'
+                                ]
+                            );
+                            if ($userallocation) {
+                                $userallocation->destroy();
+                            }
                         }
                     }
                 } else {

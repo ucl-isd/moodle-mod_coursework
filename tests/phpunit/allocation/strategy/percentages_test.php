@@ -87,7 +87,7 @@ final class percentages_test extends \advanced_testcase {
      * a whole person. However, we sill need all of the allocations to be made without missing any.
      */
     public function test_weird_percentages_work(): void {
-        $this->delete_all_allocations();
+        allocation::destroy_all($this->coursework->id);
 
         $this->coursework->update_attribute('numberofmarkers', 1);
 
@@ -157,11 +157,5 @@ final class percentages_test extends \advanced_testcase {
         $stage = new \mod_coursework\stages\assessor($this->coursework, 'assessor_1');
         $strategy = new \mod_coursework\allocation\strategy\percentages($this->coursework, $stage);
         return $strategy;
-    }
-
-    private function delete_all_allocations() {
-        global $DB;
-        $DB->delete_records('coursework_allocation_pairs');
-        allocation::remove_cache($this->coursework->id);
     }
 }
