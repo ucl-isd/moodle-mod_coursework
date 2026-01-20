@@ -761,7 +761,7 @@ abstract class base {
         return feedback::get_cached_object(
             $submission->courseworkid,
             ['submissionid' => $submission->id, 'stageidentifier' => $stageidentifier]
-        );
+        ) ?? false;
     }
 
     /**
