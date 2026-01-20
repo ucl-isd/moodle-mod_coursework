@@ -177,7 +177,10 @@ class grade_judge {
 
         if ($this->coursework->sampling_enabled()) {
             assessment_set_membership::fill_pool_coursework($this->coursework->id);
-            $record = assessment_set_membership::get_object($this->coursework->id, 'allocatableid-allocatabletype', [$allocatable->id(), $allocatable->type()]);
+            $record = assessment_set_membership::get_cached_object(
+                $this->coursework->id,
+                ['allocatableid' => $allocatable->id(), 'allocatabletype' => $allocatable->type()]
+            );
             return !empty($record);
         } else {
             return $this->coursework->has_multiple_markers();

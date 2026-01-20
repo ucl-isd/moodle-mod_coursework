@@ -546,10 +546,13 @@ abstract class base {
         }
 
         assessment_set_membership::fill_pool_coursework($this->coursework->id);
-        $record = assessment_set_membership::get_object(
+        $record = assessment_set_membership::get_cached_object(
             $this->coursework->id,
-            'allocatableid-allocatabletype-stageidentifier',
-            [$allocatable->id(), $allocatable->type(), $this->stageidentifier]
+            [
+                'allocatableid' => $allocatable->id(),
+                'allocatabletype' => $allocatable->type(),
+                'stageidentifier' => $this->stageidentifier,
+            ]
         );
         return !empty($record);
     }

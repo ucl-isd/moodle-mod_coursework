@@ -68,7 +68,7 @@ class deadline_extension extends table_base {
             $coursework->id,
             [
                 'allocatableid' => $allocatable->id(),
-                'allocatabletype' => $allocatable->type()
+                'allocatabletype' => $allocatable->type(),
             ]
         );
 
@@ -95,7 +95,7 @@ class deadline_extension extends table_base {
                 $coursework->id,
                 [
                     'allocatableid' => $allocatable->id(),
-                    'allocatabletype' => $allocatable->type()
+                    'allocatabletype' => $allocatable->type(),
                 ]
             ) ?? false;
         }

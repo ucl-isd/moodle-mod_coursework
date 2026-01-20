@@ -1350,16 +1350,19 @@ class submission extends table_base implements renderable {
     /**
      *  Function to get samplings for the submission
      * @param $stageidentifier
-     * @return array
+     * @return assessment_set_membership
      * @throws \core\exception\coding_exception
      */
 
     public function get_submissions_in_sample_by_stage($stageidentifier) {
         assessment_set_membership::fill_pool_coursework($this->courseworkid);
-        return assessment_set_membership::get_object(
+        return assessment_set_membership::get_cached_object(
             $this->courseworkid,
-            'allocatableid-allocatabletype-stageidentifier',
-            [$this->allocatableid, $this->allocatabletype, $stageidentifier]
+            [
+                'allocatableid' => $this->allocatableid,
+                'allocatabletype' => $this->allocatabletype,
+                'stageidentifier' => $stageidentifier,
+            ]
         );
     }
 
