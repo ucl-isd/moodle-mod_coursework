@@ -1340,7 +1340,7 @@ function course_group_member_removed($eventdata) {
                         'assessorid' => $removeduserid,
                         'allocatableid' => $groupid,
                         'allocatabletype' => 'group',
-                        'stageidentifier' => 'assessor_1'
+                        'stageidentifier' => 'assessor_1',
                     ]
                 )
                 : null;
@@ -1358,7 +1358,7 @@ function course_group_member_removed($eventdata) {
                                     'assessorid' => $removeduserid,
                                     'allocatableid' => $student->id,
                                     'allocatabletype' => 'user',
-                                    'stageidentifier' => 'assessor_1'
+                                    'stageidentifier' => 'assessor_1',
                                 ]
                             );
                             if ($userallocation) {
