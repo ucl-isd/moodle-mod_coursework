@@ -26,11 +26,8 @@
 namespace mod_coursework\render_helpers\grading_report\data;
 
 use mod_coursework\grading_table_row_base;
-use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
-use moodle_url;
 use stdClass;
-use stored_file;
 
 /**
  * Class submission_cell_data provides data for submission cell in tr template.

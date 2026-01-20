@@ -24,7 +24,6 @@ namespace mod_coursework;
 
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
-use mod_coursework_assessor_feedback_row;
 
 /**
  * Renderable class to represent a table containing assessor feedbacks for a single student submission.

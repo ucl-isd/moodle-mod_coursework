@@ -445,7 +445,15 @@ if ($canviewstudents) {
 }
 
 if ($cangrade || $canviewstudents) {
-    $PAGE->requires->js_call_amd('mod_coursework/coursework_edit', 'init');
+    $amdmodules = [
+        'modal_handler_extensions',
+        'modal_handler_personaldeadlines',
+        'modal_handler_plagiarism',
+        'coursework_edit',
+    ];
+    foreach ($amdmodules as $amd) {
+        $PAGE->requires->js_call_amd("mod_coursework/$amd", 'init', ['courseworkId' => $coursework->id]);
+    }
 }
 
 // Output coursework page.
