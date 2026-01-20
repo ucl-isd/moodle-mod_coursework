@@ -36,8 +36,6 @@ use core_availability\info_module;
 use core_component;
 use core_plugin_manager;
 use dml_exception;
-use dml_missing_record_exception;
-use dml_multiple_records_exception;
 use Exception;
 use grade_item;
 use grading_manager;
@@ -2841,8 +2839,6 @@ class coursework extends table_base {
     /**
      * @param int $allocatableid
      * @return allocatable
-     * @throws \coding_exception
-     * @throws \dml_exception
      */
     public function get_allocatable_from_id($allocatableid): allocatable {
         if ($this->is_configured_to_have_group_submissions()) {

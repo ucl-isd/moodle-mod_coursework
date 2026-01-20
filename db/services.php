@@ -68,7 +68,7 @@ $functions = [
     ],
     'mod_coursework_assessorallocation' => [
         'classname' => 'mod_coursework\external\assessorallocation',
-        'description' => 'Toggle alloctable inclusion in sample',
+        'description' => 'Allocate assessor to assessable',
         'type' => 'write',
         'ajax' => true,
         'loginrequired' => true,

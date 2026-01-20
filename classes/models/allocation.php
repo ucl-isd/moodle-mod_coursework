@@ -126,15 +126,9 @@ class allocation extends table_base {
         $this->update_attribute('assessorid', $assessor->id);
     }
 
-    /**
-     *
-     */
     public function togglepin(bool $state) {
         if ($state !== $this->is_pinned()) {
             $this->update_attribute('ismanual', $state);
-            return true;
-        } else {
-            return false;
         }
     }
 

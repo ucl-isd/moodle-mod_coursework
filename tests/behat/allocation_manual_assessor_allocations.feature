@@ -62,4 +62,4 @@ Feature: Manually assessor allocations
     Then I should see "teacher teacher2" in the "student student1" "table_row"
     And I should see "otherteacher teacher4" in the "student student1" "table_row"
     And I should see "teacher teacher2" in the "student student5" "table_row"
-    And I should not see "otherteacher teacher4" in the "student student5" "table_row"
+    But I should not see "otherteacher teacher4" in the "student student5" "table_row"

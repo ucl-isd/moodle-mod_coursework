@@ -135,8 +135,12 @@ function coursework_render_page(coursework $coursework) {
         $template->allocationwidget = $objectrenderer->render($allocationwidget);
     }
 
+    $assessablename = $coursework->is_configured_to_have_group_submissions() ?
+        get_string('group', 'mod_coursework')
+        : get_string('student', 'mod_coursework');
+
     $tablemodel = new stdClass();
-    $tablemodel->headers = [get_string('student', 'mod_coursework')];
+    $tablemodel->headers = [$assessablename];
     foreach ($coursework->marking_stages() as $stage) {
         if (!$stage->uses_allocation() && !$stage->uses_sampling()) {
             continue;

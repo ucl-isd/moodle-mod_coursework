@@ -14,10 +14,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Javascript module for handling personal extension modal.
+ * Javascript module for marker allocation table.
  *
  * @module      mod_coursework/markerstable
- * @copyright   2025 UCL
+ * @copyright   2026 UCL
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

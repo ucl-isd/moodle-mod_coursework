@@ -23,10 +23,8 @@ use core_external\external_value;
 use mod_coursework\models\coursework;
 
 /**
- * External service to delete an extension.
- *
  * @package   mod_coursework
- * @copyright 2025 UCL
+ * @copyright 2026 UCL
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since     Moodle 4.5
  */
@@ -50,9 +48,6 @@ class allocatableinsampletoggle extends external_api {
      *
      * @param int $extensionid
      * @return array
-     * @throws \coding_exception
-     * @throws \dml_exception
-     * @throws \invalid_parameter_exception
      */
     public static function execute(int $courseworkid, int $allocatableid, string $stageidentifier, bool $togglestate): array {
         $params = self::validate_parameters(self::execute_parameters(), [
@@ -74,7 +69,7 @@ class allocatableinsampletoggle extends external_api {
         }
 
         $allocatable = $coursework->get_allocatable_from_id($params['allocatableid']);
-        $stage->toggle_alloctable_sampling($allocatable, $params['togglestate']);
+        $stage->set_alloctable_sampling($allocatable, $params['togglestate']);
 
         return [
             'success' => true,

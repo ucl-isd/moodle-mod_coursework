@@ -428,9 +428,7 @@ abstract class base {
      * @throws coding_exception
      */
     public function destroy_allocation($allocatable) {
-        $allocation = $this->get_allocation($allocatable);
-
-        if ($allocation) {
+        if ($allocation = $this->get_allocation($allocatable)) {
             $allocation->destroy();
         }
     }
@@ -495,7 +493,6 @@ abstract class base {
     /**
      * @param allocatable $allocatable
      * @return assessment_set_membership|bool
-     * @throws \core\exception\coding_exception
      */
     public function get_assessment_set_membership($allocatable) {
         assessment_set_membership::fill_pool_coursework($this->coursework->id);
@@ -509,7 +506,7 @@ abstract class base {
         );
     }
 
-    public function toggle_alloctable_sampling(allocatable $allocatable, bool $state) {
+    public function set_alloctable_sampling(allocatable $allocatable, bool $state) {
         if (empty($this->uses_sampling())) {
             return;
         }

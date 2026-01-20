@@ -24,10 +24,8 @@ use core_user;
 use mod_coursework\models\coursework;
 
 /**
- * External service to delete an extension.
- *
  * @package   mod_coursework
- * @copyright 2025 UCL
+ * @copyright 2026 UCL
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since     Moodle 4.5
  */
@@ -51,9 +49,6 @@ class assessorallocation extends external_api {
      *
      * @param int $extensionid
      * @return array
-     * @throws \coding_exception
-     * @throws \dml_exception
-     * @throws \invalid_parameter_exception
      */
     public static function execute(int $courseworkid, int $allocatableid, string $stageidentifier, int $assessorid): array {
         $params = self::validate_parameters(self::execute_parameters(), [
