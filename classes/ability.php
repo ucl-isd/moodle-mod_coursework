@@ -1449,10 +1449,12 @@ class ability extends framework\ability {
             'mod_coursework\models\deadline_extension',
             function (deadline_extension $deadlineextension) {
                 // Check using cached object to avoid repeated DB calls on grading page.
-                return (bool)deadline_extension::get_object(
+                return (bool)deadline_extension::get_cached_object(
                     $deadlineextension->courseworkid,
-                    'allocatableid-allocatabletype',
-                    [$deadlineextension->allocatableid, $deadlineextension->allocatabletype]
+                    [
+                        'allocatableid' => $deadlineextension->allocatableid,
+                        'allocatabletype' => $deadlineextension->allocatabletype,
+                    ]
                 );
             }
         );

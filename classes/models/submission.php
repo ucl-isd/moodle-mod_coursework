@@ -304,7 +304,7 @@ class submission extends table_base implements renderable {
                 if ($submission->has_extension()) {
                     // Check if extension is valid
                     $extension = $submission->submission_extension();
-                    if ($extension->extended_deadline > time()) {
+                    if ($extension && $extension->extended_deadline > time()) {
                         // Unset as it doesn't need to be autofinalise yet
                         unset($submissions[$submission->id]);
                     }
@@ -1382,14 +1382,17 @@ class submission extends table_base implements renderable {
         }
 
         deadline_extension::fill_pool_coursework($this->courseworkid);
-        $extension = deadline_extension::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$this->allocatableid, $this->allocatabletype]);
+        $extension = deadline_extension::get_cached_object(
+            $this->courseworkid,
+            ['allocatableid' => $this->allocatableid, 'allocatabletype' => $this->allocatabletype]
+        );
         return !empty($extension);
     }
 
     /**
      * Retrieve details of submission's extension
      *
-     * @return mixed
+     * @return ?deadline_extension
      * @throws \core\exception\coding_exception
      */
     public function submission_extension() {
@@ -1398,7 +1401,10 @@ class submission extends table_base implements renderable {
         }
 
         deadline_extension::fill_pool_coursework($this->courseworkid);
-        return deadline_extension::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$this->allocatableid, $this->allocatabletype]);
+        return deadline_extension::get_cached_object(
+            $this->courseworkid,
+            ['allocatableid' => $this->allocatableid, 'allocatabletype' => $this->allocatabletype]
+        );
     }
 
     /**
@@ -1539,17 +1545,12 @@ class submission extends table_base implements renderable {
      * @throws \core\exception\coding_exception
      */
     public function has_valid_extension() {
-        $validextension = false;
-
         deadline_extension::fill_pool_coursework($this->courseworkid);
-        $extension = deadline_extension::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$this->allocatableid, $this->allocatabletype]);
-
-        if ($extension) {
-            if ($extension->extended_deadline > time()) {
-                $validextension = true;
-            }
-        }
-        return $validextension;
+        $extension = deadline_extension::get_cached_object(
+            $this->courseworkid,
+            ['allocatableid' => $this->allocatableid, 'allocatabletype' => $this->allocatabletype]
+        );
+        return $extension && $extension->extended_deadline > time();
     }
 
     public function can_be_unfinalised() {
