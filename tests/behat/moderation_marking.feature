@@ -141,8 +141,8 @@ Feature: Double marking - blind
     And I set the field "Moderation agreement" to "Disagreed"
     And I set the field "Comment" to "I don't like it!"
     And I press "Save changes"
-    Then I should see "Agreed" in row "1"
-    Then I should see "Disagreed" in row "2"
+    Then I should see "Agreed" in the "70" "table_row"
+    Then I should see "Disagreed" in the "75" "table_row"
     When I follow "Disagreed"
     And I wait until the page is ready
     Then I should see "I don't like it!"
@@ -183,12 +183,12 @@ Feature: Double marking - blind
     And I am on the "Course 1" "course" page logged in as "marker1"
     And I follow "Coursework 1"
     # See the moderation
-    Then I should see "Moderation" in row "1"
-    And I should see "Moderator 1" in row "1"
-    And I should see "Agreed" in row "1"
-    And I should see "Moderation" in row "2"
-    And I should see "Moderator 1" in row "2"
-    And I should see "Disagreed" in row "2"
+    Then I should see "Moderation" in the "70" "table_row"
+    Then I should see "Moderator 1" in the "70" "table_row"
+    Then I should see "Agreed" in the "70" "table_row"
+    Then I should see "Moderation" in the "75" "table_row"
+    Then I should see "Moderator 1" in the "75" "table_row"
+    Then I should see "Disagreed" in the "75" "table_row"
 
     # Update marking
     And I follow "75" in row "2"
@@ -196,7 +196,7 @@ Feature: Double marking - blind
       | Mark    | 65              |
       | Comment | Updated mark    |
     And I press "Save as draft"
-    Then I should see "65" in row "2"
+    Then I should see "Disagreed" in the "65" "table_row"
 
   @javascript
   Scenario: Release the grades
@@ -234,17 +234,16 @@ Feature: Double marking - blind
 
     And I am on the "Course 1" "course" page logged in as "manager"
     And I follow "Coursework 1"
-    Then I should see "Agreed" in row "1"
-    Then I should see "Disagreed" in row "2"
+    Then I should see "Agreed" in the "70" "table_row"
+    Then I should see "Disagreed" in the "75" "table_row"
 
     When I follow "Release the marks"
     Then I should see "Are you sure you want to release all marks?"
     And I press "Confirm"
     Then I should see "Marks released"
-    And I should see "Released"
-    And I should see "Released" in row "1"
-    And I should see "Released" in row "2"
-    And I should see "Released" in row "3"
+    Then I should see "Released" in the "70" "table_row"
+    Then I should see "Released" in the "75" "table_row"
+    Then I should see "Released" in the "50" "table_row"
 
   @javascript
   Scenario: Student 1 sees the released grades
@@ -331,8 +330,9 @@ Feature: Double marking - blind
     And I am on the "Course 1" "course" page logged in as "manager"
     And I follow "Coursework 1"
     And I press the release marks button
-    Then I should see "Disagreed" in row "2"
-    And I should see "Released" in row "2"
+
+    Then I should see "Disagreed" in the "75" "table_row"
+    Then I should see "Released" in the "75" "table_row"
 
     And I log out
 

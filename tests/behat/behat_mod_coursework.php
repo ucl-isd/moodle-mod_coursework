@@ -3894,58 +3894,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * Confirm that text is not showing in a row
-     *
-     * @Then /^I should( not)? see "(?P<text>[^"]*)" in row "(?P<row>\d+)"$/
-     *
-     * @param string $notvisible
-     * @param string $text
-     * @param int $rownumber
-     * @return void
-     * @throws coding_exception
-     */
-    public function i_should_see_text_in_row($notvisible, $text, $rownumber) {
-        $session = $this->getSession();
-        $page = $session->getPage();
-
-        // Find the table body.
-        $tbody = $page->find('css', 'table.mod-coursework-submissions-table tbody');
-        if (!$tbody) {
-            throw new ExpectationException('Could not find coursework submissions table.', $this->getsession());
-        }
-
-        // Get all rows.
-        $rows = $tbody->findAll('css', 'tr');
-        if (!isset($rows[$rownumber - 1])) {
-            throw new ExpectationException("Row {$rownumber} does not exist in the submissions table.", $this->getsession());
-        }
-
-        $row = $rows[$rownumber - 1];
-        $rowtext = $row->getText();
-        $contains = strpos($rowtext, $text) !== false;
-
-        // Check text inside the row.
-        // If a negation (e.g. "not") was present in the step.
-        if (!empty($notvisible)) {
-            if ($contains) {
-                throw new ExpectationException(
-                    "'{$text}' text was found in row {$rownumber}.\nRow contents: {$rowtext}",
-                    $this->getsession()
-                );
-            }
-            return; // OK.
-        }
-
-        // Normal positive check.
-        if (!$contains) {
-            throw new ExpectationException(
-                "'{$text}' was not found in row {$rownumber}.\nRow contents: {$rowtext}",
-                $this->getsession()
-            );
-        }
-    }
-
-    /**
      * Inserts a moderation directly into coursework_mod_agreements table.
      *
      * @When /^the submission from "(?P<studentfullname>[^"]*)" is moderated by "(?P<moderatorfullname>[^"]*)" with:$/
