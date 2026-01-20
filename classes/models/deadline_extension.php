@@ -64,7 +64,13 @@ class deadline_extension extends table_base {
      */
     public static function allocatable_extension_allows_submission($allocatable, $coursework) {
         self::fill_pool_coursework($coursework->id);
-        $extension = self::get_object($coursework->id, 'allocatableid-allocatabletype', [$allocatable->id(), $allocatable->type()]);
+        $extension = self::get_cached_object(
+            $coursework->id,
+            [
+                'allocatableid' => $allocatable->id(),
+                'allocatabletype' => $allocatable->type()
+            ]
+        );
 
         return !empty($extension) && $extension->extended_deadline > time();
     }
@@ -85,7 +91,13 @@ class deadline_extension extends table_base {
         }
         if ($allocatable) {
             self::fill_pool_coursework($coursework->id);
-            return self::get_object($coursework->id, 'allocatableid-allocatabletype', [$allocatable->id(), $allocatable->type()]);
+            return self::get_cached_object(
+                $coursework->id,
+                [
+                    'allocatableid' => $allocatable->id(),
+                    'allocatabletype' => $allocatable->type()
+                ]
+            ) ?? false;
         }
     }
 
