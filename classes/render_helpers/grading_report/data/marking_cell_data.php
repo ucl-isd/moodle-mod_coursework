@@ -329,20 +329,26 @@ class marking_cell_data extends cell_data_base {
 
         // Handle existing feedback.
         $canshow = $finalfeedback->can_show($this->coursework, $rowsbase->get_submission());
-        $finalgrade = $this->get_mark_for_feedback($finalfeedback, $canshow);
-        $action = $finalfeedback->can_edit($this->coursework, $rowsbase->get_submission())
-            ? 'edit'
-            : ($canshow ? 'show' : null);
+        $canedit = $finalfeedback->can_edit($this->coursework, $rowsbase->get_submission());
+        if (!$canshow && !$canedit) {
+            return null;
+        }
 
+        $finalgrade = $this->get_mark_for_feedback($finalfeedback, $canshow);
         // If this is an auto generated feedback, lasteditedbyuser will be zero.
         $assessorname = $finalfeedback->lasteditedbyuser
             ? user::find($finalfeedback->lasteditedbyuser, false)->name()
             : get_string('automaticallyagreed', 'mod_coursework');
-        return $action ? (object)[
+        return (object)[
             'mark' => (object)[
                 'markvalue' => $finalgrade,
                 'allocatablehash' => $this->get_allocatable_hash($rowsbase->get_allocatable()),
-                'url' => $this->get_mark_url($action, $rowsbase->get_submission(), $finalstage, $finalfeedback),
+                'url' => $this->get_mark_url(
+                    $canedit ? 'edit' : 'show',
+                    $rowsbase->get_submission(),
+                    $finalstage,
+                    $finalfeedback,
+                ),
                 // Only show draft label if final feedback is not finalised and submission is not ready for release.
                 // Final feedback is still unfinalised if it is agreed automatically.
                 'draft' => !$finalfeedback->finalised,
@@ -352,7 +358,7 @@ class marking_cell_data extends cell_data_base {
                 'timemodified' => $finalfeedback->timemodified,
                 'markername' => $assessorname,
             ],
-        ] : null;
+        ];
     }
 
     /**
