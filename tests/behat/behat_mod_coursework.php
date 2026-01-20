@@ -3862,38 +3862,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * Clicks a link inside the given table row.
-     *
-     * Example:
-     *   Given I follow "Agree marking" in row "2"
-     *
-     * @Given /^I follow "(?P<linktext_string>[^"]*)" in row "(?P<rownumber>\d+)"$/
-     */
-    public function i_follow_in_row($linktext, $rownumber) {
-        $linktext = behat_context_helper::escape($linktext);
-        $xpath = "(//table[contains(@class,'mod-coursework-submissions-table')]/tbody/tr)[{$rownumber}]
-        //*[self::a or self::button][normalize-space(.) = {$linktext}]";
-
-        $element = $this->getSession()->getPage()->find('xpath', $xpath);
-
-        if (!$element) {
-            $xpath = "(//table[contains(@class,'mod-coursework-submissions-table')]/tbody/tr)[{$rownumber}]
-            //button[normalize-space(.) = {$linktext}]";
-            $element = $this->getSession()->getPage()->find('xpath', $xpath);
-        }
-
-        if (!$element) {
-            throw new ExpectationException(
-                "Could not find a link or button '{$linktext}' in row {$rownumber}.",
-                $this->getSession()
-            );
-        }
-
-        // Click it.
-        $element->click();
-    }
-
-    /**
      * Inserts a moderation directly into coursework_mod_agreements table.
      *
      * @When /^the submission from "(?P<studentfullname>[^"]*)" is moderated by "(?P<moderatorfullname>[^"]*)" with:$/

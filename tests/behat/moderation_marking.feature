@@ -132,11 +132,11 @@ Feature: Double marking - blind
 
     And I am on the "Course 1" "course" page logged in as "moderator1"
     And I follow "Coursework 1"
-    And I follow "Agree marking" in row "1"
+    And I click on "Agree marking" "link" in the ".mod-coursework-submissions-row:nth-child(1)" "css_element"
     Then I should see "Moderation for"
     And I set the field "Moderation agreement" to "Agreed"
     And I press "Save changes"
-    And I follow "Agree marking" in row "2"
+    And I click on "Agree marking" "link" in the ".mod-coursework-submissions-row:nth-child(2)" "css_element"
     Then I should see "Moderation for"
     And I set the field "Moderation agreement" to "Disagreed"
     And I set the field "Comment" to "I don't like it!"
@@ -191,7 +191,7 @@ Feature: Double marking - blind
     Then I should see "Disagreed" in the "75" "table_row"
 
     # Update marking
-    And I follow "75" in row "2"
+    And I click on "75" "link" in the ".mod-coursework-submissions-row:nth-child(2)" "css_element"
     When I set the following fields to these values:
       | Mark    | 65              |
       | Comment | Updated mark    |
@@ -382,7 +382,7 @@ Feature: Double marking - blind
     # Before marks have been released moderator can view and edit moderation.
     And I am on the "Course 1" "course" page logged in as "moderator1"
     And I follow "Coursework 1"
-    And I follow "Agreed" in row "1"
+    And I click on "Agreed" "link" in the ".mod-coursework-submissions-row:nth-child(1)" "css_element"
     Then I should see "Moderation for "
     And I should see "Moderator 1"
     And "Save changes" "button" should exist
@@ -395,7 +395,7 @@ Feature: Double marking - blind
     # After marks have been released moderator can view but not edit moderation.
     And I am on the "Course 1" "course" page logged in as "moderator1"
     And I follow "Coursework 1"
-    And I follow "Agreed" in row "1"
+    And I click on "Agreed" "link" in the ".mod-coursework-submissions-row:nth-child(1)" "css_element"
     Then I should see "Moderation for "
     And I should see "Moderator 1"
     And "Save changes" "button" should not exist
