@@ -1410,7 +1410,10 @@ class submission extends table_base implements renderable {
     public function submission_personaldeadline() {
         $allocatableid = $this->get_allocatable()->id();
         $allocatabletype = $this->get_allocatable()->type();
-        $personaldeadline = personaldeadline::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$allocatableid, $allocatabletype]);
+        $personaldeadline = personaldeadline::get_cached_object(
+            $this->courseworkid,
+            ['allocatableid' => $allocatableid, 'allocatabletype' => $allocatabletype]
+        );
 
         if ($personaldeadline) {
             $personaldeadline = $personaldeadline->personaldeadline;
