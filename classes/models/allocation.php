@@ -182,22 +182,6 @@ class allocation extends table_base {
 
     /**
      *
-     * @param int $courseworkid
-     * @param $key
-     * @param $params
-     * @return bool
-     * @throws coding_exception
-     */
-    public static function get_object($courseworkid, $key, $params) {
-        if (!isset(self::$pool[$courseworkid])) {
-            self::fill_pool_coursework($courseworkid);
-        }
-        $valuekey = implode('-', $params);
-        return self::$pool[$courseworkid][$key][$valuekey][0] ?? false;
-    }
-
-    /**
-     *
      */
     protected function post_save_hook() {
         self::remove_cache($this->courseworkid);

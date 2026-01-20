@@ -547,7 +547,7 @@ class submission extends table_base implements renderable {
     /**
      * Function to retrieve a assessor allocated for the specific stage
      * @param $stageidentifier
-     * @return bool
+     * @return ?allocation
      * @throws coding_exception
      * @throws dml_exception
      */
@@ -555,10 +555,13 @@ class submission extends table_base implements renderable {
 
         $courseworkid = $this->get_coursework()->id;
         allocation::fill_pool_coursework($courseworkid);
-        return allocation::get_object(
+        return allocation::get_cached_object(
             $courseworkid,
-            'allocatableid-allocatabletype-stageidentifier',
-            [$this->get_allocatable()->id(), $this->get_allocatable()->type(), $stageidentifier]
+            [
+                'allocatableid' => $this->get_allocatable()->id(),
+                'allocatabletype' => $this->get_allocatable()->type(),
+                'stageidentifier' => $stageidentifier,
+            ]
         );
     }
 
