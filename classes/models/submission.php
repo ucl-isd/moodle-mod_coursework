@@ -1039,7 +1039,8 @@ class submission extends table_base implements renderable {
             // check if not stopped by plagiarism flag
             plagiarism_flag::fill_pool_coursework($this->courseworkid);
             $plagiarism = plagiarism_flag::get_cached_object(
-                $this->courseworkid, ['submissionid' => $this->id]
+                $this->courseworkid,
+                ['submissionid' => $this->id]
             );
             if ($plagiarism && !$plagiarism->can_release_grades()) {
                 return false;

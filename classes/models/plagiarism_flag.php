@@ -94,7 +94,8 @@ class plagiarism_flag extends table_base {
     public static function get_plagiarism_flag($submission) {
         self::fill_pool_coursework($submission->courseworkid);
         return self::get_cached_object(
-            $submission->courseworkid, ['submissionid' => $submission->id]
+            $submission->courseworkid,
+            ['submissionid' => $submission->id]
         );
     }
 
