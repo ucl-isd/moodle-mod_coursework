@@ -554,7 +554,10 @@ class coursework extends table_base {
         $submissions = submission::$pool[$this->id]['id'];
         $count = 0;
         foreach ($submissions as $s) {
-            $feedback = feedback::get_object($this->id, 'submissionid-assessorid', [$s->id, $USER->id]);
+            $feedback = feedback::get_cached_object(
+                $this->id,
+                ['submissionid' => $s->id, 'assessorid' => $USER->id]
+            );
             if (empty($feedback)) {
                 $count++;
             }

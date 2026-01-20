@@ -532,14 +532,16 @@ class submission extends table_base implements renderable {
      * @throws dml_exception
      */
     public function get_assessor_feedback_by_stage($stageidentifier) {
-        $params = [
-            'submissionid' => $this->id,
-            'ismoderation' => 0,
-            'isfinalgrade' => 0,
-            'stageidentifier' => $stageidentifier,
-        ];
         feedback::fill_pool_coursework($this->courseworkid);
-        return feedback::get_object($this->courseworkid, 'submissionid-ismoderation-isfinalgrade-stageidentifier', $params);
+        return feedback::get_cached_object(
+            $this->courseworkid,
+            [
+                'submissionid' => $this->id,
+                'ismoderation' => 0,
+                'isfinalgrade' => 0,
+                'stageidentifier' => $stageidentifier,
+            ]
+        ) ?? false;
     }
 
     /**
@@ -570,14 +572,16 @@ class submission extends table_base implements renderable {
             return [];
         }
 
-        $params = [
-            'submissionid' => $this->id,
-            'ismoderation' => 0,
-            'isfinalgrade' => 0,
-            'stageidentifier' => 'final_agreed_1',
-        ];
         feedback::fill_pool_coursework($this->courseworkid);
-        return feedback::get_object($this->courseworkid, 'submissionid-ismoderation-isfinalgrade-stageidentifier', $params);
+        return feedback::get_cached_object(
+            $this->courseworkid,
+            [
+                'submissionid' => $this->id,
+                'ismoderation' => 0,
+                'isfinalgrade' => 0,
+                'stageidentifier' => 'final_agreed_1',
+            ]
+        ) ?? false;
     }
 
     /**
@@ -598,10 +602,9 @@ class submission extends table_base implements renderable {
         } else {
             $identifier = 'assessor_1';
         }
-        return feedback::get_object(
+        return feedback::get_cached_object(
             $this->courseworkid,
-            'submissionid-stageidentifier',
-            [$this->id, $identifier]
+            ['submissionid' => $this->id, 'stageidentifier' => $identifier]
         ) ?: null;
     }
 
@@ -811,12 +814,14 @@ class submission extends table_base implements renderable {
             $userid = $USER->id;
         }
 
-        $params = [
-            'submissionid' => $this->id,
-            'assessorid' => $userid,
-        ];
         feedback::fill_pool_coursework($this->courseworkid);
-        $feedback = feedback::get_object($this->courseworkid, 'submissionid-assessorid', $params);
+        $feedback = feedback::get_cached_object(
+            $this->courseworkid,
+            [
+                'submissionid' => $this->id,
+                'assessorid' => $userid,
+            ]
+        );
         if ($feedback && $feedback->isfinalgrade == 0 && $feedback->ismoderation == 0) {
             return true;
         }
@@ -1462,7 +1467,10 @@ class submission extends table_base implements renderable {
             $this->editable_final_feedback = false;
             if ($this->is_finalised()) {
                 $coursework = $this->get_coursework();
-                $finalfeedback = feedback::get_object($coursework->id, 'submissionid-stageidentifier', [$this->id, 'final_agreed_1']);
+                $finalfeedback = feedback::get_cached_object(
+                    $coursework->id,
+                    ['submissionid' => $this->id, 'stageidentifier' => 'final_agreed_1']
+                );
                 if ($finalfeedback && $finalfeedback->finalised == 0 && $finalfeedback->assessorid <> 0) {
                     $this->editable_final_feedback = true;
                 }
