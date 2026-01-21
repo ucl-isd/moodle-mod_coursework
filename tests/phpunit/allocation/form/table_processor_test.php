@@ -23,6 +23,7 @@ namespace mod_coursework;
  */
 
 use mod_coursework\allocation\table\processor;
+use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 
 
@@ -44,7 +45,6 @@ final class table_processor_test extends \advanced_testcase {
     use test_helpers\factory_mixin;
 
     public function setUp(): void {
-        global $DB;
         parent::setUp();
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -56,7 +56,7 @@ final class table_processor_test extends \advanced_testcase {
         $this->create_another_teacher();
 
         // Delete all auto allocations caused by enrol hooks.
-        $DB->delete_records('coursework_allocation_pairs');
+        allocation::destroy_all($this->coursework->id);
     }
 
     public function test_process_rows_makes_a_new_assessor_allocation(): void {

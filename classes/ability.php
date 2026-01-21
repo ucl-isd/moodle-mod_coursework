@@ -399,10 +399,14 @@ class ability extends framework\ability {
             function (submission $submission) {
 
                 // Should be visible to those who are OK to mark it.
-                $allocationenabled = $submission->get_coursework()->allocation_enabled();
-                $userhasanyallocation = $submission->get_coursework()
-                    ->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable());
-                return $allocationenabled && $userhasanyallocation;
+                $allocatable = $submission->get_allocatable();
+                return $submission->get_coursework()->allocation_enabled()
+                    && allocation::allocatable_is_allocated_to_assessor(
+                        $submission->get_coursework()->id(),
+                        $allocatable->id(),
+                        $allocatable->type(),
+                        $this->userid
+                    );
             }
         );
     }
@@ -1183,9 +1187,12 @@ class ability extends framework\ability {
                 $allocatable = $gradingtablerow->get_allocatable();
 
                 if ($gradingtablerow->get_coursework()->allocation_enabled()) {
-                    if ($gradingtablerow->get_coursework()->assessor_has_any_allocation_for_student($allocatable)) {
-                        return true;
-                    }
+                    return allocation::allocatable_is_allocated_to_assessor(
+                        $gradingtablerow->get_coursework()->id(),
+                        $allocatable->id(),
+                        $allocatable->type(),
+                        $this->userid
+                    );
                 }
                 return false;
             }
