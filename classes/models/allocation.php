@@ -220,13 +220,12 @@ class allocation extends table_base {
         ?int $assessorid = null
     ): bool {
         global $USER;
-        return (bool)self::get_object(
+        return (bool)self::get_cached_object(
             $courseworkid,
-            'allocatableid-allocatabletype-assessorid',
             [
-                $allocatableid,
-                $allocatabletype,
-                $assessorid ?? $USER->id,
+                'allocatableid' => $allocatableid,
+                'allocatabletype' => $allocatabletype,
+                'assessorid' => $assessorid ?? $USER->id,
             ]
         );
     }
