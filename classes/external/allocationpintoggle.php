@@ -60,7 +60,7 @@ class allocationpintoggle extends external_api {
         $allocation = allocation::find([
             'courseworkid' => $params['courseworkid'],
             'stageidentifier' => $params['stageidentifier'],
-            'allocatableid' => $params['allocatableid']
+            'allocatableid' => $params['allocatableid'],
         ]);
 
         if (empty($allocation)) {
