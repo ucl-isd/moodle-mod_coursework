@@ -26,12 +26,13 @@ Coursework.
             text-align: left;
         }
 
-        /* Remove bg colour for even td. */
+        /* Remove bg colour for even/odd td. */
         .criterion.even,
         .criterion.even td {
             background-color: transparent;
         }
 
+        /* Faux headings for criteria. */
         .description,
         .criterionshortname {
             font-weight: bold;
@@ -40,12 +41,13 @@ Coursework.
             display: block;
         }
 
+        /* Small for criteria description. */
         .criteriondescription,
         .criteriondescriptionmarkers {
             font-size: small;
         }
 
-        /* Radio button, description and score. */
+        /* Radio button, definition, and score. */
         .level-wrapper {
             display: flex;
             flex-direction: row;
@@ -74,7 +76,7 @@ Coursework.
                 color: var(--dark);
             }
 
-            /* Selected level styles. */
+            /* Rubric selected level styles. */
             &:has(.radio input[type="radio"]:checked) {
                 background-color: var(--light);
 
@@ -112,14 +114,14 @@ Coursework.
             min-height: 6rem;
         }
 
-        /* Move the button below the textarea, and make it full width */
+        /* Add frequently use comments button. */
         .commentchooser {
             display: block;
             margin-top: 0.5rem;
         }
     }
 
-    /* Not rubric, but advanced marking. */
+    /* Marking guide (advanced grading, but not rubric). */
     .gradingform_guide table#advancedgrading-criteria {
         td.remark {
             display: inline-block;
