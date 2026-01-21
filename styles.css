@@ -3,19 +3,184 @@
 Coursework.
 **/
 
-#page-mod-coursework-actions-feedbacks-viewpdf #page {
-    padding: 0;
 
-    #printButton,
-    #downloadButton,
-    #secondaryOpenFile,
-    #secondaryPrint,
-    #secondaryDownload,
-    #presentationMode,
-    #viewBookmark,
-    #viewBookmarkSeparator,
-    #spreadModeButtons {
-        display: none;
+
+
+/* Rubric and advanced grading forms. */
+.path-mod-coursework {
+    #rubric-rubric,
+    #advancedgrading-criteria {
+        display: block;
+        width: 100%;
+
+        &,
+        & tbody,
+        & tr,
+        & td,
+        table {
+            /* Remove default table spacing/border and force block display */
+            display: block;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            width: 100% !important;
+            max-width: 100%;
+            text-align: left;
+        }
+
+        /* Remave bg colour for even td. */
+        .criterion.even,
+        .criterion.even td {
+            background-color: transparent;
+        }
+
+        .description,
+        .criterionshortname {
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding-top: 1rem !important;
+            display: block;
+        }
+
+        .criteriondescription,
+        .criteriondescriptionmarkers {
+            font-size: small;
+        }
+
+        /* Radio button, descirption and score. */
+        .level-wrapper {
+            display: flex;
+            flex-direction: row;
+            align-items: start;
+            width: 100%;
+            padding: .5rem;
+
+            .radio {
+                display: block !important;
+                transform: scale(1.5);
+                margin-right: 0.5rem;
+                margin-top: 0.2rem;
+            }
+
+            .definition {
+                padding: 0 1rem;
+            }
+
+            .score {
+                margin: 0;
+                margin-left: auto;
+                padding: 0.25em 0.6em !important;
+                text-wrap: nowrap;
+                font-style: normal;
+                font-size: small;
+                color: var(--dark);
+            }
+
+            /* Selected level styles. */
+            &:has(.radio input[type="radio"]:checked) {
+                background-color: var(--light);
+
+                .score {
+                    /* Score rounded pill success styles. */
+                    background-color: var(--success);
+                    color: white;
+                    max-height: 2rem;
+                    border-radius: 10rem;
+                }
+
+                .definition {
+                    font-weight: bold;
+                }
+            }
+
+            &:hover {
+                background-color: var(--light);
+                cursor: pointer;
+            }
+        }
+
+        /* Comment area. */
+        textarea,
+        .markingguideremark,
+        .commentchooser {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Reduce the textarea height (mimics rows=3) and add padding */
+        textarea {
+            padding: 0.5rem;
+            height: 6rem;
+            min-height: 6rem;
+        }
+
+        /* Move the button below the textarea, and make it full width */
+        .commentchooser {
+            display: block;
+            margin-top: 0.5rem;
+        }
+    }
+
+    /* Not rubric, but advanced marking. */
+    .gradingform_guide table#advancedgrading-criteria {
+        td.remark {
+            display: inline-block;
+            vertical-align: top;
+            width: 74% !important;
+            box-sizing: border-box;
+        }
+
+        td.score {
+            display: inline-block;
+            width: 25% !important;
+            text-align: right;
+            input {
+                margin-left: auto;
+            }
+        }
+    }
+
+    /* Hide advanced marking form header. */
+    #coursework-markingform {
+        #id_advancedgrading_label,
+        .gradingform_guide-description {
+            display: none !important;
+        }
+    }
+
+    /* Marking form and student feedback. */
+    #coursework-markingform,
+    .coursework-feedback {
+        /* Full width cols. */
+        div.col-md-3,
+        div.col-md-9 {
+            max-width: 100%;
+            flex: 0 0 100%;
+        }
+        .col-form-label {
+            font-weight: bold;
+        }
+
+        /* Grading tables. */
+        .gradingform_guide,
+        .gradingform_rubric {
+            display: block;
+            width: 100%;
+
+            .criterion.even,
+            .criterion.even td {
+                background-color: transparent;
+            }
+            .criteria {
+                height: auto;
+            }
+            label {
+                font-weight: normal;
+            }
+            .score {
+                text-align: right;
+            }
+        }
     }
 }
 
@@ -68,113 +233,6 @@ Coursework.
             display: none;
         }
     }
-
-    /* Marking form and student feedback. */
-    #coursework-markingform,
-    .coursework-feedback {
-        /* Full width cols. */
-        div.col-md-3,
-        div.col-md-9 {
-            max-width: 100%;
-            flex: 0 0 100%;
-        }
-        .col-form-label {
-            font-weight: bold;
-        }
-
-        /* Grading tables. */
-        .gradingform_guide,
-        .gradingform_rubric {
-
-            /* SHAME - overwrite rubric table paddings. */
-            table {
-                th,
-                td {
-                    padding: .75rem !important;
-                }
-            }
-            .criterion.even,
-            .criterion.even td {
-                background-color: transparent;
-            }
-            .criteria {
-                height: auto;
-            }
-            .criterionshortname,
-            label {
-                font-weight: normal;
-            }
-            .score {
-                text-align: right;
-            }
-        }
-
-        /* Rubric specific. */
-        .gradingform_rubric {
-            .radio {
-                display: block !important;
-            }
-            td,
-            tr {
-                border: 0 !important;
-            }
-            .criterion {
-                .description {
-                    font-size: 1.3rem;
-                    padding: 1rem 0;
-                }
-                /* Full width td. */
-                .description,
-                .levels {
-                    width: 100%;
-                    display: block;
-                    max-width: none;
-                    /* Inner table of rubric text. */
-                    table {
-                        width: 100%;
-                        table-layout: fixed;
-                        td.level {
-                            width: auto !important;
-                            transition: all 1s;
-                            /* Previously selected rubric option. */
-                            &.currentchecked {
-                                color: var(--dark);
-                                background-color: color-mix(in srgb, var(--primary) 10%, white 90%);
-                            }
-                            /* Selected rubric option. */
-                            &.checked {
-                                color: white;
-                                border-color: var(--primary) !important;
-                                background-color: var(--primary) !important;
-
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        /* Editing rubric. */
-        .gradingform_rubric.editable {
-            /* Hover state. */
-            td.level:hover {
-                border-color: var(--primary) !important;
-                background-color: var(--primary) !important;
-                color: white;
-            }
-        }
-
-        /* Ugly checkbox in marking form. */
-        .showmarkerdesc,
-        .showstudentdesc {
-            display: block;
-            width: 100%;
-
-            label {
-                display: block;
-            }
-        }
-    }
     .coursework-feedback {
         /* General bubble styles (same as before, but added a top-left class for clarity) */
         .chat-bubble-bordered {
@@ -222,5 +280,22 @@ Coursework.
     .container + .container > .alert {
         /* Ensure there's space above notifications. */
         margin-top: 1em;
+    }
+}
+
+/* Advanced pdf stuff. */
+#page-mod-coursework-actions-feedbacks-viewpdf #page {
+    padding: 0;
+
+    #printButton,
+    #downloadButton,
+    #secondaryOpenFile,
+    #secondaryPrint,
+    #secondaryDownload,
+    #presentationMode,
+    #viewBookmark,
+    #viewBookmarkSeparator,
+    #spreadModeButtons {
+        display: none;
     }
 }
