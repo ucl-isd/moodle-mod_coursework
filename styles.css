@@ -4,6 +4,7 @@ Coursework.
 **/
 
 /* Rubric and advanced grading forms. */
+.cm-type-coursework,
 .path-mod-coursework {
     #rubric-rubric,
     #advancedgrading-criteria {
