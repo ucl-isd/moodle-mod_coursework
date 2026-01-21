@@ -3,9 +3,6 @@
 Coursework.
 **/
 
-
-
-
 /* Rubric and advanced grading forms. */
 .path-mod-coursework {
     #rubric-rubric,
@@ -28,7 +25,7 @@ Coursework.
             text-align: left;
         }
 
-        /* Remave bg colour for even td. */
+        /* Remove bg colour for even td. */
         .criterion.even,
         .criterion.even td {
             background-color: transparent;
@@ -47,7 +44,7 @@ Coursework.
             font-size: small;
         }
 
-        /* Radio button, descirption and score. */
+        /* Radio button, description and score. */
         .level-wrapper {
             display: flex;
             flex-direction: row;
