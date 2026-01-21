@@ -36,6 +36,7 @@ class allocationpintoggle extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
+            'courseworkid' => new external_value(PARAM_INT),
             'allocatableid' => new external_value(PARAM_INT),
             'stageidentifier' => new external_value(PARAM_TEXT),
             'togglestate' => new external_value(PARAM_BOOL),
@@ -48,14 +49,20 @@ class allocationpintoggle extends external_api {
      * @param int $extensionid
      * @return array
      */
-    public static function execute(int $allocatableid, string $stageidentifier, bool $togglestate): array {
+    public static function execute(int $courseworkid, int $allocatableid, string $stageidentifier, bool $togglestate): array {
         $params = self::validate_parameters(self::execute_parameters(), [
+            'courseworkid' => $courseworkid,
             'allocatableid' => $allocatableid,
             'stageidentifier' => $stageidentifier,
             'togglestate' => $togglestate,
         ]);
 
-        $allocation = allocation::find(['stageidentifier' => $params['stageidentifier'], 'allocatableid' => $params['allocatableid']]);
+        $allocation = allocation::find([
+            'courseworkid' => $params['courseworkid'],
+            'stageidentifier' => $params['stageidentifier'],
+            'allocatableid' => $params['allocatableid']
+        ]);
+
         if (empty($allocation)) {
             return [
                 'success' => false,

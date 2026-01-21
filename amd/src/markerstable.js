@@ -24,17 +24,14 @@
 import Ajax from 'core/ajax';
 import {add as addToast} from 'core/toast';
 import $ from 'jquery';
+import notification from 'core/notification';
 
 export const init = async() => {
     document.querySelectorAll('[data-action="mod_coursework_allocatableinsampletoggle"]').forEach((node) => {
             node.addEventListener("change", async(event) => {
-                var cell = $(event.target).parents('td');
-
-                cell.find('[data-action="mod_coursework_assessorallocation"]')
-                    .toggleClass('d-none', !event.target.checked);
-
-                cell.find('[data-action="mod_coursework_allocationpintoggle"]')
-                    .parent()
+                $(event.target)
+                    .parents('td')
+                    .find('[data-action="mod_coursework_assessorallocation"]')
                     .toggleClass('d-none', !event.target.checked);
 
                 Ajax.call([{
@@ -46,9 +43,7 @@ export const init = async() => {
                         togglestate: event.target.checked
                     },
                 }])[0]
-                    .catch((error) => {
-                        addToast(error, {type: 'error'});
-                    });
+                    .fail(notification.exception);
             });
         }
     );
@@ -58,14 +53,13 @@ export const init = async() => {
                 Ajax.call([{
                     methodname: 'mod_coursework_allocationpintoggle',
                     args: {
+                        courseworkid: event.target.dataset.courseworkid,
                         allocatableid: event.target.dataset.allocatableid,
                         stageidentifier: event.target.dataset.stageidentifier,
                         togglestate: event.target.checked
                     },
                 }])[0]
-                    .catch((error) => {
-                        addToast(error, {type: 'error'});
-                    });
+                    .fail(notification.exception);
             });
         }
     );
@@ -86,12 +80,16 @@ export const init = async() => {
                             event.target.value = "0";
                             return addToast(result.error, {type: 'error'});
                         } else {
+                            const allocationpintoggle = $(event.target)
+                                .parents('td')
+                                .find('[data-action="mod_coursework_allocationpintoggle"]');
+                            allocationpintoggle.parent().toggleClass('d-none', event.target.value === "0");
+                            allocationpintoggle[0].checked = (event.target.value !== "0");
+
                             return true;
                         }
                     })
-                    .catch((error) => {
-                        addToast(error, {type: 'error'});
-                    });
+                    .fail(notification.exception);
             });
         }
     );

@@ -52,8 +52,9 @@
                             </select>
                         </div>
                         <div>
-                            <label class="{{^includedinsample}}d-none{{/includedinsample}}">
-                                <input data-stageidentifier="{{stageidentifier}}"
+                            <label class="{{^showpincheckbox}}d-none{{/showpincheckbox}}">
+                                <input data-courseworkid="{{courseworkid}}"
+                                       data-stageidentifier="{{stageidentifier}}"
                                        data-allocatableid="{{allocatableid}}"
                                        data-action="mod_coursework_allocationpintoggle"
                                        type="checkbox" {{#pinned}}checked{{/pinned}}/>

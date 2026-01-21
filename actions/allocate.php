@@ -198,6 +198,7 @@ function coursework_render_page(coursework $coursework) {
                     }
                 }
             }
+            $stagecell['showpincheckbox'] = !empty($currentmarker) && $stagecell['includedinsample'];
 
             $stages[] = $stagecell;
         }
