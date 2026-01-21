@@ -554,7 +554,10 @@ class coursework extends table_base {
         $submissions = submission::$pool[$this->id]['id'];
         $count = 0;
         foreach ($submissions as $s) {
-            $feedback = feedback::get_object($this->id, 'submissionid-assessorid', [$s->id, $USER->id]);
+            $feedback = feedback::get_cached_object(
+                $this->id,
+                ['submissionid' => $s->id, 'assessorid' => $USER->id]
+            );
             if (empty($feedback)) {
                 $count++;
             }
@@ -2603,7 +2606,10 @@ class coursework extends table_base {
 
         if ($this->personaldeadlines_enabled()) {
             personaldeadline::fill_pool_coursework($this->id);
-            $deadlinerecord = personaldeadline::get_object($this->id, 'allocatableid-allocatabletype', [$allocatable->id, $allocatable->type()]);
+            $deadlinerecord = personaldeadline::get_cached_object(
+                $this->id,
+                ['allocatableid' => $allocatable->id, 'allocatabletype' => $allocatable->type()]
+            );
 
             if (!empty($deadlinerecord)) {
                 $allocatable->deadline = $deadlinerecord->personaldeadline;
@@ -2977,7 +2983,7 @@ class coursework extends table_base {
      * @return bool
      * @throws dml_exception
      */
-    public static function get_object($courseworkid) {
+    public static function get_cached_object_from_id($courseworkid) {
         if (!isset(self::$pool['id'][$courseworkid])) {
             self::fill_pool_coursework($courseworkid);
         }

@@ -102,7 +102,7 @@ class allocation extends table_base {
      * @return user
      */
     public function assessor() {
-        return user::get_object($this->assessorid);
+        return user::get_cached_object_from_id($this->assessorid);
     }
 
     /**
@@ -178,22 +178,6 @@ class allocation extends table_base {
             }
         }
         return $result;
-    }
-
-    /**
-     *
-     * @param int $courseworkid
-     * @param $key
-     * @param $params
-     * @return bool
-     * @throws coding_exception
-     */
-    public static function get_object($courseworkid, $key, $params) {
-        if (!isset(self::$pool[$courseworkid])) {
-            self::fill_pool_coursework($courseworkid);
-        }
-        $valuekey = implode('-', $params);
-        return self::$pool[$courseworkid][$key][$valuekey][0] ?? false;
     }
 
     /**

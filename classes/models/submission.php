@@ -304,7 +304,7 @@ class submission extends table_base implements renderable {
                 if ($submission->has_extension()) {
                     // Check if extension is valid
                     $extension = $submission->submission_extension();
-                    if ($extension->extended_deadline > time()) {
+                    if ($extension && $extension->extended_deadline > time()) {
                         // Unset as it doesn't need to be autofinalise yet
                         unset($submissions[$submission->id]);
                     }
@@ -532,20 +532,22 @@ class submission extends table_base implements renderable {
      * @throws dml_exception
      */
     public function get_assessor_feedback_by_stage($stageidentifier) {
-        $params = [
-            'submissionid' => $this->id,
-            'ismoderation' => 0,
-            'isfinalgrade' => 0,
-            'stageidentifier' => $stageidentifier,
-        ];
         feedback::fill_pool_coursework($this->courseworkid);
-        return feedback::get_object($this->courseworkid, 'submissionid-ismoderation-isfinalgrade-stageidentifier', $params);
+        return feedback::get_cached_object(
+            $this->courseworkid,
+            [
+                'submissionid' => $this->id,
+                'ismoderation' => 0,
+                'isfinalgrade' => 0,
+                'stageidentifier' => $stageidentifier,
+            ]
+        ) ?? false;
     }
 
     /**
      * Function to retrieve a assessor allocated for the specific stage
      * @param $stageidentifier
-     * @return bool
+     * @return ?allocation
      * @throws coding_exception
      * @throws dml_exception
      */
@@ -553,10 +555,13 @@ class submission extends table_base implements renderable {
 
         $courseworkid = $this->get_coursework()->id;
         allocation::fill_pool_coursework($courseworkid);
-        return allocation::get_object(
+        return allocation::get_cached_object(
             $courseworkid,
-            'allocatableid-allocatabletype-stageidentifier',
-            [$this->get_allocatable()->id(), $this->get_allocatable()->type(), $stageidentifier]
+            [
+                'allocatableid' => $this->get_allocatable()->id(),
+                'allocatabletype' => $this->get_allocatable()->type(),
+                'stageidentifier' => $stageidentifier,
+            ]
         );
     }
 
@@ -570,14 +575,16 @@ class submission extends table_base implements renderable {
             return [];
         }
 
-        $params = [
-            'submissionid' => $this->id,
-            'ismoderation' => 0,
-            'isfinalgrade' => 0,
-            'stageidentifier' => 'final_agreed_1',
-        ];
         feedback::fill_pool_coursework($this->courseworkid);
-        return feedback::get_object($this->courseworkid, 'submissionid-ismoderation-isfinalgrade-stageidentifier', $params);
+        return feedback::get_cached_object(
+            $this->courseworkid,
+            [
+                'submissionid' => $this->id,
+                'ismoderation' => 0,
+                'isfinalgrade' => 0,
+                'stageidentifier' => 'final_agreed_1',
+            ]
+        ) ?? false;
     }
 
     /**
@@ -598,10 +605,9 @@ class submission extends table_base implements renderable {
         } else {
             $identifier = 'assessor_1';
         }
-        return feedback::get_object(
+        return feedback::get_cached_object(
             $this->courseworkid,
-            'submissionid-stageidentifier',
-            [$this->id, $identifier]
+            ['submissionid' => $this->id, 'stageidentifier' => $identifier]
         ) ?: null;
     }
 
@@ -743,7 +749,7 @@ class submission extends table_base implements renderable {
      * @return user
      */
     public function get_last_updated_by_user() {
-        return user::get_object($this->lastupdatedby);
+        return user::get_cached_object_from_id($this->lastupdatedby);
     }
 
     /**
@@ -811,12 +817,14 @@ class submission extends table_base implements renderable {
             $userid = $USER->id;
         }
 
-        $params = [
-            'submissionid' => $this->id,
-            'assessorid' => $userid,
-        ];
         feedback::fill_pool_coursework($this->courseworkid);
-        $feedback = feedback::get_object($this->courseworkid, 'submissionid-assessorid', $params);
+        $feedback = feedback::get_cached_object(
+            $this->courseworkid,
+            [
+                'submissionid' => $this->id,
+                'assessorid' => $userid,
+            ]
+        );
         if ($feedback && $feedback->isfinalgrade == 0 && $feedback->ismoderation == 0) {
             return true;
         }
@@ -996,7 +1004,7 @@ class submission extends table_base implements renderable {
          * @var table_base $classname
          */
         $classname = "\\mod_coursework\\models\\" . $this->allocatabletype;
-        return $classname::get_object($this->allocatableid);
+        return $classname::get_cached_object_from_id($this->allocatableid);
     }
 
     /**
@@ -1030,7 +1038,10 @@ class submission extends table_base implements renderable {
         if ($this->get_coursework()->plagiarism_flagging_enabled()) {
             // check if not stopped by plagiarism flag
             plagiarism_flag::fill_pool_coursework($this->courseworkid);
-            $plagiarism = plagiarism_flag::get_object($this->courseworkid, 'submissionid', [$this->id]);
+            $plagiarism = plagiarism_flag::get_cached_object(
+                $this->courseworkid,
+                ['submissionid' => $this->id]
+            );
             if ($plagiarism && !$plagiarism->can_release_grades()) {
                 return false;
             }
@@ -1112,13 +1123,6 @@ class submission extends table_base implements renderable {
         }
 
         return $grades;
-    }
-
-    /**
-     * @return user
-     */
-    public function get_last_submitter() {
-        return user::get_object($this->lastupdatedby);
     }
 
     /**
@@ -1349,16 +1353,19 @@ class submission extends table_base implements renderable {
     /**
      *  Function to get samplings for the submission
      * @param $stageidentifier
-     * @return array
+     * @return assessment_set_membership
      * @throws \core\exception\coding_exception
      */
 
     public function get_submissions_in_sample_by_stage($stageidentifier) {
         assessment_set_membership::fill_pool_coursework($this->courseworkid);
-        return assessment_set_membership::get_object(
+        return assessment_set_membership::get_cached_object(
             $this->courseworkid,
-            'allocatableid-allocatabletype-stageidentifier',
-            [$this->allocatableid, $this->allocatabletype, $stageidentifier]
+            [
+                'allocatableid' => $this->allocatableid,
+                'allocatabletype' => $this->allocatabletype,
+                'stageidentifier' => $stageidentifier,
+            ]
         );
     }
 
@@ -1374,14 +1381,17 @@ class submission extends table_base implements renderable {
         }
 
         deadline_extension::fill_pool_coursework($this->courseworkid);
-        $extension = deadline_extension::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$this->allocatableid, $this->allocatabletype]);
+        $extension = deadline_extension::get_cached_object(
+            $this->courseworkid,
+            ['allocatableid' => $this->allocatableid, 'allocatabletype' => $this->allocatabletype]
+        );
         return !empty($extension);
     }
 
     /**
      * Retrieve details of submission's extension
      *
-     * @return mixed
+     * @return ?deadline_extension
      * @throws \core\exception\coding_exception
      */
     public function submission_extension() {
@@ -1390,7 +1400,10 @@ class submission extends table_base implements renderable {
         }
 
         deadline_extension::fill_pool_coursework($this->courseworkid);
-        return deadline_extension::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$this->allocatableid, $this->allocatabletype]);
+        return deadline_extension::get_cached_object(
+            $this->courseworkid,
+            ['allocatableid' => $this->allocatableid, 'allocatabletype' => $this->allocatabletype]
+        );
     }
 
     /**
@@ -1402,7 +1415,10 @@ class submission extends table_base implements renderable {
     public function submission_personaldeadline() {
         $allocatableid = $this->get_allocatable()->id();
         $allocatabletype = $this->get_allocatable()->type();
-        $personaldeadline = personaldeadline::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$allocatableid, $allocatabletype]);
+        $personaldeadline = personaldeadline::get_cached_object(
+            $this->courseworkid,
+            ['allocatableid' => $allocatableid, 'allocatabletype' => $allocatabletype]
+        );
 
         if ($personaldeadline) {
             $personaldeadline = $personaldeadline->personaldeadline;
@@ -1462,7 +1478,10 @@ class submission extends table_base implements renderable {
             $this->editable_final_feedback = false;
             if ($this->is_finalised()) {
                 $coursework = $this->get_coursework();
-                $finalfeedback = feedback::get_object($coursework->id, 'submissionid-stageidentifier', [$this->id, 'final_agreed_1']);
+                $finalfeedback = feedback::get_cached_object(
+                    $coursework->id,
+                    ['submissionid' => $this->id, 'stageidentifier' => 'final_agreed_1']
+                );
                 if ($finalfeedback && $finalfeedback->finalised == 0 && $finalfeedback->assessorid <> 0) {
                     $this->editable_final_feedback = true;
                 }
@@ -1525,17 +1544,12 @@ class submission extends table_base implements renderable {
      * @throws \core\exception\coding_exception
      */
     public function has_valid_extension() {
-        $validextension = false;
-
         deadline_extension::fill_pool_coursework($this->courseworkid);
-        $extension = deadline_extension::get_object($this->courseworkid, 'allocatableid-allocatabletype', [$this->allocatableid, $this->allocatabletype]);
-
-        if ($extension) {
-            if ($extension->extended_deadline > time()) {
-                $validextension = true;
-            }
-        }
-        return $validextension;
+        $extension = deadline_extension::get_cached_object(
+            $this->courseworkid,
+            ['allocatableid' => $this->allocatableid, 'allocatabletype' => $this->allocatabletype]
+        );
+        return $extension && $extension->extended_deadline > time();
     }
 
     public function can_be_unfinalised() {
@@ -1592,22 +1606,6 @@ class submission extends table_base implements renderable {
             }
         }
         return $result;
-    }
-
-    /**
-     *
-     * @param int $courseworkid
-     * @param $key
-     * @param $params
-     * @return self|bool
-     * @throws \core\exception\coding_exception
-     */
-    public static function get_object($courseworkid, $key, $params) {
-        if (!isset(self::$pool[$courseworkid])) {
-            self::fill_pool_coursework($courseworkid);
-        }
-        $valuekey = implode('-', $params);
-        return self::$pool[$courseworkid][$key][$valuekey][0] ?? false;
     }
 
     /**

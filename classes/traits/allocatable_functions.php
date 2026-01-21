@@ -162,11 +162,14 @@ trait allocatable_functions {
 
     /**
      * @param $coursework
-     * @return bool
+     * @return ?submission
      */
     public function get_submission($coursework) {
         $this->fill_submission_and_feedback($coursework);
-        return submission::get_object($coursework->id, 'allocatableid', [$this->id]);
+        return submission::get_cached_object(
+            $coursework->id,
+            ['allocatableid' => $this->id]
+        );
     }
 
     /**

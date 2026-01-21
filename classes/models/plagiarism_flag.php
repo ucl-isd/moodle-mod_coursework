@@ -64,7 +64,7 @@ class plagiarism_flag extends table_base {
     public function get_coursework() {
         if (!isset($this->coursework)) {
             coursework::fill_pool_coursework($this->courseworkid);
-            $this->coursework = coursework::get_object($this->courseworkid);
+            $this->coursework = coursework::get_cached_object_from_id($this->courseworkid);
         }
 
         return $this->coursework;
@@ -88,12 +88,15 @@ class plagiarism_flag extends table_base {
 
     /**
      * @param $submission
-     * @return static
+     * @return ?static
      * @throws coding_exception
      */
     public static function get_plagiarism_flag($submission) {
         self::fill_pool_coursework($submission->courseworkid);
-        return self::get_object($submission->courseworkid, 'submissionid', [$submission->id]);
+        return self::get_cached_object(
+            $submission->courseworkid,
+            ['submissionid' => $submission->id]
+        );
     }
 
     /**
@@ -137,22 +140,6 @@ class plagiarism_flag extends table_base {
             }
         }
         return $result;
-    }
-
-    /**
-     *
-     * @param int $courseworkid
-     * @param $key
-     * @param $params
-     * @return self|bool
-     * @throws coding_exception
-     */
-    public static function get_object($courseworkid, $key, $params) {
-        if (!isset(self::$pool[$courseworkid])) {
-            self::fill_pool_coursework($courseworkid);
-        }
-        $valuekey = implode('-', $params);
-        return self::$pool[$courseworkid][$key][$valuekey][0] ?? false;
     }
 
     /**

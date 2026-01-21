@@ -433,10 +433,9 @@ class builder {
     private function has_final_feedback() {
         submission::fill_pool_coursework($this->coursework->id);
         feedback::fill_pool_coursework($this->coursework->id);
-        $submission = submission::get_object(
+        $submission = submission::get_cached_object(
             $this->coursework->id,
-            'allocatableid-allocatabletype',
-            [$this->allocatable->id(), $this->allocatable->type()]
+            ['allocatableid' => $this->allocatable->id(), 'allocatabletype' => $this->allocatable->type()]
         );
         if ($submission) {
             $feedbacks = feedback::$pool[$this->coursework->id]['submissionid'][$submission->id] ?? [];
@@ -456,10 +455,9 @@ class builder {
      */
     private function get_submission() {
         submission::fill_pool_coursework($this->coursework->id);
-        return submission::get_object(
+        return submission::get_cached_object(
             $this->coursework->id,
-            'allocatableid-allocatabletype',
-            [$this->allocatable->id(), $this->allocatable->type()]
+            ['allocatableid' => $this->allocatable->id(), 'allocatabletype' => $this->allocatable->type()]
         );
     }
 }

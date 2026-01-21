@@ -133,15 +133,18 @@ abstract class base {
      * @return bool
      * @throws \core\exception\coding_exception
      */
-    private function already_allocated($allocatable) {
+    private function already_allocated($allocatable): bool {
         $courseworkid = $this->get_courseworkid();
         allocation::fill_pool_coursework($courseworkid);
-        $record = allocation::get_object(
+        $record = allocation::get_cached_object(
             $courseworkid,
-            'allocatableid-allocatabletype-stageidentifier',
-            [$allocatable->id(), $allocatable->type(), $this->identifier()]
+            [
+                'allocatableid' => $allocatable->id(),
+                'allocatabletype' => $allocatable->type(),
+                'stageidentifier' => $this->identifier(),
+            ]
         );
-        return !empty($record);
+        return (bool)$record;
     }
 
     /**
@@ -155,10 +158,13 @@ abstract class base {
         if (!empty($assessor)) {
             $courseworkid = $this->get_courseworkid();
             allocation::fill_pool_coursework($courseworkid);
-            $record = allocation::get_object(
+            $record = allocation::get_cached_object(
                 $courseworkid,
-                'allocatableid-allocatabletype-assessorid',
-                [$allocatable->id(), $allocatable->type(), $assessor->id]
+                [
+                    'allocatableid' => $allocatable->id(),
+                    'allocatabletype' => $allocatable->type(),
+                    'assessorid' => $assessor->id,
+                ]
             );
             return !empty($record);
         } else {
@@ -286,26 +292,6 @@ abstract class base {
     }
 
     /**
-     * @param allocatable $allocatable
-     * @return bool
-     * @throws \core\exception\coding_exception
-     */
-    public function allocation_is_manual($allocatable) {
-
-        $courseworkid = $this->get_courseworkid();
-        allocation::fill_pool_coursework($courseworkid);
-        $record = allocation::get_object(
-            $courseworkid,
-            'allocatableid-allocatabletype-stageidentifier',
-            [$allocatable->id(), $allocatable->type(), $this->identifier()]
-        );
-        if ($record && $record->ismanual == 1) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Get teachers as user objects.
      * Used to populate drop down of teachers on marker allocation page.
      * Also called repeatedly by auto allocation process to get list of possible markers.
@@ -347,10 +333,13 @@ abstract class base {
         $feedback = null;
         $courseworkid = $this->get_courseworkid();
         submission::fill_pool_coursework($courseworkid);
-        $submission = submission::get_object($courseworkid, 'allocatableid', [$allocatable->id]);
+        $submission = submission::get_cached_object($courseworkid, ['allocatableid' => $allocatable->id]);
         if ($submission) {
             feedback::fill_pool_coursework($courseworkid);
-            $feedback = feedback::get_object($courseworkid, 'submissionid-stageidentifier', [$submission->id, $this->identifier()]);
+            $feedback = feedback::get_cached_object(
+                $courseworkid,
+                ['submissionid' => $submission->id, 'stageidentifier' => $this->identifier()]
+            );
         }
         return !empty($feedback);
     }
@@ -395,8 +384,13 @@ abstract class base {
      * @return bool|feedback
      */
     public function get_feedback_for_allocatable($allocatable) {
-        $params = [$allocatable->id(), $allocatable->type()];
-        $submission = submission::get_object($this->get_coursework()->id, 'allocatableid-allocatabletype', $params);
+        $submission = submission::get_cached_object(
+            $this->get_coursework()->id,
+            [
+                'allocatableid' => $allocatable->id(),
+                'allocatabletype' => $allocatable->type(),
+                ]
+        );
 
         if ($submission) {
             return $this->get_feedback_for_submission($submission);
@@ -411,7 +405,10 @@ abstract class base {
      */
     public function get_single_feedback($submission) {
         feedback::fill_pool_coursework($submission->courseworkid);
-        return feedback::get_object($submission->courseworkid, 'submissionid-stageidentifier', [$submission->id, 'assessor_1']);
+        return feedback::get_cached_object(
+            $submission->courseworkid,
+            ['submissionid' => $submission->id, 'stageidentifier' => 'assessor_1']
+        );
     }
 
     /**
@@ -440,7 +437,10 @@ abstract class base {
     public function stage_has_allocation() {
         $courseworkid = $this->get_courseworkid();
         allocation::fill_pool_coursework($courseworkid);
-        $record = allocation::get_object($courseworkid, 'stageidentifier', [$this->stageidentifier]);
+        $record = allocation::get_cached_object(
+            $courseworkid,
+            ['stageidentifier' => $this->stageidentifier]
+        );
 
         return !empty($record);
     }
@@ -455,12 +455,18 @@ abstract class base {
 
     /**
      * @param allocatable $allocatable
-     * @return bool
+     * @return allocation
      */
     public function get_allocation($allocatable) {
         $courseworkid = $this->coursework->id;
-        $params = [$allocatable->id(), $allocatable->type(), $this->identifier()];
-        return allocation::get_object($courseworkid, 'allocatableid-allocatabletype-stageidentifier', $params);
+        return allocation::get_cached_object(
+            $courseworkid,
+            [
+                'allocatableid' => $allocatable->id(),
+                'allocatabletype' => $allocatable->type(),
+                'stageidentifier' => $this->identifier(),
+            ]
+        );
     }
 
     /**
@@ -471,10 +477,13 @@ abstract class base {
     public function allocated_teacher_for($allocatable) {
         $courseworkid = $this->get_courseworkid();
         allocation::fill_pool_coursework($courseworkid);
-        $allocation = allocation::get_object(
+        $allocation = allocation::get_cached_object(
             $courseworkid,
-            'allocatableid-allocatabletype-stageidentifier',
-            [$allocatable->id(), $allocatable->type(), $this->identifier()]
+            [
+                'allocatableid' => $allocatable->id(),
+                'allocatabletype' => $allocatable->type(),
+                'stageidentifier' => $this->identifier(),
+            ]
         );
 
         if ($allocation) {
@@ -537,10 +546,13 @@ abstract class base {
         }
 
         assessment_set_membership::fill_pool_coursework($this->coursework->id);
-        $record = assessment_set_membership::get_object(
+        $record = assessment_set_membership::get_cached_object(
             $this->coursework->id,
-            'allocatableid-allocatabletype-stageidentifier',
-            [$allocatable->id(), $allocatable->type(), $this->stageidentifier]
+            [
+                'allocatableid' => $allocatable->id(),
+                'allocatabletype' => $allocatable->type(),
+                'stageidentifier' => $this->stageidentifier,
+            ]
         );
         return !empty($record);
     }
@@ -619,10 +631,13 @@ abstract class base {
     public function assessor_has_allocation($allocatable) {
         global $USER;
         allocation::fill_pool_coursework($this->coursework->id);
-        $allocation = allocation::get_object(
+        $allocation = allocation::get_cached_object(
             $this->coursework->id,
-            'allocatableid-allocatabletype-stageidentifier',
-            [$allocatable->id(), $allocatable->type(), $this->stageidentifier]
+            [
+                'allocatableid' => $allocatable->id(),
+                'allocatabletype' => $allocatable->type(),
+                'stageidentifier' => $this->identifier(),
+            ]
         );
         return ($allocation && $allocation->assessorid == $USER->id);
     }
@@ -685,10 +700,17 @@ abstract class base {
         foreach ($allstages as $stage) {
             // if coursework has sampling enabled, each stage must be checked if it uses sampling
             if ($this->get_coursework()->sampling_enabled()) {
-                $submission = submission::get_object($courseworkid, 'allocatableid-allocatabletype', [$allocatable->id(), $allocatable->type()]);
+                $submission = submission::get_cached_object(
+                    $courseworkid,
+                    [
+                        'allocatableid' => $allocatable->id(),
+                        'allocatabletype' => $allocatable->type(),
+                    ]
+                );
 
                 if (
-                    count($submission->get_assessor_feedbacks()) >= $submission->max_number_of_feedbacks()
+                    $submission
+                    && count($submission->get_assessor_feedbacks()) >= $submission->max_number_of_feedbacks()
                     && $submission->sampled_feedback_exists()
                 ) {
                     break;
@@ -739,7 +761,10 @@ abstract class base {
      */
     public function get_feedback_for_submission($submission) {
         $stageidentifier = $this->identifier();
-        return feedback::get_object($submission->courseworkid, 'submissionid-stageidentifier', [$submission->id, $stageidentifier]);
+        return feedback::get_cached_object(
+            $submission->courseworkid,
+            ['submissionid' => $submission->id, 'stageidentifier' => $stageidentifier]
+        ) ?? false;
     }
 
     /**
@@ -969,7 +994,7 @@ abstract class base {
                     $assessor = array_column($user, 'id');
                     if ($assessor) {
                         $assessorid = $assessor[0];
-                        $assessor = user::get_object($assessorid);
+                        $assessor = user::get_cached_object_from_id($assessorid);
                         break;
                     }
                 }

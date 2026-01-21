@@ -64,7 +64,13 @@ class deadline_extension extends table_base {
      */
     public static function allocatable_extension_allows_submission($allocatable, $coursework) {
         self::fill_pool_coursework($coursework->id);
-        $extension = self::get_object($coursework->id, 'allocatableid-allocatabletype', [$allocatable->id(), $allocatable->type()]);
+        $extension = self::get_cached_object(
+            $coursework->id,
+            [
+                'allocatableid' => $allocatable->id(),
+                'allocatabletype' => $allocatable->type(),
+            ]
+        );
 
         return !empty($extension) && $extension->extended_deadline > time();
     }
@@ -85,7 +91,13 @@ class deadline_extension extends table_base {
         }
         if ($allocatable) {
             self::fill_pool_coursework($coursework->id);
-            return self::get_object($coursework->id, 'allocatableid-allocatabletype', [$allocatable->id(), $allocatable->type()]);
+            return self::get_cached_object(
+                $coursework->id,
+                [
+                    'allocatableid' => $allocatable->id(),
+                    'allocatabletype' => $allocatable->type(),
+                ]
+            ) ?? false;
         }
     }
 
@@ -94,7 +106,7 @@ class deadline_extension extends table_base {
      */
     public function get_coursework() {
         if (!isset($this->coursework)) {
-            $this->coursework = coursework::get_object($this->courseworkid);
+            $this->coursework = coursework::get_cached_object_from_id($this->courseworkid);
         }
 
         return $this->coursework;
@@ -148,22 +160,6 @@ class deadline_extension extends table_base {
             }
         }
         return $result;
-    }
-
-    /**
-     *
-     * @param int $courseworkid
-     * @param $key
-     * @param $params
-     * @return mixed
-     * @throws coding_exception
-     */
-    public static function get_object($courseworkid, $key, $params) {
-        if (!isset(self::$pool[$courseworkid])) {
-            self::fill_pool_coursework($courseworkid);
-        }
-        $valuekey = implode('-', $params);
-        return self::$pool[$courseworkid][$key][$valuekey][0] ?? false;
     }
 
     /**

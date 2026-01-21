@@ -279,12 +279,16 @@ class ability extends framework\ability {
             'new',
             'mod_coursework\models\submission',
             function (submission $submission) {
-                $existsparams = [
-                    'courseworkid' => $submission->courseworkid,
-                    'allocatableid' => $submission->allocatableid,
-                    'allocatabletype' => $submission->allocatabletype,
-                ];
-                if (submission::exists($existsparams)) {
+                // Check using cached object to avoid repeated DB calls on grading page.
+                if (
+                    submission::get_cached_object(
+                        $submission->courseworkid,
+                        [
+                            'allocatableid' => $submission->allocatableid,
+                            'allocatabletype' => $submission->allocatabletype,
+                        ]
+                    )
+                ) {
                     $this->set_message('Submission already exists');
                     return true;
                 }
@@ -369,8 +373,10 @@ class ability extends framework\ability {
             'show',
             'mod_coursework\models\submission',
             function (submission $submission) {
-                return feedback::exists(
-                    ['submissionid' => $submission->id, 'assessorid' => $this->userid]
+                // Check using cached object to avoid repeated DB calls on grading page.
+                return (bool)feedback::get_cached_object(
+                    $submission->get_coursework()->id(),
+                    ['submissionid' => $submission->id(), 'assessorid' => $this->userid]
                 );
             }
         );
@@ -1238,16 +1244,15 @@ class ability extends framework\ability {
             'show',
             'mod_coursework\grading_table_row_base',
             function (grading_table_row_base $gradingtablerow) {
-                if ($gradingtablerow->has_submission()) {
-                    if (
-                        feedback::exists(
-                            ['submissionid' => $gradingtablerow->get_submission()->id, 'assessorid' => $this->userid]
-                        )
-                    ) {
-                        return true;
-                    }
-                }
-                return false;
+                // Check using cached object to avoid repeated DB calls on grading page.
+                return $gradingtablerow->has_submission()
+                    && feedback::get_cached_object(
+                        $gradingtablerow->get_coursework()->id(),
+                        [
+                            'submissionid' => $gradingtablerow->get_submission()->id(),
+                            'assessorid' => $this->userid,
+                        ],
+                    );
             }
         );
     }
@@ -1443,12 +1448,14 @@ class ability extends framework\ability {
             'new',
             'mod_coursework\models\deadline_extension',
             function (deadline_extension $deadlineextension) {
-                $conditions = [
-                    'allocatableid' => $deadlineextension->allocatableid,
-                    'allocatabletype' => $deadlineextension->allocatabletype,
-                    'courseworkid' => $deadlineextension->courseworkid,
-                ];
-                return deadline_extension::exists($conditions);
+                // Check using cached object to avoid repeated DB calls on grading page.
+                return (bool)deadline_extension::get_cached_object(
+                    $deadlineextension->courseworkid,
+                    [
+                        'allocatableid' => $deadlineextension->allocatableid,
+                        'allocatabletype' => $deadlineextension->allocatabletype,
+                    ]
+                );
             }
         );
     }

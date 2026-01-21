@@ -217,11 +217,12 @@ class user extends table_base implements allocatable, moderatable {
     }
 
     /**
-     * @param $id
-     * @return self
+     * Get the cached user object from its ID.
+     * @param int $id
+     * @return self|false
      * @throws \dml_exception
      */
-    public static function get_object($id) {
+    public static function get_cached_object_from_id(int $id) {
         if (!isset(self::$pool['id'][$id])) {
             global $DB;
             $user = $DB->get_record(self::$tablename, ['id' => $id]);
