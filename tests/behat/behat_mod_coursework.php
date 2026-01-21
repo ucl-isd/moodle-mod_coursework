@@ -3762,8 +3762,8 @@ class behat_mod_coursework extends behat_base {
      * Return a user record from a given full name ("firstname lastname")
      *
      * @param string $fullname
-     * @return mixed|stdClass
-     * @throws coding_exception
+     * @return stdClass The user record
+     * @throws coding_exception When the full name is invalid or the user cannot be found
      */
     private function get_user_from_fullname(string $fullname) {
         global $DB;

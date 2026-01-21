@@ -195,7 +195,7 @@ Feature: Double marking - blind
     And I should see "##+ 1 month##%d %B %Y, 8:00 AM##" in the "Student 1" "table_row"
 
   @javascript @_file_upload
-  Scenario: Student can submit a PDF fil
+  Scenario: Student can submit a PDF file
     When I am on the "Course 1" "course" page logged in as "student1"
 
     And I follow "Coursework 1"
