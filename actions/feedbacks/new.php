@@ -40,5 +40,6 @@ $params = [
 if ($stageidentifier === 'moderator') {
     throw new \core\exception\invalid_parameter_exception("Cannot create feedback for moderation stage");
 }
+$PAGE->requires->js_call_amd("mod_coursework/marking_guide_feedback_percent", 'init');
 $controller = new mod_coursework\controllers\feedback_controller($params);
 $controller->new_feedback();

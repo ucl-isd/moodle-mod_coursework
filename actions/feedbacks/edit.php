@@ -25,5 +25,6 @@ require_once(dirname(__FILE__) . '/../../../../config.php');
 $feedbackid = optional_param('feedbackid', 0, PARAM_INT);
 
 $params = ['feedbackid' => $feedbackid];
+$PAGE->requires->js_call_amd("mod_coursework/marking_guide_feedback_percent", 'init');
 $controller = new mod_coursework\controllers\feedback_controller($params);
 $controller->edit_feedback();
