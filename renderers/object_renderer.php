@@ -94,7 +94,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
             // Marker image.
             if ($feedback->assessor) {
-                $template->markerimg = $feedback->assessor()->get_user_picture_url();
+                $userpicture = new user_picture($feedback->assessor()->get_raw_record());
+                $userpicture->size = 100;
+                $template->markerimg = $userpicture->get_url($this->page)->out(false);
             }
         }
 

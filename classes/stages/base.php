@@ -695,7 +695,6 @@ abstract class base {
         $currentstage = false;
         $currentstageok = true;
         $courseworkid = $this->get_courseworkid();
-        submission::fill_pool_coursework($courseworkid);
 
         foreach ($allstages as $stage) {
             // if coursework has sampling enabled, each stage must be checked if it uses sampling

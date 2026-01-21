@@ -25,6 +25,7 @@ namespace mod_coursework\renderers;
 use context_user;
 use core\exception\moodle_exception;
 use core\output\plugin_renderer_base;
+use core\output\user_picture;
 use mod_coursework\ability;
 use mod_coursework\grading_report;
 use mod_coursework\grading_table_row_base;
@@ -107,6 +108,8 @@ class grading_report_renderer extends plugin_renderer_base {
                 // Dropdown filter markers array by id to ensure unique.
                 foreach ($trdata->markers as $marker) {
                     if (isset($marker->markerid)) {
+                        $usercontextid = $participantcontextids[$marker->markerid] ?? null;
+                        $marker->markerimg = user::get_picture_url_from_context_id($usercontextid, $marker->picture);
                         $markersarray[$marker->markerid] = $marker;
                     }
                 }

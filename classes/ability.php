@@ -1008,12 +1008,14 @@ class ability extends framework\ability {
             'edit',
             'mod_coursework\models\feedback',
             function (feedback $feedback) {
-                $isinitialgrade = $feedback->is_initial_assessor_feedback();
-                $hascapability = has_capability('mod/coursework:editinitialgrade', $feedback->get_context());
-                $iscreator = $feedback->assessorid == $this->userid;
-                $isallocated = $feedback->is_assessor_allocated();
-
-                return $isinitialgrade && $hascapability && ($iscreator || $isallocated);
+                if (!has_capability('mod/coursework:editinitialgrade', $feedback->get_context())) {
+                    return false;
+                }
+                if (!$feedback->is_initial_assessor_feedback()) {
+                    return false;
+                }
+                return $feedback->assessorid == $this->userid
+                    || $feedback->is_assessor_allocated(); // Line may involve a database query so done last.
             }
         );
     }
