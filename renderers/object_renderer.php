@@ -121,13 +121,13 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Renders advanced grading data into a custom list format.
+     * Render advanced grading for students.
      *
      * @param coursework $coursework
      * @param feedback $feedback
-     * @return string
+     * @return string Template HTML or ''
      */
-    protected function render_advanced_grading($coursework, $feedback) {
+    protected function render_advanced_grading(coursework $coursework, feedback $feedback): string {
         $gradingcontroller = $coursework->get_advanced_grading_active_controller();
         if (!$gradingcontroller) {
             return '';
@@ -198,6 +198,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                         if ($currentfilling && $currentfilling['levelid'] == $level['id']) {
                             $item->score = (float)$level['score'];
                             $item->remark = format_text($currentfilling['remark'] ?? '', FORMAT_HTML);
+                            // NOTE: definition can contain weird stuff in the db.
                             $item->rubricdefinition = s($level['definition'] ?? '');
                             if ($item->remark || $item->rubricdefinition) {
                                 $item->hascomments = true;
