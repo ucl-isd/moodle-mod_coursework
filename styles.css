@@ -3,9 +3,10 @@
 Coursework.
 **/
 
-/* Rubric and advanced grading forms. */
 .cm-type-coursework,
 .path-mod-coursework {
+
+    /* Rubric and advanced grading forms. */
     #rubric-rubric,
     #advancedgrading-criteria {
         display: block;
@@ -92,10 +93,11 @@ Coursework.
                     font-weight: bold;
                 }
             }
-
-            &:hover {
-                background-color: var(--light);
-                cursor: pointer;
+            &:has(.radio) {
+                &:hover {
+                    background-color: var(--light);
+                    cursor: pointer;
+                }
             }
         }
 
