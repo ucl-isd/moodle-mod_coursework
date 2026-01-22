@@ -185,11 +185,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 $item->maxscore = (float)($criterion['maxscore'] ?? 0);
                 $item->score = $currentfilling ? (float)($currentfilling['score'] ?? 0) : 0;
                 $item->remark = $currentfilling ? format_text($currentfilling['remark'] ?? '', FORMAT_HTML) : '';
-                if ($item->remark) {
-                    $item->hascomments = true;
-                }
             } else {
-                // Rubric data using array for levels.
+                // Rubric data using array for 'levels'.
                 if (isset($criterion['levels'])) {
                     foreach ($criterion['levels'] as $level) {
                         if ((float)$level['score'] > $item->maxscore) {
@@ -200,12 +197,14 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                             $item->remark = format_text($currentfilling['remark'] ?? '', FORMAT_HTML);
                             // NOTE: definition can contain weird stuff in the db.
                             $item->rubricdefinition = s($level['definition'] ?? '');
-                            if ($item->remark || $item->rubricdefinition) {
-                                $item->hascomments = true;
-                            }
                         }
                     }
                 }
+            }
+
+            // Have we got comments - a remark or rubric definition.
+            if ($item->remark || $item->rubricdefinition) {
+                $item->hascomments = true;
             }
 
             // Percentage for progress - round to the nearest whole number.
