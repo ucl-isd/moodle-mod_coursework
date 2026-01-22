@@ -142,12 +142,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             return '';
         }
 
+        $template = new stdClass();
+        $template->customgrading = [];
+
         $gradingdefinition = $gradingcontroller->get_definition();
-
-        // Check if it's a guide or rubric using array key checks on the definition object.
         $isguide = isset($gradingdefinition->guide_criteria);
-        $criteria = $isguide ? $gradingdefinition->guide_criteria : $gradingdefinition->rubric_criteria;
-
         // Use the filling method for the guide or rubric.
         if ($isguide) {
             $filling = $instance->get_guide_filling();
@@ -156,9 +155,9 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
         $fillings = $filling['criteria'] ?? [];
 
-        $template = new stdClass();
-        $template->customgrading = [];
 
+        // Critera.
+        $criteria = $isguide ? $gradingdefinition->guide_criteria : $gradingdefinition->rubric_criteria;
         foreach ($criteria as $criterion) {
             $criterionid = $criterion['id'];
             $currentfilling = null;
@@ -177,6 +176,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $format = $criterion['descriptionformat'] ?? FORMAT_HTML;
             $item->description = $isguide ? format_text($description, $format) : '';
 
+            // Critera marks and feedback.
             $item->maxscore = 0;
             $item->score = 0;
             $item->remark = '';
@@ -189,7 +189,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                     $item->hascomments = true;
                 }
             } else {
-                // Rubric logic using array access for levels.
+                // Rubric data using array for levels.
                 if (isset($criterion['levels'])) {
                     foreach ($criterion['levels'] as $level) {
                         if ((float)$level['score'] > $item->maxscore) {
@@ -209,8 +209,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             }
 
             // Percentage for progress - round to the nearest whole number.
-            $percentraw = ($item->maxscore > 0) ? ($item->score / $item->maxscore) * 100 : 0;
-            $item->percent = (int)round($percentraw);
+            $percent = ($item->maxscore > 0) ? ($item->score / $item->maxscore) * 100 : 0;
+            $item->percent = (int)round($percent);
 
             $template->customgrading[] = $item;
         }

@@ -349,6 +349,7 @@ $string['latesubmissionsallowed'] = 'Late submissions allowed';
 $string['latesubmissionsnotallowed'] = 'The deadline has now passed and late submissions (or updates to existing submissions) are not allowed.';
 $string['lowerlimit'] = 'Lower limit';
 $string['mark'] = 'Mark';
+$string['markdisplay'] = 'Mark: {$a->score} / {$a->maxscore}';
 $string['mark_hidden_manager'] = 'Hidden until all initial marks are complete';
 $string['mark_hidden_teacher'] = 'Hidden until marks are agreed';
 $string['markalreadyexists'] = 'Mark already exists';
