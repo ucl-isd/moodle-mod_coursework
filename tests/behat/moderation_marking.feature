@@ -1,8 +1,8 @@
 @mod @mod_coursework @moderation-marking
-Feature: Double marking - blind
+Feature: Moderated marking - blind
   In order to ensure double marking works correctly
   As an admin
-  I want to perform the full coursework workflow with blind marking.
+  I want to perform the full coursework workflow with moderated blind marking.
 
   Background:
     And the following "roles" exist:
