@@ -84,8 +84,8 @@ class mod_coursework_behat_student_page extends mod_coursework_behat_page_base {
      * @return string|null
      */
     public function get_visible_grade(): ?string {
-        // final_feedback_grade
-        $finalgradecell = $this->getpage()->find('css', '#final_feedback_grade');
+        // behat-final-feedback-grade
+        $finalgradecell = $this->getpage()->find('css', '#behat-final-feedback-grade');
         return $finalgradecell ? $finalgradecell->getText() : null;
     }
 
@@ -93,8 +93,8 @@ class mod_coursework_behat_student_page extends mod_coursework_behat_page_base {
      * @return string
      */
     public function get_visible_feedback() {
-        // final_feedback_grade
-        $finalgradecell = $this->getpage()->find('css', '#final_feedback_comment');
+        // behat-final-feedback-grade
+        $finalgradecell = $this->getpage()->find('css', '#behat-final-feedback-comment');
         return $finalgradecell->getText();
     }
 

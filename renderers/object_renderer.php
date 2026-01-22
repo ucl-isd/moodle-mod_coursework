@@ -155,8 +155,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
         $fillings = $filling['criteria'] ?? [];
 
-
-        // Critera.
+        // Criteria.
         $criteria = $isguide ? $gradingdefinition->guide_criteria : $gradingdefinition->rubric_criteria;
         foreach ($criteria as $criterion) {
             $criterionid = $criterion['id'];
@@ -176,7 +175,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $format = $criterion['descriptionformat'] ?? FORMAT_HTML;
             $item->description = $isguide ? format_text($description, $format) : '';
 
-            // Critera marks and feedback.
+            // Criteria marks and feedback.
             $item->maxscore = 0;
             $item->score = 0;
             $item->remark = '';

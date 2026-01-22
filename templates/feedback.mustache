@@ -29,7 +29,7 @@
     }
 }}
 
-<div class="coursework-feedback" data-behat-markstage="{{markingstage}}">
+<div class="coursework-feedback animate-enter" data-behat-markstage="{{markingstage}}">
     {{#title}}
         <h3>{{title}}</h3>
     {{/title}}
@@ -61,10 +61,10 @@
         <div class="{{#markername}} chat-bubble-bordered {{/markername}}">
             {{! Feedback comment. }}
             {{#feedbackcomment}}
-            <div id="final_feedback_comment">
-                <div class="small text-muted">
-                    {{#str}} feedback, mod_coursework {{/str}}
-                </div>
+            <div class="small text-muted">
+                {{#str}} feedback, mod_coursework {{/str}}
+            </div>
+            <div id="behat-final-feedback-comment">
                 {{{.}}}
             </div>
             {{/feedbackcomment}}
@@ -82,8 +82,10 @@
 
             {{#mark}}
                 <div>
-                    {{#str}} mark, mod_coursework {{/str}}
-                    <br><span id="final_feedback_grade" class="h4">{{{.}}}</span>
+                    <div>{{#str}} mark, mod_coursework {{/str}}</div>
+                    <div class="h4" id="behat-final-feedback-grade">
+                        {{{.}}}
+                    </div>
                 </div>
             {{/mark}}
         </div>
