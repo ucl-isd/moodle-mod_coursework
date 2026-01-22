@@ -383,7 +383,7 @@ Feature: Moderated marking - blind
     And I am on the "Course 1" "course" page logged in as "moderator1"
     And I follow "Coursework 1"
     And I click on "Agreed" "link" in the ".mod-coursework-submissions-row:nth-child(1)" "css_element"
-    Then I should see "Moderation for "
+    Then I should see "Moderation for"
     And I should see "Moderator 1"
     And "Save changes" "button" should exist
 
@@ -396,6 +396,6 @@ Feature: Moderated marking - blind
     And I am on the "Course 1" "course" page logged in as "moderator1"
     And I follow "Coursework 1"
     And I click on "Agreed" "link" in the ".mod-coursework-submissions-row:nth-child(1)" "css_element"
-    Then I should see "Moderation for "
+    Then I should see "Moderation for"
     And I should see "Moderator 1"
     And "Save changes" "button" should not exist
