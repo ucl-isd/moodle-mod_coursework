@@ -48,8 +48,8 @@
 
 <ul class="list-unstyled">
     {{#customgrading}}
-    <li data-behat-criteria="criterion-{{id}}">
-        <h5 class="mb-0" data-behat-criteria-name="criterion-name">{{name}}</h5>
+    <li id="behat-criterion-{{id}}">
+        <h5 class="mb-0">{{name}}</h5>
         {{#description}}
         <div class="small">{{{description}}}</div>
         {{/description}}
@@ -78,7 +78,7 @@
                 </div>
                 <div>
                     {{#remark}}
-                    <div data-behat-criteria-remark="criterion-remark"
+                    <div class="behat-criterion-remark"
                         {{#rubricdefinition}} class="mb-3" {{/rubricdefinition}}>
                         {{{.}}}
                     </div>
