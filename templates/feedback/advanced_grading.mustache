@@ -1,0 +1,49 @@
+<ul class="list-unstyled">
+    {{#customgrading}}
+    <li data-behat-criteria="criterion-{{id}}">
+        <h5 class="mb-0" data-behat-criteria-name="criterion-name">{{name}}</h5>
+        {{#description}}
+        <div class="small">{{{description}}}</div>
+        {{/description}}
+
+        <div class="row pt-2">
+            <div class="col-sm-3 mt-2">
+                <div class="small">
+                    {{#str}} mark, mod_coursework {{/str}}: {{score}} / {{maxscore}}
+                </div>
+                <div class="progress" style="height:.5rem;">
+                    <div class="progress-bar bg-success"
+                         role="progressbar"
+                         aria-label="{{name}} progress"
+                         aria-valuenow="{{score}}"
+                         style="width: {{percent}}%"
+                         aria-valuemin="0"
+                         aria-valuemax="{{maxscore}}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col mt-2">
+            {{#hascomments}}
+                <div class="small text-muted">
+                    {{#str}} feedback, mod_coursework {{/str}}
+                </div>
+                <div>
+                    {{#remark}}
+                    <div data-behat-criteria-remark="criterion-remark"
+                        {{#rubricdefinition}} class="mb-3" {{/rubricdefinition}}>
+                        {{{.}}}
+                    </div>
+                    {{/remark}}
+
+                    {{#rubricdefinition}}
+                    <p>{{{.}}}</p>
+                    {{/rubricdefinition}}
+                </div>
+            {{/hascomments}}
+            </div>
+        </div>
+        <hr>
+    </li>
+    {{/customgrading}}
+</ul>

@@ -109,8 +109,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         // Rubric/Advanced grading stuff if it's there.
         if (feedback::is_stage_using_advanced_grading($coursework, $feedback)) {
-            $controller = $coursework->get_advanced_grading_active_controller();
-            $template->advancedgradinghtml = $controller->render_grade($this->page, $feedback->id, null, '', false);
+            $template->advancedgradinghtml = $this->render_advanced_grading($coursework, $feedback);
         }
 
         if ($template->feedbackcomment || isset($template->feedbackfileshtml)) {
@@ -119,6 +118,103 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         // Return html from template.
         return $this->render_from_template('mod_coursework/feedback', $template);
+    }
+
+    /**
+     * Renders advanced grading data into a custom list format.
+     *
+     * @param coursework $coursework
+     * @param feedback $feedback
+     * @return string
+     */
+    protected function render_advanced_grading($coursework, $feedback) {
+        $gradingcontroller = $coursework->get_advanced_grading_active_controller();
+        if (!$gradingcontroller) {
+            return '';
+        }
+
+        $instance = $gradingcontroller->get_current_instance(
+            $feedback->assessorid,
+            $feedback->id
+        );
+
+        if (!$instance) {
+            return '';
+        }
+
+        $gradingdefinition = $gradingcontroller->get_definition();
+
+        // Check if it's a guide or rubric using array key checks on the definition object.
+        $isguide = isset($gradingdefinition->guide_criteria);
+        $criteria = $isguide ? $gradingdefinition->guide_criteria : $gradingdefinition->rubric_criteria;
+
+        // Use the filling method for the guide or rubric.
+        if ($isguide) {
+            $filling = $instance->get_guide_filling();
+        } else {
+            $filling = $instance->get_rubric_filling();
+        }
+        $fillings = $filling['criteria'] ?? [];
+
+        $template = new stdClass();
+        $template->customgrading = [];
+
+        foreach ($criteria as $criterion) {
+            $criterionid = $criterion['id'];
+            $currentfilling = null;
+            foreach ($fillings as $f) {
+                if ($f['criterionid'] == $criterionid) {
+                    $currentfilling = $f;
+                    break;
+                }
+            }
+
+            $item = new stdClass();
+            $item->id = $criterionid;
+            $item->name = $isguide ? $criterion['shortname'] : $criterion['description'];
+
+            $description = $criterion['description'] ?? '';
+            $format = $criterion['descriptionformat'] ?? FORMAT_HTML;
+            $item->description = $isguide ? format_text($description, $format) : '';
+
+            $item->maxscore = 0;
+            $item->score = 0;
+            $item->remark = '';
+
+            if ($isguide) {
+                $item->maxscore = (float)($criterion['maxscore'] ?? 0);
+                $item->score = $currentfilling ? (float)($currentfilling['score'] ?? 0) : 0;
+                $item->remark = $currentfilling ? format_text($currentfilling['remark'] ?? '', FORMAT_HTML) : '';
+                if ($item->remark) {
+                    $item->hascomments = true;
+                }
+            } else {
+                // Rubric logic using array access for levels.
+                if (isset($criterion['levels'])) {
+                    foreach ($criterion['levels'] as $level) {
+                        if ((float)$level['score'] > $item->maxscore) {
+                            $item->maxscore = (float)$level['score'];
+                        }
+                        if ($currentfilling && $currentfilling['levelid'] == $level['id']) {
+                            $item->score = (float)$level['score'];
+                            $item->remark = format_text($currentfilling['remark'] ?? '', FORMAT_HTML);
+                            $item->rubricdefinition = s($level['definition'] ?? '');
+                            if ($item->remark || $item->rubricdefinition) {
+                                $item->hascomments = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Percentage for progress - round to the nearest whole number.
+            $percentraw = ($item->maxscore > 0) ? ($item->score / $item->maxscore) * 100 : 0;
+            $item->percent = (int)round($percentraw);
+
+            $template->customgrading[] = $item;
+        }
+
+        return $this->render_from_template('mod_coursework/feedback/advanced_grading', $template);
     }
 
     /**
