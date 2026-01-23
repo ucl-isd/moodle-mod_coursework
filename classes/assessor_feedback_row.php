@@ -34,11 +34,6 @@ use mod_coursework\stages\base as stage_base;
  */
 class assessor_feedback_row {
     /**
-     * @var int So we can have a row with no feedback, but still see who is allocated to mark it.
-     */
-    private $assessorid;
-
-    /**
      * @var models\submission|null
      */
     private $submission;
@@ -69,35 +64,6 @@ class assessor_feedback_row {
         $this->coursework = $coursework;
     }
 
-    /**
-     * Lets us know if the current user was the author of this bit of feedback.
-     *
-     * @return bool
-     */
-    public function user_is_assessor() {
-
-        global $USER;
-
-        return $this->get_assessor_id() == $USER->id;
-    }
-
-    /**
-     * Chained getter for loose coupling.
-     *
-     * @return string
-     */
-    public function get_assessor_username() {
-        return $this->get_stage()->get_allocated_assessor_name($this->get_allocatable());
-    }
-
-    /**
-     * Gets the assessor id from the feedback.
-     *
-     * @return int
-     */
-    public function get_assessor_id() {
-        return $this->assessorid;
-    }
 
     /**
      * Gets the assessor from the feedback.
@@ -109,23 +75,6 @@ class assessor_feedback_row {
             return $this->get_feedback()->assessor();
         }
         return $this->get_stage()->get_allocated_assessor($this->allocatable);
-    }
-
-    /**
-     * Gets the assessor id from the feedback
-     *
-     * @return user
-     */
-    public function get_graded_by() {
-        return $this->get_feedback()->assessor();
-    }
-
-    /**
-     * Gets the grader's name and link to the profile
-     * @return string
-     */
-    public function get_graders_name() {
-        return  $this->get_graded_by()->profile_link();
     }
 
     /**
@@ -214,12 +163,5 @@ class assessor_feedback_row {
      */
     public function get_allocatable() {
         return $this->allocatable;
-    }
-
-    /**
-     * @return bool|models\allocation
-     */
-    private function get_allocation() {
-        return $this->stage->get_allocation($this->get_allocatable());
     }
 }
