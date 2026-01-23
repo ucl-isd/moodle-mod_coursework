@@ -26,7 +26,14 @@ const MAX_VALUE_PERCENT = 100;
 const MAX_DECIMAL_PLACES = 1;
 
 const getDecimalPlaces = () => {
-    return Math.max(Math.min(Number(document.getElementById('decimal-places').value), MAX_DECIMAL_PLACES), 0);
+    const decimcalsInput = document.getElementById('decimal-places');
+    if (decimcalsInput) {
+        return Math.max(Math.min(Number(decimcalsInput.value), MAX_DECIMAL_PLACES), 0);
+    } else {
+        // Not being used in this demo.
+        return 2;
+    }
+
 };
 
 const getFieldName = (criterionNumber, isPercent) => {
@@ -90,7 +97,6 @@ const addPercentageFields = () => {
         if (scoreInputElem.value !== '') {
             setPercentageFromScore(criterionNumber, Number(scoreInputElem.value), scoreOutOf);
         }
-
     });
 };
 
@@ -106,21 +112,28 @@ const addListeners = () => {
     });
 
     document.getElementById('decimal-places').addEventListener(
-        'input',
-        (event) => {
-            const newValue = getDecimalPlaces();
-            if (event.target.value !== newValue) {
-                event.target.value = newValue;
+            'input',
+            (event) => {
+                const newValue = getDecimalPlaces();
+                if (event.target.value !== newValue) {
+                    event.target.value = newValue;
+                }
             }
-        }
-    );
+        );
 };
 
 const setPercentageFromScore = (criterionNumber, scoreValue, scoreOutOf) => {
-    document.getElementById(getFieldName(criterionNumber, true)).value =
-        scoreValue === ''
-            ? ''
-            : (scoreValue / scoreOutOf * MAX_VALUE_PERCENT).toFixed(getDecimalPlaces());
+    const percentElem = document.getElementById(getFieldName(criterionNumber, true));
+    if (scoreValue === '') {
+        percentElem.value = '';
+        return;
+    }
+    const newValue = scoreValue / scoreOutOf * MAX_VALUE_PERCENT;
+    if (newValue === Math.floor(newValue)) {
+        percentElem.value = newValue.toFixed(0);
+        return;
+    }
+    percentElem.value = newValue.toFixed(getDecimalPlaces());
 };
 
 const setScoreFromPercent = (criterionNumber, percentValue) => {

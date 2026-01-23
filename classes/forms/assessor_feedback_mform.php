@@ -269,7 +269,7 @@ class assessor_feedback_mform extends moodleform {
                 $this->submission
             );
             echo $OUTPUT->render_from_template(
-                'coursework/marking_guide_agree_grades_form',
+                'coursework/marking_guide/agree_grades_form',
                 $data->export_for_template($OUTPUT)
             );
         } else {

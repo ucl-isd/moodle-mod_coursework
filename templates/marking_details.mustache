@@ -22,12 +22,9 @@
             </ul>
         </div>
         {{/lasteditedby}}
+        {{! TODO CTP-5695 this is a temporary form for prototype percentage grade column - needs conditionally displaying, styling etc }}
         <div class="col-2">
-            {{! TODO this is a temporary form for prototype percentage grade column (CTP-5695) including temporary inline style }}
-            <form style="max-width: 150px;">
-                <label for="decimal-places" class="d-block"><strong>{{#str}}decimalpoints, quiz{{/str}}</strong></label>
-                <input class="form-control" id="decimal-places" name="decimal-places" type="number" step="1" value="0">
-            </form>
+            {{>coursework/marking_guide/rounding_strategy_form}}
         </div>
     </div>
 </div>
