@@ -147,16 +147,18 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $gradingdefinition = $gradingcontroller->get_definition();
         $isguide = isset($gradingdefinition->guide_criteria);
-        // Use the filling method for the guide or rubric.
+
+        // Filling method & criteria for the guide or rubric.
         if ($isguide) {
             $filling = $instance->get_guide_filling();
+            $criteria = $gradingdefinition->guide_criteria;
         } else {
             $filling = $instance->get_rubric_filling();
+            $criteria = $gradingdefinition->rubric_criteria;
         }
         $fillings = $filling['criteria'] ?? [];
 
         // Criteria.
-        $criteria = $isguide ? $gradingdefinition->guide_criteria : $gradingdefinition->rubric_criteria;
         foreach ($criteria as $criterion) {
             $criterionid = $criterion['id'];
             $currentfilling = null;
