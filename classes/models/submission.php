@@ -1590,12 +1590,7 @@ class submission extends table_base implements renderable {
     protected static function get_cache_array($courseworkid) {
         global $DB;
         $records = $DB->get_records(static::$tablename, ['courseworkid' => $courseworkid]);
-        $result = [
-            'id' => [],
-            'allocatableid' => [],
-            'finalisedstatus' => [],
-            'allocatableid-allocatabletype' => [],
-        ];
+        $result = array_fill_keys(self::get_valid_cache_keys(), []);
         if ($records) {
             foreach ($records as $record) {
                 $object = new self($record);
@@ -1606,6 +1601,19 @@ class submission extends table_base implements renderable {
             }
         }
         return $result;
+    }
+
+    /**
+     * Get the allowed/expected cache keys for this class when @see self::get_cached_object() is called.
+     * @return string[]
+     */
+    protected static function get_valid_cache_keys(): array {
+        return [
+            'id',
+            'allocatableid',
+            'finalisedstatus',
+            'allocatableid-allocatabletype',
+        ];
     }
 
     /**

@@ -65,11 +65,7 @@ class assessment_set_membership extends table_base implements moderatable {
     protected static function get_cache_array($courseworkid) {
         global $DB;
         $records = $DB->get_records(self::$tablename, ['courseworkid' => $courseworkid]);
-        $result = [
-            'allocatableid-allocatabletype' => [],
-            'allocatableid-allocatabletype-stageidentifier' => [],
-            'allocatableid-stageidentifier-selectiontype' => [],
-        ];
+        $result = array_fill_keys(self::get_valid_cache_keys(), []);
         if ($records) {
             foreach ($records as $record) {
                 $object = new self($record);
@@ -79,6 +75,18 @@ class assessment_set_membership extends table_base implements moderatable {
             }
         }
         return $result;
+    }
+
+    /**
+     * Get the allowed/expected cache keys for this class when @see self::get_cached_object() is called.
+     * @return string[]
+     */
+    protected static function get_valid_cache_keys(): array {
+        return [
+            'allocatableid-allocatabletype',
+            'allocatableid-allocatabletype-stageidentifier',
+            'allocatableid-stageidentifier-selectiontype',
+        ];
     }
 
     /**

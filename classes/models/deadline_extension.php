@@ -150,9 +150,7 @@ class deadline_extension extends table_base {
     protected static function get_cache_array($courseworkid) {
         global $DB;
         $records = $DB->get_records(static::$tablename, ['courseworkid' => $courseworkid]);
-        $result = [
-            'allocatableid-allocatabletype' => [],
-        ];
+        $result = array_fill_keys(self::get_valid_cache_keys(), []);
         if ($records) {
             foreach ($records as $record) {
                 $object = new self($record);
@@ -160,6 +158,14 @@ class deadline_extension extends table_base {
             }
         }
         return $result;
+    }
+
+    /**
+     * Get the allowed/expected cache keys for this class when @see self::get_cached_object() is called.
+     * @return string[]
+     */
+    protected static function get_valid_cache_keys(): array {
+        return ['allocatableid-allocatabletype'];
     }
 
     /**
