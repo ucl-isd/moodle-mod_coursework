@@ -71,7 +71,7 @@ Coursework.
                 margin: 0;
                 margin-left: auto;
                 padding: 0.25em 0.6em !important;
-                text-wrap: nowrap;
+                text-wrap: nowrap; /* stylelint-disable-line */
                 font-style: normal;
                 font-size: small;
                 color: var(--dark);
