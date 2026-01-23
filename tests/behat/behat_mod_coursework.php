@@ -2367,7 +2367,7 @@ class behat_mod_coursework extends behat_base {
      * @Then /^I should see the rubric comment "(?P<comment_string>(?:[^"]|\\")*)"$/
      */
     public function i_should_see_the_rubric_comment_on_the_page(string $comment) {
-        $celltext = $this->find('css', '#behat-criterion-0 .behat-criterion-remark')->getText();
+        $celltext = $this->find('css', '.coursework-feedback .behat-criterion-remark')->getText();
         if ($comment !== $celltext) {
             throw new ExpectationException("Expected commennt '$comment' got '$celltext'", $this->getsession());
         }
