@@ -186,12 +186,13 @@ class assessor_feedback_row {
         if (isset($this->submission)) {
             return $this->submission;
         }
-        $params = [
-            'courseworkid' => $this->get_coursework()->id,
-            'allocatableid' => $this->get_allocatable()->id(),
-            'allocatabletype' => $this->get_allocatable()->type(),
-        ];
-        $this->submission = submission::find($params);
+        $this->submission = submission::get_cached_object(
+            $this->get_coursework()->id,
+            [
+                'allocatableid' => $this->get_allocatable()->id(),
+                'allocatabletype' => $this->get_allocatable()->type(),
+            ]
+        );
         return $this->submission;
     }
 
