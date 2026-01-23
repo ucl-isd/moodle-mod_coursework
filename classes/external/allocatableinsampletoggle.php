@@ -46,7 +46,7 @@ class allocatableinsampletoggle extends external_api {
     /**
      * Execute the function.
      *
-     * @param int $extensionid
+     * @param int $courseworkid
      * @param int $allocatableid
      * @param string $stageidentifier
      * @param bool $togglestate
