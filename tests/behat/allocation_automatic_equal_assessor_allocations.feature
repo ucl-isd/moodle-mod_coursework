@@ -1,10 +1,10 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_markingallocation
 Feature: Automatic equal assessor allocations
 
-    As a manager
-    I want to be able to allocate assesors to students
-    So that the marking is fairly distributed and the interface is less cluttered for teachers,
-    and they don't mark to many or too few.
+  As a manager
+  I want to be able to allocate assesors to students
+  So that the marking is fairly distributed and the interface is less cluttered for teachers,
+  and they don't mark to many or too few.
 
   Background:
     Given the managers are not allowed to grade
@@ -20,7 +20,6 @@ Feature: Automatic equal assessor allocations
 
   Scenario: Automatic allocations should work
     When I visit the allocations page
-    And I save everything
     And I log out
     And I log in as the teacher
     And I visit the coursework page
@@ -28,7 +27,6 @@ Feature: Automatic equal assessor allocations
 
   Scenario: Automatic allocations of non-manually allocated should work
     When I visit the allocations page
-    And I save everything
     And I log out
     And I log in as the teacher
     And I visit the coursework page

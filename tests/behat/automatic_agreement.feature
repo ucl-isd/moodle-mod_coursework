@@ -1,4 +1,4 @@
-@mod @mod_coursework @mod_coursework_automatic_agreement @oslwip
+@mod @mod_coursework @mod_coursework_automatic_agreement
 Feature: Automatic agreement for simple grades
 
     As an user with add/edit coursework capability

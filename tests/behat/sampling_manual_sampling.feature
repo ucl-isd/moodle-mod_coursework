@@ -1,9 +1,9 @@
 @mod @mod_coursework @mod_coursework_sampling
 Feature: Manual sampling
 
-    As a teacher
-    I can manually select the submissions to be included in the sample for a single feedback stage
-    So I can select correct sample of students for double marking
+  As a teacher
+  I can manually select the submissions to be included in the sample for a single feedback stage
+  So I can select correct sample of students for double marking
 
   Background:
     Given there is a course
@@ -22,10 +22,11 @@ Feature: Manual sampling
     And the submission deadline has passed
     And the submission is finalised
 
+  @javascript
   Scenario: Manual sampling should not include student when not selected
     When I visit the allocations page
-    And I deselect a student as a part of the sample for the second stage
-    And I save everything
+    And I set the following fields in the "student student2" "table_row" to these values:
+      | Included in sample | false |
     And I log out
     And I log in as the teacher
     And I visit the coursework page
@@ -34,10 +35,11 @@ Feature: Manual sampling
     And I should not see "Add feedback"
     Then I should not be able to add the second grade for this student
 
+  @javascript
   Scenario: Single grade should go to the gradebook column when only first stage is in sample
     When I visit the allocations page
-    And I deselect a student as a part of the sample for the second stage
-    And I save everything
+    And I set the following fields in the "student student2" "table_row" to these values:
+      | Included in sample | false |
     And I log out
     And I log in as the teacher
     And I visit the coursework page
@@ -46,8 +48,8 @@ Feature: Manual sampling
   @javascript
   Scenario: Manual sampling should include student when selected
     When I visit the allocations page
-    And I select a student as a part of the sample for the second stage
-    And I save everything
+    And I set the following fields in the "student student2" "table_row" to these values:
+      | Included in sample | true |
     And I log out
     And I log in as the teacher
     And I visit the coursework page

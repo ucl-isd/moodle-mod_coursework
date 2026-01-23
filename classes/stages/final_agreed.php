@@ -49,6 +49,13 @@ class final_agreed extends base {
     }
 
     /**
+     * @return bool
+     */
+    public function uses_sampling() {
+        return false;
+    }
+
+    /**
      * @return string
      */
     protected function strategy_name(): string {

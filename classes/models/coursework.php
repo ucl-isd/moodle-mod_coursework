@@ -36,8 +36,6 @@ use core_availability\info_module;
 use core_component;
 use core_plugin_manager;
 use dml_exception;
-use dml_missing_record_exception;
-use dml_multiple_records_exception;
 use Exception;
 use grade_item;
 use grading_manager;
@@ -52,7 +50,6 @@ use mod_coursework\candidateprovider_manager;
 use mod_coursework\cron;
 use mod_coursework\export\grading_sheet;
 use mod_coursework\framework\table_base;
-use mod_coursework\grading_report;
 use mod_coursework\plagiarism_helpers\base as plagiarism_base;
 use mod_coursework\stages\assessor;
 use mod_coursework\stages\base as stage_base;
@@ -2839,6 +2836,18 @@ class coursework extends table_base {
     }
 
     /**
+     * @param int $allocatableid
+     * @return allocatable
+     */
+    public function get_allocatable_from_id($allocatableid): allocatable {
+        if ($this->is_configured_to_have_group_submissions()) {
+            return group::find($allocatableid);
+        } else {
+            return user::find($allocatableid);
+        }
+    }
+
+    /**
      * * This function returns allocatable extension if given
      * @param $allocatable
      * @return bool/int
@@ -2955,7 +2964,7 @@ class coursework extends table_base {
     /**
      *
      * @param int $courseworkid
-     * @return bool
+     * @return self|bool
      * @throws dml_exception
      */
     public static function get_cached_object_from_id($courseworkid) {
