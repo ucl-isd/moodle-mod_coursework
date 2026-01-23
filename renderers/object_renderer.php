@@ -186,24 +186,23 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                 $item->maxscore = (float)($criterion['maxscore'] ?? 0);
                 $item->score = $currentfilling ? (float)($currentfilling['score'] ?? 0) : 0;
                 $item->remark = $currentfilling ? format_text($currentfilling['remark'] ?? '', FORMAT_HTML) : '';
-            } else {
+            } else if (isset($criterion['levels'])) {
                 // Rubric data using array for 'levels'.
-                if (isset($criterion['levels'])) {
-                    foreach ($criterion['levels'] as $level) {
-                        if ((float)$level['score'] > $item->maxscore) {
-                            $item->maxscore = (float)$level['score'];
-                        }
-                        if ($currentfilling && $currentfilling['levelid'] == $level['id']) {
-                            $item->score = (float)$level['score'];
-                            $item->remark = format_text($currentfilling['remark'] ?? '', FORMAT_HTML);
-                            // NOTE: definition can contain weird stuff in the db.
-                            $item->rubricdefinition = s($level['definition'] ?? '');
-                        }
+                foreach ($criterion['levels'] as $level) {
+                    if ((float)$level['score'] > $item->maxscore) {
+                        $item->maxscore = (float)$level['score'];
+                    }
+                    if ($currentfilling && $currentfilling['levelid'] == $level['id']) {
+                        $item->score = (float)$level['score'];
+                        $item->remark = format_text($currentfilling['remark'] ?? '', FORMAT_HTML);
+                        // NOTE: Using s() not format_text().
+                        // So rubric definition is plain text, without filters, and removing legacy DB content.
+                        $item->rubricdefinition = s($level['definition'] ?? '');
                     }
                 }
             }
 
-            // Have we got comments - a remark or rubric definition.
+            // Have we got comments? remark or rubric definition.
             if ($item->remark || $item->rubricdefinition) {
                 $item->hascomments = true;
             }
