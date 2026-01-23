@@ -1740,7 +1740,7 @@ class behat_mod_coursework extends behat_base {
      */
     public function i_should_see_the_final_grade_on_the_student_page($negate = false) {
 
-        $cssid = '#final_feedback_grade';
+        $cssid = '#behat-final-feedback-grade';
 
         if ($negate) {
             $this->ensure_element_does_not_exist($cssid, 'css_element');
@@ -1761,9 +1761,9 @@ class behat_mod_coursework extends behat_base {
     public function i_should_see_the_grade_comment_on_the_student_page(string $shouldornot, string $comment = 'New comment') {
 
         if ($shouldornot == 'should not') {
-            $this->ensure_element_does_not_exist('#final_feedback_comment', 'css_element');
+            $this->ensure_element_does_not_exist('#behat-final-feedback-comment', 'css_element');
         } else {
-            $commentfield = $this->find('css', '#final_feedback_comment');
+            $commentfield = $this->find('css', '#behat-final-feedback-comment');
             $text = $commentfield->getText();
             if ($text != $comment) {
                 throw new ExpectationException("Got comment '$text' expected '$comment'", $this->getsession());
@@ -2105,7 +2105,7 @@ class behat_mod_coursework extends behat_base {
      * @Then /^I should see the rubric grade on the page$/
      */
     public function i_should_see_the_rubric_grade_on_the_page() {
-        $celltext = $this->find('css', '#final_feedback_grade')->getText();
+        $celltext = $this->find('css', '#behat-final-feedback-grade')->getText();
         if (strpos($celltext, '50') === false) {
             throw new ExpectationException(
                 "Expected rubric grade 50 got '$celltext'",
@@ -2119,7 +2119,7 @@ class behat_mod_coursework extends behat_base {
      * @Then /^I should see the rubric comment "(?P<comment_string>(?:[^"]|\\")*)"$/
      */
     public function i_should_see_the_rubric_comment_on_the_page(string $comment) {
-        $celltext = $this->find('css', '#rubric-rubric0 td.remark')->getText();
+        $celltext = $this->find('css', '.coursework-feedback .behat-criterion-remark')->getText();
         if ($comment !== $celltext) {
             throw new ExpectationException("Expected commennt '$comment' got '$celltext'", $this->getsession());
         }

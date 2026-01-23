@@ -76,5 +76,5 @@ Grader two really likes it
 
     When I log in as a student
     And I visit the coursework page
-    Then I should see "Comment 3" in the ".advancedgrade td.remark" "css_element"
-    And I should see "Grader two really likes it" in the ".advancedgrade td.remark" "css_element"
+    Then I should see "Comment 3" in the ".coursework-feedback .behat-criterion-remark" "css_element"
+    And I should see "Grader two really likes it" in the ".coursework-feedback .behat-criterion-remark" "css_element"

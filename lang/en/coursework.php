@@ -353,6 +353,7 @@ $string['mark'] = 'Mark';
 $string['mark_hidden_manager'] = 'Hidden until all initial marks are complete';
 $string['mark_hidden_teacher'] = 'Hidden until marks are agreed';
 $string['markalreadyexists'] = 'Mark already exists';
+$string['markdisplay'] = 'Mark: {$a->score} / {$a->maxscore}';
 $string['marked'] = 'Marked';
 $string['markedagreemark'] = 'Marked (agreed mark)';
 $string['markedandreleased'] = 'Marked and released';

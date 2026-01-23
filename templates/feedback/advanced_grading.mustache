@@ -1,0 +1,96 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coursework/feedback/advanced_grading
+
+    Template for displaying advanced grading feedback.
+
+    Example context (json):
+    {
+        "customgrading": [
+            {
+                "id": "1",
+                "name": "Criterion 1",
+                "description": "Description for criterion 1.",
+                "score": "8",
+                "maxscore": "10",
+                "percent": "80",
+                "hascomments": true,
+                "remark": "Good work on this part."
+            },
+            {
+                "id": "2",
+                "name": "Criterion 2",
+                "description": "Description for criterion 2.",
+                "score": "3",
+                "maxscore": "5",
+                "percent": "60",
+                "hascomments": true,
+                "remark": "This is the remark for the chosen level.",
+                "rubricdefinition": "This is the definition of the chosen rubric level."
+            }
+        ]
+    }
+}}
+
+<ul class="list-unstyled">
+    {{#customgrading}}
+    <li id="behat-criterion-{{id}}">
+        <h5 class="mb-0">{{name}}</h5>
+        {{#description}}
+        <div class="small">{{{description}}}</div>
+        {{/description}}
+
+        <div class="row pt-2">
+            <div class="col-sm-3 mt-2">
+                <div class="small">
+                    {{#str}} markdisplay, mod_coursework, { "score": "{{score}}", "maxscore": "{{maxscore}}" } {{/str}}
+                </div>
+                <div class="progress" style="height:.5rem;">
+                    <div class="progress-bar bg-success"
+                         role="progressbar"
+                         aria-label="{{name}} progress"
+                         aria-valuenow="{{score}}"
+                         style="width: {{percent}}%"
+                         aria-valuemin="0"
+                         aria-valuemax="{{maxscore}}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col mt-2">
+            {{#hascomments}}
+                <div class="small text-muted">
+                    {{#str}} feedback, mod_coursework {{/str}}
+                </div>
+                <div>
+                    {{#remark}}
+                    <div class="behat-criterion-remark {{#rubricdefinition}} mb-3 {{/rubricdefinition}}">
+                        {{{.}}}
+                    </div>
+                    {{/remark}}
+
+                    {{#rubricdefinition}}
+                    <p>{{{.}}}</p>
+                    {{/rubricdefinition}}
+                </div>
+            {{/hascomments}}
+            </div>
+        </div>
+        <hr>
+    </li>
+    {{/customgrading}}
+</ul>

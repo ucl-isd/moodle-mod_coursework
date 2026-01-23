@@ -28,44 +28,48 @@
         "markername": "Denise Soto"
     }
 }}
-<div class="coursework-feedback py-3" data-behat-markstage="{{markingstage}}">
+
+<div class="coursework-feedback animate-enter" data-behat-markstage="{{markingstage}}">
     {{#title}}
-        <h3 class="h5">{{title}}</h3>
+        <h3>{{title}}</h3>
     {{/title}}
+
+    {{! Advanced grading. }}
+    {{#advancedgradinghtml}}
+    <div class="py-3">
+        {{{.}}}
+    </div>
+    {{/advancedgradinghtml}}
 
     <div class="py-3">
         {{#markername}}
         <div class="d-flex align-items-center">
             {{#markerimg}}
-                <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{markerimg}}'); height: 3rem; width: 3rem;"></div>
+                <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0" style="background-image: url('{{markerimg}}'); height: 2rem; width: 2rem;"></div>
             {{/markerimg}}
             <div>
                 {{markername}}
                 {{#date}}
-                <div class="text-muted">
+                <div class="small text-muted">
                     {{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
                 </div>
                 {{/date}}
             </div>
         </div>
         {{/markername}}
-        {{^markername}}
-            {{#date}}
-            <div>
-                {{#userdate}}{{.}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
-            </div>
-            {{/date}}
-        {{/markername}}
 
         <div class="{{#markername}} chat-bubble-bordered {{/markername}}">
-            {{! Feedback comment }}
+            {{! Feedback comment. }}
             {{#feedbackcomment}}
-            <div id="final_feedback_comment">
-                {{{feedbackcomment}}}
+            <div class="small text-muted">
+                {{#str}} feedback, mod_coursework {{/str}}
+            </div>
+            <div id="behat-final-feedback-comment">
+                {{{.}}}
             </div>
             {{/feedbackcomment}}
 
-            {{! Feedback files }}
+            {{! Feedback files. }}
             {{#feedbackfileshtml}}
             <div>
                 {{{.}}}
@@ -78,20 +82,14 @@
 
             {{#mark}}
                 <div>
-                    {{#str}} mark, mod_coursework {{/str}}
-                    <br><span id="final_feedback_grade" class="h4">{{{.}}}</span>
+                    <div>{{#str}} mark, mod_coursework {{/str}}</div>
+                    <div class="h4" id="behat-final-feedback-grade">
+                        {{{.}}}
+                    </div>
                 </div>
             {{/mark}}
         </div>
     </div>
 
-    {{! Advanced grading }}
-    {{#advancedgradinghtml}}
-    <div class="py-3">
-        <h3 class="h5">{{#str}} markingcriteriafeedback, mod_coursework {{/str}}</h3>
-        <div>
-            {{{.}}}
-        </div>
-    </div>
-    {{/advancedgradinghtml}}
+
 </div>
