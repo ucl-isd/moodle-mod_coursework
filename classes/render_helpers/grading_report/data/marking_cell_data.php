@@ -60,8 +60,10 @@ class marking_cell_data extends cell_data_base {
      * @throws dml_exception
      */
     public function get_table_cell_data(grading_table_row_base $rowsbase): ?stdClass {
-        $table = new assessor_feedback_table($this->coursework, $rowsbase->get_allocatable(), $rowsbase->get_submission());
-        $tablerows = $table->get_renderable_feedback_rows();
+        $tablerows = [];
+        foreach ($this->coursework->get_assessor_marking_stages() as $stage) {
+            $tablerows[] = new assessor_feedback_row($stage, $rowsbase->get_allocatable(), $this->coursework, $rowsbase->get_submission());
+        }
 
         // If no data is available, return null.
         if (empty($tablerows)) {
