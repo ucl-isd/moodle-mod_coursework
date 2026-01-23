@@ -7,7 +7,7 @@ Coursework.
 .path-mod-coursework {
 
     /* Rubric and advanced grading forms. */
-    #rubric-rubric .preview,
+    #rubric-rubric.preview,
     #advancedgrading-criteria {
         display: block;
         width: 100%;
