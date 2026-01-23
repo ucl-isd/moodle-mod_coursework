@@ -42,7 +42,7 @@ use moodle_url;
  * logic relating the what ought to be rendered. The renderer methods then decide how the decision
  * will be translated into a page.
  */
-abstract class grading_table_row_base implements user_row {
+class grading_table_row_base implements user_row {
     /**
      * Using this as a delegate
      * @var submission
@@ -270,8 +270,13 @@ abstract class grading_table_row_base implements user_row {
         if (!isset($this->submission)) {
             $allocatableid = $this->get_allocatable()->id();
             $allocatabletype = $this->get_allocatable()->type();
-            $params = [$allocatableid, $allocatabletype];
-            $this->submission = submission::get_object($this->get_courseworkid(), 'allocatableid-allocatabletype', $params);
+            $this->submission = submission::get_cached_object(
+                $this->get_courseworkid(),
+                [
+                    'allocatableid' => $allocatableid,
+                    'allocatabletype' => $allocatabletype,
+                ]
+            );
         }
 
         return $this->submission;

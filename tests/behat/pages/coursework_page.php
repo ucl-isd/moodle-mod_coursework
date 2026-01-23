@@ -79,12 +79,6 @@ class mod_coursework_behat_coursework_page extends mod_coursework_behat_page_bas
         }
     }
 
-    public function show_hide_non_allocated_students() {
-        if ($this->getpage()->hasLink('Show submissions for other students')) {
-            $this->getpage()->clickLink('Show submissions for other students');
-        }
-    }
-
     public function get_coursework_name($courseworkname) {
         $courseworkheading = $this->getpage()->find('css', '#page-header');
         $courseworkheadingpresent = strpos($courseworkheading->getText(), $courseworkname);

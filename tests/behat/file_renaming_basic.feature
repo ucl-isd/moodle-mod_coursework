@@ -1,4 +1,4 @@
-@mod @mod_coursework @file_renaming
+@mod @mod_coursework @mod_coursework_file_renaming_basic
 Feature: Basic file renaming for submission files
 
   As a teacher

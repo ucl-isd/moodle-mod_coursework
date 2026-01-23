@@ -20,6 +20,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_coursework\models\allocation;
 use mod_coursework\models\submission;
 use mod_coursework\models\assessment_set_membership;
 
@@ -206,7 +207,8 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
             ],
             $data
         );
-        $DB->insert_record('coursework_allocation_pairs', $data);
+        $allocation = allocation::build($data);
+        $allocation->save();
     }
 
     protected function process_coursework_mod_set_rule($data) {

@@ -26,11 +26,8 @@
 namespace mod_coursework\render_helpers\grading_report\data;
 
 use mod_coursework\grading_table_row_base;
-use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
-use moodle_url;
 use stdClass;
-use stored_file;
 
 /**
  * Class submission_cell_data provides data for submission cell in tr template.
@@ -86,7 +83,7 @@ class submission_cell_data extends cell_data_base {
      * @param submission $submission The submission to check.
      */
     protected function add_plagiarism_data(stdClass $submissiondata, submission $submission): void {
-        if (!$this->coursework->plagiarism_flagging_enbled()) {
+        if (!$this->coursework->plagiarism_flagging_enabled()) {
             return;
         }
         $submissiondata->flaggedplagiarism = $this->get_flagged_plagiarism_status($submission);

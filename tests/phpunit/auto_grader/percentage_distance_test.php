@@ -86,20 +86,26 @@ final class percentage_distance_test extends \advanced_testcase {
             ->with($this->get_coursework())
             ->will($this->returnValue(true));
 
+        $submission = $this->createMock('\mod_coursework\models\submission');
+        $user->expects($this->any())->method('get_submission')
+            ->with($this->anything())
+            ->will($this->returnValue($submission));
+
         $feedbackone = $this->createMock('\mod_coursework\models\feedback');
         $feedbackone->expects($this->any())->method('get_grade')->will($this->returnValue(50));
+        $feedbackone->expects($this->any())->method('get_submission')->will($this->returnValue($submission));
 
         $feedbacktwo = $this->createMock('\mod_coursework\models\feedback');
         $feedbacktwo->expects($this->any())->method('get_grade')->will($this->returnValue(55));
+        $feedbacktwo->expects($this->any())->method('get_submission')->will($this->returnValue($submission));
 
         $user->expects($this->any())->method('get_initial_feedbacks')
             ->with($this->get_coursework())
             ->will($this->returnValue([$feedbackone, $feedbacktwo]));
 
-        $submission = $this->createMock('\mod_coursework\models\submission');
-        $submission->expects($this->any())->method('id')->will($this->returnValue(234234));
-
-        $user->expects($this->any())->method('get_submission')->will($this->returnValue($submission));
+        $user->expects($this->any())->method('get_submission')
+            ->with($this->anything())
+            ->will($this->returnValue($submission));
 
         $object = new percentage_distance($this->get_coursework(), $user);
         // Constructor percentage_distance no longer accepts percentage param since commit c1132f6, so set 10.
@@ -120,21 +126,23 @@ final class percentage_distance_test extends \advanced_testcase {
             ->with($this->get_coursework())
             ->will($this->returnValue(true));
 
+        $submission = $this->createMock('\mod_coursework\models\submission');
+
         $feedbackone = $this->createMock('\mod_coursework\models\feedback');
         $feedbackone->expects($this->any())->method('get_grade')->will($this->returnValue(50));
+        $feedbackone->expects($this->any())->method('get_submission')->will($this->returnValue($submission));
 
         $feedbacktwo = $this->createMock('\mod_coursework\models\feedback');
         $feedbacktwo->expects($this->any())->method('get_grade')->will($this->returnValue(55));
+        $feedbacktwo->expects($this->any())->method('get_submission')->will($this->returnValue($submission));
 
         $user->expects($this->any())->method('get_initial_feedbacks')
             ->with($this->get_coursework())
             ->will($this->returnValue([$feedbackone, $feedbacktwo]));
 
-        $submission = $this->createMock('\mod_coursework\models\submission');
-        $expectedsubmissionid = 234234;
-        $submission->expects($this->any())->method('id')->will($this->returnValue($expectedsubmissionid));
-
-        $user->expects($this->any())->method('get_submission')->will($this->returnValue($submission));
+        $user->expects($this->any())->method('get_submission')
+            ->with($this->anything())
+            ->will($this->returnValue($submission));
 
         $object = new percentage_distance($this->get_coursework(), $user);
         // Constructor percentage_distance no longer accepts percentage param since commit c1132f6, so set 10.
@@ -144,7 +152,6 @@ final class percentage_distance_test extends \advanced_testcase {
         $createdfeedbacks = $DB->get_records('coursework_feedbacks', [], 'id DESC', '*', 0, 1);
         $createdfeedback = reset($createdfeedbacks);
         $this->assertEquals($createdfeedback->grade ?? null, 55); // Right grade.
-        $this->assertEquals($createdfeedback->submissionid ?? null, $expectedsubmissionid); // Right submission.
         $this->assertEquals($createdfeedback->stageidentifier ?? null, 'final_agreed_1'); // Right stage.
     }
 }

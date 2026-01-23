@@ -26,6 +26,7 @@
 
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\{ElementNotFoundException, ExpectationException};
+use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\group;
@@ -358,38 +359,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Then /^I should see the student allocated to the other teacher for the first assessor$/
-     */
-    public function i_should_see_the_student_allocated_to_the_other_teacher() {
-        /**
-         * @var mod_coursework_behat_allocations_page $page
-         */
-        $page = $this->get_page('allocations page');
-        $allocatedassessor = $page->user_allocated_assessor($this->student, 'assessor_1');
-        if ($allocatedassessor != $this->otherteacher->name()) {
-            $message = "Expected the allocated teacher name to be '{$this->otherteacher->name()}'"
-                . " but got '$allocatedassessor' instead.";
-            throw new ExpectationException($message, $this->getsession());
-        }
-    }
-
-    /**
-     * @Then /^I should see the student allocated to the teacher for the first assessor$/
-     */
-    public function i_should_see_the_student_allocated_to_the_teacher() {
-        /**
-         * @var mod_coursework_behat_allocations_page $page
-         */
-        $page = $this->get_page('allocations page');
-        $allocatedassessor = $page->user_allocated_assessor($this->student, 'assessor_1');
-        if ($allocatedassessor != $this->teacher->name()) {
-            $message = 'Expected the allocated teacher name to be ' . $this->teacher->name()
-                . ' but got ' . $allocatedassessor . ' instead.';
-            throw new ExpectationException($message, $this->getsession());
-        }
-    }
-
-    /**
      * @Then /^there should be no allocations in the db$/
      */
     public function there_should_be_no_allocations_in_the_db() {
@@ -511,54 +480,10 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^the other student is in the moderation set$/
-     */
-    public function the_other_student_is_in_the_moderation_set() {
-        $membership = new stdClass();
-        $membership->allocatabletype = 'user';
-        $membership->allocatableid = $this->otherstudent->id;
-        $membership->courseworkid = $this->coursework->id;
-        \mod_coursework\models\assessment_set_membership::create($membership);
-    }
-
-    /**
-     * @Given /^the student is in the moderation set$/
-     */
-    public function the_student_is_in_the_moderation_set() {
-        $membership = new stdClass();
-        $membership->allocatabletype = 'user';
-        $membership->allocatableid = $this->student->id;
-        $membership->courseworkid = $this->coursework->id;
-        \mod_coursework\models\assessment_set_membership::create($membership);
-    }
-
-    /**
      * @Given /^the moderator allocation strategy is set to equal$/
      */
     public function the_moderator_allocation_strategy_is_set_to_equal() {
         $this->coursework->update_attribute('moderatorallocationstrategy', 'equal');
-    }
-
-    /**
-     * @Then /^the student should not have anyone allocated as a moderator$/
-     */
-    public function the_student_should_not_have_anyone_allocated_as_a_moderator() {
-        /**
-         * @var mod_coursework_behat_allocations_page $page
-         */
-        $page = $this->get_page('allocations page');
-        $page->should_not_have_moderator_allocated($this->student);
-    }
-
-    /**
-     * @Then /^the student should have the manager allocated as the moderator$/
-     */
-    public function the_student_should_have_the_manager_allocated_as_the_moderator() {
-        /**
-         * @var mod_coursework_behat_allocations_page $page
-         */
-        $page = $this->get_page('allocations page');
-        $page->should_have_moderator_allocated($this->student, $this->manager);
     }
 
     /**
@@ -1043,25 +968,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     *
-     * @Given /^I (select|deselect) (a|another) student as a part of the sample for the second stage$/
-     * @param string $selectordeselect
-     * @param string $other
-     */
-    public function i_select_the_student_as_a_part_of_the_sample(string $selectordeselect, string $other) {
-        /**
-         * @var mod_coursework_behat_allocations_page $page
-         */
-        $student = $other == 'another' ? 'otherstudent' : 'student';
-        $page = $this->get_page('allocations page');
-        if ($selectordeselect == 'deselect') {
-            $page->deselect_for_sample($this->$student, 'assessor_2');
-        } else {
-            $page->select_for_sample($this->$student, 'assessor_2');
-        }
-    }
-
-    /**
      * @Given /^the teacher has a capability to mark submissions$/
      */
     public function the_teacher_has_a_capability_to_mark_submissions() {
@@ -1375,17 +1281,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I click on the new submission button for the student$/
-     */
-    public function i_click_on_the_new_submission_button_for_the_student() {
-        /**
-         * @var mod_coursework_behat_multiple_grading_interface $multigrader_page
-         */
-        $multigraderpage = $this->get_page('multiple grading interface');
-        $multigraderpage->click_new_submission_button_for($this->student);
-    }
-
-    /**
      * @Given /^I click on the edit submission button for the student$/
      */
     public function i_click_on_the_edit_submission_button_for_the_student() {
@@ -1404,58 +1299,6 @@ class behat_mod_coursework extends behat_base {
 
         $coursework->extensionsenabled = 1;
         $coursework->save();
-    }
-
-    /**
-     * @Then /^I should see that the student has two allcations$/
-     */
-    public function i_should_see_that_the_student_has_two_allcations() {
-        /**
-         * @var $page mod_coursework_behat_allocations_page
-         */
-        $page = $this->get_page('allocations page');
-
-        // Teacher - assessor_1.
-        $allocatedassessor = $page->user_allocated_assessor($this->student, 'assessor_1');
-        if ($allocatedassessor != $this->teacher->name()) {
-            $message = 'Expected the allocated teacher name to be ' . $this->teacher->name()
-                . ' but got ' . $allocatedassessor . ' instead.';
-            throw new ExpectationException($message, $this->getsession());
-        }
-
-        // Other teacher - assessor_2.
-        $allocatedassessor = $page->user_allocated_assessor($this->student, 'assessor_2');
-        if ($allocatedassessor != $this->otherteacher->name()) {
-            $message = 'Expected the allocated teacher name to be ' . $this->otherteacher->name()
-                . ' but got ' . $allocatedassessor . ' instead.';
-            throw new ExpectationException($message, $this->getsession());
-        }
-    }
-
-    /**
-     * @Then /^I should see that both students are allocated to the teacher$/
-     */
-    public function i_should_see_that_both_students_are_allocated_to_the_teacher() {
-        /**
-         * @var $page mod_coursework_behat_allocations_page
-         */
-        $page = $this->get_page('allocations page');
-
-        // Student.
-        $allocatedassessor = $page->user_allocated_assessor($this->student, 'assessor_1');
-        if ($allocatedassessor != $this->teacher->name()) {
-            $message = 'Expected the allocated teacher name to be ' . $this->teacher->name()
-                . ' but got ' . $allocatedassessor . ' instead.';
-            throw new ExpectationException($message, $this->getsession());
-        }
-
-        // Other student.
-        $allocatedassessor = $page->user_allocated_assessor($this->otherstudent, 'assessor_1');
-        if ($allocatedassessor != $this->teacher->name()) {
-            $message = 'Expected the allocated teacher name to be ' . $this->teacher->name()
-                . ' but got ' . $allocatedassessor . ' instead.';
-            throw new ExpectationException($message, $this->getsession());
-        }
     }
 
     /**
@@ -1774,76 +1617,6 @@ class behat_mod_coursework extends behat_base {
     // Allocation steps
 
     /**
-     * @Given /^I manually allocate the student to the other teacher$/
-     */
-    public function i_manually_allocate_the_student_to_the_other_teacher() {
-
-        // Identify the allocation dropdown.
-        $dropdownname = 'user_' . $this->student->id . '_assessor_1';
-        $node = $this->find_field($dropdownname);
-
-        // We delegate to behat_form_field class, it will
-        // guess the type properly as it is a select tag.
-        $field = behat_field_manager::get_form_field($node, $this->getsession());
-        $field->set_value($this->otherteacher->id);
-
-        $this->find_button('save_manual_allocations_1')->click();
-    }
-
-    /**
-     * @Given /^I manually allocate the student to the other teacher for the second assessment$/
-     */
-    public function i_manually_allocate_the_student_to_the_other_teacher_for_the_second_assessment() {
-
-        // Identify the allocation dropdown.
-        $dropdownname = 'user_' . $this->student->id . '_assessor_2';
-        $node = $this->find_field($dropdownname);
-
-        // We delegate to behat_form_field class, it will
-        // guess the type properly as it is a select tag.
-        $field = behat_field_manager::get_form_field($node, $this->getsession());
-        $field->set_value($this->otherteacher->id);
-    }
-
-    /**
-     * @Given /^I manually allocate the student to the teacher$/
-     */
-    public function i_manually_allocate_the_student_to_the_teacher() {
-
-        /**
-         * @var mod_coursework_behat_allocations_page $page
-         */
-        $page = $this->get_page('allocations page');
-        $page->manually_allocate($this->student, $this->teacher, 'assessor_1');
-    }
-
-    /**
-     * @Given /^I manually allocate the other student to the teacher$/
-     */
-    public function i_manually_allocate_the_other_student_to_the_teacher() {
-
-        /**
-         * @var mod_coursework_behat_allocations_page $page
-         */
-        $page = $this->get_page('allocations page');
-        $page->manually_allocate($this->otherstudent, $this->teacher, 'assessor_1');
-        $page->save_everything();
-    }
-
-    /**
-     * @Given /^I manually allocate another student to another teacher$/
-     */
-    public function i_manually_allocate_another_student_to_another_teacher() {
-
-        /**
-         * @var mod_coursework_behat_allocations_page $page
-         */
-        $page = $this->get_page('allocations page');
-        $page->manually_allocate($this->otherstudent, $this->otherteacher, 'assessor_1');
-        $page->save_everything();
-    }
-
-    /**
      * @Given /^I auto-allocate all students to assessors$/
      */
     public function i_auto_allocate_all_students() {
@@ -1955,28 +1728,7 @@ class behat_mod_coursework extends behat_base {
      * @Given /^there are no allocations in the db$/
      */
     public function there_are_no_allocations_in_the_db() {
-        global $DB;
-
-        $DB->delete_records('coursework_allocation_pairs');
-    }
-
-    /**
-     * @Then /^the student should be allocated to an assessor$/
-     */
-    public function the_student_should_be_allocated_to_an_assessor() {
-        global $DB;
-
-        $params = [
-            'courseworkid' => $this->coursework->id,
-            'allocatableid' => $this->student->id,
-            'allocatabletype' => 'user',
-        ];
-
-        $result = $DB->get_record('coursework_allocation_pairs', $params);
-
-        if (empty($result)) {
-            throw new ExpectationException('Expected assessor allocation', $this->getsession());
-        }
+        allocation::destroy_all($this->coursework->id);
     }
 
     // Feedback steps
@@ -3099,14 +2851,6 @@ class behat_mod_coursework extends behat_base {
         if (PHP_OS === "Darwin" && PHP_SAPI === "cli") {
             exec('open -a "Safari.app" ' . $fileandpath);
         }
-    }
-
-    /**
-     * @Given /^I click show all students button$/
-     */
-    public function i_click_on_show_all_students_button() {
-        $page = $this->get_page('coursework page');
-        $page->show_hide_non_allocated_students();
     }
 
     /**

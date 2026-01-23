@@ -102,7 +102,7 @@ class allocation extends table_base {
      * @return user
      */
     public function assessor() {
-        return user::get_object($this->assessorid);
+        return user::get_cached_object_from_id($this->assessorid);
     }
 
     /**
@@ -126,21 +126,9 @@ class allocation extends table_base {
         $this->update_attribute('assessorid', $assessor->id);
     }
 
-    /**
-     *
-     */
-    public function pin() {
-        if (empty($this->ismanual)) {
-            $this->update_attribute('ismanual', 1);
-        }
-    }
-
-    /**
-     *
-     */
-    public function unpin() {
-        if ($this->ismanual) {
-            $this->update_attribute('ismanual', 0);
+    public function togglepin(bool $state) {
+        if ($state !== $this->is_pinned()) {
+            $this->update_attribute('ismanual', $state);
         }
     }
 
@@ -185,8 +173,7 @@ class allocation extends table_base {
      * @param int $courseworkid
      * @param $key
      * @param $params
-     * @return bool
-     * @throws coding_exception
+     * @return self|bool
      */
     public static function get_object($courseworkid, $key, $params) {
         if (!isset(self::$pool[$courseworkid])) {
@@ -208,5 +195,41 @@ class allocation extends table_base {
      */
     protected function after_destroy() {
         self::remove_cache($this->courseworkid);
+    }
+
+    /**
+     * Destroy all allocations for a coursework.
+     * @param int $courseworkid
+     * @return void
+     */
+    public static function destroy_all(int $courseworkid) {
+        global $DB;
+        $DB->delete_records(static::$tablename, ['courseworkid' => $courseworkid]);
+        self::remove_cache($courseworkid);
+    }
+
+    /**
+     * Checks whether the current user or specific assessor is allocated to mark this student's submission.
+     * @param int $courseworkid
+     * @param int $allocatableid
+     * @param string $allocatabletype
+     * @param int|null $assessorid
+     * @return bool
+     */
+    public static function allocatable_is_allocated_to_assessor(
+        int $courseworkid,
+        int $allocatableid,
+        string $allocatabletype,
+        ?int $assessorid = null
+    ): bool {
+        global $USER;
+        return (bool)self::get_cached_object(
+            $courseworkid,
+            [
+                'allocatableid' => $allocatableid,
+                'allocatabletype' => $allocatabletype,
+                'assessorid' => $assessorid ?? $USER->id,
+            ]
+        );
     }
 }

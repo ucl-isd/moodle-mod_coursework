@@ -22,7 +22,8 @@ namespace mod_coursework;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_coursework\allocation\table\processor;
+use mod_coursework\external\assessorallocation;
+use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 
 
@@ -44,7 +45,6 @@ final class table_processor_test extends \advanced_testcase {
     use test_helpers\factory_mixin;
 
     public function setUp(): void {
-        global $DB;
         parent::setUp();
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -56,54 +56,25 @@ final class table_processor_test extends \advanced_testcase {
         $this->create_another_teacher();
 
         // Delete all auto allocations caused by enrol hooks.
-        $DB->delete_records('coursework_allocation_pairs');
+        allocation::destroy_all($this->coursework->id);
     }
 
     public function test_process_rows_makes_a_new_assessor_allocation(): void {
-
         global $DB;
 
-        $testrows = [
-            $this->student->id => [
-                'assessor_1' => [
-                    'assessor_id' => $this->teacher->id,
-                ],
-                'assessor_2' => [
-                    'assessor_id' => $this->otherteacher->id,
-                ],
-            ],
-        ];
+        assessorallocation::execute(
+            $this->coursework->id,
+            $this->student->id,
+            'assessor_1',
+            $this->teacher->id
+        );
 
-        $processor = new processor($this->coursework);
-        $processor->process_data($testrows);
-
-        $params = [
-            'courseworkid' => $this->coursework->id,
-            'allocatableid' => $this->student->id,
-            'allocatabletype' => 'user',
-            'ismanual' => 1,
-        ];
-        $allocations = $DB->get_records('coursework_allocation_pairs', $params);
-        $this->assertEquals(2, count($allocations));
-    }
-
-    public function test_process_rows_sets_the_stageidentifiers_for_new_assessor_allocation(): void {
-
-        global $DB;
-
-        $testrows = [
-            $this->student->id => [
-                'assessor_1' => [
-                    'assessor_id' => $this->teacher->id,
-                ],
-                'assessor_2' => [
-                    'assessor_id' => $this->otherteacher->id,
-                ],
-            ],
-        ];
-
-        $processor = new processor($this->coursework);
-        $processor->process_data($testrows);
+        assessorallocation::execute(
+            $this->coursework->id,
+            $this->student->id,
+            'assessor_2',
+            $this->otherteacher->id
+        );
 
         $params = [
             'courseworkid' => $this->coursework->id,
@@ -138,16 +109,12 @@ final class table_processor_test extends \advanced_testcase {
         $allocation->save();
         $this->assertEquals($allocation->assessorid, $this->teacher->id);
 
-        $testrows = [
-            $this->student->id => [
-                'assessor_1' => [
-                    'allocation_id' => $allocation->id,
-                    'assessor_id' => $this->otherteacher->id,
-                ],
-            ],
-        ];
-        $processor = new processor($this->coursework);
-        $processor->process_data($testrows);
+        assessorallocation::execute(
+            $this->coursework->id,
+            $this->student->id,
+            'assessor_1',
+            $this->otherteacher->id
+        );
 
         $allocation->reload();
         $this->assertEquals($allocation->assessorid, $this->otherteacher->id);
@@ -165,15 +132,5 @@ final class table_processor_test extends \advanced_testcase {
             'Too many allocations ' . json_encode($records)
         );
         $this->assertEquals($this->otherteacher->id, reset($records)->assessorid, 'Wrong teacher id');
-    }
-
-    public function test_that_missing_columns_dont_mess_it_up(): void {
-        $processor = new processor($this->coursework);
-        $processor->process_data([$this->student->id => []]);
-    }
-
-    public function test_that_missing_rows_dont_mess_it_up(): void {
-        $processor = new processor($this->coursework);
-        $processor->process_data();
     }
 }

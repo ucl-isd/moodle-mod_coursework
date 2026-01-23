@@ -21,23 +21,19 @@
  */
 
 use mod_coursework\ability;
-use mod_coursework\export\grading_sheet;
 use mod_coursework\forms\assessor_feedback_mform;
 use mod_coursework\forms\choose_student_for_submission_mform;
 use mod_coursework\forms\moderator_agreement_mform;
 use mod_coursework\forms\plagiarism_flagging_mform;
 use mod_coursework\forms\student_submission_form;
 use mod_coursework\grade_judge;
-use mod_coursework\grading_report;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\moderation;
 use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
-use mod_coursework\renderers\grading_report_renderer;
 use mod_coursework\router;
-use mod_coursework\warnings;
 
 /**
  * Makes the pages
@@ -216,7 +212,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             }
         }
 
-        if ($ability->can('new', $submission)) {
+        if ((!$submission || !$submission->persisted()) && $ability->can('new', $submission)) {
             if ($coursework->start_date_has_passed()) {
                 $template->submissionbutton = $this->new_submission_button($submission);
             }
@@ -320,7 +316,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         if ($areagreeing && !$feedback->get_coursework()->is_using_advanced_grading()) {
             $feedbacks = [];
             $modcourseworkobjectrenderer = new mod_coursework_object_renderer($this->page, $this->target);
-            foreach ($feedback->submission->get_assessor_feedbacks() as $previousfeedbacks) {
+            foreach ($feedback->get_submission()->get_assessor_feedbacks() as $previousfeedbacks) {
                 $feedbacks[] = $modcourseworkobjectrenderer->render_feedback($previousfeedbacks, false);
             }
 
@@ -424,40 +420,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         echo $this->output->header();
         $simpleform->display();
         echo $this->output->footer();
-    }
-
-    /**
-     *
-     * Submissions table data.
-     *
-     * @param coursework $coursework
-     * @return stdClass
-     * @throws coding_exception
-     * @throws moodle_exception
-     */
-    public function submissions_table_data(coursework $coursework): stdClass {
-        // Grading report display options.
-        $reportoptions = [
-            'mode' => grading_report::MODE_GET_ALL,
-            'sortby' => '',
-        ];
-
-        if (groups_get_activity_groupmode($coursework->get_course_module()) != NOGROUPS) {
-            $reportoptions['group'] = groups_get_activity_group($coursework->get_course_module(), true);
-        }
-
-        $gradingreport = $coursework->renderable_grading_report_factory($reportoptions);
-        $gradingreportrenderer = new grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
-
-        foreach (['modal_handler_extensions', 'modal_handler_personaldeadlines', 'modal_handler_plagiarism'] as $amd) {
-            $this->page->requires->js_call_amd(
-                "mod_coursework/$amd",
-                'init',
-                ['courseworkId' => $coursework->id]
-            );
-        }
-
-        return $gradingreportrenderer->render_grading_report($gradingreport);
     }
 
     /**

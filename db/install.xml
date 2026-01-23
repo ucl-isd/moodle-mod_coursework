@@ -146,6 +146,8 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="id" TYPE="primary" FIELDS="id" COMMENT="id"/>
+        <KEY NAME="courseworkid-fk" TYPE="foreign" FIELDS="courseworkid" REFTABLE="coursework" REFFIELDS="id"/>
+        <KEY NAME="userid-fk" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
     <TABLE NAME="coursework_allocation_pairs" COMMENT="Holds teacher-student pairings to keep track of who has been allocated to mark what.">
@@ -232,6 +234,7 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="courseworkid-fk" TYPE="foreign" FIELDS="courseworkid" REFTABLE="coursework" REFFIELDS="id"/>
       </KEYS>
         <INDEXES>
             <INDEX NAME="courseworkid-allocatableid-allocatabletype" UNIQUE="false" FIELDS="courseworkid, allocatableid, allocatabletype"/>
@@ -250,6 +253,7 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="courseworkid-fk" TYPE="foreign" FIELDS="courseworkid" REFTABLE="coursework" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
     <TABLE NAME="coursework_sample_set_plugin" COMMENT="Sample set plugins">
@@ -275,7 +279,11 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="courseworkid-fk" TYPE="foreign" FIELDS="courseworkid" REFTABLE="coursework" REFFIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="allocatableid-ix" UNIQUE="false" FIELDS="allocatableid"/>
+      </INDEXES>
     </TABLE>
     <TABLE NAME="coursework_person_deadlines" COMMENT="Stores personal deadlines that can be given to a student or group.">
       <FIELDS>
@@ -313,6 +321,8 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="feedbackid-fk" TYPE="foreign" FIELDS="feedbackid" REFTABLE="coursework_feedbacks" REFFIELDS="id"/>
+        <KEY NAME="moderatorid-fk" TYPE="foreign" FIELDS="moderatorid" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
     <TABLE NAME="coursework_plagiarism_flags" COMMENT="Stores statuses for submissions flagged for plagiarism">
@@ -330,6 +340,8 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="courseworkid-fk" TYPE="foreign" FIELDS="courseworkid" REFTABLE="coursework" REFFIELDS="id"/>
+        <KEY NAME="submissionid-fk" TYPE="foreign" FIELDS="submissionid" REFTABLE="coursework_submissions" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
 

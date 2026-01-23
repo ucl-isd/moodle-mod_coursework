@@ -29,8 +29,8 @@ use mod_coursework\models\coursework;
 use mod_coursework\personaldeadline\table\row\builder as row_builder;
 use mod_coursework\render_helpers\grading_report\cells\allocatable_cell;
 use mod_coursework\render_helpers\grading_report\cells\group_cell;
-use mod_coursework\render_helpers\grading_report\cells\personaldeadline_cell;
 use mod_coursework\render_helpers\grading_report\cells\user_cell;
+use mod_coursework\render_helpers\grading_report\cells\personaldeadline_cell;
 
 /**
  * Represents the table that will show all students and there personal deadline date the table will allow the admin

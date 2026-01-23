@@ -36,8 +36,6 @@ use core_availability\info_module;
 use core_component;
 use core_plugin_manager;
 use dml_exception;
-use dml_missing_record_exception;
-use dml_multiple_records_exception;
 use Exception;
 use grade_item;
 use grading_manager;
@@ -52,20 +50,7 @@ use mod_coursework\candidateprovider_manager;
 use mod_coursework\cron;
 use mod_coursework\export\grading_sheet;
 use mod_coursework\framework\table_base;
-use mod_coursework\grading_report;
 use mod_coursework\plagiarism_helpers\base as plagiarism_base;
-use mod_coursework\render_helpers\grading_report\cells\email_cell;
-use mod_coursework\render_helpers\grading_report\cells\first_name_cell;
-use mod_coursework\render_helpers\grading_report\cells\group_cell;
-use mod_coursework\render_helpers\grading_report\cells\idnumber_cell;
-use mod_coursework\render_helpers\grading_report\cells\last_name_cell;
-use mod_coursework\render_helpers\grading_report\cells\personaldeadline_cell;
-use mod_coursework\render_helpers\grading_report\cells\plagiarism_cell;
-use mod_coursework\render_helpers\grading_report\cells\plagiarism_flag_cell;
-use mod_coursework\render_helpers\grading_report\cells\status_cell;
-use mod_coursework\render_helpers\grading_report\cells\submission_cell;
-use mod_coursework\render_helpers\grading_report\cells\time_submitted_cell;
-use mod_coursework\render_helpers\grading_report\cells\user_cell;
 use mod_coursework\stages\assessor;
 use mod_coursework\stages\base as stage_base;
 use mod_coursework\stages\final_agreed;
@@ -566,7 +551,10 @@ class coursework extends table_base {
         $submissions = submission::$pool[$this->id]['id'];
         $count = 0;
         foreach ($submissions as $s) {
-            $feedback = feedback::get_object($this->id, 'submissionid-assessorid', [$s->id, $USER->id]);
+            $feedback = feedback::get_cached_object(
+                $this->id,
+                ['submissionid' => $s->id, 'assessorid' => $USER->id]
+            );
             if (empty($feedback)) {
                 $count++;
             }
@@ -840,7 +828,7 @@ class coursework extends table_base {
     /**
      * @return bool
      */
-    public function plagiarism_flagging_enbled() {
+    public function plagiarism_flagging_enabled() {
         return (bool)$this->plagiarismflagenabled;
     }
 
@@ -1188,31 +1176,6 @@ class coursework extends table_base {
         ];
 
         return $DB->record_exists_sql($sql, $params);
-    }
-
-    /**
-     * Checks whether the current user is an assessor allocated to mark this submission.
-     *
-     * @param allocatable $allocatable
-     * @param bool $userid
-     * @return bool
-     * @throws dml_exception
-     */
-    public function assessor_has_any_allocation_for_student($allocatable, $userid = false) {
-
-        global $DB, $USER;
-
-        if (!$userid) {
-            $userid = $USER->id;
-        }
-        $params = [
-            'courseworkid' => $this->id,
-            'assessorid' => $userid,
-            'allocatableid' => $allocatable->id(),
-            'allocatabletype' => $allocatable->type(),
-        ];
-
-        return $DB->record_exists('coursework_allocation_pairs', $params);
     }
 
     /**
@@ -1797,52 +1760,6 @@ class coursework extends table_base {
             'allocatabletype' => $allocatable->type(),
         ];
         return submission::build($ownsubmissionparams);
-    }
-
-    /**
-     * Uses the knowledge of the Coursework settings to compose the object which the renderer can deal with.
-     * This is the messy wiring for the nice, reusable components in the grading report :)
-     *
-     * @param array $reportoptions
-     * @return grading_report
-     * @throws coding_exception
-     */
-    public function renderable_grading_report_factory($reportoptions) {
-
-        // Single or multiple? Compose it, so don't use inheritance.
-
-        $report = new grading_report($reportoptions, $this);
-
-        $cellitems = [
-            'coursework' => $this,
-        ];
-
-        // Add the cell objects. These are used to generate the table headers and to render each row.
-        if ($this->is_configured_to_have_group_submissions()) {
-            $report->add_cell(new group_cell($cellitems));
-        } else {
-            $report->add_cell(new first_name_cell($cellitems));
-            $report->add_cell(new last_name_cell($cellitems));
-            $report->add_cell(new email_cell($cellitems));
-            $report->add_cell(new user_cell($cellitems));
-            $report->add_cell(new idnumber_cell($cellitems));
-        }
-
-        if ($this->personaldeadlines_enabled()) {
-            $report->add_cell(new personaldeadline_cell($cellitems));
-        }
-        $report->add_cell(new status_cell($cellitems));
-        $report->add_cell(new submission_cell($cellitems));
-        $report->add_cell(new time_submitted_cell($cellitems));
-        if ($this->plagiarism_flagging_enbled()) {
-            $report->add_cell(new plagiarism_flag_cell($cellitems));
-        }
-
-        if ($this->plagiarism_enbled()) {
-            $report->add_cell(new plagiarism_cell($cellitems));
-        }
-
-        return $report;
     }
 
     /**
@@ -2661,7 +2578,10 @@ class coursework extends table_base {
 
         if ($this->personaldeadlines_enabled()) {
             personaldeadline::fill_pool_coursework($this->id);
-            $deadlinerecord = personaldeadline::get_object($this->id, 'allocatableid-allocatabletype', [$allocatable->id, $allocatable->type()]);
+            $deadlinerecord = personaldeadline::get_cached_object(
+                $this->id,
+                ['allocatableid' => $allocatable->id, 'allocatabletype' => $allocatable->type()]
+            );
 
             if (!empty($deadlinerecord)) {
                 $allocatable->deadline = $deadlinerecord->personaldeadline;
@@ -2916,6 +2836,18 @@ class coursework extends table_base {
     }
 
     /**
+     * @param int $allocatableid
+     * @return allocatable
+     */
+    public function get_allocatable_from_id($allocatableid): allocatable {
+        if ($this->is_configured_to_have_group_submissions()) {
+            return group::find($allocatableid);
+        } else {
+            return user::find($allocatableid);
+        }
+    }
+
+    /**
      * * This function returns allocatable extension if given
      * @param $allocatable
      * @return bool/int
@@ -3032,10 +2964,10 @@ class coursework extends table_base {
     /**
      *
      * @param int $courseworkid
-     * @return bool
+     * @return self|bool
      * @throws dml_exception
      */
-    public static function get_object($courseworkid) {
+    public static function get_cached_object_from_id($courseworkid) {
         if (!isset(self::$pool['id'][$courseworkid])) {
             self::fill_pool_coursework($courseworkid);
         }

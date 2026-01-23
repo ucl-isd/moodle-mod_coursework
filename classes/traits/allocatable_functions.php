@@ -26,46 +26,13 @@ use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
+use mod_coursework\models\allocation;
 
 /**
  * Class allocatable
  * @package mod_coursework\traits
  */
 trait allocatable_functions {
-    /**
-     * For when a student leaves. All assessment and moderation stuff can be taken away.
-     *
-     * @param $coursework
-     * @throws \coding_exception
-     * @throws \dml_exception
-     */
-    public function delete_all_submission_allocations($coursework) {
-
-        global $DB;
-
-        $sql = "DELETE FROM {coursework_allocation_pairs}
-                 WHERE courseworkid = :courseworkid
-                   AND NOT EXISTS (SELECT 1
-                                     FROM {coursework_feedbacks} f
-                               INNER JOIN {coursework_submissions} s
-                                       ON f.submissionid = s.id
-                                    WHERE s.userid = studentid
-                                      AND f.assessorid = assessorid
-                                      AND s.courseworkid = :courseworkid2
-                                   )
-                   AND allocatableid = :id
-                   AND allocatabletype = :type
-                 ";
-
-        $params = [
-            'courseworkid' => $coursework->id,
-            'courseworkid2' => $coursework->id,
-            'id' => $this->id(),
-            'type' => $this->type(),
-        ];
-        $DB->execute($sql, $params);
-    }
-
     /**
      * @param coursework $coursework
      * @return bool
@@ -162,11 +129,14 @@ trait allocatable_functions {
 
     /**
      * @param $coursework
-     * @return bool
+     * @return ?submission
      */
     public function get_submission($coursework) {
         $this->fill_submission_and_feedback($coursework);
-        return submission::get_object($coursework->id, 'allocatableid', [$this->id]);
+        return submission::get_cached_object(
+            $coursework->id,
+            ['allocatableid' => $this->id]
+        );
     }
 
     /**

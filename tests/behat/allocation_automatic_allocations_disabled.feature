@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_markingallocation
 Feature: Automatic allocations can be disabled
 
     As a manager

@@ -15,7 +15,7 @@ Feature: File upload limits
     Given the coursework "maxfiles" setting is "2" in the database
 
     When I visit the coursework page
-    And I click on the new submission button
+    And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
     Then the file upload button should not be visible

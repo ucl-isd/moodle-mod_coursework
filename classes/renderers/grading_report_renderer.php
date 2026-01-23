@@ -25,6 +25,7 @@ namespace mod_coursework\renderers;
 use context_user;
 use core\exception\moodle_exception;
 use core\output\plugin_renderer_base;
+use core\output\user_picture;
 use mod_coursework\ability;
 use mod_coursework\grading_report;
 use mod_coursework\grading_table_row_base;
@@ -48,14 +49,13 @@ class grading_report_renderer extends plugin_renderer_base {
     /**
      * Renders the grading report.
      *
-     * @param grading_report $gradingreport
-     * @return bool|string
+     * @param coursework $coursework
+     * @return \stdClass
      * @throws moodle_exception
      */
-    public function render_grading_report(grading_report $gradingreport) {
+    public function get_grading_report_data(coursework $coursework): \stdClass {
 
-        $tablerows = $gradingreport->get_table_rows_for_page();
-        $coursework = $gradingreport->get_coursework();
+        $tablerows = grading_report::get_table_rows_for_page($coursework);
         $blindmarking = $coursework->blindmarking_enabled() && !has_capability('mod/coursework:viewanonymous', $coursework->get_context());
         $participantcontextids = user::get_user_picture_context_ids(
             $coursework->get_course_id()
@@ -108,6 +108,8 @@ class grading_report_renderer extends plugin_renderer_base {
                 // Dropdown filter markers array by id to ensure unique.
                 foreach ($trdata->markers as $marker) {
                     if (isset($marker->markerid)) {
+                        $usercontextid = $participantcontextids[$marker->markerid] ?? null;
+                        $marker->markerimg = user::get_picture_url_from_context_id($usercontextid, $marker->picture);
                         $markersarray[$marker->markerid] = $marker;
                     }
                 }
@@ -209,18 +211,15 @@ class grading_report_renderer extends plugin_renderer_base {
     public static function export_one_row_data(coursework $coursework, int $allocatableid, string $allocatabletype): ?object {
         global $USER;
         $classname = "\\mod_coursework\\models\\$allocatabletype";
-        $allocatable = $classname::get_object($allocatableid);
+        $allocatable = $classname::get_cached_object_from_id($allocatableid);
         if (!$allocatable) {
             return null;
         }
         $submissionfiles = submission::get_all_submission_files_data($coursework, $allocatable);
-        $rowclass = $coursework->has_multiple_markers()
-            ? 'mod_coursework\grading_table_row_multi'
-            : 'mod_coursework\grading_table_row_single';
         $ability = new ability($USER->id, $coursework);
 
         // New grading_table_row_base.
-        $row = new $rowclass(
+        $row = new grading_table_row_base(
             $coursework,
             $allocatable,
             deadline_extension::get_for_allocatable($coursework->id, $allocatableid, $allocatabletype),
@@ -241,6 +240,12 @@ class grading_report_renderer extends plugin_renderer_base {
                 context_user::instance($allocatableid)->id,
                 $allocatable->picture
             );
+        }
+
+        foreach ($data->markers as $marker) {
+            if (isset($marker->markerid)) {
+                $marker->markerimg = user::get_picture_url_from_context_id(context_user::instance($marker->markerid)->id, $marker->picture);
+            }
         }
 
         return $data;

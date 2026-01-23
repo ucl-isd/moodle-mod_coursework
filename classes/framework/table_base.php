@@ -93,7 +93,7 @@ abstract class table_base {
         $recordid = self::get_id_from_record($dbrecord);
         // Cast to array in case it's stdClass.
         $dbrecord = (array)$dbrecord;
-        if (!$recordid && $reload) {
+        if (!isset($recordid)) {
             // Supplied data without record ID - treat as query params and try to get full record.
             // Filter to valid DB table columns.
             $allowedkeys = array_keys($DB->get_columns(static::$tablename));
@@ -114,19 +114,16 @@ abstract class table_base {
             if (empty($dbrecords)) {
                 return false;
             }
-            return new $klass(array_pop($dbrecords));
-        } else {
-            // Supplied data with object ID.
-            if ($reload) {
-                // Reload all data from ID.
-                $dbrecord = $DB->get_record(static::get_table_name(), ['id' => $recordid]);
-            }
+
+            $dbrecord = array_pop($dbrecords);
+        } else if ($reload) {
+            $dbrecord = $DB->get_record(static::get_table_name(), ['id' => $recordid]);
+
             if (!$dbrecord) {
                 return false;
             }
-            // No reload required, populate object from data provided.
-            return new $klass($dbrecord);
         }
+        return new $klass($dbrecord);
     }
 
     /**
@@ -501,6 +498,9 @@ abstract class table_base {
      */
     public function update_attributes($values) {
         foreach ($values as $col => $val) {
+            if ($col == 'id') {
+                continue;
+            }
             $this->apply_column_value_to_self($col, $val, false);
         }
         $this->save();
@@ -522,6 +522,8 @@ abstract class table_base {
         $this->before_destroy();
 
         $DB->delete_records(static::get_table_name(), ['id' => $this->id]);
+
+        $this->after_destroy();
     }
 
     /**
@@ -728,5 +730,22 @@ abstract class table_base {
         static::$pool[$courseworkid] = null;
         $cache = cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
         $cache->delete(static::$tablename);
+    }
+
+
+    /**
+     *
+     * @param int $courseworkid
+     * @param array $params to search cache for
+     * @return static|null
+     * @throws \core\exception\coding_exception
+     */
+    public static function get_cached_object(int $courseworkid, array $params): ?static {
+        if (!isset(static::$pool[$courseworkid])) {
+            static::fill_pool_coursework($courseworkid);
+        }
+        $cachekeyone = implode('-', array_keys($params));
+        $cachekeytwo = implode('-', array_values($params));
+        return static::$pool[$courseworkid][$cachekeyone][$cachekeytwo][0] ?? null;
     }
 }

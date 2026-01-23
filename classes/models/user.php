@@ -144,21 +144,6 @@ class user extends table_base implements allocatable, moderatable {
     }
 
     /**
-     * Get user picture.
-     *
-     * @param int $size
-     * @return string
-     * @throws \core\exception\coding_exception
-     * @throws \dml_exception
-     */
-    public function get_user_picture_url(int $size = 100): string {
-        global $PAGE;
-        $userpicture = new user_picture($this->get_raw_record());
-        $userpicture->size = $size;
-        return $userpicture->get_url($PAGE)->out(false);
-    }
-
-    /**
      * Get user picture URL as string without going to database.
      * @param int|null $usercontextid
      * @param int|null $rev mdl_user.picture value (falsey = no image, +ve value = revision num to avoid browser caching problems).
@@ -217,11 +202,12 @@ class user extends table_base implements allocatable, moderatable {
     }
 
     /**
-     * @param $id
-     * @return self
+     * Get the cached user object from its ID.
+     * @param int $id
+     * @return self|false
      * @throws \dml_exception
      */
-    public static function get_object($id) {
+    public static function get_cached_object_from_id(int $id) {
         if (!isset(self::$pool['id'][$id])) {
             global $DB;
             $user = $DB->get_record(self::$tablename, ['id' => $id]);

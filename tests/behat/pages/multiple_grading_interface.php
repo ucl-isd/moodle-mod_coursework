@@ -67,14 +67,6 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
 
     /**
      * @param allocatable $allocatable
-     * @return string
-     */
-    private function assessor_feedback_table_id($allocatable) {
-        return '#assessorfeedbacktable_' . $this->allocatable_identifier_hash($allocatable);
-    }
-
-    /**
-     * @param allocatable $allocatable
      * @throws Behat\Mink\Exception\ElementException
      */
     public function click_new_moderator_feedback_button($allocatable) {

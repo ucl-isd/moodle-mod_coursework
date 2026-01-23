@@ -24,9 +24,11 @@ namespace mod_coursework\models;
 
 use AllowDynamicProperties;
 use cache;
-use coding_exception;
+use core\exception\coding_exception;
 use context;
+use core\exception\invalid_parameter_exception;
 use dml_exception;
+use mod_coursework\ability;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\feedback_files;
 use mod_coursework\framework\table_base;
@@ -125,9 +127,10 @@ class feedback extends table_base {
     public $student;
 
     /**
+     * The submission object that this feedback relates to.
      * @var submission
      */
-    public $submission;
+    protected submission $submission;
 
     /**
      * @var int 1 = it is a final grade, 0 is default in the DB. Used only for multiple marked things.
@@ -208,7 +211,7 @@ class feedback extends table_base {
      */
     public function get_assesor_username() {
         if (!$this->firstname && !empty($this->lasteditedbyuser)) {
-            $this->assessor = user::get_object($this->lasteditedbyuser);
+            $this->assessor = user::get_cached_object_from_id($this->lasteditedbyuser);
         }
 
         return $this->assessor->name();
@@ -459,23 +462,35 @@ class feedback extends table_base {
     /**
      * Memoized getter
      *
-     * @return bool|submission
-     * @throws \core\exception\coding_exception
-     * @throws dml_exception
+     * @return submission
+     * @throws coding_exception|dml_exception
      */
-    public function get_submission() {
+    public function get_submission(): submission {
 
-        if (!isset($this->submission) && !empty($this->submissionid)) {
-            global $DB;
-            $courseworkid = $this->courseworkid
-                ?? $DB->get_field(submission::$tablename, 'courseworkid', ['id' => $this->submissionid]);
-            if (!$courseworkid) {
-                return false;
+        if (!isset($this->submission)) {
+            if (!$this->submissionid) {
+                throw new coding_exception("Cannot get submission without ID");
             }
-            if (!isset(submission::$pool[$courseworkid])) {
-                submission::fill_pool_coursework($courseworkid);
+            if ($this->courseworkid) {
+                // We have coursework ID so try to get it from pool.
+                if (!isset(submission::$pool[$this->courseworkid])) {
+                    submission::fill_pool_coursework($this->courseworkid);
+                }
+                $submission = submission::$pool[$this->courseworkid]['id'][$this->submissionid];
+                if ($submission) {
+                    $this->set_submission($submission);
+                }
             }
-            $this->submission = submission::$pool[$courseworkid]['id'][$this->submissionid] ?? false;
+            if (!isset($this->submission)) {
+                // We still do not have submission so try to get it from DB using ID.
+                $submission = submission::find($this->submissionid) ?: null;
+                if ($submission) {
+                    $this->set_submission($submission);
+                }
+            }
+        }
+        if (!isset($this->submission)) {
+            throw new coding_exception("Could not find submission for feedback ID $this->id submission ID $this->submissionid");
         }
 
         return $this->submission;
@@ -549,7 +564,7 @@ class feedback extends table_base {
      * @return user
      */
     public function assessor() {
-        return user::get_object($this->assessorid);
+        return user::get_cached_object_from_id($this->assessorid);
     }
 
     /**
@@ -664,25 +679,9 @@ class feedback extends table_base {
 
     /**
      *
-     * @param int $courseworkid
-     * @param $key
-     * @param $params
-     * @return self|bool
-     * @throws dml_exception
-     */
-    public static function get_object($courseworkid, $key, $params) {
-        if (!isset(self::$pool[$courseworkid])) {
-            self::fill_pool_coursework($courseworkid);
-        }
-        $valuekey = implode('-', $params);
-        return self::$pool[$courseworkid][$key][$valuekey][0] ?? false;
-    }
-
-    /**
-     *
      */
     protected function post_save_hook() {
-        $submission = $this->get_submission();
+        $submission = $this->submissionid ? $this->get_submission() : null;
         if ($submission && $submission->courseworkid ?? false) {
             self::remove_cache($submission->courseworkid);
         }
@@ -705,5 +704,83 @@ class feedback extends table_base {
     public function is_auto_grade(): bool {
         // Value of $this->lasteditedbyuser will be a user ID if the feedback was not auto generated.
         return $this->is_agreed_grade() && !$this->lasteditedbyuser;
+    }
+
+    /**
+     * Can the current user add a new feedback for a specific submission and stage?.
+     * Checks with ability class.
+     * For DB efficiency, requires submission and coursework objects to be passed in here, both usually already held by caller.
+     * Otherwise, on the grading page, there are repeated queries from ability class to get submission from ID.
+     * @param submission $submission
+     * @param string $stageidentifier
+     * @return bool
+     */
+    public static function can_add_new(coursework $coursework, submission $submission, string $stageidentifier): bool {
+        global $USER;
+        $feedback = self::build(
+            ['submissionid' => $submission->id, 'assessorid' => $USER->id, 'stageidentifier' => $stageidentifier]
+        );
+
+        // Add the submission object and coursework ID to the feedback object.
+        // (These are not fields in the coursework_feedbacks table so self::build() will not add them).
+        $feedback->set_submission($submission);
+        $feedback->courseworkid = $coursework->id;
+
+        $ability = new ability($USER->id, $coursework);
+        return $ability->can('new', $feedback);
+    }
+
+    /**
+     * Can the current user see a specific feedback?
+     * For DB efficiency, requires submission and coursework objects to be passed in here, both usually already held by caller.
+     * Otherwise, on the grading page, there are repeated queries to get submission from ID.
+     * @param submission $submission
+     * @return bool
+     */
+    public function can_show(coursework $coursework, submission $submission): bool {
+        return $this->can($coursework, $submission, 'show');
+    }
+
+    /**
+     * Can the current user see a specific feedback?
+     * For DB efficiency, requires submission and coursework objects to be passed in here, both usually already held by caller.
+     * Otherwise, on the grading page, there are repeated queries to get submission from ID.
+     * @param submission $submission
+     * @return bool
+     */
+    public function can_edit(coursework $coursework, submission $submission): bool {
+        return $this->can($coursework, $submission, 'edit');
+    }
+
+    /**
+     * Checks whether can with the ability class e.g. $ability->can('new', $feedback).
+     * @param coursework $coursework
+     * @param submission $submission
+     * @param string $action
+     * @return bool
+     */
+    public function can(coursework $coursework, submission $submission, string $action): bool {
+        global $USER;
+        if (!in_array($action, ['show', 'edit'])) {
+            throw new invalid_parameter_exception("Invalid action $action");
+        }
+
+        // For DB efficiency, ensure that $this->submission set before calling ability class.
+        $this->set_submission($submission);
+        $ability = new ability($USER->id, $coursework);
+        // If required, reason for refusal can be seen here with $ability->get_last_message().
+        return $ability->can($action, $this);
+    }
+
+    /**
+     * Set the submission object for this feedback.
+     * @param submission $submission
+     * @return void
+     */
+    private function set_submission(submission $submission) {
+        if (!isset($this->submission)) {
+            $this->submission = $submission;
+            $this->submissionid = $submission->id;
+        }
     }
 }

@@ -50,4 +50,28 @@ $functions = [
         'loginrequired' => true,
         'capabilities' => '', // Handled within the class.
     ],
+    'mod_coursework_allocationpintoggle' => [
+        'classname' => 'mod_coursework\external\allocationpintoggle',
+        'description' => 'Toggle pinning of assessor allocation',
+        'type' => 'write',
+        'ajax' => true,
+        'loginrequired' => true,
+        'capabilities' => '', // Handled within the class.
+    ],
+    'mod_coursework_allocatableinsampletoggle' => [
+        'classname' => 'mod_coursework\external\allocatableinsampletoggle',
+        'description' => 'Toggle alloctable inclusion in sample',
+        'type' => 'write',
+        'ajax' => true,
+        'loginrequired' => true,
+        'capabilities' => '', // Handled within the class.
+    ],
+    'mod_coursework_assessorallocation' => [
+        'classname' => 'mod_coursework\external\assessorallocation',
+        'description' => 'Allocate assessor to assessable',
+        'type' => 'write',
+        'ajax' => true,
+        'loginrequired' => true,
+        'capabilities' => '', // Handled within the class.
+    ],
 ];

@@ -15,7 +15,7 @@ Feature: Restricting the types of files that students can upload
     Given the coursework "filetypes" setting is "" in the database
 
     When I visit the coursework page
-    And I click on the new submission button
+    And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_image.png" file to "Upload a file" filemanager
     Then I should see "1" elements in "Upload a file" filemanager
 
@@ -32,6 +32,6 @@ Feature: Restricting the types of files that students can upload
   Scenario: I can upload allowed file types when the settings are restrictive
     Given the coursework "filetypes" setting is "docx" in the database
     When I visit the coursework page
-    And I click on the new submission button
+    And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     Then I should see "1" elements in "Upload a file" filemanager

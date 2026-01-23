@@ -29,7 +29,6 @@ use mod_coursework\models\deadline_extension;
 use mod_coursework\models\feedback;
 use mod_coursework\models\moderation;
 use mod_coursework\models\personaldeadline;
-use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
 
 /**
@@ -222,15 +221,6 @@ class ability extends framework\ability {
         // Update
         $this->allow_update_deadline_extension_if_can_edit();
 
-        // Plagiarism flagging rules for Plagiarism Alert
-
-        // New
-        $this->allow_new_plagiarism_flag_with_capability();
-
-        // Edit
-        $this->prevent_edit_plagiarism_flag_if_not_persisted();
-        $this->allow_edit_plagiarism_flag_with_capability();
-
         // Personal deadlines rules
         $this->prevent_edit_personaldeadline_if_extension_given();
         $this->allow_edit_personaldeadline_with_capability();
@@ -289,12 +279,16 @@ class ability extends framework\ability {
             'new',
             'mod_coursework\models\submission',
             function (submission $submission) {
-                $existsparams = [
-                    'courseworkid' => $submission->courseworkid,
-                    'allocatableid' => $submission->allocatableid,
-                    'allocatabletype' => $submission->allocatabletype,
-                ];
-                if (submission::exists($existsparams)) {
+                // Check using cached object to avoid repeated DB calls on grading page.
+                if (
+                    submission::get_cached_object(
+                        $submission->courseworkid,
+                        [
+                            'allocatableid' => $submission->allocatableid,
+                            'allocatabletype' => $submission->allocatabletype,
+                        ]
+                    )
+                ) {
                     $this->set_message('Submission already exists');
                     return true;
                 }
@@ -379,8 +373,10 @@ class ability extends framework\ability {
             'show',
             'mod_coursework\models\submission',
             function (submission $submission) {
-                return feedback::exists(
-                    ['submissionid' => $submission->id, 'assessorid' => $this->userid]
+                // Check using cached object to avoid repeated DB calls on grading page.
+                return (bool)feedback::get_cached_object(
+                    $submission->get_coursework()->id(),
+                    ['submissionid' => $submission->id(), 'assessorid' => $this->userid]
                 );
             }
         );
@@ -403,10 +399,14 @@ class ability extends framework\ability {
             function (submission $submission) {
 
                 // Should be visible to those who are OK to mark it.
-                $allocationenabled = $submission->get_coursework()->allocation_enabled();
-                $userhasanyallocation = $submission->get_coursework()
-                    ->assessor_has_any_allocation_for_student($submission->reload()->get_allocatable());
-                return $allocationenabled && $userhasanyallocation;
+                $allocatable = $submission->get_allocatable();
+                return $submission->get_coursework()->allocation_enabled()
+                    && allocation::allocatable_is_allocated_to_assessor(
+                        $submission->get_coursework()->id(),
+                        $allocatable->id(),
+                        $allocatable->type(),
+                        $this->userid
+                    );
             }
         );
     }
@@ -887,7 +887,7 @@ class ability extends framework\ability {
                 $this->set_message('Allocatable is not in sample');
                 $stage = $feedback->get_stage();
                 $allocatable = $feedback->get_submission()->get_allocatable();
-                return $stage->uses_sampling() && $stage->allocatable_is_not_in_sampling($allocatable);
+                return $stage->uses_sampling() && !$stage->allocatable_is_in_sample($allocatable);
             }
         );
     }
@@ -1008,12 +1008,14 @@ class ability extends framework\ability {
             'edit',
             'mod_coursework\models\feedback',
             function (feedback $feedback) {
-                $isinitialgrade = $feedback->is_initial_assessor_feedback();
-                $hascapability = has_capability('mod/coursework:editinitialgrade', $feedback->get_context());
-                $iscreator = $feedback->assessorid == $this->userid;
-                $isallocated = $feedback->is_assessor_allocated();
-
-                return $isinitialgrade && $hascapability && ($iscreator || $isallocated);
+                if (!has_capability('mod/coursework:editinitialgrade', $feedback->get_context())) {
+                    return false;
+                }
+                if (!$feedback->is_initial_assessor_feedback()) {
+                    return false;
+                }
+                return $feedback->assessorid == $this->userid
+                    || $feedback->is_assessor_allocated(); // Line may involve a database query so done last.
             }
         );
     }
@@ -1187,9 +1189,12 @@ class ability extends framework\ability {
                 $allocatable = $gradingtablerow->get_allocatable();
 
                 if ($gradingtablerow->get_coursework()->allocation_enabled()) {
-                    if ($gradingtablerow->get_coursework()->assessor_has_any_allocation_for_student($allocatable)) {
-                        return true;
-                    }
+                    return allocation::allocatable_is_allocated_to_assessor(
+                        $gradingtablerow->get_coursework()->id(),
+                        $allocatable->id(),
+                        $allocatable->type(),
+                        $this->userid
+                    );
                 }
                 return false;
             }
@@ -1248,16 +1253,15 @@ class ability extends framework\ability {
             'show',
             'mod_coursework\grading_table_row_base',
             function (grading_table_row_base $gradingtablerow) {
-                if ($gradingtablerow->has_submission()) {
-                    if (
-                        feedback::exists(
-                            ['submissionid' => $gradingtablerow->get_submission()->id, 'assessorid' => $this->userid]
-                        )
-                    ) {
-                        return true;
-                    }
-                }
-                return false;
+                // Check using cached object to avoid repeated DB calls on grading page.
+                return $gradingtablerow->has_submission()
+                    && feedback::get_cached_object(
+                        $gradingtablerow->get_coursework()->id(),
+                        [
+                            'submissionid' => $gradingtablerow->get_submission()->id(),
+                            'assessorid' => $this->userid,
+                        ],
+                    );
             }
         );
     }
@@ -1453,12 +1457,14 @@ class ability extends framework\ability {
             'new',
             'mod_coursework\models\deadline_extension',
             function (deadline_extension $deadlineextension) {
-                $conditions = [
-                    'allocatableid' => $deadlineextension->allocatableid,
-                    'allocatabletype' => $deadlineextension->allocatabletype,
-                    'courseworkid' => $deadlineextension->courseworkid,
-                ];
-                return deadline_extension::exists($conditions);
+                // Check using cached object to avoid repeated DB calls on grading page.
+                return (bool)deadline_extension::get_cached_object(
+                    $deadlineextension->courseworkid,
+                    [
+                        'allocatableid' => $deadlineextension->allocatableid,
+                        'allocatabletype' => $deadlineextension->allocatabletype,
+                    ]
+                );
             }
         );
     }
@@ -1526,40 +1532,6 @@ class ability extends framework\ability {
             function (personaldeadline $personaldeadline) {
                 // check if extension for this PD exists
                 return $personaldeadline->extension_exists();
-            }
-        );
-    }
-
-    private function allow_new_plagiarism_flag_with_capability() {
-        $this->allow(
-            'new',
-            'mod_coursework\models\plagiarism_flag',
-            function (plagiarism_flag $plagiarismflag) {
-                return  has_capability('mod/coursework:addplagiarismflag', $plagiarismflag->get_coursework()->get_context());
-            }
-        );
-    }
-
-    private function allow_edit_plagiarism_flag_with_capability() {
-        $this->allow(
-            'edit',
-            'mod_coursework\models\plagiarism_flag',
-            function (plagiarism_flag $plagiarismflag) {
-                return has_capability(
-                    'mod/coursework:updateplagiarismflag',
-                    $plagiarismflag->get_coursework()
-                        ->get_context()
-                );
-            }
-        );
-    }
-
-    private function prevent_edit_plagiarism_flag_if_not_persisted() {
-        $this->prevent(
-            'edit',
-            'mod_coursework\models\plagiarism_flag',
-            function (plagiarism_flag $plagiarismflag) {
-                return !$plagiarismflag->persisted();
             }
         );
     }

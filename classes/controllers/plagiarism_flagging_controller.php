@@ -24,7 +24,6 @@ namespace mod_coursework\controllers;
 
 use AllowDynamicProperties;
 use context_module;
-use mod_coursework\ability;
 use mod_coursework\event\coursework_plagiarism_flag_updated;
 use mod_coursework\forms\plagiarism_flagging_mform;
 use mod_coursework\models\moderation;
@@ -59,15 +58,12 @@ class plagiarism_flagging_controller extends controller_base {
      * @throws moodle_exception
      */
     protected function new_plagiarism_flag() {
-
-        global $PAGE, $USER;
+        global $PAGE;
+        require_capability('mod/coursework:addplagiarismflag', $this->coursework->get_context());
 
         $plagiarismflag = new plagiarism_flag();
         $plagiarismflag->submissionid = $this->params['submissionid'];
         $plagiarismflag->courseworkid = $this->coursework->id;
-
-        $ability = new ability($USER->id, $this->coursework);
-        $ability->require_can('new', $plagiarismflag);
 
         $urlparams = [];
         $urlparams['submissionid'] = $plagiarismflag->submissionid;
@@ -84,12 +80,10 @@ class plagiarism_flagging_controller extends controller_base {
      * @throws moodle_exception
      */
     protected function edit_plagiarism_flag() {
-        global $PAGE, $USER, $DB;
+        global $PAGE, $DB;
+        require_capability('mod/coursework:updateplagiarismflag', $this->get_context());
 
         $plagiarismflag = new plagiarism_flag($this->params['flagid']);
-
-        $ability = new ability($USER->id, $this->coursework);
-        $ability->require_can('edit', $plagiarismflag);
 
         $urlparams = ['flagid' => $this->params['flagid']];
         $PAGE->set_url('/mod/coursework/actions/plagiarism_flagging/edit.php', $urlparams);
@@ -109,8 +103,8 @@ class plagiarism_flagging_controller extends controller_base {
      * Saves the new plagiarism flag for the first time.
      */
     protected function create_plagiarism_flag() {
-
         global $USER, $PAGE;
+        require_capability('mod/coursework:addplagiarismflag', $this->coursework->get_context());
 
         $plagiarismflag = new plagiarism_flag();
         $plagiarismflag->courseworkid = $this->coursework->id();
@@ -121,9 +115,6 @@ class plagiarism_flagging_controller extends controller_base {
         $pathparams = ['submission' => $submission];
         $url = $this->get_router()->get_path('new plagiarism flag', $pathparams, true);
         $PAGE->set_url($url);
-
-        $ability = new ability($USER->id, $this->coursework);
-        $ability->require_can('new', $plagiarismflag);
 
         $form = new plagiarism_flagging_mform(null, ['submissionid' => $submission->id()]);
 
@@ -149,15 +140,11 @@ class plagiarism_flagging_controller extends controller_base {
      * Updates plagiarism flag
      */
     protected function update_plagiarism_flag() {
-
         global $USER, $DB;
-
+        require_capability('mod/coursework:updateplagiarismflag', $this->coursework->get_context());
         $flagid = $this->params['flagid'];
         $plagiarismflag = new plagiarism_flag($this->params['flagid']);
         $plagiarismflag->lastmodifiedby = $USER->id;
-
-        $ability = new ability($USER->id, $this->coursework);
-        $ability->require_can('edit', $plagiarismflag);
 
         $form = new plagiarism_flagging_mform(null, ['plagiarismflagid' => $this->params['flagid']]);
 

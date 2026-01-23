@@ -83,22 +83,6 @@ class assessment_set_membership extends table_base implements moderatable {
 
     /**
      *
-     * @param int $courseworkid
-     * @param $key
-     * @param $params
-     * @return mixed
-     * @throws coding_exception
-     */
-    public static function get_object($courseworkid, $key, $params) {
-        if (!isset(self::$pool[$courseworkid])) {
-            self::fill_pool_coursework($courseworkid);
-        }
-        $valuekey = implode('-', $params);
-        return self::$pool[$courseworkid][$key][$valuekey][0] ?? false;
-    }
-
-    /**
-     *
      */
     protected function post_save_hook() {
         self::remove_cache($this->courseworkid);
@@ -283,7 +267,7 @@ class assessment_set_membership extends table_base implements moderatable {
         ];
 
         $concatcachekeys = $DB->sql_concat('courseworkid', "'_'", 'allocatabletype', "'_'", 'allocatableid');
-        $cachekeys = $DB->get_records_sql(
+        $cachekeys = $DB->get_fieldset_sql(
             "SELECT $concatcachekeys $sql GROUP BY courseworkid, allocatableid, allocatabletype",
             $params
         );

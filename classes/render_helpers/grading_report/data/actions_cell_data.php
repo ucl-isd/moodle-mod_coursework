@@ -221,7 +221,7 @@ class actions_cell_data extends cell_data_base {
     protected function set_plagiarism_data(stdClass $data, grading_table_row_base $rowsbase): void {
         // Early returns for conditions where plagiarism data should not be shown.
         if (
-            !$this->coursework->plagiarism_flagging_enbled() ||
+            !$this->coursework->plagiarism_flagging_enabled() ||
             !$rowsbase->get_submission() ||
             !$rowsbase->get_submission()->is_finalised()
         ) {
@@ -229,12 +229,14 @@ class actions_cell_data extends cell_data_base {
         }
 
         $submission = $rowsbase->get_submission();
-        $plagiarismflag = $rowsbase->get_plagiarism_flag();
-        if ($url = $this->get_plagiarism_url($submission, $plagiarismflag)) {
-            $data->plagiarism = new stdClass();
-            $data->plagiarism->url = $url;
-            $data->plagiarismstatus = $this->get_flagged_plagiarism_status($submission);
-            $data->plagiarism->flagid = $plagiarismflag->id ?? null;
+        if ($submission) {
+            $plagiarismflag = $rowsbase->get_plagiarism_flag();
+            if ($url = $this->get_plagiarism_url($submission, $plagiarismflag)) {
+                $data->plagiarism = new stdClass();
+                $data->plagiarism->url = $url;
+                $data->plagiarismstatus = $this->get_flagged_plagiarism_status($submission);
+                $data->plagiarism->flagid = $plagiarismflag->id ?? null;
+            }
         }
     }
 
@@ -247,28 +249,13 @@ class actions_cell_data extends cell_data_base {
      * @throws coding_exception
      */
     private function get_plagiarism_url(submission $submission, plagiarism_flag|bool $flag): string {
-        if (!$flag) {
-            return $this->get_new_flag_url($submission);
+        if (!has_capability('mod/coursework:addplagiarismflag', $this->coursework->get_context())) {
+            return '';
         }
-        return $this->ability->can('edit', $flag) ?
-            router::instance()->get_path('edit plagiarism flag', ['flag' => $flag], false, false) :
-            '';
-    }
-
-    /**
-     * Get URL for creating a new plagiarism flag.
-     *
-     * @param submission $submission The submission object
-     * @return string The URL or empty string if no permissions
-     * @throws coding_exception
-     * @throws moodle_exception
-     */
-    private function get_new_flag_url(submission $submission): string {
-        $params = ['courseworkid' => $this->coursework->id, 'submissionid' => $submission->id];
-        $newflag = plagiarism_flag::build($params);
-        return $this->ability->can('new', $newflag) ?
-            router::instance()->get_path('new plagiarism flag', ['submission' => $submission], false, false) :
-            '';
+        if (!$flag) {
+            return router::instance()->get_path('new plagiarism flag', ['submission' => $submission], false, false);
+        }
+        return router::instance()->get_path('edit plagiarism flag', ['flag' => $flag], false, false);
     }
 
     /**
