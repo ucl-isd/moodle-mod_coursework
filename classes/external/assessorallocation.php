@@ -48,6 +48,9 @@ class assessorallocation extends external_api {
      * Execute the function.
      *
      * @param int $extensionid
+     * @param int $allocatableid
+     * @param string $stageidentifier
+     * @param int $assessorid
      * @return array
      */
     public static function execute(int $courseworkid, int $allocatableid, string $stageidentifier, int $assessorid): array {

@@ -174,7 +174,6 @@ class allocation extends table_base {
      * @param $key
      * @param $params
      * @return self|bool
-     * @throws coding_exception
      */
     public static function get_object($courseworkid, $key, $params) {
         if (!isset(self::$pool[$courseworkid])) {

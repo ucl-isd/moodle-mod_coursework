@@ -50,7 +50,6 @@ use mod_coursework\candidateprovider_manager;
 use mod_coursework\cron;
 use mod_coursework\export\grading_sheet;
 use mod_coursework\framework\table_base;
-use mod_coursework\grading_report;
 use mod_coursework\plagiarism_helpers\base as plagiarism_base;
 use mod_coursework\stages\assessor;
 use mod_coursework\stages\base as stage_base;
