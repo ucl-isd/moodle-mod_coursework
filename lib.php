@@ -652,6 +652,8 @@ function coursework_update_instance($coursework) {
 function coursework_update_events($coursework, $eventtype) {
     global $DB;
 
+    $coursework = coursework::find($coursework->id);
+
     $params = ['modulename' => 'coursework', 'instance' => $coursework->id, 'eventtype' => $eventtype];
     if ($eventtype == coursework::COURSEWORK_EVENT_TYPE_DUE) {
         // When getting the ID for the existing event, for 'due' events it's important to pass in course ID.
@@ -667,7 +669,7 @@ function coursework_update_events($coursework, $eventtype) {
 
     // Update/create event for coursework deadline [due].
     if ($eventtype == coursework::COURSEWORK_EVENT_TYPE_DUE) {
-        $data = calendar::coursework_event(coursework::find($coursework), $eventtype, $coursework->deadline);
+        $data = calendar::coursework_event($coursework, $eventtype, $coursework->deadline);
         if ($event) {
             $event->update($data); // Update if event exists.
         } else {
