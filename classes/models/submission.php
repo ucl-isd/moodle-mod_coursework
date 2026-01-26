@@ -1566,10 +1566,10 @@ class submission extends table_base implements renderable {
     public function has_specific_assessor_feedback($assessorid) {
         global $DB;
 
-        $feedback = $DB->get_record('coursework_feedbacks', ['submissionid' => $this->id,
-                                                                        'assessorid' => $assessorid]);
-
-        return (empty($feedback)) ? false : $feedback;
+        return $DB->record_exists('coursework_feedbacks', [
+            'submissionid' => $this->id,
+            'assessorid' => $assessorid,
+        ]);
     }
 
     // Caching
