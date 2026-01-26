@@ -26,7 +26,7 @@ Feature: Multiple assessors simple grading form
     And I set the field "Mark" to "52"
     And I set the field "Comment" to "Some new comment 3"
     And I click on "Save and finalise" "button"
-    And I wait until "OK" "button" exists
+    And I should see "Changes saved"
     And I visit the edit feedback page
     And the field "Mark" matches value "52"
     And the field "Comment" matches value "Some new comment 3"
@@ -38,7 +38,9 @@ Feature: Multiple assessors simple grading form
     And I visit the coursework page
     And I click on "Add mark" "link"
     When I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
+    And I set the field "Mark" to "52"
     And I press "Save and finalise"
+    And I should see "Changes saved"
     And I visit the coursework page
     And I click the edit feedback button
     Then I should see "1" elements in "Upload a file" filemanager
@@ -67,7 +69,9 @@ Feature: Multiple assessors simple grading form
     And I visit the coursework page
     And I click on "Add mark" "link"
     When I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
+    And I set the field "Mark" to "52"
     And I press "Save and finalise"
+    And I should see "Changes saved"
     And I visit the coursework page
     And I click the edit feedback button
     And I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
@@ -102,6 +106,7 @@ Feature: Multiple assessors simple grading form
     And I follow "Add mark"
     And I set the field "Mark" to "59"
     And I press "Save and finalise"
+    And I should see "Changes saved"
     And I visit the coursework page
     # Cannot see agree marking until specific capability awarded.
     Then I should not see "Agree marking"
