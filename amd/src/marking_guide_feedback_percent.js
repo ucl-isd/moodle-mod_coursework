@@ -130,7 +130,7 @@ const setPercentageFromScore = (criterionNumber, scoreValue, scoreOutOf) => {
     }
     const newValue = scoreValue / scoreOutOf * MAX_VALUE_PERCENT;
     if (newValue === Math.floor(newValue)) {
-        percentElem.value = newValue.toFixed(0);
+        percentElem.value = newValue.toFixed(getDecimalPlaces());
         return;
     }
     percentElem.value = newValue.toFixed(getDecimalPlaces());
