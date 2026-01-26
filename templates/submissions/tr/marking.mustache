@@ -157,7 +157,7 @@
                     </span>
                 {{/released}}
 
-                <a href="{{{url}}}" class="font-weight-bold pl-1" data-mark-action="editfeedback" data-mark="{{markvalue}}">{{markvalue}}</a>
+                <a href="{{{url}}}" class="font-weight-bold pl-1" data-mark-action="editfeedback" data-mark="{{markvalue}}">{{#markvalue}}{{markvalue}}{{/markvalue}}{{^markvalue}}-{{/markvalue}}</a>
             {{/mark}}
 
             {{#addfinalfeedback}}

@@ -132,6 +132,7 @@ class assessor_feedback_mform extends moodleform {
                 'grade',
                 $this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1 ? PARAM_LOCALISEDFLOAT : PARAM_INT
             );
+            $mform->addRule('grade', get_string('required'), 'required', null, 'client');
             $mform->addRule(
                 'grade',
                 get_string('err_valueoutofrange', 'mod_coursework'),
