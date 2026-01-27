@@ -634,6 +634,7 @@ $string['studentsinmultiplegroups'] = 'The following students are in more than o
 $string['studenttosubmitfor'] = 'Student to submit for';
 $string['studentusername'] = 'Username';
 $string['submission'] = 'Submission';
+$string['submissionfor'] = 'Submission for {$a}';
 $string['submission_deadline_enabled_desc'] = 'Set the default submissions deadline applied to coursework activities';
 $string['submission_notification_html'] = '<p>Dear {$a->name},</p><p> A submission has been made in the {$a->coursework_name} coursework. </p>';
 $string['submission_notification_subject'] = 'A submission has been made in {$a}';

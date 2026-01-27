@@ -1,0 +1,63 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+
+<div {{#showpdf}} class="full-width" {{/showpdf}}>
+    <div class="container-fluid">
+        <div class="row">
+
+            {{! Marking. }}
+            <div class="col animate-enter">
+                <div class="container">
+                    {{! When not a PDF, show submissions metadata as header. }}
+                    {{^showpdf}}
+                        {{> mod_coursework/submissions/tr/submissions }}
+                    {{/showpdf}}
+
+                    <h3>Marking</h3>
+                    {{#previousfeedback}}
+                        {{{.}}}
+                        <h4 class="pt-3">{{#str}} agreefeedback, mod_coursework {{/str}}</h4>
+                    {{/previousfeedback}}
+
+                    <div id="coursework-markingform">
+                        {{{marking}}}
+                    </div>
+                </div>
+            </div>
+
+            {{! Pdf. }}
+            {{#showpdf}}
+            <div class="col-md-6">
+                {{> mod_coursework/marking/pdf }}
+            </div>
+            {{/showpdf}}
+        </div>
+    </div>
+</div>
+
+<style>
+.full-width {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    max-width: 100vw;
+}
+</style>
+
+{{! TODO - js form elements?}}
