@@ -18,7 +18,7 @@
     {{#reviewcriteria}}
     <li>
         <div class="line-clamp-2">{{name}}</div>
-            <div class="review-block">
+            <div class="review-marks">
                 <div class="row small mt-2">
                     {{#markers}}
                     <div class="col-md">
@@ -33,9 +33,14 @@
                             </div>
                         </div>
 
+                        {{#remark}}
                         <div class="mt-2">
-                            {{{remark}}}
+                            <div class="small text-muted">
+                            {{#str}} feedback, mod_coursework {{/str}}
+                            </div>
+                            {{{.}}}
                         </div>
+                        {{/remark}}
                     </div>
                     {{/markers}}
                 </div>
@@ -50,7 +55,7 @@
 <script>
 (function() {
     window.addEventListener('load', function() {
-        const sourceBlocks = document.querySelectorAll('#review-source-wrapper .review-block');
+        const sourceBlocks = document.querySelectorAll('#review-source-wrapper .review-marks');
         const targetCells = document.querySelectorAll('.gradingform_rubric .description, #advancedgrading-criteria .criterionshortname');
         sourceBlocks.forEach((block, index) => {
             if (targetCells[index]) {

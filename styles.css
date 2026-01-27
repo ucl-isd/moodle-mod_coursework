@@ -3,6 +3,41 @@
 Coursework.
 **/
 
+/* Marking page. */
+.path-mod-coursework-actions-feedbacks {
+    /* Full width container for pdf viewer. */
+    .full-width {
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        max-width: 100vw;
+    }
+
+    /* PDF viewer. */
+    #pdf-container {
+        max-width: 850px !important;
+        #pdf-viewer {
+            overflow: scroll;
+            margin-top: 1rem !important;
+        }
+        .pdf-page-canvas {
+            max-width: 100% !important;
+        }
+
+        /* Submission metadata. */
+        .mod-coursework-submission {
+            display: flex;
+            .mod-coursework-submission-metadata {
+                margin-left: auto;
+            }
+        }
+    }
+
+}
+
 .cm-type-coursework,
 .path-mod-coursework {
 
@@ -40,6 +75,10 @@ Coursework.
             font-size: 1.2rem;
             padding-top: 1rem !important;
             display: block;
+            .review-marks {
+               font-size: 1rem;
+               font-weight: normal;
+            }
         }
 
         /* Small for criteria description. */
