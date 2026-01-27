@@ -296,8 +296,6 @@ class assessor_feedback_mform extends moodleform {
         $errors = parent::validation($data, $files);
 
         if (
-            $this->agreeing_final_marking_guide()
-            &&
             $this->coursework->uses_numeric_grade()
             &&
             !$this->gradinginstance->validate_grading_element($data['advancedgrading'])

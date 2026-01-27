@@ -49,4 +49,41 @@
 </div>
 
 {{! TODO - js form elements?}}
+<script>
+(function() {
+    window.addEventListener('load', function() {
+        const root = document.getElementById('coursework-markingform');
+        if (!root) return;
 
+        const scoreCells = root.querySelectorAll('td.score');
+
+        scoreCells.forEach(cell => {
+            const input = cell.querySelector('input');
+            const maxDiv = cell.querySelector('div');
+
+            if (input && maxDiv) {
+                const maxScore = maxDiv.textContent.replace(/[^0-9.]/g, '');
+
+                // 1. Update input attributes.
+                input.setAttribute('type', 'number');
+                input.setAttribute('min', '0');
+                if (maxScore) {
+                    input.setAttribute('max', maxScore);
+                }
+                input.setAttribute('step', 'any');
+
+                // 2. Create and insert the label.
+                const label = document.createElement('label');
+                label.textContent = `Mark (0–${maxScore})`;
+                if (input.id) {
+                    label.setAttribute('for', input.id);
+                }
+                cell.insertBefore(label, cell.firstChild);
+
+                // 3. Remove the overhanging max score div.
+                maxDiv.remove();
+            }
+        });
+    });
+})();
+</script>

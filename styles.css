@@ -3,6 +3,7 @@
 Coursework.
 **/
 
+
 /* Marking page. */
 .path-mod-coursework-actions-feedbacks {
     /* Full width container for pdf viewer. */
@@ -14,6 +15,11 @@ Coursework.
         margin-left: -50vw;
         margin-right: -50vw;
         max-width: 100vw;
+    }
+
+    input[type=number] {
+        field-sizing: content;
+        min-width: 5rem;
     }
 
     /* PDF viewer. */
@@ -114,6 +120,7 @@ Coursework.
                 font-style: normal;
                 font-size: small;
                 color: var(--dark);
+
             }
 
             /* Rubric selected level styles. */

@@ -438,6 +438,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $percentraw = ($marker->maxscore > 0) ? ($marker->score / $marker->maxscore) * 100 : 0;
                 $marker->percent = (int)round($percentraw);
 
+                // Add marker data to markers object.
                 $criterionitem->markers[] = $marker;
             }
             $template->reviewcriteria[] = $criterionitem;
