@@ -15,6 +15,7 @@ Feature: visibility for teachers without blind marking
     When I visit the coursework page
     Then I should see the student's name in the user cell
 
+  @javascript
   Scenario: The user names are visible from teachers in the group cells
     Given I am logged in as a teacher
     And there is a student
@@ -22,7 +23,9 @@ Feature: visibility for teachers without blind marking
     And the student is a member of a group
     And the group is part of a grouping for the coursework
     When I visit the coursework page
-    Then I should see the student's name in the group cell
+    And I should see "View members" in the "My group" "table_row"
+    And I click on "View members" "button"
+    Then I should see "student student2" in the ".dropdown-menu.show" "css_element"
 
   Scenario: Teachers can see other grades
     Given the coursework "numberofmarkers" setting is "2" in the database
@@ -35,4 +38,7 @@ Feature: visibility for teachers without blind marking
     And there are feedbacks from both teachers
     And I am logged in as the other teacher
     When I visit the coursework page
-    Then I should see the grade from the teacher in the assessor table
+    Then I should see "teacher teacher1" in the "student student3" "table_row"
+    And I should see "otherteacher teacher2" in the "student student3" "table_row"
+    And I should see "63" in the "student student3" "table_row"
+    And I should see "67" in the "student student3" "table_row"

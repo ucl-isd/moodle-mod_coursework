@@ -22,12 +22,16 @@ Feature: visibility of agreed graders without blind marking
     And I am logged in as the other teacher
     And there is feedback for the submission from the teacher
     When I visit the coursework page
-    Then I should see the grade from the teacher in the assessor table
+    Then I should see "58" in the "student student3" "table_row"
 
   Scenario: agreed graders can view the feedback of the other assessors when all done
     Given there are feedbacks from both teachers
     And teachers have the add agreed grade capability
     And I am logged in as the other teacher
-    And I visit the coursework page
-    When I click on the view icon for the first initial assessor's grade
-    Then I should see the first initial assessors grade and comment
+    When I visit the coursework page
+    Then I should see "63" in the "student student3" "table_row"
+    And I should see "67" in the "student student3" "table_row"
+    Then I should see "teacher teacher1" in the "student student3" "table_row"
+    And I should see "otherteacher teacher2" in the "student student3" "table_row"
+    Then I click on "67" "link" in the "student student3" "table_row"
+    And I should see "New comment here"

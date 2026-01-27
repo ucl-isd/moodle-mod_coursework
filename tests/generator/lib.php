@@ -157,17 +157,22 @@ class mod_coursework_generator extends testing_module_generator {
 
         global $USER;
 
-        $feedback = \mod_coursework\models\feedback::create($feedback);
-
-        if (!isset($feedback->submissionid) || !is_numeric($feedback->submissionid) || empty($feedback->submissionid)) {
-            throw new coding_exception('Coursework generator needs a submissionid for a new feedback');
-        }
-        if (!isset($feedback->assessorid) || !is_numeric($feedback->assessorid) || empty($feedback->assessorid)) {
+        if (empty($feedback->assessorid) || !is_numeric($feedback->assessorid)) {
             if (!empty($USER->id)) {
                 $feedback->assessorid = $USER->id;
             } else {
                 throw new coding_exception('Coursework generator needs a assessorid for a new feedback');
             }
+        }
+
+        if (empty($feedback->lasteditedbyuser)) {
+            $feedback->lasteditedbyuser = $feedback->assessorid;
+        }
+
+        $feedback = \mod_coursework\models\feedback::create($feedback);
+
+        if (!isset($feedback->submissionid) || !is_numeric($feedback->submissionid) || empty($feedback->submissionid)) {
+            throw new coding_exception('Coursework generator needs a submissionid for a new feedback');
         }
         if (!isset($feedback->timecreated)) {
             $feedback->timecreated = time();
@@ -177,9 +182,6 @@ class mod_coursework_generator extends testing_module_generator {
         }
         if (!isset($feedback->grade)) {
             $feedback->grade = null;
-        }
-        if (!isset($feedback->lasteditedbyuser)) {
-            $feedback->lasteditedbyuser = $feedback->assessorid;
         }
         if (!isset($feedback->isfinalgrade)) {
             $feedback->isfinalgrade = 0;
