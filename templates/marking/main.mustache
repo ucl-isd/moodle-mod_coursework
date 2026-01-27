@@ -48,40 +48,45 @@
     </div>
 </div>
 
-{{! TODO - js form elements?}}
+{{! js fixing forms. }}
 <script>
 (function() {
     window.addEventListener('load', function() {
         const root = document.getElementById('coursework-markingform');
         if (!root) return;
 
-        const scoreCells = root.querySelectorAll('td.score');
+        const score_cells = root.querySelectorAll('td.score');
 
-        scoreCells.forEach(cell => {
+        score_cells.forEach(cell => {
             const input = cell.querySelector('input');
-            const maxDiv = cell.querySelector('div');
+            const max_div = cell.querySelector('div');
 
-            if (input && maxDiv) {
-                const maxScore = maxDiv.textContent.replace(/[^0-9.]/g, '');
+            if (input && max_div) {
+                const max_score = max_div.textContent.replace(/[^0-9.]/g, '');
 
-                // 1. Update input attributes.
+                // 1. Add required attribute.
+                input.setAttribute('required', 'required');
+
+                // 2. Update HTML attributes.
                 input.setAttribute('type', 'number');
                 input.setAttribute('min', '0');
-                if (maxScore) {
-                    input.setAttribute('max', maxScore);
+                if (max_score) {
+                    input.setAttribute('max', max_score);
                 }
                 input.setAttribute('step', 'any');
 
-                // 2. Create and insert the label.
+                // 3. Create and insert label.
                 const label = document.createElement('label');
-                label.textContent = `Mark (0–${maxScore})`;
+                label.textContent = '{{#str}} mark, mod_coursework {{/str}} (0–${max_score})'';
+
                 if (input.id) {
                     label.setAttribute('for', input.id);
                 }
+
                 cell.insertBefore(label, cell.firstChild);
 
-                // 3. Remove the overhanging max score div.
-                maxDiv.remove();
+                // 4. Remove overhanging div.
+                max_div.remove();
             }
         });
     });

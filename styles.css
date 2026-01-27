@@ -21,6 +21,9 @@ Coursework.
         field-sizing: content;
         min-width: 5rem;
     }
+    .remark label.hidden {
+        display: block !important;
+    }
 
     /* PDF viewer. */
     #pdf-container {
