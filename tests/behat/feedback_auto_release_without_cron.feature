@@ -23,6 +23,6 @@ Feature: Auto releasing the student feedback without cron
 
   Scenario: auto release happens after the deadline without the cron running
     Given the coursework individual feedback release date has passed
-    When I log in as a student
-    And I visit the coursework page
+    And I log in as a student
+    When I visit the coursework page
     Then I should see "Released"

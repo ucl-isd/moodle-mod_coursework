@@ -33,7 +33,7 @@ Feature: Visibility for teachers with blind marking
     And the student is a member of a group
     And the group is part of a grouping for the coursework
     When I visit the coursework page
-    And I should see "View members" in the "My group" "table_row"
+    Then I should see "View members" in the "My group" "table_row"
     And I click on "View members" "button"
     Then I should not see "student student2" in the ".dropdown-menu.show" "css_element"
     Then I should see "Members are hidden" in the ".dropdown-menu.show" "css_element"

@@ -23,7 +23,7 @@ Feature: Deadline extension reasons dropdown list
       | Extended deadline | ##+1 weeks##         |
       | Extension reason  | first reason            |
       | Extra information | The dog ate my homework |
-    And I click on "Save" "button"
+    When I click on "Save" "button"
     Then I should see "##+1 weeks##%d %B %Y##" in the "student student1" "table_row"
     Then I visit the coursework page
     And I click on "Actions" "button" in the "student student1" "table_row"
