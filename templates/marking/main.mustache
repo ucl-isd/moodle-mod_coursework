@@ -48,7 +48,8 @@
     </div>
 </div>
 
-{{! js fixing forms. }}
+{{! js adding labels to forms.
+// TODO - move to amd. }}
 <script>
 (function() {
     window.addEventListener('load', function() {
@@ -64,10 +65,10 @@
             if (input && max_div) {
                 const max_score = max_div.textContent.replace(/[^0-9.]/g, '');
 
-                // 1. Add required attribute.
+                // Make required.
                 input.setAttribute('required', 'required');
 
-                // 2. Update HTML attributes.
+                // Make an input type number.
                 input.setAttribute('type', 'number');
                 input.setAttribute('min', '0');
                 if (max_score) {
@@ -75,7 +76,7 @@
                 }
                 input.setAttribute('step', 'any');
 
-                // 3. Create and insert label.
+                // Label.
                 const label = document.createElement('label');
                 label.textContent = `{{#str}} mark, mod_coursework {{/str}} (0–${max_score})`;
 
@@ -85,8 +86,42 @@
 
                 cell.insertBefore(label, cell.firstChild);
 
-                // 4. Remove overhanging div.
+                // Remove overhanging div.
                 max_div.remove();
+            }
+        });
+    });
+})();
+
+(function() {
+    window.addEventListener('load', function() {
+        const root = document.getElementById('coursework-markingform');
+        if (!root) return;
+
+        const remark_cells = root.querySelectorAll('td.remark');
+
+        remark_cells.forEach(cell => {
+            const textarea = cell.querySelector('textarea');
+            const parent_row = cell.closest('tr');
+            const description_cell = parent_row ? parent_row.querySelector('td.description') : null;
+
+            if (textarea && description_cell) {
+                // Get the criterion name.
+                const criterion_name = description_cell.textContent.trim();
+
+                // Create label.
+                const label = document.createElement('label');
+
+                // Label content.
+                const feedback_prefix = '{{#str}} feedbackfor, mod_coursework {{/str}}';
+                label.textContent = `${feedback_prefix} ${criterion_name}`;
+
+                if (textarea.id) {
+                    label.setAttribute('for', textarea.id);
+                }
+
+                // Insert label.
+                cell.insertBefore(label, textarea);
             }
         });
     });

@@ -250,6 +250,7 @@ $string['feedbackcomment'] = 'Feedback comment';
 $string['feedbackcurrentfileexist'] = 'A feedback for this submission already exists';
 $string['feedbackfilecreated'] = 'The file has been added to the feedback for the submission';
 $string['feedbackfileupdated'] = 'The feedback for the submission has been updated with the given file';
+$string['feedbackfor'] = "Feedback for";
 $string['feedbacklocked'] = 'This submission has been marked by a marker since you loaded this page. No ' . 'alterations can now be made';
 $string['feedbacknotfound'] = 'A submission with feedback that matches the filename of this file was not found';
 $string['feedbackreleaseemail'] = 'Feedback release email';
