@@ -262,6 +262,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     public function edit_feedback_page(feedback $feedback, assessor_feedback_mform $simpleform) {
         $coursework = $feedback->get_coursework();
         $submission = $feedback->get_submission();
+        $submissionfiles = $submission->get_submission_files();
         $pagename = get_string('submissionfor', 'coursework', $submission->get_allocatable_name());
         $this->page->set_title($pagename);
 
@@ -269,12 +270,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template = new stdClass();
         $template->title = $pagename;
 
-        // Submission metadata.
-        $template->submission = $this->submission_metadata($feedback);
-
         // PDF or not?
         $template->showpdf = false;
-        $submissionfiles = $submission->get_submission_files();
         if ($submissionfiles && method_exists($submissionfiles, 'get_files')) {
             foreach ($submissionfiles->get_files() as $file) {
                 if ($file->get_mimetype() === 'application/pdf') {
@@ -284,6 +281,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 }
             }
         }
+
+        // Submission metadata.
+        $template->submission = $this->submission_metadata($submission, $coursework, $submissionfiles);
 
         // Agreement stage.
         $isagreeing = ($feedback->stageidentifier == 'final_agreed_1');
@@ -317,21 +317,19 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Prepares the submission structure for the mustache template.
+     * Prepare submission metadata for mustache template.
      *
-     * @param feedback $feedback
-     * @return stdClass Template data.
+     * @param submission $submission The submission object.
+     * @param coursework $coursework The coursework settings object.
+     * @param mixed $submissionfiles Submitted files object.
+     * @return stdClass Structured data for the template.
      */
-    protected function submission_metadata($feedback): stdClass {
-        $submission = $feedback->get_submission();
-        $coursework = $feedback->get_coursework();
-
+    protected function submission_metadata(submission $submission, coursework $coursework, $submissionfiles): stdClass {
         $template = new stdClass();
         $template->submissiondata = new stdClass();
         $template->submissiondata->files = [];
 
-        $submissionfiles = $submission->get_submission_files();
-        if ($submissionfiles) {
+        if ($submissionfiles && method_exists($submissionfiles, 'get_files')) {
             foreach ($submissionfiles->get_files() as $file) {
                 $f = new stdClass();
                 $f->url = $this->get_object_renderer()->make_file_url($file);
@@ -361,7 +359,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         return $template;
-}
+    }
 
     /**
      * Renders a comparison view grouped by criteria.
