@@ -74,4 +74,12 @@ $functions = [
         'loginrequired' => true,
         'capabilities' => '', // Handled within the class.
     ],
+    'mod_coursework_get_turnitin_similarity_links' => [
+        'classname' => 'mod_coursework\external\get_turnitin_similarity_links',
+        'description' => 'Get Turnitin similarity links for grading report',
+        'type' => 'read',
+        'ajax' => true,
+        'loginrequired' => true,
+        'capabilities' => '', // Handled within the class.
+    ],
 ];

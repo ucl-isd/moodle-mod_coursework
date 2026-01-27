@@ -401,48 +401,19 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $submission = $files->get_submission();
         $filesarray = [];
 
+        $tiienabled = $coursework->tii_enabled();
         foreach ($submissionfiles as $file) {
             $link = $this->make_file_link($files, $file);
 
-            if ($ability->can('view_plagiarism', $submission)) {
-                // With no stuff to show, $plagiarismlinks comes back as '<br />'.
-                $link .= '<div class ="percent">' . $this->render_file_plagiarism_information($file, $coursework, $submission) . '</div>';
-            }
+            if ($tiienabled) {
+                if ($ability->can('view_plagiarism', $submission)) {
+                    // With no stuff to show, $plagiarismlinks comes back as '<br />'.
+                    $link .= '<div class ="turnitin-information percent">' . $this->render_file_plagiarism_information($file, $coursework) . '</div>';
+                }
 
-            if ($withresubmitbutton) {
-                $link .= '<div class ="subbutton">' . $this->render_resubmit_to_plagiarism_button($coursework, $submission) . '</div>';
-            }
-
-            $filesarray[] = $link;
-        }
-
-        $br = html_writer::empty_tag('br');
-        return implode($br, $filesarray);
-    }
-
-    /**
-     * Outputs the files as a HTML list.
-     *
-     * @param mod_coursework_submission_files $files
-     * @return string
-     */
-    public function render_plagiarism_links($files) {
-
-        global $USER;
-
-        $ability = new ability($USER->id, $files->get_coursework());
-
-        $coursework = $files->get_coursework();
-        $submissionfiles = $files->get_files();
-        $submission = $files->get_submission();
-        $filesarray = [];
-
-        foreach ($submissionfiles as $file) {
-            $link = '';
-
-            if ($ability->can('view_plagiarism', $submission)) {
-                // With no stuff to show, $plagiarismlinks comes back as '<br />'.
-                $link = $this->render_file_plagiarism_information($file, $coursework, $submission);
+                if ($withresubmitbutton) {
+                    $link .= '<div class ="subbutton">' . $this->render_resubmit_to_plagiarism_button($coursework, $submission) . '</div>';
+                }
             }
 
             $filesarray[] = $link;
@@ -802,7 +773,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param coursework $coursework
      * @return string
      */
-    protected function render_file_plagiarism_information($file, $coursework) {
+    protected function render_file_plagiarism_information(stored_file $file, coursework $coursework): string {
 
         $plagiarismlinksparams = [
             'userid' => $file->get_userid(),
