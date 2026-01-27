@@ -250,15 +250,16 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param feedback $feedback
-     * @throws \core\exception\coding_exception
-     * @throws \core\exception\moodle_exception
+     * Prepare and render feedback editing page.
+     *
+     * @param feedback $feedback The feedback object being processed.
+     * @param assessor_feedback_mform $simpleform The marking form to display.
+     * @return void
      * @throws coding_exception
      * @throws dml_exception
+     * @throws moodle_exception
      */
     public function edit_feedback_page(feedback $feedback, assessor_feedback_mform $simpleform) {
-        global $SITE, $DB;
-
         $coursework = $feedback->get_coursework();
         $submission = $feedback->get_submission();
         $pagename = get_string('submissionfor', 'coursework', $submission->get_allocatable_name());
@@ -268,13 +269,10 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template = new stdClass();
         $template->title = $pagename;
 
-        // Submission.
-        $template->submission = $this->get_object_renderer()->render_submission_files_with_plagiarism_links(
-            new mod_coursework_submission_files($submission->get_submission_files()),
-            false
-        );
+        // Submission metadata.
+        $template->submission = $this->submission_metadata($feedback);
 
-        // Pdf? - check if submission has a pdf.
+        // PDF or not?
         $template->showpdf = false;
         $submissionfiles = $submission->get_submission_files();
         if ($submissionfiles && method_exists($submissionfiles, 'get_files')) {
@@ -282,47 +280,38 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 if ($file->get_mimetype() === 'application/pdf') {
                     $template->showpdf = true;
                     $template->pdfurl = $this->get_object_renderer()->make_file_url($file);
-                    break; // Stop - we found a pdf!
+                    break; // Pdf found.
                 }
             }
         }
 
-        // Marking or agree marking stage.
-        $isagreeing = $feedback->stageidentifier == 'final_agreed_1';
-
-        // Simple marking - no advanced grading.
-        if ($isagreeing && !$feedback->get_coursework()->is_using_advanced_grading()) {
-            $feedbacks = [];
-            $modcourseworkobjectrenderer = new mod_coursework_object_renderer($this->page, $this->target);
-            foreach ($feedback->get_submission()->get_assessor_feedbacks() as $previousfeedbacks) {
-                $feedbacks[] = $modcourseworkobjectrenderer->render_feedback($previousfeedbacks, false);
-            }
-
-            if (!empty($feedbacks)) {
-                $template->previousfeedback = implode('', $feedbacks);
-            }
-        }
-
-        // Advanced grading.
-        if ($isagreeing && $feedback->get_coursework()->is_using_advanced_grading()) {
-            $previousfeedbacks = $feedback->submission->get_assessor_feedbacks();
-
+        // Agreement stage.
+        $isagreeing = ($feedback->stageidentifier == 'final_agreed_1');
+        if ($isagreeing) {
+            $previousfeedbacks = $submission->get_assessor_feedbacks();
             if (!empty($previousfeedbacks)) {
-                $modcourseworkobjectrenderer = new mod_coursework_object_renderer($this->page, $this->target);
-                $template->previousfeedback = $this->rendercomparisonview(
-                    $previousfeedbacks,
-                    $coursework
-                );
+                // Advanced grading.
+                if ($coursework->is_using_advanced_grading()) {
+                    $template->previousfeedback = $this->rendercomparisonview($previousfeedbacks, $coursework);
+                } else {
+                    // Simple direct grading.
+                    $renderedlist = [];
+                    $objrenderer = new mod_coursework_object_renderer($this->page, $this->target);
+                    foreach ($previousfeedbacks as $prev) {
+                        $renderedlist[] = $objrenderer->render_feedback($prev, false);
+                    }
+                    $template->previousfeedback = implode('', $renderedlist);
+                }
             }
         }
 
-        // Marking metadata for submission template.
-        $template->submission = $this->submission_metadata($feedback);
-
-        echo $this->output->header();
+        // Output all the things.
+        // Form part.
         ob_start();
         $simpleform->display();
         $template->marking = ob_get_clean();
+        // Standard bit.
+        echo $this->output->header();
         echo $this->render_from_template('mod_coursework/marking/main', $template);
         echo $this->output->footer();
     }
