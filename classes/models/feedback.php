@@ -621,11 +621,14 @@ class feedback extends table_base {
             return;
         }
         if (submission::$pool[$courseworkid] ?? null) {
-            $submissionids = submission::$pool[$courseworkid]['id'];
+            $submissionids = array_keys(submission::$pool[$courseworkid]['id']);
         } else {
-            $submissionids = $DB->get_records(submission::$tablename, ['courseworkid' => $courseworkid], '', 'id');
+            $submissionids = array_map(
+                fn($id) => (int)$id,
+                $DB->get_fieldset(submission::$tablename, 'id', ['courseworkid' => $courseworkid])
+            );
         }
-        self::fill_pool_submissions($courseworkid, array_keys($submissionids));
+        self::fill_pool_submissions($courseworkid, $submissionids);
     }
 
     /**
@@ -647,15 +650,7 @@ class feedback extends table_base {
 
         $data = $cache->get($key);
         if ($data === false) {
-            $data = [
-                'id' => [],
-                'submissionid-stageidentifier' => [],
-                'submissionid-stageidentifier_index' => [],
-                'submissionid-finalised' => [],
-                'submissionid-ismoderation-isfinalgrade-stageidentifier' => [],
-                'submissionid-assessorid' => [],
-                'submissionid' => [],
-            ];
+            $data = array_fill_keys(self::get_valid_cache_keys(), []);
             if ($submissionids) {
                 [$submissionidsql, $submissionidparams] = $DB->get_in_or_equal($submissionids, SQL_PARAMS_NAMED);
                 $feedbacks = $DB->get_records_sql("SELECT * FROM {coursework_feedbacks} WHERE submissionid $submissionidsql", $submissionidparams);
@@ -675,6 +670,23 @@ class feedback extends table_base {
             $cache->set($key, $data);
         }
         self::$pool[$courseworkid] = $data;
+    }
+
+
+    /**
+     * Get the allowed/expected cache keys for this class when @see self::get_cached_object() is called.
+     * @return string[]
+     */
+    public static function get_valid_cache_keys(): array {
+        return [
+            'id',
+            'submissionid-stageidentifier',
+            'submissionid-stageidentifier_index',
+            'submissionid-finalised',
+            'submissionid-ismoderation-isfinalgrade-stageidentifier',
+            'submissionid-assessorid',
+            'submissionid',
+        ];
     }
 
     /**

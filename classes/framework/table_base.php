@@ -732,9 +732,39 @@ abstract class table_base {
         $cache->delete(static::$tablename);
     }
 
+    /**
+     * Check that any cache key being requested is valid (i.e. exists as valid cache key in child class).
+     * Otherwise, @see self::get_cached_object() will return null without complaining and no-one will notice.
+     * @param string $cachekey
+     * @return void
+     * @throws coding_exception
+     */
+    protected static function validate_cache_key(string $cachekey): void {
+        $validkeys = static::get_valid_cache_keys();
+        if (!in_array($cachekey, $validkeys)) {
+            throw new coding_exception(
+                "Requested cache key '$cachekey' invalid."
+                . " Must must be one of: " . implode(' | ', $validkeys)
+                . " (" . self::class . "::get_cached_object())"
+            );
+        }
+    }
 
     /**
+     * Get the allowed/expected cache keys for this class when @see self::get_cached_object() is called.
      *
+     * @return string[]
+     */
+    protected static function get_valid_cache_keys(): array {
+        throw new coding_exception(
+            "For validation, please implement get_valid_cache_keys() in child class '" . get_called_class()
+            . "' where get_cached_object() is used"
+        );
+    }
+
+    /**
+     * Get cached object for params provided.
+     * $params must use keys from child class get_valid_cache_keys()
      * @param int $courseworkid
      * @param array $params to search cache for
      * @return static|null
@@ -745,6 +775,7 @@ abstract class table_base {
             static::fill_pool_coursework($courseworkid);
         }
         $cachekeyone = implode('-', array_keys($params));
+        static::validate_cache_key($cachekeyone);
         $cachekeytwo = implode('-', array_values($params));
         return static::$pool[$courseworkid][$cachekeyone][$cachekeytwo][0] ?? null;
     }
