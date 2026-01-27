@@ -22,6 +22,7 @@ Feature: Adding and editing final feedback
     And I click the new multiple final feedback button for the student
     And I set the field "Mark" to "57"
     And I press "Save and finalise"
+    And I should see "Changes saved"
     Then I visit the coursework page
     And I should see the final agreed grade as 57
 
@@ -34,6 +35,7 @@ Feature: Adding and editing final feedback
     And I click the new multiple final feedback button for the student
     And I set the field "Mark" to "57"
     And I press "Save as draft"
+    And I should see "Changes saved"
     Then I visit the coursework page
     And I should see the final agreed grade as 57
     And I should see the final agreed grade status "Draft"
@@ -57,10 +59,10 @@ Feature: Adding and editing final feedback
     And I set the field "Mark" to "58"
     And I set the field "Comment" to "New comment"
     And I press "Save and finalise"
+    And I should see "Changes saved"
     Then I visit the coursework page
     When I click the edit final feedback button
     And I wait until the page is ready
-    And I wait "1" seconds
     And the field "Mark" matches value "58"
     And the grade comment textarea field matches "New comment"
 
@@ -72,6 +74,7 @@ Feature: Adding and editing final feedback
     When I click the new multiple final feedback button for the student
     And I set the field "Mark" to "59"
     And I press "Save and finalise"
+    And I should see "Changes saved"
 
   Scenario: Editing final feedback from others
     And managers do not have the manage capability
@@ -81,6 +84,31 @@ Feature: Adding and editing final feedback
     When I visit the coursework page
     When I click the edit final feedback button
     And I wait until the page is ready
-    And I wait "2" seconds
-    And I wait until the page is ready
     And the field "Mark" matches value "45"
+
+  @javascript
+  Scenario: Setting a new final feedback but leaving require grade field blank
+    Given there are feedbacks from both teachers
+    And I am logged in as a manager
+    And I visit the coursework page
+    And I click the new multiple final feedback button for the student
+    And I set the field "Mark" to ""
+    And I press "Save and finalise"
+    And I should see "Required" in the "#fitem_id_grade" "css_element"
+    And I should not see "Changes saved"
+
+  @javascript
+  Scenario: Updating the final feedback but leaving require grade field blank
+    Given there are feedbacks from both teachers
+    And I am logged in as a manager
+    And I visit the coursework page
+    And I click the new multiple final feedback button for the student
+    And I set the field "Mark" to "22"
+    And I press "Save and finalise"
+    And I should see "Changes saved"
+    And I visit the coursework page
+    And I click on "22" "link" in the "[data-behat-markstage='final_agreed']" "css_element"
+    And I set the field "Mark" to ""
+    And I press "Save and finalise"
+    And I should see "Required" in the "#fitem_id_grade" "css_element"
+    And I should not see "Changes saved"
