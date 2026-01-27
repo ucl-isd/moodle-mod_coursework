@@ -290,9 +290,12 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         if ($isagreeing) {
             $previousfeedbacks = $submission->get_assessor_feedbacks();
             if (!empty($previousfeedbacks)) {
-                // Advanced grading.
                 if ($coursework->is_using_advanced_grading()) {
-                    $template->previousfeedback = $this->rendercomparisonview($previousfeedbacks, $coursework);
+                    // Advanced grading.
+                    $gradingcontroller = $coursework->get_advanced_grading_active_controller();
+                    if ($gradingcontroller) {
+                        $template->previousfeedback = $this->render_comparison_view($previousfeedbacks, $gradingcontroller);
+                    }
                 } else {
                     // Simple direct grading.
                     $renderedlist = [];
@@ -362,72 +365,76 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Renders a comparison view grouped by criteria.
+     * Agree feedback - output markers feedback in mustache.
      *
      * @param array $previousfeedbacks Array of feedback objects.
-     * @param coursework $coursework
-     * @return string HTML or ''.
+     * @param gradingform_controller $gradingcontroller
+     * @return string HTML or empty string.
      */
-    protected function rendercomparisonview($previousfeedbacks, $coursework): string {
-        $gradingcontroller = $coursework->get_advanced_grading_active_controller();
-        if (!$gradingcontroller) {
-            return '';
-        }
-
+    protected function render_comparison_view(array $previousfeedbacks, $gradingcontroller): string {
         $gradingdefinition = $gradingcontroller->get_definition();
         $isguide = isset($gradingdefinition->guide_criteria);
         $criteria = $isguide ? $gradingdefinition->guide_criteria : $gradingdefinition->rubric_criteria;
 
+        // Loop through each feedback and get the markers data.
+        $markersdata = [];
+        foreach ($previousfeedbacks as $index => $feedback) {
+            $instance = $gradingcontroller->get_current_instance($feedback->assessorid, $feedback->id);
+
+            if ($instance) {
+                $filling = $isguide ? $instance->get_guide_filling() : $instance->get_rubric_filling();
+
+                $markersdata[$index] = new stdClass();
+                $markersdata[$index]->label = get_string('marker', 'mod_coursework') . " " . ($index + 1);
+                $markersdata[$index]->fillings = $filling['criteria'] ?? [];
+            }
+        }
+
         $template = new stdClass();
         $template->reviewcriteria = [];
 
+        // Loop through each criterion in the Rubric/Guide.
         foreach ($criteria as $criterion) {
             $criterionitem = new stdClass();
             $criterionitem->name = $isguide ? $criterion['shortname'] : $criterion['description'];
             $criterionitem->markers = [];
 
-            foreach ($previousfeedbacks as $index => $feedback) {
-                $instance = $gradingcontroller->get_current_instance($feedback->assessorid, $feedback->id);
-                if (!$instance) {
-                    continue;
-                }
-
-                $filling = $isguide ? $instance->get_guide_filling() : $instance->get_rubric_filling();
-                $fillings = $filling['criteria'] ?? [];
-
-                // Find the filling for this specific criterion.
-                $currentfilling = null;
-                foreach ($fillings as $f) {
-                    if ($f['criterionid'] == $criterion['id']) {
-                        $currentfilling = $f;
-                        break;
-                    }
-                }
-
+            // For each marker, find their score for this specific criterion.
+            foreach ($markersdata as $markerinfo) {
                 $marker = new stdClass();
-                $marker->label = "Marker " . ($index + 1);
+                $marker->label = $markerinfo->label;
                 $marker->score = 0;
                 $marker->maxscore = 0;
                 $marker->remark = '';
 
+                // Find the filling for this specific criterion.
+                $currentfilling = null;
+                foreach ($markerinfo->fillings as $fill) {
+                    if ($fill['criterionid'] == $criterion['id']) {
+                        $currentfilling = $fill;
+                        break;
+                    }
+                }
+
+                // Handle the score logic based on Guide vs Rubric.
                 if ($isguide) {
                     $marker->maxscore = (float)($criterion['maxscore'] ?? 0);
                     $marker->score = $currentfilling ? (float)($currentfilling['score'] ?? 0) : 0;
-                    $marker->remark = $currentfilling ? format_text($currentfilling['remark'] ?? '', FORMAT_HTML) : '';
+                    $marker->remark = $currentfilling ? format_text($currentfilling['remark'], FORMAT_HTML) : '';
                 } else {
-                    // Rubric max score and selection logic.
                     foreach ($criterion['levels'] as $level) {
-                        $lscore = (float)$level['score'];
-                        if ($lscore > $marker->maxscore) {
-                            $marker->maxscore = $lscore;
+                        $lvlscore = (float)$level['score'];
+                        if ($lvlscore > $marker->maxscore) {
+                            $marker->maxscore = $lvlscore;
                         }
                         if ($currentfilling && $currentfilling['levelid'] == $level['id']) {
-                            $marker->score = $lscore;
+                            $marker->score = $lvlscore;
                             $marker->remark = format_text($currentfilling['remark'] ?? '', FORMAT_HTML);
                         }
                     }
                 }
 
+                // Calculate the percentage for the progress bar.
                 $percentraw = ($marker->maxscore > 0) ? ($marker->score / $marker->maxscore) * 100 : 0;
                 $marker->percent = (int)round($percentraw);
 
