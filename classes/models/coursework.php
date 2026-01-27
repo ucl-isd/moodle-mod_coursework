@@ -402,6 +402,13 @@ class coursework extends table_base {
      */
     public $personaldeadlineenabled;
 
+
+    /**
+     * Is turnitin enabled?
+     * @var bool
+     */
+    protected $turnitinenabled;
+
     /**
      * Gets the relevant course module and caches it.
      *
@@ -2150,27 +2157,27 @@ class coursework extends table_base {
      * @return bool
      * @throws dml_exception
      */
-    public function tii_enabled() {
-
-        if (!isset(self::$pool[$this->id]['tii_enabled'][$this->id])) {
-            global $CFG, $DB;
-            $turnitinenabled = false;
-            if ($CFG->enableplagiarism) {
-                $plagiarismsettings = (array)get_config('plagiarism');
-                if (!empty($plagiarismsettings['turnitin_use'])) {
-                    $params = [
-                        'cm' => $this->get_coursemodule_id(),
-                        'name' => 'use_turnitin',
-                        'value' => 1,
-                    ];
-                    if ($DB->record_exists('plagiarism_turnitin_config', $params)) {
-                        $turnitinenabled = true;
-                    }
-                }
-            }
-            self::$pool[$this->id]['tii_enabled'][$this->id] = $turnitinenabled;
+    public function tii_enabled(): bool {
+        global $CFG, $DB;
+        if (
+            (!$CFG->enableplagiarism ?? false )
+            || !isset(plagiarism_load_available_plugins()['turnitin'])
+            || !get_config('plagiarism_turnitin', 'plagiarism_turnitin_mod_coursework')
+        ) {
+            return false;
         }
-        return self::$pool[$this->id]['tii_enabled'][$this->id];
+
+        if (!isset($this->turnitinenabled)) {
+            $this->turnitinenabled = $DB->record_exists(
+                'plagiarism_turnitin_config',
+                [
+                    'cm' => $this->get_coursemodule_id(),
+                    'name' => 'use_turnitin',
+                    'value' => 1,
+                ]
+            );
+        }
+        return $this->turnitinenabled;
     }
 
     /**

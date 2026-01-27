@@ -10,7 +10,7 @@
         </td>
 
         {{! Submission. }}
-        <td class="mod-coursework-submissions-submission-col">
+        <td class="mod-coursework-submissions-submission-col"{{#submission.id}} data-submission-id="{{submission.id}}"{{/submission.id}}>
             {{> mod_coursework/submissions/tr/submissions}}
         </td>
 

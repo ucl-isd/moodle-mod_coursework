@@ -82,6 +82,15 @@
                         {{/datemodified}}
                     </div>
                 </div>
+            {{#tiienabled}}
+                <div class="mod-coursework-plagiarism-tii">
+                    <span class="sr-only">{{#str}} plagiarism_report, mod_coursework {{/str}}</span>
+                    <span class="mod-coursework-plagiarism-tii-links" id="mod-coursework-plagiarism-tii-links-{{fileid}}" data-tii-loaded="{{tiiloadedattr}}{{^tiiloadedattr}}false{{/tiiloadedattr}}">
+                    {{! JS will insert data from TII here, unless re-loading a single row from AJAX in which case tiilinksHTML is provided}}
+                        {{{tiilinksHTML}}}
+                </span>
+                </div>
+            {{/tiienabled}}
             {{/files}}
         </div>
 
