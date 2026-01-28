@@ -33,7 +33,6 @@ use gradingform_instance;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
-use mod_coursework\output\grading_guide_agreed_grades;
 use mod_coursework\stages\final_agreed;
 use mod_coursework\utils\cs_editor;
 use moodleform;
@@ -262,6 +261,10 @@ class assessor_feedback_mform extends moodleform {
     public function display() {
         global $OUTPUT;
 
+        parent::display();
+        // TODO - trace back and remove any code called to output marking guide in pervious iteration.
+        // Hopefully David Watson can help with this!
+        /*
         if ($this->agreeing_final_marking_guide()) {
             $data = new grading_guide_agreed_grades(
                 $this->_form->getAttributes(),
@@ -276,17 +279,7 @@ class assessor_feedback_mform extends moodleform {
         } else {
             parent::display();
         }
-    }
-
-    private function agreeing_final_marking_guide(): bool {
-        return
-            feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)
-            &&
-            $this->coursework->is_using_marking_guide()
-            &&
-            $this->coursework->has_multiple_markers()
-            &&
-            $this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1;
+        */
     }
 
     /**
@@ -304,8 +297,6 @@ class assessor_feedback_mform extends moodleform {
         $errors = parent::validation($data, $files);
 
         if (
-            $this->agreeing_final_marking_guide()
-            &&
             $this->coursework->uses_numeric_grade()
             &&
             !$this->gradinginstance->validate_grading_element($data['advancedgrading'])

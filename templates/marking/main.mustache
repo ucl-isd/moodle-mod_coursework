@@ -1,0 +1,136 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+
+<div {{#showpdf}} class="full-width" {{/showpdf}}>
+    <div class="container-fluid">
+        <div class="row">
+
+            {{! Marking. }}
+            <div class="col animate-enter">
+                <div class="container">
+                    {{! When not a PDF, show submissions metadata as header. }}
+                    {{^showpdf}}
+                        {{> mod_coursework/submissions/tr/submissions }}
+                    {{/showpdf}}
+
+                    <h3>Marking</h3>
+                    {{#previousfeedback}}
+                        {{{.}}}
+                        <h4 class="pt-3">{{#str}} agreefeedback, mod_coursework {{/str}}</h4>
+                    {{/previousfeedback}}
+
+                    <div id="coursework-markingform">
+                        {{{marking}}}
+                    </div>
+                </div>
+            </div>
+
+            {{! Pdf. }}
+            {{#showpdf}}
+            <div class="col-md-6">
+                {{> mod_coursework/marking/pdf }}
+            </div>
+            {{/showpdf}}
+        </div>
+    </div>
+</div>
+
+{{! js adding labels to forms.
+// TODO - move to amd. }}
+<script>
+(function() {
+    window.addEventListener('load', function() {
+        const root = document.getElementById('coursework-markingform');
+        if (!root) return;
+
+        const score_cells = root.querySelectorAll('td.score');
+
+        score_cells.forEach(cell => {
+            const input = cell.querySelector('input');
+            const max_div = cell.querySelector('div');
+
+            if (input && max_div) {
+                const max_score = max_div.textContent.replace(/[^0-9.]/g, '');
+
+                // Make required.
+                input.setAttribute('required', 'required');
+
+                // Make an input type number.
+                input.setAttribute('type', 'number');
+                input.setAttribute('min', '0');
+                if (max_score) {
+                    input.setAttribute('max', max_score);
+                }
+                input.setAttribute('step', 'any');
+
+                // Label.
+                const label = document.createElement('label');
+                label.textContent = `{{#str}} mark, mod_coursework {{/str}} (0–${max_score})`;
+
+                if (input.id) {
+                    label.setAttribute('for', input.id);
+                }
+
+                cell.insertBefore(label, cell.firstChild);
+
+                // Remove overhanging div.
+                max_div.remove();
+            }
+        });
+    });
+})();
+
+(function() {
+    window.addEventListener('load', function() {
+        const root = document.getElementById('coursework-markingform');
+        if (!root) return;
+
+        const remark_cells = root.querySelectorAll('td.remark');
+
+        remark_cells.forEach(cell => {
+            const textarea = cell.querySelector('textarea');
+            const parent_row = cell.closest('tr');
+            const description_cell = parent_row ? parent_row.querySelector('td.description') : null;
+
+            if (textarea && description_cell) {
+                // 1. Clone the description cell so we don't mess up the actual UI.
+                const temp_description = description_cell.cloneNode(true);
+
+                // 2. Remove the unwanted div.
+                const review_marks = temp_description.querySelector('.review-marks');
+                if (review_marks) {
+                    review_marks.remove();
+                }
+
+                // 3. What remains is just the text you want.
+                const criterion_name = temp_description.textContent.trim();
+
+                // 2. Create the label.
+                const label = document.createElement('label');
+                const feedback_prefix = '{{#str}} feedbackfor, mod_coursework {{/str}}';
+                label.textContent = `${feedback_prefix} ${criterion_name}`;
+
+                if (textarea.id) {
+                    label.setAttribute('for', textarea.id);
+                }
+
+                // 3. Insert the label.
+                cell.insertBefore(label, textarea);
+            }
+        });
+    });
+})();
+</script>

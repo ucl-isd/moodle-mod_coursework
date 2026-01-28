@@ -1,6 +1,27 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{! Title when displaying on marking page. }}
+{{#title}}
+    <h3>{{title}}</h3>
+{{/title}}
+
 {{#submission}}
     {{#submissiondata}}
         {{#files}}
+        <div class="mod-coursework-submission">
             <div class="position-relative d-flex align-items-center pb-2">
                 {{! Icon. }}
                 <div class="rounded-circle border border-primary d-flex align-items-center justify-content-center flex-shrink-0 mr-2" style="height: 2rem; width: 2rem;">
@@ -33,45 +54,48 @@
                 </div>
             </div>
 
-            {{#extensiondeadline}}
-            <div class="bg-light badge-pill my-2 py-1">
-                <div class="position-relative d-flex align-items-center">
-                        <div class="mr-3">
-                            <i class="fa-regular fa-clock"></i>
-                        </div>
-                        <div class="small">
-                            {{#str}} extension, mod_coursework {{/str}}
-                            <br>
-                            {{#userdate}}
-                                {{.}}, {{#str}} strftimedatetime, langconfig {{/str}}
-                            {{/userdate}}
-                        </div>
+            <div class="mod-coursework-submission-metadata">
+                {{#extensiondeadline}}
+                <div class="bg-light badge-pill my-2 py-1">
+                    <div class="position-relative d-flex align-items-center">
+                            <div class="mr-3">
+                                <i class="fa-regular fa-clock"></i>
+                            </div>
+                            <div class="small">
+                                {{#str}} extension, mod_coursework {{/str}}
+                                <br>
+                                {{#userdate}}
+                                    {{.}}, {{#str}} strftimedatetime, langconfig {{/str}}
+                                {{/userdate}}
+                            </div>
+                    </div>
                 </div>
-            </div>
-            {{/extensiondeadline}}
+                {{/extensiondeadline}}
 
-            {{#submittedlate}}
-                <span class="badge badge-pill badge-warning">
-                    <i class="fa-regular fa-clock m-1"></i>
-                    {{#str}} submitted_late, mod_coursework {{/str}}
-                </span>
-            {{/submittedlate}}
-
-            {{#flaggedplagiarism}}
-                <span class="badge badge-pill badge-danger">
-                    <i class="fa-regular fa-flag m-1"></i>
-                    {{#str}} flagged_plagiarism, mod_coursework {{/str}}
-                </span>
-            {{/flaggedplagiarism}}
-
-            {{#plagiarismlinks}}
-                <div>
-                    <span class="sr-only">
-                        {{#str}} plagiarism_report, mod_coursework {{/str}}
+                {{#submittedlate}}
+                    <span class="badge badge-pill badge-warning">
+                        <i class="fa-regular fa-clock m-1"></i>
+                        {{#str}} submitted_late, mod_coursework {{/str}}
                     </span>
-                    {{{plagiarismlinks}}}
-                </div>
-            {{/plagiarismlinks}}
+                {{/submittedlate}}
+
+                {{#flaggedplagiarism}}
+                    <span class="badge badge-pill badge-danger">
+                        <i class="fa-regular fa-flag m-1"></i>
+                        {{#str}} flagged_plagiarism, mod_coursework {{/str}}
+                    </span>
+                {{/flaggedplagiarism}}
+
+                {{#plagiarismlinks}}
+                    <div>
+                        <span class="sr-only">
+                            {{#str}} plagiarism_report, mod_coursework {{/str}}
+                        </span>
+                        {{{plagiarismlinks}}}
+                    </div>
+                {{/plagiarismlinks}}
+            </div>
+        </div>
         {{/files}}
     {{/submissiondata}}
 

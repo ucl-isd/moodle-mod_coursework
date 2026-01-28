@@ -250,88 +250,201 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param feedback $feedback
-     * @throws \core\exception\coding_exception
-     * @throws \core\exception\moodle_exception
+     * Prepare and render feedback editing page.
+     *
+     * @param feedback $feedback The feedback object being processed.
+     * @param assessor_feedback_mform $simpleform The marking form to display.
+     * @return void
      * @throws coding_exception
      * @throws dml_exception
+     * @throws moodle_exception
      */
     public function edit_feedback_page(feedback $feedback, assessor_feedback_mform $simpleform) {
-        global $SITE, $DB;
-
-        $submission = $feedback->get_submission();
-        $areagreeing = $feedback->stageidentifier == 'final_agreed_1';
-        $gradingtitle = $areagreeing
-            ? get_string('markingforagree', 'coursework', $submission->get_allocatable_name())
-            : get_string('markingfor', 'coursework', $submission->get_allocatable_name());
-
         $coursework = $feedback->get_coursework();
-        $this->page->set_pagelayout($coursework->is_using_marking_guide() ? 'incourse' : 'standard');
-        $this->page->navbar->add($gradingtitle);
-        $this->page->set_title($SITE->fullname);
-        $this->page->set_heading($SITE->fullname);
+        $submission = $feedback->get_submission();
+        $submissionfiles = $submission->get_submission_files();
+        $pagename = get_string('submissionfor', 'coursework', $submission->get_allocatable_name());
+        $this->page->set_title($pagename);
 
-        // Template grading details.
+        // Template.
         $template = new stdClass();
-        $template->title = $gradingtitle;
-        // Marker.
-        $assessor = $DB->get_record('user', ['id' => $feedback->assessorid]);
-        $template->marker = ($feedback->assessorid == 0) ?
-            get_string('automaticagreement', 'mod_coursework')
-            :
-            fullname($assessor);
+        $template->title = $pagename;
 
-        // Submission.
-        $template->submission = $this->get_object_renderer()->render_submission_files_with_plagiarism_links(
-            new mod_coursework_submission_files($submission->get_submission_files()),
-            false
-        );
-
-        if (!empty($feedback->id)) {
-            if (!empty($feedback->lasteditedbyuser)) {
-                $editor = $DB->get_record('user', ['id' => $feedback->lasteditedbyuser]);
-            } else {
-                $editor = $assessor;
-            }
-
-            // Last edit.
-            $template->lasteditedby = (object)[
-                'name' =>
-                    ((!$feedback->get_coursework()->sampling_enabled() || $feedback->get_submission()->sampled_feedback_exists())
-                        &&
-                        $feedback->assessorid == 0
-                        &&
-                        $feedback->timecreated == $feedback->timemodified)
-                        ?
-                        get_string('automaticagreement', 'mod_coursework')
-                        :
-                        fullname($editor),
-                'date' => userdate($feedback->timemodified, get_string('strftimerecentfull', 'langconfig')),
-            ];
-        }
-
-        echo $this->output->header();
-        echo $this->render_from_template('mod_coursework/marking_details', $template);
-
-        if ($areagreeing && !$feedback->get_coursework()->is_using_advanced_grading()) {
-            $feedbacks = [];
-            $modcourseworkobjectrenderer = new mod_coursework_object_renderer($this->page, $this->target);
-            foreach ($feedback->get_submission()->get_assessor_feedbacks() as $previousfeedbacks) {
-                $feedbacks[] = $modcourseworkobjectrenderer->render_feedback($previousfeedbacks, false);
-            }
-
-            if (!empty($feedbacks)) {
-                echo '<h3 class="h5">' . get_string('markerfeedback', 'mod_coursework') . '</h3>';
-                echo implode('', $feedbacks);
-                echo '<h3 class="h5">' . get_string('agreefeedback', 'mod_coursework') . '</h3>';
+        // PDF or not?
+        $template->showpdf = false;
+        if ($submissionfiles && method_exists($submissionfiles, 'get_files')) {
+            foreach ($submissionfiles->get_files() as $file) {
+                if ($file->get_mimetype() === 'application/pdf') {
+                    $template->showpdf = true;
+                    $template->pdfurl = $this->get_object_renderer()->make_file_url($file);
+                    break; // Pdf found.
+                }
             }
         }
 
-        // SHAME - Can we add an id to the form.
-        echo "<div id='coursework-markingform'>";
+        // Submission metadata.
+        $template->submission = $this->submission_metadata($submission, $coursework, $submissionfiles);
+
+        // Agreement stage.
+        $isagreeing = ($feedback->stageidentifier == 'final_agreed_1');
+        if ($isagreeing) {
+            $previousfeedbacks = $submission->get_assessor_feedbacks();
+            if (!empty($previousfeedbacks)) {
+                if ($coursework->is_using_advanced_grading()) {
+                    // Advanced grading.
+                    $gradingcontroller = $coursework->get_advanced_grading_active_controller();
+                    if ($gradingcontroller) {
+                        $template->previousfeedback = $this->render_comparison_view($previousfeedbacks, $gradingcontroller);
+                    }
+                } else {
+                    // Simple direct grading.
+                    $renderedlist = [];
+                    $objrenderer = new mod_coursework_object_renderer($this->page, $this->target);
+                    foreach ($previousfeedbacks as $prev) {
+                        $renderedlist[] = $objrenderer->render_feedback($prev, false);
+                    }
+                    $template->previousfeedback = implode('', $renderedlist);
+                }
+            }
+        }
+
+        // Output all the things.
+        // Form part.
+        ob_start();
         $simpleform->display();
-        echo "</div>";
+        $template->marking = ob_get_clean();
+        // Standard bit.
+        echo $this->output->header();
+        echo $this->render_from_template('mod_coursework/marking/main', $template);
         echo $this->output->footer();
+    }
+
+    /**
+     * Prepare submission metadata for mustache template.
+     *
+     * @param submission $submission The submission object.
+     * @param coursework $coursework The coursework settings object.
+     * @param mixed $submissionfiles Submitted files object.
+     * @return stdClass Structured data for the template.
+     */
+    protected function submission_metadata(submission $submission, coursework $coursework, $submissionfiles): stdClass {
+        $template = new stdClass();
+        $template->submissiondata = new stdClass();
+        $template->submissiondata->files = [];
+
+        if ($submissionfiles && method_exists($submissionfiles, 'get_files')) {
+            foreach ($submissionfiles->get_files() as $file) {
+                $f = new stdClass();
+                $f->url = $this->get_object_renderer()->make_file_url($file);
+                $f->datemodified = $file->get_timemodified();
+                // TODO - check if when file name gets changed to candidate num it changes here...
+                $f->filename = $file->get_filename();
+
+                // Finalised.
+                $f->finalised = ($submission->finalisedstatus == 1);
+
+                // TODO - plagarism. This dosn't work.
+                $f->flaggedplagiarism = false;
+                if ($coursework->plagiarismflagenabled) {
+                    // TODO - turnitin stuff.
+                    // $f->plagiarismlinks = $this->get_object_renderer()->render_plagiarism_links($file);
+                }
+
+                $template->submissiondata->files[] = $f;
+            }
+        }
+
+        // Late.
+        $template->submittedlate = false;
+        if (!empty($submission->timesubmitted) && !empty($coursework->deadline)) {
+            // TODO - does this work with extensions and personal deadlines?
+            $template->submittedlate = ($submission->timesubmitted > $coursework->deadline);
+        }
+
+        return $template;
+    }
+
+    /**
+     * Agree feedback - output markers feedback in mustache.
+     *
+     * @param array $previousfeedbacks Array of feedback objects.
+     * @param gradingform_controller $gradingcontroller
+     * @return string HTML or empty string.
+     */
+    protected function render_comparison_view(array $previousfeedbacks, $gradingcontroller): string {
+        $gradingdefinition = $gradingcontroller->get_definition();
+        $isguide = isset($gradingdefinition->guide_criteria);
+        $criteria = $isguide ? $gradingdefinition->guide_criteria : $gradingdefinition->rubric_criteria;
+
+        // Loop through each feedback and get the markers data.
+        $markersdata = [];
+        foreach ($previousfeedbacks as $index => $feedback) {
+            $instance = $gradingcontroller->get_current_instance($feedback->assessorid, $feedback->id);
+
+            if ($instance) {
+                $filling = $isguide ? $instance->get_guide_filling() : $instance->get_rubric_filling();
+
+                $markersdata[$index] = new stdClass();
+                $markersdata[$index]->label = get_string('marker', 'mod_coursework') . " " . ($index + 1);
+                $markersdata[$index]->fillings = $filling['criteria'] ?? [];
+            }
+        }
+
+        $template = new stdClass();
+        $template->reviewcriteria = [];
+
+        // Loop through each criterion in the Rubric/Guide.
+        foreach ($criteria as $criterion) {
+            $criterionitem = new stdClass();
+            $criterionitem->name = $isguide ? $criterion['shortname'] : $criterion['description'];
+            $criterionitem->markers = [];
+
+            // For each marker, find their score for this specific criterion.
+            foreach ($markersdata as $markerinfo) {
+                $marker = new stdClass();
+                $marker->label = $markerinfo->label;
+                $marker->score = 0;
+                $marker->maxscore = 0;
+                $marker->remark = '';
+
+                // Find the filling for this specific criterion.
+                $currentfilling = null;
+                foreach ($markerinfo->fillings as $fill) {
+                    if ($fill['criterionid'] == $criterion['id']) {
+                        $currentfilling = $fill;
+                        break;
+                    }
+                }
+
+                // Handle the score logic based on Guide vs Rubric.
+                if ($isguide) {
+                    $marker->maxscore = (float)($criterion['maxscore'] ?? 0);
+                    $marker->score = $currentfilling ? (float)($currentfilling['score'] ?? 0) : 0;
+                    $marker->remark = $currentfilling ? format_text($currentfilling['remark'], FORMAT_HTML) : '';
+                } else {
+                    foreach ($criterion['levels'] as $level) {
+                        $lvlscore = (float)$level['score'];
+                        if ($lvlscore > $marker->maxscore) {
+                            $marker->maxscore = $lvlscore;
+                        }
+                        if ($currentfilling && $currentfilling['levelid'] == $level['id']) {
+                            $marker->score = $lvlscore;
+                            $marker->remark = format_text($currentfilling['remark'] ?? '', FORMAT_HTML);
+                        }
+                    }
+                }
+
+                // Calculate the percentage for the progress bar.
+                $percentraw = ($marker->maxscore > 0) ? ($marker->score / $marker->maxscore) * 100 : 0;
+                $marker->percent = (int)round($percentraw);
+
+                // Add marker data to markers object.
+                $criterionitem->markers[] = $marker;
+            }
+            $template->reviewcriteria[] = $criterionitem;
+        }
+
+        return $this->render_from_template('mod_coursework/marking/review', $template);
     }
 
     /**
