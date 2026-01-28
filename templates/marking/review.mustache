@@ -16,9 +16,12 @@
 <div class="d-none" id="review-source-wrapper">
     <ul class="pl-3">
     {{#reviewcriteria}}
-    <li>
-        <div class="line-clamp-2">{{name}}</div>
-            <div class="review-marks">
+        <li>
+            <div class="line-clamp-2">
+                {{name}}
+            </div>
+
+            <div class="review-marks animate-enter">
                 <div class="row small mt-2">
                     {{#markers}}
                     <div class="col-md">
@@ -44,10 +47,9 @@
                     </div>
                     {{/markers}}
                 </div>
-            <hr>
+                <hr>
             </div>
-
-    </li>
+        </li>
     {{/reviewcriteria}}
     </ul>
 </div>

@@ -106,13 +106,20 @@
             const description_cell = parent_row ? parent_row.querySelector('td.description') : null;
 
             if (textarea && description_cell) {
-                // Get the criterion name.
-                const criterion_name = description_cell.textContent.trim();
+                // 1. Clone the description cell so we don't mess up the actual UI.
+                const temp_description = description_cell.cloneNode(true);
 
-                // Create label.
+                // 2. Remove the unwanted div.
+                const review_marks = temp_description.querySelector('.review-marks');
+                if (review_marks) {
+                    review_marks.remove();
+                }
+
+                // 3. What remains is just the text you want.
+                const criterion_name = temp_description.textContent.trim();
+
+                // 2. Create the label.
                 const label = document.createElement('label');
-
-                // Label content.
                 const feedback_prefix = '{{#str}} feedbackfor, mod_coursework {{/str}}';
                 label.textContent = `${feedback_prefix} ${criterion_name}`;
 
@@ -120,7 +127,7 @@
                     label.setAttribute('for', textarea.id);
                 }
 
-                // Insert label.
+                // 3. Insert the label.
                 cell.insertBefore(label, textarea);
             }
         });

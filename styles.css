@@ -20,6 +20,7 @@ Coursework.
     input[type=number] {
         field-sizing: content;
         min-width: 5rem;
+        text-align: right;
     }
     .remark label.hidden {
         display: block !important;
@@ -31,6 +32,7 @@ Coursework.
         #pdf-viewer {
             overflow: scroll;
             margin-top: 1rem !important;
+            text-align: center;
         }
         .pdf-page-canvas {
             max-width: 100% !important;
@@ -82,7 +84,7 @@ Coursework.
         .criterionshortname {
             font-weight: bold;
             font-size: 1.2rem;
-            padding-top: 1rem !important;
+            padding-top: 2rem !important;
             display: block;
             .review-marks {
                font-size: 1rem;
@@ -94,6 +96,7 @@ Coursework.
         .criteriondescription,
         .criteriondescriptionmarkers {
             font-size: small;
+            width: auto;
         }
 
         /* Radio button, definition, and score. */
@@ -151,18 +154,20 @@ Coursework.
         }
 
         /* Comment area. */
+        td.remark {
+            padding: .5rem !important;
+        }
         textarea,
-        .markingguideremark,
-        .commentchooser {
+        .markingguideremark {
             width: 100%;
             box-sizing: border-box;
         }
 
-        /* Reduce the textarea height (mimics rows=3) and add padding */
+        /* Reduce the textarea height (mimics rows=2) and add padding */
         textarea {
             padding: 0.5rem;
-            height: 6rem;
-            min-height: 6rem;
+            height: 4rem;
+            min-height: 4rem;
         }
 
         /* Add frequently use comments button. */
