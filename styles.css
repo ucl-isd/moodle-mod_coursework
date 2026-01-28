@@ -3,7 +3,6 @@
 Coursework.
 **/
 
-
 /* Marking page. */
 .path-mod-coursework-actions-feedbacks {
     /* Full width container for pdf viewer. */
@@ -18,7 +17,7 @@ Coursework.
     }
 
     input[type=number] {
-        field-sizing: content;
+        field-sizing: content; /* stylelint-disable-line */
         min-width: 5rem;
         text-align: right;
     }
@@ -86,6 +85,7 @@ Coursework.
             font-size: 1.2rem;
             padding-top: 2rem !important;
             display: block;
+
             .review-marks {
                font-size: 1rem;
                font-weight: normal;
