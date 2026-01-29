@@ -105,8 +105,8 @@ trait allocatable_functions {
         if ($coursework->sampling_enabled()) {
             $expectedmarkers = assessment_set_membership::membership_count(
                 $coursework->id(),
-                $this->id(),
-                $this->type()
+                $this->type(),
+                $this->id()
             ) + 1;  // Add one as there is always a marker for stage 1.
         }
 
