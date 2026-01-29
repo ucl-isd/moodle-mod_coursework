@@ -281,6 +281,17 @@ class assessor_feedback_mform extends moodleform {
         */
     }
 
+    private function agreeing_final_marking_guide(): bool {
+        return
+            feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)
+            &&
+            $this->coursework->is_using_marking_guide()
+            &&
+            $this->coursework->has_multiple_markers()
+            &&
+            $this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1;
+    }
+
     /**
      * If there are errors return array of errors ("fieldname" => "error message").
      *
@@ -294,8 +305,9 @@ class assessor_feedback_mform extends moodleform {
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
-
         if (
+            $this->agreeing_final_marking_guide()
+            &&
             $this->coursework->uses_numeric_grade()
             &&
             !$this->gradinginstance->validate_grading_element($data['advancedgrading'])
