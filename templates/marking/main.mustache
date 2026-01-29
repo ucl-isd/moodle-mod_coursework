@@ -13,6 +13,16 @@
     You should have received a copy of the GNU General Public License
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
+{{!
+    @template mod_coursework/marking/main
+
+    Example context (json):
+    {
+        "showpdf": true,
+        "previousfeedback": "<p>This is where the feedback from the previous marking stage would appear. The student did a good job overall.</p>",
+        "marking": "<form id=\"mform1\" action=\"#\" method=\"post\"><table class=\"generaltable\"><tbody><tr><td class=\"description\">Criterion 1<div class=\"review-marks\">some review marks</div></td><td class=\"score\"><input type=\"text\" name=\"score1\" id=\"score1\"><div>/ 10</div></td><td class=\"remark\"><textarea name=\"remark1\" id=\"remark1\"></textarea></td></tr><tr><td class=\"description\">Criterion 2<div class=\"review-marks\">some review marks</div></td><td class=\"score\"><input type=\"text\" name=\"score2\" id=\"score2\"><div>/ 20</div></td><td class=\"remark\"><textarea name=\"remark2\" id=\"remark2\"></textarea></td></tr></tbody></table></form>"
+    }
+}}
 
 <div {{#showpdf}} class="full-width" {{/showpdf}}>
     <div class="container-fluid">
@@ -26,7 +36,7 @@
                         {{> mod_coursework/submissions/tr/submissions }}
                     {{/showpdf}}
 
-                    <h3>Marking</h3>
+                    <h3>{{#str}} marking, mod_coursework {{/str}}</h3>
                     {{#previousfeedback}}
                         {{{.}}}
                         <h4 class="pt-3">{{#str}} agreefeedback, mod_coursework {{/str}}</h4>
