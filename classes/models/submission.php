@@ -1690,6 +1690,25 @@ class submission extends table_base implements renderable {
     }
 
     /**
+     * Get multiple submission objects from IDs.
+     * @param int[] $submissionids
+     * @return array submission objects
+     * @throws \core\exception\invalid_parameter_exception
+     * @throws coding_exception
+     * @throws dml_exception
+     */
+    public static function get_multiple(array $submissionids): array {
+        global $DB;
+        [$insql, $params] = $DB->get_in_or_equal($submissionids, SQL_PARAMS_NAMED);
+        $records = $DB->get_records_sql("SELECT * FROM {coursework_submissions} WHERE id $insql", $params);
+        $submissions = [];
+        foreach ($records as $record) {
+            $submissions[$record->id] = self::find($record, false);
+        }
+        return $submissions;
+    }
+
+    /**
      * Check if the submission should be flagged for plagiarism.
      *
      * @return string|bool

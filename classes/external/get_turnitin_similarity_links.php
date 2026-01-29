@@ -46,7 +46,7 @@ class get_turnitin_similarity_links extends external_api {
             'courseworkid' => new external_value(PARAM_INT, 'ID of the coursework'),
             'submissionids' => new external_multiple_structure(
                 new external_value(PARAM_INT, 'ID of the submission'),
-                'ID of the submissions (or empty array if all submissions required)'
+                'ID of the submissions required'
             ),
         ]);
     }
@@ -61,7 +61,7 @@ class get_turnitin_similarity_links extends external_api {
      * @throws \dml_exception
      * @throws \invalid_parameter_exception
      */
-    public static function execute(int $courseworkid, array $submissionids = []): array {
+    public static function execute(int $courseworkid, array $submissionids): array {
         global $CFG, $USER;
         require_once("$CFG->libdir/plagiarismlib.php");
         $params = self::validate_parameters(
@@ -92,6 +92,10 @@ class get_turnitin_similarity_links extends external_api {
 
         require_capability('plagiarism/turnitin:viewfullreport', $context);
 
+        if (empty($submissionids)) {
+            return ['success' => true, 'result' => [], 'errorcode' => null, 'message' => ''];
+        }
+
         // Only show the rows that the user can see.
         $visiblesubmissionids = grading_report::get_visible_row_submission_ids($coursework);
         $invalidids = array_filter(
@@ -110,10 +114,18 @@ class get_turnitin_similarity_links extends external_api {
 
         $noabilityids = [];
         $ability = new ability($USER->id, $coursework);
-        foreach ($visiblesubmissionids as $visiblesubmissionid) {
-            $submission = submission::find(['id' => $visiblesubmissionid]);
-            if (!$submission || !$ability->can('view_plagiarism', $submission)) {
-                $noabilityids[] = $visiblesubmissionid;
+        $foundsubmissions = submission::get_multiple($submissionids);
+        // Check we have the ability to see plagiarism details for all requested and found submissions.
+        foreach ($foundsubmissions as $foundsubmission) {
+            if ($foundsubmission->courseworkid != $courseworkid || !$ability->can('view_plagiarism', $foundsubmission)) {
+                $noabilityids[] = $foundsubmission->id;
+            }
+        }
+        // Check if we are requesting any submissions that were not found.
+        $foundsubmissionids = array_keys($foundsubmissions);
+        foreach ($submissionids as $submissionid) {
+            if (!in_array($submissionid, $foundsubmissionids)) {
+                $noabilityids[] = $submissionid;
             }
         }
         if (!empty($noabilityids)) {

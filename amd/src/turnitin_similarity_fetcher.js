@@ -47,40 +47,44 @@ const processTurnitin = debounce(
         const submissionIds = visiblePlagiarismLinks.map(elem => {
             return parseInt(elem.closest('.mod-coursework-submissions-submission-col').dataset.submissionId);
         });
-        const WSResult = await Ajax.call([{
-            methodname: 'mod_coursework_get_turnitin_similarity_links',
-            args: {courseworkid: courseworkId, submissionids: submissionIds}
-        }])[0];
-        const tiiEmptyString = await getString('turnitinnoreport', 'coursework');
-        if (WSResult.success) {
-            WSResult.result.forEach(submission => {
-                submission.files.forEach(file => {
-                    const el = document.getElementById('mod-coursework-plagiarism-tii-links-' + file.fileid);
-                    if (el) {
-                        el.innerHTML = file.linkshtml;
-                        if (el.innerHTML === '') {
-                            el.innerHTML = `<small>${tiiEmptyString}</small>`;
+
+        if (submissionIds.length) {
+            const WSResult = await Ajax.call([{
+                methodname: 'mod_coursework_get_turnitin_similarity_links',
+                args: {courseworkid: courseworkId, submissionids: submissionIds}
+            }])[0];
+            const tiiEmptyString = await getString('turnitinnoreport', 'coursework');
+            if (WSResult.success) {
+                WSResult.result.forEach(submission => {
+                    submission.files.forEach(file => {
+                        const el = document.getElementById('mod-coursework-plagiarism-tii-links-' + file.fileid);
+                        if (el) {
+                            el.innerHTML = file.linkshtml;
+                            if (el.innerHTML === '') {
+                                el.innerHTML = `<small>${tiiEmptyString}</small>`;
+                            }
+                            el.dataset.tiiLoaded = "true";
+                        } else {
+                            Log.debug("Element not found #mod-coursework-plagiarism-tii-links-" + file.fileid);
                         }
-                        el.dataset.tiiLoaded = "true";
-                    } else {
-                        Log.debug("Element not found #mod-coursework-plagiarism-tii-links-" + file.fileid);
-                    }
+                    });
                 });
-            });
-        } else {
-            Log.debug(
-                "Error getting Turnitin links for submissions " + submissionIds.join(',')
-                + ": " + WSResult.errorcode + " | " + WSResult.message
-            );
-            submissionIds.forEach(id => {
-                const elems = document.querySelectorAll(
-                    `.mod-coursework-submissions-submission-col[data-submission-id="${id}"] .mod-coursework-plagiarism-tii-links`
+            } else {
+                Log.debug(
+                    "Error getting Turnitin links for submissions " + submissionIds.join(',')
+                    + ": " + WSResult.errorcode + " | " + WSResult.message
                 );
-                elems.forEach(el => {
-                    el.innerHTML = `<small>${tiiEmptyString}</small>`;
-                    el.dataset.tiiLoaded = "true";
+                submissionIds.forEach(id => {
+                    const elems = document.querySelectorAll(
+                        `.mod-coursework-submissions-submission-col[data-submission-id="${id}"]`
+                            + `.mod-coursework-plagiarism-tii-links`
+                    );
+                    elems.forEach(el => {
+                        el.innerHTML = `<small>${tiiEmptyString}</small>`;
+                        el.dataset.tiiLoaded = "true";
+                    });
                 });
-            });
+            }
         }
     },
     100
@@ -106,6 +110,6 @@ function debounce(fn, delay = 100) {
  */
 export const init = (courseworkid) => {
     courseworkId = courseworkid;
-    window.addEventListener("scroll", processTurnitin, {passive: true});
+    window.addEventListener("scrollend", processTurnitin, {passive: true});
     processTurnitin();
 };
