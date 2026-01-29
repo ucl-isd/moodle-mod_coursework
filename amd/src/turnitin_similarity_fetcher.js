@@ -50,7 +50,7 @@ const processTurnitin = debounce(
             return parseInt(elem.closest('.mod-coursework-submissions-submission-col').dataset.submissionId);
         });
 
-        const newSubmissionIds = submissionIds.filter(id => !alreadyRequestedIds.includes(id));
+        const newSubmissionIds = [...new Set(submissionIds)].filter(id => !alreadyRequestedIds.includes(id));
 
         if (newSubmissionIds.length) {
             // Record the fact that we requested these already so don't ask again.
