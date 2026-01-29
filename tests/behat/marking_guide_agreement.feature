@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_marking_guide_agreement
 Feature: Marking guide
   Users can make use of the marking guide to submit grades for final approval.
 
@@ -43,7 +43,7 @@ Feature: Marking guide
     Given I visit the coursework page
     And I follow "Agree marking"
     Then the following fields match these values:
-      | Feedback: |  |
+      | A criteria criterion remark |  |
 
     Given the coursework "autopopulatefeedbackcomment" setting is "1" in the database
     And I visit the coursework page
@@ -53,7 +53,7 @@ Feature: Marking guide
     And I should see "8" in the "A criteria" "table_row"
     And I should see "Grader one likes it" in the "Feedback" "table_row"
     And I should see "Grader two really likes it" in the "Feedback" "table_row"
-    And the field "Feedback:" matches multiline:
+    And the field "A criteria criterion remark" matches multiline:
 """
 Grader one likes it
 
