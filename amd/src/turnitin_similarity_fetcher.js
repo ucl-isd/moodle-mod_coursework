@@ -19,6 +19,8 @@ import Log from 'core/log';
 
 let courseworkId;
 
+let alreadyRequestedIds = [];
+
 /**
  * Javascript module for handling fetching of similarity data from TII after page load.
  *
@@ -48,10 +50,14 @@ const processTurnitin = debounce(
             return parseInt(elem.closest('.mod-coursework-submissions-submission-col').dataset.submissionId);
         });
 
-        if (submissionIds.length) {
+        const newSubmissionIds = submissionIds.filter(id => !alreadyRequestedIds.includes(id));
+
+        if (newSubmissionIds.length) {
+            // Record the fact that we requested these already so don't ask again.
+            alreadyRequestedIds = [...alreadyRequestedIds, ...newSubmissionIds];
             const WSResult = await Ajax.call([{
                 methodname: 'mod_coursework_get_turnitin_similarity_links',
-                args: {courseworkid: courseworkId, submissionids: submissionIds}
+                args: {courseworkid: courseworkId, submissionids: newSubmissionIds}
             }])[0];
             const tiiEmptyString = await getString('turnitinnoreport', 'coursework');
             if (WSResult.success) {
@@ -71,10 +77,10 @@ const processTurnitin = debounce(
                 });
             } else {
                 Log.debug(
-                    "Error getting Turnitin links for submissions " + submissionIds.join(',')
+                    "Error getting Turnitin links for submissions " + newSubmissionIds.join(',')
                     + ": " + WSResult.errorcode + " | " + WSResult.message
                 );
-                submissionIds.forEach(id => {
+                newSubmissionIds.forEach(id => {
                     const elems = document.querySelectorAll(
                         `.mod-coursework-submissions-submission-col[data-submission-id="${id}"]`
                             + `.mod-coursework-plagiarism-tii-links`
