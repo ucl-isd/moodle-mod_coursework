@@ -351,6 +351,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 existing_sr_only_announcement.remove();
             }
         }, 2000);
+
+        setTimeout(() => {
+            // Notify others (e.g. Turnitin similarity fetcher).
+            window.dispatchEvent(new CustomEvent('mod-coursework-grading-filter-changed'));
+        }, 500);
     }
 
     function get_visible_row_count() {

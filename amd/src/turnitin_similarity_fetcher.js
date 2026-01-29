@@ -111,5 +111,6 @@ function debounce(fn, delay = 100) {
 export const init = (courseworkid) => {
     courseworkId = courseworkid;
     window.addEventListener("scrollend", processTurnitin, {passive: true});
+    window.addEventListener("mod-coursework-grading-filter-changed", processTurnitin, {passive: true});
     processTurnitin();
 };
