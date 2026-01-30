@@ -65,7 +65,7 @@ Coursework.
             /* Remove default table spacing/border and force block display */
             display: block;
             margin: 0 !important;
-            padding: 0 !important;
+            padding: 0 .1rem !important;
             border: none !important;
             width: 100% !important;
             max-width: 100%;
@@ -126,7 +126,6 @@ Coursework.
                 font-style: normal;
                 font-size: small;
                 color: var(--dark);
-
             }
 
             /* Rubric selected level styles. */
@@ -154,9 +153,6 @@ Coursework.
         }
 
         /* Comment area. */
-        td.remark {
-            padding: .5rem !important;
-        }
         textarea,
         .markingguideremark {
             width: 100%;
@@ -173,7 +169,8 @@ Coursework.
         /* Add frequently use comments button. */
         .commentchooser {
             display: block;
-            margin-top: 0.5rem;
+            font-size: small;
+            margin: .5rem 0;
         }
     }
 
@@ -182,7 +179,7 @@ Coursework.
         td.remark {
             display: inline-block;
             vertical-align: top;
-            width: 74% !important;
+            width: 75% !important;
             box-sizing: border-box;
         }
 

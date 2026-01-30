@@ -204,7 +204,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             }
 
             // Have we got comments? remark or rubric definition.
-            if ($item->remark || $item->rubricdefinition) {
+            if (!empty($item->remark) || !empty($item->rubricdefinition)) {
                 $item->hascomments = true;
             }
 
