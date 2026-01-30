@@ -59,7 +59,7 @@ Feature: Marking guide with frequent comments
     And I should see "Comment 3" in the "Feedback" "table_row"
     And I should see "Grader two really likes it" in the "Feedback" "table_row"
     Then the following fields match these values:
-      | Feedback: | Custom |
+      | A criteria criterion remark | Custom |
     And the field "Enter custom feedback" matches multiline:
 """
 Comment 3

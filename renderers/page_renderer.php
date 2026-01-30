@@ -343,7 +343,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 // Finalised.
                 $f->finalised = ($submission->finalisedstatus == 1);
 
-                // TODO - plagarism. This dosn't work.
+                // TODO - plagiarism. This doesn't work.
                 $f->flaggedplagiarism = false;
                 if ($coursework->plagiarismflagenabled) {
                     // TODO - turnitin stuff.
