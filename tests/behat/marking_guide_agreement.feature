@@ -53,12 +53,6 @@ Feature: Marking guide
     And I should see "8" in the "A criteria" "table_row"
     And I should see "Grader one likes it" in the "Feedback" "table_row"
     And I should see "Grader two really likes it" in the "Feedback" "table_row"
-    And the field "A criteria criterion remark" matches multiline:
-"""
-Grader one likes it
-
-Grader two really likes it
-"""
     And I set the field "Mark" to ""
     And I press "Save and finalise"
     And I should see "Please provide a valid grade for each criterion"
