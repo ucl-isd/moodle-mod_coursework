@@ -75,4 +75,4 @@ Feature: Marking guide with frequent comments
 
     When I log in as a student
     And I visit the coursework page
-    Then I should see "Comment 2" in the ".coursework-feedback .remark" "css_element"
+    Then I should see "Comment 2" in the ".coursework-feedback .behat-criterion-remark" "css_element"

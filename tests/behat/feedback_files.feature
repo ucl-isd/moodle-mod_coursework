@@ -27,6 +27,7 @@ Feature: Adding feedback files
     Given I am logged in as a manager
     When I visit the coursework page
     And I click on the add feedback button
+    And I set the field "Mark" to "70"
     And I upload "mod/coursework/tests/files_for_uploading/Test_image.png" file to "Upload a file" filemanager
     When I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
     And I press "Save and finalise"
