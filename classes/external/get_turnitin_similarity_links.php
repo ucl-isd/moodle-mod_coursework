@@ -155,16 +155,7 @@ class get_turnitin_similarity_links extends external_api {
 
                 $result[$submissionfile->submissionid]['files'][] = (object)[
                     'fileid' => (int)$submissionfile->file->get_id(),
-                    'linkshtml' => plagiarism_get_links(
-                        [
-                            'userid' => $submissionfile->authorid, // User or for group submissions, first member of group.
-                            'file' => $submissionfile->file,
-                            'cmid' => $coursework->get_coursemodule_id(),
-                            'course' => $coursework->get_course(),
-                            'coursework' => $coursework->id(),
-                            'modname' => 'coursework',
-                        ]
-                    ),
+                    'linkshtml' => submission::plagiarism_get_links($submissionfile->authorid, $submissionfile->file, $coursework),
                 ];
             }
         }

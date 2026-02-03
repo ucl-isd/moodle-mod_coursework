@@ -408,7 +408,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             if ($tiienabled) {
                 if ($ability->can('view_plagiarism', $submission)) {
                     // With no stuff to show, $plagiarismlinks comes back as '<br />'.
-                    $link .= '<div class ="turnitin-information percent">' . $this->render_file_plagiarism_information($file, $coursework) . '</div>';
+                    $link .= '<div class ="turnitin-information percent">' . submission::plagiarism_get_links($file->get_userid(), $file, $coursework) . '</div>';
                 }
 
                 if ($withresubmitbutton) {
@@ -766,24 +766,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         );
         $html .= html_writer::end_tag('form');
         return $html;
-    }
-
-    /**
-     * @param stored_file $file
-     * @param coursework $coursework
-     * @return string
-     */
-    protected function render_file_plagiarism_information(stored_file $file, coursework $coursework): string {
-
-        $plagiarismlinksparams = [
-            'userid' => $file->get_userid(),
-            'file' => $file,
-            'cmid' => $coursework->get_coursemodule_id(),
-            'course' => $coursework->get_course(),
-            'coursework' => $coursework->id,
-            'modname' => 'coursework',
-        ];
-        return plagiarism_get_links($plagiarismlinksparams);
     }
 
     /**

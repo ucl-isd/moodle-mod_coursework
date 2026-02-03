@@ -1667,15 +1667,8 @@ class submission extends table_base implements renderable {
             ];
             if ($withturnitinlinks && $coursework->tii_enabled()) {
                 // Normally we do not get Turnitin similarity reports here as they are fetched after page load to improve load time.
-                $result->tiilinksHTML = plagiarism_get_links(
-                    [
-                        'userid' => $filerecord->authorid, // User or for group submissions, first member of group.
-                        'file' => $fs->get_file_instance($filerecord),
-                        'cmid' => $coursework->get_coursemodule_id(),
-                        'course' => $coursework->get_course(),
-                        'coursework' => $coursework->id,
-                        'modname' => 'coursework',
-                    ]
+                $result->tiilinksHTML = self::plagiarism_get_links(
+                    $filerecord->authorid, $fs->get_file_instance($filerecord), $coursework
                 );
                 $result->tiiloadedattr = "true";
                 if (!$result->tiilinksHTML) {
@@ -1707,6 +1700,34 @@ class submission extends table_base implements renderable {
         }
         return $submissions;
     }
+
+    /**
+     * Call the core plagairism_get_links function to get turnitin links or mock response if behat testing.
+     * @param int $userid User ID or, for group submissions, first member of group.
+     * @param stored_file $file the submission file we are checking (could be multiple for one submission).
+     * @param coursework $coursework
+     * @return string
+     * @throws \core\exception\coding_exception
+     * @throws \moodle_exception
+     * @throws dml_exception
+     */
+    public static function plagiarism_get_links(int $userid, stored_file $file, coursework $coursework): string {
+        if (defined('BEHAT_SITE_RUNNING')) {
+            return "[TURNITIN DUMMY LINKS HTML]";
+        }
+
+        return plagiarism_get_links(
+            [
+                'userid' => $userid,
+                'file' => $file,
+                'cmid' => $coursework->get_coursemodule_id(),
+                'course' => $coursework->get_course(),
+                'coursework' => $coursework->id(),
+                'modname' => 'coursework',
+            ]
+        );
+    }
+
 
     /**
      * Check if the submission should be flagged for plagiarism.

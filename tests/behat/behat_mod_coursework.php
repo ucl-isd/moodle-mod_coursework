@@ -1261,12 +1261,32 @@ class behat_mod_coursework extends behat_base {
      * @param $settingvalue
      */
     public function the_coursework_setting_is_in_the_database($settingname, $settingvalue) {
+        global $DB;
         $coursework = $this->get_coursework();
         if ($settingvalue == 'NULL') {
             $settingvalue = null;
         }
+
+        // Special setting for plagiarism turnitin links being on at coursework level, in its own table.
+        if ($settingname === 'plagiarism_turnitin_config' && $settingvalue == 1) {
+            $params = ['cm' => $this->get_coursework()->get_coursemodule_id(), 'name' => 'use_turnitin'];
+            $existingvalue = $DB->get_field('plagiarism_turnitin_config', 'value', $params);
+            if ($existingvalue === false ) {
+                $DB->insert_record('plagiarism_turnitin_config', array_merge($params, ['value' => 1]));
+            } else {
+                $DB->set_field('plagiarism_turnitin_config', 'value', 1, $params);
+            }
+            return;
+        }
         $coursework->$settingname = $settingvalue;
         $coursework->save();
+    }
+
+    /**
+     * @Given I scroll to the element :selector
+     */
+    public function iScrollToElement($selector) {
+        $this->getSession()->executeScript("document.querySelector('{$selector}').scrollIntoView();");
     }
 
     /**
