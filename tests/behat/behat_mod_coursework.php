@@ -1269,6 +1269,13 @@ class behat_mod_coursework extends behat_base {
 
         // Special setting for plagiarism turnitin links being on at coursework level, in its own table.
         if ($settingname === 'plagiarism_turnitin_config' && $settingvalue == 1) {
+            $pluginmanager = \core_plugin_manager::instance();
+            if (!$pluginmanager->get_plugin_info('plagiarism_turnitin')) {
+                throw new ExpectationException(
+                    "This test can be expected to fail as Turnitin plagiriam plugin is not installed",
+                    $this->getsession()
+                );
+            }
             $params = ['cm' => $this->get_coursework()->get_coursemodule_id(), 'name' => 'use_turnitin'];
             $existingvalue = $DB->get_field('plagiarism_turnitin_config', 'value', $params);
             if ($existingvalue === false) {

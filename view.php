@@ -442,7 +442,7 @@ if ($cangrade || $canviewstudents) {
         'modal_handler_plagiarism',
         'coursework_edit',
     ];
-    if ($coursework->tii_enabled() && has_capability('plagiarism/turnitin:viewfullreport', $PAGE->context)) {
+    if ($coursework->tii_enabled()) {
         $amdmodules[] = 'turnitin_similarity_fetcher';
     }
     foreach ($amdmodules as $amd) {

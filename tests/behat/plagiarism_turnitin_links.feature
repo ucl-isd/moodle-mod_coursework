@@ -1,5 +1,6 @@
 @mod @mod_coursework @javascript @mod_coursework_plagiarism_turnitin_links
 Feature: Check that Turnitin reports are fetched and displayed post page load from JS (when enabled)
+#  These tests can be expected to fail if the plagiarism/turnitin plugin is not also installed in the build.
 
   Background:
     Given there is a course

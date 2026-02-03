@@ -58,6 +58,14 @@ jobs:
         with:
           path: plugin
 
+      - name: Checkout the turnitin plagiarism plugin repository
+        uses: actions/checkout@v4
+        with:
+          repository: ucl-isd/moodle-plagiarism_turnitin
+          path: /plagiarism/turnitin
+          ref: UCL_2025102600  # The branch to use.
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Setup PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2
         with:
