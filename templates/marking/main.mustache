@@ -143,4 +143,19 @@
         });
     });
 })();
+
+(function() {
+    window.addEventListener('load', function() {
+        // Target the specific grade input by its ID.
+        const grade_input = document.getElementById('id_grade');
+
+        if (grade_input) {
+            // Make it a number.
+            grade_input.setAttribute('type', 'number');
+            grade_input.setAttribute('required', 'required');
+            grade_input.setAttribute('min', '0');
+            grade_input.setAttribute('step', 'any');
+        }
+    });
+})();
 </script>

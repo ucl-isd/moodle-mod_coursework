@@ -16,8 +16,6 @@ Coursework.
         max-width: 100vw;
     }
 
-
-
     /* PDF viewer. */
     #pdf-container {
         max-width: 850px !important;
@@ -37,6 +35,13 @@ Coursework.
                 margin-left: auto;
             }
         }
+    }
+
+    /* Normalise number input fields. */
+    input[type=number] {
+        field-sizing: content; /* stylelint-disable-line */
+        min-width: 5rem;
+        text-align: right;
     }
 
 }
@@ -69,13 +74,6 @@ Coursework.
         .criterion.even,
         .criterion.even td {
             background-color: transparent;
-        }
-
-        /* Normalise number input fields. */
-        input[type=number] {
-            field-sizing: content; /* stylelint-disable-line */
-            min-width: 5rem;
-            text-align: right;
         }
 
         /* Show form labels. */
