@@ -58,14 +58,6 @@ jobs:
         with:
           path: plugin
 
-      - name: Checkout the turnitin plagiarism plugin repository
-        uses: actions/checkout@v4
-        with:
-          repository: ucl-isd/moodle-plagiarism_turnitin
-          path: /plagiarism/turnitin
-          ref: UCL_2025102600  # The branch to use.
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Setup PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2
         with:
@@ -85,8 +77,11 @@ jobs:
           # Install nvm v0.39.7 (temp workaround for issue https://github.com/moodlehq/moodle-plugin-ci/issues/309).
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 
+      # Add the Turnitin plagiarism plugin first so we can test it shows reports from the grading page.
+      # https://moodlehq.github.io/moodle-plugin-ci/AddExtraPlugins.html#:~:text=You%20may%20add%20as%20many,%2Fmoodle%2Dlocal_hub.git%20.
       - name: Install moodle-plugin-ci
         run: |
+          moodle-plugin-ci add-plugin --branch UCL_2026020300 --clone https://github.com/ucl-isd/moodle-plagiarism_turnitin.git
           moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
         env:
           DB: ${{ matrix.database }}
