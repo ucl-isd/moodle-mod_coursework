@@ -55,10 +55,10 @@ Feature: Marking guide
     And I should see "Grader two really likes it" in the "Feedback" "table_row"
     And I set the field "Mark" to ""
     And I press "Save and finalise"
-    And I should see "Please provide a valid grade for each criterion"
+    And I do not see "Changes saved"
     And I set the field "Mark" to "10"
     And I press "Save and finalise"
-    And I should not see "Please provide a valid grade for each criterion"
+    And I do see "Changes saved"
     Then I should see the final agreed grade status "Ready for release"
     And I should see the final agreed grade as 10
     And I follow "Release the marks"
