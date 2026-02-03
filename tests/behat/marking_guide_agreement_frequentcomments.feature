@@ -48,36 +48,31 @@ Feature: Marking guide with frequent comments
       | A criteria | 8 | Grader two really likes it |
     And I press "Save and finalise"
 
-#  TODO fix this broken test.
-#  https://ucldata.atlassian.net/browse/CTP-5618
-#  @broken
-#  @javascript
-#  Scenario: Submit final stage as marking guide.
-#   Given the coursework "autopopulatefeedbackcomment" setting is "1" in the database
-#   And I visit the coursework page
-#    And I follow "Agree marking"
-#    And I should see "A criteria"
-#    And I should see "6" in the "A criteria" "table_row"
-#    And I should see "8" in the "A criteria" "table_row"
-#    And I should see "Comment 3" in the "Feedback" "table_row"
-#    And I should see "Grader two really likes it" in the "Feedback" "table_row"
-#   Then the following fields match these values:
-#      | A criteria criterion remark | Custom |
-#    And the field "Enter custom feedback" matches multiline:
-# """
-# Comment 3
-#
-# Grader two really likes it
-# """
-#   And I set the field "Mark" to "10"
-#    And I press "Save and finalise"
-#    Then I should see the final agreed grade status "Ready for release"
-#    And I should see the final agreed grade as 10
-#    And I follow "Release the marks"
-#    And I press "Confirm"
-#    And I log out
-#
-#    When I log in as a student
-#    And I visit the coursework page
-#    Then I should see "Comment 3" in the ".coursework-feedback .behat-criterion-remark" "css_element"
-#    And I should see "Grader two really likes it" in the ".coursework-feedback .behat-criterion-remark" "css_element"
+  @javascript
+  Scenario: Final marker reviews assessor feedback and uses frequent comments.
+    Given I visit the coursework page
+    And I follow "Agree marking"
+
+    And I should see "A criteria"
+    And I should see "6" in the "A criteria" "table_row"
+    And I should see "8" in the "A criteria" "table_row"
+    And I should see "Comment 3" in the "Feedback" "table_row"
+    And I should see "Grader two really likes it" in the "Feedback" "table_row"
+
+    And I click on "Insert frequently used comment" "button" in the "A criteria" "table_row"
+    And I wait "1" seconds
+    And I press "Comment 2"
+    And I wait "1" seconds
+
+    Then the field "A criteria criterion remark" matches value "Comment 2"
+    And I set the field "Mark" to "10"
+    And I press "Save and finalise"
+
+    Then I should see the final agreed grade status "Ready for release"
+    And I follow "Release the marks"
+    And I press "Confirm"
+    And I log out
+
+    When I log in as a student
+    And I visit the coursework page
+    Then I should see "Comment 2" in the ".coursework-feedback .remark" "css_element"
