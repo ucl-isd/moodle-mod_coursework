@@ -1668,7 +1668,9 @@ class submission extends table_base implements renderable {
             if ($withturnitinlinks && $coursework->tii_enabled()) {
                 // Normally we do not get Turnitin similarity reports here as they are fetched after page load to improve load time.
                 $result->tiilinksHTML = self::plagiarism_get_links(
-                    $filerecord->authorid, $fs->get_file_instance($filerecord), $coursework
+                    $filerecord->authorid,
+                    $fs->get_file_instance($filerecord),
+                    $coursework
                 );
                 $result->tiiloadedattr = "true";
                 if (!$result->tiilinksHTML) {
