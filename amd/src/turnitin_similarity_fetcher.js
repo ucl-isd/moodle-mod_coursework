@@ -88,9 +88,9 @@ const processTurnitin = debounce(
                 newSubmissionIds.forEach(id => {
                     const elems = document.querySelectorAll(
                         `.mod-coursework-submissions-submission-col[data-submission-id="${id}"]`
-                            + `.mod-coursework-plagiarism-tii-links`
+                            + ` .mod-coursework-plagiarism-tii-links`
                     );
-                    elems.forEach(el => {
+                    Array.from(elems).forEach(el => {
                         el.innerHTML = `<small>${tiiEmptyString}</small>`;
                         el.dataset.tiiLoaded = "true";
                     });

@@ -151,9 +151,21 @@ class get_turnitin_similarity_links extends external_api {
                     ];
                 }
 
+                try {
+                    // Get links from the plagiarism_turnitin plugin.
+                    $links = submission::plagiarism_get_links($submissionfile->authorid, $submissionfile->file, $coursework);
+                } catch (\Exception $e) {
+                    return [
+                        'success' => false,
+                        'result' => [],
+                        'errorcode' => 'turnitinerror',
+                        'message' => ($CFG->debugdisplay ?? false) ? $e->getMessage() : '',
+                    ];
+                }
+
                 $result[$submissionfile->submissionid]['files'][] = (object)[
                     'fileid' => (int)$submissionfile->file->get_id(),
-                    'linkshtml' => submission::plagiarism_get_links($submissionfile->authorid, $submissionfile->file, $coursework),
+                    'linkshtml' => $links,
                 ];
             }
         }
