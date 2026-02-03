@@ -4,9 +4,6 @@ Feature: Check that Turnitin reports are fetched and displayed post page load fr
   Background:
     Given there is a course
     And there is a coursework
-    And the following "permission overrides" exist:
-      | capability                         | permission | role    | contextlevel | reference |
-      | plagiarism/turnitin:viewfullreport | Allow      | teacher | Course       | C1        |
     And there is a student
     And there is a teacher
     And the student has a submission

@@ -90,13 +90,11 @@ class get_turnitin_similarity_links extends external_api {
         $context = $coursework->get_context();
         self::validate_context($context);
 
-        require_capability('plagiarism/turnitin:viewfullreport', $context);
-
         if (empty($params['submissionids'])) {
             return ['success' => true, 'result' => [], 'errorcode' => null, 'message' => ''];
         }
 
-        // Only show the rows that the user can see.
+        // We do not use a capability check here, but instead limit to submissions that the user can see in grading report.
         $visiblesubmissionids = grading_report::get_visible_row_submission_ids($coursework);
         $invalidids = array_filter(
             $params['submissionids'],
