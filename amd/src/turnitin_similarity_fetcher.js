@@ -37,7 +37,12 @@ let alreadyRequestedIds = [];
  */
 const processTurnitin = debounce(
     async() => {
-        const plagiarismLinks = [...document.querySelectorAll('.mod-coursework-plagiarism-tii-links')];
+        // Ignores TII links in rows which are hidden (i.e. filtered out of view by JS filter applying display:none).
+        const plagiarismLinks = [
+            ...document.querySelectorAll(
+                '.mod-coursework-submissions-row:not([style*="display: none"]) .mod-coursework-plagiarism-tii-links'
+            )
+        ];
         const visiblePlagiarismLinks = plagiarismLinks
             .filter(el => {
                 return el.dataset.tiiLoaded === "false";

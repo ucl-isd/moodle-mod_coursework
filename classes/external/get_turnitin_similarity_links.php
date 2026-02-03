@@ -66,7 +66,7 @@ class get_turnitin_similarity_links extends external_api {
         require_once("$CFG->libdir/plagiarismlib.php");
         $params = self::validate_parameters(
             self::execute_parameters(),
-            ['courseworkid' => $courseworkid, 'submissionids' => $submissionids]
+            ['courseworkid' => $courseworkid, 'submissionids' => array_unique($submissionids, SORT_NUMERIC)]
         );
 
         $coursework = coursework::get_cached_object_from_id($params['courseworkid']);
@@ -92,14 +92,14 @@ class get_turnitin_similarity_links extends external_api {
 
         require_capability('plagiarism/turnitin:viewfullreport', $context);
 
-        if (empty($submissionids)) {
+        if (empty($params['submissionids'])) {
             return ['success' => true, 'result' => [], 'errorcode' => null, 'message' => ''];
         }
 
         // Only show the rows that the user can see.
         $visiblesubmissionids = grading_report::get_visible_row_submission_ids($coursework);
         $invalidids = array_filter(
-            $submissionids,
+            $params['submissionids'],
             fn($id) => !in_array($id, $visiblesubmissionids)
         );
 
@@ -114,7 +114,7 @@ class get_turnitin_similarity_links extends external_api {
 
         $noabilityids = [];
         $ability = new ability($USER->id, $coursework);
-        $foundsubmissions = submission::get_multiple($submissionids);
+        $foundsubmissions = submission::get_multiple($params['submissionids']);
         // Check we have the ability to see plagiarism details for all requested and found submissions.
         foreach ($foundsubmissions as $foundsubmission) {
             if ($foundsubmission->courseworkid != $courseworkid || !$ability->can('view_plagiarism', $foundsubmission)) {
@@ -123,7 +123,7 @@ class get_turnitin_similarity_links extends external_api {
         }
         // Check if we are requesting any submissions that were not found.
         $foundsubmissionids = array_keys($foundsubmissions);
-        foreach ($submissionids as $submissionid) {
+        foreach ($params['submissionids'] as $submissionid) {
             if (!in_array($submissionid, $foundsubmissionids)) {
                 $noabilityids[] = $submissionid;
             }
@@ -137,7 +137,7 @@ class get_turnitin_similarity_links extends external_api {
             ];
         }
 
-        $submissionfilesdata = submission::get_all_submission_files_data($coursework, $submissionids);
+        $submissionfilesdata = submission::get_all_submission_files_data($coursework, $params['submissionids']);
         if (empty($submissionfilesdata)) {
             return ['success' => true, 'result' => [], 'errorcode' => null, 'message' => ''];
         }
