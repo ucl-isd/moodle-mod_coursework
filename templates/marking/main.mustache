@@ -37,7 +37,8 @@
                     {{/showpdf}}
 
                     <h3>{{#str}} marking, mod_coursework {{/str}}</h3>
-                    <div class="{{#advancedmarking}} sticky-top p-3 bg-white border {{/advancedmarking}}">
+                    {{! When behatrunning, don't make sticky to avoid issues.}}
+                    <div class="{{^behatrunning}} {{#advancedmarking}} sticky-top p-3 bg-white border {{/advancedmarking}} {{/behatrunning}}">
                         {{#previousfeedback}}
                             {{{.}}}
                             <h4>{{#str}} agreefeedback, mod_coursework {{/str}}</h4>

@@ -105,12 +105,12 @@
      * Make is so.
      */
     const init_grading_tracker = () => {
-        const rubric_el = document.querySelector('.gradingform_rubric');
-        const guide_el = document.querySelector('.gradingform_guide');
+        const rubric = document.querySelector('.gradingform_rubric');
+        const guide = document.querySelector('.gradingform_guide');
 
-        if (rubric_el) {
+        if (rubric) {
             const observer = new MutationObserver(calculate_rubric);
-            observer.observe(rubric_el, {
+            observer.observe(rubric, {
                 attributes: true,
                 subtree: true,
                 attributeFilter: ['class']
@@ -118,7 +118,7 @@
             calculate_rubric();
         }
 
-        if (guide_el) {
+        if (guide) {
             document.addEventListener('input', (e) => {
                 if (e.target.closest('.gradingform_guide .score')) {
                     calculate_guide();

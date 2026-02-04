@@ -260,6 +260,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws moodle_exception
      */
     public function edit_feedback_page(feedback $feedback, assessor_feedback_mform $simpleform) {
+        global $CFG;
+
         $coursework = $feedback->get_coursework();
         $submission = $feedback->get_submission();
         $submissionfiles = $submission->get_submission_files();
@@ -269,6 +271,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         // Template.
         $template = new stdClass();
         $template->title = $pagename;
+
+        // Behat running?
+        $template->behatrunning = !empty($CFG->behat_site);
 
         // PDF or not?
         $template->showpdf = false;
