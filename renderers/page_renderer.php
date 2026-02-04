@@ -273,7 +273,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template->title = $pagename;
 
         // Behat running?
-        $template->behatrunning = !empty($CFG->behat_site);
+        if (defined('BEHAT_SITE_RUNNING') && BEHAT_SITE_RUNNING) {
+            $template->behatrunning = true;
+        }
 
         // PDF or not?
         $template->showpdf = false;
