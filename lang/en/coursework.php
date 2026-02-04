@@ -393,6 +393,7 @@ $string['markingspreadsheet'] = 'Marking spreadsheet';
 $string['markingsummary'] = 'Marking summary';
 $string['markingworkflow'] = 'Marking workflow';
 $string['markreleasedtostudent'] = 'Mark has been already released and is visible to student(s)';
+$string['markrange'] = 'Mark ({$a->min} - {$a->max})';
 $string['markrules'] = 'Mark rules';
 $string['marks_released'] = 'Marks released';
 $string['max_cw_mark'] = 'Maximum mark for this coursework is';
