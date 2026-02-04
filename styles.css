@@ -179,8 +179,8 @@ Coursework.
         /* Reduce the textarea height and add padding */
         textarea {
             padding: 0.5rem;
-            height: 4rem;
             min-height: 4rem;
+            field-sizing: content; /* stylelint-disable-line */
         }
 
         /* Add frequently use comments button. */

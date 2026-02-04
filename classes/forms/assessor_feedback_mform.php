@@ -81,7 +81,7 @@ class assessor_feedback_mform extends moodleform {
      * Makes the form elements.
      */
     public function definition() {
-
+        global $CFG;
         $mform =& $this->_form;
 
         $this->feedback = $this->_customdata['feedback'];
@@ -125,20 +125,21 @@ class assessor_feedback_mform extends moodleform {
                 $mform->addElement('html', '<a href="#">' . get_string('togglezoom', 'mod_assign') . '</a>');
             }
         } else if ($this->coursework->uses_numeric_grade()) {
-            $maxgrade = $this->coursework->get_max_grade();
-
             // Object to pass to lang string.
             $a = new stdClass();
             $a->min = 0;
-            $a->max = $maxgrade;
-            // Note - we add min, max, step etc as this will become an input type number (js).
+            $a->max = $this->coursework->get_max_grade();
+
+            // Custom input type number.
+            $element = $CFG->dirroot . '/mod/coursework/classes/forms/number_element.php';
+            require_once($element);
+            $mform->registerElementType('number', $element, 'number_element');
             $mform->addElement(
-                'text',
+                'number',
                 'grade',
                 get_string('markrange', 'mod_coursework', $a),
-                ['size' => '4',
-                'required' => 'required',
-                'max' => $maxgrade,
+                ['required' => 'required',
+                'max' => $a->max,
                 'min' => 0,
                 'step' => 'any']
             );
@@ -319,10 +320,10 @@ class assessor_feedback_mform extends moodleform {
      */
     public function grade_in_range($grade): bool {
         // Convert localized string (like 55,5) to a standard PHP float (55.5).
-        $grade_val = unformat_float($grade);
+        $gradeval = unformat_float($grade);
 
         // If it's not a valid number after unformatting, fail.
-        if (!is_numeric($grade_val)) {
+        if (!is_numeric($gradeval)) {
             return false;
         }
 
@@ -330,7 +331,7 @@ class assessor_feedback_mform extends moodleform {
         $maxgrade = (float)$this->coursework->get_max_grade();
 
         // Check its in range.
-        return ($grade_val >= $mingrade && $grade_val <= $maxgrade);
+        return ($gradeval >= $mingrade && $gradeval <= $maxgrade);
     }
 
     /**
