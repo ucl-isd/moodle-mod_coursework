@@ -40,8 +40,18 @@ Coursework.
     /* Normalise number input fields. */
     input[type=number] {
         field-sizing: content; /* stylelint-disable-line */
-        min-width: 5rem;
+        min-width: 4rem;
         text-align: right;
+    }
+
+    .showmarkerdesc,
+    .showstudentdesc {
+        display: block;
+        padding: 1rem;
+        label {
+            display: block;
+            font-size: small;
+        }
     }
 
 }

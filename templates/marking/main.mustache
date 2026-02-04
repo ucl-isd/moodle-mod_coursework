@@ -37,10 +37,16 @@
                     {{/showpdf}}
 
                     <h3>{{#str}} marking, mod_coursework {{/str}}</h3>
-                    {{#previousfeedback}}
-                        {{{.}}}
-                        <h4 class="pt-3">{{#str}} agreefeedback, mod_coursework {{/str}}</h4>
-                    {{/previousfeedback}}
+                    <div class="{{#advancedmarking}} sticky-top p-3 bg-white border {{/advancedmarking}}">
+                        {{#previousfeedback}}
+                            {{{.}}}
+                            <h4>{{#str}} agreefeedback, mod_coursework {{/str}}</h4>
+                        {{/previousfeedback}}
+
+                        {{#advancedmarking}}
+                            {{> mod_coursework/marking/totalmark }}
+                        {{/advancedmarking}}
+                    </div>
 
                     <div id="coursework-markingform">
                         {{{marking}}}

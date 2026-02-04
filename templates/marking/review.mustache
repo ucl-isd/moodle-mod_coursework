@@ -62,23 +62,17 @@
             </div>
 
             <div class="review-marks animate-enter">
-                <div class="row small mt-2">
+                <div class="row mt-2">
                     {{#markers}}
                     <div class="col-md">
-                        <div>{{label}}: {{score}}/{{maxscore}}</div>
-                        <div class="progress" style="height:.5rem; max-width: 200px;">
-                            <div class="progress-bar bg-success"
-                                role="progressbar"
-                                aria-valuenow="{{score}}"
-                                style="width: {{percent}}%"
-                                aria-valuemin="0"
-                                aria-valuemax="{{maxscore}}">
-                            </div>
-                        </div>
+
+                        {{< mod_coursework/progress }}
+                            {{$label}}{{label}}{{/label}}
+                        {{/ mod_coursework/progress }}
 
                         {{#remark}}
-                        <div class="mt-2">
-                            <div class="small text-muted">
+                        <div class="mt-2 small">
+                            <div class="text-muted">
                             {{#str}} feedback, mod_coursework {{/str}}
                             </div>
                             {{{.}}}

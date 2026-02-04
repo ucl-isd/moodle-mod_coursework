@@ -285,13 +285,19 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         // Submission metadata.
         $template->submission = $this->submission_metadata($submission, $coursework, $submissionfiles);
 
+        // Advanced marking - rubric/amrking guide etc.
+        $template->advancedmarking = false;
+        if ($coursework->is_using_advanced_grading()) {
+            $template->advancedmarking = true;
+        }
+
         // Agreement stage.
         $isagreeing = ($feedback->stageidentifier == 'final_agreed_1');
         if ($isagreeing) {
             $previousfeedbacks = $submission->get_assessor_feedbacks();
             if (!empty($previousfeedbacks)) {
-                if ($coursework->is_using_advanced_grading()) {
-                    // Advanced grading.
+                if ($template->advancedmarking) {
+                    // Advanced marking.
                     $gradingcontroller = $coursework->get_advanced_grading_active_controller();
                     if ($gradingcontroller) {
                         $template->previousfeedback = $this->render_comparison_view($previousfeedbacks, $gradingcontroller);
