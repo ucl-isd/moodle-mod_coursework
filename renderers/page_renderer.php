@@ -33,6 +33,7 @@ use mod_coursework\models\moderation;
 use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
+use mod_coursework\render_helpers\grading_report\data\cell_data_base;
 use mod_coursework\router;
 
 /**
@@ -260,8 +261,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws moodle_exception
      */
     public function edit_feedback_page(feedback $feedback, assessor_feedback_mform $simpleform) {
-        global $CFG;
-
         $coursework = $feedback->get_coursework();
         $submission = $feedback->get_submission();
         $submissionfiles = $submission->get_submission_files();
@@ -350,29 +349,21 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $f = new stdClass();
                 $f->url = $this->get_object_renderer()->make_file_url($file);
                 $f->datemodified = $file->get_timemodified();
-                // TODO - check if when file name gets changed to candidate num it changes here...
                 $f->filename = $file->get_filename();
 
                 // Finalised.
                 $f->finalised = ($submission->finalisedstatus == 1);
 
-                // TODO - plagiarism. This doesn't work.
-                $f->flaggedplagiarism = false;
-                if ($coursework->plagiarismflagenabled) {
-                    // TODO - turnitin stuff.
-                    // $f->plagiarismlinks = $this->get_object_renderer()->render_plagiarism_links($file);
-                }
+                // Plagiarism.
+                $f->flaggedplagiarism = cell_data_base::get_flagged_plagiarism_status($submission);
+                // TODO - turnitin stuff.
 
                 $template->submissiondata->files[] = $f;
             }
         }
 
         // Late.
-        $template->submittedlate = false;
-        if (!empty($submission->timesubmitted) && !empty($coursework->deadline)) {
-            // TODO - does this work with extensions and personal deadlines?
-            $template->submittedlate = ($submission->timesubmitted > $coursework->deadline);
-        }
+        $template->submittedlate = ($submission->was_late() !== false);
 
         return $template;
     }
