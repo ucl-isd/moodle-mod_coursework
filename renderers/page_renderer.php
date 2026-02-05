@@ -287,7 +287,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             false
         );
 
-        if (!empty($feedback->id())) {
+        if ($feedback->persisted()) {
             if (!empty($feedback->lasteditedbyuser)) {
                 $editor = $DB->get_record('user', ['id' => $feedback->lasteditedbyuser]);
             } else {
