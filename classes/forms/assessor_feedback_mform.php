@@ -257,16 +257,6 @@ class assessor_feedback_mform extends moodleform {
         );
     }
 
-    /**
-     * Override the form display in specific circumstances.
-     * @return void
-     * @throws \coding_exception
-     * @throws moodle_exception
-     */
-    public function display() {
-        parent::display();
-    }
-
     private function agreeing_final_marking_guide(): bool {
         return
             feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)

@@ -38,7 +38,6 @@ require_once($CFG->libdir . '/form/text.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class number_element extends MoodleQuickForm_text {
-
     /**
      * Constructor.
      *
@@ -76,7 +75,7 @@ class number_element extends MoodleQuickForm_text {
      *
      * @return string
      */
-    public function toHtml(): string {
+    public function toHtml(): string { // @codingStandardsIgnoreLine
         global $OUTPUT;
         $context = $this->export_for_template($OUTPUT);
         return $OUTPUT->render_from_template('mod_coursework/form_number', $context);
