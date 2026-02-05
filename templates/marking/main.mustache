@@ -23,7 +23,6 @@
         "marking": "<form id=\"mform1\" action=\"#\" method=\"post\"><table class=\"generaltable\"><tbody><tr><td class=\"description\">Criterion 1<div class=\"review-marks\">some review marks</div></td><td class=\"score\"><input type=\"text\" name=\"score1\" id=\"score1\"><div>/ 10</div></td><td class=\"remark\"><textarea name=\"remark1\" id=\"remark1\"></textarea></td></tr><tr><td class=\"description\">Criterion 2<div class=\"review-marks\">some review marks</div></td><td class=\"score\"><input type=\"text\" name=\"score2\" id=\"score2\"><div>/ 20</div></td><td class=\"remark\"><textarea name=\"remark2\" id=\"remark2\"></textarea></td></tr></tbody></table></form>"
     }
 }}
-
 <div {{#showpdf}} class="full-width" {{/showpdf}}>
     <div class="container-fluid">
         <div class="row">
@@ -38,7 +37,7 @@
 
                     <h3>{{#str}} marking, mod_coursework {{/str}}</h3>
 
-                    {{! When behatrunning, don't make sticky to avoid issues.}}
+                    {{! When behatrunning, don't make sticky to avoid issues with hidden elements.}}
                     <div class="{{^behatrunning}} {{#advancedmarking}} sticky-top p-3 bg-white border {{/advancedmarking}} {{/behatrunning}}">
                         {{#previousfeedback}}
                             {{{.}}}
@@ -66,89 +65,20 @@
     </div>
 </div>
 
-{{! js adding labels to forms.
-// TODO - move to amd. }}
-<script>
-(function() {
-    window.addEventListener('DOMContentLoaded', function() {
-        const root = document.getElementById('coursework-markingform');
-        if (!root) return;
-
-        const score_cells = root.querySelectorAll('td.score');
-
-        score_cells.forEach(cell => {
-            const input = cell.querySelector('input');
-            const max_div = cell.querySelector('div');
-
-            if (input && max_div) {
-                const max_score = max_div.textContent.replace(/[^0-9.]/g, '');
-
-                // Make required.
-                input.setAttribute('required', 'required');
-
-                // Make an input type number.
-                input.setAttribute('type', 'number');
-                input.setAttribute('min', '0');
-                if (max_score) {
-                    input.setAttribute('max', max_score);
-                }
-                input.setAttribute('step', 'any');
-
-                // Label.
-                const label = document.createElement('label');
-                label.textContent = `{{#str}} mark, mod_coursework {{/str}} (0–${max_score})`;
-
-                if (input.id) {
-                    label.setAttribute('for', input.id);
-                }
-
-                cell.insertBefore(label, cell.firstChild);
-
-                // Remove overhanging div.
-                max_div.remove();
-            }
+{{#advancedmarking}}
+    {{#isguide}}
+        {{#js}}
+        require(['mod_coursework/marking_guide'], function(marking_guide) {
+            marking_guide.init();
         });
-    });
-})();
+        {{/js}}
+    {{/isguide}}
 
-(function() {
-    window.addEventListener('DOMContentLoaded', function() {
-        const root = document.getElementById('coursework-markingform');
-        if (!root) return;
-
-        const remark_cells = root.querySelectorAll('td.remark');
-
-        remark_cells.forEach(cell => {
-            const textarea = cell.querySelector('textarea');
-            const parent_row = cell.closest('tr');
-            const description_cell = parent_row ? parent_row.querySelector('td.description') : null;
-
-            if (textarea && description_cell) {
-                // 1. Clone the description cell so we don't mess up the actual UI.
-                const temp_description = description_cell.cloneNode(true);
-
-                // 2. Remove the unwanted div.
-                const review_marks = temp_description.querySelector('.review-marks');
-                if (review_marks) {
-                    review_marks.remove();
-                }
-
-                // 3. What remains is just the text you want.
-                const criterion_name = temp_description.textContent.trim();
-
-                // 2. Create the label.
-                const label = document.createElement('label');
-                const feedback_prefix = '{{#str}} feedbackfor, mod_coursework {{/str}}';
-                label.textContent = `${feedback_prefix} ${criterion_name}`;
-
-                if (textarea.id) {
-                    label.setAttribute('for', textarea.id);
-                }
-
-                // 3. Insert the label.
-                cell.insertBefore(label, textarea);
-            }
+    {{^isguide}}
+        {{#js}}
+        require(['mod_coursework/rubric'], function(rubric) {
+            rubric.init();
         });
-    });
-})();
-</script>
+        {{/js}}
+    {{/isguide}}
+{{/advancedmarking}}

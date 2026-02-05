@@ -87,17 +87,8 @@
     </ul>
 </div>
 
-<script>
-(function() {
-    window.addEventListener('DOMContentLoaded', function() {
-        const sourceBlocks = document.querySelectorAll('#review-source-wrapper .review-marks');
-        const targetCells = document.querySelectorAll('.gradingform_rubric .description, #advancedgrading-criteria .descriptionreadonly');
-        sourceBlocks.forEach((block, index) => {
-            if (targetCells[index]) {
-                // Append progress to rubric.
-                targetCells[index].appendChild(block);
-            }
-        });
-    });
-})();
-</script>
+{{#js}}
+require(['mod_coursework/agree_marks'], function(agree_marks) {
+    agree_marks.init();
+});
+{{/js}}
