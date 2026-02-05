@@ -43,15 +43,6 @@ require_once($CFG->dirroot . '/lib/completionlib.php');
 require_once($CFG->dirroot . '/lib/plagiarismlib.php');
 require_once($CFG->dirroot . '/mod/coursework/classes/export/csv.php');
 
-// TODO move all js to renderer.
-$jsmodule = [
-    'name' => 'mod_coursework',
-    'fullpath' => '/mod/coursework/module.js',
-    'requires' => ['base',
-                        'node-base'],
-    'strings' => [],
-];
-
 // Course_module ID, or coursework instance ID - it should be named as the first character of the module.
 $coursemoduleid = optional_param('id', 0, PARAM_INT);
 $courseworkid = optional_param('e', 0, PARAM_INT);
