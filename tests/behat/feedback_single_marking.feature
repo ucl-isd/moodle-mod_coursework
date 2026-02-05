@@ -35,7 +35,25 @@ Feature: Adding and editing single feedback
   Scenario: Editing someone else's grade
     Given the submission is finalised
     And there is feedback for the submission from the teacher
+    And I log out
+    And I log in as "admin"
     And I visit the coursework page
     When I click the edit feedback button
     And the field "Mark" matches value "58"
     And the field with xpath "//textarea[@id='id_feedbackcomment']" matches value "Blah"
+    And I set the field "Mark" to "50"
+    And I press "Save and finalise"
+    Then I should see "50" in the "student student1" "table_row"
+    But I should see "teacher teacher2" in the "student student1" "table_row"
+
+    When I click the edit feedback button
+    Then I should see "Admin User" in the ".behat_lasteditedby" "css_element"
+    But I should see "teacher teacher2" in the ".behat_marker" "css_element"
+
+    When I press "Save and finalise"
+    And I follow "Release the marks"
+    And I log out
+    And I log in as a student
+    And I visit the coursework page
+    Then I should not see "Admin User" in the ".coursework-feedback" "css_element"
+    But I should see "teacher teacher2" in the ".coursework-feedback" "css_element"

@@ -24,6 +24,7 @@ namespace mod_coursework;
 
 use mod_coursework\allocation\allocatable;
 use mod_coursework\models\coursework;
+use mod_coursework\models\null_user;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
 use mod_coursework\stages\base as stage_base;
@@ -68,13 +69,18 @@ class assessor_feedback_row {
     /**
      * Gets the assessor from the feedback.
      *
-     * @return user
+     * @return allocatable
      */
     public function get_assessor() {
-        if (!$this->get_coursework()->allocation_enabled() && $this->has_feedback()) {
+        if ($this->has_feedback()) {
             return $this->get_feedback()->assessor();
         }
-        return $this->get_stage()->get_allocated_assessor($this->allocatable);
+
+        if ($this->get_stage()->has_allocation($this->allocatable)) {
+            return $this->get_stage()->get_allocation($this->allocatable)->assessor();
+        }
+
+        return new null_user();
     }
 
     /**
