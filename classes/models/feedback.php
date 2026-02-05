@@ -206,22 +206,6 @@ class feedback extends table_base {
     }
 
     /**
-     * Real name for display. Allows us to defer the DB call to retrieve first and last name
-     * in case we don't need it.
-     */
-    public function get_assesor_username() {
-        if (!$this->firstname && !empty($this->lasteditedbyuser)) {
-            $this->assessor = user::get_cached_object_from_id($this->lasteditedbyuser);
-        }
-
-        return $this->assessor->name();
-    }
-
-    public function get_assessor_id() {
-        return $this->assessor->id;
-    }
-
-    /**
      * @return string
      */
     public function get_assessor_stage_no() {
@@ -230,10 +214,6 @@ class feedback extends table_base {
             $no = substr($this->stageidentifier, -1);
         }
         return $no;
-    }
-
-    public function get_feedbacks_assessorid() {
-        return $this->assessorid;
     }
 
     /**
@@ -255,41 +235,6 @@ class feedback extends table_base {
      */
     public function get_coursemodule_id() {
         return $this->get_submission()->get_course_module_id();
-    }
-
-    /**
-     * Returns a feedback instance
-     * @param submission $submission
-     * @param int $isfinalgrade do we want the final grade (in case this assessor did a component
-     * one and a final one
-     * @param int $assessorid
-     * @return feedback|null
-     * @throws dml_exception
-     * @todo get rid of this.
-     */
-    public static function get_teacher_feedback(
-        submission $submission,
-        $isfinalgrade = 0,
-        $assessorid = 0
-    ) {
-        global $DB;
-
-        $params = ['submissionid' => $submission->id];
-        // If it's single marker, we just get the only one.
-        if ($assessorid && $submission->has_multiple_markers()) {
-            $params['assessorid'] = $assessorid;
-            $params['ismoderation'] = 0;
-        }
-
-        $params['isfinalgrade'] = $isfinalgrade ? 1 : 0;
-
-        // Should only ever be one that has the particular combination of these three options.
-        $feedback = $DB->get_record('coursework_feedbacks', $params);
-
-        if (is_object($feedback)) {
-            return new feedback($feedback);
-        }
-        return null;
     }
 
     /**
@@ -340,29 +285,6 @@ class feedback extends table_base {
         }
 
         return false;
-    }
-
-    /**
-     * @return void
-     * @throws dml_exception
-     */
-    public function set_student() {
-        global $DB;
-
-        if (!$this->submissionid) {
-            return;
-        }
-        $sql = "SELECT u.id,
-                       u.id AS userid,
-                       u.firstname,
-                       u.lastname
-                  FROM {user} u
-            INNER JOIN {coursework_submissions} s
-                    ON u.id = s.userid
-                 WHERE s.id = :sid
-                    ";
-        $params = ['sid' => $this->submissionid];
-        $this->student = $DB->get_record_sql($sql, $params);
     }
 
     /**
@@ -443,23 +365,6 @@ class feedback extends table_base {
     }
 
     /**
-     * Has the general deadline for individual feedback passed?
-     *
-     * @return bool
-     */
-    public function individual_deadline_passed() {
-        return time() > $this->get_coursework()->get_individual_feedback_deadline();
-    }
-
-    /**
-     * Tells us what state the submission is in e.g. submission::PUBLISHED
-     * @return int
-     */
-    protected function get_submission_state() {
-        return $this->get_submission()->get_state();
-    }
-
-    /**
      * Memoized getter
      *
      * @return submission
@@ -527,37 +432,6 @@ class feedback extends table_base {
      */
     private function get_context_id() {
         return $this->get_submission()->get_context_id();
-    }
-
-    /**
-     * This takes various settings from the visibility grid, depending on what type of feedback this is.
-     * @todo Needs replacing with some sort of polymorphism
-     *
-     * @param bool $show
-     */
-    public function set_allowed_to_show_grade($show) {
-        $this->showgrade = $show;
-    }
-
-    /**
-     * @param bool $show
-     */
-    public function set_allowed_to_show_comment($show) {
-        $this->showcomment = $show;
-    }
-
-    /**
-     * @return bool
-     */
-    public function is_allowed_to_show_grade() {
-        return $this->showgrade;
-    }
-
-    /**
-     * @return bool
-     */
-    public function is_allowed_to_show_comment() {
-        return $this->showcomment;
     }
 
     /**
