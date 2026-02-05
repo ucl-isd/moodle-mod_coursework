@@ -339,17 +339,21 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
 
 
-   /**
+    /**
      * Agree feedback - output markers feedback in mustache.
      *
      * @param array $previousfeedbacks Array of feedback objects.
      * @param gradingform_controller $gradingcontroller
-     * @param stdClass $gradingdefinition The pre-fetched definition.
-     * @param bool $isguide Pre-calculated flag.
+     * @param stdClass $gradingdefinition
+     * @param bool $isguide
      * @return string HTML.
      */
-    protected function render_comparison_view(array $previousfeedbacks, gradingform_controller $gradingcontroller,
-        stdClass $gradingdefinition, bool $isguide): string {
+    protected function render_comparison_view(
+        array $previousfeedbacks,
+        gradingform_controller $gradingcontroller,
+        stdClass $gradingdefinition,
+        bool $isguide
+        ): string {
         $criteria = $isguide ? $gradingdefinition->guide_criteria : $gradingdefinition->rubric_criteria;
 
         $markersdata = [];

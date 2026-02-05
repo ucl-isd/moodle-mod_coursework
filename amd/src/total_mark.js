@@ -9,25 +9,25 @@
 /**
  * Update the UI elements.
  *
- * @param {Number} total_score The current total score.
- * @param {Number} total_max The maximum possible score.
+ * @param {Number} totalScore The current total score.
+ * @param {Number} totalMax The maximum possible score.
  */
-const update_ui = (total_score, total_max) => {
-    const score = +total_score.toFixed(2);
-    const max = +total_max.toFixed(2);
+const updateUi = (totalScore, totalMax) => {
+    const score = +totalScore.toFixed(2);
+    const max = +totalMax.toFixed(2);
     const percent = max > 0 ? (score / max) * 100 : 0;
-    const display_percent = +Math.max(0, Math.min(percent, 100)).toFixed(2);
+    const displayPercent = +Math.max(0, Math.min(percent, 100)).toFixed(2);
 
     document.querySelectorAll('[data-region="total-mark-display"]').forEach(region => {
         // Update the text spans.
         region.querySelector('.total-score-text').textContent = score.toString();
         region.querySelector('.total-max-text').textContent = max.toString();
-        region.querySelector('.total-percent').textContent = display_percent.toString();
+        region.querySelector('.total-percent').textContent = displayPercent.toString();
 
         // Update the progress bar.
         const bar = region.querySelector('.total-progress-bar');
         if (bar) {
-            bar.style.width = display_percent + '%';
+            bar.style.width = displayPercent + '%';
             bar.setAttribute('aria-valuenow', score.toString());
             bar.setAttribute('aria-valuemax', max.toString());
         }
@@ -37,84 +37,84 @@ const update_ui = (total_score, total_max) => {
 /**
  * Calculate totals for Rubric.
  */
-const calculate_rubric = () => {
+const calculateRubric = () => {
     const rubric = document.querySelector('.gradingform_rubric');
     if (!rubric) {
         return;
     }
 
-    let running_total = 0;
-    let running_max = 0;
+    let runningTotal = 0;
+    let runningMax = 0;
 
     rubric.querySelectorAll('.criterion').forEach(row => {
         const selected = row.querySelector('.level.checked .scorevalue');
         if (selected) {
-            running_total += parseFloat(selected.textContent) || 0;
+            runningTotal += parseFloat(selected.textContent) || 0;
         }
 
-        let row_max = 0;
+        let rowMax = 0;
         row.querySelectorAll('.scorevalue').forEach(span => {
             const val = parseFloat(span.textContent) || 0;
-            if (val > row_max) {
-                row_max = val;
+            if (val > rowMax) {
+                rowMax = val;
             }
         });
-        running_max += row_max;
+        runningMax += rowMax;
     });
 
-    update_ui(running_total, running_max);
+    updateUi(runningTotal, runningMax);
 };
 
 /**
  * Calculate totals for Marking Guide.
  */
-const calculate_guide = () => {
+const calculateGuide = () => {
     const guide = document.querySelector('.gradingform_guide');
     if (!guide) {
         return;
     }
 
-    let running_total = 0;
-    let running_max = 0;
+    let runningTotal = 0;
+    let runningMax = 0;
 
     guide.querySelectorAll('.score input[type="number"]').forEach(input => {
         const val = parseFloat(input.value);
         const max = parseFloat(input.getAttribute('max'));
         if (!isNaN(val)) {
-            running_total += val;
+            runningTotal += val;
         }
         if (!isNaN(max)) {
-            running_max += max;
+            runningMax += max;
         }
     });
 
-    update_ui(running_total, running_max);
+    updateUi(runningTotal, runningMax);
 };
 
 /**
  * Initialize the grading tracker listeners.
  */
-const init_grading_tracker = () => {
+const initGradingTracker = () => {
     const rubric = document.querySelector('.gradingform_rubric');
     const guide = document.querySelector('.gradingform_guide');
 
     if (rubric) {
-        const observer = new MutationObserver(calculate_rubric);
+        const observer = new MutationObserver(calculateRubric);
         observer.observe(rubric, {
             attributes: true,
             subtree: true,
             attributeFilter: ['class']
         });
-        calculate_rubric();
+        calculateRubric();
     }
 
     if (guide) {
         document.addEventListener('input', (e) => {
             if (e.target.closest('.gradingform_guide .score')) {
-                calculate_guide();
+                calculateGuide();
             }
         });
-        calculate_guide();
+        calculateGuide();
     }
 };
 
@@ -125,7 +125,7 @@ export const init = () => {
     const run = () => {
         // A tiny 50ms delay to let the DOM settle.
         setTimeout(() => {
-            init_grading_tracker();
+            initGradingTracker();
         }, 50);
     };
 
