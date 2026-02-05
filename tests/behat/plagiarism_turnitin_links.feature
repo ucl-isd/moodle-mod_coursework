@@ -50,3 +50,25 @@ Feature: Check that Turnitin reports are fetched and displayed post page load fr
     And I wait until the page is ready
     # Now the course specific setting is *on* so I do see the links.
     And I should see "[TURNITIN DUMMY LINKS HTML]"
+
+  Scenario: Submission *does* have Turnitin report showing after I reload a row via AJAX, as settings are on
+    Given the following config values are set as admin:
+      | config                             | value    |
+      | enableplagiarism                   | 1        |
+    And the following config values are set as admin:
+      | config                             | value    | plugin              |
+      | enabled                            | 1        | plagiarism_turnitin |
+      | plagiarism_turnitin_mod_coursework | 1        | plagiarism_turnitin |
+    And the coursework "plagiarism_turnitin_config" setting is "1" in the database
+    And the coursework "plagiarismflagenabled" setting is "1" in the database
+    And I log in as a manager
+    And I visit the coursework page
+    And I click on "Actions" "button" in the "student1" "table_row"
+    And I click on "Plagiarism action" "link"
+    And I set the field "Status" to "Under Investigation"
+    And I set the field "Internal comment" to "Test comment"
+    And I click on "Save" "button"
+    And I wait until the page is ready
+    Then I should see "Flagged for plagiarism" in the table row containing "student1"
+    # Now row has been reloaded, we can check that TII still shows.
+    And I should see "[TURNITIN DUMMY LINKS HTML]" in the table row containing "student1"
