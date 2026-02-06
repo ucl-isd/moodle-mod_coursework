@@ -445,16 +445,17 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 // Finalised.
                 $f->finalised = ($submission->finalisedstatus == 1);
 
-                // Plagiarism.
-                $f->flaggedplagiarism = cell_data_base::get_flagged_plagiarism_status($submission);
-                // TODO - turnitin stuff.
-
                 $template->submissiondata->files[] = $f;
             }
         }
 
         // Late.
         $template->submittedlate = ($submission->was_late() !== false);
+
+        // Plagiarism.
+        $template->submissiondata->flaggedplagiarism = cell_data_base::get_flagged_plagiarism_status($submission);
+
+        // TODO - turnitin stuff.
 
         return $template;
     }
