@@ -220,7 +220,7 @@ trait factory_mixin {
         $generator = $this->get_coursework_generator();
         $params['course'] = $this->get_course()->id;
         $module = $generator->create_instance($params);
-        $this->coursework = coursework::find($module->id);
+        $this->coursework = coursework::get_from_id($module->id);
         return $this->coursework;
     }
 

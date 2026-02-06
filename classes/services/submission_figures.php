@@ -41,7 +41,7 @@ class submission_figures {
      */
     public static function get_submissions_for_assessor(int $instance): array {
 
-        $coursework = coursework::find($instance);
+        $coursework = coursework::get_from_id($instance);
         $context = $coursework->get_context();
         $submissions = $coursework->get_all_submissions();
 
@@ -95,7 +95,7 @@ class submission_figures {
      * @throws \dml_exception
      */
     public static function calculate_needsgrading_for_assessor(int $instance): int {
-        $coursework = coursework::find($instance);
+        $coursework = coursework::get_from_id($instance);
         $context = $coursework->get_context();
 
         if (

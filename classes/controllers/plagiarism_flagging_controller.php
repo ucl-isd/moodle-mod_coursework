@@ -111,7 +111,7 @@ class plagiarism_flagging_controller extends controller_base {
         $plagiarismflag->submissionid = $this->params['submissionid'];
         $plagiarismflag->createdby = $USER->id;
 
-        $submission = submission::find($this->params['submissionid']);
+        $submission = submission::get_from_id($this->params['submissionid']);
         $pathparams = ['submission' => $submission];
         $url = $this->get_router()->get_path('new plagiarism flag', $pathparams, true);
         $PAGE->set_url($url);

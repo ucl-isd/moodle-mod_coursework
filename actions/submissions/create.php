@@ -39,7 +39,7 @@ $finalised = (bool)optional_param('finalisebutton', 0, PARAM_TEXT);
 
 if (!in_array($allocatabletype, ['user', 'group'])) {
     throw new access_denied(
-        coursework::find($courseworkid),
+        coursework::get_from_id($courseworkid),
         'Bad alloctable type'
     );
 }

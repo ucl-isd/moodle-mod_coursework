@@ -392,7 +392,7 @@ class feedback extends table_base {
             }
             if (!isset($this->submission)) {
                 // We still do not have submission so try to get it from DB using ID.
-                $submission = submission::find($this->submissionid) ?: null;
+                $submission = submission::get_from_id($this->submissionid) ?: null;
                 if ($submission) {
                     $this->set_submission($submission);
                 }

@@ -109,15 +109,14 @@ class controller_base {
         if (!empty($this->params['id'])) {
             $modelclass = $this->model_class();
             $modelname = $this->model_name();
-            $this->$modelname = $modelclass::find($this->params['id']);
+            $this->$modelname = $modelclass::get_from_id($this->params['id']);
             if (!$this->$modelname) {
                 throw new invalid_parameter_exception("Cannot find $modelclass ID " . $this->params['id']);
             }
             $this->coursework = $this->$modelname->get_coursework();
         }
         if (!empty($this->params['courseworkid'])) {
-            $coursework = $DB->get_record('coursework', ['id' => $this->params['courseworkid']], '*', MUST_EXIST);
-            $this->coursework = coursework::find($coursework);
+            $this->coursework = coursework::get_from_id($this->params['courseworkid']);
 
             $this->coursemodule = get_coursemodule_from_instance('coursework', $this->coursework->id);
 
@@ -128,7 +127,7 @@ class controller_base {
         if (empty($this->coursemodule) && !empty($this->params['cmid'])) {
             $this->coursemodule = get_coursemodule_from_id('coursework', $this->params['cmid'], 0, false, MUST_EXIST);
             if (empty($this->coursework)) {
-                $this->coursework = coursework::find($this->coursemodule->instance);
+                $this->coursework = coursework::get_from_id($this->coursemodule->instance);
             }
             $this->params['courseid'] = $this->coursemodule->course;
         }

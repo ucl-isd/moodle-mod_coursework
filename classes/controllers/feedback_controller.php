@@ -78,7 +78,7 @@ class feedback_controller extends controller_base {
         $PAGE->set_url('/mod/coursework/actions/feedbacks/viewpdf.php', $urlparams);
 
         $ability = new ability($USER->id, $this->coursework);
-        $submission = submission::find($this->params['submissionid']);
+        $submission = submission::get_from_id($this->params['submissionid']);
 
         if ($ability->cannot('show', $submission)) {
             return false;
@@ -222,7 +222,7 @@ class feedback_controller extends controller_base {
         $teacherfeedback->lasteditedbyuser = $USER->id;
         $teacherfeedback->finalised = $this->params['finalised'] ? 1 : 0;
 
-        $submission = submission::find($this->params['submissionid']);
+        $submission = submission::get_from_id($this->params['submissionid']);
         $pathparams = [
             'submission' => $submission,
             'assessor' => core_user::get_user($this->params['assessorid']),

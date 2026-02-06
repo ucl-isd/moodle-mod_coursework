@@ -133,7 +133,7 @@ class moderations_controller extends controller_base {
         $moderatoragreement->lasteditedby = $USER->id;
         $moderatoragreement->feedbackid = $this->params['feedbackid'];
 
-        $submission = submission::find($this->params['submissionid']);
+        $submission = submission::get_from_id($this->params['submissionid']);
         $pathparams = [
             'submission' => $submission,
             'moderator' => core_user::get_user($this->params['moderatorid']),

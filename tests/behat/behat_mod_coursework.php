@@ -692,6 +692,28 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * @Then /^I should not see the student's name in the group cell$/
+     */
+    public function i_should_not_see_the_student_s_name_in_the_group_cell() {
+        /**
+         * @var $page mod_coursework_behat_single_grading_interface
+         */
+        $page = $this->get_page('single grading interface');
+        $page->should_not_have_user_name_in_group_cell($this->student);
+    }
+
+    /**
+     * @Then /^I should see the student's name in the group cell$/
+     */
+    public function i_should_see_the_students_name_in_the_group_cell() {
+        /**
+         * @var $page mod_coursework_behat_single_grading_interface
+         */
+        $page = $this->get_page('single grading interface');
+        $page->should_have_user_name_in_group_cell($this->student);
+    }
+
+    /**
      * @When /^I click on the view icon for the first initial assessor's grade$/
      */
     public function i_click_on_the_view_icon_for_the_first_initial_assessor_s_grade() {
@@ -713,6 +735,25 @@ class behat_mod_coursework extends behat_base {
          */
         $page = $this->get_page('multiple grading interface');
         $page->should_not_have_show_feedback_icon($feedback);
+    }
+
+    /**
+     * @Then /^I should( not)? see the grade from the teacher in the assessor table$/
+     * @param bool $negate
+     * @throws coding_exception
+     */
+    public function i_should_not_see_the_grade_from_the_teacher_in_the_assessor_table($negate = false) {
+        /**
+         * @var $page mod_coursework_behat_multiple_grading_interface
+         */
+        $page = $this->get_page('multiple grading interface');
+        $feedback = $this->get_initial_assessor_feedback_for_student();
+
+        if ($negate) {
+            $page->should_not_have_grade_in_assessor_table($feedback);
+        } else {
+            $page->should_have_grade_in_assessor_table($feedback);
+        }
     }
 
     /**
@@ -1055,10 +1096,199 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * I enter an extension in the form
+     * @When /^I enter an extension "(?P<time_string>(?:[^"]|\\")*)" in the form(?: with reason code "(?P<reasoncode_string>(?:[^"]|\\")*)")?$/
+     */
+    public function i_enter_an_extension_in_the_form(string $timeextension, string $reasoncode = '') {
+        $newtime = strtotime('3:30pm', strtotime($timeextension));
+        // Put into ISO-8601 format.
+        $newtimestring = date('Y-m-d\TH:i', $newtime);
+        $script = "const e = document.querySelector('input#extension-extend-deadline');"
+            . "e.value = '$newtimestring'; e.dispatchEvent(new Event('change'));";
+        behat_base::execute_script_in_session($this->getsession(), $script);
+        // The change event is to enable save button.
+
+        if ($reasoncode) {
+            $reason = '0'; // 0 is "first reason" in the select menu
+            $script = "document.querySelector('select#extension-reason-select').value = '$reason'; ";
+            behat_base::execute_script_in_session($this->getsession(), $script);
+        }
+
+        $extrainfo = 'Some extra information';
+        $script = "document.querySelector('textarea#id_extra_information').value = '$extrainfo'";
+        behat_base::execute_script_in_session($this->getsession(), $script);
+    }
+
+    /**
+     * I should see the extension in the form
+     * @When /^I should see the extension "(?P<time_string>(?:[^"]|\\")*)" in the form(?: with reason code "(?P<reason_string>(?:[^"]|\\")*)")?$/
+     */
+    public function i_should_see_the_extension_in_the_form(string $timeextension, string $reasoncode = '') {
+        $newtime = strtotime('3:30pm', strtotime($timeextension));
+        // Put into ISO-8601 format.
+        $newtimestring = date('Y-m-d\TH:i', $newtime);
+        $script = "document.querySelector('input#extension-extend-deadline').value";
+        $result = behat_base::evaluate_script_in_session($this->getsession(), $script);
+        if ($result != $newtimestring) {
+            throw new ExpectationException("Expected time '$newtimestring' got '$result'", $this->getsession());
+        }
+
+        if ($reasoncode) {
+            // Reason code 0 is "first reason" in the select menu.
+            $script = "document.querySelector('select#extension-reason-select').value === '$reasoncode';";
+            if (!$resulttwo = behat_base::evaluate_script_in_session($this->getsession(), $script)) {
+                throw new ExpectationException("Expected reason code '$reasoncode' got '$resulttwo'", $this->getsession());
+            }
+        }
+
+        $extrainfo = 'Some extra information';
+        $script = "document.querySelector('textarea#id_extra_information').value === '$extrainfo'";
+        if (!$resultthree = behat_base::evaluate_script_in_session($this->getsession(), $script)) {
+            throw new ExpectationException("Expected time '$newtimestring' got '$resultthree'", $this->getsession());
+        }
+    }
+
+    /**
+     * @Given /^I should see the extended deadline "(?P<time_string>(?:[^"]|\\")*)" in the student row$/
+     */
+    public function i_should_see_the_extended_deadline_in_the_student_row(string $timestring) {
+        $newtime = strtotime('3:30pm', strtotime($timestring));
+        // Put into format shown in UI.
+        $expectedtimestring = userdate($newtime, '%a, %d %b %Y, %H:%M');
+        $node = $this->find('css', '.extension-submission');
+        $text = $node->getText();
+        if (!str_contains($text, $expectedtimestring)) {
+            throw new ExpectationException(
+                "Expected to see extension '$expectedtimestring' got '$text'",
+                $this->getsession()
+            );
+        }
+    }
+
+    /**
+     * @When /^I edit the extension for the student$/
+     */
+    public function i_add_edit_the_extension_for_the_student() {
+        /**
+         * @var mod_coursework_behat_multiple_grading_interface $multigrader_page
+         */
+        $multigraderpage = $this->get_page('multiple grading interface');
+        $multigraderpage->click_edit_extension_button_for($this->student);
+
+        /**
+         * @var mod_coursework_behat_edit_extension_page $edit_extension_page
+         */
+        $editextensionpage = $this->get_page('edit extension page');
+        $this->extensiondeadline = strtotime('3:30pm', strtotime('+4 weeks'));
+        $editextensionpage->edit_active_extension($this->extensiondeadline);
+    }
+
+    /**
      * @Given /^there are some extension reasons configured at site level$/
      */
     public function there_are_some_extension_reasons_configured_at_site_level() {
         set_config('coursework_extension_reasons_list', "first reason\nsecond reason");
+    }
+
+    /**
+     * @Given /^I should see the deadline reason in the deadline extension form$/
+     */
+    public function i_should_see_the_deadline_reason_in_the_student_row() {
+        /**
+         * @var mod_coursework_behat_edit_extension_page $edit_extension_page
+         */
+        $editextensionpage = $this->get_page('edit extension page');
+        $reason = $editextensionpage->get_extension_reason_for_allocatable();
+        if ($reason != 0) {
+            throw new ExpectationException("Unexpected extension reason '$reason'", $this->getsession());
+        }
+    }
+
+    /**
+     * @Given /^I should see the extra information in the deadline extension form$/
+     */
+    public function i_should_see_the_extra_information_in_the_student_row() {
+        /**
+         * @var mod_coursework_behat_edit_extension_page $edit_extension_page
+         */
+        $editextensionpage = $this->get_page('edit extension page');
+        if (!$editextensionpage->get_extra_information_for_allocatable('Extra info here')) {
+            throw new ExpectationException("Extra info not found", $this->getsession());
+        }
+    }
+
+    /**
+     * @When /^I click on the edit extension icon for the student$/
+     */
+    public function i_click_on_the_edit_extension_icon_for_the_student() {
+        /**
+         * @var mod_coursework_behat_multiple_grading_interface $multigrader_page
+         */
+        $multigraderpage = $this->get_page('multiple grading interface');
+        $multigraderpage->click_edit_extension_button_for($this->student);
+    }
+
+    /**
+     * @Given /^I submit the extension deadline form$/
+     */
+    public function i_submit_the_extension_deadline_form() {
+        /**
+         * @var mod_coursework_behat_new_extension_page $edit_extension_page
+         */
+        $editextensionpage = $this->get_page('new extension page');
+        $editextensionpage->submit_form();
+    }
+
+    /**
+     * @Given /^I should see the new extended deadline in the student row$/
+     */
+    public function i_should_see_the_new_extended_deadline_in_the_student_row() {
+        /**
+         * @var mod_coursework_behat_multiple_grading_interface $multigrader_page
+         */
+        $multigraderpage = $this->get_page('multiple grading interface');
+        $multigraderpage->should_show_extension_for_allocatable(
+            $this->student,
+            $this->extensiondeadline
+        );
+    }
+
+    /**
+     * @Then /^I should see the new deadline reason in the dropdown$/
+     */
+    public function i_should_see_the_new_deadline_reason_in_the_dropdown() {
+        /**
+         * @var mod_coursework_behat_edit_extension_page $edit_extension_page
+         */
+        $editextensionpage = $this->get_page('edit extension page');
+        $reason = $editextensionpage->get_extension_reason_for_allocatable();
+        if ($reason != 1) {
+            throw new ExpectationException("Unexpected extension reason '$reason'", $this->getsession());
+        }
+    }
+
+    /**
+     * @Given /^I should see the new extra deadline information in the deadline extension form$/
+     */
+    public function i_should_see_the_new_extra_deadline_information_in_the_deadline_extension_form() {
+        /**
+         * @var mod_coursework_behat_edit_extension_page $edit_extension_page
+         */
+        $editextensionpage = $this->get_page('edit extension page');
+        if (!$editextensionpage->get_extra_information_for_allocatable('New info here')) {
+            throw new ExpectationException("New info not found", $this->getsession());
+        }
+    }
+
+    /**
+     * @Given /^I click on the edit submission button for the student$/
+     */
+    public function i_click_on_the_edit_submission_button_for_the_student() {
+        /**
+         * @var mod_coursework_behat_multiple_grading_interface $multigrader_page
+         */
+        $multigraderpage = $this->get_page('multiple grading interface');
+        $multigraderpage->click_edit_submission_button_for($this->student);
     }
 
     /**
@@ -1201,7 +1431,7 @@ class behat_mod_coursework extends behat_base {
 
         $coursework = new stdClass();
         $coursework->course = $this->course;
-        $this->coursework = coursework::find($generator->create_instance($coursework)->id);
+        $this->coursework = coursework::get_from_id($generator->create_instance($coursework)->id);
     }
 
     /**
@@ -2591,6 +2821,23 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * @Then /^I should see the first initial assessors grade and comment$/
+     */
+    public function i_should_see_the_first_initial_assessors_grade_and_comment() {
+        /**
+         * @var mod_coursework_behat_show_feedback_page $page
+         */
+        $page = $this->get_page('show feedback page');
+        $page->set_feedback($this->get_initial_assessor_feedback_for_student());
+        if (!$page->has_comment('New comment here')) {
+            throw new ExpectationException('Comment not found', $this->getsession());
+        }
+        if (!$page->has_grade('67')) {
+            throw new ExpectationException('Grade 67 not found', $this->getsession());
+        }
+    }
+
+    /**
      * @return mixed
      */
     protected function get_initial_assessor_feedback_for_student() {
@@ -3042,7 +3289,7 @@ class behat_mod_coursework extends behat_base {
             throw new ExpectationException('No submission found for student', $this->getsession());
         }
 
-        return submission::find($submissionrecord->id);
+        return submission::get_from_id($submissionrecord->id);
     }
 
     /**

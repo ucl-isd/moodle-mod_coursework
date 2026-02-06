@@ -885,7 +885,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
             if (!$cm->uservisible) {
                 continue;
             }
-            $coursework = coursework::find($cm->instance);
+            $coursework = coursework::get_from_id($cm->instance);
             if ($usesections && $cm->sectionnum) {
                 $sectionname = get_section_name($course, $sections[$cm->sectionnum]);
                 if ($sectionname !== $currentsection) {
@@ -906,7 +906,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 if ($coursework->usegroups) {
                     $allocatable = $coursework->get_coursework_group_from_user_id($USER->id);
                 } else {
-                    $allocatable = user::find($USER->id, false);
+                    $allocatable = user::get_from_id((int)$USER->id);
                 }
                 if ($allocatable) {
                     $timedue = $coursework->get_allocatable_deadline($allocatable->id); // get deadline based on user taking into considerations personal deadline and extension

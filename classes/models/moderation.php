@@ -139,7 +139,7 @@ class moderation extends table_base {
      */
     public function get_submission() {
         $feedback = $this->get_feedback();
-        $this->submission = submission::find($feedback->submissionid);
+        $this->submission = submission::get_from_id($feedback->submissionid);
 
         return $this->submission;
     }
