@@ -7,7 +7,6 @@
  */
 
 import {getString} from 'core/str';
-import log from 'core/log';
 
 /**
  * Initialize the rubric feedback labels.
@@ -50,6 +49,7 @@ export const init = async() => {
             }
         });
     } catch (error) {
-        log.info("Catch from rubric.js: ", error);
+        // eslint-disable-next-line no-console
+        console.error("Catch from rubric.js:", error);
     }
 };

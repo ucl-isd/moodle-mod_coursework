@@ -7,7 +7,6 @@
  */
 
 import {getString} from 'core/str';
-import log from 'core/log';
 
 /**
  * Initialize the marking guide score field enhancements.
@@ -58,6 +57,7 @@ export const init = async() => {
             }
         });
     } catch (error) {
-        log.info("Catch from marking_guide.js: ", error);
+        // eslint-disable-next-line no-console
+        console.error("Catch from marking_guide.js:", error);
     }
 };
