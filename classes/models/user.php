@@ -49,6 +49,12 @@ use stdClass;
  */
 #[AllowDynamicProperties]
 class user extends table_base implements allocatable, moderatable {
+    /**
+     * Cache area where objects by ID are stored.
+     * @var string
+     */
+    const CACHE_AREA_IDS = 'userids';
+
     use allocatable_functions;
 
     /**
@@ -199,21 +205,6 @@ class user extends table_base implements allocatable, moderatable {
             $object = new self($record);
             self::$pool['id'][$record->id] = $object;
         }
-    }
-
-    /**
-     * Get the cached user object from its ID.
-     * @param int $id
-     * @return self|false
-     * @throws \dml_exception
-     */
-    public static function get_cached_object_from_id(int $id) {
-        if (!isset(self::$pool['id'][$id])) {
-            global $DB;
-            $user = $DB->get_record(self::$tablename, ['id' => $id]);
-            self::$pool['id'][$id] = new self($user);
-        }
-        return self::$pool['id'][$id];
     }
 
     /**

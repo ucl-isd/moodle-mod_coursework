@@ -60,7 +60,7 @@ class allocatableinsampletoggle extends external_api {
             'togglestate' => $togglestate,
         ]);
 
-        $coursework = coursework::get_cached_object_from_id($params['courseworkid']);
+        $coursework = coursework::get_from_id($params['courseworkid']);
 
         self::validate_context($coursework->get_context());
         require_capability('mod/coursework:allocate', $coursework->get_context());
