@@ -35,37 +35,10 @@
 <script type="module">
     // Import pdf.js library.
     import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.4.149/pdf.min.mjs';
-
-    // Import pdf.js worker.
     pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.4.149/pdf.worker.min.mjs";
 
-    const pdfurl = "{{{pdfurl}}}";
-    const scalefactor = 1;
-    const viewercontainer = document.getElementById("pdf-viewer");
-
-    const renderpage = (pdf, pagenum, canvas) => {
-        pdf.getPage(pagenum).then((page) => {
-            const viewport = page.getViewport({ scale: scalefactor });
-            const context = canvas.getContext("2d");
-
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-
-            const rendercontext = {
-                canvasContext: context,
-                viewport: viewport
-            };
-            page.render(rendercontext);
-        });
-    };
-
-    pdfjsLib.getDocument(pdfurl).promise.then((pdfdoc) => {
-        for (let pagenum = 1; pagenum <= pdfdoc.numPages; pagenum++) {
-            const canvas = document.createElement("canvas");
-            viewercontainer.appendChild(canvas);
-            renderpage(pdfdoc, pagenum, canvas);
-        }
-    }).catch((error) => {
-        console.error("Error loading PDF:", error);
+    // Pass library object to AMD module.
+    require(['mod_coursework/pdf'], function(pdf) {
+        pdf.init(pdfjsLib, "{{{pdfurl}}}");
     });
 </script>

@@ -13,6 +13,34 @@
     You should have received a copy of the GNU General Public License
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
+{{!
+    @template mod_coursework/submissions/tr/submissions
+
+    Template for displaying submission files and metadata.
+
+    Example context (json):
+    {
+        "title": "Submission",
+        "submission": {
+            "submissiondata": {
+                "files": [
+                    {
+                        "filename": "essay.pdf",
+                        "url": "http://example.com/file.php/123/essay.pdf",
+                        "finalised": true,
+                        "datemodified": 1704067200
+                    }
+                ],
+                "extensiondeadline": 1704240000,
+                "submittedlate": false,
+                "flaggedplagiarism": false,
+                "plagiarismlinks": "<a href=''>Turnitin report</a>"
+            },
+            "personaldeadline": 1704067200,
+            "extensiongranted": false
+        }
+    }
+}}
 {{! Title when displaying on marking page. }}
 {{#title}}
     <h3>{{title}}</h3>
