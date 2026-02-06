@@ -78,6 +78,12 @@ require_once($CFG->dirroot . '/grade/grading/lib.php');
 #[AllowDynamicProperties]
 class coursework extends table_base {
     /**
+     * Cache area where objects by ID are stored.
+     * @var string
+     */
+    const CACHE_AREA_IDS = 'courseworkids';
+
+    /**
      * Event type for due or extension dates in mdl_event.
      */
     const COURSEWORK_EVENT_TYPE_DUE = 'due';
@@ -2600,19 +2606,6 @@ class coursework extends table_base {
             $courseworks = $DB->get_records('coursework', ['id' => $courseworkid]);
             self::fill_pool($courseworks);
         }
-    }
-
-    /**
-     *
-     * @param int $courseworkid
-     * @return self|bool
-     * @throws dml_exception
-     */
-    public static function get_cached_object_from_id($courseworkid) {
-        if (!isset(self::$pool['id'][$courseworkid])) {
-            self::fill_pool_coursework($courseworkid);
-        }
-        return self::$pool['id'][$courseworkid] ?? false;
     }
 
     /**

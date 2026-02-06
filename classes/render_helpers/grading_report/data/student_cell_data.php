@@ -71,7 +71,7 @@ class student_cell_data extends cell_data_base {
         $data->id = $hidden ? '' : $group->id;
         $data->name = $group->name();
         $data->picture = $hidden ? '' :
-            get_group_picture_url(group::get_cached_object_from_id($group->id()), $this->coursework->get_course_id());
+            get_group_picture_url(group::get_from_id($group->id()), $this->coursework->get_course_id());
         $data->members = $this->get_group_members($group, $hidden);
         return $data;
     }

@@ -37,6 +37,12 @@ use mod_coursework\framework\table_base;
 #[AllowDynamicProperties]
 class allocation extends table_base {
     /**
+     * Cache area where objects by ID are stored.
+     * @var string
+     */
+    const CACHE_AREA_IDS = 'allocationids';
+
+    /**
      * @var string
      */
     protected static $tablename = 'coursework_allocation_pairs';
@@ -102,7 +108,7 @@ class allocation extends table_base {
      * @return user
      */
     public function assessor() {
-        return user::get_cached_object_from_id($this->assessorid);
+        return user::get_from_id($this->assessorid);
     }
 
     /**
