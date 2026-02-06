@@ -28,24 +28,24 @@ Coursework.
     }
 
     /* PDF viewer. */
-    #pdf-container {
-        max-width: 850px !important;
-        #pdf-viewer {
-            overflow: scroll;
-            margin-top: 1rem !important;
-            text-align: center;
-        }
-        canvas {
-            display: block;
-            width: 100%;
-        }
-
+    #mod-coursework-pdf-container {
+        z-index: 1;
         /* Submission metadata. */
         .mod-coursework-submission {
             display: flex;
             align-items: flex-start;
             .mod-coursework-submission-metadata {
                 margin-left: auto;
+            }
+        }
+        /* PDF iframe. */
+        #mod-coursework-pdf-wrapper {
+            height: 85vh;
+            iframe {
+                height: 100%;
+                width: 100%;
+                border: none;
+                border-bottom: 1rem solid;
             }
         }
     }
@@ -364,6 +364,11 @@ Coursework.
         /* Ensure there's space above notifications. */
         margin-top: 1em;
     }
+}
+
+/* Boost style theme with navbar fixed-top. */
+body:has(.navbar.fixed-top) .sticky-top {
+    top: 65px;
 }
 
 /* Advanced pdf stuff. */

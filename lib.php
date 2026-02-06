@@ -145,7 +145,7 @@ function mod_coursework_pluginfile($course, $cm, $context, $filearea, $args, $fo
         if (!$file || $file->is_directory()) {
             return false;
         }
-        send_stored_file($file, 0, 0, true); // Download MUST be forced - security!
+        send_stored_file($file, 0, 0, false);
         return true;
     } else {
         if ($filearea === 'feedback') {

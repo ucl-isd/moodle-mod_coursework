@@ -1,5 +1,5 @@
 /**
- * Rubric labeling logic for mod_coursework.
+ * Rubric labeling and interaction logic for mod_coursework.
  *
  * @module     mod_coursework/rubric
  * @copyright  2026 UCL
@@ -9,34 +9,61 @@
 import {getString} from 'core/str';
 
 /**
- * Initialize the rubric feedback labels.
+ * Initialize the rubric enhancements.
  */
 export const init = async() => {
-    // Target the standard Moodle rubric container.
     const rubricContainer = document.querySelector('.gradingform_rubric');
     if (!rubricContainer) {
         return;
     }
 
+    // Radio button fix.
+    rubricContainer.addEventListener('click', (e) => {
+        const cell = e.target.closest('.level');
+        if (!cell) {
+            return;
+        }
+
+        const radio = cell.querySelector('input[type="radio"]');
+        if (!radio) {
+            return;
+        }
+
+        // Stop Moodle core JS from interfering.
+        e.stopPropagation();
+
+        if (e.target !== radio) {
+            radio.checked = true;
+        }
+
+        // Update visual states.
+        const row = cell.closest('tr');
+        row.querySelectorAll('.level').forEach((l) => {
+            l.classList.remove('checked', 'currentchecked');
+            l.setAttribute('aria-checked', 'false');
+        });
+
+        cell.classList.add('checked', 'currentchecked');
+        cell.setAttribute('aria-checked', 'true');
+
+        // Trigger change for Moodle's calculation logic.
+        radio.dispatchEvent(new Event('change', {bubbles: true}));
+    }, true);
+
+    // Feedback labeling logic.
     try {
         const feedbackPrefix = await getString('feedbackfor', 'mod_coursework');
-
-        // In a rubric, comments are usually in cells with the 'remark' class.
         const remarkCells = rubricContainer.querySelectorAll('td.remark');
 
         remarkCells.forEach(cell => {
             const textarea = cell.querySelector('textarea');
-            // In rubrics, the description is usually in the same row (tr).
             const parentRow = cell.closest('tr');
             const descriptionCell = parentRow ? parentRow.querySelector('td.description') : null;
 
             if (textarea && descriptionCell) {
-                // Clone the description to strip out extra UI elements.
                 const tempDescription = descriptionCell.cloneNode(true);
-
                 const criterionName = tempDescription.textContent.trim();
 
-                // Create the label.
                 const feedbackLabel = document.createElement('label');
                 feedbackLabel.textContent = `${feedbackPrefix} ${criterionName}`;
 
@@ -44,7 +71,6 @@ export const init = async() => {
                     feedbackLabel.setAttribute('for', textarea.id);
                 }
 
-                // Insert it before the textarea in the remark cell.
                 cell.insertBefore(feedbackLabel, textarea);
             }
         });

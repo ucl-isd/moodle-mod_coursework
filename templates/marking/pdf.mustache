@@ -23,22 +23,13 @@
     }
 }}
 
-<div id="pdf-container" class="mx-auto">
-
+<div id="mod-coursework-pdf-container" class="mx-auto sticky-top">
     {{! Submissions metadata. }}
     {{> mod_coursework/submissions/tr/submissions }}
 
-    {{! Pdf viewer. }}
-    <div id="pdf-viewer" class="container border m-0 p-0"></div>
+    {{! Pdf iframe. }}
+    <div id="mod-coursework-pdf-wrapper">
+        <p class="small">{{#str}} pdfhelp, mod_coursework {{/str}}</p>
+        <iframe src="{{{pdfurl}}}" loading="lazy"></iframe>
+    </div>
 </div>
-
-<script type="module">
-    // Import pdf.js library.
-    import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.4.149/pdf.min.mjs';
-    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.4.149/pdf.worker.min.mjs";
-
-    // Pass library object to AMD module.
-    require(['mod_coursework/pdf'], function(pdf) {
-        pdf.init(pdfjsLib, "{{{pdfurl}}}");
-    });
-</script>
