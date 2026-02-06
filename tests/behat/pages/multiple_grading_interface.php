@@ -228,28 +228,6 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
     /**
      * @param feedback $feedback
      */
-    public function should_not_have_grade_in_assessor_table($feedback) {
-        $assessor = $feedback->assessor();
-        $rowclass = '.feedback-' . $assessor->id() . '-' . $feedback->get_allocatable()
-            ->id() . '.' . $feedback->get_stage()->identifier() . ' .assessor_feedback_grade';
-
-        $this->should_not_have_css($rowclass, $feedback->grade);
-    }
-
-    /**
-     * @param feedback $feedback
-     */
-    public function should_have_grade_in_assessor_table($feedback) {
-        $assessor = $feedback->assessor();
-        $rowclass = '.feedback-' . $assessor->id() . '-' . $feedback->get_allocatable()
-            ->id() . '.' . $feedback->get_stage()->identifier() . ' .assessor_feedback_grade';
-
-        $this->should_have_css($rowclass, $feedback->grade);
-    }
-
-    /**
-     * @param feedback $feedback
-     */
     public function should_not_have_edit_link_for_feedback($feedback) {
         $identifier = '[data-behat-feedbackid="' . $feedback->id . '"]';
         $this->should_not_have_css($identifier);

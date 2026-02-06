@@ -74,6 +74,24 @@ final class percentage_distance_test extends \advanced_testcase {
         $this->assertEquals(0, $DB->count_records('coursework_feedbacks'));
     }
 
+    /**
+     * Test there is no error after student submission with:
+     *   - Number of times each submission should initially be marked: 2
+     *   - Sampling enabled: Yes
+     *   - Automatic agreement of marks: Percentage distance
+     */
+    public function test_no_error_with_auto_agreement_and_sampling(): void {
+        $coursework = $this->get_coursework();
+        $coursework->update_attribute('samplingenabled', 1);
+        $user = $this->get_student();
+        $this->create_a_submission_for_the_student();
+        $object = new percentage_distance($this->get_coursework(), $user, 10);
+
+        $object->create_auto_grade_if_rules_match($user);
+
+        $this->assertTrue(true); // Check there are no errors above.
+    }
+
     public function test_that_a_new_record_is_created_when_all_initial_feedbacks_are_close_enough(): void {
         global $DB;
 

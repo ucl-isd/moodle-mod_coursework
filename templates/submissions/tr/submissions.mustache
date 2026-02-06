@@ -82,6 +82,7 @@
                         {{/datemodified}}
                     </div>
                 </div>
+<<<<<<< advanced-grading-layout
             {{/files}}
         </div>
 
@@ -103,31 +104,57 @@
                     </div>
                 </div>
             {{/extensiondeadline}}
+=======
+            </div>
+        {{/files}}
+        {{#extensiondeadline}}
+            <div class="bg-light badge-pill my-2 py-1">
+                <div class="position-relative d-flex align-items-center">
+                    <div class="mr-3">
+                        <i class="fa-regular fa-clock"></i>
+                    </div>
+                    <div class="small">
+                        {{#str}} extension, mod_coursework {{/str}}
+                        <br>
+                        {{#userdate}}
+                            {{.}}, {{#str}} strftimedatetime, langconfig {{/str}}
+                        {{/userdate}}
+                    </div>
+                </div>
+            </div>
+        {{/extensiondeadline}}
+>>>>>>> main
 
-            {{#submittedlate}}
-                <span class="badge badge-pill badge-warning">
+        {{#submittedlate}}
+            <span class="badge badge-pill badge-warning">
                     <i class="fa-regular fa-clock m-1"></i>
-                    {{#str}} submitted_late, mod_coursework {{/str}}
+                {{#str}} submitted_late, mod_coursework {{/str}}
                 </span>
-            {{/submittedlate}}
+        {{/submittedlate}}
 
-            {{#flaggedplagiarism}}
-                <span class="badge badge-pill badge-danger">
+        {{#flaggedplagiarism}}
+            <span class="badge badge-pill badge-danger">
                     <i class="fa-regular fa-flag m-1"></i>
-                    {{#str}} flagged_plagiarism, mod_coursework {{/str}}
+                {{#str}} flagged_plagiarism, mod_coursework {{/str}}
                 </span>
-            {{/flaggedplagiarism}}
+        {{/flaggedplagiarism}}
 
-            {{#plagiarismlinks}}
-                <div>
+        {{#plagiarismlinks}}
+            <div>
                     <span class="sr-only">
                         {{#str}} plagiarism_report, mod_coursework {{/str}}
                     </span>
+<<<<<<< advanced-grading-layout
                     {{{plagiarismlinks}}}
                 </div>
             {{/plagiarismlinks}}
         </div>
     </div>
+=======
+                {{{plagiarismlinks}}}
+            </div>
+        {{/plagiarismlinks}}
+>>>>>>> main
     {{/submissiondata}}
 
     {{^submissiondata}}

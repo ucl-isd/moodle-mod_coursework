@@ -23,3 +23,13 @@ Feature: Collisions: two people try to create feedback at the same time
     And I click on the add feedback button for assessor 2
     And I set the field "Mark" to "56"
     And I press "Save and finalise"
+
+  Scenario: Single marker: If I submit feedback and it's already been given then the form should show a warning
+    Given there is a teacher
+    And there is another teacher
+    And I am logged in as the other teacher
+    And the coursework is set to single marker
+    And I visit the coursework page
+    And I have an assessor feedback at grade 67
+    When I click on the add feedback button
+    Then I should see "Another user has already submitted feedback for this student. Your changes will not be saved."
