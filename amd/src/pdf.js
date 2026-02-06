@@ -13,9 +13,10 @@
  * @param {Number} pagenum
  * @param {HTMLCanvasElement} canvas
  * @param {Number} scalefactor
+ * @returns {Promise}
  */
 const renderpage = (pdf, pagenum, canvas, scalefactor) => {
-    pdf.getPage(pagenum).then((page) => {
+    return pdf.getPage(pagenum).then((page) => {
         const viewport = page.getViewport({scale: scalefactor});
         const context = canvas.getContext('2d');
 
@@ -26,14 +27,17 @@ const renderpage = (pdf, pagenum, canvas, scalefactor) => {
             canvasContext: context,
             viewport: viewport
         };
-        page.render(rendercontext);
+        return page.render(rendercontext).promise;
+    }).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error("Catch from pdf.js:", error);
     });
 };
 
 /**
  * Initialize the PDF viewer.
  *
- * @param {Object} pdfjsLib The library object imported in the template.
+ * @param {Object} pdfjsLib
  * @param {String} pdfurl
  */
 export const init = (pdfjsLib, pdfurl) => {
@@ -50,8 +54,9 @@ export const init = (pdfjsLib, pdfurl) => {
             viewercontainer.appendChild(canvas);
             renderpage(pdfdoc, pagenum, canvas, scalefactor);
         }
+        return pdfdoc;
     }).catch((error) => {
         // eslint-disable-next-line no-console
-        console.error("Error loading PDF:", error);
+        console.error("Catch from pdf.js:", error);
     });
 };
