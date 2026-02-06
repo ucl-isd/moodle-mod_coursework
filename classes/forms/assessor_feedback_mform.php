@@ -125,7 +125,6 @@ class assessor_feedback_mform extends moodleform {
                 $mform->addElement('html', '<a href="#">' . get_string('togglezoom', 'mod_assign') . '</a>');
             }
         } else if ($this->coursework->uses_numeric_grade()) {
-<<<<<<< advanced-grading-layout
             // Object to pass to lang string.
             $a = new stdClass();
             $a->min = 0;
@@ -137,16 +136,6 @@ class assessor_feedback_mform extends moodleform {
             $mform->registerElementType('number', $element, 'number_element');
             $mform->addElement(
                 'number',
-=======
-            // We are using a point grade e.g. 100/100, so use a text input not a menu.
-            $mform->addElement('text', 'grade', get_string('mark', 'mod_coursework'));
-            $mform->setType(
-                'grade',
-                $this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1 ? PARAM_LOCALISEDFLOAT : PARAM_INT
-            );
-            $mform->addRule('grade', get_string('required'), 'required', null, 'client');
-            $mform->addRule(
->>>>>>> main
                 'grade',
                 get_string('markrange', 'mod_coursework', $a),
                 ['required' => 'required',
