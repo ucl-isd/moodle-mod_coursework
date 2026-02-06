@@ -2466,9 +2466,9 @@ class coursework extends table_base {
         $deadline = $this->deadline;
 
         if ($this->usegroups) {
-            $allocatable = group::find($allocatableid);
+            $allocatable = group::get_from_id($allocatableid);
         } else {
-            $allocatable = user::find($allocatableid);
+            $allocatable = user::get_from_id($allocatableid);
         }
 
         if ($this->personaldeadlines_enabled()) {
@@ -2496,9 +2496,9 @@ class coursework extends table_base {
      */
     public function get_allocatable_from_id($allocatableid): allocatable {
         if ($this->is_configured_to_have_group_submissions()) {
-            return group::find($allocatableid);
+            return group::get_from_id($allocatableid);
         } else {
-            return user::find($allocatableid);
+            return user::get_from_id($allocatableid);
         }
     }
 

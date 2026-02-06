@@ -120,7 +120,7 @@ class deadline_extension extends table_base {
 
     public function get_allocatable() {
         $classname = "\\mod_coursework\\models\\{$this->allocatabletype}";
-        return $classname::find($this->allocatableid);
+        return $classname::get_from_id($this->allocatableid);
     }
 
     /**

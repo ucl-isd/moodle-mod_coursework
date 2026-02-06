@@ -117,7 +117,7 @@ class agreedfeedback_cell extends cell_base {
                 }
             } else {
                 // This is an existing feedback check it against the edit ability checks.
-                if (!$feedback->can_edit($this->coursework, submission::find($submissionid))) {
+                if (!$feedback->can_edit($this->coursework, submission::get_from_id($submissionid))) {
                     return get_string('nopermissiontoeditmark', 'coursework');
                 }
             }

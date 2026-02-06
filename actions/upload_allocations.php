@@ -34,7 +34,7 @@ require_once($CFG->libdir . '/csvlib.class.php');
 $coursemoduleid = required_param('cmid', PARAM_INT);
 
 $coursemodule = $DB->get_record('course_modules', ['id' => $coursemoduleid]);
-$coursework = coursework::find($coursemodule->instance);
+$coursework = coursework::get_from_id($coursemodule->instance);
 $course = $DB->get_record('course', ['id' => $coursemodule->course]);
 require_login($course, false, $coursemodule);
 

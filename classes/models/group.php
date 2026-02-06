@@ -46,13 +46,14 @@ use stdClass;
  */
 #[AllowDynamicProperties]
 class group extends table_base implements allocatable, moderatable {
+    use allocatable_functions;
+
     /**
      * Cache area where objects by ID are stored.
      * @var string
      */
     const CACHE_AREA_IDS = 'groupids';
 
-    use allocatable_functions;
 
     /**
      * @var string

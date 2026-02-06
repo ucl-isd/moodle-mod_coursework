@@ -51,7 +51,7 @@ class unenrol_task extends scheduled_task {
 
         if (!empty($courseworkids)) {
             foreach ($courseworkids as $courseworkid) {
-                $coursework = coursework::find($courseworkid);
+                $coursework = coursework::get_from_id($courseworkid);
                 if (empty($coursework)) {
                     continue;
                 }

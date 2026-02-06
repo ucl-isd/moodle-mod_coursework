@@ -98,7 +98,7 @@ class allocation extends table_base {
     public function get_coursework() {
 
         if (!isset($this->coursework)) {
-            $this->coursework = coursework::find($this->courseworkid);
+            $this->coursework = coursework::get_from_id($this->courseworkid);
         }
 
         return $this->coursework;

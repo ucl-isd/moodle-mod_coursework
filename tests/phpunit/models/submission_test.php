@@ -96,7 +96,7 @@ final class submission_test extends \advanced_testcase {
         $submission->save();
         $this->assertTrue($submission->persisted());
 
-        $retrieved = submission::find($submission->id);
+        $retrieved = submission::get_from_id($submission->id);
         $this->assertequals($submission->id(), $retrieved->id());
 
         $this->assertEquals($this->coursework->id, $retrieved->courseworkid);
@@ -112,7 +112,7 @@ final class submission_test extends \advanced_testcase {
 
         $this->assertInstanceOf(
             '\mod_coursework\models\submission',
-            submission::find($submission->id)
+            submission::get_from_id($submission->id)
         );
     }
 

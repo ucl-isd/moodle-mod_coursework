@@ -122,7 +122,7 @@ class submissions_controller extends controller_base {
     protected function edit_submission() {
         global $USER, $PAGE;
 
-        $submission = submission::find($this->params['submissionid']);
+        $submission = submission::get_from_id($this->params['submissionid']);
 
         $ability = new ability($USER->id, $this->coursework);
         if (!$ability->can('edit', $submission)) {
@@ -259,7 +259,7 @@ class submissions_controller extends controller_base {
             return;
         }
 
-        $submission = submission::find($this->params['submissionid']);
+        $submission = submission::get_from_id($this->params['submissionid']);
 
         $ability = new ability($USER->id, $this->coursework);
         $this->exception_if_late($submission);
@@ -318,7 +318,7 @@ class submissions_controller extends controller_base {
             redirect($courseworkpageurl);
         }
 
-        $submission = submission::find($this->params['submissionid']);
+        $submission = submission::get_from_id($this->params['submissionid']);
 
         $ability = new ability($USER->id, $this->coursework);
         if (!$ability->can('finalise', $submission)) {
@@ -382,7 +382,7 @@ class submissions_controller extends controller_base {
 
     protected function prepare_environment() {
         if (!empty($this->params['submissionid'])) {
-            $this->submission = submission::find($this->params['submissionid']);
+            $this->submission = submission::get_from_id($this->params['submissionid']);
             $this->coursework = $this->submission->get_coursework();
         }
 

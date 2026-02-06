@@ -34,9 +34,7 @@ $setpersonaldeadlinespage = optional_param('setpersonaldeadlinespage', 0, PARAM_
 $multipleuserdeadlines = optional_param('multipleuserdeadlines', 0, PARAM_INT);
 $selectedtype = optional_param('selectedtype', 'date', PARAM_RAW);
 
-$courseworkdb = $DB->get_record('coursework', ['id' => $courseworkid]);
-
-$coursework = coursework::find($courseworkdb);
+$coursework = coursework::get_from_id($courseworkid);
 
 require_login($coursework->get_course(), false, $coursework->get_course_module());
 

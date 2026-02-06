@@ -270,7 +270,7 @@ class deadline_extension_form extends dynamic_form {
         $extensionid = $datasource['extensionid'] ?? null;
         if ($extensionid && is_numeric($extensionid)) {
             // We are editing an existing extension.
-            $extension = deadline_extension::find($extensionid);
+            $extension = deadline_extension::get_from_id($extensionid);
             if ($extension) {
                 $this->extension = $extension;
             } else {
@@ -279,12 +279,12 @@ class deadline_extension_form extends dynamic_form {
             $this->allocatable = $this->extension->get_allocatable();
             $this->coursework = $this->extension->get_coursework();
         } else {
-            $coursework = coursework::find($datasource['coursework']->id ?? $datasource['courseworkid']);
+            $coursework = coursework::get_from_id($datasource['coursework']->id ?? $datasource['courseworkid']);
             $this->coursework = $coursework;
             $allocatabletype = $datasource['allocatabletype'];
             $allocatableid = $datasource['allocatableid'];
             $classname = "\\mod_coursework\\models\\$allocatabletype";
-            $this->allocatable = $classname::find($allocatableid);
+            $this->allocatable = $classname::get_from_id($allocatableid);
             if (!$this->allocatable) {
                 throw new invalid_parameter_exception("Allocatable ID $allocatableid not found");
             }

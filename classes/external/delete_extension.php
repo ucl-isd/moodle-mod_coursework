@@ -57,7 +57,7 @@ class delete_extension extends external_api {
         $result = ['success' => false, 'message' => null];
 
         $params = self::validate_parameters(self::execute_parameters(), ['extensionid' => $extensionid]);
-        $extension = deadline_extension::find($params['extensionid']);
+        $extension = deadline_extension::get_from_id($params['extensionid']);
         if (!$extension) {
             return [
                 'success' => false,
