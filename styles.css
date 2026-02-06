@@ -31,6 +31,7 @@ Coursework.
         /* Submission metadata. */
         .mod-coursework-submission {
             display: flex;
+            align-items: flex-start;
             .mod-coursework-submission-metadata {
                 margin-left: auto;
             }
