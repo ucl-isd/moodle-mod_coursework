@@ -43,6 +43,11 @@ use core_cache\cache;
 #[AllowDynamicProperties]
 class assessment_set_membership extends table_base implements moderatable {
     /**
+     * Cache area where objects by ID are stored.
+     * @var string
+     */
+    const CACHE_AREA_IDS = 'assessmentsetids';
+    /**
      * cache array
      *
      * @var

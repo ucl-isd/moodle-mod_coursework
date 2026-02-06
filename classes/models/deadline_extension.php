@@ -47,6 +47,12 @@ use mod_coursework_coursework;
 #[AllowDynamicProperties]
 class deadline_extension extends table_base {
     /**
+     * Cache area where objects by ID are stored.
+     * @var string
+     */
+    const CACHE_AREA_IDS = 'extensionids';
+
+    /**
      * @var coursework
      */
     protected $coursework;
@@ -106,7 +112,7 @@ class deadline_extension extends table_base {
      */
     public function get_coursework() {
         if (!isset($this->coursework)) {
-            $this->coursework = coursework::get_cached_object_from_id($this->courseworkid);
+            $this->coursework = coursework::get_from_id($this->courseworkid);
         }
 
         return $this->coursework;

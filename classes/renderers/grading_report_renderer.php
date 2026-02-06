@@ -32,6 +32,7 @@ use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
 use mod_coursework\models\personaldeadline;
 use mod_coursework\models\submission;
+use mod_coursework\models\group;
 use mod_coursework\models\user;
 use mod_coursework\render_helpers\grading_report\data\actions_cell_data;
 use mod_coursework\render_helpers\grading_report\data\marking_cell_data;
@@ -210,8 +211,9 @@ class grading_report_renderer extends plugin_renderer_base {
      */
     public static function export_one_row_data(coursework $coursework, int $allocatableid, string $allocatabletype): ?object {
         global $USER;
-        $classname = "\\mod_coursework\\models\\$allocatabletype";
-        $allocatable = $classname::get_cached_object_from_id($allocatableid);
+        $allocatable = $allocatabletype == 'user'
+            ? user::get_from_id($allocatableid)
+            : group::get_from_id($allocatableid);
         if (!$allocatable) {
             return null;
         }

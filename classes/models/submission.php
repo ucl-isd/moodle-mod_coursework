@@ -64,6 +64,12 @@ require_once($CFG->dirroot . '/mod/coursework/lib.php');
 #[AllowDynamicProperties]
 class submission extends table_base implements renderable {
     /**
+     * Cache area where objects by ID are stored.
+     * @var string
+     */
+    const CACHE_AREA_IDS = 'submissionids';
+
+    /**
      * Possible value for mdl_submission.finalised field.
      * Submission has never been finalised, can be finalised by changing to 1.
      */
@@ -749,7 +755,7 @@ class submission extends table_base implements renderable {
      * @return user
      */
     public function get_last_updated_by_user() {
-        return user::get_cached_object_from_id($this->lastupdatedby);
+        return user::get_from_id($this->lastupdatedby);
     }
 
     /**
@@ -976,7 +982,7 @@ class submission extends table_base implements renderable {
          * @var table_base $classname
          */
         $classname = "\\mod_coursework\\models\\" . $this->allocatabletype;
-        return $classname::get_cached_object_from_id($this->allocatableid);
+        return $classname::get_from_id($this->allocatableid);
     }
 
     /**

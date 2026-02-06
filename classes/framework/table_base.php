@@ -39,6 +39,12 @@ use stdClass;
 #[AllowDynamicProperties] // Allow dynamic properties for table_base to avoid interferences elsewhere.
 abstract class table_base {
     /**
+     * @var string|null cache area for objects by ID.
+     * Child classes are expected to override this if they implement caching.
+     */
+    const CACHE_AREA_IDS = null;
+
+    /**
      * @var string
      */
     protected static $tablename;
@@ -80,14 +86,9 @@ abstract class table_base {
             return false;
         }
 
-        $klass = get_called_class();
-
         if (is_numeric($dbrecord) && $dbrecord > 0) {
-            $data = $DB->get_record(self::get_table_name(), ['id' => $dbrecord]);
-            if (!$data) {
-                return false;
-            }
-            return new $klass($data);
+            debugging("Deprecated use get_from_id() instead", DEBUG_DEVELOPER);
+            return self::get_from_id($dbrecord);
         }
 
         $recordid = self::get_id_from_record($dbrecord);
@@ -123,6 +124,7 @@ abstract class table_base {
                 return false;
             }
         }
+        $klass = get_called_class();
         return new $klass($dbrecord);
     }
 
@@ -334,6 +336,10 @@ abstract class table_base {
         // Update if there's an id, otherwise make a new one. Check first for an id?
         if ($this->persisted()) {
             $DB->update_record(static::get_table_name(), $savedata);
+            if (static::CACHE_AREA_IDS) {
+                $cache = cache::make('mod_coursework', static::CACHE_AREA_IDS);
+                $cache->delete($this->id());
+            }
         } else {
             $this->id = $DB->insert_record(static::get_table_name(), $savedata);
         }
@@ -522,7 +528,10 @@ abstract class table_base {
         $this->before_destroy();
 
         $DB->delete_records(static::get_table_name(), ['id' => $this->id]);
-
+        if (static::CACHE_AREA_IDS) {
+            $cache = cache::make('mod_coursework', static::CACHE_AREA_IDS);
+            $cache->delete($this->id());
+        }
         $this->after_destroy();
     }
 
@@ -778,5 +787,36 @@ abstract class table_base {
         static::validate_cache_key($cachekeyone);
         $cachekeytwo = implode('-', array_values($params));
         return static::$pool[$courseworkid][$cachekeyone][$cachekeytwo][0] ?? null;
+    }
+
+    /**
+     * Get child object from its ID, using cache if possible.
+     * @param int $id
+     * @return $this
+     */
+    public static function get_from_id(int $id, int $strictness = IGNORE_MISSING) {
+        if (static::CACHE_AREA_IDS) {
+            // Child class has a cache for these.
+            $cache = cache::make('mod_coursework', static::CACHE_AREA_IDS);
+            $cachedrecord = $cache->get($id);
+            if ($cachedrecord === false) {
+                $cachedrecord = self::get_db_record_from_id($id, $strictness);
+                $cache->set($id, $cachedrecord);
+            }
+            return new static($cachedrecord);
+        } else {
+            // Child class does not have a cache for these.  Get from DB.
+            return new static(self::get_db_record_from_id($id, $strictness));
+        }
+    }
+
+    /**
+     * Get child object from its ID, from the database.
+     * @param int $id
+     * @return \stdClass|null
+     */
+    private static function get_db_record_from_id(int $id, int $strictness): ?object {
+        global $DB;
+        return $DB->get_record(static::$tablename, ['id' => $id], '*', $strictness) ?? null;
     }
 }
