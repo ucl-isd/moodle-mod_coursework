@@ -61,7 +61,7 @@ class assessorallocation extends external_api {
             'assessorid' => $assessorid,
         ]);
 
-        $coursework = coursework::get_cached_object_from_id($params['courseworkid']);
+        $coursework = coursework::get_from_id($params['courseworkid']);
 
         $assessor = core_user::get_user($params['assessorid']);
 

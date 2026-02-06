@@ -16,7 +16,16 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use mod_coursework\models\allocation;
 use mod_coursework\models\assessment_set_membership;
+use mod_coursework\models\coursework;
+use mod_coursework\models\deadline_extension;
+use mod_coursework\models\feedback;
+use mod_coursework\models\group;
+use mod_coursework\models\personaldeadline;
+use mod_coursework\models\plagiarism_flag;
+use mod_coursework\models\submission;
+use mod_coursework\models\user;
 
 /**
  * @package    mod_coursework
@@ -32,5 +41,55 @@ $definitions = [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
+    ],
+    allocation::CACHE_AREA_IDS => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => false,
+    ],
+    assessment_set_membership::CACHE_AREA_IDS => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => false,
+    ],
+    coursework::CACHE_AREA_IDS => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => false,
+    ],
+    deadline_extension::CACHE_AREA_IDS => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => false,
+    ],
+    feedback::CACHE_AREA_IDS => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => false,
+    ],
+    group::CACHE_AREA_IDS => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => false,
+    ],
+    personaldeadline::CACHE_AREA_IDS => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => false,
+    ],
+    plagiarism_flag::CACHE_AREA_IDS => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => false,
+    ],
+    submission::CACHE_AREA_IDS => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => false,
+    ],
+    user::CACHE_AREA_IDS => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => false,
     ],
 ];
