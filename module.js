@@ -273,6 +273,52 @@ M.mod_coursework = {
 
 
         });
+    },
+
+    /**
+     * Override core M.gradingform_rubric.levelclick as it does not allow clicks directly in radio buttons.
+     * Used on actions/feedback/edit.php and actions/feedback/new.php.
+     * See core grade/grading/form/rubric/js/rubric.js.
+     */
+    init_rubric_grading_workaround: function () {
+
+        const originalInitFunc = M.gradingform_rubric.init;
+        M.gradingform_rubric.init = function(Y, options) {
+            originalInitFunc(Y, options);
+            // Now reverse the inline 'display: none;' applied by core JS in previous line.
+            Y.all('#fitem_id_advancedgrading #rubric-advancedgrading .level-wrapper div.radio').each( div => {
+                div.setStyle('display', '')
+            });
+        }
+
+        /**
+         * The original levelclick function has funny stuff going on to cover the fact that the radio button is hidden.
+         * Our version is simpler because the radio button is visible and clickable.
+         * @param e
+         * @param Y
+         * @param name
+         */
+        M.gradingform_rubric.levelclick = function(e, Y, name) {
+            var el = e.target
+
+            // Get the parent "level" node for whatever element is clicked.
+            while (el && !el.hasClass('level')) {
+                el = el.get('parentNode')
+            }
+
+            if (!el) return
+            el.siblings().removeClass('checked');
+            el.addClass('checked')
+
+            // Set aria-checked attribute for siblings to false.
+            el.siblings().setAttribute('aria-checked', 'false');
+            el.setAttribute('aria-checked', 'true');
+
+            // If the radio button itself was not clicked (but the surrounding div), check the radio button.
+            let chb = el.one('input[type=radio]')
+            if (!chb.get('checked')) {
+                chb.set('checked', true)
+            }
+        };
     }
 };
-

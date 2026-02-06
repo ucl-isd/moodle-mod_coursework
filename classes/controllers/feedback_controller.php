@@ -105,6 +105,19 @@ class feedback_controller extends controller_base {
         $teacherfeedback->courseworkid = $this->params['courseworkid'];
 
         $coursework = $teacherfeedback->get_coursework();
+        if ($coursework->is_using_advanced_grading() && $coursework->is_using_rubric()) {
+            $PAGE->requires->js_init_call(
+                'M.mod_coursework.init_rubric_grading_workaround',
+                [],
+                false,
+                [
+                    'name' => 'mod_coursework',
+                    'fullpath' => '/mod/coursework/module.js',
+                    'requires' => ['gradingform_rubric'],
+                    'strings' => [],
+                ]
+            );
+        }
 
         if (
             feedback::exists([
@@ -176,6 +189,21 @@ class feedback_controller extends controller_base {
 
         $urlparams = ['feedbackid' => $this->params['feedbackid']];
         $PAGE->set_url('/mod/coursework/actions/feedbacks/edit.php', $urlparams);
+
+        $coursework = $teacherfeedback->get_coursework();
+        if ($coursework->is_using_advanced_grading() && $coursework->is_using_rubric()) {
+            $PAGE->requires->js_init_call(
+                'M.mod_coursework.init_rubric_grading_workaround',
+                [],
+                false,
+                [
+                    'name' => 'mod_coursework',
+                    'fullpath' => '/mod/coursework/module.js',
+                    'requires' => ['gradingform_rubric'],
+                    'strings' => [],
+                ]
+            );
+        }
 
         $teacherfeedback->grade = is_numeric($teacherfeedback->grade)
             ? format_float($teacherfeedback->grade, $this->coursework->get_grade_item()->get_decimals())
