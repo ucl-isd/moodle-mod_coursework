@@ -16,6 +16,17 @@ Coursework.
         max-width: 100vw;
     }
 
+    /* Don't display drawers on marking pages. */
+    .drawer-toggles,
+    .drawer {
+        display: none !important;
+    }
+    #page.drawers.show-drawer-left,
+    #page.drawers.show-drawer-right {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
     /* PDF viewer. */
     #pdf-container {
         max-width: 850px !important;
