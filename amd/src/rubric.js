@@ -7,6 +7,7 @@
  */
 
 import {getString} from 'core/str';
+import log from 'core/log';
 
 /**
  * Initialize the rubric feedback labels.
@@ -49,6 +50,6 @@ export const init = async() => {
             }
         });
     } catch (error) {
-        // console.error("Rubric Labels: Could not load string.", error);
+        log.info("Catch from rubric.js: ", error);
     }
 };

@@ -119,7 +119,7 @@ const initGradingTracker = () => {
 };
 
 /**
- * init.
+ * Init.
  */
 export const init = () => {
     const run = () => {

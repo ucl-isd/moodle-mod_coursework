@@ -353,7 +353,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         gradingform_controller $gradingcontroller,
         stdClass $gradingdefinition,
         bool $isguide
-        ): string {
+    ): string {
         $criteria = $isguide ? $gradingdefinition->guide_criteria : $gradingdefinition->rubric_criteria;
 
         $markersdata = [];
