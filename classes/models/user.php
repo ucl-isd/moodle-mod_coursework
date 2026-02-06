@@ -49,13 +49,13 @@ use stdClass;
  */
 #[AllowDynamicProperties]
 class user extends table_base implements allocatable, moderatable {
+    use allocatable_functions;
+
     /**
      * Cache area where objects by ID are stored.
      * @var string
      */
     const CACHE_AREA_IDS = 'userids';
-
-    use allocatable_functions;
 
     /**
      * @var string
