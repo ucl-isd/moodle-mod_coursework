@@ -109,7 +109,7 @@ class mod_coursework_generator extends testing_module_generator {
         }
 
         $instance = parent::create_instance($record, $options);
-        return coursework::find($instance);
+        return coursework::get_from_id($instance->id);
     }
 
     /**

@@ -82,7 +82,7 @@ final class generator_test extends \advanced_testcase {
         $this->assertEquals($course->id, $cm->course);
 
         $context = \context_module::instance($cm->id);
-        $this->assertEquals(coursework::find($coursework)->get_coursemodule_id(), $context->instanceid);
+        $this->assertEquals(coursework::get_from_id($coursework->id)->get_coursemodule_id(), $context->instanceid);
 
         // Test gradebook integration using low level DB access - DO NOT USE IN PLUGIN CODE!
         $gitem = $DB->get_record(
@@ -185,7 +185,7 @@ final class generator_test extends \advanced_testcase {
         $data->userid = $user->id;
 
         // Should fail because we have no assessorid and we have no logged ourselves in.
-        $submission = $generator->create_submission($data, coursework::find($coursework));
+        $submission = $generator->create_submission($data, coursework::get_from_id($coursework->id));
         $submission = $DB->get_record('coursework_submissions', ['id' => $submission->id]);
 
         $this->assertNotEmpty($submission);

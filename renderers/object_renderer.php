@@ -1056,7 +1056,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $coursework = $personaldeadlinerow->get_coursework();
 
         $personaldeadline =
-            personaldeadline::get_personaldeadline_for_student(user::find($personaldeadlinerow->get_allocatable()->id()), $coursework);
+            personaldeadline::get_personaldeadline_for_student(user::get_from_id($personaldeadlinerow->get_allocatable()->id()), $coursework);
 
         if (!$personaldeadline) {
             $personaldeadline = personaldeadline::build(

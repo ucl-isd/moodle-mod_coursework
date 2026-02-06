@@ -526,7 +526,7 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                     ['id' => $itemid]
                 );
 
-                $submission = submission::find($entry->id);
+                $submission = submission::get_from_id($entry->id);
                 $submission->rename_files(); // use cw function to handle file renaming as submission may have few files
             }
         }

@@ -67,7 +67,7 @@ class clearannotations extends external_api {
             ]
         );
 
-        $submission = submission::find($params['submissionid']);
+        $submission = submission::get_from_id($params['submissionid']);
         if (!$submission) {
             return [
                 'success' => false,

@@ -88,7 +88,7 @@ class cron {
             /**
              * @var coursework $coursework
              */
-            $coursework = coursework::find($rawcoursework);
+            $coursework = coursework::get_from_id($rawcoursework->id);
             if (!$coursework || !$coursework->is_coursework_visible()) {// check if coursework exists and is not hidden
                 continue;
             }
@@ -209,7 +209,7 @@ class cron {
         $usercounter = [];
 
         foreach ($users as $user) {
-            $courseworkinstance = coursework::find($user->courseworkid);
+            $courseworkinstance = coursework::get_from_id($user->courseworkid);
 
             $mailer = new mailer($courseworkinstance);
 

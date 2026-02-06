@@ -35,7 +35,7 @@ $cmid = required_param('cmid', PARAM_INT);
 $submissionid = required_param('submissionid', PARAM_INT);
 
 $cm = $DB->get_record('course_modules', ['id' => $cmid]);
-$coursework = coursework::find($cm->instance);
+$coursework = coursework::get_from_id($cm->instance);
 $course = $DB->get_record('course', ['id' => $cm->course]);
 $submissiondb = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
 $submission = submission::find($submissiondb);

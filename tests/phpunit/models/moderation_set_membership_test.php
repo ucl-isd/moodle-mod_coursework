@@ -41,6 +41,6 @@ final class moderation_set_membership_test extends \advanced_testcase {
         $record->courseworkid = 44;
         $membership = assessment_set_membership::create($record);
 
-        $this->assertEquals(22, \mod_coursework\models\assessment_set_membership::find($membership->id())->allocatableid);
+        $this->assertEquals(22, \mod_coursework\models\assessment_set_membership::get_from_id($membership->id())->allocatableid);
     }
 }

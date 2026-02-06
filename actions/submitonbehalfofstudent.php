@@ -33,10 +33,10 @@ global $CFG, $DB, $PAGE, $OUTPUT;
 
 $coursemoduleid = required_param('cmid', PARAM_INT);
 $coursemodule = $DB->get_record('course_modules', ['id' => $coursemoduleid]);
-$coursework = coursework::find($coursemodule->instance);
+$coursework = coursework::get_from_id($coursemodule->instance);
 $course = $DB->get_record('course', ['id' => $coursemodule->course]);
 $studentid = optional_param('userid', 0, PARAM_INT);
-$student = user::find($studentid);
+$student = user::get_from_id($studentid);
 
 // Get an empty submission for the form even if we know there won't be one.
 $submission = $coursework->get_user_submission($student);

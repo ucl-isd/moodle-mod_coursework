@@ -48,11 +48,11 @@ class dates extends activity_dates {
     protected function get_dates(): array {
         global $USER;
 
-        $instance = coursework::find($this->cm->instance);
+        $instance = coursework::get_from_id((int)$this->cm->instance);
         $timeopen = $instance->startdate ?? null;
         $timedue = $instance->get_user_deadline($USER->id) ?? null;
 
-        $user = user::find($USER->id);
+        $user = user::get_from_id((int)$USER->id);
         $deadlineextension = $user
             ? deadline_extension::get_extension_for_student($user, $instance) : null;
         if ($deadlineextension && ($deadlineextension->extended_deadline ?? null)) {

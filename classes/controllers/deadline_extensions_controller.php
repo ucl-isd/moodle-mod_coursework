@@ -95,11 +95,11 @@ class deadline_extensions_controller extends controller_base {
 
         $createurl = $this->get_router()->get_path('create deadline extension');
         $courseworkid = required_param('courseworkid', PARAM_INT);
-        $this->coursework = coursework::find($courseworkid) ?? null;
+        $this->coursework = coursework::get_from_id($courseworkid) ?? null;
         $allocatabletype = required_param('allocatabletype', PARAM_TEXT);
         $allocatableid = required_param('allocatableid', PARAM_INT);
         $classname = "\\mod_coursework\\models\\$allocatabletype";
-        $allocatable = $classname::find($allocatableid);
+        $allocatable = $classname::get_from_id($allocatableid);
         $this->form = new deadline_extension_form(
             $createurl,
             [
@@ -194,7 +194,7 @@ class deadline_extensions_controller extends controller_base {
         global $USER;
         $extensionid = $this->params['extensionid'];
         $ability = new ability($USER->id, $this->coursework);
-        $deadlineextension = deadline_extension::find(['id' => $extensionid]);
+        $deadlineextension = deadline_extension::get_from_id($extensionid);
         if ($deadlineextension && $deadlineextension->can_be_deleted()) {
             $ability->require_can('edit', $deadlineextension);
             $deadlineextension->delete();
@@ -232,7 +232,7 @@ class deadline_extensions_controller extends controller_base {
         }
         $ability = new ability($USER->id, $this->coursework);
         $values = $this->form->get_data();
-        $this->deadlineextension = deadline_extension::find(['id' => $this->params['id']]);
+        $this->deadlineextension = deadline_extension::get_from_id($this->params['id']);
 
         $ability->require_can('update', $this->deadlineextension);
 

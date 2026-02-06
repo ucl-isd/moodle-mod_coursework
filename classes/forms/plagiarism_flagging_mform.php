@@ -158,7 +158,7 @@ class plagiarism_flagging_mform extends dynamic_form {
             if (!$submissionid) {
                 $submissionid = $this->get_flag()->get_submission()->id();
             }
-            $this->submission = submission::find($submissionid);
+            $this->submission = submission::get_from_id($submissionid);
         }
         return $this->submission;
     }
@@ -175,7 +175,7 @@ class plagiarism_flagging_mform extends dynamic_form {
             $flagid = ($this->_customdata['plagiarismflagid'] ?? null) ?? ($this->_ajaxformdata['plagiarismflagid'] ?? null);
             if ($flagid) {
                 // Maybe no flag exists yet, but set it if it does.
-                $this->plagiarismflag = plagiarism_flag::find($flagid);
+                $this->plagiarismflag = plagiarism_flag::get_from_id($flagid);
             }
         }
         return $this->plagiarismflag;

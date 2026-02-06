@@ -225,20 +225,9 @@ if ($coursemoduleid) {
         MUST_EXIST
     );
     $course = $DB->get_record('course', ['id' => $coursemodule->course], '*', MUST_EXIST);
-    $courseworkrecord = $DB->get_record(
-        'coursework',
-        ['id' => $coursemodule->instance],
-        '*',
-        MUST_EXIST
-    );
+    $courseworkid = $coursemodule->instance;
 } else {
     if ($courseworkid) {
-        $courseworkrecord = $DB->get_record(
-            'coursework',
-            ['id' => $courseworkid],
-            '*',
-            MUST_EXIST
-        );
         $course = $DB->get_record(
             'course',
             ['id' => $courseworkrecord->course],
@@ -247,7 +236,7 @@ if ($coursemoduleid) {
         );
         $coursemodule = get_coursemodule_from_instance(
             'coursework',
-            $courseworkrecord->id,
+            $courseworkid,
             $course->id,
             false,
             MUST_EXIST
@@ -260,7 +249,7 @@ if ($coursemoduleid) {
 // This will set $PAGE->context to the coursemodule's context.
 require_login($course, true, $coursemodule);
 
-$coursework = mod_coursework\models\coursework::find($courseworkrecord);
+$coursework = mod_coursework\models\coursework::get_from_id($courseworkid);
 
 // Check if group is in session and use it no group available in url
 if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $group == -1) {
@@ -399,7 +388,7 @@ if ($canviewstudents) {
         /**
          * @var submission $submission
          */
-        $submission = submission::find($submissionid);
+        $submission = submission::get_from_id($submissionid);
 
         $params = [
             'cm' => $coursemodule->id,

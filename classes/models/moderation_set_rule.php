@@ -200,7 +200,7 @@ abstract class moderation_set_rule extends table_base implements renderable {
      */
     protected function get_coursework() {
         if (!isset($this->coursework)) {
-            $this->coursework = coursework::find($this->courseworkid);
+            $this->coursework = coursework::get_from_id($this->courseworkid);
         }
         return $this->coursework;
     }

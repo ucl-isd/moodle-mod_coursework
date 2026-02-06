@@ -33,8 +33,7 @@ $cm = get_coursemodule_from_id('coursework', $cmid, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', ['id' => $cm->course]);
 require_login($course, false, $cm);
 
-$courseworkrecord = $DB->get_record('coursework', ['id' => $cm->instance], '*', MUST_EXIST);
-$coursework = coursework::find($courseworkrecord, false);
+$coursework = coursework::get_from_id($cm->instance, MUST_EXIST);
 
 if (!has_capability('mod/coursework:addinitialgrade', $PAGE->context)) {
     throw new moodle_exception('access_denied', 'coursework');

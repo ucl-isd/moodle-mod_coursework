@@ -161,7 +161,7 @@ abstract class ability {
      */
     protected function get_user() {
         if ($this->user === null) {
-            $this->user = user::find($this->userid);
+            $this->user = user::get_from_id($this->userid);
         }
         return $this->user;
     }

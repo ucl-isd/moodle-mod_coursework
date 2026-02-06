@@ -47,13 +47,13 @@ $submissionid = required_param('submissionid', PARAM_INT);
 $fileid = required_param('fileid', PARAM_INT);
 $filename = required_param('filename', PARAM_TEXT);
 
-$submission = submission::find($submissionid);
+$submission = submission::get_from_id($submissionid);
 
 if (!$submission) {
     return false;
 }
 
-$coursework = coursework::find($submission->courseworkid);
+$coursework = coursework::get_from_id($submission->courseworkid);
 
 if (empty($this->coursework->enablepdfjs())) {
     throw new Exception('coursework enablepdfjs not enabled');

@@ -203,7 +203,7 @@ abstract class base {
         // get the allocations count value that's lowest (may represent multiple teachers), then get the first array
         // key (teacher id) that has that number of allocations.
         $smallestcount = min($teachercounts);
-        return user::find(array_search($smallestcount, $teachercounts));
+        return user::get_from_id(array_search($smallestcount, $teachercounts));
     }
 
     /**

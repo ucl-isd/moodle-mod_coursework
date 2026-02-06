@@ -36,7 +36,7 @@ if (!$cm) {
     redirect($returnurl, get_string('course_module_not_found', 'mod_coursework'));
 }
 
-$coursework = coursework::find($cm->instance);
+$coursework = coursework::get_from_id($cm->instance);
 if (!$coursework) {
     redirect($returnurl, get_string('coursework_not_found', 'mod_coursework'));
 }

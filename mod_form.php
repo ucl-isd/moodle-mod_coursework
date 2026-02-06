@@ -233,7 +233,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         $courseworkid = $this->get_courseworkid();
         if ($courseworkid) {
-            $coursework = mod_coursework\models\coursework::find($courseworkid);
+            $coursework = mod_coursework\models\coursework::get_from_id($courseworkid);
             if ($coursework->has_samples() && isset($data['samplingenabled']) && $data['samplingenabled'] == 0) {
                 $errors['samplingenabled'] = get_string('sampling_cant_be_disabled', 'mod_coursework');
             }
@@ -245,7 +245,7 @@ class mod_coursework_mod_form extends moodleform_mod {
 
         // Validate candidate number setting changes.
         if (!empty($this->_customdata['courseworkid'])) {
-            $coursework = coursework::find($this->_customdata['courseworkid']);
+            $coursework = coursework::get_from_id($this->_customdata['courseworkid']);
 
             if ($coursework && !$coursework->can_change_candidate_number_setting()) {
                 $currentvalue = $coursework->usecandidate ?? 0;
@@ -376,7 +376,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $optional = true;
         $courseworkid = $this->get_courseworkid();
         if ($courseworkid) {
-            $coursework = mod_coursework\models\coursework::find($courseworkid);
+            $coursework = mod_coursework\models\coursework::get_from_id($courseworkid);
             if ($coursework->extension_exists()) {
                 // An extension already exists for this coursework.
                 // So no longer possible to uncheck the box for coursework deadline - a deadline must apply.
@@ -1029,7 +1029,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $submissionexists = 0;
         // disable the setting if at least one submission exists
         $courseworkid = $this->get_courseworkid();
-        if ($courseworkid && mod_coursework\models\coursework::find($courseworkid)->has_any_submission()) {
+        if ($courseworkid && mod_coursework\models\coursework::get_from_id($courseworkid)->has_any_submission()) {
             $submissionexists = 1;
         }
 
@@ -1181,7 +1181,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $feedbackexists = 0;
         // disable the setting if at least one feedback exists
         $courseworkid = $this->get_courseworkid();
-        if ($courseworkid && mod_coursework\models\coursework::find($courseworkid)->has_any_final_feedback()) {
+        if ($courseworkid && mod_coursework\models\coursework::get_from_id($courseworkid)->has_any_final_feedback()) {
             $feedbackexists = 1;
         }
 
@@ -1249,7 +1249,7 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->addHelpButton('samplingenabled', 'samplingenabled', 'mod_coursework');
 
         $courseworkid = $this->get_courseworkid();
-        if (!$courseworkid ||  ($courseworkid && !mod_coursework\models\coursework::find($courseworkid)->has_samples())) {
+        if (!$courseworkid ||  ($courseworkid && !mod_coursework\models\coursework::get_from_id($courseworkid)->has_samples())) {
             $moodleform->hideif('samplingenabled', 'numberofmarkers', 'eq', 1);
         }
     }
@@ -1397,7 +1397,7 @@ class mod_coursework_mod_form extends moodleform_mod {
      */
     protected function add_candidate_number_setting(): void {
         $moodleform =& $this->_form;
-        $coursework = $this->get_courseworkid() ? coursework::find($this->get_courseworkid()) : null;
+        $coursework = $this->get_courseworkid() ? coursework::get_from_id($this->get_courseworkid()) : null;
 
         // If new coursework, or can change setting, show as editable.
         if (!$coursework || $coursework->can_change_candidate_number_setting()) {

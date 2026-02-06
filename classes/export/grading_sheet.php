@@ -167,7 +167,7 @@ class grading_sheet extends csv {
         $csvdata = [];
         // groups
         if ($this->coursework->is_configured_to_have_group_submissions()) {
-            $group = group::find($submission->allocatableid);
+            $group = group::get_from_id($submission->allocatableid);
             $csvdata[] = $this->add_cells_to_array($submission, $group, $this->csvcells);
         } else {
             // students
