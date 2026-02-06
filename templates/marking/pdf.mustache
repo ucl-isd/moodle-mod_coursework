@@ -20,20 +20,6 @@
     Example context (json):
     {
         "pdfurl": "https://moodle.example.com/pluginfile.php/123/mod_coursework/submission/1/submission.pdf",
-        "submission": {
-            "submissiondata": {
-                "files": [
-                    {
-                        "url": "https://moodle.example.com/pluginfile.php/123/mod_coursework/submission/1/submission.pdf",
-                        "datemodified": 1641031200,
-                        "filename": "submission.pdf",
-                        "finalised": true,
-                        "flaggedplagiarism": false
-                    }
-                ]
-            },
-            "submittedlate": true
-        }
     }
 }}
 
@@ -46,50 +32,40 @@
     <div id="pdf-viewer" class="container border m-0 p-0"></div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+<script type="module">
+    // Import pdf.js library.
+    import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.4.149/pdf.min.mjs';
 
-<script>
-// Setting the Worker Source (required for PDF.js to function)
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+    // Import pdf.js worker.
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.4.149/pdf.worker.min.mjs";
 
-const pdfurl = "{{{pdfurl}}}";
-const scalefactor = 1;
-const viewercontainer = document.getElementById("pdf-viewer");
+    const pdfurl = "{{{pdfurl}}}";
+    const scalefactor = 1;
+    const viewercontainer = document.getElementById("pdf-viewer");
 
-// Render pdf onto canvas element.
-function renderpage(pdf, pagenum, canvas) {
-  pdf.getPage(pagenum).then(function (page) {
-    const viewport = page.getViewport({ scale: scalefactor });
-    const context = canvas.getContext("2d");
+    const renderpage = (pdf, pagenum, canvas) => {
+        pdf.getPage(pagenum).then((page) => {
+            const viewport = page.getViewport({ scale: scalefactor });
+            const context = canvas.getContext("2d");
 
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
 
-    const rendercontext = {
-      canvasContext: context,
-      viewport: viewport
+            const rendercontext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+            page.render(rendercontext);
+        });
     };
-    page.render(rendercontext);
-  });
-}
 
-// Asynchronously download PDF and render all pages.
-pdfjsLib
-  .getDocument(pdfurl)
-  .promise.then(function (pdfdoc) {
-    // Loop through all pages.
-    for (let pagenum = 1; pagenum <= pdfdoc.numPages; pagenum++) {
-      const canvas = document.createElement("canvas");
-
-      // Append the canvas to the viewer container.
-      viewercontainer.appendChild(canvas);
-
-      // Render the specific page onto the new canvas.
-      renderpage(pdfdoc, pagenum, canvas);
-    }
-  })
-  .catch(function (error) {
-    console.error("Error loading PDF:", error);
-  });
+    pdfjsLib.getDocument(pdfurl).promise.then((pdfdoc) => {
+        for (let pagenum = 1; pagenum <= pdfdoc.numPages; pagenum++) {
+            const canvas = document.createElement("canvas");
+            viewercontainer.appendChild(canvas);
+            renderpage(pdfdoc, pagenum, canvas);
+        }
+    }).catch((error) => {
+        console.error("Error loading PDF:", error);
+    });
 </script>

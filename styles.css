@@ -24,8 +24,9 @@ Coursework.
             margin-top: 1rem !important;
             text-align: center;
         }
-        .pdf-page-canvas {
-            max-width: 100% !important;
+        canvas {
+            display: block;
+            width: 100%;;
         }
 
         /* Submission metadata. */
