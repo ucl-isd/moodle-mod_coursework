@@ -526,7 +526,6 @@ abstract class table_base {
 
         $this->before_destroy();
 
-        static::clear_cache($this->id);
         $DB->delete_records(static::get_table_name(), ['id' => $this->id]);
         $this->after_destroy();
     }
@@ -535,6 +534,13 @@ abstract class table_base {
      * Hook method to allow subclasses to get stuff done like destruction of dependent records.
      */
     protected function before_destroy() {
+    }
+
+    /**
+     * Hook method to allow subclasses to get stuff done like destruction of dependent records.
+     */
+    protected function after_destroy() {
+        self::clear_cache($this->id);
     }
 
     /**
