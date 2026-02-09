@@ -167,4 +167,23 @@ class plagiarism_flag extends table_base {
     protected function after_destroy() {
         self::remove_cache($this->courseworkid);
     }
+
+
+    /**
+     * Remove all plagiarism flags by a submission
+     *
+     * @param int $submissionid
+     */
+    public static function remove_plagiarisms_by_submission(int $submissionid) {
+        global $DB;
+        $ids = $DB->get_fieldset(
+            'id',
+            'coursework_plagiarism_flags',
+            ['submissionid' => $submissionid]
+        );
+        foreach ($ids as $id) {
+            $flag = self::get_from_id($id);
+            $flag->destroy();
+        }
+    }
 }

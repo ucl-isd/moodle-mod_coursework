@@ -24,6 +24,7 @@ namespace mod_coursework;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
 
 /**
@@ -56,9 +57,8 @@ final class submission_test extends \advanced_testcase {
      * Clean up the test fixture by removing the objects.
      */
     public function tearDown(): void {
-        global $DB;
-
-        $DB->delete_records('coursework', ['id' => $this->coursework->id]);
+        $coursework = coursework::get_from_id($this->coursework->id);
+        $coursework->destroy();
         unset($this->coursework);
         parent::tearDown();
     }

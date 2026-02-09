@@ -209,4 +209,19 @@ class moderation extends table_base {
         }
         return null;
     }
+
+
+    /**
+     * Remove all agreements by a feedback
+     *
+     * @param int $feedbackid
+     */
+    public static function remove_agreements_by_feedback(int $feedbackid) {
+        global $DB;
+        $ids = $DB->get_fieldset(self::$tablename, 'id', ['feedbackid' => $feedbackid]);
+        foreach ($ids as $id) {
+            $m = self::get_from_id($id);
+            $m->destroy();
+        }
+    }
 }

@@ -230,4 +230,34 @@ class personaldeadline extends table_base {
         );
         return $record ? new self($record) : null;
     }
+
+
+    /**
+     * Remove all personal deadlines by coursework
+     *
+     */
+    public static function remove_personaldeadlines_by_coursework(int $courseworkid) {
+        $deadlines = self::get_all_for_coursework($courseworkid);
+        foreach ($deadlines as $deadline) {
+            if ($deadline->allocatabletype == 'user') {
+                $d = self::get_from_id($deadline->id);
+                $d->destroy();
+            }
+        }
+        self::remove_cache($courseworkid);
+    }
+
+
+    /**
+     * Remove all personal deadlines by coursework
+     *
+     */
+    public static function remove_personaldeadlines_by_user(int $courseworkid, int $userid) {
+        $deadlines = self::get_for_allocatable($courseworkid, $userid, 'user');
+        foreach ($deadlines as $deadline) {
+            $d = self::get_from_id($deadline->id);
+            $d->destroy();
+        }
+        self::remove_cache($courseworkid);
+    }
 }

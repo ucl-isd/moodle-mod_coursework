@@ -318,4 +318,31 @@ class deadline_extension extends table_base {
         );
         return $record ? new self($record) : null;
     }
+
+    /**
+     * @param int $courseworkid
+     * Remove all deadline extensions by coursework
+     */
+    public static function remove_deadline_extensions_by_coursework(int $courseworkid) {
+        $extensions = self::get_all_for_coursework($courseworkid);
+        foreach ($extensions as $extension) {
+            if ($extension->allocatabletype == 'user') {
+                $e = self::get_from_id($extension->id);
+                $e->destroy();
+            }
+        }
+    }
+
+    /**
+     * Remove all deadline extensions by user
+     * @param int $courseworkid
+     * @param int $userid
+     */
+    public static function remove_deadline_extensions_by_user(int $courseworkid, int $userid) {
+        $extensions = self::get_for_allocatable($courseworkid, $userid, 'user');
+        foreach ($extensions as $extension) {
+            $e = self::get_from_id($extension->id);
+            $e->destroy();
+        }
+    }
 }
