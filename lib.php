@@ -631,7 +631,8 @@ function coursework_update_instance($coursework) {
         // Remove all deadline events for this coursework regardless the type
          calendar::remove_event($coursework);
     }
-
+    // TODO would be better to use a coursework object and do feedback->save() here.
+    coursework::clear_cache($coursework->id);
     return $DB->update_record('coursework', $coursework);
 }
 
@@ -709,14 +710,8 @@ function coursework_delete_instance($id) {
     if (!$coursework = $DB->get_record('coursework', ['id' => $id])) {
         return false;
     }
-
-    // Delete any dependent records here.
-
-    // TODO delete feedbacks.
-    // TODO delete allocations.
-    // TODO delete submissions.
-
-    $DB->delete_records('coursework', ['id' => $coursework->id]);
+    $coursework = coursework::get_from_id($coursework->id);
+    $coursework->destroy();
 
     return true;
 }
@@ -1406,7 +1401,12 @@ function course_group_member_removed($eventdata) {
             }
 
             if (can_delete_allocation($coursework->id(), $allocatableid)) {
-                $DB->delete_records('coursework_allocation_pairs', ['courseworkid' => $coursework->id(), 'allocatableid' => $allocatableid, 'stageidentifier' => 'assessor_1']);
+                $allocations = allocation::get_for_allocatable($coursework->id, $allocatable->id);
+                foreach ($allocations as $allocation) {
+                    if ($allocation->stageidentifier == 'assessor_1') {
+                        $allocation->destroy();
+                    }
+                }
                 allocation::remove_cache($coursework->id);
             }
 
@@ -1580,9 +1580,12 @@ function teacher_removed_allocated_not_graded($eventdata) {
                     continue;
                 }
 
-                $DB->delete_records('coursework_allocation_pairs', ['courseworkid' => $coursework->id,
-                                                                              'assessorid' => $userid,
-                                                                              'allocatableid' => $allocatable->id]);
+                $allocations = allocation::get_for_allocatable($coursework->id, $allocatable->id);
+                foreach ($allocations as $alloc) {
+                    if ($alloc->assessorid == $userid) {
+                        $alloc->destroy();
+                    }
+                }
             }
             allocation::remove_cache($coursework->id);
         }

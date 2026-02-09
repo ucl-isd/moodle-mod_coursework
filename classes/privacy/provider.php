@@ -33,7 +33,12 @@ use core_privacy\local\request\helper;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
-use coursework;
+use mod_coursework\models\coursework;
+use mod_coursework\models\feedback;
+use mod_coursework\models\deadline_extension;
+use mod_coursework\models\moderation;
+use mod_coursework\models\personaldeadline;
+use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
 use stdClass;
 
@@ -280,26 +285,26 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
                 $submissions = $coursework->retrieve_submissions_by_coursework();
                 foreach ($submissions as $submission) {
                     // Remove all plagiarisms of the current submission
-                    $coursework->remove_plagiarisms_by_submission($submission->id);
+                    plagiarism_flag::remove_plagiarisms_by_submission($submission->id);
                     // remove corresponding file of this submission
                     $coursework->remove_corresponding_file($context->id, $submission->id, 'submission');
                     // Retrieve all feedbacks for this current submission
-                    $feedbacks = $coursework->retrieve_feedbacks_by_submission($submission->id);
+                    $feedbacks = feedback::get_all_for_submission($submission->id);
                     foreach ($feedbacks as $feedback) {
                         // Remove all agreements for a feedback
-                        $coursework->remove_agreements_by_feedback($feedback->id);
+                        moderation::remove_agreements_by_feedback($feedback->id);
                         // remove corresponding file of this feedback
                         $coursework->remove_corresponding_file($context->id, $feedback->id, 'feedback');
                     }
                     // Remove all feedbacks for this submission
-                    $coursework->remove_feedbacks_by_submission($submission->id);
+                    feedback::remove_feedbacks_by_submission($submission->id);
                 }
                 // Remove all submissions by this coursework
-                $coursework->remove_submissions_by_coursework();
+                submission::remove_submissions_by_coursework($coursework->id);
                 // Remove all deadline extensions by coursework
-                $coursework->remove_deadline_extensions_by_coursework();
+                deadline_extension::remove_deadline_extensions_by_coursework($coursework->id);
                 // Remove all personal deadlines by coursework
-                $coursework->remove_personaldeadlines_by_coursework();
+                personaldeadline::remove_personaldeadlines_by_coursework($coursework->id);
             }
         }
     }
@@ -315,26 +320,26 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
             $submissions = $coursework->retrieve_submissions_by_user($user->id);
             foreach ($submissions as $submission) {
                 // Remove all plagiarisms of the current submission
-                $coursework->remove_plagiarisms_by_submission($submission->id);
+                plagiarism_flag::remove_plagiarisms_by_submission($submission->id);
                 // remove corresponding file of this submission
                 $coursework->remove_corresponding_file($context->id, $submission->id, 'submission');
                 // Retrieve all feedbacks for this current submission
-                $feedbacks = $coursework->retrieve_feedbacks_by_submission($submission->id);
+                $feedbacks = feedback::get_all_for_submission($submission->id);
                 foreach ($feedbacks as $feedback) {
                     // Remove all agreements for a feedback
-                    $coursework->remove_agreements_by_feedback($feedback->id);
+                    moderation::remove_agreements_by_feedback($feedback->id);
                     // remove corresponding file of this feedback
                     $coursework->remove_corresponding_file($context->id, $feedback->id, 'feedback');
                 }
                 // Remove all feedbacks for this submission
-                $coursework->remove_feedbacks_by_submission($submission->id);
+                feedback::remove_feedbacks_by_submission($submission->id);
             }
             // Remove all submissions submitted by this user
             $coursework->remove_submissions_by_user($user->id);
             // Remove all deadline extensions
-            $coursework->remove_deadline_extensions_by_user($user->id);
+            deadline_extension::remove_deadline_extensions_by_user($coursework->id, $user->id);
             // Remove all personal deadlines
-            $coursework->remove_personaldeadlines_by_user($user->id);
+            personaldeadline::remove_personaldeadlines_by_user($user->id);
         }
     }
     public static function delete_data_for_users(approved_userlist $userlist) {
@@ -350,26 +355,26 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
             $submissions = $coursework->retrieve_submissions_by_user($userid);
             foreach ($submissions as $submission) {
                 // Remove all plagiarisms of the current submission
-                $coursework->remove_plagiarisms_by_submission($submission->id);
+                plagiarism_flag::remove_plagiarisms_by_submission($submission->id);
                 // remove corresponding file of this submission
                 $coursework->remove_corresponding_file($context->id, $submission->id, 'submission');
                 // Retrieve all feedbacks for this current submission
-                $feedbacks = $coursework->retrieve_feedbacks_by_submission($submission->id);
+                $feedbacks = feedback::get_all_for_submission($submission->id);
                 foreach ($feedbacks as $feedback) {
                     // Remove all agreements for a feedback
-                    $coursework->remove_agreements_by_feedback($feedback->id);
+                    moderation::remove_agreements_by_feedback($feedback->id);
                     // remove corresponding file of this feedback
                     $coursework->remove_corresponding_file($context->id, $feedback->id, 'feedback');
                 }
                 // Remove all feedbacks for this submission
-                $coursework->remove_feedbacks_by_submission($submission->id);
+                feedback::remove_feedbacks_by_submission($submission->id);
             }
             // Remove all submissions submitted by this user
             $coursework->remove_submissions_by_user($userid);
             // Remove all deadline extensions
-            $coursework->remove_deadline_extensions_by_user($userid);
+            deadline_extension::remove_deadline_extensions_by_user($coursework->id, $userid);
             // Remove all personal deadlines
-            $coursework->remove_personaldeadlines_by_user($userid);
+            personaldeadline::remove_personaldeadlines_by_user($coursework->id, $userid);
         }
     }
     protected static function get_coursework_instance(context $context) {

@@ -338,7 +338,7 @@ abstract class table_base {
         // Update if there's an id, otherwise make a new one. Check first for an id?
         if ($this->persisted()) {
             $DB->update_record(static::get_table_name(), $savedata);
-            $this->clear_cache();
+            static::clear_cache($this->id);
         } else {
             $this->id = $DB->insert_record(static::get_table_name(), $savedata);
         }
@@ -526,7 +526,7 @@ abstract class table_base {
 
         $this->before_destroy();
 
-        $this->clear_cache();
+        static::clear_cache($this->id);
         $DB->delete_records(static::get_table_name(), ['id' => $this->id]);
         $this->after_destroy();
     }
@@ -816,7 +816,7 @@ abstract class table_base {
      */
     private static function get_db_record_from_id(int $id, int $strictness): ?object {
         global $DB;
-        return $DB->get_record(static::$tablename, ['id' => $id], '*', $strictness) ?? null;
+        return $DB->get_record(static::$tablename, ['id' => $id], '*', $strictness) ?: null;
     }
 
     /**
@@ -825,10 +825,10 @@ abstract class table_base {
      * @return void
      * @throws coding_exception
      */
-    protected function clear_cache() {
+    public static function clear_cache(int $id) {
         if (static::CACHE_AREA_IDS) {
             $cache = cache::make('mod_coursework', static::CACHE_AREA_IDS);
-            $cache->delete($this->id());
+            $cache->delete($id);
         }
     }
 }

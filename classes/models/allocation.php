@@ -218,6 +218,10 @@ class allocation extends table_base {
      */
     public static function destroy_all(int $courseworkid) {
         global $DB;
+        $ids = $DB->get_fieldset(static::$tablename, 'id', ['courseworkid' => $courseworkid]);
+        foreach ($ids as $id) {
+            self::clear_cache($id);
+        }
         $DB->delete_records(static::$tablename, ['courseworkid' => $courseworkid]);
         self::remove_cache($courseworkid);
     }
@@ -245,5 +249,28 @@ class allocation extends table_base {
                 'assessorid' => $assessorid ?? $USER->id,
             ]
         );
+    }
+
+    /**
+     * Get allocations for an assessor/alloctable pair.
+     * @param int $courseworkid
+     * @param int $allocatableid
+     * @return allocation[]
+     * @throws \core\exception\invalid_parameter_exception
+     * @throws \dml_exception
+     * @throws coding_exception
+     */
+    public static function get_for_allocatable(int $courseworkid, int $allocatableid): array {
+        global $DB;
+        $allocationids = $DB->get_fieldset(
+            'coursework_allocation_pairs',
+            'id',
+            ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid]
+        );
+        $result = [];
+        foreach ($allocationids as $allocationid) {
+            $result[] = self::get_from_id($allocationid);
+        }
+        return $result;
     }
 }

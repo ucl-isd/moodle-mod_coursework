@@ -24,6 +24,7 @@ namespace mod_coursework\forms;
 
 use moodleform;
 use stdClass;
+use mod_coursework\models\coursework;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -65,7 +66,8 @@ class general_feedback_form extends moodleform {
         $coursework->feedbackcommentformat = 1;
         $coursework->generalfeedbacktimepublished = time();
         $coursework->id = $feedback->id;
-
+        // TODO would be better to use a coursework object and do coursework->save() here.
+        coursework::clear_cache($coursework->id);
         $DB->update_record('coursework', $coursework);
     }
 }

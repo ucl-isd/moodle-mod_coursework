@@ -673,4 +673,38 @@ class feedback extends table_base {
             $this->submissionid = $submission->id;
         }
     }
+
+    /**
+     * Get all feedbacks for a submission.
+     * @param int $submissionid
+     * @return feedback[]
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
+     */
+    public static function get_all_for_submission(int $submissionid): array {
+        global $DB;
+        $feedbackids = $DB->get_fieldset(
+            'coursework_feedbacks',
+            'id',
+            ['submissionid' => $submissionid],
+        );
+        $result = [];
+        foreach ($feedbackids as $feedbackid) {
+            $result[$feedbackid] = self::get_from_id($feedbackid);
+        }
+        return $result;
+    }
+
+    /**
+     * Remove all feedbacks by a submission
+     *
+     * @param int $submissionid
+     * @throws dml_exception
+     */
+    public static function remove_feedbacks_by_submission(int $submissionid) {
+        $feedbacks = self::get_all_for_submission($submissionid);
+        foreach ($feedbacks as $feedback) {
+            $feedback->destroy();
+        }
+    }
 }
