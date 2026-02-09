@@ -22,11 +22,13 @@
 
 namespace mod_coursework\traits;
 use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
 use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 use mod_coursework\models\allocation;
+use mod_coursework\stages\final_agreed;
 
 /**
  * Class allocatable
@@ -77,40 +79,33 @@ trait allocatable_functions {
     /**
      * @param coursework $coursework
      * @return bool
-     * @throws \coding_exception
+     * @throws invalid_parameter_exception
      * @throws \dml_exception
+     * @throws coding_exception
      */
     public function has_all_initial_feedbacks($coursework) {
-        global $DB;
-
-        $expectedmarkers = $coursework->numberofmarkers;
-
-        $sql = "
-            SELECT COUNT(*)
-              FROM {coursework_feedbacks} f
-        INNER JOIN {coursework_submissions} s
-                ON f.submissionid = s.id
-             WHERE f.stageidentifier LIKE 'assess%'
-               AND s.allocatableid = :id
-               AND s.courseworkid = :courseworkid
-               AND f.finalised = 1
-        ";
-        $feedbacks = $DB->count_records_sql(
-            $sql,
-            ['id' => $this->id(),
-            'courseworkid' => $coursework->id()]
+        if (!$this->get_submission($coursework)) {
+            return false;
+        }
+        $feedbacks = feedback::get_all_for_submission(
+            $this->get_submission($coursework)->id(),
+        );
+        $filteredfeedbacks = array_filter(
+            $feedbacks,
+            fn($f) => str_starts_with($f->stageidentifier, 'assess') && $f->finalised
         );
 
-        // when sampling is enabled, calculate how many stages are in sample
+        // When sampling is enabled, calculate how many stages are in sample.
         if ($coursework->sampling_enabled()) {
             $expectedmarkers = assessment_set_membership::membership_count(
                 $coursework->id(),
                 $this->type(),
                 $this->id()
             ) + 1;  // Add one as there is always a marker for stage 1.
+        } else {
+            $expectedmarkers = $coursework->numberofmarkers;
         }
-
-        return $feedbacks == $expectedmarkers;
+        return count($filteredfeedbacks) == $expectedmarkers;
     }
 
     /**
@@ -121,7 +116,8 @@ trait allocatable_functions {
         $result = [];
         $submission = $this->get_submission($coursework);
         if ($submission) {
-            $result = feedback::$pool[$coursework->id]['submissionid-stageidentifier_index'][$submission->id . '-others'] ?? [];
+            $feedbacks = feedback::get_all_for_submission($submission->id);
+            $result = array_filter($feedbacks, fn($f) => $f->stageidentifier != final_agreed::STAGE_FINAL_AGREED_1);
         }
         return $result;
     }
