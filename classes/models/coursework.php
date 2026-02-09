@@ -856,29 +856,6 @@ class coursework extends table_base {
     }
 
     /**
-     * Gets a student record based on a supplied submission id and adds user details to this object.
-     *
-     * @param int $submissionid
-     * @return bool|mixed
-     * @throws dml_exception
-     */
-    public function set_coursework_submission_student($submissionid) {
-        global $DB;
-
-        if (!$submissionid) {
-            return false;
-        }
-
-        $sql = "SELECT u.id, u.id AS userid, u.firstname, u.lastname
-                  FROM {user} u
-            INNER JOIN {coursework_submissions} s
-                    ON u.id = s.userid
-                 WHERE s.id = :eid
-                    ";
-        return ($this->student = $DB->get_record_sql($sql, ['eid' => $submissionid]));
-    }
-
-    /**
      * @param $params
      * @return array
      * @throws coding_exception
@@ -997,24 +974,6 @@ class coursework extends table_base {
     }
 
     /**
-     * We must make sure that random class names are not passed in and then instantiated. This checks
-     * that the file is there and that the class it contains is a subclass of
-     * coursework_allocation_strategy like it needs to be.
-     *
-     * @param string $allocationstrategy the class name without the namespace
-     * @return bool
-     */
-    public function validate_and_set_allocation_strategy($allocationstrategy) {
-
-        if ($this->allocation_strategy_is_valid($allocationstrategy)) {
-            $this->assessorallocationstrategy = $allocationstrategy;
-            $this->save();
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * @param $strategyname
      * @return bool|void
      */
@@ -1022,19 +981,6 @@ class coursework extends table_base {
 
         if ($this->allocation_strategy_is_valid($strategyname)) {
             $this->update_attribute('assessorallocationstrategy', $strategyname);
-            return;
-        }
-        return false;
-    }
-
-    /**
-     * @param string $strategyname
-     * @return bool|void
-     */
-    public function set_moderator_allocation_strategy($strategyname) {
-
-        if ($this->allocation_strategy_is_valid($strategyname)) {
-            $this->update_attribute('moderatorallocationstrategy', $strategyname);
             return;
         }
         return false;
@@ -1207,28 +1153,6 @@ class coursework extends table_base {
     }
 
     /**
-     * Checks whether the current user is an assessor allocated to mark this submission.
-     *
-     * @param allocatable $allocatable
-     * @return bool
-     * @throws dml_exception
-     */
-    public function current_user_is_moderator_for_student($allocatable) {
-
-        global $DB, $USER;
-
-        $params = [
-            'courseworkid' => $this->id,
-            'assessorid' => $USER->id,
-            'stageidentifier' => 'moderator_1',
-            'allocatableid' => $allocatable->id(),
-            'allocatabletype' => $allocatable->type(),
-        ];
-
-        return $DB->record_exists('coursework_allocation_pairs', $params);
-    }
-
-    /**
      * Gets all the submissions at once for the grading table.
      *
      * @return submission[]
@@ -1237,104 +1161,6 @@ class coursework extends table_base {
     public function get_all_submissions() {
         submission::fill_pool_coursework($this->id);
         return submission::$pool[$this->id]['id'];
-    }
-
-    /**
-     * Get submissions that need grading, either in initial or final stage
-     * For multiple marker coursework if final grade is not given it is assumed that submission may need grading in
-     * either initial, final or both stages
-     *
-     * @return array
-     * @throws coding_exception
-     * @throws dml_exception
-     */
-    public function get_submissions_needing_grading() {
-
-        $needsgrading = [];
-        $submissions = $this->get_finalised_submissions();
-
-        foreach ($submissions as $submission) {
-            $stageidentifier = ($this->has_multiple_markers()) ? 'final_agreed_1' : 'assessor_1';
-            $submission = submission::find($submission);
-            if (!$submission->get_assessor_feedback_by_stage($stageidentifier)) {
-                $needsgrading[] = $submission;
-            }
-        }
-
-        return $needsgrading;
-    }
-
-    /**
-     * Get all graded submissions for the specified marking stage
-     *
-     * @param $stageidentifier
-     * @return array
-     * @throws coding_exception
-     * @throws dml_exception
-     */
-    public function get_graded_submissions_by_stage($stageidentifier) {
-
-        $graded = [];
-        $submissions = $this->get_finalised_submissions();
-
-        foreach ($submissions as $submission) {
-            $submission = submission::find($submission);
-            if ($submission->get_assessor_feedback_by_stage($stageidentifier)) {
-                $graded[$submission->id] = $submission;
-            }
-        }
-        return $graded;
-    }
-
-    /**
-     * Function to get all assessor's graded submissions within the specified coursework
-     *
-     * @param $assessorid
-     * @return array
-     * @throws coding_exception
-     * @throws dml_exception
-     */
-    public function get_assessor_graded_submissions($assessorid) {
-        global $DB;
-
-        $graded = [];
-        $params = ['courseworkid' => $this->id, 'assessorid' => $assessorid];
-        $sql = "SELECT cs.id
-                FROM {coursework_feedbacks} cf
-                JOIN {coursework_submissions} cs
-                ON cs.id = cf.submissionid
-                WHERE cs.courseworkid = :courseworkid
-                AND assessorid = :assessorid";
-        $submissions = $DB->get_records_sql($sql, $params);
-
-        foreach ($submissions as $submission) {
-            $submission = submission::find($submission);
-            $graded[$submission->id] = $submission;
-        }
-
-        return $graded;
-    }
-
-    /**
-     * Get all published submissions in the coursework
-     *
-     * @return array
-     * @throws coding_exception
-     * @throws dml_exception
-     */
-    public function get_published_submissions() {
-        global $DB;
-
-        $sql = "SELECT *
-                FROM {coursework_submissions}
-                WHERE courseworkid = :courseworkid
-                AND firstpublished IS NOT NULL";
-
-        $submissions = $DB->get_records_sql($sql, ['courseworkid' => $this->id]);
-        foreach ($submissions as &$submission) {
-            $submission = submission::find($submission);
-        }
-        return $submissions;
     }
 
     /**
@@ -1433,26 +1259,6 @@ class coursework extends table_base {
     }
 
     /**
-     * Checks settings to see whether the current user (who we assume is a student) can
-     * view their feedback.
-     *
-     * @return bool
-     */
-    public function student_can_view_individual_feedback() {
-
-        if ($this->has_individual_autorelease_feedback_enabled()) {
-            return true;
-        }
-
-        $releasedate = $this->get_student_feedback_release_date();
-        if ($releasedate < time()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Tells us when a student should be able to see the feedback for their submission.
      *
      * @return int
@@ -1487,28 +1293,6 @@ class coursework extends table_base {
     }
 
     /**
-     * Returns true or false for whether to display the Student ID column.
-     *
-     */
-    public function display_studentid() {
-
-        if ($this->blindmarking) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Tells us if any allocations are being used for moderators, so we can check for an allocation if we need to.
-     *
-     * @return bool
-     */
-    public function moderator_allocations_in_use() {
-        return !empty($this->moderatorallocationstrategy) && $this->moderatorallocationstrategy !== 'none';
-    }
-
-    /**
      * If the grades are saved, then we may have to re-do the moderator allocation set based on the final grade
      * that the student got e.g. if we want to moderate only those who have scored below 30%.
      */
@@ -1539,82 +1323,10 @@ class coursework extends table_base {
     }
 
     /**
-     * Tells us if the coursework is set to allow students to see component feedbacks.
-     *
-     * @return int
-     */
-    public function students_can_view_component_feedbacks() {
-        return ($this->studentviewcomponentfeedbacks);
-    }
-
-    /**
-     * Tells us whether students are allowed to see moderator feedbacks for this coursework.
-     *
-     * @return int
-     */
-    public function students_can_view_moderator_feedbacks() {
-        return ($this->studentviewmoderatorfeedbacks);
-    }
-
-    /**
      * @return int
      */
     public function students_can_view_all_feedbacks() {
         return $this->showallfeedbacks;
-    }
-
-    /**
-     * Returns the setting that tells us whether students are allowed to view this. Ignores deadlines, release dates etc.
-     *
-     * @return int 1 or 0
-     */
-    public function students_can_view_component_feedback_comments() {
-        return $this->studentviewcomponentfeedbacks;
-    }
-
-    /**
-     * Returns the setting that tells us whether students are allowed to view this. Ignores deadlines, release dates etc.
-     *
-     * @return int 1 or 0
-     */
-    public function students_can_view_component_feedback_grades() {
-        return $this->studentviewcomponentgrades;
-    }
-
-    /**
-     * Returns the setting that tells us whether students are allowed to view this. Ignores deadlines, release dates etc.
-     *
-     * @return int 1 or 0
-     */
-    public function students_can_view_final_feedback_comments() {
-        return $this->studentviewfinalfeedback;
-    }
-
-    /**
-     * Returns the setting that tells us whether students are allowed to view this. Ignores deadlines, release dates etc.
-     *
-     * @return int 1 or 0
-     */
-    public function students_can_view_final_feedback_grades() {
-        return $this->studentviewfinalgrade;
-    }
-
-    /**
-     * Returns the setting that tells us whether students are allowed to view this. Ignores deadlines, release dates etc.
-     *
-     * @return int 1 or 0
-     */
-    public function students_can_view_moderator_feedback_comments() {
-        return $this->studentviewmoderatorfeedbacks;
-    }
-
-    /**
-     * Returns the setting that tells us whether students are allowed to view this. Ignores deadlines, release dates etc.
-     *
-     * @return int 1 or 0
-     */
-    public function students_can_view_moderator_feedback_grades() {
-        return $this->studentviewmoderatorgrade;
     }
 
     /**
@@ -1625,23 +1337,6 @@ class coursework extends table_base {
         global $USER;
 
         return (time() < $this->get_user_deadline($USER->id)) || $this->allow_late_submissions();
-    }
-
-    /**
-     * @param $userid
-     * @return bool
-     */
-    public function user_grade_is_published($userid) {
-        // Get the gradebook grade.
-
-        $grades = grade_get_grades($this->get_course_id(), 'mod', 'coursework', $this->id, $userid);
-
-        if (
-            isset($grades->items[0]->grades[$userid]->grade) && $grades->items[0]->grades[$userid]->grade != -1
-        ) {
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -2107,52 +1802,8 @@ class coursework extends table_base {
         return $stages;
     }
 
-    /**
-     * Temporary messy solution only used in the bit that makes the grading report cells.
-     *
-     * @return final_agreed
-     * @throws coding_exception
-     */
-    private function get_final_grade_stage() {
-        if ($this->get_max_markers() > 1) {
-            return new final_agreed($this, 'final_agreed_1');
-        }
-        throw new coding_exception('Trying to get the final grade stage of a coursework that does not have one');
-    }
-
-    /**
-     * Temporary messy solution only used in the bit that makes the grading report cells.
-     *
-     * @return moderator
-     */
-    private function get_moderator_grade_stage() {
-        if ($this->moderation_agreement_enabled()) {
-            return new moderator($this, 'moderator');
-        }
-    }
-
     public function get_submission_notification_users() {
         return $this->submissionnotification;
-    }
-
-    /**
-     * Utility method that returns an image icon.
-     *
-     * @todo This should be in the renderer.
-     *
-     * @param $text
-     * @param $imagename
-     * @return string
-     */
-    final public static function get_image($text, $imagename) {
-        global $CFG;
-        $url = $CFG->wwwroot . '/theme/image.php?image=t/' . $imagename;
-        return html_writer::empty_tag(
-            'img',
-            ['alt' => $text,
-                                            'title' => $text,
-            'src' => $url]
-        );
     }
 
     /**
