@@ -140,12 +140,10 @@ class assessor_feedback_row {
         if (isset($this->submission)) {
             return $this->submission;
         }
-        $this->submission = submission::get_cached_object(
+        $this->submission = submission::get_for_allocatable(
             $this->get_coursework()->id,
-            [
-                'allocatableid' => $this->get_allocatable()->id(),
-                'allocatabletype' => $this->get_allocatable()->type(),
-            ]
+            $this->get_allocatable()->id(),
+            $this->get_allocatable()->type()
         );
         return $this->submission;
     }
