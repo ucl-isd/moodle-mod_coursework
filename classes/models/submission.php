@@ -1732,6 +1732,23 @@ class submission extends table_base implements renderable {
     }
 
     /**
+     * Get all submissions for a coursework ID.
+     * @param int $courseworkid
+     * @return []submission
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
+     */
+    public static function get_all_for_coursework(int $courseworkid) {
+        global $DB;
+        $submissionids = $DB->get_fieldset(self::$tablename, 'id', ['courseworkid' => $courseworkid]);
+        $result = [];
+        foreach ($submissionids as $submissionid) {
+            $result[$submissionid] = self::get_from_id($submissionid);
+        }
+        return $result;
+    }
+
+    /**
      * Get multiple submission objects from IDs.
      * @param int[] $submissionids
      * @return array submission objects
@@ -1776,8 +1793,6 @@ class submission extends table_base implements renderable {
             ]
         );
     }
-
-
 
     /**
      * Check if the submission should be flagged for plagiarism.

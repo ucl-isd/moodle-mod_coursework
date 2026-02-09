@@ -118,7 +118,6 @@ trait allocatable_functions {
      * @return array
      */
     public function get_initial_feedbacks($coursework) {
-        $this->fill_submission_and_feedback($coursework);
         $result = [];
         $submission = $this->get_submission($coursework);
         if ($submission) {
@@ -132,21 +131,6 @@ trait allocatable_functions {
      * @return ?submission
      */
     public function get_submission($coursework) {
-        $this->fill_submission_and_feedback($coursework);
-        return submission::get_cached_object(
-            $coursework->id,
-            ['allocatableid' => $this->id]
-        );
-    }
-
-    /**
-     *
-     * @param $coursework
-     * @throws \dml_exception
-     * @throws coding_exception
-     */
-    private function fill_submission_and_feedback($coursework) {
-        $courseworkid = $coursework->id;
-        submission::fill_pool_coursework($courseworkid);
+        return submission::get_for_allocatable($coursework->id, $this->id, $this->type());
     }
 }
