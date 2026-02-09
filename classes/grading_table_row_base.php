@@ -270,13 +270,7 @@ class grading_table_row_base implements user_row {
         if (!isset($this->submission)) {
             $allocatableid = $this->get_allocatable()->id();
             $allocatabletype = $this->get_allocatable()->type();
-            $this->submission = submission::get_cached_object(
-                $this->get_courseworkid(),
-                [
-                    'allocatableid' => $allocatableid,
-                    'allocatabletype' => $allocatabletype,
-                ]
-            );
+            $this->submission = submission::get_for_allocatable($this->get_courseworkid(), $allocatableid, $allocatabletype);
         }
 
         return $this->submission;

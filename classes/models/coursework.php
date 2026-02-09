@@ -1131,9 +1131,8 @@ class coursework extends table_base {
      * @return submission[]
      * @throws \core\exception\coding_exception
      */
-    public function get_all_submissions() {
-        submission::fill_pool_coursework($this->id);
-        return submission::$pool[$this->id]['id'];
+    public function get_all_submissions(): array {
+        return submission::get_all_for_coursework($this->id);
     }
 
     /**
@@ -1256,12 +1255,12 @@ class coursework extends table_base {
     public function get_unfinalised_students($fields = 'u.id, u.firstname, u.lastname') {
 
         $students = get_enrolled_users(context_course::instance($this->get_course_id()), 'mod/coursework:submit', 0, $fields);
-        submission::fill_pool_coursework($this->id);
-        $alreadyfinalised = submission::$pool[$this->id]['finalisedstatus'][submission::FINALISED_STATUS_FINALISED] ?? [];
-        foreach ($alreadyfinalised as $submission) {
-            unset($students[$submission->userid]);
+        $submissions = submission::get_all_for_coursework($this->id);
+        foreach ($submissions as $submission) {
+            if ($submission->finalisedstatus == submission::FINALISED_STATUS_FINALISED) {
+                unset($students[$submission->userid]);
+            }
         }
-
         return $students;
     }
 
@@ -2073,8 +2072,8 @@ class coursework extends table_base {
         if ($this->numberofmarkers <= 1 || $this->automaticagreementstrategy == 'null') {
             return;
         }
-        submission::fill_pool_coursework($this->id);
-        $submissions = submission::$pool[$this->id]['finalisedstatus'][submission::FINALISED_STATUS_FINALISED] ?? [];
+        $submissions = submission::get_all_for_coursework($this->id);
+        $submissions = array_filter($submissions, fn($s) => $s->finalisedstatus == submission::FINALISED_STATUS_FINALISED);
         if (empty($submissions)) {
             return;
         }
@@ -2472,11 +2471,9 @@ class coursework extends table_base {
     public function fill_cache() {
         global $DB;
         $courseworkid = $this->id;
-        submission::fill_pool_coursework($courseworkid);
         self::fill_pool([$this]);
         course_module::fill_pool([$this->get_course_module()]);
         module::fill_pool($DB->get_records('modules', ['name' => 'coursework']));
-        feedback::fill_pool_submissions($courseworkid, array_keys(submission::$pool[$courseworkid]['id']));
         allocation::fill_pool_coursework($courseworkid);
         plagiarism_flag::fill_pool_coursework($courseworkid);
         assessment_set_membership::fill_pool_coursework($courseworkid);

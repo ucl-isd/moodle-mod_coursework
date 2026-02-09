@@ -26,6 +26,7 @@ namespace mod_coursework\services;
 
 use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
+use mod_coursework\models\submission;
 
 /**
  * Class to provide figures around submissions and gradings.
@@ -43,7 +44,7 @@ class submission_figures {
 
         $coursework = coursework::get_from_id($instance);
         $context = $coursework->get_context();
-        $submissions = $coursework->get_all_submissions();
+        $submissions = submission::get_all_for_coursework($coursework->id);
 
         $singlemarker = !$coursework->has_multiple_markers();
         $canaddagreed = has_capability('mod/coursework:addagreedgrade', $context);

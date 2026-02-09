@@ -1099,11 +1099,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     private function get_export_upload_links(coursework $coursework): array {
         $cmid = $this->page->cm->id;
         $viewurl = '/mod/coursework/view.php';
-        $submissions = $coursework->get_all_submissions();
+        $hassubmissions = $coursework->get_submission_count() > 0;
         $hasfinalised = $coursework->get_finalised_submissions();
         $finalised = submission::$pool[$coursework->id]['finalisedstatus'][submission::FINALISED_STATUS_FINALISED] ?? [];
         $can = fn(string $cap) => has_capability($cap, $this->page->context);
-        $canmark = !empty($submissions) && $hasfinalised;
+        $canmark = $hassubmissions && $hasfinalised;
 
         // Export/Import options.
         $menuoptions = [
@@ -1113,7 +1113,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                     [
                         'url' => new moodle_url($viewurl, ['id' => $cmid, 'download' => 1]),
                         'lang' => 'download_submitted_files',
-                        'cap' => ($finalised && !empty($submissions)),
+                        'cap' => ($finalised && $hassubmissions),
                     ],
                     [
                         'url' => new moodle_url($viewurl, ['id' => $cmid, 'export' => 1]),

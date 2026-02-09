@@ -84,11 +84,8 @@ class plagiarism_flag extends table_base {
      */
     public function get_submission() {
         if (!isset($this->submission) && !empty($this->submissionid)) {
-            submission::fill_pool_coursework($this->courseworkid);
-            $this->submission = isset(submission::$pool[$this->courseworkid]['id'][$this->submissionid]) ?
-                submission::$pool[$this->courseworkid]['id'][$this->submissionid] : null;
+            $this->submission = submission::get_from_id($this->submissionid);
         }
-
         return $this->submission;
     }
 
