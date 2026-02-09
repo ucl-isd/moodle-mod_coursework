@@ -1610,6 +1610,7 @@ class submission extends table_base implements renderable {
      *
      */
     protected function after_destroy() {
+        self::clear_cache($this->id);
         self::remove_cache($this->courseworkid);
     }
 
