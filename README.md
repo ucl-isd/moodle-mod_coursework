@@ -1,13 +1,16 @@
 Coursework Activity
 ======================================================================
-Copyright 2011-2019 University of London.
-Copyright 2024-2025 University College London
+Copyright 2011-2019 University of London.  
+Copyright 2024-2026 University College London
 
 Part of the [Double Marking Project led by UCL](https://www.catalyst-eu.net/blog/2025/04/29/enhancing-assessment-in-moodle-the-double-marking-project)
 This is allowing us to take a blank slate approach about what the ideal marker experience should look like.
 We are also contributing some of this functionality into core Moodle Assignment, see:
 - https://moodle.atlassian.net/browse/MDL-86005
 - https://moodle.atlassian.net/browse/MDL-64118
+
+In order to roll this out at scale at UCL, we have created a Creation Wizard which grants the permissions to Coursework to Assessment Managers and Markers
+- https://github.com/ucl-isd/moodle-mod_assessmentwizard
 
 The Coursework Activity has been written to provide a way to receive coursework and have it marked without teachers knowing which student the work belongs to. Multiple markers are also supported where a final grade can be agreed based on several options. It does not replace the standard assignment activity and is intended to work alongside it.
 Special thanks to Royal Veterinary College and [@aspark21](https://github.com/aspark21), Plymouth University, London School of Tropical Medicine and University of London International Programmes for funding parts of the development and documentation. 
@@ -46,6 +49,11 @@ Current Coursework plugin includes following features as well as features added 
 
 Releases 
 =================
+**February 2026** - Actual release at UCL
+- Major improvements to the feedback agreement interfaces for Rubrics and Marking Guides
+- Improved the Automated Agreement of Marks to meet UCL requirements
+- bug fixes bringing stability after the major redesign
+
 **October 2025** - Full redesign of the user interfaces and refactoring using mustache templates by [University College London](https://blogs.ucl.ac.uk/digital-education/)
 - implements support for Candidate Numbers via subplugin framework allowing for alternative sources, out of the box works with https://github.com/ucl-isd/moodle-local_sitsgradepush
 - in reverse Coursework is now supported for Marks Transfer to SITS and automated deadline extensions via https://github.com/ucl-isd/moodle-local_sitsgradepush
@@ -168,13 +176,16 @@ New features:
 
 Plagiarism
 ==========
-Coursework works with Turnitin plagiarism plugin https://github.com/turnitin/moodle-plagiarism_turnitin and the lowest recommended version is v2017022201
+Coursework works with Turnitin plagiarism plugin https://github.com/turnitin/moodle-plagiarism_turnitin and the lowest recommended version is v2017022201 (when it was first implemented but you probably want to be on the latest version).
+
+We will look at using the LTI Asset processor extension once it is available in core Moodle.
 
 
 Release & Support
 =================
 
-This is currently a beta preview release and includes untested code. 
+This version is now in production at UCL.
+
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details: 
 http://www.gnu.org/copyleft/gpl.html
@@ -184,6 +195,8 @@ Documentation
 =============
 
 The documentation can be found in https://docs.moodle.org/31/en/Coursework_module
+
+- https://blogs.ucl.ac.uk/digital-education/2026/02/06/new-in-ucl-moodle-double-marking-candidate-numbers-the-assessment-creation-wizard/
 
 Compatibility
 ===========
@@ -199,6 +212,9 @@ Defining roles
 
 Coursework allows institutions to define their permissions unique to their institution. 
 These roles can now be allocated at activity level.
+
+We assign these at activity level through the creation wizard which streamlines the setup process
+- https://github.com/ucl-isd/moodle-mod_assessmentwizard 
 
 Configuration
 =============
