@@ -24,6 +24,8 @@
 
 namespace mod_coursework;
 
+use mod_coursework\models\coursework;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -54,9 +56,8 @@ final class coursework_test extends \advanced_testcase {
      * Clean up the test fixture by removing the objects.
      */
     public function tearDown(): void {
-        global $DB;
-
-        $DB->delete_records('coursework', ['id' => $this->coursework->id]);
+        $coursework = coursework::get_from_id($this->coursework->id);
+        $coursework->destroy();
         unset($this->coursework);
         parent::tearDown();
     }
