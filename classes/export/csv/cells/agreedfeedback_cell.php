@@ -26,6 +26,7 @@ use dml_exception;
 use lang_string;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
+use mod_coursework\stages\final_agreed;
 
 /**
  * Class agreedfeedback_cell
@@ -64,7 +65,7 @@ class agreedfeedback_cell extends cell_base {
      * @throws dml_exception
      */
     public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells = []) {
-        global $DB, $PAGE;
+        global $PAGE;
         $stageidentfinal = 'final_agreed_1';
 
         if (
@@ -97,12 +98,7 @@ class agreedfeedback_cell extends cell_base {
             }
 
             // Has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
-            $feedbackparams = [
-                'submissionid' => $submission->id,
-                'stageidentifier' => $stageidentfinal,
-            ];
-
-            $feedback = feedback::find($feedbackparams);
+            $feedback = feedback::get_from_submission_and_stage($submission->id, final_agreed::STAGE_FINAL_AGREED_1);
 
             // Does a feedback exist for this stage.
             if (empty($feedback)) {

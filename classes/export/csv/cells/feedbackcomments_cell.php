@@ -77,12 +77,7 @@ class feedbackcomments_cell extends cell_base {
             if (!$this->coursework->is_assessor($USER->id)) {
                 return get_string('nopermissiontomarksubmission', 'coursework');
             }
-
-            $feedbackparams = [
-                'submissionid' => $submission->id,
-                'stageidentifier' => $stageidentifier,
-            ];
-            $feedback = feedback::find($feedbackparams);
+            $feedback = feedback::get_from_submission_and_stage($submission->id, $stageidentifier);
 
             // Does a feedback exist for this stage
             if (empty($feedback)) {
