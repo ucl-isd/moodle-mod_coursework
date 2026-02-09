@@ -1607,6 +1607,29 @@ class submission extends table_base implements renderable {
     }
 
     /**
+     * Clear the caches for this object.
+     * May need to be overridden in child class, if child class has additional cache areas beyond CACHE_AREA_IDS.
+     * @return void
+     * @throws \core\exception\coding_exception
+     */
+    public static function clear_cache(int $id) {
+
+        // First the cache by user/group ID.
+        $object = self::get_from_id($id);
+        if ($object) {
+            $cachetoclear = cache::make(
+                'mod_coursework',
+                $object->allocatabletype == 'user' ? self::CACHE_AREA_SUBMISSIONS_BY_USER : self::CACHE_AREA_SUBMISSIONS_BY_GROUP
+            );
+            $cachetoclear->delete($object->allocatableid);
+        }
+
+        // Now the main cache.
+        $cache = cache::make('mod_coursework', static::CACHE_AREA_IDS);
+        $cache->delete($id);
+    }
+
+    /**
      * Get an array of data for all submission files for this coursework, by participantID-participantType.
      * Used from the grading page to get all at once / avoid getting files once for each row.
      * @param coursework $coursework
