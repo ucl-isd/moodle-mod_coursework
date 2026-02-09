@@ -222,7 +222,7 @@ class mailer {
 
         $subject = get_string('cron_email_subject', 'mod_coursework', $emaildata);
 
-        $student = user::find($user);
+        $student = user::get_from_id($user->id);
 
         $emaildata->name = $student->name();
         $textbody = get_string('cron_email_text', 'mod_coursework', $emaildata);
@@ -246,7 +246,7 @@ class mailer {
         return message_send($eventdata);
     }
 
-    public function send_submission_notification($userstonotify) {
+    public function send_submission_notification(int $useridtonotify) {
 
         global $CFG;
 
@@ -256,8 +256,10 @@ class mailer {
 
             $subject = get_string('submission_notification_subject', 'coursework', $emaildata->coursework_name);
 
-            $userstonotify = user::find($userstonotify);
-
+            $userstonotify = user::get_from_id($useridtonotify);
+            if (!$userstonotify) {
+                continue;
+            }
             $emaildata->name = $userstonotify->name();
             $textbody = get_string('submission_notification_text', 'coursework', $emaildata);
             $htmlbody = get_string('submission_notification_html', 'coursework', $emaildata);

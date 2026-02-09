@@ -286,7 +286,7 @@ abstract class base {
             $users = get_enrolled_users($this->coursework->get_context(), $this->assessor_capability());
             $this->teachers = array_map(
                 function ($user) {
-                    return user::find($user, false);
+                    return user::get_from_id($user->id);
                 },
                 $users
             );
