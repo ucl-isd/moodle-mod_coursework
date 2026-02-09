@@ -1420,7 +1420,7 @@ class coursework extends table_base {
             $allocatable = $user;
         }
 
-        return $this->get_allocatable_submission($allocatable);
+        return submission::get_for_allocatable($this->id, $allocatable->id(), $allocatable->type());
     }
 
     /**
@@ -1429,26 +1429,6 @@ class coursework extends table_base {
      */
     public function has_user_submission($user): bool {
         return (bool)$this->get_user_submission($user);
-    }
-
-    /**
-     * @param allocatable $allocatable
-     * @return bool|table_base
-     * @throws coding_exception
-     * @throws dml_exception
-     */
-    public function get_allocatable_submission($allocatable) {
-
-        if (!($allocatable instanceof allocatable)) {
-            return false;
-        }
-
-        $ownsubmissionparams = [
-            'courseworkid' => $this->id,
-            'allocatableid' => $allocatable->id(),
-            'allocatabletype' => $allocatable->type(),
-        ];
-        return submission::find($ownsubmissionparams);
     }
 
     /**

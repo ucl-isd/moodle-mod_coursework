@@ -749,7 +749,9 @@ class feedback extends table_base {
         $result = [];
         foreach ($cachedfeedbackids as $cachedfeedbackid) {
             $feedback = feedback::get_from_id($cachedfeedbackid);
-            $result[$feedback->id] = $feedback;
+            if ($feedback) {
+                $result[$feedback->id] = $feedback;
+            }
         }
         return $result;
     }

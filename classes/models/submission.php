@@ -26,6 +26,8 @@ use AllowDynamicProperties;
 use coding_exception;
 use context;
 use context_module;
+use cache;
+use core\exception\invalid_parameter_exception;
 use core\exception\moodle_exception;
 use core_user\fields;
 use dml_exception;
@@ -68,6 +70,18 @@ class submission extends table_base implements renderable {
      * @var string
      */
     const CACHE_AREA_IDS = 'submissionids';
+
+    /**
+     * Cache area where objects by user ID are stored.
+     * @var string
+     */
+    const CACHE_AREA_SUBMISSIONS_BY_USER = 'submissionsbyuser';
+
+    /**
+     * Cache area where objects by group ID are stored.
+     * @var string
+     */
+    const CACHE_AREA_SUBMISSIONS_BY_GROUP = 'submissionsbygroup';
 
     /**
      * Possible value for mdl_submission.finalised field.
@@ -1691,6 +1705,32 @@ class submission extends table_base implements renderable {
 
 
     /**
+     * Get all feedbacks for a specific submission from its ID.
+     * @param int $courseworkid
+     * @param int $allocatableid
+     * @param string $allocatabletype
+     * @return ?submission
+     */
+    public static function get_for_allocatable(int $courseworkid, int $allocatableid, string $allocatabletype): ?submission {
+        global $DB;
+        if ($allocatableid <= 0 || !in_array($allocatabletype, ['user', 'group'])) {
+            throw new invalid_parameter_exception("Invalid ID $allocatableid or type $allocatabletype");
+        }
+        $cachearea = $allocatabletype == 'user' ? self::CACHE_AREA_SUBMISSIONS_BY_USER : self::CACHE_AREA_SUBMISSIONS_BY_GROUP;
+        $cache = cache::make('mod_coursework', $cachearea);
+        $cachedid = $cache->get($allocatableid);
+        if ($cachedid === false) {
+            $cachedid = $DB->get_field(
+                self::$tablename,
+                'id',
+                ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid, 'allocatabletype' => $allocatabletype]
+            );
+            $cache->set($allocatableid, $cachedid === false ? null : $cachedid);
+        }
+        return $cachedid ? self::get_from_id($cachedid) : null;
+    }
+
+    /**
      * Get multiple submission objects from IDs.
      * @param int[] $submissionids
      * @return array submission objects
@@ -1737,6 +1777,7 @@ class submission extends table_base implements renderable {
     }
 
 
+
     /**
      * Check if the submission should be flagged for plagiarism.
      *
@@ -1749,5 +1790,4 @@ class submission extends table_base implements renderable {
         }
         return get_string('plagiarism_' . $flag->status, 'mod_coursework');
     }
-
 }

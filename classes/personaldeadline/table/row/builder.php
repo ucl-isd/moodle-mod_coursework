@@ -195,17 +195,7 @@ class builder implements user_row {
     }
 
     public function get_submission_status() {
-        global  $DB;
-
-        $submissiondb = $DB->get_record(
-            'coursework_submissions',
-            ['courseworkid' => $this->get_coursework()->id,
-                'allocatableid' => $this->allocatable->id(),
-            'allocatabletype' => $this->allocatable->type()]
-        );
-
-        $submission = submission::find($submissiondb);
-
+        $submission = submission::get_for_allocatable($this->get_coursework()->id, $this->allocatable->id(), $this->allocatable->type());
         $statustext = get_string('statusnotsubmitted', 'mod_coursework');
 
         if (!empty($submission) && $submission->get_state() == $submission::FINALISED) {
