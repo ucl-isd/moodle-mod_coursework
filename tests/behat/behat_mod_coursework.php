@@ -31,6 +31,7 @@ use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\group;
 use mod_coursework\models\submission;
+use mod_coursework\models\user;
 use mod_coursework\router;
 use mod_coursework\stages\base as stage_base;
 use mod_coursework\auto_grader\average_grade_no_straddle;
@@ -2699,7 +2700,7 @@ class behat_mod_coursework extends behat_base {
         $user->firstname = $displayname ? $displayname : $rolename . $this->usersuffix;
         $user->lastname = $rolename . $this->usersuffix;
         $user = $generator->create_user($user);
-        $user = \mod_coursework\models\user::find($user);
+        $user = user::get_from_id($user->id);
 
         // If the role name starts with 'other_' here (e.g. 'other_teacher') we need to remove it.
         $rolename = str_replace('other_', '', $rolename);
@@ -2732,7 +2733,7 @@ class behat_mod_coursework extends behat_base {
         $group->name = 'My group';
         $group->courseid = $this->course->id;
         $group = $generator->create_group($group);
-        $this->group = group::find($group);
+        $this->group = group::get_from_id($group->id);
 
         $membership = new stdClass();
         $membership->groupid = $this->group->id;

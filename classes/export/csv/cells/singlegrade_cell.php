@@ -129,10 +129,7 @@ class singlegrade_cell extends cell_base {
             if (!empty($errormsg)) {
                 return $errormsg;
             }
-
-            $dbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
-
-            $submission = submission::find($dbrecord);
+            $submission = submission::get_from_id($submissionid);
 
             // Is this submission ready to be graded
             if (!$submission->ready_to_grade() && $submission->get_state() < submission::FULLY_GRADED) {

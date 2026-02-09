@@ -131,7 +131,7 @@ final class user_test extends \advanced_testcase {
         $this->assertEquals($dbstudent->id, $courseworkuser2->id());
 
         // Find the user coursework object providing their ID.
-        $courseworkuser3 = user::find($dbstudent);
+        $courseworkuser3 = user::get_from_id($dbstudent->id);
         $this->assertNotFalse($courseworkuser3);
         $this->assertTrue($courseworkuser3->persisted());
         $this->assertEquals($dbstudent->id, $courseworkuser3->id());

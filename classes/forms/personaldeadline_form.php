@@ -75,7 +75,7 @@ class personaldeadline_form extends dynamic_form {
             $customdata['courseworkid'],
         );
         $this->existingdeadline = $existingdeadlinerecord
-            ? personaldeadline::find($existingdeadlinerecord)
+            ? personaldeadline::get_from_id($existingdeadlinerecord->id)
             : null;
 
         $this->allocatable = $this->existingdeadline

@@ -98,7 +98,7 @@ class group extends table_base implements allocatable, moderatable {
         foreach ($members as $member) {
             // check is member has capability to submit in this coursework (to get rid of assessors if they are placed in the group)
             if (has_capability('mod/coursework:submit', $context, $member)) {
-                $memberobjects[] = user::find($member);
+                $memberobjects[] = user::get_from_id($member->id);
             }
         }
         return $memberobjects;

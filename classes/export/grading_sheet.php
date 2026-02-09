@@ -27,6 +27,7 @@ use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 use mod_coursework\models\group;
 use mod_coursework\models\submission;
+use mod_coursework\models\user;
 
 class grading_sheet extends csv {
     public function get_submissions($groupid = null, $selectedsubmissionids = '') {
@@ -174,7 +175,7 @@ class grading_sheet extends csv {
             $students = $submission->students_for_gradebook();
 
             foreach ($students as $student) {
-                $student = \mod_coursework\models\user::find($student);
+                $student = user::get_from_id($student->id);
                 $csvdata[] = $this->add_cells_to_array($submission, $student, $this->csvcells);
             }
         }

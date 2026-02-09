@@ -228,11 +228,7 @@ class submissions_controller extends controller_base {
                 if (!empty($useridcommaseparatedlist)) {
                     $userids = explode(',', $useridcommaseparatedlist);
                     foreach ($userids as $u) {
-                        $notifyuser = $DB->get_record('user', ['id' => trim($u)]);
-
-                        if (!empty($notifyuser)) {
-                            $mailer->send_submission_notification($notifyuser);
-                        }
+                        $mailer->send_submission_notification(trim($u));
                     }
                 }
             }
@@ -358,7 +354,7 @@ class submissions_controller extends controller_base {
                 ['courseworkid' => $this->params['courseworkid'], 'allocatableid' => $aid, 'allocatabletype' => $this->params['allocatabletype']]
             );
             if (!empty($submissiondb)) {
-                $submission = submission::find($submissiondb);
+                $submission = submission::get_from_id($submissiondb->id);
 
                 if ($submission->can_be_unfinalised()) {
                     $submission->finalisedstatus = submission::FINALISED_STATUS_MANUALLY_UNFINALISED;
