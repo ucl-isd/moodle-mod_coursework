@@ -295,9 +295,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template->advancedmarking = false;
         if ($coursework->is_using_advanced_grading()) {
             $template->advancedmarking = true;
+            // Is this a marking guide? Used in mustache for for standard and previous feedback display.
             $gradingcontroller = $coursework->get_advanced_grading_active_controller();
             $gradingdefinition = $gradingcontroller->get_definition();
-            // Is this a marking guide?
             $template->isguide = isset($gradingdefinition->guide_criteria);
         }
 
