@@ -1694,6 +1694,22 @@ class submission extends table_base implements renderable {
         $filerecords->close();
         return $results;
     }
+    /**
+     * Remove all submissions by this coursework.
+     * @param int $courseworkid
+     * @return void
+     * @throws dml_exception
+     */
+    public static function remove_submissions_by_coursework(int $courseworkid) {
+        global $DB;
+        $params = ['courseworkid' => $courseworkid, 'allocatabletype' => 'user'];
+        $submissionids = $DB->get_fieldset(self::$tablename, 'id', $params);
+        foreach ($submissionids as $submissionid) {
+            $submission = self::get_from_id($submissionid);
+            $submission->destroy();
+        }
+    }
+
 
     /**
      * Get multiple submission objects from IDs.
