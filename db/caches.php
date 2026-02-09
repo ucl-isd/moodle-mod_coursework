@@ -96,5 +96,15 @@ $definitions = [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
+    ],
+    submission::CACHE_AREA_SUBMISSIONS_BY_USER => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => true,
+    ],
+    submission::CACHE_AREA_SUBMISSIONS_BY_GROUP => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => true,
     ]
 ];

@@ -273,11 +273,8 @@ class upload {
                         // create allocation
                         $this->add_allocation($assessor->id, $cells[$keynum], $allocatable);
                     } else {
-                        // update allocation if submission was not marked yet
-                        $subdbrecord = $DB->get_record('coursework_submissions', ['courseworkid' => $this->coursework->id,
-                                                                                       'allocatabletype' => $allocatabletype,
-                                                                                       'allocatableid' => $allocatable->id]);
-                        $submission = submission::find($subdbrecord);
+                        // update allocation if submission was not marked yet;
+                        $submission = submission::get_for_allocatable($this->coursework->id, $allocatable->id, $allocatabletype);
 
                         if (!$submission || !$submission->get_assessor_feedback_by_stage($cells[$keynum])) {
                             $this->update_allocation($allocation->id, $assessor->id);

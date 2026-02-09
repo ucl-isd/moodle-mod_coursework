@@ -1574,7 +1574,7 @@ function teacher_removed_allocated_not_graded($eventdata) {
                     $allocatable = group::get_from_id($allocation->allocatableid);
                 }
 
-                $submission = $coursework->get_allocatable_submission($allocatable);
+                $submission = submission::get_for_allocatable($coursework->id, $allocatable->id(), $allocatable->type());
                 // if assessor grade the submission already, skip it
                 if ($submission && $submission->has_specific_assessor_feedback($userid)) {
                     continue;

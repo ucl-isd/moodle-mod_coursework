@@ -2843,10 +2843,7 @@ class behat_mod_coursework extends behat_base {
      * @return mixed
      */
     protected function get_initial_assessor_feedback_for_student() {
-        $submissionparams = ['courseworkid' => $this->get_coursework()->id,
-                                   'allocatableid' => $this->student->id,
-                                   'allocatabletype' => 'user'];
-        $submission = submission::find($submissionparams);
+        $submission = submission::get_for_allocatable($this->get_coursework()->id, $this->student->id, 'user');
         $feedback = \mod_coursework\models\feedback::get_from_submission_and_stage($submission->id, assessor::STAGE_ASSESSOR_1);
         return $feedback;
     }
