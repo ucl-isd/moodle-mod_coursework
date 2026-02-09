@@ -84,8 +84,8 @@ class grading_report {
             $row = new grading_table_row_base(
                 $coursework,
                 $participant,
-                $extension ? deadline_extension::find($extension, false) : null,
-                $personaldeadline ? personaldeadline::find($personaldeadline, false) : null,
+                $extension ? deadline_extension::get_from_id($extension->id) : null,
+                $personaldeadline ? personaldeadline::get_from_id($personaldeadline->id) : null,
                 $allsubmissionfiles[$participant->type() . "-" . $participant->id()] ?? [],
             );
 

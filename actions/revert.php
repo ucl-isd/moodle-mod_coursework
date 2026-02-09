@@ -37,8 +37,7 @@ $submissionid = required_param('submissionid', PARAM_INT);
 $cm = $DB->get_record('course_modules', ['id' => $cmid]);
 $coursework = coursework::get_from_id($cm->instance);
 $course = $DB->get_record('course', ['id' => $cm->course]);
-$submissiondb = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
-$submission = submission::find($submissiondb);
+$submission = submission::get_from_id($submissionid);
 
 require_login($course, false, $cm);
 $url = new moodle_url('/mod/coursework/view.php', ['id' => $cm->id]);

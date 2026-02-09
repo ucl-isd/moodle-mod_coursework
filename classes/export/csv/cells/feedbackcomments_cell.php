@@ -63,9 +63,7 @@ class feedbackcomments_cell extends cell_base {
             has_capability('mod/coursework:addinitialgrade', $PAGE->context) || has_capability('mod/coursework:editinitialgrade', $PAGE->context)
             || has_capability('mod/coursework:administergrades', $PAGE->context)
         ) {
-            $dbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
-
-            $submission = submission::find($dbrecord);
+            $submission = submission::get_from_id($submissionid);
 
             // Is this submission ready to be graded
             if (!$submission->ready_to_grade()) {

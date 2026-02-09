@@ -312,9 +312,7 @@ class import extends grading_sheet {
 
                 $i++;
             }
-
-            $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
-            $submission = submission::find($subdbrecord);
+            $submission = submission::get_from_id($submissionid);
 
             // Is this submission graded? if yes did this user grade it?
 
@@ -661,11 +659,8 @@ class import extends grading_sheet {
      * @throws dml_exception
      */
     public function get_stageidentifier($submissionid, $cellidentifier) {
-
         global $DB, $USER;
-        $submission = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
-
-        $submission = submission::find($submission);
+        $submission = submission::get_from_id($submissionid);
 
         // single marked - singlegrade - allocated/notallocated
         $stageidentifier = 'assessor_1';
@@ -753,9 +748,7 @@ class import extends grading_sheet {
      */
     public function auto_agreement($cwfeedbackid) {
         global $DB;
-
-        $feedback = $DB->get_record('coursework_feedbacks', ['id' => $cwfeedbackid]);
-        $feedback = feedback::find($feedback);
+        $feedback = feedback::get_from_id($cwfeedbackid);
 
         $autofeedbackclassname = '\mod_coursework\auto_grader\\' . $this->coursework->automaticagreementstrategy;
         /**

@@ -160,16 +160,12 @@ class deadline_extensions_controller extends controller_base {
      */
     protected function edit_deadline_extension() {
         global $USER, $PAGE;
-
-        $params = [
-            'id' => $this->params['id'],
-        ];
-        $this->deadlineextension = deadline_extension::find($params);
+        $this->deadlineextension = deadline_extension::get_from_id($this->params['id']);
 
         $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('edit', $this->deadlineextension);
 
-        $PAGE->set_url('/mod/coursework/actions/deadline_extensions/edit.php', $params);
+        $PAGE->set_url('/mod/coursework/actions/deadline_extensions/edit.php', ['id' => $this->params['id']]);
         $updateurl = $this->get_router()->get_path('update deadline extension');
 
         $formdata = ['courseworkid' => $this->coursework->id, 'extensionid' => $this->params['extensionid']];

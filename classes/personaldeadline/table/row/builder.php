@@ -116,7 +116,7 @@ class builder implements user_row {
     public function get_student_firstname() {
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->firstname)) {
-            $this->allocatable = user::find($allocatable);
+            $this->allocatable = user::get_from_id($allocatable->id());
         }
 
         return $this->get_allocatable()->firstname;
@@ -130,7 +130,7 @@ class builder implements user_row {
     public function get_student_lastname() {
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->lastname)) {
-            $this->allocatable = user::find($allocatable);
+            $this->allocatable = user::get_from_id($allocatable->id());
         }
 
         return $this->get_allocatable()->lastname;
@@ -144,7 +144,7 @@ class builder implements user_row {
     public function get_idnumber() {
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->idnumber)) {
-            $this->allocatable = user::find($allocatable);
+            $this->allocatable = user::get_from_id($allocatable->id());
         }
 
         return $this->get_allocatable()->idnumber;
@@ -158,7 +158,7 @@ class builder implements user_row {
     public function get_email() {
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->email)) {
-            $this->allocatable = user::find($allocatable);
+            $this->allocatable = user::get_from_id($allocatable->id());
         }
 
         return $this->get_allocatable()->email;

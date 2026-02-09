@@ -95,7 +95,7 @@ trait factory_mixin {
         $user = new stdClass();
         $user->firstname = 'Student';
         $rawstudent = $generator->create_user($user);
-        $this->student = user::find($rawstudent);
+        $this->student = user::get_from_id($rawstudent->id);
         $this->enrol_as_student($this->student);
 
         return $this->student;
@@ -111,7 +111,7 @@ trait factory_mixin {
 
         $user = new stdClass();
         $user->firstname = 'Other Student';
-        $this->otherstudent = user::find($generator->create_user($user));
+        $this->otherstudent = user::get_from_id($generator->create_user($user)->id);
         $this->enrol_as_student($this->otherstudent);
 
         return $this->otherstudent;
@@ -128,7 +128,7 @@ trait factory_mixin {
         $user = new stdClass();
         $user->firstname = 'Teacher';
         $dbrecord = $generator->create_user($user);
-        $this->teacher = user::find($dbrecord);
+        $this->teacher = user::get_from_id($dbrecord->id);
         $this->enrol_as_teacher($this->teacher);
 
         return $this->teacher;
@@ -144,7 +144,7 @@ trait factory_mixin {
 
         $user = new stdClass();
         $user->firstname = 'Other Teacher';
-        $this->otherteacher = user::find($generator->create_user($user));
+        $this->otherteacher = user::get_from_id($generator->create_user($user)->id);
         $this->enrol_as_teacher($this->otherteacher);
 
         return $this->otherteacher;
@@ -158,7 +158,7 @@ trait factory_mixin {
         $group = new stdClass();
         $group->name = 'My group';
         $group->courseid = $this->get_course()->id;
-        $this->group = group::find($generator->create_group($group));
+        $this->group = group::get_from_id($generator->create_group($group)->id);
 
         return $this->group;
     }
