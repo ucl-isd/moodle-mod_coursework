@@ -118,9 +118,8 @@ class coursework_file_zip_importer {
             $filename = $file->get_filename();
 
             if ($allocatableid = $this->is_valid_feedback_file_filename($coursework, $file, $participants)) {
-                $subdbrecord = $DB->get_record('coursework_submissions', ['courseworkid' => $coursework->id(), 'allocatableid' => $allocatableid, 'allocatabletype' => $coursework->get_allocatable_type()]);
-
-                $submission = models\submission::find($subdbrecord);
+            } else {
+                $submission = models\submission::get_for_allocatable($coursework->id(), $allocatableid, $coursework->get_allocatable_type());
 
                 if ($submission->get_state() < models\submission::PUBLISHED) {
                     // If only add/edit initial capability then workout stage identifier
@@ -171,7 +170,6 @@ class coursework_file_zip_importer {
                 } else {
                     $results[$filename] = get_string('feedbacksubmissionpublished', 'mod_coursework');
                 }
-            } else {
                 $results[$filename] = get_string('feedbacknotfound', 'mod_coursework');
             }
         }
