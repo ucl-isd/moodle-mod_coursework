@@ -278,7 +278,7 @@ class cron {
             echo 'Auto releasing feedbacks for courseworks where the release date have passed...';
         }
 
-        $sql = "SELECT *
+        $sql = "SELECT cs.id as submissionid, *
                  FROM {coursework} c
                  JOIN {coursework_submissions} cs
                    ON c.id = cs.courseworkid
@@ -290,7 +290,7 @@ class cron {
         $courseworksubmissions = $DB->get_records_sql($sql, ['now' => time()]);
 
         foreach ($courseworksubmissions as $courseworksubmission) {
-            $submission = submission::find($courseworksubmission);
+            $submission = submission::get_from_id($courseworksubmission->submissionid);
             $feedbackautoreleasedeadline = $submission->get_coursework()->get_individual_feedback_deadline();
             $allocatable = $submission->get_allocatable();
             if (empty($allocatable)) {
