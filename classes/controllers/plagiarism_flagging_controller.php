@@ -185,13 +185,7 @@ class plagiarism_flagging_controller extends controller_base {
         global $DB;
 
         if (!empty($this->params['flagid'])) {
-            $plagiarismflag = $DB->get_record(
-                'coursework_plagiarism_flags',
-                ['id' => $this->params['flagid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->flag = new plagiarism_flag($plagiarismflag);
+            $this->flag = plagiarism_flag::get_from_id($this->params['flagid'], MUST_EXIST);
             $this->params['courseworkid'] = $this->flag->get_coursework()->id;
         }
 

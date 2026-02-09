@@ -349,19 +349,12 @@ class submissions_controller extends controller_base {
         $changedeadlines = false;
 
         foreach ($allocatableids as $aid) {
-            $submissiondb = $DB->get_record(
-                'coursework_submissions',
-                ['courseworkid' => $this->params['courseworkid'], 'allocatableid' => $aid, 'allocatabletype' => $this->params['allocatabletype']]
-            );
-            if (!empty($submissiondb)) {
-                $submission = submission::get_from_id($submissiondb->id);
-
-                if ($submission->can_be_unfinalised()) {
-                    $submission->finalisedstatus = submission::FINALISED_STATUS_MANUALLY_UNFINALISED;
-                    $submission->save();
-                    $personaldeadlinepageurl->param("allocatableid_arr[$aid]", $aid);
-                    $changedeadlines = true;
-                }
+            $submission = submission::get_for_allocatable($this->params['courseworkid']->id, $aid, $this->params['allocatabletype']);
+            if ($submission && $submission->can_be_unfinalised()) {
+                $submission->finalisedstatus = submission::FINALISED_STATUS_MANUALLY_UNFINALISED;
+                $submission->save();
+                $personaldeadlinepageurl->param("allocatableid_arr[$aid]", $aid);
+                $changedeadlines = true;
             }
         }
 
