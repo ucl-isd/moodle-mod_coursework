@@ -57,6 +57,12 @@ class feedback extends table_base {
     protected static $tablename = 'coursework_feedbacks';
 
     /**
+     * Cache area where feedback IDs for each submission ID are stored.
+     * @var string
+     */
+    const CACHE_AREA_FEEDBACKS_BY_SUBMISSION = 'feedbacksbysubmissionid';
+
+    /**
      * @var int
      */
     public $submissionid;
@@ -706,5 +712,45 @@ class feedback extends table_base {
         foreach ($feedbacks as $feedback) {
             $feedback->destroy();
         }
+    }
+
+    /**
+     * Get a feedback for a specific submission and stage.
+     * @param int $submissionid
+     * @param string $stageidentifier
+     * @return feedback|null
+     */
+    public static function get_from_submission_and_stage(int $submissionid, string $stageidentifier): ?feedback {
+        $feedbacks = self::get_all_from_submission_id($submissionid);
+        $filtered = array_filter($feedbacks, fn($f) => $f->stageidentifier == $stageidentifier);
+        return empty($filtered) ? null : array_pop($filtered);
+    }
+
+    /**
+     * Get all feedbacks for a specific submission from its ID.
+     * @param int $submissionid
+     * @return []feedback
+     */
+    public static function get_all_from_submission_id(int $submissionid): array {
+        global $DB;
+        if ($submissionid <= 0) {
+            throw new invalid_parameter_exception("Invalid ID $submissionid");
+        }
+        $cache = cache::make('mod_coursework', static::CACHE_AREA_FEEDBACKS_BY_SUBMISSION);
+        $cachedfeedbackids = $cache->get($submissionid);
+        if ($cachedfeedbackids === false) {
+            $cachedfeedbackids = $DB->get_fieldset(
+                self::$tablename,
+                'id',
+                ['submissionid' => $submissionid]
+            );
+            $cache->set($submissionid, $cachedfeedbackids);
+        }
+        $result = [];
+        foreach ($cachedfeedbackids as $cachedfeedbackid) {
+            $feedback = feedback::get_from_id($cachedfeedbackid);
+            $result[$feedback->id] = $feedback;
+        }
+        return $result;
     }
 }

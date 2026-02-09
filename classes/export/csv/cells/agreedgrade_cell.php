@@ -26,6 +26,7 @@ use mod_coursework\ability;
 use mod_coursework\grade_judge;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
+use mod_coursework\stages\final_agreed;
 
 /**
  * Class agreedgrade_cell
@@ -73,10 +74,7 @@ class agreedgrade_cell extends cell_base {
     }
 
     public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells = []) {
-
-        global $DB, $PAGE, $USER;
-
-        $stageident = 'final_agreed_1';
+        global $PAGE;
         $agreedgradecap = ['mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade',
             'mod/coursework:addallocatedagreedgrade', 'mod/coursework:editallocatedagreedgrade'];
 
@@ -160,7 +158,7 @@ class agreedgrade_cell extends cell_base {
             }
 
             // Has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
-            $feedback = feedback::find(['submissionid' => $submission->id, 'stageidentifier' => $stageident]);
+            $feedback = feedback::get_from_submission_and_stage($submission->id, final_agreed::STAGE_FINAL_AGREED_1);
 
             // Does a feedback exist for this stage
             if (empty($feedback)) {
@@ -168,7 +166,7 @@ class agreedgrade_cell extends cell_base {
                 if (
                     !has_capability('mod/coursework:administergrades', $PAGE->context)
                     && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context)
-                    && !feedback::can_add_new($this->coursework, $submission, $stageident)
+                    && !feedback::can_add_new($this->coursework, $submission, final_agreed::STAGE_FINAL_AGREED_1)
                 ) {
                     return get_string('nopermissiontomarksubmission', 'coursework');
                 }
