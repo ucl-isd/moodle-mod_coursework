@@ -21,6 +21,10 @@
  * @copyright  2026 UCL {@link https://www.ucl.ac.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+namespace mod_coursework\forms;
+
+use MoodleQuickForm_text;
+use renderer_base;
 
 defined('MOODLE_INTERNAL') || die();
 

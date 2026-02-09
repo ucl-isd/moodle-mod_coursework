@@ -131,9 +131,12 @@ class assessor_feedback_mform extends moodleform {
             $a->max = $this->coursework->get_max_grade();
 
             // Custom input type number.
-            $element = $CFG->dirroot . '/mod/coursework/classes/forms/number_element.php';
-            require_once($element);
-            $mform->registerElementType('number', $element, 'number_element');
+            \MoodleQuickForm::registerElementType(
+            'number',
+            "$CFG->dirroot/mod/coursework/classes/forms/number_element.php",
+            'mod_coursework\forms\number_element'
+            );
+
             $mform->addElement(
                 'number',
                 'grade',
