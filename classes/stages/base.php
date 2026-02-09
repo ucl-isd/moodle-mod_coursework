@@ -313,11 +313,7 @@ abstract class base {
         submission::fill_pool_coursework($courseworkid);
         $submission = submission::get_cached_object($courseworkid, ['allocatableid' => $allocatable->id]);
         if ($submission) {
-            feedback::fill_pool_coursework($courseworkid);
-            $feedback = feedback::get_cached_object(
-                $courseworkid,
-                ['submissionid' => $submission->id, 'stageidentifier' => $this->identifier()]
-            );
+            $feedback = feedback::get_from_submission_and_stage($submission->id, $this->identifier());
         }
         return !empty($feedback);
     }
@@ -378,15 +374,11 @@ abstract class base {
 
     /**
      * @param $submission
-     * @return feedback|bool
+     * @return ?feedback
      * @throws \dml_exception
      */
     public function get_single_feedback($submission) {
-        feedback::fill_pool_coursework($submission->courseworkid);
-        return feedback::get_cached_object(
-            $submission->courseworkid,
-            ['submissionid' => $submission->id, 'stageidentifier' => 'assessor_1']
-        );
+        return feedback::get_from_submission_and_stage($submission->courseworkid, 'assessor_1');
     }
 
     /**
@@ -692,10 +684,7 @@ abstract class base {
      */
     public function get_feedback_for_submission($submission) {
         $stageidentifier = $this->identifier();
-        return feedback::get_cached_object(
-            $submission->courseworkid,
-            ['submissionid' => $submission->id, 'stageidentifier' => $stageidentifier]
-        ) ?? false;
+        return feedback::get_from_submission_and_stage($submission->id, $stageidentifier) ?? false;
     }
 
     /**

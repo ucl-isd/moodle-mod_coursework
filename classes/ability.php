@@ -267,15 +267,7 @@ class ability extends framework\ability {
             'mod_coursework\models\submission',
             function (submission $submission) {
                 // Check using cached object to avoid repeated DB calls on grading page.
-                if (
-                    submission::get_cached_object(
-                        $submission->courseworkid,
-                        [
-                            'allocatableid' => $submission->allocatableid,
-                            'allocatabletype' => $submission->allocatabletype,
-                        ]
-                    )
-                ) {
+                if (submission::get_for_allocatable($this->coursework->id, $submission->allocatableid, $submission->allocatabletype)) {
                     $this->set_message('Submission already exists');
                     return true;
                 }
@@ -361,10 +353,7 @@ class ability extends framework\ability {
             'mod_coursework\models\submission',
             function (submission $submission) {
                 // Check using cached object to avoid repeated DB calls on grading page.
-                return (bool)feedback::get_cached_object(
-                    $submission->get_coursework()->id(),
-                    ['submissionid' => $submission->id(), 'assessorid' => $this->userid]
-                );
+                return !empty(feedback::get_all_for_submission($submission->id(), $this->userid));
             }
         );
     }

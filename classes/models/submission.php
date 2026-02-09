@@ -41,6 +41,7 @@ use mod_coursework\event\assessable_uploaded;
 use mod_coursework\framework\table_base;
 use mod_coursework\grade_judge;
 use mod_coursework\mailer;
+use mod_coursework\stages\final_agreed;
 use mod_coursework\submission_files;
 use moodle_url;
 use renderable;
@@ -511,13 +512,10 @@ class submission extends table_base implements renderable {
             // No submission - empty placeholder.
             return [];
         }
-
-        if (!isset(feedback::$pool[$this->courseworkid]['submissionid-stageidentifier_index'])) {
-            feedback::fill_pool_coursework($this->courseworkid);
-        }
+        $feedbacks = feedback::get_all_for_submission($this->id);
         // Get all other feedbacks whose stageidentifier is not "final_agreed_1"
         // In case of loops, we would like empty array instead of false.
-        return feedback::$pool[$this->courseworkid]['submissionid-stageidentifier_index']["$this->id-others"] ?? [];
+        return array_filter($feedbacks, fn($f) => $f->stageidentifier != final_agreed::STAGE_FINAL_AGREED_1);
     }
 
     /**
@@ -527,16 +525,8 @@ class submission extends table_base implements renderable {
      * @throws dml_exception
      */
     public function get_assessor_feedback_by_stage($stageidentifier) {
-        feedback::fill_pool_coursework($this->courseworkid);
-        return feedback::get_cached_object(
-            $this->courseworkid,
-            [
-                'submissionid' => $this->id,
-                'ismoderation' => 0,
-                'isfinalgrade' => 0,
-                'stageidentifier' => $stageidentifier,
-            ]
-        ) ?? false;
+        $feedback = feedback::get_from_submission_and_stage($this->id, $stageidentifier);
+        return $feedback && $feedback->ismoderation == 0 && $feedback->isfinalgrade == 0 ? $feedback : false;
     }
 
     /**
@@ -570,16 +560,8 @@ class submission extends table_base implements renderable {
             return [];
         }
 
-        feedback::fill_pool_coursework($this->courseworkid);
-        return feedback::get_cached_object(
-            $this->courseworkid,
-            [
-                'submissionid' => $this->id,
-                'ismoderation' => 0,
-                'isfinalgrade' => 0,
-                'stageidentifier' => 'final_agreed_1',
-            ]
-        ) ?? false;
+        $feedback = feedback::get_from_submission_and_stage($this->id, final_agreed::STAGE_FINAL_AGREED_1);
+        return $feedback && !$feedback->ismoderation && !$feedback->isfinalgrade;
     }
 
     /**
@@ -600,10 +582,7 @@ class submission extends table_base implements renderable {
         } else {
             $identifier = 'assessor_1';
         }
-        return feedback::get_cached_object(
-            $this->courseworkid,
-            ['submissionid' => $this->id, 'stageidentifier' => $identifier]
-        ) ?: null;
+        return feedback::get_from_submission_and_stage($this->id, $identifier);
     }
 
     /**
@@ -1070,7 +1049,7 @@ class submission extends table_base implements renderable {
             if (!$this->is_published()) {
                 $this->update_attribute('firstpublished', time());
                 // If the agreed grade is still in draft and is an auto grade, mark it as finalised now.
-                foreach (feedback::get_all_from_submission_id($this->id) as $feedback) {
+                foreach (feedback::get_all_for_submission($this->id) as $feedback) {
                     if ($feedback->is_auto_grade() && !$feedback->finalised) {
                         $feedback->update_attribute('finalised', 1);
                     }
@@ -1422,11 +1401,9 @@ class submission extends table_base implements renderable {
      */
     public function is_assessor_initial_grader() {
         global $USER;
-
-        feedback::fill_pool_coursework($this->courseworkid);
-        $feedbacks = feedback::$pool[$this->courseworkid]['submissionid-assessorid'][$this->id . '-' . $USER->id] ?? [];
+        $feedbacks = feedback::get_all_for_submission($this->id, $USER->id);
         foreach ($feedbacks as $feedback) {
-            if ($feedback->stageidentifier != 'final_agreed_1') {
+            if ($feedback->stageidentifier != final_agreed::STAGE_FINAL_AGREED_1) {
                 return true;
             }
         }
@@ -1457,11 +1434,7 @@ class submission extends table_base implements renderable {
         if (!isset($this->editable_final_feedback)) {
             $this->editable_final_feedback = false;
             if ($this->is_finalised()) {
-                $coursework = $this->get_coursework();
-                $finalfeedback = feedback::get_cached_object(
-                    $coursework->id,
-                    ['submissionid' => $this->id, 'stageidentifier' => 'final_agreed_1']
-                );
+                $finalfeedback = feedback::get_from_submission_and_stage($this->id, final_agreed::STAGE_FINAL_AGREED_1);
                 if ($finalfeedback && $finalfeedback->finalised == 0 && $finalfeedback->assessorid <> 0) {
                     $this->editable_final_feedback = true;
                 }

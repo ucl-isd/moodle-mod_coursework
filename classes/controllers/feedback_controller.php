@@ -183,7 +183,7 @@ class feedback_controller extends controller_base {
         // auto-populate Agreed Feedback with comments from initial marking
         if ($coursework && $coursework->autopopulatefeedbackcomment_enabled() && $teacherfeedback->stageidentifier == 'final_agreed_1') {
             // get all initial stages feedbacks for this submission
-            $initialfeedbacks = feedback::get_all_from_submission_id($teacherfeedback->submissionid);
+            $initialfeedbacks = feedback::get_all_for_submission($teacherfeedback->submissionid);
             $count = 1;
             $feedbackcomments = [];
             // put all initial feedbacks together for the comment field
@@ -471,7 +471,7 @@ class feedback_controller extends controller_base {
      * @throws \dml_exception
      */
     private function next_available_stage($feedback) {
-        $feedbacks = feedback::get_all_from_submission_id($feedback->submissionid);
+        $feedbacks = feedback::get_all_for_submission($feedback->submissionid);
         // get count of feedbacks that already exist
         $sql = "SELECT COUNT(*) as total
                 FROM {coursework_feedbacks}
