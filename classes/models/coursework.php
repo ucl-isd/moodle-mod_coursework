@@ -1671,23 +1671,6 @@ class coursework extends table_base {
     }
 
     /**
-     * @param stdClass $dbgrade
-     * @throws dml_exception
-     */
-    protected function update_feedback_timepublished($dbgrade) {
-        global $DB;
-
-        // Record the publish time, but only if not already recorded, so we only ever see time
-        // of first publishing.
-        if (!$dbgrade->timepublished) {
-            $feedback = new stdClass();
-            $feedback->id = $dbgrade->feedback_id;
-            $feedback->timepublished = time();
-            $DB->update_record('coursework_feedbacks', $feedback);
-        }
-    }
-
-    /**
      * @return bool
      */
     public function is_using_advanced_grading(): bool {
