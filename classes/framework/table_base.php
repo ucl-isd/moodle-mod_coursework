@@ -44,6 +44,8 @@ abstract class table_base {
      */
     const CACHE_AREA_IDS = null;
 
+    //todo add cache_area_by_allocatables
+
     /**
      * @var string
      */
@@ -336,10 +338,7 @@ abstract class table_base {
         // Update if there's an id, otherwise make a new one. Check first for an id?
         if ($this->persisted()) {
             $DB->update_record(static::get_table_name(), $savedata);
-            if (static::CACHE_AREA_IDS) {
-                $cache = cache::make('mod_coursework', static::CACHE_AREA_IDS);
-                $cache->delete($this->id());
-            }
+            $this->clear_cache();
         } else {
             $this->id = $DB->insert_record(static::get_table_name(), $savedata);
         }
@@ -527,11 +526,8 @@ abstract class table_base {
 
         $this->before_destroy();
 
+        $this->clear_cache();
         $DB->delete_records(static::get_table_name(), ['id' => $this->id]);
-        if (static::CACHE_AREA_IDS) {
-            $cache = cache::make('mod_coursework', static::CACHE_AREA_IDS);
-            $cache->delete($this->id());
-        }
         $this->after_destroy();
     }
 
@@ -792,9 +788,12 @@ abstract class table_base {
     /**
      * Get child object from its ID, using cache if possible.
      * @param int $id
-     * @return $this
+     * @return static|null object of the child class or null.
      */
-    public static function get_from_id(int $id, int $strictness = IGNORE_MISSING) {
+    public static function get_from_id(int $id, int $strictness = IGNORE_MISSING): ?static {
+        if ($id <= 0) {
+            throw new invalid_parameter_exception("Invalid ID $id");
+        }
         if (static::CACHE_AREA_IDS) {
             // Child class has a cache for these.
             $cache = cache::make('mod_coursework', static::CACHE_AREA_IDS);
@@ -818,5 +817,18 @@ abstract class table_base {
     private static function get_db_record_from_id(int $id, int $strictness): ?object {
         global $DB;
         return $DB->get_record(static::$tablename, ['id' => $id], '*', $strictness) ?? null;
+    }
+
+    /**
+     * Clear the cache for this object.
+     * May need to be overridden in child class, if child class has additional cache areas beyond CACHE_AREA_IDS.
+     * @return void
+     * @throws coding_exception
+     */
+    protected function clear_cache() {
+        if (static::CACHE_AREA_IDS) {
+            $cache = cache::make('mod_coursework', static::CACHE_AREA_IDS);
+            $cache->delete($this->id());
+        }
     }
 }
