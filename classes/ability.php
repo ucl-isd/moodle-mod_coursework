@@ -280,15 +280,7 @@ class ability extends framework\ability {
             'mod_coursework\models\submission',
             function (submission $submission) {
                 // Check using cached object to avoid repeated DB calls on grading page.
-                if (
-                    submission::get_cached_object(
-                        $submission->courseworkid,
-                        [
-                            'allocatableid' => $submission->allocatableid,
-                            'allocatabletype' => $submission->allocatabletype,
-                        ]
-                    )
-                ) {
+                if (submission::get_for_allocatable($this->coursework->id, $submission->allocatableid, $submission->allocatabletype)) {
                     $this->set_message('Submission already exists');
                     return true;
                 }
@@ -374,10 +366,7 @@ class ability extends framework\ability {
             'mod_coursework\models\submission',
             function (submission $submission) {
                 // Check using cached object to avoid repeated DB calls on grading page.
-                return (bool)feedback::get_cached_object(
-                    $submission->get_coursework()->id(),
-                    ['submissionid' => $submission->id(), 'assessorid' => $this->userid]
-                );
+                return !empty(feedback::get_all_for_submission($submission->id(), $this->userid));
             }
         );
     }
@@ -1260,14 +1249,10 @@ class ability extends framework\ability {
             'mod_coursework\grading_table_row_base',
             function (grading_table_row_base $gradingtablerow) {
                 // Check using cached object to avoid repeated DB calls on grading page.
-                return $gradingtablerow->has_submission()
-                    && feedback::get_cached_object(
-                        $gradingtablerow->get_coursework()->id(),
-                        [
-                            'submissionid' => $gradingtablerow->get_submission()->id(),
-                            'assessorid' => $this->userid,
-                        ],
-                    );
+                if ($gradingtablerow->has_submission()) {
+                    return !empty(feedback::get_all_for_submission($gradingtablerow->get_submission()->id(), $this->userid));
+                }
+                return false;
             }
         );
     }

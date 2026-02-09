@@ -536,46 +536,6 @@ class coursework extends table_base {
     }
 
     /**
-     * Gets all the feedbacks for this coursework as DB rows.
-     *
-     * @return array
-     * @throws dml_exception
-     */
-    public function get_all_raw_feedbacks() {
-        feedback::fill_pool_coursework($this->id);
-        return feedback::$pool[$this->id]['id'];
-    }
-
-    /**
-     * @param $cangrade bool
-     * @return int number of ungraded assessments, 0
-     * @throws \core\exception\coding_exception
-     * @throws dml_exception
-     */
-    public function get_ungraded_assessments_number($cangrade) {
-        global $USER;
-        // Is this a teacher? If so, show the number of bits of work they need to mark.
-        if (!$cangrade) {
-            return 0;
-        }
-        // Count submitted work that this person has not graded.
-        submission::fill_pool_coursework($this->id);
-        feedback::fill_pool_coursework($this->id);
-        $submissions = submission::$pool[$this->id]['id'];
-        $count = 0;
-        foreach ($submissions as $s) {
-            $feedback = feedback::get_cached_object(
-                $this->id,
-                ['submissionid' => $s->id, 'assessorid' => $USER->id]
-            );
-            if (empty($feedback)) {
-                $count++;
-            }
-        }
-        return $count;
-    }
-
-    /**
      * Getter for DB deadline field.
      *
      * @return int
@@ -2114,7 +2074,6 @@ class coursework extends table_base {
             return;
         }
         submission::fill_pool_coursework($this->id);
-        feedback::fill_pool_coursework($this->id);
         $submissions = submission::$pool[$this->id]['finalisedstatus'][submission::FINALISED_STATUS_FINALISED] ?? [];
         if (empty($submissions)) {
             return;
@@ -2136,7 +2095,6 @@ class coursework extends table_base {
             }
         }
         unset($SESSION->keep_cache_data);
-        feedback::remove_cache($this->id);
     }
 
     /** Function to check it Turnitin is enabled for the particular coursework

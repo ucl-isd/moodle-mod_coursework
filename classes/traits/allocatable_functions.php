@@ -148,6 +148,5 @@ trait allocatable_functions {
     private function fill_submission_and_feedback($coursework) {
         $courseworkid = $coursework->id;
         submission::fill_pool_coursework($courseworkid);
-        feedback::fill_pool_coursework($courseworkid);
     }
 }

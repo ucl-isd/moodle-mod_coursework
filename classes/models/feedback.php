@@ -386,25 +386,12 @@ class feedback extends table_base {
             if (!$this->submissionid) {
                 throw new coding_exception("Cannot get submission without ID");
             }
-            if ($this->courseworkid) {
-                // We have coursework ID so try to get it from pool.
-                if (!isset(submission::$pool[$this->courseworkid])) {
-                    submission::fill_pool_coursework($this->courseworkid);
-                }
-                $submission = submission::$pool[$this->courseworkid]['id'][$this->submissionid];
-                if ($submission) {
-                    $this->set_submission($submission);
-                }
-            }
-            if (!isset($this->submission)) {
-                // We still do not have submission so try to get it from DB using ID.
-                $submission = submission::get_from_id($this->submissionid) ?: null;
-                if ($submission) {
-                    $this->set_submission($submission);
-                }
+            $submission = submission::get_from_id($this->submissionid);
+            if ($submission) {
+                $this->set_submission($submission);
             }
         }
-        if (!isset($this->submission)) {
+        if (!$this->submission) {
             throw new coding_exception("Could not find submission for feedback ID $this->id submission ID $this->submissionid");
         }
 
@@ -488,107 +475,17 @@ class feedback extends table_base {
     }
 
     /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
-     *
-     * @param int $courseworkid
-     * @throws dml_exception
-     */
-    public static function fill_pool_coursework($courseworkid) {
-        global $DB;
-        if (isset(self::$pool[$courseworkid])) {
-            return;
-        }
-        if (submission::$pool[$courseworkid] ?? null) {
-            $submissionids = array_keys(submission::$pool[$courseworkid]['id']);
-        } else {
-            $submissionids = array_map(
-                fn($id) => (int)$id,
-                $DB->get_fieldset(submission::$tablename, 'id', ['courseworkid' => $courseworkid])
-            );
-        }
-        self::fill_pool_submissions($courseworkid, $submissionids);
-    }
-
-    /**
-     * @param int $courseworkid
-     * @param $submissionids
-     * @throws \core\exception\coding_exception
-     * @throws coding_exception
-     * @throws dml_exception
-     */
-    public static function fill_pool_submissions($courseworkid, $submissionids) {
-        global $DB;
-
-        if (isset(self::$pool[$courseworkid])) {
-            return;
-        }
-
-        $key = self::$tablename;
-        $cache = cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
-
-        $data = $cache->get($key);
-        if ($data === false) {
-            $data = array_fill_keys(self::get_valid_cache_keys(), []);
-            if ($submissionids) {
-                [$submissionidsql, $submissionidparams] = $DB->get_in_or_equal($submissionids, SQL_PARAMS_NAMED);
-                $feedbacks = $DB->get_records_sql("SELECT * FROM {coursework_feedbacks} WHERE submissionid $submissionidsql", $submissionidparams);
-                foreach ($feedbacks as $record) {
-                    $object = new self($record);
-                    $stageidentifier = $record->stageidentifier;
-                    $stageidentifierindex = ($stageidentifier == final_agreed::STAGE_FINAL_AGREED_1) ? $stageidentifier : 'others';
-                    $data['id'][$record->id] = $object;
-                    $data['submissionid-stageidentifier'][$record->submissionid . '-' . $stageidentifier][] = $object;
-                    $data['submissionid-stageidentifier_index'][$record->submissionid . '-' . $stageidentifierindex][] = $object;
-                    $data['submissionid-finalised'][$record->submissionid . '-' . $record->finalised][] = $object;
-                    $data['submissionid-ismoderation-isfinalgrade-stageidentifier'][$record->submissionid . '-' . $record->ismoderation . '-' . $record->isfinalgrade . '-' . $stageidentifier][] = $object;
-                    $data['submissionid-assessorid'][$record->submissionid . '-' . $record->assessorid][] = $object;
-                    $data['submissionid'][$record->submissionid][] = $object;
-                }
-            }
-            $cache->set($key, $data);
-        }
-        self::$pool[$courseworkid] = $data;
-    }
-
-
-    /**
-     * Get the allowed/expected cache keys for this class when @see self::get_cached_object() is called.
-     * @return string[]
-     */
-    public static function get_valid_cache_keys(): array {
-        return [
-            'id',
-            'submissionid-stageidentifier',
-            'submissionid-stageidentifier_index',
-            'submissionid-finalised',
-            'submissionid-ismoderation-isfinalgrade-stageidentifier',
-            'submissionid-assessorid',
-            'submissionid',
-        ];
-    }
-
-    /**
      *
      */
     protected function post_save_hook() {
-        $submission = $this->submissionid ? $this->get_submission() : null;
-        if ($submission && $submission->courseworkid ?? false) {
-            self::remove_cache($submission->courseworkid);
-        }
+        self::clear_cache($this->id);
     }
 
     /**
      *
      */
     protected function after_destroy() {
-        $courseworkid = $this->get_submission()->courseworkid;
-        self::remove_cache($courseworkid);
+        self::clear_cache($this->id);
     }
 
     /**
@@ -683,20 +580,32 @@ class feedback extends table_base {
     /**
      * Get all feedbacks for a submission.
      * @param int $submissionid
+     * @param int $assessorid optional assessor ID filter.
      * @return feedback[]
      * @throws dml_exception
      * @throws invalid_parameter_exception
      */
-    public static function get_all_for_submission(int $submissionid): array {
+    public static function get_all_for_submission(int $submissionid, int $assessorid = 0): array {
         global $DB;
-        $feedbackids = $DB->get_fieldset(
-            'coursework_feedbacks',
-            'id',
-            ['submissionid' => $submissionid],
-        );
+        if ($submissionid <= 0) {
+            throw new invalid_parameter_exception("Invalid ID $submissionid");
+        }
+        $cache = cache::make('mod_coursework', static::CACHE_AREA_FEEDBACKS_BY_SUBMISSION);
+        $cachedfeedbackids = $cache->get($submissionid);
+        if ($cachedfeedbackids === false) {
+            $cachedfeedbackids = $DB->get_fieldset(
+                self::$tablename,
+                'id',
+                ['submissionid' => $submissionid]
+            );
+            $cache->set($submissionid, $cachedfeedbackids);
+        }
         $result = [];
-        foreach ($feedbackids as $feedbackid) {
-            $result[$feedbackid] = self::get_from_id($feedbackid);
+        foreach ($cachedfeedbackids as $cachedfeedbackid) {
+            $feedback = self::get_from_id($cachedfeedbackid);
+            if ($feedback && ($assessorid == 0 || $assessorid == $feedback->assessorid)) {
+                $result[$feedback->id] = $feedback;
+            }
         }
         return $result;
     }
@@ -721,41 +630,10 @@ class feedback extends table_base {
      * @return feedback|null
      */
     public static function get_from_submission_and_stage(int $submissionid, string $stageidentifier): ?feedback {
-        $feedbacks = self::get_all_from_submission_id($submissionid);
+        $feedbacks = self::get_all_for_submission($submissionid);
         $filtered = array_filter($feedbacks, fn($f) => $f->stageidentifier == $stageidentifier);
         return empty($filtered) ? null : array_pop($filtered);
     }
-
-    /**
-     * Get all feedbacks for a specific submission from its ID.
-     * @param int $submissionid
-     * @return feedback[]
-     */
-    public static function get_all_from_submission_id(int $submissionid): array {
-        global $DB;
-        if ($submissionid <= 0) {
-            throw new invalid_parameter_exception("Invalid ID $submissionid");
-        }
-        $cache = cache::make('mod_coursework', static::CACHE_AREA_FEEDBACKS_BY_SUBMISSION);
-        $cachedfeedbackids = $cache->get($submissionid);
-        if ($cachedfeedbackids === false) {
-            $cachedfeedbackids = $DB->get_fieldset(
-                self::$tablename,
-                'id',
-                ['submissionid' => $submissionid]
-            );
-            $cache->set($submissionid, $cachedfeedbackids);
-        }
-        $result = [];
-        foreach ($cachedfeedbackids as $cachedfeedbackid) {
-            $feedback = feedback::get_from_id($cachedfeedbackid);
-            if ($feedback) {
-                $result[$feedback->id] = $feedback;
-            }
-        }
-        return $result;
-    }
-
 
     /**
      * Clear the caches for this object.

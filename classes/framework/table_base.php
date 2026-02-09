@@ -377,6 +377,7 @@ abstract class table_base {
      * Allows subclasses to do other stuff after after the DB save.
      */
     protected function post_save_hook() {
+        static::clear_cache($this->id);
     }
 
     /**
@@ -540,7 +541,7 @@ abstract class table_base {
      * Hook method to allow subclasses to get stuff done like destruction of dependent records.
      */
     protected function after_destroy() {
-        self::clear_cache($this->id);
+        static::clear_cache($this->id);
     }
 
     /**
