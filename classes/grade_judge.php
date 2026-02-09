@@ -30,6 +30,8 @@ use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\null_feedback;
 use mod_coursework\models\submission;
+use mod_coursework\stages\final_agreed;
+use mod_coursework\stages\assessor;
 
 /**
  * Class grade_judge is responsible for deciding what the student's final grade should be, given
@@ -135,9 +137,9 @@ class grade_judge {
         }
 
         if ($this->allocatable_needs_more_than_one_feedback($submission->get_allocatable())) {
-            $feedback = feedback::find(['submissionid' => $submission->id(), 'stageidentifier' => 'final_agreed_1']);
+            $feedback = feedback::get_from_submission_and_stage($submission->id(), final_agreed::STAGE_FINAL_AGREED_1);
         } else {
-            $feedback = feedback::find(['submissionid' => $submission->id(), 'stageidentifier' => 'assessor_1']);
+            $feedback = feedback::get_from_submission_and_stage($submission->id(), assessor::STAGE_ASSESSOR_1);
         }
 
         return $feedback ? $feedback : new null_feedback();
