@@ -1367,19 +1367,20 @@ class coursework extends table_base {
 
     /**
      * @param user|null $user
-     * @return submission
+     * @return submission|null;
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function get_user_submission($user) {
-
+    public function get_user_submission(?user $user): ?submission {
+        if (!$user) {
+            return null;
+        }
         if ($this->is_configured_to_have_group_submissions()) {
             $allocatable = $this->get_coursework_group_from_user_id($user->id());
+            return submission::get_for_allocatable($this->id, $allocatable->id(), $allocatable->type());
         } else {
-            $allocatable = $user;
+            return submission::get_for_allocatable($this->id, $user->id(), 'user');
         }
-
-        return submission::get_for_allocatable($this->id, $allocatable->id(), $allocatable->type());
     }
 
     /**

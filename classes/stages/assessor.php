@@ -24,6 +24,7 @@ namespace mod_coursework\stages;
 
 use AllowDynamicProperties;
 use coding_exception;
+use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 
 /**
@@ -88,16 +89,9 @@ class assessor extends base {
      * @throws \dml_exception
      */
     public function other_parallel_stage_has_feedback_from_this_assessor(int $assessorid, $submission) {
-        global $DB;
-
-        $sql = "
-            SELECT 1
-            FROM {coursework_feedbacks} f
-            WHERE assessorid = ?
-            AND submissionid = ?
-            AND stageidentifier LIKE '{$this->type()}%'
-        ";
-        return $DB->record_exists_sql($sql, [$assessorid, $submission->id]);
+        $feedbacks = feedback::get_all_for_submission($submission->id, $assessorid);
+        $filtered = array_filter($feedbacks, fn($f) => str_starts_with($f->stageidentifier, $this->type()));
+        return !empty($filtered);
     }
 
     /**

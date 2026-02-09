@@ -166,6 +166,11 @@ class feedback extends table_base {
     public $markernumber;
 
     /**
+     * @var bool is this finalised
+     */
+    public $finalised;
+
+    /**
      * This allows up to loop through the properties of the object which correspond to fields
      * in the DB table, ignoring the others.
      * @var array
