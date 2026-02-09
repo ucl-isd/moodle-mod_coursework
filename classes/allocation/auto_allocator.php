@@ -104,8 +104,8 @@ class auto_allocator {
     private function delete_all_ungraded_auto_allocations() {
         global $DB;
 
-        $ungradedallocations = $DB->get_records_sql('
-            SELECT *
+        $ungradedallocationids = $DB->get_fieldset_sql('
+            SELECT p.id
             FROM {coursework_allocation_pairs} p
             WHERE courseworkid = ?
             AND p.ismanual = 0
@@ -121,11 +121,11 @@ class auto_allocator {
             )
         ', ['courseworkid' => $this->get_coursework()->id]);
 
-        foreach ($ungradedallocations as &$allocation) {
+        foreach ($ungradedallocationids as $allocationid) {
             /**
              * @var allocation $allocation_object
              */
-            $allocationobject = allocation::find($allocation);
+            $allocationobject = allocation::get_from_id($allocationid);
             $allocationobject->destroy();
         }
         // Behat test @mod_coursework_allocation_auto_interact_manual fails without this.
