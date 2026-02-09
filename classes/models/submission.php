@@ -551,7 +551,7 @@ class submission extends table_base implements renderable {
     }
 
     /**
-     * @return array|bool|feedback
+     * @return bool|feedback
      * @throws dml_exception
      */
     public function get_agreed_grade() {
@@ -561,7 +561,7 @@ class submission extends table_base implements renderable {
         }
 
         $feedback = feedback::get_from_submission_and_stage($this->id, final_agreed::STAGE_FINAL_AGREED_1);
-        return $feedback && !$feedback->ismoderation && !$feedback->isfinalgrade;
+        return $feedback && !$feedback->ismoderation && !$feedback->isfinalgrade ? $feedback : false;
     }
 
     /**
