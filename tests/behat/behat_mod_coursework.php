@@ -34,6 +34,7 @@ use mod_coursework\models\submission;
 use mod_coursework\models\user;
 use mod_coursework\router;
 use mod_coursework\stages\base as stage_base;
+use mod_coursework\stages\assessor;
 use mod_coursework\auto_grader\average_grade_no_straddle;
 
 require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
@@ -2846,12 +2847,7 @@ class behat_mod_coursework extends behat_base {
                                    'allocatableid' => $this->student->id,
                                    'allocatabletype' => 'user'];
         $submission = submission::find($submissionparams);
-
-        $feedbackparams = [
-            'stageidentifier' => 'assessor_1',
-            'submissionid' => $submission->id,
-        ];
-        $feedback = \mod_coursework\models\feedback::find($feedbackparams);
+        $feedback = \mod_coursework\models\feedback::get_from_submission_and_stage($submission->id, assessor::STAGE_ASSESSOR_1);
         return $feedback;
     }
 

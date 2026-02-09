@@ -50,12 +50,7 @@ class assessorgrade_cell extends cell_base {
 
         // check if user can see initial grades before all of them are completed
         $ability = new ability($USER->id, $this->coursework);
-
-        $feedbackparams = [
-            'submissionid' => $submission->id,
-            'stageidentifier' => $stageidentifier,
-        ];
-        $feedback = feedback::find($feedbackparams);
+        $feedback = feedback::get_from_submission_and_stage($submission->id, $stageidentifier);
 
         if (($submission->get_agreed_grade() || ($feedback && $ability->can('show', $feedback))) || !$submission->any_editable_feedback_exists() || is_siteadmin($USER->id)) {
             if ($this->coursework->is_using_rubric()) {
@@ -182,11 +177,7 @@ class assessorgrade_cell extends cell_base {
             }
 
             // Has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
-            $feedbackparams = [
-                'submissionid' => $submission->id,
-                'stageidentifier' => $stageidentifier,
-            ];
-            $feedback = feedback::find($feedbackparams);
+            $feedback = feedback::get_from_submission_and_stage($submission->id, $stageidentifier);
 
             $ability = new ability($USER->id, $this->coursework);
 

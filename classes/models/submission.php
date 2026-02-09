@@ -495,23 +495,6 @@ class submission extends table_base implements renderable {
     }
 
     /**
-     * Gets all attached feedbacks, fetching from DB if not already there.
-     *
-     * @return feedback[] array of raw db records
-     * @throws dml_exception
-     */
-    public function get_feedbacks() {
-        if (!is_array($this->feedbacks)) {
-            // Sort here is on ID so that if there's any need to get the first one chronologically, we can use reset().
-
-            feedback::fill_pool_coursework($this->courseworkid);
-            $this->feedbacks = feedback::$pool[$this->courseworkid]['submissionid'][$this->id] ?? [];
-        }
-
-        return $this->feedbacks;
-    }
-
-    /**
      * This will return the feedbacks that have been added, but which are not the final feedback.
      *
      * @return feedback[]
@@ -1068,7 +1051,7 @@ class submission extends table_base implements renderable {
             if (!$this->is_published()) {
                 $this->update_attribute('firstpublished', time());
                 // If the agreed grade is still in draft and is an auto grade, mark it as finalised now.
-                foreach ($this->get_feedbacks() as $feedback) {
+                foreach (feedback::get_all_from_submission_id($this->id) as $feedback) {
                     if ($feedback->is_auto_grade() && !$feedback->finalised) {
                         $feedback->update_attribute('finalised', 1);
                     }

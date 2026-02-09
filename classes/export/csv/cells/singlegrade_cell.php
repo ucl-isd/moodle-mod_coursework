@@ -152,11 +152,7 @@ class singlegrade_cell extends cell_base {
             }
 
             // Has this submission been graded if yes then check if the current user graded it (only if allocation is not enabled).
-            $feedbackparams = [
-                'submissionid' => $submission->id,
-                'stageidentifier' => $stageidentifier,
-            ];
-            $feedback = feedback::find($feedbackparams);
+            $feedback = feedback::get_from_submission_and_stage($submission->id, $stageidentifier);
 
             if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
                 // Was this user the one who last graded this submission if not then user cannot grade

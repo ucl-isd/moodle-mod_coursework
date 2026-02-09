@@ -92,4 +92,9 @@ $definitions = [
         'simplekeys' => true,
         'simpledata' => false,
     ],
+    feedback::CACHE_AREA_FEEDBACKS_BY_SUBMISSION => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => true,
+    ]
 ];
