@@ -2332,18 +2332,6 @@ class coursework extends table_base {
     }
 
     /**
-     * Function to retrieve all feedbacks by a submission
-     *
-     * @param $submissionid
-     * @return feedbacks
-     * @throws dml_exception
-     */
-    public function retrieve_feedbacks_by_submission($submissionid) {
-        feedback::fill_pool_coursework($this->id);
-        return isset(feedback::$pool[$this->id][$submissionid]) ? feedback::$pool[$this->id][$submissionid] : [];
-    }
-
-    /**
      * Function to remove all submissions submitted by a user
      *
      * @param $userid
@@ -2351,19 +2339,14 @@ class coursework extends table_base {
      */
     public function remove_submissions_by_user($userid) {
         global $DB;
-        $DB->delete_records('coursework_submissions', ['courseworkid' => $this->id, 'authorid' => $userid, 'allocatabletype' => 'user']);
+        $params = ['courseworkid' => $this->id, 'authorid' => $userid, 'allocatabletype' => 'user'];
+        $ids = $DB->get_fieldset('coursework_submissions', 'id', $params);
+        foreach ($ids as $id) {
+            $submission = submission::get_from_id($id);
+            $submission->destroy();
+        }
     }
 
-    /**
-     * Function to remove all submissions by this coursework
-     *
-     * @return void
-     * @throws dml_exception
-     */
-    public function remove_submissions_by_coursework() {
-        global $DB;
-        $DB->delete_records('coursework_submissions', ['courseworkid' => $this->id, 'allocatabletype' => 'user']);
-    }
     /**
      * Function to Remove the corresponding file by context, item-id and fielarea
      *
@@ -2375,57 +2358,6 @@ class coursework extends table_base {
         $component = 'mod_coursework';
         $fs = get_file_storage();
         $fs->delete_area_files($contextid, $component, $filearea, $itemid);
-    }
-
-    /**
-     * Function to Remove all feedbacks by a submission
-     *
-     * @param $submissionid
-     * @throws dml_exception
-     */
-    public function remove_feedbacks_by_submission($submissionid) {
-        global $DB;
-        $DB->delete_records('coursework_feedbacks', ['submissionid' => $submissionid]);
-    }
-
-    /**
-     * Function to Remove all agreements by a feedback
-     *
-     * @param $feedbackid
-     * @throws dml_exception
-     */
-    public function remove_agreements_by_feedback($feedbackid) {
-        global $DB;
-        $DB->delete_records('coursework_mod_agreements', ['feedbackid' => $feedbackid]);
-    }
-
-    /**
-     * Function to Remove all deadline extensions by user
-     *
-     * @param $userid
-     * @throws dml_exception
-     */
-    public function remove_deadline_extensions_by_user($userid) {
-        global $DB;
-        $DB->execute('DELETE FROM {coursework_extensions} WHERE allocatabletype = ? AND (allocatableid = ? OR allocatableuser = ? ) ', ['user', $userid, $userid]);
-    }
-    /**
-     * Function to Remove all personal deadlines by coursework
-     *
-     */
-    public function remove_personaldeadlines_by_coursework() {
-        global $DB;
-
-        $DB->execute('DELETE FROM {coursework_person_deadlines} WHERE allocatabletype = ? AND courseworkid = ? ', ['user', $this->id]);
-        personaldeadline::remove_cache($this->id);
-    }
-    /**
-     * Function to Remove all deadline extensions by coursework
-     *
-     */
-    public function remove_deadline_extensions_by_coursework() {
-        global $DB;
-        $DB->execute('DELETE FROM {coursework_extensions} WHERE allocatabletype = ? AND courseworkid = ? ', ['user', $this->id]);
     }
 
     /**
@@ -2514,18 +2446,6 @@ class coursework extends table_base {
         }
 
         return $extension;
-    }
-
-    /**
-     * Function to Remove all plagiarisms by a submission
-     *
-     * @param $submissionid
-     * @throws dml_exception
-     */
-    public function remove_plagiarisms_by_submission($submissionid) {
-        global $DB;
-
-        $DB->delete_records('coursework_plagiarism_flags', ['submissionid' => $submissionid]);
     }
 
     /**
@@ -2830,5 +2750,25 @@ class coursework extends table_base {
             $event->priority = CALENDAR_EVENT_USER_OVERRIDE_PRIORITY;
             return (bool)calendar_event::create($event, false);
         }
+    }
+
+
+    /**
+     * Clear the cache for this object.
+     * May need to be overridden in child class, if child class has additional cache areas beyond CACHE_AREA_IDS.
+     * @return void
+     * @throws coding_exception
+     */
+    public static function clear_cache(int $id) {
+        //todo clear cache for dependent records e.g. submissions, feedback etc.
+        parent::clear_cache($id);
+    }
+
+    public function destroy() {
+        // todo Delete any dependent records here.
+        // TODO delete feedbacks.
+        // TODO delete allocations.
+        // TODO delete submissions.
+        parent::destroy();
     }
 }

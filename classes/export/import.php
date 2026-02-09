@@ -637,8 +637,9 @@ class import extends grading_sheet {
             $editgrade->feedbackcomment = $feedback;
             $editgrade->lasteditedbyuser = $USER->id;
             $editgrade->finalised = 1;
-
-             $update = $DB->update_record('coursework_feedbacks', $editgrade);
+            // TODO would be better to use a feedback object and do feedback->save() here.
+            feedback::clear_cache($editgrade->id);
+            $update = $DB->update_record('coursework_feedbacks', $editgrade);
 
              // if record updated and coursework has automatic grading enabled update agreedgrade
             if ($update && $this->coursework->automaticagreement_enabled()) {
