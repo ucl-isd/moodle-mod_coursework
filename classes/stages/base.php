@@ -310,8 +310,7 @@ abstract class base {
     public function has_feedback($allocatable) {
         $feedback = null;
         $courseworkid = $this->get_courseworkid();
-        submission::fill_pool_coursework($courseworkid);
-        $submission = submission::get_cached_object($courseworkid, ['allocatableid' => $allocatable->id]);
+        $submission = submission::get_for_allocatable($courseworkid, $allocatable->id(), $allocatable->type());
         if ($submission) {
             $feedback = feedback::get_from_submission_and_stage($submission->id, $this->identifier());
         }
@@ -358,12 +357,10 @@ abstract class base {
      * @return bool|feedback
      */
     public function get_feedback_for_allocatable($allocatable) {
-        $submission = submission::get_cached_object(
+        $submission = submission::get_for_allocatable(
             $this->get_coursework()->id,
-            [
-                'allocatableid' => $allocatable->id(),
-                'allocatabletype' => $allocatable->type(),
-                ]
+            $allocatable->id(),
+            $allocatable->type()
         );
 
         if ($submission) {
@@ -623,13 +620,7 @@ abstract class base {
         foreach ($allstages as $stage) {
             // if coursework has sampling enabled, each stage must be checked if it uses sampling
             if ($this->get_coursework()->sampling_enabled()) {
-                $submission = submission::get_cached_object(
-                    $courseworkid,
-                    [
-                        'allocatableid' => $allocatable->id(),
-                        'allocatabletype' => $allocatable->type(),
-                    ]
-                );
+                $submission = submission::get_for_allocatable($courseworkid, $allocatable->id(), $allocatable->type());
 
                 if (
                     $submission
