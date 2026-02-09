@@ -217,16 +217,8 @@ class moderations_controller extends controller_base {
      * Get any feedback-specific stuff.
      */
     protected function prepare_environment() {
-        global $DB;
-
         if (!empty($this->params['feedbackid'])) {
-            $feedback = $DB->get_record(
-                'coursework_feedbacks',
-                ['id' => $this->params['feedbackid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->feedback = new feedback($feedback);
+            $this->feedback = feedback::get_from_id($this->params['feedbackid'], MUST_EXIST);
             $this->params['courseworkid'] = $this->feedback->get_coursework()->id;
         }
 

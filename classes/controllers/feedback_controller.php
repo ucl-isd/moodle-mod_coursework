@@ -33,6 +33,7 @@ use mod_coursework\forms\assessor_feedback_mform;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
+use mod_coursework\stages\final_agreed;
 use moodle_url;
 
 defined('MOODLE_INTERNAL' || die());
@@ -139,8 +140,7 @@ class feedback_controller extends controller_base {
         // auto-populate Agreed Feedback with comments from initial marking
         if ($coursework && $coursework->autopopulatefeedbackcomment_enabled() && $teacherfeedback->stageidentifier == 'final_agreed_1') {
             // get all initial stages feedbacks for this submission
-            $initialfeedbacks = $DB->get_records('coursework_feedbacks', ['submissionid' => $teacherfeedback->submissionid]);
-
+            $initialfeedbacks = feedback::get_all_from_submission_id($teacherfeedback->submissionid);
             $count = 1;
             $feedbackcomments = [];
             // put all initial feedbacks together for the comment field
@@ -374,16 +374,8 @@ class feedback_controller extends controller_base {
      * Get any feedback-specific stuff.
      */
     protected function prepare_environment() {
-        global $DB;
-
         if (!empty($this->params['feedbackid'])) {
-            $feedback = $DB->get_record(
-                'coursework_feedbacks',
-                ['id' => $this->params['feedbackid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->feedback = new feedback($feedback);
+            $this->feedback = feedback::get_from_id($this->params['feedbackid'], MUST_EXIST);
             $this->params['courseworkid'] = $this->feedback->get_coursework()->id;
         }
 
@@ -459,15 +451,10 @@ class feedback_controller extends controller_base {
      * @throws \dml_exception
      */
     private function next_available_stage($feedback) {
-        global $DB;
+        $feedbacks = feedback::get_all_from_submission_id($feedback->submissionid);
         // get count of feedbacks that already exist
-        $sql = "SELECT COUNT(*) as total
-                FROM {coursework_feedbacks}
-                WHERE submissionid = $feedback->submissionid
-                AND stageidentifier <> 'final_agreed_1'";
-
-        $usedstages = $DB->get_record_sql($sql);
-        $newstage = $usedstages->total + 1;
+        $filtered = array_filter($feedbacks, fn($f) => $f->stageidentifier != final_agreed::STAGE_FINAL_AGREED_1);
+        $newstage = count($filtered) + 1;
         return 'assessor_' . $newstage;
     }
 
