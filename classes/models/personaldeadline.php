@@ -161,6 +161,7 @@ class personaldeadline extends table_base {
      *
      */
     protected function after_destroy() {
+        self::clear_cache($this->id);
         self::remove_cache($this->courseworkid);
     }
 

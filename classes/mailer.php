@@ -258,7 +258,7 @@ class mailer {
 
             $userstonotify = user::get_from_id($useridtonotify);
             if (!$userstonotify) {
-                continue;
+                return;
             }
             $emaildata->name = $userstonotify->name();
             $textbody = get_string('submission_notification_text', 'coursework', $emaildata);
