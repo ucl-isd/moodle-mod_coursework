@@ -631,8 +631,8 @@ function coursework_update_instance($coursework) {
         // Remove all deadline events for this coursework regardless the type
          calendar::remove_event($coursework);
     }
-    // TODO would be better to use a coursework object and do feedback->save() here.
-    coursework::clear_cache($coursework->id);
+    $cw = coursework::get_from_id($coursework->id);
+    $cw->clear_cache();
     return $DB->update_record('coursework', $coursework);
 }
 
@@ -1223,6 +1223,7 @@ function coursework_records_to_menu($records, $field1, $field2) {
 function coursework_mod_updated($eventdata) {
     if ($eventdata->other['modulename'] == 'coursework') {
         $coursework = coursework::get_from_id($eventdata->other['instanceid']);
+        $coursework->clear_cache();
         /**
          * @var coursework $coursework
          */

@@ -43,9 +43,6 @@ final class csv_test extends \advanced_testcase {
         $this->student = $this->create_a_student();
         $this->teacher = $this->create_a_teacher();
         $this->otherteacher = $this->create_another_teacher();
-
-        // If we don't do this, we end up with the same cached objects for all tests and they may have incorrect/missing properties.
-        \mod_coursework\models\coursework::$pool = null;
     }
 
     /**

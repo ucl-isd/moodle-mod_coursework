@@ -57,6 +57,12 @@ abstract class table_base {
     const CACHE_AREA_BY_GROUP = null;
 
     /**
+     * @var string|null cache area for objects by submission.
+     * Child classes are expected to override this if they implement caching by submission.
+     */
+    const CACHE_AREA_BY_SUBMISSION = null;
+
+    /**
      * @var string
      */
     protected static $tablename;
@@ -384,7 +390,7 @@ abstract class table_base {
      * Allows subclasses to do other stuff after the DB save.
      */
     protected function post_save_hook() {
-        static::clear_cache($this->id);
+        $this->clear_cache();
     }
 
     /**
@@ -548,7 +554,7 @@ abstract class table_base {
      * Hook method to allow subclasses to get stuff done like destruction of dependent records.
      */
     protected function after_destroy() {
-        static::clear_cache($this->id);
+        $this->clear_cache();
     }
 
     /**
@@ -675,7 +681,7 @@ abstract class table_base {
      * @throws coding_exception
      */
     public function __toString() {
-        $string = $this->get_table_name() . ' ' . $this->id . ' ';
+        $string = $this->get_table_name() . ' ' . $this->id ?? 0 . ' ';
         foreach ($this->get_column_names() as $column) {
             $string .= $column . ' ' . $this->$column . ' ';
         }
@@ -854,23 +860,11 @@ abstract class table_base {
      * @return void
      * @throws \core\exception\coding_exception
      */
-    public static function clear_cache(int $id) {
-        // First the caches by user/group ID, if the child class implements them.
-        $object = static::get_from_id($id);
-        if ($object) {
-            if ((static::CACHE_AREA_BY_USER ?? null) && $object->allocatabletype == 'user') {
-                $cachetoclear = cache::make('mod_coursework', static::CACHE_AREA_BY_USER);
-                $cachetoclear->delete($object->allocatableid);
-            } else if ((static::CACHE_AREA_BY_GROUP  ?? null) && $object->allocatabletype == 'group') {
-                $cachetoclear = cache::make('mod_coursework', static::CACHE_AREA_BY_GROUP);
-                $cachetoclear->delete($object->allocatableid);
-            }
-        }
-
+    public function clear_cache() {
         if (static::CACHE_AREA_IDS) {
             // Child class implements the main cache - clear that too.
             $cache = cache::make('mod_coursework', static::CACHE_AREA_IDS);
-            $cache->delete($id);
+            $cache->delete($this->id);
         }
     }
 

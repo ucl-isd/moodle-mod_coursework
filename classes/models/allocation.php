@@ -208,7 +208,7 @@ class allocation extends table_base {
      *
      */
     protected function after_destroy() {
-        self::clear_cache($this->id);
+        $this->clear_cache();
         self::remove_cache($this->courseworkid);
     }
 
@@ -221,7 +221,8 @@ class allocation extends table_base {
         global $DB;
         $ids = $DB->get_fieldset(static::$tablename, 'id', ['courseworkid' => $courseworkid]);
         foreach ($ids as $id) {
-            self::clear_cache($id);
+            $a = self::get_from_id($id);
+            $a->clear_cache();
         }
         $DB->delete_records(static::$tablename, ['courseworkid' => $courseworkid]);
         self::remove_cache($courseworkid);

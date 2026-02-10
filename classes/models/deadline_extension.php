@@ -23,6 +23,7 @@
 namespace mod_coursework\models;
 
 use AllowDynamicProperties;
+use cache;
 use context_module;
 use core\exception\coding_exception;
 use core\exception\invalid_parameter_exception;
@@ -31,7 +32,6 @@ use mod_coursework\event\extension_created;
 use mod_coursework\event\extension_deleted;
 use mod_coursework\event\extension_updated;
 use mod_coursework\framework\table_base;
-use mod_coursework_coursework;
 
 /**
  * Class deadline_extension is responsible for representing one row of the deadline_extensions table.
@@ -81,14 +81,7 @@ class deadline_extension extends table_base {
      * @throws coding_exception
      */
     public static function allocatable_extension_allows_submission($allocatable, $coursework) {
-        $extension = self::get_cached_object(
-            $coursework->id,
-            [
-                'allocatableid' => $allocatable->id(),
-                'allocatabletype' => $allocatable->type(),
-            ]
-        );
-
+        $extension = self::get_for_allocatable($coursework->id, $allocatable->id(), $allocatable->type());
         return !empty($extension) && $extension->extended_deadline > time();
     }
 
@@ -281,5 +274,24 @@ class deadline_extension extends table_base {
             $e = self::get_from_id($extension->id);
             $e->destroy();
         }
+    }
+
+    /**
+     * Allows subclasses to do other stuff after the DB save.
+     */
+    public function clear_cache() {
+
+        // For this class we implement user/group ID caches so clear them.
+        $allocatable = $this->get_allocatable();
+        if ($allocatable && $allocatable->persisted()) {
+            $cachetoclear = cache::make(
+                'mod_coursework',
+                $allocatable->type() == 'user'
+                    ? static::CACHE_AREA_BY_USER : static::CACHE_AREA_BY_GROUP
+            );
+            $cachetoclear->delete($allocatable->id());
+        }
+
+        parent::clear_cache();
     }
 }

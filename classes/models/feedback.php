@@ -60,7 +60,7 @@ class feedback extends table_base {
      * Cache area where feedback IDs for each submission ID are stored.
      * @var string
      */
-    const CACHE_AREA_FEEDBACKS_BY_SUBMISSION = 'feedbacksbysubmissionid';
+    const CACHE_AREA_BY_SUBMISSION = 'feedbacksbysubmissionid';
 
     /**
      * @var int
@@ -581,7 +581,7 @@ class feedback extends table_base {
         if ($submissionid <= 0) {
             throw new invalid_parameter_exception("Invalid ID $submissionid");
         }
-        $cache = cache::make('mod_coursework', static::CACHE_AREA_FEEDBACKS_BY_SUBMISSION);
+        $cache = cache::make('mod_coursework', static::CACHE_AREA_BY_SUBMISSION);
         $cachedfeedbackids = $cache->get($submissionid);
         if ($cachedfeedbackids === false) {
             $cachedfeedbackids = $DB->get_fieldset(
@@ -594,7 +594,7 @@ class feedback extends table_base {
         $result = [];
         foreach ($cachedfeedbackids as $cachedfeedbackid) {
             $feedback = self::get_from_id($cachedfeedbackid);
-            if ($feedback && ($assessorid == 0 || $assessorid == $feedback->assessorid)) {
+            if ($feedback && $feedback->persisted() && ($assessorid == 0 || $assessorid == $feedback->assessorid)) {
                 $result[$feedback->id] = $feedback;
             }
         }
@@ -624,5 +624,16 @@ class feedback extends table_base {
         $feedbacks = self::get_all_for_submission($submissionid);
         $filtered = array_filter($feedbacks, fn($f) => $f->stageidentifier == $stageidentifier);
         return empty($filtered) ? null : array_pop($filtered);
+    }
+
+    /**
+     * Allows subclasses to do other stuff after the DB save.
+     */
+    public function clear_cache() {
+        // For this class we implement a submission ID cache so clear that.
+        $cachetoclear = cache::make('mod_coursework', self::CACHE_AREA_BY_SUBMISSION);
+        $cachetoclear->delete($this->submissionid);
+
+        parent::clear_cache();
     }
 }

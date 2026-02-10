@@ -2637,24 +2637,4 @@ class coursework extends table_base {
             return (bool)calendar_event::create($event, false);
         }
     }
-
-
-    /**
-     * Clear the cache for this object.
-     * May need to be overridden in child class, if child class has additional cache areas beyond CACHE_AREA_IDS.
-     * @return void
-     * @throws coding_exception
-     */
-    public static function clear_cache(int $id) {
-        //todo clear cache for dependent records e.g. submissions, feedback etc.
-        parent::clear_cache($id);
-    }
-
-    public function destroy() {
-        // todo Delete any dependent records here.
-        // TODO delete feedbacks.
-        // TODO delete allocations.
-        // TODO delete submissions.
-        parent::destroy();
-    }
 }

@@ -1522,8 +1522,8 @@ class ability extends framework\ability {
                 // Check if extension for this PD exists.
                 return (bool)deadline_extension::get_for_allocatable(
                     $personaldeadline->get_coursework()->id,
-                    $personaldeadline->get_allocatable()->id(),
-                    $personaldeadline->get_allocatable()->type()
+                    $personaldeadline->allocatableid,
+                    $personaldeadline->allocatabletype
                 );
             }
         );

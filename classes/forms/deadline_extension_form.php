@@ -283,10 +283,10 @@ class deadline_extension_form extends dynamic_form {
         $this->extensionreasons = coursework::extension_reasons();
         $this->personaldeadline = $this->coursework->personaldeadlineenabled
             ? personaldeadline::get_for_allocatable(
-                    $this->coursework->id(),
-                    $this->allocatable->id(),
-                    $this->allocatable->type()
-                )
+                $this->coursework->id(),
+                $this->allocatable->id(),
+                $this->allocatable->type()
+            )
             : null;
     }
 

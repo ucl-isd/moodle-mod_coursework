@@ -951,11 +951,16 @@ class submission extends table_base implements renderable {
      * @return allocatable
      */
     public function get_allocatable() {
-        /**
-         * @var table_base $classname
-         */
-        $classname = "\\mod_coursework\\models\\" . $this->allocatabletype;
-        return $classname::get_from_id($this->allocatableid);
+        if (!$this->allocatableid) {
+            throw new \core\exception\coding_exception("Submission must have an allocatable (e.g. user)");
+        }
+        if ($this->allocatabletype == 'user') {
+            return user::get_from_id($this->allocatableid);
+        } else if ($this->allocatabletype == 'group') {
+            return group::get_from_id($this->allocatableid);
+        } else {
+            throw new \core\exception\coding_exception("Invalid type '" . $this->allocatabletype . "'");
+        }
     }
 
     /**
@@ -1150,7 +1155,7 @@ class submission extends table_base implements renderable {
         if (!empty($this->coursework->renamefiles)) {
             $this->rename_files();
         }
-        self::clear_cache($this->id);
+        $this->clear_cache();
     }
 
     /**
@@ -1634,6 +1639,24 @@ class submission extends table_base implements renderable {
     }
 
     /**
+     * Allows subclasses to do other stuff after the DB save.
+     */
+    public function clear_cache() {
+
+        // For this class we implement user/group ID caches so clear them.
+        $allocatable = $this->get_allocatable();
+        if ($allocatable && $allocatable->persisted()) {
+            $cachetoclear = cache::make(
+                'mod_coursework',
+                $allocatable->type() == 'user'
+                    ? static::CACHE_AREA_BY_USER : static::CACHE_AREA_BY_GROUP
+            );
+            $cachetoclear->delete($allocatable->id());
+        }
+        parent::clear_cache();
+    }
+
+    /**
      * Get multiple submission objects from IDs.
      * @param int[] $submissionids
      * @return array submission objects
@@ -1692,4 +1715,21 @@ class submission extends table_base implements renderable {
         return get_string('plagiarism_' . $flag->status, 'mod_coursework');
     }
 
+    /**
+     * Allows subclasses to do other stuff after the DB save.
+     */
+    public function clear_cache() {
+
+        // For this class we implement user/group ID caches so clear them.
+        $allocatable = $this->get_allocatable();
+        if ($allocatable && $allocatable->persisted()) {
+            $cachetoclear = cache::make(
+                'mod_coursework',
+                $allocatable->type() == 'user'
+                    ? static::CACHE_AREA_BY_USER : static::CACHE_AREA_BY_GROUP
+            );
+            $cachetoclear->delete($allocatable->id());
+        }
+        parent::clear_cache();
+    }
 }

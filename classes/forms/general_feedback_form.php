@@ -66,8 +66,8 @@ class general_feedback_form extends moodleform {
         $coursework->feedbackcommentformat = 1;
         $coursework->generalfeedbacktimepublished = time();
         $coursework->id = $feedback->id;
-        // TODO would be better to use a coursework object and do coursework->save() here.
-        coursework::clear_cache($coursework->id);
         $DB->update_record('coursework', $coursework);
+        $cw = coursework::get_from_id($coursework->id);
+        $cw->clear_cache();
     }
 }
