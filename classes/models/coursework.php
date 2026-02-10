@@ -423,23 +423,22 @@ class coursework extends table_base {
      * @throws moodle_exception
      */
     public function get_course_module() {
-
         global $DB;
-
         if (!isset($this->coursemodule)) {
             if (empty($this->id)) {
                 throw new moodle_exception('Trying to get course module for a coursework that has not yet been saved');
             }
-            $modulerecord = module::$pool['name']['coursework'] ?? $DB->get_record('modules', ['name' => 'coursework']);
-            $moduleid = $modulerecord->id;
-            $courseid = $this->get_course_id();
-            if (!isset(course_module::$pool['course-module-instance'][$courseid][$moduleid][$this->id]->id)) {
-                course_module::$pool['course-module-instance'][$courseid][$moduleid][$this->id] =
-                    $DB->get_record('course_modules', ['course' => $courseid, 'module' => $moduleid, 'instance' => $this->id], '*', MUST_EXIST);
-            }
-            $this->coursemodule = course_module::$pool['course-module-instance'][$courseid][$moduleid][$this->id];
+            $this->coursemodule = $DB->get_record_sql(
+                "SELECT cm.*
+                    FROM {course_modules} cm
+                    JOIN {modules} m ON m.id = cm.module
+                    WHERE m.name = 'coursework' AND cm.instance = ?",
+                [$this->id],
+                MUST_EXIST
+            );
+            $this->cmid = $this->coursemodule->id;
+            $this->course = $this->coursemodule->course;
         }
-
         return $this->coursemodule;
     }
 
