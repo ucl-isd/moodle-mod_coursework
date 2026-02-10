@@ -763,10 +763,7 @@ class submission extends table_base implements renderable {
     public function get_coursework() {
 
         if (empty($this->coursework)) {
-            if (!isset(coursework::$pool['id'][$this->courseworkid])) {
-                coursework::fill_pool_coursework($this->courseworkid);
-            }
-            $this->coursework = coursework::$pool['id'][$this->courseworkid];
+            $this->coursework = coursework::get_from_id($this->courseworkid);
             if (!$this->coursework) {
                 throw new coding_exception('Could not find the coursework for submission id ' . $this->id);
             }
@@ -1416,7 +1413,8 @@ class submission extends table_base implements renderable {
         $editablefeedbacks = [];
         $coursework = $this->get_coursework();
         if ($coursework->numberofmarkers > 1 && $this->is_finalised()) {
-            $editablefeedbacks = feedback::$pool[$coursework->id]['submissionid-finalised'][$this->id . '-0'] ?? [];
+            $feedbacks = feedback::get_all_for_submission($this->id);
+            $editablefeedbacks = array_filter($feedbacks, fn($f) => !$f->finalised);
         }
 
         return (empty($editablefeedbacks)) ? false : $editablefeedbacks;
@@ -1519,65 +1517,6 @@ class submission extends table_base implements renderable {
             'submissionid' => $this->id,
             'assessorid' => $assessorid,
         ]);
-    }
-
-    // Caching
-
-    /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
-     *
-     * @param int $courseworkid
-     * @return array
-     * @throws dml_exception
-     */
-    protected static function get_cache_array($courseworkid) {
-        global $DB;
-        $records = $DB->get_records(static::$tablename, ['courseworkid' => $courseworkid]);
-        $result = array_fill_keys(self::get_valid_cache_keys(), []);
-        if ($records) {
-            foreach ($records as $record) {
-                $object = new self($record);
-                $result['id'][$record->id] = $object;
-                $result['allocatableid'][$record->allocatableid][] = $object;
-                $result['finalisedstatus'][$record->finalisedstatus][] = $object;
-                $result['allocatableid-allocatabletype'][$record->allocatableid . '-' . $record->allocatabletype][] = $object;
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * Get the allowed/expected cache keys for this class when @see self::get_cached_object() is called.
-     * @return string[]
-     */
-    protected static function get_valid_cache_keys(): array {
-        return [
-            'id',
-            'allocatableid',
-            'finalisedstatus',
-            'allocatableid-allocatabletype',
-        ];
-    }
-
-    /**
-     *
-     */
-    protected function post_save_hook() {
-        self::remove_cache($this->courseworkid);
-    }
-
-    /**
-     *
-     */
-    protected function after_destroy() {
-        self::clear_cache($this->id);
-        self::remove_cache($this->courseworkid);
     }
 
     /**

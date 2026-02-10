@@ -374,7 +374,7 @@ abstract class table_base {
     }
 
     /**
-     * Allows subclasses to do other stuff after after the DB save.
+     * Allows subclasses to do other stuff after the DB save.
      */
     protected function post_save_hook() {
         static::clear_cache($this->id);
