@@ -132,9 +132,9 @@ class assessor_feedback_mform extends moodleform {
 
             // Custom input type number.
             \MoodleQuickForm::registerElementType(
-            'number',
-            "$CFG->dirroot/mod/coursework/classes/forms/number_element.php",
-            'mod_coursework\forms\number_element'
+                'number',
+                "$CFG->dirroot/mod/coursework/classes/forms/number_element.php",
+                'mod_coursework\forms\number_element'
             );
 
             $mform->addElement(

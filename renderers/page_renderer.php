@@ -292,14 +292,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template->submission = $this->submission_metadata($submission, $coursework, $submissionfiles);
 
         // Advanced marking.
-        $template->advancedmarking = false;
-        if ($coursework->is_using_advanced_grading()) {
-            $template->advancedmarking = true;
-            // Is this a marking guide? Used in mustache for for standard and previous feedback display.
-            $gradingcontroller = $coursework->get_advanced_grading_active_controller();
-            $gradingdefinition = $gradingcontroller->get_definition();
-            $template->isguide = isset($gradingdefinition->guide_criteria);
-        }
+        $template->advancedmarking = $coursework->is_using_advanced_grading();
+        // Is this a marking guide?
+        $template->isguide = $template->advancedmarking && $coursework->is_using_marking_guide();
 
         // Agreement stage.
         $isagreeing = ($feedback->stageidentifier == 'final_agreed_1');
@@ -309,9 +304,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 if ($template->advancedmarking) {
                     // Advanced marking.
                     $template->previousfeedback = $this->render_comparison_view(
+                        $coursework,
                         $previousfeedbacks,
-                        $gradingcontroller,
-                        $gradingdefinition,
                         $template->isguide
                     );
                 } else {
@@ -337,23 +331,17 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         echo $this->output->footer();
     }
 
-
-
     /**
      * Agree feedback - output markers feedback in mustache.
      *
+     * @param coursework $coursework
      * @param array $previousfeedbacks Array of feedback objects.
-     * @param gradingform_controller $gradingcontroller
-     * @param stdClass $gradingdefinition
      * @param bool $isguide
      * @return string HTML.
      */
-    protected function render_comparison_view(
-        array $previousfeedbacks,
-        gradingform_controller $gradingcontroller,
-        stdClass $gradingdefinition,
-        bool $isguide
-    ): string {
+    protected function render_comparison_view(coursework $coursework, array $previousfeedbacks, bool $isguide): string {
+        $gradingcontroller = $coursework->get_advanced_grading_active_controller();
+        $gradingdefinition = $gradingcontroller->get_definition();
         $criteria = $isguide ? $gradingdefinition->guide_criteria : $gradingdefinition->rubric_criteria;
 
         $markersdata = [];
