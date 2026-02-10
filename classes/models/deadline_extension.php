@@ -277,7 +277,7 @@ class deadline_extension extends table_base {
     }
 
     /**
-     * Allows subclasses to do other stuff after the DB save.
+     * Clear caches used by this object.
      */
     public function clear_cache() {
 

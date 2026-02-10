@@ -277,21 +277,6 @@ class grading_table_row_base implements user_row {
     }
 
     /**
-     * @return plagiarism_flag
-     * @throws \dml_exception
-     * @throws coding_exception
-     */
-    public function get_plagiarism_flag() {
-
-        $submission = $this->get_submission();
-        $params = [
-            'submissionid' => $submission->id,
-        ];
-
-        return plagiarism_flag::find($params);
-    }
-
-    /**
      * Chained getter to prevent tight coupling.
      *
      * @return object[] array of objects - one for each of this row's user's submission files.
