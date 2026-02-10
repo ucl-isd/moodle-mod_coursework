@@ -1377,7 +1377,9 @@ class coursework extends table_base {
         }
         if ($this->is_configured_to_have_group_submissions()) {
             $allocatable = $this->get_coursework_group_from_user_id($user->id());
-            return submission::get_for_allocatable($this->id, $allocatable->id(), $allocatable->type());
+            return $allocatable
+                ? submission::get_for_allocatable($this->id, $allocatable->id(), $allocatable->type())
+                : null;
         } else {
             return submission::get_for_allocatable($this->id, $user->id(), 'user');
         }
