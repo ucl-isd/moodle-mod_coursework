@@ -42,7 +42,6 @@ abstract class cell_base implements cell_interface {
     protected $dateformat;
     protected $stages;
     protected $extension;
-    protected $plagiarismflag;
 
     /**
      * @param $coursework
@@ -53,7 +52,6 @@ abstract class cell_base implements cell_interface {
         $this->dateformat = '%a, %d %b %Y, %H:%M';
         $this->stages = $this->coursework->get_max_markers();
         $this->extension = new deadline_extension();
-        $this->plagiarismflag = new plagiarism_flag();
     }
 
     /**
@@ -137,7 +135,7 @@ abstract class cell_base implements cell_interface {
      */
     public function plagiarism_flagged($submission) {
 
-        $flag = $this->plagiarismflag->get_plagiarism_flag($submission);
+        $flag = plagiarism_flag::get_for_submission($submission->id);
 
         return ($this->coursework->plagiarism_flagging_enabled() && !empty($flag));
     }
@@ -150,7 +148,7 @@ abstract class cell_base implements cell_interface {
      */
     public function get_plagiarism_flag_status_for_csv($submission) {
 
-        $flag = $this->plagiarismflag->get_plagiarism_flag($submission);
+        $flag = plagiarism_flag::get_for_submission($submission->id);
 
         return get_string('plagiarism_' . $flag->status, 'mod_coursework');
     }
@@ -161,9 +159,7 @@ abstract class cell_base implements cell_interface {
      * @return string
      */
     public function get_plagiarism_flag_comment_for_csv($submission) {
-
-        $flag = $this->plagiarismflag->get_plagiarism_flag($submission);
-
+        $flag = plagiarism_flag::get_for_submission($submission->id);
         return self::clean_cell($flag->comment);
     }
 
