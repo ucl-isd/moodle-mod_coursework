@@ -204,7 +204,7 @@ class assessor_feedback_mform extends moodleform {
                 get_string('removefeedback', 'coursework')
             );
         }
-        $buttonarray[] = $this->_form->createElement('cancel');
+        $buttonarray[] = $this->_form->createElement('cancel', 'cancel', null, ['formnovalidate' => '']);
         $this->_form->addGroup($buttonarray, 'buttonar', '', [' '], false);
         $this->_form->closeHeaderBefore('buttonar');
     }
