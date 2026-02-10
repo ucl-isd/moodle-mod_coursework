@@ -163,5 +163,4 @@ class plagiarism_flag extends table_base {
         }
         return $cachedid ? self::get_from_id($cachedid) : null;
     }
-
 }

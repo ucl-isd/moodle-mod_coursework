@@ -59,6 +59,16 @@ class grading_table_row_base implements user_row {
     protected $allocatable;
 
     /**
+     * @var deadline_extension|null $extension
+     */
+    protected ?deadline_extension $extension;
+
+    /**
+     * @var ?personaldeadline
+     */
+    protected ?personaldeadline $personaldeadline;
+
+    /**
      * Array of objects representing submission files this row's user (DB query results)
      * @var ?object[]
      */
@@ -74,6 +84,16 @@ class grading_table_row_base implements user_row {
     public function __construct(coursework $coursework, user|group $user, array $submissionfiles) {
         $this->coursework = $coursework;
         $this->allocatable = $user;
+        $this->extension = deadline_extension::get_for_allocatable(
+            $this->coursework->id,
+            $user->id(),
+            $user->type()
+        );
+        $this->personaldeadline = personaldeadline::get_for_allocatable(
+            $this->coursework->id,
+            $user->id(),
+            $user->type()
+        );
         $this->submissionfiles = $submissionfiles;
     }
 
