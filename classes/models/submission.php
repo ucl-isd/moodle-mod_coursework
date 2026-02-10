@@ -73,16 +73,16 @@ class submission extends table_base implements renderable {
     const CACHE_AREA_IDS = 'submissionids';
 
     /**
-     * Cache area where objects by user ID are stored.
+     * Cache area where objects of this class by user ID are stored.
      * @var string
      */
-    const CACHE_AREA_SUBMISSIONS_BY_USER = 'submissionsbyuser';
+    const CACHE_AREA_BY_USER = 'submissionsbyuser';
 
     /**
-     * Cache area where objects by group ID are stored.
+     * Cache area where objects of this class by group ID are stored.
      * @var string
      */
-    const CACHE_AREA_SUBMISSIONS_BY_GROUP = 'submissionsbygroup';
+    const CACHE_AREA_BY_GROUP = 'submissionsbygroup';
 
     /**
      * Possible value for mdl_submission.finalised field.
@@ -1331,11 +1331,10 @@ class submission extends table_base implements renderable {
         if (!$this->coursework->extensions_enabled()) {
             return false;
         }
-
-        deadline_extension::fill_pool_coursework($this->courseworkid);
-        $extension = deadline_extension::get_cached_object(
+        $extension = deadline_extension::get_for_allocatable(
             $this->courseworkid,
-            ['allocatableid' => $this->allocatableid, 'allocatabletype' => $this->allocatabletype]
+            $this->allocatableid,
+            $this->allocatabletype
         );
         return !empty($extension);
     }
@@ -1350,11 +1349,10 @@ class submission extends table_base implements renderable {
         if (!$this->coursework->extensions_enabled()) {
             return false;
         }
-
-        deadline_extension::fill_pool_coursework($this->courseworkid);
-        return deadline_extension::get_cached_object(
+        return deadline_extension::get_for_allocatable(
             $this->courseworkid,
-            ['allocatableid' => $this->allocatableid, 'allocatabletype' => $this->allocatabletype]
+            $this->allocatableid,
+            $this->allocatabletype
         );
     }
 
@@ -1367,9 +1365,10 @@ class submission extends table_base implements renderable {
     public function submission_personaldeadline() {
         $allocatableid = $this->get_allocatable()->id();
         $allocatabletype = $this->get_allocatable()->type();
-        $personaldeadline = personaldeadline::get_cached_object(
+        $personaldeadline = personaldeadline::get_for_allocatable(
             $this->courseworkid,
-            ['allocatableid' => $allocatableid, 'allocatabletype' => $allocatabletype]
+            $allocatableid,
+            $allocatabletype
         );
 
         if ($personaldeadline) {
@@ -1491,10 +1490,10 @@ class submission extends table_base implements renderable {
      * @throws \core\exception\coding_exception
      */
     public function has_valid_extension() {
-        deadline_extension::fill_pool_coursework($this->courseworkid);
-        $extension = deadline_extension::get_cached_object(
+        $extension = deadline_extension::get_for_allocatable(
             $this->courseworkid,
-            ['allocatableid' => $this->allocatableid, 'allocatabletype' => $this->allocatabletype]
+            $this->allocatableid,
+            $this->allocatabletype
         );
         return $extension && $extension->extended_deadline > time();
     }
@@ -1517,29 +1516,6 @@ class submission extends table_base implements renderable {
             'submissionid' => $this->id,
             'assessorid' => $assessorid,
         ]);
-    }
-
-    /**
-     * Clear the caches for this object.
-     * May need to be overridden in child class, if child class has additional cache areas beyond CACHE_AREA_IDS.
-     * @return void
-     * @throws \core\exception\coding_exception
-     */
-    public static function clear_cache(int $id) {
-
-        // First the cache by user/group ID.
-        $object = self::get_from_id($id);
-        if ($object) {
-            $cachetoclear = cache::make(
-                'mod_coursework',
-                $object->allocatabletype == 'user' ? self::CACHE_AREA_SUBMISSIONS_BY_USER : self::CACHE_AREA_SUBMISSIONS_BY_GROUP
-            );
-            $cachetoclear->delete($object->allocatableid);
-        }
-
-        // Now the main cache.
-        $cache = cache::make('mod_coursework', static::CACHE_AREA_IDS);
-        $cache->delete($id);
     }
 
     /**
@@ -1639,32 +1615,6 @@ class submission extends table_base implements renderable {
         }
     }
 
-
-    /**
-     * Get all feedbacks for a specific submission from its ID.
-     * @param int $courseworkid
-     * @param int $allocatableid
-     * @param string $allocatabletype
-     * @return ?submission
-     */
-    public static function get_for_allocatable(int $courseworkid, int $allocatableid, string $allocatabletype): ?submission {
-        global $DB;
-        if ($allocatableid <= 0 || !in_array($allocatabletype, ['user', 'group'])) {
-            throw new invalid_parameter_exception("Invalid ID $allocatableid or type $allocatabletype");
-        }
-        $cachearea = $allocatabletype == 'user' ? self::CACHE_AREA_SUBMISSIONS_BY_USER : self::CACHE_AREA_SUBMISSIONS_BY_GROUP;
-        $cache = cache::make('mod_coursework', $cachearea);
-        $cachedid = $cache->get($allocatableid);
-        if ($cachedid === false) {
-            $cachedid = $DB->get_field(
-                self::$tablename,
-                'id',
-                ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid, 'allocatabletype' => $allocatabletype]
-            );
-            $cache->set($allocatableid, $cachedid === false ? null : $cachedid);
-        }
-        return $cachedid ? self::get_from_id($cachedid) : null;
-    }
 
     /**
      * Get all submissions for a coursework ID.

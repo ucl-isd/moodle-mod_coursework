@@ -2165,10 +2165,10 @@ class coursework extends table_base {
         $allocatable->courseworkid = $this->id;
 
         if ($this->personaldeadlines_enabled()) {
-            personaldeadline::fill_pool_coursework($this->id);
-            $deadlinerecord = personaldeadline::get_cached_object(
+            $deadlinerecord = personaldeadline::get_for_allocatable(
                 $this->id,
-                ['allocatableid' => $allocatable->id, 'allocatabletype' => $allocatable->type()]
+                $allocatable->id,
+                $allocatable->type()
             );
 
             if (!empty($deadlinerecord)) {

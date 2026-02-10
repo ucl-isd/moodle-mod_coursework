@@ -51,6 +51,18 @@ class personaldeadline extends table_base {
     const CACHE_AREA_IDS = 'deadlineids';
 
     /**
+     * Cache area where objects of this class by user ID are stored.
+     * @var string
+     */
+    const CACHE_AREA_BY_USER = 'deadlinesbyuser';
+
+    /**
+     * Cache area where objects of this class by group ID are stored.
+     * @var string
+     */
+    const CACHE_AREA_BY_GROUP = 'deadlinesbygroup';
+
+    /**
      * @var coursework
      */
     protected $coursework;
@@ -66,7 +78,6 @@ class personaldeadline extends table_base {
      */
     public function get_coursework() {
         if (!isset($this->coursework)) {
-            coursework::fill_pool_coursework($this->courseworkid);
             $this->coursework = coursework::get_from_id($this->courseworkid);
         }
 
@@ -76,22 +87,6 @@ class personaldeadline extends table_base {
     public function get_allocatable() {
         $classname = "\\mod_coursework\\models\\{$this->allocatabletype}";
         return $classname::get_from_id($this->allocatableid);
-    }
-
-    /**
-     * Function to check if extension for this personal deadline (alloctable) exists
-     * @return bool|table_base
-     * @throws \coding_exception
-     * @throws \dml_exception
-     */
-    public function extension_exists() {
-        $coursework = $this->get_coursework();
-
-        $params = ['courseworkid' => $coursework->id,
-                        'allocatableid' => $this->allocatableid,
-                        'allocatabletype' => $this->allocatabletype];
-
-        return deadline_extension::find($params);
     }
 
     /**
@@ -114,55 +109,6 @@ class personaldeadline extends table_base {
                                       'allocatabletype' => $allocatable->type(),
             ]);
         }
-    }
-
-    /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
-     *
-     * @param int $courseworkid
-     * @return array
-     * @throws \dml_exception
-     */
-    protected static function get_cache_array($courseworkid) {
-        global $DB;
-        $records = $DB->get_records(static::$tablename, ['courseworkid' => $courseworkid]);
-        $result = array_fill_keys(self::get_valid_cache_keys(), []);
-        if ($records) {
-            foreach ($records as $record) {
-                $object = new self($record);
-                $result['allocatableid-allocatabletype'][$record->allocatableid . '-' . $record->allocatabletype][] = $object;
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * Get the allowed/expected cache keys for this class when @see self::get_cached_object() is called.
-     * @return string[]
-     */
-    protected static function get_valid_cache_keys(): array {
-        return ['allocatableid-allocatabletype'];
-    }
-
-    /**
-     *
-     */
-    protected function post_save_hook() {
-        self::remove_cache($this->courseworkid);
-    }
-
-    /**
-     *
-     */
-    protected function after_destroy() {
-        self::clear_cache($this->id);
-        self::remove_cache($this->courseworkid);
     }
 
     /**
@@ -214,24 +160,6 @@ class personaldeadline extends table_base {
         global $DB;
         return $DB->get_records(self::$tablename, ['courseworkid' => $courseworkid]);
     }
-
-    /**
-     * Get deadline for a particular allocatable from the database.
-     * @param int $courseworkid
-     * @param int $allocatableid
-     * @param string $allocatabletype
-     * @return ?self
-     * @throws \dml_exception
-     */
-    public static function get_for_allocatable(int $courseworkid, int $allocatableid, string $allocatabletype): ?self {
-        global $DB;
-        $record = $DB->get_record(
-            self::$tablename,
-            ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid, 'allocatabletype' => $allocatabletype]
-        );
-        return $record ? new self($record) : null;
-    }
-
 
     /**
      * Remove all personal deadlines by coursework
