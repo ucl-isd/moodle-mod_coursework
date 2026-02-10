@@ -23,6 +23,7 @@
 namespace mod_coursework\models;
 
 use AllowDynamicProperties;
+use cache;
 use context_module;
 use core\exception\coding_exception;
 use core\exception\invalid_parameter_exception;
@@ -85,8 +86,13 @@ class personaldeadline extends table_base {
     }
 
     public function get_allocatable() {
-        $classname = "\\mod_coursework\\models\\{$this->allocatabletype}";
-        return $classname::get_from_id($this->allocatableid);
+        if ($this->allocatabletype == 'user') {
+            return user::get_from_id($this->allocatableid);
+        } else if ($this->allocatabletype == 'group') {
+            return group::get_from_id($this->allocatableid);
+        } else {
+            throw new coding_exception("Invalid type '" . $this->allocatabletype . "'");
+        }
     }
 
     /**
@@ -188,5 +194,25 @@ class personaldeadline extends table_base {
             $d->destroy();
         }
         self::remove_cache($courseworkid);
+    }
+
+
+    /**
+     * Allows subclasses to do other stuff after the DB save.
+     */
+    public function clear_cache() {
+
+        // For this class we implement user/group ID caches so clear them.
+        $allocatable = $this->get_allocatable();
+        if ($allocatable && $allocatable->persisted()) {
+            $cachetoclear = cache::make(
+                'mod_coursework',
+                $allocatable->type() == 'user'
+                    ? static::CACHE_AREA_BY_USER : static::CACHE_AREA_BY_GROUP
+            );
+            $cachetoclear->delete($allocatable->id());
+        }
+
+        parent::clear_cache();
     }
 }

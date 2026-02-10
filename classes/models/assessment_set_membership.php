@@ -115,7 +115,7 @@ class assessment_set_membership extends table_base implements moderatable {
      *
      */
     protected function after_destroy() {
-        self::clear_cache($this->id);
+        $this->clear_cache();
         self::remove_cache($this->courseworkid);
     }
 
