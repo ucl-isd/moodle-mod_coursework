@@ -1101,7 +1101,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $viewurl = '/mod/coursework/view.php';
         $hassubmissions = $coursework->get_submission_count() > 0;
         $hasfinalised = $coursework->get_finalised_submissions();
-        $finalised = submission::$pool[$coursework->id]['finalisedstatus'][submission::FINALISED_STATUS_FINALISED] ?? [];
+        $subs = submission::get_all_for_coursework($coursework->id);
+        $finalised = array_filter($subs, fn($sub) => $sub->finalisedstatus);
         $can = fn(string $cap) => has_capability($cap, $this->page->context);
         $canmark = $hassubmissions && $hasfinalised;
 

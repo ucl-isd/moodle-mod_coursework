@@ -176,9 +176,9 @@ class average_grade implements auto_grader {
         if ($this->coursework->autopopulatefeedbackcomment_enabled()) {
             $updatedfeedback->feedbackcomment = $this->feedback_comments();
         }
-        // TODO would be better to use a feedback object and do feedback->save() here.
         $DB->update_record('coursework_feedbacks', $updatedfeedback);
-        feedback::clear_cache($updatedfeedback->id);
+        $f = feedback::get_from_id($feedback->id);
+        $f->clear_cache();
     }
 
     /**

@@ -275,6 +275,10 @@ class actions_cell_data extends cell_data_base {
         ) {
             return;
         }
+        if ($data->extension->date ?? false) {
+            // Cannot set deadline if extension in place.
+            return;
+        };
         $personaldeadlineobject = $rowsbase->get_personaldeadline();
         if ($personaldeadlineobject) {
             $data->personaldeadline = (object)[

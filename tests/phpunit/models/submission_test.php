@@ -49,7 +49,6 @@ final class submission_test extends \advanced_testcase {
         $this->preventResetByRollback();
 
         // If we don't do this, we end up with the same cached objects for all tests and they may have incorrect/missing properties.
-        \mod_coursework\models\coursework::$pool = null;
         \mod_coursework\models\user::$pool = null;
     }
 
@@ -69,6 +68,9 @@ final class submission_test extends \advanced_testcase {
     public function test_get_coursework(): void {
         $submission = new submission();
         $submission->courseworkid = $this->coursework->id;
+        $student = $this->create_a_student();
+        $submission->allocatableid = $student->id;
+        $submission->allocatabletype = 'user';
         $submission->save();
 
         $this->assertEquals($this->coursework->id, $submission->get_coursework()->id);
@@ -80,6 +82,9 @@ final class submission_test extends \advanced_testcase {
     public function test_save_id(): void {
         $submission = new submission();
         $submission->courseworkid = $this->coursework->id;
+        $student = $this->create_a_student();
+        $submission->allocatableid = $student->id;
+        $submission->allocatabletype = 'user';
         $submission->save();
 
         $this->assertNotEmpty($submission->id);
@@ -91,6 +96,9 @@ final class submission_test extends \advanced_testcase {
     public function test_save_courseworkid(): void {
         $submission = new submission();
         $submission->courseworkid = $this->coursework->id;
+        $student = $this->create_a_student();
+        $submission->allocatableid = $student->id;
+        $submission->allocatabletype = 'user';
 
         $this->assertFalse($submission->persisted());
         $submission->save();
