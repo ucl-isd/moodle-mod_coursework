@@ -803,34 +803,6 @@ class submission extends table_base implements renderable {
         return $this->get_coursework()->has_multiple_markers();
     }
 
-    /**
-     * Has the current user already submitted a feedback for this submission?
-     *
-     * @param int $userid
-     * @return bool
-     * @throws dml_exception
-     */
-    public function user_has_submitted_feedback($userid = 0) {
-        global $USER;
-
-        if (empty($userid)) {
-            $userid = $USER->id;
-        }
-
-        feedback::fill_pool_coursework($this->courseworkid);
-        $feedback = feedback::get_cached_object(
-            $this->courseworkid,
-            [
-                'submissionid' => $this->id,
-                'assessorid' => $userid,
-            ]
-        );
-        if ($feedback && $feedback->isfinalgrade == 0 && $feedback->ismoderation == 0) {
-            return true;
-        }
-        return false;
-    }
-
     /*
      * As with the author id field this function was created to verify that coursework will work correctly with Turnitin
      * Plagiarism plugin that requires the author of a submission to
