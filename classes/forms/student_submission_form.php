@@ -256,6 +256,7 @@ class student_submission_form extends moodleform {
         $data->submissionid = $this->get_submission()->id;
 
         parent::set_data($data);
+        submission::clear_cache($data->submissionid);
     }
 
     /**

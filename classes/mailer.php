@@ -64,7 +64,7 @@ class mailer {
 
         $submission = $this->coursework->get_user_submission($user);
 
-        if ($this->coursework && $this->coursework->is_coursework_visible()) {// check if coursework exists and is not hidden
+        if ($submission && $this->coursework && $this->coursework->is_coursework_visible()) {// check if coursework exists and is not hidden
             $emaildata = new stdClass();
             $emaildata->name = $user->name();
             $dateformat = '%a, %d %b %Y, %H:%M';
