@@ -23,9 +23,10 @@
 namespace mod_coursework\models;
 
 use AllowDynamicProperties;
+use cache;
 use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
 use mod_coursework\framework\table_base;
-use mod_coursework_coursework;
 
 /**
  * Class plagiarism flag is responsible for representing one row of the plagiarism flags table.
@@ -44,6 +45,13 @@ class plagiarism_flag extends table_base {
      * @var string
      */
     const CACHE_AREA_IDS = 'plagiriasmflagids';
+
+
+    /**
+     * Cache area where object IDs of this class are stored by submission ID.
+     * @var string
+     */
+    const CACHE_AREA_BY_SUBMISSION = 'plagiarismbysubmissionid';
 
     /**
      * @var coursework
@@ -89,19 +97,6 @@ class plagiarism_flag extends table_base {
     }
 
     /**
-     * @param $submission
-     * @return ?static
-     * @throws coding_exception
-     */
-    public static function get_plagiarism_flag($submission) {
-        self::fill_pool_coursework($submission->courseworkid);
-        return self::get_cached_object(
-            $submission->courseworkid,
-            ['submissionid' => $submission->id]
-        );
-    }
-
-    /**
      * @return bool
      */
     public function can_release_grades() {
@@ -115,56 +110,6 @@ class plagiarism_flag extends table_base {
                 return true;
         }
     }
-
-    /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
-     *
-     * @param int $courseworkid
-     * @return array
-     * @throws \dml_exception
-     */
-    protected static function get_cache_array($courseworkid) {
-        global $DB;
-        $records = $DB->get_records(self::$tablename, ['courseworkid' => $courseworkid]);
-        $result = array_fill_keys(self::get_valid_cache_keys(), []);
-        if ($records) {
-            foreach ($records as $record) {
-                $object = new self($record);
-                $result['submissionid'][$record->submissionid][] = $object;
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * Get the allowed/expected cache keys for this class when @see self::get_cached_object() is called.
-     * @return string[]
-     */
-    protected static function get_valid_cache_keys(): array {
-        return ['submissionid'];
-    }
-
-    /**
-     *
-     */
-    protected function post_save_hook() {
-        self::remove_cache($this->courseworkid);
-    }
-
-    /**
-     *
-     */
-    protected function after_destroy() {
-        $this->clear_cache();
-        self::remove_cache($this->courseworkid);
-    }
-
 
     /**
      * Remove all plagiarism flags by a submission
@@ -183,4 +128,40 @@ class plagiarism_flag extends table_base {
             $flag->destroy();
         }
     }
+
+
+    /**
+     * Clear caches used by this object.
+     */
+    public function clear_cache() {
+        // For this class we implement a submission ID cache so clear that.
+        $cachetoclear = cache::make('mod_coursework', self::CACHE_AREA_BY_SUBMISSION);
+        $cachetoclear->delete($this->submissionid);
+
+        parent::clear_cache();
+    }
+
+    /**
+     * Get all objects for a submission.
+     * @param int $submissionid
+     * @return self|null
+     */
+    public static function get_for_submission(int $submissionid): ?self {
+        global $DB;
+        if ($submissionid <= 0) {
+            throw new invalid_parameter_exception("Invalid ID $submissionid");
+        }
+        $cache = cache::make('mod_coursework', static::CACHE_AREA_BY_SUBMISSION);
+        $cachedid = $cache->get($submissionid);
+        if ($cachedid === false) {
+            $cachedid = $DB->get_field(
+                self::$tablename,
+                'id',
+                ['submissionid' => $submissionid]
+            );
+            $cache->set($submissionid, $cachedid);
+        }
+        return $cachedid ? self::get_from_id($cachedid) : null;
+    }
+
 }

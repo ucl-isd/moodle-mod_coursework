@@ -57,7 +57,7 @@ class feedback extends table_base {
     protected static $tablename = 'coursework_feedbacks';
 
     /**
-     * Cache area where feedback IDs for each submission ID are stored.
+     * Cache area where object IDs of this class are stored by submission ID.
      * @var string
      */
     const CACHE_AREA_BY_SUBMISSION = 'feedbacksbysubmissionid';
@@ -627,7 +627,7 @@ class feedback extends table_base {
     }
 
     /**
-     * Allows subclasses to do other stuff after the DB save.
+     * Clear caches used by this object.
      */
     public function clear_cache() {
         // For this class we implement a submission ID cache so clear that.

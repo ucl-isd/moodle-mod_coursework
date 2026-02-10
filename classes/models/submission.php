@@ -993,11 +993,7 @@ class submission extends table_base implements renderable {
     public function ready_to_publish() {
         if ($this->get_coursework()->plagiarism_flagging_enabled()) {
             // check if not stopped by plagiarism flag
-            plagiarism_flag::fill_pool_coursework($this->courseworkid);
-            $plagiarism = plagiarism_flag::get_cached_object(
-                $this->courseworkid,
-                ['submissionid' => $this->id]
-            );
+            $plagiarism = plagiarism_flag::get_for_submission($this->id);
             if ($plagiarism && !$plagiarism->can_release_grades()) {
                 return false;
             }
@@ -1639,7 +1635,7 @@ class submission extends table_base implements renderable {
     }
 
     /**
-     * Allows subclasses to do other stuff after the DB save.
+     * Clear caches used by this object.
      */
     public function clear_cache() {
 
