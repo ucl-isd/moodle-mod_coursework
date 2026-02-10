@@ -22,58 +22,50 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {getString} from 'core/str';
-
 /**
  * Initialize the marking guide score field enhancements.
+ *
+ * @param {String} markLabelText The localized string for "Mark" passed from Mustache.
  */
-export const init = async() => {
+export const init = (markLabelText) => {
     const rootElement = document.getElementById('coursework-markingform');
     if (!rootElement) {
         return;
     }
 
-    try {
-        // Fetch the "Mark" string from lang file.
-        const markLabelText = await getString('mark', 'mod_coursework');
+    const scoreCells = rootElement.querySelectorAll('td.score');
 
-        const scoreCells = rootElement.querySelectorAll('td.score');
+    scoreCells.forEach(cell => {
+        const scoreInput = cell.querySelector('input');
+        const maxScoreDiv = cell.querySelector('div');
 
-        scoreCells.forEach(cell => {
-            const scoreInput = cell.querySelector('input');
-            const maxScoreDiv = cell.querySelector('div');
+        if (scoreInput && maxScoreDiv) {
+            // Extract only numbers/decimals from the max score text.
+            const maxScore = maxScoreDiv.textContent.replace(/[^0-9.]/g, '');
 
-            if (scoreInput && maxScoreDiv) {
-                // Extract only numbers/decimals from the max score text.
-                const maxScore = maxScoreDiv.textContent.replace(/[^0-9.]/g, '');
+            // 1. Enhance the input field.
+            scoreInput.setAttribute('required', 'required');
+            scoreInput.setAttribute('type', 'number');
+            scoreInput.setAttribute('min', '0');
+            scoreInput.setAttribute('step', 'any');
 
-                // 1. Enhance the input field.
-                scoreInput.setAttribute('required', 'required');
-                scoreInput.setAttribute('type', 'number');
-                scoreInput.setAttribute('min', '0');
-                scoreInput.setAttribute('step', 'any');
-
-                if (maxScore) {
-                    scoreInput.setAttribute('max', maxScore);
-                }
-
-                // 2. Create and insert the Label.
-                const scoreLabel = document.createElement('label');
-                scoreLabel.textContent = `${markLabelText} (0–${maxScore})`;
-
-                if (scoreInput.id) {
-                    scoreLabel.setAttribute('for', scoreInput.id);
-                }
-
-                // Insert at the top of the cell.
-                cell.insertBefore(scoreLabel, cell.firstChild);
-
-                // 3. Clean up the old overhanging div.
-                maxScoreDiv.remove();
+            if (maxScore) {
+                scoreInput.setAttribute('max', maxScore);
             }
-        });
-    } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error("Catch from marking_guide.js:", error);
-    }
+
+            // 2. Create and insert the Label.
+            const scoreLabel = document.createElement('label');
+            scoreLabel.textContent = `${markLabelText} (0–${maxScore})`;
+
+            if (scoreInput.id) {
+                scoreLabel.setAttribute('for', scoreInput.id);
+            }
+
+            // Insert at the top of the cell.
+            cell.insertBefore(scoreLabel, cell.firstChild);
+
+            // 3. Clean up the old overhanging div.
+            maxScoreDiv.remove();
+        }
+    });
 };

@@ -68,8 +68,8 @@
 {{#advancedmarking}}
     {{#isguide}}
         {{#js}}
-        require(['mod_coursework/marking_guide'], function(marking_guide) {
-            marking_guide.init();
+        require(['mod_coursework/marking_guide'], function(markingGuide) {
+            markingGuide.init("{{#str}} mark, mod_coursework {{/str}}");
         });
         {{/js}}
     {{/isguide}}
@@ -77,7 +77,7 @@
     {{^isguide}}
         {{#js}}
         require(['mod_coursework/rubric'], function(rubric) {
-            rubric.init();
+            rubric.init("{{#str}} feedbackfor, mod_coursework {{/str}}");
         });
         {{/js}}
     {{/isguide}}

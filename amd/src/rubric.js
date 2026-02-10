@@ -15,19 +15,19 @@
 //
 
 /**
- * Rubric labeling and interaction logic for mod_coursework.
+ * Rubric labels and make radio buttons work.
  *
  * @module     mod_coursework/rubric
  * @copyright  2026 UCL
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {getString} from 'core/str';
-
 /**
- * Initialize the rubric enhancements.
+ * Initialize rubric enhancements.
+ *
+ * @param {String} feedbackPrefix The localized string passed from Mustache.
  */
-export const init = async() => {
+export const init = (feedbackPrefix) => {
     const rubricContainer = document.querySelector('.gradingform_rubric');
     if (!rubricContainer) {
         return;
@@ -66,32 +66,33 @@ export const init = async() => {
         radio.dispatchEvent(new Event('change', {bubbles: true}));
     }, true);
 
-    // Feedback labeling logic.
-    try {
-        const feedbackPrefix = await getString('feedbackfor', 'mod_coursework');
-        const remarkCells = rubricContainer.querySelectorAll('td.remark');
+    // Feedback labels.
+    const remarkCells = rubricContainer.querySelectorAll('td.remark');
 
-        remarkCells.forEach(cell => {
-            const textarea = cell.querySelector('textarea');
-            const parentRow = cell.closest('tr');
-            const descriptionCell = parentRow ? parentRow.querySelector('td.description') : null;
+    remarkCells.forEach(cell => {
+        const textarea = cell.querySelector('textarea');
+        const parentRow = cell.closest('tr');
+        const descriptionCell = parentRow ? parentRow.querySelector('td.description') : null;
 
-            if (textarea && descriptionCell) {
-                const tempDescription = descriptionCell.cloneNode(true);
-                const criterionName = tempDescription.textContent.trim();
+        if (textarea && descriptionCell) {
+            const tempDescription = descriptionCell.cloneNode(true);
 
-                const feedbackLabel = document.createElement('label');
-                feedbackLabel.textContent = `${feedbackPrefix} ${criterionName}`;
-
-                if (textarea.id) {
-                    feedbackLabel.setAttribute('for', textarea.id);
-                }
-
-                cell.insertBefore(feedbackLabel, textarea);
+            // Remove the .review-marks element from the clone.
+            const reviewMarks = tempDescription.querySelector('.review-marks');
+            if (reviewMarks) {
+                reviewMarks.remove();
             }
-        });
-    } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error("Catch from rubric.js:", error);
-    }
+
+            const criterionName = tempDescription.textContent.trim();
+
+            const feedbackLabel = document.createElement('label');
+            feedbackLabel.textContent = `${feedbackPrefix} ${criterionName}`;
+
+            if (textarea.id) {
+                feedbackLabel.setAttribute('for', textarea.id);
+            }
+
+            cell.insertBefore(feedbackLabel, textarea);
+        }
+    });
 };
