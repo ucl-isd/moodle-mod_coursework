@@ -375,7 +375,7 @@ abstract class base {
      * @throws \dml_exception
      */
     public function get_single_feedback($submission) {
-        return feedback::get_from_submission_and_stage($submission->courseworkid, 'assessor_1');
+        return feedback::get_from_submission_and_stage($submission->id, assessor::STAGE_ASSESSOR_1);
     }
 
     /**
