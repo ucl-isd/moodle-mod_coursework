@@ -32,7 +32,6 @@ use mod_coursework\models\deadline_extension;
 use mod_coursework\models\feedback;
 use mod_coursework\models\group;
 use mod_coursework\models\personaldeadline;
-use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
 use moodle_url;
@@ -61,16 +60,6 @@ class grading_table_row_base implements user_row {
     protected $allocatable;
 
     /**
-     * @var deadline_extension|null $extension
-     */
-    protected ?deadline_extension $extension;
-
-    /**
-     * @var ?personaldeadline
-     */
-    protected ?personaldeadline $personaldeadline;
-
-    /**
      * Array of objects representing submission files this row's user (DB query results)
      * @var ?object[]
      */
@@ -81,15 +70,11 @@ class grading_table_row_base implements user_row {
      *
      * @param coursework $coursework $coursework
      * @param user|group $user
-     * @param deadline_extension|null $extension
-     * @param personaldeadline|null $personaldeadline
      * @param array $submissionfiles
      */
-    public function __construct(coursework $coursework, user|group $user, ?deadline_extension $extension, ?personaldeadline $personaldeadline, array $submissionfiles) {
+    public function __construct(coursework $coursework, user|group $user, array $submissionfiles) {
         $this->coursework = $coursework;
         $this->allocatable = $user;
-        $this->extension = $extension;
-        $this->personaldeadline = $personaldeadline;
         $this->submissionfiles = $submissionfiles;
     }
 
@@ -330,7 +315,7 @@ class grading_table_row_base implements user_row {
      */
 
     public function has_extension(): bool {
-        return (bool)$this->extension;
+        return (bool)$this->get_extension();
     }
 
     /**
@@ -340,11 +325,11 @@ class grading_table_row_base implements user_row {
 
      */
     public function get_extension(): ?deadline_extension {
-        if (empty($this->coursework->extensions_enabled())) {
-            return null;
-        }
-
-        return $this->extension;
+        return deadline_extension::get_for_allocatable(
+            $this->coursework->id,
+            $this->allocatable->id(),
+            $this->allocatable->type()
+        );
     }
 
     /**
@@ -358,7 +343,11 @@ class grading_table_row_base implements user_row {
             return null;
         }
 
-        return $this->personaldeadline;
+        return personaldeadline::get_for_allocatable(
+            $this->coursework->id,
+            $this->allocatable->id(),
+            $this->allocatable->type()
+        );
     }
 
     /**
