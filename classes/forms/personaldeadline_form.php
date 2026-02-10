@@ -263,14 +263,19 @@ class personaldeadline_form extends dynamic_form {
     protected function can_edit(): bool {
         global $USER;
         $datasource = $this->_customdata ?? $this->_ajaxformdata;
-        $deadline = personaldeadlines_controller::get_personaldeadline(
-            $datasource['allocatableid'],
-            $datasource['allocatabletype'],
+        $deadline = personaldeadline::get_for_allocatable(
             $datasource['courseworkid'],
+            $datasource['allocatableid'],
+            $datasource['allocatabletype']
         );
         $ability = new ability($USER->id, $this->get_coursework());
-        $deadline = personaldeadline::find_or_build($deadline);
-        $deadline->courseworkid = $this->coursework->id();
+        if (!$deadline) {
+            $deadline = personaldeadline::build([
+                'courseworkid' => $datasource['courseworkid'],
+                'allocatableid' => $datasource['allocatableid'],
+                'allocatabletype' => $datasource['allocatabletype'],
+            ]);
+        }
         return $ability->can('edit', $deadline);
     }
 
