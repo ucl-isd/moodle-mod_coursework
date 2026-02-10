@@ -48,10 +48,6 @@ class grading_report {
 
         global $USER;
         $participants = $coursework->get_allocatables();
-        $extensions = $coursework->extensions_enabled()
-            ? deadline_extension::get_all_for_coursework($coursework->id) : [];
-        $personaldeadlines = $coursework->personaldeadlines_enabled()
-            ? personaldeadline::get_all_for_coursework($coursework->id) : [];
         $allsubmissionfiles = submission::get_all_submission_files_data($coursework);
 
         // Make tablerow objects so we can use the methods to check permissions and set things.
@@ -62,30 +58,10 @@ class grading_report {
 
         foreach ($participants as $key => $participant) {
             // To save multiple queries to DB for extensions and deadlines, add them here.
-            $extension = array_filter(
-                $extensions,
-                function ($ext) use ($participant) {
-                    return $participant->id() == $ext->allocatableid
-                        && $participant->type() == $ext->allocatabletype;
-                }
-            );
-            $extension = array_pop($extension);
-
-            $personaldeadline = array_filter(
-                $personaldeadlines,
-                function ($ext) use ($participant) {
-                    return $participant->id() == $ext->allocatableid
-                        && $participant->type() == $ext->allocatabletype;
-                }
-            );
-            $personaldeadline = array_pop($personaldeadline);
-
             // New grading_table_row_base.
             $row = new grading_table_row_base(
                 $coursework,
                 $participant,
-                $extension ? deadline_extension::get_from_id($extension->id) : null,
-                $personaldeadline ? personaldeadline::get_from_id($personaldeadline->id) : null,
                 $allsubmissionfiles[$participant->type() . "-" . $participant->id()] ?? [],
             );
 
