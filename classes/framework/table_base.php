@@ -44,7 +44,17 @@ abstract class table_base {
      */
     const CACHE_AREA_IDS = null;
 
-    //todo add cache_area_by_allocatables
+    /**
+     * @var string|null cache area for objects by user.
+     * Child classes are expected to override this if they implement caching by user.
+     */
+    const CACHE_AREA_BY_USER = null;
+
+    /**
+     * @var string|null cache area for objects by group.
+     * Child classes are expected to override this if they implement caching by user.
+     */
+    const CACHE_AREA_BY_GROUP = null;
 
     /**
      * @var string
@@ -338,14 +348,11 @@ abstract class table_base {
         // Update if there's an id, otherwise make a new one. Check first for an id?
         if ($this->persisted()) {
             $DB->update_record(static::get_table_name(), $savedata);
-            static::clear_cache($this->id);
         } else {
             $this->id = $DB->insert_record(static::get_table_name(), $savedata);
         }
-
         // Possibly we just saved only some fields and some were created as defaults. Update with the missing ones.
         $this->reload();
-
         $this->post_save_hook();
     }
 
@@ -827,15 +834,70 @@ abstract class table_base {
     }
 
     /**
-     * Clear the cache for this object.
+     * Get child object from its allocatable details, from the database.
+     * @param int $id
+     * @return \stdClass|null
+     */
+    private static function get_db_id_from_allocatable(int $courseworkid, int $allocatableid, string $allocatabletype): ?int {
+        global $DB;
+        return $DB->get_field(
+            static::$tablename,
+            'id',
+            ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid, 'allocatabletype' => $allocatabletype]
+        );
+    }
+
+
+    /**
+     * Clear the caches for this object.
      * May need to be overridden in child class, if child class has additional cache areas beyond CACHE_AREA_IDS.
      * @return void
-     * @throws coding_exception
+     * @throws \core\exception\coding_exception
      */
     public static function clear_cache(int $id) {
+        // First the caches by user/group ID, if the child class implements them.
+        $object = static::get_from_id($id);
+        if ($object) {
+            if ((static::CACHE_AREA_BY_USER ?? null) && $object->allocatabletype == 'user') {
+                $cachetoclear = cache::make('mod_coursework', static::CACHE_AREA_BY_USER);
+                $cachetoclear->delete($object->allocatableid);
+            } else if ((static::CACHE_AREA_BY_GROUP  ?? null) && $object->allocatabletype == 'group') {
+                $cachetoclear = cache::make('mod_coursework', static::CACHE_AREA_BY_GROUP);
+                $cachetoclear->delete($object->allocatableid);
+            }
+        }
+
         if (static::CACHE_AREA_IDS) {
+            // Child class implements the main cache - clear that too.
             $cache = cache::make('mod_coursework', static::CACHE_AREA_IDS);
             $cache->delete($id);
         }
+    }
+
+    /**
+     * Get the object of the child class (e.g. submission, extension) which related to a specific user or group.
+     * This requires the child class to implement the cache and to have allocatableid and allocatabletype props.
+     * @param int $courseworkid
+     * @param int $allocatableid
+     * @param string $allocatabletype
+     * @return ?static
+     */
+    public static function get_for_allocatable(int $courseworkid, int $allocatableid, string $allocatabletype): ?static {
+        if ($allocatableid <= 0 || !in_array($allocatabletype, ['user', 'group'])) {
+            throw new invalid_parameter_exception("Invalid ID $allocatableid or type $allocatabletype");
+        }
+        $implementscache = (static::CACHE_AREA_BY_USER ?? false) && (static::CACHE_AREA_BY_GROUP ?? false);
+        if ($implementscache) {
+            $cachearea = $allocatabletype == 'user' ? static::CACHE_AREA_BY_USER : static::CACHE_AREA_BY_GROUP;
+            $cache = cache::make('mod_coursework', $cachearea);
+            $id = $cache->get($allocatableid);
+            if ($id === false) {
+                $id = static::get_db_id_from_allocatable($courseworkid, $allocatableid, $allocatabletype);
+                $cache->set($allocatableid, $id === false ? null : $id);
+            }
+        } else {
+            throw new coding_exception("Child class " . static::class . " is not compatible with the method ::get_for_allocatable()");
+        }
+        return $id ? self::get_from_id($id) : null;
     }
 }

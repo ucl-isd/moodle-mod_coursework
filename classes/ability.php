@@ -1443,12 +1443,10 @@ class ability extends framework\ability {
             'mod_coursework\models\deadline_extension',
             function (deadline_extension $deadlineextension) {
                 // Check using cached object to avoid repeated DB calls on grading page.
-                return (bool)deadline_extension::get_cached_object(
+                return (bool)deadline_extension::get_for_allocatable(
                     $deadlineextension->courseworkid,
-                    [
-                        'allocatableid' => $deadlineextension->allocatableid,
-                        'allocatabletype' => $deadlineextension->allocatabletype,
-                    ]
+                    $deadlineextension->allocatableid,
+                    $deadlineextension->allocatabletype,
                 );
             }
         );
@@ -1515,8 +1513,12 @@ class ability extends framework\ability {
             'edit',
             'mod_coursework\models\personaldeadline',
             function (personaldeadline $personaldeadline) {
-                // check if extension for this PD exists
-                return $personaldeadline->extension_exists();
+                // Check if extension for this PD exists.
+                return (bool)deadline_extension::get_for_allocatable(
+                    $personaldeadline->get_coursework()->id,
+                    $personaldeadline->get_allocatable()->id(),
+                    $personaldeadline->get_allocatable()->type()
+                );
             }
         );
     }
