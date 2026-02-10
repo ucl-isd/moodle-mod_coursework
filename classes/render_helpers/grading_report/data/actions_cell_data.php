@@ -218,7 +218,7 @@ class actions_cell_data extends cell_data_base {
         if (has_capability('mod/coursework:addplagiarismflag', $this->coursework->get_context())) {
             $data->plagiarism = new stdClass();
             $submission = $rowsbase->get_submission();
-            $plagiarismflag = $submission ? plagiarism_flag::find(['submissionid' => $submission->id]) : null;
+            $plagiarismflag = $submission ? $plagiarismflag = plagiarism_flag::get_for_submission($submission->id) : null;
             if ($plagiarismflag) {
                 $data->plagiarismstatus = $submission->get_flagged_plagiarism_status();
                 $data->plagiarism->flagid = $plagiarismflag->id ?? null;
@@ -230,11 +230,11 @@ class actions_cell_data extends cell_data_base {
      * Get the appropriate plagiarism URL based on flag status.
      *
      * @param submission $submission The submission object
-     * @param plagiarism_flag|bool $flag The plagiarism flag object
+     * @param plagiarism_flag|null $flag The plagiarism flag object
      * @return string The URL or empty string if no permissions
      * @throws coding_exception
      */
-    private function get_plagiarism_url(submission $submission, plagiarism_flag|bool $flag): string {
+    private function get_plagiarism_url(submission $submission, ?plagiarism_flag $flag): string {
         if (!has_capability('mod/coursework:addplagiarismflag', $this->coursework->get_context())) {
             return '';
         }
