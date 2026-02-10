@@ -1172,6 +1172,7 @@ class submission extends table_base implements renderable {
         if (!empty($this->coursework->renamefiles)) {
             $this->rename_files();
         }
+        self::clear_cache($this->id);
     }
 
     /**
