@@ -409,6 +409,7 @@ class coursework extends table_base {
     public $personaldeadlineenabled;
 
 
+
     /**
      * Is turnitin enabled?
      * @var bool
@@ -2429,59 +2430,6 @@ class coursework extends table_base {
             }
         } else {
             $this->stages = [];
-        }
-    }
-
-    /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
-     * Fill pool to cache for later use
-     *
-     * @param $array
-     */
-    public static function fill_pool($array) {
-        self::$pool = [
-            'id' => [],
-        ];
-
-        foreach ($array as $record) {
-            $object = new self($record);
-            self::$pool['id'][$record->id] = $object;
-        }
-    }
-
-    /**
-     *
-     * @param int $courseworkid
-     * @throws dml_exception
-     */
-    public static function fill_pool_coursework($courseworkid) {
-        global $DB;
-        if (empty(self::$pool['id'][$courseworkid])) {
-            $courseworks = $DB->get_records('coursework', ['id' => $courseworkid]);
-            self::fill_pool($courseworks);
-        }
-    }
-
-    /**
-     *
-     */
-    public function fill_cache() {
-        global $DB;
-        $courseworkid = $this->id;
-        self::fill_pool([$this]);
-        course_module::fill_pool([$this->get_course_module()]);
-        module::fill_pool($DB->get_records('modules', ['name' => 'coursework']));
-        allocation::fill_pool_coursework($courseworkid);
-        plagiarism_flag::fill_pool_coursework($courseworkid);
-        assessment_set_membership::fill_pool_coursework($courseworkid);
-        if (core_plugin_manager::instance()->get_plugin_info('local_uolw_sits_data_import')) {
-            user::fill_candidate_number_data($this);
         }
     }
 
