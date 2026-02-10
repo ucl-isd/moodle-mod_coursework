@@ -243,22 +243,6 @@ class deadline_extension_form extends dynamic_form {
     }
 
     /**
-     * If user has a personal deadline, get the object.
-     * @return personaldeadline|null
-     * @throws \coding_exception
-     * @throws \dml_exception
-     */
-    public function personaldeadline(): ?personaldeadline {
-        global $DB;
-        $params = [
-            'allocatableid' => $this->allocatable->id(),
-            'allocatabletype' => $this->allocatable->type(),
-            'courseworkid' => $this->coursework->id(),
-        ];
-        return personaldeadline::find($DB->get_record('coursework_person_deadlines', $params)) ?: null;
-    }
-
-    /**
      * Set instance variables for this object.
      * @return void
      * @throws \coding_exception
@@ -297,7 +281,13 @@ class deadline_extension_form extends dynamic_form {
             ]);
         }
         $this->extensionreasons = coursework::extension_reasons();
-        $this->personaldeadline = $this->coursework->personaldeadlineenabled ? $this->personaldeadline() : null;
+        $this->personaldeadline = $this->coursework->personaldeadlineenabled
+            ? personaldeadline::get_for_allocatable(
+                    $this->coursework->id(),
+                    $this->allocatable->id(),
+                    $this->allocatable->type()
+                )
+            : null;
     }
 
 

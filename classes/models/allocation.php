@@ -261,7 +261,8 @@ class allocation extends table_base {
      * @throws \dml_exception
      * @throws coding_exception
      */
-    public static function get_for_allocatable(int $courseworkid, int $allocatableid): array {
+    public static function get_for_allocatable(int $courseworkid, int $allocatableid, string $alloctabletype): ?static {
+        throw new coding_exception("TODO Use parent for this");
         global $DB;
         $allocationids = $DB->get_fieldset(
             'coursework_allocation_pairs',
