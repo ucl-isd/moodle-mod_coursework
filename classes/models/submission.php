@@ -73,16 +73,10 @@ class submission extends table_base implements renderable {
     const CACHE_AREA_IDS = 'submissionids';
 
     /**
-     * Cache area where objects of this class by user ID are stored.
+     * Cache area where objects of this class by allocatable (user or group) ID are stored.
      * @var string
      */
-    const CACHE_AREA_BY_USER = 'submissionsbyuser';
-
-    /**
-     * Cache area where objects of this class by group ID are stored.
-     * @var string
-     */
-    const CACHE_AREA_BY_GROUP = 'submissionsbygroup';
+    const CACHE_AREA_BY_ALLOCATABLE = 'submissionsbyallocatable';
 
     /**
      * Possible value for mdl_submission.finalised field.
@@ -1634,23 +1628,6 @@ class submission extends table_base implements renderable {
         return $result;
     }
 
-    /**
-     * Clear caches used by this object.
-     */
-    public function clear_cache() {
-
-        // For this class we implement user/group ID caches so clear them.
-        $allocatable = $this->get_allocatable();
-        if ($allocatable && $allocatable->persisted()) {
-            $cachetoclear = cache::make(
-                'mod_coursework',
-                $allocatable->type() == 'user'
-                    ? static::CACHE_AREA_BY_USER : static::CACHE_AREA_BY_GROUP
-            );
-            $cachetoclear->delete($allocatable->id());
-        }
-        parent::clear_cache();
-    }
 
     /**
      * Get multiple submission objects from IDs.
@@ -1712,20 +1689,15 @@ class submission extends table_base implements renderable {
     }
 
     /**
-     * Allows subclasses to do other stuff after the DB save.
+     * Check if the submission should be flagged for plagiarism.
+     *
+     * @return string|bool
      */
-    public function clear_cache() {
-
-        // For this class we implement user/group ID caches so clear them.
-        $allocatable = $this->get_allocatable();
-        if ($allocatable && $allocatable->persisted()) {
-            $cachetoclear = cache::make(
-                'mod_coursework',
-                $allocatable->type() == 'user'
-                    ? static::CACHE_AREA_BY_USER : static::CACHE_AREA_BY_GROUP
-            );
-            $cachetoclear->delete($allocatable->id());
+    public function get_flagged_plagiarism_status(): string|bool {
+        $flag = plagiarism_flag::get_plagiarism_flag($this);
+        if (!$flag || !($flag->status == plagiarism_flag::INVESTIGATION || $flag->status == plagiarism_flag::NOTCLEARED)) {
+            return false;
         }
-        parent::clear_cache();
+        return get_string('plagiarism_' . $flag->status, 'mod_coursework');
     }
 }

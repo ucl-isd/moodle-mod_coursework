@@ -45,16 +45,10 @@ abstract class table_base {
     const CACHE_AREA_IDS = null;
 
     /**
-     * @var string|null cache area for objects by user.
-     * Child classes are expected to override this if they implement caching by user.
+     * @var string|null cache area for objects by user or group (allocatable).
+     * Child classes are expected to override this if they implement caching by user/group.
      */
-    const CACHE_AREA_BY_USER = null;
-
-    /**
-     * @var string|null cache area for objects by group.
-     * Child classes are expected to override this if they implement caching by user.
-     */
-    const CACHE_AREA_BY_GROUP = null;
+    const CACHE_AREA_BY_ALLOCATABLE = null;
 
     /**
      * @var string|null cache area for objects by submission.
@@ -817,16 +811,16 @@ abstract class table_base {
         if (static::CACHE_AREA_IDS) {
             // Child class has a cache for these.
             $cache = cache::make('mod_coursework', static::CACHE_AREA_IDS);
-            $cachedrecord = $cache->get($id);
-            if ($cachedrecord === false) {
-                $cachedrecord = self::get_db_record_from_id($id, $strictness);
-                $cache->set($id, $cachedrecord);
+            $record = $cache->get($id);
+            if ($record === false) {
+                $record = self::get_db_record_from_id($id, $strictness);
+                $cache->set($id, $record);
             }
-            return new static($cachedrecord);
         } else {
             // Child class does not have a cache for these.  Get from DB.
-            return new static(self::get_db_record_from_id($id, $strictness));
+            $record = self::get_db_record_from_id($id, $strictness);
         }
+        return $record ? new static($record) : null;
     }
 
     /**
@@ -853,7 +847,6 @@ abstract class table_base {
         );
     }
 
-
     /**
      * Clear the caches for this object.
      * May need to be overridden in child class, if child class has additional cache areas beyond CACHE_AREA_IDS.
@@ -865,6 +858,21 @@ abstract class table_base {
             // Child class implements the main cache - clear that too.
             $cache = cache::make('mod_coursework', static::CACHE_AREA_IDS);
             $cache->delete($this->id);
+        }
+        if (static::CACHE_AREA_BY_ALLOCATABLE) {
+            // For this class we implement user/group ID caches so clear them.
+            // E.g. submission, deadline and extension all use this.
+            $allocatable = $this->get_allocatable();
+            if ($allocatable && $allocatable->persisted()) {
+                $cachetoclear = cache::make('mod_coursework', static::CACHE_AREA_BY_ALLOCATABLE);
+                $cachetoclear->delete(self::get_allocatable_cache_key($this->courseworkid, $allocatable->id(), $allocatable->type()));
+            }
+        }
+        if (static::CACHE_AREA_BY_SUBMISSION) {
+            // For this class we implement a submission ID cache so clear that.
+            // E.g. feedback and plagiarism flag use this.
+            $cachetoclear = cache::make('mod_coursework', static::CACHE_AREA_BY_SUBMISSION);
+            $cachetoclear->delete($this->submissionid);
         }
     }
 
@@ -880,18 +888,31 @@ abstract class table_base {
         if ($allocatableid <= 0 || !in_array($allocatabletype, ['user', 'group'])) {
             throw new invalid_parameter_exception("Invalid ID $allocatableid or type $allocatabletype");
         }
-        $implementscache = (static::CACHE_AREA_BY_USER ?? false) && (static::CACHE_AREA_BY_GROUP ?? false);
+        $implementscache = static::CACHE_AREA_BY_ALLOCATABLE ?? false;
         if ($implementscache) {
-            $cachearea = $allocatabletype == 'user' ? static::CACHE_AREA_BY_USER : static::CACHE_AREA_BY_GROUP;
-            $cache = cache::make('mod_coursework', $cachearea);
-            $id = $cache->get($allocatableid);
+            $cache = cache::make('mod_coursework', static::CACHE_AREA_BY_ALLOCATABLE);
+            $cachekey = self::get_allocatable_cache_key($courseworkid, $allocatableid, $allocatabletype);
+            $id = $cache->get($cachekey);
             if ($id === false) {
                 $id = static::get_db_id_from_allocatable($courseworkid, $allocatableid, $allocatabletype);
-                $cache->set($allocatableid, $id === false ? null : $id);
+                $cache->set($cachekey, $id === false ? null : $id);
             }
         } else {
             throw new coding_exception("Child class " . static::class . " is not compatible with the method ::get_for_allocatable()");
         }
         return $id ? self::get_from_id($id) : null;
+    }
+
+    /**
+     * Get the cache key used for @see static::CACHE_AREA_BY_ALLOCATABLE
+     * @param int $courseworkid
+     * @param int $allocatableid
+     * @param string $allocatabletype
+     * @return string
+     */
+    public static function get_allocatable_cache_key(int $courseworkid, int $allocatableid, string $allocatabletype): string {
+        $typeprefix = substr($allocatabletype, 0, 1);
+        // E.g. c3u10 for coursework ID 3, user ID 10 or c3g10 for coursework ID 3, group ID 10.
+        return "c$courseworkid$typeprefix$allocatableid";
     }
 }

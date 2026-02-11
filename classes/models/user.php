@@ -52,12 +52,6 @@ class user extends table_base implements allocatable, moderatable {
     use allocatable_functions;
 
     /**
-     * Cache area where objects by ID are stored.
-     * @var string
-     */
-    const CACHE_AREA_IDS = 'userids';
-
-    /**
      * @var string
      */
     protected static $tablename = 'user';
@@ -186,25 +180,6 @@ class user extends table_base implements allocatable, moderatable {
     public function get_user_profile_url(): string {
         $url = new moodle_url('/user/profile.php', ['id' => $this->id()]);
         return $url->out(false);
-    }
-
-    /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
-     * Fill pool to cache for later use
-     *
-     * @param $array
-     */
-    public static function fill_pool($array) {
-        foreach ($array as $record) {
-            $object = new self($record);
-            self::$pool['id'][$record->id] = $object;
-        }
     }
 
     /**
