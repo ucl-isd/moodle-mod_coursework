@@ -427,14 +427,14 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $f->filename = $file->get_filename();
 
                 // Finalised.
-                $f->finalised = ($submission->finalisedstatus == 1);
+                $f->finalised = $submission->is_finalised();
 
                 $template->submissiondata->files[] = $f;
             }
         }
 
         // Late.
-        $template->submittedlate = ($submission->was_late() !== false);
+        $template->submittedlate = (bool) $submission->was_late();
 
         // Plagiarism.
         $template->submissiondata->flaggedplagiarism = cell_data_base::get_flagged_plagiarism_status($submission);
