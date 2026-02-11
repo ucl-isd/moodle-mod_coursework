@@ -539,16 +539,11 @@ class submission extends table_base implements renderable {
      * @throws dml_exception
      */
     public function get_assessor_allocation_by_stage($stageidentifier) {
-
-        $courseworkid = $this->get_coursework()->id;
-        allocation::fill_pool_coursework($courseworkid);
-        return allocation::get_cached_object(
-            $courseworkid,
-            [
-                'allocatableid' => $this->get_allocatable()->id(),
-                'allocatabletype' => $this->get_allocatable()->type(),
-                'stageidentifier' => $stageidentifier,
-            ]
+        return allocation::get_for_allocatable_at_stage(
+            $this->get_coursework()->id,
+            $this->get_allocatable()->id(),
+            $this->get_allocatable()->type(),
+            $stageidentifier
         );
     }
 
