@@ -92,6 +92,11 @@ $definitions = [
         'simplekeys' => true,
         'simpledata' => true,
     ],
+    allocation::CACHE_AREA_BY_ALLOCATABLE => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => true,
+    ],
     deadline_extension::CACHE_AREA_BY_ALLOCATABLE => [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,

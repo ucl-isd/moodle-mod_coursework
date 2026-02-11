@@ -1106,22 +1106,21 @@ class coursework extends table_base {
      * @return bool
      * @throws \core\exception\coding_exception
      */
-    public function assessor_has_allocation_for_student_not_in_current_stage($allocatable, $userid, $stage) {
-
+    public function assessor_has_allocation_for_student_not_in_current_stage($allocatable, $userid, $stage): bool {
         global $USER;
         if (!$userid) {
             $userid = $USER->id;
         }
-        allocation::fill_pool_coursework($this->id);
-        $records = isset(allocation::$pool[$this->id]['allocatableid-allocatabletype-assessorid'][$allocatable->id() . '-' . $allocatable->type() . "-$userid"]) ?
-            allocation::$pool[$this->id]['allocatableid-allocatabletype-assessorid'][$allocatable->id() . '-' . $allocatable->type() . "-$userid"] : [];
-
-        foreach ($records as $record) {
-            if ($record->stageidentifier != $stage) {
+        $allocations = allocation::get_set_for_allocatable(
+            $this->id,
+            $allocatable->id,
+            $allocatable->type()
+        );
+        foreach ($allocations as $allocation) {
+            if ($allocation->assessorid == $userid && $allocation->stageidentifier != $stage) {
                 return true;
             }
         }
-
         return false;
     }
 
