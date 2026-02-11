@@ -322,9 +322,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         // Output all the things.
         // Form part.
-        ob_start();
-        $simpleform->display();
-        $template->marking = ob_get_clean();
+        $template->marking = $simpleform->render();
         // Standard bit.
         echo $this->output->header();
         echo $this->render_from_template('mod_coursework/marking/main', $template);
