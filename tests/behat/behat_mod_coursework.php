@@ -1290,13 +1290,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given I scroll to the element :selector
-     */
-    public function i_scroll_to_element($selector) {
-        $this->getSession()->executeScript("document.querySelector('{$selector}').scrollIntoView();");
-    }
-
-    /**
      * @Then /^there should be ([\d]+) coursework$/
      * @param $expectedcount
      * @throws ExpectationException

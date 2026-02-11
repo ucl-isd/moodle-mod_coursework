@@ -14,7 +14,7 @@ Feature: Check that Turnitin reports are fetched and displayed post page load fr
     Given I am logged in as a teacher
     And I visit the coursework page
     # Ensure the table is scrolled into view, since JS loading is not triggered for rows out of view.
-    And I scroll to the element "table.mod-coursework-submissions-table"
+    And I hover "table.mod-coursework-submissions-table" "css_element"
     And I wait until the page is ready
     And I should not see "[TURNITIN DUMMY LINKS HTML]"
 
@@ -29,7 +29,7 @@ Feature: Check that Turnitin reports are fetched and displayed post page load fr
       | plagiarism_turnitin_mod_coursework | 1        | plagiarism_turnitin |
     And I visit the coursework page
     # Ensure the table is scrolled into view, since JS loading is not triggered for rows out of view.
-    And I scroll to the element "table.mod-coursework-submissions-table"
+    And I hover "table.mod-coursework-submissions-table" "css_element"
     And I wait until the page is ready
     # The course specific setting is still off at this point so I do not see the links.
     And I should not see "[TURNITIN DUMMY LINKS HTML]"
@@ -46,7 +46,7 @@ Feature: Check that Turnitin reports are fetched and displayed post page load fr
     And I am logged in as a teacher
     And I visit the coursework page
     # Ensure the table is scrolled into view, since JS loading is not triggered for rows out of view.
-    And I scroll to the element "table.mod-coursework-submissions-table"
+    And I hover "table.mod-coursework-submissions-table" "css_element"
     And I wait until the page is ready
     # Now the course specific setting is *on* so I do see the links.
     And I should see "[TURNITIN DUMMY LINKS HTML]"
