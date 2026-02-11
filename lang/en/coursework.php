@@ -95,6 +95,7 @@ $string['blindmarking'] = 'Blind marking';
 $string['blindmarking_desc'] = 'Blind marking - You will not see students\' names';
 $string['blindmarking_help'] = 'Blind marking prevents people without the mod/coursework:viewanonymous capability from seeing the real names of the students. It also prevents people who are allowed to add agreed marks from seeing the initial marks added by other people until they have all been added. This will be fixed permanently once set and cannot be ' . 'changed later.';
 $string['cachedef_allocationids'] = 'Cache to store allocation DB objects by ID';
+$string['cachedef_allocationsbyallocatable'] = 'Cache to store the user/group allocation ID (if any) for an allocatable in a coursework';
 $string['cachedef_assessmentsetids'] = 'Cache to store assessment set DB objects by ID';
 $string['cachedef_courseworkdata'] = 'Cache to store legacy coursework data (to be removed)';
 $string['cachedef_courseworkids'] = 'Cache to store coursework DB objects by ID';

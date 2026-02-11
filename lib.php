@@ -1327,17 +1327,18 @@ function course_group_member_removed($eventdata) {
 
         if ($initialstageassessor) {
             // remove all assessor allocations for this group
-            $groupallocation = $coursework->is_configured_to_have_group_submissions()
-                ? allocation::find(
-                    [
-                        'courseworkid' => $coursework->id(),
-                        'assessorid' => $removeduserid,
-                        'allocatableid' => $groupid,
-                        'allocatabletype' => 'group',
-                        'stageidentifier' => 'assessor_1',
-                    ]
-                )
-                : null;
+            if ($coursework->is_configured_to_have_group_submissions()) {
+                $groupallocation = allocation::get_for_allocatable_at_stage(
+                    $coursework->id(),
+                    $groupid,
+                    'group',
+                    'assessor_1'
+                );
+                $groupallocation = $groupallocation && $groupallocation->assessorid == $removeduserid
+                    ? $groupallocation : null;
+            } else {
+                $groupallocation = null;
+            }
             if ($groupallocation && can_delete_allocation($coursework->id(), $groupid)) {
                 $groupallocation->destroy();
             } else {
@@ -1346,16 +1347,13 @@ function course_group_member_removed($eventdata) {
                 if ($students) {
                     foreach ($students as $student) {
                         if (can_delete_allocation($coursework->id(), $student->id)) {
-                            $userallocation = allocation::find(
-                                [
-                                    'courseworkid' => $coursework->id(),
-                                    'assessorid' => $removeduserid,
-                                    'allocatableid' => $student->id,
-                                    'allocatabletype' => 'user',
-                                    'stageidentifier' => 'assessor_1',
-                                ]
+                            $userallocation = allocation::get_for_allocatable_at_stage(
+                                $coursework->id(),
+                                $student->idid,
+                                'user',
+                                'assessor_1'
                             );
-                            if ($userallocation) {
+                            if ($userallocation && $userallocation->assessorid == $removeduserid) {
                                 $userallocation->destroy();
                             }
                         }
@@ -1393,22 +1391,26 @@ function course_group_member_removed($eventdata) {
 
                 if (!$students) { // if no students in group, then remove group allocation
                     $allocatableid = $groupid;
+                    $allocatabletype = 'group';
                 } else {
                     continue; // continue as we store group allocatableid, so removing student from the group with many students doesn't affect allocations
                 }
             } else {
                 // If individual coursework
                 $allocatableid = $removeduserid;
+                $allocatabletype = 'user';
             }
 
             if (can_delete_allocation($coursework->id(), $allocatableid)) {
-                $allocations = allocation::get_for_allocatable($coursework->id, $allocatable->id);
-                foreach ($allocations as $allocation) {
-                    if ($allocation->stageidentifier == 'assessor_1') {
-                        $allocation->destroy();
-                    }
+                $allocation = allocation::get_for_allocatable_at_stage(
+                    $coursework->id,
+                    $allocatableid,
+                    $allocatabletype,
+                    'assessor_1'
+                );
+                if ($allocation) {
+                    $allocation->destroy();
                 }
-                allocation::remove_cache($coursework->id);
             }
 
             // check if the student was in a different group and allocate them to the first found group
@@ -1566,8 +1568,10 @@ function teacher_removed_allocated_not_graded($eventdata) {
     foreach ($courseworks as $cw) {
         $coursework = coursework::get_from_id($cw->id);
         if ($coursework->allocation_enabled()) {
-            $assessorallocations = $DB->get_records('coursework_allocation_pairs', ['courseworkid' => $coursework->id,
-                                                                                                'assessorid' => $userid]);
+            $assessorallocations = $DB->get_records(
+                'coursework_allocation_pairs',
+                ['courseworkid' => $coursework->id, 'assessorid' => $userid]
+            );
             foreach ($assessorallocations as $allocation) {
                 if ($allocation->allocatabletype == 'user') {
                     $allocatable = user::get_from_id($allocation->allocatableid);
@@ -1580,15 +1584,17 @@ function teacher_removed_allocated_not_graded($eventdata) {
                 if ($submission && $submission->has_specific_assessor_feedback($userid)) {
                     continue;
                 }
-
-                $allocations = allocation::get_for_allocatable($coursework->id, $allocatable->id);
+                $allocations = allocation::get_set_for_allocatable(
+                    $coursework->id,
+                    $allocatable->id,
+                    $allocatable->type()
+                );
                 foreach ($allocations as $alloc) {
                     if ($alloc->assessorid == $userid) {
                         $alloc->destroy();
                     }
                 }
             }
-            allocation::remove_cache($coursework->id);
         }
     }
 

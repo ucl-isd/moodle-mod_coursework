@@ -320,9 +320,6 @@ class feedback_controller extends controller_base {
                 $this->get_page_renderer()->confirm_feedback_removal_page($teacherfeedback, $confirmurl);
                 return;
             } else {
-                feedback::remove_cache($teacherfeedback->get_courseworkid());
-                submission::remove_cache($teacherfeedback->get_courseworkid());
-
                 // Remove associated files.
                 $fs = get_file_storage();
                 $fs->delete_area_files(

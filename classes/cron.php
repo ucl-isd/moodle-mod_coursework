@@ -245,7 +245,6 @@ class cron {
             // done. Would not want them to check straight away and then find they could still
             // edit it.
             $submission->update_attribute('finalisedstatus', submission::FINALISED_STATUS_FINALISED);
-            submission::remove_cache($submission->courseworkid);
             // Slightly wasteful to keep re-fetching the coursework :-/
             $mailer = new mailer($submission->get_coursework());
             foreach ($submission->get_students() as $student) {

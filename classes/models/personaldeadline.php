@@ -173,7 +173,6 @@ class personaldeadline extends table_base {
                 $d->destroy();
             }
         }
-        self::remove_cache($courseworkid);
     }
 
 
@@ -187,6 +186,5 @@ class personaldeadline extends table_base {
             $d = self::get_from_id($deadline->id);
             $d->destroy();
         }
-        self::remove_cache($courseworkid);
     }
 }

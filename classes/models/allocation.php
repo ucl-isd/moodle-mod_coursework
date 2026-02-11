@@ -23,7 +23,9 @@
 namespace mod_coursework\models;
 
 use AllowDynamicProperties;
+use cache;
 use core\exception\coding_exception;
+use core\exception\invalid_parameter_exception;
 use mod_coursework\framework\table_base;
 
 /**
@@ -41,6 +43,13 @@ class allocation extends table_base {
      * @var string
      */
     const CACHE_AREA_IDS = 'allocationids';
+
+    /**
+     * Cache area where objects of this class by allocatable (user or group) ID are stored.
+     * @var string
+     */
+    const CACHE_AREA_BY_ALLOCATABLE = 'allocationsbyallocatable';
+
 
     /**
      * @var string
@@ -139,80 +148,6 @@ class allocation extends table_base {
     }
 
     /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
-     *
-     * @param int $courseworkid
-     * @return array
-     * @throws \dml_exception
-     */
-    protected static function get_cache_array($courseworkid) {
-        global $DB;
-        $records = $DB->get_records(static::$tablename, ['courseworkid' => $courseworkid]);
-        $result = array_fill_keys(self::get_valid_cache_keys(), []);
-        if ($records) {
-            foreach ($records as $record) {
-                $object = new self($record);
-                $result['id'][$record->id] = $object;
-                $result['stageidentifier'][$record->stageidentifier][] = $object;
-                $result['allocatableid-allocatabletype-stageidentifier'][$record->allocatableid . '-' . $record->allocatabletype . '-' . $record->stageidentifier][] = $object;
-                $result['allocatableid-allocatabletype-assessorid'][$record->allocatableid . '-' . $record->allocatabletype . '-' . $record->assessorid][] = $object;
-                $result['assessorid-allocatabletype'][$record->assessorid . '-' . $record->allocatabletype][] = $object;
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * Get the allowed/expected cache keys for this class when @see self::get_cached_object() is called.
-     * @return string[]
-     */
-    protected static function get_valid_cache_keys(): array {
-        return [
-            'id',
-            'stageidentifier',
-            'allocatableid-allocatabletype-stageidentifier',
-            'allocatableid-allocatabletype-assessorid',
-            'assessorid-allocatabletype',
-        ];
-    }
-
-    /**
-     *
-     * @param int $courseworkid
-     * @param $key
-     * @param $params
-     * @return self|bool
-     */
-    public static function get_object($courseworkid, $key, $params) {
-        if (!isset(self::$pool[$courseworkid])) {
-            self::fill_pool_coursework($courseworkid);
-        }
-        $valuekey = implode('-', $params);
-        return self::$pool[$courseworkid][$key][$valuekey][0] ?? false;
-    }
-
-    /**
-     *
-     */
-    protected function post_save_hook() {
-        self::remove_cache($this->courseworkid);
-    }
-
-    /**
-     *
-     */
-    protected function after_destroy() {
-        $this->clear_cache();
-        self::remove_cache($this->courseworkid);
-    }
-
-    /**
      * Destroy all allocations for a coursework.
      * @param int $courseworkid
      * @return void
@@ -222,10 +157,8 @@ class allocation extends table_base {
         $ids = $DB->get_fieldset(static::$tablename, 'id', ['courseworkid' => $courseworkid]);
         foreach ($ids as $id) {
             $a = self::get_from_id($id);
-            $a->clear_cache();
+            $a->destroy();
         }
-        $DB->delete_records(static::$tablename, ['courseworkid' => $courseworkid]);
-        self::remove_cache($courseworkid);
     }
 
     /**
@@ -243,37 +176,91 @@ class allocation extends table_base {
         ?int $assessorid = null
     ): bool {
         global $USER;
-        return (bool)self::get_cached_object(
+        $allocations = self::get_set_for_allocatable(
             $courseworkid,
-            [
-                'allocatableid' => $allocatableid,
-                'allocatabletype' => $allocatabletype,
-                'assessorid' => $assessorid ?? $USER->id,
-            ]
+            $allocatableid,
+            $allocatabletype
         );
+        $filtered = array_filter($allocations, fn($a) => $a->assessorid == $assessorid ?? $USER->id);
+        return !empty($filtered);
     }
 
     /**
-     * Get allocations for an assessor/alloctable pair.
+     * Get allocations for an allocatable in a coursework.
+     * Each allocatable may have more than one in the set (from different marking stages).
      * @param int $courseworkid
      * @param int $allocatableid
+     * @param string $alloctabletype
      * @return allocation[]
      * @throws \core\exception\invalid_parameter_exception
      * @throws \dml_exception
      * @throws coding_exception
      */
-    public static function get_for_allocatable(int $courseworkid, int $allocatableid, string $alloctabletype): ?static {
-        throw new coding_exception("TODO Use parent for this");
-        global $DB;
-        $allocationids = $DB->get_fieldset(
-            'coursework_allocation_pairs',
-            'id',
-            ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid]
-        );
+    public static function get_set_for_allocatable(int $courseworkid, int $allocatableid, string $allocatabletype): array {
+        if ($allocatableid <= 0 || !in_array($allocatabletype, ['user', 'group'])) {
+            throw new invalid_parameter_exception("Invalid ID $allocatableid or type $allocatabletype");
+        }
+        $cache = cache::make('mod_coursework', self::CACHE_AREA_BY_ALLOCATABLE);
+        $cachekey = self::get_allocatable_cache_key($courseworkid, $allocatableid, $allocatabletype);
+        $ids = $cache->get($cachekey);
+        if ($ids === false) {
+            $ids = self::get_db_ids_from_allocatable($courseworkid, $allocatableid, $allocatabletype);
+            $cache->set($cachekey, $ids);
+        }
         $result = [];
-        foreach ($allocationids as $allocationid) {
-            $result[] = self::get_from_id($allocationid);
+        foreach ($ids as $id) {
+            $result[] = self::get_from_id($id);
         }
         return $result;
+    }
+
+    /**
+     * Get the allocation IDs from the DB for all allocations of this allocatable in this coursework.
+     * @param $courseworkid
+     * @param $allocatableid
+     * @param $allocatabletype
+     * @return array
+     * @throws \dml_exception
+     */
+    private static function get_db_ids_from_allocatable($courseworkid, $allocatableid, $allocatabletype): array {
+        global $DB;
+        return $DB->get_fieldset(
+            'coursework_allocation_pairs',
+            'id',
+            ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid, 'allocatabletype' => $allocatabletype]
+        );
+    }
+
+    /**
+     * Get allocation for an allocatable at a given stage in a coursework.
+     * @param int $courseworkid
+     * @param int $allocatableid
+     * @param string $alloctabletype
+     * @param string $stageidentifier stage identifier filter e.g. assessor::STAGE_ASSESSOR_1
+     * @return self|null
+     * @throws \core\exception\invalid_parameter_exception
+     * @throws \dml_exception
+     * @throws coding_exception
+     */
+    public static function get_for_allocatable_at_stage(int $courseworkid, int $allocatableid, string $alloctabletype, string $stageidentifier): ?self {
+        $allocations = self::get_set_for_allocatable($courseworkid, $allocatableid, $alloctabletype);
+        $allocation = array_pop($allocations);
+        return $allocation && $allocation->stageidentifier == $stageidentifier ? $allocation : null;
+    }
+
+    /**
+     * Get the allocatable for this allocation.
+     * @return user|group
+     * @throws coding_exception
+     * @throws invalid_parameter_exception
+     */
+    public function get_allocatable(): user|group {
+        if ($this->allocatabletype == 'user') {
+            return user::get_from_id($this->allocatableid);
+        } else if ($this->allocatabletype == 'group') {
+            return group::get_from_id($this->allocatableid);
+        } else {
+            throw new coding_exception("Invalid type");
+        }
     }
 }
