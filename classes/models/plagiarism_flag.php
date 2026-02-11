@@ -44,7 +44,7 @@ class plagiarism_flag extends table_base {
      * Cache area where objects by ID are stored.
      * @var string
      */
-    const CACHE_AREA_IDS = 'plagiriasmflagids';
+    const CACHE_AREA_IDS = 'plagiarismflagids';
 
 
     /**
@@ -127,18 +127,6 @@ class plagiarism_flag extends table_base {
             $flag = self::get_from_id($id);
             $flag->destroy();
         }
-    }
-
-
-    /**
-     * Clear caches used by this object.
-     */
-    public function clear_cache() {
-        // For this class we implement a submission ID cache so clear that.
-        $cachetoclear = cache::make('mod_coursework', self::CACHE_AREA_BY_SUBMISSION);
-        $cachetoclear->delete($this->submissionid);
-
-        parent::clear_cache();
     }
 
     /**

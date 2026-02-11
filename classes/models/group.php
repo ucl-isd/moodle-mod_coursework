@@ -49,13 +49,6 @@ class group extends table_base implements allocatable, moderatable {
     use allocatable_functions;
 
     /**
-     * Cache area where objects by ID are stored.
-     * @var string
-     */
-    const CACHE_AREA_IDS = 'groupids';
-
-
-    /**
      * @var string
      */
     protected static $tablename = 'groups';
@@ -118,24 +111,5 @@ class group extends table_base implements allocatable, moderatable {
      */
     public function is_valid_for_course($course) {
         return $this->courseid == $course->id;
-    }
-
-    /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
-     * Fill pool to cache for later use
-     *
-     * @param $array
-     */
-    public static function fill_pool($array) {
-        foreach ($array as $record) {
-            $object = new self($record);
-            self::$pool['id'][$record->id] = $object;
-        }
     }
 }

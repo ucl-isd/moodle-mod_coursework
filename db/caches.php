@@ -67,11 +67,6 @@ $definitions = [
         'simplekeys' => true,
         'simpledata' => false,
     ],
-    group::CACHE_AREA_IDS => [
-        'mode' => cache_store::MODE_APPLICATION,
-        'simplekeys' => true,
-        'simpledata' => false,
-    ],
     personaldeadline::CACHE_AREA_IDS => [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,
@@ -87,11 +82,6 @@ $definitions = [
         'simplekeys' => true,
         'simpledata' => false,
     ],
-    user::CACHE_AREA_IDS => [
-        'mode' => cache_store::MODE_APPLICATION,
-        'simplekeys' => true,
-        'simpledata' => false,
-    ],
     feedback::CACHE_AREA_BY_SUBMISSION => [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,
@@ -102,32 +92,17 @@ $definitions = [
         'simplekeys' => true,
         'simpledata' => true,
     ],
-    deadline_extension::CACHE_AREA_BY_USER => [
+    deadline_extension::CACHE_AREA_BY_ALLOCATABLE => [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
     ],
-    deadline_extension::CACHE_AREA_BY_GROUP => [
+    personaldeadline::CACHE_AREA_BY_ALLOCATABLE => [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
     ],
-    personaldeadline::CACHE_AREA_BY_USER => [
-        'mode' => cache_store::MODE_APPLICATION,
-        'simplekeys' => true,
-        'simpledata' => true,
-    ],
-    personaldeadline::CACHE_AREA_BY_GROUP => [
-        'mode' => cache_store::MODE_APPLICATION,
-        'simplekeys' => true,
-        'simpledata' => true,
-    ],
-    submission::CACHE_AREA_BY_USER => [
-        'mode' => cache_store::MODE_APPLICATION,
-        'simplekeys' => true,
-        'simpledata' => true,
-    ],
-    submission::CACHE_AREA_BY_GROUP => [
+    submission::CACHE_AREA_BY_ALLOCATABLE => [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
