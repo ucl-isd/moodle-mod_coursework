@@ -166,13 +166,13 @@ abstract class base {
      * @return bool
      */
     protected function teacher_already_has_an_allocation_for_this_allocatable($student, $teacher) {
-        $params = [
-            'courseworkid' => $this->coursework->id,
-            'allocatableid' => $student->id(),
-            'allocatabletype' => $student->type(),
-            'assessorid' => $teacher->id,
-        ];
-        return allocation::exists($params);
+        $allocations = allocation::get_set_for_allocatable(
+            $this->coursework->id,
+            $student->id(),
+            $student->type()
+        );
+        $filtered = array_filter($allocations, fn($a) => $a->assessorid == $teacher->id);
+        return !empty($filtered);
     }
 
     /**

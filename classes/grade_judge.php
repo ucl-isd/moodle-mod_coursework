@@ -178,12 +178,12 @@ class grade_judge {
     public function allocatable_needs_more_than_one_feedback($allocatable) {
 
         if ($this->coursework->sampling_enabled()) {
-            assessment_set_membership::fill_pool_coursework($this->coursework->id);
-            $record = assessment_set_membership::get_cached_object(
-                $this->coursework->id,
-                ['allocatableid' => $allocatable->id(), 'allocatabletype' => $allocatable->type()]
+            $membership = assessment_set_membership::get_set_for_allocatable(
+                $this->coursework->id(),
+                $allocatable->id(),
+                $allocatable->type()
             );
-            return !empty($record);
+            return (bool)$membership;
         } else {
             return $this->coursework->has_multiple_markers();
         }

@@ -102,14 +102,11 @@ final class user_test extends \advanced_testcase {
     }
 
     /**
-     * Test that user::find() and user->persisted() working as expected.
-     * @covers \mod_coursework\models\user::find()
-     * @covers \mod_coursework\framework\table_base::find()
+     * Test that user->persisted() working as expected.
      * @covers \mod_coursework\framework\table_base::persisted()
      * @throws \core\exception\invalid_parameter_exception
      */
     public function test_persisted(): void {
-        global $DB;
         $generator = testing_util::get_data_generator();
 
         $user = new stdClass();
@@ -118,29 +115,10 @@ final class user_test extends \advanced_testcase {
         $dbstudent = $generator->create_user($user);
         $this->assertNotFalse($dbstudent);
 
-        // Find the user coursework object without providing their ID, using an array.
-        $courseworkuser = user::find((array)$user);
-        $this->assertNotFalse($courseworkuser);
-        $this->assertTrue($courseworkuser->persisted());
-        $this->assertEquals($dbstudent->id, $courseworkuser->id());
-
-        // Find the user coursework object without providing their ID, using an object.
-        $courseworkuser2 = user::find($user);
-        $this->assertNotFalse($courseworkuser2);
-        $this->assertTrue($courseworkuser2->persisted());
-        $this->assertEquals($dbstudent->id, $courseworkuser2->id());
-
         // Find the user coursework object providing their ID.
         $courseworkuser3 = user::get_from_id($dbstudent->id);
         $this->assertNotFalse($courseworkuser3);
         $this->assertTrue($courseworkuser3->persisted());
         $this->assertEquals($dbstudent->id, $courseworkuser3->id());
-
-        // Find the user coursework object providing a fresh DB record ID, preventing reload.
-        $dbrecord = $DB->get_record('user', ['id' => $dbstudent->id], '*', MUST_EXIST);
-        $courseworkuser4 = user::find($dbrecord, false);
-        $this->assertNotFalse($courseworkuser4);
-        $this->assertTrue($courseworkuser4->persisted());
-        $this->assertEquals($dbrecord->id, $courseworkuser4->id());
     }
 }

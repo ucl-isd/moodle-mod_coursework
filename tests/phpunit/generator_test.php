@@ -46,9 +46,6 @@ final class generator_test extends \advanced_testcase {
     public function setUp(): void {
         parent::setUp();
         $this->resetAfterTest(true);
-        // If we don't do this, we end up with the same cached objects for all tests and they may have incorrect/missing properties.
-        \mod_coursework\models\course_module::$pool = null;
-        \mod_coursework\models\module::$pool = null;
     }
 
     /**

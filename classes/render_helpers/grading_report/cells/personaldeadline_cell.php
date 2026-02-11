@@ -42,14 +42,20 @@ class personaldeadline_cell extends cell_base {
         $coursework = $rowobject->get_coursework();
         $deadline = $coursework->get_deadline();
         $content = '<div class="show_personal_dealine">';
-
         $newpersonaldeadlineparams = [
             'allocatableid' => $rowobject->get_allocatable()->id(),
             'allocatabletype' => $rowobject->get_allocatable()->type(),
             'courseworkid' => $rowobject->get_coursework()->id,
         ];
 
-        $personaldeadline = personaldeadline::find_or_build($newpersonaldeadlineparams);
+        $personaldeadline = personaldeadline::get_for_allocatable(
+            $rowobject->get_coursework()->id,
+            $rowobject->get_allocatable()->id(),
+            $rowobject->get_allocatable()->type()
+        );
+        if (!$personaldeadline) {
+            $personaldeadline = personaldeadline::build($newpersonaldeadlineparams);
+        }
         if ($personaldeadline->personaldeadline) {
             $deadline = $personaldeadline->personaldeadline;
         }
