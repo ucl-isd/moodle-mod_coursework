@@ -480,6 +480,7 @@ $string['othermarkermark'] = 'Other marker mark ({$a})';
 $string['overwritefeedback'] = 'Overwrite current feedback files with uploaded ones';
 $string['overwritemarks'] = 'Check box to allow existing marks to be overwritten by marks present in this csv';
 $string['pdfhelp'] = "Friendly reminder: Download the PDF to annotate it, then upload in your feedback.";
+$string['pdfpreview'] = "Pdf preview";
 $string['per_page'] = 'Records per page';
 $string['per_page_desc'] = 'Default number of records displayed per page';
 $string['percentage'] = '%';
