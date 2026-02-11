@@ -53,16 +53,10 @@ class deadline_extension extends table_base {
     const CACHE_AREA_IDS = 'extensionids';
 
     /**
-     * Cache area where objects of this class by user ID are stored.
+     * Cache area where objects of this class by allocatable (user or group) ID are stored.
      * @var string
      */
-    const CACHE_AREA_BY_USER = 'extensionsbyuser';
-
-    /**
-     * Cache area where objects of this class by group ID are stored.
-     * @var string
-     */
-    const CACHE_AREA_BY_GROUP = 'extensionsbygroup';
+    const CACHE_AREA_BY_ALLOCATABLE = 'extensionsbyallocatable';
 
     /**
      * @var coursework
@@ -274,24 +268,5 @@ class deadline_extension extends table_base {
             $e = self::get_from_id($extension->id);
             $e->destroy();
         }
-    }
-
-    /**
-     * Clear caches used by this object.
-     */
-    public function clear_cache() {
-
-        // For this class we implement user/group ID caches so clear them.
-        $allocatable = $this->get_allocatable();
-        if ($allocatable && $allocatable->persisted()) {
-            $cachetoclear = cache::make(
-                'mod_coursework',
-                $allocatable->type() == 'user'
-                    ? static::CACHE_AREA_BY_USER : static::CACHE_AREA_BY_GROUP
-            );
-            $cachetoclear->delete($allocatable->id());
-        }
-
-        parent::clear_cache();
     }
 }
