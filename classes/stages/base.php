@@ -129,17 +129,12 @@ abstract class base {
      * @throws \core\exception\coding_exception
      */
     private function already_allocated($allocatable): bool {
-        $courseworkid = $this->get_courseworkid();
-        allocation::fill_pool_coursework($courseworkid);
-        $record = allocation::get_cached_object(
-            $courseworkid,
-            [
-                'allocatableid' => $allocatable->id(),
-                'allocatabletype' => $allocatable->type(),
-                'stageidentifier' => $this->identifier(),
-            ]
+        return (bool)allocation::get_for_allocatable_at_stage(
+            $this->get_courseworkid(),
+            $allocatable->id(),
+            $allocatable->type(),
+            $this->identifier()
         );
-        return (bool)$record;
     }
 
     /**
@@ -151,17 +146,13 @@ abstract class base {
     public function assessor_already_allocated_for_this_submission($allocatable, $assessor) {
 
         if (!empty($assessor)) {
-            $courseworkid = $this->get_courseworkid();
-            allocation::fill_pool_coursework($courseworkid);
-            $record = allocation::get_cached_object(
-                $courseworkid,
-                [
-                    'allocatableid' => $allocatable->id(),
-                    'allocatabletype' => $allocatable->type(),
-                    'assessorid' => $assessor->id,
-                ]
+            $allocations = allocation::get_set_for_allocatable(
+                $this->get_courseworkid(),
+                $allocatable->id(),
+                $allocatable->type()
             );
-            return !empty($record);
+            $filtered = array_filter($allocations, fn($a) => $a->assessorid == $assessor->id);
+            return !empty($filtered);
         } else {
             return false;
         }
@@ -197,11 +188,12 @@ abstract class base {
      * @throws coding_exception
      */
     public function make_manual_allocation($allocatable, $teacher) {
-        $allocation = allocation::find([
-            'courseworkid' => $this->get_courseworkid(),
-            'stageidentifier' => $this->identifier(),
-            'allocatableid' => $allocatable->id,
-        ]);
+        $allocation = allocation::get_for_allocatable_at_stage(
+            $this->get_courseworkid(),
+            $allocatable->id,
+            $allocatable->type(),
+            $this->identifier()
+        );
         if (empty($allocation)) {
             $allocation = new allocation();
             $allocation->courseworkid = $this->coursework->id;
@@ -213,8 +205,6 @@ abstract class base {
         $allocation->assessorid = $teacher->id;
         $allocation->ismanual = 1;
         $allocation->save();
-
-        allocation::fill_pool_coursework($this->get_coursework()->id());
         return $allocation;
     }
 
@@ -383,33 +373,8 @@ abstract class base {
      * @return bool
      * @throws \core\exception\coding_exception
      */
-    public function has_allocation($allocatable) {
-        if (!isset($this->allocatableswithallocations)) {
-            $courseworkid = $this->get_coursework()->id;
-            if (!isset(allocation::$pool[$courseworkid]['stageidentifier'])) {
-                allocation::fill_pool_coursework($courseworkid);
-            }
-            $this->allocatableswithallocations = array_column(allocation::$pool[$courseworkid]['stageidentifier'][$this->stageidentifier] ?? [], 'allocatableid');
-        }
-
-        return in_array($allocatable->id, $this->allocatableswithallocations);
-    }
-
-    /**
-     * Check if current marking stage has any allocation
-     *
-     * @return bool
-     * @throws \core\exception\coding_exception
-     */
-    public function stage_has_allocation() {
-        $courseworkid = $this->get_courseworkid();
-        allocation::fill_pool_coursework($courseworkid);
-        $record = allocation::get_cached_object(
-            $courseworkid,
-            ['stageidentifier' => $this->stageidentifier]
-        );
-
-        return !empty($record);
+    public function has_allocation($allocatable): bool {
+        return (bool)self::get_allocation($allocatable);
     }
 
     /**
@@ -427,38 +392,24 @@ abstract class base {
      * @return allocation|bool
      */
     public function get_allocation($allocatable) {
-        $courseworkid = $this->coursework->id;
-        return allocation::get_cached_object(
-            $courseworkid,
-            [
-                'allocatableid' => $allocatable->id(),
-                'allocatabletype' => $allocatable->type(),
-                'stageidentifier' => $this->identifier(),
-            ]
+        return allocation::get_for_allocatable_at_stage(
+            $this->get_coursework()->id,
+            $allocatable->id,
+            $allocatable->type(),
+            $this->identifier()
         );
     }
 
     /**
      * @param allocatable $allocatable
-     * @return user
+     * @return user|false
      * @throws \core\exception\coding_exception
      */
     public function allocated_teacher_for($allocatable) {
-        $courseworkid = $this->get_courseworkid();
-        allocation::fill_pool_coursework($courseworkid);
-        $allocation = allocation::get_cached_object(
-            $courseworkid,
-            [
-                'allocatableid' => $allocatable->id(),
-                'allocatabletype' => $allocatable->type(),
-                'stageidentifier' => $this->identifier(),
-            ]
-        );
-
+        $allocation = self::get_allocation($allocatable);
         if ($allocation) {
             return $allocation->assessor();
         }
-
         return false;
     }
 
@@ -573,15 +524,7 @@ abstract class base {
      */
     public function assessor_has_allocation($allocatable) {
         global $USER;
-        allocation::fill_pool_coursework($this->coursework->id);
-        $allocation = allocation::get_cached_object(
-            $this->coursework->id,
-            [
-                'allocatableid' => $allocatable->id(),
-                'allocatabletype' => $allocatable->type(),
-                'stageidentifier' => $this->identifier(),
-            ]
-        );
+        $allocation = self::get_allocation($allocatable);
         return ($allocation && $allocation->assessorid == $USER->id);
     }
 
@@ -599,6 +542,17 @@ abstract class base {
      */
     public function uses_allocation() {
         return $this->coursework->allocation_enabled();
+    }
+
+    /**
+     * @param allocatable $allocatable
+     * @return bool|null_user|user
+     */
+    public function get_allocated_assessor($allocatable) {
+        if ($this->has_allocation($allocatable)) {
+            return $this->get_allocation($allocatable)->assessor();
+        }
+        return new null_user();
     }
 
     abstract public function allocation_table_header();

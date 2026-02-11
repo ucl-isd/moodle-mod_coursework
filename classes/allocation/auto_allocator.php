@@ -60,8 +60,6 @@ class auto_allocator {
                 $this->process_marking_stage($stage);
             }
         }
-        allocation::remove_cache($this->coursework->id);
-        allocation::fill_pool_coursework($this->coursework->id);
     }
 
     /**
@@ -128,8 +126,6 @@ class auto_allocator {
             $allocationobject = allocation::get_from_id($allocationid);
             $allocationobject->destroy();
         }
-        // Behat test @mod_coursework_allocation_auto_interact_manual fails without this.
-        allocation::remove_cache($this->coursework->id);
     }
 
     /**
