@@ -335,8 +335,7 @@ abstract class base {
     public function get_moderation($submission) {
         $feedback = $this->get_single_feedback($submission);
         if ($feedback) {
-            $moderationparams = ['feedbackid' => $feedback->id];
-            return moderation::find($moderationparams);
+            return moderation::get_for_feedback_id($feedback->id);
         } else {
             return false;
         }
@@ -435,14 +434,11 @@ abstract class base {
      * @return assessment_set_membership|bool
      */
     public function get_assessment_set_membership($allocatable) {
-        assessment_set_membership::fill_pool_coursework($this->coursework->id);
-        return assessment_set_membership::get_cached_object(
+        return assessment_set_membership::get_for_allocatable_at_stage(
             $this->coursework->id,
-            [
-                'allocatableid' => $allocatable->id(),
-                'allocatabletype' => $allocatable->type(),
-                'stageidentifier' => $this->stageidentifier,
-            ]
+            $allocatable->id(),
+            $allocatable->type(),
+            $this->stageidentifier
         );
     }
 
@@ -456,11 +452,14 @@ abstract class base {
         }
 
         if ($state) {
-            $moderationsetmembership = new assessment_set_membership();
-            $moderationsetmembership->courseworkid = $this->coursework->id;
-            $moderationsetmembership->allocatableid = $allocatable->id();
-            $moderationsetmembership->allocatabletype = $allocatable->type();
-            $moderationsetmembership->stageidentifier = $this->stageidentifier;
+            $moderationsetmembership = assessment_set_membership::build(
+                [
+                    'courseworkid' => $this->coursework->id,
+                    'allocatableid' => $allocatable->id(),
+                    'allocatabletype' => $allocatable->type(),
+                    'stageidentifier' => $this->stageidentifier,
+                ]
+            );
             $moderationsetmembership->save();
         } else if (!$state && !$this->coursework->has_automatic_sampling_at_stage($this->stageidentifier)) {
             $this->remove_allocatable_from_sampling($allocatable);
@@ -630,26 +629,6 @@ abstract class base {
     public function get_feedback_for_submission($submission) {
         $stageidentifier = $this->identifier();
         return feedback::get_from_submission_and_stage($submission->id, $stageidentifier) ?? false;
-    }
-
-    /**
-     * @param $feedback
-     * @return bool|table_base
-     * @throws \dml_exception
-     * @throws coding_exception
-     */
-    public function get_moderation_for_feedback($feedback) {
-        $moderationparams = [
-            'feedbackid' => $feedback->id,
-        ];
-        return moderation::find($moderationparams);
-    }
-
-    /**
-     * return bool
-     */
-    public function assessment_set_is_not_empty() {
-        return assessment_set_membership::exists(['courseworkid' => $this->coursework->id]);
     }
 
     /**

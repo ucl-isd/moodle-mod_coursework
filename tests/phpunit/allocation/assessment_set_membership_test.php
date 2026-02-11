@@ -104,11 +104,6 @@ final class assessment_set_membership_test extends \advanced_testcase {
             assessment_set_membership::get_from_id($membership->id)
         );
 
-        $this->assertEquals(
-            $membership,
-            assessment_set_membership::find($setmembersdata)
-        );
-
         $membership->destroy();
         $this->assertEquals(
             0,

@@ -222,10 +222,10 @@ class allocation extends table_base {
      * @return array
      * @throws \dml_exception
      */
-    private static function get_db_ids_from_allocatable($courseworkid, $allocatableid, $allocatabletype): array {
+    private static function get_db_ids_from_allocatable(int $courseworkid, int $allocatableid, string $allocatabletype): array {
         global $DB;
         return $DB->get_fieldset(
-            'coursework_allocation_pairs',
+            self::$tablename,
             'id',
             ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid, 'allocatabletype' => $allocatabletype]
         );
