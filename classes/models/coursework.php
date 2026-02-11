@@ -1136,6 +1136,16 @@ class coursework extends table_base {
     }
 
     /**
+     * How many submissions does this coursework have?
+     * @return int
+     * @throws dml_exception
+     */
+    public function get_submission_count(): int {
+        global $DB;
+        return $DB->count_records('coursework_submissions', ['courseworkid' => $this->id]);
+    }
+
+    /**
      * Returns a hash of this user's id. Not username as this would be non-unique across
      * different courseworks, compromising anonymity.
      *
