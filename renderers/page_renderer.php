@@ -434,7 +434,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         // Late.
-        $template->submittedlate = (bool) $submission->was_late();
+        $template->submissiondata->submittedlate = (bool) $submission->was_late();
 
         // Plagiarism.
         $template->submissiondata->flaggedplagiarism = $submission->get_flagged_plagiarism_status();
