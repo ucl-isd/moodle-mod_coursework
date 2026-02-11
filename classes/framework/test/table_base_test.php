@@ -58,39 +58,6 @@ class framework_table_base_test extends advanced_testcase {
         $this->assertEquals($user->id, framework_user_table::get_from_id($user->id)->id);
     }
 
-    public function test_find_when_true_with_other_param() {
-        $generator = testing_util::get_data_generator();
-
-        $params = [
-            'username' => 'freddo',
-        ];
-        $user = $generator->create_user($params);
-
-        $this->assertEquals($user->id, framework_user_table::find($params)->id);
-    }
-
-    public function test_find_when_true_with_entire_db_object() {
-        $generator = testing_util::get_data_generator();
-
-        $params = [
-            'username' => 'freddo',
-        ];
-        $user = $generator->create_user($params);
-
-        $this->assertEquals($user->id, framework_user_table::find($user)->id);
-    }
-
-    public function test_find_when_false() {
-        $params = [
-            'username' => 'freddo',
-        ];
-        $this->assertFalse(framework_user_table::find($params));
-    }
-
-    public function test_find_when_false_and_zero_supplied() {
-        $this->assertFalse(framework_user_table::find(0));
-    }
-
     public function test_exists_when_true() {
         $generator = testing_util::get_data_generator();
 
@@ -107,16 +74,6 @@ class framework_table_base_test extends advanced_testcase {
             'username' => 'freddo',
         ];
         $this->assertFalse(framework_user_table::exists($params));
-    }
-
-    public function test_find_when_given_a_db_record() {
-        $generator = testing_util::get_data_generator();
-
-        $params = [
-            'username' => 'freddo',
-        ];
-        $user = $generator->create_user($params);
-        $this->assertEquals($user->id, framework_user_table::find($user)->id);
     }
 
     public function test_find_all_returns_records() {

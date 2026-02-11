@@ -97,6 +97,7 @@ $string['blindmarking_help'] = 'Blind marking prevents people without the mod/co
 $string['cachedef_allocationids'] = 'Cache to store allocation DB objects by ID';
 $string['cachedef_allocationsbyallocatable'] = 'Cache to store the user/group allocation ID (if any) for an allocatable in a coursework';
 $string['cachedef_assessmentsetids'] = 'Cache to store assessment set DB objects by ID';
+$string['cachedef_assessmentsetmbrshpbyallocatable'] = 'Cache to store the user/group assessment set membership IDs (if any) for an allocatable in a coursework';
 $string['cachedef_courseworkdata'] = 'Cache to store legacy coursework data (to be removed)';
 $string['cachedef_courseworkids'] = 'Cache to store coursework DB objects by ID';
 $string['cachedef_deadlineids'] = 'Cache to store personal deadline DB objects by ID';

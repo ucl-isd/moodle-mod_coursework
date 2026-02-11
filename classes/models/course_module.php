@@ -34,28 +34,4 @@ class course_module extends table_base {
      * @var string
      */
     protected static $tablename = 'course_modules';
-
-    /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
-     * Fill pool to cache for later use
-     *
-     * @param $array
-     */
-    public static function fill_pool($array) {
-        self::$pool = [
-            'id' => [],
-            'course-module-instance' => [],
-        ];
-        foreach ($array as $record) {
-            $object = new self($record);
-            self::$pool['id'][$record->id] = $object;
-            self::$pool['course-module-instance'][$record->course][$record->module][$record->instance] = $object;
-        }
-    }
 }

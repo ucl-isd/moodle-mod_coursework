@@ -140,12 +140,11 @@ class personaldeadlines_controller extends controller_base {
                 foreach (json_decode($data->allocatableid) as $allocatableid) {
                     $data->allocatableid = $allocatableid;
                     $data->id = '';
-                    $findparams = [
-                        'allocatableid' => $allocatableid,
-                        'allocatabletype' => $data->allocatabletype,
-                        'courseworkid' => $data->courseworkid,
-                    ];
-                    $this->personaldeadline = personaldeadline::find_or_build($findparams);
+                    $this->personaldeadline = personaldeadline::get_for_allocatable(
+                        $data->courseworkid,
+                        $allocatableid,
+                        $data->allocatabletype
+                    );
 
                     if (empty($this->personaldeadline->personaldeadline)) { // Personal deadline doesnt exist.
                         // Add new.
@@ -229,7 +228,15 @@ class personaldeadlines_controller extends controller_base {
         // We use the first element in the array to setup the personal deadline object
         $params['allocatableid'] = (is_array($this->params['allocatableid'])) ? current($this->params['allocatableid']) : $this->params['allocatableid'];
 
-         $this->personaldeadline = personaldeadline::find_or_build($params);
+        $this->personaldeadline = personaldeadline::get_for_allocatable(
+            $this->params['courseworkid'],
+            $params['allocatableid'],
+            $this->params['allocatabletype']
+        );
+
+        if (!$this->personaldeadline) {
+            $this->personaldeadline = personaldeadline::build($params);
+        }
 
         $params['allocatableid'] = $this->params['allocatableid'];
 

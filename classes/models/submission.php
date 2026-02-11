@@ -308,7 +308,7 @@ class submission extends table_base implements renderable {
 
         foreach ($submissions as &$submission) {
             $deadline = $submission->deadline;
-            $submission = static::find($submission);
+            $submission = self::get_from_id($submission->id);
 
             if ($submission->get_coursework()->personaldeadlines_enabled()) {
                 $deadline = $submission->submission_personaldeadline();
@@ -1286,10 +1286,12 @@ class submission extends table_base implements renderable {
      */
 
     public function get_submissions_in_sample() {
-        assessment_set_membership::fill_pool_coursework($this->courseworkid);
         $allocatable = $this->get_allocatable();
-        return isset(assessment_set_membership::$pool[$this->courseworkid]['allocatableid-allocatabletype'][$allocatable->id . '-' . $allocatable->type()]) ?
-            assessment_set_membership::$pool[$this->courseworkid]['allocatableid-allocatabletype'][$allocatable->id . '-' . $allocatable->type()] : [];
+        return assessment_set_membership::get_set_for_allocatable(
+            $this->courseworkid,
+            $allocatable->id,
+            $allocatable->type()
+        );
     }
 
     /**
@@ -1300,14 +1302,11 @@ class submission extends table_base implements renderable {
      */
 
     public function get_submissions_in_sample_by_stage($stageidentifier) {
-        assessment_set_membership::fill_pool_coursework($this->courseworkid);
-        return assessment_set_membership::get_cached_object(
+        return assessment_set_membership::get_for_allocatable_at_stage(
             $this->courseworkid,
-            [
-                'allocatableid' => $this->allocatableid,
-                'allocatabletype' => $this->allocatabletype,
-                'stageidentifier' => $stageidentifier,
-            ]
+            $this->allocatableid,
+            $this->allocatabletype,
+            $stageidentifier
         );
     }
 

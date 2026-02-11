@@ -249,7 +249,6 @@ class manager {
         $DB->delete_records('coursework_sample_set_rules', ['courseworkid' => $this->coursework->id]);
         // We also need to clear the cache.
         // We get an error in behat @mod_coursework_sampling_range_set_rules if not as user not in cached sample for assessor 2.
-        assessment_set_membership::remove_cache($this->coursework->id);
         for ($i = 2; $i <= $this->coursework->get_max_markers(); $i++) {
             $samplestrategy = required_param("assessor_{$i}_samplingstrategy", PARAM_INT);
 

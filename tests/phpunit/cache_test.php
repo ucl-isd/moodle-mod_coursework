@@ -279,7 +279,7 @@ final class cache_test extends \advanced_testcase
     }
 
     /**
-     * Test class for deadline extension class.
+     * Test for deadline extension class.
      * @return void
      * @throws \core\exception\coding_exception
      * @throws \core\exception\invalid_parameter_exception
@@ -318,5 +318,16 @@ final class cache_test extends \advanced_testcase
                 'user'
             )
         );
+    }
+
+    /**
+     * Test for allocation class.
+     * @return void
+     * @throws \core\exception\coding_exception
+     * @throws \core\exception\invalid_parameter_exception
+     * @throws \dml_exception
+     */
+    public function test_allocation_cache(): void {
+        throw new \Exception("Not yet implemented");
     }
 }

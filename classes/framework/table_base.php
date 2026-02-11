@@ -84,60 +84,11 @@ abstract class table_base {
 
     /**
      * Makes a new instance. Can be overridden to provide a factory
-     *
-     * @param stdClass|int|array $dbrecord
-     * @param bool $reload
-     * @return bool|self
-     * @throws dml_exception|invalid_parameter_exception
+     * @return void
+     * @throws coding_exception
      */
-    public static function find($dbrecord, $reload = true): self|bool {
-
-        global $DB;
-
-        if (empty($dbrecord)) {
-            return false;
-        }
-
-        if (is_numeric($dbrecord) && $dbrecord > 0) {
-            debugging("Deprecated use get_from_id() instead", DEBUG_DEVELOPER);
-            return self::get_from_id($dbrecord);
-        }
-
-        $recordid = self::get_id_from_record($dbrecord);
-        // Cast to array in case it's stdClass.
-        $dbrecord = (array)$dbrecord;
-        if (!isset($recordid)) {
-            // Supplied data without record ID - treat as query params and try to get full record.
-            // Filter to valid DB table columns.
-            $allowedkeys = array_keys($DB->get_columns(static::$tablename));
-            $filteredparams = [];
-            foreach (array_keys($dbrecord) as $key) {
-                if (in_array($key, $allowedkeys)) {
-                    $filteredparams[$key] = $dbrecord[$key];
-                }
-            }
-            if (empty($filteredparams)) {
-                throw new coding_exception("No valid fields from table " . static::$tablename . " in params " . json_encode($dbrecord));
-            }
-
-            $dbrecords = $DB->get_records(static::get_table_name(), $filteredparams, '', '*', 0, 2);
-            if (count($dbrecords) > 1) {
-                throw new coding_exception("Found multiple records with supplied properties " . json_encode($filteredparams));
-            }
-            if (empty($dbrecords)) {
-                return false;
-            }
-
-            $dbrecord = array_pop($dbrecords);
-        } else if ($reload) {
-            $dbrecord = $DB->get_record(static::get_table_name(), ['id' => $recordid]);
-
-            if (!$dbrecord) {
-                return false;
-            }
-        }
-        $klass = get_called_class();
-        return new $klass($dbrecord);
+    public static function find(): void {
+        throw new coding_exception("Method removed please use get_...() methods or build()");
     }
 
     /**
@@ -264,18 +215,11 @@ abstract class table_base {
      * This is a convenience method so we can do things like new and edit calls to ability
      * without having to juggle build and find elsewhere.
      *
-     * @param array $params
-     * @return object
+     * @return void
      * @throws coding_exception
-     * @throws dml_exception
      */
-    public static function find_or_build($params) {
-        $object = self::find($params);
-        if ($object) {
-            return $object;
-        } else {
-            return self::build($params);
-        }
+    public static function find_or_build() {
+        throw new coding_exception("Method removed please use get_...() methods or build()");
     }
 
     /**
@@ -709,97 +653,6 @@ abstract class table_base {
     }
 
     /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
-     *
-     * @param int $courseworkid
-     * @throws \core\exception\coding_exception
-     */
-    public static function fill_pool_coursework($courseworkid) {
-        if (isset(static::$pool[$courseworkid])) {
-            return;
-        }
-        $key = static::$tablename;
-        $cache = cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
-
-        $data = $cache->get($key);
-        if ($data === false) {
-            // no cache found
-            $data = static::get_cache_array($courseworkid);
-            $cache->set($key, $data);
-        }
-
-        static::$pool[$courseworkid] = $data;
-    }
-
-    /**
-     * @param int $courseworkid
-     * @throws \core\exception\coding_exception
-     */
-    public static function remove_cache($courseworkid) {
-        global $SESSION;
-        if (!empty($SESSION->keep_cache_data)) {
-            return;
-        }
-        static::$pool[$courseworkid] = null;
-        $cache = cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
-        $cache->delete(static::$tablename);
-    }
-
-    /**
-     * Check that any cache key being requested is valid (i.e. exists as valid cache key in child class).
-     * Otherwise, @see self::get_cached_object() will return null without complaining and no-one will notice.
-     * @param string $cachekey
-     * @return void
-     * @throws coding_exception
-     */
-    protected static function validate_cache_key(string $cachekey): void {
-        $validkeys = static::get_valid_cache_keys();
-        if (!in_array($cachekey, $validkeys)) {
-            throw new coding_exception(
-                "Requested cache key '$cachekey' invalid."
-                . " Must must be one of: " . implode(' | ', $validkeys)
-                . " (" . self::class . "::get_cached_object())"
-            );
-        }
-    }
-
-    /**
-     * Get the allowed/expected cache keys for this class when @see self::get_cached_object() is called.
-     *
-     * @return string[]
-     */
-    protected static function get_valid_cache_keys(): array {
-        throw new coding_exception(
-            "For validation, please implement get_valid_cache_keys() in child class '" . get_called_class()
-            . "' where get_cached_object() is used"
-        );
-    }
-
-    /**
-     * Get cached object for params provided.
-     * $params must use keys from child class get_valid_cache_keys()
-     * @param int $courseworkid
-     * @param array $params to search cache for
-     * @return static|null
-     * @throws \core\exception\coding_exception
-     */
-    public static function get_cached_object(int $courseworkid, array $params): ?static {
-        if (!isset(static::$pool[$courseworkid])) {
-            static::fill_pool_coursework($courseworkid);
-        }
-        $cachekeyone = implode('-', array_keys($params));
-        static::validate_cache_key($cachekeyone);
-        $cachekeytwo = implode('-', array_values($params));
-        return static::$pool[$courseworkid][$cachekeyone][$cachekeytwo][0] ?? null;
-    }
-
-    /**
      * Get child object from its ID, using cache if possible.
      * @param int $id
      * @return static|null object of the child class or null.
@@ -900,7 +753,7 @@ abstract class table_base {
         } else {
             throw new coding_exception("Child class " . static::class . " is not compatible with the method ::get_for_allocatable()");
         }
-        return $id ? self::get_from_id($id) : null;
+        return $id ? static::get_from_id($id) : null;
     }
 
     /**

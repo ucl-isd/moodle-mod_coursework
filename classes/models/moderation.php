@@ -224,4 +224,19 @@ class moderation extends table_base {
             $m->destroy();
         }
     }
+
+    /**
+     * Get a moderation object from a feedback ID.
+     * @param int $feedbackid
+     * @return self|null
+     * @throws \dml_exception
+     */
+    public static function get_for_feedback_id(int $feedbackid): ?self {
+        global $DB;
+        $record = $DB->get_record(
+            self::$tablename,
+            ['feedbackid' => $feedbackid]
+        );
+        return $record ? new self($record) : null;
+    }
 }
