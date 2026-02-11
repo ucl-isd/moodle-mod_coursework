@@ -86,7 +86,7 @@ class submission_cell_data extends cell_data_base {
         if (!$this->coursework->plagiarism_flagging_enabled()) {
             return;
         }
-        $submissiondata->flaggedplagiarism = $this->get_flagged_plagiarism_status($submission);
+        $submissiondata->flaggedplagiarism = $submission->get_flagged_plagiarism_status();
     }
 
     /**

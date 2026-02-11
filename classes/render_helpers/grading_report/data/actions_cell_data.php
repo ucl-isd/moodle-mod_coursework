@@ -234,7 +234,7 @@ class actions_cell_data extends cell_data_base {
             if ($url = $this->get_plagiarism_url($submission, $plagiarismflag)) {
                 $data->plagiarism = new stdClass();
                 $data->plagiarism->url = $url;
-                $data->plagiarismstatus = $this->get_flagged_plagiarism_status($submission);
+                $data->plagiarismstatus = $submission->get_flagged_plagiarism_status();
                 $data->plagiarism->flagid = $plagiarismflag->id ?? null;
             }
         }

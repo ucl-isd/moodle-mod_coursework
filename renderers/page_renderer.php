@@ -437,7 +437,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template->submittedlate = (bool) $submission->was_late();
 
         // Plagiarism.
-        $template->submissiondata->flaggedplagiarism = cell_data_base::get_flagged_plagiarism_status($submission);
+        $template->submissiondata->flaggedplagiarism = $submission->get_flagged_plagiarism_status();
 
         // TODO - turnitin stuff.
 
