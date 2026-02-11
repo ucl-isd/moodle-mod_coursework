@@ -625,15 +625,4 @@ class feedback extends table_base {
         $filtered = array_filter($feedbacks, fn($f) => $f->stageidentifier == $stageidentifier);
         return empty($filtered) ? null : array_pop($filtered);
     }
-
-    /**
-     * Clear caches used by this object.
-     */
-    public function clear_cache() {
-        // For this class we implement a submission ID cache so clear that.
-        $cachetoclear = cache::make('mod_coursework', self::CACHE_AREA_BY_SUBMISSION);
-        $cachetoclear->delete($this->submissionid);
-
-        parent::clear_cache();
-    }
 }

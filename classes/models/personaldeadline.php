@@ -52,16 +52,10 @@ class personaldeadline extends table_base {
     const CACHE_AREA_IDS = 'deadlineids';
 
     /**
-     * Cache area where objects of this class by user ID are stored.
+     * Cache area where objects of this class by allocatable (user or group) ID are stored.
      * @var string
      */
-    const CACHE_AREA_BY_USER = 'deadlinesbyuser';
-
-    /**
-     * Cache area where objects of this class by group ID are stored.
-     * @var string
-     */
-    const CACHE_AREA_BY_GROUP = 'deadlinesbygroup';
+    const CACHE_AREA_BY_ALLOCATABLE = 'deadlinesbyallocatable';
 
     /**
      * @var coursework
@@ -194,25 +188,5 @@ class personaldeadline extends table_base {
             $d->destroy();
         }
         self::remove_cache($courseworkid);
-    }
-
-
-    /**
-     * Clear caches used by this object.
-     */
-    public function clear_cache() {
-
-        // For this class we implement user/group ID caches so clear them.
-        $allocatable = $this->get_allocatable();
-        if ($allocatable && $allocatable->persisted()) {
-            $cachetoclear = cache::make(
-                'mod_coursework',
-                $allocatable->type() == 'user'
-                    ? static::CACHE_AREA_BY_USER : static::CACHE_AREA_BY_GROUP
-            );
-            $cachetoclear->delete($allocatable->id());
-        }
-
-        parent::clear_cache();
     }
 }
