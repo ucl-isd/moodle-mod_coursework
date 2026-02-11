@@ -258,7 +258,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @return void
      * @throws coding_exception
      * @throws dml_exception
-     * @throws moodle_exception
      */
     public function edit_feedback_page(feedback $feedback, assessor_feedback_mform $simpleform) {
         $coursework = $feedback->get_coursework();
@@ -297,8 +296,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template->isguide = $template->advancedmarking && $coursework->is_using_marking_guide();
 
         // Agreement stage.
-        $isagreeing = ($feedback->stageidentifier == 'final_agreed_1');
-        if ($isagreeing) {
+        if ($feedback->stageidentifier == 'final_agreed_1') {
             $previousfeedbacks = $submission->get_assessor_feedbacks();
             if (!empty($previousfeedbacks)) {
                 if ($template->advancedmarking) {
