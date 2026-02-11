@@ -93,22 +93,24 @@ class personaldeadline extends table_base {
      * Get any personal deadline for this student.
      * @param allocatable|user $student
      * @param coursework $coursework
-     * @return bool|table_base|void
+     * @return self|null
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public static function get_personaldeadline_for_student($student, $coursework) {
+    public static function get_personaldeadline_for_student($student, $coursework): ?self {
         if ($coursework->is_configured_to_have_group_submissions()) {
             $allocatable = $coursework->get_coursework_group_from_user_id($student->id());
         } else {
             $allocatable = $student;
         }
         if ($allocatable) {
-            return static::find(['courseworkid' => $coursework->id,
-                                      'allocatableid' => $allocatable->id(),
-                                      'allocatabletype' => $allocatable->type(),
-            ]);
+            return self::get_for_allocatable(
+                $coursework->id,
+                $allocatable->id(),
+                $allocatable->type()
+            );
         }
+        return null;
     }
 
     /**

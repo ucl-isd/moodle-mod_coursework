@@ -110,8 +110,13 @@ class deadline_extension extends table_base {
     }
 
     public function get_allocatable() {
-        $classname = "\\mod_coursework\\models\\{$this->allocatabletype}";
-        return $classname::get_from_id($this->allocatableid);
+        if ($this->allocatabletype == 'user') {
+            return user::get_from_id($this->allocatableid);
+        } else if ($this->allocatabletype == 'group') {
+            return group::get_from_id($this->allocatableid);
+        } else {
+            throw new coding_exception("Invalid type '" . $this->allocatabletype . "'");
+        }
     }
 
     /**
