@@ -197,12 +197,10 @@ class feedback extends table_base {
 
         // check if assessor's name in this CW is set to hidden.
         if ($this->is_assessor_anonymity_enabled()) {
-            $assessorname = '';
+            return '';
         } else {
-            $assessorname = $this->get_assesor_username();
+            return $this->assessor()->name();
         }
-
-        return $assessorname;
     }
 
     /**

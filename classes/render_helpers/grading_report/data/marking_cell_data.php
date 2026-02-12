@@ -190,13 +190,11 @@ class marking_cell_data extends cell_data_base {
                 continue;
             }
             $feedback = $row->get_feedback();
-            // Get the assessor to last edit user if feedback exists, otherwise use the allocated assessor.
-            $assessor = !empty($feedback) ? user::find($feedback->lasteditedbyuser) : $row->get_assessor();
 
             $canseeothermarkerdetails = $rowdata->hasallinitialfeedbacks
                 || $this->coursework->viewinitialgradeenabled
                 || has_capability('mod/coursework:administergrades', $this->coursework->get_context());
-            $marker = $this->create_marker_data($assessor, $markernumber, $canseeothermarkerdetails);
+            $marker = $this->create_marker_data($row->get_assessor(), $markernumber, $canseeothermarkerdetails);
             if ($feedback) {
                 $this->process_feedback_data($marker, $feedback, $rowsbase, $row);
             }
@@ -338,8 +336,8 @@ class marking_cell_data extends cell_data_base {
 
         $finalgrade = $this->get_mark_for_feedback($finalfeedback, $canshow);
         // If this is an auto generated feedback, lasteditedbyuser will be zero.
-        $assessorname = $finalfeedback->lasteditedbyuser
-            ? user::find($finalfeedback->lasteditedbyuser, false)->name()
+        $assessorname = $finalfeedback->assessorid
+            ? user::find($finalfeedback->assessorid, false)->name()
             : get_string('automaticallyagreed', 'mod_coursework');
         return (object)[
             'mark' => (object)[
