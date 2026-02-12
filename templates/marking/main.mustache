@@ -1,0 +1,84 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coursework/marking/main
+
+    Example context (json):
+    {
+        "showpdf": true,
+        "previousfeedback": "<p>This is where the feedback from the previous marking stage would appear. The student did a good job overall.</p>",
+        "marking": "<form id=\"mform1\" action=\"#\" method=\"post\"><table class=\"generaltable\"><tbody><tr><td class=\"description\">Criterion 1<div class=\"review-marks\">some review marks</div></td><td class=\"score\"><input type=\"text\" name=\"score1\" id=\"score1\"><div>/ 10</div></td><td class=\"remark\"><textarea name=\"remark1\" id=\"remark1\"></textarea></td></tr><tr><td class=\"description\">Criterion 2<div class=\"review-marks\">some review marks</div></td><td class=\"score\"><input type=\"text\" name=\"score2\" id=\"score2\"><div>/ 20</div></td><td class=\"remark\"><textarea name=\"remark2\" id=\"remark2\"></textarea></td></tr></tbody></table></form>"
+    }
+}}
+<div {{#showpdf}} class="full-width" {{/showpdf}}>
+    <div class="container-fluid">
+        <div class="row">
+
+            {{! Marking. }}
+            <div class="col animate-enter">
+                <div class="container">
+                    {{! When not a PDF, show submissions metadata as header. }}
+                    {{^showpdf}}
+                        {{> mod_coursework/submissions/tr/submissions }}
+                    {{/showpdf}}
+
+                    <h3>{{#str}} marking, mod_coursework {{/str}}</h3>
+
+                    {{! When behatrunning, don't make sticky to avoid issues with hidden elements.}}
+                    <div class="{{^behatrunning}} {{#advancedmarking}} sticky-top p-3 bg-white border {{/advancedmarking}} {{/behatrunning}}">
+                        {{#previousfeedback}}
+                            {{{.}}}
+                            <h4>{{#str}} agreefeedback, mod_coursework {{/str}}</h4>
+                        {{/previousfeedback}}
+
+                        {{#advancedmarking}}
+                            {{> mod_coursework/marking/totalmark }}
+                        {{/advancedmarking}}
+                    </div>
+
+                    <div id="coursework-markingform">
+                        {{{marking}}}
+                    </div>
+                </div>
+            </div>
+
+            {{! Pdf. }}
+            {{#showpdf}}
+            <div class="col-md-6">
+                {{> mod_coursework/marking/pdf }}
+            </div>
+            {{/showpdf}}
+        </div>
+    </div>
+</div>
+
+{{#advancedmarking}}
+    {{#isguide}}
+        {{#js}}
+        require(['mod_coursework/marking_guide'], function(markingGuide) {
+            markingGuide.init("{{#str}} mark, mod_coursework {{/str}}");
+        });
+        {{/js}}
+    {{/isguide}}
+
+    {{^isguide}}
+        {{#js}}
+        require(['mod_coursework/rubric'], function(rubric) {
+            rubric.init("{{#str}} feedbackfor, mod_coursework {{/str}}");
+        });
+        {{/js}}
+    {{/isguide}}
+{{/advancedmarking}}

@@ -94,7 +94,6 @@ Feature: Adding and editing final feedback
     And I click the new multiple final feedback button for the student
     And I set the field "Mark" to ""
     And I press "Save and finalise"
-    And I should see "Required" in the "#fitem_id_grade" "css_element"
     And I should not see "Changes saved"
 
   @javascript
@@ -110,5 +109,4 @@ Feature: Adding and editing final feedback
     And I click on "22" "link" in the "[data-behat-markstage='final_agreed']" "css_element"
     And I set the field "Mark" to ""
     And I press "Save and finalise"
-    And I should see "Required" in the "#fitem_id_grade" "css_element"
     And I should not see "Changes saved"

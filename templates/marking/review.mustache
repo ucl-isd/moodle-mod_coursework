@@ -1,0 +1,94 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coursework/marking/review
+
+    Example context (json):
+    {
+        "reviewcriteria": [
+            {
+                "name": "Criterion 1: Structure and Argument",
+                "markers": [
+                    {
+                        "label": "Marker 1",
+                        "score": "8.00",
+                        "maxscore": "10.00",
+                        "percent": 80,
+                        "remark": "<p>The structure was logical and the argument was mostly clear.</p>"
+                    },
+                    {
+                        "label": "Marker 2",
+                        "score": "7.00",
+                        "maxscore": "10.00",
+                        "percent": 70,
+                        "remark": "<p>A good effort, but the argument could have been supported with more evidence in places.</p>"
+                    }
+                ]
+            },
+            {
+                "name": "Criterion 2: Research and Referencing",
+                "markers": [
+                    {
+                        "label": "Marker 1",
+                        "score": "15.00",
+                        "maxscore": "20.00",
+                        "percent": 75,
+                        "remark": "<p>Good use of sources, but some minor errors in APA formatting.</p>"
+                    }
+                ]
+            }
+        ]
+    }
+}}
+<div class="d-none" id="review-source-wrapper">
+    <ul class="pl-3">
+    {{#reviewcriteria}}
+        <li>
+            <div class="line-clamp-2">
+                {{name}}
+            </div>
+
+            <div class="review-marks animate-enter">
+                <div class="row mt-2">
+                    {{#markers}}
+                    <div class="col-md">
+                        {{< mod_coursework/progress }}
+                            {{$label}}{{label}}{{/label}}
+                        {{/ mod_coursework/progress }}
+
+                        {{#remark}}
+                        <div class="mt-2 small">
+                            <div class="text-muted">
+                            {{#str}} feedback, mod_coursework {{/str}}
+                            </div>
+                            {{{.}}}
+                        </div>
+                        {{/remark}}
+                    </div>
+                    {{/markers}}
+                </div>
+                <hr>
+            </div>
+        </li>
+    {{/reviewcriteria}}
+    </ul>
+</div>
+
+{{#js}}
+require(['mod_coursework/agree_marks'], function(agree_marks) {
+    agree_marks.init();
+});
+{{/js}}

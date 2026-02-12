@@ -1,4 +1,3 @@
-<?php
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -13,21 +12,33 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+//
 
 /**
- * @package    mod_coursework
- * @copyright  2011 University of London Computer Centre {@link https://www.cosector.com}
+ * Agree Marks module for mod_coursework.
+ *
+ * @module     mod_coursework/agree_marks
+ * @copyright  2026 UCL
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+/**
+ * Initialize the mark syncing logic.
+ */
+export const init = () => {
+    const sourceBlocks = document.querySelectorAll('#review-source-wrapper .review-marks');
 
-$plugin->component = 'mod_coursework';
+    if (sourceBlocks.length === 0) {
+        return;
+    }
 
-$plugin->version = 2026021000;
-$plugin->requires = 2024100700;
+    const targetCells = document.querySelectorAll(
+        '.gradingform_rubric .description, #advancedgrading-criteria .descriptionreadonly'
+    );
 
-$plugin->cron = 300; // Period for cron to check this module (secs).
-
-$plugin->release = "5.0.0";
-$plugin->maturity = MATURITY_STABLE;
+    sourceBlocks.forEach((block, index) => {
+        if (targetCells[index]) {
+            targetCells[index].appendChild(block);
+        }
+    });
+};

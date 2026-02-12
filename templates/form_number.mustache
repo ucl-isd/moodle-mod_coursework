@@ -1,0 +1,41 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coursework/form_number
+
+    Renders a number input field with configurable attributes.
+
+    Example context (json):
+    {
+        "name": "grade",
+        "id": "id_grade",
+        "value": "75",
+        "min": "0",
+        "max": "100",
+        "step": "0.01",
+        "required": true
+    }
+}}
+<div class="d-flex">
+       <input type="number" class="form-control"
+              name="{{name}}" id="{{id}}"
+              {{#value}}value="{{.}}"{{/value}}
+              {{#min}}min="{{.}}"{{/min}}
+              {{#max}}max="{{.}}"{{/max}}
+              {{#step}}step="{{.}}"{{/step}}
+              {{#required}}required="required"{{/required}}
+       >
+</div>

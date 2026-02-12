@@ -1,77 +1,133 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coursework/submissions/tr/submissions
+
+    Template for displaying submission files and metadata.
+
+    Example context (json):
+    {
+        "title": "Submission",
+        "submission": {
+            "submissiondata": {
+                "files": [
+                    {
+                        "filename": "essay.pdf",
+                        "url": "http://example.com/file.php/123/essay.pdf",
+                        "finalised": true,
+                        "datemodified": 1704067200
+                    }
+                ],
+                "extensiondeadline": 1704240000,
+                "submittedlate": false,
+                "flaggedplagiarism": false,
+                "plagiarismlinks": "<a href=''>Turnitin report</a>"
+            },
+            "personaldeadline": 1704067200,
+            "extensiongranted": false
+        }
+    }
+}}
+{{! Title when displaying on marking page. }}
+{{#title}}
+    <h3>{{title}}</h3>
+{{/title}}
+
 {{#submission}}
     {{#submissiondata}}
-        {{#files}}
-            <div class="position-relative d-flex align-items-center pb-2">
-                {{! Icon. }}
-                <div class="rounded-circle border border-primary d-flex align-items-center justify-content-center flex-shrink-0 mr-2" style="height: 2rem; width: 2rem;">
-                    <i class="fa-regular fa-file-lines text-primary"></i>
-                </div>
+    <div class="mod-coursework-submission">
+        {{! Files. }}
+        <div class="mod-coursework-submission-files">
+            {{#files}}
+                <div class="position-relative d-flex align-items-center pb-2">
+                    {{! Icon }}
+                    <div class="rounded-circle border border-primary d-flex align-items-center justify-content-center flex-shrink-0 mr-2" style="height: 2rem; width: 2rem;">
+                        <i class="fa-regular fa-file-lines text-primary"></i>
+                    </div>
 
-                {{! File. }}
-                <div>
-                    {{^finalised}}
-                        <span class="badge badge-pill badge-info">
-                            {{#str}} draft, mod_coursework {{/str}}
-                        </span>
-                    {{/finalised}}
-
-                    <a href="{{{url}}}" class="stretched-link text-break line-clamp-1" style="line-height: 1.25;">
-                        {{filename}}
-                    </a>
-
-                    {{#datemodified}}
-                        <div class="small text-nowrap text-muted">
-                            <span class="sr-only">
-                                {{#str}} submitted, mod_coursework {{/str}}
+                    {{! File Info }}
+                    <div>
+                        {{^finalised}}
+                            <span class="badge badge-pill badge-info">
+                                {{#str}} draft, mod_coursework {{/str}}
                             </span>
+                        {{/finalised}}
 
+                        <a href="{{{url}}}" target="_blank" class="stretched-link text-break line-clamp-1" style="line-height: 1.25;">
+                            {{filename}}
+                        </a>
+
+                        {{#datemodified}}
+                            <div class="small text-nowrap text-muted">
+                                <span class="sr-only">
+                                    {{#str}} submitted, mod_coursework {{/str}}
+                                </span>
+                                {{#userdate}}
+                                    {{.}}, {{#str}} strftimedatetime, langconfig {{/str}}
+                                {{/userdate}}
+                            </div>
+                        {{/datemodified}}
+                    </div>
+                </div>
+            {{/files}}
+        </div>
+
+        {{! Metadata. }}
+        <div class="mod-coursework-submission-metadata">
+            {{#extensiondeadline}}
+                <div class="bg-light badge-pill my-2 py-1">
+                    <div class="position-relative d-flex align-items-center">
+                        <div class="mr-3">
+                            <i class="fa-regular fa-clock"></i>
+                        </div>
+                        <div class="small">
+                            {{#str}} extension, mod_coursework {{/str}}
+                            <br>
                             {{#userdate}}
                                 {{.}}, {{#str}} strftimedatetime, langconfig {{/str}}
                             {{/userdate}}
                         </div>
-                    {{/datemodified}}
-                </div>
-            </div>
-        {{/files}}
-        {{#extensiondeadline}}
-            <div class="bg-light badge-pill my-2 py-1">
-                <div class="position-relative d-flex align-items-center">
-                    <div class="mr-3">
-                        <i class="fa-regular fa-clock"></i>
-                    </div>
-                    <div class="small">
-                        {{#str}} extension, mod_coursework {{/str}}
-                        <br>
-                        {{#userdate}}
-                            {{.}}, {{#str}} strftimedatetime, langconfig {{/str}}
-                        {{/userdate}}
                     </div>
                 </div>
-            </div>
-        {{/extensiondeadline}}
+            {{/extensiondeadline}}
 
-        {{#submittedlate}}
-            <span class="badge badge-pill badge-warning">
+            {{#submittedlate}}
+                <span class="badge badge-pill badge-warning">
                     <i class="fa-regular fa-clock m-1"></i>
-                {{#str}} submitted_late, mod_coursework {{/str}}
+                    {{#str}} submitted_late, mod_coursework {{/str}}
                 </span>
-        {{/submittedlate}}
+            {{/submittedlate}}
 
-        {{#flaggedplagiarism}}
-            <span class="badge badge-pill badge-danger">
+            {{#flaggedplagiarism}}
+                <span class="badge badge-pill badge-danger">
                     <i class="fa-regular fa-flag m-1"></i>
-                {{#str}} flagged_plagiarism, mod_coursework {{/str}}
+                    {{#str}} flagged_plagiarism, mod_coursework {{/str}}
                 </span>
-        {{/flaggedplagiarism}}
+            {{/flaggedplagiarism}}
 
-        {{#plagiarismlinks}}
-            <div>
+            {{#plagiarismlinks}}
+                <div>
                     <span class="sr-only">
                         {{#str}} plagiarism_report, mod_coursework {{/str}}
                     </span>
-                {{{plagiarismlinks}}}
-            </div>
-        {{/plagiarismlinks}}
+                    {{{plagiarismlinks}}}
+                </div>
+            {{/plagiarismlinks}}
+        </div>
+    </div>
     {{/submissiondata}}
 
     {{^submissiondata}}
@@ -90,20 +146,18 @@
         {{#extensiondeadline}}
             <div class="bg-light badge-pill my-2 py-1">
                 <div class="position-relative d-flex align-items-center">
-                        <div class="mr-3">
-                            <i class="fa-regular fa-clock"></i>
-                        </div>
-                        <div class="small">
-                            {{#str}} extension, mod_coursework {{/str}}
-                            <br>
-                            {{#userdate}}
-                                {{.}}, {{#str}} strftimedatetime, langconfig {{/str}}
-                            {{/userdate}}
-                        </div>
+                    <div class="mr-3">
+                        <i class="fa-regular fa-clock"></i>
+                    </div>
+                    <div class="small">
+                        {{#str}} extension, mod_coursework {{/str}}
+                        <br>
+                        {{#userdate}}
+                            {{.}}, {{#str}} strftimedatetime, langconfig {{/str}}
+                        {{/userdate}}
+                    </div>
                 </div>
             </div>
         {{/extensiondeadline}}
-
     {{/submissiondata}}
-
 {{/submission}}

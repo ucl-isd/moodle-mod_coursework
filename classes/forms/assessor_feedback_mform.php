@@ -33,7 +33,6 @@ use gradingform_instance;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
-use mod_coursework\output\grading_guide_agreed_grades;
 use mod_coursework\stages\final_agreed;
 use mod_coursework\utils\cs_editor;
 use moodleform;
@@ -82,7 +81,7 @@ class assessor_feedback_mform extends moodleform {
      * Makes the form elements.
      */
     public function definition() {
-
+        global $CFG;
         $mform =& $this->_form;
 
         $this->feedback = $this->_customdata['feedback'];
@@ -126,20 +125,29 @@ class assessor_feedback_mform extends moodleform {
                 $mform->addElement('html', '<a href="#">' . get_string('togglezoom', 'mod_assign') . '</a>');
             }
         } else if ($this->coursework->uses_numeric_grade()) {
-            // We are using a point grade e.g. 100/100, so use a text input not a menu.
-            $mform->addElement('text', 'grade', get_string('mark', 'mod_coursework'));
-            $mform->setType(
-                'grade',
-                $this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1 ? PARAM_LOCALISEDFLOAT : PARAM_INT
+            // Object to pass to lang string.
+            $a = new stdClass();
+            $a->min = 0;
+            $a->max = $this->coursework->get_max_grade();
+
+            // Custom input type number.
+            \MoodleQuickForm::registerElementType(
+                'number',
+                "$CFG->dirroot/mod/coursework/classes/forms/number_element.php",
+                'mod_coursework\forms\number_element'
             );
-            $mform->addRule('grade', get_string('required'), 'required', null, 'client');
-            $mform->addRule(
+
+            $mform->addElement(
+                'number',
                 'grade',
-                get_string('err_valueoutofrange', 'mod_coursework'),
-                'numeric',
-                null,
-                'client'
+                get_string('markrange', 'mod_coursework', $a),
+                ['required' => 'required',
+                'max' => $a->max,
+                'min' => 0,
+                'step' => 'any']
             );
+            $mform->setType('grade', PARAM_LOCALISEDFLOAT);
+            $mform->addRule('grade', get_string('err_valueoutofrange', 'mod_coursework'), 'callback', [$this, 'grade_in_range'], 'server');
         } else {
             // We are using a grading scale e.g. competent/not yet competent, so we need a select menu for the grade.
             $mform->addElement(
@@ -196,7 +204,7 @@ class assessor_feedback_mform extends moodleform {
                 get_string('removefeedback', 'coursework')
             );
         }
-        $buttonarray[] = $this->_form->createElement('cancel');
+        $buttonarray[] = $this->_form->createElement('cancel', 'cancel', null, ['formnovalidate' => '']);
         $this->_form->addGroup($buttonarray, 'buttonar', '', [' '], false);
         $this->_form->closeHeaderBefore('buttonar');
     }
@@ -214,12 +222,11 @@ class assessor_feedback_mform extends moodleform {
         if (feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)) {
             $controller = $this->coursework->get_advanced_grading_active_controller();
             $gradinginstance = $controller->get_or_create_instance(0, $this->feedback->assessorid, $this->feedback->id);
+
             $this->feedback->grade = $gradinginstance->submit_and_get_grade(
                 $formdata->advancedgrading,
                 $this->feedback->id
             );
-        } else if ($this->feedback->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1) {
-            $this->feedback->grade = format_float($formdata->grade, $this->coursework->get_grade_item()->get_decimals());
         } else {
             $this->feedback->grade = $formdata->grade;
         }
@@ -253,31 +260,6 @@ class assessor_feedback_mform extends moodleform {
         );
     }
 
-    /**
-     * Override the form display in specific circumstances.
-     * @return void
-     * @throws \coding_exception
-     * @throws moodle_exception
-     */
-    public function display() {
-        global $OUTPUT;
-
-        if ($this->agreeing_final_marking_guide()) {
-            $data = new grading_guide_agreed_grades(
-                $this->_form->getAttributes(),
-                $this->_form->_elements,
-                $this->gradingcontroller,
-                $this->submission
-            );
-            echo $OUTPUT->render_from_template(
-                'coursework/marking_guide_agree_grades_form',
-                $data->export_for_template($OUTPUT)
-            );
-        } else {
-            parent::display();
-        }
-    }
-
     private function agreeing_final_marking_guide(): bool {
         return
             feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)
@@ -302,7 +284,6 @@ class assessor_feedback_mform extends moodleform {
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
-
         if (
             $this->agreeing_final_marking_guide()
             &&
@@ -325,12 +306,25 @@ class assessor_feedback_mform extends moodleform {
     }
 
     /**
-     * Agreed grade can be entered as text field (float or int) so need to validate it.
+     * Validate that the grade is within the allowed range for this coursework.
+     *
+     * @param mixed $grade The grade value from the form.
+     * @return bool
      */
-    public function grade_in_range(string $grade): bool {
+    public function grade_in_range($grade): bool {
+        // Convert localized string (like 55,5) to a standard PHP float (55.5).
+        $gradeval = unformat_float($grade);
+
+        // If it's not a valid number after unformatting, fail.
+        if (!is_numeric($gradeval)) {
+            return false;
+        }
+
         $mingrade = 0;
-        $maxgrade = $this->coursework->get_max_grade();
-        return is_numeric($grade) && $grade >= $mingrade && $maxgrade && $grade <= $maxgrade;
+        $maxgrade = (float)$this->coursework->get_max_grade();
+
+        // Check its in range.
+        return ($gradeval >= $mingrade && $gradeval <= $maxgrade);
     }
 
     /**
@@ -338,12 +332,13 @@ class assessor_feedback_mform extends moodleform {
      * @param stdClass|array $defaultvalues object or array of default values
      */
     public function set_data($defaultvalues) {
-        parent::set_data($defaultvalues);
         $defaultvalues = (array)$defaultvalues;
-        if (isset($defaultvalues['grade']) && $this->feedback->stageidentifier !== final_agreed::STAGE_FINAL_AGREED_1) {
-            // Override parent method to display grade as an integer, unless it's final agreed grade.
-            // (It will come from DB as a float, but users will expect an integer).
-            $this->_form->setDefault('grade', floor($defaultvalues['grade']));
+
+        if (isset($defaultvalues['grade'])) {
+            // -1 is the magic number to show 50 as "50" and 50.5 as "50.5"
+            $defaultvalues['grade'] = format_float($defaultvalues['grade'], -1);
         }
+
+        parent::set_data($defaultvalues);
     }
 }

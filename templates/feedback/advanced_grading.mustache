@@ -56,19 +56,7 @@
 
         <div class="row pt-2">
             <div class="col-sm-3 mt-2">
-                <div class="small">
-                    {{#str}} markdisplay, mod_coursework, { "score": "{{score}}", "maxscore": "{{maxscore}}" } {{/str}}
-                </div>
-                <div class="progress" style="height:.5rem;">
-                    <div class="progress-bar bg-success"
-                         role="progressbar"
-                         aria-label="{{name}} progress"
-                         aria-valuenow="{{score}}"
-                         style="width: {{percent}}%"
-                         aria-valuemin="0"
-                         aria-valuemax="{{maxscore}}">
-                    </div>
-                </div>
+                {{> mod_coursework/progress }}
             </div>
 
             <div class="col mt-2">

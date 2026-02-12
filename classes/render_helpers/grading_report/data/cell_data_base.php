@@ -57,19 +57,4 @@ abstract class cell_data_base implements cell_data_interface {
         $this->ability = new ability($USER->id, $this->coursework);
         $this->clock = di::get(clock::class);
     }
-
-    /**
-     * Check if the submission should be flagged for plagiarism.
-     *
-     * @param submission $submission
-     * @return string|bool
-     * @throws \coding_exception
-     */
-    protected function get_flagged_plagiarism_status(submission $submission): string|bool {
-        $flag = plagiarism_flag::get_plagiarism_flag($submission);
-        if (!$flag || !($flag->status == plagiarism_flag::INVESTIGATION || $flag->status == plagiarism_flag::NOTCLEARED)) {
-            return false;
-        }
-        return get_string('plagiarism_' . $flag->status, 'mod_coursework');
-    }
 }

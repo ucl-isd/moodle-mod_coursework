@@ -37,6 +37,7 @@ Feature: Multiple assessors simple grading form
     And the submission is finalised
     And I visit the coursework page
     And I click on "Add mark" "link"
+    And I set the field "Mark" to "70"
     When I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I set the field "Mark" to "52"
     And I press "Save and finalise"
@@ -68,6 +69,7 @@ Feature: Multiple assessors simple grading form
     And the submission is finalised
     And I visit the coursework page
     And I click on "Add mark" "link"
+    And I set the field "Mark" to "70"
     When I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I set the field "Mark" to "52"
     And I press "Save and finalise"

@@ -1686,4 +1686,17 @@ class submission extends table_base implements renderable {
         }
         return $results;
     }
+
+    /**
+     * Check if the submission should be flagged for plagiarism.
+     *
+     * @return string|bool
+     */
+    public function get_flagged_plagiarism_status(): string|bool {
+        $flag = plagiarism_flag::get_plagiarism_flag($this);
+        if (!$flag || !($flag->status == plagiarism_flag::INVESTIGATION || $flag->status == plagiarism_flag::NOTCLEARED)) {
+            return false;
+        }
+        return get_string('plagiarism_' . $flag->status, 'mod_coursework');
+    }
 }
