@@ -612,28 +612,6 @@ abstract class base {
         return $this->coursework->allocation_enabled();
     }
 
-    /**
-     * @param allocatable $allocatable
-     * @return string
-     */
-    public function get_allocated_assessor_name($allocatable) {
-        if ($this->has_allocation($allocatable)) {
-            return $this->get_allocation($allocatable)->assessor_name();
-        }
-        return '';
-    }
-
-    /**
-     * @param allocatable $allocatable
-     * @return bool|null_user|user
-     */
-    public function get_allocated_assessor($allocatable) {
-        if ($this->has_allocation($allocatable)) {
-            return $this->get_allocation($allocatable)->assessor();
-        }
-        return new null_user();
-    }
-
     abstract public function allocation_table_header();
 
     /**
