@@ -442,6 +442,9 @@ if ($cangrade || $canviewstudents) {
         'modal_handler_plagiarism',
         'coursework_edit',
     ];
+    if ($coursework->tii_enabled()) {
+        $amdmodules[] = 'turnitin_similarity_fetcher';
+    }
     foreach ($amdmodules as $amd) {
         $PAGE->requires->js_call_amd("mod_coursework/$amd", 'init', ['courseworkId' => $coursework->id]);
     }

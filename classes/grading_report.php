@@ -109,6 +109,25 @@ class grading_report {
     }
 
     /**
+     * Get the submission IDs that the user can see in this grading report.
+     * @param coursework $coursework
+     * @return int[]
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
+    public static function get_visible_row_submission_ids(coursework $coursework): array {
+        $visiblegradingreportrows = self::get_table_rows_for_page($coursework);
+        $visiblesubmissionids = [];
+        foreach ($visiblegradingreportrows as $visiblegradingreportrow) {
+            $submission = $visiblegradingreportrow->get_submission();
+            if ($submission) {
+                $visiblesubmissionids[] = $submission->id();
+            }
+        }
+        return $visiblesubmissionids;
+    }
+
+    /**
      *
      * @return array rendering options
      */

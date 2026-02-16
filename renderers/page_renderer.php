@@ -33,7 +33,7 @@ use mod_coursework\models\moderation;
 use mod_coursework\models\plagiarism_flag;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
-use mod_coursework\render_helpers\grading_report\data\cell_data_base;
+use mod_coursework\submission_files;
 use mod_coursework\router;
 
 /**
@@ -411,7 +411,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      *
      * @param submission $submission The submission object.
      * @param coursework $coursework The coursework settings object.
-     * @param mixed $submissionfiles Submitted files object.
+     * @param submission_files $submissionfiles Submitted files object.
      * @return stdClass Structured data for the template.
      */
     protected function submission_metadata(submission $submission, coursework $coursework, $submissionfiles): stdClass {
@@ -428,6 +428,11 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
                 // Finalised.
                 $f->finalised = $submission->is_finalised();
+                $f->tiilinksHTML = submission::plagiarism_get_links(
+                    $submission->authorid,
+                    $file,
+                    $coursework
+                );
 
                 $template->submissiondata->files[] = $f;
             }
@@ -438,8 +443,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         // Plagiarism.
         $template->submissiondata->flaggedplagiarism = $submission->get_flagged_plagiarism_status();
-
-        // TODO - turnitin stuff.
+        $template->tiienabled = $coursework->tii_enabled();
 
         return $template;
     }
