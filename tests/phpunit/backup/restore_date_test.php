@@ -50,7 +50,7 @@ final class restore_date_test extends \restore_date_testcase {
             'grade' => 100]);
 
         $data = new \stdClass();
-        $data->allocatableid = 5;
+        $data->allocatableid = $user->id;
         $data->allocatabletype = 'user';
         $data->stageidentifier = 'assessor_1';
         $data->courseworkid = $coursework->id;
