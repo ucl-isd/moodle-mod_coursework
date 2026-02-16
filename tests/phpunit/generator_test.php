@@ -106,8 +106,14 @@ final class generator_test extends \advanced_testcase {
     public function test_create_allocation_default_assessor(): void {
         global $DB;
 
+        $generator = \testing_util::get_data_generator();
+        $user = new \stdClass();
+        $user->firstname = 'Student';
+        $user->Lastname = 'One';
+        $dbstudent = $generator->create_user($user);
+
         $data = new \stdClass();
-        $data->allocatableid = 5;
+        $data->allocatableid = $dbstudent->id;
         $data->allocatabletype = 'user';
         $data->stageidentifier = 'assessor_1';
         $data->courseworkid = 65;
@@ -123,7 +129,7 @@ final class generator_test extends \advanced_testcase {
         $this->assertNotEmpty($allocation);
 
         $this->assertEquals(2, $allocation->assessorid);
-        $this->assertEquals(5, $allocation->allocatableid);
+        $this->assertEquals($dbstudent->id, $allocation->allocatableid);
         $this->assertEquals(65, $allocation->courseworkid);
         $this->assertEquals(0, $allocation->ismanual);
     }

@@ -49,7 +49,7 @@ final class deadline_extension_test extends \advanced_testcase {
             'allocatableid' => $dbstudent->id,
             'allocatabletype' => 'user',
             'courseworkid' => 4,
-            'extended_deadline' => time()
+            'extended_deadline' => time(),
         ];
         $newthing = deadline_extension::create($params);
         $this->assertInstanceOf('mod_coursework\models\deadline_extension', $newthing);
