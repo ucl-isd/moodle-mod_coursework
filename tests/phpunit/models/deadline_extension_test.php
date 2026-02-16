@@ -23,6 +23,7 @@
 namespace mod_coursework;
 
 use mod_coursework\models\deadline_extension;
+use testing_util;
 
 /**
  * Class mod_coursework_models_deadline_extension_test is responsible for testin
@@ -39,10 +40,17 @@ final class deadline_extension_test extends \advanced_testcase {
     }
 
     public function test_create(): void {
-        $params = ['allocatableid' => 3,
-                        'allocatabletype' => 'user',
-                        'courseworkid' => 4,
-                        'extended_deadline' => time()];
+        $generator = testing_util::get_data_generator();
+        $user = new \stdClass();
+        $user->firstname = 'Student';
+        $user->Lastname = 'One';
+        $dbstudent = $generator->create_user($user);
+        $params = [
+            'allocatableid' => $dbstudent->id,
+            'allocatabletype' => 'user',
+            'courseworkid' => 4,
+            'extended_deadline' => time()
+        ];
         $newthing = deadline_extension::create($params);
         $this->assertInstanceOf('mod_coursework\models\deadline_extension', $newthing);
         $this->assertTrue($newthing->persisted());
@@ -72,8 +80,13 @@ final class deadline_extension_test extends \advanced_testcase {
 
     public function test_get_coursework(): void {
         $coursework = $this->create_a_coursework();
+        $generator = testing_util::get_data_generator();
+        $user = new \stdClass();
+        $user->firstname = 'Student';
+        $user->Lastname = 'One';
+        $dbstudent = $generator->create_user($user);
         $params = [
-            'allocatableid' => 3,
+            'allocatableid' => $dbstudent->id,
             'allocatabletype' => 'user',
             'courseworkid' => $coursework->id,
             'extended_deadline' => strtotime('- 1 week'),

@@ -323,11 +323,16 @@ final class cache_test extends \advanced_testcase
     /**
      * Test for allocation class.
      * @return void
-     * @throws \core\exception\coding_exception
-     * @throws \core\exception\invalid_parameter_exception
-     * @throws \dml_exception
      */
     public function test_allocation_cache(): void {
+        throw new \Exception("Not yet implemented");
+    }
+
+    /**
+     * Test for assessment_set_membership class.
+     * @return void
+     */
+    public function test_assessment_set_membership_cache(): void {
         throw new \Exception("Not yet implemented");
     }
 }
