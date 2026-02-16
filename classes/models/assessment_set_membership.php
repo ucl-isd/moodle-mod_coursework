@@ -44,6 +44,7 @@ use mod_coursework\traits\table_with_allocatable;
 #[AllowDynamicProperties]
 class assessment_set_membership extends table_base implements moderatable {
     use table_with_allocatable;
+
     /**
      * Cache area where objects by ID are stored.
      * @var string

@@ -35,12 +35,18 @@ final class moderation_set_membership_test extends \advanced_testcase {
     }
 
     public function test_find(): void {
+        $generator = \testing_util::get_data_generator();
+        $user = new \stdClass();
+        $user->firstname = 'Student';
+        $user->Lastname = 'One';
+        $dbstudent = $generator->create_user($user);
+
         $record = new \stdClass();
-        $record->allocatableid = 22;
+        $record->allocatableid = $dbstudent->id;
         $record->allocatabletype = 'user';
         $record->courseworkid = 44;
         $membership = assessment_set_membership::create($record);
 
-        $this->assertEquals(22, \mod_coursework\models\assessment_set_membership::get_from_id($membership->id())->allocatableid);
+        $this->assertEquals($dbstudent->id, \mod_coursework\models\assessment_set_membership::get_from_id($membership->id())->allocatableid);
     }
 }
