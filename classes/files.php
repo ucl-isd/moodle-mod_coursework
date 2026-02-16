@@ -44,7 +44,7 @@ abstract class files implements countable {
     /**
      * Getter for the files.
      *
-     * @return array
+     * @return stored_file[]
      */
     public function get_files() {
         return $this->files;
