@@ -32,6 +32,7 @@ use mod_coursework\event\extension_created;
 use mod_coursework\event\extension_deleted;
 use mod_coursework\event\extension_updated;
 use mod_coursework\framework\table_base;
+use mod_coursework\traits\table_with_allocatable;
 
 /**
  * Class deadline_extension is responsible for representing one row of the deadline_extensions table.
@@ -46,6 +47,7 @@ use mod_coursework\framework\table_base;
  */
 #[AllowDynamicProperties]
 class deadline_extension extends table_base {
+    use table_with_allocatable;
     /**
      * Cache area where objects by ID are stored.
      * @var string
@@ -107,16 +109,6 @@ class deadline_extension extends table_base {
         }
 
         return $this->coursework;
-    }
-
-    public function get_allocatable() {
-        if ($this->allocatabletype == 'user') {
-            return user::get_from_id($this->allocatableid);
-        } else if ($this->allocatabletype == 'group') {
-            return group::get_from_id($this->allocatableid);
-        } else {
-            throw new coding_exception("Invalid type '" . $this->allocatabletype . "'");
-        }
     }
 
     /**

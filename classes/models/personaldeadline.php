@@ -23,15 +23,13 @@
 namespace mod_coursework\models;
 
 use AllowDynamicProperties;
-use cache;
 use context_module;
-use core\exception\coding_exception;
 use core\exception\invalid_parameter_exception;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\event\personaldeadline_created;
 use mod_coursework\event\personaldeadline_updated;
 use mod_coursework\framework\table_base;
-use mod_coursework_coursework;
+use mod_coursework\traits\table_with_allocatable;
 
 /**
  * Class personaldeadline is responsible for representing one row of the personaldeadline table.
@@ -45,6 +43,7 @@ use mod_coursework_coursework;
  */
 #[AllowDynamicProperties]
 class personaldeadline extends table_base {
+    use table_with_allocatable;
     /**
      * Cache area where objects by ID are stored.
      * @var string
@@ -77,16 +76,6 @@ class personaldeadline extends table_base {
         }
 
         return $this->coursework;
-    }
-
-    public function get_allocatable() {
-        if ($this->allocatabletype == 'user') {
-            return user::get_from_id($this->allocatableid);
-        } else if ($this->allocatabletype == 'group') {
-            return group::get_from_id($this->allocatableid);
-        } else {
-            throw new coding_exception("Invalid type '" . $this->allocatabletype . "'");
-        }
     }
 
     /**
