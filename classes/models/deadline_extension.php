@@ -48,6 +48,7 @@ use mod_coursework\traits\table_with_allocatable;
 #[AllowDynamicProperties]
 class deadline_extension extends table_base {
     use table_with_allocatable;
+
     /**
      * Cache area where objects by ID are stored.
      * @var string

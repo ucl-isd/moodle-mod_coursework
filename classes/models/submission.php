@@ -65,6 +65,7 @@ require_once($CFG->dirroot . '/mod/coursework/lib.php');
 #[AllowDynamicProperties]
 class submission extends table_base implements renderable {
     use table_with_allocatable;
+
     /**
      * Cache area where objects by ID are stored.
      * @var string
