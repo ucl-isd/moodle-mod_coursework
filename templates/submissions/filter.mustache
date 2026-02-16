@@ -352,10 +352,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 2000);
 
-        setTimeout(() => {
-            // Notify others (e.g. Turnitin similarity fetcher).
-            window.dispatchEvent(new CustomEvent('mod-coursework-grading-filter-changed'));
-        }, 500);
+        // Notify others (e.g. Turnitin similarity fetcher).
+        window.dispatchEvent(new CustomEvent('mod-coursework-grading-filter-changed'));
     }
 
     function get_visible_row_count() {
