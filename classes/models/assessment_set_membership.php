@@ -30,10 +30,10 @@ namespace mod_coursework\models;
 
 use AllowDynamicProperties;
 use core\exception\coding_exception;
-use core\exception\invalid_parameter_exception;
 use mod_coursework\allocation\moderatable;
 use mod_coursework\framework\table_base;
 use core_cache\cache;
+use mod_coursework\traits\table_with_allocatable;
 
 /**
  * @property int courseworkid
@@ -43,6 +43,7 @@ use core_cache\cache;
  */
 #[AllowDynamicProperties]
 class assessment_set_membership extends table_base implements moderatable {
+    use table_with_allocatable;
     /**
      * Cache area where objects by ID are stored.
      * @var string
@@ -266,70 +267,6 @@ class assessment_set_membership extends table_base implements moderatable {
     }
 
     /**
-     * Get membership for an allocatable in a coursework.
-     * Each allocatable may have more than one in the set (from different marking stages).
-     * @param int $courseworkid
-     * @param int $allocatableid
-     * @param string $allocatabletype
-     * @return self[]
-     * @throws \core\exception\invalid_parameter_exception
-     * @throws \dml_exception
-     * @throws coding_exception
-     */
-    public static function get_set_for_allocatable(int $courseworkid, int $allocatableid, string $allocatabletype) {
-        if ($allocatableid <= 0 || !in_array($allocatabletype, ['user', 'group'])) {
-            throw new invalid_parameter_exception("Invalid ID $allocatableid or type $allocatabletype");
-        }
-        $cache = cache::make('mod_coursework', self::CACHE_AREA_BY_ALLOCATABLE);
-        $cachekey = self::get_allocatable_cache_key($courseworkid, $allocatableid, $allocatabletype);
-        $ids = $cache->get($cachekey);
-        ;
-        if ($ids === false) {
-            $ids = self::get_db_ids_from_allocatable($courseworkid, $allocatableid, $allocatabletype);
-            $cache->set($cachekey, $ids);
-        }
-        $result = [];
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $result[] = self::get_from_id($id);
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * Not supported in this class as more than one returned.
-     * @see self::get_set_for_allocatable() instead.
-     * @see parent::get_for_allocatable()
-     *
-     * @param int $courseworkid
-     * @param int $allocatableid
-     * @param string $allocatabletype
-     * @return static|null
-     * @throws coding_exception
-     */
-    public static function get_for_allocatable(int $courseworkid, int $allocatableid, string $allocatabletype): ?static {
-        throw new coding_exception("Not supported in this class as more than one returned.  Use get_set_for_allocatable() instead.");
-    }
-
-    /**
-     * Get the membership IDs from the DB for all memberships of this allocatable in this coursework.
-     * @param int $courseworkid
-     * @param int $allocatableid
-     * @param string $allocatabletype
-     * @return array
-     * @throws \dml_exception
-     */
-    private static function get_db_ids_from_allocatable(int $courseworkid, int $allocatableid, string $allocatabletype): array {
-        global $DB;
-        return $DB->get_fieldset(
-            self::$tablename,
-            'id',
-            ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid, 'allocatabletype' => $allocatabletype]
-        );
-    }
-
-    /**
      * Get membership for an allocatable at a given stage in a coursework.
      * @param int $courseworkid
      * @param int $allocatableid
@@ -344,21 +281,5 @@ class assessment_set_membership extends table_base implements moderatable {
         $memberships = self::get_set_for_allocatable($courseworkid, $allocatableid, $alloctabletype);
         $filtered = array_filter($memberships, fn($m) => $m->stageidentifier == $stageidentifier);
         return array_pop($filtered);
-    }
-
-    /**
-     * Get the allocatable object.
-     * @return group|user|null
-     * @throws coding_exception
-     * @throws invalid_parameter_exception
-     */
-    public function get_allocatable(): user|group|null {
-        if ($this->allocatabletype == 'user') {
-            return user::get_from_id($this->allocatableid);
-        } else if ($this->allocatabletype == 'group') {
-            return group::get_from_id($this->allocatableid);
-        } else {
-            throw new coding_exception("Invalid type '" . $this->allocatabletype . "'");
-        }
     }
 }

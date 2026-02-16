@@ -687,20 +687,6 @@ abstract class table_base {
     }
 
     /**
-     * Get child object from its allocatable details, from the database.
-     * @param int $id
-     * @return \stdClass|null
-     */
-    private static function get_db_id_from_allocatable(int $courseworkid, int $allocatableid, string $allocatabletype): ?int {
-        global $DB;
-        return $DB->get_field(
-            static::$tablename,
-            'id',
-            ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid, 'allocatabletype' => $allocatabletype]
-        );
-    }
-
-    /**
      * Clear the caches for this object.
      * May need to be overridden in child class, if child class has additional cache areas beyond CACHE_AREA_IDS.
      * @return void
@@ -712,60 +698,11 @@ abstract class table_base {
             $cache = cache::make('mod_coursework', static::CACHE_AREA_IDS);
             $cache->delete($this->id);
         }
-        if (static::CACHE_AREA_BY_ALLOCATABLE) {
-            // For this class we implement user/group ID caches so clear them.
-            // E.g. submission, deadline and extension all use this.
-            $allocatable = $this->get_allocatable();
-            if ($allocatable && $allocatable->persisted()) {
-                $cachetoclear = cache::make('mod_coursework', static::CACHE_AREA_BY_ALLOCATABLE);
-                $cachetoclear->delete(self::get_allocatable_cache_key($this->courseworkid, $allocatable->id(), $allocatable->type()));
-            }
-        }
         if (static::CACHE_AREA_BY_SUBMISSION) {
             // For this class we implement a submission ID cache so clear that.
             // E.g. feedback and plagiarism flag use this.
             $cachetoclear = cache::make('mod_coursework', static::CACHE_AREA_BY_SUBMISSION);
             $cachetoclear->delete($this->submissionid);
         }
-    }
-
-    /**
-     * Get the object of the child class (e.g. submission, extension) which related to a specific user or group.
-     * This requires the child class to implement the cache and to have allocatableid and allocatabletype props.
-     * @param int $courseworkid
-     * @param int $allocatableid
-     * @param string $allocatabletype
-     * @return ?static
-     */
-    public static function get_for_allocatable(int $courseworkid, int $allocatableid, string $allocatabletype): ?static {
-        if ($allocatableid <= 0 || !in_array($allocatabletype, ['user', 'group'])) {
-            throw new invalid_parameter_exception("Invalid ID $allocatableid or type $allocatabletype");
-        }
-        $implementscache = static::CACHE_AREA_BY_ALLOCATABLE ?? false;
-        if ($implementscache) {
-            $cache = cache::make('mod_coursework', static::CACHE_AREA_BY_ALLOCATABLE);
-            $cachekey = self::get_allocatable_cache_key($courseworkid, $allocatableid, $allocatabletype);
-            $id = $cache->get($cachekey);
-            if ($id === false) {
-                $id = static::get_db_id_from_allocatable($courseworkid, $allocatableid, $allocatabletype);
-                $cache->set($cachekey, $id === false ? null : $id);
-            }
-        } else {
-            throw new coding_exception("Child class " . static::class . " is not compatible with the method ::get_for_allocatable()");
-        }
-        return $id ? static::get_from_id($id) : null;
-    }
-
-    /**
-     * Get the cache key used for @see static::CACHE_AREA_BY_ALLOCATABLE
-     * @param int $courseworkid
-     * @param int $allocatableid
-     * @param string $allocatabletype
-     * @return string
-     */
-    public static function get_allocatable_cache_key(int $courseworkid, int $allocatableid, string $allocatabletype): string {
-        $typeprefix = substr($allocatabletype, 0, 1);
-        // E.g. c3u10 for coursework ID 3, user ID 10 or c3g10 for coursework ID 3, group ID 10.
-        return "c$courseworkid$typeprefix$allocatableid";
     }
 }

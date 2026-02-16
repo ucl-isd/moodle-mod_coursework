@@ -26,13 +26,10 @@ use AllowDynamicProperties;
 use coding_exception;
 use context;
 use context_module;
-use cache;
 use core\exception\invalid_parameter_exception;
 use core\exception\moodle_exception;
 use core_user\fields;
 use dml_exception;
-use dml_missing_record_exception;
-use dml_multiple_records_exception;
 use exception;
 use file_storage;
 use html_writer;
@@ -43,6 +40,7 @@ use mod_coursework\grade_judge;
 use mod_coursework\mailer;
 use mod_coursework\stages\final_agreed;
 use mod_coursework\submission_files;
+use mod_coursework\traits\table_with_allocatable;
 use moodle_url;
 use renderable;
 use stdClass;
@@ -66,6 +64,7 @@ require_once($CFG->dirroot . '/mod/coursework/lib.php');
  */
 #[AllowDynamicProperties]
 class submission extends table_base implements renderable {
+    use table_with_allocatable;
     /**
      * Cache area where objects by ID are stored.
      * @var string
@@ -936,21 +935,7 @@ class submission extends table_base implements renderable {
         return $this->get_state() >= self::FINAL_GRADED;
     }
 
-    /**
-     * @return allocatable
-     */
-    public function get_allocatable() {
-        if (!$this->allocatableid) {
-            throw new \core\exception\coding_exception("Submission must have an allocatable (e.g. user)");
-        }
-        if ($this->allocatabletype == 'user') {
-            return user::get_from_id($this->allocatableid);
-        } else if ($this->allocatabletype == 'group') {
-            return group::get_from_id($this->allocatableid);
-        } else {
-            throw new \core\exception\coding_exception("Invalid type '" . $this->allocatabletype . "'");
-        }
-    }
+
 
     /**
      * @return user[]
