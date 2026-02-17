@@ -52,7 +52,7 @@ class mod_coursework_behat_login_page extends mod_coursework_behat_page_base {
         }
 
         $this->getpage()->fillField('username', $user->username);
-        $this->getpage()->fillField('password', $user->password);
+        $this->getpage()->fillField('password', md5($user->username  . 'mod_coursework'));
         $this->getcontext()->find_button('Log in')->press();
 
         try {

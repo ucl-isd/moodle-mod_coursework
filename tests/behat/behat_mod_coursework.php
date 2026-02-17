@@ -2464,12 +2464,12 @@ class behat_mod_coursework extends behat_base {
 
         $user = new stdClass();
         $user->username = 'user' . $this->usersuffix;
-        $user->password = 'user' . $this->usersuffix;
+        // Ensure password is complex enough (by hashing username) that chrome does not reject it as compromised in data breach.
+        $user->password = md5($user->username . 'mod_coursework');
         $user->firstname = $displayname ? $displayname : $rolename . $this->usersuffix;
         $user->lastname = $rolename . $this->usersuffix;
         $user = $generator->create_user($user);
         $user = \mod_coursework\models\user::find($user);
-        $user->password = 'user' . $this->usersuffix;
 
         // If the role name starts with 'other_' here (e.g. 'other_teacher') we need to remove it.
         $rolename = str_replace('other_', '', $rolename);
