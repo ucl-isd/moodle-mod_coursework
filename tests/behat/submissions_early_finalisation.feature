@@ -18,7 +18,7 @@ Feature: Early finalisation of student submissions
     And I click on "Upload your submission" "link"
     And I should see the save and finalise button
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
-    And I save and finalise the submission
+    And I click on "Submit and finalise" "button"
     And I visit the coursework page
     Then I should see the file on the page
     But I should not see the edit submission button
