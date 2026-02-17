@@ -21,8 +21,9 @@ Feature: Candidate number based file renaming for submission files
     When I visit the coursework page
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
-    And I save and finalise the submission
-    Then the uploaded file should be renamed to "TEST001_1.docx"
+    And I click on "Submit and finalise" "button"
+    # Uploaded file has been renamed to "TEST001_1.docx".
+    Then I should see "TEST001_1.docx"
 
   @javascript @_file_upload
   Scenario: Multiple files with candidate numbers get sequential numbering
@@ -34,11 +35,10 @@ Feature: Candidate number based file renaming for submission files
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
-    And I save and finalise the submission
-    Then the uploaded files should be renamed to:
-      | filename        |
-      | TEST001_1.docx  |
-      | TEST001_2.docx  |
+    And I click on "Submit and finalise" "button"
+    # Uploaded files have been renamed.
+    Then I should see "TEST001_1.docx"
+    And I should see "TEST001_2.docx"
 
   @javascript @_file_upload
   Scenario: Files use username hash when candidate number is disabled
@@ -48,7 +48,7 @@ Feature: Candidate number based file renaming for submission files
     When I visit the coursework page
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
-    And I save and finalise the submission
+    And I click on "Submit and finalise" "button"
     Then the uploaded file should be renamed with pattern "X[a-f0-9]{8}_1.docx"
 
   @javascript @_file_upload
@@ -59,7 +59,7 @@ Feature: Candidate number based file renaming for submission files
     When I visit the coursework page
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
-    And I save and finalise the submission
+    And I click on "Submit and finalise" "button"
     And I log out
     And I am logged in as a editingteacher
     When I visit the coursework page
