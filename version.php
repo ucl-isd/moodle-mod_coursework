@@ -24,6 +24,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_coursework';
 
+$plugin->version = 2026021603;
 $plugin->version = 2026022300;
 $plugin->requires = 2024100700;
 
