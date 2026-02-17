@@ -805,22 +805,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Then /^I should see two feedback files on the page$/
-     */
-    public function i_should_see_two_feedback_files_on_the_page() {
-        /**
-         * @var mod_coursework_behat_student_page $page
-         */
-        $page = $this->get_page('student page');
-
-        if ($this->running_javascript()) {
-            $this->wait_for_seconds(10);
-        }
-
-        $page->should_have_number_of_feedback_files(2);
-    }
-
-    /**
      * @Given /^the coursework start date is disabled$/
      */
     public function the_coursework_start_date_is_disabled() {
@@ -3271,19 +3255,11 @@ class behat_mod_coursework extends behat_base {
      * @throws ExpectationException
      */
     private function find_student_submission(): submission {
-        global $DB;
-
-        // Get the submission record.
-        $submissionrecord = $DB->get_record('coursework_submissions', [
-            'courseworkid' => $this->coursework->id,
-            'userid' => $this->student->id,
-        ]);
-
-        if (!$submissionrecord) {
-            throw new ExpectationException('No submission found for student', $this->getsession());
-        }
-
-        return submission::get_from_id($submissionrecord->id);
+        return submission::get_for_allocatable(
+            $this->coursework->id,
+            $this->student->id,
+            'user'
+        );
     }
 
     /**
@@ -3295,31 +3271,6 @@ class behat_mod_coursework extends behat_base {
         set_config('behat_mock_provider_filepath', $CFG->dirroot . '/mod/coursework/tests/behat/fixtures/mock_candidate_provider.php');
         set_config('behat_mock_provider_class', '\\mod_coursework\\behat\\fixtures\\mock_candidate_provider');
         set_config('behat_mock_candidate_number', $candidatenumber);
-    }
-
-    /**
-     * Verify that the uploaded file has been renamed to the expected filename.
-     *
-     * @Then /^the uploaded file should be renamed to "([^"]*)"$/
-     */
-    public function the_uploaded_file_should_be_renamed_to(string $expectedname): void {
-        // Find the student's submission.
-        $submission = $this->find_student_submission();
-        $files = $submission->get_submission_files();
-        $file = $files->get_first_submitted_file();
-
-        if (!$file) {
-            throw new ExpectationException('No submission files found', $this->getsession());
-        }
-
-        $actualname = $file->get_filename();
-
-        if ($actualname !== $expectedname) {
-            throw new ExpectationException(
-                "Expected filename '$expectedname', got '$actualname'",
-                $this->getsession()
-            );
-        }
     }
 
     /**

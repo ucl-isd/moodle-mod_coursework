@@ -18,6 +18,7 @@ Feature: Marking guide with frequent comments
 
     And I select "Advanced grading" from secondary navigation
     And I set the field "Change active grading method to" to "Marking guide"
+    And I wait until the page is ready
     And I follow "Define new grading form from scratch"
     And I set the following fields to these values:
       | Name | Behat marking form |
