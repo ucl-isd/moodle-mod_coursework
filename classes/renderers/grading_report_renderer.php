@@ -217,11 +217,12 @@ class grading_report_renderer extends plugin_renderer_base {
         if (!$allocatable) {
             return null;
         }
-        $submission = submission::get_cached_object(
+        $submission = submission::get_for_allocatable(
             $coursework->id,
-            ['allocatableid' => $allocatable->id, 'allocatabletype' => $allocatabletype]
+            $allocatable->id,
+            $allocatabletype
         );
-        $submissionfilesarray = $submission
+        $submissionfiles = $submission
             ? submission::get_all_submission_files_data($coursework, [$submission->id()], true)
             : [];
         $ability = new ability($USER->id, $coursework);

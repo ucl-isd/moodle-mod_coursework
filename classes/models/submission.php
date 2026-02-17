@@ -1618,12 +1618,17 @@ class submission extends table_base implements renderable {
      * @throws dml_exception
      */
     public static function get_multiple(array $submissionids): array {
-        global $DB;
-        [$insql, $params] = $DB->get_in_or_equal($submissionids, SQL_PARAMS_NAMED);
-        $records = $DB->get_records_sql("SELECT * FROM {coursework_submissions} WHERE id $insql", $params);
-        $submissions = [];
-        foreach ($records as $record) {
-            $submissions[$record->id] = self::find($record, false);
+        $invalidids = [];
+        foreach ($submissionids as $submissionid) {
+            $submission = self::get_from_id($submissionid);
+            if ($submission) {
+                $submissions[$submissionid] = $submission;
+            } else {
+                $invalidids[] = $submissionid;
+            }
+        }
+        if (!empty($invalidids)) {
+            throw new invalid_parameter_exception("Submission id(s) not found: " . implode(',', $invalidids));
         }
         return $submissions;
     }
@@ -1661,20 +1666,7 @@ class submission extends table_base implements renderable {
      * @return string|bool
      */
     public function get_flagged_plagiarism_status(): string|bool {
-        $flag = plagiarism_flag::get_plagiarism_flag($this);
-        if (!$flag || !($flag->status == plagiarism_flag::INVESTIGATION || $flag->status == plagiarism_flag::NOTCLEARED)) {
-            return false;
-        }
-        return get_string('plagiarism_' . $flag->status, 'mod_coursework');
-    }
-
-    /**
-     * Check if the submission should be flagged for plagiarism.
-     *
-     * @return string|bool
-     */
-    public function get_flagged_plagiarism_status(): string|bool {
-        $flag = plagiarism_flag::get_plagiarism_flag($this);
+        $flag = plagiarism_flag::get_for_submission($this->id);
         if (!$flag || !($flag->status == plagiarism_flag::INVESTIGATION || $flag->status == plagiarism_flag::NOTCLEARED)) {
             return false;
         }
