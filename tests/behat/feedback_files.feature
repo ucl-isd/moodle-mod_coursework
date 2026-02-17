@@ -39,4 +39,5 @@ Feature: Adding feedback files
 
     And I log in as a student
     And I visit the coursework page
-    Then I should see two feedback files on the page
+    And I should see "Test_image.png"
+    And I should see "Test_document_two.docx"

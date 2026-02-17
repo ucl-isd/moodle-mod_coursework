@@ -19,7 +19,7 @@ Feature: Basic file renaming for submission files
     When I visit the coursework page
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
-    And I save and finalise the submission
+    And I click on "Submit and finalise" "button"
     Then the uploaded file should be renamed with pattern "X[a-f0-9]{8}_1.docx"
 
   @javascript @_file_upload
@@ -29,8 +29,9 @@ Feature: Basic file renaming for submission files
     When I visit the coursework page
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
-    And I save and finalise the submission
-    Then the uploaded file should keep original name "Test_document.docx"
+    And I click on "Submit and finalise" "button"
+    # Uploaded file should keep original name "Test_document.docx"
+    Then I should see "Test_document.docx"
 
   @javascript @_file_upload
   Scenario: Multiple files from same student get sequential numbers
@@ -41,7 +42,7 @@ Feature: Basic file renaming for submission files
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
-    And I save and finalise the submission
+    And I click on "Submit and finalise" "button"
     Then the uploaded files should be renamed with sequential patterns:
       | pattern                    |
       | X[a-f0-9]{8}_1.docx        |

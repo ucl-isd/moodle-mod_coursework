@@ -47,21 +47,6 @@ class mod_coursework_behat_student_page extends mod_coursework_behat_page_base {
     }
 
     /**
-     * @param int $expectednumberoffiles
-     * @throws ExpectationException
-     */
-    public function should_have_number_of_feedback_files($expectednumberoffiles) {
-
-        $files = $this->getpage()->findAll('css', '.feedbackfile');
-        $numberoffiles = count($files);
-
-        if (!$numberoffiles == $expectednumberoffiles) {
-            $message = 'Expected ' . $expectednumberoffiles . ' feedback files but there were ' . $numberoffiles;
-            throw new ExpectationException($message, $this->getsession());
-        }
-    }
-
-    /**
      * @param $rolename
      */
     public function should_show_the_submitter_as($rolename) {
