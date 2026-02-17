@@ -69,7 +69,7 @@ class get_turnitin_similarity_links extends external_api {
             ['courseworkid' => $courseworkid, 'submissionids' => array_unique($submissionids, SORT_NUMERIC)]
         );
 
-        $coursework = coursework::get_cached_object_from_id($params['courseworkid']);
+        $coursework = coursework::get_from_id($params['courseworkid']);
         if (!$coursework) {
             return [
                 'success' => false,
