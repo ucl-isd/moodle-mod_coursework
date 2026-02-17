@@ -475,16 +475,17 @@ abstract class base {
      * @param allocatable $allocatable
      * @throws \dml_exception|coding_exception
      */
-    public function remove_allocatable_from_sampling($allocatable) {
-        $params = [
-            'courseworkid' => $this->coursework->id,
-            'allocatableid' => $allocatable->id(),
-            'allocatabletype' => $allocatable->type(),
-            'stageidentifier' => $this->stageidentifier,
-        ];
-        $membership = assessment_set_membership::find($params, false);
-        if ($membership) {
-            $membership->destroy();
+    public function remove_allocatable_from_sampling(allocatable $allocatable) {
+        $memberships = assessment_set_membership::get_set_for_allocatable(
+            $this->coursework->id,
+            $allocatable->id(),
+            $allocatable->type()
+        );
+        foreach ($memberships as $membership) {
+            if ($membership->stageidentifier == $this->stageidentifier) {
+                $membership->destroy();
+                return;
+            }
         }
     }
 
