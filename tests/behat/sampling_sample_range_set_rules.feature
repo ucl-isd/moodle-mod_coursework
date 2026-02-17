@@ -1,4 +1,4 @@
-@mod @mod_coursework @mod_coursework_sampling @javascript
+@mod @mod_coursework @mod_coursework_sampling @mod_coursework_sampling_range_set_rules  @javascript
 Feature: Automatic sample based on range set grades using marking of students in stage 1 and 2
 
   As a manager, I want to be able to automatically allocate assessors to students
