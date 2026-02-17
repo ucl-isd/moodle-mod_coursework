@@ -240,6 +240,7 @@ class grading_report_renderer extends plugin_renderer_base {
         // We need to add some to this because the tr and actions templates both use fields from parent as well as row.
         // Otherwise some action menu elements may be incomplete.
         $data->coursework = self::prepare_coursework_data($coursework);
+        $data->tiienabled = $coursework->tii_enabled();
 
         if ($allocatabletype === "user" && (!$coursework->blindmarking_enabled() || has_capability('mod/coursework:viewanonymous', $coursework->get_context()))) {
             $data->submissiontype->user->picture = user::get_picture_url_from_context_id(
