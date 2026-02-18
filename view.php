@@ -340,6 +340,7 @@ $canviewstudents = has_any_capability([
     'mod/coursework:editinitialgrade',
     'mod/coursework:grade',
     'mod/coursework:grantextensions',
+    'mod/coursework:moderate',
     'mod/coursework:publish',
     'mod/coursework:revertfinalised',
     'mod/coursework:submitonbehalfof',
