@@ -283,9 +283,10 @@ class marking_cell_data extends cell_data_base {
         }
 
         if (
-            has_capability('mod/coursework:addagreedgrade', $this->coursework->get_context())
-            ||
-            has_capability('mod/coursework:addallocatedagreedgrade', $this->coursework->get_context())
+            has_any_capability(
+                ['mod/coursework:addagreedgrade', 'mod/coursework:addallocatedagreedgrade'],
+                $this->coursework->get_context()
+            )
         ) {
             return get_string('mark_hidden_manager', 'mod_coursework');
         }

@@ -133,11 +133,7 @@ class grading_sheet extends csv {
                         && has_capability('mod/coursework:addinitialgrade', $PAGE->context)
                     )
                     &&
-                    (
-                        has_capability('mod/coursework:addagreedgrade', $PAGE->context)
-                        ||
-                        has_capability('mod/coursework:editagreedgrade', $PAGE->context)
-                    )
+                    has_any_capability(['mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade'], $PAGE->context)
                 ) {
                     unset($submissions[$submission->id]);
                     continue;
@@ -206,15 +202,16 @@ class grading_sheet extends csv {
 
         // based on capabilities decide what view display - singlegrade or multiplegrade
         if (
-            (has_capability('mod/coursework:addagreedgrade', $PAGE->context) || has_capability('mod/coursework:administergrades', $PAGE->context))
-            && $coursework->get_max_markers() > 1
+            has_any_capability(['mod/coursework:addagreedgrade', 'mod/coursework:administergrades'], $PAGE->context)
+            &&
+            $coursework->get_max_markers() > 1
         ) {
             for ($i = 1; $i <= $coursework->get_max_markers(); $i++) {
                 // extra column with allocated assessor name
                 if (
                     $coursework->allocation_enabled() && $coursework->get_max_markers() > 1
-                    && (has_capability('mod/coursework:addinitialgrade', $PAGE->context)
-                      || has_capability('mod/coursework:editinitialgrade', $PAGE->context))
+                    &&
+                    has_any_capability(['mod/coursework:addinitialgrade', 'mod/coursework:editinitialgrade'], $PAGE->context)
                 ) {
                     $csvcells[] = 'assessor' . $i;
                 }
@@ -233,9 +230,7 @@ class grading_sheet extends csv {
             $csvcells[] = 'agreedgrade';
             $csvcells[] = 'agreedfeedback';
         } else if (
-            has_capability('mod/coursework:addinitialgrade', $PAGE->context)
-            ||
-            has_capability('mod/coursework:administergrades', $PAGE->context)
+            has_any_capability(['mod/coursework:addinitialgrade', 'mod/coursework:administergrades'], $PAGE->context)
         ) {
             $csvcells[] = 'singlegrade';
             $csvcells[] = 'feedbackcomments';

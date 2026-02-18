@@ -61,11 +61,10 @@ abstract class cell_base implements cell_interface {
      * @throws coding_exception
      */
     public function can_view_hidden() {
-
-        $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->coursework->get_context());
-        $exportgrade = has_capability('mod/coursework:canexportfinalgrades', $this->coursework->get_context());
-
-        return (!$this->coursework->blindmarking || $viewanonymous || $exportgrade);
+        return
+            !$this->coursework->blindmarking
+            ||
+            has_any_capability('mod/coursework:viewanonymous', 'mod/coursework:canexportfinalgrades'], $this->coursework->get_context();
     }
 
     /**

@@ -98,11 +98,15 @@ class submission_figures {
         $coursework = coursework::find($instance);
         $context = $coursework->get_context();
 
+        $addagreedgrade = has_capability('mod/coursework:addagreedgrade', $context);
+        $addinitialgrade = has_capability('mod/coursework:addinitialgrade', $context);
+        $administergrades = has_capability('mod/coursework:administergrades', $context);
+
         if (
             !$coursework->has_multiple_markers()
-                && !$coursework->allocation_enabled()
-                && !has_capability('mod/coursework:addinitialgrade', $context)
-                && has_capability('mod/coursework:addagreedgrade', $context)
+            && !$coursework->allocation_enabled()
+            && !$addinitialgrade
+            && $addagreedgrade
         ) {
             return 0;
         }
@@ -113,12 +117,13 @@ class submission_figures {
         // Remove unwanted submissions.
         $submissions = self::remove_ungradable_submissions($submissions);
 
-        $canfinalgrade = has_any_capability([
-                'mod/coursework:addagreedgrade',
-                'mod/coursework:administergrades',
-            ], $context) || (
-                has_capability('mod/coursework:addinitialgrade', $context)
-                    && has_capability('mod/coursework:addallocatedagreedgrade', $context)
+        $canfinalgrade =
+            $addagreedgrade
+            || $administergrades
+            || (
+                $addinitialgrade
+                &&
+                has_capability('mod/coursework:addallocatedagreedgrade', $context)
             );
 
         if ($canfinalgrade) {
@@ -126,12 +131,7 @@ class submission_figures {
             $needsgrading = count($submissions) - count($remaining);
         }
 
-        $caninitialgrade = has_any_capability([
-            'mod/coursework:addinitialgrade',
-            'mod/coursework:administergrades',
-        ], $context);
-
-        if ($caninitialgrade) {
+        if ($addinitialgrade || $administergrades) {
             $submissions = self::remove_final_gradable_submissions($submissions);
             $needsgrading += count(self::get_assessor_initial_graded_submissions($submissions));
         }

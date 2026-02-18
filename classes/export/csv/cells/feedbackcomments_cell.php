@@ -56,12 +56,10 @@ class feedbackcomments_cell extends cell_base {
     }
 
     public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells = []) {
-
         global $PAGE, $DB, $USER;
 
         if (
-            has_capability('mod/coursework:addinitialgrade', $PAGE->context) || has_capability('mod/coursework:editinitialgrade', $PAGE->context)
-            || has_capability('mod/coursework:administergrades', $PAGE->context)
+            has_any_capability(['mod/coursework:addinitialgrade', 'mod/coursework:editinitialgrade', 'mod/coursework:administergrades'], $PAGE->context)
         ) {
             $dbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
 
@@ -78,7 +76,7 @@ class feedbackcomments_cell extends cell_base {
             }
 
             // Is the current user an assessor at any of this submissions grading stages or do they have administer grades
-            if (!$this->coursework->is_assessor($USER->id) && !has_capability('mod/coursework:administergrades', $PAGE->context)) {
+            if (!$this->coursework->is_assessor($USER->id)) {
                 return get_string('nopermissiontomarksubmission', 'coursework');
             }
 

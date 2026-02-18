@@ -419,16 +419,18 @@ class feedback_controller extends controller_base {
         global $USER;
 
         $stage = $this->coursework->get_stage($identifier);
-        if (!$stage->user_is_assessor($USER->id)) {
-            if (
-                !(has_capability('mod/coursework:administergrades', $this->coursework->get_context()) ||
-                  has_capability('mod/coursework:addallocatedagreedgrade', $this->coursework->get_context()))
-            ) {
-                throw new access_denied(
-                    $this->coursework,
-                    'You are not authorised to add feedback at this stage'
-                );
-            }
+        if (
+            !$stage->user_is_assessor($USER->id)
+            &&
+            !has_any_capability(
+                ['mod/coursework:administergrades', 'mod/coursework:addallocatedagreedgrade'],
+                $this->coursework->get_context()
+            )
+        ) {
+            throw new access_denied(
+                $this->coursework,
+                'You are not authorised to add feedback at this stage'
+            );
         }
     }
 
