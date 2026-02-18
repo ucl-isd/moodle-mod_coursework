@@ -64,7 +64,7 @@ abstract class cell_base implements cell_interface {
         return
             !$this->coursework->blindmarking
             ||
-            has_any_capability('mod/coursework:viewanonymous', 'mod/coursework:canexportfinalgrades'], $this->coursework->get_context();
+            has_any_capability(['mod/coursework:viewanonymous', 'mod/coursework:canexportfinalgrades'], $this->coursework->get_context());
     }
 
     /**
