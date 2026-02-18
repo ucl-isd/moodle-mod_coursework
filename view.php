@@ -329,33 +329,24 @@ if ($downloadgradingsheet) {
 
 $cangrade = has_capability('mod/coursework:addinitialgrade', $PAGE->context);
 $cansubmit = has_capability('mod/coursework:submit', $PAGE->context);
-$canviewstudents = false;
-
-// TODO this is awful.
-$capabilities = ['addinstance',
-                      'submitonbehalfof',
-                      'addinitialgrade',
-                      'editinitialgrade',
-                      'addagreedgrade',
-                      'editagreedgrade',
-                      'publish',
-                      'viewanonymous',
-                      'revertfinalised',
-                      'allocate',
-                      'viewallgradesatalltimes',
-                      'administergrades',
-                      'grantextensions',
-                      'canexportfinalgrades',
-                      'viewextensions',
-                      'grade'];
-
-foreach ($capabilities as $capability) {
-    if (has_capability('mod/coursework:' . $capability, $PAGE->context)) {
-        $canviewstudents = true;
-        break;
-    }
-}
-
+$canviewstudents = has_any_capability([
+    'mod/coursework:addagreedgrade',
+    'mod/coursework:addinitialgrade',
+    'mod/coursework:addinstance',
+    'mod/coursework:administergrades',
+    'mod/coursework:allocate',
+    'mod/coursework:canexportfinalgrades',
+    'mod/coursework:editagreedgrade',
+    'mod/coursework:editinitialgrade',
+    'mod/coursework:grade',
+    'mod/coursework:grantextensions',
+    'mod/coursework:publish',
+    'mod/coursework:revertfinalised',
+    'mod/coursework:submitonbehalfof',
+    'mod/coursework:viewallgradesatalltimes',
+    'mod/coursework:viewanonymous',
+    'mod/coursework:viewextensions',
+], $PAGE->context);
 
 $event = course_module_viewed::create(
     ['objectid' => $coursework->id, 'context' => $coursework->get_context()]
