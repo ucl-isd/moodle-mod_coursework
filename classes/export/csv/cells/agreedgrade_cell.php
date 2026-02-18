@@ -77,16 +77,22 @@ class agreedgrade_cell extends cell_base {
         global $DB, $PAGE, $USER;
 
         $stageident = 'final_agreed_1';
-        $agreedgradecap = ['mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade',
-            'mod/coursework:addallocatedagreedgrade', 'mod/coursework:editallocatedagreedgrade'];
 
         if (empty($value)) {
             return true;
         }
 
         if (
-            has_any_capability($agreedgradecap, $PAGE->context)
-            || has_capability('mod/coursework:administergrades', $PAGE->context)
+            has_any_capability(
+                [
+                'mod/coursework:addagreedgrade',
+                'mod/coursework:editagreedgrade',
+                'mod/coursework:addallocatedagreedgrade',
+                'mod/coursework:editallocatedagreedgrade',
+                'mod/coursework:administergrades',
+                ],
+                $PAGE->context
+            )
         ) {
             $errormsg = '';
 
@@ -168,17 +174,13 @@ class agreedgrade_cell extends cell_base {
             if (empty($feedback)) {
                 // This is a new feedback check it against the new ability checks
                 if (
-                    !has_capability('mod/coursework:administergrades', $PAGE->context)
-                    && !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context)
+                    !has_capability('mod/coursework:addallocatedagreedgrade', $PAGE->context)
                     && !feedback::can_add_new($this->coursework, $submission, $stageident)
                 ) {
                     return get_string('nopermissiontomarksubmission', 'coursework');
                 }
             } else {
-                if (
-                    !has_capability('mod/coursework:administergrades', $PAGE->context)
-                    && !$feedback->can_edit($this->coursework, $submission)
-                ) {
+                if (!$feedback->can_edit($this->coursework, $submission)) {
                     return get_string('nopermissiontoeditmark', 'coursework');
                 }
             }

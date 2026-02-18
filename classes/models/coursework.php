@@ -2250,10 +2250,7 @@ class coursework extends table_base {
      * @throws coding_exception
      */
     public function can_submit() {
-        if (has_capability('mod/coursework:submit', $this->get_context())) {
-            return true;
-        }
-        return false;
+        return has_capability('mod/coursework:submit', $this->get_context());
     }
 
     /**
@@ -2263,13 +2260,11 @@ class coursework extends table_base {
      * @throws coding_exception
      */
     public function can_grade() {
-        if (
-            has_capability('mod/coursework:addinitialgrade', $this->get_context()) || has_capability('mod/coursework:addagreedgrade', $this->get_context())
-            || has_capability('mod/coursework:addallocatedagreedgrade', $this->get_context())
-        ) {
-            return true;
-        }
-        return false;
+        return has_any_capability([
+            'mod/coursework:addinitialgrade',
+            'mod/coursework:addagreedgrade',
+            'mod/coursework:addallocatedagreedgrade',
+        ], $this->get_context());
     }
 
     /**

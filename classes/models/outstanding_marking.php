@@ -272,10 +272,11 @@ class outstanding_marking {
      * @throws \coding_exception
      */
     private function has_agreed_grade($courseid, $userid) {
-
-        $coursecontext = context_course::instance($courseid);
-
-        return  has_capability('mod/coursework:addagreedgrade', $coursecontext, $userid) || has_capability('mod/coursework:addallocatedagreedgrade', $coursecontext, $userid);
+        return has_any_capability(
+            ['mod/coursework:addagreedgrade', 'mod/coursework:addallocatedagreedgrade'],
+            context_course::instance($courseid),
+            $userid
+        );
     }
 
     /**
@@ -285,10 +286,7 @@ class outstanding_marking {
      * @throws \coding_exception
      */
     private function has_initial_grade($courseid, $userid) {
-
-        $coursecontext = context_course::instance($courseid);
-
-        return  has_capability('mod/coursework:addinitialgrade', $coursecontext, $userid);
+        return has_capability('mod/coursework:addinitialgrade', context_course::instance($courseid), $userid);
     }
 
     /**

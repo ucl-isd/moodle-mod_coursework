@@ -98,9 +98,16 @@ class assessorfeedback_cell extends cell_base {
 
         $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
         $submission = submission::find($subdbrecord);
+        $administergrades = has_capability('mod/coursework:administergrades', $modulecontext);
+
         if (
-            has_any_capability($agreedgradecap, $modulecontext) && has_any_capability($initialgradecap, $modulecontext)
-            || has_capability('mod/coursework:administergrades', $modulecontext)
+            $administergrades
+            ||
+            (
+                has_any_capability($agreedgradecap, $modulecontext)
+                &&
+                has_any_capability($initialgradecap, $modulecontext)
+            )
         ) {
             // Is the submission in question ready to grade?
             if (!$submission->ready_to_grade()) {
@@ -113,7 +120,7 @@ class assessorfeedback_cell extends cell_base {
             }
 
             // If you have administer grades you can grade anything
-            if (has_capability('mod/coursework:administergrades', $modulecontext)) {
+            if ($administergrades) {
                 return true;
             }
 
@@ -129,12 +136,12 @@ class assessorfeedback_cell extends cell_base {
             // Does a feedback exist for this stage
             if (!empty($feedback)) {
                 // This is a new feedback check it against the new ability checks
-                if (!has_capability('mod/coursework:administergrades', $modulecontext) && !$ability->can('new', $feedback)) {
+                if (!$administergrades && !$ability->can('new', $feedback)) {
                     return get_string('nopermissiontoeditmark', 'coursework');
                 }
             } else {
                 // This is a new feedback check it against the edit ability checks
-                if (!has_capability('mod/coursework:administergrades', $modulecontext) && !$ability->can('edit', $feedback)) {
+                if (!$administergrades && !$ability->can('edit', $feedback)) {
                     return get_string('nopermissiontoeditmark', 'coursework');
                 }
             }
@@ -156,7 +163,7 @@ class assessorfeedback_cell extends cell_base {
                 ];
 
                 if (
-                    !has_capability('mod/coursework:administergrades', $modulecontext)
+                    !$administergrades
                     && !$DB->get_record('coursework_allocation_pairs', $allocationparams)
                 ) {
                     return get_string('nopermissiontomarksubmission', 'coursework');
@@ -165,7 +172,8 @@ class assessorfeedback_cell extends cell_base {
 
             // Check for coursework without allocations - with/without samplings
             if (
-                has_capability('mod/coursework:addinitialgrade', $modulecontext) && !has_capability('mod/coursework:editinitialgrade', $modulecontext)
+                has_capability('mod/coursework:addinitialgrade', $modulecontext)
+                && !has_capability('mod/coursework:editinitialgrade', $modulecontext)
                 && $this->coursework->get_max_markers() > 1 && !$this->coursework->allocation_enabled()
             ) {
                 // check how many feedbacks for this submission

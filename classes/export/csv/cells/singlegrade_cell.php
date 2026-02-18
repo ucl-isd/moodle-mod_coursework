@@ -76,8 +76,13 @@ class singlegrade_cell extends cell_base {
         global $PAGE, $DB, $USER;
 
         if (
-            has_capability('mod/coursework:addinitialgrade', $PAGE->context) || has_capability('mod/coursework:editinitialgrade', $PAGE->context)
-            || has_capability('mod/coursework:administergrades', $PAGE->context)
+            has_any_capability(
+                [
+                'mod/coursework:addinitialgrade',
+                'mod/coursework:editinitialgrade',
+                'mod/coursework:administergrades'],
+                $PAGE->context
+            )
         ) {
             $errormsg = '';
 
@@ -163,7 +168,10 @@ class singlegrade_cell extends cell_base {
 
             if (!$this->coursework->allocation_enabled() && !empty($feedback)) {
                 // Was this user the one who last graded this submission if not then user cannot grade
-                if ($feedback->assessorid != $USER->id || !has_capability('mod/coursework:editinitialgrade', $PAGE->context) && !has_capability('mod/coursework:administergrades', $PAGE->context)) {
+                if (
+                    $feedback->assessorid != $USER->id
+                    && !has_capability('mod/coursework:editinitialgrade', $PAGE->context)
+                ) {
                     return get_string('nopermissiontoeditmark', 'coursework');
                 }
             }
