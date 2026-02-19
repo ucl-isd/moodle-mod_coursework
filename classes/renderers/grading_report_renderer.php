@@ -228,7 +228,7 @@ class grading_report_renderer extends plugin_renderer_base {
         $ability = new ability($USER->id, $coursework);
 
         // New grading_table_row_base.
-        $row = new grading_table_row_base($coursework, $allocatable, $submissionfiles);
+        $row = new grading_table_row_base($coursework, $allocatable, array_pop($submissionfiles));
         if (!$ability->can('show', $row)) {
             return null;
         }
