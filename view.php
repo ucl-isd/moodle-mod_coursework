@@ -444,6 +444,15 @@ if ($cangrade || $canviewstudents) {
     ];
     if ($coursework->tii_enabled()) {
         $amdmodules[] = 'turnitin_similarity_fetcher';
+        $tiilib = "$CFG->dirroot/plagiarism/turnitin/lib.php";
+        if (file_exists($tiilib)) {
+            require_once($tiilib);
+            if (method_exists('plagiarism_plugin_turnitin', 'load_page_components')) {
+                // On the grading overview page, if the marker clicks a TII link, TII JS is required for it to launch.
+                $plugin = new plagiarism_plugin_turnitin();
+                $plugin->load_page_components();
+            }
+        }
     }
     foreach ($amdmodules as $amd) {
         $PAGE->requires->js_call_amd("mod_coursework/$amd", 'init', ['courseworkId' => $coursework->id]);
