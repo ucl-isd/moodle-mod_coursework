@@ -17,6 +17,8 @@
 namespace mod_coursework;
 
 use cache;
+use mod_coursework\models\allocation;
+use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
 use mod_coursework\models\feedback;
@@ -36,8 +38,7 @@ use mod_coursework\stages\final_agreed;
  * Class ability_test is responsible for testing the ability class to make sure the mechanisms work.
  * @group mod_coursework
  */
-final class cache_test extends \advanced_testcase
-{
+final class cache_test extends \advanced_testcase {
     use test_helpers\factory_mixin;
 
     const NON_EXISTENT_ID = 999999111111;
@@ -308,7 +309,7 @@ final class cache_test extends \advanced_testcase
         $this->assertEquals($newextension + 1000, deadline_extension::get_from_id($extension->id)->extended_deadline);
 
         $extensiontest->destroy();
-        $this->assertNull(coursework::get_from_id($extensiontest->id));
+        $this->assertNull(deadline_extension::get_from_id($extensiontest->id));
 
         $this->assertNull(deadline_extension::get_from_id(self::NON_EXISTENT_ID));
         $this->assertNull(
@@ -325,7 +326,42 @@ final class cache_test extends \advanced_testcase
      * @return void
      */
     public function test_allocation_cache(): void {
-        throw new \Exception("Not yet implemented");
+        $buildobject = new \stdClass();
+        $buildobject->id = '';
+        $buildobject->courseworkid = $this->coursework->id;
+        $buildobject->assessorid = $this->teacher->id;
+        $buildobject->ismanual = 1;
+        $buildobject->stageidentifier = assessor::STAGE_ASSESSOR_1;
+        $buildobject->allocatableid = $this->student->id();
+        $buildobject->allocatabletype = $this->student->type();
+        $allocation = allocation::build((array)$buildobject);
+        $allocation->save();
+
+        $allocationtestset = allocation::get_set_for_allocatable(
+            $this->coursework->id,
+            $this->student->id,
+            $this->student->type()
+        );
+        $this->assertEquals(1, count($allocationtestset));
+
+        $stageoneallocation = reset($allocationtestset);
+
+        $this->assertEquals($allocation, $stageoneallocation);
+
+        $stageoneallocation->update_attribute('assessorid', $this->otherteacher->id());
+        $this->assertEquals($this->otherteacher->id, allocation::get_from_id($stageoneallocation->id)->assessorid);
+
+        $stageoneallocation->destroy();
+        $this->assertNull(allocation::get_from_id($stageoneallocation->id));
+
+        $this->assertNull(allocation::get_from_id(self::NON_EXISTENT_ID));
+        $this->assertEmpty(
+            allocation::get_set_for_allocatable(
+                $this->coursework->id,
+                self::NON_EXISTENT_ID,
+                'user'
+            )
+        );
     }
 
     /**
@@ -333,6 +369,43 @@ final class cache_test extends \advanced_testcase
      * @return void
      */
     public function test_assessment_set_membership_cache(): void {
-        throw new \Exception("Not yet implemented");
+        $membership = assessment_set_membership::build(
+            [
+                'courseworkid' => $this->coursework->id,
+                'allocatableid' => $this->student->id(),
+                'allocatabletype' => $this->student->type(),
+                'stageidentifier' => assessor::STAGE_ASSESSOR_1,
+            ]
+        );
+        $membership->save();
+
+        $membershiptestset = assessment_set_membership::get_set_for_allocatable(
+            $this->coursework->id,
+            $this->student->id(),
+            $this->student->type()
+        );
+        $this->assertEquals(1, count($membershiptestset));
+
+        $stageonemembership = reset($membershiptestset);
+
+        $this->assertEquals($membership, $stageonemembership);
+
+        $stageonemembership->update_attribute('stageidentifier', assessor::STAGE_ASSESSOR_2);
+        $this->assertEquals(
+            assessor::STAGE_ASSESSOR_2,
+            assessment_set_membership::get_from_id($stageonemembership->id)->stageidentifier
+        );
+
+        $stageonemembership->destroy();
+        $this->assertNull(assessment_set_membership::get_from_id($stageonemembership->id));
+
+        $this->assertNull(assessment_set_membership::get_from_id(self::NON_EXISTENT_ID));
+        $this->assertEmpty(
+            assessment_set_membership::get_set_for_allocatable(
+                $this->coursework->id,
+                self::NON_EXISTENT_ID,
+                'user'
+            )
+        );
     }
 }
