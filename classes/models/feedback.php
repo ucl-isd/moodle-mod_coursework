@@ -257,7 +257,13 @@ class feedback extends table_base {
      * @return bool
      */
     public function is_assessor_allocated() {
-        return $this->get_stage()->assessor_has_allocation($this->get_allocatable());
+        $submission = $this->get_submission();
+        // Don't get the allocatable object as we don't need it, only need ID and type.
+        // (Called repeatedly from ability class).
+        return $this->get_stage()->assessor_has_allocation(
+            $submission->get_allocatable_id(),
+            $submission->get_allocatable_type()
+        );
     }
 
     /**

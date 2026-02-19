@@ -154,7 +154,7 @@ function coursework_render_page(coursework $coursework) {
         $stages = [];
         foreach ($coursework->marking_stages() as $stage) {
             $feedback = $stage->get_feedback_for_allocatable($allocatable);
-            $membership = $stage->get_assessment_set_membership($allocatable);
+            $membership = $stage->get_assessment_set_membership($allocatable->id(), $allocatable->type());
 
             $stagecell = [
                 'stageidentifier' => $stage->identifier(),
@@ -164,7 +164,7 @@ function coursework_render_page(coursework $coursework) {
                 $stagecell['currentmarker'] = $feedback->assessor()->name();
                 $stagecell['currentgrade'] = $feedback->get_grade();
             } else if ($stage->uses_allocation()) {
-                $allocation = $stage->get_allocation($allocatable);
+                $allocation = $stage->get_allocation($allocatable->id(), $allocatable->type());
                 $currentmarker = $allocation->assessorid ?? 0;
 
                 $stagecell['potentialmarkers'] = array_values(
