@@ -37,7 +37,7 @@ const getFieldName = (criterionNumber, isPercent) => {
     return `advancedgrading-criteria-${criterionNumber}-` + (isPercent ? 'percent' : 'score');
 };
 
-const handleCheckBoxClick = async () => {
+const handleCheckBoxClick = async() => {
     const checkBox = event.target;
     usingPercentGrades = checkBox.checked;
 

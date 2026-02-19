@@ -24,11 +24,11 @@
 
 import * as FeedbackPercent from "mod_coursework/marking_guide_feedback_percent";
 
-const MAX_INPUT_LENGTH = 5;
+const MAX_INPUT_LENGTH = 7;
 
 /**
  * Prevent invalid entries into the score input.
- * @param event
+ * @param {event} event
  */
 const preventInvalidNumber = (event) => {
     // Field will allow user to enter e for scientific notation - stop that.
