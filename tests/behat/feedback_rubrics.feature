@@ -44,7 +44,9 @@ Feature: Adding feedback using the built in Moodle rubrics
     And I log out
     And I log in as a manager
     And I visit the coursework page
-    And I publish the grades
+    And I click on "Release the marks" "link"
+    And I wait until the page is ready
+    And I click on "Confirm" "button"
     And I log out
     And I log in as a student
     When I visit the gradebook page
