@@ -75,18 +75,10 @@ class mod_coursework_observer {
     }
 
     /**
-     * @param role_assigned $event
-     */
-    public static function add_teacher_to_dropdown_when_enrolled(core\event\role_assigned $event) {
-        teacher_allocation_cache_purge($event);
-    }
-
-    /**
      * @param role_unassigned $event
      * @throws dml_exception
      */
     public static function remove_teacher_from_dropdown_when_unenrolled(core\event\role_unassigned $event) {
         teacher_removed_allocated_not_graded($event);
-        teacher_allocation_cache_purge($event);
     }
 }

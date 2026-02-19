@@ -1532,25 +1532,6 @@ function coursework_personaldeadline_passed($courseworkid) {
 }
 
 /**
- * Purge coursework cache if a role with specific capability passed
- *
- * @param $eventdata
- * @return bool
- */
-function teacher_allocation_cache_purge($eventdata) {
-    $roleid = $eventdata->objectid;
-
-    // get roles with a specific capability
-    $roles = get_roles_with_capability('mod/coursework:addinitialgrade');
-    if (in_array($roleid, array_keys($roles))) { // if any role with above capability is in array, purge cache
-        // purge only coursework cache
-        $cache = cache::make('mod_coursework', 'courseworkdata');
-        $cache->purge();
-    }
-    return true;
-}
-
-/**
  * Function to remove teacher allocation (also if pinned), don't remove if teacher already graded
  *
  * @param $eventdata
