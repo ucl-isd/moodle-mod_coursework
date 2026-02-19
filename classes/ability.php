@@ -388,12 +388,11 @@ class ability extends framework\ability {
             function (submission $submission) {
 
                 // Should be visible to those who are OK to mark it.
-                $allocatable = $submission->get_allocatable();
                 return $submission->get_coursework()->allocation_enabled()
                     && allocation::allocatable_is_allocated_to_assessor(
                         $submission->get_coursework()->id(),
-                        $allocatable->id(),
-                        $allocatable->type(),
+                        $submission->get_allocatable_id(),
+                        $submission->get_allocatable_type(),
                         $this->userid
                     );
             }
@@ -834,8 +833,13 @@ class ability extends framework\ability {
             'mod_coursework\models\feedback',
             function (feedback $feedback) {
                 $this->set_message('Prerequisite stage has no feedback');
+                $submission = $feedback->get_submission();
                 $stage = $feedback->get_stage();
-                return !$stage->prerequisite_stages_have_feedback($feedback->get_allocatable()) && !is_siteadmin();
+                return !$stage->prerequisite_stages_have_feedback(
+                        $submission->get_allocatable_id(),
+                        $submission->get_allocatable_type()
+                    )
+                && !is_siteadmin();
             }
         );
     }
@@ -862,8 +866,8 @@ class ability extends framework\ability {
             function (feedback $feedback) {
                 $this->set_message('Allocatable already has feedback for this stage');
                 $stage = $feedback->get_stage();
-                $allocatable = $feedback->get_submission()->get_allocatable();
-                return $stage->has_feedback($allocatable);
+                $submission = $feedback->get_submission();
+                return $stage->has_feedback($submission->get_allocatable_id(), $submission->get_allocatable_type());
             }
         );
     }
@@ -875,8 +879,11 @@ class ability extends framework\ability {
             function (feedback $feedback) {
                 $this->set_message('Allocatable is not in sample');
                 $stage = $feedback->get_stage();
-                $allocatable = $feedback->get_submission()->get_allocatable();
-                return $stage->uses_sampling() && !$stage->allocatable_is_in_sample($allocatable);
+                $submission = $feedback->get_submission();
+                return $stage->uses_sampling() && !$stage->allocatable_is_in_sample(
+                        $submission->get_allocatable_id(),
+                        $submission->get_allocatable_type()
+                    );
             }
         );
     }
@@ -887,10 +894,13 @@ class ability extends framework\ability {
             'mod_coursework\models\feedback',
             function (feedback $feedback) {
                 $stage = $feedback->get_stage();
-                $allocatable = $feedback->get_submission()->get_allocatable();
+                $submission = $feedback->get_submission();
 
                 if ($stage->uses_allocation() && $feedback->get_coursework()->allocation_enabled()) {
-                    $allocatedteacher = $stage->allocated_teacher_for($allocatable);
+                    $allocatedteacher = $stage->allocated_teacher_for(
+                        $submission->get_allocatable_id(),
+                        $submission->get_allocatable_type()
+                    );
                     if ($allocatedteacher) {
                         if ($allocatedteacher->id == $this->userid) {
                             return true;
@@ -909,10 +919,13 @@ class ability extends framework\ability {
             function (feedback $feedback) {
                 $this->set_message('Assessors are not allocated');
                 $stage = $feedback->get_stage();
-                $allocatable = $feedback->get_submission()->get_allocatable();
+                $submission = $feedback->get_submission();
 
                 if ($stage->uses_allocation() && $feedback->get_coursework()->allocation_enabled()) {
-                    $allocatedteacher = $stage->allocated_teacher_for($allocatable);
+                    $allocatedteacher = $stage->allocated_teacher_for(
+                        $submission->get_allocatable_id(),
+                        $submission->get_allocatable_type(),
+                    );
                     if ($allocatedteacher) {
                         if ($allocatedteacher->id() != $this->userid) {
                             return true;
