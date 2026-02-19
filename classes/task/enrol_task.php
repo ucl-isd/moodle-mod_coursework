@@ -56,9 +56,6 @@ class enrol_task extends scheduled_task {
                 if (empty($coursework)) {
                     continue;
                 }
-
-                $cache = cache::make('mod_coursework', 'courseworkdata');
-                $cache->set($coursework->id() . "_teachers", '');
                 $allocator = new auto_allocator($coursework);
                 $allocator->process_allocations();
 

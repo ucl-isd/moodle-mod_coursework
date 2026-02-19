@@ -56,10 +56,6 @@ $observers = [
         'callback' => 'mod_coursework_observer::process_allocations_when_group_member_removed',
     ],
     [
-        'eventname' => 'core\event\role_assigned',
-        'callback' => 'mod_coursework_observer::add_teacher_to_dropdown_when_enrolled',
-    ],
-    [
         'eventname' => 'core\event\role_unassigned',
         'callback' => 'mod_coursework_observer::remove_teacher_from_dropdown_when_unenrolled',
     ],
