@@ -836,9 +836,9 @@ class ability extends framework\ability {
                 $submission = $feedback->get_submission();
                 $stage = $feedback->get_stage();
                 return !$stage->prerequisite_stages_have_feedback(
-                        $submission->get_allocatable_id(),
-                        $submission->get_allocatable_type()
-                    )
+                    $submission->get_allocatable_id(),
+                    $submission->get_allocatable_type()
+                )
                 && !is_siteadmin();
             }
         );
@@ -881,9 +881,9 @@ class ability extends framework\ability {
                 $stage = $feedback->get_stage();
                 $submission = $feedback->get_submission();
                 return $stage->uses_sampling() && !$stage->allocatable_is_in_sample(
-                        $submission->get_allocatable_id(),
-                        $submission->get_allocatable_type()
-                    );
+                    $submission->get_allocatable_id(),
+                    $submission->get_allocatable_type()
+                );
             }
         );
     }
