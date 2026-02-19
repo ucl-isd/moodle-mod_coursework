@@ -921,10 +921,7 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
     }
 
     // Link to the locally assigned roles screen.
-    if (
-        has_capability('moodle/role:assign', $context)
-            && has_capability('mod/coursework:allocate', $context)
-    ) {
+    if (has_all_capabilities(['moodle/role:assign', 'mod/coursework:allocate'], $context)) {
         $link = new moodle_url('/admin/roles/assign.php', ['contextid' => $context->id]);
         $navref->add(get_string('addmarkers', 'mod_coursework'), $link, navigation_node::TYPE_SETTING);
     }

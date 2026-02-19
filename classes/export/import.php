@@ -356,8 +356,9 @@ class import extends grading_sheet {
                 }
                 // check for initial grade capability otherwise ignore it
                 if (
-                    $stage != 'final_agreed_1' && (!has_capability('mod/coursework:addinitialgrade', $PAGE->context)) &&
-                    (!has_capability('mod/coursework:administergrades', $PAGE->context))
+                    $stage != 'final_agreed_1'
+                    &&
+                    !has_any_capability(['mod/coursework:addinitialgrade', 'mod/coursework:administergrades'], $PAGE->context)
                 ) {
                     continue;
                 }
