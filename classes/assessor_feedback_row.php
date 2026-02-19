@@ -76,7 +76,7 @@ class assessor_feedback_row {
         }
 
         if ($this->get_stage()->has_allocation($this->allocatable)) {
-            return $this->get_stage()->get_allocation($this->allocatable)->assessor();
+            return $this->get_stage()->get_allocation($this->allocatable->id(), $this->allocatable->type())->assessor();
         }
 
         return new null_user();

@@ -133,7 +133,7 @@ class moderation extends table_base {
     /**
      * Memoized getter
      *
-     * @return bool|table_base
+     * @return ?submission
      * @throws \coding_exception
      * @throws \dml_exception
      */
@@ -173,15 +173,13 @@ class moderation extends table_base {
      * @return bool
      */
     public function is_moderator_allocated() {
-
-        return $this->get_stage()->assessor_has_allocation($this->get_allocatable());
-    }
-
-    /**
-     * @return allocatable
-     */
-    public function get_allocatable() {
-        return $this->get_submission()->get_allocatable();
+        // Don't get the allocatable object as we don't need it, only need ID and type.
+        // (Called repeatedly from ability class).
+        $submission = $this->get_submission();
+        return $this->get_stage()->assessor_has_allocation(
+            $submission->get_allocatable_id(),
+            $submission->get_allocatable_type(),
+        );
     }
 
     /**

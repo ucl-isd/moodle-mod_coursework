@@ -135,6 +135,7 @@ trait table_with_allocatable {
         }
         parent::clear_cache();
     }
+
     /**
      * Get the allocatable relating to the object using this trait
      * @return user|group
@@ -152,5 +153,21 @@ trait table_with_allocatable {
         } else {
             throw new \core\exception\coding_exception("Invalid type '" . $this->allocatabletype . "'");
         }
+    }
+
+    /**
+     * Get the allocatable ID relating to the object using this trait without getting the full object
+     * @return int|null
+     */
+    public function get_allocatable_id(): ?int {
+        return $this->allocatableid ?? null;
+    }
+
+    /**
+     * Get the allocatable type relating to the object using this trait without getting the full object
+     * @return string|null
+     */
+    public function get_allocatable_type(): ?string {
+        return $this->allocatabletype ?? null;
     }
 }
