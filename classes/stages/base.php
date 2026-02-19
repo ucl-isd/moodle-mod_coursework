@@ -292,15 +292,16 @@ abstract class base {
     /**
      * This is expensive when called lots of times, so we cache the results all in one go.
      *
-     * @param allocatable $allocatable
+     * @param int $allocatableid
+     * @param string $allocatabletype
      * @return bool
      * @throws \core\exception\coding_exception
      * @throws \dml_exception
      */
-    public function has_feedback($allocatable) {
+    public function has_feedback(int $allocatableid, string $allocatabletype): bool {
         $feedback = null;
         $courseworkid = $this->get_courseworkid();
-        $submission = submission::get_for_allocatable($courseworkid, $allocatable->id(), $allocatable->type());
+        $submission = submission::get_for_allocatable($courseworkid, $allocatableid, $allocatabletype);
         if ($submission) {
             $feedback = feedback::get_from_submission_and_stage($submission->id, $this->identifier());
         }
@@ -373,7 +374,7 @@ abstract class base {
      * @throws \core\exception\coding_exception
      */
     public function has_allocation($allocatable): bool {
-        return (bool)self::get_allocation($allocatable);
+        return (bool)self::get_allocation($allocatable->id(), $allocatable->type());
     }
 
     /**
@@ -381,31 +382,34 @@ abstract class base {
      * @throws coding_exception
      */
     public function destroy_allocation($allocatable) {
-        if ($allocation = $this->get_allocation($allocatable)) {
+        if ($allocation = $this->get_allocation($allocatable->id(), $allocatable->type())) {
             $allocation->destroy();
         }
     }
 
     /**
-     * @param allocatable $allocatable
+     * Get the allocation for this allocatable for this stage
+     * @param int $allocatableid
+     * @param string $allocatabletype
      * @return allocation|bool
      */
-    public function get_allocation($allocatable) {
+    public function get_allocation(int $allocatableid, string $allocatabletype) {
         return allocation::get_for_allocatable_at_stage(
             $this->get_coursework()->id,
-            $allocatable->id,
-            $allocatable->type(),
+            $allocatableid,
+            $allocatabletype,
             $this->identifier()
         );
     }
 
     /**
-     * @param allocatable $allocatable
+     * @param int $allocatableid
+     * @param string $allocatabletype
      * @return user|false
      * @throws \core\exception\coding_exception
      */
-    public function allocated_teacher_for($allocatable) {
-        $allocation = self::get_allocation($allocatable);
+    public function allocated_teacher_for(int $allocatableid, string $allocatabletype) {
+        $allocation = self::get_allocation($allocatableid, $allocatabletype);
         if ($allocation) {
             return $allocation->assessor();
         }
@@ -413,11 +417,12 @@ abstract class base {
     }
 
     /**
-     * @param allocatable $allocatable
+     * @param int $allocatableid
+     * @param $allocatabletype
      * @return bool
      * @throws \core\exception\coding_exception
      */
-    public function allocatable_is_in_sample($allocatable) {
+    public function allocatable_is_in_sample(int $allocatableid, string $allocatabletype):bool {
         if (!$this->uses_sampling()) {
             return true;
         }
@@ -426,18 +431,19 @@ abstract class base {
             return true;
         }
 
-        return !empty($this->get_assessment_set_membership($allocatable));
+        return !empty($this->get_assessment_set_membership($allocatableid, $allocatabletype));
     }
 
     /**
-     * @param allocatable $allocatable
-     * @return assessment_set_membership|bool
+     * @param int $allocatableid
+     * @param string $allocatabletype
+     * @return assessment_set_membership|null
      */
-    public function get_assessment_set_membership($allocatable) {
+    public function get_assessment_set_membership(int $allocatableid, string $allocatabletype) {
         return assessment_set_membership::get_for_allocatable_at_stage(
             $this->coursework->id,
-            $allocatable->id(),
-            $allocatable->type(),
+            $allocatableid,
+            $allocatabletype,
             $this->stageidentifier
         );
     }
@@ -447,7 +453,7 @@ abstract class base {
             return;
         }
 
-        if ($this->allocatable_is_in_sample($allocatable) == $state) {
+        if ($this->allocatable_is_in_sample($allocatable->id(), $allocatable->type()) == $state) {
             return;
         }
 
@@ -518,13 +524,14 @@ abstract class base {
 
     /**
      * Check if a user has any allocation in this stage
-     * @param allocatable $allocatable
+     * @param int $allocatableid
+     * @param string $allocatabletype
      * @return bool
      * @throws \core\exception\coding_exception
      */
-    public function assessor_has_allocation($allocatable) {
+    public function assessor_has_allocation(int $allocatableid, string $allocatabletype): bool {
         global $USER;
-        $allocation = self::get_allocation($allocatable);
+        $allocation = self::get_allocation($allocatableid, $allocatabletype);
         return ($allocation && $allocation->assessorid == $USER->id);
     }
 
@@ -544,25 +551,15 @@ abstract class base {
         return $this->coursework->allocation_enabled();
     }
 
-    /**
-     * @param allocatable $allocatable
-     * @return bool|null_user|user
-     */
-    public function get_allocated_assessor($allocatable) {
-        if ($this->has_allocation($allocatable)) {
-            return $this->get_allocation($allocatable)->assessor();
-        }
-        return new null_user();
-    }
-
     abstract public function allocation_table_header();
 
     /**
-     * @param allocatable $allocatable
+     * @param int $allocatableid
+     * @param string $allocatabletype
      * @return bool
      * @throws \core\exception\coding_exception
      */
-    public function prerequisite_stages_have_feedback($allocatable) {
+    public function prerequisite_stages_have_feedback(int $allocatableid, string $allocatabletype): bool {
         $allstages = $this->get_coursework()->marking_stages();
 
         // Some stages are parallel, so we ignore them being partially complete.
@@ -574,7 +571,7 @@ abstract class base {
         foreach ($allstages as $stage) {
             // if coursework has sampling enabled, each stage must be checked if it uses sampling
             if ($this->get_coursework()->sampling_enabled()) {
-                $submission = submission::get_for_allocatable($courseworkid, $allocatable->id(), $allocatable->type());
+                $submission = submission::get_for_allocatable($courseworkid, $allocatableid, $allocatabletype);
 
                 if (
                     $submission

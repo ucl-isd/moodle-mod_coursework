@@ -1520,7 +1520,7 @@ class coursework extends table_base {
         // Otherwise send everyone.
         foreach ($stages as $stage) {
             if ($this->allocation_enabled()) {
-                $teacher = $stage->allocated_teacher_for($student);
+                $teacher = $stage->allocated_teacher_for($student->id(), $student->type());
                 if ($teacher) {
                     $assessors[] = $teacher;
                 }
