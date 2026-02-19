@@ -68,6 +68,9 @@ class mod_coursework_generator extends testing_module_generator {
         if (!isset($record->intro)) {
             $record->intro = 'Test coursework ' . $i;
         }
+        if (!isset($record->idnumber)) {
+            $record->idnumber = 'coursework' . $i;
+        }
         if (!isset($record->introformat)) {
             $record->introformat = FORMAT_MOODLE;
         }
