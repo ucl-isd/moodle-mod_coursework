@@ -22,12 +22,35 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+import * as FeedbackPercent from "mod_coursework/marking_guide_feedback_percent";
+
+const MAX_INPUT_LENGTH = 5;
+
 /**
- * Initialize the marking guide score field enhancements.
+ * Prevent invalid entries into the score input.
+ * @param event
+ */
+const preventInvalidNumber = (event) => {
+    // Field will allow user to enter e for scientific notation - stop that.
+    if (!/[0-9.]/.test(event.key)) {
+        event.preventDefault();
+        return;
+    }
+    if (
+        event.target.value.length >= MAX_INPUT_LENGTH
+        && event.key !== 'Backspace'
+        && event.key !== 'Delete'
+    ) {
+        event.preventDefault();
+    }
+};
+
+/**
+ * Set up the marking guide score field enhancements.
  *
  * @param {String} markLabelText The localized string for "Mark" passed from Mustache.
  */
-export const init = (markLabelText) => {
+const setUpUI = (markLabelText) => {
     const rootElement = document.getElementById('coursework-markingform');
     if (!rootElement) {
         return;
@@ -67,5 +90,19 @@ export const init = (markLabelText) => {
             // 3. Clean up the old overhanging div.
             maxScoreDiv.remove();
         }
+
+        scoreInput.addEventListener('keypress', preventInvalidNumber);
     });
+};
+
+/**
+ * Initialise the marking guide score field enhancements.
+ *
+ * @param {String} markLabelText The localized string for "Mark" passed from Mustache.
+ * @param {boolean} enterPercentGrades whether user want to enter grades as percentages (user preference).
+ */
+export const init = (markLabelText, enterPercentGrades) => {
+    setUpUI(markLabelText);
+    // Once the new fields are added, can initialise the percentage field JS (which depends on them).
+    FeedbackPercent.init(enterPercentGrades);
 };

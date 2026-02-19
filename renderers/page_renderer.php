@@ -295,6 +295,9 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         // Is this a marking guide?
         $template->isguide = $template->advancedmarking && $coursework->is_using_marking_guide();
 
+        // Does user want to enter grades as percentages?
+        $template->enterpercentgrades = $template->isguide && get_user_preferences('coursework_guide_enter_percent_grades', false);
+
         // Agreement stage.
         if ($feedback->stageidentifier == 'final_agreed_1') {
             $previousfeedbacks = $submission->get_assessor_feedbacks();
@@ -321,6 +324,28 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         // Output all the things.
         // Form part.
         $template->marking = $simpleform->render();
+
+        if ($template->advancedmarking) {
+            if ($template->isguide) {
+                $this->page->requires->js_call_amd(
+                    'mod_coursework/marking_guide',
+                    'init',
+                    [
+                        'markString' => get_string('mark', 'coursework'),
+                        'enterPercentGrades' => $template->enterpercentgrades,
+                    ]
+                );
+            }
+        } else {
+            $this->page->requires->js_call_amd(
+                'mod_coursework/rubric',
+                'init',
+                [
+                    'feedbackfor' => get_string('feedbackfor', 'coursework'),
+                ]
+            );
+        }
+
         // Standard bit.
         echo $this->output->header();
         echo $this->render_from_template('mod_coursework/marking/main', $template);

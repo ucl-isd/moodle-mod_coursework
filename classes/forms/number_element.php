@@ -62,15 +62,18 @@ class number_element extends MoodleQuickForm_text {
      */
     public function export_for_template(renderer_base $output): array {
         $context = parent::export_for_template($output);
-        $context = [
-            'name' => $this->getName(),
-            'id' => $this->getAttribute('id'),
-            'value' => $this->getValue(),
-            'min' => $this->getAttribute('min'),
-            'max' => $this->getAttribute('max'),
-            'step' => $this->getAttribute('step') ?: 'any',
-            'required' => $this->getAttribute('required'),
-        ];
+        $context = array_merge(
+            $context,
+            [
+                'name' => $this->getName(),
+                'id' => $this->getAttribute('id'),
+                'value' => $this->getValue(),
+                'min' => $this->getAttribute('min'),
+                'max' => $this->getAttribute('max'),
+                'step' => $this->getAttribute('step') ?: 'any',
+                'required' => $this->getAttribute('required'),
+            ]
+        );
         return $context;
     }
 

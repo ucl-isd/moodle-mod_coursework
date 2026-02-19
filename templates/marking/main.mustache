@@ -38,14 +38,24 @@
                     <h3>{{#str}} marking, mod_coursework {{/str}}</h3>
 
                     {{! When behatrunning, don't make sticky to avoid issues with hidden elements.}}
-                    <div class="{{^behatrunning}} {{#advancedmarking}} sticky-top p-3 bg-white border {{/advancedmarking}} {{/behatrunning}}">
+                    <div class="{{^behatrunning}} {{#advancedmarking}} sticky-top p-3 bg-white border container {{/advancedmarking}} {{/behatrunning}}">
                         {{#previousfeedback}}
                             {{{.}}}
                             <h4>{{#str}} agreefeedback, mod_coursework {{/str}}</h4>
                         {{/previousfeedback}}
 
                         {{#advancedmarking}}
-                            {{> mod_coursework/marking/totalmark }}
+                            <div class="row">
+                                <div class="col">
+                                    {{> mod_coursework/marking/totalmark }}
+                                </div>
+                                {{#isguide}}
+                                    <div class="col">
+                                        {{> mod_coursework/marking/marking_guide_percentage_switch }}
+                                    </div>
+                                {{/isguide}}
+                            </div>
+
                         {{/advancedmarking}}
                     </div>
 
@@ -65,20 +75,3 @@
     </div>
 </div>
 
-{{#advancedmarking}}
-    {{#isguide}}
-        {{#js}}
-        require(['mod_coursework/marking_guide'], function(markingGuide) {
-            markingGuide.init("{{#str}} mark, mod_coursework {{/str}}");
-        });
-        {{/js}}
-    {{/isguide}}
-
-    {{^isguide}}
-        {{#js}}
-        require(['mod_coursework/rubric'], function(rubric) {
-            rubric.init("{{#str}} feedbackfor, mod_coursework {{/str}}");
-        });
-        {{/js}}
-    {{/isguide}}
-{{/advancedmarking}}

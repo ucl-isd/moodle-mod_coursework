@@ -300,6 +300,10 @@ class mod_coursework_mod_form extends moodleform_mod {
             $data->moderationagreementenabled = 0;
         }
 
+        if (!isset($data->advgradeusepercentelements)) {
+            $data->advgradeusepercentelements = 0;
+        }
+
         return $data;
     }
 

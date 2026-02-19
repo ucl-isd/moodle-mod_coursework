@@ -1,0 +1,12 @@
+<div id="coursework-marking-guide-totals">
+    <h3 class="h6">{{#str}}grade, coursework{{/str}}</h3>
+    {{^grade}}
+        <div class="h1">--</div>
+    {{/grade}}
+    {{#grade}}
+        {{#percentage}}<div id="coursework-total-grade-percentage" class="h2">{{percentage}}%</div>{{/percentage}}
+        <div id="coursework-total-grade" data-out-of="{{outof}}" data-grade="{{numeric}}"{{^percentage}} class="h2"{{/percentage}}>
+            {{numeric}} / {{outof}}
+        </div>
+    {{/grade}}
+</div>
