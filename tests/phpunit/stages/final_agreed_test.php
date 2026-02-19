@@ -46,7 +46,7 @@ final class final_agreed_test extends \advanced_testcase {
         $student = $this->create_a_student();
         $this->create_a_submission_for_the_student();
 
-        $this->assertFalse($stage->prerequisite_stages_have_feedback($student->id(), $student->type()));
+        $this->assertFalse($stage->prerequisite_stages_have_feedback($student->id, 'user'));
     }
 
     public function test_prerequisite_stages_is_false_with_one_assessor_feedback(): void {
@@ -78,6 +78,6 @@ final class final_agreed_test extends \advanced_testcase {
 
         // Need to student to be in the sample.
 
-        $this->assertTrue($stage->prerequisite_stages_have_feedback($student->id(), $student->type()));
+        $this->assertTrue($stage->prerequisite_stages_have_feedback($student->id, 'user'));
     }
 }

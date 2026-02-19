@@ -422,7 +422,7 @@ abstract class base {
      * @return bool
      * @throws \core\exception\coding_exception
      */
-    public function allocatable_is_in_sample(int $allocatableid, string $allocatabletype):bool {
+    public function allocatable_is_in_sample(int $allocatableid, string $allocatabletype): bool {
         if (!$this->uses_sampling()) {
             return true;
         }
@@ -589,9 +589,9 @@ abstract class base {
             if ($class != $currentstage) { // New stage type
                 $currentstage = $class;
                 $previousstageok = $currentstageok;
-                $currentstageok = $stage->has_feedback($allocatable);
+                $currentstageok = $stage->has_feedback($allocatableid, $allocatabletype);
             } else { // Same stage (parallel)
-                $currentstageok = $currentstageok && $stage->has_feedback($allocatable);
+                $currentstageok = $currentstageok && $stage->has_feedback($allocatableid, $allocatabletype);
             }
         }
 
