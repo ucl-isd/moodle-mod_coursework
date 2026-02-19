@@ -47,7 +47,7 @@ final class assessor_test extends \advanced_testcase {
         $student = $this->create_a_student();
         $this->create_a_submission_for_the_student();
 
-        $this->assertTrue($firststage->prerequisite_stages_have_feedback($student));
+        $this->assertTrue($firststage->prerequisite_stages_have_feedback($student->id(), $student->type()));
     }
 
     public function test_prerequisite_stages_is_ok_with_one_assessor_feedback(): void {
@@ -65,7 +65,7 @@ final class assessor_test extends \advanced_testcase {
         $this->create_a_teacher();
         $this->create_an_assessor_feedback_for_the_submission($this->teacher);
 
-        $this->assertTrue($secondstage->prerequisite_stages_have_feedback($student));
+        $this->assertTrue($secondstage->prerequisite_stages_have_feedback($student->id(), $student->type()));
     }
 
     public function test_type(): void {
