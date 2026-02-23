@@ -591,7 +591,7 @@ function coursework_update_instance($coursework) {
         $courseworkobj = coursework::get_from_id($coursework->id);
 
         $params = [
-            'context' => context_module::instance($courseworkobj->get_course_module()->id),
+            'context' => context_module::instance($courseworkobj->get_coursemodule_id()),
             'courseid' => $courseworkobj->get_course()->id,
             'objectid' => $coursework->id,
             'other' => [

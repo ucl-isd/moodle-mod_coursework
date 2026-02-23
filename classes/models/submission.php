@@ -265,16 +265,6 @@ class submission extends table_base implements renderable {
             $this->userid = $USER->id;
             $this->timecreated = time();
         }
-
-        if ($this->persisted() && !$this->firstname && !empty($this->userid)) {
-            // Get the real first and last name from the user table. We use fullname($this), which needs it,
-            // so we can't lazy-load.
-            $user = $DB->get_record('user', ['id' => $this->userid]);
-            $allnames = fields::get_name_fields();
-            foreach ($allnames as $namefield) {
-                $this->$namefield = $user->$namefield;
-            }
-        }
     }
 
     /**
@@ -414,7 +404,7 @@ class submission extends table_base implements renderable {
         );
 
         $params = [
-            'context' => context_module::instance($this->get_coursework()->get_course_module()->id),
+            'context' => context_module::instance($this->get_coursework()->get_coursemodule_id()),
             'courseid' => $this->get_course_id(),
             'objectid' => $this->id,
             'relateduserid' => $this->get_author_id(),

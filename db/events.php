@@ -59,4 +59,8 @@ $observers = [
         'eventname' => 'core\event\role_unassigned',
         'callback' => 'mod_coursework_observer::remove_teacher_from_dropdown_when_unenrolled',
     ],
+    [
+        'eventname' => 'core\event\user_updated',
+        'callback' => 'mod_coursework_observer::user_updated',
+    ],
 ];

@@ -26,6 +26,7 @@
 namespace mod_coursework\models;
 
 use AllowDynamicProperties;
+use cache;
 use calendar_event;
 use cm_info;
 use coding_exception;
@@ -82,6 +83,12 @@ class coursework extends table_base {
      * @var string
      */
     const CACHE_AREA_IDS = 'courseworkids';
+
+    /**
+     * Cache area where objects by ID are stored.
+     * @var string
+     */
+    const CACHE_AREA_CM_IDS = 'coursemoduleid';
 
     /**
      * Event type for due or extension dates in mdl_event.
@@ -425,15 +432,13 @@ class coursework extends table_base {
     public function get_course_module() {
         global $DB;
         if (!isset($this->coursemodule)) {
-            if (empty($this->id)) {
+            if (!$this->persisted()) {
                 throw new moodle_exception('Trying to get course module for a coursework that has not yet been saved');
             }
-            $this->coursemodule = $DB->get_record_sql(
-                "SELECT cm.*
-                    FROM {course_modules} cm
-                    JOIN {modules} m ON m.id = cm.module
-                    WHERE m.name = 'coursework' AND cm.instance = ?",
-                [$this->id],
+            $this->coursemodule = $DB->get_record(
+                'course_modules',
+                ['id' => $this->get_coursemodule_id()],
+                '*',
                 MUST_EXIST
             );
             $this->cmid = $this->coursemodule->id;
@@ -474,14 +479,30 @@ class coursework extends table_base {
     }
 
     /**
-     * Returns the id of the associated coursemodule, if there is one. Otherwise false.
+     * Returns the id of the associated coursemodule.
      *
      * @return int
      * @throws moodle_exception
      */
-    public function get_coursemodule_id() {
-        $coursemodule = $this->get_course_module();
-        return (int)$coursemodule->id;
+    public function get_coursemodule_id(): int {
+        global $DB;
+        if (isset($this->cmid)) {
+            return $this->cmid;
+        }
+        $cache = cache::make('mod_coursework', self::CACHE_AREA_CM_IDS);
+        $this->cmid = $cache->get($this->id);
+        if ($this->cmid === false) {
+            $this->cmid = $DB->get_field_sql(
+                "SELECT cm.id
+                    FROM {course_modules} cm
+                    JOIN {modules} m ON m.id = cm.module
+                    WHERE m.name = 'coursework' AND cm.instance = ?",
+                [$this->id],
+                MUST_EXIST
+            );
+            $cache->set($this->id, $this->cmid ?: null);
+        }
+        return $this->cmid;
     }
 
     /**

@@ -119,7 +119,7 @@ class personaldeadline extends table_base {
             'objectid' => $this->id,
             'userid' => $USER->id ?? 0,
             'relateduserid' => $allocatable->type() == 'user' ? $allocatable->id() : null,
-            'context' => context_module::instance($coursework->get_course_module()->id),
+            'context' => context_module::instance($coursework->get_coursemodule_id()),
             'anonymous' => $coursework->blindmarking_enabled() ? 1 : 0,
             'other' => [
                 'allocatabletype' => $allocatable->type(),

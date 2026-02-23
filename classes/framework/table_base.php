@@ -681,7 +681,7 @@ abstract class table_base {
      * @param int $id
      * @return \stdClass|null
      */
-    private static function get_db_record_from_id(int $id, int $strictness): ?object {
+    protected static function get_db_record_from_id(int $id, int $strictness): ?object {
         global $DB;
         return $DB->get_record(static::$tablename, ['id' => $id], '*', $strictness) ?: null;
     }

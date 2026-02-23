@@ -52,7 +52,7 @@ class turnitin extends base {
             $plagiarismsettings = (array)get_config('plagiarism_turnitin');
             if (!empty($plagiarismsettings['enabled'])) {
                 $params = [
-                    'cm' => $this->get_coursework()->get_course_module()->id,
+                    'cm' => $this->get_coursework()->get_coursemodule_id(),
                     'name' => 'use_turnitin',
                     'value' => 1,
                 ];

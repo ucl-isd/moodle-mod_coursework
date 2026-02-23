@@ -158,7 +158,7 @@ class plagiarism_flagging_controller extends controller_base {
         // add to log here
         $oldstatus = $DB->get_field(plagiarism_flag::get_table_name(), 'status', ['id' => $flagid]); // Retrieve old status before saving new
         $params = [
-            'context' => context_module::instance($this->coursework->get_course_module()->id),
+            'context' => context_module::instance($this->coursework->get_coursemodule_id()),
             'courseid' => $this->coursework->get_course()->id,
             'objectid' => $this->coursework->id,
             'other' => [

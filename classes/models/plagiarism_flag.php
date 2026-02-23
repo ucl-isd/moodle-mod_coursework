@@ -147,7 +147,7 @@ class plagiarism_flag extends table_base {
                 'id',
                 ['submissionid' => $submissionid]
             );
-            $cache->set($submissionid, $cachedid);
+            $cache->set($submissionid, $cachedid ?: null);
         }
         return $cachedid ? self::get_from_id($cachedid) : null;
     }

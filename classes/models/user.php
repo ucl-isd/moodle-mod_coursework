@@ -52,6 +52,12 @@ class user extends table_base implements allocatable, moderatable {
     use allocatable_functions;
 
     /**
+     * Cache area where objects by ID are stored.
+     * @var string
+     */
+    const CACHE_AREA_IDS = 'userids';
+
+    /**
      * @var string
      */
     protected static $tablename = 'user';
@@ -65,6 +71,23 @@ class user extends table_base implements allocatable, moderatable {
             $this->$namefield = '';
         }
         parent::__construct($data);
+    }
+
+
+    /**
+     * Overrride from parent.
+     * Get child object from its ID, from the database.
+     * @param int $id
+     * @return \stdClass|null
+     */
+    protected static function get_db_record_from_id(int $id, int $strictness): ?object {
+        // In the case of user we override this so we don't get all DB fields, to avoid caching unnecessary data incl user hashed password.
+        $userfields = 'id,email,suspended,deleted,' . implode(',', \core_user\fields::get_name_fields());
+        $user = \core_user::get_user($id, $userfields);
+        if (!$user || $user->deleted) {
+            return null;
+        }
+        return $user;
     }
 
     /**
@@ -88,7 +111,8 @@ class user extends table_base implements allocatable, moderatable {
             return core_user::get_fullname($data);
         }
 
-        return core_user::get_fullname($this->get_raw_record());
+        $record = self::get_db_record_from_id($this->id, IGNORE_MISSING);
+        return $record ? core_user::get_fullname($record) : '';
     }
 
     /**
