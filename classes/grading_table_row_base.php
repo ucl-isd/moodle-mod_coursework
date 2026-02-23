@@ -345,11 +345,7 @@ class grading_table_row_base implements user_row {
 
      */
     public function get_extension(): ?deadline_extension {
-        return deadline_extension::get_for_allocatable(
-            $this->coursework->id,
-            $this->allocatable->id(),
-            $this->allocatable->type()
-        );
+        return $this->extension;
     }
 
     /**
@@ -363,11 +359,7 @@ class grading_table_row_base implements user_row {
             return null;
         }
 
-        return personaldeadline::get_for_allocatable(
-            $this->coursework->id,
-            $this->allocatable->id(),
-            $this->allocatable->type()
-        );
+        return $this->personaldeadline;
     }
 
     /**
