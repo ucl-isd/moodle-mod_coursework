@@ -26,6 +26,7 @@ use mod_coursework\event\course_module_viewed;
 use mod_coursework\export\csv;
 use mod_coursework\export\grading_sheet;
 use mod_coursework\models\submission;
+use mod_coursework\plagiarism_helpers\turnitin;
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
@@ -444,6 +445,8 @@ if ($cangrade || $canviewstudents) {
     ];
     if ($coursework->tii_enabled()) {
         $amdmodules[] = 'turnitin_similarity_fetcher';
+        // Require JS from the Turnitin plugin so report links launch correctly.
+        turnitin::load_page_components();
     }
     foreach ($amdmodules as $amd) {
         $PAGE->requires->js_call_amd("mod_coursework/$amd", 'init', ['courseworkId' => $coursework->id]);
