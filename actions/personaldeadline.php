@@ -57,7 +57,7 @@ if ($selectedtype != 'unfinalise') {
 } else {
     if (!has_capability('mod/coursework:revertfinalised', $PAGE->context)) {
         $message = 'You do not have permission to revert submissions';
-        redirect(new moodle_url('mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]), $message);
+        redirect(new moodle_url('mod/coursework/view.php', ['id' => $coursework->get_coursemodule_id()]), $message);
     }
 
     $controller = new mod_coursework\controllers\submissions_controller($params);

@@ -68,7 +68,7 @@ class grading_report_renderer extends plugin_renderer_base {
         $template->blindmarkingenabled = $coursework->hide_student_identities();
         $template->tiienabled = $coursework->tii_enabled();
 
-        $currenturl = new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]);
+        $currenturl = new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_coursemodule_id()]);
 
         if ($groupmenu = groups_print_activity_menu($coursework->get_course_module(), $currenturl, true)) {
             // Display group mode menu with the relevant groups.

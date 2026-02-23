@@ -117,7 +117,7 @@ class feedback_controller extends controller_base {
                 $teacherfeedback->stageidentifier = $this->next_available_stage($teacherfeedback);
             } else {
                 redirect(
-                    new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]),
+                    new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_coursemodule_id()]),
                     get_string('anotheruseralreadysubmittedfeedback', 'mod_coursework')
                 );
             }
