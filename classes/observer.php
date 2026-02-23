@@ -26,6 +26,7 @@ use core\event\group_member_added;
 use core\event\group_member_removed;
 use core\event\role_assigned;
 use core\event\role_unassigned;
+use mod_coursework\models\user;
 
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/mod/coursework/lib.php');
@@ -80,5 +81,16 @@ class mod_coursework_observer {
      */
     public static function remove_teacher_from_dropdown_when_unenrolled(core\event\role_unassigned $event) {
         teacher_removed_allocated_not_graded($event);
+    }
+
+    /**
+     * @param core\event\user_updated $event
+     * @throws dml_exception
+     */
+    public static function user_updated(core\event\user_updated $event) {
+        $user = user::get_from_id($event->objectid);
+        if ($user) {
+            $user->clear_cache();
+        }
     }
 }
