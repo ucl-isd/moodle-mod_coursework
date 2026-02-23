@@ -140,15 +140,15 @@ class behat_mod_coursework extends behat_base {
                 break;
 
             case 'coursework settings':
-                return parent::locate_path('/course/modedit.php?update=' . $this->get_coursework()->get_course_module()->id);
+                return parent::locate_path('/course/modedit.php?update=' . $this->get_coursework()->get_coursemodule_id());
                 break;
 
             case 'coursework':
-                return parent::locate_path('/mod/coursework/view.php?id=' . $this->get_coursework()->get_course_module()->id);
+                return parent::locate_path('/mod/coursework/view.php?id=' . $this->get_coursework()->get_coursemodule_id());
                 break;
 
             case 'allocations':
-                return parent::locate_path('/mod/coursework/actions/allocate.php?id=' . $this->get_coursework()->get_course_module()->id);
+                return parent::locate_path('/mod/coursework/actions/allocate.php?id=' . $this->get_coursework()->get_coursemodule_id());
 
             case 'assessor grading':
                 return parent::locate_path('/mod/coursework/actions/feedback/new.php?submissionid=' . $this->submission->id . '&assessorid=' . $this->teacher->id);

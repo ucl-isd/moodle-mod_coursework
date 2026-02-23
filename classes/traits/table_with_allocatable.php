@@ -20,6 +20,7 @@ use core\exception\coding_exception;
 use core\exception\invalid_parameter_exception;
 use core_cache\cache;
 use mod_coursework\allocation\allocatable;
+use mod_coursework\framework\table_base;
 use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\deadline_extension;
 use mod_coursework\models\group;
@@ -53,7 +54,6 @@ trait table_with_allocatable {
         $cache = cache::make('mod_coursework', static::class::CACHE_AREA_BY_ALLOCATABLE);
         $cachekey = self::get_allocatable_cache_key($courseworkid, $allocatableid, $allocatabletype);
         $ids = $cache->get($cachekey);
-        ;
         if ($ids === false) {
             $ids = self::get_db_ids_from_allocatable($courseworkid, $allocatableid, $allocatabletype);
             $cache->set($cachekey, $ids);

@@ -79,6 +79,11 @@ $definitions = [
         'simplekeys' => true,
         'simpledata' => false,
     ],
+    user::CACHE_AREA_IDS => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => false,
+    ],
     feedback::CACHE_AREA_BY_SUBMISSION => [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,
@@ -110,6 +115,11 @@ $definitions = [
         'simpledata' => true,
     ],
     submission::CACHE_AREA_BY_ALLOCATABLE => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => true,
+    ],
+    coursework::CACHE_AREA_CM_IDS  => [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
