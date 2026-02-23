@@ -443,7 +443,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         // Capability checks
         $canallocate = has_capability('mod/coursework:allocate', $coursework->get_context());
-        $cangrade = has_capability('mod/coursework:addinitialgrade', $this->page->context);
+        $cangrade = has_any_capability(['mod/coursework:addinitialgrade', 'mod/coursework:moderate'], $this->page->context);
         $canpublish = has_capability('mod/coursework:publish', $this->page->context);
         $cansubmit = has_capability('mod/coursework:submit', $this->page->context);
 
