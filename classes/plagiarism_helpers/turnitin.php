@@ -72,4 +72,27 @@ class turnitin extends base {
     public function human_readable_name() {
         return get_string('turnitin', 'plagiarism_turnitin');
     }
+
+    /**
+     * From the Turnitin plagiarism plugin (if installed) load the page components.
+     * Important to call this if displaying Turnitin links on page by AJAX as they require this JS to launch.
+     * @return void
+     */
+    public static function load_page_components() {
+        global $CFG;
+
+        $tiilib = "$CFG->dirroot/plagiarism/turnitin/lib.php";
+        if (file_exists($tiilib)) {
+            require_once($tiilib);
+            if (method_exists('plagiarism_plugin_turnitin', 'load_page_components')) {
+                // On the grading overview page, if the marker clicks a TII link, TII JS is required for it to launch.
+                $plugin = new \plagiarism_plugin_turnitin();
+                $plugin->load_page_components();
+            } else {
+                debugging("Could not initialise Turnitin plagiarism plugin page components");
+            }
+        } else {
+            debugging("Could not find Turnitin plagiarism plugin lib.php");
+        }
+    }
 }
