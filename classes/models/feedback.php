@@ -190,20 +190,6 @@ class feedback extends table_base {
     private $showgrade = true;
 
     /**
-     * This function is used for student view, it determines if assessors' names should be displayed or should be hidden
-     * @return string assessor's name
-     */
-    public function display_assessor_name() {
-
-        // check if assessor's name in this CW is set to hidden.
-        if ($this->is_assessor_anonymity_enabled()) {
-            return '';
-        } else {
-            return $this->assessor()->name();
-        }
-    }
-
-    /**
      * @return string
      */
     public function get_assessor_stage_no() {
