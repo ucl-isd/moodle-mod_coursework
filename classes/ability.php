@@ -1111,12 +1111,12 @@ class ability extends framework\ability {
             'mod_coursework\models\feedback',
             function (feedback $feedback) {
                 return
-                    $feedback->get_submission()->get_state() >= submission::FULLY_GRADED
-                    &&
                     has_any_capability(
                         ['mod/coursework:addagreedgrade', 'mod/coursework:addallocatedagreedgrade'],
                         $feedback->get_coursework()->get_context()
-                    );
+                    )
+                    &&
+                    $feedback->get_submission()->get_state() >= submission::FULLY_GRADED;
             }
         );
     }
