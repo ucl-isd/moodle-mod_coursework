@@ -69,6 +69,7 @@ class grading_report {
                 unset($participants[$key]);
                 continue;
             }
+
             $rows[$participant->id()] = $row;
             $participantsfound++;
             if (!empty($rowcount) && $participantsfound >= $rowcount) {
