@@ -134,7 +134,6 @@ class grading_report {
             }
         }
 
-
         return false;
     }
 

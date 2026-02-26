@@ -472,5 +472,4 @@ class grading_table_row_base implements user_row {
 
         return false;
     }
-
 }
