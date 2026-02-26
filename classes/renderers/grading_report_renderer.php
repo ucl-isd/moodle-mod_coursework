@@ -209,7 +209,6 @@ class grading_report_renderer extends plugin_renderer_base {
      * @return ?object
      */
     public static function export_one_row_data(coursework $coursework, int $allocatableid, string $allocatabletype): ?object {
-        global $USER;
         $classname = "\\mod_coursework\\models\\$allocatabletype";
         $allocatable = $classname::get_cached_object_from_id($allocatableid);
         if (!$allocatable) {
@@ -222,7 +221,6 @@ class grading_report_renderer extends plugin_renderer_base {
         $submissionfilesarray = $submission
             ? submission::get_all_submission_files_data($coursework, [$submission->id()], true)
             : [];
-        $ability = new ability($USER->id, $coursework);
 
         // New grading_table_row_base.
         $row = new grading_table_row_base(
@@ -232,7 +230,7 @@ class grading_report_renderer extends plugin_renderer_base {
             personaldeadline::get_for_allocatable($coursework->id, $allocatableid, $allocatabletype),
             !empty($submissionfilesarray) ? array_pop($submissionfilesarray) : []
         );
-        if (!$ability->can('show', $row)) {
+        if (!grading_report::can_see_all_rows($coursework) && !$row->user_visible()) {
             return null;
         }
         $data = self::get_table_row_data($coursework, $row);
