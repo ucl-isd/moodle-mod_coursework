@@ -376,14 +376,12 @@ class grading_table_row_base implements user_row {
 
         if ($coursework->allocation_enabled()) {
             $allocatable = $this->get_allocatable();
-            if (
-                allocation::allocatable_is_allocated_to_assessor(
-                    $coursework->id(),
-                    $allocatable->id(),
-                    $allocatable->type(),
-                    $USER->id
-                )
-            ) {
+            if (allocation::allocatable_is_allocated_to_assessor(
+                $coursework->id(),
+                $allocatable->id(),
+                $allocatable->type(),
+                $USER->id
+            )) {
                 return true;
             }
 
@@ -396,19 +394,30 @@ class grading_table_row_base implements user_row {
             ) {
                 return true;
             }
+        } else {
+            // If we have a particular capability, row is visible.
+            if (has_any_capability(
+                [
+                    'mod/coursework:viewallgradesatalltimes',
+                    'mod/coursework:submitonbehalfof',
+                    'mod/coursework:canexportfinalgrades',
+                    'mod/coursework:grantextensions'
+                ],
+                $coursework->get_context())
+            ) {
+                return true;
+            }
+
+            // If we are able to grade any stage for this row, it's visible.
+            foreach ($coursework->marking_stages() as $stage) {
+                if ($stage->user_is_assessor($USER->id)) {
+                    return true;
+                }
+            }
         }
 
-        if (
-            $submission
-            && feedback::get_cached_object(
-                $coursework->id(),
-                [
-                    'submissionid' => $submission->id(),
-                    'assessorid' => $USER->id,
-                ],
-            )
-        ) {
-            // If we've already graded any stage for this submission, row is visible.
+        if ($submission && !empty(feedback::get_all_for_submission($submission->id(), $USER->id))) {
+            // If we've already graded a stage for this submission, row is visible.
             return true;
         }
 
