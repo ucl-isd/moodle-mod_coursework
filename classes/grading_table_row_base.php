@@ -26,6 +26,7 @@ use coding_exception;
 use core\exception\moodle_exception;
 use html_writer;
 use mod_coursework\allocation\allocatable;
+use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
 use mod_coursework\models\feedback;
@@ -397,5 +398,65 @@ class grading_table_row_base implements user_row {
         }
 
         return $this->personaldeadline;
+    }
+
+    /**
+     * Is this row visible to the current user?
+     * @return bool
+     */
+    public function user_visible(): bool {
+        global $USER;
+
+        $allocatable = $this->get_allocatable();
+        $coursework = $this->get_coursework();
+        $submission = $this->get_submission();
+
+        if ($coursework->allocation_enabled()) {
+            if (allocation::allocatable_is_allocated_to_assessor(
+                $coursework->id(),
+                $allocatable->id(),
+                $allocatable->type(),
+                $USER->id
+            )) {
+                return true;
+            }
+
+            // Visible if row is ready for agreed feedback and user is allowed to add agreed feedback.
+            if (
+                $submission
+                && has_capability('mod/coursework:addagreedgrade', $coursework->get_context())
+                && (!$coursework->sampling_enabled() || $submission->sampled_feedback_exists())
+                && $submission->get_state() >= submission::FULLY_GRADED
+            ) {
+                return true;
+            }
+        } else {
+            // If we have a particular capability, row is visible.
+            if (has_any_capability(
+                [
+                    'mod/coursework:viewallgradesatalltimes',
+                    'mod/coursework:submitonbehalfof',
+                    'mod/coursework:canexportfinalgrades',
+                    'mod/coursework:grantextensions'
+                ],
+                $coursework->get_context())
+            ) {
+                return true;
+            }
+
+            // If we are able to grade any stage for this row, it's visible.
+            foreach ($coursework->marking_stages() as $stage) {
+                if ($stage->user_is_assessor($USER->id)) {
+                    return true;
+                }
+            }
+        }
+
+        if ($submission && !empty(feedback::get_all_for_submission($submission->id(), $USER->id))) {
+            // If we've already graded a stage for this submission, row is visible.
+            return true;
+        }
+
+        return false;
     }
 }

@@ -210,7 +210,6 @@ class grading_report_renderer extends plugin_renderer_base {
      * @return ?object
      */
     public static function export_one_row_data(coursework $coursework, int $allocatableid, string $allocatabletype): ?object {
-        global $USER;
         $allocatable = $allocatabletype == 'user'
             ? user::get_from_id($allocatableid)
             : group::get_from_id($allocatableid);
@@ -228,11 +227,9 @@ class grading_report_renderer extends plugin_renderer_base {
         // Submission files will be array by user and we only want our user.
         $submissionfiles = empty($submissionfiles) ? [] : reset($submissionfiles);
 
-        $ability = new ability($USER->id, $coursework);
-
         // New grading_table_row_base.
         $row = new grading_table_row_base($coursework, $allocatable, $submissionfiles);
-        if (!$ability->can('show', $row)) {
+        if (!$row->user_visible()) {
             return null;
         }
         $data = self::get_table_row_data($coursework, $row);

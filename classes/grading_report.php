@@ -45,14 +45,11 @@ class grading_report {
      * @throws \dml_exception
      */
     public static function get_table_rows_for_page(coursework $coursework): array {
-
-        global $USER;
         $participants = $coursework->get_allocatables();
         $allsubmissionfiles = submission::get_all_submission_files_data($coursework);
 
         // Make tablerow objects so we can use the methods to check permissions and set things.
         $rows = [];
-        $ability = new ability($USER->id, $coursework);
 
         $participantsfound = 0;
 
@@ -66,15 +63,11 @@ class grading_report {
             );
 
             // Now, we skip the ones who should not be visible on this page.
-            $canshow = $ability->can('show', $row);
-            if (!$canshow && !isset($options['unallocated'])) {
+            if (!$row->user_visible()) {
                 unset($participants[$key]);
                 continue;
             }
-            if ($canshow && isset($options['unallocated'])) {
-                unset($participants[$key]);
-                continue;
-            }
+
             $rows[$participant->id()] = $row;
             $participantsfound++;
             if (!empty($rowcount) && $participantsfound >= $rowcount) {
