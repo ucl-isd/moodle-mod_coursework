@@ -225,10 +225,13 @@ class grading_report_renderer extends plugin_renderer_base {
         $submissionfiles = $submission
             ? submission::get_all_submission_files_data($coursework, [$submission->id()], true)
             : [];
+        // Submission files will be array by user and we only want our user.
+        $submissionfiles = empty($submissionfiles) ? [] : reset($submissionfiles);
+
         $ability = new ability($USER->id, $coursework);
 
         // New grading_table_row_base.
-        $row = new grading_table_row_base($coursework, $allocatable, array_pop($submissionfiles));
+        $row = new grading_table_row_base($coursework, $allocatable, $submissionfiles);
         if (!$ability->can('show', $row)) {
             return null;
         }
