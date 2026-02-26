@@ -80,6 +80,10 @@ class upload_feedback_form extends moodleform {
             $mform->disabledIf('overwrite', 'feedbackstage', 'eq', 'initialassessor');
         }
 
+        if (!$editinitialgrade && !$administergrades) {
+            $mform->disabledIf('overwrite', 'feedbackstage', 'eq', 'final_agreed_1');
+        }
+
         $this->add_action_buttons(true, get_string('uploadfeedbackzip', 'coursework'));
     }
 
