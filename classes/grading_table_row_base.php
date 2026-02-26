@@ -42,7 +42,7 @@ use moodle_url;
  * logic relating the what ought to be rendered. The renderer methods then decide how the decision
  * will be translated into a page.
  */
-class grading_table_row_base implements user_row {
+class grading_table_row_base {
     /**
      * Using this as a delegate
      * @var submission
@@ -93,22 +93,6 @@ class grading_table_row_base implements user_row {
     }
 
     /**
-     * Gets the grade agreed by the markers based ont he component marks. Not capped!
-     * Chained getter for loose coupling.
-     *
-     * @return int
-     */
-    public function get_final_grade() {
-
-        $submission = $this->get_submission();
-
-        if (!$submission) {
-            return '';
-        }
-        return $submission->get_final_grade();
-    }
-
-    /**
      * @return bool
      */
     public function is_published() {
@@ -134,76 +118,6 @@ class grading_table_row_base implements user_row {
     }
 
     /**
-     * Avoid calling repeatedly as it results in DB queries.
-     * Will return the username if permissions allow, otherwise, an anonymous placeholder. Can't delegate to the similar
-     * submission::get_user_name() function as there may not be a submission.
-     *
-     * @param bool $link
-     * @return string
-     * @throws moodle_exception
-     * @throws \dml_exception
-     * @throws coding_exception
-     */
-    public function get_user_name($link = false) {
-
-        global $DB;
-
-        $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context());
-        if (!$this->get_coursework()->blindmarking || $viewanonymous || $this->is_published()) {
-            $user = $DB->get_record('user', ['id' => $this->get_allocatable_id()]);
-            $fullname = fullname($user);
-            $allowed = has_capability('moodle/user:viewdetails', $this->get_coursework()->get_context());
-            if ($link && $allowed) {
-                $url = new moodle_url('/user/view.php', ['id' => $this->get_allocatable_id(),
-                                                              'course' => $this->get_coursework()->get_course_id()]);
-                return html_writer::link($url, $fullname);
-            } else {
-                return $fullname;
-            }
-        } else {
-            return get_string('hidden', 'mod_coursework');
-        }
-    }
-
-    /**
-     * Will return the idnumber if permissions allow, otherwise, an anonymous placeholder.
-     *
-     * @return string
-     * @throws \dml_exception
-     * @throws coding_exception
-     */
-    public function get_idnumber() {
-        global $DB;
-
-        $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context());
-        if (!$this->get_coursework()->blindmarking || $viewanonymous || $this->is_published()) {
-            $user = $DB->get_record('user', ['id' => $this->get_allocatable_id()]);
-            return $user->idnumber;
-        } else {
-            return get_string('hidden', 'mod_coursework');
-        }
-    }
-
-    /**
-     * Will return the email if permissions allow, otherwise, an anonymous placeholder.
-     *
-     * @return string
-     * @throws \dml_exception
-     * @throws coding_exception
-     */
-    public function get_email() {
-        global $DB;
-
-        $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context());
-        if (!$this->get_coursework()->blindmarking || $viewanonymous || $this->is_published()) {
-            $user = $DB->get_record('user', ['id' => $this->get_allocatable_id()]);
-            return $user->email;
-        } else {
-            return '';
-        }
-    }
-
-    /**
      * Returns the id of the student who's submission this is
      *
      * @return float|int|string
@@ -213,34 +127,12 @@ class grading_table_row_base implements user_row {
     }
 
     /**
-     * Getter for submission timesubmitted.
-     *
-     * @return int
-     */
-    public function get_time_submitted() {
-
-        $submission = $this->get_submission();
-
-        if (!$submission) {
-            return '';
-        }
-        return $submission->time_submitted();
-    }
-
-    /**
      * Getter for personal deadline time
      *
      * @return ?int
      */
     public function get_personaldeadline_time(): ?int {
         return $this->personaldeadline->personaldeadline ?? null;
-    }
-
-    /**
-     * Returns the hash used to name files anonymously for this user/coursework combination
-     */
-    public function get_filename_hash() {
-        return $this->get_coursework()->get_username_hash($this->get_allocatable_id());
     }
 
     /**
@@ -336,22 +228,6 @@ class grading_table_row_base implements user_row {
     public function has_submission() {
         $submission = $this->get_submission();
         return !empty($submission);
-    }
-
-    /**
-     * Checks to see whether we should show the current user who this student is.
-     */
-    public function can_view_username() {
-
-        if (has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context())) {
-            return true;
-        }
-
-        if ($this->get_coursework()->blindmarking) {
-            return false;
-        }
-
-        return true;
     }
 
     /**

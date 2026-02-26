@@ -33,9 +33,6 @@ interface user_row {
     public function get_allocatable_id();
 
     public function get_user_name();
-
-    public function get_idnumber();
-
     public function get_email();
 
     public function can_view_username();

@@ -113,48 +113,6 @@ class builder implements user_row {
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function get_student_firstname() {
-        $allocatable = $this->get_allocatable();
-        if (empty($allocatable->firstname)) {
-            $this->allocatable = user::find($allocatable);
-        }
-
-        return $this->get_allocatable()->firstname;
-    }
-
-    /**
-     * @return string
-     * @throws \coding_exception
-     * @throws \dml_exception
-     */
-    public function get_student_lastname() {
-        $allocatable = $this->get_allocatable();
-        if (empty($allocatable->lastname)) {
-            $this->allocatable = user::find($allocatable);
-        }
-
-        return $this->get_allocatable()->lastname;
-    }
-
-    /**
-     * @return string
-     * @throws \coding_exception
-     * @throws \dml_exception
-     */
-    public function get_idnumber() {
-        $allocatable = $this->get_allocatable();
-        if (empty($allocatable->idnumber)) {
-            $this->allocatable = user::find($allocatable);
-        }
-
-        return $this->get_allocatable()->idnumber;
-    }
-
-    /**
-     * @return string
-     * @throws \coding_exception
-     * @throws \dml_exception
-     */
     public function get_email() {
         $allocatable = $this->get_allocatable();
         if (empty($allocatable->email)) {
