@@ -136,6 +136,15 @@ class feedback_controller extends controller_base {
         $urlparams['stageidentifier'] = $teacherfeedback->stageidentifier;
         $PAGE->set_url('/mod/coursework/actions/feedbacks/new.php', $urlparams);
 
+        // Autopopulate average grade from initial assessors.
+        if ($coursework && $coursework->is_using_ranged_rubric() && $teacherfeedback->stageidentifier == 'final_agreed_1') {
+            if (str_contains($coursework->automaticagreementstrategy, 'none')) {
+                $gdata = [];
+                $gdata = $coursework->get_advanced_grading_average_grade_range_rubric($teacherfeedback->get_submission()->id);
+                $PAGE->requires->js_call_amd('mod_coursework/rubric_ranges', 'init', [$gdata]);
+            }
+        }
+
         // auto-populate Agreed Feedback with comments from initial marking
         if ($coursework && $coursework->autopopulatefeedbackcomment_enabled() && $teacherfeedback->stageidentifier == 'final_agreed_1') {
             // get all initial stages feedbacks for this submission
