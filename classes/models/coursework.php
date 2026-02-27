@@ -83,6 +83,16 @@ class coursework extends table_base {
     const COURSEWORK_EVENT_TYPE_DUE = 'due';
 
     /**
+     * Event type for initial grading due in mdl_event.
+     */
+    const COURSEWORK_EVENT_TYPE_INITIAL_GRADING_DUE = 'initialgradingdue';
+
+    /**
+     * Event type for agreed grading due in mdl_event.
+     */
+    const COURSEWORK_EVENT_TYPE_AGREED_GRADING_DUE = 'agreedgradingdue';
+
+    /**
      * @var string
      */
     protected static $tablename = 'coursework';
