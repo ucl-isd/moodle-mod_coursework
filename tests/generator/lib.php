@@ -48,8 +48,8 @@ class mod_coursework_generator extends testing_module_generator {
      *                               - course is essential
      *                               - all else is optional and defaults will be supplied
      * @param array|null $options extra stuff for the coursemodule. idnumber, section, visible, etc.
-     * @throws coding_exception
      * @return coursework
+     * @throws coding_exception
      */
     public function create_instance($record = null, ?array $options = null) {
 
@@ -116,8 +116,8 @@ class mod_coursework_generator extends testing_module_generator {
      * Makes an allocation in the DB so we can then test with it.
      *
      * @param stdClass $allocation
-     * @throws coding_exception
      * @return stdClass
+     * @throws coding_exception
      */
     public function create_allocation($allocation) {
 
@@ -153,14 +153,15 @@ class mod_coursework_generator extends testing_module_generator {
      * Makes a feedback for testing.
      *
      * @param stdClass $feedback
-     * @throws coding_exception
      * @return feedback
+     * @throws coding_exception
      */
     public function create_feedback($feedback) {
-
         global $USER;
 
-        if (empty($feedback->assessorid) || !is_numeric($feedback->assessorid)) {
+        $feedback = (object)$feedback;
+
+        if (!is_numeric($feedback->assessorid ?? null)) {
             if (!empty($USER->id)) {
                 $feedback->assessorid = $USER->id;
             } else {
@@ -172,11 +173,23 @@ class mod_coursework_generator extends testing_module_generator {
             $feedback->lasteditedbyuser = $feedback->assessorid;
         }
 
-        $feedback = \mod_coursework\models\feedback::create($feedback);
+        if (!is_numeric($feedback->submissionid ?? null) && !empty($feedback->allocatableid)) {
+            $submission = submission::find([
+                'courseworkid' => $feedback->courseworkid,
+                'allocatableid' => $feedback->allocatableid,
+            ]);
 
-        if (!isset($feedback->submissionid) || !is_numeric($feedback->submissionid) || empty($feedback->submissionid)) {
+            if (!empty($submission->id())) {
+                $feedback->submissionid = $submission->id();
+                unset($feedback->allocatableid);
+            } else {
+                throw new coding_exception('Cannot resolve submission from allocatable');
+            }
+        } else if (!is_numeric($feedback->submissionid ?? null)) {
             throw new coding_exception('Coursework generator needs a submissionid for a new feedback');
         }
+
+        $feedback = \mod_coursework\models\feedback::create($feedback);
         if (!isset($feedback->timecreated)) {
             $feedback->timecreated = time();
         }
@@ -205,19 +218,24 @@ class mod_coursework_generator extends testing_module_generator {
      * Makes a submission for testing.
      *
      * @param stdClass|array $submission
-     * @param coursework $coursework
-     * @throws coding_exception
+     * @param ?coursework $coursework
      * @return stdClass
+     * @throws coding_exception
      */
-    public function create_submission($submission, $coursework) {
+    public function create_submission($submission, $coursework = null) {
 
         global $USER;
 
         $submission = submission::build($submission);
 
-        if (!isset($submission->courseworkid)) {
+        if (!isset($submission->courseworkid) && isset($coursework)) {
             $submission->courseworkid = $coursework->id;
+        } else if ($submission->courseworkid && !isset($coursework)) {
+            $coursework = coursework::find($submission->courseworkid);
+        } else if (!isset($submission->courseworkid) && !isset($coursework)) {
+            throw new \core\exception\coding_exception('Coursework generator needs a courseworkid');
         }
+
         if (!isset($submission->allocatableid) || !is_numeric($submission->allocatableid) || empty($submission->allocatableid)) {
             if (!empty($USER->id)) {
                 $submission->allocatableid = $USER->id;
