@@ -6,38 +6,71 @@ Feature: Automatically allocations interacting with manually allocated students
   So that if the number of students or teachers has changed, I can make sure everything remains balanced
 
   Background:
-    Given there is a course
-    And there is a coursework
-    And the coursework "allocationenabled" setting is "1" in the database
-    And the coursework "numberofmarkers" setting is "1" in the database
-    And the managers are not allowed to grade
-    And there is a student
-    And there is a teacher
-    And I am logged in as a manager
+    Given the following "course" exists:
+      | fullname  | Course 1 |
+      | shortname | C1       |
+    And the following "activity" exists:
+      | activity          | coursework |
+      | course            | C1         |
+      | name              | Coursework |
+      | allocationenabled | 1          |
+      | numberofmarkers   | 1          |
+    And the following "users" exist:
+      | username | firstname    | lastname | email                |
+      | teacher2 | teacher      | teacher2 | teacher2@example.com |
+      | teacher4 | otherteacher | teacher4 | teacher4@example.com |
+      | manager1 | Manager      | 1        | manager1@example.com |
+      | student1 | student      | student1 | student1@example.com |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | teacher2 | C1     | teacher |
+      | teacher4 | C1     | teacher |
+      | manager1 | C1     | manager |
+      | student1 | C1     | student |
+    And I log in as "manager1"
 
   @javascript
   Scenario: Automatic allocations should not alter the manual allocations
-    Given there is another teacher
-    And there are no allocations in the db
-    And I am on the "Coursework 1" "coursework activity" page
+    Given I am on the "Coursework" "coursework activity" page
     Then I should not see "teacher teacher2" in the "student student1" "table_row"
-    When I visit the allocations page
-    And I set the following fields in the "student student1" "table_row" to these values:
-      | Choose marker assessor_1 | teacher teacher2 |
-    And I set the allocation strategy to 100 percent for the other teacher
-    And I am on the "Coursework 1" "coursework activity" page
+
+    When I navigate to "Allocate markers" in current page administration
+    And I set the following fields to these values:
+      | Choose marker assessor_1   | teacher teacher2      |
+      | assessorallocationstrategy | Percentage per marker |
+      | otherteacher teacher4      | 100                   |
+    And I press "Apply"
+    And I am on the "Coursework" "coursework activity" page
+    Then I should see "teacher teacher2" in the "student student1" "table_row"
+
+    When I navigate to "Allocate markers" in current page administration
+    Then the following fields match these values:
+      | assessorallocationstrategy | Percentage per marker |
+      | otherteacher teacher4      | 100                   |
+      | Choose marker assessor_1   | teacher teacher2      |
+
+    When I am on the "Coursework" "coursework activity" page
     Then I should see "teacher teacher2" in the "student student1" "table_row"
 
   @javascript
   Scenario: Automatic allocations should wipe the older automatic allocations
-    Given the student is allocated to the teacher
-    And there is another teacher
-    When I visit the allocations page
-    And I set the allocation strategy to 100 percent for the other teacher
-    And I wait until the page is ready
+    Given I am on the "Coursework" "coursework activity" page
+    And I navigate to "Allocate markers" in current page administration
+    And I set the following fields to these values:
+      | Choose marker assessor_1 | teacher teacher2 |
+      | Pinned                   | 0                |
+
+    When I am on the "Coursework" "coursework activity" page
+    Then I should see "teacher teacher2" in the "student student1" "table_row"
+
+    When I navigate to "Allocate markers" in current page administration
+    Then the following fields match these values:
+      | Choose marker assessor_1 | teacher teacher2 |
+      | Pinned                   | 0                |
+
+    When I set the following fields to these values:
+      | assessorallocationstrategy | Percentage per marker |
+      | otherteacher teacher4      | 100                   |
     And I click on "Apply" "button"
-    # Apply button will reload page via module.js when call to /mod/coursework/actions/processallocation.php returns.
-    And I wait until the page is ready
-    And I wait "3" seconds
-    When I am on the "Coursework 1" "coursework activity" page
+    When I am on the "Coursework" "coursework activity" page
     Then I should see "otherteacher teacher4" in the "student student1" "table_row"
