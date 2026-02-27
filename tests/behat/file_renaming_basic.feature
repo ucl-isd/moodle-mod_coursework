@@ -6,8 +6,13 @@ Feature: Basic file renaming for submission files
   So that I can ensure blind marking integrity and student anonymity
 
   Background:
-    Given there is a course
-    And there is a coursework
+    Given the following "course" exists:
+      | fullname          | Course 1  |
+      | shortname         | C1        |
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
     And the coursework "allowearlyfinalisation" setting is "1" in the database
     And there is a teacher
     And there is a student
@@ -16,7 +21,7 @@ Feature: Basic file renaming for submission files
   Scenario: Files are renamed with username hash when renamefiles is enabled
     Given the coursework "renamefiles" setting is "1" in the database
     And I am logged in as a student
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I save and finalise the submission
@@ -26,7 +31,7 @@ Feature: Basic file renaming for submission files
   Scenario: Files keep original names when renamefiles is disabled
     Given the coursework "renamefiles" setting is "0" in the database
     And I am logged in as a student
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I save and finalise the submission
@@ -37,7 +42,7 @@ Feature: Basic file renaming for submission files
     Given the coursework "renamefiles" setting is "1" in the database
     And the coursework "maxfiles" setting is "2" in the database
     And I am logged in as a student
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager

@@ -3,17 +3,23 @@ Feature: Teachers and course administrators should be able to add and edit
   plagiarism flags
 
   Background:
-    Given there is a course
-    And there is a coursework
+    Given the following "course" exists:
+      | fullname          | Course 1  |
+      | shortname         | C1        |
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
     And the coursework "plagiarismflagenabled" setting is "1" in the database
     And there is a student
     And there is a teacher
-    And the student has a submission
-    And the submission is finalised
+    And the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | Coursework | 1               |
 
   Scenario: Teacher can flag a submission for plagiarism
     Given I am logged in as a teacher
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     And I should not see "Flagged for plagiarism"
     And "Actions" "button" should exist
     And I click on "Actions" "button"

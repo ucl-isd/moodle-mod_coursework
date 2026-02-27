@@ -7,29 +7,38 @@ Feature: visibility of agreed graders with blind marking
     So that we are not influenced by one another or confused over what to do
 
   Background:
-    Given there is a course
-    And there is a coursework
+    Given the following "course" exists:
+      | fullname          | Course 1  |
+      | shortname         | C1        |
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
+      | numberofmarkers            | 2          |
     And blind marking is enabled
     And teachers have the add agreed grade capability
     And there is a teacher
     And there is another teacher
-    And the coursework "numberofmarkers" setting is "2" in the database
     And there is a student
-    And the student has a submission
-    And the submission is finalised
+    And the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | Coursework | 1               |
 
   Scenario: agreed graders cannot see other feedbacks before they have done their own
     Given I am logged in as the other teacher
     And there is feedback for the submission from the teacher
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     Then I should see "Draft" in the "Hidden" "table_row"
     And I should see "Add mark" in the "Hidden" "table_row"
     And I should not see "58" in the "Hidden" "table_row"
 
   Scenario: agreed graders can view the feedback of the other assessors when all done
-    Given there are feedbacks from both teachers
+    the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
+      | student1    | Coursework | teacher2 | assessor_2      | 63    | New comment here |
     And I am logged in as the other teacher
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     Then I should see "63" in the "Hidden" "table_row"
     And I should see "67" in the "Hidden" "table_row"
     Then I should see "teacher teacher1" in the "Hidden" "table_row"

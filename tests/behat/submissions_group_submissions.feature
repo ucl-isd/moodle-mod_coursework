@@ -6,8 +6,13 @@ Feature: Students are able to submit one piece of work on behalf of the group
     So that they and the tutor can see it and mark it
 
   Background:
-    Given there is a course
-    And there is a coursework
+    Given the following "course" exists:
+      | fullname          | Course 1  |
+      | shortname         | C1        |
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
     And the coursework "usegroups" setting is "1" in the database
     And I am logged in as a student
     And the student is a member of a group
@@ -16,25 +21,25 @@ Feature: Students are able to submit one piece of work on behalf of the group
 
   @javascript @_file_upload
   Scenario: I can submit a file and it appears for the others to see
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     And I click on "Upload a submission for your group" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I press "Submit"
     And I log out
     And I log in as the other student
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     Then I should see the file on the page
 
   @javascript @_file_upload
   Scenario: I can resubmit the work when someone else has submitted it
     Given the coursework "maxfiles" setting is "2" in the database
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     And I click on "Upload a submission for your group" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I press "Submit"
     And I log out
     And I log in as the other student
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     Then I should see that the submission was made by the student
 
     When I click on "Edit the submission for your group" "link"

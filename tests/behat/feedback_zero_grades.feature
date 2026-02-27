@@ -7,20 +7,26 @@ Feature: Zero grades should show up just like the others
     the student will know
 
   Background:
-    Given there is a course
-    And there is a coursework
+    Given the following "course" exists:
+      | fullname          | Course 1  |
+      | shortname         | C1        |
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
+      | numberofmarkers   | 1          |
     And there is a student
-    And the student has a submission
-    And the submission is finalised
+    And the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | Coursework | 1               |
 
   Scenario: Single maker final feedback
     Given the coursework "grade" setting is "9" in the database
     Given I am logged in as a teacher
-    And the coursework "numberofmarkers" setting is "1" in the database
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     And I click on the add feedback button
     And I set the field "Mark" to "0"
     And I press "Save and finalise"
-    Then I visit the coursework page
+    Then I am on the "Coursework" "coursework activity" page
     And I wait until the page is ready
     And I should see the final grade as 0

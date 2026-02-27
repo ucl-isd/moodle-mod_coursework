@@ -6,8 +6,13 @@ Feature: Candidate number based file renaming for submission files
   So that I can ensure blind marking with standardized candidate number anonymization
 
   Background:
-    Given there is a course
-    And there is a coursework
+    Given the following "course" exists:
+      | fullname          | Course 1  |
+      | shortname         | C1        |
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
     And the coursework "allowearlyfinalisation" setting is "1" in the database
     And there is a editingteacher
     And there is a student
@@ -18,7 +23,7 @@ Feature: Candidate number based file renaming for submission files
     Given blind marking is enabled
     And the coursework "usecandidate" setting is "1" in the database
     And I am logged in as a student
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I save and finalise the submission
@@ -30,7 +35,7 @@ Feature: Candidate number based file renaming for submission files
     And the coursework "usecandidate" setting is "1" in the database
     And the coursework "maxfiles" setting is "2" in the database
     And I am logged in as a student
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
@@ -45,7 +50,7 @@ Feature: Candidate number based file renaming for submission files
     Given blind marking is enabled
     And the coursework "usecandidate" setting is "0" in the database
     And I am logged in as a student
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I save and finalise the submission
@@ -56,13 +61,13 @@ Feature: Candidate number based file renaming for submission files
     Given blind marking is enabled
     And the coursework "usecandidate" setting is "1" in the database
     And I am logged in as a student
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I save and finalise the submission
     And I log out
     And I am logged in as a editingteacher
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     And I click on "Settings" "link"
     And I expand all fieldsets
     And I should see "Candidate number file naming is enabled."

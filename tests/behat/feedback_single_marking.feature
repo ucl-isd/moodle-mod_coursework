@@ -6,9 +6,14 @@ Feature: Adding and editing single feedback
     I want to be able to edit the final grade via a form
 
   Background:
-    Given there is a course
-    And there is a coursework
-    And the coursework "numberofmarkers" setting is "1" in the database
+    Given the following "course" exists:
+      | fullname          | Course 1  |
+      | shortname         | C1        |
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
+      | numberofmarkers   | 1          |
     And there is a student
     And there is a teacher
     And the student has a submission
@@ -19,17 +24,18 @@ Feature: Adding and editing single feedback
   Scenario: Setting the final feedback grade and comment
     Given the submission is finalised
     And the coursework deadline has passed
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     And I click on the add feedback button
     And I grade the submission as 56 using the simple form
-    Then I visit the coursework page
+    Then I am on the "Coursework" "coursework activity" page
     And I should see the final grade as 56
     And I click the edit feedback button
     And the field "Mark" matches value "56"
-    And the grade comment textarea field matches "New comment"
+    And the following fields match these values:
+      | Comment | New comment |
 
   Scenario: I should not see the feedback icon when the submission has not been finalised
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     Then I should not see a link to add feedback
 
   Scenario: Editing someone else's grade
@@ -37,7 +43,7 @@ Feature: Adding and editing single feedback
     And there is feedback for the submission from the teacher
     And I log out
     And I log in as "admin"
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     When I click the edit feedback button
     And the field "Mark" matches value "58"
     And the field with xpath "//textarea[@id='id_feedbackcomment']" matches value "Blah"
@@ -49,6 +55,18 @@ Feature: Adding and editing single feedback
     When I follow "Release the marks"
     And I log out
     And I log in as a student
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     Then I should not see "Admin User" in the ".coursework-feedback" "css_element"
     But I should see "teacher teacher2" in the ".coursework-feedback" "css_element"
+
+  Scenario: Student cannot see marker when assessor anonymity is enabled
+    Given the submission is finalised
+    And there is finalised feedback for the submission from the teacher
+    And grades have been released
+    And I log out
+    When the coursework "assessoranonymity" setting is "1" in the database
+    And I log in as a student
+    And I am on the "Coursework" "coursework activity" page
+    Then I should not see "Admin User" in the ".coursework-feedback" "css_element"
+    And I should not see "teacher teacher2" in the ".coursework-feedback" "css_element"
+    But I should see "Marker 1" in the ".coursework-feedback" "css_element"

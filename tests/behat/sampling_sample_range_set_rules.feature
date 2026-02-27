@@ -7,8 +7,14 @@ Feature: Automatic sample based on range set grades using marking of students in
   so they mark more evenly and randomly.
 
   Background:
-    Given there is a course
-    And there is a coursework
+    Given the following "course" exists:
+      | fullname          | Course 1  |
+      | shortname         | C1        |
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
+      | deadline                   | ##yesterday## |
     And there is a student
     And the student has a submission
     And there is another student
@@ -16,19 +22,18 @@ Feature: Automatic sample based on range set grades using marking of students in
     And there is a teacher
     And the coursework "numberofmarkers" setting is "3" in the database
     And the coursework "samplingenabled" setting is "1" in the database
-    And the coursework deadline has passed
 
     And I am logged in as a teacher
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     And I wait "1" seconds
-    And I click on the add feedback button for assessor 1
+    And I click on "Add mark" "link" in the "[data-behat-markstage='1']" "css_element"
     And I set the field "Mark" to "56"
     And I press "Save and finalise"
     And I wait "1" seconds
     And I should see "Changes saved"
 
-    And I visit the coursework page
-    And I click on the add feedback button for assessor 1 for another student
+    And I am on the "Coursework" "coursework activity" page
+    And I click on "Add mark" "link" in the "[data-behat-markstage='1']" "css_element" for another student
     And I set the field "Mark" to "45"
     And I press "Save and finalise"
     And I log out
@@ -36,7 +41,7 @@ Feature: Automatic sample based on range set grades using marking of students in
   @javascript
   Scenario: Automatically allocating a set of students within specified grade rule range in stage 2 based on stage 1 grades
     Given I am logged in as a manager
-    And I visit the allocations page
+    And I navigate to "Allocate markers" in current page administration
     And I wait "1" seconds
     And I enable automatic sampling for stage 2
 
@@ -62,23 +67,23 @@ Feature: Automatic sample based on range set grades using marking of students in
   @javascript
   Scenario: Automatically allocating a set of students within specified percentage rule range in stage 3 based on stage 2 grades
     Given I am logged in as a manager
-    And I visit the allocations page
+    And I navigate to "Allocate markers" in current page administration
     And I enable automatic sampling for stage 2
     And I enable total rule for stage 2
     And I select 100% of total students in stage 1
     And I save sampling strategy
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     And I wait "1" seconds
-    And I click on the add feedback button for assessor 2
+    And I click on "Add mark" "link" in the "[data-behat-markstage='2']" "css_element"
     And I set the field "Mark" to "60"
     And I press "Save and finalise"
-    And I visit the coursework page
-    And I click on the add feedback button for assessor 2 for another student
+    And I am on the "Coursework" "coursework activity" page
+    And I click on "Add mark" "link" in the "[data-behat-markstage='2']" "css_element" for another student
     And I set the field "Mark" to "40"
     And I press "Save and finalise"
     And I log out
     And I am logged in as a manager
-    And I visit the allocations page
+    And I navigate to "Allocate markers" in current page administration
     When I enable automatic sampling for stage 3
     And I enable grade range rule 1 for stage 3
     And I select limit type for grade range rule 1 in stage 3 as "percentage"

@@ -4,31 +4,38 @@ Feature: Download and upload buttons on submissions page
   They should contain the expected menu items corresponding the user's role
 
   Background:
-    Given there is a course
-    And there is a coursework
+    Given the following "course" exists:
+      | fullname          | Course 1  |
+      | shortname         | C1        |
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
     And there is a teacher
     And there is a student
 
   Scenario: When there are no submissions the teacher should not see an upload or download menu
     When I log in as a teacher
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     Then I should not see "Download"
     And I should not see "Upload"
 
   Scenario: When there is a submission the teacher should see an upload and download menu
-    When the student has a submission
-    And the submission is finalised
+    When the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | Coursework | 1               |
     And I log in as a teacher
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     Then I should see "Download"
     And I should see "Upload"
 
   @javascript
   Scenario: A teacher should see the expected download menu items
-    When the student has a submission
-    And the submission is finalised
+    When the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | Coursework | 1               |
     And I log in as a teacher
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     And I click on "Download" "button"
     And I wait until the page is ready
     Then I should see "Submitted files"
@@ -37,10 +44,11 @@ Feature: Download and upload buttons on submissions page
 
   @javascript
   Scenario: An admin should see the expected download menu items
-    When the student has a submission
-    And the submission is finalised
+    When the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | Coursework | 1               |
     And I log in as "admin"
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     And I click on "Download" "button"
     And I wait until the page is ready
     Then I should see "Submitted files"
@@ -49,10 +57,11 @@ Feature: Download and upload buttons on submissions page
 
   @javascript
   Scenario: A teacher should see the expect upload menu items
-    When the student has a submission
-    And the submission is finalised
+    When the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | Coursework | 1               |
     And I log in as a teacher
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     And I click on "Upload" "button"
     Then I should see "Marking spreadsheet"
     And I should see "Feedback files in a zip"

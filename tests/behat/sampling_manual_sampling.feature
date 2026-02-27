@@ -6,10 +6,15 @@ Feature: Manual sampling
   So I can select correct sample of students for double marking
 
   Background:
-    Given there is a course
+    Given the following "course" exists:
+      | fullname          | Course 1  |
+      | shortname         | C1        |
     And I am logged in as a manager
     And the manager has a capability to allocate students in samplings
-    And there is a coursework
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
     And the coursework allocation option is disabled
     And the coursework has sampling enabled
     And the coursework is set to double marker
@@ -24,12 +29,12 @@ Feature: Manual sampling
 
   @javascript
   Scenario: Manual sampling should not include student when not selected
-    When I visit the allocations page
+    When I navigate to "Allocate markers" in current page administration
     And I set the following fields in the "student student2" "table_row" to these values:
       | Included in sample | false |
     And I log out
     And I log in as the teacher
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     And I wait "1" seconds
     # I should *NOT* be able to grade the user
     And I should not see "Add feedback"
@@ -37,25 +42,25 @@ Feature: Manual sampling
 
   @javascript
   Scenario: Single grade should go to the gradebook column when only first stage is in sample
-    When I visit the allocations page
+    When I navigate to "Allocate markers" in current page administration
     And I set the following fields in the "student student2" "table_row" to these values:
       | Included in sample | false |
     And I log out
     And I log in as the teacher
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     Then I should see the grade given by the initial teacher in the provisional grade column
 
   @javascript
   Scenario: Manual sampling should include student when selected
-    When I visit the allocations page
+    When I navigate to "Allocate markers" in current page administration
     And I set the following fields in the "student student2" "table_row" to these values:
       | Included in sample | true |
     And I log out
     And I log in as the teacher
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     # I should be able to grade the user
     And I wait "1" seconds
     And I should see "Add mark"
-    And I click on the add feedback button for assessor 2
+    And I click on "Add mark" "link" in the "[data-behat-markstage='2']" "css_element"
     And I set the field "Mark" to "67"
     And I press "Save and finalise"
