@@ -416,18 +416,14 @@ class ability extends framework\ability {
             'show',
             'mod_coursework\models\submission',
             function (submission $submission) {
-
                 // Should be visible to those who are OK to mark it.
-                $allocationdisabled = !$submission->get_coursework()->allocation_enabled();
-                $allowedtograde = has_capability(
-                    'mod/coursework:addinitialgrade',
-                    $submission->get_coursework()->get_context()
-                );
-                $allowedtoagreegrades = has_capability(
-                    'mod/coursework:addagreedgrade',
-                    $submission->get_coursework()->get_context()
-                );
-                return $allocationdisabled && ($allowedtograde || $allowedtoagreegrades);
+                return
+                    !$submission->get_coursework()->allocation_enabled()
+                    &&
+                    has_any_capability(
+                        ['mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade'],
+                        $submission->get_coursework()->get_context()
+                    );
             }
         );
     }
@@ -438,18 +434,13 @@ class ability extends framework\ability {
             'show',
             'mod_coursework\models\submission',
             function (submission $submission) {
-
-                $allowedtograde = has_capability(
-                    'mod/coursework:addinitialgrade',
-                    $submission->get_coursework()->get_context()
-                );
-                $allowedtoagreegrades = has_capability(
-                    'mod/coursework:addagreedgrade',
-                    $submission->get_coursework()->get_context()
-                );
-                $allocationdisabled = !$submission->get_coursework()->allocation_enabled();
-
-                return $allocationdisabled && $submission->is_published() && ($allowedtograde || $allowedtoagreegrades);
+                return
+                    !$submission->get_coursework()->allocation_enabled()
+                    && $submission->is_published()
+                    && has_any_capability(
+                        ['mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade'],
+                        $submission->get_coursework()->get_context()
+                    );
             }
         );
     }
@@ -460,9 +451,19 @@ class ability extends framework\ability {
             'mod_coursework\models\submission',
             function (submission $submission) {
                 $state = $submission->get_state();
-                $allowedtoagreegrades = has_capability('mod/coursework:addagreedgrade', $submission->get_coursework()->get_context());
-                $allowedtoeditagreegrades = has_capability('mod/coursework:editagreedgrade', $submission->get_coursework()->get_context());
-                return (($allowedtoagreegrades && $state == submission::FULLY_GRADED) || ($allowedtoeditagreegrades && $state >= submission::FULLY_GRADED));
+                return (
+                    (
+                        $state == submission::FULLY_GRADED
+                        &&
+                        has_capability('mod/coursework:addagreedgrade', $submission->get_coursework()->get_context())
+                    )
+                    ||
+                    (
+                        $state >= submission::FULLY_GRADED
+                        &&
+                        has_capability('mod/coursework:editagreedgrade', $submission->get_coursework()->get_context())
+                    )
+                );
             }
         );
     }
@@ -1109,16 +1110,13 @@ class ability extends framework\ability {
             'show',
             'mod_coursework\models\feedback',
             function (feedback $feedback) {
-
-                if (
-                    has_capability('mod/coursework:addagreedgrade', $feedback->get_coursework()->get_context())
-                    || has_capability('mod/coursework:addallocatedagreedgrade', $feedback->get_coursework()->get_context())
-                ) {
-                    if ($feedback->get_submission()->get_state() >= submission::FULLY_GRADED) {
-                        return true;
-                    }
-                }
-                return false;
+                return
+                    has_any_capability(
+                        ['mod/coursework:addagreedgrade', 'mod/coursework:addallocatedagreedgrade'],
+                        $feedback->get_coursework()->get_context()
+                    )
+                    &&
+                    $feedback->get_submission()->get_state() >= submission::FULLY_GRADED;
             }
         );
     }
@@ -1316,15 +1314,9 @@ class ability extends framework\ability {
             'show',
             'mod_coursework\models\feedback',
             function (feedback $feedback) {
-                return  has_capability(
-                    'mod/coursework:viewallgradesatalltimes',
-                    $feedback->get_coursework()
-                        ->get_context()
-                )
-                || has_capability(
-                    'mod/coursework:administergrades',
-                    $feedback->get_coursework()
-                        ->get_context()
+                return  has_any_capability(
+                    ['mod/coursework:viewallgradesatalltimes', 'mod/coursework:administergrades'],
+                    $feedback->get_coursework()->get_context()
                 );
             }
         );
@@ -1344,17 +1336,13 @@ class ability extends framework\ability {
                     $haseditablefeedbacks = $feedback->get_submission()->editable_feedbacks_exist();
                 }
 
-                return $feedback->is_agreed_grade() && !$haseditablefeedbacks && (has_capability(
-                    'mod/coursework:addagreedgrade',
-                    $feedback->get_coursework()
-                        ->get_context()
-                )
-                                                        || has_capability(
-                                                            'mod/coursework:addallocatedagreedgrade',
-                                                            $feedback->get_coursework()
-                                                                ->get_context()
-                                                        )
-                                                            && $feedback->get_submission()->is_assessor_initial_grader());
+                return $feedback->is_agreed_grade()
+                    && !$haseditablefeedbacks
+                    && has_any_capability(
+                        ['mod/coursework:addagreedgrade', 'mod/coursework:addallocatedagreedgrade'],
+                        $feedback->get_coursework()->get_context()
+                    )
+                    && $feedback->get_submission()->is_assessor_initial_grader();
             }
         );
     }

@@ -46,7 +46,7 @@ class outstanding_marking {
             }
         }
 
-        return  (!empty($initialsubmissions)) ? count($initialsubmissions) : 0;
+        return (!empty($initialsubmissions)) ? count($initialsubmissions) : 0;
     }
 
     /**
@@ -60,7 +60,7 @@ class outstanding_marking {
 
         $agreedsubmissions = [];
 
-            // AGREED GRADE INFORMATION
+        // AGREED GRADE INFORMATION
 
         if ($this->should_get_to_mark_agreed_grade_info($coursework->id, $userid) && $coursework->has_multiple_markers()) {
             if (!$coursework->sampling_enabled()) {
@@ -70,7 +70,7 @@ class outstanding_marking {
             }
         }
 
-        return  (!empty($agreedsubmissions)) ? count($agreedsubmissions) : 0;
+        return (!empty($agreedsubmissions)) ? count($agreedsubmissions) : 0;
     }
 
     /**
@@ -82,7 +82,7 @@ class outstanding_marking {
      */
     private function get_single_marker_initial_grade_submissions_to_mark($courseworkid, $userid = false, $allocationenabled = false) {
 
-        global  $DB;
+        global $DB;
 
         $sqlparams = [];
         $sqltable = "";
@@ -113,7 +113,7 @@ class outstanding_marking {
         $sqlparams['courseworkid'] = $courseworkid;
         $sqlparams['submissionfinalised'] = submission::FINALISED_STATUS_FINALISED;
 
-        return  $DB->get_records_sql($sql, $sqlparams);
+        return $DB->get_records_sql($sql, $sqlparams);
     }
 
     /**
@@ -124,7 +124,7 @@ class outstanding_marking {
      */
     private function get_multiple_to_mark_sampled_initial_grade_submissions($courseworkid, $userid) {
 
-        global  $DB;
+        global $DB;
 
         $countsamples = 'CASE WHEN a.id = NULL THEN 0 ELSE COUNT(a.id)+1 END';
         $sql = "     SELECT  *,
@@ -152,7 +152,7 @@ class outstanding_marking {
         $sqlparams['subcourseworkid'] = $courseworkid;
         $sqlparams['courseworkid'] = $courseworkid;
 
-        return  $DB->get_records_sql($sql, $sqlparams);
+        return $DB->get_records_sql($sql, $sqlparams);
     }
 
     /**
@@ -165,7 +165,7 @@ class outstanding_marking {
      */
     private function get_multiple_to_mark_initial_grade_submissions($courseworkid, $userid, $numberofmarkers, $allocationenabled) {
 
-        global      $DB;
+        global $DB;
 
         $sqlparams = [];
         $sqltable = '';
@@ -206,7 +206,7 @@ class outstanding_marking {
         $sqlparams['assessorid'] = $userid;
         $sqlparams['submissionfinalised'] = submission::FINALISED_STATUS_FINALISED;
 
-        return  $DB->get_records_sql($sql, $sqlparams);
+        return $DB->get_records_sql($sql, $sqlparams);
     }
 
     /**
@@ -242,7 +242,7 @@ class outstanding_marking {
      */
     private function get_to_grade_agreed_grade_sampled_submissions($courseworkid) {
 
-        global  $DB;
+        global $DB;
 
         $countsamples = 'CASE WHEN a.id = NULL THEN 0 ELSE COUNT(a.id)+1 END';
         $sql = "SELECT  *,
@@ -272,10 +272,11 @@ class outstanding_marking {
      * @throws \coding_exception
      */
     private function has_agreed_grade($courseid, $userid) {
-
-        $coursecontext = context_course::instance($courseid);
-
-        return  has_capability('mod/coursework:addagreedgrade', $coursecontext, $userid) || has_capability('mod/coursework:addallocatedagreedgrade', $coursecontext, $userid);
+        return has_any_capability(
+            ['mod/coursework:addagreedgrade', 'mod/coursework:addallocatedagreedgrade'],
+            context_course::instance($courseid),
+            $userid
+        );
     }
 
     /**
@@ -285,10 +286,7 @@ class outstanding_marking {
      * @throws \coding_exception
      */
     private function has_initial_grade($courseid, $userid) {
-
-        $coursecontext = context_course::instance($courseid);
-
-        return  has_capability('mod/coursework:addinitialgrade', $coursecontext, $userid);
+        return has_capability('mod/coursework:addinitialgrade', context_course::instance($courseid), $userid);
     }
 
     /**
@@ -297,7 +295,6 @@ class outstanding_marking {
      * @return bool
      */
     private function should_get_to_mark_initial_grade_info($courseworkid, $userid) {
-
         $coursework = new coursework($courseworkid);
 
         // Findout if the user can create an initial grade
