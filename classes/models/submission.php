@@ -233,6 +233,12 @@ class submission extends table_base implements renderable {
     protected $moderatorfeedback;
 
     /**
+     * Current state of this submission
+     * @var int
+     */
+    private int $currentstate;
+
+    /**
      * Constructor: takes a DB row from the coursework_submissions table. We don't retrieve it first
      * as we may want to overwrite with submitted data or make a new one.
      *
@@ -637,8 +643,22 @@ class submission extends table_base implements renderable {
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function get_state(bool $includefilescheck = false): int {
+    public function get_state(bool $includefilescheck = false) {
+        // Keep result temporarily as this is called many times for same submission during loading of the grading page.
+        if (!isset($this->currentstate)) {
+            $this->currentstate = $this->get_state_uncached($includefilescheck);
+        }
+        return $this->currentstate;
+    }
 
+    /**
+     * Get the raw state not cached version.
+     * Usually use @see self::get_state() instead
+     * @return int
+     * @throws coding_exception
+     * @throws dml_exception
+     */
+    private function get_state_uncached(bool $includefilescheck): int {
         if ($this->get_coursework() == null) {
             return -1;
         }
@@ -1742,5 +1762,17 @@ class submission extends table_base implements renderable {
             return false;
         }
         return get_string('plagiarism_' . $flag->status, 'mod_coursework');
+    }
+
+    /**
+     * Reloads the data from the DB columns.
+     * Also unset current state which we are storing locally but which may be different now.
+     * @param bool $complainifnotfound
+     * @return $this
+     * @throws dml_exception
+     */
+    public function reload($complainifnotfound = true) {
+        unset($this->currentstate);
+        return parent::reload($complainifnotfound);
     }
 }
