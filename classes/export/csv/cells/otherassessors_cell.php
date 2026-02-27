@@ -23,6 +23,7 @@
 namespace mod_coursework\export\csv\cells;
 use coding_exception;
 use mod_coursework\ability;
+use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 
 /**
@@ -38,27 +39,15 @@ class otherassessors_cell extends cell_base {
      * @throws coding_exception
      */
     public function get_cell($submission, $student, $stageidentifier) {
-        global $DB, $USER;
-        // find out current user stage identifier
+        global $USER;
 
-        // $stageidentifier =
-        // retrieve all feedbacks without currents user feedback
-
-        $params = [
-            'submissionid' => $submission->id,
-            'assessorid' => $USER->id,
-            'stageidentifier' => $stageidentifier,
-        ];
-
-        $sql = "SELECT * FROM {coursework_feedbacks}
-                WHERE submissionid = :submissionid
-                AND assessorid <> :assessorid
-                AND stageidentifier <> 'final_agreed_1'";
-
-        $feedbacks = $DB->get_records_sql($sql, $params);
         $gradedata = [];
-
+        $feedbacks = feedback::find_all(['submissionid' => $submission->id]);
         foreach ($feedbacks as $feedback) {
+            if (empty($feedback->get_assessor_stage_no()) || $feedback->assessorid == $USER->id) {
+                continue;
+            }
+
             $grade = $submission->get_assessor_feedback_by_stage($feedback->stageidentifier);
             if ($grade) {
                 // skip if you are allocated but someone else graded it
@@ -66,11 +55,8 @@ class otherassessors_cell extends cell_base {
                 if ($allocation && $allocation->assessorid == $USER->id) {
                     continue;
                 }
-                $ability = new ability($USER->id, $this->coursework);
-                if (
-                    (($ability->can('show', $feedback) || has_capability('mod/coursework:addallocatedagreedgrade', $submission->get_coursework()->get_context())) &&
-                    (!$submission->any_editable_feedback_exists() && count($submission->get_assessor_feedbacks()) <= $submission->max_number_of_feedbacks())) || is_siteadmin($USER->id)
-                ) {
+
+                if ($feedback->can_show($this->coursework, $submission)) {
                     if ($this->coursework->is_using_rubric()) {
                         $this->get_rubric_scores_gradedata($grade, $gradedata); // multiple parts are handled here
                     } else {
