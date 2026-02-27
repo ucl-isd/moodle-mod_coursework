@@ -67,16 +67,13 @@ class otherassessors_cell extends cell_base {
                     $gradedata[] = get_string('mark_hidden_manager', 'mod_coursework');
                     $gradedata[] = '';
                 }
-            } else {
-                if ($this->coursework->is_using_rubric()) {
+            } else if ($this->coursework->is_using_rubric()) {
                     $criterias = $this->coursework->get_rubric_criteria();
-                    foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
-                        $gradedata['assessor' . $stageidentifier . '_' . $criteria['id']] = get_string('mark_hidden_manager', 'mod_coursework');
-                        $gradedata['assessor' . $stageidentifier . '_' . $criteria['id'] . 'comment'] = '';
-                    }
-                } else {
-                    $gradedata[] = '';
+                foreach ($criterias as $criteria) { // rubrics can have multiple parts, so let's create header for each of it
+                    $gradedata['assessor' . $stageidentifier . '_' . $criteria['id']] = get_string('mark_hidden_manager', 'mod_coursework');
+                    $gradedata['assessor' . $stageidentifier . '_' . $criteria['id'] . 'comment'] = '';
                 }
+            } else {
                 $gradedata[] = '';
             }
         }
