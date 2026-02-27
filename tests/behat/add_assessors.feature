@@ -2,16 +2,25 @@
 Feature: Add assessors tab appears for users with moodle/role:assign
 
   Background:
-    Given there is a course
-    And there is a coursework
-    And there is an editing teacher
+    Given the following "course" exists:
+      | fullname  | Course 1 |
+      | shortname | C1       |
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | teacher2 | teacher   | teacher2        | teacher2@example.com |
+      | manager1 | Manager   | 1        | manager1@example.com |
+    And the following "course enrolments" exist:
+      | user     | course | role           |
+      | teacher2 | C1     | editingteacher |
+      | manager1 | C1     | manager        |
 
   Scenario: Manager can see add assessors
-    Given I am logged in as a manager
-    When I visit the coursework page
+    Given I am on the "Coursework" "coursework activity" page logged in as "manager1"
     Then I should see "Add markers"
 
-  Scenario: Editing teacher cannot see add assessors
-    Given I am logged in as an editing teacher
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page logged in as "teacher1"
     Then I should not see "Add markers"
