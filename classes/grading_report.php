@@ -45,8 +45,6 @@ class grading_report {
      * @throws \dml_exception
      */
     public static function get_table_rows_for_page(coursework $coursework): array {
-
-        global $USER;
         $participants = $coursework->get_allocatables();
         $extensions = $coursework->extensions_enabled()
             ? deadline_extension::get_all_for_coursework($coursework->id) : [];
@@ -56,9 +54,10 @@ class grading_report {
 
         // Make tablerow objects so we can use the methods to check permissions and set things.
         $rows = [];
-        $ability = new ability($USER->id, $coursework);
 
         $participantsfound = 0;
+
+        $canseeallrows = self::can_see_all_rows($coursework);
 
         foreach ($participants as $key => $participant) {
             // To save multiple queries to DB for extensions and deadlines, add them here.
@@ -90,12 +89,7 @@ class grading_report {
             );
 
             // Now, we skip the ones who should not be visible on this page.
-            $canshow = $ability->can('show', $row);
-            if (!$canshow && !isset($options['unallocated'])) {
-                unset($participants[$key]);
-                continue;
-            }
-            if ($canshow && isset($options['unallocated'])) {
+            if (!$canseeallrows && !$row->user_visible()) {
                 unset($participants[$key]);
                 continue;
             }
@@ -106,6 +100,41 @@ class grading_report {
             }
         }
         return $rows;
+    }
+
+
+    /**
+     * Can the user see all rows in this report (to save checking for each row).
+     * @param coursework $coursework
+     * @return bool
+     */
+    public static function can_see_all_rows(coursework $coursework): bool {
+        global $USER;
+        if (
+            has_any_capability(
+                [
+                    'mod/coursework:viewallgradesatalltimes',
+                    'mod/coursework:submitonbehalfof',
+                    'mod/coursework:canexportfinalgrades',
+                    'mod/coursework:grantextensions',
+                    'mod/coursework:administergrades',
+                ],
+                $coursework->get_context()
+            )
+        ) {
+            return true;
+        }
+
+        if (!$coursework->allocation_enabled()) {
+            // If we are able to grade any stage for this row, it's visible.
+            foreach ($coursework->marking_stages() as $stage) {
+                if ($stage->user_is_assessor($USER->id)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -26,6 +26,7 @@ use coding_exception;
 use core\exception\moodle_exception;
 use html_writer;
 use mod_coursework\allocation\allocatable;
+use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
 use mod_coursework\models\feedback;
@@ -417,5 +418,58 @@ class grading_table_row_base implements user_row {
         }
 
         return $this->personaldeadline;
+    }
+
+    /**
+     * Is this row (specifically) visible to the current user?
+     * Note that user may be able to see all rows which, for efficiency in a loop, this does not check.
+     * @see grading_report::can_see_all_rows()
+     * @return bool
+     */
+    public function user_visible(): bool {
+        global $USER;
+
+        $coursework = $this->get_coursework();
+        $submission = $this->get_submission();
+
+        if ($coursework->allocation_enabled()) {
+            $allocatable = $this->get_allocatable();
+            if (
+                allocation::allocatable_is_allocated_to_assessor(
+                    $coursework->id(),
+                    $allocatable->id(),
+                    $allocatable->type(),
+                    $USER->id
+                )
+            ) {
+                return true;
+            }
+
+            // Visible if row is ready for agreed feedback and user is allowed to add agreed feedback.
+            if (
+                $submission
+                && has_capability('mod/coursework:addagreedgrade', $coursework->get_context())
+                && (!$coursework->sampling_enabled() || $submission->sampled_feedback_exists())
+                && $submission->get_state() >= submission::FULLY_GRADED
+            ) {
+                return true;
+            }
+        }
+
+        if (
+            $submission
+            && feedback::get_cached_object(
+                $coursework->id(),
+                [
+                    'submissionid' => $submission->id(),
+                    'assessorid' => $USER,
+                ],
+            )
+        ) {
+            // If we've already graded any stage for this submission, row is visible.
+            return true;
+        }
+
+        return false;
     }
 }

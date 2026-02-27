@@ -188,19 +188,7 @@ class ability extends framework\ability {
         $this->allow_show_allocation_to_the_allocated_assessor();
         $this->allow_show_allocation_to_allocators();
 
-        // Grading table row rules
-
-        // Show grading table row
-        $this->allow_show_grading_table_row_if_allocation_enabled_and_user_has_any_allocation();
-        $this->allow_show_grading_table_row_if_allocation_enabled_and_all_initial_feedback_done_and_user_can_do_agreed_grades();
-        $this->allow_show_grading_table_row_if_allocation_not_enabled_and_user_is_assessor_of_any_stage();
-        $this->allow_show_grading_table_row_if_user_has_added_feedback_for_this_submission();
-        $this->allow_show_grading_table_row_if_user_can_administer_grades();
-        $this->allow_show_grading_table_row_if_user_can_grant_extension_and_no_allocation();
-        // CTP-4215 external examiner with capability mod/coursework:viewallgradesatalltimes needs to see all submissions.
-        $this->allow_show_grading_table_row_if_user_can_view_grades_at_all_times();
-        $this->allow_show_grading_table_row_if_user_can_submit_on_behalf_of();
-        $this->allow_show_grading_table_row_if_user_can_export_final_grades();
+        // Grading table row rules have been simplified / moved to grading_table_row_base:::user_visible().
 
         // Deadline extension rules
 
@@ -1185,130 +1173,6 @@ class ability extends framework\ability {
         );
     }
 
-    protected function allow_show_grading_table_row_if_allocation_enabled_and_user_has_any_allocation() {
-        $this->allow(
-            'show',
-            'mod_coursework\grading_table_row_base',
-            function (grading_table_row_base $gradingtablerow) {
-                $allocatable = $gradingtablerow->get_allocatable();
-
-                if ($gradingtablerow->get_coursework()->allocation_enabled()) {
-                    return allocation::allocatable_is_allocated_to_assessor(
-                        $gradingtablerow->get_coursework()->id(),
-                        $allocatable->id(),
-                        $allocatable->type(),
-                        $this->userid
-                    );
-                }
-                return false;
-            }
-        );
-    }
-
-    protected function allow_show_grading_table_row_if_allocation_enabled_and_all_initial_feedback_done_and_user_can_do_agreed_grades() {
-        $this->allow(
-            'show',
-            'mod_coursework\grading_table_row_base',
-            function (grading_table_row_base $gradingtablerow) {
-                $canaddagreedgrade = has_capability(
-                    'mod/coursework:addagreedgrade',
-                    $gradingtablerow->get_coursework()
-                        ->get_context()
-                );
-
-                if (
-                    $gradingtablerow->get_coursework()
-                        ->allocation_enabled() && $gradingtablerow->has_submission()
-                ) {
-                    $submissionhasallinitialassessorfeedbacks = $gradingtablerow->get_submission()
-                        ->get_state() >= submission::FULLY_GRADED;
-                    if (
-                        $canaddagreedgrade &&
-                        $submissionhasallinitialassessorfeedbacks
-                    ) {
-                        $submissioninsample = $gradingtablerow->get_submission()->sampled_feedback_exists();
-                        return (!$gradingtablerow->get_coursework()->sampling_enabled() || $submissioninsample) ? true : false;
-                    }
-                }
-                return false;
-            }
-        );
-    }
-
-    protected function allow_show_grading_table_row_if_allocation_not_enabled_and_user_is_assessor_of_any_stage() {
-        $this->allow(
-            'show',
-            'mod_coursework\grading_table_row_base',
-            function (grading_table_row_base $gradingtablerow) {
-                if (!$gradingtablerow->get_coursework()->allocation_enabled()) {
-                    foreach ($gradingtablerow->get_coursework()->marking_stages() as $stage) {
-                        if ($stage->user_is_assessor($this->userid)) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-        );
-    }
-
-    protected function allow_show_grading_table_row_if_user_has_added_feedback_for_this_submission() {
-        $this->allow(
-            'show',
-            'mod_coursework\grading_table_row_base',
-            function (grading_table_row_base $gradingtablerow) {
-                // Check using cached object to avoid repeated DB calls on grading page.
-                return $gradingtablerow->has_submission()
-                    && feedback::get_cached_object(
-                        $gradingtablerow->get_coursework()->id(),
-                        [
-                            'submissionid' => $gradingtablerow->get_submission()->id(),
-                            'assessorid' => $this->userid,
-                        ],
-                    );
-            }
-        );
-    }
-
-    protected function allow_show_grading_table_row_if_user_can_view_grades_at_all_times() {
-        $this->allow(
-            'show',
-            'mod_coursework\grading_table_row_base',
-            function (grading_table_row_base $gradingtablerow) {
-                return has_capability(
-                    'mod/coursework:viewallgradesatalltimes',
-                    $gradingtablerow->get_coursework()->get_context()
-                );
-            }
-        );
-    }
-
-    protected function allow_show_grading_table_row_if_user_can_submit_on_behalf_of() {
-        $this->allow(
-            'show',
-            'mod_coursework\grading_table_row_base',
-            function (grading_table_row_base $gradingtablerow) {
-                return has_capability(
-                    'mod/coursework:submitonbehalfof',
-                    $gradingtablerow->get_coursework()->get_context()
-                );
-            }
-        );
-    }
-
-    protected function allow_show_grading_table_row_if_user_can_export_final_grades() {
-        $this->allow(
-            'show',
-            'mod_coursework\grading_table_row_base',
-            function (grading_table_row_base $gradingtablerow) {
-                return has_capability(
-                    'mod/coursework:canexportfinalgrades',
-                    $gradingtablerow->get_coursework()->get_context()
-                );
-            }
-        );
-    }
-
     protected function allow_show_feedback_if_user_can_view_grades_at_all_times_or_administer() {
         $this->allow(
             'show',
@@ -1357,35 +1221,6 @@ class ability extends framework\ability {
                     $feedback->get_coursework()
                         ->get_context()
                 );
-            }
-        );
-    }
-
-    private function allow_show_grading_table_row_if_user_can_administer_grades() {
-        $this->allow(
-            'show',
-            'mod_coursework\grading_table_row_base',
-            function (grading_table_row_base $row) {
-                return has_capability(
-                    'mod/coursework:administergrades',
-                    $row->get_coursework()
-                        ->get_context()
-                );
-            }
-        );
-    }
-
-    private function allow_show_grading_table_row_if_user_can_grant_extension_and_no_allocation() {
-        $this->allow(
-            'show',
-            'mod_coursework\grading_table_row_base',
-            function (grading_table_row_base $row) {
-
-                return  (!$row->get_coursework()->allocation_enabled() && has_capability(
-                    'mod/coursework:grantextensions',
-                    $row->get_coursework()
-                        ->get_context()
-                ));
             }
         );
     }
