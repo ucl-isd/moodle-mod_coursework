@@ -785,6 +785,13 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * @Given /^the coursework start date is now$/
+     */
+    public function the_coursework_start_date_is_now() {
+        $this->coursework->update_attribute('startdate', time());
+    }
+
+    /**
      * @Given /^the coursework start date is in the future$/
      */
     public function the_coursework_start_date_is_in_the_future() {
@@ -2205,15 +2212,28 @@ class behat_mod_coursework extends behat_base {
 
     /**
      * Named student has a submission.
-     * @Given /^the student called "([\w]+)" has a( finalised)? submission*$/
+     * @Given /^the student called "(?P<name>(?:[^"]|\\")*)" has a( finalised)? submission*$/
      */
-    public function named_student_has_a_submission(string $firstname, bool $finalised = false) {
+    public function named_student_has_a_submission(string $fullname, bool $finalised = false) {
         global $DB;
         $generator = testing_util::get_data_generator()->get_plugin_generator('mod_coursework');
-        $userid = $DB->get_field_sql(
-            "SELECT id FROM {user} WHERE firstname = ? AND lastname LIKE 'student%'",
-            [$firstname]
-        );
+
+        // Check if the name consists of first- and last name.
+        $nameparts = explode(' ', $fullname, 2);
+        $firstname = $nameparts[0];
+        $lastname = $nameparts[1] ?? '';
+
+        if (empty($lastname)) {
+            $userid = $DB->get_field_sql(
+                "SELECT id FROM {user} WHERE firstname = ? AND lastname LIKE 'student%'",
+                [$firstname]
+            );
+        } else {
+            $userid = $DB->get_field_sql(
+                "SELECT id FROM {user} WHERE firstname = ? AND lastname = ?",
+                [$firstname, $lastname]
+            );
+        }
         if ($userid) {
             $submission = new stdClass();
             $submission->allocatableid = $userid;
@@ -2890,6 +2910,25 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
+     * For matching a late submitted date ignoring the time part
+     *
+     * Example: I should see late submitted date 4 July 2025
+     *
+     * @Given /^I should see late submitted date "(?P<date>(?:[^"]|\\")*)"$/
+     */
+    public function i_should_see_late_submitted_date($date) {
+        $page = $this->getsession()->getpage();
+        $match = $page->find('xpath', "//li[starts-with(normalize-space(string()), 'Submitted Late $date')]");
+
+        if (!$match) {
+            throw new ExpectationException(
+                "Should have seen expected submitted late date $date, but it was not there",
+                $this->getsession()
+            );
+        }
+    }
+
+    /**
      * @Given /^sample marking includes student for stage (\d)$/
      */
     public function sample_marking_includes_student_for_stage($stage) {
@@ -3149,5 +3188,282 @@ class behat_mod_coursework extends behat_base {
     public function i_set_the_field_to_replacing_line_breaks($field, $value) {
         $value = str_replace('\n', chr(10), $value);
         $this->execute([behat_forms::class, 'i_set_the_field_to'], [$field, $value]);
+    }
+
+    /**
+     * Sets an extension deadline for a student in a coursework.
+     *
+     * Example: And the coursework extension for "Student 1" in "Coursework 1" is "1 January 2027 08:00"
+     * Example: And the coursework extension for "Student 1" in "Coursework 1" is "## + 1 month ##"
+     *
+     * @Given /^the coursework extension for "(?P<fullname_string>(?:[^"]|\\")*)" in "(?P<cwname>(?:[^"]|\\")*)" is "(?P<datestr>(?:[^"]|\\")*)"$/
+     */
+    public function set_extension_for_user($fullname, $cwname, $datestr) {
+        global $DB;
+
+        // Check date string.
+        if (is_int($datestr) || (is_string($datestr) && ctype_digit($datestr))) {
+            $extendeddeadline = (int)$datestr;
+        } else {
+            $extendeddeadline = strtotime($datestr);
+            if ($extendeddeadline === false) {
+                throw new \InvalidArgumentException('Invalid user extension date string: ' . $datestr);
+            }
+        }
+
+        // Find the coursework by name.
+        $cw = $DB->get_record('coursework', ['name' => $cwname], '*', MUST_EXIST);
+
+        $user = $this->get_user_from_fullname($fullname);
+
+        // See if an extension already exists.
+        $existing = $DB->get_record('coursework_extensions', [
+            'courseworkid' => $cw->id,
+            'allocatableid' => $user->id,
+            'allocatabletype' => 'user',
+        ]);
+
+        $record = new stdClass();
+        $record->courseworkid = $cw->id;
+        $record->allocatableid = $user->id;
+        $record->allocatabletype = 'user';
+        $record->extended_deadline = $extendeddeadline;
+        $record->createdbyid = 2;  // Admin ID.
+
+        if ($existing) {
+            $record->id = $existing->id;
+            $DB->update_record('coursework_extensions', $record);
+        } else {
+            $DB->insert_record('coursework_extensions', $record);
+        }
+    }
+
+    /**
+     * @Given /^the following markers are allocated:$/
+     *
+     * @param TableNode $allocations Students and their markers.
+     */
+    public function the_following_markers_are_allocated(TableNode $allocations) {
+        global $DB;
+
+        $datahash = $allocations->getHash();
+
+        foreach ($datahash as $allocate) {
+            $stages = ['assessor_1'];
+            if (isset($allocate['moderator'])) {
+                $stages[] = 'moderator';
+            } else if (isset($allocate['assessor_2'])) {
+                $stages[] = 'assessor_2';
+            }
+
+            $student = $this->get_user_from_fullname($allocate['student']);
+            foreach ($stages as $stage) {
+                $marker = $this->get_user_from_fullname($allocate[$stage]);
+
+                $record = $DB->get_record('coursework_allocation_pairs', [
+                    'courseworkid' => $this->coursework->id,
+                    'allocatableid' => $student->id,
+                    'allocatableuser' => $student->id,
+                    'stageidentifier' => $stage,
+                    'allocatabletype' => 'user',
+                ]);
+                if ($record) {
+                    $record->assessorid = $marker->id;
+                    $record->ismanual = 1;
+                    $DB->update_record('coursework_allocation_pairs', $record);
+                } else {
+                    $record = new stdClass();
+                    $record->courseworkid = $this->coursework->id;
+                    $record->allocatableid = $student->id;
+                    $record->allocatableuser = $student->id;
+                    $record->assessorid = $marker->id;
+                    $record->stageidentifier = $stage;
+                    $record->allocatabletype = 'user';
+                    $record->ismanual = 1;
+                    $DB->insert_record('coursework_allocation_pairs', $record);
+                }
+            }
+        }
+        allocation::remove_cache($this->coursework->id);
+    }
+
+    /**
+     * Return a user record from a given full name ("firstname lastname")
+     *
+     * @param string $fullname
+     * @return stdClass The user record
+     * @throws coding_exception When the full name is invalid or the user cannot be found
+     */
+    private function get_user_from_fullname(string $fullname) {
+        global $DB;
+
+        // Check if the name consists of first- and last name.
+        $nameparts = explode(' ', $fullname, 2);
+        $firstname = $nameparts[0];
+        $lastname = $nameparts[1] ?? '';
+
+        if (empty($lastname)) {
+            throw new coding_exception("Full name '{$fullname}' must contain at least one space between first and last name.");
+        }
+
+        // Find user by full name (firstname + lastname).
+        $user = $DB->get_record('user', [
+            'firstname' => $firstname,
+            'lastname'  => $lastname,
+        ]);
+
+        if (!$user) {
+            throw new coding_exception("Could not find user with name '{$fullname}'.");
+        }
+        return $user;
+    }
+
+    /**
+     * Inserts a grade directly into coursework_feedbacks table.
+     *
+     * @When /^the submission from "(?P<studentfullname>[^"]*)" is marked by "(?P<markerfullname>[^"]*)" with:$/
+     */
+    public function mark_coursework_submission_directly(
+        string $studentfullname,
+        string $markerfullname,
+        TableNode $table
+    ) {
+        global $DB;
+
+        $student = $this->get_user_from_fullname($studentfullname);
+        $marker = $this->get_user_from_fullname($markerfullname);
+
+        // Resolve submission for this student.
+        $submission = $DB->get_record('coursework_submissions', [
+            'courseworkid' => $this->coursework->id,
+            'allocatableid' => $student->id,
+        ]);
+        if (!$submission) {
+            throw new ExpectationException("Submission for '$studentfullname' not found", $this->getSession());
+        }
+
+        // Resolve marker allocation.
+        $allocation = $DB->get_record('coursework_allocation_pairs', [
+            'courseworkid' => $this->coursework->id,
+            'assessorid' => $marker->id,
+            'allocatableid' => $student->id,
+        ]);
+        if (!$allocation) {
+            throw new ExpectationException("Marker '$markerfullname' for '$studentfullname' not found", $this->getSession());
+        }
+
+        // Extract the provided table values.
+        $data = $table->getRowsHash();
+
+        $mark = isset($data['Mark']) ? floatval($data['Mark']) : null;
+        $comment = $data['Comment'] ?? '';
+        $finalised = $data['Finalised'] ?? '';
+
+        if ($mark === null) {
+            throw new ExpectationException("Missing 'Mark' value in table", $this->getSession());
+        }
+
+        // Check if there is already a feedback record.
+        $existing = $DB->get_record('coursework_feedbacks', [
+            'submissionid' => $submission->id,
+            'assessorid' => $marker->id,
+            'stageidentifier' => $allocation->stageidentifier,
+        ]);
+
+        // Insert/update feedback record.
+        $feedback = new stdClass();
+        $feedback->submissionid = $submission->id;
+        $feedback->assessorid = $marker->id;
+        $feedback->stageidentifier = $allocation->stageidentifier;
+        $feedback->grade = $mark;
+        $feedback->feedbackcomment = $comment;
+        $feedback->lasteditedbyuser = $marker->id;
+        $feedback->finalised = $finalised;
+        $feedback->timecreated = time();
+        $feedback->timemodified = time();
+
+        if ($existing) {
+            $feedback->id = $existing->id;
+            $DB->update_record('coursework_feedbacks', $feedback);
+        } else {
+            $DB->insert_record('coursework_feedbacks', $feedback);
+        }
+    }
+
+    /**
+     * Inserts a moderation directly into coursework_mod_agreements table.
+     *
+     * @When /^the submission from "(?P<studentfullname>[^"]*)" is moderated by "(?P<moderatorfullname>[^"]*)" with:$/
+     */
+    public function moderate_submission_directly(
+        string $studentfullname,
+        string $moderatorfullname,
+        TableNode $table
+    ) {
+        global $DB;
+
+        $student = $this->get_user_from_fullname($studentfullname);
+        $moderator = $this->get_user_from_fullname($moderatorfullname);
+
+        // Resolve submission for this student.
+        $submission = $DB->get_record('coursework_submissions', [
+            'courseworkid' => $this->coursework->id,
+            'allocatableid' => $student->id,
+        ]);
+        if (!$submission) {
+            throw new ExpectationException("Submission for '$studentfullname' not found", $this->getSession());
+        }
+
+        // Resolve moderator allocation.
+        $allocation = $DB->get_record('coursework_allocation_pairs', [
+            'courseworkid' => $this->coursework->id,
+            'assessorid' => $moderator->id,
+            'allocatableid' => $student->id,
+            'stageidentifier' => 'moderator',
+        ]);
+        if (!$allocation) {
+            throw new ExpectationException("Moderator '$moderatorfullname' for '$studentfullname' not found", $this->getSession());
+        }
+
+        // Resolve feedback.
+        $params = ['submissionid' => $submission->id];
+        $sql = "SELECT *
+                FROM {coursework_feedbacks}
+                WHERE submissionid = :submissionid
+                AND stageidentifier LIKE 'assessor_%'";
+        $feedback = $DB->get_record_sql($sql, $params);
+
+        if (!$feedback) {
+            throw new ExpectationException("Feedback for '$studentfullname' not found", $this->getSession());
+        }
+
+        // Extract the provided table values.
+        $data = $table->getRowsHash();
+        $agreementtext = $data['Agreement'] ?? '';
+        $comment = $data['Comment'] ?? '';
+
+        // Check if there is already an agreement record.
+        $existing = $DB->get_record('coursework_mod_agreements', [
+            'feedbackid' => $feedback->id,
+            'moderatorid' => $moderator->id,
+        ]);
+
+        // Insert/update agreement record.
+        $agreement = new stdClass();
+        $agreement->feedbackid = $feedback->id;
+        $agreement->moderatorid = $moderator->id;
+        $agreement->agreement = $agreementtext;
+        $agreement->modcomment = $comment;
+        $agreement->modcommentformat = FORMAT_HTML;
+        $agreement->lasteditedby = $moderator->id;
+        $agreement->timecreated = time();
+        $agreement->timemodified = time();
+
+        if ($existing) {
+            $agreement->id = $existing->id;
+            $DB->update_record('coursework_mod_agreements', $agreement);
+        } else {
+            $DB->insert_record('coursework_mod_agreements', $agreement);
+        }
     }
 }
