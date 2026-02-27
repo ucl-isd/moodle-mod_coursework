@@ -26,7 +26,9 @@
 namespace mod_coursework\render_helpers\grading_report\data;
 
 use coding_exception;
+use core\exception\invalid_parameter_exception;
 use core\exception\moodle_exception;
+use core\url;
 use core_user;
 use dml_exception;
 use mod_coursework\assessor_feedback_table;
@@ -232,37 +234,21 @@ class marking_cell_data extends cell_data_base {
      * @param string $action 'edit', 'show' or 'new'
      * @param submission $submission the submission
      * @param stage $stage the stage of the row
-     * @param feedback|null $feedback $feedback the feedback
-     * @param bool $final whether this is for a final mark
+     * @param feedback|null $feedback $feedback the feedback if editing existing
      * @return string
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function get_mark_url(
-        string $action,
-        submission $submission,
-        stage $stage,
-        ?feedback $feedback = null,
-        bool $final = false
-    ): string {
-        global $USER;
-
-        $paths = [
-            'edit' => ['path' => 'edit feedback', 'params' => ['feedback' => $feedback]],
-            'show' => ['path' => 'show feedback', 'params' => ['feedback' => $feedback]],
-            'new' => [
-                'path' => 'new ' . ($final ? 'final ' : '') . 'feedback',
-                'params' => [
-                    'submission' => $submission,
-                    'assessor' => user::find($USER, false),
-                    'stage' => $stage,
-                ],
-            ],
-        ];
-
-        return isset($paths[$action]) ?
-            router::instance()->get_path($paths[$action]['path'], $paths[$action]['params']) :
-            '#';
+    public function get_mark_url(string $action, submission $submission, stage $stage, ?feedback $feedback = null): string {
+        if (!in_array($action, ['new', 'edit', 'show'])) {
+            throw new invalid_parameter_exception("Unknown action $action");
+        }
+        return (new url(
+            "/mod/coursework/actions/feedbacks/$action.php",
+            ($action == 'new')
+               ? ['submissionid' => $submission->id(), 'stageidentifier' => $stage->identifier()]
+               : ['feedbackid' => $feedback ? $feedback->id() : null]
+        ))->out();
     }
 
     /**
