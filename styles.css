@@ -272,7 +272,7 @@ Coursework.
         background-size: cover;
         background-position: center;
     }
-    
+
     /* Hide activity header - date and description displayed differently. */
     .activity-header {
         display: none !important;
