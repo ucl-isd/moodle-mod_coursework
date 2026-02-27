@@ -97,15 +97,17 @@ class percentages extends base {
                     }
                 }
 
+                $elem = 'assessorstrategy' . $this->get_name() . '[' . $teacher->id . ']';
                 $attributes = [
-                    'name' => 'assessorstrategy' . $this->get_name() . '[' . $teacher->id . ']',
+                    'name' => $elem,
                     'size' => 3,
+                    'id' => $elem,
                 ];
                 if ($currentsetting) {
                     $attributes['value'] = $currentsetting->value;
                 }
                 $cell = new html_table_cell();
-                $cell->text .= fullname($teacher);
+                $cell->text .= '<label for="' . $elem . '">' . fullname($teacher) . '</label>';
                 $row->cells[] = $cell;
 
                 $cell = new html_table_cell();
