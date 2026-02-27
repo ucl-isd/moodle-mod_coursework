@@ -326,12 +326,12 @@ function mod_coursework_core_calendar_provide_event_action(
 
         if ($event->eventtype == 'initialgradingdue') {
             // Initial grades
-            $togradeinitialcount = $outstandingmarking->get_to_grade_initial_count($dbcoursework, $USER->id);
+            $togradeinitialcount = $outstandingmarking->get_to_grade_initial_count($coursework, $USER->id);
             $name = ($coursework->has_multiple_markers()) ? get_string('initialmark', 'coursework') : get_string('mark', 'mod_coursework');
             $itemcount = $togradeinitialcount;
         } else if ($event->eventtype == 'agreedgradingdue') {
             // Agreed grades
-            $togradeagreedcount = $outstandingmarking->get_to_grade_agreed_count($dbcoursework, $USER->id);
+            $togradeagreedcount = $outstandingmarking->get_to_grade_agreed_count($coursework, $USER->id);
             $name = get_string('agreedmark', 'coursework');
             $itemcount = $togradeagreedcount;
         }

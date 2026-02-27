@@ -26,14 +26,11 @@ use context_course;
 
 class outstanding_marking {
     /**
-     * @param $cwkrecord
-     * @param $userid
+     * @param coursework $coursework
+     * @param int $userid
      * @return int
      */
-    public function get_to_grade_initial_count($cwkrecord, $userid) {
-
-        $coursework = new coursework($cwkrecord);
-
+    public function get_to_grade_initial_count(coursework $coursework, int $userid) {
         $initialsubmissions = [];
 
         if ($this->should_get_to_mark_initial_grade_info($coursework->id, $userid)) {
@@ -50,14 +47,11 @@ class outstanding_marking {
     }
 
     /**
-     * @param $cwkrecord
-     * @param $userid
+     * @param coursework $coursework
+     * @param int $userid
      * @return int
      */
-    public function get_to_grade_agreed_count($cwkrecord, $userid) {
-
-        $coursework = new coursework($cwkrecord);
-
+    public function get_to_grade_agreed_count(coursework $coursework, int $userid) {
         $agreedsubmissions = [];
 
         // AGREED GRADE INFORMATION
