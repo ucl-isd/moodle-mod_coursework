@@ -2,8 +2,13 @@
 Feature: Teachers should be able to add and edit plagiarism flags for group submissions
 
   Background:
-    Given there is a course
-    And there is a coursework
+    Given the following "course" exists:
+      | fullname          | Course 1  |
+      | shortname         | C1        |
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
     And the coursework "plagiarismflagenabled" setting is "1" in the database
     And the coursework "usegroups" setting is "1" in the database
     And there is a student
@@ -14,7 +19,7 @@ Feature: Teachers should be able to add and edit plagiarism flags for group subm
 
   Scenario: Teacher can flag a group submission for plagiarism
     Given I am logged in as a teacher
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     And I should not see "Flagged for plagiarism"
     And I click on "Actions" "button"
     And I click on "Plagiarism action" "link"

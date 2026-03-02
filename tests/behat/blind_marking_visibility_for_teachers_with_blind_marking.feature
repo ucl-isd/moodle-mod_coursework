@@ -6,21 +6,26 @@ Feature: Visibility for teachers with blind marking
   So that I can be sure that they are not influenced by each other and the marking is fair
 
   Background:
-    Given there is a course
-    And there is a coursework
+    Given the following "course" exists:
+      | fullname          | Course 1  |
+      | shortname         | C1        |
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
 
   Scenario: The student names are hidden from teachers in the user cells
     Given blind marking is enabled
     And I am logged in as a teacher
     And there is a student
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     Then I should not see the student's name in the user cell
     And I should not see the student's picture in the user cell
 
   Scenario: The student names are not hidden from teachers in the user cells
     Given I am logged in as a teacher
     And there is a student
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     Then I should see the student's name in the user cell
     And I should see the student's picture in the user cell
 
@@ -32,7 +37,7 @@ Feature: Visibility for teachers with blind marking
     And group submissions are enabled
     And the student is a member of a group
     And the group is part of a grouping for the coursework
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     Then I should see "View members" in the "My group" "table_row"
     And I click on "View members" "button"
     Then I should not see "student student2" in the ".dropdown-menu.show" "css_element"
@@ -44,17 +49,18 @@ Feature: Visibility for teachers with blind marking
     And there is a teacher
     And there is another teacher
     And there is a student
-    And the student has a submission
-    And the submission is finalised
+    And the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | Coursework | 1               |
     And there are feedbacks from both teachers
     And I am logged in as the other teacher
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     Then I should not see "67" in the "Hidden" "table_row"
     But I should see "Marked" in the "Hidden" "table_row"
     And I should see "63" in the "Hidden" "table_row"
     And I log out
     Then I am logged in as a teacher
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     Then I should not see "63" in the "Hidden" "table_row"
     But I should see "Marked" in the "Hidden" "table_row"
     And I should see "67" in the "Hidden" "table_row"

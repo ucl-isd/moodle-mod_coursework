@@ -7,9 +7,14 @@ Feature: Auto releasing the student feedback without cron
     So that I get the feedback I need and don't think the system is broken
 
   Background:
-    Given there is a course
-    And there is a coursework
-    And the coursework is set to single marker
+    Given the following "course" exists:
+      | fullname          | Course 1  |
+      | shortname         | C1        |
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
+      | numberofmarkers   | 1          |
     And there is a student
     And the student has a submission
     And there is a teacher
@@ -18,11 +23,11 @@ Feature: Auto releasing the student feedback without cron
   Scenario: auto release does not happen before the deadline without the cron running
     Given the coursework individual feedback release date has not passed
     When I log in as a student
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     Then I should not see "Released"
 
   Scenario: auto release happens after the deadline without the cron running
     Given the coursework individual feedback release date has passed
     And I log in as a student
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     Then I should see "Released"
