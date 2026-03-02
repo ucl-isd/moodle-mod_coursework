@@ -774,7 +774,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @param string $classname
      * @return string
      */
-    protected function make_file_link($files, $file, $classname = 'submissionfile') {
+    protected function make_file_link($files, $file, $classname = 'submissionfile text-break') {
         if (
             $files->get_file_area_name() == 'submission'
             &&
