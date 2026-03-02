@@ -6,23 +6,28 @@ Feature: Start date
     So that students will not begin to work on it until the right time
 
   Background:
-    Given there is a course
-    And there is a coursework
+    Given the following "course" exists:
+      | fullname          | Course 1  |
+      | shortname         | C1        |
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
 
   Scenario: The student can submit when the start date is disabled
     Given the coursework start date is disabled
     When I log in as a student
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     Then I should see "Upload your submission"
 
   Scenario: The student can not submit when the start date is in the future
     Given the coursework start date is in the future
     When I log in as a student
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     Then I should not see "Upload your submission"
 
   Scenario: The student can submit when the start date is in the past
     Given the coursework start date is in the past
     When I log in as a student
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page
     Then I should see "Upload your submission"

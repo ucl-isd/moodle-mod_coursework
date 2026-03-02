@@ -7,11 +7,16 @@ Feature: Marking the group submissions applies the grades to the whole group
     see their feedback and grades
 
   Background:
-    Given there is a course
-    And there is a coursework
+    Given the following "course" exists:
+      | fullname          | Course 1  |
+      | shortname         | C1        |
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
+      | numberofmarkers            | 2          |
     And there is a teacher
     And there is another teacher
-    And the coursework "numberofmarkers" setting is "2" in the database
     And the coursework "usegroups" setting is "1" in the database
     And there is a student
     And the student is a member of a group
@@ -24,8 +29,8 @@ Feature: Marking the group submissions applies the grades to the whole group
 
   @javascript
   Scenario: grading the submission makes the grades show up for both students in the interface
-    Given I visit the coursework page
+    Given I am on the "Coursework" "coursework activity" page
     When I click the new final feedback button for the group
     And I grade the submission as 56 using the simple form
-    Then I visit the coursework page
+    Then I am on the "Coursework" "coursework activity" page
     And I should see the final grade for the group in the grading interface

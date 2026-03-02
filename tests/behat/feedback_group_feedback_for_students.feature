@@ -6,8 +6,13 @@ Feature: Students see feedback on group assignments
     So that I know what my marks are and can improve my work
 
   Background:
-    Given there is a course
-    And there is a coursework
+    Given the following "course" exists:
+      | fullname          | Course 1  |
+      | shortname         | C1        |
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
     And the coursework "usegroups" setting is "1" in the database
     And the coursework is set to double marker
     And there is a manager
@@ -22,13 +27,13 @@ Feature: Students see feedback on group assignments
 
   Scenario: I can see the published grade when someone else submitted
     Given I am logged in as the other student
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     Then I should see the grade for the group submission
     And I should see the feedback for the group submission
 
   Scenario: I can see the published grade when I submitted
     Given I am logged in as the student
-    When I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page
     Then I should see the grade for the group submission
     And I should see the feedback for the group submission
 
@@ -36,7 +41,7 @@ Feature: Students see feedback on group assignments
 #  @broken
 #  Scenario: I can see the published grade in the gradebook when someone else submitted
 #    Given I am logged in as the other student
-#    And I visit the coursework page
+#    And I am on the "Coursework" "coursework activity" page
 #    When I visit the gradebook page
 #    Then I should see the grade in the gradebook
 
