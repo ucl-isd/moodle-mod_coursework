@@ -55,7 +55,7 @@ Feature: Marking guide
     Then I should not see "Changes saved"
 
     And I set the field "A criteria criterion remark" to "Final agreed feedback"
-    And I set the field "Mark" to "10"
+    And I set the field "Mark (0–100)" to "10"
     And I press "Save and finalise"
     Then I should see "Changes saved"
     And I should see the final agreed grade status "Ready for release"
