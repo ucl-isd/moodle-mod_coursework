@@ -234,9 +234,9 @@ class submission extends table_base implements renderable {
 
     /**
      * Current state of this submission
-     * @var int
+     * @var int|null
      */
-    private int $currentstate;
+    private ?int $currentstate;
 
     /**
      * Constructor: takes a DB row from the coursework_submissions table. We don't retrieve it first
@@ -1772,7 +1772,7 @@ class submission extends table_base implements renderable {
      * @throws dml_exception
      */
     public function reload($complainifnotfound = true) {
-        unset($this->currentstate);
+        $this->currentstate = null;
         return parent::reload($complainifnotfound);
     }
 }
