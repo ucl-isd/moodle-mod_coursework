@@ -102,6 +102,7 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
         $collection->add_database_table('coursework_person_deadlines', $persondeadlines, 'privacy:metadata:persondeadlines');
         $collection->add_database_table('coursework_mod_agreements', $modagreements, 'privacy:metadata:modagreements');
         $collection->add_database_table('coursework_plagiarism_flags', $plagiarismflags, 'privacy:metadata:plagiarismflags');
+        $collection->add_user_preference('coursework_guide_enter_percent_grades', 'privacy:metadata:guideenterpercentgrades');
         return $collection;
     }
     /**
@@ -621,5 +622,27 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
         ];
         writer::with_context($context)
             ->export_data(array_merge($path, [get_string('privacy:moderator', 'mod_coursework')]), (object) $agreementdata);
+    }
+
+
+    /**
+     * Stores the user preferences related to mod_coursework.
+     *
+     * @param  int $userid The user ID that we want the preferences for.
+     */
+    public static function export_user_preferences(int $userid) {
+        $context = \context_system::instance();
+        $preferences = [
+            'coursework_guide_enter_percent_grades' => ['string' => get_string('privacy:metadata:guideenterpercentgrades', 'mod_coursework'), 'bool' => false],
+        ];
+        foreach ($preferences as $key => $preference) {
+            $value = get_user_preferences($key, null, $userid);
+            if ($preference['bool']) {
+                $value = transform::yesno($value);
+            }
+            if (isset($value)) {
+                writer::with_context($context)->export_user_preference('mod_coursework', $key, $value, $preference['string']);
+            }
+        }
     }
 }

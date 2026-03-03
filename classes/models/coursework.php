@@ -962,6 +962,7 @@ class coursework extends table_base {
     /**
      * Does this coursework use a numeric grade or something else (e.g. no grade, scale)?
      * @see make_grades_menu() in core which shows the logic behind this.
+     * (A negative grade value here will be a scale grade type not numeric).
      * @return bool
      */
     public function uses_numeric_grade(): bool {

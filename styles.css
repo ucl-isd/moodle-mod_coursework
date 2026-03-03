@@ -262,6 +262,31 @@ Coursework.
             }
             .score {
                 text-align: right;
+                input.invalid-value {
+                    border-color: var(--danger);
+                    outline-color: var(--danger);
+                    box-shadow: 0 0 0 .2rem var(--danger);
+                    padding-right: calc(1.5em + .75rem);
+                    background-image: url([[pix:mod_coursework|exclamation-circle]]);
+                    background-repeat: no-repeat;
+                    background-position: right calc(.375em + .1875rem) center;
+                    background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+                }
+                input.form-control {
+                    text-align: right;
+                    &:read-only {
+                        border: none;
+                        background-color: inherit;
+                        box-shadow: none;
+                        &:focus {
+                            outline-style: dotted;
+                        }
+                    }
+
+                }
+            }
+            #coursework-marking-guide-totals-inner {
+                min-width: 100px;
             }
         }
     }

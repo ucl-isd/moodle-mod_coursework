@@ -93,11 +93,11 @@ const calculateGuide = () => {
     let runningTotal = 0;
     let runningMax = 0;
 
-    guide.querySelectorAll('.score input[type="number"]').forEach(input => {
+    guide.querySelectorAll('.score input:not(.input-percent)[type="number"]').forEach(input => {
         const val = parseFloat(input.value);
         const max = parseFloat(input.getAttribute('max'));
         if (!isNaN(val)) {
-            runningTotal += val;
+            runningTotal += Math.min(val, max);
         }
         if (!isNaN(max)) {
             runningMax += max;
