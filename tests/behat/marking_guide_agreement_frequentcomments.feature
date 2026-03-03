@@ -1,4 +1,4 @@
-@mod @mod_coursework @mod_coursework_guide_agree_frequent_comments
+@mod @mod_coursework @mod_coursework_marking_guide_agreement_frequent_comments
 Feature: Marking guide with frequent comments
   Users can make use of the marking guide to submit grades for final approval based on frequently used comments.
 
@@ -65,7 +65,7 @@ Feature: Marking guide with frequent comments
     And I wait "1" seconds
 
     Then the field "A criteria criterion remark" matches value "Comment 2"
-    And I set the field "Mark" to "10"
+    And I set the field "Mark (0–100)" to "10"
     And I press "Save and finalise"
 
     Then I should see the final agreed grade status "Ready for release"

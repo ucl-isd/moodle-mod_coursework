@@ -87,7 +87,6 @@ Feature: Marking guide percentage grades entry
     And I visit the coursework page
     And I should see "49" in the "student student2" "table_row"
 
-
   @javascript
   Scenario: Marker chooses to enter grades as fractions even though percentage grades are allowed.
     Given the following "user preferences" exist:
