@@ -643,7 +643,7 @@ class submission extends table_base implements renderable {
      * @throws coding_exception
      * @throws dml_exception
      */
-    public function get_state(bool $includefilescheck = false) {
+    public function get_state(bool $includefilescheck = false): int {
         // Keep result temporarily as this is called many times for same submission during loading of the grading page.
         if (!isset($this->currentstate)) {
             $this->currentstate = $this->get_state_uncached($includefilescheck);
