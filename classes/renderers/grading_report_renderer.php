@@ -66,7 +66,6 @@ class grading_report_renderer extends plugin_renderer_base {
         $template = new stdClass();
         $template->coursework = self::prepare_coursework_data($coursework);
         $template->blindmarkingenabled = $blindmarking;
-        $template->releasemarks = $this->prepare_release_marks_button($coursework);
         $template->tiienabled = $coursework->tii_enabled();
 
         $currenturl = new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]);
@@ -136,6 +135,10 @@ class grading_report_renderer extends plugin_renderer_base {
             }
 
             $template->tr[] = $trdata;
+        }
+
+        if ($markingsummary->readyforrelease > 0) {
+            $template->releasemarks = $this->prepare_release_marks_button($coursework);
         }
 
         // Sort markers a-z for dropdown filter.
@@ -342,7 +345,7 @@ class grading_report_renderer extends plugin_renderer_base {
      * @throws coding_exception
      */
     protected function prepare_release_marks_button(coursework $coursework): ?stdClass {
-        [$canrelease] = $coursework->can_release_marks();
+        [$canrelease] = $coursework->can_release_marks(true);
         if (!$canrelease) {
             return null;
         }

@@ -2653,10 +2653,11 @@ class coursework extends table_base {
     /**
      * Check if we can release marks for this coursework instance.
      *
+     * @param bool $assumehasstufftopublish avoid potentially lengthy check that the coursework has stuff to publish?
      * @return array
      * @throws coding_exception
      */
-    public function can_release_marks() {
+    public function can_release_marks(bool $assumehasstufftopublish = false) {
         if (!has_capability('mod/coursework:publish', $this->get_context())) {
             return [
                 false,
@@ -2664,11 +2665,24 @@ class coursework extends table_base {
             ];
         }
 
-        if (!$this->has_stuff_to_publish()) {
-            return [
-                false,
-                get_string('nofinalmarkedworkyet', 'mod_coursework'),
-            ];
+        if (!$assumehasstufftopublish) {
+            $submissions = submission::find_all(['courseworkid' => $this->id()]);
+            $hasstufftopublish = false;
+            /**
+             * @var submission $submission
+             */
+            foreach ($submissions as $submission) {
+                if ($submission->ready_to_publish()) {
+                    $hasstufftopublish = true;
+                    break;
+                }
+            }
+            if (!$hasstufftopublish) {
+                return [
+                    false,
+                    get_string('nofinalmarkedworkyet', 'mod_coursework'),
+                ];
+            }
         }
 
         if ($this->blindmarking_enabled() && $this->moderation_enabled() && $this->unmoderated_work_exists()) {
