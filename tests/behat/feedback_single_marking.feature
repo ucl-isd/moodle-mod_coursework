@@ -61,7 +61,9 @@ Feature: Adding and editing single feedback
 
   Scenario: Student cannot see marker when assessor anonymity is enabled
     Given the submission is finalised
-    And there is finalised feedback for the submission from the teacher
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
     And grades have been released
     And I log out
     When the coursework "assessoranonymity" setting is "1" in the database

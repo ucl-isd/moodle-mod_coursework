@@ -37,7 +37,9 @@ Feature: When a coursework uses single marking the marking summary table should 
     Given the following "mod_coursework > submissions" exist:
       | allocatable | coursework | finalisedstatus |
       | student1    | Coursework | 1               |
-    And there is finalised feedback for the submission from the teacher
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
     And I log in as the teacher
     And I am on the "Coursework" "coursework activity" page
     Then I should see marking summary:
@@ -50,7 +52,9 @@ Feature: When a coursework uses single marking the marking summary table should 
     Given the following "mod_coursework > submissions" exist:
       | allocatable | coursework | finalisedstatus |
       | student1    | Coursework | 1               |
-    And there is finalised feedback for the submission from the teacher
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
     And I log in as the manager
     And I am on the "Coursework" "coursework activity" page
     And I press the release marks button
