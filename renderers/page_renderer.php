@@ -112,56 +112,54 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws coding_exception
      */
     public function edit_moderation_page(moderation $moderatoragreement) {
-
-        global $SITE;
+        global $USER;
 
         $submission = $moderatoragreement->get_submission();
 
         $title = get_string('moderationfor', 'coursework', $submission->get_allocatable_name());
-
         $this->page->set_pagelayout('standard');
         $this->page->navbar->add($title);
-        $this->page->set_title($SITE->fullname);
-        $this->page->set_heading($SITE->fullname);
+        $this->page->set_title($title);
 
-        $assessor = core_user::get_user($moderatoragreement->moderatorid);
+        $model = new stdClass();
+        $model->allocatablename = $submission->get_allocatable_name();
+        $model->feedbacks = [];
 
-        $html = $this->output->heading($title);
-        $html .= '<table class = "moderating-details">';
-        $html .= '<tr><th>' . get_string('moderatedby', 'coursework') . '</th><td>' . fullname($assessor) . '</td></tr>';
+        foreach ($submission->get_assessor_feedbacks() as $feedback) {
+            $model->feedbacks[] = $this->get_object_renderer()->get_feedback_model($feedback, false);
+        }
+
+        if ($moderatoragreement->moderatorid !== $USER->id) {
+            $model->moderator = fullname(core_user::get_user($moderatoragreement->moderatorid));
+        }
 
         if (!empty($moderatoragreement->lasteditedby) && $moderatoragreement->lasteditedby !== $moderatoragreement->moderatorid) {
-            $html .= '<tr><th>'
-                . get_string('lasteditedby', 'coursework')
-                . '</th><td>'
-                . fullname(core_user::get_user($moderatoragreement->lasteditedby))
-                . ' on '
-                . userdate($moderatoragreement->timemodified, '%a, %d %b %Y, %H:%M')
-                . '</td></tr>';
+            $model->lasteditedby = fullname(core_user::get_user($moderatoragreement->lasteditedby));
+            $model->timemodified = userdate($moderatoragreement->timemodified, '%a, %d %b %Y, %H:%M');
         }
 
-        $html .= '</table>';
-
         if ($moderatoragreement->persisted()) {
-            $submiturl = $this->get_router()->get_path('update moderation', ['moderation' => $moderatoragreement]);
-        } else {
-            $submiturl = $this->get_router()->get_path('create moderation agreement', ['moderation' => $moderatoragreement]);
-        }
+            $simpleform = new moderator_agreement_mform(
+                $this->get_router()->get_path('update moderation', ['moderation' => $moderatoragreement]),
+                ['moderation' => $moderatoragreement]
+            );
 
-        $simpleform = new moderator_agreement_mform($submiturl, ['moderation' => $moderatoragreement]);
-
-        if ($moderatoragreement->persisted()) {
             $moderatoragreement->modcomment = [
                 'text' => $moderatoragreement->modcomment,
                 'format' => $moderatoragreement->modcommentformat,
             ];
 
             $simpleform->set_data($moderatoragreement);
+        } else {
+            $simpleform = new moderator_agreement_mform(
+                $this->get_router()->get_path('create moderation agreement', ['moderation' => $moderatoragreement]),
+                ['moderation' => $moderatoragreement]
+            );
         }
+        $model->moderationform = $simpleform->render();
 
         echo $this->output->header();
-        echo $html;
-        $simpleform->display();
+        echo $this->render_from_template('mod_coursework/moderate', $model);
         echo $this->output->footer();
     }
 

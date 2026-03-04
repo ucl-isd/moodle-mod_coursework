@@ -56,7 +56,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @throws \core\exception\moodle_exception
      * @throws coding_exception
      */
-    public function render_feedback(feedback $feedback, $showtitle = true) {
+    public function get_feedback_model(feedback $feedback, $showtitle = true): object {
         $template = new stdClass();
 
         $template->markingstage = $feedback->stageidentifier;
@@ -117,8 +117,14 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $template->separator = true;
         }
 
-        // Return html from template.
-        return $this->render_from_template('mod_coursework/feedback', $template);
+        return $template;
+    }
+
+    public function render_feedback(feedback $feedback, $showtitle = true): string {
+        return $this->render_from_template(
+            'mod_coursework/feedback',
+            $this->get_feedback_model($feedback, $showtitle)
+        );
     }
 
     /**
