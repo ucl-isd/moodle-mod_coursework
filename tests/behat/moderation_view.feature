@@ -42,9 +42,12 @@ Feature: View moderation feedback
 
     When I am on the "Coursework" "coursework activity" page
     And I click on "Agree marking" "link"
-    And I set the field "Moderation agreement" to "Agreed"
-    And I click on "Save changes" "button"
-    And I log out
+    Then I should see "teacher teacher1" in the "data-behat-markstage=\"assessor_1\"" "css_element"
+    And I should see "58" in the "data-behat-markstage=\"assessor_1\"" "css_element"
+    And I should see "Blah" in the "data-behat-markstage=\"assessor_1\"" "css_element"
+
+    When I set the field "Moderation agreement" to "Agreed"
+    #And I click on "Save changes" "button"
     And I am on the "Coursework" "coursework activity" page logged in as "teacher1"
     Then I should see "Moderation" in the table row containing "John1"
     And I should see "Agreed" in the table row containing "John1"
