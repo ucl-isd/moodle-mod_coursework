@@ -22,6 +22,7 @@
 
 namespace mod_coursework\export;
 use coding_exception;
+use core_user;
 use csv_import_reader;
 use dml_exception;
 use dml_missing_record_exception;
@@ -113,6 +114,28 @@ class import extends grading_sheet {
                 //
                 if ($cells[$i] == 'submissionid') {
                     $submissionid = $value;
+
+                    if (defined('BEHAT_SITE_RUNNING') && empty($submissionid)) {
+                        // Import process relies on submissionid and a hash of the username.
+                        // These can never be stable under behat so we're reverse engingeering them
+                        // by looking stuff up.
+                        // BUILD TESTABLE CODE!!!
+
+                        $celllookup = array_flip($cells);
+
+                        $keyedline = array_combine($cells, $line);
+                        if (!empty($keyedline['username'])) {
+                            $submission = submission::find([
+                                'courseworkid' => $this->coursework->id(),
+                                'allocatableid' => core_user::get_user_by_username($keyedline['username'])->id,
+                            ]);
+
+                            $submissionid = $submission->id();
+
+                            $line[$celllookup['submissionid']] = $submissionid;
+                            $line[$celllookup['submissionfileid']] = $this->coursework->get_username_hash($submission->allocatableid);
+                        }
+                    }
                 }
 
                 if (empty($submissionid)) {
@@ -303,6 +326,25 @@ class import extends grading_sheet {
                 if (empty($idfound) && $cells[$i] == 'submissionid') {
                     $submissionid = $value;
                     $idfound = true;
+                }
+
+                if (defined('BEHAT_SITE_RUNNING') && empty($submissionid)) {
+                    // Import process relies on submissionid and a hash of the username.
+                    // These can never be stable under behat so we're reverse engingeering them
+                    // by looking stuff up.
+                    // BUILD TESTABLE CODE!!!
+
+                    $keyedline = array_combine($cells, $line);
+                    if (!empty($keyedline['username'])) {
+                        $submission = submission::find([
+                            'courseworkid' => $this->coursework->id(),
+                            'allocatableid' => core_user::get_user_by_username($keyedline['username'])->id,
+                        ]);
+
+                        $submissionid = $submission->id();
+                        $idfound = true;
+                        $value = $submissionid;
+                    }
                 }
 
                 // Save the value into the csvline with the relevant pointer
