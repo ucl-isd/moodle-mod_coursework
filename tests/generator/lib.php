@@ -120,8 +120,9 @@ class mod_coursework_generator extends testing_module_generator {
      * @throws coding_exception
      */
     public function create_allocation($allocation) {
+        global $USER;
 
-        global $USER, $DB;
+        $allocation = (object)$allocation;
 
         if (empty($allocation->allocatableid) || !is_numeric($allocation->allocatableid)) {
             throw new coding_exception('Coursework generator needs an allocatableid for a new allocation');

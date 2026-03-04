@@ -61,6 +61,16 @@ class behat_mod_coursework_generator extends behat_generator_base {
                     'assessor' => 'assessorid',
                 ],
             ],
+            'allocations' => [
+                'singular' => 'allocation',
+                'datagenerator' => 'allocation',
+                'required' => ['allocatable', 'coursework', 'assessor', 'stageidentifier'],
+                'switchids' => [
+                    'allocatable' => 'allocatableid',
+                    'coursework' => 'courseworkid',
+                    'assessor' => 'assessorid',
+                ],
+            ],
         ];
     }
 
