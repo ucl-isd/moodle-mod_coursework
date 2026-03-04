@@ -108,7 +108,9 @@ Feature: Multiple assessors simple grading form
     Given there is a teacher
     And there is another teacher
     And the submission is finalised
-    And there is finalised feedback for the submission from the teacher
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
     And I am logged in as the other teacher
     And I am on the "Coursework" "coursework activity" page
     And I follow "Add mark"
