@@ -31,8 +31,8 @@ Feature: View moderation feedback
       | allocatable | coursework | finalisedstatus |
       | student1    | Coursework | 1               |
     And the following "mod_coursework > feedbacks" exist:
-      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment |finalised|
-      | student1    | Coursework | teacher1 | assessor_1      | 58    | Blah            |1        |
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment | finalised |
+      | student1    | Coursework | teacher1 | assessor_1      | 58    | Blah            | 1         |
 
   Scenario: As an assessor I’ve received some moderation and when I view this I should see the moderator's feedback with no error
     Given I am on the "Coursework" "coursework activity" page logged in as "moderator1"
