@@ -34,7 +34,8 @@ Feature: Adding feedback files
     And I press "Save and finalise"
     And I should see "Changes saved"
     And I visit the coursework page
-    And I publish the grades
+    And I follow "Release the marks"
+    And I press "Confirm"
     And I log out
 
     And I log in as a student
