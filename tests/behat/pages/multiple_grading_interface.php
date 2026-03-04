@@ -186,24 +186,6 @@ class mod_coursework_behat_multiple_grading_interface extends mod_coursework_beh
         return '.assessor_feedback_grade';
     }
 
-    public function press_publish_button() {
-        $linkid = "release-marks-button";
-        $this->getpage()->clickLink($linkid);
-    }
-
-    public function confirm_publish_action() {
-
-        if ($this->getpage()->hasButton('Confirm')) {
-            $this->getpage()->pressButton('Confirm');
-        } else {
-            echo "failed";
-        }
-
-        if ($this->getpage()->hasLink('Continue')) {
-            $this->getpage()->clickLink('Continue');
-        }
-    }
-
     /**
      * @param feedback $feedback
      * @throws \Behat\Mink\Exception\ElementNotFoundException

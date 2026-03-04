@@ -587,19 +587,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^I publish the grades$/
-     */
-    public function i_publish_the_grades() {
-        /**
-         * @var mod_coursework_behat_multiple_grading_interface $page
-         */
-        $page = $this->get_page('multiple grading interface');
-
-        $page->press_publish_button();
-        $page->confirm_publish_action();
-    }
-
-    /**
      * @Then /^the coursework general feedback is disabled$/
      */
     public function the_coursework_general_feedback_is_disabled() {
