@@ -178,8 +178,7 @@ const preventInvalidNumber = (event) => {
     if (
         !hasSelectedText
         && event.target.value.length >= maxLength
-        && event.key !== 'Backspace'
-        && event.key !== 'Delete'
+        && !['Backspace', 'Delete', 'Tab'].includes(event.key)
     ) {
         event.preventDefault();
     }

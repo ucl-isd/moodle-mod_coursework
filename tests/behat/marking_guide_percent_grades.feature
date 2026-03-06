@@ -8,6 +8,7 @@ Feature: Marking guide percentage grades entry
     And the coursework "numberofmarkers" setting is "2" in the database
     And there is a teacher
     And there is a student
+    And there is another teacher
     And the student has a submission
     And the submission is finalised
     And the coursework deadline has passed
@@ -37,7 +38,7 @@ Feature: Marking guide percentage grades entry
       | mod/coursework:enterguidegradesaspercent | Prevent    | editingteacher | Course       | C1        |
       | mod/coursework:enterguidegradesaspercent | Prevent    | teacher        | Course       | C1        |
 
-    And I click on the add feedback button for assessor 1
+    And I follow "Add mark"
     And I wait until the page is ready
     And I should see "Mark (0–30)"
     And I should see "Mark (0–20)"
@@ -57,13 +58,14 @@ Feature: Marking guide percentage grades entry
     And I log out
 
   @javascript
-  Scenario: Marker enters grades as percentages.
+  Scenario: Marker enters grades as percentages, or as fractions even though percentage grades are allowed.
     Given the following "user preferences" exist:
       | user     | preference                            | value |
       | user1    | coursework_guide_enter_percent_grades | 1     |
     And I log in as the teacher
     And I visit the coursework page
-    And I click on the add feedback button for assessor 1
+    And I follow "Add mark"
+    And I wait until the page is ready
     And I should see "Mark (0–30)"
     And I should see "Mark (0–20)"
     And I should see "Mark (0–50)"
@@ -86,21 +88,18 @@ Feature: Marking guide percentage grades entry
 
     And I visit the coursework page
     And I should see "49" in the "student student2" "table_row"
+    And I log out
 
-  @javascript
-  Scenario: Marker chooses to enter grades as fractions even though percentage grades are allowed.
-    Given the following "user preferences" exist:
-      | user     | preference                            | value |
-      | user1    | coursework_guide_enter_percent_grades | 1     |
-    And I log in as the teacher
+    # Now add as scores, with percentages switched off, even though percentage grades are allowed.
+    And I log in as the other teacher
     And I visit the coursework page
-    And I click on the add feedback button for assessor 1
-    And I should see "Mark (0–30)"
-    And I should see "Mark (0–20)"
-    And I should see "Mark (0–50)"
-    And I should see "Mark %"
-    # Switch off percentage marks
+    And I follow "Add mark"
+    # Percentage marks by default - toggle the input to check it works.
+    And the field "Enter marks as %" matches value "0"
     And I click on "Enter marks as %" "checkbox"
+    And the field "Enter marks as %" matches value "1"
+    And I click on "Enter marks as %" "checkbox"
+    And the field "Enter marks as %" matches value "0"
 
     # Enter a grade of 50% of /30 (15 marks) + 20 % of /20 (4 marks) + 60% of /50 (30 marks) = 49/100
     And I set the field "Mark (0–30)" in the "Criterion 1" "table_row" to "15"
