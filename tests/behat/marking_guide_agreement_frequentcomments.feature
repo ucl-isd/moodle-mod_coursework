@@ -1,4 +1,4 @@
-@mod @mod_coursework
+@mod @mod_coursework @mod_coursework_guide_agree_frequent_comments
 Feature: Marking guide with frequent comments
   Users can make use of the marking guide to submit grades for final approval based on frequently used comments.
 
@@ -27,7 +27,7 @@ Feature: Marking guide with frequent comments
     And I define the following frequently used comments:
       | Comment 1 |
       | Comment 2 |
-      | Comment 3 |
+      | Frequent Comment 3 |
     And I press "Save marking guide and make it ready"
 
     And I visit the coursework page
@@ -38,9 +38,9 @@ Feature: Marking guide with frequent comments
 
     And I click on "Insert frequently used comment" "button" in the "A criteria" "table_row"
     And I wait "1" seconds
-    And I press "Comment 3"
+    And I press "Frequent Comment 3"
     And I wait "1" seconds
-    Then the field "A criteria criterion remark" matches value "Comment 3"
+    Then the field "A criteria criterion remark" matches value "Frequent Comment 3"
     And I press "Save and finalise"
 
     And I click on the add feedback button for assessor 2
@@ -56,7 +56,7 @@ Feature: Marking guide with frequent comments
     And I should see "A criteria"
     And I should see "6" in the "A criteria" "table_row"
     And I should see "8" in the "A criteria" "table_row"
-    And I should see "Comment 3" in the "Feedback" "table_row"
+    And I should see "Frequent Comment 3" in the "Feedback" "table_row"
     And I should see "Grader two really likes it" in the "Feedback" "table_row"
 
     And I click on "Insert frequently used comment" "button" in the "A criteria" "table_row"
@@ -76,3 +76,14 @@ Feature: Marking guide with frequent comments
     When I log in as a student
     And I visit the coursework page
     Then I should see "Comment 2" in the ".coursework-feedback .behat-criterion-remark" "css_element"
+
+  @javascript
+  Scenario: Pressing return key while focussed on a mark input field does not launch frequent comments modal.
+    Given I visit the coursework page
+    And I click on the edit feedback button for assessor 2
+    And I set the field "Mark" to "8"
+    And I press the enter key
+    # Frequent comments modal not launched.
+    And I should not see "Frequent Comment 3"
+    # Instead, form submits.
+    And I should see "Changes saved"

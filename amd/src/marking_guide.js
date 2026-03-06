@@ -68,4 +68,11 @@ export const init = (markLabelText) => {
             maxScoreDiv.remove();
         }
     });
+
+    // CTP-5833 - when focus is on a mark input field and user presses return, avoid implicit click on frequent comments button.
+    // (I.e. add type="button" because core code in grade/grading/form/guide/renderer.php doesn't do so).
+    const insertFrequentCommentButtons = document.querySelectorAll('button.commentchooser.btn');
+    insertFrequentCommentButtons.forEach((btn) => {
+        btn.setAttribute('type', 'button');
+    });
 };
