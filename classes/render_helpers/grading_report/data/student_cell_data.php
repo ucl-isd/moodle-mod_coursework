@@ -48,7 +48,7 @@ class student_cell_data extends cell_data_base {
     public function get_table_cell_data(grading_table_row_base $rowsbase): ?stdClass {
         $submissiontype = new stdClass();
         $allocatable = $rowsbase->get_allocatable();
-        $hidden = $this->should_hide_identity();
+        $hidden = $rowsbase->get_coursework()->hide_student_identities();
 
         if ($allocatable instanceof group) {
             $submissiontype->group = $this->get_group_data($allocatable, $hidden);
@@ -122,7 +122,7 @@ class student_cell_data extends cell_data_base {
             'id' => $rowsbase->get_allocatable_id(),
             'name' => $this->get_enhanced_name_with_candidate_number(
                 $user->id(),
-                $rowsbase->can_see_user_name()
+                !$rowsbase->get_coursework()->hide_student_identities()
                     ? $rowsbase->get_allocatable()->name()
                     : get_string('hidden', 'mod_coursework')
             ),
@@ -146,17 +146,6 @@ class student_cell_data extends cell_data_base {
 
         $candidatenumber = $this->get_candidate_number($userid);
         return $candidatenumber ?: get_string($fallbackstring, 'mod_coursework');
-    }
-
-    /**
-     * Determine if the identity should be hidden.
-     *
-     * @return bool
-     * @throws coding_exception
-     */
-    private function should_hide_identity() {
-        return $this->coursework->blindmarking_enabled() &&
-            !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context());
     }
 
     /**

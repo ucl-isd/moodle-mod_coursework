@@ -924,7 +924,7 @@ class coursework extends table_base {
 
                 $foldername = '';
 
-                if ($this->blindmarking == 0 || has_capability('mod/coursework:viewanonymous', $this->get_context())) {
+                if (!$this->hide_student_identities()) {
                     $submissionuser = $submission->get_allocatable();
                     if ($this->is_configured_to_have_group_submissions() && $submissionuser->name) {
                         $foldername = $submissionuser->name . '_';
@@ -1590,6 +1590,19 @@ class coursework extends table_base {
      */
     public function blindmarking_enabled() {
         return (bool)$this->blindmarking;
+    }
+
+    /**
+     * Should student identities be hidden?
+     * @return bool
+     * @throws coding_exception
+     */
+    public function hide_student_identities(): bool {
+        return $this->blindmarking_enabled()
+        && !has_any_capability(
+            ['mod/coursework:viewanonymous', 'mod/coursework:canexportfinalgrades'],
+            $this->get_context()
+        );
     }
 
     /**

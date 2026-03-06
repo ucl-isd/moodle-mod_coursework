@@ -52,7 +52,7 @@ class user_cell extends cell_base implements allocatable_cell {
         $tablename = (!empty($options['tablename'])) ? $options['tablename'] : '';
 
         // allow to sort users only if CW is not set to blind marking or a user has capability to view anonymous
-        if ($viewanonymous || !$this->coursework->blindmarking) {
+        if (!$this->coursework->hide_student_identities()) {
             $sortbyfirstname = $this->helper_sortable_heading(
                 get_string('firstname'),
                 'firstname',
