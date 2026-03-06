@@ -39,12 +39,10 @@ class name_cell extends cell_base {
 
         if ($this->can_view_hidden() || $submission->is_published()) {
             return $student->lastname . ' ' . $student->firstname;
-        } else {
-            if (!get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')) {
-                return get_string('hidden', 'coursework');
-            }
+        } else if (get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')) {
             return $this->get_candidate_number($student->id) ?? get_string('hidden');
         }
+        return get_string('hidden', 'coursework');
     }
 
     /**
