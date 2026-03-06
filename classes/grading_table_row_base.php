@@ -462,7 +462,7 @@ class grading_table_row_base implements user_row {
                 $coursework->id(),
                 [
                     'submissionid' => $submission->id(),
-                    'assessorid' => $USER,
+                    'assessorid' => $USER->id,
                 ],
             )
         ) {
