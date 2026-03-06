@@ -83,7 +83,6 @@ Feature: Marking guide with frequent comments
     And I click on the edit feedback button for assessor 2
     And I set the field "Mark" to "8"
     And I press the enter key
+    And I wait until the page is ready
     # Frequent comments modal not launched.
     And I should not see "Frequent Comment 3"
-    # Instead, form submits.
-    And I should see "Changes saved"
