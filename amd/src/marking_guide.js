@@ -38,8 +38,7 @@ const preventInvalidNumber = (event) => {
     }
     if (
         event.target.value.length >= MAX_INPUT_LENGTH
-        && event.key !== 'Backspace'
-        && event.key !== 'Delete'
+        && !['Backspace', 'Delete', 'Tab'].includes(event.key)
     ) {
         event.preventDefault();
     }
