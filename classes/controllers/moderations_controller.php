@@ -86,7 +86,7 @@ class moderations_controller extends controller_base {
         $PAGE->set_url('/mod/coursework/actions/moderations/new.php', $urlparams);
 
         $renderer = $this->get_page_renderer();
-        $renderer->new_moderation_page($moderatoragreement);
+        $renderer->edit_moderation_page($moderatoragreement);
     }
 
     /**
@@ -107,15 +107,8 @@ class moderations_controller extends controller_base {
         $urlparams = ['moderationid' => $this->params['moderationid']];
         $PAGE->set_url('/mod/coursework/actions/moderations/edit.php', $urlparams);
 
-        $moderator = $DB->get_record('user', ['id' => $moderation->moderatorid]);
-        if (!empty($moderation->lasteditedby)) {
-            $editor = $DB->get_record('user', ['id' => $moderation->lasteditedby]);
-        } else {
-            $editor = $moderator;
-        }
-
         $renderer = $this->get_page_renderer();
-        $renderer->edit_moderation_page($moderation, $moderator, $editor);
+        $renderer->edit_moderation_page($moderation);
     }
 
     /**
