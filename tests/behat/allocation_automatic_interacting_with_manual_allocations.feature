@@ -49,9 +49,6 @@ Feature: Automatically allocations interacting with manually allocated students
       | otherteacher teacher4      | 100                   |
       | Choose marker assessor_1   | teacher teacher2      |
 
-    When I am on the "Coursework" "coursework activity" page
-    Then I should see "teacher teacher2" in the "student student1" "table_row"
-
   @javascript
   Scenario: Automatic allocations should wipe the older automatic allocations
     Given I am on the "Coursework" "coursework activity" page

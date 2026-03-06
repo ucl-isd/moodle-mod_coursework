@@ -1,7 +1,7 @@
 @mod @mod_coursework @mod_coursework_automatic_agreement
 Feature: Automatic agreement for simple grades
 
-  As an user with add/edit coursework capability
+  As a user with add/edit coursework capability
   I can add an automatic agreement for double marking when both simple grades are adjacent within a specified range,
   so that the highest grade is chosen for all cases apart from the fail grades.
 

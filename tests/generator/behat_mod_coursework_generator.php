@@ -32,7 +32,7 @@ use mod_coursework\models\coursework;
  * @author Open Source Learning <enquiries@opensourcelearning.co.uk>
  * @link https://opensourcelearning.co.uk
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @copyright 2024, Andrew Hancox
+ * @copyright  2026 onwards UCL <andrewdchancox@googlemail.com>
  */
 class behat_mod_coursework_generator extends behat_generator_base {
     /**

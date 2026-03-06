@@ -20,13 +20,11 @@ Feature: Automatic agreement for grades not straddling grade class boundaries
       | automaticagreementrange | 10 |
     And the following "users" exist:
       | username | firstname | lastname | email                |
-      | manager1 | Manager   | 1        | manager1@example.com |
       | teacher1 | teacher   | teacher1 | teacher1@example.com |
       | teacher2 | teacher   | teacher2 | teacher2@example.com |
       | student1 | student   | student1 | student1@example.com |
     And the following "course enrolments" exist:
       | user     | course | role    |
-      | manager1 | C1     | manager |
       | teacher1 | C1     | teacher |
       | teacher2 | C1     | teacher |
       | student1 | C1     | student |
@@ -47,7 +45,7 @@ Feature: Automatic agreement for grades not straddling grade class boundaries
     And I press "Save changes"
     And I log out
 
-  Scenario: Simple grades within 10% of eachother and both in the same grade class, agreed grade is averaged.
+  Scenario: Simple grades within 10% of each other and both in the same grade class, agreed grade is averaged.
     Given I am on the "Coursework" "coursework activity" page logged in as "teacher1"
     And I click on "Add mark" "link" in the "[data-behat-markstage='1']" "css_element"
     And I set the field "Mark" to "67"
@@ -63,7 +61,7 @@ Feature: Automatic agreement for grades not straddling grade class boundaries
     Then I should see "65" in the "[data-behat-markstage='final_agreed']" "css_element"
     And I should see "Automatically agreed" in the table row containing "student student1"
 
-  Scenario: Simple grades within 10% of eachother, but in different grade classes, no auto agreed grade appears.
+  Scenario: Simple grades within 10% of each other, but in different grade classes, no auto agreed grade appears.
     Given I am on the "Coursework" "coursework activity" page logged in as "teacher1"
     And I click on "Add mark" "link" in the "[data-behat-markstage='1']" "css_element"
     And I set the field "Mark" to "67"
@@ -78,7 +76,7 @@ Feature: Automatic agreement for grades not straddling grade class boundaries
     Then I should not see "Automatically agreed" in the table row containing "student student1"
     And I should not see "70" in the table row containing "student student1"
 
-  Scenario: Simple grades *NOT* within 10% of eachother where they should be, but both in the same grade class, agreed grade does not appear
+  Scenario: Simple grades *NOT* within 10% of each other where they should be, but both in the same grade class, agreed grade does not appear
     Given I am on the "Coursework" "coursework activity" page logged in as "teacher1"
     And I click on "Add mark" "link" in the "[data-behat-markstage='1']" "css_element"
     And I set the field "Mark" to "10"
@@ -93,7 +91,7 @@ Feature: Automatic agreement for grades not straddling grade class boundaries
     Then I should not see "64" in the table row containing "student student1"
     And I should not see "Automatically agreed" in the table row containing "student student1"
 
-  Scenario: Simple grades are *NOT* within 5% of eachother, and in different grade classes, no auto agreed grade appears.
+  Scenario: Simple grades are *NOT* within 5% of each other, and in different grade classes, no auto agreed grade appears.
     Given I am on the "Coursework" "coursework activity" page logged in as "teacher1"
     And I click on "Add mark" "link" in the "[data-behat-markstage='1']" "css_element"
     And I set the field "Mark" to "10"
