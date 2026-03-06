@@ -36,7 +36,10 @@ class submissionfileid_cell extends cell_base {
      * @return string
      */
     public function get_cell($submission, $student, $stageidentifier) {
-        return  $this->coursework->get_username_hash($submission->allocatableid);
+        if (!get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')) {
+            return $this->coursework->get_username_hash($submission->allocatableid);
+        }
+        return $this->get_candidate_number($student->id) ?? get_string('hidden');
     }
 
     /**

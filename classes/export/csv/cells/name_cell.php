@@ -38,12 +38,13 @@ class name_cell extends cell_base {
     public function get_cell($submission, $student, $stageidentifier) {
 
         if ($this->can_view_hidden() || $submission->is_published()) {
-            $name = $student->lastname . ' ' . $student->firstname;
+            return $student->lastname . ' ' . $student->firstname;
         } else {
-            $name = get_string('hidden', 'coursework');
+            if (!get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')) {
+                return get_string('hidden', 'coursework');
+            }
+            return $this->get_candidate_number($student->id) ?? get_string('hidden');
         }
-
-        return  $name;
     }
 
     /**

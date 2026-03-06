@@ -24,6 +24,7 @@ namespace mod_coursework\export\csv\cells;
 use coding_exception;
 use core_text;
 use gradingform_rubric_instance;
+use mod_coursework\candidateprovider_manager;
 use mod_coursework\grade_judge;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
@@ -305,5 +306,18 @@ abstract class cell_base implements cell_interface {
 
     public static function clean_cell($contents) {
         return trim(core_text::specialtoascii(html_to_text($contents, 0)));
+    }
+
+    /**
+     * Get the user's candidate number.
+     * @param int $userid
+     * @return string|null
+     */
+    protected function get_candidate_number(int $userid): ?string {
+        $candidateprovidermanager = candidateprovider_manager::instance();
+        if (!$candidateprovidermanager->is_provider_available()) {
+            return null;
+        }
+        return $candidateprovidermanager->get_candidate_number($this->coursework->get_course_id(), $userid) ?: null;
     }
 }
