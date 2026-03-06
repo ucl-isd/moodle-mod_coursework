@@ -38,8 +38,6 @@ interface user_row {
 
     public function get_email();
 
-    public function can_view_username();
-
     /**
      * @return allocatable
      */

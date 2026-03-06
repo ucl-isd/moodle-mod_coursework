@@ -120,21 +120,6 @@ class grading_table_row_base implements user_row {
     }
 
     /**
-     * Can the current user see the row user's name?
-     * @return bool
-     * @throws coding_exception
-     */
-    public function can_see_user_name(): bool {
-        if (!$this->get_coursework()->blindmarking || $this->is_published()) {
-            return true;
-        }
-        return has_capability(
-            'mod/coursework:viewanonymous',
-            $this->get_coursework()->get_context()
-        );
-    }
-
-    /**
      * Avoid calling repeatedly as it results in DB queries.
      * Will return the username if permissions allow, otherwise, an anonymous placeholder. Can't delegate to the similar
      * submission::get_user_name() function as there may not be a submission.
@@ -146,11 +131,8 @@ class grading_table_row_base implements user_row {
      * @throws coding_exception
      */
     public function get_user_name($link = false) {
-
         global $DB;
-
-        $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context());
-        if (!$this->get_coursework()->blindmarking || $viewanonymous || $this->is_published()) {
+        if (!$this->get_coursework()->hide_student_identities()) {
             $user = $DB->get_record('user', ['id' => $this->get_allocatable_id()]);
             $fullname = fullname($user);
             $allowed = has_capability('moodle/user:viewdetails', $this->get_coursework()->get_context());
@@ -175,9 +157,7 @@ class grading_table_row_base implements user_row {
      */
     public function get_idnumber() {
         global $DB;
-
-        $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context());
-        if (!$this->get_coursework()->blindmarking || $viewanonymous || $this->is_published()) {
+        if (!$this->get_coursework()->hide_student_identities()) {
             $user = $DB->get_record('user', ['id' => $this->get_allocatable_id()]);
             return $user->idnumber;
         } else {
@@ -194,9 +174,7 @@ class grading_table_row_base implements user_row {
      */
     public function get_email() {
         global $DB;
-
-        $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context());
-        if (!$this->get_coursework()->blindmarking || $viewanonymous || $this->is_published()) {
+        if (!$this->get_coursework()->hide_student_identities()) {
             $user = $DB->get_record('user', ['id' => $this->get_allocatable_id()]);
             return $user->email;
         } else {
@@ -337,22 +315,6 @@ class grading_table_row_base implements user_row {
     public function has_submission() {
         $submission = $this->get_submission();
         return !empty($submission);
-    }
-
-    /**
-     * Checks to see whether we should show the current user who this student is.
-     */
-    public function can_view_username() {
-
-        if (has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context())) {
-            return true;
-        }
-
-        if ($this->get_coursework()->blindmarking) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
