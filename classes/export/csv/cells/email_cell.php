@@ -37,7 +37,7 @@ class email_cell extends cell_base {
      */
     public function get_cell($submission, $student, $stageidentifier) {
 
-        if ($this->can_view_hidden() || $submission->is_published()) {
+        if (!$this->coursework->hide_student_identities()) {
             $name = $student->email;
         } else {
             $name = get_string('hidden', 'coursework');

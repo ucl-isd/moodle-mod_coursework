@@ -57,18 +57,6 @@ abstract class cell_base implements cell_interface {
     }
 
     /**
-     * Function to check if a user can see real names/usernames even if blind marking is enabled
-     * @return bool
-     * @throws coding_exception
-     */
-    public function can_view_hidden() {
-        return
-            !$this->coursework->blindmarking
-            ||
-            has_any_capability(['mod/coursework:viewanonymous', 'mod/coursework:canexportfinalgrades'], $this->coursework->get_context());
-    }
-
-    /**
      * Function to check if the student was given an extension
      * @param $student
      * @return bool

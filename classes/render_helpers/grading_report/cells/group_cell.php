@@ -47,7 +47,7 @@ class group_cell extends cell_base implements allocatable_cell {
         $content .= '<div class="group_style">';
         $content .= '<select>';
 
-        if ($this->coursework->blindmarking_enabled() && !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context()) && !$rowobject->is_published()) {
+        if ($this->coursework->hide_student_identities()) {
             $content .= '<option class="expand_members" selected="selected">' . get_string('membershidden', 'coursework') . '</option>';
         } else {
             $content .= '<option class="expand_members" selected="selected">' . get_string('viewmembers', 'coursework') . '</option>';
@@ -99,7 +99,7 @@ class group_cell extends cell_base implements allocatable_cell {
      */
     protected function add_group_member_name($groupmember, $rowobject) {
         $text = '<option>';
-        if ($this->coursework->blindmarking_enabled() && !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context()) && !$rowobject->is_published()) {
+        if ($this->coursework->hide_student_identities()) {
             $text .= 'Hidden';
         } else {
             $text .= $groupmember->profile_link() . ' (' . $groupmember->email . ')';
