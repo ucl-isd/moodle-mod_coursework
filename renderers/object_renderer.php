@@ -88,14 +88,21 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $timeequal = ($feedback->timecreated == $feedback->timemodified);
         $isautomaticagreement = ((!$issamplingenabled || $sampledfeedbackexists) && $assessoriszero && $timeequal);
 
-        if (!$isautomaticagreement && $feedback->assessorid != 0) {
-            $template->markername = $feedback->display_assessor_name();
+        if (!$isautomaticagreement && $assessor = $feedback->assessor()) {
             $template->date = $feedback->timemodified;
 
-            // Marker image.
-            if ($feedback->assessor) {
-                $userpicture = new user_picture($feedback->assessor()->get_raw_record());
-                $userpicture->size = 100;
+            if (!$feedback->is_assessor_anonymity_enabled()) {
+                $template->markername = $assessor->name();
+            } else if ($feedback->is_moderation()) {
+                $template->markername = get_string('moderator', 'mod_coursework');
+            } else if ($stage = $feedback->get_assessor_stage_no()) {
+                $template->markername = get_string('markerheading', 'mod_coursework', $stage);
+            }
+
+            if ($feedback->is_assessor_anonymity_enabled()) {
+                $template->markerimg = $this->output->image_url('u/f1')->out(false);
+            } else {
+                $userpicture = new user_picture($assessor->get_raw_record());
                 $template->markerimg = $userpicture->get_url($this->page)->out(false);
             }
         }
