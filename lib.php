@@ -335,7 +335,7 @@ function mod_coursework_core_calendar_provide_event_action(
         } else if ($event->eventtype == 'agreedgradingdue') {
             // Agreed grades
             $togradeagreedcount = $outstandingmarking->get_to_grade_agreed_count($dbcoursework, $USER->id);
-            $name = get_string('agreedgrade', 'coursework');
+            $name = get_string('agreedmark', 'coursework');
             $itemcount = $togradeagreedcount;
         }
 

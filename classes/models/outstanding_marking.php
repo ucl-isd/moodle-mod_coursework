@@ -196,7 +196,7 @@ class outstanding_marking {
                                                                         {coursework_feedbacks} feed
                                                                         JOIN {coursework_submissions} sub ON sub.id = feed.submissionid
                                                                         WHERE assessorid = :subassessorid AND sub.courseworkid= :subcourseworkid)
-                                          GROUP BY cs.id, f.id
+                                          GROUP BY cs.id
                                           HAVING (COUNT(f.id) < :numofmarkers)";
 
         $sqlparams['subassessorid'] = $userid;

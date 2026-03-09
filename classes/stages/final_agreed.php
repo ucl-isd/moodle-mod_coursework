@@ -67,7 +67,7 @@ class final_agreed extends base {
      * @throws coding_exception
      */
     public function allocation_table_header() {
-        return get_string('agreedgrade', 'mod_coursework');
+        return get_string('agreedmark', 'mod_coursework');
     }
 
     /**
