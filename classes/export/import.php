@@ -775,7 +775,7 @@ class import extends grading_sheet {
             // find position of otherassesors so we know from which key to unset
             $key = array_search('otherassessors', $csvcells);
             unset($csvcells[$key]);
-            $othercells = $this->other_assessors_cells();
+            $othercells = $this->other_assessors_cells(); // How many cells do the other assessors take up (probably two - mark + feedback).
             if ($this->coursework->is_using_rubric()) {
                 $singlegradeposition = array_search('singlegrade', $csvcells);
 
@@ -783,7 +783,7 @@ class import extends grading_sheet {
 
                 $startposition = $singlegradeposition + ((count($criterias) * 2) + 1);
             } else {
-                $startposition = array_search('otherassessors', $csvcells);
+                $startposition = $key;
             }
 
             for ($i = $startposition; $i < $startposition + $othercells; $i++) {
