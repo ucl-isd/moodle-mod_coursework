@@ -297,7 +297,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         // Does user want to enter grades as percentages?
         $template->percentgradesallowed = $template->isguide
-            && get_config('mod/coursework', 'allowenterguidegradesaspercent');
+            && get_config('coursework', 'allowenterguidegradesaspercent');
         $template->enterpercentgrades = $template->percentgradesallowed
             && get_user_preferences('coursework_guide_enter_percent_grades', false);
 
