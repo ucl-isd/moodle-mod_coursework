@@ -1,19 +1,19 @@
 @mod @mod_coursework
 Feature: warnings when settings are not right
 
-    As a manager
-    I want to know when there are issues with the setup of the coursework instance
-    So that I can take corrective action before stuff goes wrong
+  As a manager
+  I want to know when there are issues with the setup of the coursework instance
+  So that I can take corrective action before stuff goes wrong
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
-      | activity | coursework |
-      | course   | C1         |
-      | name     | Coursework |
-      | numberofmarkers   | 3          |
+      | activity        | coursework |
+      | course          | C1         |
+      | name            | Coursework |
+      | numberofmarkers | 3          |
 
   Scenario: managers see a warning about there being too few teachers
     Given there is a teacher

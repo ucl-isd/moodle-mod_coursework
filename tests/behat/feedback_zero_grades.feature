@@ -1,20 +1,20 @@
 @mod @mod_coursework @mod_coursework_feedback_zero_grades
 Feature: Zero grades should show up just like the others
 
-    As a teacher
-    I want to be abel to award a grade of zero
-    So that in case there is no work submitted or the work is truly and irredeemably useless,
-    the student will know
+  As a teacher
+  I want to be abel to award a grade of zero
+  So that in case there is no work submitted or the work is truly and irredeemably useless,
+  the student will know
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
-      | activity | coursework |
-      | course   | C1         |
-      | name     | Coursework |
-      | numberofmarkers   | 1          |
+      | activity        | coursework |
+      | course          | C1         |
+      | name            | Coursework |
+      | numberofmarkers | 1          |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | student1 | student   | student1 | student1@example.com |

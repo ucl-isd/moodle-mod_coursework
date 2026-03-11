@@ -1,15 +1,15 @@
 @mod @mod_coursework @mod_coursework_feedback_collisions
 Feature: Collisions: two people try to create feedback at the same time
 
-    As a teacher
-    I want to see a warning message if I try to save my feedback when another
-    teacher has already done so
-    So that I do not get a surprise when the grades I have awarded disappear
+  As a teacher
+  I want to see a warning message if I try to save my feedback when another
+  teacher has already done so
+  So that I do not get a surprise when the grades I have awarded disappear
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
       | activity | coursework |
       | course   | C1         |

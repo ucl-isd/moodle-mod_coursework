@@ -1,14 +1,14 @@
 @mod @mod_coursework @mod_coursework_submissions_deadlines
 Feature: Deadlines for submissions
 
-    As a teacher
-    I want to set deadlines that are visible to the student
-    So that they know when they are expected to submit, and can be sent automatic reminders
+  As a teacher
+  I want to set deadlines that are visible to the student
+  So that they know when they are expected to submit, and can be sent automatic reminders
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And I am logged in as a teacher
     And the following "activity" exists:
       | activity | coursework |

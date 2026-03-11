@@ -1,13 +1,13 @@
 @mod @mod_coursework @mod_coursework_factory
 Feature: Testing that the factories for behat steps work. If any tests fail, fix this FIRST.
-    As a developer maintaining the coursework module
-    I want to be able to use a factory to generate the scenario context
-    So that my tests are easier to write and run faster
+  As a developer maintaining the coursework module
+  I want to be able to use a factory to generate the scenario context
+  So that my tests are easier to write and run faster
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
 
   Scenario: Making a coursework
     Given I am logged in as a teacher
@@ -46,8 +46,8 @@ Feature: Testing that the factories for behat steps work. If any tests fail, fix
     When I visit the course page
     And I turn editing mode on
     When I add a "coursework" activity to course "C1" section "3" and I fill the form with:
-            | name         | Test coursework             |
-            | Description  | Test coursework description |
+      | name        | Test coursework             |
+      | Description | Test coursework description |
     Then the coursework general feedback should be disabled
 
   Scenario: The coursework settings can be changed
@@ -65,9 +65,9 @@ Feature: Testing that the factories for behat steps work. If any tests fail, fix
     When I visit the course page
     And I turn editing mode on
     When I add a "coursework" activity to course "C1" section "3" and I fill the form with:
-            | name                  | Test coursework             |
-            | Description           | Test coursework description |
-            | blindmarking          | 0                           |
+      | name         | Test coursework             |
+      | Description  | Test coursework description |
+      | blindmarking | 0                           |
     Then the coursework "blindmarking" setting should be "0" in the database
 
   Scenario: logged in as a teacher works

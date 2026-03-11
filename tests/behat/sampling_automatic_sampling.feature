@@ -7,8 +7,8 @@ Feature: Automatic sampling using total number of students in stage 1 and 2
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And I am logged in as a manager
     And the manager has a capability to allocate students in samplings
     And the following "activity" exists:

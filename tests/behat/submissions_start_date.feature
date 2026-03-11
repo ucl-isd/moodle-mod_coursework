@@ -1,14 +1,14 @@
 @mod @mod_coursework
 Feature: Start date
 
-    As a teacher
-    I want to be able to restrict the start date of the coursework
-    So that students will not begin to work on it until the right time
+  As a teacher
+  I want to be able to restrict the start date of the coursework
+  So that students will not begin to work on it until the right time
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
       | activity | coursework |
       | course   | C1         |

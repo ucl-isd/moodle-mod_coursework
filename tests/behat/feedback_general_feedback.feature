@@ -1,21 +1,21 @@
 @mod @mod_coursework @mod_coursework_feedback_general
 Feature: general feedback
 
-    As a manager
-    I want to be able to provide some general feedback for all of the students before their individual feedback is released
-    So that they can prepare effectively for upcoming exams or assignments
+  As a manager
+  I want to be able to provide some general feedback for all of the students before their individual feedback is released
+  So that they can prepare effectively for upcoming exams or assignments
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
       | activity | coursework |
       | course   | C1         |
       | name     | Coursework |
     And the following "users" exist:
       | username | firstname | lastname | email                |
-      | teacher2 | teacher   | teacher2        | teacher2@example.com |
+      | teacher2 | teacher   | teacher2 | teacher2@example.com |
     And the following "course enrolments" exist:
       | user     | course | role           |
       | teacher2 | C1     | editingteacher |

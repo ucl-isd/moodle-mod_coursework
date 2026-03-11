@@ -1,14 +1,14 @@
 @mod @mod_coursework @mod_coursework_feedback_group_feedback_for_students
 Feature: Students see feedback on group assignments
 
-    As a student
-    I want to be able to see the feedback for the group assignment even if I did not submit it
-    So that I know what my marks are and can improve my work
+  As a student
+  I want to be able to see the feedback for the group assignment even if I did not submit it
+  So that I know what my marks are and can improve my work
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
       | activity | coursework |
       | course   | C1         |

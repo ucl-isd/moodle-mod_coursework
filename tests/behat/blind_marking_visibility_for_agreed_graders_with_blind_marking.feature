@@ -36,7 +36,7 @@ Feature: visibility of agreed graders with blind marking
 
   Scenario: agreed graders cannot see other feedbacks before they have done their own
     Given the following "mod_coursework > feedbacks" exist:
-      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment |
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
       | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
     When I am on the "Coursework" "coursework activity" page logged in as "teacher2"
     Then I should see "Draft" in the "Hidden" "table_row"

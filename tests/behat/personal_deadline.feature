@@ -5,12 +5,12 @@ Feature: When "Use the personal deadline" is enabled the deadline date should re
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
-      | activity | coursework |
-      | course   | C1         |
-      | name     | Coursework |
+      | activity | coursework  |
+      | course   | C1          |
+      | name     | Coursework  |
       | deadline | ##+1 week## |
     And the coursework "personaldeadlineenabled" setting is "1" in the database
     And the following "users" exist:

@@ -1,19 +1,19 @@
 @mod @mod_coursework @mod_coursework_feedback_single_marking
 Feature: Adding and editing single feedback
 
-    In order to provide students with a fair final grade that combines the component grades
-    As a course leader
-    I want to be able to edit the final grade via a form
+  In order to provide students with a fair final grade that combines the component grades
+  As a course leader
+  I want to be able to edit the final grade via a form
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
-      | activity | coursework |
-      | course   | C1         |
-      | name     | Coursework |
-      | numberofmarkers   | 1          |
+      | activity        | coursework |
+      | course          | C1         |
+      | name            | Coursework |
+      | numberofmarkers | 1          |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | teacher1 | teacher   | teacher1 | teacher1@example.com |
@@ -43,8 +43,8 @@ Feature: Adding and editing single feedback
   Scenario: Editing someone else's grade
     Given the submission is finalised
     And the following "mod_coursework > feedbacks" exist:
-      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
-      | student1    | Coursework | teacher1 | assessor_1      | 58    | Blah |
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment |
+      | student1    | Coursework | teacher1 | assessor_1      | 58    | Blah            |
     And I log out
     And I log in as "admin"
     And I am on the "Coursework" "coursework activity" page

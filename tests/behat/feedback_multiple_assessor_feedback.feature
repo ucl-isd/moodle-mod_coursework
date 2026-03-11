@@ -1,27 +1,27 @@
 @mod @mod_coursework @mod_coursework_feedback_multiple_assessors
 Feature: Multiple assessors simple grading form
 
-    As a teacher
-    I want there to be a simple grading form
-    So that I can give students a grade and a feedback comment without any frustrating extra work
+  As a teacher
+  I want there to be a simple grading form
+  So that I can give students a grade and a feedback comment without any frustrating extra work
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | teacher1 | teacher   | teacher1 | teacher1@example.com |
       | student1 | student   | student1 | student1@example.com |
     And there is another teacher
     And the following "permission overrides" exist:
-            | capability                      | permission | role    | contextlevel | reference |
-            | mod/coursework:editinitialgrade | Allow      | teacher | Course       | C1        |
+      | capability                      | permission | role    | contextlevel | reference |
+      | mod/coursework:editinitialgrade | Allow      | teacher | Course       | C1        |
     And the following "activity" exists:
-      | activity | coursework |
-      | course   | C1         |
-      | name     | Coursework |
-      | numberofmarkers            | 2          |
+      | activity        | coursework |
+      | course          | C1         |
+      | name            | Coursework |
+      | numberofmarkers | 2          |
     And the coursework "allocationenabled" setting is "0" in the database
     And the student has a submission
 
@@ -65,8 +65,8 @@ Feature: Multiple assessors simple grading form
 
   Scenario: Grades can not be edited by other teachers
     Given the following "mod_coursework > feedbacks" exist:
-      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
-      | student1    | Coursework | teacher1 | assessor_1      | 58    | Blah |
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment |
+      | student1    | Coursework | teacher1 | assessor_1      | 58    | Blah            |
     And I am logged in as the other teacher
     And the submission is finalised
     When I am on the "Coursework" "coursework activity" page
@@ -125,8 +125,8 @@ Feature: Multiple assessors simple grading form
     # Cannot see agree marking until specific capability awarded.
     Then I should not see "Agree marking"
     And the following "permission overrides" exist:
-      | capability                      | permission | role    | contextlevel | reference |
-      | mod/coursework:addagreedgrade   | Allow      | teacher | Course       | C1        |
+      | capability                    | permission | role    | contextlevel | reference |
+      | mod/coursework:addagreedgrade | Allow      | teacher | Course       | C1        |
     And I am on the "Coursework" "coursework activity" page
     And I follow "Agree marking"
     And I wait until the page is ready

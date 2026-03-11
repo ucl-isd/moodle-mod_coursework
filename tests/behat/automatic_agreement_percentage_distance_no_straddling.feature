@@ -17,7 +17,7 @@ Feature: Automatic agreement for grades not straddling grade class boundaries
       | numberofmarkers            | 2                         |
       | deadline                   | ##yesterday##             |
       | automaticagreementstrategy | average_grade_no_straddle |
-      | automaticagreementrange | 10 |
+      | automaticagreementrange    | 10                        |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | teacher1 | teacher   | teacher1 | teacher1@example.com |

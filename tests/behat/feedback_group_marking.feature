@@ -1,20 +1,20 @@
 @mod @mod_coursework @mod_coursework_feedback_group_marking
 Feature: Marking the group submissions applies the grades to the whole group
 
-    As a teacher
-    I want to be able to grade the submission that the group have provided
-    So that the marks are awarded to all of the group members and they can
-    see their feedback and grades
+  As a teacher
+  I want to be able to grade the submission that the group have provided
+  So that the marks are awarded to all of the group members and they can
+  see their feedback and grades
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
-      | activity | coursework |
-      | course   | C1         |
-      | name     | Coursework |
-      | numberofmarkers            | 2          |
+      | activity        | coursework |
+      | course          | C1         |
+      | name            | Coursework |
+      | numberofmarkers | 2          |
     And there is a teacher
     And there is another teacher
     And the coursework "usegroups" setting is "1" in the database

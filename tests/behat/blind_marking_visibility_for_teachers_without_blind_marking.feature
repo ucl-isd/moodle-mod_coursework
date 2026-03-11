@@ -1,14 +1,14 @@
 @mod @mod_coursework
 Feature: visibility for teachers without blind marking
 
-    As a manager
-    I want to be able to prevent teachers from seeing each others' marks
-    So that I can be sure that they are not influenced by each other and the marking is fair
+  As a manager
+  I want to be able to prevent teachers from seeing each others' marks
+  So that I can be sure that they are not influenced by each other and the marking is fair
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
       | activity | coursework |
       | course   | C1         |

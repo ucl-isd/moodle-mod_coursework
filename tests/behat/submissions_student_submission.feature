@@ -1,14 +1,14 @@
 @mod @mod_coursework
 Feature: Students can submit files
 
-    In order to submit work to my tutor for grading
-    As a student who has completed some work
-    I want to be able to upload it as a file to the coursework instance
+  In order to submit work to my tutor for grading
+  As a student who has completed some work
+  I want to be able to upload it as a file to the coursework instance
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
       | activity | coursework |
       | course   | C1         |

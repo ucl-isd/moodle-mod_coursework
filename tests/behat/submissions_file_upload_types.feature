@@ -1,14 +1,14 @@
 @mod @mod_coursework @mod_coursework_submissions_file_upload_types
 Feature: Restricting the types of files that students can upload
 
-    As a teacher
-    I want to be able to restrict what file types the students can upload
-    So that tutors marking the work have a consistent experence and don't waste time
+  As a teacher
+  I want to be able to restrict what file types the students can upload
+  So that tutors marking the work have a consistent experence and don't waste time
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
       | activity | coursework |
       | course   | C1         |

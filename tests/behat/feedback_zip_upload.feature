@@ -7,9 +7,9 @@ Feature: Upload feedback files
       | fullname  | Course 1 |
       | shortname | C1       |
     And the following "activity" exists:
-      | activity                   | coursework |
-      | course                     | C1         |
-      | name                       | Coursework |
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | manager1 | Manager   | 1        | manager1@example.com |

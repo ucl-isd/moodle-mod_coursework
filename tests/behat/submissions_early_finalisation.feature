@@ -1,15 +1,15 @@
 @mod @mod_coursework @mod_coursework_submissions_early_finalisation
 Feature: Early finalisation of student submissions
 
-    As a teacher
-    I want to allow students to finalise their work early
-    So that there is a way to know when something is ready to mark before the deadline is due and I
-    can plan my grading work more effectively
+  As a teacher
+  I want to allow students to finalise their work early
+  So that there is a way to know when something is ready to mark before the deadline is due and I
+  can plan my grading work more effectively
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
       | activity | coursework |
       | course   | C1         |

@@ -8,13 +8,13 @@ Feature: Automatic sample based on range set grades using marking of students in
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
-      | activity | coursework |
-      | course   | C1         |
-      | name     | Coursework |
-      | deadline                   | ##yesterday## |
+      | activity | coursework    |
+      | course   | C1            |
+      | name     | Coursework    |
+      | deadline | ##yesterday## |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | student1 | student   | student1 | student1@example.com |

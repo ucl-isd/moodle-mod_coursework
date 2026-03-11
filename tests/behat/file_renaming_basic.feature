@@ -7,8 +7,8 @@ Feature: Basic file renaming for submission files
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
       | activity | coursework |
       | course   | C1         |
@@ -50,6 +50,6 @@ Feature: Basic file renaming for submission files
     And I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
     And I save and finalise the submission
     Then the uploaded files should be renamed with sequential patterns:
-      | pattern                    |
-      | X[a-f0-9]{8}_1.docx        |
-      | X[a-f0-9]{8}_2.docx        |
+      | pattern             |
+      | X[a-f0-9]{8}_1.docx |
+      | X[a-f0-9]{8}_2.docx |

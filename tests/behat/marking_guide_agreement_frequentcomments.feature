@@ -4,14 +4,14 @@ Feature: Marking guide with frequent comments
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
-      | activity | coursework |
-      | course   | C1         |
-      | name     | Coursework |
-      | numberofmarkers            | 2          |
-      | deadline                   | ##yesterday## |
+      | activity        | coursework    |
+      | course          | C1            |
+      | name            | Coursework    |
+      | numberofmarkers | 2             |
+      | deadline        | ##yesterday## |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | teacher1 | teacher   | teacher1 | teacher1@example.com |
@@ -33,8 +33,8 @@ Feature: Marking guide with frequent comments
       | Criterion name | Description for students | Description for markers | Maximum score |
       | A criteria     | Description for students | Description for markers | 100           |
     And I define the following frequently used comments:
-      | Comment 1 |
-      | Comment 2 |
+      | Comment 1          |
+      | Comment 2          |
       | Frequent Comment 3 |
     And I press "Save marking guide and make it ready"
 

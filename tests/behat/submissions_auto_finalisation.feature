@@ -1,15 +1,15 @@
 @mod @mod_coursework @mod_coursework_auto_finalisation
 Feature: Auto finalising before cron runs
 
-    As a teacher
-    I want to see all work finalised as soon as the deadline passes, without having to
-    wait for the cron to run
-    So that I can start marking immediately
+  As a teacher
+  I want to see all work finalised as soon as the deadline passes, without having to
+  wait for the cron to run
+  So that I can start marking immediately
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
       | activity | coursework |
       | course   | C1         |

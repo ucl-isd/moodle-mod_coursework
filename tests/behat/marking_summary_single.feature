@@ -4,13 +4,13 @@ Feature: When a coursework uses single marking the marking summary table should 
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
-      | activity | coursework |
-      | course   | C1         |
-      | name     | Coursework |
-      | numberofmarkers   | 1          |
+      | activity        | coursework |
+      | course          | C1         |
+      | name            | Coursework |
+      | numberofmarkers | 1          |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | teacher1 | teacher   | teacher1 | teacher1@example.com |
@@ -20,9 +20,9 @@ Feature: When a coursework uses single marking the marking summary table should 
     Given I log in as the teacher
     And I am on the "Coursework" "coursework activity" page
     Then I should see marking summary:
-      | Submissions         | 0/1 |
-      | Ready for release   | 0   |
-      | Released            | 0   |
+      | Submissions       | 0/1 |
+      | Ready for release | 0   |
+      | Released          | 0   |
 
   Scenario: Teacher's view when student has uploaded submission
     Given the following "mod_coursework > submissions" exist:
@@ -31,9 +31,9 @@ Feature: When a coursework uses single marking the marking summary table should 
     And I log in as the teacher
     And I am on the "Coursework" "coursework activity" page
     Then I should see marking summary:
-      | Submissions         | 1/1 |
-      | Ready for release   | 0   |
-      | Released            | 0   |
+      | Submissions       | 1/1 |
+      | Ready for release | 0   |
+      | Released          | 0   |
 
   Scenario: Teacher's view when submission is marked
     Given the following "mod_coursework > submissions" exist:
@@ -45,9 +45,9 @@ Feature: When a coursework uses single marking the marking summary table should 
     And I log in as the teacher
     And I am on the "Coursework" "coursework activity" page
     Then I should see marking summary:
-      | Submissions         | 1/1 |
-      | Ready for release   | 1   |
-      | Released            | 0   |
+      | Submissions       | 1/1 |
+      | Ready for release | 1   |
+      | Released          | 0   |
 
   @javascript
   Scenario: Manager's view when marks are released
@@ -61,6 +61,6 @@ Feature: When a coursework uses single marking the marking summary table should 
     And I am on the "Coursework" "coursework activity" page
     And I press the release marks button
     Then I should see marking summary:
-      | Submissions         | 1/1 |
-      | Ready for release   | 0   |
-      | Released            | 1   |
+      | Submissions       | 1/1 |
+      | Ready for release | 0   |
+      | Released          | 1   |

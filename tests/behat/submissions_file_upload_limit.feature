@@ -1,14 +1,14 @@
 @mod @mod_coursework
 Feature: File upload limits
 
-    As a course leader
-    I want to be able to limit the number of files that a student can upload
-    So that they must submit a specific number
+  As a course leader
+  I want to be able to limit the number of files that a student can upload
+  So that they must submit a specific number
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
       | activity | coursework |
       | course   | C1         |

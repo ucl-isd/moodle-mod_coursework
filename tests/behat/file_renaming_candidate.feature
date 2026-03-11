@@ -7,8 +7,8 @@ Feature: Candidate number based file renaming for submission files
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
       | activity | coursework |
       | course   | C1         |
@@ -43,9 +43,9 @@ Feature: Candidate number based file renaming for submission files
     And I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
     And I save and finalise the submission
     Then the uploaded files should be renamed to:
-      | filename        |
-      | TEST001_1.docx  |
-      | TEST001_2.docx  |
+      | filename       |
+      | TEST001_1.docx |
+      | TEST001_2.docx |
 
   @javascript @_file_upload
   Scenario: Files use username hash when candidate number is disabled

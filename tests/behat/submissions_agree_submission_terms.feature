@@ -1,14 +1,14 @@
 @mod @mod_coursework @_file_upload
 Feature: Students must agree to terms before submitting anything
 
-    As a manger
-    I want to be able to force students to agree to terms and conditions
-    So that we are legally protected in case of disputes over plagiarism and the students can't cheat
+  As a manger
+  I want to be able to force students to agree to terms and conditions
+  So that we are legally protected in case of disputes over plagiarism and the students can't cheat
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
       | activity | coursework |
       | course   | C1         |

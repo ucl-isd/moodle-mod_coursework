@@ -1,14 +1,14 @@
 @mod @mod_coursework
 Feature: Late submissions
 
-    As a teacher
-    I want to be able to allow stuents to submit work past the deadline
-    So that they can still get some credit even if their grades get capped
+  As a teacher
+  I want to be able to allow stuents to submit work past the deadline
+  So that they can still get some credit even if their grades get capped
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
       | activity | coursework |
       | course   | C1         |

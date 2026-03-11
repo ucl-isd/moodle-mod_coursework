@@ -4,8 +4,8 @@ Feature: Check that Turnitin reports are fetched and displayed post page load fr
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
       | activity | coursework |
       | course   | C1         |
@@ -31,12 +31,12 @@ Feature: Check that Turnitin reports are fetched and displayed post page load fr
   Scenario: Submission does *not* have Turnitin report on page load as global settings are on but course setting is still off
     Given I am logged in as a teacher
     Given the following config values are set as admin:
-      | config                             | value    |
-      | enableplagiarism                   | 1        |
+      | config           | value |
+      | enableplagiarism | 1     |
     And the following config values are set as admin:
-      | config                             | value    | plugin              |
-      | enabled                            | 1        | plagiarism_turnitin |
-      | plagiarism_turnitin_mod_coursework | 1        | plagiarism_turnitin |
+      | config                             | value | plugin              |
+      | enabled                            | 1     | plagiarism_turnitin |
+      | plagiarism_turnitin_mod_coursework | 1     | plagiarism_turnitin |
     And I am on the "Coursework" "coursework activity" page
     # Ensure the table is scrolled into view, since JS loading is not triggered for rows out of view.
     And I hover "table.mod-coursework-submissions-table" "css_element"
@@ -47,12 +47,12 @@ Feature: Check that Turnitin reports are fetched and displayed post page load fr
   @javascript
   Scenario: Submission *does* have Turnitin report on page load as settings are on
     Given the following config values are set as admin:
-      | config                             | value    |
-      | enableplagiarism                   | 1        |
+      | config           | value |
+      | enableplagiarism | 1     |
     And the following config values are set as admin:
-      | config                             | value    | plugin              |
-      | enabled                            | 1        | plagiarism_turnitin |
-      | plagiarism_turnitin_mod_coursework | 1        | plagiarism_turnitin |
+      | config                             | value | plugin              |
+      | enabled                            | 1     | plagiarism_turnitin |
+      | plagiarism_turnitin_mod_coursework | 1     | plagiarism_turnitin |
     And the coursework "plagiarism_turnitin_config" setting is "1" in the database
     And I am logged in as a teacher
     And I am on the "Coursework" "coursework activity" page
@@ -65,12 +65,12 @@ Feature: Check that Turnitin reports are fetched and displayed post page load fr
   @javascript
   Scenario: Submission *does* have Turnitin report showing after I reload a row via AJAX, as settings are on
     Given the following config values are set as admin:
-      | config                             | value    |
-      | enableplagiarism                   | 1        |
+      | config           | value |
+      | enableplagiarism | 1     |
     And the following config values are set as admin:
-      | config                             | value    | plugin              |
-      | enabled                            | 1        | plagiarism_turnitin |
-      | plagiarism_turnitin_mod_coursework | 1        | plagiarism_turnitin |
+      | config                             | value | plugin              |
+      | enabled                            | 1     | plagiarism_turnitin |
+      | plagiarism_turnitin_mod_coursework | 1     | plagiarism_turnitin |
     And the coursework "plagiarism_turnitin_config" setting is "1" in the database
     And the coursework "plagiarismflagenabled" setting is "1" in the database
     And I log in as a manager
@@ -87,12 +87,12 @@ Feature: Check that Turnitin reports are fetched and displayed post page load fr
 
   Scenario: Submission has Turnitin report showing on individual student marking page
     Given the following config values are set as admin:
-      | config                             | value    |
-      | enableplagiarism                   | 1        |
+      | config           | value |
+      | enableplagiarism | 1     |
     And the following config values are set as admin:
-      | config                             | value    | plugin              |
-      | enabled                            | 1        | plagiarism_turnitin |
-      | plagiarism_turnitin_mod_coursework | 1        | plagiarism_turnitin |
+      | config                             | value | plugin              |
+      | enabled                            | 1     | plagiarism_turnitin |
+      | plagiarism_turnitin_mod_coursework | 1     | plagiarism_turnitin |
     And the coursework "plagiarism_turnitin_config" setting is "1" in the database
     And the coursework "plagiarismflagenabled" setting is "1" in the database
     And I log in as a manager

@@ -1,14 +1,14 @@
 @mod @mod_coursework @mod_coursework_submissions_group_submissions
 Feature: Students are able to submit one piece of work on behalf of the group
 
-    As a student
-    I want to be able to submit a single piece of work on behalf of the other people in my group
-    So that they and the tutor can see it and mark it
+  As a student
+  I want to be able to submit a single piece of work on behalf of the other people in my group
+  So that they and the tutor can see it and mark it
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
       | activity | coursework |
       | course   | C1         |

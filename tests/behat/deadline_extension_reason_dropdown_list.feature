@@ -7,13 +7,13 @@ Feature: Deadline extension reasons dropdown list
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
-      | activity | coursework |
-      | course   | C1         |
-      | name     | Coursework |
-      | deadline                   | ##yesterday## |
+      | activity          | coursework    |
+      | course            | C1            |
+      | name              | Coursework    |
+      | deadline          | ##yesterday## |
       | extensionsenabled | 1             |
     And the following "users" exist:
       | username | firstname | lastname | email                |
@@ -28,7 +28,7 @@ Feature: Deadline extension reasons dropdown list
     And I click on "Actions" "button" in the "student student1" "table_row"
     And I click on "Submission extension" "link"
     And I set the following fields to these values:
-      | Extended deadline | ##+1 weeks##         |
+      | Extended deadline | ##+1 weeks##            |
       | Extension reason  | first reason            |
       | Extra information | The dog ate my homework |
     When I click on "Save" "button"
@@ -37,7 +37,7 @@ Feature: Deadline extension reasons dropdown list
     And I click on "Actions" "button" in the "student student1" "table_row"
     And I click on "Submission extension" "link"
     And I set the following fields to these values:
-      | Extended deadline | ##+2 weeks##         |
+      | Extended deadline | ##+2 weeks##            |
       | Extension reason  | first reason            |
       | Extra information | The dog ate my homework |
     And I click on "Save" "button"
@@ -52,7 +52,7 @@ Feature: Deadline extension reasons dropdown list
     And I click on "Actions" "button" in the "student student1" "table_row"
     And I click on "Submission extension" "link"
     And I set the following fields to these values:
-      | Extended deadline | ##+4 weeks##         |
+      | Extended deadline | ##+4 weeks##            |
       | Extension reason  | first reason            |
       | Extra information | The dog ate my homework |
     And I click on "Save" "button"

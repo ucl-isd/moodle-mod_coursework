@@ -1,19 +1,19 @@
 @mod @mod_coursework @mod_coursework_feedback_publishing_grades
 Feature: publishing grades to the students
 
-    In order that the students receive their final grades
-    As a manager
-    I want to be able to publish the grades when I am ready to
+  In order that the students receive their final grades
+  As a manager
+  I want to be able to publish the grades when I am ready to
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
-      | activity | coursework |
-      | course   | C1         |
-      | name     | Coursework |
-      | numberofmarkers            | 2          |
+      | activity        | coursework |
+      | course          | C1         |
+      | name            | Coursework |
+      | numberofmarkers | 2          |
     And the coursework "blindmarking" setting is "0" in the database
     And the coursework "moderationenabled" setting is "0" in the database
     And the following "users" exist:
