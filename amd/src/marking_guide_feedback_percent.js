@@ -88,82 +88,78 @@ const handleCheckBoxClick = (e) => {
  *
  * @param {boolean} initialPreferenceValue
  */
-export const init = (initialPreferenceValue) => {
+export const init = async(initialPreferenceValue) => {
     usingPercentGrades = initialPreferenceValue;
 
-    getString('markpercent', 'mod_coursework').then((markPercentString) => {
-        const checkBox = document.getElementById('switch-entergradesaspercent');
-        if (checkBox) {
-            checkBox.addEventListener('change', handleCheckBoxClick);
+    const markPercentString = await getString('markpercent', 'mod_coursework');
+    const checkBox = document.getElementById('switch-entergradesaspercent');
+    if (checkBox) {
+        checkBox.addEventListener('change', handleCheckBoxClick);
+    }
+
+    const tableCells = document.querySelectorAll('div#guide-advancedgrading tr.criterion td.score');
+    tableCells.forEach((tableCell) => {
+        const scoreInputElem = tableCell.querySelector('input');
+        if (!scoreInputElem) {
+            return;
         }
 
-        const tableCells = document.querySelectorAll('div#guide-advancedgrading tr.criterion td.score');
-        tableCells.forEach((tableCell) => {
-            const scoreInputElem = tableCell.querySelector('input');
-            if (!scoreInputElem) {
-                return;
+        const match = scoreInputElem.name.match(/advancedgrading\[criteria]\[(\d+)]\[score]/);
+        const criterionNumber = match ? match[1] : null;
+        const newFieldName = getFieldName(criterionNumber, true);
+        const scoreOutOf = parseFloat(scoreInputElem.max) || 0;
+
+        scoreInputElem.setAttribute('data-criterion-number', criterionNumber);
+
+        if (usingPercentGrades) {
+            scoreInputElem.setAttribute('readonly', 'true');
+        }
+        scoreInputElem.addEventListener('input', handleScoreChangeEvent);
+
+        const context = {
+            "name": newFieldName,
+            "id": newFieldName,
+            "min": "0",
+            "max": MAX_VALUE_PERCENT,
+            "step": "any",
+            "required": true
+        };
+
+        (async() => {
+            const {html, js} = await Templates.renderForPromise('mod_coursework/form_number', context);
+            const container = document.createElement('div');
+            container.classList.add(CLASS_PERCENT_CONTAINER);
+
+            if (!usingPercentGrades) {
+                container.classList.add('d-none');
             }
 
-            const match = scoreInputElem.name.match(/advancedgrading\[criteria]\[(\d+)]\[score]/);
-            const criterionNumber = match ? match[1] : null;
-            const newFieldName = getFieldName(criterionNumber, true);
-            const scoreOutOf = parseFloat(scoreInputElem.max) || 0;
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            const templateWrapper = tempDiv.firstElementChild;
+            const inp = templateWrapper.querySelector('input');
 
-            scoreInputElem.setAttribute('data-criterion-number', criterionNumber);
+            inp.setAttribute('data-criterion-number', criterionNumber);
 
-            if (usingPercentGrades) {
-                scoreInputElem.setAttribute('readonly', 'true');
+            const label = document.createElement('label');
+            label.setAttribute('for', newFieldName);
+            label.textContent = markPercentString;
+            label.classList.add('d-block');
+
+            container.appendChild(label);
+            container.appendChild(templateWrapper);
+            tableCell.insertBefore(container, tableCell.firstChild);
+
+            Templates.runTemplateJS(js);
+
+            inp.addEventListener('input', handlePercentChangeEvent);
+            inp.addEventListener('keypress', preventInvalidNumber);
+
+            if (scoreInputElem.value !== '') {
+                setPercentageFromScore(criterionNumber, parseFloat(scoreInputElem.value), scoreOutOf);
             }
-            scoreInputElem.addEventListener('input', handleScoreChangeEvent);
-
-            const context = {
-                "name": newFieldName,
-                "id": newFieldName,
-                "min": "0",
-                "max": MAX_VALUE_PERCENT,
-                "step": "any",
-                "required": true
-            };
-
-            Templates.render('mod_coursework/form_number', context)
-                .then((html, js) => {
-                    const container = document.createElement('div');
-                    container.classList.add(CLASS_PERCENT_CONTAINER);
-
-                    if (!usingPercentGrades) {
-                        container.classList.add('d-none');
-                    }
-
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = html;
-                    const templateWrapper = tempDiv.firstElementChild;
-                    const inp = templateWrapper.querySelector('input');
-
-                    inp.setAttribute('data-criterion-number', criterionNumber);
-
-                    const label = document.createElement('label');
-                    label.setAttribute('for', newFieldName);
-                    label.textContent = markPercentString;
-                    label.classList.add('d-block');
-
-                    container.appendChild(label);
-                    container.appendChild(templateWrapper);
-                    tableCell.insertBefore(container, tableCell.firstChild);
-
-                    Templates.runTemplateJS(js);
-
-                    inp.addEventListener('input', handlePercentChangeEvent);
-                    inp.addEventListener('keypress', preventInvalidNumber);
-
-                    if (scoreInputElem.value !== '') {
-                        setPercentageFromScore(criterionNumber, parseFloat(scoreInputElem.value), scoreOutOf);
-                    }
-                    return;
-                })
-                .catch(() => {});
-        });
-        return;
-    }).catch(() => {});
+        })();
+    });
 };
 
 /**
