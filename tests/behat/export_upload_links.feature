@@ -12,7 +12,9 @@ Feature: Download and upload buttons on submissions page
       | course   | C1         |
       | name     | Coursework |
     And there is a teacher
-    And there is a student
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
 
   Scenario: When there are no submissions the teacher should not see an upload or download menu
     When I log in as a teacher

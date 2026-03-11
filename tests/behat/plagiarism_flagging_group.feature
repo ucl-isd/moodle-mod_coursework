@@ -11,7 +11,9 @@ Feature: Teachers should be able to add and edit plagiarism flags for group subm
       | name     | Coursework |
     And the coursework "plagiarismflagenabled" setting is "1" in the database
     And the coursework "usegroups" setting is "1" in the database
-    And there is a student
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
     And the student is a member of a group
     And there is a teacher
     And the group has a submission

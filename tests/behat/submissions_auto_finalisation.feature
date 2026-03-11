@@ -14,7 +14,9 @@ Feature: Auto finalising before cron runs
       | activity | coursework |
       | course   | C1         |
       | name     | Coursework |
-    And there is a student
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
     And the student has a submission
     And the submission is not finalised
 

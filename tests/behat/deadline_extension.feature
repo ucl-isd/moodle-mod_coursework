@@ -7,15 +7,17 @@ Feature: Deadlines extensions for submissions
 
   Background:
     Given the following "course" exists:
-      | fullname          | Course 1  |
-      | shortname         | C1        |
+      | fullname  | Course 1 |
+      | shortname | C1       |
     And the following "activity" exists:
-      | activity | coursework |
-      | course   | C1         |
-      | name     | Coursework |
-      | deadline                   | ##yesterday## |
-    And the coursework individual extension option is enabled
-    And there is a student
+      | activity          | coursework    |
+      | course            | C1            |
+      | name              | Coursework    |
+      | deadline          | ##yesterday## |
+      | extensionsenabled | 1             |
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
 
   Scenario: The student can submit after the deadline when the start date is disabled
     Given there is an extension for the student that allows them to submit

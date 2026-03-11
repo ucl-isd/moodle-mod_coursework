@@ -15,10 +15,14 @@ Feature: Auto releasing the student feedback without cron
       | course   | C1         |
       | name     | Coursework |
       | numberofmarkers   | 1          |
-    And there is a student
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
     And the student has a submission
     And there is a teacher
-    And there is feedback for the submission from the teacher
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 58    | Blah |
 
   Scenario: auto release does not happen before the deadline without the cron running
     Given the coursework individual feedback release date has not passed

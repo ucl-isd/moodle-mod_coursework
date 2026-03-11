@@ -14,9 +14,11 @@ Feature: User can submit on behalf of a student
       | activity | coursework |
       | course   | C1         |
       | name     | Coursework |
-    And there is a teacher
-    And there is another teacher
-    And there is a student called "John1"
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+      | teacher2 | teacher   | teacher2 | teacher2@example.com |
+      | student1 | student   | student1 | student1@example.com | called "John1"
 
   @javascript @_file_upload
   Scenario: As a manager, I upload a file and see it on the coursework page

@@ -11,9 +11,11 @@ Feature: When "Use the personal deadline" is enabled the deadline date should re
       | activity | coursework |
       | course   | C1         |
       | name     | Coursework |
-    And the coursework deadline date is "##+1 week##"
+      | deadline | ##+1 week## |
     And the coursework "personaldeadlineenabled" setting is "1" in the database
-    And there is a student called "John1"
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com | called "John1"
     And there is another student
 
   Scenario: Student with personal deadline

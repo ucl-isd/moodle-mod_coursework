@@ -11,8 +11,10 @@ Feature: When a coursework uses double marking the marking summary table should 
       | course   | C1         |
       | name     | Coursework |
       | numberofmarkers            | 2          |
-    And there is a student
-    And there is a teacher
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+      | student1 | student   | student1 | student1@example.com |
     And there is a manager
     And there is another teacher
 
@@ -58,7 +60,9 @@ Feature: When a coursework uses double marking the marking summary table should 
     Given the following "mod_coursework > submissions" exist:
       | allocatable | coursework | finalisedstatus |
       | student1    | Coursework | 1               |
-    And there is feedback for the submission from the teacher
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 58    | Blah |
     And I log in as the teacher
     And I am on the "Coursework" "coursework activity" page
     Then I should see marking summary:
@@ -70,7 +74,9 @@ Feature: When a coursework uses double marking the marking summary table should 
     Given the following "mod_coursework > submissions" exist:
       | allocatable | coursework | finalisedstatus |
       | student1    | Coursework | 1               |
-    And there is feedback for the submission from the teacher
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 58    | Blah |
     And I log in as the manager
     And I am on the "Coursework" "coursework activity" page
     Then I should see marking summary:
@@ -82,7 +88,10 @@ Feature: When a coursework uses double marking the marking summary table should 
     Given the following "mod_coursework > submissions" exist:
       | allocatable | coursework | finalisedstatus |
       | student1    | Coursework | 1               |
-    And there are feedbacks from both teachers
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
+      | student1    | Coursework | teacher2 | assessor_2      | 63    | New comment here |
     And I log in as the manager
     And I am on the "Coursework" "coursework activity" page
     Then I should see marking summary:
@@ -95,7 +104,10 @@ Feature: When a coursework uses double marking the marking summary table should 
     Given the following "mod_coursework > submissions" exist:
       | allocatable | coursework | finalisedstatus |
       | student1    | Coursework | 1               |
-    And there are feedbacks from both teachers
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
+      | student1    | Coursework | teacher2 | assessor_2      | 63    | New comment here |
     And there is final feedback
     And I log in as the manager
     And I am on the "Coursework" "coursework activity" page

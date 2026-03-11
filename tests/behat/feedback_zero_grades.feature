@@ -15,7 +15,9 @@ Feature: Zero grades should show up just like the others
       | course   | C1         |
       | name     | Coursework |
       | numberofmarkers   | 1          |
-    And there is a student
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
     And the following "mod_coursework > submissions" exist:
       | allocatable | coursework | finalisedstatus |
       | student1    | Coursework | 1               |

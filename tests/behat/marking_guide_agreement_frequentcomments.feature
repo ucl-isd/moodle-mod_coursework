@@ -12,9 +12,11 @@ Feature: Marking guide with frequent comments
       | name     | Coursework |
       | numberofmarkers            | 2          |
       | deadline                   | ##yesterday## |
-    And there is a teacher
-    And there is another teacher
-    And there is a student
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+      | teacher2 | teacher   | teacher2 | teacher2@example.com |
+      | student1 | student   | student1 | student1@example.com |
     And the following "mod_coursework > submissions" exist:
       | allocatable | coursework | finalisedstatus |
       | student1    | Coursework | 1               |

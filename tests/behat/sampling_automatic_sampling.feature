@@ -15,7 +15,9 @@ Feature: Automatic sampling using total number of students in stage 1 and 2
       | activity | coursework |
       | course   | C1         |
       | name     | Coursework |
-    And there is a student
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
     And there is another student
     And there is a teacher
     And there is another teacher

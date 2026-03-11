@@ -18,8 +18,10 @@ Feature: Manual sampling
     And the coursework allocation option is disabled
     And the coursework has sampling enabled
     And the coursework is set to double marker
-    And there is a student
-    And there is a teacher
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+      | student1 | student   | student1 | student1@example.com |
     And the teacher has a capability to mark submissions
     And there is another teacher
     And the student has a submission

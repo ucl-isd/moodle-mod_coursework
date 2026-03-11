@@ -18,13 +18,18 @@ Feature: Marking the group submissions applies the grades to the whole group
     And there is a teacher
     And there is another teacher
     And the coursework "usegroups" setting is "1" in the database
-    And there is a student
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
     And the student is a member of a group
     And there is another student
     And the other student is a member of the group
     And the group has a submission
     And the submission is finalised
-    And there are feedbacks from both teachers
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
+      | student1    | Coursework | teacher2 | assessor_2      | 63    | New comment here |
     And I am logged in as a manager
 
   @javascript

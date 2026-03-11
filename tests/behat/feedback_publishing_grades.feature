@@ -16,7 +16,9 @@ Feature: publishing grades to the students
       | numberofmarkers            | 2          |
     And the coursework "blindmarking" setting is "0" in the database
     And the coursework "moderationenabled" setting is "0" in the database
-    And there is a student
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
     And the following "mod_coursework > submissions" exist:
       | allocatable | coursework | finalisedstatus |
       | student1    | Coursework | 1               |
@@ -25,7 +27,10 @@ Feature: publishing grades to the students
   Scenario: Not publishing with double marking hides feedback from the student
     Given there is a teacher
     And there is another teacher
-    And there are feedbacks from both teachers
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
+      | student1    | Coursework | teacher2 | assessor_2      | 63    | New comment here |
     And I am logged in as a manager
     When I am on the "Coursework" "coursework activity" page
     And I click the new multiple final feedback button for the student
@@ -46,7 +51,10 @@ Feature: publishing grades to the students
   Scenario: Deliberate publishing with double marking shows feedback to the student
     Given there is a teacher
     And there is another teacher
-    And there are feedbacks from both teachers
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
+      | student1    | Coursework | teacher2 | assessor_2      | 63    | New comment here |
     And I am logged in as a manager
 
     When I am on the "Coursework" "coursework activity" page

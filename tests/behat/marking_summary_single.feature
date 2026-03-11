@@ -11,8 +11,10 @@ Feature: When a coursework uses single marking the marking summary table should 
       | course   | C1         |
       | name     | Coursework |
       | numberofmarkers   | 1          |
-    And there is a student
-    And there is a teacher
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+      | student1 | student   | student1 | student1@example.com |
 
   Scenario: Teacher's view when there are no submissions
     Given I log in as the teacher

@@ -9,8 +9,10 @@ Feature: Multiple assessors simple grading form
     Given the following "course" exists:
       | fullname          | Course 1  |
       | shortname         | C1        |
-    And there is a student
-    And there is a teacher
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+      | student1 | student   | student1 | student1@example.com |
     And there is another teacher
     And the following "permission overrides" exist:
             | capability                      | permission | role    | contextlevel | reference |
@@ -62,7 +64,9 @@ Feature: Multiple assessors simple grading form
       | Comment | New comment here |
 
   Scenario: Grades can not be edited by other teachers
-    Given there is feedback for the submission from the teacher
+    Given the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 58    | Blah |
     And I am logged in as the other teacher
     And the submission is finalised
     When I am on the "Coursework" "coursework activity" page

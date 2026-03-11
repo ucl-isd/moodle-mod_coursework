@@ -11,8 +11,10 @@ Feature: Grading summary table visibility
       | activity | coursework |
       | course   | C1         |
       | name     | Coursework |
-    And there is a student
-    And there is a teacher
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+      | student1 | student   | student1 | student1@example.com |
     And I log in as the student
     And I am on the "Coursework" "coursework activity" page
     Then I should not see "Marking summary"

@@ -614,14 +614,6 @@ class behat_mod_coursework extends behat_base {
     }
 
     /**
-     * @Given /^blind marking is enabled$/
-     */
-    public function blind_marking_is_enabled() {
-        $this->get_coursework()->update_attribute('blindmarking', 1);
-        $this->get_coursework()->update_attribute('renamefiles', 1);
-    }
-
-    /**
      * @Then /^I should( not)? see the student's name in the user cell$/
      *
      * @param bool $negate
@@ -729,23 +721,6 @@ class behat_mod_coursework extends behat_base {
                           'capability' => 'mod/coursework:viewallstudents'];
         $permissionsetting = CAP_ALLOW;
         $DB->set_field('role_capabilities', 'permission', $permissionsetting, $params);
-    }
-
-    /**
-     * IMPORTANT: CI server borks if this is not done *before* the manager
-     * logs in!
-     *
-     * @Given /^teachers have the add agreed grade capability$/
-     */
-    public function teachers_have_the_add_agreed_grade_capability() {
-        global $DB;
-
-        $teacherrole = $DB->get_record('role', ['shortname' => 'teacher']);
-        $params = ['roleid' => $teacherrole->id,
-                        'capability' => 'mod/coursework:addagreedgrade',
-                        'contextid' => 1,
-                        'permission' => CAP_ALLOW];
-        $DB->insert_record('role_capabilities', $params);
     }
 
     /**
@@ -1046,16 +1021,6 @@ class behat_mod_coursework extends behat_base {
      */
     public function there_are_some_extension_reasons_configured_at_site_level() {
         set_config('coursework_extension_reasons_list', "first reason\nsecond reason");
-    }
-
-    /**
-     * @Given /^the coursework individual extension option is enabled$/
-     */
-    public function the_coursework_individual_extension_option_is_enabled() {
-        $coursework = $this->get_coursework();
-
-        $coursework->extensionsenabled = 1;
-        $coursework->save();
     }
 
     /**
@@ -2794,15 +2759,6 @@ class behat_mod_coursework extends behat_base {
                 $this->getsession()
             );
         }
-    }
-
-    /**
-     * For example, the coursework deadline can be set with:
-     *   And the coursework deadline date is "##+1 week##"
-     * @Given /^the coursework ([\w]+) date is "(?P<value>(?:[^"]|\\")*)"$/
-     */
-    public function the_coursework_date_is($name, $value) {
-        $this->the_coursework_setting_is_in_the_database($name, $value);
     }
 
     /**

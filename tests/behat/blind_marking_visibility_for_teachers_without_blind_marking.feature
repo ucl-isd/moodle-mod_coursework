@@ -16,14 +16,18 @@ Feature: visibility for teachers without blind marking
 
   Scenario: The student names are normally visible to teachers in the user cells
     Given I am logged in as a teacher
-    And there is a student
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
     When I am on the "Coursework" "coursework activity" page
     Then I should see the student's name in the user cell
 
   @javascript
   Scenario: The user names are visible from teachers in the group cells
     Given I am logged in as a teacher
-    And there is a student
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
     And group submissions are enabled
     And the student is a member of a group
     And the group is part of a grouping for the coursework
@@ -35,15 +39,19 @@ Feature: visibility for teachers without blind marking
   Scenario: Teachers can see other grades
     Given the coursework "numberofmarkers" setting is "2" in the database
     And the coursework "viewinitialgradeenabled" setting is "1" in the database
-    And there is a teacher
-    And there is another teacher
-    And there is a student
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+      | teacher2 | teacher   | teacher2 | teacher2@example.com |
+      | student1 | student   | student1 | student1@example.com |
     And the following "mod_coursework > submissions" exist:
       | allocatable | coursework | finalisedstatus |
       | student1    | Coursework | 1               |
-    And there are feedbacks from both teachers
-    And I am logged in as the other teacher
-    When I am on the "Coursework" "coursework activity" page
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
+      | student1    | Coursework | teacher2 | assessor_2      | 63    | New comment here |
+    And I am on the "Coursework" "coursework activity" page logged in as "teacher2"
     Then I should see "teacher teacher1" in the "student student3" "table_row"
     And I should see "otherteacher teacher2" in the "student student3" "table_row"
     And I should see "63" in the "student student3" "table_row"

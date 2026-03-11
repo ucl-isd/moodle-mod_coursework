@@ -16,7 +16,9 @@ Feature: Students see feedback on group assignments
     And the coursework "usegroups" setting is "1" in the database
     And the coursework is set to double marker
     And there is a manager
-    And there is a student
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
     And the student is a member of a group
     And there is another student
     And the other student is a member of the group

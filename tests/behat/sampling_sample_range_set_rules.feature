@@ -15,7 +15,9 @@ Feature: Automatic sample based on range set grades using marking of students in
       | course   | C1         |
       | name     | Coursework |
       | deadline                   | ##yesterday## |
-    And there is a student
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
     And the student has a submission
     And there is another student
     And another student has another submission

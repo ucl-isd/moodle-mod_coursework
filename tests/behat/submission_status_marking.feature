@@ -11,8 +11,10 @@ Feature: When a coursework has multiple markers
       | course   | C1         |
       | name     | Coursework |
       | numberofmarkers            | 2          |
-    And there is a student
-    And there is a teacher
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+      | student1 | student   | student1 | student1@example.com |
     And the following "mod_coursework > submissions" exist:
       | allocatable | coursework | finalisedstatus |
       | student1    | Coursework | 1               |
@@ -32,7 +34,10 @@ Feature: When a coursework has multiple markers
 
   Scenario: Both markers have added final feedback but there is no agreed mark
     Given there is another teacher
-    And there are feedbacks from both teachers
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
+      | student1    | Coursework | teacher2 | assessor_2      | 63    | New comment here |
     And I log in as a student
     When I am on the "Coursework" "coursework activity" page
     Then I should see submission status "In marking"
@@ -42,7 +47,10 @@ Feature: When a coursework has multiple markers
     And sample marking includes student for stage 2
     And there is another teacher
     And there is a manager
-    And there are feedbacks from both teachers
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
+      | student1    | Coursework | teacher2 | assessor_2      | 63    | New comment here |
     And there is final feedback
     And I log in as a student
     When I am on the "Coursework" "coursework activity" page
@@ -51,7 +59,10 @@ Feature: When a coursework has multiple markers
   Scenario: There is a final mark
     Given there is another teacher
     And there is a manager
-    And there are feedbacks from both teachers
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
+      | student1    | Coursework | teacher2 | assessor_2      | 63    | New comment here |
     And there is final feedback
     And I log in as a student
     When I am on the "Coursework" "coursework activity" page
@@ -62,7 +73,10 @@ Feature: When a coursework has multiple markers
     And sample marking includes student for stage 2
     And there is another teacher
     And there is a manager
-    And there are feedbacks from both teachers
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
+      | student1    | Coursework | teacher2 | assessor_2      | 63    | New comment here |
     And there is draft final feedback
     And I log in as a student
     When I am on the "Coursework" "coursework activity" page
@@ -71,7 +85,10 @@ Feature: When a coursework has multiple markers
   Scenario: There is a final mark but this is not finalised
     Given there is another teacher
     And there is a manager
-    And there are feedbacks from both teachers
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
+      | student1    | Coursework | teacher2 | assessor_2      | 63    | New comment here |
     And there is draft final feedback
     And I log in as a student
     When I am on the "Coursework" "coursework activity" page
@@ -80,7 +97,10 @@ Feature: When a coursework has multiple markers
   Scenario: Mark is finalised and has been released
     Given there is another teacher
     And there is a manager
-    And there are feedbacks from both teachers
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
+      | student1    | Coursework | teacher2 | assessor_2      | 63    | New comment here |
     And there is final feedback
     And grades have been released
     And I log in as a student

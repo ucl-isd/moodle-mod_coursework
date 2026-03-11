@@ -14,8 +14,10 @@ Feature: Adding and editing single feedback
       | course   | C1         |
       | name     | Coursework |
       | numberofmarkers   | 1          |
-    And there is a student
-    And there is a teacher
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+      | student1 | student   | student1 | student1@example.com |
     And the student has a submission
     And the teacher has a capability to edit their own initial feedbacks
     And I log in as the teacher
@@ -40,7 +42,9 @@ Feature: Adding and editing single feedback
 
   Scenario: Editing someone else's grade
     Given the submission is finalised
-    And there is feedback for the submission from the teacher
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 58    | Blah |
     And I log out
     And I log in as "admin"
     And I am on the "Coursework" "coursework activity" page

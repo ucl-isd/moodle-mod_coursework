@@ -15,7 +15,9 @@ Feature: Basic file renaming for submission files
       | name     | Coursework |
     And the coursework "allowearlyfinalisation" setting is "1" in the database
     And there is a teacher
-    And there is a student
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
 
   @javascript @_file_upload
   Scenario: Files are renamed with username hash when renamefiles is enabled

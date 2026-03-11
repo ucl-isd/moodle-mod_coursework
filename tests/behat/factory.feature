@@ -81,7 +81,9 @@ Feature: Testing that the factories for behat steps work. If any tests fail, fix
     Then I should be on the course page
 
   Scenario: logged in as a manager works when a student has been created
-    Given there is a student
+    Given the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
     Then I am logged in as a manager
 
   Scenario: Making a setting NULL

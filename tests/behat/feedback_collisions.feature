@@ -14,7 +14,9 @@ Feature: Collisions: two people try to create feedback at the same time
       | activity | coursework |
       | course   | C1         |
       | name     | Coursework |
-    And there is a student
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
     And the following "mod_coursework > submissions" exist:
       | allocatable | coursework | finalisedstatus |
       | student1    | Coursework | 1               |

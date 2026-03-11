@@ -11,8 +11,10 @@ Feature: Teachers and course administrators should be able to add and edit
       | course   | C1         |
       | name     | Coursework |
     And the coursework "plagiarismflagenabled" setting is "1" in the database
-    And there is a student
-    And there is a teacher
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+      | student1 | student   | student1 | student1@example.com |
     And the following "mod_coursework > submissions" exist:
       | allocatable | coursework | finalisedstatus |
       | student1    | Coursework | 1               |
