@@ -30,13 +30,12 @@ Feature: Marking guide percentage grades entry
     And I log out
 
   @javascript
-  Scenario: Marker enters grades as fractions in usual way (no percent grades permission for this activity).
+  Scenario: Marker enters grades as fractions in usual way (no percent grades allowed by site admin).
     Given I log in as the teacher
     And I visit the coursework page
-    And the following "permission overrides" exist:
-      | capability                               | permission | role           | contextlevel | reference |
-      | mod/coursework:enterguidegradesaspercent | Prevent    | editingteacher | Course       | C1        |
-      | mod/coursework:enterguidegradesaspercent | Prevent    | teacher        | Course       | C1        |
+    And the following config values are set as admin:
+      | config                             | value    | plugin         |
+      | allowenterguidegradesaspercent     | 0        | mod_coursework |
 
     And I follow "Add mark"
     And I wait until the page is ready
