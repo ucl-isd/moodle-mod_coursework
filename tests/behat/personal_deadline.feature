@@ -15,7 +15,7 @@ Feature: When "Use the personal deadline" is enabled the deadline date should re
     And the coursework "personaldeadlineenabled" setting is "1" in the database
     And the following "users" exist:
       | username | firstname | lastname | email                |
-      | student1 | student   | student1 | student1@example.com | called "John1"
+      | student1 | John1   | student1 | student1@example.com |
     And there is another student
 
   Scenario: Student with personal deadline

@@ -14,10 +14,8 @@ Feature: For the final grade the mark should be to the decimal point
       | username | firstname | lastname | email                |
       | teacher1 | teacher   | teacher1 | teacher1@example.com |
       | teacher2 | teacher   | teacher2 | teacher2@example.com |
-      | student1 | student   | student1 | student1@example.com | called "John1"
-    And the following "users" exist:
-      | username | firstname | lastname | email                |
-      | student1 | student   | student1 | student1@example.com | called "Jane1"
+      | student1 | John1     | student1 | student1@example.com |
+      | student1 | Jane1     | student1 | student1@example.com |
     And the student called "John1" has a finalised submission
     And the student called "Jane1" has a finalised submission
 

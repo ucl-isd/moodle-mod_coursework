@@ -124,7 +124,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $model = new stdClass();
         $model->allocatablename = $submission->get_allocatable_name();
         $model->feedbacks = [];
-        
+
         foreach ($submission->get_assessor_feedbacks() as $feedback) {
             $model->feedbacks[] = $this->get_object_renderer()->get_feedback_model($feedback, false);
         }

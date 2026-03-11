@@ -18,7 +18,7 @@ Feature: User can submit on behalf of a student
       | username | firstname | lastname | email                |
       | teacher1 | teacher   | teacher1 | teacher1@example.com |
       | teacher2 | teacher   | teacher2 | teacher2@example.com |
-      | student1 | student   | student1 | student1@example.com | called "John1"
+      | student1 | John1   | student1 | student1@example.com |
 
   @javascript @_file_upload
   Scenario: As a manager, I upload a file and see it on the coursework page
