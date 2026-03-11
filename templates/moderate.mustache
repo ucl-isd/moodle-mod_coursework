@@ -1,5 +1,5 @@
 {{!
-    This file is part the Feedback tracker report plugin for Moodle
+    This file is part of Moodle - http://moodle.org/
     Moodle is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -32,26 +32,28 @@
     {{> mod_coursework/feedback}}
 {{/feedbacks}}
 
-<h5>{{#str}} moderate, mod_coursework {{/str}}</h5>
+<h3 class="py-3">{{#str}} moderate, mod_coursework {{/str}}</h3>
 
-<table class="moderating-details">
+<table class="table">
     {{#moderator}}
         <tr>
-            <th>
+            <th scope="row">
                 {{#str}} moderatedby, mod_coursework {{/str}}
             </th>
             <td>
-                {{moderator}} on {{timemodified}}
+                {{moderator}}<br>
+                <small>{{timemodified}}</small>
             </td>
         </tr>
     {{/moderator}}
     {{#lasteditedby}}
         <tr>
-            <th>
+            <th scope="row">
                 {{#str}} lasteditedby, mod_coursework {{/str}}
             </th>
             <td>
-                {{lasteditedby}} on {{timemodified}}
+                {{lasteditedby}}<br>
+                <small>{{timemodified}}</small>
             </td>
         </tr>
     {{/lasteditedby}}
