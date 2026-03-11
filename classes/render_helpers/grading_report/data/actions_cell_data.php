@@ -48,11 +48,7 @@ class actions_cell_data extends cell_data_base {
      */
     public function get_table_cell_data(grading_table_row_base $rowsbase): ?stdClass {
         $data = new stdClass();
-
-        $identitieshidden = $this->coursework->blindmarking_enabled() &&
-            !has_capability('mod/coursework:viewanonymous', $this->coursework->get_context());
-
-        if (!$identitieshidden) {
+        if (!$this->coursework->hide_student_identities()) {
             $this->set_extension_data($data, $rowsbase);
             $this->set_personaldeadline_data($data, $rowsbase);
         }
@@ -179,7 +175,7 @@ class actions_cell_data extends cell_data_base {
             $data->finalise = new stdClass();
             $data->finalise->url = router::instance()
                 ->get_path('finalise submission', ['submission' => $rowsbase->get_submission()], false, false);
-            $data->finalise->studentname = $rowsbase->can_see_user_name()
+            $data->finalise->studentname = !$rowsbase->get_coursework()->hide_student_identities()
                 ? $rowsbase->get_allocatable()->name() : get_string('hidden', 'mod_coursework');
         }
     }
@@ -206,7 +202,7 @@ class actions_cell_data extends cell_data_base {
             );
             $data->unfinalise = new stdClass();
             $data->unfinalise->url = $url->out(false);
-            $data->unfinalise->studentname = $rowsbase->can_see_user_name()
+            $data->unfinalise->studentname = !$rowsbase->get_coursework()->hide_student_identities()
                 ? $rowsbase->get_allocatable()->name() : get_string('hidden', 'mod_coursework');
         }
     }

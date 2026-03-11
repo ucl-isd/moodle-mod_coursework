@@ -745,8 +745,7 @@ class submission extends table_base implements renderable {
      */
     public function get_allocatable_name($aslink = false) {
 
-        $viewanonymous = has_capability('mod/coursework:viewanonymous', $this->get_coursework()->get_context());
-        if (!$this->get_coursework()->blindmarking || $viewanonymous || $this->is_published() || $this->get_coursework()->is_configured_to_have_group_submissions()) {
+        if (!$this->get_coursework()->hide_student_identities() || $this->get_coursework()->is_configured_to_have_group_submissions()) {
             $fullname = $this->get_allocatable()->name();
 
             $allowed = has_capability('moodle/user:viewdetails', $this->get_context());

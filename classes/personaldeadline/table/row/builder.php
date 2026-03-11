@@ -79,15 +79,6 @@ class builder implements user_row {
     }
 
     /**
-     * Assume that if someone can see the coursework personal deadline table then they can see the full user names.
-     *
-     * @return bool
-     */
-    public function can_view_username() {
-        return true;
-    }
-
-    /**
      * @return allocatable_cell
      */
     public function get_allocatable_cell() {

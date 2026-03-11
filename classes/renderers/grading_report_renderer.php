@@ -55,7 +55,6 @@ class grading_report_renderer extends plugin_renderer_base {
     public function get_grading_report_data(coursework $coursework): \stdClass {
 
         $tablerows = grading_report::get_table_rows_for_page($coursework);
-        $blindmarking = $coursework->blindmarking_enabled() && !has_capability('mod/coursework:viewanonymous', $coursework->get_context());
         $participantcontextids = user::get_user_picture_context_ids(
             $coursework->get_course_id()
         );
@@ -65,7 +64,7 @@ class grading_report_renderer extends plugin_renderer_base {
 
         $template = new stdClass();
         $template->coursework = self::prepare_coursework_data($coursework);
-        $template->blindmarkingenabled = $blindmarking;
+        $template->blindmarkingenabled = $coursework->hide_student_identities();
         $template->tiienabled = $coursework->tii_enabled();
 
         $currenturl = new moodle_url('/mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]);
@@ -93,7 +92,7 @@ class grading_report_renderer extends plugin_renderer_base {
 
             // If this row represents a user (not a group), add the user picture.
             $allocatable = $rowobject->get_allocatable();
-            if ($allocatable->type() === 'user' && !$blindmarking) {
+            if ($allocatable->type() === 'user' && !$template->blindmarkingenabled) {
                 $participantcontextid = $participantcontextids[$allocatable->id()] ?? null;
                 $trdata->submissiontype->user->picture =
                     user::get_picture_url_from_context_id($participantcontextid, $allocatable->picture);
@@ -243,7 +242,7 @@ class grading_report_renderer extends plugin_renderer_base {
         $data->coursework = self::prepare_coursework_data($coursework);
         $data->tiienabled = $coursework->tii_enabled();
 
-        if ($allocatabletype === "user" && (!$coursework->blindmarking_enabled() || has_capability('mod/coursework:viewanonymous', $coursework->get_context()))) {
+        if ($allocatabletype === "user" && !$coursework->hide_student_identities()) {
             $data->submissiontype->user->picture = user::get_picture_url_from_context_id(
                 context_user::instance($allocatableid)->id,
                 $allocatable->picture
