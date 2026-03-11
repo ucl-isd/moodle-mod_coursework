@@ -30,12 +30,12 @@
     }
 }}
 <div class="d-flex">
-       <input type="number" class="form-control"
+       <input type="number" inputmode="decimal" class="form-control"
               name="{{name}}" id="{{id}}"
-              {{#value}}value="{{.}}"{{/value}}
-              {{#min}}min="{{.}}"{{/min}}
-              {{#max}}max="{{.}}"{{/max}}
-              {{#step}}step="{{.}}"{{/step}}
-              {{#required}}required="required"{{/required}}
+              {{#value}} value="{{.}}" {{/value}}
+              {{#min}} min="{{.}}" {{/min}}
+              {{#max}} max="{{.}}" {{/max}}
+              {{#step}} step="{{.}}" {{/step}} 
+              {{#required}} required="required" {{/required}}
        >
 </div>

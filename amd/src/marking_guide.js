@@ -109,7 +109,13 @@ const setUpUI = (markLabelText) => {
  * @param {boolean} percentGradesAllowed whether user has capability to enter percent grades.
  */
 export const init = (markLabelText, enterPercentGrades, percentGradesAllowed) => {
+    // Remove tabindexes as not helpful for accessibility/natural flow.
+    document.querySelectorAll('#advancedgrading-criteria [tabindex]').forEach(el => {
+        el.removeAttribute('tabindex');
+    });
+
     setUpUI(markLabelText);
+
     // Once the new fields are added, can initialise the percentage field JS (which depends on them).
     if (percentGradesAllowed) {
         FeedbackPercent.init(enterPercentGrades);

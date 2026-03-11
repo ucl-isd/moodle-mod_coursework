@@ -49,13 +49,14 @@
                                 <div class="col">
                                     {{> mod_coursework/marking/totalmark }}
                                 </div>
-                                {{#isguide}}{{#percentgradesallowed}}
-                                    <div class="col">
-                                        {{> mod_coursework/marking/marking_guide_percentage_switch }}
-                                    </div>
-                                {{/percentgradesallowed}}{{/isguide}}
+                            
+                                {{#percentgradesallowed}}
+                                <div class="col">
+                                    {{> mod_coursework/marking/marking_guide_percentage_switch }}
+                                </div>
+                                {{/percentgradesallowed}}
+                                
                             </div>
-
                         {{/advancedmarking}}
                     </div>
 
@@ -74,4 +75,3 @@
         </div>
     </div>
 </div>
-
