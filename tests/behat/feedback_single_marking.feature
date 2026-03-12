@@ -61,6 +61,7 @@ Feature: Adding and editing single feedback
     When the coursework "assessoranonymity" setting is "1" in the database
     And I log in as a student
     And I visit the coursework page
+    And I wait "1" seconds
     Then I should not see "Admin User" in the ".coursework-feedback" "css_element"
     And I should not see "teacher teacher2" in the ".coursework-feedback" "css_element"
     But I should see "Marker 1" in the ".coursework-feedback" "css_element"

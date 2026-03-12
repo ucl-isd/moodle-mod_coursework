@@ -28,7 +28,7 @@ import {getString} from 'core/str';
 
 const CLASS_PERCENT_CONTAINER = 'percent-input-container';
 const MAX_VALUE_PERCENT = 100;
-const MAX_PERCENT_LENGTH = 5;
+const MAX_INPUT_LENGTH = 7;
 
 let usingPercentGrades;
 
@@ -208,19 +208,21 @@ const setScoreFromPercent = (criterionNumber, percentValue) => {
         : ((parseFloat(scoreInputElem.max) * percentValue) / MAX_VALUE_PERCENT).toFixed(getDecimalPlaces());
 };
 
+
 /**
- * Prevent non-numeric keys.
- *
- * @param {Event} event
+ * Prevent invalid entries into the grade inputs.
+ * @param {event} event
  */
-const preventInvalidNumber = (event) => {
+export const preventInvalidNumber = (event) => {
+    // Field will allow user to enter e for scientific notation - stop that.
     if (!/[0-9.]/.test(event.key)) {
         event.preventDefault();
         return;
     }
-    const maxLength = event.target.value.includes('.') ? MAX_PERCENT_LENGTH : MAX_PERCENT_LENGTH - 1;
-    const hasSelectedText = event.target.selectionStart !== event.target.selectionEnd;
-    if (!hasSelectedText && event.target.value.length >= maxLength) {
+    if (
+        event.target.value.length >= MAX_INPUT_LENGTH
+        && !['Backspace', 'Delete', 'Tab'].includes(event.key)
+    ) {
         event.preventDefault();
     }
 };

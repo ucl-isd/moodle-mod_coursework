@@ -24,26 +24,6 @@
 
 import * as FeedbackPercent from "mod_coursework/marking_guide_feedback_percent";
 
-const MAX_INPUT_LENGTH = 7;
-
-/**
- * Prevent invalid entries into the score input.
- * @param {event} event
- */
-const preventInvalidNumber = (event) => {
-    // Field will allow user to enter e for scientific notation - stop that.
-    if (!/[0-9.]/.test(event.key)) {
-        event.preventDefault();
-        return;
-    }
-    if (
-        event.target.value.length >= MAX_INPUT_LENGTH
-        && !['Backspace', 'Delete', 'Tab'].includes(event.key)
-    ) {
-        event.preventDefault();
-    }
-};
-
 /**
  * Set up the marking guide score field enhancements.
  *
@@ -90,7 +70,7 @@ const setUpUI = (markLabelText) => {
             maxScoreDiv.remove();
         }
 
-        scoreInput.addEventListener('keypress', preventInvalidNumber);
+        scoreInput.addEventListener('keypress', FeedbackPercent.preventInvalidNumber);
     });
 
     // CTP-5833 - when focus is on a mark input field and user presses return, avoid implicit click on frequent comments button.

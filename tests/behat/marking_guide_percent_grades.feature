@@ -31,12 +31,11 @@ Feature: Marking guide percentage grades entry
 
   @javascript
   Scenario: Marker enters grades as fractions in usual way (no percent grades allowed by site admin).
-    Given I log in as the teacher
+    Given the following config values are set as admin:
+      | config                             | value    | plugin     |
+      | allowenterguidegradesaspercent     | 0        | coursework |
+    And I log in as the teacher
     And I visit the coursework page
-    And the following config values are set as admin:
-      | config                             | value    | plugin         |
-      | allowenterguidegradesaspercent     | 0        | mod_coursework |
-
     And I follow "Add mark"
     And I wait until the page is ready
     And I should see "Mark (0–30)"
