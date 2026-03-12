@@ -79,7 +79,7 @@ $capabilities = [
 
     'mod/coursework:submit' => [
         'riskbitmask' => RISK_SPAM,
-        'captype' => 'write',
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'student' => CAP_ALLOW,
@@ -97,7 +97,7 @@ $capabilities = [
 
     'mod/coursework:addinitialgrade' => [
         'riskbitmask' => RISK_PERSONAL | RISK_SPAM,
-        'captype' => 'write',
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'teacher' => CAP_ALLOW,
@@ -108,7 +108,7 @@ $capabilities = [
 
     'mod/coursework:editinitialgrade' => [
         'riskbitmask' => RISK_PERSONAL | RISK_SPAM,
-        'captype' => 'write',
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'manager' => CAP_ALLOW,
@@ -117,7 +117,7 @@ $capabilities = [
 
     'mod/coursework:addagreedgrade' => [
         'riskbitmask' => RISK_PERSONAL | RISK_SPAM,
-        'captype' => 'write',
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'manager' => CAP_ALLOW,
@@ -126,7 +126,7 @@ $capabilities = [
 
     'mod/coursework:editagreedgrade' => [
         'riskbitmask' => RISK_PERSONAL | RISK_SPAM,
-        'captype' => 'write',
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'manager' => CAP_ALLOW,
@@ -198,7 +198,7 @@ $capabilities = [
 
     'mod/coursework:canexportfinalgrades' => [
         'riskbitmask' => RISK_MANAGETRUST,
-        'captype' => 'write',
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'manager' => CAP_ALLOW,
@@ -221,7 +221,7 @@ $capabilities = [
     // It is being left for now, as it may be an expectation of the Turnitin plagiarism plugin in some versions.
     'mod/coursework:grade' => [
         'riskbitmask' => RISK_MANAGETRUST | RISK_PERSONAL,
-        'captype' => 'write',
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'manager' => CAP_ALLOW,
@@ -251,7 +251,7 @@ $capabilities = [
 
     'mod/coursework:addallocatedagreedgrade' => [
         'riskbitmask' => RISK_PERSONAL | RISK_SPAM,
-        'captype' => 'write',
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'manager' => CAP_ALLOW,
@@ -260,7 +260,7 @@ $capabilities = [
 
     'mod/coursework:editallocatedagreedgrade' => [
         'riskbitmask' => RISK_PERSONAL | RISK_SPAM,
-        'captype' => 'write',
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'manager' => CAP_ALLOW,
