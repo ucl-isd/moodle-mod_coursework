@@ -6,6 +6,7 @@ Feature: Marking guide percentage grades entry
     Given there is a course
     And there is a coursework
     And the coursework "numberofmarkers" setting is "2" in the database
+    And the coursework "allowenterguidegradesaspercent" setting is "1" in the database
     And there is a teacher
     And there is a student
     And there is another teacher
@@ -31,9 +32,7 @@ Feature: Marking guide percentage grades entry
 
   @javascript
   Scenario: Marker enters grades as fractions in usual way (no percent grades allowed by site admin).
-    Given the following config values are set as admin:
-      | config                             | value    | plugin     |
-      | allowenterguidegradesaspercent     | 0        | coursework |
+    Given the coursework "allowenterguidegradesaspercent" setting is "0" in the database
     And I log in as the teacher
     And I visit the coursework page
     And I follow "Add mark"

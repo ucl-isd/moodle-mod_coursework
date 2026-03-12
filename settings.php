@@ -342,13 +342,4 @@ if ($ADMIN->fulltree) {
     $settings->add($settingsheader);
 
     $settings->add(new admin_setting_configcheckbox('coursework_enablepdfjs', get_string('enablepdfjs', 'mod_coursework'), '', 0));
-
-    $settings->add(
-        new admin_setting_configcheckbox(
-            'coursework/allowenterguidegradesaspercent',
-            get_string('allowenterguidegradesaspercent', 'mod_coursework'),
-            '',
-            1
-        )
-    );
 }

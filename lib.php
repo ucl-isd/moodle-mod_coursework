@@ -568,6 +568,11 @@ function coursework_update_instance($coursework) {
         }
     }
 
+    if (!isset($coursework->allowenterguidegradesaspercent)) {
+        // If checkbox not checked, zero is not passed to add it.
+         $coursework->allowenterguidegradesaspercent = 0;
+    }
+
     $coursework->submissionnotification = $subnotify;
 
     $courseworkhassubmissions = $DB->record_exists('coursework_submissions', ['courseworkid' => $coursework->id]);

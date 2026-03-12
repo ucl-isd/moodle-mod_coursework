@@ -49,8 +49,7 @@ Feature: Marking guide
     And I should see "8" in the "A criteria" "table_row"
     And I should see "Grader one likes it" in the "Feedback" "table_row"
     And I should see "Grader two really likes it" in the "Feedback" "table_row"
-
-    When I set the field "Mark" to ""
+    When I set the field "Mark (0–100)" to ""
     And I press "Save and finalise"
     Then I should not see "Changes saved"
 

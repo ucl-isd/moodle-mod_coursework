@@ -81,7 +81,7 @@ Feature: Marking guide with frequent comments
   Scenario: Pressing return key while focussed on a mark input field does not launch frequent comments modal.
     Given I visit the coursework page
     And I click on the edit feedback button for assessor 2
-    And I set the field "Mark" to "8"
+    And I set the field "Mark (0–100)" to "8"
     And I press the enter key
     And I wait until the page is ready
     # Frequent comments modal not launched.
