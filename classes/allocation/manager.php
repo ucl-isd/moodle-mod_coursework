@@ -349,7 +349,7 @@ class manager {
                   FROM {coursework_submissions} s
                   JOIN {coursework_feedbacks} f
                     ON f.submissionid = s.id
-                 WHERE s.courseworkid = {$this->coursework->id}
+                 WHERE s.courseworkid = :courseworkid
                    AND f.stageidentifier = 'final_agreed_1'";
 
         return $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id]);

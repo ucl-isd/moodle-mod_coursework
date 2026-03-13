@@ -471,10 +471,10 @@ class feedback_controller extends controller_base {
         // get count of feedbacks that already exist
         $sql = "SELECT COUNT(*) as total
                 FROM {coursework_feedbacks}
-                WHERE submissionid = $feedback->submissionid
+                WHERE submissionid = :submissionid
                 AND stageidentifier <> 'final_agreed_1'";
 
-        $usedstages = $DB->get_record_sql($sql);
+        $usedstages = $DB->get_record_sql($sql, ['submissionid' => $feedback->submissionid]);
         $newstage = $usedstages->total + 1;
         return 'assessor_' . $newstage;
     }
