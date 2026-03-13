@@ -695,18 +695,18 @@ class import extends grading_sheet {
             // if any part of initial submission graded by the user then get stageidentifier from feedback
             // else workout
             $sql = "SELECT stageidentifier FROM {coursework_feedbacks}
-                    WHERE submissionid = $submissionid
-                    AND assessorid = $USER->id
+                    WHERE submissionid = :submissionid
+                    AND assessorid = :userid
                     AND stageidentifier <> 'final_agreed_1'";
-            $record = $DB->get_record_sql($sql);
+            $record = $DB->get_record_sql($sql, ['userid' => $USER->id, 'submissionid' => $submissionid]);
             if (!empty($record)) {
                 $stageidentifier = $record->stageidentifier;
             } else if (!$this->coursework->sampling_enabled()) { // Samplings disabled
                 // workout if any stage is still available
                 $sql = "SELECT count(*) as graded FROM {coursework_feedbacks}
-                        WHERE submissionid = $submissionid
+                        WHERE submissionid = :submissionid
                         AND stageidentifier <> 'final_agreed_1'";
-                $record = $DB->get_record_sql($sql);
+                $record = $DB->get_record_sql($sql, ['submissionid' => $submissionid]);
 
                 if ($this->coursework->get_max_markers() > $record->graded) {
                     $stage = $record->graded + 1;
