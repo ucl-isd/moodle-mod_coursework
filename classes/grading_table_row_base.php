@@ -376,12 +376,14 @@ class grading_table_row_base implements user_row {
 
         if ($coursework->allocation_enabled()) {
             $allocatable = $this->get_allocatable();
-            if (allocation::allocatable_is_allocated_to_assessor(
-                $coursework->id(),
-                $allocatable->id(),
-                $allocatable->type(),
-                $USER->id
-            )) {
+            if (
+                allocation::allocatable_is_allocated_to_assessor(
+                    $coursework->id(),
+                    $allocatable->id(),
+                    $allocatable->type(),
+                    $USER->id
+                )
+            ) {
                 return true;
             }
 
@@ -396,14 +398,16 @@ class grading_table_row_base implements user_row {
             }
         } else {
             // If we have a particular capability, row is visible.
-            if (has_any_capability(
-                [
+            if (
+                has_any_capability(
+                    [
                     'mod/coursework:viewallgradesatalltimes',
                     'mod/coursework:submitonbehalfof',
                     'mod/coursework:canexportfinalgrades',
-                    'mod/coursework:grantextensions'
-                ],
-                $coursework->get_context())
+                    'mod/coursework:grantextensions',
+                    ],
+                    $coursework->get_context()
+                )
             ) {
                 return true;
             }
