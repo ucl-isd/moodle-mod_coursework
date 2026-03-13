@@ -304,12 +304,11 @@ class feedback extends table_base {
      *
      * @return bool
      */
-    public function is_agreed_grade() {
-        $identifier = $this->get_stage()->identifier();
+    public function is_agreed_grade(): bool {
         if ($this->get_coursework()->has_multiple_markers()) {
-            return $identifier == final_agreed::STAGE_FINAL_AGREED_1;
+            return $this->stageidentifier == final_agreed::STAGE_FINAL_AGREED_1;
         } else {
-            return $identifier == assessor::STAGE_ASSESSOR_1;
+            return $this->stageidentifier == assessor::STAGE_ASSESSOR_1;
         }
     }
 
