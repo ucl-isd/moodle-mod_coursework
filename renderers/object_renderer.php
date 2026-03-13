@@ -449,7 +449,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      */
     protected function render_mod_coursework_coursework(mod_coursework_coursework $coursework): string {
         global $USER;
-        $student = user::find($USER, false);
+        $student = user::get_from_id($USER->id, false);
         $coursework = $coursework->wrapped_object();
         $template = new stdClass();
         $template->cmid = $coursework->get_coursemodule_id();
@@ -913,7 +913,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $template = new stdClass();
 
         // Fetch student and deadline information.
-        $user = user::find($USER, false);
+        $user = user::get_from_id($USER->id);
 
         // Handle coursework deadline details.
         if ($coursework->has_deadline()) {
@@ -1069,7 +1069,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $coursework = $personaldeadlinerow->get_coursework();
 
         $personaldeadline =
-            personaldeadline::get_personaldeadline_for_student(user::find($personaldeadlinerow->get_allocatable()->id()), $coursework);
+            personaldeadline::get_personaldeadline_for_student(user::get_from_id($personaldeadlinerow->get_allocatable()->id()), $coursework);
 
         if (!$personaldeadline) {
             $personaldeadline = personaldeadline::build(

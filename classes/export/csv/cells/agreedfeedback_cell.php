@@ -79,8 +79,7 @@ class agreedfeedback_cell extends cell_base {
                 $PAGE->context
             )
         ) {
-            $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
-            $submission = submission::find($subdbrecord);
+            $submission = submission::get_from_id($submissionid);
 
             // Is the submission in question ready to grade?
             if (!$submission->all_initial_graded() && !empty($value)) {
@@ -117,7 +116,7 @@ class agreedfeedback_cell extends cell_base {
                 }
             } else {
                 // This is an existing feedback check it against the edit ability checks.
-                if (!$feedback->can_edit($this->coursework, submission::find($submissionid))) {
+                if (!$feedback->can_edit($this->coursework, submission::get_from_id($submissionid))) {
                     return get_string('nopermissiontoeditmark', 'coursework');
                 }
             }

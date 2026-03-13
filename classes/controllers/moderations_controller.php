@@ -126,7 +126,7 @@ class moderations_controller extends controller_base {
         $moderatoragreement->lasteditedby = $USER->id;
         $moderatoragreement->feedbackid = $this->params['feedbackid'];
 
-        $submission = submission::find($this->params['submissionid']);
+        $submission = submission::get_from_id($this->params['submissionid']);
         $pathparams = [
             'submission' => $submission,
             'moderator' => core_user::get_user($this->params['moderatorid']),
@@ -224,24 +224,12 @@ class moderations_controller extends controller_base {
         }
 
         if (!empty($this->params['submissionid'])) {
-            $submission = $DB->get_record(
-                'coursework_submissions',
-                ['id' => $this->params['submissionid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->submission = submission::find($submission);
+            $this->submission = submission::get_from_id($this->params['submissionid'], MUST_EXIST);
             $this->params['courseworkid'] = $this->submission->courseworkid;
         }
 
         if (!empty($this->params['moderationid'])) {
-            $moderation = $DB->get_record(
-                'coursework_mod_agreements',
-                ['id' => $this->params['moderationid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->moderation = moderation::find($moderation);
+            $this->moderation = moderation::get_from_id($this->params['moderationid'], MUST_EXIST);
             $this->params['courseworkid'] = $this->moderation->get_coursework()->id;
         }
 

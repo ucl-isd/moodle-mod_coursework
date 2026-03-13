@@ -111,7 +111,7 @@ class plagiarism_flagging_controller extends controller_base {
         $plagiarismflag->submissionid = $this->params['submissionid'];
         $plagiarismflag->createdby = $USER->id;
 
-        $submission = submission::find($this->params['submissionid']);
+        $submission = submission::get_from_id($this->params['submissionid']);
         $pathparams = ['submission' => $submission];
         $url = $this->get_router()->get_path('new plagiarism flag', $pathparams, true);
         $PAGE->set_url($url);
@@ -196,24 +196,12 @@ class plagiarism_flagging_controller extends controller_base {
         }
 
         if (!empty($this->params['submissionid'])) {
-            $submission = $DB->get_record(
-                'coursework_submissions',
-                ['id' => $this->params['submissionid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->submission = submission::find($submission);
+            $this->submission = submission::get_from_id($this->params['submissionid'], MUST_EXIST);
             $this->params['courseworkid'] = $this->submission->courseworkid;
         }
 
         if (!empty($this->params['moderationid'])) {
-            $moderation = $DB->get_record(
-                'coursework_mod_agreements',
-                ['id' => $this->params['moderationid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->moderation = moderation::find($moderation);
+            $this->moderation = moderation::get_from_id($this->params['moderationid']);
             $this->params['courseworkid'] = $this->moderation->get_coursework()->id;
         }
 

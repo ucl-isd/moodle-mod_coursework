@@ -57,10 +57,7 @@ class submissionfileid_cell extends cell_base {
         if (empty($value)) {
             return 'No submission hash value entered';
         }
-
-        $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
-
-        $submission = submission::find($subdbrecord);
+        $submission = submission::get_from_id($submissionid);
 
         $hash = $this->coursework->get_username_hash($submission->allocatableid);
 

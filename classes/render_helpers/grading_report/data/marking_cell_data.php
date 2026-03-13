@@ -324,7 +324,7 @@ class marking_cell_data extends cell_data_base {
         $finalgrade = $this->get_mark_for_feedback($finalfeedback, $canshow);
         // If this is an auto generated feedback, lasteditedbyuser will be zero.
         $assessorname = $finalfeedback->assessorid
-            ? user::find($finalfeedback->assessorid, false)->name()
+            ? user::get_from_id($finalfeedback->assessorid)->name()
             : get_string('automaticallyagreed', 'mod_coursework');
         return (object)[
             'mark' => (object)[

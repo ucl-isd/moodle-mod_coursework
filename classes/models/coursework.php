@@ -909,7 +909,7 @@ class coursework extends table_base {
 
         foreach ($submissions as $submission) {
             // If allocations are in use, then we don't supply files that are not allocated.
-            $submission = submission::find($submission);
+            $submission = submission::get_from_id($submission->id);
 
             $files = $fs->get_area_files(
                 $context->id,
@@ -1397,7 +1397,7 @@ class coursework extends table_base {
             $params = ['userid' => $userid, 'courseid' => $this->get_course()->id];
         }
         $group = $DB->get_record_sql($sql, $params);
-        return group::find($group);
+        return $group ? group::get_from_id($group->id) : false;
     }
 
     /**
@@ -1843,7 +1843,7 @@ class coursework extends table_base {
 
             $groups = $DB->get_records_sql($sql, $params);
             foreach ($groups as $group) {
-                $group = group::find($group);
+                $group = group::get_from_id($group->id);
                 // Find out if members of this group can access this coursework, if group is left without members then remove it
                 $cm = $this->get_course_module();
                 $cmobject = $this->cm_object($cm);
@@ -1992,7 +1992,7 @@ class coursework extends table_base {
         );
 
         foreach ($submissions as &$submission) {
-            $submission = submission::find($submission);
+            $submission = submission::get_from_id($submission->id);
         }
 
         return $submissions;
@@ -2460,9 +2460,9 @@ class coursework extends table_base {
         $deadline = $this->deadline;
 
         if ($this->usegroups) {
-            $allocatable = group::find($allocatableid);
+            $allocatable = group::get_from_id($allocatableid);
         } else {
-            $allocatable = user::find($allocatableid);
+            $allocatable = user::get_from_id($allocatableid);
         }
 
         if ($this->personaldeadlines_enabled()) {
@@ -2490,9 +2490,9 @@ class coursework extends table_base {
      */
     public function get_allocatable_from_id($allocatableid): allocatable {
         if ($this->is_configured_to_have_group_submissions()) {
-            return group::find($allocatableid);
+            return group::get_from_id($allocatableid);
         } else {
-            return user::find($allocatableid);
+            return user::get_from_id($allocatableid);
         }
     }
 

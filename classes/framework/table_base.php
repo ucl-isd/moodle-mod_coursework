@@ -65,14 +65,35 @@ abstract class table_base {
     protected readonly int $id;
 
     /**
+     * Get an instance of the child object from its ID.
+     *
+     * @param int $id
+     * @return static
+     * @throws dml_exception|invalid_parameter_exception
+     */
+    public static function get_from_id(int $id, int $strictness = IGNORE_MISSING): ?static {
+        global $DB;
+        // Temporarily, this just refers on to the legacy method to get the object.
+        // (The legacy method will be deleted later when the caching work is completed).
+        $record = $DB->get_record(static::get_table_name(), ['id' => $id]);
+        if ($record) {
+            return self::find($record, false) ?: null;
+        }
+        if ($strictness == MUST_EXIST) {
+            throw new invalid_parameter_exception("Object ID $id not found for class " . static::class);
+        }
+        return null;
+    }
+
+    /**
      * Makes a new instance. Can be overridden to provide a factory
      *
      * @param stdClass|int|array $dbrecord
      * @param bool $reload
-     * @return bool|self
+     * @return bool|static
      * @throws dml_exception|invalid_parameter_exception
      */
-    public static function find($dbrecord, $reload = true): self|bool {
+    public static function find($dbrecord, $reload = true): static|bool {
 
         global $DB;
 
@@ -80,14 +101,9 @@ abstract class table_base {
             return false;
         }
 
-        $klass = get_called_class();
-
-        if (is_numeric($dbrecord) && $dbrecord > 0) {
-            $data = $DB->get_record(self::get_table_name(), ['id' => $dbrecord]);
-            if (!$data) {
-                return false;
-            }
-            return new $klass($data);
+        if (is_numeric($dbrecord)) {
+            debugging("Passing ID to find is deprecated.  Use get_from_id() instead");
+            return self::get_from_id($dbrecord);
         }
 
         $recordid = self::get_id_from_record($dbrecord);
@@ -123,7 +139,7 @@ abstract class table_base {
                 return false;
             }
         }
-        return new $klass($dbrecord);
+        return new static($dbrecord);
     }
 
     /**

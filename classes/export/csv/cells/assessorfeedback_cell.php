@@ -95,11 +95,8 @@ class assessorfeedback_cell extends cell_base {
         }
         $agreedgradecap = ['mod/coursework:addagreedgrade', 'mod/coursework:editagreedgrade'];
         $initialgradecap = ['mod/coursework:addinitialgrade', 'mod/coursework:editinitialgrade'];
-
-        $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
-        $submission = submission::find($subdbrecord);
+        $submission = submission::get_from_id($submissionid);
         $administergrades = has_capability('mod/coursework:administergrades', $modulecontext);
-
         if (
             $administergrades
             ||
