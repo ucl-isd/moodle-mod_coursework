@@ -568,6 +568,11 @@ function coursework_update_instance($coursework) {
         }
     }
 
+    if (!isset($coursework->allowenterguidegradesaspercent)) {
+        // If checkbox not checked, zero is not passed to add it.
+         $coursework->allowenterguidegradesaspercent = 0;
+    }
+
     $coursework->submissionnotification = $subnotify;
 
     $courseworkhassubmissions = $DB->record_exists('coursework_submissions', ['courseworkid' => $coursework->id]);
@@ -1603,4 +1608,22 @@ function coursework_get_courseworks_by_courseid($courseid) {
     global $DB;
 
     return $DB->get_records('coursework', ['course' => $courseid]);
+}
+
+/**
+ * Return a list of all the user preferences used by mod_coursework.
+ *
+ * @uses core_user::is_current_user
+ *
+ * @return array[]
+ */
+function mod_coursework_user_preferences(): array {
+    return [
+        'coursework_guide_enter_percent_grades' => [
+            'type' => PARAM_INT,
+            'null' => NULL_NOT_ALLOWED,
+            'default' => 0,
+            'permissioncallback' => [core_user::class, 'is_current_user'],
+        ],
+    ];
 }

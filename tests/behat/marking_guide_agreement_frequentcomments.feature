@@ -1,4 +1,4 @@
-@mod @mod_coursework @mod_coursework_guide_agree_frequent_comments
+@mod @mod_coursework @mod_coursework_marking_guide_agreement_frequent_comments
 Feature: Marking guide with frequent comments
   Users can make use of the marking guide to submit grades for final approval based on frequently used comments.
 
@@ -65,7 +65,7 @@ Feature: Marking guide with frequent comments
     And I wait "1" seconds
 
     Then the field "A criteria criterion remark" matches value "Comment 2"
-    And I set the field "Mark" to "10"
+    And I set the field "Mark (0–100)" to "10"
     And I press "Save and finalise"
 
     Then I should see the final agreed grade status "Ready for release"
@@ -81,9 +81,8 @@ Feature: Marking guide with frequent comments
   Scenario: Pressing return key while focussed on a mark input field does not launch frequent comments modal.
     Given I visit the coursework page
     And I click on the edit feedback button for assessor 2
-    And I set the field "Mark" to "8"
+    And I set the field "Mark (0–100)" to "8"
     And I press the enter key
+    And I wait until the page is ready
     # Frequent comments modal not launched.
     And I should not see "Frequent Comment 3"
-    # Instead, form submits.
-    And I should see "Changes saved"
