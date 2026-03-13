@@ -73,18 +73,6 @@ class allocation extends table_base {
     public $timelocked;
 
     /**
-     * @var array
-     */
-    protected $fields = [
-        'id',
-        'courseworkid',
-        'assessorid',
-        'studentid',
-        'ismanual',
-        'timelocked',
-    ];
-
-    /**
      * @return bool|coursework|table_base
      * @throws \coding_exception
      * @throws \dml_exception
