@@ -71,6 +71,15 @@ class behat_mod_coursework_generator extends behat_generator_base {
                     'assessor' => 'assessorid',
                 ],
             ],
+            'deadline_extensions' => [
+                'singular' => 'deadline_extension',
+                'datagenerator' => 'deadline_extension',
+                'required' => ['allocatable', 'coursework', 'deadline'],
+                'switchids' => [
+                    'allocatable' => 'allocatableid',
+                    'coursework' => 'courseworkid',
+                ],
+            ],
         ];
     }
 
