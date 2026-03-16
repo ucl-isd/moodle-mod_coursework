@@ -24,6 +24,7 @@
 
 use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
+use mod_coursework\models\deadline_extension;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 
@@ -148,6 +149,24 @@ class mod_coursework_generator extends testing_module_generator {
         $allocation = allocation::build((array)$allocation);
         $allocation->save();
         return $allocation;
+    }
+
+    public function create_deadline_extension($deadlineextension) {
+        $deadlineextension = (object)$deadlineextension;
+
+        if (empty($deadlineextension->allocatableid) || !is_numeric($deadlineextension->allocatableid)) {
+            throw new coding_exception('Coursework generator needs an allocatableid for a new allocation');
+        }
+        if (empty($deadlineextension->courseworkid) || !is_numeric($deadlineextension->courseworkid)) {
+            throw new coding_exception('Coursework generator needs a courseworkid for a new allocation');
+        }
+
+        deadline_extension::create([
+            'allocatableid' => $deadlineextension->allocatableid,
+            'allocatabletype' => 'user',
+            'courseworkid' => $deadlineextension->courseworkid,
+            'extended_deadline' => $deadlineextension->deadline,
+        ]);
     }
 
     /**
