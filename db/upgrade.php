@@ -365,6 +365,20 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026010801, 'coursework');
     }
 
+    if ($oldversion < 2026031200) {
+        // Define field allowenterguidegradesaspercent to be added to coursework.
+        $table = new xmldb_table('coursework');
+        $field = new xmldb_field('allowenterguidegradesaspercent', XMLDB_TYPE_INTEGER, 1, null, XMLDB_NOTNULL, null, '0', 'plagiarismflagenabled');
+
+        // Conditionally launch add field allowenterguidegradesaspercent.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2026031200, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }

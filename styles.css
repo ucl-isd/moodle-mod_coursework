@@ -192,6 +192,7 @@ Coursework.
         /* Reduce the textarea height and add padding */
         textarea {
             padding: 0.5rem;
+            margin-bottom: .5rem;
             min-height: 4rem;
             field-sizing: content; /* stylelint-disable-line */
         }
@@ -219,6 +220,7 @@ Coursework.
             text-align: right;
             input {
                 margin-left: auto;
+                margin-bottom: .5rem;
             }
         }
     }
@@ -262,6 +264,13 @@ Coursework.
             }
             .score {
                 text-align: right;
+                input:required {
+                    &:user-invalid {
+                        border: 2px solid var(--danger);
+                        padding-right: 1.5rem;
+                        background: url([[pix:i/risk_dataloss]]) no-repeat center right 0.5rem / 1rem 1rem;
+                    }
+                }
             }
         }
     }

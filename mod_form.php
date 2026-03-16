@@ -1188,6 +1188,20 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->addElement('hidden', 'feedbackexists', $feedbackexists);
         $moodleform->setType('feedbackexists', PARAM_INT);
         $moodleform->disabledIf('finalstagegrading', 'feedbackexists', 'eq', 1);
+
+        $moodleform->addElement(
+            'checkbox',
+            'allowenterguidegradesaspercent',
+            get_string('entergradesaspercent', 'coursework'),
+            get_string('allowenterguidegradesaspercent', 'coursework')
+        );
+        $moodleform->setType('allowenterguidegradesaspercent', PARAM_INT);
+        $moodleform->hideif(
+            'allowenterguidegradesaspercent',
+            'advancedgradingmethod_submissions',
+            'neq',
+            'guide'
+        );
     }
 
     /**

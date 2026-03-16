@@ -61,6 +61,8 @@ Feature: Adding and editing single feedback
     When the coursework "assessoranonymity" setting is "1" in the database
     And I log in as a student
     And I visit the coursework page
-    Then I should not see "Admin User" in the ".coursework-feedback" "css_element"
-    And I should not see "teacher teacher2" in the ".coursework-feedback" "css_element"
-    But I should see "Marker 1" in the ".coursework-feedback" "css_element"
+    And I should see "Agreed feedback"
+    # I am viewing my feedback.  I don't see marker real names, but I do see anonymised name as "Marker 1".
+    Then I should not see "Admin User"
+    And I should not see "teacher"
+    But I should see "Marker 1"

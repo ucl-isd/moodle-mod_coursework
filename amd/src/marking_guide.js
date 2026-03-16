@@ -22,12 +22,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+import * as FeedbackPercent from "mod_coursework/marking_guide_feedback_percent";
+
 /**
- * Initialize the marking guide score field enhancements.
+ * Set up the marking guide score field enhancements.
  *
  * @param {String} markLabelText The localized string for "Mark" passed from Mustache.
  */
-export const init = (markLabelText) => {
+const setUpUI = (markLabelText) => {
     const rootElement = document.getElementById('coursework-markingform');
     if (!rootElement) {
         return;
@@ -67,6 +69,8 @@ export const init = (markLabelText) => {
             // 3. Clean up the old overhanging div.
             maxScoreDiv.remove();
         }
+
+        scoreInput.addEventListener('keypress', FeedbackPercent.preventInvalidNumber);
     });
 
     // CTP-5833 - when focus is on a mark input field and user presses return, avoid implicit click on frequent comments button.
@@ -75,4 +79,25 @@ export const init = (markLabelText) => {
     insertFrequentCommentButtons.forEach((btn) => {
         btn.setAttribute('type', 'button');
     });
+};
+
+/**
+ * Initialise the marking guide score field enhancements.
+ *
+ * @param {String} markLabelText The localized string for "Mark" passed from Mustache.
+ * @param {boolean} enterPercentGrades whether user want to enter grades as percentages (user preference).
+ * @param {boolean} percentGradesAllowed whether user has capability to enter percent grades.
+ */
+export const init = (markLabelText, enterPercentGrades, percentGradesAllowed) => {
+    // Remove tabindexes as not helpful for accessibility/natural flow.
+    document.querySelectorAll('#advancedgrading-criteria [tabindex]').forEach(el => {
+        el.removeAttribute('tabindex');
+    });
+
+    setUpUI(markLabelText);
+
+    // Once the new fields are added, can initialise the percentage field JS (which depends on them).
+    if (percentGradesAllowed) {
+        FeedbackPercent.init(enterPercentGrades);
+    }
 };
