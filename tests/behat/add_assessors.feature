@@ -11,7 +11,7 @@ Feature: Add assessors tab appears for users with moodle/role:assign
       | name     | Coursework |
     And the following "users" exist:
       | username | firstname | lastname | email                |
-      | teacher2 | teacher   | teacher2        | teacher2@example.com |
+      | teacher2 | teacher   | teacher2 | teacher2@example.com |
       | manager1 | Manager   | 1        | manager1@example.com |
     And the following "course enrolments" exist:
       | user     | course | role           |
