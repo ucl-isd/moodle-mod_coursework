@@ -51,14 +51,6 @@ abstract class base {
     protected $coursework;
 
     /**
-     * @var array the columns in the DB
-     */
-    protected $fields = [
-        'id',
-        'courseworkid',
-    ];
-
-    /**
      * Holds the config settings to avoid repeated DB calls.
      *
      * @var array

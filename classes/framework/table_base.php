@@ -33,8 +33,6 @@ use stdClass;
 
 /**
  * This forms the base class for other classes that represent database table objects using the Active Record pattern.
- *
- * @property mixed fields
  */
 #[AllowDynamicProperties] // Allow dynamic properties for table_base to avoid interferences elsewhere.
 abstract class table_base {

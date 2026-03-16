@@ -78,19 +78,6 @@ abstract class sample_set_rule extends table_base implements renderable {
     public $minimum;
 
     /**
-     * @var array List of class properties that correspond with DB fields.
-     */
-    protected $fields = [
-        'id',
-        'courseworkid',
-        'rulename',
-        'ruleorder',
-        'upperlimit',
-        'lowerlimit',
-        'minimum',
-    ];
-
-    /**
      * @param $coursework
      */
     public function __construct($coursework) {

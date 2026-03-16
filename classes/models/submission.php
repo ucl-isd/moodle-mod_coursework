@@ -171,20 +171,6 @@ class submission extends table_base implements renderable {
     public $manualsrscode;
 
     /**
-     * Holds the DB table fields
-     * @var array
-     */
-    protected $fields = [
-        'id',
-        'courseworkid',
-        'userid',
-        'timecreated',
-        'timemodified',
-        'finalisedstatus',
-        'manualsrscode',
-    ];
-
-    /**
      * @var int the id of the file area for the submission form
      */
     public $submissionmanager;
