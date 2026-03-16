@@ -189,8 +189,6 @@ class mod_coursework_generator extends testing_module_generator {
         } else if (!is_numeric($feedback->submissionid ?? null)) {
             throw new coding_exception('Coursework generator needs a submissionid for a new feedback');
         }
-
-        $feedback = \mod_coursework\models\feedback::create($feedback);
         if (!isset($feedback->timecreated)) {
             $feedback->timecreated = time();
         }
@@ -209,6 +207,8 @@ class mod_coursework_generator extends testing_module_generator {
         if (!isset($feedback->finalised)) {
             $feedback->finalised = 1;
         }
+
+        $feedback = \mod_coursework\models\feedback::create($feedback);
 
         $feedback->save();
 
