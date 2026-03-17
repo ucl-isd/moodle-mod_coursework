@@ -52,18 +52,17 @@ class submissionfileid_cell extends cell_base {
     }
 
     public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells = []) {
-        global $DB;
-
         if (empty($value)) {
             return 'No submission hash value entered';
         }
+        $submission = submission::find($submissionid);
 
-        $subdbrecord = $DB->get_record('coursework_submissions', ['id' => $submissionid]);
+        if (get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')) {
+            $expected = $this->get_candidate_number($submission->allocatableid) ?? get_string('hidden');
+        } else {
+            $expected = $this->coursework->get_username_hash($submission->allocatableid);
+        }
 
-        $submission = submission::find($subdbrecord);
-
-        $hash = $this->coursework->get_username_hash($submission->allocatableid);
-
-        return ($value == $hash) ? true : get_string('submissionnotfound', 'coursework');
+        return ($value == $expected) ? true : get_string('submissionnotfound', 'coursework');
     }
 }
