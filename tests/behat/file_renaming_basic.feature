@@ -6,17 +6,26 @@ Feature: Basic file renaming for submission files
   So that I can ensure blind marking integrity and student anonymity
 
   Background:
-    Given there is a course
-    And there is a coursework
+    Given the following "course" exists:
+      | fullname  | Course 1 |
+      | shortname | C1       |
+    And the following "activity" exists:
+      | activity | coursework |
+      | course   | C1         |
+      | name     | Coursework |
     And the coursework "allowearlyfinalisation" setting is "1" in the database
     And there is a teacher
-    And there is a student
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | student1 | C1     | student |
 
   @javascript @_file_upload
   Scenario: Files are renamed with username hash when renamefiles is enabled
     Given the coursework "renamefiles" setting is "1" in the database
-    And I am logged in as a student
-    When I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page logged in as "student1"
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I save and finalise the submission
@@ -25,8 +34,7 @@ Feature: Basic file renaming for submission files
   @javascript @_file_upload
   Scenario: Files keep original names when renamefiles is disabled
     Given the coursework "renamefiles" setting is "0" in the database
-    And I am logged in as a student
-    When I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page logged in as "student1"
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I save and finalise the submission
@@ -36,13 +44,12 @@ Feature: Basic file renaming for submission files
   Scenario: Multiple files from same student get sequential numbers
     Given the coursework "renamefiles" setting is "1" in the database
     And the coursework "maxfiles" setting is "2" in the database
-    And I am logged in as a student
-    When I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page logged in as "student1"
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
     And I save and finalise the submission
     Then the uploaded files should be renamed with sequential patterns:
-      | pattern                    |
-      | X[a-f0-9]{8}_1.docx        |
-      | X[a-f0-9]{8}_2.docx        |
+      | pattern             |
+      | X[a-f0-9]{8}_1.docx |
+      | X[a-f0-9]{8}_2.docx |

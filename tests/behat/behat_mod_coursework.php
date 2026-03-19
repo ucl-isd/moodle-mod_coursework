@@ -1739,6 +1739,7 @@ class behat_mod_coursework extends behat_base {
      * @Given /^there are feedbacks from both me and another teacher$/
      */
     public function there_are_feedbacks_from_me_and_another_teacher() {
+        // Will create finalised feedback
         /**
          * @var $generator mod_coursework_generator
          */
