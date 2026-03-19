@@ -44,7 +44,7 @@ use stdClass;
  * @category   privacy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class provider implements \core_privacy\local\metadata\provider, \core_privacy\local\request\plugin\provider, core_userlist_provider {
+class provider implements core_userlist_provider, \core_privacy\local\metadata\provider, \core_privacy\local\request\plugin\provider {
     /**
      * Provides meta data that is stored about a user with mod_coursework
      *
