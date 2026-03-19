@@ -1,9 +1,8 @@
 @mod @mod_coursework @mod_coursework_feedback_general
-Feature: general feedback
+Feature: general feedback can be disabled
 
   As a manager
-  I want to be able to provide some general feedback for all of the students before their individual feedback is released
-  So that they can prepare effectively for upcoming exams or assignments
+  I do not want to be able to provide some general feedback for all of the students
 
   Background:
     Given the following "course" exists:
@@ -13,8 +12,6 @@ Feature: general feedback
       | activity        | coursework                            |
       | course          | C1                                    |
       | name            | Coursework                            |
-      | generalfeedback | ##-1 week##                           |
-      | feedbackcomment | <p>Some general feedback comments</p> |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | manager1 | manager   | manager1 | manager1@example.com |
@@ -26,17 +23,10 @@ Feature: general feedback
       | manager1 | C1     | manager        |
       | student1 | C1     | student        |
 
-  Scenario: enabling general feedback shows the place for managers but not teachers to enter feedback
+  Scenario: disabling general feedback hides the feedback from students
+    Given I am on the "Coursework" "coursework activity" page logged in as "student1"
+    Then I should not see "Feedback for all students"
+
+  Scenario: disabling general feedback does not hide the place for managers to enter feedback
     Given I am on the "Coursework" "coursework activity" page logged in as "manager1"
     Then I should see "Feedback for all students" in the ".secondary-navigation" "css_element"
-
-    Given I am on the "Coursework" "coursework activity" page logged in as "teacher1"
-    Then I should not see "Feedback for all students" in the ".secondary-navigation" "css_element"
-
-  Scenario: enabling general feedback shows students the feedback when the deadline has passed
-    Given the following "mod_coursework > submissions" exist:
-      | allocatable | coursework | finalisedstatus |
-      | student1    | Coursework | 1               |
-    And I am on the "Coursework" "coursework activity" page logged in as "student1"
-    Then I should see "Feedback for all students"
-    And I should see "Some general feedback comments"
