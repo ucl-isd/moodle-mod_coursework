@@ -48,16 +48,11 @@ require_once($CFG->dirroot . '/mod/coursework/renderer.php');
 #[AllowDynamicProperties]
 class plagiarism_flagging_controller extends controller_base {
     /**
-     * @var plagiarism_flag
-     */
-    protected $plagiarismflag;
-
-    /**
      * This deals with the page that the assessors see when they want to add component feedbacks.
      *
      * @throws moodle_exception
      */
-    protected function new_plagiarism_flag() {
+    public function new_plagiarism_flag() {
         global $PAGE;
         require_capability('mod/coursework:addplagiarismflag', $this->coursework->get_context());
 
@@ -79,7 +74,7 @@ class plagiarism_flagging_controller extends controller_base {
      *
      * @throws moodle_exception
      */
-    protected function edit_plagiarism_flag() {
+    public function edit_plagiarism_flag() {
         global $PAGE, $DB;
         require_capability('mod/coursework:updateplagiarismflag', $this->get_context());
 
@@ -102,7 +97,7 @@ class plagiarism_flagging_controller extends controller_base {
     /**
      * Saves the new plagiarism flag for the first time.
      */
-    protected function create_plagiarism_flag() {
+    public function create_plagiarism_flag() {
         global $USER, $PAGE;
         require_capability('mod/coursework:addplagiarismflag', $this->coursework->get_context());
 
@@ -139,7 +134,7 @@ class plagiarism_flagging_controller extends controller_base {
     /**
      * Updates plagiarism flag
      */
-    protected function update_plagiarism_flag() {
+    public function update_plagiarism_flag() {
         global $USER, $DB;
         require_capability('mod/coursework:updateplagiarismflag', $this->coursework->get_context());
         $flagid = $this->params['flagid'];
@@ -181,7 +176,7 @@ class plagiarism_flagging_controller extends controller_base {
     /**
      * Get any plagiarism flag-specific stuff.
      */
-    protected function prepare_environment() {
+    public function __construct($params) {
         global $DB;
 
         if (!empty($this->params['flagid'])) {
@@ -217,6 +212,6 @@ class plagiarism_flagging_controller extends controller_base {
             $this->params['courseworkid'] = $this->moderation->get_coursework()->id;
         }
 
-        parent::prepare_environment();
+        parent::__construct($params);
     }
 }

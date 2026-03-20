@@ -44,7 +44,7 @@ use mod_coursework\models\personaldeadline;
  */
 #[AllowDynamicProperties]
 class deadline_extensions_controller extends controller_base {
-    protected function show_deadline_extension() {
+    public function show_deadline_extension() {
         global $USER, $PAGE;
 
         $ability = new ability($USER->id, $this->coursework);
@@ -55,7 +55,7 @@ class deadline_extensions_controller extends controller_base {
         $this->render_page('show');
     }
 
-    protected function new_deadline_extension() {
+    public function new_deadline_extension() {
         global $USER, $PAGE;
 
         $params = $this->set_default_current_deadline();
@@ -90,7 +90,7 @@ class deadline_extensions_controller extends controller_base {
      * @throws moodle_exception
      * @see deadline_extension_form::process_dynamic_submission
      */
-    protected function create_deadline_extension() {
+    public function create_deadline_extension() {
         global $USER;
 
         $createurl = $this->get_router()->get_path('create deadline extension');
@@ -158,7 +158,7 @@ class deadline_extensions_controller extends controller_base {
      * @throws moodle_exception
      * @see deadline_extension_form::process_dynamic_submission
      */
-    protected function edit_deadline_extension() {
+    public function edit_deadline_extension() {
         global $USER, $PAGE;
 
         $params = [
@@ -215,7 +215,7 @@ class deadline_extensions_controller extends controller_base {
      * @throws access_denied
      * @throws moodle_exception
      */
-    protected function update_deadline_extension() {
+    public function update_deadline_extension() {
         global $USER;
 
         $updateurl = $this->get_router()->get_path('update deadline extension');

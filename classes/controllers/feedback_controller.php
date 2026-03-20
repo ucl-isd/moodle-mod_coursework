@@ -55,7 +55,7 @@ class feedback_controller extends controller_base {
      */
     protected $feedback;
 
-    protected function show_feedback() {
+    public function show_feedback() {
         global $PAGE, $USER;
         $urlparams = ['feedbackid' => $this->params['feedbackid']];
         $PAGE->set_url('/mod/coursework/actions/feedbacks/show.php', $urlparams);
@@ -67,7 +67,7 @@ class feedback_controller extends controller_base {
         echo $renderer->show_feedback_page($teacherfeedback);
     }
 
-    protected function viewpdf() {
+    public function viewpdf() {
         global $PAGE, $USER;
 
         if (empty($this->coursework->enablepdfjs())) {
@@ -93,7 +93,7 @@ class feedback_controller extends controller_base {
      *
      * @throws \moodle_exception
      */
-    protected function new_feedback() {
+    public function new_feedback() {
         global $PAGE, $USER, $DB;
 
         $teacherfeedback = new feedback();
@@ -165,7 +165,7 @@ class feedback_controller extends controller_base {
      *
      * @throws moodle_exception
      */
-    protected function edit_feedback() {
+    public function edit_feedback() {
         global $PAGE, $USER;
 
         $teacherfeedback = new feedback($this->params['feedbackid']);
@@ -207,7 +207,7 @@ class feedback_controller extends controller_base {
     /**
      * Saves the new feedback form for the first time.
      */
-    protected function create_feedback() {
+    public function create_feedback() {
 
         global $USER, $PAGE;
 
@@ -286,7 +286,7 @@ class feedback_controller extends controller_base {
     /**
      * Updates the feedback.
      */
-    protected function update_feedback() {
+    public function update_feedback() {
         global $USER, $PAGE;
 
         $PAGE->set_url(new moodle_url('/mod/coursework/actions/feedbacks/update.php', $this->params));
@@ -373,7 +373,7 @@ class feedback_controller extends controller_base {
     /**
      * Get any feedback-specific stuff.
      */
-    protected function prepare_environment() {
+    public function __construct($params) {
         global $DB;
 
         if (!empty($this->params['feedbackid'])) {
@@ -406,7 +406,7 @@ class feedback_controller extends controller_base {
             $this->params['ismoderation'] = 0;
         }
 
-        parent::prepare_environment();
+        parent::__construct($params);
     }
 
     /**
@@ -415,7 +415,7 @@ class feedback_controller extends controller_base {
      * @throws \coding_exception
      * @throws access_denied
      */
-    protected function check_stage_permissions($identifier) {
+    private function check_stage_permissions($identifier) {
         global $USER;
 
         $stage = $this->coursework->get_stage($identifier);
@@ -482,7 +482,7 @@ class feedback_controller extends controller_base {
     /**
      * @param $submission
      */
-    protected function try_auto_feedback_creation($submission) {
+    private function try_auto_feedback_creation($submission) {
         // automatic agreement if necessary
         $autofeedbackclassname = '\mod_coursework\auto_grader\\' . $this->coursework->automaticagreementstrategy;
         /**

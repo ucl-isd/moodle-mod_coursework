@@ -55,7 +55,7 @@ class submissions_controller extends controller_base {
      * @param bool $isnew
      * @return bool|null
      */
-    protected function submission_page($submitform, $submission, $isnew) {
+    private function submission_page($submitform, $submission, $isnew) {
         $validation = false;
         if ($submitform->is_submitted()) {
             $validation = $submitform->validate_defined_fields();
@@ -79,7 +79,7 @@ class submissions_controller extends controller_base {
      * @throws coding_exception
      * @throws moodle_exception
      */
-    protected function new_submission() {
+    public function new_submission() {
         global $USER, $PAGE;
 
         $submission = submission::build([
@@ -119,7 +119,7 @@ class submissions_controller extends controller_base {
      * @throws access_denied
      * @throws coding_exception
      */
-    protected function edit_submission() {
+    public function edit_submission() {
         global $USER, $PAGE;
 
         $submission = submission::find($this->params['submissionid']);
@@ -144,7 +144,7 @@ class submissions_controller extends controller_base {
     /**
      * Receives the form input from the new submission page and saves it.
      */
-    protected function create_submission() {
+    public function create_submission() {
         global $USER, $CFG, $DB;
 
         $courseworkpageurl = $this->get_path('coursework', ['coursework' => $this->coursework]);
@@ -244,7 +244,7 @@ class submissions_controller extends controller_base {
     /**
      *
      */
-    protected function update_submission() {
+    public function update_submission() {
 
         global $USER, $CFG;
 
@@ -309,7 +309,7 @@ class submissions_controller extends controller_base {
     /**
      *
      */
-    protected function finalise_submission() {
+    public function finalise_submission() {
 
         global $USER;
 
@@ -337,7 +337,7 @@ class submissions_controller extends controller_base {
         redirect($courseworkpageurl, get_string('changessaved'));
     }
 
-    protected function unfinalise_submission() {
+    public function unfinalise_submission() {
         global $DB;
 
         $allocatableids = (!is_array($this->params['allocatableid']))
@@ -380,13 +380,13 @@ class submissions_controller extends controller_base {
         }
     }
 
-    protected function prepare_environment() {
+    public function __construct($params) {
         if (!empty($this->params['submissionid'])) {
             $this->submission = submission::find($this->params['submissionid']);
             $this->coursework = $this->submission->get_coursework();
         }
 
-        parent::prepare_environment();
+        parent::__construct($params);
     }
 
     /**
@@ -394,7 +394,7 @@ class submissions_controller extends controller_base {
      * @param coursework $coursework
      * @throws coding_exception
      */
-    protected function check_coursework_is_open($coursework) {
+    private function check_coursework_is_open($coursework) {
         if (!$coursework->start_date_has_passed()) {
             throw new Exception(get_string('notstartedyet', 'mod_coursework', userdate($coursework->startdate)));
         }
@@ -423,7 +423,7 @@ class submissions_controller extends controller_base {
      * param submission $submission
      * return bool true if a matching record exists, else false
      */
-    protected function submissions_exists($submission) {
+    private function submissions_exists($submission) {
         global $DB;
 
         return $DB->record_exists(
@@ -439,7 +439,7 @@ class submissions_controller extends controller_base {
      * @return bool
      * @throws \dml_exception
      */
-    protected function has_valid_extension($submission) {
+    private function has_valid_extension($submission) {
         global $DB;
 
         $validextension = false;
@@ -464,7 +464,7 @@ class submissions_controller extends controller_base {
      * @return bool
      * @throws \dml_exception
      */
-    protected function has_valid_personaldeadline($submission) {
+    private function has_valid_personaldeadline($submission) {
         global $DB;
 
         $validpersonaldeadline = false;

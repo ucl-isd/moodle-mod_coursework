@@ -56,7 +56,7 @@ class personaldeadlines_controller extends controller_base {
      * @throws \moodle_exception
      * @throws access_denied
      */
-    protected function new_personaldeadline() {
+    public function new_personaldeadline() {
         global $USER, $PAGE, $OUTPUT;
 
         $courseworkpageurl = $this->get_path('coursework', ['coursework' => $this->coursework]);
@@ -205,7 +205,7 @@ class personaldeadlines_controller extends controller_base {
      * @return void
      * @throws Exception
      */
-    public function update_calendar_event(int $allocatableid, string $allocatabletype, int $personaldeadlineunix) {
+    private function update_calendar_event(int $allocatableid, string $allocatabletype, int $personaldeadlineunix) {
         $existingextension = deadline_extension::get_for_allocatable($this->coursework->id, $allocatableid, $allocatabletype);
         // Update calendar/timeline event to the latest of the new personal deadline or existing extension.
         $this->coursework->update_user_calendar_event(
@@ -219,7 +219,7 @@ class personaldeadlines_controller extends controller_base {
      * Set the deadline to default coursework deadline if the personal deadline was never given before
      * @return array
      */
-    protected function set_default_current_deadline() {
+    private function set_default_current_deadline() {
         $params = [
             'allocatabletype' => $this->params['allocatabletype'],
             'courseworkid' => $this->params['courseworkid'],
@@ -265,16 +265,5 @@ class personaldeadlines_controller extends controller_base {
         ];
 
         return $DB->get_record('coursework_person_deadlines', $params);
-    }
-
-    /**
-     * @param $time
-     * @return bool
-     */
-    protected function validated($time) {
-        if (strtotime($time) <= time()) {
-            return false;
-        }
-        return true;
     }
 }

@@ -62,7 +62,7 @@ class moderations_controller extends controller_base {
      *
      * @throws moodle_exception
      */
-    protected function new_moderation() {
+    public function new_moderation() {
 
         global $PAGE, $USER;
 
@@ -94,7 +94,7 @@ class moderations_controller extends controller_base {
      *
      * @throws moodle_exception
      */
-    protected function edit_moderation() {
+    public function edit_moderation() {
 
         global $DB, $PAGE, $USER;
 
@@ -114,7 +114,7 @@ class moderations_controller extends controller_base {
     /**
      * Saves the new feedback form for the first time.
      */
-    protected function create_moderation() {
+    public function create_moderation() {
         global $USER, $PAGE;
 
         $this->check_stage_permissions($this->params['stageidentifier']);
@@ -161,7 +161,7 @@ class moderations_controller extends controller_base {
     /**
      * Saves the new feedback form for the first time.
      */
-    protected function update_moderation() {
+    public function update_moderation() {
         global $USER;
 
         $moderatoragreement = new moderation($this->params['moderationid']);
@@ -191,7 +191,7 @@ class moderations_controller extends controller_base {
      * @throws coding_exception
      * @throws access_denied
      */
-    protected function show_moderation() {
+    public function show_moderation() {
         global $PAGE, $USER;
 
         $urlparams = ['moderationid' => $this->params['moderationid']];
@@ -209,7 +209,7 @@ class moderations_controller extends controller_base {
     /**
      * Get any feedback-specific stuff.
      */
-    protected function prepare_environment() {
+    public function __construct($params) {
         global $DB;
 
         if (!empty($this->params['feedbackid'])) {
@@ -245,7 +245,7 @@ class moderations_controller extends controller_base {
             $this->params['courseworkid'] = $this->moderation->get_coursework()->id;
         }
 
-        parent::prepare_environment();
+        parent::__construct($params);
     }
 
     /**
@@ -253,7 +253,7 @@ class moderations_controller extends controller_base {
      * @throws access_denied
      * @throws coding_exception
      */
-    protected function check_stage_permissions($identifier) {
+    private function check_stage_permissions($identifier) {
         global $USER;
 
         $stage = $this->coursework->get_stage($identifier);

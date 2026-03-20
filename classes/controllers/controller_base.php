@@ -49,7 +49,7 @@ require_once($CFG->dirroot . '/mod/coursework/renderer.php');
  *
  * @property bool page_rendered
  */
-class controller_base {
+abstract class controller_base {
     /**
      * From the HTTP request
      *
@@ -83,13 +83,6 @@ class controller_base {
     protected $router;
 
     /**
-     * @param array $params
-     */
-    public function __construct($params) {
-        $this->params = $params;
-    }
-
-    /**
      * This is intended to be a single point of entry, which does all of the boring stuff like check require_login etc.
      *
      * It will use any of the supplies parameters to make sure that the record exists and then assign the retrieved object
@@ -101,9 +94,10 @@ class controller_base {
      * $this->submission
      * $this->course
      */
-    protected function prepare_environment() {
-
+    public function __construct($params) {
         global $DB;
+
+        $this->params = $params;
 
         // if there's an id, lets's assume it's an edit or update and we should just get the main model
         if (!empty($this->params['id'])) {
@@ -164,24 +158,12 @@ class controller_base {
         require_login($this->course, false, $this->coursemodule);
     }
 
-    /**
-     * Single accessible method that look for a private method and uses it if its there, after preparing the environment.
-     *
-     * @param $methodname
-     * @param $arguments
-     * @throws coding_exception
-     * @throws invalid_parameter_exception
-     * @throws moodle_exception
-     */
-    public function __call($methodname, $arguments) {
+    public function get_course() {
+        return $this->course;
+    }
 
-        if (method_exists($this, $methodname)) {
-            $this->prepare_environment();
-            call_user_func([$this,
-                                 $methodname]);
-        } else {
-            throw new coding_exception('No page defined in the controller called "' . $methodname . '"');
-        }
+    public function get_coursemodule() {
+        return $this->coursemodule;
     }
 
     /**
@@ -209,15 +191,6 @@ class controller_base {
     protected function get_router() {
 
         return router::instance();
-    }
-
-    /**
-     * @return \renderer_base
-     */
-    protected function get_object_renderer() {
-        global $PAGE;
-
-        return $PAGE->get_renderer('mod_coursework', 'object');
     }
 
     /**
