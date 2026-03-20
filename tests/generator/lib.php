@@ -249,7 +249,9 @@ class mod_coursework_generator extends testing_module_generator {
 
         if (!isset($submission->courseworkid) && isset($coursework)) {
             $submission->courseworkid = $coursework->id;
-        } else if ($submission->courseworkid && !isset($coursework)) {
+        }
+
+        if ($submission->courseworkid && !isset($coursework)) {
             $coursework = coursework::get_from_id($submission->courseworkid);
         } else if (!isset($submission->courseworkid) && !isset($coursework)) {
             throw new \core\exception\coding_exception('Coursework generator needs a courseworkid');
@@ -262,6 +264,14 @@ class mod_coursework_generator extends testing_module_generator {
                 throw new coding_exception('Coursework generator needs an allocatableid for a new submission');
             }
         }
+        if (!isset($submission->allocatabletype)) {
+            if ($coursework->usegroups) {
+                $submission->allocatabletype = 'group';
+            } else {
+                $submission->allocatabletype = 'user';
+            }
+        }
+
         if (!isset($submission->timecreated)) {
             $submission->timecreated = time();
         }
