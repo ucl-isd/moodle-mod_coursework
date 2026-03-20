@@ -49,6 +49,7 @@ class behat_mod_coursework_generator extends behat_generator_base {
                 'switchids' => [
                     'allocatable' => 'allocatableid',
                     'coursework' => 'courseworkid',
+                    'createdby' => 'createdby',
                 ],
             ],
             'feedbacks' => [
@@ -83,6 +84,13 @@ class behat_mod_coursework_generator extends behat_generator_base {
         ];
     }
 
+    protected function get_createdby_id(string $createdby): int {
+        if ($user = \core_user::get_user_by_username($createdby)) {
+            return $user->id;
+        }
+        throw new coding_exception('Unable to resolve createdby.');
+    }
+
     protected function get_assessor_id(string $assessor): int {
         if ($user = \core_user::get_user_by_username($assessor)) {
             return $user->id;
@@ -91,9 +99,16 @@ class behat_mod_coursework_generator extends behat_generator_base {
     }
 
     protected function get_allocatable_id(string $allocatable): int {
+        global $DB;
+
         if ($user = \core_user::get_user_by_username($allocatable)) {
             return $user->id;
         }
+
+        if ($group = $DB->get_field('groups', 'id', ['idnumber' => $allocatable])) {
+            return $group;
+        }
+
         throw new coding_exception('Unable to resolve allocatable.');
     }
 
