@@ -40,4 +40,5 @@ if ($stageidentifier === 'moderator') {
     throw new \core\exception\invalid_parameter_exception("Cannot create feedback for moderation stage");
 }
 $controller = new mod_coursework\controllers\feedback_controller($params);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->new_feedback();

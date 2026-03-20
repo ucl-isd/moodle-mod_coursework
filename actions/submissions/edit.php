@@ -32,4 +32,5 @@ $params = [
     'submissionid' => $submissionid,
 ];
 $controller = new mod_coursework\controllers\submissions_controller($params);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->edit_submission();

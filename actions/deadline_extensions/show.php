@@ -30,4 +30,5 @@ $params = [
     'id' => $id,
 ];
 $controller = new mod_coursework\controllers\deadline_extensions_controller($params);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->show_deadline_extension();

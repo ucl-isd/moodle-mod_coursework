@@ -34,12 +34,6 @@ $setpersonaldeadlinespage = optional_param('setpersonaldeadlinespage', 0, PARAM_
 $multipleuserdeadlines = optional_param('multipleuserdeadlines', 0, PARAM_INT);
 $selectedtype = optional_param('selectedtype', 'date', PARAM_RAW);
 
-$courseworkdb = $DB->get_record('coursework', ['id' => $courseworkid]);
-
-$coursework = coursework::find($courseworkdb);
-
-require_login($coursework->get_course(), false, $coursework->get_course_module());
-
 $params = [
     'courseworkid' => $courseworkid,
     'allocatableid' => $allocatableid,
@@ -53,13 +47,15 @@ if (!empty($allocatableidarr)) {
     $params['allocatableid'] = json_encode(array_values($allocatableidarr));
 }
 
+$controller = new mod_coursework\controllers\personaldeadlines_controller($params);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
+
 if ($selectedtype != 'unfinalise') {
-    $controller = new mod_coursework\controllers\personaldeadlines_controller($params);
     $controller->new_personaldeadline();
 } else {
     if (!has_capability('mod/coursework:revertfinalised', $PAGE->context)) {
         $message = 'You do not have permission to revert submissions';
-        redirect(new moodle_url('mod/coursework/view.php', ['id' => $coursework->get_course_module()->id]), $message);
+        redirect(new moodle_url('mod/coursework/view.php', ['id' => $controller->get_coursemodule()->id]), $message);
     }
 
     $controller = new mod_coursework\controllers\submissions_controller($params);

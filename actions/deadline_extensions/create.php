@@ -38,4 +38,5 @@ $link = new moodle_url($url, $params);
 $PAGE->set_url($link);
 
 $controller = new mod_coursework\controllers\deadline_extensions_controller($params);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->create_deadline_extension();

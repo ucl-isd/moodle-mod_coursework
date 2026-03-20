@@ -26,4 +26,5 @@ $feedbackid = optional_param('feedbackid', 0, PARAM_INT);
 
 $params = ['feedbackid' => $feedbackid];
 $controller = new mod_coursework\controllers\feedback_controller($params);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->edit_feedback();

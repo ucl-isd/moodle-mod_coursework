@@ -38,4 +38,5 @@ $params = [
     'stageidentifier' => $stageidentifier,
 ];
 $controller = new mod_coursework\controllers\moderations_controller($params);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->new_moderation();

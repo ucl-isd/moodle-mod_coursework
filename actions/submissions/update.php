@@ -34,4 +34,5 @@ $params = [
     'finalised' => $finalised,
 ];
 $controller = new mod_coursework\controllers\submissions_controller($params);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->update_submission();

@@ -31,4 +31,5 @@ $params = [
 ];
 
 $controller = new mod_coursework\controllers\plagiarism_flagging_controller($params);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->new_plagiarism_flag();

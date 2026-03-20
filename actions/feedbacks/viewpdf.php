@@ -28,4 +28,5 @@ $params = [
     'submissionid' => $submissionid,
 ];
 $controller = new mod_coursework\controllers\feedback_controller($params);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->viewpdf();

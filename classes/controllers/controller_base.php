@@ -154,8 +154,6 @@ abstract class controller_base {
         if (empty($this->coursework)) {
             throw new moodle_exception('Not enough params to retrieve coursework');
         }
-
-        require_login($this->course, false, $this->coursemodule);
     }
 
     public function get_course() {
