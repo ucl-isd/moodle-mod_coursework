@@ -24,6 +24,7 @@
 
 use mod_coursework\models\allocation;
 use mod_coursework\models\coursework;
+use mod_coursework\models\deadline_extension;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
 
@@ -120,8 +121,9 @@ class mod_coursework_generator extends testing_module_generator {
      * @throws coding_exception
      */
     public function create_allocation($allocation) {
+        global $USER;
 
-        global $USER, $DB;
+        $allocation = (object)$allocation;
 
         if (empty($allocation->allocatableid) || !is_numeric($allocation->allocatableid)) {
             throw new coding_exception('Coursework generator needs an allocatableid for a new allocation');
@@ -147,6 +149,24 @@ class mod_coursework_generator extends testing_module_generator {
         $allocation = allocation::build((array)$allocation);
         $allocation->save();
         return $allocation;
+    }
+
+    public function create_deadline_extension($deadlineextension) {
+        $deadlineextension = (object)$deadlineextension;
+
+        if (empty($deadlineextension->allocatableid) || !is_numeric($deadlineextension->allocatableid)) {
+            throw new coding_exception('Coursework generator needs an allocatableid for a new allocation');
+        }
+        if (empty($deadlineextension->courseworkid) || !is_numeric($deadlineextension->courseworkid)) {
+            throw new coding_exception('Coursework generator needs a courseworkid for a new allocation');
+        }
+
+        deadline_extension::create([
+            'allocatableid' => $deadlineextension->allocatableid,
+            'allocatabletype' => 'user',
+            'courseworkid' => $deadlineextension->courseworkid,
+            'extended_deadline' => $deadlineextension->deadline,
+        ]);
     }
 
     /**
@@ -188,8 +208,6 @@ class mod_coursework_generator extends testing_module_generator {
         } else if (!is_numeric($feedback->submissionid ?? null)) {
             throw new coding_exception('Coursework generator needs a submissionid for a new feedback');
         }
-
-        $feedback = \mod_coursework\models\feedback::create($feedback);
         if (!isset($feedback->timecreated)) {
             $feedback->timecreated = time();
         }
@@ -208,6 +226,8 @@ class mod_coursework_generator extends testing_module_generator {
         if (!isset($feedback->finalised)) {
             $feedback->finalised = 1;
         }
+
+        $feedback = \mod_coursework\models\feedback::create($feedback);
 
         $feedback->save();
 
@@ -230,7 +250,9 @@ class mod_coursework_generator extends testing_module_generator {
 
         if (!isset($submission->courseworkid) && isset($coursework)) {
             $submission->courseworkid = $coursework->id;
-        } else if ($submission->courseworkid && !isset($coursework)) {
+        }
+
+        if ($submission->courseworkid && !isset($coursework)) {
             $coursework = coursework::find($submission->courseworkid);
         } else if (!isset($submission->courseworkid) && !isset($coursework)) {
             throw new \core\exception\coding_exception('Coursework generator needs a courseworkid');
@@ -243,6 +265,14 @@ class mod_coursework_generator extends testing_module_generator {
                 throw new coding_exception('Coursework generator needs an allocatableid for a new submission');
             }
         }
+        if (!isset($submission->allocatabletype)) {
+            if ($coursework->usegroups) {
+                $submission->allocatabletype = 'group';
+            } else {
+                $submission->allocatabletype = 'user';
+            }
+        }
+
         if (!isset($submission->timecreated)) {
             $submission->timecreated = time();
         }

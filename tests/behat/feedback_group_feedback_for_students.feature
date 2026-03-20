@@ -1,48 +1,67 @@
 @mod @mod_coursework @mod_coursework_feedback_group_feedback_for_students
 Feature: Students see feedback on group assignments
 
-    As a student
-    I want to be able to see the feedback for the group assignment even if I did not submit it
-    So that I know what my marks are and can improve my work
+  As a student
+  I want to be able to see the feedback for the group assignment even if I did not submit it
+  So that I know what my marks are and can improve my work
 
   Background:
-    Given there is a course
-    And there is a coursework
-    And the coursework "usegroups" setting is "1" in the database
-    And the coursework is set to double marker
-    And there is a manager
-    And there is a student
-    And the student is a member of a group
-    And there is another student
-    And the other student is a member of the group
-    And the group has a submission
-    And the submission is finalised
-    And there is final feedback
-    And the grades have been published
+    Given the following "course" exists:
+      | fullname  | Course 1 |
+      | shortname | C1       |
+    And the following "activity" exists:
+      | activity        | coursework |
+      | course          | C1         |
+      | name            | Coursework |
+      | numberofmarkers | 2          |
+      | usegroups       | 1          |
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
+      | student2 | student   | student2 | student2@example.com |
+      | manager1 | manager   | manager1 | manager1@example.com |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+      | teacher2 | teacher   | teacher2 | teacher2@example.com |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | student1 | C1     | student |
+      | student2 | C1     | student |
+      | teacher1 | C1     | teacher |
+      | teacher2 | C1     | teacher |
+      | manager1 | C1     | manager |
+    And the following "groups" exist:
+      | course | idnumber | name     |
+      | C1     | G1       | My group |
+    And the following "group members" exist:
+      | group | user     |
+      | G1    | student1 |
+      | G1    | student2 |
+    Given the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus | createdby |
+      | G1          | Coursework | 1               | student1  |
+    Given the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  | finalised |
+      | G1          | Coursework | teacher1 | assessor_1      | 67    | New comment here | 1         |
+      | G1          | Coursework | teacher2 | assessor_2      | 63    | New comment here | 1         |
 
-  Scenario: I can see the published grade when someone else submitted
-    Given I am logged in as the other student
-    When I visit the coursework page
-    Then I should see the grade for the group submission
-    And I should see the feedback for the group submission
+  Scenario: Users in groups can see the published grade whether or not they submitted
+    Given I am on the "Coursework" "coursework activity" page logged in as "manager1"
+    When I click on "Agree marking" "link" in the "student1" "table_row"
+    And I set the following fields to these values:
+      | Mark    | 45   |
+      | Comment | blah |
+    And I press "Save and finalise"
+    And I should see "Changes saved"
+    And I follow "Release the marks"
 
-  Scenario: I can see the published grade when I submitted
-    Given I am logged in as the student
-    When I visit the coursework page
-    Then I should see the grade for the group submission
-    And I should see the feedback for the group submission
+    Given I am on the "Coursework" "coursework activity" page logged in as "student1"
+    Then I should see "45" in the "#behat-final-feedback-grade" "css_element"
+    And I should see "blah" in the "#behat-final-feedback-comment" "css_element"
+    When I am on the "Course 1" "grades > User report > View" page
+    Then I should see "45.00"
 
-#  TODO fix this broken test.
-#  @broken
-#  Scenario: I can see the published grade in the gradebook when someone else submitted
-#    Given I am logged in as the other student
-#    And I visit the coursework page
-#    When I visit the gradebook page
-#    Then I should see the grade in the gradebook
-
-#  TODO fix this broken test.
-#  @broken
-#  Scenario: I can see the published grade in the gradebook when I submitted
-#    Given I am logged in as the student
-#    When I visit the gradebook page
-#    Then I should see the grade in the gradebook
+    Given I am on the "Coursework" "coursework activity" page logged in as "student2"
+    Then I should see "45" in the "#behat-final-feedback-grade" "css_element"
+    And I should see "blah" in the "#behat-final-feedback-comment" "css_element"
+    When I am on the "Course 1" "grades > User report > View" page
+    Then I should see "45.00"
