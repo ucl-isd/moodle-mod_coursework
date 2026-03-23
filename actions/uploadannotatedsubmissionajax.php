@@ -41,7 +41,6 @@ require_once($CFG->dirroot . '/webservice/lib.php');
 
 
 // Authenticate the user.
-require_login();
 
 $submissionid = required_param('submissionid', PARAM_INT);
 $fileid = required_param('fileid', PARAM_INT);
@@ -53,7 +52,9 @@ if (!$submission) {
     return false;
 }
 
-$coursework = coursework::find($submission->courseworkid);
+$coursework = coursework::find($submission->get_coursework());
+$context = $coursework->get_context();
+require_login($coursework->get_course(), false, $coursework->get_course_module());
 
 if (empty($this->coursework->enablepdfjs())) {
     throw new Exception('coursework enablepdfjs not enabled');
@@ -63,9 +64,6 @@ $ability = new ability($USER->id, $coursework);
 if ($ability->cannot('show', $submission)) {
     return false;
 }
-
-$context = $coursework->get_context();
-$PAGE->set_context($context);
 
 $fs = get_file_storage();
 

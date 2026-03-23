@@ -27,7 +27,7 @@
 require_once(dirname(__FILE__) . '/../../../../config.php');
 
 $controller = new mod_coursework\controllers\plagiarism_flagging_controller([
-    'submissionid' =>  required_param('submissionid', PARAM_INT),
+    'submissionid' => required_param('submissionid', PARAM_INT),
 ]);
 require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->create_plagiarism_flag();

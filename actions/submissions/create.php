@@ -33,8 +33,8 @@ $controller = new mod_coursework\controllers\submissions_controller([
     'courseworkid' => required_param('courseworkid', PARAM_INT),
     'finalised' => optional_param('finalisebutton', 0, PARAM_TEXT),
     'allocatableid' => required_param('allocatableid', PARAM_INT),
-    'allocatabletype' =>  required_param('allocatabletype', PARAM_TEXT),
-    'submissionid' => optional_param('submissionid', null, PARAM_INT)
+    'allocatabletype' => required_param('allocatabletype', PARAM_TEXT),
+    'submissionid' => optional_param('submissionid', null, PARAM_INT),
 ]);
 require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->create_submission();

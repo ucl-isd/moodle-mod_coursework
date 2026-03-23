@@ -79,9 +79,6 @@ if (!$delete) {
             $messagetype = $success ? notification::SUCCESS : notification::ERROR;
             redirect($courseworkurl, $message, null, $messagetype);
         } else {
-            $PAGE->set_context(context_module::instance($controller->get_coursemodule()->id));
-            $PAGE->set_cm($controller->get_coursemodule());
-
             $deleteurl = new moodle_url($PAGE->url);
             $deleteurl->param('sure', '1');
             $deleteurl->param('deleteextension', '1');

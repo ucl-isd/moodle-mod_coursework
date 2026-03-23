@@ -96,7 +96,7 @@ class submissions_controller extends controller_base {
 
         $this->check_coursework_is_open($this->coursework);
 
-        $urlparams = ['courseworkid' => $this->params['courseworkid']];
+        $urlparams = ['courseworkid' => $this->coursework->id()];
         $PAGE->set_url('/mod/coursework/actions/submissions/new.php', $urlparams);
 
         $path = $this->get_router()->get_path('create submission', ['coursework' => $this->coursework]);
@@ -127,7 +127,7 @@ class submissions_controller extends controller_base {
             throw new access_denied($this->coursework);
         }
 
-        $urlparams = ['submissionid' => $this->params['submissionid']];
+        $urlparams = ['submissionid' => $this->submission->id()];
         $PAGE->set_url('/mod/coursework/actions/submissions/edit.php', $urlparams);
 
         $path = $this->get_router()->get_path('update submission', ['submission' => $this->submission]);
@@ -340,7 +340,7 @@ class submissions_controller extends controller_base {
         $personaldeadlinepageurl = new moodle_url(
             '/mod/coursework/actions/personaldeadline.php',
             ['id' => $this->coursework->get_coursemodule_id(), 'multipleuserdeadlines' => 1, 'setpersonaldeadlinespage' => 1,
-            'courseworkid' => $this->params['courseworkid'],
+            'courseworkid' => $this->coursework->id(),
             'allocatabletype' => $this->params['allocatabletype']]
         );
 
@@ -349,7 +349,7 @@ class submissions_controller extends controller_base {
         foreach ($allocatableids as $aid) {
             $submissiondb = $DB->get_record(
                 'coursework_submissions',
-                ['courseworkid' => $this->params['courseworkid'], 'allocatableid' => $aid, 'allocatabletype' => $this->params['allocatabletype']]
+                ['courseworkid' => $this->coursework->id(), 'allocatableid' => $aid, 'allocatabletype' => $this->params['allocatabletype']]
             );
             if (!empty($submissiondb)) {
                 $submission = submission::find($submissiondb);
@@ -386,7 +386,6 @@ class submissions_controller extends controller_base {
         ) {
             throw new moodle_exception('Invalid allocatabletype');
         }
-
         parent::__construct($params);
     }
 
