@@ -94,7 +94,7 @@ abstract class controller_base {
      * $this->submission
      * $this->course
      */
-    public function __construct($params) {
+    public function __construct($params = []) {
         global $DB;
 
         $this->params = $params;

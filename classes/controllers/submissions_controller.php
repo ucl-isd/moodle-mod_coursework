@@ -374,7 +374,7 @@ class submissions_controller extends controller_base {
         }
     }
 
-    public function __construct($params) {
+    public function __construct($params = []) {
         if (!empty($params['submissionid'])) {
             $this->submission = submission::find($params['submissionid']);
             $this->coursework = $this->submission->get_coursework();
