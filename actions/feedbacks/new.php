@@ -29,7 +29,7 @@ $controller = new mod_coursework\controllers\feedback_controller([
     'cmid' => optional_param('cmid', 0, PARAM_INT),
     'feedbackid' => optional_param('feedbackid', 0, PARAM_INT),
     'assessorid' => $USER->id,
-    'stageidentifier' => optional_param('stageidentifier', 'uh-oh', PARAM_RAW),
+    'stageidentifier' => required_param('stageidentifier', PARAM_ALPHANUMEXT),
 ]);
 require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->new_feedback();

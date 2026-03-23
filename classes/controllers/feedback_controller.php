@@ -380,34 +380,34 @@ class feedback_controller extends controller_base {
     public function __construct($params) {
         global $DB;
 
-        if (!empty($this->params['feedbackid'])) {
+        if (!empty($params['feedbackid'])) {
             $feedback = $DB->get_record(
                 'coursework_feedbacks',
-                ['id' => $this->params['feedbackid']],
+                ['id' => $params['feedbackid']],
                 '*',
                 MUST_EXIST
             );
             $this->feedback = new feedback($feedback);
-            $this->params['courseworkid'] = $this->feedback->get_coursework()->id;
+            $params['courseworkid'] = $this->feedback->get_coursework()->id;
         }
 
-        if (!empty($this->params['submissionid'])) {
+        if (!empty($params['submissionid'])) {
             $submission = $DB->get_record(
                 'coursework_submissions',
-                ['id' => $this->params['submissionid']],
+                ['id' => $params['submissionid']],
                 '*',
                 MUST_EXIST
             );
             $this->submission = submission::find($submission);
-            $this->params['courseworkid'] = $this->submission->courseworkid;
+            $params['courseworkid'] = $this->submission->courseworkid;
         }
 
-        if (!array_key_exists('isfinalgrade', $this->params)) {
-            $this->params['isfinalgrade'] = 0;
+        if (!array_key_exists('isfinalgrade', $params)) {
+            $params['isfinalgrade'] = 0;
         }
 
-        if (!array_key_exists('ismoderation', $this->params)) {
-            $this->params['ismoderation'] = 0;
+        if (!array_key_exists('ismoderation', $params)) {
+            $params['ismoderation'] = 0;
         }
 
         parent::__construct($params);

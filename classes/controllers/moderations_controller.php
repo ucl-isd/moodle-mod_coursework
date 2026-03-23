@@ -212,37 +212,37 @@ class moderations_controller extends controller_base {
     public function __construct($params) {
         global $DB;
 
-        if (!empty($this->params['feedbackid'])) {
+        if (!empty($params['feedbackid'])) {
             $feedback = $DB->get_record(
                 'coursework_feedbacks',
-                ['id' => $this->params['feedbackid']],
+                ['id' => $params['feedbackid']],
                 '*',
                 MUST_EXIST
             );
             $this->feedback = new feedback($feedback);
-            $this->params['courseworkid'] = $this->feedback->get_coursework()->id;
+            $params['courseworkid'] = $this->feedback->get_coursework()->id;
         }
 
-        if (!empty($this->params['submissionid'])) {
+        if (!empty($params['submissionid'])) {
             $submission = $DB->get_record(
                 'coursework_submissions',
-                ['id' => $this->params['submissionid']],
+                ['id' => $params['submissionid']],
                 '*',
                 MUST_EXIST
             );
             $this->submission = submission::find($submission);
-            $this->params['courseworkid'] = $this->submission->courseworkid;
+            $params['courseworkid'] = $this->submission->courseworkid;
         }
 
-        if (!empty($this->params['moderationid'])) {
+        if (!empty($params['moderationid'])) {
             $moderation = $DB->get_record(
                 'coursework_mod_agreements',
-                ['id' => $this->params['moderationid']],
+                ['id' => $params['moderationid']],
                 '*',
                 MUST_EXIST
             );
             $this->moderation = moderation::find($moderation);
-            $this->params['courseworkid'] = $this->moderation->get_coursework()->id;
+            $params['courseworkid'] = $this->moderation->get_coursework()->id;
         }
 
         parent::__construct($params);

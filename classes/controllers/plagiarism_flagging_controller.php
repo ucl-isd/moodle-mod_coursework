@@ -179,37 +179,37 @@ class plagiarism_flagging_controller extends controller_base {
     public function __construct($params) {
         global $DB;
 
-        if (!empty($this->params['flagid'])) {
+        if (!empty($params['flagid'])) {
             $plagiarismflag = $DB->get_record(
                 'coursework_plagiarism_flags',
-                ['id' => $this->params['flagid']],
+                ['id' => $params['flagid']],
                 '*',
                 MUST_EXIST
             );
             $this->flag = new plagiarism_flag($plagiarismflag);
-            $this->params['courseworkid'] = $this->flag->get_coursework()->id;
+            $params['courseworkid'] = $this->flag->get_coursework()->id;
         }
 
-        if (!empty($this->params['submissionid'])) {
+        if (!empty($params['submissionid'])) {
             $submission = $DB->get_record(
                 'coursework_submissions',
-                ['id' => $this->params['submissionid']],
+                ['id' => $params['submissionid']],
                 '*',
                 MUST_EXIST
             );
             $this->submission = submission::find($submission);
-            $this->params['courseworkid'] = $this->submission->courseworkid;
+            $params['courseworkid'] = $this->submission->courseworkid;
         }
 
-        if (!empty($this->params['moderationid'])) {
+        if (!empty($params['moderationid'])) {
             $moderation = $DB->get_record(
                 'coursework_mod_agreements',
-                ['id' => $this->params['moderationid']],
+                ['id' => $params['moderationid']],
                 '*',
                 MUST_EXIST
             );
             $this->moderation = moderation::find($moderation);
-            $this->params['courseworkid'] = $this->moderation->get_coursework()->id;
+            $params['courseworkid'] = $this->moderation->get_coursework()->id;
         }
 
         parent::__construct($params);
