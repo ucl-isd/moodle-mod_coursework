@@ -122,23 +122,21 @@ class submissions_controller extends controller_base {
     public function edit_submission() {
         global $USER, $PAGE;
 
-        $submission = submission::find($this->params['submissionid']);
-
         $ability = new ability($USER->id, $this->coursework);
-        if (!$ability->can('edit', $submission)) {
+        if (!$ability->can('edit', $this->submission)) {
             throw new access_denied($this->coursework);
         }
 
         $urlparams = ['submissionid' => $this->params['submissionid']];
         $PAGE->set_url('/mod/coursework/actions/submissions/edit.php', $urlparams);
 
-        $path = $this->get_router()->get_path('update submission', ['submission' => $submission]);
+        $path = $this->get_router()->get_path('update submission', ['submission' => $this->submission]);
         $submitform = new student_submission_form($path, [
             'coursework' => $this->coursework,
-            'submission' => $submission,
+            'submission' => $this->submission,
         ]);
 
-        return $this->submission_page($submitform, $submission, false);
+        return $this->submission_page($submitform, $this->submission, false);
     }
 
     /**
@@ -259,34 +257,32 @@ class submissions_controller extends controller_base {
             return;
         }
 
-        $submission = submission::find($this->params['submissionid']);
-
         $ability = new ability($USER->id, $this->coursework);
-        $this->exception_if_late($submission);
-        if (!$ability->can('update', $submission)) {
+        $this->exception_if_late($this->submission);
+        if (!$ability->can('update', $this->submission)) {
             throw new access_denied($this->coursework, $ability->get_last_message());
         }
 
         $incomingfinalisedsetting = $this->params['finalised']
             ? submission::FINALISED_STATUS_FINALISED : submission::FINALISED_STATUS_NOT_FINALISED;
         $notifyaboutfinalisation = $incomingfinalisedsetting == submission::FINALISED_STATUS_FINALISED
-            && !$submission->is_finalised();
+            && !$this->submission->is_finalised();
 
-        $submission->finalisedstatus = $incomingfinalisedsetting;
-        $submission->lastupdatedby = $USER->id;
-        $submission->timesubmitted = time();
+        $this->submission->finalisedstatus = $incomingfinalisedsetting;
+        $this->submission->lastupdatedby = $USER->id;
+        $this->submission->timesubmitted = time();
 
-        $submission->save();
+        $this->submission->save();
 
         $filesid = file_get_submitted_draft_itemid('submission_manager');
-        $submission->save_files($filesid);
+        $this->submission->save_files($filesid);
 
         $context = context_module::instance($this->coursemodule->id);
         // Trigger assessable_submitted event to show files are complete.
         $params = [
             'context' => $context,
-            'objectid' => $submission->id,
-            'anonymous' => $submission->get_coursework()->blindmarking_enabled() ? 1 : 0,
+            'objectid' => $this->submission->id,
+            'anonymous' => $this->submission->get_coursework()->blindmarking_enabled() ? 1 : 0,
             'other' => [
                 'courseworkid' => $this->coursework->id,
             ],
@@ -294,11 +290,11 @@ class submissions_controller extends controller_base {
         $event = assessable_submitted::create($params);
         $event->trigger();
 
-        $submission->submit_plagiarism();
+        $this->submission->submit_plagiarism();
 
         if ($CFG->coursework_allsubmissionreceipt || $notifyaboutfinalisation) {
             $mailer = new mailer($this->coursework);
-            foreach ($submission->get_students() as $student) {
+            foreach ($this->submission->get_students() as $student) {
                 $mailer->send_submission_receipt($student, $notifyaboutfinalisation);
             }
         }
@@ -318,19 +314,17 @@ class submissions_controller extends controller_base {
             redirect($courseworkpageurl);
         }
 
-        $submission = submission::find($this->params['submissionid']);
-
         $ability = new ability($USER->id, $this->coursework);
-        if (!$ability->can('finalise', $submission)) {
+        if (!$ability->can('finalise', $this->submission)) {
             throw new access_denied($this->coursework);
         }
 
-        $submission->finalisedstatus = submission::FINALISED_STATUS_FINALISED;
-        $submission->save();
+        $this->submission->finalisedstatus = submission::FINALISED_STATUS_FINALISED;
+        $this->submission->save();
 
         // Email the user. Best to do this as an event after 2.7 so as to keep the page fast.
         $mailer = new mailer($this->coursework);
-        foreach ($submission->get_students() as $student) {
+        foreach ($this->submission->get_students() as $student) {
             $mailer->send_submission_receipt($student, true);
         }
 
@@ -381,14 +375,14 @@ class submissions_controller extends controller_base {
     }
 
     public function __construct($params) {
-        if (!empty($this->params['submissionid'])) {
-            $this->submission = submission::find($this->params['submissionid']);
+        if (!empty($params['submissionid'])) {
+            $this->submission = submission::find($params['submissionid']);
             $this->coursework = $this->submission->get_coursework();
         }
         if (
-            !empty($this->params['allocatabletype'])
+            !empty($params['allocatabletype'])
             &&
-            !in_array($this->params['allocatabletype'], ['user', 'group'])
+            !in_array($params['allocatabletype'], ['user', 'group'])
         ) {
             throw new moodle_exception('Invalid allocatabletype');
         }
