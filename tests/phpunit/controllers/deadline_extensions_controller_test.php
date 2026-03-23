@@ -27,9 +27,15 @@ namespace mod_coursework;
  * class.
  * @group mod_coursework
  */
-final class deadline_extensions_controller_test extends \basic_testcase {
+final class deadline_extensions_controller_test extends \advanced_testcase {
+    use test_helpers\factory_mixin;
+
     public function test_model_name(): void {
-        $controller = new \mod_coursework\controllers\deadline_extensions_controller([]);
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $course   = $this->getDataGenerator()->create_course();
+        $coursework = $this->create_a_coursework();
+        $controller = new \mod_coursework\controllers\deadline_extensions_controller(['courseid' => $course->id, 'courseworkid' => $coursework->id()]);
         $this->assertEquals('deadline_extension', $controller->model_name());
     }
 }
