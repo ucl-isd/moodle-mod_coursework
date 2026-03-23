@@ -24,21 +24,12 @@ require_once(dirname(__FILE__) . '/../../../../config.php');
 
 global $USER;
 
-$submissionid = required_param('submissionid', PARAM_INT);
-$cmid = optional_param('cmid', 0, PARAM_INT);
-$feedbackid = optional_param('feedbackid', 0, PARAM_INT);
-$stageidentifier = optional_param('stageidentifier', 'uh-oh', PARAM_RAW);
-
-$params = [
-    'submissionid' => $submissionid,
-    'cmid' => $cmid,
-    'feedbackid' => $feedbackid,
+$controller = new mod_coursework\controllers\feedback_controller([
+    'submissionid' => required_param('submissionid', PARAM_INT),
+    'cmid' => optional_param('cmid', 0, PARAM_INT),
+    'feedbackid' => optional_param('feedbackid', 0, PARAM_INT),
     'assessorid' => $USER->id,
-    'stageidentifier' => $stageidentifier,
-];
-if ($stageidentifier === 'moderator') {
-    throw new \core\exception\invalid_parameter_exception("Cannot create feedback for moderation stage");
-}
-$controller = new mod_coursework\controllers\feedback_controller($params);
+    'stageidentifier' => optional_param('stageidentifier', 'uh-oh', PARAM_RAW),
+]);
 require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->new_feedback();

@@ -385,6 +385,13 @@ class submissions_controller extends controller_base {
             $this->submission = submission::find($this->params['submissionid']);
             $this->coursework = $this->submission->get_coursework();
         }
+        if (
+            !empty($this->params['allocatabletype'])
+            &&
+            !in_array($this->params['allocatabletype'], ['user', 'group'])
+        ) {
+            throw new moodle_exception('Invalid allocatabletype');
+        }
 
         parent::__construct($params);
     }

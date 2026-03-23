@@ -104,6 +104,10 @@ class feedback_controller extends controller_base {
         $teacherfeedback->stageidentifier = $this->params['stageidentifier'];
         $teacherfeedback->courseworkid = $this->params['courseworkid'];
 
+        if ($teacherfeedback->stageidentifier === 'moderator') {
+            throw new \core\exception\invalid_parameter_exception("Cannot create feedback for moderation stage");
+        }
+
         $coursework = $teacherfeedback->get_coursework();
 
         if (

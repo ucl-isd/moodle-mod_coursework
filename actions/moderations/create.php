@@ -26,19 +26,13 @@
 
 require_once(dirname(__FILE__) . '/../../../../config.php');
 
-global $CFG, $USER;
+global $USER;
 
-$submissionid = required_param('submissionid', PARAM_INT);
-$feedbackid = required_param('feedbackid', PARAM_INT);
-$moderatorid = optional_param('moderatorid', $USER->id, PARAM_INT);
-$stageidentifier = optional_param('stageidentifier', '', PARAM_ALPHANUMEXT);
-
-$params = [
-    'submissionid' => $submissionid,
-    'feedbackid' => $feedbackid,
-    'moderatorid' => $moderatorid,
-    'stageidentifier' => $stageidentifier,
-];
-$controller = new mod_coursework\controllers\moderations_controller($params);
+$controller = new mod_coursework\controllers\moderations_controller([
+    'submissionid' => required_param('submissionid', PARAM_INT),
+    'feedbackid' => required_param('feedbackid', PARAM_INT),
+    'moderatorid' => optional_param('moderatorid', $USER->id, PARAM_INT),
+    'stageidentifier' => optional_param('stageidentifier', '', PARAM_ALPHANUMEXT),
+]);
 require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->create_moderation();

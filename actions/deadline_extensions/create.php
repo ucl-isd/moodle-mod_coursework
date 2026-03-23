@@ -24,14 +24,10 @@ require_once(dirname(__FILE__) . '/../../../../config.php');
 
 global $CFG, $PAGE, $USER;
 
-$courseworkid = required_param('courseworkid', PARAM_INT);
-$allocatableid = optional_param('allocatableid', 0, PARAM_INT);
-$allocatabletype = optional_param('allocatabletype', '', PARAM_ALPHANUMEXT);
-
 $params = [
-    'courseworkid' => $courseworkid,
-    'allocatableid' => $allocatableid,
-    'allocatabletype' => $allocatabletype,
+    'courseworkid' => required_param('courseworkid', PARAM_INT),
+    'allocatableid' => optional_param('allocatableid', 0, PARAM_INT),
+    'allocatabletype' => optional_param('allocatabletype', '', PARAM_ALPHANUMEXT),
 ];
 $url = '/mod/coursework/actions/deadline_extensions/create.php';
 $link = new moodle_url($url, $params);

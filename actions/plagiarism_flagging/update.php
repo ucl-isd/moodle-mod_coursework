@@ -28,12 +28,8 @@ require_once(dirname(__FILE__) . '/../../../../config.php');
 
 global $CFG, $USER;
 
-$flagid = required_param('flagid', PARAM_INT);
-
-$params = [
-    'flagid' => $flagid,
-];
-
-$controller = new mod_coursework\controllers\plagiarism_flagging_controller($params);
+$controller = new mod_coursework\controllers\plagiarism_flagging_controller([
+    'flagid' => required_param('flagid', PARAM_INT),
+]);
 require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->update_plagiarism_flag();

@@ -26,18 +26,11 @@
 
 require_once(dirname(__FILE__) . '/../../../../config.php');
 
-$feedbackid = required_param('feedbackid', PARAM_INT);
-$finalised = (bool)optional_param('submitbutton', 0, PARAM_TEXT);
-$remove = (bool)optional_param('removefeedbackbutton', 0, PARAM_TEXT);
-$confirm = optional_param('confirm', 0, PARAM_INT);
-
-$params = [
-    'feedbackid' => $feedbackid,
-    'finalised' => $finalised,
-    'remove' => $remove,
-    'confirm' => $confirm,
-];
-
-$controller = new mod_coursework\controllers\feedback_controller($params);
+$controller = new mod_coursework\controllers\feedback_controller([
+    'feedbackid' => required_param('feedbackid', PARAM_INT),
+    'finalised' => optional_param('submitbutton', 0, PARAM_BOOL),
+    'remove' => optional_param('removefeedbackbutton', 0, PARAM_BOOL),
+    'confirm' => optional_param('confirm', 0, PARAM_INT),
+]);
 require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->update_feedback();

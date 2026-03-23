@@ -28,20 +28,12 @@ require_once(dirname(__FILE__) . '/../../../../config.php');
 
 global $USER;
 
-$submissionid = required_param('submissionid', PARAM_INT);
-$isfinalgrade = optional_param('isfinalgrade', 0, PARAM_INT);
-$assessorid = optional_param('assessorid', $USER->id, PARAM_INT);
-$stageidentifier = optional_param('stageidentifier', '', PARAM_ALPHANUMEXT);
-$finalised = (bool)optional_param('submitbutton', 0, PARAM_TEXT);
-
-$params = [
-    'submissionid' => $submissionid,
-    'isfinalgrade' => $isfinalgrade,
-    'assessorid' => $assessorid,
-    'stageidentifier' => $stageidentifier,
-    'finalised' => $finalised,
-];
-
-$controller = new mod_coursework\controllers\feedback_controller($params);
+$controller = new mod_coursework\controllers\feedback_controller([
+    'submissionid' => required_param('submissionid', PARAM_INT),
+    'isfinalgrade' => optional_param('isfinalgrade', 0, PARAM_INT),
+    'assessorid' => optional_param('assessorid', $USER->id, PARAM_INT),
+    'stageidentifier' => optional_param('stageidentifier', '', PARAM_ALPHANUMEXT),
+    'finalised' => optional_param('submitbutton', 0, PARAM_BOOL),
+]);
 require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->create_feedback();
