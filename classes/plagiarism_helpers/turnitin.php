@@ -36,7 +36,7 @@ class turnitin extends base {
      * @return string
      */
     public function file_submission_instructions() {
-        return 'Turnitin allows only one file to be submitted, and restricts the file types to those it can process.';
+        return get_string('turnitintfilesubmissioninstructions', 'coursework');
     }
 
     /**
