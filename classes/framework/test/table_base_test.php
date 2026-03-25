@@ -55,7 +55,7 @@ class framework_table_base_test extends advanced_testcase {
         ];
         $user = $generator->create_user($params);
 
-        $this->assertEquals($user->id, framework_user_table::find($user->id)->id);
+        $this->assertEquals($user->id, framework_user_table::get_from_id($user->id)->id);
     }
 
     public function test_find_when_true_with_other_param() {
@@ -88,7 +88,7 @@ class framework_table_base_test extends advanced_testcase {
     }
 
     public function test_find_when_false_and_zero_supplied() {
-        $this->assertFalse(framework_user_table::find(0));
+        $this->assertNull(framework_user_table::get_from_id(0));
     }
 
     public function test_exists_when_true() {

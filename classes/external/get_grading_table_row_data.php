@@ -68,7 +68,7 @@ class get_grading_table_row_data extends external_api {
             ]
         );
 
-        $coursework = coursework::find($params['courseworkid']);
+        $coursework = coursework::get_from_id($params['courseworkid']);
         if (!$coursework) {
             return [
                 'success' => false,

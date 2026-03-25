@@ -44,7 +44,7 @@ final class group_test extends \advanced_testcase {
         $group = $generator->create_group($group);
 
         $this->assertNotEmpty($group->name);
-        $courseworkgroup = group::find($group->id);
+        $courseworkgroup = group::get_from_id($group->id);
         $this->assertEquals($group->name, $courseworkgroup->name);
         $this->assertTrue($courseworkgroup->persisted());
     }

@@ -75,15 +75,15 @@ class personaldeadline_form extends dynamic_form {
             $customdata['courseworkid'],
         );
         $this->existingdeadline = $existingdeadlinerecord
-            ? personaldeadline::find($existingdeadlinerecord)
+            ? personaldeadline::get_from_id($existingdeadlinerecord->id)
             : null;
 
         $this->allocatable = $this->existingdeadline
             ? $this->existingdeadline->get_allocatable()
             : (
             $customdata['allocatabletype'] == 'user'
-                    ? user::find($customdata['allocatableid'])
-                    : group::find($customdata['allocatableid'])
+                    ? user::get_from_id($customdata['allocatableid'])
+                    : group::get_from_id($customdata['allocatableid'])
             );
 
         $this->_form->addElement('hidden', 'allocatabletype');
@@ -239,7 +239,7 @@ class personaldeadline_form extends dynamic_form {
             return $this->coursework;
         } else {
             $datasource = $this->_customdata ?? $this->_ajaxformdata;
-            $this->coursework = coursework::find($datasource['courseworkid']);
+            $this->coursework = coursework::get_from_id($datasource['courseworkid']);
         }
         return $this->coursework;
     }

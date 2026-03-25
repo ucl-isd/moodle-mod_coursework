@@ -118,12 +118,12 @@ class upload {
                     if ($allocatabletype == 'user') {
                         // get user id
                         $suballocatable = $DB->get_record('user', [$assessoridentifier => $value]);
-                        $allocatable = ($suballocatable) ? user::find($suballocatable->id) : '';
+                        $allocatable = ($suballocatable) ? user::get_from_id($suballocatable->id) : '';
                     } else {
                         // get group id
                         $suballocatable = $DB->get_record('groups', ['courseid' => $this->coursework->course,
                                                                         'name' => $value]);
-                        $allocatable = ($suballocatable) ? group::find($suballocatable->id) : '';
+                        $allocatable = ($suballocatable) ? group::get_from_id($suballocatable->id) : '';
                     }
 
                     // check if allocatable exists in this coursework
@@ -251,12 +251,12 @@ class upload {
                     if ($allocatabletype == 'user') {
                         // get user id
                         $suballocatable = $DB->get_record('user', [$assessoridentifier => $value]);
-                        $allocatable = ($suballocatable) ? user::find($suballocatable->id) : '';
+                        $allocatable = ($suballocatable) ? user::get_from_id($suballocatable->id) : '';
                     } else {
                         // get group id
                         $suballocatable = $DB->get_record('groups', ['courseid' => $this->coursework->course,
                             'name' => $value]);
-                        $allocatable = ($suballocatable) ? group::find($suballocatable->id) : '';
+                        $allocatable = ($suballocatable) ? group::get_from_id($suballocatable->id) : '';
                     }
                 }
                 if ($allocatable && str_starts_with($cells[$keynum], 'assessor') && !empty($value)) {
@@ -322,7 +322,7 @@ class upload {
      * @return void
      */
     public function update_allocation($allocationid, $assessorid): void {
-        $allocation = allocation::find($allocationid);
+        $allocation = allocation::get_from_id($allocationid);
         $allocation->ismanual = 1;
         $allocation->assessorid = $assessorid;
         $allocation->save();
