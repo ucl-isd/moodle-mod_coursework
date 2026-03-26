@@ -59,7 +59,7 @@ final class restore_date_test extends \restore_date_testcase {
         $data = new \stdClass();
         $data->courseworkid = $coursework->id;
         $data->userid = $user->id;
-        $submission = $generator->create_submission($data, coursework::find($coursework));
+        $submission = $generator->create_submission($data, coursework::get_from_id($coursework->id));
 
         $data = new \stdClass();
         $data->submissionid = $submission->id;

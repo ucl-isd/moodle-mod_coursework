@@ -43,7 +43,7 @@ final class user_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
 
         $this->assertNotEmpty($user->firstname);
-        $this->assertEquals($user->firstname, \mod_coursework\models\user::find($user->id)->firstname);
+        $this->assertEquals($user->firstname, \mod_coursework\models\user::get_from_id($user->id)->firstname);
     }
 
     public function test_has_final_agreed_grade_returns_true_when_present(): void {
@@ -131,7 +131,7 @@ final class user_test extends \advanced_testcase {
         $this->assertEquals($dbstudent->id, $courseworkuser2->id());
 
         // Find the user coursework object providing their ID.
-        $courseworkuser3 = user::find($dbstudent);
+        $courseworkuser3 = user::get_from_id($dbstudent->id);
         $this->assertNotFalse($courseworkuser3);
         $this->assertTrue($courseworkuser3->persisted());
         $this->assertEquals($dbstudent->id, $courseworkuser3->id());

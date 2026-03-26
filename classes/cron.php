@@ -88,7 +88,7 @@ class cron {
             /**
              * @var coursework $coursework
              */
-            $coursework = coursework::find($rawcoursework);
+            $coursework = coursework::get_from_id($rawcoursework->id);
             if (!$coursework || !$coursework->is_coursework_visible()) {// check if coursework exists and is not hidden
                 continue;
             }
@@ -209,7 +209,7 @@ class cron {
         $usercounter = [];
 
         foreach ($users as $user) {
-            $courseworkinstance = coursework::find($user->courseworkid);
+            $courseworkinstance = coursework::get_from_id($user->courseworkid);
 
             $mailer = new mailer($courseworkinstance);
 
@@ -315,7 +315,7 @@ class cron {
 
         $graders = get_enrolled_users($context, 'mod/coursework:addinitialgrade');
         foreach ($graders as $grader) {
-            $result[$grader->id] = user::find($grader, false);
+            $result[$grader->id] = user::get_from_id($grader->id);
         }
         $managers = get_enrolled_users($context, 'mod/coursework:addagreedgrade');
         foreach ($managers as $manager) {
@@ -323,7 +323,7 @@ class cron {
                 // Already have this user.
                 continue;
             }
-            $result[$manager->id] = user::find($manager, false);
+            $result[$manager->id] = user::get_from_id($manager->id);
         }
         return array_values($result);
     }

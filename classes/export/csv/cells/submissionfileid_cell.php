@@ -55,7 +55,7 @@ class submissionfileid_cell extends cell_base {
         if (empty($value)) {
             return 'No submission hash value entered';
         }
-        $submission = submission::find($submissionid);
+        $submission = submission::get_from_id($submissionid);
 
         if (get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')) {
             $expected = $this->get_candidate_number($submission->allocatableid) ?? get_string('hidden');

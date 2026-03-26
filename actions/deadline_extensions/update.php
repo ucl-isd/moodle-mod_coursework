@@ -42,7 +42,7 @@ require_login($controller->get_course(), false, $controller->get_coursemodule())
 if (!$delete) {
     $controller->update_deadline_extension();
 } else {
-    $deadlineextension = mod_coursework\models\deadline_extension::find($extensionid);
+    $deadlineextension = mod_coursework\models\deadline_extension::get_from_id($extensionid);
     $redirecturl = new moodle_url('/mod/coursework/actions/deadline_extensions/edit.php', ['id' => $extensionid]);
     if (!$deadlineextension || !$deadlineextension->courseworkid) {
         redirect(

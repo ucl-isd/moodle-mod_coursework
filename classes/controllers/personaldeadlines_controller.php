@@ -194,7 +194,7 @@ class personaldeadlines_controller extends controller_base {
      */
     public function get_allocatable() {
         $allocatableclass = "\\mod_coursework\\models\\{$this->params['allocatabletype']}";
-        return $allocatableclass::find($this->params['allocatableid']);
+        return $allocatableclass::get_from_id($this->params['allocatableid']);
     }
 
     /**
