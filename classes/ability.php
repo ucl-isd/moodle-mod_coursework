@@ -121,9 +121,7 @@ class ability extends framework\ability {
         // View plagiarism submission
         $this->allow_view_plagiarism_submission_if_has_permission_or_is_assessor();
         $this->prevent_view_plagiarism_when_submission_does_not_belong_to_student();
-        $this->allow_view_plagiarism_submission_when_in_submitted_state();
-        $this->allow_view_plagiarism_submission_when_in_finalised_state();
-        $this->allow_view_plagiarism_submission_when_in_published_state();
+        $this->allow_view_plagiarism_submission_when_in_submitted_state_or_higher();
 
         // Moderations rules
         // new moderation
@@ -634,32 +632,12 @@ class ability extends framework\ability {
         );
     }
 
-    protected function allow_view_plagiarism_submission_when_in_submitted_state() {
+    protected function allow_view_plagiarism_submission_when_in_submitted_state_or_higher() {
         $this->allow(
             'view_plagiarism',
             'mod_coursework\models\submission',
             function (submission $submission) {
-                return $submission->get_state(true) === submission::SUBMITTED;
-            }
-        );
-    }
-
-    protected function allow_view_plagiarism_submission_when_in_finalised_state() {
-        $this->allow(
-            'view_plagiarism',
-            'mod_coursework\models\submission',
-            function (submission $submission) {
-                return $submission->get_state() === submission::FINALISED;
-            }
-        );
-    }
-
-    protected function allow_view_plagiarism_submission_when_in_published_state() {
-        $this->allow(
-            'view_plagiarism',
-            'mod_coursework\models\submission',
-            function (submission $submission) {
-                return $submission->get_state() === submission::PUBLISHED;
+                return $submission->get_state() >= submission::SUBMITTED;
             }
         );
     }
