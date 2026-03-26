@@ -22,6 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\exception\invalid_parameter_exception;
 use mod_coursework\event\course_module_viewed;
 use mod_coursework\export\csv;
 use mod_coursework\export\grading_sheet;
@@ -62,42 +63,19 @@ $group = optional_param('group', -1, PARAM_INT);
 $resettable = optional_param('treset', 0, PARAM_INT);
 $allresettable = optional_param('alltreset', 0, PARAM_INT);
 
-$courseworkrecord = new stdClass();
-
 if ($coursemoduleid) {
-    $coursemodule = get_coursemodule_from_id(
-        'coursework',
-        $coursemoduleid,
-        0,
-        false,
-        MUST_EXIST
-    );
-    $course = $DB->get_record('course', ['id' => $coursemodule->course], '*', MUST_EXIST);
+    [$course, $coursemodule] = get_course_and_cm_from_cmid($coursemoduleid);
     $courseworkid = $coursemodule->instance;
+} else if ($courseworkid) {
+    [$course, $coursemodule] = get_course_and_cm_from_instance($courseworkid, 'coursework');
 } else {
-    if ($courseworkid) {
-        $course = $DB->get_record(
-            'course',
-            ['id' => $courseworkrecord->course],
-            '*',
-            MUST_EXIST
-        );
-        $coursemodule = get_coursemodule_from_instance(
-            'coursework',
-            $courseworkid,
-            $course->id,
-            false,
-            MUST_EXIST
-        );
-    } else {
-        die('You must specify a course_module ID or an instance ID');
-    }
+    throw new invalid_parameter_exception('No course module ID or instance ID supplied');
 }
 
 // This will set $PAGE->context to the coursemodule's context.
 require_login($course, true, $coursemodule);
 
-$coursework = mod_coursework\models\coursework::get_from_id($courseworkid);
+$coursework = mod_coursework\models\coursework::get_from_id($courseworkid, MUST_EXIST);
 
 // Check if group is in session and use it no group available in url
 if (groups_get_activity_groupmode($coursework->get_course_module()) != 0 && $group == -1) {

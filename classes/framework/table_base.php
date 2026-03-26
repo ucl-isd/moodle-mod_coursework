@@ -74,13 +74,14 @@ abstract class table_base {
         // Temporarily, this just refers on to the legacy method to get the object.
         // (The legacy method will be deleted later when the caching work is completed).
         $record = $DB->get_record(static::get_table_name(), ['id' => $id]);
+        $result = null;
         if ($record) {
-            return self::find($record, false) ?: null;
+            $result = self::find($record, false) ?: null;
         }
-        if ($strictness == MUST_EXIST) {
+        if ($strictness == MUST_EXIST && !$result) {
             throw new invalid_parameter_exception("Object ID $id not found for class " . static::class);
         }
-        return null;
+        return $result;
     }
 
     /**
