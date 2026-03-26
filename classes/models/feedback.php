@@ -154,27 +154,6 @@ class feedback extends table_base {
     public $markernumber;
 
     /**
-     * This allows up to loop through the properties of the object which correspond to fields
-     * in the DB table, ignoring the others.
-     * @var array
-     */
-    protected $fields = [
-        'id',
-        'submissionid',
-        'timecreated',
-        'timemodified',
-        'assessorid',
-        'grade',
-        'feedbackcomment',
-        'feedbackcommentformat',
-        'timepublished',
-        'lasteditedbyuser',
-        'isfinalgrade',
-        'ismoderation',
-        'markernumber',
-    ];
-
-    /**
      * @var stdClass
      */
     public $assessor;

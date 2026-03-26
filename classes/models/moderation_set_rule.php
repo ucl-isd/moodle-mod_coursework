@@ -79,19 +79,6 @@ abstract class moderation_set_rule extends table_base implements renderable {
     public $minimum;
 
     /**
-     * @var array List of class properties that correspond with DB fields.
-     */
-    protected $fields = [
-        'id',
-        'courseworkid',
-        'rulename',
-        'ruleorder',
-        'upperlimit',
-        'lowerlimit',
-        'minimum',
-    ];
-
-    /**
      * @param bool|int|stdClass $dbrecord
      */
     public function __construct($dbrecord = false) {

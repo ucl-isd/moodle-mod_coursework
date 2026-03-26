@@ -70,19 +70,6 @@ abstract class sample_base {
      */
     public $minimum;
 
-    /**
-     * @var array List of class properties that correspond with DB fields.
-     */
-    protected $fields = [
-        'id',
-        'courseworkid',
-        'rulename',
-        'ruleorder',
-        'upperlimit',
-        'lowerlimit',
-        'minimum',
-    ];
-
     public function __construct($coursework) {
         $this->coursework = $coursework;
     }
