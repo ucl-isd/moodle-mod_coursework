@@ -24,10 +24,8 @@ require_once(dirname(__FILE__) . '/../../../../config.php');
 
 global $CFG, $USER;
 
-$moderationid = optional_param('moderationid', 0, PARAM_INT);
-
-$params = [
-    'moderationid' => $moderationid,
-];
-$controller = new mod_coursework\controllers\moderations_controller($params);
+$controller = new mod_coursework\controllers\moderations_controller([
+    'moderationid' => optional_param('moderationid', 0, PARAM_INT),
+]);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->show_moderation();

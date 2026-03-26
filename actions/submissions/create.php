@@ -29,29 +29,12 @@ use mod_coursework\models\coursework;
 
 require_once(dirname(__FILE__) . '/../../../../config.php');
 
-global $USER;
-
-$courseworkid = required_param('courseworkid', PARAM_INT);
-$allocatableid = required_param('allocatableid', PARAM_INT);
-$allocatabletype = required_param('allocatabletype', PARAM_ALPHANUMEXT);
-$submissionid = optional_param('submissionid', 0, PARAM_INT);
-$finalised = (bool)optional_param('finalisebutton', 0, PARAM_TEXT);
-
-if (!in_array($allocatabletype, ['user', 'group'])) {
-    throw new access_denied(
-        coursework::find($courseworkid),
-        'Bad alloctable type'
-    );
-}
-
-$params = [
-    'courseworkid' => $courseworkid,
-    'finalised' => $finalised,
-    'allocatableid' => $allocatableid,
-    'allocatabletype' => $allocatabletype,
-];
-if ($submissionid) {
-    $params['submissionid'] = $submissionid;
-}
-$controller = new mod_coursework\controllers\submissions_controller($params);
+$controller = new mod_coursework\controllers\submissions_controller([
+    'courseworkid' => required_param('courseworkid', PARAM_INT),
+    'finalised' => optional_param('finalisebutton', 0, PARAM_BOOL),
+    'allocatableid' => required_param('allocatableid', PARAM_INT),
+    'allocatabletype' => required_param('allocatabletype', PARAM_ALPHANUMEXT),
+    'submissionid' => optional_param('submissionid', null, PARAM_INT),
+]);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->create_submission();

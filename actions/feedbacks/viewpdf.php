@@ -22,10 +22,8 @@
 
 require_once(dirname(__FILE__) . '/../../../../config.php');
 
-$submissionid = required_param('submissionid', PARAM_INT);
-
-$params = [
-    'submissionid' => $submissionid,
-];
-$controller = new mod_coursework\controllers\feedback_controller($params);
+$controller = new mod_coursework\controllers\feedback_controller([
+    'submissionid' => required_param('submissionid', PARAM_INT),
+]);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->viewpdf();

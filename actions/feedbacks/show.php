@@ -22,8 +22,9 @@
 
 require_once(dirname(__FILE__) . '/../../../../config.php');
 
-$feedbackid = optional_param('feedbackid', 0, PARAM_INT);
 
-$params = ['feedbackid' => $feedbackid];
-$controller = new mod_coursework\controllers\feedback_controller($params);
+$controller = new mod_coursework\controllers\feedback_controller([
+    'feedbackid' => optional_param('feedbackid', 0, PARAM_INT),
+]);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->show_feedback();

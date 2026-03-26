@@ -36,8 +36,10 @@ $url = '/mod/coursework/actions/deadline_extensions/update.php';
 $link = new moodle_url($url, $params);
 $PAGE->set_url($link);
 
+$controller = new mod_coursework\controllers\deadline_extensions_controller($params);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
+
 if (!$delete) {
-    $controller = new mod_coursework\controllers\deadline_extensions_controller($params);
     $controller->update_deadline_extension();
 } else {
     $deadlineextension = mod_coursework\models\deadline_extension::find($extensionid);
@@ -68,16 +70,8 @@ if (!$delete) {
     $courseworkid = $deadlineextension->courseworkid ?? null;
     $sure = optional_param('sure', 0, PARAM_INT);
     if ($courseworkid) {
-        $cm = get_coursemodule_from_instance(
-            'coursework',
-            $courseworkid,
-            0,
-            false,
-            MUST_EXIST
-        );
-        $courseworkurl = new moodle_url('/mod/coursework/view.php', ['id' => $cm->id]);
+        $courseworkurl = new moodle_url('/mod/coursework/view.php', ['id' => $controller->get_coursemodule()->id]);
         if ($sure) {
-            $controller = new mod_coursework\controllers\deadline_extensions_controller($params);
             $success = $controller->delete_deadline_extension();
             $message = $success
                 ? get_string('extension_deleted', 'mod_coursework', $deadlineextension->get_grantee_user_name())
@@ -85,9 +79,6 @@ if (!$delete) {
             $messagetype = $success ? notification::SUCCESS : notification::ERROR;
             redirect($courseworkurl, $message, null, $messagetype);
         } else {
-            $PAGE->set_context(context_module::instance($cm->id));
-            $PAGE->set_cm($cm);
-
             $deleteurl = new moodle_url($PAGE->url);
             $deleteurl->param('sure', '1');
             $deleteurl->param('deleteextension', '1');

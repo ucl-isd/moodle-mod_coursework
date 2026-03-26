@@ -30,4 +30,5 @@ $id = required_param('id', PARAM_INT);
 // Extension ID is clearer and we should switch id to that over time.
 $params = ['id' => $id, 'extensionid' => $id];
 $controller = new mod_coursework\controllers\deadline_extensions_controller($params);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->edit_deadline_extension();

@@ -22,12 +22,8 @@
 
 require_once(dirname(__FILE__) . '/../../../../config.php');
 
-global $CFG, $USER;
-
-$id = required_param('id', PARAM_INT);
-
-$params = [
-    'id' => $id,
-];
-$controller = new mod_coursework\controllers\deadline_extensions_controller($params);
+$controller = new mod_coursework\controllers\deadline_extensions_controller([
+    'id' => required_param('id', PARAM_INT),
+]);
+require_login($controller->get_course(), false, $controller->get_coursemodule());
 $controller->show_deadline_extension();

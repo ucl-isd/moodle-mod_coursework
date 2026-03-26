@@ -57,12 +57,51 @@ class moderations_controller extends controller_base {
      */
     protected $feedback;
 
+    public function __construct($params = []) {
+        global $DB;
+
+        if (!empty($params['feedbackid'])) {
+            $feedback = $DB->get_record(
+                'coursework_feedbacks',
+                ['id' => $params['feedbackid']],
+                '*',
+                MUST_EXIST
+            );
+            $this->feedback = new feedback($feedback);
+            $params['courseworkid'] = $this->feedback->get_coursework()->id;
+        }
+
+        if (!empty($params['submissionid'])) {
+            $submission = $DB->get_record(
+                'coursework_submissions',
+                ['id' => $params['submissionid']],
+                '*',
+                MUST_EXIST
+            );
+            $this->submission = submission::find($submission);
+            $params['courseworkid'] = $this->submission->courseworkid;
+        }
+
+        if (!empty($params['moderationid'])) {
+            $moderation = $DB->get_record(
+                'coursework_mod_agreements',
+                ['id' => $params['moderationid']],
+                '*',
+                MUST_EXIST
+            );
+            $this->moderation = moderation::find($moderation);
+            $params['courseworkid'] = $this->moderation->get_coursework()->id;
+        }
+
+        parent::__construct($params);
+    }
+
     /**
      * This deals with the page that the assessors see when they want to add component feedbacks.
      *
      * @throws moodle_exception
      */
-    protected function new_moderation() {
+    public function new_moderation() {
 
         global $PAGE, $USER;
 
@@ -94,7 +133,7 @@ class moderations_controller extends controller_base {
      *
      * @throws moodle_exception
      */
-    protected function edit_moderation() {
+    public function edit_moderation() {
 
         global $DB, $PAGE, $USER;
 
@@ -114,7 +153,7 @@ class moderations_controller extends controller_base {
     /**
      * Saves the new feedback form for the first time.
      */
-    protected function create_moderation() {
+    public function create_moderation() {
         global $USER, $PAGE;
 
         $this->check_stage_permissions($this->params['stageidentifier']);
@@ -161,7 +200,7 @@ class moderations_controller extends controller_base {
     /**
      * Saves the new feedback form for the first time.
      */
-    protected function update_moderation() {
+    public function update_moderation() {
         global $USER;
 
         $moderatoragreement = new moderation($this->params['moderationid']);
@@ -191,7 +230,7 @@ class moderations_controller extends controller_base {
      * @throws coding_exception
      * @throws access_denied
      */
-    protected function show_moderation() {
+    public function show_moderation() {
         global $PAGE, $USER;
 
         $urlparams = ['moderationid' => $this->params['moderationid']];
@@ -207,53 +246,11 @@ class moderations_controller extends controller_base {
     }
 
     /**
-     * Get any feedback-specific stuff.
-     */
-    protected function prepare_environment() {
-        global $DB;
-
-        if (!empty($this->params['feedbackid'])) {
-            $feedback = $DB->get_record(
-                'coursework_feedbacks',
-                ['id' => $this->params['feedbackid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->feedback = new feedback($feedback);
-            $this->params['courseworkid'] = $this->feedback->get_coursework()->id;
-        }
-
-        if (!empty($this->params['submissionid'])) {
-            $submission = $DB->get_record(
-                'coursework_submissions',
-                ['id' => $this->params['submissionid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->submission = submission::find($submission);
-            $this->params['courseworkid'] = $this->submission->courseworkid;
-        }
-
-        if (!empty($this->params['moderationid'])) {
-            $moderation = $DB->get_record(
-                'coursework_mod_agreements',
-                ['id' => $this->params['moderationid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->moderation = moderation::find($moderation);
-            $this->params['courseworkid'] = $this->moderation->get_coursework()->id;
-        }
-
-        parent::prepare_environment();
-    }
-
-    /**
      * @param string $identifier
      * @throws access_denied
      * @throws coding_exception
      */
-    protected function check_stage_permissions($identifier) {
+    private function check_stage_permissions($identifier) {
         global $USER;
 
         $stage = $this->coursework->get_stage($identifier);

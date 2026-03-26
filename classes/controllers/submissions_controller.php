@@ -35,7 +35,6 @@ use mod_coursework\mailer;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
 use moodle_url;
-use unauthorized_access_exception;
 
 /**
  * Class submissions_controller
@@ -47,6 +46,21 @@ class submissions_controller extends controller_base {
      */
     protected $submission;
 
+    public function __construct($params = []) {
+        if (!empty($params['submissionid'])) {
+            $this->submission = submission::find($params['submissionid']);
+            $this->coursework = $this->submission->get_coursework();
+        }
+        if (
+            !empty($params['allocatabletype'])
+            &&
+            !in_array($params['allocatabletype'], ['user', 'group'])
+        ) {
+            throw new moodle_exception('Invalid allocatabletype');
+        }
+        parent::__construct($params);
+    }
+
     /**
      * Shared logic for rendering the submission page (new or edit).
      *
@@ -55,7 +69,7 @@ class submissions_controller extends controller_base {
      * @param bool $isnew
      * @return bool|null
      */
-    protected function submission_page($submitform, $submission, $isnew) {
+    private function submission_page($submitform, $submission, $isnew) {
         $validation = false;
         if ($submitform->is_submitted()) {
             $validation = $submitform->validate_defined_fields();
@@ -79,7 +93,7 @@ class submissions_controller extends controller_base {
      * @throws coding_exception
      * @throws moodle_exception
      */
-    protected function new_submission() {
+    public function new_submission() {
         global $USER, $PAGE;
 
         $submission = submission::build([
@@ -96,7 +110,7 @@ class submissions_controller extends controller_base {
 
         $this->check_coursework_is_open($this->coursework);
 
-        $urlparams = ['courseworkid' => $this->params['courseworkid']];
+        $urlparams = ['courseworkid' => $this->coursework->id()];
         $PAGE->set_url('/mod/coursework/actions/submissions/new.php', $urlparams);
 
         $path = $this->get_router()->get_path('create submission', ['coursework' => $this->coursework]);
@@ -119,32 +133,30 @@ class submissions_controller extends controller_base {
      * @throws access_denied
      * @throws coding_exception
      */
-    protected function edit_submission() {
+    public function edit_submission() {
         global $USER, $PAGE;
 
-        $submission = submission::find($this->params['submissionid']);
-
         $ability = new ability($USER->id, $this->coursework);
-        if (!$ability->can('edit', $submission)) {
+        if (!$ability->can('edit', $this->submission)) {
             throw new access_denied($this->coursework);
         }
 
-        $urlparams = ['submissionid' => $this->params['submissionid']];
+        $urlparams = ['submissionid' => $this->submission->id()];
         $PAGE->set_url('/mod/coursework/actions/submissions/edit.php', $urlparams);
 
-        $path = $this->get_router()->get_path('update submission', ['submission' => $submission]);
+        $path = $this->get_router()->get_path('update submission', ['submission' => $this->submission]);
         $submitform = new student_submission_form($path, [
             'coursework' => $this->coursework,
-            'submission' => $submission,
+            'submission' => $this->submission,
         ]);
 
-        return $this->submission_page($submitform, $submission, false);
+        return $this->submission_page($submitform, $this->submission, false);
     }
 
     /**
      * Receives the form input from the new submission page and saves it.
      */
-    protected function create_submission() {
+    public function create_submission() {
         global $USER, $CFG, $DB;
 
         $courseworkpageurl = $this->get_path('coursework', ['coursework' => $this->coursework]);
@@ -244,7 +256,7 @@ class submissions_controller extends controller_base {
     /**
      *
      */
-    protected function update_submission() {
+    public function update_submission() {
 
         global $USER, $CFG;
 
@@ -259,34 +271,32 @@ class submissions_controller extends controller_base {
             return;
         }
 
-        $submission = submission::find($this->params['submissionid']);
-
         $ability = new ability($USER->id, $this->coursework);
-        $this->exception_if_late($submission);
-        if (!$ability->can('update', $submission)) {
+        $this->exception_if_late($this->submission);
+        if (!$ability->can('update', $this->submission)) {
             throw new access_denied($this->coursework, $ability->get_last_message());
         }
 
         $incomingfinalisedsetting = $this->params['finalised']
             ? submission::FINALISED_STATUS_FINALISED : submission::FINALISED_STATUS_NOT_FINALISED;
         $notifyaboutfinalisation = $incomingfinalisedsetting == submission::FINALISED_STATUS_FINALISED
-            && !$submission->is_finalised();
+            && !$this->submission->is_finalised();
 
-        $submission->finalisedstatus = $incomingfinalisedsetting;
-        $submission->lastupdatedby = $USER->id;
-        $submission->timesubmitted = time();
+        $this->submission->finalisedstatus = $incomingfinalisedsetting;
+        $this->submission->lastupdatedby = $USER->id;
+        $this->submission->timesubmitted = time();
 
-        $submission->save();
+        $this->submission->save();
 
         $filesid = file_get_submitted_draft_itemid('submission_manager');
-        $submission->save_files($filesid);
+        $this->submission->save_files($filesid);
 
         $context = context_module::instance($this->coursemodule->id);
         // Trigger assessable_submitted event to show files are complete.
         $params = [
             'context' => $context,
-            'objectid' => $submission->id,
-            'anonymous' => $submission->get_coursework()->blindmarking_enabled() ? 1 : 0,
+            'objectid' => $this->submission->id,
+            'anonymous' => $this->submission->get_coursework()->blindmarking_enabled() ? 1 : 0,
             'other' => [
                 'courseworkid' => $this->coursework->id,
             ],
@@ -294,11 +304,11 @@ class submissions_controller extends controller_base {
         $event = assessable_submitted::create($params);
         $event->trigger();
 
-        $submission->submit_plagiarism();
+        $this->submission->submit_plagiarism();
 
         if ($CFG->coursework_allsubmissionreceipt || $notifyaboutfinalisation) {
             $mailer = new mailer($this->coursework);
-            foreach ($submission->get_students() as $student) {
+            foreach ($this->submission->get_students() as $student) {
                 $mailer->send_submission_receipt($student, $notifyaboutfinalisation);
             }
         }
@@ -309,7 +319,7 @@ class submissions_controller extends controller_base {
     /**
      *
      */
-    protected function finalise_submission() {
+    public function finalise_submission() {
 
         global $USER;
 
@@ -318,26 +328,24 @@ class submissions_controller extends controller_base {
             redirect($courseworkpageurl);
         }
 
-        $submission = submission::find($this->params['submissionid']);
-
         $ability = new ability($USER->id, $this->coursework);
-        if (!$ability->can('finalise', $submission)) {
+        if (!$ability->can('finalise', $this->submission)) {
             throw new access_denied($this->coursework);
         }
 
-        $submission->finalisedstatus = submission::FINALISED_STATUS_FINALISED;
-        $submission->save();
+        $this->submission->finalisedstatus = submission::FINALISED_STATUS_FINALISED;
+        $this->submission->save();
 
         // Email the user. Best to do this as an event after 2.7 so as to keep the page fast.
         $mailer = new mailer($this->coursework);
-        foreach ($submission->get_students() as $student) {
+        foreach ($this->submission->get_students() as $student) {
             $mailer->send_submission_receipt($student, true);
         }
 
         redirect($courseworkpageurl, get_string('changessaved'));
     }
 
-    protected function unfinalise_submission() {
+    public function unfinalise_submission() {
         global $DB;
 
         $allocatableids = (!is_array($this->params['allocatableid']))
@@ -346,7 +354,7 @@ class submissions_controller extends controller_base {
         $personaldeadlinepageurl = new moodle_url(
             '/mod/coursework/actions/personaldeadline.php',
             ['id' => $this->coursework->get_coursemodule_id(), 'multipleuserdeadlines' => 1, 'setpersonaldeadlinespage' => 1,
-            'courseworkid' => $this->params['courseworkid'],
+            'courseworkid' => $this->coursework->id(),
             'allocatabletype' => $this->params['allocatabletype']]
         );
 
@@ -355,7 +363,7 @@ class submissions_controller extends controller_base {
         foreach ($allocatableids as $aid) {
             $submissiondb = $DB->get_record(
                 'coursework_submissions',
-                ['courseworkid' => $this->params['courseworkid'], 'allocatableid' => $aid, 'allocatabletype' => $this->params['allocatabletype']]
+                ['courseworkid' => $this->coursework->id(), 'allocatableid' => $aid, 'allocatabletype' => $this->params['allocatabletype']]
             );
             if (!empty($submissiondb)) {
                 $submission = submission::find($submissiondb);
@@ -380,21 +388,12 @@ class submissions_controller extends controller_base {
         }
     }
 
-    protected function prepare_environment() {
-        if (!empty($this->params['submissionid'])) {
-            $this->submission = submission::find($this->params['submissionid']);
-            $this->coursework = $this->submission->get_coursework();
-        }
-
-        parent::prepare_environment();
-    }
-
     /**
      * Is the coursework open?
      * @param coursework $coursework
      * @throws coding_exception
      */
-    protected function check_coursework_is_open($coursework) {
+    private function check_coursework_is_open($coursework) {
         if (!$coursework->start_date_has_passed()) {
             throw new Exception(get_string('notstartedyet', 'mod_coursework', userdate($coursework->startdate)));
         }
@@ -423,7 +422,7 @@ class submissions_controller extends controller_base {
      * param submission $submission
      * return bool true if a matching record exists, else false
      */
-    protected function submissions_exists($submission) {
+    private function submissions_exists($submission) {
         global $DB;
 
         return $DB->record_exists(
@@ -439,7 +438,7 @@ class submissions_controller extends controller_base {
      * @return bool
      * @throws \dml_exception
      */
-    protected function has_valid_extension($submission) {
+    private function has_valid_extension($submission) {
         global $DB;
 
         $validextension = false;
@@ -464,7 +463,7 @@ class submissions_controller extends controller_base {
      * @return bool
      * @throws \dml_exception
      */
-    protected function has_valid_personaldeadline($submission) {
+    private function has_valid_personaldeadline($submission) {
         global $DB;
 
         $validpersonaldeadline = false;
