@@ -422,7 +422,13 @@ class grading_report_renderer extends plugin_renderer_base {
      * @param int $lifetimeseconds
      * @return void
      */
-    public static function add_notification(int $courseworkid, int $submissionid, string $notification, string $notificationtype, int $lifetimeseconds = 10): void {
+    public static function add_notification(
+        int $courseworkid,
+        int $submissionid,
+        string $notification,
+        string $notificationtype,
+        int $lifetimeseconds = 10
+    ): void {
         global $SESSION;
         $key = self::get_notifications_session_key($courseworkid);
         if (!isset($SESSION->$key)) {
