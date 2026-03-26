@@ -129,6 +129,8 @@ class singlegrade_cell extends cell_base {
                         $i++;
                     }
                 }
+            } else {
+                throw new coding_exception("Unexpected value for submission ID $submissionid:" . json_encode($value));
             }
 
             if (!empty($errormsg)) {
