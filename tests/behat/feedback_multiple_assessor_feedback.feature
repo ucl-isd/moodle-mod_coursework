@@ -119,7 +119,6 @@ Feature: Multiple assessors simple grading form
     And I wait until the page is ready
     And I set the field "Mark" to "71.1"
     And I press "Save and finalise"
-    And I visit the coursework page
     And I should see "Feedback saved" in the "student1" "table_row"
     And I should see "71.1" in the "student1" "table_row"
 
