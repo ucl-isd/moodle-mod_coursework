@@ -7,50 +7,52 @@ Feature: Adding feedback using the built in Moodle rubrics
   So that I can grade the work faster, give more consistent responses and make the process more fair
 
   Background:
-    Given there is a course
-    And there is a coursework
-    And the coursework "numberofmarkers" setting is "1" in the database
-    And there is a student
-    And the student has a submission
-    And the submission is finalised
-    And I am logged in as a teacher
-
-  Scenario: I should be able to add feedback using a simple rubric
-    Given there is a rubric defined for the coursework
-    Given I visit the coursework page
-    When I click on the add feedback button
-    And I grade by filling the rubric with:
-      | first criterion | 1 | New comment here |
-    And I press "Save and finalise"
-    And I log out
-
-    And I log in as a manager
-    And I visit the coursework page
-    And I follow "Release the marks"
-    And I log out
-    And I log in as a student
-    And I visit the coursework page
-    Then I should see the rubric grade on the page
-    And I should see the rubric comment "New comment here"
+    Given the following "course" exists:
+      | fullname  | Course 1 |
+      | shortname | C1       |
+    And the following "activity" exists:
+      | activity        | coursework |
+      | course          | C1         |
+      | name            | Coursework |
+      | numberofmarkers | 1          |
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | student1 | student   | student1 | student1@example.com |
+      | manager1 | manager   | manager1 | manager1@example.com |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | teacher1 | C1     | teacher |
+      | student1 | C1     | student |
+      | manager1 | C1     | manager |
+    And the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | Coursework | 1               |
+    And I am on the "Coursework" "coursework activity" page logged in as "admin"
+    And I select "Advanced grading" from secondary navigation
+    And I set the field "Change active grading method to" to "Rubric"
+    And I follow "Define new grading form from scratch"
+    And I set the following fields to these values:
+      | Name        | Test rubric        |
+      | Description | Rubric description |
+    And I define the following rubric:
+      | first criterion | Bad | 1 | Ok | 2 | Good | 3 |
+    And I press "Save rubric and make it ready"
 
   @javascript
-  Scenario: I should see the rubric grade show up in the gradebook
-    Given there is a rubric defined for the coursework
-    Given I visit the coursework page
-    When I click on the add feedback button
+  Scenario: I should be able to grade a submission using a rubric and have the grade show up in the gradebook
+    Given I am on the "Coursework" "coursework activity" page logged in as "teacher1"
+    When I click on "Add mark" "link" in the "student1" "table_row"
     And I grade by filling the rubric with:
-      | first criterion | 2 | Very good |
+      | first criterion | 3 | Criterion comment |
     And I press "Save and finalise"
-    And I log out
-    And I log in as a manager
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page logged in as "manager1"
     And I follow "Release the marks"
     And I press "Confirm"
-    And I log out
-    And I log in as a student
-    When I visit the gradebook page
-    And I wait until the page is ready
-    And I wait "1" seconds
-    Then I should see the rubric grade "100" in the gradebook
-    When I visit the coursework page
-    And I should see the rubric comment "Very good"
+    When I am on the "Coursework" "coursework activity" page logged in as "student1"
+    Then I should see "100" in the ".coursework-feedback" "css_element"
+    And I should see "Criterion comment" in the ".coursework-feedback" "css_element"
+    Then I should see "Good" in the ".coursework-feedback" "css_element"
+
+    When I am on the "Course 1" "grades > User report > View" page
+    Then I should see "100.00"
