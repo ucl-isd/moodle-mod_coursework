@@ -95,7 +95,7 @@ class singlegrade_cell extends cell_base {
                         $errormsg .= ' ' . get_string('max_cw_mark', 'coursework') . ' ' . $this->coursework->grade;
                     }
                 }
-            } else {
+            } else if ($this->coursework->is_using_rubric() && is_array($value)) {
                 // We won't be processing this line if it has no values, empty wont tell us this as it thinks that an array with
                 // Keys isnt. We will use array_filter whhich will return all values from the array if this is empty then we have
                 // Nothing to do
@@ -129,6 +129,8 @@ class singlegrade_cell extends cell_base {
                         $i++;
                     }
                 }
+            } else {
+                throw new coding_exception("Unexpected value for submission ID $submissionid:" . json_encode($value));
             }
 
             if (!empty($errormsg)) {
