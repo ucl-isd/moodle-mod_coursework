@@ -39,7 +39,7 @@ Feature: Adding and editing final feedback
     And I click on "Agree marking" "link" in the "student1" "table_row"
     And I set the field "Mark" to "57"
     And I press "Save and finalise"
-    And I should see "Changes saved"
+    And I should see "Feedback saved"
     Then I am on the "Coursework" "coursework activity" page
     And I should see "57" in the "[data-behat-markstage='final_agreed']" "css_element"
 
@@ -50,7 +50,7 @@ Feature: Adding and editing final feedback
     And I click on "Agree marking" "link" in the "student1" "table_row"
     And I set the field "Mark" to "57"
     And I press "Save as draft"
-    And I should see "Changes saved"
+    And I should see "Feedback saved"
     Then I am on the "Coursework" "coursework activity" page
     And I should see "57" in the "[data-behat-markstage='final_agreed']" "css_element"
     And I should see "Draft" in the "[data-behat-markstage='final_agreed']" "css_element"
@@ -72,7 +72,7 @@ Feature: Adding and editing final feedback
     And I set the field "Mark" to "57"
     And I set the field "Comment" to "New comment"
     And I press "Save and finalise"
-    And I should see "Changes saved"
+    And I should see "Feedback saved"
     Then I am on the "Coursework" "coursework activity" page
     And I click on "57" "link" in the "student student1" "table_row"
     And I wait until the page is ready
@@ -86,7 +86,7 @@ Feature: Adding and editing final feedback
     And I click on "Agree marking" "link" in the "student1" "table_row"
     And I set the field "Mark" to ""
     And I press "Save and finalise"
-    And I should not see "Changes saved"
+    And I should not see "Feedback saved"
 
   @javascript
   Scenario: Updating the final feedback but leaving require grade field blank
@@ -94,9 +94,9 @@ Feature: Adding and editing final feedback
     And I click on "Agree marking" "link" in the "student1" "table_row"
     And I set the field "Mark" to "22"
     And I press "Save and finalise"
-    And I should see "Changes saved"
+    And I should see "Feedback saved"
     And I am on the "Coursework" "coursework activity" page
     And I click on "22" "link" in the "[data-behat-markstage='final_agreed']" "css_element"
     And I set the field "Mark" to ""
     And I press "Save and finalise"
-    And I should not see "Changes saved"
+    And I should not see "Feedback saved"

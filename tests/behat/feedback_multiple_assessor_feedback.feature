@@ -54,6 +54,7 @@ Feature: Multiple assessors simple grading form
     And I press "Save and finalise"
     And I am on the "Coursework" "coursework activity" page
     Then I should see "56" in the "student1" "table_row"
+    Then I should see "Feedback saved" in the "student1" "table_row"
 
   Scenario: Teachers do not see the agree marking button unless they have the specific permission awarded
     Given the following "mod_coursework > feedbacks" exist:
@@ -63,7 +64,7 @@ Feature: Multiple assessors simple grading form
     And I follow "Add mark"
     And I set the field "Mark" to "59"
     And I press "Save and finalise"
-    And I should see "Changes saved"
+    And I should see "Feedback saved"
     And I am on the "Coursework" "coursework activity" page
     # Cannot see agree marking until specific capability awarded.
     Then I should not see "Agree marking"
@@ -75,7 +76,7 @@ Feature: Multiple assessors simple grading form
     And I wait until the page is ready
     And I set the field "Mark" to "71.1"
     And I press "Save and finalise"
-    And I am on the "Coursework" "coursework activity" page
+    And I should see "Feedback saved" in the "student1" "table_row"
     And I should see "71.1"
 
   Scenario: Grades must be published for a student to see feedback
