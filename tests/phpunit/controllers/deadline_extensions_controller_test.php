@@ -16,6 +16,8 @@
 
 namespace mod_coursework;
 
+use mod_coursework\controllers\deadline_extensions_controller;
+
 /**
  * @package    mod_coursework
  * @copyright  2017 University of London Computer Centre {@link https://www.cosector.com}
@@ -33,9 +35,12 @@ final class deadline_extensions_controller_test extends \advanced_testcase {
     public function test_model_name(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        $course   = $this->getDataGenerator()->create_course();
+        $course = $this->getDataGenerator()->create_course();
         $coursework = $this->create_a_coursework();
-        $controller = new \mod_coursework\controllers\deadline_extensions_controller(['courseid' => $course->id, 'courseworkid' => $coursework->id()]);
+        $controller = new deadline_extensions_controller([
+            'courseid' => $course->id,
+            'courseworkid' => $coursework->id(),
+        ]);
         $this->assertEquals('deadline_extension', $controller->model_name());
     }
 }

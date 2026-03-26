@@ -47,6 +47,45 @@ require_once($CFG->dirroot . '/mod/coursework/renderer.php');
  */
 #[AllowDynamicProperties]
 class plagiarism_flagging_controller extends controller_base {
+    public function __construct($params = []) {
+        global $DB;
+
+        if (!empty($params['flagid'])) {
+            $plagiarismflag = $DB->get_record(
+                'coursework_plagiarism_flags',
+                ['id' => $params['flagid']],
+                '*',
+                MUST_EXIST
+            );
+            $this->flag = new plagiarism_flag($plagiarismflag);
+            $params['courseworkid'] = $this->flag->get_coursework()->id;
+        }
+
+        if (!empty($params['submissionid'])) {
+            $submission = $DB->get_record(
+                'coursework_submissions',
+                ['id' => $params['submissionid']],
+                '*',
+                MUST_EXIST
+            );
+            $this->submission = submission::find($submission);
+            $params['courseworkid'] = $this->submission->courseworkid;
+        }
+
+        if (!empty($params['moderationid'])) {
+            $moderation = $DB->get_record(
+                'coursework_mod_agreements',
+                ['id' => $params['moderationid']],
+                '*',
+                MUST_EXIST
+            );
+            $this->moderation = moderation::find($moderation);
+            $params['courseworkid'] = $this->moderation->get_coursework()->id;
+        }
+
+        parent::__construct($params);
+    }
+
     /**
      * This deals with the page that the assessors see when they want to add component feedbacks.
      *
@@ -171,47 +210,5 @@ class plagiarism_flagging_controller extends controller_base {
         $plagiarismflag->save();
 
         redirect($courseworkpageurl);
-    }
-
-    /**
-     * Get any plagiarism flag-specific stuff.
-     */
-    public function __construct($params) {
-        global $DB;
-
-        if (!empty($params['flagid'])) {
-            $plagiarismflag = $DB->get_record(
-                'coursework_plagiarism_flags',
-                ['id' => $params['flagid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->flag = new plagiarism_flag($plagiarismflag);
-            $params['courseworkid'] = $this->flag->get_coursework()->id;
-        }
-
-        if (!empty($params['submissionid'])) {
-            $submission = $DB->get_record(
-                'coursework_submissions',
-                ['id' => $params['submissionid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->submission = submission::find($submission);
-            $params['courseworkid'] = $this->submission->courseworkid;
-        }
-
-        if (!empty($params['moderationid'])) {
-            $moderation = $DB->get_record(
-                'coursework_mod_agreements',
-                ['id' => $params['moderationid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->moderation = moderation::find($moderation);
-            $params['courseworkid'] = $this->moderation->get_coursework()->id;
-        }
-
-        parent::__construct($params);
     }
 }

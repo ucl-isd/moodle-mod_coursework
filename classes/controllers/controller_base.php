@@ -156,10 +156,16 @@ abstract class controller_base {
         }
     }
 
+    /**
+     * @return stdClass
+     */
     public function get_course() {
         return $this->course;
     }
 
+    /**
+     * @return stdClass
+     */
     public function get_coursemodule() {
         return $this->coursemodule;
     }

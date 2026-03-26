@@ -35,7 +35,6 @@ use mod_coursework\mailer;
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
 use moodle_url;
-use unauthorized_access_exception;
 
 /**
  * Class submissions_controller
@@ -46,6 +45,21 @@ class submissions_controller extends controller_base {
      * @var submission
      */
     protected $submission;
+
+    public function __construct($params = []) {
+        if (!empty($params['submissionid'])) {
+            $this->submission = submission::find($params['submissionid']);
+            $this->coursework = $this->submission->get_coursework();
+        }
+        if (
+            !empty($params['allocatabletype'])
+            &&
+            !in_array($params['allocatabletype'], ['user', 'group'])
+        ) {
+            throw new moodle_exception('Invalid allocatabletype');
+        }
+        parent::__construct($params);
+    }
 
     /**
      * Shared logic for rendering the submission page (new or edit).
@@ -372,21 +386,6 @@ class submissions_controller extends controller_base {
             );
             redirect($setpersonaldeadlinepageurl);
         }
-    }
-
-    public function __construct($params = []) {
-        if (!empty($params['submissionid'])) {
-            $this->submission = submission::find($params['submissionid']);
-            $this->coursework = $this->submission->get_coursework();
-        }
-        if (
-            !empty($params['allocatabletype'])
-            &&
-            !in_array($params['allocatabletype'], ['user', 'group'])
-        ) {
-            throw new moodle_exception('Invalid allocatabletype');
-        }
-        parent::__construct($params);
     }
 
     /**

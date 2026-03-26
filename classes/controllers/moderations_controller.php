@@ -57,6 +57,45 @@ class moderations_controller extends controller_base {
      */
     protected $feedback;
 
+    public function __construct($params = []) {
+        global $DB;
+
+        if (!empty($params['feedbackid'])) {
+            $feedback = $DB->get_record(
+                'coursework_feedbacks',
+                ['id' => $params['feedbackid']],
+                '*',
+                MUST_EXIST
+            );
+            $this->feedback = new feedback($feedback);
+            $params['courseworkid'] = $this->feedback->get_coursework()->id;
+        }
+
+        if (!empty($params['submissionid'])) {
+            $submission = $DB->get_record(
+                'coursework_submissions',
+                ['id' => $params['submissionid']],
+                '*',
+                MUST_EXIST
+            );
+            $this->submission = submission::find($submission);
+            $params['courseworkid'] = $this->submission->courseworkid;
+        }
+
+        if (!empty($params['moderationid'])) {
+            $moderation = $DB->get_record(
+                'coursework_mod_agreements',
+                ['id' => $params['moderationid']],
+                '*',
+                MUST_EXIST
+            );
+            $this->moderation = moderation::find($moderation);
+            $params['courseworkid'] = $this->moderation->get_coursework()->id;
+        }
+
+        parent::__construct($params);
+    }
+
     /**
      * This deals with the page that the assessors see when they want to add component feedbacks.
      *
@@ -204,48 +243,6 @@ class moderations_controller extends controller_base {
 
         $renderer = $this->get_page_renderer();
         $renderer->show_moderation_page($moderation);
-    }
-
-    /**
-     * Get any feedback-specific stuff.
-     */
-    public function __construct($params) {
-        global $DB;
-
-        if (!empty($params['feedbackid'])) {
-            $feedback = $DB->get_record(
-                'coursework_feedbacks',
-                ['id' => $params['feedbackid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->feedback = new feedback($feedback);
-            $params['courseworkid'] = $this->feedback->get_coursework()->id;
-        }
-
-        if (!empty($params['submissionid'])) {
-            $submission = $DB->get_record(
-                'coursework_submissions',
-                ['id' => $params['submissionid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->submission = submission::find($submission);
-            $params['courseworkid'] = $this->submission->courseworkid;
-        }
-
-        if (!empty($params['moderationid'])) {
-            $moderation = $DB->get_record(
-                'coursework_mod_agreements',
-                ['id' => $params['moderationid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->moderation = moderation::find($moderation);
-            $params['courseworkid'] = $this->moderation->get_coursework()->id;
-        }
-
-        parent::__construct($params);
     }
 
     /**

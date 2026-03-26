@@ -96,7 +96,7 @@ class deadline_extensions_controller extends controller_base {
         $createurl = $this->get_router()->get_path('create deadline extension');
         $courseworkid = required_param('courseworkid', PARAM_INT);
         $this->coursework = coursework::find($courseworkid) ?? null;
-        $allocatabletype = required_param('allocatabletype', PARAM_TEXT);
+        $allocatabletype = required_param('allocatabletype', PARAM_ALPHANUMEXT);
         $allocatableid = required_param('allocatableid', PARAM_INT);
         $classname = "\\mod_coursework\\models\\$allocatabletype";
         $allocatable = $classname::find($allocatableid);

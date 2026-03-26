@@ -55,6 +55,45 @@ class feedback_controller extends controller_base {
      */
     protected $feedback;
 
+    /**
+     * Get any feedback-specific stuff.
+     */
+    public function __construct($params = []) {
+        global $DB;
+
+        if (!empty($params['feedbackid'])) {
+            $feedback = $DB->get_record(
+                'coursework_feedbacks',
+                ['id' => $params['feedbackid']],
+                '*',
+                MUST_EXIST
+            );
+            $this->feedback = new feedback($feedback);
+            $params['courseworkid'] = $this->feedback->get_coursework()->id;
+        }
+
+        if (!empty($params['submissionid'])) {
+            $submission = $DB->get_record(
+                'coursework_submissions',
+                ['id' => $params['submissionid']],
+                '*',
+                MUST_EXIST
+            );
+            $this->submission = submission::find($submission);
+            $params['courseworkid'] = $this->submission->courseworkid;
+        }
+
+        if (!array_key_exists('isfinalgrade', $params)) {
+            $params['isfinalgrade'] = 0;
+        }
+
+        if (!array_key_exists('ismoderation', $params)) {
+            $params['ismoderation'] = 0;
+        }
+
+        parent::__construct($params);
+    }
+
     public function show_feedback() {
         global $PAGE, $USER;
         $urlparams = ['feedbackid' => $this->params['feedbackid']];
@@ -372,45 +411,6 @@ class feedback_controller extends controller_base {
             $renderer->edit_feedback_page($teacherfeedback, $form);
             die();
         }
-    }
-
-    /**
-     * Get any feedback-specific stuff.
-     */
-    public function __construct($params) {
-        global $DB;
-
-        if (!empty($params['feedbackid'])) {
-            $feedback = $DB->get_record(
-                'coursework_feedbacks',
-                ['id' => $params['feedbackid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->feedback = new feedback($feedback);
-            $params['courseworkid'] = $this->feedback->get_coursework()->id;
-        }
-
-        if (!empty($params['submissionid'])) {
-            $submission = $DB->get_record(
-                'coursework_submissions',
-                ['id' => $params['submissionid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->submission = submission::find($submission);
-            $params['courseworkid'] = $this->submission->courseworkid;
-        }
-
-        if (!array_key_exists('isfinalgrade', $params)) {
-            $params['isfinalgrade'] = 0;
-        }
-
-        if (!array_key_exists('ismoderation', $params)) {
-            $params['ismoderation'] = 0;
-        }
-
-        parent::__construct($params);
     }
 
     /**

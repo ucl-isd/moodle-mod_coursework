@@ -31,7 +31,7 @@ global $USER;
 $params = [
     'courseworkid' => required_param('courseworkid', PARAM_INT),
     'allocatableid' => optional_param('allocatableid', $USER->id, PARAM_INT),
-    'allocatabletype' => optional_param('allocatabletype', 'user', PARAM_TEXT),
+    'allocatabletype' => optional_param('allocatabletype', 'user', PARAM_ALPHANUMEXT),
 ];
 $controller = new mod_coursework\controllers\submissions_controller($params);
 require_login($controller->get_course(), false, $controller->get_coursemodule());
