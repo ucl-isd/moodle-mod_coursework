@@ -1,0 +1,71 @@
+{{!
+    This file is part the Feedback tracker report plugin for Moodle
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coursework/feedback
+
+    Template for displaying student feedback.
+
+    Example context (json):
+    {
+        "allocatablename": "Jan Černý",
+        "moderaterimg": "https://randomuser.me/api/portraits/women/22.jpg",
+        "modcomment": "<div><p>This is the feedback</p></div>",
+        "moderatedby": "Denise Soto"
+        "date": "17778792",
+        "modcomment": "<div>I agree with your markl</div>",
+        "agreement": "Agree",
+    }
+}}
+
+<div class="coursework-feedback animate-enter">
+    <h3>{{#str}} moderationfor, mod_coursework, {{{allocatablename}}} {{/str}}</h3>
+
+    <div class="py-3">
+        <div class="d-flex align-items-center">
+            {{#moderaterimg}}
+                <div class="mr-2 bg-cover bg-light rounded-circle flex-shrink-0"
+                     style="background-image: url('{{moderaterimg}}'); height: 2rem; width: 2rem;"></div>
+            {{/moderaterimg}}
+            <div>
+                {{moderatedby}}
+                <div class="small text-muted">
+                    {{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-bubble-bordered">
+            {{! Feedback comment. }}
+            {{#modcomment}}
+                <div class="small text-muted">
+                    {{#str}} comment, mod_coursework {{/str}}
+                </div>
+                <div id="behat-final-feedback-comment">
+                    {{{.}}}
+                </div>
+            {{/modcomment}}
+
+            <hr>
+
+            <div>
+                <div>{{#str}} moderationagreement, mod_coursework {{/str}}</div>
+                <div class="h4" id="behat-final-feedback-grade">
+                    {{agreement}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

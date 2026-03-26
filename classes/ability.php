@@ -136,6 +136,7 @@ class ability extends framework\ability {
 
         // Show moderation
         $this->allow_show_moderation_if_user_can_view_grades_at_all_times();
+        $this->allow_show_moderation_if_original_assessor();
 
         // Feedback rules
 
@@ -741,6 +742,17 @@ class ability extends framework\ability {
                     $moderation->get_coursework()
                         ->get_context()
                 );
+            }
+        );
+    }
+
+    protected function allow_show_moderation_if_original_assessor() {
+        $this->allow(
+            'show',
+            'mod_coursework\models\moderation',
+            function (moderation $moderation) {
+                global $USER;
+                return $moderation->get_feedback()->assessorid == $USER->id;
             }
         );
     }
