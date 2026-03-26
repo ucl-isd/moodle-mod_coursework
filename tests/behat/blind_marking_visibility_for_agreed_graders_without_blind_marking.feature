@@ -45,7 +45,7 @@ Feature: visibility of agreed graders without blind marking
     Then I click on "67" "link" in the "student student1" "table_row"
     And I should see "New comment here"
 
-  Scenario: agreed graders can not view the feedback of the other assessors when draft
+  Scenario: agreed graders cannot view the feedback of the other assessors when draft
     Given the following "mod_coursework > feedbacks" exist:
       | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  | finalised |
       | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here | 0         |

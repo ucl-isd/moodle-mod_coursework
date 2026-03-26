@@ -117,7 +117,7 @@ class import extends grading_sheet {
 
                     if (defined('BEHAT_SITE_RUNNING') && empty($submissionid)) {
                         // Import process relies on submissionid and a hash of the username.
-                        // These can never be stable under behat so we're reverse engingeering them
+                        // These can never be stable under behat so we're reverse engineering them
                         // by looking stuff up.
                         // BUILD TESTABLE CODE!!!
 
@@ -330,7 +330,7 @@ class import extends grading_sheet {
 
                 if (defined('BEHAT_SITE_RUNNING') && empty($submissionid)) {
                     // Import process relies on submissionid and a hash of the username.
-                    // These can never be stable under behat so we're reverse engingeering them
+                    // These can never be stable under behat so we're reverse engineering them
                     // by looking stuff up.
                     // BUILD TESTABLE CODE!!!
 

@@ -116,7 +116,7 @@ class mod_coursework_generator extends testing_module_generator {
     /**
      * Makes an allocation in the DB so we can then test with it.
      *
-     * @param stdClass $allocation
+     * @param stdClass|array $allocation
      * @return stdClass
      * @throws coding_exception
      */
@@ -154,10 +154,10 @@ class mod_coursework_generator extends testing_module_generator {
     public function create_deadline_extension($deadlineextension) {
         $deadlineextension = (object)$deadlineextension;
 
-        if (empty($deadlineextension->allocatableid) || !is_numeric($deadlineextension->allocatableid)) {
+        if (!is_numeric($deadlineextension->allocatableid ?? null)) {
             throw new coding_exception('Coursework generator needs an allocatableid for a new allocation');
         }
-        if (empty($deadlineextension->courseworkid) || !is_numeric($deadlineextension->courseworkid)) {
+        if (!is_numeric($deadlineextension->courseworkid ?? null)) {
             throw new coding_exception('Coursework generator needs a courseworkid for a new allocation');
         }
 
@@ -227,8 +227,7 @@ class mod_coursework_generator extends testing_module_generator {
             $feedback->finalised = 1;
         }
 
-        $feedback = \mod_coursework\models\feedback::create($feedback);
-
+        $feedback = feedback::create($feedback);
         $feedback->save();
 
         return $feedback;

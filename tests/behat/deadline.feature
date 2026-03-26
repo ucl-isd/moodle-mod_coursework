@@ -2,7 +2,7 @@
 Feature: Deadlines extensions for submissions
 
   As a manager
-  I can add allow students to submit after the deadline
+  I can allow students to submit after the deadline
   So that late work can still be given a grade
 
   Background:
