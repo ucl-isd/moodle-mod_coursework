@@ -26,7 +26,7 @@ Feature: Multiple assessors simple grading form
     And I set the field "Mark" to "52"
     And I set the field "Comment" to "Some new comment 3"
     And I click on "Save and finalise" "button"
-    And I should see "Changes saved"
+    And I should see "Feedback saved" in the "student1" "table_row"
     And I visit the edit feedback page
     And the field "Mark" matches value "52"
     And the field "Comment" matches value "Some new comment 3"
@@ -41,7 +41,7 @@ Feature: Multiple assessors simple grading form
     When I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I set the field "Mark" to "52"
     And I press "Save and finalise"
-    And I should see "Changes saved"
+    And I should see "Feedback saved" in the "student1" "table_row"
     And I visit the coursework page
     And I click the edit feedback button
     Then I should see "1" elements in "Upload a file" filemanager
@@ -73,7 +73,7 @@ Feature: Multiple assessors simple grading form
     When I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I set the field "Mark" to "52"
     And I press "Save and finalise"
-    And I should see "Changes saved"
+    And I should see "Feedback saved" in the "student1" "table_row"
     And I visit the coursework page
     And I click the edit feedback button
     And I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
@@ -95,8 +95,7 @@ Feature: Multiple assessors simple grading form
     And I visit the coursework page
     And I click on "Add mark" "link" in the "Submissions table" "table"
     When I grade the submission as 56 using the simple form with comment "A test comment 9"
-    And I visit the coursework page
-    Then I should see the grade on the page
+    Then I should see "Feedback saved" in the "student1" "table_row"
 
   Scenario: Teachers do not see the agree marking button unless they have the specific permission awarded
     Given there is a teacher
@@ -108,7 +107,7 @@ Feature: Multiple assessors simple grading form
     And I follow "Add mark"
     And I set the field "Mark" to "59"
     And I press "Save and finalise"
-    And I should see "Changes saved"
+    And I should see "Feedback saved" in the "student1" "table_row"
     And I visit the coursework page
     # Cannot see agree marking until specific capability awarded.
     Then I should not see "Agree marking"
@@ -121,7 +120,8 @@ Feature: Multiple assessors simple grading form
     And I set the field "Mark" to "71.1"
     And I press "Save and finalise"
     And I visit the coursework page
-    And I should see "71.1"
+    And I should see "Feedback saved" in the "student1" "table_row"
+    And I should see "71.1" in the "student1" "table_row"
 
   Scenario: As a teacher I should not be able to see who else is grading a submission until all grades are in added to it if viewinitialgradeenabled is no
     Given the coursework "viewinitialgradeenabled" setting is "0" in the database

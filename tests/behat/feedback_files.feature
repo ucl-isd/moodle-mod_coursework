@@ -32,7 +32,7 @@ Feature: Adding feedback files
     When I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
     And I set the field "Mark" to "52"
     And I press "Save and finalise"
-    And I should see "Changes saved"
+    And I should see "Feedback saved"
     And I visit the coursework page
     And I follow "Release the marks"
     And I press "Confirm"

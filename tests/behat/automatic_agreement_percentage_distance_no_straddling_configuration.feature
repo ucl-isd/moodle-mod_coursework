@@ -13,7 +13,7 @@ Feature: Configure grade boundaries for automatic agreement of grades
     0|49.99
     """
     And I press "Save changes"
-    And I should see "Changes saved"
+    And I should see "Feedback saved"
     And I set the field "Average grade (no straddling class boundaries)" to multiline:
     """
     50A|100
@@ -32,7 +32,7 @@ Feature: Configure grade boundaries for automatic agreement of grades
     0.00|0.99
     """
     And I press "Save changes"
-    And I should see "Changes saved"
+    And I should see "Feedback saved"
     # Non-contiguous ranges rejected
     And I set the field "Average grade (no straddling class boundaries)" to multiline:
     """
