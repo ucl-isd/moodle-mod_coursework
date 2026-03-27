@@ -366,6 +366,7 @@ class marking_cell_data extends cell_data_base {
 
         $submission = $rowsbase->get_submission();
         $moderationstage = $this->coursework->get_moderator_marking_stage();
+        $firstfeedback = $rowsbase->get_single_feedback();
 
         // Existing moderation.
         if ($moderation = $moderationstage->get_moderation($submission)) {
@@ -373,7 +374,7 @@ class marking_cell_data extends cell_data_base {
             if (
                 !$canseeallgrades
                 &&
-                !$rowsbase->get_single_feedback()->lasteditedbyuser == $USER->id
+                $firstfeedback->lasteditedbyuser == $USER->id
             ) {
                 return null; // Exit: Cannot view moderation data.
             }
@@ -397,13 +398,7 @@ class marking_cell_data extends cell_data_base {
             }
 
             return (object)['mark' => $markdata];
-        } else {
-            // New moderation.
-            $firstfeedback = $moderationstage->get_single_feedback($submission);
-            if (!$firstfeedback || !$firstfeedback->finalised) {
-                return null; // No feedback to moderate.
-            }
-
+        } else if (!empty($firstfeedback->finalised)) {
             $newmoderation = moderation::build(['feedbackid' => $firstfeedback->id]);
 
             // Convoluted url builder.
@@ -414,9 +409,9 @@ class marking_cell_data extends cell_data_base {
                     'feedbackid' => $firstfeedback->id,
                     'assessor' => core_user::get_user($USER->id),
                 ])];
-            } else {
-                return null;
             }
         }
+
+        return null;
     }
 }
