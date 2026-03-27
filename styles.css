@@ -293,8 +293,8 @@ Coursework.
         width: 100%;
     }
 
-    /* Plagiarism in table submissions col. */
-    .mod-coursework-submissions-submission-col .core_plagiarism_links {
+    /* Plagiarism links. */
+    .mod-coursework-submission .core_plagiarism_links {
         display: block;
         padding: .5rem;
         margin-top: .5rem;
