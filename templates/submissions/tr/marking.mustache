@@ -192,9 +192,9 @@
                         <span>{{{markvalue}}}</span>
                     {{/url}}
                 {{/mark}}
-                {{#addmoderation}}
-                    <a class="btn btn-sm btn-success" href="{{{url}}}" data-behat-mark-action="addmoderation">{{#str}} agree_marking, mod_coursework {{/str}}</a>
-                {{/addmoderation}}
+                {{#addmoderationurl}}
+                    <a class="btn btn-sm btn-success" href="{{{addmoderationurl}}}" data-behat-mark-action="addmoderation">{{#str}} agree_marking, mod_coursework {{/str}}</a>
+                {{/addmoderationurl}}
             </div>
         </li>
     {{/moderation}}
