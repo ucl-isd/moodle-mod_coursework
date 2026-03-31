@@ -191,10 +191,8 @@ class marking_cell_data extends cell_data_base {
                 $showstatus = (!empty($moderation) && $moderation->agreement === 'agreed');
             }
 
-            if ($showstatus) {
-                $marker->released = $submission->is_published();
-                $marker->readyforrelease = !$marker->released && $submission->ready_to_publish();
-            }
+            $marker->released = $showstatus && $submission->is_published();
+            $marker->readyforrelease = $showstatus && !$marker->released && $submission->ready_to_publish();
         }
 
         // Actions - show, edit.

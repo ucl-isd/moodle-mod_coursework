@@ -41,6 +41,8 @@ Feature: View moderation feedback
     Then I should see "Blah"
 
     When I am on the "Coursework" "coursework activity" page
+    And I should not see "Released" in the table row containing "John1"
+    And I should not see "Ready for release" in the table row containing "John1"
     And I click on "Agree marking" "link"
     Then I should see "teacher teacher1" in the "[data-behat-markstage=\"assessor_1\"]" "css_element"
     And I should see "58" in the "[data-behat-markstage=\"assessor_1\"]" "css_element"
@@ -53,8 +55,17 @@ Feature: View moderation feedback
     Then I should see "Moderation" in the table row containing "John1"
     And I should see "Agreed" in the table row containing "John1"
     And I should not see "Disagreed" in the table row containing "John1"
+    And I should not see "Released" in the table row containing "John1"
+    And I should see "Ready for release" in the table row containing "John1"
 
     When I click on "Agreed" "text" in the "John1" "table_row"
     Then I should see "Moderation for John1 student1"
     And I should see "Agreed"
     And I should see "Moderator explaining agreement"
+
+    Given I am on the "Coursework" "coursework activity" page logged in as "admin"
+    And I should not see "Released" in the table row containing "John1"
+    And I should see "Ready for release" in the table row containing "John1"
+    And I follow "Release the marks"
+    And I should see "Released" in the table row containing "John1"
+    And I should not see "Ready for release" in the table row containing "John1"
