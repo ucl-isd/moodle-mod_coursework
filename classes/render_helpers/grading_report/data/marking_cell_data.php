@@ -76,7 +76,7 @@ class marking_cell_data extends cell_data_base {
             $rowdata->agreedmark = $this->get_final_feedback_data($rowsbase);
         }
 
-        if ($this->coursework->moderation_enabled() && $submission) {
+        if ($this->coursework->moderation_agreement_enabled() && $submission) {
             $rowdata->moderation = $this->get_moderation_data($rowsbase);
         }
 
@@ -86,7 +86,8 @@ class marking_cell_data extends cell_data_base {
             $tablerows,
             function ($row) {
                 return $row->get_feedback() && !$row->get_feedback()->is_agreed_grade();
-            }));
+            }
+        ));
         $rowdata->hasallinitialfeedbacks = $rowdata->countinitialfeedbacks >= $this->coursework->get_max_markers();
 
         $markernumber = 1;
@@ -203,20 +204,6 @@ class marking_cell_data extends cell_data_base {
             // User cannot see the mark.
             $marker->markhidden = true;
         }
-    }
-
-    /**
-     * Get marker data for both single and multiple marker scenarios.
-     *
-     * @param assessor_feedback_row[] $tablerows Each TR row in the table
-     * @param grading_table_row_base $rowsbase Row base object containing general data
-     * @param bool $ismultiple Whether this is for multiple markers
-     * @return stdClass
-     * @throws coding_exception
-     * @throws dml_exception
-     */
-    protected function get_marker_data(array $tablerows, grading_table_row_base $rowsbase, bool $ismultiple = false): stdClass {
-
     }
 
     /**
@@ -374,7 +361,7 @@ class marking_cell_data extends cell_data_base {
             if (
                 !$canseeallgrades
                 &&
-                $firstfeedback->lasteditedbyuser == $USER->id
+                $firstfeedback->lasteditedbyuser !== $USER->id
             ) {
                 return null; // Exit: Cannot view moderation data.
             }
