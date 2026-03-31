@@ -169,7 +169,9 @@ class marking_cell_data extends cell_data_base {
     private function process_feedback_data(stdClass $marker, feedback $feedback, grading_table_row_base $rowsbase, assessor_feedback_row $row): void {
         // Get feedback mark.
 
-        $canshow = $feedback->can_show($this->coursework, $rowsbase->get_submission());
+        $submission = $rowsbase->get_submission();
+
+        $canshow = $feedback->can_show($this->coursework, $submission);
         $marker->mark = $this->get_mark_for_feedback($feedback, $canshow);
         // Return early if no marking.
         if (!isset($marker->mark) || ($marker->mark === '')) {
@@ -187,7 +189,7 @@ class marking_cell_data extends cell_data_base {
         if ($canshow) {
             $action = 'show';
         }
-        if ($feedback->can_edit($this->coursework, $rowsbase->get_submission())) {
+        if ($feedback->can_edit($this->coursework, $submission)) {
             $action = 'edit';
             $marker->feedbackid = $feedback->id;
         }
@@ -196,7 +198,7 @@ class marking_cell_data extends cell_data_base {
         if ($action) {
             $marker->markurl = $this->get_mark_url(
                 $action,
-                $rowsbase->get_submission(),
+                $submission,
                 $row->get_stage(),
                 $feedback
             );
