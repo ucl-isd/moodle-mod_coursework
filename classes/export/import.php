@@ -89,7 +89,15 @@ class import extends grading_sheet {
             $submissionid = false;
 
             // if the csv headers count is different than expected return error
-            if ((!$this->coursework->is_using_rubric() && count($line) != count($cells)) || ($this->coursework->is_using_rubric() && !$this->rubric_count_correct($cells, $line))) {
+            if (!$this->coursework->is_using_rubric()) {
+                $headercount = count($cells);
+                $linecount  = count($line);
+                if ($headercount != $linecount) {
+                    debugging("Unexpected number cells ($linecount) versus header ($headercount) " . json_encode($line) . " | " . json_encode($cells), DEBUG_DEVELOPER);
+                    $errors = get_string('incorrectfileformat', 'coursework');
+                    break;
+                }
+            } else if (!$this->rubric_count_correct($cells, $line)) {
                 $errors = get_string('incorrectfileformat', 'coursework');
                 break;
             }

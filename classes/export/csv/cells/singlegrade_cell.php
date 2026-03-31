@@ -86,7 +86,11 @@ class singlegrade_cell extends cell_base {
         ) {
             $errormsg = '';
 
-            if (!empty($value) && !$this->coursework->is_using_rubric()) {
+            if (!$this->coursework->is_using_rubric()) {
+                if (empty($value)) {
+                    // Value is allowed to be empty.
+                    return true;
+                }
                 $gradejudge = new grade_judge($this->coursework);
                 if (!$gradejudge->grade_in_scale($value)) {
                     $errormsg = get_string('valuenotincourseworkscale', 'coursework');
