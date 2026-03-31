@@ -185,7 +185,7 @@ class moderations_controller extends controller_base {
             '/mod/coursework/view.php', ['id' => $coursework->get_coursemodule_id()], "submission-" . $submission->id()
         );
         if ($form->is_cancelled()) {
-            grading_report_renderer::add_notification(
+            grading_report_renderer::add_row_notification(
                 $coursework->id(),
                 $submission->id(),
                 get_string('cancelled'),
@@ -199,7 +199,7 @@ class moderations_controller extends controller_base {
         if ($data) {
             $moderatoragreement = $form->process_data($moderatoragreement);
             $moderatoragreement->save();
-            grading_report_renderer::add_notification(
+            grading_report_renderer::add_row_notification(
                 $coursework->id(),
                 $submission->id(),
                 get_string('changessaved'),
@@ -233,7 +233,7 @@ class moderations_controller extends controller_base {
             '/mod/coursework/view.php', ['id' => $coursework->get_coursemodule_id()], "submission-" . $submission->id()
         );
         if ($form->is_cancelled()) {
-            grading_report_renderer::add_notification(
+            grading_report_renderer::add_row_notification(
                 $coursework->id(),
                 $submission->id(),
                 get_string('cancelled'),
@@ -242,7 +242,7 @@ class moderations_controller extends controller_base {
         } else {
             $moderatoragreement = $form->process_data($moderatoragreement);
             $moderatoragreement->save();
-            grading_report_renderer::add_notification(
+            grading_report_renderer::add_row_notification(
                 $coursework->id(),
                 $moderatoragreement->get_submission()->id(),
                 get_string('changessaved'),

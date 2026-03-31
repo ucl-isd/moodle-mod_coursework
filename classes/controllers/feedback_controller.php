@@ -299,7 +299,7 @@ class feedback_controller extends controller_base {
             "submission-" . $submission->id()
         );
         if ($form->is_cancelled()) {
-            grading_report_renderer::add_notification(
+            grading_report_renderer::add_row_notification(
                 $coursework->id(),
                 $submission->id(),
                 get_string('cancelled'),
@@ -329,7 +329,7 @@ class feedback_controller extends controller_base {
 
             $this->try_auto_feedback_creation($teacherfeedback->get_submission());
 
-            grading_report_renderer::add_notification(
+            grading_report_renderer::add_row_notification(
                 $coursework->id(),
                 $submission->id(),
                 get_string('feedbacksaved', 'coursework'),
@@ -397,7 +397,7 @@ class feedback_controller extends controller_base {
                     $teacherfeedback->id()
                 );
 
-                grading_report_renderer::add_notification(
+                grading_report_renderer::add_row_notification(
                     $coursework->id(),
                     $submission->id(),
                     get_string('feedbackdeleted', 'coursework'),
@@ -420,7 +420,7 @@ class feedback_controller extends controller_base {
             "submission-" . $submission->id()
         );
         if ($form->is_cancelled()) {
-            grading_report_renderer::add_notification(
+            grading_report_renderer::add_row_notification(
                 $coursework->id(),
                 $submission->id(),
                 get_string('cancelled'),
@@ -442,7 +442,7 @@ class feedback_controller extends controller_base {
                 $this->coursework->grade_changed_event();
                 $teacherfeedback->get_submission()->publish();
             }
-            grading_report_renderer::add_notification(
+            grading_report_renderer::add_row_notification(
                 $coursework->id(),
                 $submission->id(),
                 get_string('feedbacksaved', 'coursework'),

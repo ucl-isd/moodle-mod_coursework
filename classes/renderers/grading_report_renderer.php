@@ -87,7 +87,7 @@ class grading_report_renderer extends plugin_renderer_base {
         $template->tr = [];
         $markersarray = []; // Collect list of allocated markers while we are iterating.
 
-        $notifications = self::get_notifications($coursework->id());
+        $notifications = self::get_row_notifications($coursework->id());
 
         foreach ($tablerows as $index => $rowobject) {
             $trdata = $this->get_table_row_data($coursework, $rowobject);
@@ -422,7 +422,7 @@ class grading_report_renderer extends plugin_renderer_base {
      * @param int $lifetimeseconds
      * @return void
      */
-    public static function add_notification(
+    public static function add_row_notification(
         int $courseworkid,
         int $submissionid,
         string $notification,
@@ -430,7 +430,7 @@ class grading_report_renderer extends plugin_renderer_base {
         int $lifetimeseconds = 10
     ): void {
         global $SESSION;
-        $key = self::get_notifications_session_key($courseworkid);
+        $key = self::get_row_notifications_session_key($courseworkid);
         if (!isset($SESSION->$key)) {
             $SESSION->$key = [];
         }
@@ -450,9 +450,9 @@ class grading_report_renderer extends plugin_renderer_base {
      * @param int $courseworkid
      * @return array
      */
-    public static function get_notifications(int $courseworkid): array {
+    public static function get_row_notifications(int $courseworkid): array {
         global $SESSION;
-        $key = self::get_notifications_session_key($courseworkid);
+        $key = self::get_row_notifications_session_key($courseworkid);
         $rows = $SESSION->$key ?? [];
         foreach ($rows as $rowindex => $row) {
             foreach ($row as $notifindex => $notif) {
@@ -472,7 +472,7 @@ class grading_report_renderer extends plugin_renderer_base {
      * @param int $courseworkid
      * @return string
      */
-    public static function get_notifications_session_key(int $courseworkid): string {
+    public static function get_row_notifications_session_key(int $courseworkid): string {
         return "coursework_grade_row_notifs_$courseworkid";
     }
 }
