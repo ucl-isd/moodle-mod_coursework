@@ -182,7 +182,9 @@ class moderations_controller extends controller_base {
         $form = new moderator_agreement_mform(null, ['moderation' => $moderatoragreement]);
         $coursework = $moderatoragreement->get_coursework();
         $courseworkpageurl = new moodle_url(
-            '/mod/coursework/view.php', ['id' => $coursework->get_coursemodule_id()], "submission-" . $submission->id()
+            '/mod/coursework/view.php',
+            ['id' => $coursework->get_coursemodule_id()],
+            "submission-" . $submission->id()
         );
         if ($form->is_cancelled()) {
             grading_report_renderer::add_row_notification(
@@ -230,7 +232,9 @@ class moderations_controller extends controller_base {
         $coursework = $moderatoragreement->get_coursework();
         $submission = $moderatoragreement->get_submission();
         $courseworkpageurl = new moodle_url(
-            '/mod/coursework/view.php', ['id' => $coursework->get_coursemodule_id()], "submission-" . $submission->id()
+            '/mod/coursework/view.php',
+            ['id' => $coursework->get_coursemodule_id()],
+            "submission-" . $submission->id()
         );
         if ($form->is_cancelled()) {
             grading_report_renderer::add_row_notification(
