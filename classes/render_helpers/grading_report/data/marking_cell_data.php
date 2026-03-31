@@ -181,8 +181,21 @@ class marking_cell_data extends cell_data_base {
 
         // Marker template data.
         $marker->draft = !$feedback->finalised;
-        $marker->readyforrelease = $rowsbase->get_submission()->ready_to_publish();
         $marker->timemodified = $feedback->timemodified;
+
+        if ($submission->persisted() && !$this->coursework->has_multiple_markers()) {
+            $showstatus = true;
+
+            if ($this->coursework->moderation_agreement_enabled()) {
+                $moderation = $this->coursework->get_moderator_marking_stage()->get_moderation($submission);
+                $showstatus = (!empty($moderation) && $moderation->agreement === 'agreed');
+            }
+
+            if ($showstatus) {
+                $marker->released = $submission->is_published();
+                $marker->readyforrelease = !$marker->released && $submission->ready_to_publish();
+            }
+        }
 
         // Actions - show, edit.
         $action = null;
@@ -361,32 +374,28 @@ class marking_cell_data extends cell_data_base {
         if ($moderation = $moderationstage->get_moderation($submission)) {
             $canseeallgrades = $this->ability->can('show', $moderation);
             if (
-                !$canseeallgrades
-                &&
-                $firstfeedback->lasteditedbyuser !== $USER->id
+                $canseeallgrades
+                ||
+                $firstfeedback->lasteditedbyuser == $USER->id
             ) {
-                return null; // Exit: Cannot view moderation data.
-            }
+                $markdata = new stdClass();
+                $markdata->agreedmarkvalue = get_string($moderation->agreement, 'coursework');
 
-            // Mark data.
-            $markdata = new stdClass();
-            $markdata->markvalue = get_string($moderation->agreement, 'coursework');
-            $markdata->readyforrelease = $moderation->agreement === 'agreed' && !$submission->is_published();
-
-            if ($moderation->timemodified) {
-                $markdata->moderatorname = $moderation->moderator()->name();
-                $markdata->timemodified = $moderation->timemodified;
-            }
-
-            if ($canseeallgrades) {
-                if (!$submission->is_published() && $this->ability->can('edit', $moderation)) {
-                    $markdata->url = router::instance()->get_path('edit moderation', ['moderation' => $moderation]);
-                } else {
-                    $markdata->url = router::instance()->get_path('show moderation', ['moderation' => $moderation]);
+                if ($moderation->timemodified) {
+                    $markdata->moderatorname = $moderation->moderator()->name();
+                    $markdata->moderationdate = $moderation->timemodified;
                 }
-            }
 
-            return (object)['mark' => $markdata];
+                if ($canseeallgrades) {
+                    if (!$submission->is_published() && $this->ability->can('edit', $moderation)) {
+                        $markdata->moderationurl = router::instance()->get_path('edit moderation', ['moderation' => $moderation]);
+                    } else {
+                        $markdata->moderationurl = router::instance()->get_path('show moderation', ['moderation' => $moderation]);
+                    }
+                }
+
+                return $markdata;
+            }
         } else if (!empty($firstfeedback->finalised)) {
             $newmoderation = moderation::build(['feedbackid' => $firstfeedback->id]);
 
