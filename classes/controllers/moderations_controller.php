@@ -30,7 +30,9 @@ use mod_coursework\forms\moderator_agreement_mform;
 use mod_coursework\models\feedback;
 use mod_coursework\models\moderation;
 use mod_coursework\models\submission;
+use mod_coursework\renderers\grading_report_renderer;
 use moodle_exception;
+use moodle_url;
 
 defined('MOODLE_INTERNAL' || die());
 
@@ -178,9 +180,17 @@ class moderations_controller extends controller_base {
         $ability->require_can('new', $moderatoragreement);
 
         $form = new moderator_agreement_mform(null, ['moderation' => $moderatoragreement]);
-
-        $courseworkpageurl = $this->get_path('coursework', ['coursework' => $moderatoragreement->get_coursework()]);
+        $coursework = $moderatoragreement->get_coursework();
+        $courseworkpageurl = new moodle_url(
+            '/mod/coursework/view.php', ['id' => $coursework->get_coursemodule_id()], "submission-" . $submission->id()
+        );
         if ($form->is_cancelled()) {
+            grading_report_renderer::add_notification(
+                $coursework->id(),
+                $submission->id(),
+                get_string('cancelled'),
+                \core\notification::INFO
+            );
             redirect($courseworkpageurl);
         }
 
@@ -189,7 +199,12 @@ class moderations_controller extends controller_base {
         if ($data) {
             $moderatoragreement = $form->process_data($moderatoragreement);
             $moderatoragreement->save();
-
+            grading_report_renderer::add_notification(
+                $coursework->id(),
+                $submission->id(),
+                get_string('changessaved'),
+                \core\notification::SUCCESS
+            );
             redirect($courseworkpageurl);
         } else {
             $renderer = $this->get_page_renderer();
@@ -212,15 +227,28 @@ class moderations_controller extends controller_base {
         $this->check_stage_permissions($moderatoragreement->stageidentifier);
 
         $form = new moderator_agreement_mform(null, ['moderation' => $moderatoragreement]);
-
-        $courseworkpageurl = $this->get_path('coursework', ['coursework' => $moderatoragreement->get_coursework()]);
+        $coursework = $moderatoragreement->get_coursework();
+        $submission = $moderatoragreement->get_submission();
+        $courseworkpageurl = new moodle_url(
+            '/mod/coursework/view.php', ['id' => $coursework->get_coursemodule_id()], "submission-" . $submission->id()
+        );
         if ($form->is_cancelled()) {
-            redirect($courseworkpageurl);
+            grading_report_renderer::add_notification(
+                $coursework->id(),
+                $submission->id(),
+                get_string('cancelled'),
+                \core\notification::INFO
+            );
+        } else {
+            $moderatoragreement = $form->process_data($moderatoragreement);
+            $moderatoragreement->save();
+            grading_report_renderer::add_notification(
+                $coursework->id(),
+                $moderatoragreement->get_submission()->id(),
+                get_string('changessaved'),
+                \core\notification::SUCCESS
+            );
         }
-
-        $moderatoragreement = $form->process_data($moderatoragreement);
-        $moderatoragreement->save();
-
         redirect($courseworkpageurl);
     }
 
