@@ -57,7 +57,7 @@ Feature: Marking guide
     And I set the field "A criteria criterion remark" to "Final agreed feedback"
     And I set the field "Mark (0–100)" to "10"
     And I press "Save and finalise"
-    Then I should see "Feedback saved" in the "student1" "table_row"
+    Then I should see "Feedback saved" in the "student3" "table_row"
     And I should see the final agreed grade status "Ready for release"
     And I should see the final agreed grade as 10
 
