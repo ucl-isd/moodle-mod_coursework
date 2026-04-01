@@ -17,7 +17,7 @@
 /**
  * @package    mod_coursework
  * @copyright  2026 UCL
- * @license    http://www.gnu.org/copyleft/gpl.html G1NU GPL v3 or later
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace mod_coursework\render_helpers\grading_report\data;
@@ -28,7 +28,6 @@ use mod_coursework\models\coursework;
  * Class to add notifications to grading report by row.
  */
 class grading_report_notifier {
-
     /**
      * The coursework.
      * @var coursework
@@ -51,21 +50,16 @@ class grading_report_notifier {
      * @param int $lifetimeseconds
      * @return void
      */
-    public function add_row_notification(
-        int $submissionid,
-        string $notification,
-        string $notificationtype,
-        int $lifetimeseconds = 10
-    ): void {
+    public function add_row_notification(int $submissionid, string $notification, string $notificationtype, int $lifetimeseconds = 10): void {
         global $SESSION;
         $key = $this->get_row_notifications_session_key();
         if (!isset($SESSION->$key)) {
             $SESSION->$key = [];
         }
-        if (!isset($SESSION->$key[$submissionid])) {
-            $SESSION->$key[$submissionid] = [];
+        if (!isset($SESSION->{$key}[$submissionid])) {
+            $SESSION->{$key}[$submissionid] = [];
         }
-        $SESSION->$key[$submissionid][] = (object)[
+        $SESSION->{$key}[$submissionid][] = (object)[
             'submissionid' => $submissionid,
             'notification' => $notification,
             'notificationclass' => $notificationtype == \core\notification::ERROR ? 'danger' : $notificationtype,
@@ -83,12 +77,7 @@ class grading_report_notifier {
      * @throws \core\exception\moodle_exception
      * @throws \moodle_exception
      */
-    public function redirect_and_notify (
-        int $submissionid,
-        string $notification,
-        string $notificationtype,
-        int $lifetimeseconds = 10
-    ) {
+    public function redirect_and_notify(int $submissionid, string $notification, string $notificationtype, int $lifetimeseconds = 10) {
         $this->add_row_notification($submissionid, $notification, $notificationtype, $lifetimeseconds);
         redirect(
             new \moodle_url(

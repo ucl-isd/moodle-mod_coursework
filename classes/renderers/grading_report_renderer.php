@@ -103,7 +103,7 @@ class grading_report_renderer extends plugin_renderer_base {
                 $trdata->rowid = "row-" . $index;
                 $trdata->notifications = null;
             }
-            
+
             // If this row represents a user (not a group), add the user picture.
             $allocatable = $rowobject->get_allocatable();
             if ($allocatable->type() === 'user' && !$template->blindmarkingenabled) {
