@@ -38,8 +38,13 @@ Feature: Adding and editing single feedback
     And I press "Save and finalise"
     Then I should see "50" in the "student student1" "table_row"
     And I should see "teacher teacher1" in the "student student1" "table_row"
+    And I should see "Ready for release" in the "student student1" "table_row"
+    And I should not see "Released" in the "student student1" "table_row"
 
     And I follow "Release the marks"
+    And I should not see "Ready for release" in the "student student1" "table_row"
+    And I should see "Released" in the "student student1" "table_row"
+
     And I am on the "Coursework" "coursework activity" page logged in as "student1"
     Then I should not see "Admin User" in the ".coursework-feedback" "css_element"
     But I should see "teacher teacher1" in the ".coursework-feedback" "css_element"

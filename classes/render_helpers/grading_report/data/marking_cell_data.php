@@ -62,20 +62,66 @@ class marking_cell_data extends cell_data_base {
      * @throws dml_exception
      */
     public function get_table_cell_data(grading_table_row_base $rowsbase): ?stdClass {
+        $submission = $rowsbase->get_submission();
+
         $tablerows = [];
         foreach ($this->coursework->get_assessor_marking_stages() as $stage) {
-            $tablerows[] = new assessor_feedback_row($stage, $rowsbase->get_allocatable(), $this->coursework, $rowsbase->get_submission());
+            $tablerows[] = new assessor_feedback_row($stage, $rowsbase->get_allocatable(), $this->coursework);
         }
 
-        // If no data is available, return null.
-        if (empty($tablerows)) {
-            return null;
+        $rowdata = new stdClass();
+        $rowdata->markers = [];
+
+        if ($this->coursework->has_multiple_markers()) {
+            $rowdata->agreedmark = $this->get_final_feedback_data($rowsbase);
         }
 
-        // Process the data based on whether this is for multiple markers.
-        return $this->coursework->has_multiple_markers() ?
-            $this->get_marker_data($tablerows, $rowsbase, true) :
-            $this->get_marker_data($tablerows, $rowsbase);
+        if ($this->coursework->moderation_agreement_enabled() && isset($submission)) {
+            $rowdata->moderation = $this->get_moderation_data($rowsbase);
+        }
+
+        // Count initial feedbacks using table rows to avoid additional DB queries.
+        // Then we know from the outset if we have all initial feedbacks or not.
+        $rowdata->countinitialfeedbacks = count(array_filter(
+            $tablerows,
+            function ($row) {
+                return $row->get_feedback() && !$row->get_feedback()->is_agreed_grade();
+            }
+        ));
+        $rowdata->hasallinitialfeedbacks = $rowdata->countinitialfeedbacks >= $this->coursework->get_max_markers();
+
+        $markernumber = 1;
+        foreach ($tablerows as $row) {
+            if ($row->get_stage()->identifier() === 'moderator') {
+                continue;
+            }
+            $canseeothermarkerdetails = $rowdata->hasallinitialfeedbacks
+                || $this->coursework->viewinitialgradeenabled
+                || has_capability('mod/coursework:administergrades', $this->coursework->get_context());
+            $marker = $this->create_marker_data($row->get_assessor(), $markernumber, $canseeothermarkerdetails);
+
+            if ($feedback = $row->get_feedback()) {
+                $this->process_feedback_data($marker, $feedback, $rowsbase, $row);
+            } else if (
+                isset($submission)
+                &&
+                feedback::can_add_new($rowsbase->get_coursework(), $submission, $row->get_stage()->identifier())
+            ) {
+                $marker->addfeedback = (object)[
+                    'markurl' => $this->get_mark_url(
+                        'new',
+                        $submission,
+                        $row->get_stage()
+                    ),
+                    'allocatablehash' => $this->get_allocatable_hash($rowsbase->get_allocatable()),
+                ];
+            }
+
+            $rowdata->markers[] = $marker;
+            $markernumber++;
+        }
+
+        return $rowdata;
     }
 
     /**
@@ -123,7 +169,9 @@ class marking_cell_data extends cell_data_base {
     private function process_feedback_data(stdClass $marker, feedback $feedback, grading_table_row_base $rowsbase, assessor_feedback_row $row): void {
         // Get feedback mark.
 
-        $canshow = $feedback->can_show($this->coursework, $rowsbase->get_submission());
+        $submission = $rowsbase->get_submission();
+
+        $canshow = $feedback->can_show($this->coursework, $submission);
         $marker->mark = $this->get_mark_for_feedback($feedback, $canshow);
         // Return early if no marking.
         if (!isset($marker->mark) || ($marker->mark === '')) {
@@ -133,15 +181,26 @@ class marking_cell_data extends cell_data_base {
 
         // Marker template data.
         $marker->draft = !$feedback->finalised;
-        $marker->readyforrelease = $rowsbase->get_submission()->ready_to_publish();
         $marker->timemodified = $feedback->timemodified;
+
+        if ($submission->persisted() && !$this->coursework->has_multiple_markers()) {
+            $showstatus = true;
+
+            if ($this->coursework->moderation_agreement_enabled()) {
+                $moderation = $this->coursework->get_moderator_marking_stage()->get_moderation($submission);
+                $showstatus = (!empty($moderation) && $moderation->agreement === 'agreed');
+            }
+
+            $marker->released = $showstatus && $submission->is_published();
+            $marker->readyforrelease = $showstatus && !$marker->released && $submission->ready_to_publish();
+        }
 
         // Actions - show, edit.
         $action = null;
         if ($canshow) {
             $action = 'show';
         }
-        if ($feedback->can_edit($this->coursework, $rowsbase->get_submission())) {
+        if ($feedback->can_edit($this->coursework, $submission)) {
             $action = 'edit';
             $marker->feedbackid = $feedback->id;
         }
@@ -150,7 +209,7 @@ class marking_cell_data extends cell_data_base {
         if ($action) {
             $marker->markurl = $this->get_mark_url(
                 $action,
-                $rowsbase->get_submission(),
+                $submission,
                 $row->get_stage(),
                 $feedback
             );
@@ -158,74 +217,6 @@ class marking_cell_data extends cell_data_base {
             // User cannot see the mark.
             $marker->markhidden = true;
         }
-    }
-
-    /**
-     * Get marker data for both single and multiple marker scenarios.
-     *
-     * @param assessor_feedback_row[] $tablerows Each TR row in the table
-     * @param grading_table_row_base $rowsbase Row base object containing general data
-     * @param bool $ismultiple Whether this is for multiple markers
-     * @return stdClass
-     * @throws coding_exception
-     * @throws dml_exception
-     */
-    protected function get_marker_data(array $tablerows, grading_table_row_base $rowsbase, bool $ismultiple = false): stdClass {
-        $rowdata = new stdClass();
-        $rowdata->markers = [];
-
-        // Count initial feedbacks using table rows to avoid additional DB queries.
-        // Then we know from the outset if we have all initial feedbacks or not.
-        $intialfeedbacks = array_filter(
-            $tablerows,
-            function ($row) {
-                return $row->get_feedback() && !$row->get_feedback()->is_agreed_grade();
-            }
-        );
-        $rowdata->countinitialfeedbacks = count($intialfeedbacks);
-        $rowdata->hasallinitialfeedbacks = $rowdata->countinitialfeedbacks >= $this->coursework->get_max_markers();
-
-        $markernumber = 1;
-        foreach ($tablerows as $row) {
-            if ($row->get_stage()->identifier() === 'moderator') {
-                $rowdata->moderation = $this->get_moderation_data($rowsbase);
-                continue;
-            }
-            $feedback = $row->get_feedback();
-
-            $canseeothermarkerdetails = $rowdata->hasallinitialfeedbacks
-                || $this->coursework->viewinitialgradeenabled
-                || has_capability('mod/coursework:administergrades', $this->coursework->get_context());
-            $marker = $this->create_marker_data($row->get_assessor(), $markernumber, $canseeothermarkerdetails);
-            if ($feedback) {
-                $this->process_feedback_data($marker, $feedback, $rowsbase, $row);
-            }
-
-            $canaddfeedback = !$feedback
-                && $rowsbase->get_submission()
-                && feedback::can_add_new($rowsbase->get_coursework(), $rowsbase->get_submission(), $row->get_stage()->identifier());
-            if ($canaddfeedback) {
-                $marker->addfeedback = (object)[
-                    'markurl' => $this->get_mark_url(
-                        'new',
-                        $rowsbase->get_submission(),
-                        $row->get_stage(),
-                        null,
-                        !$ismultiple
-                    ),
-                    'allocatablehash' => $this->get_allocatable_hash($rowsbase->get_allocatable()),
-                ];
-            }
-
-            $rowdata->markers[] = $marker;
-            $markernumber++;
-        }
-        // Set the agreed mark if this is for multiple markers.
-        if ($ismultiple) {
-            $rowdata->agreedmark = $this->get_final_feedback_data($rowsbase);
-        }
-
-        return $rowdata;
     }
 
     /**
@@ -374,76 +365,49 @@ class marking_cell_data extends cell_data_base {
         global $USER;
 
         $submission = $rowsbase->get_submission();
-
-        if (!$submission) {
-            return null; // No submission.
-        }
-
         $moderationstage = $this->coursework->get_moderator_marking_stage();
-        $moderation = $moderationstage->get_moderation($submission);
-        $moderationdata = new stdClass(); // Mustache data.
+        $firstfeedback = $rowsbase->get_single_feedback();
 
         // Existing moderation.
-        if ($moderation) {
+        if ($moderation = $moderationstage->get_moderation($submission)) {
             $canseeallgrades = $this->ability->can('show', $moderation);
-            if (!$canseeallgrades) {
-                $gradedbyme = $rowsbase->get_single_feedback()->lasteditedbyuser == $USER->id;
-                if (!$gradedbyme) {
-                    return null; // Exit: Cannot view moderation data.
+            if (
+                $canseeallgrades
+                ||
+                $firstfeedback->lasteditedbyuser == $USER->id
+            ) {
+                $markdata = new stdClass();
+                $markdata->agreedmarkvalue = get_string($moderation->agreement, 'coursework');
+
+                if ($moderation->timemodified) {
+                    $markdata->moderatorname = $moderation->moderator()->name();
+                    $markdata->moderationdate = $moderation->timemodified;
                 }
-            }
 
-            // Mark data.
-            $markdata = new stdClass();
-            $markdata->markvalue = get_string($moderation->agreement, 'coursework');
-            $markdata->readyforrelease = $moderation->agreement === 'agreed' && !$submission->is_published();
-
-            if ($moderation->timemodified) {
-                $markdata->moderatorname = $moderation->moderator()->name();
-                $markdata->timemodified = $moderation->timemodified;
-            }
-
-            // TODO - currently there are 3 forms/urls for moderation.
-            // Ideally we should just have one which contains the logic for new/edit/show.
-            // It should show what the user is moderating/agreeing on.
-            // Ideally this could be combined with the agree feedback process.
-
-            if ($canseeallgrades) {
-                // If user can see all grades and/or edit moderations, they may see moderation result as a link.
-                // Default show url.
-                $markdata->url = router::instance()->get_path('show moderation', ['moderation' => $moderation]);
-
-                // Edit url (overwrites default if user can edit).
-                if (!$submission->is_published() && $this->ability->can('edit', $moderation)) {
-                    $markdata->url = router::instance()->get_path('edit moderation', ['moderation' => $moderation]);
+                if ($canseeallgrades) {
+                    if (!$submission->is_published() && $this->ability->can('edit', $moderation)) {
+                        $markdata->moderationurl = router::instance()->get_path('edit moderation', ['moderation' => $moderation]);
+                    } else {
+                        $markdata->moderationurl = router::instance()->get_path('show moderation', ['moderation' => $moderation]);
+                    }
                 }
+
+                return $markdata;
             }
+        } else if (!empty($firstfeedback->finalised)) {
+            $newmoderation = moderation::build(['feedbackid' => $firstfeedback->id]);
 
-            $moderationdata->mark = $markdata;
-
-            // Return existing moderation.
-            return $moderationdata;
+            // Convoluted url builder.
+            if ($this->ability->can('new', $newmoderation)) {
+                return (object)['addmoderationurl' => router::instance()->get_path('new moderations', [
+                    'submission' => $submission,
+                    'stage' => $moderationstage,
+                    'feedbackid' => $firstfeedback->id,
+                    'assessor' => core_user::get_user($USER->id),
+                ])];
+            }
         }
 
-        // New moderation.
-        $firstfeedback = $moderationstage->get_single_feedback($submission);
-        if (!$firstfeedback || !$firstfeedback->finalised) {
-            return null; // No feedback to moderate.
-        }
-
-        $newmoderation = moderation::build(['feedbackid' => $firstfeedback->id]);
-
-        // Convoluted url builder.
-        if ($this->ability->can('new', $newmoderation)) {
-            $moderationdata->addmoderation = new stdClass();
-            $params = [
-                'submission' => $submission,
-                'stage' => $moderationstage,
-                'feedbackid' => $firstfeedback->id,
-                'assessor' => core_user::get_user($USER->id),
-            ];
-            $moderationdata->addmoderation->url = router::instance()->get_path('new moderations', $params);
-        }
-        return $moderationdata;
+        return null;
     }
 }

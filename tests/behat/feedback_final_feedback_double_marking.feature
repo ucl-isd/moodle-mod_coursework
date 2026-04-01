@@ -54,12 +54,16 @@ Feature: Adding and editing final feedback
     Then I am on the "Coursework" "coursework activity" page
     And I should see "57" in the "[data-behat-markstage='final_agreed']" "css_element"
     And I should see "Draft" in the "[data-behat-markstage='final_agreed']" "css_element"
+    And I should not see "Ready for release" in the "student1" "table_row"
+    And I should not see "Released" in the "student student1" "table_row"
     And I click on "57" "link" in the "student student1" "table_row"
     And I press "Save and finalise"
     And I should see "Ready for release" in the "student1" "table_row"
+    And I should not see "Released" in the "student student1" "table_row"
     And I follow "Release the marks"
     And I press "Confirm"
     And I should see "Released" in the "student1" "table_row"
+    And I should not see "Ready for release" in the "student1" "table_row"
 
   @javascript
   Scenario: Setting the final feedback comment
