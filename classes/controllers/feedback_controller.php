@@ -302,6 +302,11 @@ class feedback_controller extends controller_base {
             $teacherfeedback->save(); // Need an id so we can save the advanced grading here.
 
             $teacherfeedback = $form->process_data();
+            if ($this->coursework->is_using_rubric() && $teacherfeedback->grade < 0) {
+                // Grade is -1 here if rubric was not completed at all, so abort processing.
+                $teacherfeedback->destroy();
+                redirect($PAGE->url, get_string('rubricnotcompleted', 'gradingform_rubric'), null, notification::NOTIFY_ERROR);
+            }
 
             $teacherfeedback->save();
 
@@ -389,7 +394,10 @@ class feedback_controller extends controller_base {
             redirect($courseworkpageurl, get_string('cancelled'), null, notification::NOTIFY_SUCCESS);
         } else if ($form->get_data()) {
             $teacherfeedback = $form->process_data();
-
+            if ($this->coursework->is_using_rubric() && $teacherfeedback->grade < 0) {
+                // Grade is -1 here if rubric was not completed at all, so abort processing.
+                redirect($PAGE->url, get_string('rubricnotcompleted', 'gradingform_rubric'), null, notification::NOTIFY_ERROR);
+            }
             $teacherfeedback->save();
             $form->save_feedback_files();
 
