@@ -19,7 +19,7 @@
             {{#notifications}}
                 <div class="alert alert-{{notificationclass}} alert-dismissible fade show" role="alert">
                     {{{notification}}}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="{{#str}}closebuttontitle{{/str}}"><span aria-hidden="true">&times;</span></button>
                 </div>
             {{/notifications}}
             {{> mod_coursework/submissions/tr/marking}}
