@@ -702,5 +702,6 @@ abstract class table_base {
             $cachetoclear = cache::make('mod_coursework', static::CACHE_AREA_BY_SUBMISSION);
             $cachetoclear->delete($this->submissionid);
         }
+        // (The table_with_allocatable trait overrides this method also to clear static::CACHE_AREA_BY_ALLOCATABLE for child classes which implement it).
     }
 }

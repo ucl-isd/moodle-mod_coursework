@@ -125,12 +125,13 @@ class import extends grading_sheet {
 
                         $keyedline = array_combine($cells, $line);
                         if (!empty($keyedline['username'])) {
-                            $submission = submission::find([
-                                'courseworkid' => $this->coursework->id(),
-                                'allocatableid' => core_user::get_user_by_username($keyedline['username'])->id,
-                            ]);
+                            $submission = submission::get_for_allocatable(
+                                $this->coursework->id(),
+                                core_user::get_user_by_username($keyedline['username'])->id,
+                                'user'
+                            );
 
-                            $submissionid = $submission->id();
+                            $submissionid = $submission ? $submission->id() : null;
 
                             $line[$celllookup['submissionid']] = $submissionid;
                             $line[$celllookup['submissionfileid']] = $this->coursework->get_username_hash($submission->allocatableid);
@@ -336,13 +337,14 @@ class import extends grading_sheet {
 
                     $keyedline = array_combine($cells, $line);
                     if (!empty($keyedline['username'])) {
-                        $submission = submission::find([
-                            'courseworkid' => $this->coursework->id(),
-                            'allocatableid' => core_user::get_user_by_username($keyedline['username'])->id,
-                        ]);
+                        $submission = submission::get_for_allocatable(
+                            $this->coursework->id(),
+                            core_user::get_user_by_username($keyedline['username'])->id,
+                            'user'
+                        );
 
-                        $submissionid = $submission->id();
-                        $idfound = true;
+                        $submissionid = $submission ? $submission->id() : null;
+                        $idfound = (bool)$submissionid;
                         $value = $submissionid;
                     }
                 }

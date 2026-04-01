@@ -194,12 +194,13 @@ class mod_coursework_generator extends testing_module_generator {
         }
 
         if (!is_numeric($feedback->submissionid ?? null) && !empty($feedback->allocatableid)) {
-            $submission = submission::find([
-                'courseworkid' => $feedback->courseworkid,
-                'allocatableid' => $feedback->allocatableid,
-            ]);
+            $submission = submission::get_for_allocatable(
+                $feedback->courseworkid,
+                $feedback->allocatableid,
+                'user'
+            );
 
-            if (!empty($submission->id())) {
+            if ($submission) {
                 $feedback->submissionid = $submission->id();
                 unset($feedback->allocatableid);
             } else {

@@ -133,16 +133,6 @@ class submission extends table_base implements renderable {
     public $finalisedstatus;
 
     /**
-     * @var
-     */
-    public $firstname;
-
-    /**
-     * @var
-     */
-    public $lastname;
-
-    /**
      * @var int courseid
      */
     private $courseid;

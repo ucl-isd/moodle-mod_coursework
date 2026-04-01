@@ -72,24 +72,12 @@ class moderations_controller extends controller_base {
         }
 
         if (!empty($params['submissionid'])) {
-            $submission = $DB->get_record(
-                'coursework_submissions',
-                ['id' => $params['submissionid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->submission = submission::find($submission);
+            $this->submission = submission::get_from_id($params['submissionid'], MUST_EXIST);
             $params['courseworkid'] = $this->submission->courseworkid;
         }
 
         if (!empty($params['moderationid'])) {
-            $moderation = $DB->get_record(
-                'coursework_mod_agreements',
-                ['id' => $params['moderationid']],
-                '*',
-                MUST_EXIST
-            );
-            $this->moderation = moderation::find($moderation);
+            $this->moderation = moderation::get_from_id($params['moderationid'], MUST_EXIST);
             $params['courseworkid'] = $this->moderation->get_coursework()->id;
         }
 

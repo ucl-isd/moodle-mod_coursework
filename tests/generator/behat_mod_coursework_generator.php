@@ -97,15 +97,14 @@ class behat_mod_coursework_generator extends behat_generator_base {
         throw new coding_exception('Unable to resolve allocatable.');
     }
 
-    protected function get_coursework_id(string $coursework): int {
-        if ($courseworkobj = coursework::find(['name' => $coursework])) {
-            $id = $courseworkobj->id();
+    protected function get_coursework_id(string $activityname): int {
+        global $DB;
+        $ids = $DB->get_fieldset('coursework', 'id', ['name' => $activityname]);
+        if (empty($ids)) {
+            throw new coding_exception("Coursework not found with name $activityname");
+        } else if (count($ids) > 1) {
+            throw new coding_exception("Multiple courseworks found with name $activityname: " . implode(',', $ids));
         }
-
-        if (empty($id)) {
-            throw new coding_exception('Unable to resolve coursework.');
-        }
-
-        return $id;
+        return reset($ids);
     }
 }

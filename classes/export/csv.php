@@ -87,8 +87,13 @@ class csv {
          */
         $submissions = $this->get_submissions();
 
-        // sort submissions by lastname
-        usort($submissions, [$this, "sort_by_lastname"]);
+        // Sort submissions by lastname.
+        usort(
+            $submissions,
+            function ($a, $b) {
+                return strcmp($a->get_allocatable()->lastname, $b->get_allocatable()->lastname);
+            }
+        );
 
         // loop through each submission in the coursework
         foreach ($submissions as $submission) {
@@ -186,17 +191,6 @@ class csv {
 
         $filename = clean_filename($filename);
         return $this->csvexport->filename = $filename . '.csv';
-    }
-
-    /**
-     * Function to sort array in order of submission's lastname
-     * @param $a
-     * @param $b
-     * @return int
-     */
-    protected function sort_by_lastname($a, $b) {
-
-        return strcmp($a->lastname, $b->lastname);
     }
 
     /**
