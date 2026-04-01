@@ -35,7 +35,7 @@ Feature: A manager can both provide their own feedback and edit other graders fe
     When I click on "Agree marking" "link" in the "student1" "table_row"
     And I set the field "Mark" to "59"
     And I press "Save and finalise"
-    And I should see "Changes saved"
+    And I should see "Feedback saved"
 
   Scenario: Editing final feedback from others
     Given the following "mod_coursework > feedbacks" exist:

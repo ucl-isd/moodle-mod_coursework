@@ -51,7 +51,7 @@ Feature: Students see feedback on group assignments
       | Mark    | 45   |
       | Comment | blah |
     And I press "Save and finalise"
-    And I should see "Changes saved"
+    And I should see "Feedback saved"
     And I follow "Release the marks"
 
     Given I am on the "Coursework" "coursework activity" page logged in as "student1"

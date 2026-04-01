@@ -52,7 +52,6 @@ Feature: Multiple assessors simple grading form
       | Mark    | 56               |
       | Comment | A test comment 9 |
     And I press "Save and finalise"
-    And I am on the "Coursework" "coursework activity" page
     Then I should see "56" in the "student1" "table_row"
     Then I should see "Feedback saved" in the "student1" "table_row"
 
