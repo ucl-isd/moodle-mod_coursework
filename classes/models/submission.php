@@ -730,8 +730,13 @@ class submission extends table_base implements renderable {
      * @throws moodle_exception
      */
     public function get_allocatable_name($aslink = false) {
+        global $USER;
 
-        if (!$this->get_coursework()->hide_student_identities() || $this->get_coursework()->is_configured_to_have_group_submissions()) {
+        if (
+            !$this->get_coursework()->hide_student_identities()
+            || $this->get_coursework()->is_configured_to_have_group_submissions()
+            || $USER->id == $this->allocatableid
+        ) {
             $fullname = $this->get_allocatable()->name();
 
             $allowed = has_capability('moodle/user:viewdetails', $this->get_context());
