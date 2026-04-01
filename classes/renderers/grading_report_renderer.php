@@ -96,8 +96,14 @@ class grading_report_renderer extends plugin_renderer_base {
             $submission = $rowobject->get_submission();
 
             // Row ID with submission ID is used for URL anchor when feedback is saved.
-            $trdata->rowid = $submission ? "submission-" . $submission->id() : "row-" . $index;
-            $trdata->notifications = $submission ? ($notifications[$rowobject->get_submission()->id()] ?? null) : null;
+            if ($submission) {
+                $trdata->rowid = "submission-" . $submission->id();
+                $trdata->notifications = $notifications[$rowobject->get_submission()->id()] ?? null;
+            } else {
+                $trdata->rowid = "row-" . $index;
+                $trdata->notifications = null;
+            }
+            
             // If this row represents a user (not a group), add the user picture.
             $allocatable = $rowobject->get_allocatable();
             if ($allocatable->type() === 'user' && !$template->blindmarkingenabled) {
