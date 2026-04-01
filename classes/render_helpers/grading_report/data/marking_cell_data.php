@@ -76,7 +76,7 @@ class marking_cell_data extends cell_data_base {
             $rowdata->agreedmark = $this->get_final_feedback_data($rowsbase);
         }
 
-        if ($this->coursework->moderation_agreement_enabled() && $submission) {
+        if ($this->coursework->moderation_agreement_enabled() && isset($submission)) {
             $rowdata->moderation = $this->get_moderation_data($rowsbase);
         }
 
@@ -103,7 +103,7 @@ class marking_cell_data extends cell_data_base {
             if ($feedback = $row->get_feedback()) {
                 $this->process_feedback_data($marker, $feedback, $rowsbase, $row);
             } else if (
-                !empty($submission)
+                isset($submission)
                 &&
                 feedback::can_add_new($rowsbase->get_coursework(), $submission, $row->get_stage()->identifier())
             ) {
