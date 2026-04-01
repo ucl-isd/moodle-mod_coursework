@@ -25,8 +25,8 @@ namespace mod_coursework\renderers;
 use context_user;
 use core\exception\moodle_exception;
 use core\output\plugin_renderer_base;
-use mod_coursework\ability;
 use mod_coursework\grading_report;
+use mod_coursework\render_helpers\grading_report\data\grading_report_notifier;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
@@ -87,7 +87,8 @@ class grading_report_renderer extends plugin_renderer_base {
         $template->tr = [];
         $markersarray = []; // Collect list of allocated markers while we are iterating.
 
-        $notifications = self::get_row_notifications($coursework->id());
+        $notifier = new grading_report_notifier($coursework);
+        $notifications = $notifier->get_row_notifications();
 
         foreach ($tablerows as $index => $rowobject) {
             $trdata = $this->get_table_row_data($coursework, $rowobject);
@@ -411,68 +412,5 @@ class grading_report_renderer extends plugin_renderer_base {
         }
 
         $trdata->status = implode(', ', $status);
-    }
-
-    /**
-     * Add a notification to be shown in the marking table row.
-     * @param int $courseworkid
-     * @param int $submissionid
-     * @param string $notification
-     * @param string $notificationtype
-     * @param int $lifetimeseconds
-     * @return void
-     */
-    public static function add_row_notification(
-        int $courseworkid,
-        int $submissionid,
-        string $notification,
-        string $notificationtype,
-        int $lifetimeseconds = 10
-    ): void {
-        global $SESSION;
-        $key = self::get_row_notifications_session_key($courseworkid);
-        if (!isset($SESSION->$key)) {
-            $SESSION->$key = [];
-        }
-        if (!isset($SESSION->$key[$submissionid])) {
-            $SESSION->$key[$submissionid] = [];
-        }
-        $SESSION->$key[$submissionid][] = (object)[
-            'submissionid' => $submissionid,
-            'notification' => $notification,
-            'notificationclass' => $notificationtype == \core\notification::ERROR ? 'danger' : $notificationtype,
-            'expires' => time() + $lifetimeseconds,
-        ];
-    }
-
-    /**
-     * Get all notifications to be shown in all marking table rows.
-     * @param int $courseworkid
-     * @return array
-     */
-    public static function get_row_notifications(int $courseworkid): array {
-        global $SESSION;
-        $key = self::get_row_notifications_session_key($courseworkid);
-        $rows = $SESSION->$key ?? [];
-        foreach ($rows as $rowindex => $row) {
-            foreach ($row as $notifindex => $notif) {
-                if ($notif->expires < time()) {
-                    unset($rows[$rowindex][$notifindex]);
-                }
-            }
-        }
-        // Empty cache now have sent all.
-        $SESSION->$key = [];
-        return $rows;
-    }
-
-
-    /**
-     * Get the key used to store row notifications in $SESSION.
-     * @param int $courseworkid
-     * @return string
-     */
-    public static function get_row_notifications_session_key(int $courseworkid): string {
-        return "coursework_grade_row_notifs_$courseworkid";
     }
 }
