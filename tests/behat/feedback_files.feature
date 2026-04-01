@@ -37,7 +37,7 @@ Feature: Adding feedback files
     And I set the field "Comment" to "Some new comment 3"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I click on "Save as draft" "button"
-    And I should see "Feedback saved"
+    And I should see "Feedback saved" in the "student1" "table_row"
     And I click on "52" "link" in the "student1" "table_row"
     Then the field "Mark" matches value "52"
     And the field "Comment" matches value "Some new comment 3"

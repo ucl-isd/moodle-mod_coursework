@@ -82,7 +82,7 @@ Feature: Marking guide percentage grades entry
     # Total % mark also calculated and shown.
     And I should see "49%" in the ".total-mark-container" "css_element"
     And I press "Save and finalise"
-    And I should see "Feedback saved"
+    And I should see "Feedback saved" in the "student1" "table_row"
 
     And I visit the coursework page
     And I should see "49" in the "student student2" "table_row"
@@ -105,7 +105,7 @@ Feature: Marking guide percentage grades entry
     And I set the field "Mark (0–50)" in the "Criterion 3" "table_row" to "30"
     And I wait until the page is ready
     And I press "Save and finalise"
-    And I should see "Feedback saved"
+    And I should see "Feedback saved" in the "student1" "table_row"
 
     And I visit the coursework page
     And I should see "49" in the "student student2" "table_row"

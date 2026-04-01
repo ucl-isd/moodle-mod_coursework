@@ -63,7 +63,7 @@ Feature: Multiple assessors simple grading form
     And I follow "Add mark"
     And I set the field "Mark" to "59"
     And I press "Save and finalise"
-    And I should see "Feedback saved"
+    And I should see "Feedback saved" in the "student1" "table_row"
     And I am on the "Coursework" "coursework activity" page
     # Cannot see agree marking until specific capability awarded.
     Then I should not see "Agree marking"
