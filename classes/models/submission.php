@@ -412,7 +412,7 @@ class submission extends table_base implements renderable {
      * @param bool $reset to force the cache to be ignored.
      * @return submission_files
      */
-    public function get_submission_files($reset = false) {
+    public function get_submission_files($reset = false): submission_files {
 
         if (!$reset && $this->submissionfiles instanceof submission_files) {
             return $this->submissionfiles;

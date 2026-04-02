@@ -110,4 +110,19 @@ class submission_files extends files {
     public function get_submission() {
         return $this->submission;
     }
+
+    /**
+     * Returns the first PDF.
+     *
+     * @return stored_file|null
+     */
+    public function get_first_pdf(): ?stored_file {
+        foreach ($this->get_files() as $file) {
+            if ($file->get_mimetype() === 'application/pdf') {
+                return $file;
+            }
+        }
+
+        return null;
+    }
 }

@@ -27,29 +27,6 @@ Coursework.
         margin-right: 0;
     }
 
-    /* PDF viewer. */
-    #mod-coursework-pdf-container {
-        z-index: 1;
-        /* Submission metadata. */
-        .mod-coursework-submission {
-            display: flex;
-            align-items: flex-start;
-            .mod-coursework-submission-metadata {
-                margin-left: auto;
-            }
-        }
-        /* PDF iframe. */
-        #mod-coursework-pdf-wrapper {
-            height: 85vh;
-            iframe {
-                height: 100%;
-                width: 100%;
-                border: none;
-                border-bottom: 1rem solid;
-            }
-        }
-    }
-
     /* Normalise number input fields. */
     input[type=number] {
         field-sizing: content; /* stylelint-disable-line */
@@ -404,5 +381,28 @@ body:has(.navbar.fixed-top) .sticky-top {
     #viewBookmarkSeparator,
     #spreadModeButtons {
         display: none;
+    }
+}
+
+/* PDF viewer. */
+#mod-coursework-pdf-container {
+    z-index: 1;
+    /* Submission metadata. */
+    .mod-coursework-submission {
+        display: flex;
+        align-items: flex-start;
+        .mod-coursework-submission-metadata {
+            margin-left: auto;
+        }
+    }
+    /* PDF iframe. */
+    #mod-coursework-pdf-wrapper {
+        height: 85vh;
+        iframe {
+            height: 100%;
+            width: 100%;
+            border: none;
+            border-bottom: 1rem solid;
+        }
     }
 }

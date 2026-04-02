@@ -133,7 +133,7 @@ class moderation extends table_base {
     /**
      * Memoized getter
      *
-     * @return bool|table_base
+     * @return bool|submission
      * @throws \coding_exception
      * @throws \dml_exception
      */
