@@ -95,6 +95,7 @@ class ability extends framework\ability {
         $this->allow_show_submission_if_user_is_agreed_grade_assessor_and_submission_is_ready();
         $this->allow_show_submission_if_user_can_administer_grades();
         $this->allow_show_submission_if_user_can_view_all_grades_at_all_times();
+        $this->allow_show_submission_if_moderator();
 
         // Edit submission
         $this->prevent_edit_submission_for_unsaved_records();
@@ -137,6 +138,7 @@ class ability extends framework\ability {
         // Show moderation
         $this->allow_show_moderation_if_user_can_view_grades_at_all_times();
         $this->allow_show_moderation_if_original_assessor();
+        $this->allow_show_moderation_if_moderator();
 
         // Feedback rules
 
@@ -481,6 +483,33 @@ class ability extends framework\ability {
         );
     }
 
+    protected function allow_show_submission_if_moderator() {
+        $this->allow(
+            'show',
+            'mod_coursework\models\submission',
+            function (submission $submission) {
+                if (
+                    !$this->coursework->moderation_agreement_enabled()
+                    ||
+                    $this->coursework->has_multiple_markers()
+                    ||
+                    $submission->get_state() < submission::FULLY_GRADED
+                ) {
+                    return false;
+                }
+
+                $feedback = $submission->get_assessor_feedback_by_stage('assessor_1');
+
+                global $USER;
+                $moderatoragreement = new moderation();
+                $moderatoragreement->feedbackid = $feedback->id;
+                $moderatoragreement->submissionid = $submission->id;
+                $moderatoragreement->moderatorid = $USER->id;
+
+                return $this->can('new', $moderatoragreement);
+            }
+        );
+    }
 
     protected function prevent_edit_submission_for_unsaved_records() {
         $this->prevent(
@@ -742,6 +771,24 @@ class ability extends framework\ability {
                     $moderation->get_coursework()
                         ->get_context()
                 );
+            }
+        );
+    }
+
+    protected function allow_show_moderation_if_moderator() {
+        $this->allow(
+            'show',
+            'mod_coursework\models\moderation',
+            function (moderation $moderation) {
+                global $USER;
+
+                if (
+                    $moderation->lasteditedby == $USER->id
+                    ||
+                    $moderation->moderatorid == $USER->id
+                ) {
+                    return true;
+                }
             }
         );
     }

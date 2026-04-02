@@ -370,12 +370,7 @@ class marking_cell_data extends cell_data_base {
 
         // Existing moderation.
         if ($moderation = $moderationstage->get_moderation($submission)) {
-            $canseeallgrades = $this->ability->can('show', $moderation);
-            if (
-                $canseeallgrades
-                ||
-                $firstfeedback->lasteditedbyuser == $USER->id
-            ) {
+            if ($this->ability->can('show', $moderation)) {
                 $markdata = new stdClass();
                 $markdata->agreedmarkvalue = get_string($moderation->agreement, 'coursework');
 
@@ -384,12 +379,10 @@ class marking_cell_data extends cell_data_base {
                     $markdata->moderationdate = $moderation->timemodified;
                 }
 
-                if ($canseeallgrades) {
-                    if (!$submission->is_published() && $this->ability->can('edit', $moderation)) {
-                        $markdata->moderationurl = router::instance()->get_path('edit moderation', ['moderation' => $moderation]);
-                    } else {
-                        $markdata->moderationurl = router::instance()->get_path('show moderation', ['moderation' => $moderation]);
-                    }
+                if (!$submission->is_published() && $this->ability->can('edit', $moderation)) {
+                    $markdata->moderationurl = router::instance()->get_path('edit moderation', ['moderation' => $moderation]);
+                } else {
+                    $markdata->moderationurl = router::instance()->get_path('show moderation', ['moderation' => $moderation]);
                 }
 
                 return $markdata;
