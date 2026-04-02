@@ -34,6 +34,7 @@ use mod_coursework\models\user;
 use mod_coursework\personaldeadline\table\row\builder;
 use mod_coursework\renderers\grading_report_renderer;
 use mod_coursework\router;
+use mod_coursework\submission_files;
 use mod_coursework\warnings;
 
 defined('MOODLE_INTERNAL') || die();
@@ -123,6 +124,49 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         if ($template->feedbackcomment || isset($template->feedbackfileshtml)) {
             $template->separator = true;
         }
+
+        return $template;
+    }
+
+    /**
+     * Prepare submission metadata for mustache template.
+     *
+     * @param submission $submission The submission object.
+     * @param coursework $coursework The coursework settings object.
+     * @param submission_files $submissionfiles Submitted files object.
+     * @return stdClass Structured data for the template.
+     */
+    public function submission_metadata(submission $submission, coursework $coursework, $submissionfiles): stdClass {
+        $template = new stdClass();
+        $template->submissiondata = new stdClass();
+        $template->submissiondata->files = [];
+
+        if ($submissionfiles && method_exists($submissionfiles, 'get_files')) {
+            foreach ($submissionfiles->get_files() as $file) {
+                $f = new stdClass();
+                $f->url = $this->make_file_url($file);
+                $f->datemodified = $file->get_timemodified();
+                $f->filename = $file->get_filename();
+
+                // Finalised.
+                $f->finalised = $submission->is_finalised();
+                $f->tiilinksHTML = submission::plagiarism_get_links(
+                    $submission->authorid,
+                    $file,
+                    $coursework
+                );
+
+                $template->submissiondata->files[] = $f;
+            }
+        }
+
+        // Late.
+        $template->submissiondata->submittedlate = (bool) $submission->was_late();
+
+        // Plagiarism.
+        $template->submissiondata->flaggedplagiarism = $submission->get_flagged_plagiarism_status();
+        $template->tiienabled = $coursework->tii_enabled();
+        $template->title = get_string('submissionfor', 'coursework', $submission->get_allocatable_name());
 
         return $template;
     }

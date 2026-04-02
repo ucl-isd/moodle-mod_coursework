@@ -25,11 +25,13 @@
 
 <div id="mod-coursework-pdf-container" class="mx-auto sticky-top">
     {{! Submissions metadata. }}
-    {{> mod_coursework/submissions/tr/submissions }}
+    {{#submission}}
+        {{> mod_coursework/submissions/tr/submissions }}
+    {{/submission}}
 
     {{! Pdf iframe. }}
     <div id="mod-coursework-pdf-wrapper">
         <p class="small">{{#str}} pdfhelp, mod_coursework {{/str}}</p>
-        <iframe src="{{{pdfurl}}}" loading="lazy" title="{{#str}} pdfpreview, mod_coursework {{/str}}"></iframe>
+        <iframe name="mod-coursework-pdf-iframe" src="{{{pdfurl}}}" loading="lazy" title="{{#str}} pdfpreview, mod_coursework {{/str}}"></iframe>
     </div>
 </div>

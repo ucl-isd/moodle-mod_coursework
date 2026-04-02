@@ -117,13 +117,28 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $submission = $moderatoragreement->get_submission();
 
         $title = get_string('moderationfor', 'coursework', $submission->get_allocatable_name());
-        $this->page->set_pagelayout('standard');
         $this->page->navbar->add($title);
         $this->page->set_title($title);
 
         $model = new stdClass();
         $model->allocatablename = $submission->get_allocatable_name();
         $model->feedbacks = [];
+
+        // PDF or not?
+        $submissionfiles = $submission->get_submission_files();
+        $model->showpdf = false;
+        if ($submissionfiles && method_exists($submissionfiles, 'get_files')) {
+            foreach ($submissionfiles->get_files() as $file) {
+                if ($file->get_mimetype() === 'application/pdf') {
+                    $model->showpdf = true;
+                    $model->pdfurl = $this->get_object_renderer()->make_file_url($file);
+                    break; // Pdf found.
+                }
+            }
+        }
+
+        // Submission metadata.
+        $model->submission = $this->get_object_renderer()->submission_metadata($submission, $moderatoragreement->get_coursework(), $submissionfiles);
 
         foreach ($submission->get_assessor_feedbacks() as $feedback) {
             $model->feedbacks[] = $this->get_object_renderer()->get_feedback_model($feedback, false);
@@ -302,7 +317,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         // Submission metadata.
-        $template->submission = $this->submission_metadata($submission, $coursework, $submissionfiles);
+        $template->submission = $this->get_object_renderer()->submission_metadata($submission, $coursework, $submissionfiles);
 
         // Advanced marking.
         $template->advancedmarking = $coursework->is_using_advanced_grading();
@@ -446,48 +461,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         }
 
         return $this->render_from_template('mod_coursework/marking/review', $template);
-    }
-
-    /**
-     * Prepare submission metadata for mustache template.
-     *
-     * @param submission $submission The submission object.
-     * @param coursework $coursework The coursework settings object.
-     * @param submission_files $submissionfiles Submitted files object.
-     * @return stdClass Structured data for the template.
-     */
-    protected function submission_metadata(submission $submission, coursework $coursework, $submissionfiles): stdClass {
-        $template = new stdClass();
-        $template->submissiondata = new stdClass();
-        $template->submissiondata->files = [];
-
-        if ($submissionfiles && method_exists($submissionfiles, 'get_files')) {
-            foreach ($submissionfiles->get_files() as $file) {
-                $f = new stdClass();
-                $f->url = $this->get_object_renderer()->make_file_url($file);
-                $f->datemodified = $file->get_timemodified();
-                $f->filename = $file->get_filename();
-
-                // Finalised.
-                $f->finalised = $submission->is_finalised();
-                $f->tiilinksHTML = submission::plagiarism_get_links(
-                    $submission->authorid,
-                    $file,
-                    $coursework
-                );
-
-                $template->submissiondata->files[] = $f;
-            }
-        }
-
-        // Late.
-        $template->submissiondata->submittedlate = (bool) $submission->was_late();
-
-        // Plagiarism.
-        $template->submissiondata->flaggedplagiarism = $submission->get_flagged_plagiarism_status();
-        $template->tiienabled = $coursework->tii_enabled();
-
-        return $template;
     }
 
     /**
