@@ -322,6 +322,11 @@ Coursework.
         }
     }
 
+    .mod-coursework-submissions-table tr.mod-coursework-submissions-row {
+        /*When URL anchor used, ensure row not obscured by breadcrumb.*/
+        scroll-margin-top: 60px;
+    }
+
     /* Actions menu dropdown dividers. */
     .mod-coursework-submissions-action-col .dropdown-menu {
         /* Hide any hanging dividers. */

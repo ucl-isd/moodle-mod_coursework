@@ -32,7 +32,7 @@ use mod_coursework\exceptions\access_denied;
 use mod_coursework\forms\assessor_feedback_mform;
 use mod_coursework\models\feedback;
 use mod_coursework\models\submission;
-use mod_coursework\models\user;
+use mod_coursework\render_helpers\grading_report\data\grading_report_notifier;
 use moodle_url;
 
 defined('MOODLE_INTERNAL' || die());
@@ -293,12 +293,14 @@ class feedback_controller extends controller_base {
 
         $form = new assessor_feedback_mform(null, ['feedback' => $teacherfeedback]);
 
-        $courseworkpageurl = $this->get_path('coursework', ['coursework' => $teacherfeedback->get_coursework()]);
+        $notifier = new grading_report_notifier($teacherfeedback->get_coursework());
         if ($form->is_cancelled()) {
-            redirect($courseworkpageurl, get_string('cancelled'), null, notification::NOTIFY_SUCCESS);
-        }
-
-        if ($form->get_data()) {
+            $notifier->redirect_and_notify(
+                $submission->id(),
+                get_string('cancelled'),
+                \core\notification::INFO
+            );
+        } else if ($form->get_data()) {
             $teacherfeedback->save(); // Need an id so we can save the advanced grading here.
 
             $teacherfeedback = $form->process_data();
@@ -318,12 +320,10 @@ class feedback_controller extends controller_base {
             }
 
             $this->try_auto_feedback_creation($teacherfeedback->get_submission());
-
-            redirect(
-                $courseworkpageurl,
-                get_string('changessaved', 'mod_coursework'),
-                null,
-                notification::NOTIFY_SUCCESS
+            $notifier->redirect_and_notify(
+                $submission->id(),
+                get_string('feedbacksaved', 'coursework'),
+                \core\notification::SUCCESS
             );
         } else {
             $renderer = $this->get_page_renderer();
@@ -344,8 +344,10 @@ class feedback_controller extends controller_base {
 
         $ability = new ability($USER->id, $this->coursework);
         $ability->require_can('update', $teacherfeedback);
-        $courseworkpageurl = $this->get_path('coursework', ['coursework' => $teacherfeedback->get_coursework()]);
+        $submission = $teacherfeedback->get_submission();
+        $coursework = $submission->get_coursework();
 
+        $notifier = new grading_report_notifier($coursework);
         // remove feedback comments and associated feedback files if 'Remove feedback' button pressed
         if ($this->params['remove']) {
             if (!$this->params['confirm']) {
@@ -374,14 +376,17 @@ class feedback_controller extends controller_base {
                 // Remove associated files.
                 $fs = get_file_storage();
                 $fs->delete_area_files(
-                    $teacherfeedback->get_coursework()->get_context()->id,
+                    $coursework->get_context()->id,
                     'mod_coursework',
                     'feedback',
                     $teacherfeedback->id()
                 );
-
                 $teacherfeedback->destroy();
-                redirect($courseworkpageurl, get_string('deleted'), null, notification::NOTIFY_ERROR);
+                $notifier->redirect_and_notify(
+                    $submission->id(),
+                    get_string('feedbackdeleted', 'coursework'),
+                    \core\notification::ERROR
+                );
             }
         }
 
@@ -389,9 +394,14 @@ class feedback_controller extends controller_base {
 
         $form = new assessor_feedback_mform(null, ['feedback' => $teacherfeedback]);
 
-        $courseworkpageurl = $this->get_path('coursework', ['coursework' => $teacherfeedback->get_coursework()]);
+        $submission = $teacherfeedback->get_submission();
+
         if ($form->is_cancelled()) {
-            redirect($courseworkpageurl, get_string('cancelled'), null, notification::NOTIFY_SUCCESS);
+            $notifier->redirect_and_notify(
+                $submission->id(),
+                get_string('cancelled'),
+                \core\notification::INFO
+            );
         } else if ($form->get_data()) {
             $teacherfeedback = $form->process_data();
             if ($this->coursework->is_using_rubric() && $teacherfeedback->grade < 0) {
@@ -407,11 +417,10 @@ class feedback_controller extends controller_base {
                 $this->coursework->grade_changed_event();
                 $teacherfeedback->get_submission()->publish();
             }
-            redirect(
-                $courseworkpageurl,
-                get_string('changessaved', 'mod_coursework'),
-                null,
-                notification::NOTIFY_SUCCESS
+            $notifier->redirect_and_notify(
+                $submission->id(),
+                get_string('feedbacksaved', 'coursework'),
+                \core\notification::SUCCESS
             );
         } else {
             // Grade validation error - redisplay form with messages.

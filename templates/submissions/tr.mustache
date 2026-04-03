@@ -1,4 +1,4 @@
-<tr class="mod-coursework-submissions-row"
+<tr class="mod-coursework-submissions-row" id="{{{rowid}}}"
     data-status="{{status}}"
     data-marker="{{{markerfilter}}}"
     data-allocateble-id="{{#submissiontype.user}}{{submissiontype.user.id}}{{/submissiontype.user}}{{#submissiontype.group}}{{submissiontype.group.id}}{{/submissiontype.group}}"
@@ -16,6 +16,12 @@
 
         {{! Marking. }}
         <td class="mod-coursework-submissions-marking-col">
+            {{#notifications}}
+                <div class="alert alert-{{notificationclass}} alert-dismissible fade show" role="alert">
+                    {{{notification}}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="{{#str}}closebuttontitle{{/str}}"><span aria-hidden="true">&times;</span></button>
+                </div>
+            {{/notifications}}
             {{> mod_coursework/submissions/tr/marking}}
         </td>
 

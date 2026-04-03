@@ -30,6 +30,7 @@ use mod_coursework\forms\moderator_agreement_mform;
 use mod_coursework\models\feedback;
 use mod_coursework\models\moderation;
 use mod_coursework\models\submission;
+use mod_coursework\render_helpers\grading_report\data\grading_report_notifier;
 use moodle_exception;
 
 defined('MOODLE_INTERNAL' || die());
@@ -178,19 +179,22 @@ class moderations_controller extends controller_base {
         $ability->require_can('new', $moderatoragreement);
 
         $form = new moderator_agreement_mform(null, ['moderation' => $moderatoragreement]);
-
-        $courseworkpageurl = $this->get_path('coursework', ['coursework' => $moderatoragreement->get_coursework()]);
+        $notifier = new grading_report_notifier($moderatoragreement->get_coursework());
         if ($form->is_cancelled()) {
-            redirect($courseworkpageurl);
+            $notifier->redirect_and_notify(
+                $submission->id(),
+                get_string('cancelled'),
+                \core\notification::INFO
+            );
         }
-
-        $data = $form->get_data();
-
-        if ($data) {
+        if ($form->get_data()) {
             $moderatoragreement = $form->process_data($moderatoragreement);
             $moderatoragreement->save();
-
-            redirect($courseworkpageurl);
+            $notifier->redirect_and_notify(
+                $submission->id(),
+                get_string('changessaved'),
+                \core\notification::SUCCESS
+            );
         } else {
             $renderer = $this->get_page_renderer();
             $renderer->new_moderation_page($moderatoragreement);
@@ -212,16 +216,24 @@ class moderations_controller extends controller_base {
         $this->check_stage_permissions($moderatoragreement->stageidentifier);
 
         $form = new moderator_agreement_mform(null, ['moderation' => $moderatoragreement]);
-
-        $courseworkpageurl = $this->get_path('coursework', ['coursework' => $moderatoragreement->get_coursework()]);
+        $coursework = $moderatoragreement->get_coursework();
+        $submission = $moderatoragreement->get_submission();
+        $notifier = new grading_report_notifier($coursework);
         if ($form->is_cancelled()) {
-            redirect($courseworkpageurl);
+            $notifier->redirect_and_notify(
+                $submission->id(),
+                get_string('cancelled'),
+                \core\notification::INFO
+            );
+        } else {
+            $moderatoragreement = $form->process_data($moderatoragreement);
+            $moderatoragreement->save();
+            $notifier->redirect_and_notify(
+                $submission->id(),
+                get_string('changessaved'),
+                \core\notification::SUCCESS
+            );
         }
-
-        $moderatoragreement = $form->process_data($moderatoragreement);
-        $moderatoragreement->save();
-
-        redirect($courseworkpageurl);
     }
 
     /**

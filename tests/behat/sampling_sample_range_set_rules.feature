@@ -25,7 +25,7 @@ Feature: Automatic sample based on range set grades using marking of students in
     And I set the field "Mark" to "56"
     And I press "Save and finalise"
     And I wait "1" seconds
-    And I should see "Changes saved"
+    And I should see "Feedback saved" in the "student1" "table_row"
 
     And I visit the coursework page
     And I click on the add feedback button for assessor 1 for another student

@@ -18,6 +18,7 @@ Feature: Marking guide
 
     And I select "Advanced grading" from secondary navigation
     And I set the field "Change active grading method to" to "Marking guide"
+    And I wait until the page is ready
     And I follow "Define new grading form from scratch"
     And I set the following fields to these values:
       | Name | Behat marking form |
@@ -51,12 +52,12 @@ Feature: Marking guide
     And I should see "Grader two really likes it" in the "Feedback" "table_row"
     When I set the field "Mark (0–100)" to ""
     And I press "Save and finalise"
-    Then I should not see "Changes saved"
+    Then I should not see "Feedback saved"
 
     And I set the field "A criteria criterion remark" to "Final agreed feedback"
     And I set the field "Mark (0–100)" to "10"
     And I press "Save and finalise"
-    Then I should see "Changes saved"
+    Then I should see "Feedback saved" in the "student3" "table_row"
     And I should see the final agreed grade status "Ready for release"
     And I should see the final agreed grade as 10
 

@@ -25,8 +25,8 @@ namespace mod_coursework\renderers;
 use context_user;
 use core\exception\moodle_exception;
 use core\output\plugin_renderer_base;
-use mod_coursework\ability;
 use mod_coursework\grading_report;
+use mod_coursework\render_helpers\grading_report\data\grading_report_notifier;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
@@ -87,8 +87,22 @@ class grading_report_renderer extends plugin_renderer_base {
         $template->tr = [];
         $markersarray = []; // Collect list of allocated markers while we are iterating.
 
-        foreach ($tablerows as $rowobject) {
+        $notifier = new grading_report_notifier($coursework);
+        $notifications = $notifier->get_row_notifications();
+
+        foreach ($tablerows as $index => $rowobject) {
             $trdata = $this->get_table_row_data($coursework, $rowobject);
+
+            $submission = $rowobject->get_submission();
+
+            // Row ID with submission ID is used for URL anchor when feedback is saved.
+            if ($submission) {
+                $trdata->rowid = "submission-" . $submission->id();
+                $trdata->notifications = $notifications[$rowobject->get_submission()->id()] ?? null;
+            } else {
+                $trdata->rowid = "row-" . $index;
+                $trdata->notifications = null;
+            }
 
             // If this row represents a user (not a group), add the user picture.
             $allocatable = $rowobject->get_allocatable();
