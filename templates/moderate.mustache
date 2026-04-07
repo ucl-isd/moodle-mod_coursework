@@ -26,37 +26,53 @@
     }
 }}
 
-<h2>{{#str}} moderationfor, mod_coursework, {{allocatablename}}{{/str}}</h2>
+<div {{#showpdf}} class="full-width" {{/showpdf}}>
+    <div class="container-fluid">
+        <div class="row">
 
-{{#feedbacks}}
-    {{> mod_coursework/feedback}}
-{{/feedbacks}}
+            <div class="col animate-enter">
+                <div class="container">
+                    <h3>{{#str}} moderationfor, mod_coursework, {{allocatablename}}{{/str}}</h3>
 
-<h3 class="py-3">{{#str}} moderate, mod_coursework {{/str}}</h3>
+                    {{#feedbacks}}
+                        {{> mod_coursework/feedback}}
+                    {{/feedbacks}}
 
-<table class="table">
-    {{#moderator}}
-        <tr>
-            <th scope="row">
-                {{#str}} moderatedby, mod_coursework {{/str}}
-            </th>
-            <td>
-                {{moderator}}<br>
-                <small>{{timemodified}}</small>
-            </td>
-        </tr>
-    {{/moderator}}
-    {{#lasteditedby}}
-        <tr>
-            <th scope="row">
-                {{#str}} lasteditedby, mod_coursework {{/str}}
-            </th>
-            <td>
-                {{lasteditedby}}<br>
-                <small>{{timemodified}}</small>
-            </td>
-        </tr>
-    {{/lasteditedby}}
-</table>
+                    <h3 class="py-3">{{#str}} moderate, mod_coursework {{/str}}</h3>
 
-{{{moderationform}}}
+                    <table class="table">
+                        {{#moderator}}
+                            <tr>
+                                <th scope="row">
+                                    {{#str}} moderatedby, mod_coursework {{/str}}
+                                </th>
+                                <td>
+                                    {{moderator}}<br>
+                                    <small>{{timemodified}}</small>
+                                </td>
+                            </tr>
+                        {{/moderator}}
+                        {{#lasteditedby}}
+                            <tr>
+                                <th scope="row">
+                                    {{#str}} lasteditedby, mod_coursework {{/str}}
+                                </th>
+                                <td>
+                                    {{lasteditedby}}<br>
+                                    <small>{{timemodified}}</small>
+                                </td>
+                            </tr>
+                        {{/lasteditedby}}
+                    </table>
+
+                    {{{moderationform}}}
+                </div>
+            </div>
+            {{#showpdf}}
+                <div class="col-md-6">
+                    {{> mod_coursework/marking/pdf }}
+                </div>
+            {{/showpdf}}
+        </div>
+    </div>
+</div>

@@ -24,7 +24,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_coursework';
 
-$plugin->version = 2026031200;
+$plugin->version = 2026031201;
 $plugin->requires = 2024100700;
 
 $plugin->cron = 300; // Period for cron to check this module (secs).
