@@ -51,6 +51,7 @@ use mod_coursework\cron;
 use mod_coursework\export\grading_sheet;
 use mod_coursework\framework\table_base;
 use mod_coursework\plagiarism_helpers\base as plagiarism_base;
+use mod_coursework\plagiarism_helpers\turnitin;
 use mod_coursework\stages\assessor;
 use mod_coursework\stages\base as stage_base;
 use mod_coursework\stages\final_agreed;
@@ -687,15 +688,9 @@ class coursework extends table_base {
          * PostScript, TXT, RTF, and PDF
          */
         if ($turnitinenabled) {
-            $filetypes = ['.doc',
-                                '.docx',
-                                '.txt',
-                                '.html',
-                                '.eps',
-                                '.pdf',
-                                '.htm',
-                                '.rtf'];
+            $filetypes = (new turnitin($this))->allowed_file_types();
         } else if (!empty($this->filetypes)) {
+            // Use the list of file types in the coursework settings form if populated.
             $filetypes = preg_split('/,+\s?|\s+/', $this->filetypes);
             foreach ($filetypes as $key => $filetype) {
                 $filetype = trim($filetype); // Remove whitespace

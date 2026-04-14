@@ -79,11 +79,7 @@ class turnitin extends base {
      * @return void
      */
     public static function load_page_components() {
-        global $CFG;
-
-        $tiilib = "$CFG->dirroot/plagiarism/turnitin/lib.php";
-        if (file_exists($tiilib)) {
-            require_once($tiilib);
+        if (self::require_tii_lib()) {
             if (method_exists('plagiarism_plugin_turnitin', 'load_page_components')) {
                 // On the grading overview page, if the marker clicks a TII link, TII JS is required for it to launch.
                 $plugin = new \plagiarism_plugin_turnitin();
@@ -94,5 +90,43 @@ class turnitin extends base {
         } else {
             debugging("Could not find Turnitin plagiarism plugin lib.php");
         }
+    }
+
+    /**
+     * Check if the Turnitin plagiarism plugin lib file exists (and make sure required if so).
+     * @return bool whether exists.
+     */
+    public static function require_tii_lib(): bool {
+        global $CFG;
+        $path = "$CFG->dirroot/plagiarism/turnitin/lib.php";
+        if (file_exists($path)) {
+            require_once($path);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get a list of allowed file types preferably from the Turnitin plagarism plugin.
+     * @return string[]
+     */
+    public function allowed_file_types(): array {
+        try {
+            if (self::require_tii_lib()) {
+                global $turnitinacceptedfiles; // If $turnitinacceptedfiles is defined in tii_lib, we can use that.
+                $turnitinactivitysettings = (new \plagiarism_plugin_turnitin())->get_settings($this->get_coursework()->get_coursemodule_id());
+                if (!empty($turnitinactivitysettings["plagiarism_allow_non_or_submissions"])) {
+                    // "Any file type" is allowed in Turnitin activity level settings.
+                    return [];
+                } else if (isset($turnitinacceptedfiles) && is_array($turnitinacceptedfiles)) {
+                    return $turnitinacceptedfiles;
+                }
+            }
+        } catch (\Exception $e) {
+            debugging("Could not get list of allowed file types from Turnitin plagiarism plugin.  Using default list. " . $e->getMessage());
+        }
+        return ['.doc', '.docx', '.ppt', '.pptx', '.pps', '.ppsx',
+            '.pdf', '.txt', '.htm', '.html', '.hwp', '.odt',
+            '.wpd', '.ps', '.rtf', '.xls', '.xlsx', ];
     }
 }
