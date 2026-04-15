@@ -15,6 +15,7 @@ In order to roll this out at scale at UCL, we have created a Creation Wizard whi
 The Coursework Activity has been written to provide a way to receive coursework and have it marked without teachers knowing which student the work belongs to. Multiple markers are also supported where a final grade can be agreed based on several options. It does not replace the standard assignment activity and is intended to work alongside it.
 Special thanks to Royal Veterinary College and [@aspark21](https://github.com/aspark21), Plymouth University, London School of Tropical Medicine and University of London International Programmes for funding parts of the development and documentation. 
 
+
 Current Coursework plugin includes following features as well as features added in Releases below:
 
 •	Integration with Turnitin plagiarism tool
