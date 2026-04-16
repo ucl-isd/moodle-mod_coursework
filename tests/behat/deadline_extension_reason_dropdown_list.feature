@@ -31,7 +31,7 @@ Feature: Deadline extension reasons dropdown list
   Scenario: The teacher can add a reason for the deadline extension to an individual submission
     Given I am on the "Coursework" "coursework activity" page logged in as "manager1"
     And I click on "Actions" "button" in the "student student1" "table_row"
-    And I click on "Submission extension" "link"
+    And I click on "Submission extension" "button"
     And I set the following fields to these values:
       | Extended deadline | ##+1 weeks##            |
       | Extension reason  | first reason            |
@@ -40,7 +40,7 @@ Feature: Deadline extension reasons dropdown list
     Then I should see "##+1 weeks##%d %B %Y##" in the "student student1" "table_row"
     Then I am on the "Coursework" "coursework activity" page
     And I click on "Actions" "button" in the "student student1" "table_row"
-    And I click on "Submission extension" "link"
+    And I click on "Submission extension" "button"
     And I set the following fields to these values:
       | Extended deadline | ##+2 weeks##            |
       | Extension reason  | first reason            |
@@ -55,7 +55,7 @@ Feature: Deadline extension reasons dropdown list
       | student1    | Coursework | ##-1 week## |
     And I am on the "Coursework" "coursework activity" page logged in as "manager1"
     And I click on "Actions" "button" in the "student student1" "table_row"
-    And I click on "Submission extension" "link"
+    And I click on "Submission extension" "button"
     And I set the following fields to these values:
       | Extended deadline | ##+4 weeks##            |
       | Extension reason  | first reason            |

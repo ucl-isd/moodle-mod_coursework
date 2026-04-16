@@ -17,7 +17,7 @@ Feature: Teachers and course administrators should be able to add and edit
     And I should not see "Flagged for plagiarism"
     And "Actions" "button" should exist
     And I click on "Actions" "button"
-    And I click on "Plagiarism action" "link"
+    And I click on "Plagiarism action" "button"
     And I set the field "Status" to "Under Investigation"
     And I set the field "Internal comment" to "Test comment"
     And I click on "Save" "button"
