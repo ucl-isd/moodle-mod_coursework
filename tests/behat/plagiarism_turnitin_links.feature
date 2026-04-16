@@ -68,7 +68,7 @@ Feature: Check that Turnitin reports are fetched and displayed post page load fr
     And I log in as a manager
     And I visit the coursework page
     And I click on "Actions" "button" in the "student1" "table_row"
-    And I click on "Plagiarism action" "link"
+    And I click on "Plagiarism action" "button"
     And I set the field "Status" to "Under Investigation"
     And I set the field "Internal comment" to "Test comment"
     And I click on "Save" "button"

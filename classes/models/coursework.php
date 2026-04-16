@@ -2172,7 +2172,8 @@ class coursework extends table_base {
      * @throws dml_exception
      */
     public function tii_enabled(): bool {
-        global $DB;
+        global $DB, $CFG;
+        require_once("$CFG->dirroot/lib/plagiarismlib.php");
         if (
             !get_config('core', 'enableplagiarism')
             || !isset(plagiarism_load_available_plugins()['turnitin'])

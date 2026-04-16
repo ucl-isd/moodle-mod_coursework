@@ -101,16 +101,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         echo $this->output->footer();
     }
 
-    /**
-     * Renders the HTML for the edit page
-     *
-     * @param moderation $moderatoragreement
-     * @param $assessor
-     * @param $editor
-     * @throws \core\exception\coding_exception
-     * @throws \core\exception\moodle_exception
-     * @throws coding_exception
-     */
     public function edit_moderation_page(moderation $moderatoragreement) {
         global $USER;
 
@@ -490,60 +480,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         return $template;
     }
 
-    /**
-     * @param plagiarism_flag $newplagiarismflag
-     * @throws coding_exception
-     */
-    public function new_plagiarism_flag_page($newplagiarismflag) {
-        global $SITE;
-
-        $submission = $newplagiarismflag->get_submission();
-        $gradingtitle = get_string('plagiarismflaggingfor', 'coursework', $submission->get_allocatable_name());
-
-        $this->page->set_pagelayout('standard');
-        $this->page->navbar->add($gradingtitle);
-        $this->page->set_title($SITE->fullname);
-        $this->page->set_heading($SITE->fullname);
-
-        $html = $this->output->heading($gradingtitle);
-
-        $submiturl = $this->get_router()->get_path('create plagiarism flag', ['plagiarism_flag' => $newplagiarismflag]);
-        $simpleform = new plagiarism_flagging_mform($submiturl, ['submissionid' => $submission->id()]);
-        echo $this->output->header();
-        echo $html;
-        $simpleform->display();
-        echo $this->output->footer();
-    }
-
-    /**
-     * @param plagiarism_flag $plagiarismflag
-     * @param $creator
-     * @param $editor
-     * @throws coding_exception
-     */
-    public function edit_plagiarism_flag_page(plagiarism_flag $plagiarismflag, $creator, $editor) {
-
-        global $SITE;
-
-        $submission = $plagiarismflag->get_submission();
-        $gradingtitle = get_string('plagiarismflaggingfor', 'coursework', $submission->get_allocatable_name());
-
-        $this->page->set_pagelayout('standard');
-        $this->page->navbar->add($gradingtitle);
-        $this->page->set_title($SITE->fullname);
-        $this->page->set_heading($SITE->fullname);
-
-        $submiturl = $this->get_router()->get_path('update plagiarism flag', ['flag' => $plagiarismflag, 'submission' => $submission]);
-        $simpleform = new plagiarism_flagging_mform($submiturl, ['plagiarismflagid' => $plagiarismflag->id]);
-
-        $plagiarismflag->plagiarismcomment = ['text' => $plagiarismflag->comment,
-                                                    'format' => $plagiarismflag->commentformat];
-
-        $simpleform->set_data($plagiarismflag);
-        echo $this->output->header();
-        $simpleform->display();
-        echo $this->output->footer();
-    }
 
     /**
      * Return submission output data for Mustache.

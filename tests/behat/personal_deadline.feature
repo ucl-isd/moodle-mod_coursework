@@ -38,7 +38,7 @@ Feature: When "Use the personal deadline" is enabled the deadline date should re
     And I click on "Actions" "button" in the "John1" "table_row"
     And I wait until the page is ready
     And I wait "1" seconds
-    And I click on "Personal deadline" "link"
+    And I click on "Personal deadline" "button"
     And I wait until the page is ready
     And I should see "New personal deadline for John1 student1"
     And I set the field "Personal deadline" to "##+2 weeks, 8:00 AM##"
