@@ -157,13 +157,6 @@ class router {
                 );
                 break;
 
-            case 'edit personal deadline':
-                $url = new moodle_url(
-                    '/mod/coursework/actions/personaldeadline.php',
-                    $items
-                );
-                break;
-
             case 'set personal deadlines':
                 $url = new moodle_url(
                     '/mod/coursework/actions/set_personaldeadlines.php',

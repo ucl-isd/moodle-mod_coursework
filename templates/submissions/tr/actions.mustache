@@ -15,8 +15,7 @@
             {{#coursework.personaldeadlines_enabled}}
                 {{! Not editable if an extension exists for this user }}
                 {{#personaldeadline}}
-                    <a class="dropdown-item {{^is_editable}} disabled {{/is_editable}}"
-                       href="{{config.wwwroot}}/mod/coursework/actions/personaldeadline.php?allocatableid={{#submissiontype.user}}{{submissiontype.user.id}}{{/submissiontype.user}}{{#group}}{{group.id}}{{/group}}&allocatabletype={{#submissiontype.user}}user{{/submissiontype.user}}{{#group}}group{{/group}}&courseworkid={{coursework.id}}"
+                    <button class="dropdown-item {{^is_editable}} disabled {{/is_editable}}"
                         data-action="mod-coursework-launch-modal-personal-deadline"
                         data-coursework-id="{{coursework.id}}"
                         data-allocatable-id="{{allocatableid}}"
@@ -38,7 +37,7 @@
                         {{/exists}}
 
                         {{^exists}}{{#str}} personaldeadline, coursework {{/str}}{{/exists}}
-                    </a>
+                    </button>
                     <div class="dropdown-divider"></div>
                 {{/personaldeadline}}
             {{/coursework.personaldeadlines_enabled}}

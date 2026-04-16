@@ -341,49 +341,6 @@ class submissions_controller extends controller_base {
         redirect($courseworkpageurl, get_string('changessaved'));
     }
 
-    public function unfinalise_submission() {
-        global $DB;
-
-        $allocatableids = (!is_array($this->params['allocatableid']))
-            ? [$this->params['allocatableid']] : $this->params['allocatableid'];
-
-        $personaldeadlinepageurl = new moodle_url(
-            '/mod/coursework/actions/personaldeadline.php',
-            ['id' => $this->coursework->get_coursemodule_id(), 'multipleuserdeadlines' => 1, 'setpersonaldeadlinespage' => 1,
-            'courseworkid' => $this->coursework->id(),
-            'allocatabletype' => $this->params['allocatabletype']]
-        );
-
-        $changedeadlines = false;
-
-        foreach ($allocatableids as $aid) {
-            $submissiondb = $DB->get_record(
-                'coursework_submissions',
-                ['courseworkid' => $this->coursework->id(), 'allocatableid' => $aid, 'allocatabletype' => $this->params['allocatabletype']]
-            );
-            if (!empty($submissiondb)) {
-                $submission = submission::get_from_id($submissiondb->id);
-
-                if ($submission->can_be_unfinalised()) {
-                    $submission->finalisedstatus = submission::FINALISED_STATUS_MANUALLY_UNFINALISED;
-                    $submission->save();
-                    $personaldeadlinepageurl->param("allocatableid_arr[$aid]", $aid);
-                    $changedeadlines = true;
-                }
-            }
-        }
-
-        if (!empty($changedeadlines)) {
-            redirect($personaldeadlinepageurl, get_string('unfinalisedchangesubmissiondate', 'mod_coursework'));
-        } else {
-            $setpersonaldeadlinepageurl = new moodle_url(
-                '/mod/coursework/actions/set_personaldeadlines.php',
-                ['id' => $this->coursework->get_coursemodule_id()]
-            );
-            redirect($setpersonaldeadlinepageurl);
-        }
-    }
-
     /**
      * Is the coursework open?
      * @param coursework $coursework
