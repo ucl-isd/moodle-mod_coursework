@@ -215,12 +215,11 @@ class actions_cell_data extends cell_data_base {
             return;
         }
 
-        $submission = $rowsbase->get_submission();
-        if ($submission) {
-            $plagiarismflag = $rowsbase->get_plagiarism_flag();
-            if ($url = $this->get_plagiarism_url($submission, $plagiarismflag)) {
-                $data->plagiarism = new stdClass();
-                $data->plagiarism->url = $url;
+        if (has_capability('mod/coursework:addplagiarismflag', $this->coursework->get_context())) {
+            $data->plagiarism = new stdClass();
+            $submission = $rowsbase->get_submission();
+            $plagiarismflag = $submission ? plagiarism_flag::find(['submissionid' => $submission->id]) : null;
+            if ($plagiarismflag) {
                 $data->plagiarismstatus = $submission->get_flagged_plagiarism_status();
                 $data->plagiarism->flagid = $plagiarismflag->id ?? null;
             }

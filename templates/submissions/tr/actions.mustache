@@ -79,13 +79,13 @@
             <div class="dropdown-divider"></div>
         {{/unfinalise}}
 
-        {{#plagiarism.url}}
-            <a class="dropdown-item" href="{{plagiarism.url}}"
+        {{#plagiarism}}
+            <button class="dropdown-item"
                data-action="mod-coursework-launch-modal-plagiarism"
                data-coursework-id="{{coursework.id}}"
                data-allocatable-id="{{allocatableid}}"
                data-allocatable-type="{{allocatabletype}}"
-               {{#plagiarism.flagid}}data-plagiarism-id="{{plagiarism.flagid}}"{{/plagiarism.flagid}}
+               {{#flagid}}data-plagiarism-id="{{flagid}}"{{/flagid}}
                data-submission-id="{{submission.id}}"
             >{{#str}} plagiarism_action, mod_coursework {{/str}}
                 {{#plagiarismstatus}}
@@ -95,9 +95,9 @@
                         {{.}}
                     </small>
                 {{/plagiarismstatus}}
-            </a>
+            </button>
             <div class="dropdown-divider"></div>
-        {{/plagiarism.url}}
+        {{/plagiarism}}
 
         {{! Release mark - not implemented yet.}}
         <!--
