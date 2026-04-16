@@ -88,12 +88,6 @@ class actions_cell_data extends cell_data_base {
         if (!$this->coursework->get_deadline() || !$this->coursework->extensions_enabled()) {
             return;
         }
-        // Set parameters to add/update extension.
-        $extensionparams = [
-            'allocatableid' => $rowsbase->get_allocatable_id(),
-            'allocatabletype' => $rowsbase->get_allocatable()->type(),
-            'courseworkid' => $this->coursework->id,
-        ];
         $extension = $rowsbase->get_extension();
         // We avoid using $this->ability->can() in this context as it creates multiple DB queries per row.
         $hascapability = has_capability('mod/coursework:grantextensions', $this->coursework->get_context());
@@ -105,7 +99,6 @@ class actions_cell_data extends cell_data_base {
 
         $data->extension = new stdClass();
         if ($extension) {
-            $extensionparams['id'] = $extension->id;
             $data->extension->date = $extension->extended_deadline;
             $data->extension->id = $extension->id;
         } else {
@@ -114,8 +107,6 @@ class actions_cell_data extends cell_data_base {
 
         $data->extension->show = true;
         $data->extension->class = $extension ? 'edit_deadline_extension' : 'new_deadline_extension';
-        $data->extension->url = $extension ? router::instance()->get_path('edit deadline extension', ['id' => $extension->id]) :
-            htmlspecialchars_decode(router::instance()->get_path('new deadline extension', $extensionparams));
     }
 
     /**

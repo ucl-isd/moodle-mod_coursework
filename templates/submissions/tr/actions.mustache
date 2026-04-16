@@ -44,8 +44,7 @@
             {{/coursework.personaldeadlines_enabled}}
 
             {{#extension.show}}
-                <a class="dropdown-item {{extension.class}}"
-                   href="{{extension.url}}"
+                <button class="dropdown-item {{extension.class}}"
                    data-action="mod-coursework-launch-modal-extension"
                    data-coursework-id="{{coursework.id}}"
                    {{#extension.id}}data-extension-id="{{extension.id}}"{{/extension.id}}
@@ -60,7 +59,7 @@
                             {{/extension.date}}
                         </span>
                     </small>
-                </a>
+                </button>
                 <div class="dropdown-divider"></div>
             {{/extension.show}}
 

@@ -157,20 +157,6 @@ class router {
                 );
                 break;
 
-            case 'new deadline extension':
-                $url = new moodle_url(
-                    '/mod/coursework/actions/deadline_extensions/new.php',
-                    $items
-                );
-                break;
-
-            case 'edit deadline extension':
-                $url = new moodle_url(
-                    '/mod/coursework/actions/deadline_extensions/edit.php',
-                    $items
-                );
-                break;
-
             case 'edit personal deadline':
                 $url = new moodle_url(
                     '/mod/coursework/actions/personaldeadline.php',
