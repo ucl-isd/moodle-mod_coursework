@@ -393,6 +393,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $markerobj = new stdClass();
                 $markerobj->label = get_string('marker', 'mod_coursework') . " " . ($index + 1);
                 $markerobj->fillings = $filling['criteria'] ?? [];
+                $markerobj->markerindex = $index + 1;
                 $markersdata[$index] = $markerobj;
             }
         }
@@ -403,6 +404,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         foreach ($criteria as $criterion) {
             $criterionitem = new stdClass();
             $criterionitem->name = $isguide ? $criterion['shortname'] : $criterion['description'];
+            $criterionitem->criterionid = $criterion['id'];
             $criterionitem->markers = [];
 
             foreach ($markersdata as $markerinfo) {
@@ -411,6 +413,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
                 $marker->score = 0;
                 $marker->maxscore = 0;
                 $marker->remark = '';
+                $marker->markerindex = $markerinfo->markerindex;
 
                 $currentfilling = null;
                 foreach ($markerinfo->fillings as $fill) {

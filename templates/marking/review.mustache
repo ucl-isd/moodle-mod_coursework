@@ -70,17 +70,25 @@
                         {{/ mod_coursework/progress }}
 
                         {{#remark}}
-                        <div class="mt-2 small">
-                            <div class="text-muted">
-                            {{#str}} feedback, mod_coursework {{/str}}
-                            </div>
-                            {{{.}}}
+                        <div class="mt-2 small d-flex justify-content-between">
+                            <span class="text-muted">{{#str}} feedback, mod_coursework {{/str}}</span>
+                            <button class="btn muted btn-link p-0" data-action="mod-coursework-copy-feedback" data-copy-to="advancedgrading-criteria-{{criterionid}}-remark" data-copy-source="criterion-{{criterionid}}-marker-{{markerindex}}">
+                                <small><i class="fa fa-copy me-1" aria-hidden="true"></i>{{#str}}copytoagreed, coursework{{/str}}</small>
+                            </button>
+                        </div>
+                        <div class="small">
+                            <div id="criterion-{{criterionid}}-marker-{{markerindex}}">{{{.}}}</div>
                         </div>
                         {{/remark}}
                     </div>
                     {{/markers}}
                 </div>
                 <hr>
+                <div class="text-right">
+                    <button class="btn muted btn-link p-0" data-action="mod-coursework-calculate-average-grade">
+                        <small><i class="fa fa-calculator me-1" aria-hidden="true"></i>{{#str}}calculateaveragegrade, coursework{{/str}}</small>
+                    </button>
+                </div>
             </div>
         </li>
     {{/reviewcriteria}}

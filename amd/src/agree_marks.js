@@ -22,6 +22,29 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+const addCopyToAgreedListeners = () => {
+    document.querySelectorAll('[data-action="mod-coursework-copy-feedback"]').forEach((button) => {
+        button.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const textArea = document.getElementById(button.dataset.copyTo);
+            const copySource = document.getElementById(button.dataset.copySource);
+            if (copySource && !textArea.value.includes("\n" + copySource.textContent)) {
+                textArea.value += "\n" + copySource.textContent;
+            }
+            button.setAttribute('disabled', 'disabled');
+        });
+    });
+};
+
+const addCalculateAverageGradeListeners = () => {
+    document.querySelectorAll('[data-action="mod-coursework-calculate-average-grade"]').forEach((button) => {
+        button.addEventListener("click", async (e) => {
+            e.preventDefault();
+            alert("TODO Not yet implemented");
+        });
+    });
+};
+
 /**
  * Initialize the mark syncing logic.
  */
@@ -41,4 +64,7 @@ export const init = () => {
             targetCells[index].appendChild(block);
         }
     });
+
+    addCopyToAgreedListeners();
+    addCalculateAverageGradeListeners();
 };
