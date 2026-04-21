@@ -26,7 +26,6 @@ use core\exception\invalid_parameter_exception;
 use core\exception\moodle_exception;
 use core_form\dynamic_form;
 use mod_coursework\ability;
-use mod_coursework\controllers\personaldeadlines_controller;
 use mod_coursework\exceptions\access_denied;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
@@ -69,14 +68,12 @@ class personaldeadline_form extends dynamic_form {
 
         $this->coursework = $this->get_coursework();
 
-        $existingdeadlinerecord = personaldeadlines_controller::get_personaldeadline(
-            $customdata['allocatableid'],
-            $customdata['allocatabletype'],
-            $customdata['courseworkid'],
-        );
-        $this->existingdeadline = $existingdeadlinerecord
-            ? personaldeadline::get_from_id($existingdeadlinerecord->id)
-            : null;
+        $this->existingdeadline = personaldeadline::find([
+            'courseworkid' => $customdata['courseworkid'],
+            'allocatableid' => $customdata['allocatableid'],
+            'allocatabletype' => $customdata['allocatabletype'],
+
+        ]) ?: null;
 
         $this->allocatable = $this->existingdeadline
             ? $this->existingdeadline->get_allocatable()
@@ -263,15 +260,14 @@ class personaldeadline_form extends dynamic_form {
     protected function can_edit(): bool {
         global $USER;
         $datasource = $this->_customdata ?? $this->_ajaxformdata;
-        $deadline = personaldeadlines_controller::get_personaldeadline(
-            $datasource['allocatableid'],
-            $datasource['allocatabletype'],
-            $datasource['courseworkid'],
-        );
         $ability = new ability($USER->id, $this->get_coursework());
-        $deadline = personaldeadline::find_or_build($deadline);
-        $deadline->courseworkid = $this->coursework->id();
-        return $ability->can('edit', $deadline);
+        $deadline = personaldeadline::find_or_build([
+            'courseworkid' => $datasource['courseworkid'],
+            'allocatableid' => $datasource['allocatableid'],
+            'allocatabletype' => $datasource['allocatabletype'],
+
+        ]) ?: null;
+        return $deadline && $ability->can('edit', $deadline);
     }
 
     /**

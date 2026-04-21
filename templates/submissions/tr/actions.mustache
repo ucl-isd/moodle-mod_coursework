@@ -15,8 +15,7 @@
             {{#coursework.personaldeadlines_enabled}}
                 {{! Not editable if an extension exists for this user }}
                 {{#personaldeadline}}
-                    <a class="dropdown-item {{^is_editable}} disabled {{/is_editable}}"
-                       href="{{config.wwwroot}}/mod/coursework/actions/personaldeadline.php?allocatableid={{#submissiontype.user}}{{submissiontype.user.id}}{{/submissiontype.user}}{{#group}}{{group.id}}{{/group}}&allocatabletype={{#submissiontype.user}}user{{/submissiontype.user}}{{#group}}group{{/group}}&courseworkid={{coursework.id}}"
+                    <button class="dropdown-item {{^is_editable}} disabled {{/is_editable}}"
                         data-action="mod-coursework-launch-modal-personal-deadline"
                         data-coursework-id="{{coursework.id}}"
                         data-allocatable-id="{{allocatableid}}"
@@ -38,14 +37,13 @@
                         {{/exists}}
 
                         {{^exists}}{{#str}} personaldeadline, coursework {{/str}}{{/exists}}
-                    </a>
+                    </button>
                     <div class="dropdown-divider"></div>
                 {{/personaldeadline}}
             {{/coursework.personaldeadlines_enabled}}
 
             {{#extension.show}}
-                <a class="dropdown-item {{extension.class}}"
-                   href="{{extension.url}}"
+                <button class="dropdown-item {{extension.class}}"
                    data-action="mod-coursework-launch-modal-extension"
                    data-coursework-id="{{coursework.id}}"
                    {{#extension.id}}data-extension-id="{{extension.id}}"{{/extension.id}}
@@ -60,7 +58,7 @@
                             {{/extension.date}}
                         </span>
                     </small>
-                </a>
+                </button>
                 <div class="dropdown-divider"></div>
             {{/extension.show}}
 
@@ -81,13 +79,13 @@
             <div class="dropdown-divider"></div>
         {{/unfinalise}}
 
-        {{#plagiarism.url}}
-            <a class="dropdown-item" href="{{plagiarism.url}}"
+        {{#plagiarism}}
+            <button class="dropdown-item"
                data-action="mod-coursework-launch-modal-plagiarism"
                data-coursework-id="{{coursework.id}}"
                data-allocatable-id="{{allocatableid}}"
                data-allocatable-type="{{allocatabletype}}"
-               {{#plagiarism.flagid}}data-plagiarism-id="{{plagiarism.flagid}}"{{/plagiarism.flagid}}
+               {{#flagid}}data-plagiarism-id="{{flagid}}"{{/flagid}}
                data-submission-id="{{submission.id}}"
             >{{#str}} plagiarism_action, mod_coursework {{/str}}
                 {{#plagiarismstatus}}
@@ -97,9 +95,9 @@
                         {{.}}
                     </small>
                 {{/plagiarismstatus}}
-            </a>
+            </button>
             <div class="dropdown-divider"></div>
-        {{/plagiarism.url}}
+        {{/plagiarism}}
 
         {{! Release mark - not implemented yet.}}
         <!--

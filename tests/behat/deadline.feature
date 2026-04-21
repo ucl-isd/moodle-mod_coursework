@@ -55,7 +55,7 @@ Feature: Deadlines extensions for submissions
     Given I am on the "Coursework" "coursework activity" page logged in as "manager1"
     And I press "Actions"
     And I wait until the page is ready
-    And I click on "Submission extension" "link"
+    And I click on "Submission extension" "button"
     And I wait until the page is ready
     And I set the field "Extended deadline" to "##+2 weeks, 8:00 AM##"
     And I click on "Save" "button" in the "Extended deadline" "dialogue"
@@ -65,7 +65,7 @@ Feature: Deadlines extensions for submissions
 
     Given I press "Actions"
     And I wait until the page is ready
-    And I click on "Submission extension" "link"
+    And I click on "Submission extension" "button"
     And I wait until the page is ready
     And I set the field "Extended deadline" to "##+3 weeks, 8:00 AM##"
     And I click on "Save" "button" in the "Extended deadline" "dialogue"

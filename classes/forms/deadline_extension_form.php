@@ -346,7 +346,7 @@ class deadline_extension_form extends dynamic_form {
         $errors = [];
         $warnings = [];
 
-        // Code adapted from deadline_extensions_controller->update_deadline_extension().
+        // Code adapted from (now removed) deadline_extensions_controller->update_deadline_extension().
         $ability = new ability($USER->id, $this->coursework);
         if (!$ability->can($this->extension->id ? 'update' : 'new', $this->extension)) {
             $errors[] = get_string('nopermissiongeneral', 'mod_coursework');
