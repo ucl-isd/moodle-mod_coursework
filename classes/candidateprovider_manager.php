@@ -31,29 +31,6 @@ class candidateprovider_manager {
     /** @var candidateprovider_manager|null Singleton instance */
     private static $instance = null;
 
-    /** @var candidateprovider|null Mock provider for testing */
-    private $mockprovider = null;
-
-    /**
-     * Private constructor to prevent direct instantiation.
-     */
-    private function __construct() {
-        if ((defined('PHPUNIT_TEST') && PHPUNIT_TEST) || defined('BEHAT_SITE_RUNNING')) {
-            // Check if Behat step has specified a mock provider filepath, class name and candidate number.
-            $mockproviderfilepath = get_config('core', 'behat_mock_provider_filepath');
-            $mockproviderclass = get_config('core', 'behat_mock_provider_class');
-            $mockcandidatenumber = get_config('core', 'behat_mock_candidate_number') ?? null;
-
-            if ($mockproviderfilepath && $mockproviderclass) {
-                $this->mockprovider = $this->load_mock_provider_from_file(
-                    $mockproviderfilepath,
-                    $mockproviderclass,
-                    $mockcandidatenumber
-                );
-            }
-        }
-    }
-
     /**
      * Get singleton instance.
      *
@@ -67,28 +44,25 @@ class candidateprovider_manager {
         return self::$instance;
     }
 
+    private array $providers;
     /**
      * Get all available candidate number providers.
      *
      * @return array Array of provider name => display name
      */
     public function get_available_providers(): array {
-        $providers = [];
-        $subplugins = core_plugin_manager::instance()->get_subplugins_of_plugin('mod_coursework');
-        if (empty($subplugins)) {
-            return $providers;
-        }
+        if (!isset($this->providers)) {
+            $this->providers = [];
 
-        foreach ($subplugins as $subplugin) {
-            if ($subplugin->type === 'courseworkcandidateprovider') {
+            foreach (core_plugin_manager::instance()->get_plugins_of_type('courseworkcandidateprovider') as $subplugin) {
                 $provider = self::create_provider_instance($subplugin->name);
                 if ($provider && $provider->is_available()) {
-                    $providers[$subplugin->name] = $provider->get_provider_name();
+                    $this->providers[$subplugin->name] = $provider->get_provider_name();
                 }
             }
         }
 
-        return $providers;
+        return $this->providers;
     }
 
     /**
@@ -97,13 +71,9 @@ class candidateprovider_manager {
      * @return candidateprovider|null Provider instance or null if none selected
      * @throws \dml_exception
      */
-    public function get_selected_provider(): ?candidateprovider {
-        // Return mock provider if set (for testing).
-        if ($this->mockprovider !== null) {
-            return $this->mockprovider;
-        }
+    private function get_selected_provider(): ?candidateprovider {
         $selected = get_config('mod_coursework', 'candidate_provider');
-        if (empty($selected) || $selected === 'none') {
+        if (empty($selected)) {
             return null;
         }
 
@@ -118,11 +88,6 @@ class candidateprovider_manager {
     public function is_provider_available(): bool {
         $provider = $this->get_selected_provider();
 
-        // Return true if mock provider is set (for testing).
-        if ($this->mockprovider !== null) {
-            return true;
-        }
-
         return $provider !== null && $provider->is_available();
     }
 
@@ -133,25 +98,16 @@ class candidateprovider_manager {
      * @return candidateprovider|null Provider instance or null if not found
      */
     private function create_provider_instance(string $providername): ?candidateprovider {
-        $component = 'courseworkcandidateprovider_' . $providername;
-        $classname = "\\$component\\candidatenumber_provider";
-
-        // Check if the class exists.
-        if (!class_exists($classname)) {
-            return null;
-        }
-
-        // Check if plugin is installed.
-        $plugininfo = core_plugin_manager::instance()->get_plugin_info($component);
-        if (!$plugininfo) {
-            return null;
-        }
+        $classname = "\\courseworkcandidateprovider_$providername\\candidatenumber_provider";
 
         try {
             $instance = new $classname();
+
             if ($instance instanceof candidateprovider) {
                 return $instance;
             }
+
+            debugging('Unexpected type returned by ' . $providername, DEBUG_DEVELOPER);
         } catch (Exception $e) {
             debugging('Failed to create provider instance for ' . $providername . ': ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
@@ -168,7 +124,7 @@ class candidateprovider_manager {
      */
     public function get_candidate_number(int $courseid, int $userid): ?string {
         $provider = $this->get_selected_provider();
-        if (!$provider) {
+        if (!$provider || !$provider->is_available()) {
             return null;
         }
 
@@ -178,26 +134,5 @@ class candidateprovider_manager {
             debugging('Provider failed to get candidate number: ' . $e->getMessage(), DEBUG_DEVELOPER);
             return null;
         }
-    }
-
-    /**
-     * Load mock provider from specified file.
-     *
-     * @param string $filepath Path to mock provider file
-     * @param string $classname Class name of the mock provider
-     * @param string|null $candidatenumber Candidate number to use
-     * @return candidateprovider|null Mock provider instance or null if failed
-     */
-    private function load_mock_provider_from_file(string $filepath, string $classname, ?string $candidatenumber): ?candidateprovider {
-        try {
-            require_once($filepath);
-            if (class_exists($classname)) {
-                return new $classname($candidatenumber);
-            }
-        } catch (Exception $e) {
-            debugging('Failed to load mock provider from file: ' . $e->getMessage(), DEBUG_DEVELOPER);
-        }
-
-        return null;
     }
 }

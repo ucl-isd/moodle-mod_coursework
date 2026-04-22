@@ -166,10 +166,6 @@ class student_cell_data extends cell_data_base {
     }
 
     private function get_candidate_number(int $userid): ?string {
-        $candidateprovidermanager = candidateprovider_manager::instance();
-        if (!$candidateprovidermanager->is_provider_available()) {
-            return null;
-        }
-        return $candidateprovidermanager->get_candidate_number($this->coursework->get_course_id(), $userid) ?: null;
+        return candidateprovider_manager::instance()->get_candidate_number($this->coursework->get_course_id(), $userid);
     }
 }
