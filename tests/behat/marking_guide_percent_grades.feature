@@ -3,19 +3,31 @@ Feature: Marking guide percentage grades entry
   Markers can enter element grades as percentages instead of the usual fractions
 
   Background:
-    Given there is a course
-    And there is a coursework
-    And the coursework "numberofmarkers" setting is "2" in the database
-    And the coursework "allowenterguidegradesaspercent" setting is "1" in the database
-    And there is a teacher
-    And there is a student
-    And there is another teacher
-    And the student has a submission
-    And the submission is finalised
-    And the coursework deadline has passed
+    Given the following "course" exists:
+      | fullname  | Course 1 |
+      | shortname | C1       |
+    And the following "activity" exists:
+      | activity                       | coursework    |
+      | course                         | C1            |
+      | name                           | Coursework    |
+      | numberofmarkers                | 2             |
+      | allowenterguidegradesaspercent | 1             |
+      | deadline                       | ##yesterday## |
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+      | teacher2 | teacher   | teacher2 | teacher2@example.com |
+      | student1 | student   | student1 | student1@example.com |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | teacher1 | C1     | teacher |
+      | teacher2 | C1     | teacher |
+      | student1 | C1     | student |
+    And the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | Coursework | 1               |
 
-    And I log in as "admin"
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page logged in as "admin"
 
     And I select "Advanced grading" from secondary navigation
     And I set the field "Change active grading method to" to "Marking guide"
@@ -24,18 +36,21 @@ Feature: Marking guide percentage grades entry
     And I set the following fields to these values:
       | Name | Behat marking form |
     And I define the following marking guide:
-      | Criterion name | Description for students | Description for markers  | Maximum score |
-      | Criterion 1     | Description for students | Description for markers | 30            |
-      | Criterion 2     | Description for students | Description for markers | 20            |
-      | Criterion 3     | Description for students | Description for markers | 50            |
+      | Criterion name | Description for students | Description for markers | Maximum score |
+      | Criterion 1    | Description for students | Description for markers | 30            |
+      | Criterion 2    | Description for students | Description for markers | 20            |
+      | Criterion 3    | Description for students | Description for markers | 50            |
     And I press "Save marking guide and make it ready"
     And I log out
 
   @javascript
   Scenario: Marker enters grades as fractions in usual way (no percent grades allowed by site admin).
-    Given the coursework "allowenterguidegradesaspercent" setting is "0" in the database
-    And I log in as the teacher
-    And I visit the coursework page
+    Given I am on the "Coursework" "coursework activity" page logged in as "admin"
+    And I navigate to "Settings" in current page administration
+    And I set the field "allowenterguidegradesaspercent" to "0"
+    And I press "Save and display"
+
+    When I am on the "Coursework" "coursework activity" page logged in as "teacher1"
     And I follow "Add mark"
     And I wait until the page is ready
     And I should see "Mark (0–30)"
@@ -51,17 +66,16 @@ Feature: Marking guide percentage grades entry
       | Criterion 3 | 25 |  |
     And I press "Save and finalise"
 
-    And I visit the coursework page
-    And I should see "41" in the "student student2" "table_row"
+    And I am on the "Coursework" "coursework activity" page
+    And I should see "41" in the "student student1" "table_row"
     And I log out
 
   @javascript
   Scenario: Marker enters grades as percentages, or as fractions even though percentage grades are allowed.
     Given the following "user preferences" exist:
       | user     | preference                            | value |
-      | user1    | coursework_guide_enter_percent_grades | 1     |
-    And I log in as the teacher
-    And I visit the coursework page
+      | teacher1 | coursework_guide_enter_percent_grades | 1     |
+    And I am on the "Coursework" "coursework activity" page logged in as "teacher1"
     And I follow "Add mark"
     And I wait until the page is ready
     And I should see "Mark (0–30)"
@@ -82,15 +96,15 @@ Feature: Marking guide percentage grades entry
     # Total % mark also calculated and shown.
     And I should see "49%" in the ".total-mark-container" "css_element"
     And I press "Save and finalise"
-    And I should see "Feedback saved" in the "student2" "table_row"
+    And I should see "Feedback saved" in the "student1" "table_row"
 
     And I visit the coursework page
-    And I should see "49" in the "student student2" "table_row"
+    And I should see "49" in the "student student1" "table_row"
     And I log out
 
     # Now add as scores, with percentages switched off, even though percentage grades are allowed.
-    And I log in as the other teacher
-    And I visit the coursework page
+
+    And I am on the "Coursework" "coursework activity" page logged in as "teacher2"
     And I follow "Add mark"
     # Percentage marks by default - toggle the input to check it works.
     And the field "Enter marks as %" matches value "0"
@@ -105,7 +119,7 @@ Feature: Marking guide percentage grades entry
     And I set the field "Mark (0–50)" in the "Criterion 3" "table_row" to "30"
     And I wait until the page is ready
     And I press "Save and finalise"
-    And I should see "Feedback saved" in the "student2" "table_row"
+    And I should see "Feedback saved" in the "student1" "table_row"
 
-    And I visit the coursework page
-    And I should see "49" in the "student student2" "table_row"
+    And I am on the "Coursework" "coursework activity" page
+    And I should see "49" in the "student student1" "table_row"
