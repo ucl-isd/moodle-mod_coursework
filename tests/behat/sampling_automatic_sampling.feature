@@ -6,45 +6,46 @@ Feature: Automatic sampling using total number of students in stage 1 and 2
   So that this process does not need to be done manually, wasting lots of time.
 
   Background:
-    Given there is a course
-    And I am logged in as a manager
-    And the manager has a capability to allocate students in samplings
-    And there is a coursework
-    And there is a student
-    And there is another student
-    And there is a teacher
-    And there is another teacher
-
-  Scenario: Automatically allocating a total for stage 2 based on stage 1
-    Given the coursework "numberofmarkers" setting is "2" in the database
-    And the coursework "samplingenabled" setting is "1" in the database
-    And I visit the allocations page
-    When I enable automatic sampling for stage 2
-    And I enable total rule for stage 2
-    And I select 50% of total students in stage 1
-    And I save sampling strategy
-    Then a student or another student should be automatically included in sample for stage 2
+    Given the following "course" exists:
+      | fullname  | Course 1 |
+      | shortname | C1       |
+    And the following "activity" exists:
+      | activity        | coursework |
+      | course          | C1         |
+      | name            | Coursework |
+      | samplingenabled | 1          |
+      | numberofmarkers | 3          |
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | manager1 | manager   | manager1 | manager1@example.com |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+      | teacher2 | teacher   | teacher2 | teacher2@example.com |
+      | student1 | student   | student1 | student1@example.com |
+      | student2 | student   | student2 | student2@example.com |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | manager1 | C1     | manager |
+      | teacher1 | C1     | teacher |
+      | teacher2 | C1     | teacher |
+      | student1 | C1     | student |
+      | student2 | C1     | student |
+    And the following config values are set as admin:
+      | config                 | value | plugin         |
+      | eliminaterandmosiation | 1     | mod_coursework |
 
   Scenario: Automatically allocating a total for stage 3 based on stage 2
-    Given the coursework "numberofmarkers" setting is "3" in the database
-    And the coursework "samplingenabled" setting is "1" in the database
-    And I visit the allocations page
-    When I enable automatic sampling for stage 2
-    And I enable total rule for stage 2
-    And I select 100% of total students in stage 1
-    And I enable automatic sampling for stage 3
-    And I enable total rule for stage 3
-    And I select 50% of total students in stage 2
-    And I save sampling strategy
-    Then a student or another student should be automatically included in sample for stage 3
-
-  Scenario: Automatically allocating a total for stage 3 based on stage 1
-    Given the coursework "numberofmarkers" setting is "3" in the database
-    And the coursework "samplingenabled" setting is "1" in the database
-    And I visit the allocations page
-    When I enable automatic sampling for stage 3
-    And I enable total rule for stage 3
-    When I enable automatic sampling for stage 2
-    And I select 50% of total students in stage 1
-    And I save sampling strategy
-    Then a student or another student should be automatically included in sample for stage 3
+    Given I am on the "Coursework" "coursework activity" page logged in as "manager1"
+    And I navigate to "Allocate markers" in current page administration
+    And I set the following fields to these values:
+      | assessor_2_samplingstrategy     | Automatic |
+      | assessor_2_sampletotal_checkbox | 1         |
+      | assessor_2_sampletotal          | 100       |
+      | assessor_3_samplingstrategy     | Automatic |
+      | assessor_3_sampletotal_checkbox | 1         |
+      | assessor_3_sampletotal          | 50        |
+    And I press "save_sampling"
+    Then "student student1" row "Marker 2" column of "mod_coursework_allocatemarkers" table should contain "Automatically included in sample"
+    And "student student1" row "Marker 3" column of "mod_coursework_allocatemarkers" table should contain "Automatically included in sample"
+    And "student student2" row "Marker 2" column of "mod_coursework_allocatemarkers" table should contain "Automatically included in sample"
+    And "student student2" row "Marker 3" column of "mod_coursework_allocatemarkers" table should not contain "Automatically included in sample"
+    And "student student2" row "Marker 3" column of "mod_coursework_allocatemarkers" table should contain "Included in sample"

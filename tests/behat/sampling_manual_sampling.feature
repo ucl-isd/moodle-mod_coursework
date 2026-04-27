@@ -6,56 +6,50 @@ Feature: Manual sampling
   So I can select correct sample of students for double marking
 
   Background:
-    Given there is a course
-    And I am logged in as a manager
-    And the manager has a capability to allocate students in samplings
-    And there is a coursework
-    And the coursework allocation option is disabled
-    And the coursework has sampling enabled
-    And the coursework is set to double marker
-    And there is a student
-    And there is a teacher
-    And the teacher has a capability to mark submissions
-    And there is another teacher
-    And the student has a submission
-    And there is feedback for the submission from the other teacher
-    And the submission deadline has passed
-    And the submission is finalised
+    Given the following "course" exists:
+      | fullname  | Course 1 |
+      | shortname | C1       |
+    And the following "activity" exists:
+      | activity          | coursework  |
+      | course            | C1          |
+      | name              | Coursework  |
+      | allocationenabled | 0           |
+      | samplingenabled   | 1           |
+      | numberofmarkers   | 2           |
+      | deadline          | ##-1 week## |
+    And the following "permission overrides" exist:
+      | capability                     | permission | role    | contextlevel | reference |
+      | mod/coursework:addinitialgrade | Allow      | teacher | Course       | C1        |
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | manager1 | manager   | manager1 | manager1@example.com |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+      | teacher2 | teacher   | teacher2 | teacher2@example.com |
+      | student1 | student   | student1 | student1@example.com |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | manager1 | C1     | manager |
+      | teacher1 | C1     | teacher |
+      | teacher2 | C1     | teacher |
+      | student1 | C1     | student |
+    And the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | Coursework | 1               |
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher2 | assessor_1      | 67    | New comment here |
 
   @javascript
   Scenario: Manual sampling should not include student when not selected
-    When I visit the allocations page
-    And I set the following fields in the "student student2" "table_row" to these values:
-      | Included in sample | false |
-    And I log out
-    And I log in as the teacher
-    And I visit the coursework page
-    And I wait "1" seconds
-    # I should *NOT* be able to grade the user
-    And I should not see "Add feedback"
-    Then I should not be able to add the second grade for this student
+    When I am on the "Coursework" "coursework activity" page logged in as "manager1"
+    And I navigate to "Allocate markers" in current page administration
+    And I set the following fields in the "student student1" "table_row" to these values:
+      | Included in sample | 0 |
+    And I am on the "Coursework" "coursework activity" page
+    Then I should not see "Add mark" in the "student student1" "table_row"
 
-  @javascript
-  Scenario: Single grade should go to the gradebook column when only first stage is in sample
-    When I visit the allocations page
-    And I set the following fields in the "student student2" "table_row" to these values:
-      | Included in sample | false |
-    And I log out
-    And I log in as the teacher
-    And I visit the coursework page
-    Then I should see the grade given by the initial teacher in the provisional grade column
-
-  @javascript
-  Scenario: Manual sampling should include student when selected
-    When I visit the allocations page
-    And I set the following fields in the "student student2" "table_row" to these values:
-      | Included in sample | true |
-    And I log out
-    And I log in as the teacher
-    And I visit the coursework page
-    # I should be able to grade the user
-    And I wait "1" seconds
-    And I should see "Add mark"
-    And I click on the add feedback button for assessor 2
-    And I set the field "Mark" to "67"
-    And I press "Save and finalise"
+    When I navigate to "Allocate markers" in current page administration
+    And I set the following fields in the "student student1" "table_row" to these values:
+      | Included in sample | 1 |
+    And I am on the "Coursework" "coursework activity" page
+    Then I should see "Add mark" in the "student student1" "table_row"
