@@ -153,6 +153,10 @@ function coursework_render_page(coursework $coursework) {
     foreach ($coursework->get_allocatables() as $allocatable) {
         $stages = [];
         foreach ($coursework->marking_stages() as $stage) {
+            if (!$stage->uses_allocation() && !$stage->uses_sampling()) {
+                continue;
+            }
+
             $feedback = $stage->get_feedback_for_allocatable($allocatable);
             $membership = $stage->get_assessment_set_membership($allocatable);
 
