@@ -215,6 +215,10 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                         $arraykeys = array_rand($allocatablesampleset, $totaltoreturn - count($autosampleset));
 
+                    if (defined('BEHAT_SITE_RUNNING') && get_config('mod_coursework', 'eliminaterandmosiation')) {
+                        $arraykeys = array_slice(array_keys($allocatablesampleset), 0, $totaltoreturn - count($autosampleset));
+                    }
+
                     if (!is_array($arraykeys)) {
                         $arraykeys = [$arraykeys];
                     }
