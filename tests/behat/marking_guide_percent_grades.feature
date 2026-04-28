@@ -41,7 +41,6 @@ Feature: Marking guide percentage grades entry
       | Criterion 2    | Description for students | Description for markers | 20            |
       | Criterion 3    | Description for students | Description for markers | 50            |
     And I press "Save marking guide and make it ready"
-    And I log out
 
   @javascript
   Scenario: Marker enters grades as fractions in usual way (no percent grades allowed by site admin).
@@ -68,7 +67,6 @@ Feature: Marking guide percentage grades entry
 
     And I am on the "Coursework" "coursework activity" page
     And I should see "41" in the "student student1" "table_row"
-    And I log out
 
   @javascript
   Scenario: Marker enters grades as percentages, or as fractions even though percentage grades are allowed.
@@ -100,7 +98,6 @@ Feature: Marking guide percentage grades entry
 
     And I visit the coursework page
     And I should see "49" in the "student student1" "table_row"
-    And I log out
 
     # Now add as scores, with percentages switched off, even though percentage grades are allowed.
 

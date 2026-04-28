@@ -79,7 +79,6 @@ Feature: Marking guide with frequent comments
     Then I should see "Ready for release" in the "student1" "table_row"
     And I follow "Release the marks"
     And I press "Confirm"
-    And I log out
 
     When I am on the "Coursework" "coursework activity" page logged in as "student1"
     Then I should see "Frequent Comment 2" in the ".coursework-feedback .behat-criterion-remark" "css_element"

@@ -59,7 +59,6 @@ Feature: For the final grade the mark should be to the decimal point
     And I press "Save and finalise"
     # Decimal mark is cleaned to integer.
     Then I should see "40" in the table row containing "Jane1"
-    And I log out
 
     And I am on the "Coursework" "coursework activity" page logged in as "teacher2"
     # Cannot see other teacher's mark - see "Marked" instead.
@@ -69,7 +68,6 @@ Feature: For the final grade the mark should be to the decimal point
     And I set the field "Mark" to "58"
     And I press "Save and finalise"
     Then I should see "58" in the table row containing "John1"
-    And I log out
 
     # Manager can then enter agreed grade as a decimal.
     And I am on the "Coursework" "coursework activity" page logged in as "manager1"

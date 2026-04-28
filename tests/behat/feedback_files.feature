@@ -52,7 +52,7 @@ Feature: Adding feedback files
 
     When I follow "Release the marks"
     And I press "Confirm"
-    And I log out
+
     And I am on the "Coursework" "coursework activity" page logged in as "student1"
     Then I should see "Test_image.png" in the ".coursework-feedback" "css_element"
     And I should see "Test_document.docx" in the ".coursework-feedback" "css_element"
