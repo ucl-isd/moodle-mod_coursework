@@ -16,10 +16,11 @@ Feature: Deadlines for submissions
       | user     | course | role           |
       | teacher1 | C1     | editingteacher |
     And the following "activity" exists:
-      | activity           | coursework |
-      | course             | C1         |
-      | name               | Coursework |
-      | individualfeedback | 0          |
+      | activity           | coursework  |
+      | course             | C1          |
+      | name               | Coursework  |
+      | individualfeedback | 0           |
+      | deadline           | ##+1 week## |
 
   # General feedback visibility was included here, but it is now no longer shown to markers.
   # Instead, it is now accessible to managers via the secondary navigation only.
@@ -30,8 +31,9 @@ Feature: Deadlines for submissions
     Then I should not see "Auto-release feedback"
 
     Given I navigate to "Settings" in current page administration
-    And I set the field "individualfeedback" to "##+1 week##"
+    And I set the field "individualfeedback" to "##+2 week##"
     And I press "Save and display"
     When I am on the "Coursework" "coursework activity" page
     Then I should see "Auto-release feedback"
-    And I should see "##+1 week##" in the ".behat-duedate" "css_element"
+    And I should see "##+1 week##%d %B %Y##" in the ".behat-duedate" "css_element"
+    And I should see "##+2 week##%d %B %Y##" in the ".behat-individualfeedback" "css_element"

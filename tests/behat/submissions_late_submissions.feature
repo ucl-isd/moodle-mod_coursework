@@ -24,8 +24,7 @@ Feature: Late submissions
 
   @javascript @_file_upload
   Scenario: not allowed to submit late if the setting does not allow it
-    Given the coursework "allowlatesubmissions" setting is "0" in the database
-    And I am on the "Coursework" "coursework activity" page logged in as "student1"
+    Given I am on the "Coursework" "coursework activity" page logged in as "student1"
     Then I should not see "Upload your submission"
 
     Given I am on the "Coursework" "coursework activity" page logged in as "admin"

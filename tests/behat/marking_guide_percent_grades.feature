@@ -95,8 +95,6 @@ Feature: Marking guide percentage grades entry
     And I should see "49%" in the ".total-mark-container" "css_element"
     And I press "Save and finalise"
     And I should see "Feedback saved" in the "student1" "table_row"
-
-    And I visit the coursework page
     And I should see "49" in the "student student1" "table_row"
 
     # Now add as scores, with percentages switched off, even though percentage grades are allowed.

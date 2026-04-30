@@ -11,10 +11,11 @@ Feature: Auto releasing the student feedback without cron
       | fullname  | Course 1 |
       | shortname | C1       |
     And the following "activity" exists:
-      | activity        | coursework |
-      | course          | C1         |
-      | name            | Coursework |
-      | numberofmarkers | 1          |
+      | activity        | coursework  |
+      | course          | C1          |
+      | name            | Coursework  |
+      | numberofmarkers | 1           |
+      | deadline        | ##-2 week## |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | student1 | student   | student1 | student1@example.com |
@@ -27,24 +28,27 @@ Feature: Auto releasing the student feedback without cron
       | allocatable | coursework | finalisedstatus |
       | student1    | Coursework | 1               |
     And the following "mod_coursework > feedbacks" exist:
-      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment |
-      | student1    | Coursework | teacher1 | assessor_1      | 58    | Blah            |
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment | finalised |
+      | student1    | Coursework | teacher1 | assessor_1      | 58    | Blah            | 1         |
 
   Scenario: auto release does not happen before the deadline without the cron running
     When I am on the "Coursework" "coursework activity" page logged in as "admin"
     And I navigate to "Settings" in current page administration
+    And I expand all fieldsets
     And I set the field "individualfeedback" to "##+1 week##"
     And I press "Save and display"
 
     When I am on the "Coursework" "coursework activity" page logged in as "student1"
     Then I should not see "Released"
 
+  @javascript
   Scenario: auto release happens after the deadline without the cron running
     When I am on the "Coursework" "coursework activity" page logged in as "admin"
     And I navigate to "Settings" in current page administration
+    And I expand all fieldsets
     And I set the field "individualfeedback" to "##-1 week##"
     And I press "Save and display"
 
-    Given the coursework individual feedback release date has passed
+    #Given the coursework individual feedback release date has passed
     And I am on the "Coursework" "coursework activity" page logged in as "student1"
     Then I should see "Released"

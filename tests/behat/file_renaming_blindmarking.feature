@@ -17,6 +17,7 @@ Feature: Username hash based file renaming for submission files
       | maxfiles     | 2          |
       | blindmarking | 1          |
       | renamefiles  | 1          |
+      | usecandidate | 0          |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | student1 | student   | student1 | student1@example.com |
@@ -26,9 +27,7 @@ Feature: Username hash based file renaming for submission files
 
   @javascript @_file_upload
   Scenario: Files use username hash when candidate number is disabled
-    Given blind marking is enabled
-    And the coursework "usecandidate" setting is "0" in the database
-    And I am on the "Coursework" "coursework activity" page logged in as "student1"
+    Given I am on the "Coursework" "coursework activity" page logged in as "student1"
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager

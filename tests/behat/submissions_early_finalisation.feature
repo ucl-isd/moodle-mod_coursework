@@ -60,7 +60,12 @@ Feature: Early finalisation of student submissions
 
   @javascript @_file_upload
   Scenario: allowed to submit late if the setting allows it
-    Given the coursework "allowlatesubmissions" setting is "1" in the database
+    Given I am on the "Coursework" "coursework activity" page logged in as "admin"
+    And I navigate to "Settings" in current page administration
+    And I expand all fieldsets
+    And I set the field "allowlatesubmissions" to "1"
+    And I press "Save and display"
+
     When I am on the "Coursework" "coursework activity" page logged in as "student1"
     And I follow "Upload your submission"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager

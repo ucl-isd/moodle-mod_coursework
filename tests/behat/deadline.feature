@@ -28,11 +28,11 @@ Feature: Deadlines extensions for submissions
 
   Scenario: A teacher and a student should both see the deadline
     Given I am on the "Coursework" "coursework activity" page logged in as "teacher1"
-    Then I should see due date "##yesterday##%d %B %Y##"
+    Then I should see "##yesterday##%d %B %Y##" in the ".behat-duedate" "css_element"
     But I should not see "Extended deadline"
 
     Given I am on the "Coursework" "coursework activity" page logged in as "student1"
-    Then I should see due date "##yesterday##%d %B %Y##"
+    Then I should see "##yesterday##%d %B %Y##" in the ".behat-duedate" "css_element"
     But I should not see "Extended deadline"
 
   Scenario: The student can submit after the deadline when they have a deadline extension
@@ -41,7 +41,8 @@ Feature: Deadlines extensions for submissions
       | student1    | Coursework | ##+1 week## |
     When I am on the "Coursework" "coursework activity" page logged in as "student1"
     Then "Upload your submission" "link" should exist
-    And I should see extension date "##+1 week##%d %B %Y##"
+    And I should see "##+1 week##%d %B %Y##" in the ".behat-duedate" "css_element"
+    And I should see "Extended deadline"
 
   Scenario: The student can not submit when their deadline extension is in the past
     Given the following "mod_coursework > deadline_extensions" exist:
