@@ -33,7 +33,9 @@ Feature: Late submissions
     And I press "Save and display"
 
     When I am on the "Coursework" "coursework activity" page logged in as "student1"
-    Then I should see "Upload your submission"
+    Then I should see "Late submissions allowed"
     When I follow "Upload your submission"
-    And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
+    Then I should see "You are submitting after the deadline has passed. Any mark given will be provisional and could still be set to 0."
+    When I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I press "Submit"
+    Then I should see "Late" in the ".behat-submission-information" "css_element"
