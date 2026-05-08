@@ -145,12 +145,12 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
         $stage = "assessor_" . $stagenumber;
 
         $sql = "SELECT r.*,p.rulename
-                         FROM           {coursework_sample_set_plugin} p
-                         INNER JOIN     {coursework_sample_set_rules} r ON p.id = r.samplesetpluginid
-                         WHERE            r.courseworkid = :courseworkid
-                         AND            p.rulename = 'total_sample_type'
-                         AND            stageidentifier = :stage
-                         ORDER BY       ruleorder";
+                         FROM     {coursework_sample_set_plugin} p
+                         JOIN     {coursework_sample_set_rules} r ON p.id = r.samplesetpluginid
+                         WHERE    r.courseworkid = :courseworkid
+                         AND      p.rulename = 'total_sample_type'
+                         AND      stageidentifier = :stage
+                         ORDER BY ruleorder";
 
         $rule = $DB->get_record_sql($sql, ['courseworkid' => $this->coursework->id, 'stage' => $stage]);
 
@@ -214,7 +214,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                     $arraykeys = array_rand($allocatablesampleset, $totaltoreturn - count($autosampleset));
 
-                    if (defined('BEHAT_SITE_RUNNING') && get_config('mod_coursework', 'eliminaterandmosiation')) {
+                    if (defined('BEHAT_SITE_RUNNING') && get_config('mod_coursework', 'eliminaterandomisation')) {
                         $arraykeys = array_slice(array_keys($allocatablesampleset), 0, $totaltoreturn - count($autosampleset));
                     }
 

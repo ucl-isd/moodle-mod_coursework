@@ -37,3 +37,8 @@ Feature: Restricting the types of files that students can upload
     And I click on "Upload your submission" "link"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     Then I should see "1" elements in "Upload a file" filemanager
+
+    Given I am on the "Coursework" "coursework activity" page
+    And I click on "Upload your submission" "link"
+    And I upload "mod/coursework/tests/files_for_uploading/Test_image.png" file to "Upload a file" filemanager
+    Then I should see "filetype cannot be accepted"

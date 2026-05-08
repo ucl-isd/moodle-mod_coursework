@@ -41,7 +41,6 @@ Feature: Auto releasing the student feedback without cron
     When I am on the "Coursework" "coursework activity" page logged in as "student1"
     Then I should not see "Released"
 
-  @javascript
   Scenario: auto release happens after the deadline without the cron running
     When I am on the "Coursework" "coursework activity" page logged in as "admin"
     And I navigate to "Settings" in current page administration

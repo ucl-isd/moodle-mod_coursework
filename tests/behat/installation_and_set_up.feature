@@ -22,4 +22,4 @@ Feature: Installing the coursework module and making sure it works
     And I add a "coursework" activity to course "C1" section "0" and I fill the form with:
       | name        | Test coursework             |
       | Description | Test coursework description |
-    And I should see "Test coursework" in the "General" "section"
+    Then I should see "Test coursework" in the "General" "section"

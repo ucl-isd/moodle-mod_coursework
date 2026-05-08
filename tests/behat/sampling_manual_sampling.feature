@@ -17,9 +17,6 @@ Feature: Manual sampling
       | samplingenabled   | 1           |
       | numberofmarkers   | 2           |
       | deadline          | ##-1 week## |
-    And the following "permission overrides" exist:
-      | capability                     | permission | role    | contextlevel | reference |
-      | mod/coursework:addinitialgrade | Allow      | teacher | Course       | C1        |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | manager1 | manager   | manager1 | manager1@example.com |

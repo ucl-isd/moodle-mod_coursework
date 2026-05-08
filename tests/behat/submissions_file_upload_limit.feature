@@ -26,7 +26,7 @@ Feature: File upload limits
   Scenario: I am prevented from uploading more files than specified
     Given I am on the "Coursework" "coursework activity" page logged in as "student1"
     And I click on "Upload your submission" "link"
-    Then "div.fp-btn-add a" "css_element" should be visible
+    Then "Add..." "link" in the ".filemanager" "css_element" should be visible
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I upload "mod/coursework/tests/files_for_uploading/Test_document_two.docx" file to "Upload a file" filemanager
-    Then "div.fp-btn-add a" "css_element" should not be visible
+    Then "Add..." "link" in the ".filemanager" "css_element" should not be visible

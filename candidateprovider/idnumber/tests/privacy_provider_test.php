@@ -37,7 +37,6 @@ final class privacy_provider_test extends \advanced_testcase {
      *
      * @covers \courseworkcandidateprovider_idnumber\privacy\provider::get_reason()
      * @return void
-     * @throws \coding_exception
      */
     public function test_get_reason(): void {
         $reason = get_string(provider::get_reason(), 'courseworkcandidateprovider_idnumber');

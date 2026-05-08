@@ -17,14 +17,10 @@ Feature: User can submit on behalf of a student
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | manager1 | manager   | manager1 | manager1@example.com |
-      | teacher1 | teacher   | teacher1 | teacher1@example.com |
-      | teacher2 | teacher   | teacher2 | teacher2@example.com |
       | student1 | John1     | student1 | student1@example.com |
     And the following "course enrolments" exist:
       | user     | course | role    |
       | manager1 | C1     | manager |
-      | teacher1 | C1     | teacher |
-      | teacher2 | C1     | teacher |
       | student1 | C1     | student |
 
   @javascript @_file_upload

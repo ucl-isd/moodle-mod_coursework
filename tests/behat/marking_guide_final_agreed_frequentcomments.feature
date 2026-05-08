@@ -88,7 +88,7 @@ Feature: Marking guide with frequent comments
     Given I am on the "Coursework" "coursework activity" page
     And I follow "Agree marking"
     And I set the field "Mark (0–100)" to "8"
-    And I press the enter key
+    When I press the enter key
     And I wait until the page is ready
     # Frequent comments modal not launched.
-    And "#comment_chooser" "css_element" should not exist
+    Then "#comment_chooser" "css_element" should not exist

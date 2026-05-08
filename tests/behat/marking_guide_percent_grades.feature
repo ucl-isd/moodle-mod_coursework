@@ -66,7 +66,7 @@ Feature: Marking guide percentage grades entry
     And I press "Save and finalise"
 
     And I am on the "Coursework" "coursework activity" page
-    And I should see "41" in the "student student1" "table_row"
+    Then I should see "41" in the "student student1" "table_row"
 
   @javascript
   Scenario: Marker enters grades as percentages, or as fractions even though percentage grades are allowed.
@@ -117,4 +117,4 @@ Feature: Marking guide percentage grades entry
     And I should see "Feedback saved" in the "student1" "table_row"
 
     And I am on the "Coursework" "coursework activity" page
-    And I should see "49" in the "student student1" "table_row"
+    Then I should see "49" in the "student student1" "table_row"

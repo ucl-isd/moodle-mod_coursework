@@ -26,8 +26,8 @@ Feature: Students must agree to terms before submitting anything
 
   Scenario: I do not see the terms when the site has the option disabled
     Given the following config values are set as admin:
-      | config                      | value     |
-      | coursework_agree_terms      | 0         |
+      | config                 | value |
+      | coursework_agree_terms | 0     |
     When I am on the "Coursework" "coursework activity" page logged in as "student1"
     And I click on "Upload your submission" "link"
     Then I should see "Upload your submission"

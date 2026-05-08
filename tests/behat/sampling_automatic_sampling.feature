@@ -31,7 +31,7 @@ Feature: Automatic sampling using total number of students in stage 1 and 2
       | student2 | C1     | student |
     And the following config values are set as admin:
       | config                 | value | plugin         |
-      | eliminaterandmosiation | 1     | mod_coursework |
+      | eliminaterandomisation | 1     | mod_coursework |
 
   Scenario: Automatically allocating a total for stage 3 based on stage 2
     Given I am on the "Coursework" "coursework activity" page logged in as "manager1"

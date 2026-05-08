@@ -8,17 +8,17 @@ Feature: When "Use the personal deadline" is enabled the deadline date should re
       | fullname  | Course 1 |
       | shortname | C1       |
     And the following "activity" exists:
-      | activity                | coursework    |
-      | course                  | C1            |
-      | name                    | Coursework    |
-      | deadline                | ##+1 week##   |
-      | personaldeadlineenabled | 1             |
+      | activity                | coursework  |
+      | course                  | C1          |
+      | name                    | Coursework  |
+      | deadline                | ##+1 week## |
+      | personaldeadlineenabled | 1           |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | student1 | John1     | student1 | student1@example.com |
       | student2 | John2     | student2 | student2@example.com |
-      | teacher1 | John2     | teacher1 | teacher1@example.com |
-      | manager1 | John2     | manager1 | manager1@example.com |
+      | teacher1 | John3     | teacher1 | teacher1@example.com |
+      | manager1 | John4     | manager1 | manager1@example.com |
     And the following "course enrolments" exist:
       | user     | course | role    |
       | teacher1 | C1     | teacher |
