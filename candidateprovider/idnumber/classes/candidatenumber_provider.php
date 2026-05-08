@@ -14,29 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_coursework\behat\fixtures;
+namespace courseworkcandidateprovider_idnumber;
+
+use core_plugin_manager;
+use core_user;
+use Exception;
+use local_idnumber\scnmanager;
+use mod_coursework\candidateprovider;
 
 /**
- * Mock candidate provider for Behat testing.
+ * Candidate number provider.
  *
- * @package    mod_coursework
- * @copyright  2025 onwards University College London {@link https://www.ucl.ac.uk/}
+ * @package    courseworkcandidateprovider_idnumber
+ * @copyright  2026 onwards University College London {@link https://www.ucl.ac.uk/}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Alex Yeung <k.yeung@ucl.ac.uk>
+ * @author     Andrew Hancox <andrewdchancox@googlemail.com>
  */
-class mock_candidate_provider extends \mod_coursework\candidateprovider {
-    /** @var string|null The candidate number to return for all requests */
-    private ?string $candidatenumber;
-
-    /**
-     * Constructor.
-     *
-     * @param string|null $candidatenumber The candidate number to return
-     */
-    public function __construct(?string $candidatenumber = 'TEST001') {
-        $this->candidatenumber = $candidatenumber;
-    }
-
+class candidatenumber_provider extends candidateprovider {
     /**
      * Get candidate number for a user in a specific course.
      *
@@ -45,7 +39,7 @@ class mock_candidate_provider extends \mod_coursework\candidateprovider {
      * @return string|null Candidate number or null if not found
      */
     public function get_candidate_number(int $courseid, int $userid): ?string {
-        return $this->candidatenumber;
+        return core_user::get_user($userid)->idnumber;
     }
 
     /**
@@ -63,6 +57,6 @@ class mock_candidate_provider extends \mod_coursework\candidateprovider {
      * @return string Provider name
      */
     public function get_provider_name(): string {
-        return 'Behat Mock Provider (' . $this->candidatenumber . ')';
+        return get_string('pluginname', 'courseworkcandidateprovider_idnumber');
     }
 }

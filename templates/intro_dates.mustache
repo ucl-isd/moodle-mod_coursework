@@ -22,7 +22,7 @@
     }
 }}
 <div class="row">
-    <div class="col">
+    <div class="col behat-duedate">
         {{#duedate}}
             <h3 class="h6">{{#str}} due, mod_coursework {{/str}}</h3>
             <p>{{#userdate}}{{.}}, {{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>
@@ -46,7 +46,7 @@
     </div>
 
     {{#individualfeedbackdeadline}}
-    <div class="col-6">
+    <div class="col-6 behat-individualfeedback">
         <h3 class="h6">{{#str}} individualfeedback, mod_coursework {{/str}}</h3>
     <p>{{#userdate}}{{.}}, {{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}</p>
     </div>

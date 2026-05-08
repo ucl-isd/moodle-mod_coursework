@@ -2745,25 +2745,6 @@ class coursework extends table_base {
     }
 
     /**
-     * Validate candidate number settings.
-     * Throws exception if prerequisites are not met but setting is enabled.
-     *
-     * @return void
-     * @throws moodle_exception
-     */
-    public function validate_candidate_number_settings(): void {
-        if (!$this->usecandidate) {
-            return; // No validation needed if feature disabled.
-        }
-
-        // Check if a provider is available.
-        // Use candidate number setting is enabled but no provider available, throw exception.
-        if (!candidateprovider_manager::instance()->is_provider_available()) {
-            throw new moodle_exception('no_candidate_provider_available', 'mod_coursework');
-        }
-    }
-
-    /**
      * Get file identifier for user (candidate number or fallback to hash).
      *
      * @param int $userid
@@ -2777,7 +2758,9 @@ class coursework extends table_base {
         }
 
         // Validate prerequisites.
-        $this->validate_candidate_number_settings();
+        if ($this->usecandidate && !candidateprovider_manager::instance()->is_provider_available()) {
+            throw new moodle_exception('no_candidate_provider_available', 'mod_coursework');
+        }
 
         // Try to get candidate number using the manager.
         $candidatenumber = candidateprovider_manager::instance()->get_candidate_number(

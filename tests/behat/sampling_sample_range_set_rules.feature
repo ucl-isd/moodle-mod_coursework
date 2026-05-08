@@ -7,83 +7,81 @@ Feature: Automatic sample based on range set grades using marking of students in
   so they mark more evenly and randomly.
 
   Background:
-    Given there is a course
-    And there is a coursework
-    And there is a student
-    And the student has a submission
-    And there is another student
-    And another student has another submission
-    And there is a teacher
-    And the coursework "numberofmarkers" setting is "3" in the database
-    And the coursework "samplingenabled" setting is "1" in the database
-    And the coursework deadline has passed
-
-    And I am logged in as a teacher
-    And I visit the coursework page
-    And I wait "1" seconds
-    And I click on the add feedback button for assessor 1
-    And I set the field "Mark" to "56"
-    And I press "Save and finalise"
-    And I wait "1" seconds
-    And I should see "Feedback saved" in the "student1" "table_row"
-
-    And I visit the coursework page
-    And I click on the add feedback button for assessor 1 for another student
-    And I set the field "Mark" to "45"
-    And I press "Save and finalise"
-    And I log out
+    Given the following "course" exists:
+      | fullname  | Course 1 |
+      | shortname | C1       |
+    And the following "activity" exists:
+      | activity        | coursework    |
+      | course          | C1            |
+      | name            | Coursework    |
+      | deadline        | ##yesterday## |
+      | numberofmarkers | 3             |
+      | samplingenabled | 1             |
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | manager1 | manager   | manager1 | manager1@example.com |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+      | student1 | student   | student1 | student1@example.com |
+      | student2 | student   | student2 | student2@example.com |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | manager1 | C1     | manager |
+      | teacher1 | C1     | teacher |
+      | student1 | C1     | student |
+      | student2 | C1     | student |
+    And the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | Coursework | 1               |
+      | student2    | Coursework | 1               |
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 56    | New comment here |
+      | student2    | Coursework | teacher1 | assessor_1      | 45    | New comment here |
 
   @javascript
   Scenario: Automatically allocating a set of students within specified grade rule range in stage 2 based on stage 1 grades
-    Given I am logged in as a manager
-    And I visit the allocations page
-    And I wait "1" seconds
-    And I enable automatic sampling for stage 2
+    Given I am on the "Coursework" "coursework activity" page logged in as "manager1"
+    And I navigate to "Allocate markers" in current page administration
+    And I set the following fields to these values:
+      | assessor_2_samplingstrategy | Automatic |
+      | assessor_2_samplerules_0    | 1         |
+      | assessor_2_sampletype_0     | grade     |
+      | assessor_2_samplefrom_0     | 50        |
+      | assessor_2_sampleto_0       | 100       |
+    And I press "save_sampling"
 
-    And show me the page
-    And I enable grade range rule 1 for stage 2
-    And I select limit type for grade range rule 1 in stage 2 as "grade"
-    And I select "from" grade limit for grade range rule 1 in stage 2 as "50"
-    And I select "to" grade limit for grade range rule 1 in stage 2 as "100"
-    And I save sampling strategy
-    Then a student should be automatically included in sample for stage 2
-    And another student should not be automatically included in sample for stage 2
+    Then "student student1" row "Marker 2" column of "mod_coursework_allocatemarkers" table should contain "Automatically included in sample"
+    And "student student2" row "Marker 2" column of "mod_coursework_allocatemarkers" table should not contain "Automatically included in sample"
+    And "student student2" row "Marker 2" column of "mod_coursework_allocatemarkers" table should contain "Included in sample"
 
-    Then I add grade range rule for stage 2
-    And I enable grade range rule 2 for stage 2
-    And I select limit type for grade range rule 2 in stage 2 as "grade"
-    And I select "from" grade limit for grade range rule 1 in stage 2 as "40"
-    And I select "to" grade limit for grade range rule 1 in stage 2 as "50"
-    And show me the page
-    And I save sampling strategy
-    Then a student should be automatically included in sample for stage 2
-    And another student should be automatically included in sample for stage 2
+    When I navigate to "Allocate markers" in current page administration
+    And I click on "Add rule" "link"
+    And I set the following fields to these values:
+      | assessor_2_samplingstrategy | Automatic |
+      | assessor_2_samplerules_1    | 1         |
+      | assessor_2_sampletype_1     | grade     |
+      | assessor_2_samplefrom_1     | 40        |
+      | assessor_2_sampleto_1       | 50        |
+    And I press "save_sampling"
 
-  @javascript
-  Scenario: Automatically allocating a set of students within specified percentage rule range in stage 3 based on stage 2 grades
-    Given I am logged in as a manager
-    And I visit the allocations page
-    And I enable automatic sampling for stage 2
-    And I enable total rule for stage 2
-    And I select 100% of total students in stage 1
-    And I save sampling strategy
-    And I visit the coursework page
-    And I wait "1" seconds
-    And I click on the add feedback button for assessor 2
-    And I set the field "Mark" to "60"
-    And I press "Save and finalise"
-    And I visit the coursework page
-    And I click on the add feedback button for assessor 2 for another student
-    And I set the field "Mark" to "40"
-    And I press "Save and finalise"
-    And I log out
-    And I am logged in as a manager
-    And I visit the allocations page
-    When I enable automatic sampling for stage 3
-    And I enable grade range rule 1 for stage 3
-    And I select limit type for grade range rule 1 in stage 3 as "percentage"
-    And I select "from" grade limit for grade range rule 1 in stage 3 as "60"
-    And I select "to" grade limit for grade range rule 1 in stage 3 as "70"
-    And I save sampling strategy
-    Then a student should be automatically included in sample for stage 3
-    And another student should not be automatically included in sample for stage 3
+    Then "student student1" row "Marker 2" column of "mod_coursework_allocatemarkers" table should contain "Automatically included in sample"
+    And "student student2" row "Marker 2" column of "mod_coursework_allocatemarkers" table should contain "Automatically included in sample"
+
+    Given the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_2      | 60    | New comment here |
+      | student2    | Coursework | teacher1 | assessor_2      | 40    | New comment here |
+
+    When I navigate to "Allocate markers" in current page administration
+    And I click on "Add rule" "link"
+    And I set the following fields to these values:
+      | assessor_3_samplingstrategy | Automatic  |
+      | assessor_3_samplerules_0    | 1          |
+      | assessor_3_sampletype_0     | percentage |
+      | assessor_3_samplefrom_0     | 60         |
+      | assessor_3_sampleto_0       | 70         |
+    And I press "save_sampling"
+
+    Then "student student1" row "Marker 3" column of "mod_coursework_allocatemarkers" table should contain "Automatically included in sample"
+    And "student student2" row "Marker 3" column of "mod_coursework_allocatemarkers" table should not contain "Automatically included in sample"
+    And "student student2" row "Marker 3" column of "mod_coursework_allocatemarkers" table should contain "Included in sample"

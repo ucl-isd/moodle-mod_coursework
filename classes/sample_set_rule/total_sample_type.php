@@ -79,7 +79,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
             $selected,
             ['id' => "assessor_{$assessornumber}_sampletotal", 'class' => " sample_set_rule"]
         );
-        $html  .= html_writer::label(get_string('ofallstudents', 'mod_coursework'), 'assessortwo_sampletotal[]');
+        $html .= html_writer::label(get_string('ofallstudents', 'mod_coursework'), 'assessortwo_sampletotal[]');
 
         $html .= html_writer::end_div();
 
@@ -108,7 +108,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         ";
 
-        return  html_writer::script($jsscript, null);
+        return html_writer::script($jsscript, null);
     }
 
     public function save_form_data($assessornumber = 0, &$order = 0) {
@@ -144,14 +144,13 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
         $stage = "assessor_" . $stagenumber;
 
-        $sql = "SELECT         r.*,p.rulename
-                         FROM           {coursework_sample_set_plugin} p,
-                                        {coursework_sample_set_rules} r
-                         WHERE          p.id = r.samplesetpluginid
-                         AND            r.courseworkid = :courseworkid
-                         AND            p.rulename = 'total_sample_type'
-                         AND            stageidentifier = :stage
-                         ORDER BY       ruleorder";
+        $sql = "SELECT r.*,p.rulename
+                         FROM     {coursework_sample_set_plugin} p
+                         JOIN     {coursework_sample_set_rules} r ON p.id = r.samplesetpluginid
+                         WHERE    r.courseworkid = :courseworkid
+                         AND      p.rulename = 'total_sample_type'
+                         AND      stageidentifier = :stage
+                         ORDER BY ruleorder";
 
         $rule = $DB->get_record_sql($sql, ['courseworkid' => $this->coursework->id, 'stage' => $stage]);
 
@@ -190,7 +189,7 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                             !isset($published[$af->allocatableid]) && !isset($finalised[$af->allocatableid])
                             && !isset($autosampleset[$af->allocatableid]) && !isset($manualsampleset[$af->allocatableid])
                         ) {
-                                $autosampleset[$af->allocatableid] = $allocatables[$af->allocatableid];
+                            $autosampleset[$af->allocatableid] = $allocatables[$af->allocatableid];
                         }
 
                         if (count($autosampleset) == $totaltoreturn) {
@@ -201,8 +200,8 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
                 // If this is not enough select anyone (which should == the ungraded as all graded should have been added)
                 if (count($autosampleset) < $totaltoreturn) {
-                        // Remove allocatables with published submissions
-                        $allocatablesampleset = array_diff_ukey($allocatables, $published, ["mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"]);
+                    // Remove allocatables with published submissions
+                    $allocatablesampleset = array_diff_ukey($allocatables, $published, ["mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"]);
 
                     // Remove allocatables with finalised submissions
                     $allocatablesampleset = array_diff_ukey($allocatablesampleset, $finalised, ["mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"]);
@@ -213,13 +212,17 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
                     // Remove allocatables already in the sample set
                     $allocatablesampleset = array_diff_ukey($allocatablesampleset, $autosampleset, ["mod_coursework\\sample_set_rule\\total_sample_type", "compare_key"]);
 
-                        $arraykeys = array_rand($allocatablesampleset, $totaltoreturn - count($autosampleset));
+                    $arraykeys = array_rand($allocatablesampleset, $totaltoreturn - count($autosampleset));
+
+                    if (defined('BEHAT_SITE_RUNNING') && get_config('mod_coursework', 'eliminaterandomisation')) {
+                        $arraykeys = array_slice(array_keys($allocatablesampleset), 0, $totaltoreturn - count($autosampleset));
+                    }
 
                     if (!is_array($arraykeys)) {
                         $arraykeys = [$arraykeys];
                     }
 
-                        // Use the allocatables array to get other ungraded allocatables
+                    // Use the allocatables array to get other ungraded allocatables
                     foreach ($arraykeys as $id) {
                         if (
                             !isset($published[$id]) && !isset($finalised[$id])

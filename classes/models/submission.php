@@ -1724,7 +1724,7 @@ class submission extends table_base implements renderable {
      * @throws dml_exception
      */
     public static function plagiarism_get_links(int $userid, stored_file $file, coursework $coursework): string {
-        if (defined('BEHAT_SITE_RUNNING')) {
+        if (defined('BEHAT_SITE_RUNNING') && get_config('mod_coursework', 'showtiidummylinks')) {
             return "[TURNITIN DUMMY LINKS HTML]";
         }
 

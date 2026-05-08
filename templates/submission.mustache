@@ -42,7 +42,7 @@
     {{! Submission file. }}
     {{{file}}}
 
-    <ul class="pt-3 mb-0 w-100 list-unstyled" aria-labelledby="submission-title">
+    <ul class="pt-3 mb-0 w-100 list-unstyled behat-submission-information" aria-labelledby="submission-title">
         {{! Time submitted. }}
         {{#date}}
         <li class="d-flex py-1 border-top">
@@ -56,7 +56,7 @@
         {{/date}}
 
         {{#groupsubmitter}}
-        <li class="d-flex py-1 border-top">
+        <li class="d-flex py-1 border-top behat-groupsubmitter">
             {{#str}} submittedby, mod_coursework {{/str}}
             <span class="ml-auto">
                 {{{.}}}

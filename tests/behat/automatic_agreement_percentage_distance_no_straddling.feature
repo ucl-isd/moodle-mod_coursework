@@ -43,14 +43,12 @@ Feature: Automatic agreement for grades not straddling grade class boundaries
     0.00|0.99
     """
     And I press "Save changes"
-    And I log out
 
   Scenario: Simple grades within 10% of each other and both in the same grade class, agreed grade is averaged.
     Given I am on the "Coursework" "coursework activity" page logged in as "teacher1"
     And I click on "Add mark" "link" in the "[data-behat-markstage='1']" "css_element"
     And I set the field "Mark" to "67"
     And I press "Save and finalise"
-    And I log out
 
     And I am on the "Coursework" "coursework activity" page logged in as "teacher2"
     And I click on "Add mark" "link" in the "[data-behat-markstage='2']" "css_element"
@@ -66,7 +64,6 @@ Feature: Automatic agreement for grades not straddling grade class boundaries
     And I click on "Add mark" "link" in the "[data-behat-markstage='1']" "css_element"
     And I set the field "Mark" to "67"
     And I press "Save and finalise"
-    And I log out
 
     And I am on the "Coursework" "coursework activity" page logged in as "teacher2"
     And I click on "Add mark" "link" in the "[data-behat-markstage='2']" "css_element"
@@ -81,7 +78,6 @@ Feature: Automatic agreement for grades not straddling grade class boundaries
     And I click on "Add mark" "link" in the "[data-behat-markstage='1']" "css_element"
     And I set the field "Mark" to "10"
     And I press "Save and finalise"
-    And I log out
 
     And I am on the "Coursework" "coursework activity" page logged in as "teacher2"
     And I click on "Add mark" "link" in the "[data-behat-markstage='2']" "css_element"
@@ -96,7 +92,6 @@ Feature: Automatic agreement for grades not straddling grade class boundaries
     And I click on "Add mark" "link" in the "[data-behat-markstage='1']" "css_element"
     And I set the field "Mark" to "10"
     And I press "Save and finalise"
-    And I log out
 
     And I am on the "Coursework" "coursework activity" page logged in as "teacher2"
     And I click on "Add mark" "link" in the "[data-behat-markstage='2']" "css_element"

@@ -305,4 +305,15 @@ class mod_coursework_generator extends testing_module_generator {
 
         return $submission;
     }
+
+    public function create_personaldeadline($personaldeadline) {
+        $personaldeadline = (object)$personaldeadline;
+        \mod_coursework\models\personaldeadline::create([
+            'allocatableid' => $personaldeadline->allocatableid,
+            'allocatabletype' => 'user',
+            'courseworkid' => $personaldeadline->courseworkid,
+            'personaldeadline' => $personaldeadline->deadline,
+            'createdbyid' => get_admin()->id,
+        ]);
+    }
 }

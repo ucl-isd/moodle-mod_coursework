@@ -45,8 +45,7 @@ Feature: Adding and editing final feedback
 
   @javascript
   Scenario: Setting and releasing the final feedback grade via a draft state
-    Given the coursework "draftfeedbackenabled" setting is "1" in the database
-    And I am on the "Coursework" "coursework activity" page logged in as "manager1"
+    Given I am on the "Coursework" "coursework activity" page logged in as "manager1"
     And I click on "Agree marking" "link" in the "student1" "table_row"
     And I set the field "Mark" to "57"
     And I press "Save as draft"

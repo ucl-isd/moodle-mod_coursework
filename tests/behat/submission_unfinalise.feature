@@ -7,33 +7,46 @@ Feature: Manager manually un-finalising a student submission
   to enable the student to resubmit a different document
 
   Background:
-    Given there is a course
-    And there is a coursework
-    And the coursework "allowlatesubmissions" setting is "1" in the database
-    And there is a student
-    And there is a teacher
-    And there is another teacher
-    And the student has a submission
-    And the submission deadline has passed
+    Given the following "course" exists:
+      | fullname  | Course 1 |
+      | shortname | C1       |
+    And the following "activity" exists:
+      | activity             | coursework    |
+      | course               | C1            |
+      | name                 | Coursework    |
+      | allowlatesubmissions | 1             |
+      | deadline             | ##yesterday## |
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | manager1 | manager   | manager1 | manager1@example.com |
+      | teacher1 | teacher   | teacher1 | teacher1@example.com |
+      | teacher2 | teacher   | teacher2 | teacher2@example.com |
+      | student1 | student   | student1 | student1@example.com |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | manager1 | C1     | manager |
+      | teacher1 | C1     | teacher |
+      | teacher2 | C1     | teacher |
+      | student1 | C1     | student |
+    And the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | Coursework | 1               |
 
   Scenario: Student visits the coursework page and sees the submission is finalised and cannot edit
-    Given I log in as a student
-    And I visit the coursework page
+    Given I am on the "Coursework" "coursework activity" page logged in as "student1"
     And I should see "Submitted"
     # So far the submission has not been unfinalised so I cannot edit as student.
     And I should not see "Edit your submission"
 
   Scenario: Teacher *cannot unfinalise* when visits the coursework page and sees the submission is finalised when the deadline has passed.
-    When I am logged in as a teacher
-    And I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page logged in as "teacher1"
     # I am not able to see the actions button so cannot click "Unfinalise submission".
     And I should not see "Actions" in the table row containing "student student1"
     And I should not see "Unfinalise submission"
 
   @javascript
   Scenario: Manager *can unfinalise* when visits the page and sees the submission is finalised when the deadline has passed.
-    When I am logged in as a manager
-    And I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page logged in as "manager1"
     # The submission is finalised at this point so the submission will not say "Draft".
     And I should not see "Draft" in the table row containing "student student1"
     And I click on "Actions" "button"
@@ -43,10 +56,8 @@ Feature: Manager manually un-finalising a student submission
     And I wait until the page is ready
     # The submission is now unfinalised so will say "Draft".
     And I should see "Draft" in the table row containing "student student1"
-    And I log out
 
-    And I log in as a student
-    And I visit the coursework page
+    And I am on the "Coursework" "coursework activity" page logged in as "student1"
     And I should see "Submitted"
     # Now the submission has been unfinalised so I can edit as student.
     And I should see "Edit your submission"
@@ -55,19 +66,19 @@ Feature: Manager manually un-finalising a student submission
     # Now it is finalised again, so I can no longer edit it.
     And I should see "Submitted"
     And I should not see "Edit your submission"
-    And I log out
 
-    When I am logged in as a manager
-    And I visit the coursework page
+    When I am on the "Coursework" "coursework activity" page logged in as "manager1"
     # The submission is now finalised again (by the student) so will not say "Draft".
     And I should not see "Draft" in the table row containing "student student1"
 
   Scenario: Manager *cannot unfinalise* when visits the page and sees the submission is finalised when the deadline has passed and activity does not allow late submissions.
-    When I am logged in as a manager
-    And the coursework "allowlatesubmissions" setting is "0" in the database
-    And I visit the coursework page
+    Given I am on the "Coursework" "coursework activity" page logged in as "admin"
+    And I navigate to "Settings" in current page administration
+    And I set the field "allowlatesubmissions" to "0"
+    And I press "Save and display"
+
+    When I am on the "Coursework" "coursework activity" page logged in as "manager1"
     # The submission is finalised at this point (so the submission will not say "Draft").
     And I should not see "Draft" in the table row containing "student student1"
     # Because late submissions are not allowed, I cannot unfinalise.
     And I should not see "Actions" in the table row containing "student student1"
-    And I log out
