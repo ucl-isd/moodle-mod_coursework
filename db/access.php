@@ -79,7 +79,7 @@ $capabilities = [
 
     'mod/coursework:submit' => [
         'riskbitmask' => RISK_SPAM,
-        'captype' => 'read',
+        'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'student' => CAP_ALLOW,
@@ -97,7 +97,7 @@ $capabilities = [
 
     'mod/coursework:addinitialgrade' => [
         'riskbitmask' => RISK_PERSONAL | RISK_SPAM,
-        'captype' => 'read',
+        'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'teacher' => CAP_ALLOW,
@@ -108,7 +108,7 @@ $capabilities = [
 
     'mod/coursework:editinitialgrade' => [
         'riskbitmask' => RISK_PERSONAL | RISK_SPAM,
-        'captype' => 'read',
+        'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'manager' => CAP_ALLOW,
@@ -117,7 +117,7 @@ $capabilities = [
 
     'mod/coursework:addagreedgrade' => [
         'riskbitmask' => RISK_PERSONAL | RISK_SPAM,
-        'captype' => 'read',
+        'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'manager' => CAP_ALLOW,
@@ -126,7 +126,7 @@ $capabilities = [
 
     'mod/coursework:editagreedgrade' => [
         'riskbitmask' => RISK_PERSONAL | RISK_SPAM,
-        'captype' => 'read',
+        'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'manager' => CAP_ALLOW,
