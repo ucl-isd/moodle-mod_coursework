@@ -117,7 +117,7 @@ $capabilities = [
 
     'mod/coursework:addagreedgrade' => [
         'riskbitmask' => RISK_PERSONAL | RISK_SPAM,
-        'captype' => 'read',
+        'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'manager' => CAP_ALLOW,
@@ -126,7 +126,7 @@ $capabilities = [
 
     'mod/coursework:editagreedgrade' => [
         'riskbitmask' => RISK_PERSONAL | RISK_SPAM,
-        'captype' => 'read',
+        'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'manager' => CAP_ALLOW,
