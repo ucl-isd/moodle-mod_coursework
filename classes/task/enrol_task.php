@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_coursework;
 namespace mod_coursework\task;
 
 use cache;
@@ -45,25 +44,15 @@ class enrol_task extends scheduled_task {
      * Run coursework cron.
      */
     public function execute() {
-
         global $DB;
 
-        $courseworkids = $DB->get_records('coursework', ['processenrol' => 1]);
+        foreach (coursework::find_all(['processenrol' => 1]) as $coursework) {
+            $cache = cache::make('mod_coursework', 'courseworkdata');
+            $cache->set($coursework->id() . "_teachers", '');
+            $allocator = new auto_allocator($coursework);
+            $allocator->process_allocations();
 
-        if (!empty($courseworkids)) {
-            foreach ($courseworkids as $courseworkid) {
-                $coursework = coursework::get_from_id($courseworkid);
-                if (empty($coursework)) {
-                    continue;
-                }
-
-                $cache = cache::make('mod_coursework', 'courseworkdata');
-                $cache->set($coursework->id() . "_teachers", '');
-                $allocator = new auto_allocator($coursework);
-                $allocator->process_allocations();
-
-                $DB->set_field('coursework', 'processenrol', 0, ['id' => $coursework->id()]);
-            }
+            $DB->set_field('coursework', 'processenrol', 0, ['id' => $coursework->id()]);
         }
 
         return true;

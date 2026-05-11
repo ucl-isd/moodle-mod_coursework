@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_coursework\models;
 namespace mod_coursework\task;
 
 use core\task\scheduled_task;
@@ -44,23 +43,13 @@ class unenrol_task extends scheduled_task {
      * Run coursework cron.
      */
     public function execute() {
-
         global $DB;
 
-        $courseworkids = $DB->get_records('coursework', ['processunenrol' => 1]);
+        foreach (coursework::find_all(['processunenrol' => 1]) as $coursework) {
+            $allocator = new auto_allocator($coursework);
+            $allocator->process_allocations();
 
-        if (!empty($courseworkids)) {
-            foreach ($courseworkids as $courseworkid) {
-                $coursework = coursework::get_from_id($courseworkid);
-                if (empty($coursework)) {
-                    continue;
-                }
-
-                $allocator = new auto_allocator($coursework);
-                $allocator->process_allocations();
-
-                $DB->set_field('coursework', 'processunenrol', 0, ['id' => $coursework->id()]);
-            }
+            $DB->set_field('coursework', 'processunenrol', 0, ['id' => $coursework->id()]);
         }
 
         return true;
