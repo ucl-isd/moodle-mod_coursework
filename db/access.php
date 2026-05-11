@@ -79,7 +79,7 @@ $capabilities = [
 
     'mod/coursework:submit' => [
         'riskbitmask' => RISK_SPAM,
-        'captype' => 'write',
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'student' => CAP_ALLOW,
@@ -108,7 +108,7 @@ $capabilities = [
 
     'mod/coursework:editinitialgrade' => [
         'riskbitmask' => RISK_PERSONAL | RISK_SPAM,
-        'captype' => 'read',
+        'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
             'manager' => CAP_ALLOW,
