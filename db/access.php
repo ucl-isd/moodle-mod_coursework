@@ -77,7 +77,7 @@ $capabilities = [
         ],
     ],
     
-    //captype originally 'write' but switched to 'read' to allow staff roles to view student submissions in read-only coursework activities.
+    // captype originally 'write' but switched to 'read' to allow staff roles to view student submissions in read-only coursework activities.
     'mod/coursework:submit' => [
         'riskbitmask' => RISK_SPAM,
         'captype' => 'read',
@@ -96,7 +96,7 @@ $capabilities = [
         ],
     ],
     
-    //captype originally 'write' but switched to 'read' to allow staff roles to view student submissions in read-only coursework activities.
+    // captype originally 'write' but switched to 'read' to allow staff roles to view student submissions in read-only coursework activities.
     'mod/coursework:addinitialgrade' => [
         'riskbitmask' => RISK_PERSONAL | RISK_SPAM,
         'captype' => 'read',
