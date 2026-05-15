@@ -33,15 +33,31 @@ use stdClass;
  * the total grade.
  */
 class range_sample_type extends sample_base {
-    public function adjust_set(array &$moderationset, array &$potentialallocatables, $stage) {
-    }
-
+    /**
+     * Not implemented
+     *
+     * @return void
+     */
     public function get_numeric_boundaries() {
     }
 
+    /**
+     *
+     * Not implemented
+     *
+     * @return void
+     */
     public function get_default_rule_order() {
     }
 
+    /**
+     *
+     *  Generate form elements and return as html string
+     *
+     * @return string
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
     public function add_form_elements($assessornumber = 0) {
 
         global $DB;
@@ -68,13 +84,31 @@ class range_sample_type extends sample_base {
             $html .= $this->range_elements($assessornumber, 0, false);
         }
 
-        $html  .= html_writer::link('#', get_string('addrule', 'mod_coursework'), ['id' => "assessor_{$assessornumber}_addgradderule", 'class' => 'addgradderule sample_set_rule']);
+        $html  .= html_writer::link(
+            '#',
+            get_string('addrule', 'mod_coursework'),
+            ['id' => "assessor_{$assessornumber}_addgradderule", 'class' => 'addgradderule sample_set_rule']
+        );
         $html  .= "  ";
-        $html  .= html_writer::link('#', get_string('removerule', 'mod_coursework'), ['id' => "assessor_{$assessornumber}_removegradderule", 'class' => 'removegradderule sample_set_rule']);
+        $html  .= html_writer::link(
+            '#',
+            get_string('removerule', 'mod_coursework'),
+            ['id' => "assessor_{$assessornumber}_removegradderule", 'class' => 'removegradderule sample_set_rule']
+        );
 
         return $html;
     }
 
+    /**
+     * Builds form elements for this sample type
+     *
+     * TODO: Restrict visibility to private as there are no external consumers.
+     *
+     * @param $assessornumber
+     * @param $sequence
+     * @param $dbrecord
+     * @return string
+     */
     public function range_elements($assessornumber, $sequence, $dbrecord = false) {
 
         $percentageoptions = [];
@@ -96,9 +130,13 @@ class range_sample_type extends sample_base {
 
         if ($dbrecord) {
             $selectedtype = [$dbrecord->ruletype => get_string($dbrecord->ruletype, 'mod_coursework')];
-            $selectedto = ($dbrecord->ruletype == 'scale') ? [$dbrecord->upperlimit => $scale[$dbrecord->upperlimit]] : [$dbrecord->upperlimit => $dbrecord->upperlimit];
-
-            $selectedfrom = ($dbrecord->ruletype == 'scale') ? [$dbrecord->lowerlimit => $scale[$dbrecord->lowerlimit]] : [$dbrecord->lowerlimit => $dbrecord->lowerlimit];
+            if ($dbrecord->ruletype == 'scale') {
+                $selectedto = [$dbrecord->upperlimit => $scale[$dbrecord->upperlimit]];
+                $selectedfrom = [$dbrecord->lowerlimit => $scale[$dbrecord->lowerlimit]];
+            } else {
+                $selectedto = [$dbrecord->upperlimit => $dbrecord->upperlimit];
+                $selectedfrom = [$dbrecord->lowerlimit => $dbrecord->lowerlimit];
+            }
 
             $ruleschecked = ($dbrecord) ? true : false;
         } else {
@@ -118,7 +156,10 @@ class range_sample_type extends sample_base {
             1,
             $ruleschecked,
             '',
-            ['id' => "assessor_{$assessornumber}_samplerules_{$sequence}", 'class' => "assessor_{$assessornumber} range_grade_checkbox sample_set_rule"]
+            [
+                'id' => "assessor_{$assessornumber}_samplerules_{$sequence}",
+                'class' => "assessor_{$assessornumber} range_grade_checkbox sample_set_rule",
+            ]
         );
 
         $gradescaletext = ($this->coursework->grade < 0) ? get_string('scale') : get_string('gradenoun');
@@ -137,14 +178,17 @@ class range_sample_type extends sample_base {
 
         $html .= html_writer::label(get_string('from', 'mod_coursework'), 'assessortwo_samplefrom[0]');
 
-        $ruleoptions = (!empty($selectedtype) && array_key_exists('percentage', $selectedtype)) ? $percentageoptions : $scale; // change this into a ternary statement that
+        $ruleoptions = (!empty($selectedtype) && array_key_exists('percentage', $selectedtype)) ? $percentageoptions : $scale;
 
         $html .= html_writer::select(
             $ruleoptions,
             "assessor_{$assessornumber}_samplefrom[]",
             "",
             $selectedfrom,
-            ['id' => "assessor_{$assessornumber}_samplefrom_{$sequence}", 'class' => " sample_set_rule range_drop_down range_samp_from"]
+            [
+                'id' => "assessor_{$assessornumber}_samplefrom_{$sequence}",
+                'class' => " sample_set_rule range_drop_down range_samp_from",
+            ]
         );
 
         $html .= html_writer::label(get_string('to', 'mod_coursework'), "assessor_{$assessornumber}_sampleto[0]");
@@ -162,6 +206,13 @@ class range_sample_type extends sample_base {
         return $html;
     }
 
+    /**
+     *
+     * Adds javascript required for the form elements.
+     *
+     * @param $assessornumber
+     * @return string
+     */
     public function add_form_elements_js($assessornumber = 0) {
 
         $jsscript = "
@@ -329,6 +380,15 @@ class range_sample_type extends sample_base {
         return  html_writer::script($jsscript, null);
     }
 
+    /**
+     *
+     * Saves the form data
+     *
+     * @param $assessornumber
+     * @param $order
+     * @return void
+     * @throws \coding_exception
+     */
     public function save_form_data($assessornumber = 0, &$order = 0) {
 
             global $DB;
@@ -358,36 +418,70 @@ class range_sample_type extends sample_base {
         }
     }
 
+    /**
+     *
+     * Given a marking stage number and three arrays passed by reference, the autosampleset array is modified based on conditions
+     *
+     * The autosampleset is modified so that assessment_set_membership {coursework_sample_set_mbrs} records
+     * can be created by the calling function
+     *
+     * TODO: $allocatables is passed by reference but not modified in this function
+     * TODO: $manualsampleset is passed by reference but not modified in this function
+     *
+     * @param $stagenumber int the numeric marking stage
+     * @param $allocatables \mod_coursework\allocation\allocatable[] an array implementing the allocatable interface.
+     * @param $manualsampleset \stdClass[]
+     * @param $autosampleset array
+     * @return void
+     */
     public function adjust_sample_set($stagenumber, &$allocatables, &$manualsampleset, &$autosampleset) {
 
-        global  $DB;
+        global $DB;
 
         $stage = "assessor_" . $stagenumber;
 
-        $sql = "SELECT         r.*,p.rulename
-                         FROM           {coursework_sample_set_plugin} p,
-                                        {coursework_sample_set_rules} r
-                         WHERE          p.id = r.samplesetpluginid
-                         AND            r.courseworkid = :courseworkid
-                         AND            p.rulename = 'range_sample_type'
-                         AND            stageidentifier = :stage
-                         ORDER BY       ruleorder";
+        $sql = "SELECT r.*, p.rulename
+                  FROM {coursework_sample_set_plugin} p
+                  JOIN {coursework_sample_set_rules} r ON p.id = r.samplesetpluginid
+                 WHERE r.courseworkid = :courseworkid
+                   AND p.rulename = 'range_sample_type'
+                   AND stageidentifier = :stage
+              ORDER BY ruleorder";
 
         $ruleinstance = $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id, 'stage' => $stage]);
 
         foreach ($ruleinstance as $ri) {
             $limit = $this->rationalise($ri->ruletype, $ri->lowerlimit, $ri->upperlimit);
 
-            // all allocatables that are within specified range based on previous stage
+            // All allocatables that are within specified range based on previous stage.
             $previousstage = $stagenumber - 1;
             $allocatablesinrange = $this->get_allocatables_in_range("assessor_" . $previousstage, $limit[0], $limit[1]);
 
-            $finalised = $this->finalised_submissions();
+            $finalised = $this->finalised_submissions("assessor_" . $previousstage);
             $published = $this->released_submissions();
 
             foreach ($allocatablesinrange as $awf) {
+                /*
+                 *
+                 * The $autosampleset is built based on whether the $allocatablesinrange data fits the following conditions:
+                 *
+                 * !published ensures no grade exists in the gradebook
+                 *      checks for {coursework_submissions}.firstpublished
+                 *      bool \mod_coursework\models\submission->is_published()
+                 *      'Checks whether there is a grade in the gradebook for this user.'
+                 *
+                 * finalised checks for a finalised (i.e. non-draft) submission and that the feedback is not agreed
+                 *
+                 * !autosampleset ensures the allocation isn't already in the created sample set allocations
+                 *
+                 * !$manualsampleset ensures the allocation isn't already flagged manually
+                 *
+                 * $allocatables ensures the user submission identified was one of the passed [users or groups]
+                 *
+                 */
+
                 if (
-                    !isset($published[$awf->allocatableid]) && !isset($finalised[$awf->allocatableid])
+                    !isset($published[$awf->allocatableid]) && isset($finalised[$awf->allocatableid])
                     && !isset($autosampleset[$awf->allocatableid]) && !isset($manualsampleset[$awf->allocatableid])
                     && isset($allocatables[$awf->allocatableid])
                 ) {
@@ -397,6 +491,15 @@ class range_sample_type extends sample_base {
         }
     }
 
+    /**
+     *
+     * Gets the limits as an array
+     *
+     * @param $ruletype
+     * @param $limit1
+     * @param $limit2
+     * @return array
+     */
     private function rationalise($ruletype, $limit1, $limit2) {
 
         global  $DB;
@@ -423,12 +526,14 @@ class range_sample_type extends sample_base {
 
                     $numberofitems = count($courseworkscale);
 
-                    $weighting = 100 / $numberofitems; // shall we round it????
+                    // phpcs:ignore moodle.Commenting.TodoComment.MissingInfoInline
+                    // TODO: Consider rounding.
+                    $weighting = 100 / $numberofitems;
 
-                    $limits[0] = ceil($limits[0] / $weighting); // element of array
-                    $limits[1] = ceil($limits[1] / $weighting); // element of array
+                    $limits[0] = ceil($limits[0] / $weighting);
+                    $limits[1] = ceil($limits[1] / $weighting);
 
-                    // Note we have to add one as the values are not stored in there element positions
+                    // Note we have to add one as the values are not stored in their element positions.
                 }
             }
         }
@@ -436,6 +541,16 @@ class range_sample_type extends sample_base {
         return $limits;
     }
 
+    /**
+     *
+     * Retrieves submission and feedback where the grade is between provided limits
+     *
+     * @param $stage
+     * @param $limit1
+     * @param $limit2
+     * @return array
+     * @throws \dml_exception
+     */
     private function get_allocatables_in_range($stage, $limit1, $limit2) {
         global $CFG, $DB;
 
@@ -450,7 +565,7 @@ class range_sample_type extends sample_base {
                     AND $gradesql BETWEEN {$limit1} AND {$limit2}";
 
         // Note as things stand limit1 and limit2 can not be params as the type of the grade field (varchar)
-        // means the values are cast as strings
+        // means the values are cast as strings.
 
         return $DB->get_records_sql(
             $sql,

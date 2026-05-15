@@ -43,6 +43,9 @@ abstract class sample_base {
      */
     public $courseworkid;
 
+    /**
+     * @var coursework
+     */
     protected $coursework;
 
     /**
@@ -70,6 +73,10 @@ abstract class sample_base {
      */
     public $minimum;
 
+    /**
+     * Base constructor.
+     * @param $coursework coursework
+     */
     public function __construct($coursework) {
         $this->coursework = $coursework;
     }
@@ -82,19 +89,6 @@ abstract class sample_base {
         $fullnamebits = explode('\\', $fullname);
         return end($fullnamebits);
     }
-
-    /**
-     * This will take the current set and the list of students who could potentially be added
-     * and adjust them. e.g. if the rule says 'include all below 40% of total grade, it will
-     * calculate what 40% is, then move any below it from the $potentialstudents array to
-     * the $moderationset array.
-     *
-     * @param array $moderationset
-     * @param array $potentialallocatables
-     * @param stage_base $stage
-     * @return mixed
-     */
-    abstract public function adjust_set(array &$moderationset, array &$potentialallocatables, $stage);
 
     /**
      * Tells us where this ought to be in relation to other rules. The one for percent of total must happen last,
@@ -119,10 +113,36 @@ abstract class sample_base {
      */
     abstract public function add_form_elements($assessornumber);
 
+    /**
+     *
+     * Generate form elements and return as html string.
+     *
+     * @param $assessornumber
+     * @return mixed
+     */
     abstract public function add_form_elements_js($assessornumber);
 
+    /**
+     *
+     * Saves the form data
+     *
+     * @param $assessornumber
+     * @param $order
+     * @return mixed
+     */
     abstract public function save_form_data($assessornumber = 0, &$order = 0);
 
+    /**
+     *
+     * The autosampleset is modified so that assessment_set_membership {coursework_sample_set_mbrs} records
+     * can be created by the calling function
+     *
+     * @param $ruleid
+     * @param $manualsampleset
+     * @param $allocatables
+     * @param $autosampleset
+     * @return mixed
+     */
     abstract public function adjust_sample_set($ruleid, &$manualsampleset, &$allocatables, &$autosampleset);
 
     /**
@@ -130,17 +150,22 @@ abstract class sample_base {
      * @return array
      * @throws \dml_exception
      */
-    protected function finalised_submissions() {
+    protected function finalised_submissions($stage) {
         global $DB;
 
         $sql = "SELECT  allocatableid
                   FROM  {coursework_submissions} s
-                  JOIN  {coursework_feedbacks} f
-                    ON  f.submissionid = s.id
+            INNER JOIN  {coursework_feedbacks} f
+                    ON  f.submissionid = s.id AND f.stageidentifier = :stage
                  WHERE  s.courseworkid = :courseworkid
-                   AND  f.stageidentifier = 'final_agreed_1'";
+                   AND s.finalisedstatus = :finalised";
 
-        return $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id]);
+        $params = [
+            'stage' => $stage,
+            'courseworkid' => $this->coursework->id,
+            'finalised' => \mod_coursework\models\submission::FINALISED_STATUS_FINALISED,
+        ];
+        return $DB->get_records_sql($sql, $params);
     }
 
     /**
