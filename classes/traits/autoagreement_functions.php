@@ -33,15 +33,21 @@ trait autoagreement_functions {
      */
     public function feedback_comments() {
         global $DB;
-
-        $feedbacks = $DB->get_records('coursework_feedbacks', [
+        $sql = "SELECT * FROM {coursework_feedbacks}
+            WHERE submissionid = :submissionid AND isfinalgrade = :isfinalgrade
+            AND stageidentifier NOT LIKE :stageidentifier";
+        $feedbacks = $DB->get_records_sql($sql, [
             'submissionid' => $this->get_allocatable()->get_submission($this->get_coursework())->id(),
             'isfinalgrade' => 0,
+            'stageidentifier' => 'final_agreed_1',
         ]);
         $feedbackcomment = '';
         $count = 1;
 
         foreach ($feedbacks as $feedback) {
+            if (empty($feedback->feedbackcomment)) {
+                continue;
+            }
             // Put all initial feedbacks together for the comment field.
             $feedbackcomment .= get_string('markercomments', 'mod_coursework', $count);
             $feedbackcomment .= $feedback->feedbackcomment;
