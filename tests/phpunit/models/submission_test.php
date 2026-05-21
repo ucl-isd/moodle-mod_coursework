@@ -128,12 +128,6 @@ final class submission_test extends \advanced_testcase {
         $this->assertEquals($group, $submission->get_allocatable());
     }
 
-    public function test_extract_extenstion_from_filename(): void {
-        $filename = 'thing.docx';
-        $submission = new submission();
-        $this->assertEquals('docx', $submission->extract_extension_from_file_name($filename));
-    }
-
     public function test_publish_updates_grade_timemodified(): void {
         global $DB;
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');

@@ -1,4 +1,4 @@
-@mod @mod_coursework @mod_coursework_file_renaming_candidate
+@mod @mod_coursework @mod_coursework_file_renaming
 Feature: Username hash based file renaming for submission files
 
   As a teacher
