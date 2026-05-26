@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version file for coursework candidate provider - SITS Grade Push.
+ * Version file for coursework candidate provider - ID Number.
  *
  * @package    courseworkcandidateprovider_idnumber
  * @copyright  2026 onwards University College London {@link https://www.ucl.ac.uk/}
