@@ -1,9 +1,8 @@
-@mod @mod_coursework @mod_coursework_file_renaming_candidate
+@mod @mod_coursework @mod_coursework_file_renaming
 Feature: Candidate number based file renaming for submission files
 
   As a teacher
   I want submitted files to be renamed with candidate numbers when using candidate providers
-  So that I can ensure blind marking with standardized candidate number anonymization
 
   Background:
     Given the following "course" exists:
@@ -14,7 +13,7 @@ Feature: Candidate number based file renaming for submission files
       | course       | C1         |
       | name         | Coursework |
       | maxfiles     | 2          |
-      | blindmarking | 1          |
+      | blindmarking | 0          |
       | renamefiles  | 1          |
       | usecandidate | 1          |
     And the following "users" exist:

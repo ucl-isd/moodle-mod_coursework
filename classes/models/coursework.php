@@ -2744,38 +2744,6 @@ class coursework extends table_base {
         return !$this->has_submissions_with_files();
     }
 
-    /**
-     * Get file identifier for user (candidate number or fallback to hash).
-     *
-     * @param int $userid
-     * @return string
-     * @throws moodle_exception
-     */
-    public function get_file_identifier_for_user(int $userid): string {
-        // If candidate number feature is not enabled for this coursework or blind marking not enabled, use hash.
-        if (!$this->usecandidate || !$this->blindmarking_enabled()) {
-            return $this->get_username_hash($userid);
-        }
-
-        // Validate prerequisites.
-        if ($this->usecandidate && !candidateprovider_manager::instance()->is_provider_available()) {
-            throw new moodle_exception('no_candidate_provider_available', 'mod_coursework');
-        }
-
-        // Try to get candidate number using the manager.
-        $candidatenumber = candidateprovider_manager::instance()->get_candidate_number(
-            $this->get_course_id(),
-            $userid
-        );
-
-        if (!empty($candidatenumber)) {
-            return $candidatenumber; // Return candidate number (ABCD123) if found.
-        }
-
-        // Cannot get candidate number from provider, fallback to hash.
-        return $this->get_username_hash($userid);
-    }
-
 
     /**
      * User may need to see a personal event in timeline block on dashboard, showing due time.

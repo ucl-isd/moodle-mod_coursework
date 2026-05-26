@@ -35,6 +35,7 @@ use exception;
 use file_storage;
 use html_writer;
 use mod_coursework\allocation\allocatable;
+use mod_coursework\candidateprovider_manager;
 use mod_coursework\event\assessable_uploaded;
 use mod_coursework\framework\table_base;
 use mod_coursework\grade_judge;
@@ -1178,9 +1179,7 @@ class submission extends table_base implements renderable {
             $this->coursework->get_file_options()
         );
 
-        if (!empty($this->coursework->renamefiles)) {
-            $this->rename_files();
-        }
+        $this->rename_files();
     }
 
     /**
@@ -1201,52 +1200,29 @@ class submission extends table_base implements renderable {
     }
 
     public function rename_files() {
+        if (empty($this->coursework->renamefiles)) {
+            return;
+        }
+        if ($this->coursework->usecandidate && !candidateprovider_manager::instance()->is_provider_available()) {
+            throw new moodle_exception('no_candidate_provider_available', 'mod_coursework');
+        }
+
+        $userid = $this->is_submission_on_behalf() ? $this->allocatableid : $this->userid;
+        if ($this->coursework->usecandidate && !$this->coursework->blindmarking_enabled()) {
+            $filenamestem = candidateprovider_manager::instance()->get_candidate_number($this->get_course_id(), $userid);
+        } else {
+            $filenamestem = $this->coursework->get_username_hash($userid);
+        }
+
         $counter = 1;
-        $storedfiles = $this->get_files();
-        foreach ($storedfiles as $file) {
-            $this->rename_file($file, $counter);
-            $counter++;
-        }
-    }
+        foreach ($this->get_files() as $file) {
+            $filename = $filenamestem
+                . '_' . $counter++
+                . '.' . pathinfo($file->get_filename())['extension'] ?? pathinfo($file->get_source())['extension'];
 
-    /**
-     * @param string $filename
-     * @return string
-     */
-    public function extract_extension_from_file_name($filename) {
-        if (!str_contains($filename, '.')) {
-            return '';
-        } else {
-            return substr(strrchr($filename, '.'), 1);
-        }
-    }
-
-    /**
-     * @param stored_file $file
-     * @param int $counter
-     * @throws \file_exception
-     */
-    private function rename_file($file, $counter) {
-
-        // If a submission was made on behalf of student/group, we need to use owner's id, not the person who submitted it.
-        if ($this->is_submission_on_behalf()) {
-            $userid = $this->allocatableid;
-        } else {
-            $userid = $this->userid;
-        }
-
-        $filepath = $file->get_filepath();
-        $fileextension = $this->extract_extension_from_file_name($file->get_filename());
-        if (empty($fileextension)) {
-            $fileextension = $this->extract_extension_from_file_name($file->get_source());
-        }
-
-        // Get the file identifier (candidate number or username hash).
-        $identifier = $this->coursework->get_file_identifier_for_user($userid);
-
-        $filename = $identifier . '_' . $counter . '.' . $fileextension;
-        if ($filename !== $file->get_filename()) {
-            $file->rename($filepath, $filename);
+            if ($filename !== $file->get_filename()) {
+                $file->rename($file->get_filepath(), $filename);
+            }
         }
     }
 
