@@ -447,6 +447,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $cangrade = has_any_capability(['mod/coursework:addinitialgrade', 'mod/coursework:moderate'], $this->page->context);
         $canpublish = has_capability('mod/coursework:publish', $this->page->context);
         $cansubmit = has_capability('mod/coursework:submit', $this->page->context);
+        $canview = has_capability('mod/coursework:viewallgradesatalltimes', $this->page->context);
 
         // Warnings.
         $warnings = new warnings($coursework);
@@ -474,7 +475,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         // Teacher data.
         $submissionstable = '';
-        if ($cangrade || $canpublish) {
+        if ($cangrade || $canpublish || $canview) {
             // Submissions table.
             $gradingreportrenderer = new grading_report_renderer($this->page, RENDERER_TARGET_GENERAL);
             $templatedata = $gradingreportrenderer->get_grading_report_data($coursework);
@@ -1100,11 +1101,8 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     private function get_export_upload_links(coursework $coursework): array {
         $cmid = $this->page->cm->id;
         $viewurl = '/mod/coursework/view.php';
-        $submissions = $coursework->get_all_submissions();
-        $hasfinalised = $coursework->get_finalised_submissions();
-        $finalised = submission::$pool[$coursework->id]['finalisedstatus'][submission::FINALISED_STATUS_FINALISED] ?? [];
-        $can = fn(string $cap) => has_capability($cap, $this->page->context);
-        $canmark = !empty($submissions) && $hasfinalised;
+        $finalisedsubmissions = !empty(submission::$pool[$coursework->id]['finalisedstatus'][submission::FINALISED_STATUS_FINALISED] ?? []);
+        $canmark = has_any_capability(['mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade', 'mod/coursework:administergrades'], $this->page->context);
 
         // Export/Import options.
         $menuoptions = [
@@ -1114,17 +1112,20 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                     [
                         'url' => new moodle_url($viewurl, ['id' => $cmid, 'download' => 1]),
                         'lang' => 'download_submitted_files',
-                        'cap' => ($finalised && !empty($submissions)),
+                        'show' => $finalisedsubmissions,
                     ],
                     [
                         'url' => new moodle_url($viewurl, ['id' => $cmid, 'export' => 1]),
                         'lang' => 'finalmarks',
-                        'cap' => ($can('mod/coursework:viewallgradesatalltimes') && $can('mod/coursework:canexportfinalgrades') && $hasfinalised),
+                        'show' => $finalisedsubmissions && has_any_capability(
+                            ['mod/coursework:viewallgradesatalltimes', 'mod/coursework:canexportfinalgrades'],
+                            $this->page->context
+                        ),
                     ],
                     [
                         'url' => new moodle_url($viewurl, ['id' => $cmid, 'export_grading_sheet' => 1]),
                         'lang' => 'markingspreadsheet',
-                        'cap' => $canmark,
+                        'show' => $finalisedsubmissions,
                     ],
                 ],
             ],
@@ -1134,12 +1135,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                     [
                         'url' => new moodle_url('/mod/coursework/actions/upload_grading_sheet.php', ['cmid' => $cmid]),
                         'lang' => 'markingspreadsheet',
-                        'cap' => $canmark,
+                        'show' => $finalisedsubmissions && $canmark,
                     ],
                     [
                         'url' => new moodle_url('/mod/coursework/actions/upload_feedback.php', ['cmid' => $cmid]),
                         'lang' => 'uploadfeedbackfiles',
-                        'cap' => $canmark,
+                        'show' => $finalisedsubmissions && $canmark,
                     ],
                 ],
             ],
@@ -1150,7 +1151,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         foreach ($menuoptions as $id => $option) {
             $actions = [];
             foreach ($option['actions'] as $action) {
-                if ($action['cap']) {
+                if ($action['show']) {
                     $actions[] = [
                         'url' => $action['url']->out(false),
                         'title' => get_string($action['lang'], 'mod_coursework'),

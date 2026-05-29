@@ -42,3 +42,28 @@ Feature: Download and upload buttons on submissions page
     Then I should see "Submitted files"
     And I should see "Marking spreadsheet"
     But I should not see "Final marks"
+
+  Scenario: External examiner visits the coursework page and sees the Download menu
+    Given the following "roles" exist:
+      | name              | shortname        | archetype |
+      | External examiner | externalexaminer |           |
+    And the following "users" exist:
+      | username  | firstname | lastname | email                |
+      | examiner1 | External  | Examiner | external@example.com |
+    And the following "role capability" exists:
+      | role                                   | externalexaminer |
+      | mod/coursework:view                    | allow            |
+      | mod/coursework:viewallgradesatalltimes | allow            |
+      | mod/coursework:viewextensions          | allow            |
+    And the following "course enrolments" exist:
+      | user      | course | role             |
+      | examiner1 | C1     | externalexaminer |
+    And the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | Coursework | 1               |
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment | finalised |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | Some comment    | 1         |
+    When I am on the "Coursework" "coursework activity" page logged in as "examiner1"
+    Then "Download" "button" should exist
+    But "Upload" "button" should not exist
