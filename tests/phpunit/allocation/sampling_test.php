@@ -26,7 +26,6 @@ namespace mod_coursework;
 
 use mod_coursework\models\coursework;
 use mod_coursework\models\submission;
-use function PHPUnit\Framework\assertEquals;
 
 /**
  * Class test_auto_allocator
@@ -53,7 +52,7 @@ final class sampling_test extends \advanced_testcase {
             'grade' => 100,
             'numberofmarkers' => 3,
             'samplingenabled' => 1,
-            'deadline' => time() + 86400,
+            'deadline' => time() + DAYSECS,
             'allocationenabled' => 1,
             'assessorallocationstrategy' => 'equal',
         ];
@@ -67,7 +66,6 @@ final class sampling_test extends \advanced_testcase {
     }
 
     /**
-     *
      * @covers \mod_coursework\sample_set_rule\range_sample_type::adjust_sample_set
      */
     public function test_sampling_not_applied_to_draft_feedback(): void {
@@ -206,7 +204,6 @@ final class sampling_test extends \advanced_testcase {
     }
 
     /**
-     *
      * @covers \mod_coursework\sample_set_rule\range_sample_type::adjust_sample_set
      */
     public function test_sampling_then_equal_auto_allocation(): void {
@@ -288,12 +285,10 @@ final class sampling_test extends \advanced_testcase {
     }
 
     /**
-     *
      * Given a collection of sample set rules, this function creates coursework_sample_set_rules record =s for phpunit testing
      *
-     * @param $ruleset
+     * @param object[] $ruleset
      * @return void
-     * @throws \dml_exception
      */
     private function create_sample_ruleset($ruleset) {
         global $DB;

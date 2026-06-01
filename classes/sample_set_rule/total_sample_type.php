@@ -26,6 +26,7 @@ namespace mod_coursework\sample_set_rule;
 
 use html_writer;
 use stdClass;
+use mod_coursework\allocation\allocatable;
 
 /**
  * Defines a rule that will include all students above or below a particular percentage of
@@ -33,8 +34,7 @@ use stdClass;
  */
 class total_sample_type extends sample_base {
     /**
-     *
-     *  Generate form elements and return as html string
+     * Generate form elements and return as html string
      *
      * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
      * @return string the generate form controls for this total sample type
@@ -87,7 +87,6 @@ class total_sample_type extends sample_base {
     }
 
     /**
-     *
      * Generate form elements and return as html string.
      *
      * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
@@ -119,7 +118,6 @@ class total_sample_type extends sample_base {
     }
 
     /**
-     *
      * Saves the form data
      *
      * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
@@ -150,18 +148,19 @@ class total_sample_type extends sample_base {
     }
 
     /**
-     *
      * Call back function for array_diff_ukey
      *
      * Computes the difference of arrays using a callback function on the keys for comparison
      * The callback function must return an integer less than, equal to, or greater than zero if the first argument is considered
      * to be respectively less than, equal to, or greater than the second.
      *
+     * TODO: Possibly safe to replace the contents of this with the spaceship operator, i.e. return $a <=> $b;
+     *
      * @param $a
      * @param $b
      * @return int
      */
-    private static function compare_key($a, $b) {
+    public static function compare_key($a, $b) {
         if ($a === $b) {
             return 0;
         }
@@ -169,7 +168,6 @@ class total_sample_type extends sample_base {
     }
 
     /**
-     *
      * Given a marking stage number and three arrays passed by reference, the autosampleset array is modified based on conditions
      *
      * The autosampleset is modified so that assessment_set_membership {coursework_sample_set_mbrs} records
@@ -177,13 +175,13 @@ class total_sample_type extends sample_base {
      *
      * TODO: $allocatables is passed by reference but not modified in this function
      * TODO: $manualsampleset is passed by reference but not modified in this function
+     * TODO: Possibly safe to replace array_diff_ukey with array_diff_key and remove compare_key function
      *
-     * @param $stagenumber int the numeric marking stage
-     * @param $allocatables \mod_coursework\allocation\allocatable[] an array implementing the allocatable interface.
-     * @param $manualsampleset \stdClass[]
-     * @param $autosampleset array
+     * @param int $stagenumber int the numeric marking stage
+     * @param allocatable[] $allocatables an array implementing the allocatable interface.
+     * @param \stdClass[] $manualsampleset
+     * @param array $autosampleset
      * @return void
-     * @throws \dml_exception
      */
     public function adjust_sample_set(
         int $stagenumber,

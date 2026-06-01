@@ -118,7 +118,6 @@ Feature: Automatic sample based on range set grades using marking of students in
       | student2    | Coursework3 | teacher2 | assessor_1      | 43    | New comment here | 0            | 0         |
       | student3    | Coursework3 | teacher3 | assessor_1      | 45    | New comment here | 0            | 1         |
 
-  @javascript
   Scenario: Applying sampling of finalised and non finalised feedback, then applying automatic equal allocation
     Given I am on the "Coursework" "coursework activity" page logged in as "manager1"
     When I navigate to "Allocate markers" in current page administration
@@ -165,7 +164,6 @@ Feature: Automatic sample based on range set grades using marking of students in
     Then I should see "teacher teacher1" in the "student student3" "table_row"
     And I should see "teacher teacher2" in the "student student4" "table_row"
 
-  @javascript
   Scenario: Applying sampling of finalised and non finalised feedback with the deadline pastdue, then applying automatic equal allocation
     Given I am on the "Coursework2" "coursework activity" page logged in as "manager1"
     When I navigate to "Allocate markers" in current page administration
@@ -213,7 +211,6 @@ Feature: Automatic sample based on range set grades using marking of students in
     And I should see "teacher teacher2" in the "student student2" "table_row"
     And I should see "teacher teacher3" in the "student student3" "table_row"
 
-  @javascript
   Scenario: Applying sampling of finalised and non finalised feedback with manual allocations, then applying automatic equal allocation
     Given I am on the "Coursework3" "coursework activity" page logged in as "manager1"
     When I navigate to "Allocate markers" in current page administration

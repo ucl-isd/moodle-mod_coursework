@@ -35,13 +35,10 @@ use mod_coursework\allocation;
  */
 class range_sample_type extends sample_base {
     /**
-     *
-     *  Generate form elements and return as html string
+     * Generate form elements and return as html string
      *
      * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
      * @return string
-     * @throws \coding_exception
-     * @throws \dml_exception
      */
     public function add_form_elements(int $assessornumber = 0): string {
 
@@ -87,14 +84,12 @@ class range_sample_type extends sample_base {
     /**
      * Builds form elements for this sample type
      *
-     * TODO: Restrict visibility to private as there are no external consumers.
-     *
      * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
-     * @param $sequence int the sample sequence
-     * @param $dbrecord mixed optional dbrecord object
+     * @param int $sequence the sample sequence
+     * @param mixed $dbrecord optional dbrecord object
      * @return string
      */
-    public function range_elements(int $assessornumber, int $sequence, mixed $dbrecord = false): string {
+    private function range_elements(int $assessornumber, int $sequence, mixed $dbrecord = false): string {
 
         $percentageoptions = [];
 
@@ -192,7 +187,6 @@ class range_sample_type extends sample_base {
     }
 
     /**
-     *
      * Adds javascript required for the form elements.
      *
      * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
@@ -366,7 +360,6 @@ class range_sample_type extends sample_base {
     }
 
     /**
-     *
      * Saves the form data
      *
      * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
@@ -403,7 +396,6 @@ class range_sample_type extends sample_base {
     }
 
     /**
-     *
      * Given a marking stage number and three arrays passed by reference, the autosampleset array is modified based on conditions
      *
      * The autosampleset is modified so that assessment_set_membership {coursework_sample_set_mbrs} records
@@ -412,10 +404,10 @@ class range_sample_type extends sample_base {
      * TODO: $allocatables is passed by reference but not modified in this function
      * TODO: $manualsampleset is passed by reference but not modified in this function
      *
-     * @param $stagenumber int the numeric marking stage
-     * @param $allocatables allocatable[] an array implementing the allocatable interface.
-     * @param $manualsampleset \stdClass[]
-     * @param $autosampleset array
+     * @param int $stagenumber the numeric marking stage
+     * @param allocatable[] $allocatables an array implementing the allocatable interface.
+     * @param \stdClass[] $manualsampleset
+     * @param array $autosampleset
      * @return void
      */
     public function adjust_sample_set(
@@ -483,12 +475,11 @@ class range_sample_type extends sample_base {
     }
 
     /**
-     *
      * Gets the limits as an array
      *
-     * @param $ruletype string scale|percentage
-     * @param $limit1 int one of the limits, upper or lower
-     * @param $limit2 int one of the limits, upper or lower
+     * @param string $ruletype scale|percentage
+     * @param int $limit1 one of the limits, upper or lower
+     * @param int $limit2 one of the limits, upper or lower
      * @return array the rationalised limits
      */
     private function rationalise($ruletype, $limit1, $limit2) {
@@ -533,12 +524,11 @@ class range_sample_type extends sample_base {
     }
 
     /**
-     *
      * Retrieves submission and feedback where the grade is between provided limits
      *
-     * @param $stage string the stage identifier
-     * @param $limit1 int the lower limit
-     * @param $limit2 int the upper limit
+     * @param string $stage the stage identifier
+     * @param int $limit1 the lower limit
+     * @param int $limit2 the upper limit
      * @return array an array of db records (submission x feedback) where the grade is between provided limits
      */
     private function get_allocatables_in_range($stage, $limit1, $limit2) {

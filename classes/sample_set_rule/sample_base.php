@@ -85,7 +85,7 @@ abstract class sample_base {
         return end($fullnamebits);
     }
 
-    /**e
+    /**
      * Some rules make no sense when there are multiple e.g. 'include at least x% of the total number'.
      *
      * @return true
@@ -95,9 +95,8 @@ abstract class sample_base {
     }
 
     /**
-     *
-     *  Generate form elements and return as html string
-     *  Each rule may have different form elements that we need to add in order for a new one to be created
+     * Generate form elements and return as html string
+     * Each rule may have different form elements that we need to add in order for a new one to be created
      *
      * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
      * @return string the html of the added elements
@@ -105,8 +104,7 @@ abstract class sample_base {
     abstract public function add_form_elements(int $assessornumber = 0): string;
 
     /**
-     *
-     * Generate form elements and return as html string.
+     * Generate form elements and return as js string.
      *
      * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
      * @return string the html of the added elements
@@ -114,7 +112,6 @@ abstract class sample_base {
     abstract public function add_form_elements_js(int $assessornumber = 0): string;
 
     /**
-     *
      * Saves the form data
      *
      * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
@@ -124,16 +121,15 @@ abstract class sample_base {
     abstract public function save_form_data(int $assessornumber = 0, int &$order = 0): void;
 
     /**
-     *
      * Given a marking stage number and three arrays passed by reference, the autosampleset array is modified based on conditions
      *
      * The autosampleset is modified so that assessment_set_membership {coursework_sample_set_mbrs} records
      * can be created by the calling function
      *
-     * @param $stagenumber int the numeric marking stage
-     * @param $allocatables allocatable[] an array implementing the allocatable interface.
-     * @param $manualsampleset \stdClass[]
-     * @param $autosampleset array
+     * @param int $stagenumber the numeric marking stage
+     * @param allocatable[] $allocatables an array implementing the allocatable interface.
+     * @param \stdClass[] $manualsampleset
+     * @param array $autosampleset
      * @return void
      */
     abstract public function adjust_sample_set(
@@ -144,7 +140,6 @@ abstract class sample_base {
     ): void;
 
     /**
-     *
      * Retrieves the finalised submissions based on provided $stage
      *
      * @param string $stage the stage identifier
@@ -169,7 +164,6 @@ abstract class sample_base {
     }
 
     /**
-     *
      * @return array
      * @throws \dml_exception
      */
