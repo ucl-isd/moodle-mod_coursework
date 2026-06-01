@@ -31,35 +31,15 @@ use stdClass;
  * Defines a rule that will include all students above or below a particular percentage of
  * the total grade.
  */
-class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
-    /**
-     *
-     * Not implemented.
-     *
-     * @return void
-     */
-    public function get_numeric_boundaries() {
-    }
-
-    /**
-     *
-     * Not implemented.
-     *
-     * @return void
-     */
-    public function get_default_rule_order() {
-    }
-
+class total_sample_type extends sample_base {
     /**
      *
      *  Generate form elements and return as html string
      *
-     * @return string
-     * @throws \coding_exception
-     * @throws \dml_exception
+     * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
+     * @return string the generate form controls for this total sample type
      */
-    public function add_form_elements($assessornumber = 0) {
-
+    public function add_form_elements(int $assessornumber = 0): string {
         global $DB;
 
         $sql = "SELECT     sr.*
@@ -108,12 +88,12 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
 
     /**
      *
-     * Adds javascript required for the form elements.
+     * Generate form elements and return as html string.
      *
-     * @param $assessornumber
-     * @return string
+     * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
+     * @return string the html of the added elements
      */
-    public function add_form_elements_js($assessornumber = 0) {
+    public function add_form_elements_js(int $assessornumber = 0): string {
 
         $jsscript = "
 
@@ -142,13 +122,11 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
      *
      * Saves the form data
      *
-     * @param $assessornumber
-     * @param $order
+     * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
+     * @param int $order value to store on coursework_sample_set_rules.ruleorder. Increments inside function.
      * @return void
-     * @throws \coding_exception
-     * @throws \dml_exception
      */
-    public function save_form_data($assessornumber = 0, &$order = 0) {
+    public function save_form_data(int $assessornumber = 0, int &$order = 0): void {
         global $DB;
 
         $totalcheckbox = optional_param("assessor_{$assessornumber}_sampletotal_checkbox", false, PARAM_INT);
@@ -207,7 +185,12 @@ class total_sample_type extends \mod_coursework\sample_set_rule\sample_base {
      * @return void
      * @throws \dml_exception
      */
-    public function adjust_sample_set($stagenumber, &$allocatables, &$manualsampleset, &$autosampleset) {
+    public function adjust_sample_set(
+        int $stagenumber,
+        array &$allocatables,
+        array &$manualsampleset,
+        array &$autosampleset
+    ): void {
 
         global $DB;
 

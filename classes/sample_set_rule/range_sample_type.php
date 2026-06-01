@@ -27,6 +27,7 @@ namespace mod_coursework\sample_set_rule;
 use grade_scale;
 use html_writer;
 use stdClass;
+use mod_coursework\allocation;
 
 /**
  * Defines a rule that will include all students above or below a particular percentage of
@@ -34,31 +35,15 @@ use stdClass;
  */
 class range_sample_type extends sample_base {
     /**
-     * Not implemented
-     *
-     * @return void
-     */
-    public function get_numeric_boundaries() {
-    }
-
-    /**
-     *
-     * Not implemented
-     *
-     * @return void
-     */
-    public function get_default_rule_order() {
-    }
-
-    /**
      *
      *  Generate form elements and return as html string
      *
+     * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
      * @return string
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function add_form_elements($assessornumber = 0) {
+    public function add_form_elements(int $assessornumber = 0): string {
 
         global $DB;
 
@@ -104,12 +89,12 @@ class range_sample_type extends sample_base {
      *
      * TODO: Restrict visibility to private as there are no external consumers.
      *
-     * @param $assessornumber
-     * @param $sequence
-     * @param $dbrecord
+     * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
+     * @param $sequence int the sample sequence
+     * @param $dbrecord mixed optional dbrecord object
      * @return string
      */
-    public function range_elements($assessornumber, $sequence, $dbrecord = false) {
+    public function range_elements(int $assessornumber, int $sequence, mixed $dbrecord = false): string {
 
         $percentageoptions = [];
 
@@ -210,10 +195,10 @@ class range_sample_type extends sample_base {
      *
      * Adds javascript required for the form elements.
      *
-     * @param $assessornumber
-     * @return string
+     * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
+     * @return string the javascript required for the form elements
      */
-    public function add_form_elements_js($assessornumber = 0) {
+    public function add_form_elements_js(int $assessornumber = 0): string {
 
         $jsscript = "
 
@@ -384,12 +369,11 @@ class range_sample_type extends sample_base {
      *
      * Saves the form data
      *
-     * @param $assessornumber
-     * @param $order
+     * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
+     * @param int $order value to store on coursework_sample_set_rules.ruleorder. Increments inside function.
      * @return void
-     * @throws \coding_exception
      */
-    public function save_form_data($assessornumber = 0, &$order = 0) {
+    public function save_form_data(int $assessornumber = 0, int &$order = 0): void {
 
             global $DB;
 
@@ -429,12 +413,17 @@ class range_sample_type extends sample_base {
      * TODO: $manualsampleset is passed by reference but not modified in this function
      *
      * @param $stagenumber int the numeric marking stage
-     * @param $allocatables \mod_coursework\allocation\allocatable[] an array implementing the allocatable interface.
+     * @param $allocatables allocatable[] an array implementing the allocatable interface.
      * @param $manualsampleset \stdClass[]
      * @param $autosampleset array
      * @return void
      */
-    public function adjust_sample_set($stagenumber, &$allocatables, &$manualsampleset, &$autosampleset) {
+    public function adjust_sample_set(
+        int $stagenumber,
+        array &$allocatables,
+        array &$manualsampleset,
+        array &$autosampleset
+    ): void {
 
         global $DB;
 
@@ -481,8 +470,10 @@ class range_sample_type extends sample_base {
                  */
 
                 if (
-                    !isset($published[$awf->allocatableid]) && isset($finalised[$awf->allocatableid])
-                    && !isset($autosampleset[$awf->allocatableid]) && !isset($manualsampleset[$awf->allocatableid])
+                    !isset($published[$awf->allocatableid])
+                    && isset($finalised[$awf->allocatableid])
+                    && !isset($autosampleset[$awf->allocatableid])
+                    && !isset($manualsampleset[$awf->allocatableid])
                     && isset($allocatables[$awf->allocatableid])
                 ) {
                         $autosampleset[$awf->allocatableid] = $allocatables[$awf->allocatableid];
@@ -495,10 +486,10 @@ class range_sample_type extends sample_base {
      *
      * Gets the limits as an array
      *
-     * @param $ruletype
-     * @param $limit1
-     * @param $limit2
-     * @return array
+     * @param $ruletype string scale|percentage
+     * @param $limit1 int one of the limits, upper or lower
+     * @param $limit2 int one of the limits, upper or lower
+     * @return array the rationalised limits
      */
     private function rationalise($ruletype, $limit1, $limit2) {
 
@@ -545,11 +536,10 @@ class range_sample_type extends sample_base {
      *
      * Retrieves submission and feedback where the grade is between provided limits
      *
-     * @param $stage
-     * @param $limit1
-     * @param $limit2
-     * @return array
-     * @throws \dml_exception
+     * @param $stage string the stage identifier
+     * @param $limit1 int the lower limit
+     * @param $limit2 int the upper limit
+     * @return array an array of db records (submission x feedback) where the grade is between provided limits
      */
     private function get_allocatables_in_range($stage, $limit1, $limit2) {
         global $CFG, $DB;

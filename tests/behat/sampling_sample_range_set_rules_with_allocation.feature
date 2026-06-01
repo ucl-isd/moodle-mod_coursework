@@ -3,8 +3,8 @@ Feature: Automatic sample based on range set grades using marking of students in
 
   As a manager, I want to be able to automatically allocate assessors to students
   using a set of grade rules with upper and lower limits
-  for a large group of students so that the marking is fairly distributed
-  so they mark more evenly and randomly.
+
+  I want to be sure that Submissions are not in draft when being sampled, they must be finalised to be sampled.
 
   Background:
     Given the following "course" exists:
@@ -156,7 +156,7 @@ Feature: Automatic sample based on range set grades using marking of students in
     # This invalidates any strategy checking for that loading text due to race conditions, except creating custom step definitions sniffing window.location
     # The returning AJAX on success toggles the my_overlay then invokes location.reload(true)
     When I press "Apply"
-    And I wait until "//div[@id='coursework_input_buttons' and contains(concat(' ', normalize-space(@class), ' '), ' my_overlay ')]" "xpath_element" does not exist
+    And I wait until "#coursework_input_buttons #countdown.my_overlay" "css_element" does not exist
     And I wait until the page is ready
     Then "student student3" row "Marker 2" column of "mod_coursework_allocatemarkers" table should contain "teacher1"
     And "student student4" row "Marker 2" column of "mod_coursework_allocatemarkers" table should contain "teacher2"
@@ -199,7 +199,7 @@ Feature: Automatic sample based on range set grades using marking of students in
     # This invalidates any strategy checking for that loading text due to race conditions, except creating custom step definitions sniffing window.location
     # The returning AJAX on success toggles the my_overlay then invokes location.reload(true)
     When I press "Apply"
-    And I wait until "//div[@id='coursework_input_buttons' and contains(concat(' ', normalize-space(@class), ' '), ' my_overlay ')]" "xpath_element" does not exist
+    And I wait until "#coursework_input_buttons #countdown.my_overlay" "css_element" does not exist
     And I wait until the page is ready
     Then "student student1" row "Marker 2" column of "mod_coursework_allocatemarkers" table should contain "Automatically included in sample"
     And "student student2" row "Marker 2" column of "mod_coursework_allocatemarkers" table should contain "Automatically included in sample"
@@ -258,7 +258,7 @@ Feature: Automatic sample based on range set grades using marking of students in
     # This invalidates any strategy checking for that loading text due to race conditions, except creating custom step definitions sniffing window.location
     # The returning AJAX on success toggles the my_overlay then invokes location.reload(true)
     When I press "Apply"
-    And I wait until "//div[@id='coursework_input_buttons' and contains(concat(' ', normalize-space(@class), ' '), ' my_overlay ')]" "xpath_element" does not exist
+    And I wait until "#coursework_input_buttons #countdown.my_overlay" "css_element" does not exist
     And I wait until the page is ready
     Then "student student1" row "Marker 2" column of "mod_coursework_allocatemarkers" table should not contain "Automatically included in sample"
     And "student student2" row "Marker 2" column of "mod_coursework_allocatemarkers" table should contain "Automatically included in sample"
