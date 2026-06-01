@@ -146,6 +146,18 @@ class mod_coursework_generator extends testing_module_generator {
         if (empty($allocation->allocatabletype)) {
             $allocation->allocatabletype = 'user';
         }
+
+        // Prevent creating duplicate allocation.
+        $params = [
+            'courseworkid' => $allocation->courseworkid,
+            'stageidentifier' => $allocation->stageidentifier,
+            'allocatabletype' => $allocation->allocatabletype,
+            'allocatableid' => $allocation->allocatableid,
+        ];
+        if (allocation::count($params) > 0) {
+            throw new coding_exception('Coursework generator attempted creation of a duplicate allocation');
+        }
+
         $allocation = allocation::build((array)$allocation);
         $allocation->save();
         return $allocation;

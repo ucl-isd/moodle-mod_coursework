@@ -24,6 +24,8 @@
 
 namespace mod_coursework\sample_set_rule;
 
+use mod_coursework\models\submission;
+
 /**
  * This base class is extended to make specific sampling rules strategies
  */
@@ -84,27 +86,6 @@ abstract class sample_base {
     }
 
     /**
-     * This will take the current set and the list of students who could potentially be added
-     * and adjust them. e.g. if the rule says 'include all below 40% of total grade, it will
-     * calculate what 40% is, then move any below it from the $potentialstudents array to
-     * the $moderationset array.
-     *
-     * @param array $moderationset
-     * @param array $potentialallocatables
-     * @param stage_base $stage
-     * @return mixed
-     */
-    abstract public function adjust_set(array &$moderationset, array &$potentialallocatables, $stage);
-
-    /**
-     * Tells us where this ought to be in relation to other rules. The one for percent of total must happen last,
-     * so this is how we enforce it.
-     *
-     * @return mixed
-     */
-    abstract public function get_default_rule_order();
-
-    /**
      * Some rules make no sense when there are multiple e.g. 'include at least x% of the total number'.
      *
      * @return true
@@ -114,37 +95,75 @@ abstract class sample_base {
     }
 
     /**
-     * Each rule may have different form elements that we need to add in order for a new one to be
-     * @return mixed
+     * Generate form elements and return as html string
+     * Each rule may have different form elements that we need to add in order for a new one to be created
+     *
+     * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
+     * @return string the html of the added elements
      */
-    abstract public function add_form_elements($assessornumber);
-
-    abstract public function add_form_elements_js($assessornumber);
-
-    abstract public function save_form_data($assessornumber = 0, &$order = 0);
-
-    abstract public function adjust_sample_set($ruleid, &$manualsampleset, &$allocatables, &$autosampleset);
+    abstract public function add_form_elements(int $assessornumber = 0): string;
 
     /**
+     * Generate form elements and return as js string.
      *
-     * @return array
-     * @throws \dml_exception
+     * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
+     * @return string the html of the added elements
      */
-    protected function finalised_submissions() {
+    abstract public function add_form_elements_js(int $assessornumber = 0): string;
+
+    /**
+     * Saves the form data
+     *
+     * @param int $assessornumber the stage identifier numeric component e.g. assessor_x where x = 1
+     * @param int $order value to store on coursework_sample_set_rules.ruleorder. Increments inside function.
+     * @return void
+     */
+    abstract public function save_form_data(int $assessornumber = 0, int &$order = 0): void;
+
+    /**
+     * Given a marking stage number and three arrays passed by reference, the autosampleset array is modified based on conditions
+     *
+     * The autosampleset is modified so that assessment_set_membership {coursework_sample_set_mbrs} records
+     * can be created by the calling function
+     *
+     * @param int $stagenumber the numeric marking stage
+     * @param allocatable[] $allocatables an array implementing the allocatable interface.
+     * @param \stdClass[] $manualsampleset
+     * @param array $autosampleset
+     * @return void
+     */
+    abstract public function adjust_sample_set(
+        int $stagenumber,
+        array &$allocatables,
+        array &$manualsampleset,
+        array &$autosampleset
+    ): void;
+
+    /**
+     * Retrieves the finalised submissions based on provided $stage
+     *
+     * @param string $stage the stage identifier
+     * @return array of db objects (submission x feedback)
+     */
+    protected function finalised_submissions(string $stage): array {
         global $DB;
 
-        $sql = "SELECT  allocatableid
-                  FROM  {coursework_submissions} s
-                  JOIN  {coursework_feedbacks} f
-                    ON  f.submissionid = s.id
-                 WHERE  s.courseworkid = :courseworkid
-                   AND  f.stageidentifier = 'final_agreed_1'";
+        $sql = "SELECT allocatableid
+                  FROM {coursework_submissions} s
+                  JOIN {coursework_feedbacks} f
+                    ON f.submissionid = s.id AND f.stageidentifier = :stage
+                 WHERE s.courseworkid = :courseworkid
+                   AND s.finalisedstatus = :finalised";
 
-        return $DB->get_records_sql($sql, ['courseworkid' => $this->coursework->id]);
+        $params = [
+            'stage' => $stage,
+            'courseworkid' => $this->coursework->id,
+            'finalised' => submission::FINALISED_STATUS_FINALISED,
+        ];
+        return $DB->get_records_sql($sql, $params);
     }
 
     /**
-     *
      * @return array
      * @throws \dml_exception
      */
