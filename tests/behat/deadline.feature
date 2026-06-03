@@ -59,7 +59,7 @@ Feature: Deadlines extensions for submissions
     And I click on "Submission extension" "button"
     And I wait until the page is ready
     And I set the field "Extended deadline" to "##+2 weeks, 8:00 AM##"
-    And I click on "Save" "button" in the "Extended deadline" "dialogue"
+    When I click on "Save" "button" in the "Extended deadline" "dialogue"
     Then I should see "##+2 weeks##%d %B %Y, 8:00 AM##" in the "student student1" "table_row"
     When I am on the "Coursework" "coursework activity" page
     Then I should see "##+2 weeks##%d %B %Y, 8:00 AM##" in the "student student1" "table_row"
@@ -69,7 +69,30 @@ Feature: Deadlines extensions for submissions
     And I click on "Submission extension" "button"
     And I wait until the page is ready
     And I set the field "Extended deadline" to "##+3 weeks, 8:00 AM##"
-    And I click on "Save" "button" in the "Extended deadline" "dialogue"
+    When I click on "Save" "button" in the "Extended deadline" "dialogue"
     Then I should see "##+3 weeks##%d %B %Y, 8:00 AM##" in the "student student1" "table_row"
     When I am on the "Coursework" "coursework activity" page
-    And I should see "##+3 weeks##%d %B %Y, 8:00 AM##" in the "student student1" "table_row"
+    Then I should see "##+3 weeks##%d %B %Y, 8:00 AM##" in the "student student1" "table_row"
+
+    # Test existing extensions can be set to an earlier date
+    Given I press "Actions"
+    And I wait until the page is ready
+    And I click on "Submission extension" "button"
+    And I wait until the page is ready
+    And I set the field "Extended deadline" to "##+1 weeks, 8:00 AM##"
+    When I click on "Save" "button" in the "Extended deadline" "dialogue"
+    Then I should see "##+1 weeks##%d %B %Y, 8:00 AM##" in the "student student1" "table_row"
+    When I am on the "Coursework" "coursework activity" page
+    Then I should see "##+1 weeks##%d %B %Y, 8:00 AM##" in the "student student1" "table_row"
+
+    # Test extensions can be deleted
+    Given I press "Actions"
+    And I wait until the page is ready
+    And I click on "Submission extension" "button"
+    And I wait until the page is ready
+    And I click on "Delete this extension" "checkbox"
+    When I click on "Save" "button" in the "Extended deadline" "dialogue"
+    And I click on "Delete" "button" in the "Are you sure?" "dialogue"
+    Then I should not see "Extension" in the "student student1" "table_row"
+    When I am on the "Coursework" "coursework activity" page
+    Then I should not see "Extension" in the "student student1" "table_row"

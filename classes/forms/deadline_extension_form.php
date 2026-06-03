@@ -221,20 +221,12 @@ class deadline_extension_form extends dynamic_form {
         global $CFG;
         $errors = [];
         if ($data['deleteextension'] ?? null == 1) {
-            if (!$this->extension->can_be_deleted()) {
-                $errors['deleteextension'] = get_string('extension_cannot_delete', 'mod_coursework');
-            } else {
-                // No validation needed - extension is not yet in use so can be deleted. Other fields don't need checking.
-                return [];
-            }
+            return [];
         }
         $maxdeadline = $CFG->coursework_max_extension_deadline ?? 0;
         $deadline = $this->get_user_latest_deadline();
 
         if ($data['extended_deadline']) {
-            if ($data['extended_deadline'] <= $deadline) {
-                $errors['extended_deadline'] = get_string('alert_validate_deadline', 'coursework');
-            }
             if ($maxdeadline && $data['extended_deadline'] >= strtotime("+$maxdeadline months", $deadline)) {
                 $errors['extended_deadline'] = get_string('alert_validate_deadline_months', 'coursework', $maxdeadline);
             }
@@ -356,16 +348,7 @@ class deadline_extension_form extends dynamic_form {
         $data->extrainformationformat = $data->extra_information['format'] ?? null;
 
         if ($data->deleteextension ?? null == 1) {
-            if (!$this->extension->can_be_deleted()) {
-                $errors[] = get_string('extension_cannot_delete', 'mod_coursework');
-                return [
-                    'success' => empty($errors),
-                    'resultcode' => 'cannotdelete',
-                    'message' => '',
-                    'errors' => $errors,
-                    'warnings' => $warnings,
-                ];
-            } else if ($data->suredelete ?? false) {
+            if ($data->suredelete ?? false) {
                 $ability->require_can('update', $this->extension);
                 $this->extension->delete();
                 return [
