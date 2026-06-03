@@ -66,6 +66,15 @@ class marking_cell_data extends cell_data_base {
 
         $tablerows = [];
         foreach ($this->coursework->get_assessor_marking_stages() as $stage) {
+            // For 'marking' cell data, short-circuit this $stage if sampling is enabled no feedback exists.
+            if (
+                $this->coursework->sampling_enabled()
+                && $stage->uses_sampling()
+                && !$stage->get_feedback_for_allocatable($rowsbase->get_allocatable())
+                && !$stage->get_assessment_set_membership($rowsbase->get_allocatable())
+            ) {
+                continue;
+            }
             $tablerows[] = new assessor_feedback_row($stage, $rowsbase->get_allocatable(), $this->coursework);
         }
 
@@ -283,10 +292,10 @@ class marking_cell_data extends cell_data_base {
         if (!$rowsbase->get_submission()) {
             return null;
         }
-        // Early return if sampling is enabled but no sampled feedback exists.
+        // Early return if sampling is enabled and the submission still needs more marks.
         if (
             $rowsbase->get_coursework()->sampling_enabled() &&
-            !$rowsbase->get_submission()->sampled_feedback_exists()
+            count($rowsbase->get_submission()->get_assessor_feedbacks()) < $rowsbase->get_submission()->max_number_of_feedbacks()
         ) {
             return null;
         }

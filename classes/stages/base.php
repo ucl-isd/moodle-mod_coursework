@@ -639,10 +639,10 @@ abstract class base {
                     ]
                 );
 
+                // CTP-6337 Don't check $submission->sampled_feedback_exists() here - DA.
                 if (
                     $submission
                     && count($submission->get_assessor_feedbacks()) >= $submission->max_number_of_feedbacks()
-                    && $submission->sampled_feedback_exists()
                 ) {
                     break;
                 }
