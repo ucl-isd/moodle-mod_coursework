@@ -41,9 +41,9 @@ Feature: View moderation feedback
     Then I should see "Blah"
 
     When I am on the "Coursework" "coursework activity" page
-    And I should not see "Released" in the table row containing "John1"
-    And I should not see "Ready for release" in the table row containing "John1"
-    And I click on "Agree marking" "link"
+    Then I should not see "Released" in the table row containing "John1"
+    But I should see "Ready for release" in the table row containing "John1"
+    When I click on "Agree marking" "link"
     Then I should see "teacher teacher1" in the "[data-behat-markstage=\"assessor_1\"]" "css_element"
     And I should see "58" in the "[data-behat-markstage=\"assessor_1\"]" "css_element"
     And I should see "Blah" in the "[data-behat-markstage=\"assessor_1\"]" "css_element"
