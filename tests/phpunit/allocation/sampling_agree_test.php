@@ -36,6 +36,7 @@ use mod_coursework\models\submission;
 use mod_coursework\render_helpers\grading_report\data\marking_cell_data;
 
 /**
+ * CTP-6337 - Tests for agree/release behaviour when sampling is enabled and some submissions are in the sample
  * @group mod_coursework
  */
 final class sampling_agree_test extends \advanced_testcase {
@@ -119,7 +120,8 @@ final class sampling_agree_test extends \advanced_testcase {
      */
     private function create_finalised_submission_with_two_marks(models\user $student, int $grade1, int $grade2): void {
 
-        $submission = $this->get_coursework_generator()->create_submission((object) [
+        $submission = $this->get_coursework_generator()->create_submission(
+            (object) [
                 'courseworkid' => $this->coursework->id,
                 'allocatableid' => $student->id,
                 'allocatabletype' => 'user',
