@@ -121,21 +121,13 @@ class csv {
             $cell = new $class($this->coursework);
             if (str_starts_with($csvcell, 'assessor')) {
                 $cell = $cell->get_cell($submission, $student, $stageidentifier);
-                if (is_array($cell)) {
-                    $row = array_merge($row, $cell);
-                } else {
-                    $row[] = $cell;
-                }
-            } else if ($csvcell != 'stages' && $csvcell != 'moderationagreement' && $csvcell != 'otherassessors') {
-                $cell = $cell->get_cell($submission, $student, false);
-                if (is_array($cell)) {
-                    $row = array_merge($row, $cell);
-                } else {
-                    $row[] = $cell;
-                }
             } else {
-                $stages = $cell->get_cell($submission, $student, false);
-                $row = array_merge($row, $stages);
+                $cell = $cell->get_cell($submission, $student, false);
+            }
+            if (is_array($cell)) {
+                $row = array_merge($row, $cell);
+            } else {
+                $row[] = $cell;
             }
         }
         return $row;
