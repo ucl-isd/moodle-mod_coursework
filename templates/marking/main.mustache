@@ -38,7 +38,7 @@
                     <h3>{{#str}} marking, mod_coursework {{/str}}</h3>
 
                     {{! When behatrunning, don't make sticky to avoid issues with hidden elements.}}
-                    <div class="{{^behatrunning}} {{#advancedmarking}} sticky-top p-3 bg-white border container {{/advancedmarking}} {{/behatrunning}}">
+                    <div class="{{#advancedmarking}} sticky-top p-3 bg-white border container {{/advancedmarking}}">
                         {{#previousfeedback}}
                             {{{.}}}
                             <h4>{{#str}} agreefeedback, mod_coursework {{/str}}</h4>
