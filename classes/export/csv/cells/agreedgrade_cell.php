@@ -48,7 +48,7 @@ class agreedgrade_cell extends cell_base {
             $gradedata = (!$agreedgrade) ? '' : $this->get_actual_grade($agreedgrade->grade);
         }
 
-        return   $gradedata;
+        return $gradedata;
     }
 
     /**

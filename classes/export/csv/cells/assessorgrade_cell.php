@@ -97,7 +97,7 @@ class assessorgrade_cell extends cell_base {
             $strings = get_string('csvmarkermark', 'coursework', $stage);
         }
 
-        return  $strings;
+        return $strings;
     }
 
     public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells = []) {

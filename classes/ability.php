@@ -705,7 +705,7 @@ class ability extends framework\ability {
                 if ($moderation->get_coursework()->allocation_enabled()) {
                     $isallocated = $moderation->is_moderator_allocated();
                 }
-                return  $isallocated;
+                return $isallocated;
             }
         );
     }
@@ -719,7 +719,7 @@ class ability extends framework\ability {
                 if ($moderation->get_coursework()->allocation_enabled() && !is_siteadmin()) {
                     $isallocated = !$moderation->is_moderator_allocated();
                 }
-                return  $isallocated;
+                return $isallocated;
             }
         );
     }
@@ -1065,7 +1065,7 @@ class ability extends framework\ability {
             function (feedback $feedback) {
                 $stage = $feedback->get_stage();
                 $allowed = has_capability('mod/coursework:editallocatedagreedgrade', $feedback->get_context());
-                return  $allowed && $stage->identifier() == 'final_agreed_1' && $feedback->get_submission()->is_assessor_initial_grader();
+                return $allowed && $stage->identifier() == 'final_agreed_1' && $feedback->get_submission()->is_assessor_initial_grader();
             }
         );
     }
@@ -1077,7 +1077,7 @@ class ability extends framework\ability {
             function (feedback $feedback) {
                 $iscreator = $feedback->assessorid == $this->userid;
                 $stage = $feedback->get_stage();
-                return  $iscreator && ($feedback->get_submission()->editable_feedbacks_exist() || $feedback->get_submission()->editable_final_feedback_exist()
+                return $iscreator && ($feedback->get_submission()->editable_feedbacks_exist() || $feedback->get_submission()->editable_final_feedback_exist()
                         && ((!$feedback->get_coursework()->has_multiple_markers() && $stage->is_initial_assesor_stage() ) || !$stage->is_initial_assesor_stage()));
             }
         );

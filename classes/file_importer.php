@@ -231,6 +231,6 @@ class coursework_file_zip_importer {
             $params['lasteditedbyuser'] = $USER->id;
         }
 
-        return   $DB->get_record_sql($sql, $params);
+        return $DB->get_record_sql($sql, $params);
     }
 }

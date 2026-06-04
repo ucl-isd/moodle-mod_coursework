@@ -48,7 +48,7 @@ class singlegrade_cell extends cell_base {
         } else {
             $gradedata = (!$grade) ? '' : $this->get_actual_grade($grade->grade);
         }
-        return   $gradedata;
+        return $gradedata;
     }
 
     /**
