@@ -30,12 +30,12 @@ use mod_coursework\models\submission;
  */
 class submissionfileid_cell extends cell_base {
     /**
-     * @param $submission
-     * @param $student
-     * @param $stageidentifier
-     * @return string
+     * @param submission $submission
+     * @param object $student
+     * @param string $stageidentifier
+     * @return array|string
      */
-    public function get_cell($submission, $student, $stageidentifier) {
+    public function get_cell(submission $submission, object $student, string $stageidentifier): array|string {
         if (get_config('mod_coursework', 'use_candidate_numbers_for_hidden_name')) {
             return $this->get_candidate_number($student->id) ?? get_string('hidden');
         }

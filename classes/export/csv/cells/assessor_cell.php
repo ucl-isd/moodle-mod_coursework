@@ -23,20 +23,21 @@
 namespace mod_coursework\export\csv\cells;
 
 use coding_exception;
+use mod_coursework\models\submission;
 
 /**
  * Class assessor_cell
  */
 class assessor_cell extends cell_base {
     /**
-     * @param $submission
-     * @param $student
-     * @param $stageidentifier
-     * @return string
+     * @param submission $submission
+     * @param object $student
+     * @param string $stageidentifier
+     * @return array|string
      * @throws \dml_exception
      */
 
-    public function get_cell($submission, $student, $stageidentifier) {
+    public function get_cell(submission $submission, object $student, string $stageidentifier): array|string {
 
         $assessor = '';
         $allocation = $this->coursework->get_assessor_allocation($submission, $stageidentifier);

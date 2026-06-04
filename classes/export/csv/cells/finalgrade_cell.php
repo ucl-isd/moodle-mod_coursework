@@ -30,11 +30,11 @@ use mod_coursework\models\submission;
 class finalgrade_cell extends cell_base {
     /**
      * @param submission $submission
-     * @param $student
-     * @param $stageidentifier
-     * @return null|string
+     * @param object $student
+     * @param string $stageidentifier
+     * @return array|string
      */
-    public function get_cell($submission, $student, $stageidentifier) {
+    public function get_cell(submission $submission, object $student, string $stageidentifier): array|string {
         return !$submission->get_final_grade() || $submission->editable_final_feedback_exist()
             ? ''
             : $this->get_actual_grade($submission->get_final_grade());
