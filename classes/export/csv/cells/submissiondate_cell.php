@@ -30,11 +30,11 @@ use mod_coursework\models\submission;
 class submissiondate_cell extends cell_base {
     /**
      * @param submission $submission
-     * @param $student
-     * @param $stageidentifier
-     * @return string
+     * @param object $student
+     * @param string $stageidentifier
+     * @return array|string
      */
-    public function get_cell($submission, $student, $stageidentifier) {
+    public function get_cell(submission $submission, object $student, string $stageidentifier): array|string {
         return userdate($submission->time_submitted(), $this->dateformat);
     }
 

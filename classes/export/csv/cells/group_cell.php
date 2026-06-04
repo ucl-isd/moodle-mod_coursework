@@ -23,19 +23,20 @@
 namespace mod_coursework\export\csv\cells;
 
 use coding_exception;
+use mod_coursework\models\submission;
 
 /**
  * Class group_cell
  */
 class group_cell extends cell_base {
     /**
-     * @param $submission
-     * @param $group
-     * @param $stageidentifier
-     * @return mixed
+     * @param submission $submission
+     * @param object $group
+     * @param string $stageidentifier
+     * @return array|string
      */
-    public function get_cell($submission, $group, $stageidentifier) {
-        return  $group->name;
+    public function get_cell(submission $submission, object $group, string $stageidentifier): array|string {
+        return $group->name;
     }
 
     /**

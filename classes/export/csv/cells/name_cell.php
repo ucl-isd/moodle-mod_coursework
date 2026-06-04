@@ -30,12 +30,12 @@ use mod_coursework\models\submission;
 class name_cell extends cell_base {
     /**
      * @param submission $submission
-     * @param $student
-     * @param $stageidentifier
-     * @return string
+     * @param object $student
+     * @param string $stageidentifier
+     * @return array|string
      * @throws coding_exception
      */
-    public function get_cell($submission, $student, $stageidentifier) {
+    public function get_cell(submission $submission, object $student, string $stageidentifier): array|string {
 
         if (!$this->coursework->hide_student_identities()) {
             return $student->lastname . ' ' . $student->firstname;

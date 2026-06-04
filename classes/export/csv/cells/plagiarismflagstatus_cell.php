@@ -23,18 +23,19 @@
 namespace mod_coursework\export\csv\cells;
 
 use coding_exception;
+use mod_coursework\models\submission;
 
 /**
  * Class plagiarismflagstatus_cell
  */
 class plagiarismflagstatus_cell extends cell_base {
     /**
-     * @param $submission
-     * @param $student
-     * @param $stageidentifier
-     * @return string
+     * @param submission $submission
+     * @param object $student
+     * @param string $stageidentifier
+     * @return array|string
      */
-    public function get_cell($submission, $student, $stageidentifier) {
+    public function get_cell(submission $submission, object $student, string $stageidentifier): array|string {
 
         if ($this->plagiarism_flagged($submission)) {
             $flag = $this->get_plagiarism_flag_status_for_csv($submission);
