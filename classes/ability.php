@@ -705,7 +705,7 @@ class ability extends framework\ability {
                 if ($moderation->get_coursework()->allocation_enabled()) {
                     $isallocated = $moderation->is_moderator_allocated();
                 }
-                return  $isallocated;
+                return $isallocated;
             }
         );
     }
@@ -719,7 +719,7 @@ class ability extends framework\ability {
                 if ($moderation->get_coursework()->allocation_enabled() && !is_siteadmin()) {
                     $isallocated = !$moderation->is_moderator_allocated();
                 }
-                return  $isallocated;
+                return $isallocated;
             }
         );
     }
@@ -1065,7 +1065,7 @@ class ability extends framework\ability {
             function (feedback $feedback) {
                 $stage = $feedback->get_stage();
                 $allowed = has_capability('mod/coursework:editallocatedagreedgrade', $feedback->get_context());
-                return  $allowed && $stage->identifier() == 'final_agreed_1' && $feedback->get_submission()->is_assessor_initial_grader();
+                return $allowed && $stage->identifier() == 'final_agreed_1' && $feedback->get_submission()->is_assessor_initial_grader();
             }
         );
     }

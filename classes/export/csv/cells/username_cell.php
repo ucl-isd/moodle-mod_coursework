@@ -43,7 +43,7 @@ class username_cell extends cell_base {
             $username = get_string('hidden', 'coursework');
         }
 
-        return  $username;
+        return $username;
     }
 
     /**

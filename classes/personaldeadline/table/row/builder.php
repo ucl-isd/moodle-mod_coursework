@@ -182,7 +182,7 @@ class builder implements user_row {
             $personaldeadline = $this->get_coursework()->deadline;
         }
 
-        return  $personaldeadline;
+        return $personaldeadline;
     }
 
     public function get_submission_status() {
@@ -205,6 +205,6 @@ class builder implements user_row {
             $statustext = $submission->get_status_text();
         }
 
-        return  $statustext;
+        return $statustext;
     }
 }

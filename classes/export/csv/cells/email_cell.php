@@ -43,7 +43,7 @@ class email_cell extends cell_base {
             $name = get_string('hidden', 'coursework');
         }
 
-        return  $name;
+        return $name;
     }
 
     /**

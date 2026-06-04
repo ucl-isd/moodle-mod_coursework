@@ -242,7 +242,7 @@ class import extends grading_sheet {
                 }
             }
 
-            return  $expectedsize != $actualsize ? false : true;
+            return $expectedsize != $actualsize ? false : true;
         }
     }
 

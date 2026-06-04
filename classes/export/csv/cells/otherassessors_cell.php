@@ -97,7 +97,7 @@ class otherassessors_cell extends cell_base {
             }
         }
 
-        return   $gradedata;
+        return $gradedata;
     }
 
     /**
