@@ -27,6 +27,9 @@ use mod_coursework\models\submission;
 
 /**
  * Class submissiontime_cell
+ * Note - this cell shows how many days past the users deadline the submission was made
+ * or shows on time if it was within deadline.
+ * See submissiondate for the date/time the submission was made.
  */
 class submissiontime_cell extends cell_base {
     /**
@@ -36,7 +39,13 @@ class submissiontime_cell extends cell_base {
      * @return array|string
      */
     public function get_cell(submission $submission, object $student, string $stageidentifier): array|string {
-        return $this->submission_time($submission);
+        $lateseconds = $submission->was_late();
+
+        if ($lateseconds === false) {
+            return get_string('ontime', 'mod_coursework');
+        } else {
+            return format_time($lateseconds);
+        }
     }
 
     /**

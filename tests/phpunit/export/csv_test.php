@@ -216,7 +216,7 @@ final class csv_test extends \advanced_testcase {
             '0' => $studentname,
             '1' => $student->username,
             '2' => userdate($timenow, $dateformat),
-            '3' => 'Late',
+            '3' => '1 day',
             '4' => $coursework->get_username_hash($submission->allocatableid),
             '5' => (float)$feedback1->grade,
             '6' => $assessorname1,
