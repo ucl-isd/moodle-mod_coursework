@@ -345,5 +345,37 @@
       </KEYS>
     </TABLE>
 
+    <TABLE NAME="coursework_stage_strategies" COMMENT="Stores the allocation strategy. One row per marker per coursework.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseworkid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key references coursework id."/>
+        <FIELD NAME="stageidentifier" TYPE="char" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="Marking stage, e.g. assessor_1, assessor_2, moderator."/>
+        <FIELD NAME="strategy" TYPE="char" LENGTH="50" NOTNULL="true" SEQUENCE="false" COMMENT="Strategy name: equal, percentages, group_assessor, or manual."/>
+        <FIELD NAME="autorun" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If 1 this strategy fires automatically on allocation events."/>
+        <FIELD NAME="groupingid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Grouping used for group_assessor strategy. 0 means all."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="courseworkid-fk" TYPE="foreign" FIELDS="courseworkid" REFTABLE="coursework" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="courseworkid-stageidentifier-uix" UNIQUE="true" FIELDS="courseworkid, stageidentifier"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="coursework_stage_strategy_options" COMMENT="Options for a saved allocation strategy.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="strategyid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key references coursework_stage_strategies id."/>
+        <FIELD NAME="assessorid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key references user id."/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Foreign key references groups id."/>
+        <FIELD NAME="value" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Integer percentage weight assigned to this assessor."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="strategyid-fk" TYPE="foreign" FIELDS="strategyid" REFTABLE="coursework_stage_strategies" REFFIELDS="id"/>
+        <KEY NAME="assessorid-fk" TYPE="foreign" FIELDS="assessorid" REFTABLE="user" REFFIELDS="id"/>
+        <KEY NAME="groupid-fk" TYPE="foreign" FIELDS="groupid" REFTABLE="groups" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
   </TABLES>
 </XMLDB>
