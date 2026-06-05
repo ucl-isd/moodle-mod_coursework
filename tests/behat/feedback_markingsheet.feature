@@ -7,11 +7,12 @@ Feature: Upload marking sheet
       | fullname  | Course 1 |
       | shortname | C1       |
     And the following "activity" exists:
-      | activity                   | coursework |
-      | course                     | C1         |
-      | name                       | Coursework |
-      | allocationenabled          | 1          |
-      | assessorallocationstrategy | none       |
+      | activity                   | coursework     |
+      | course                     | C1             |
+      | name                       | Coursework     |
+      | allocationenabled          | 1              |
+      | assessorallocationstrategy | none           |
+      | deadline                   | ##march 2024## |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | manager1 | Manager   | 1        | manager1@example.com |
@@ -27,9 +28,9 @@ Feature: Upload marking sheet
       | teacher1 | C1     | teacher |
       | teacher2 | C1     | teacher |
     And the following "mod_coursework > submissions" exist:
-      | allocatable | coursework | finalisedstatus |
-      | student1    | Coursework | 1               |
-      | student2    | Coursework | 1               |
+      | allocatable | coursework | finalisedstatus | timesubmitted    |
+      | student1    | Coursework | 1               | ##january 2024## |
+      | student2    | Coursework | 1               | ##june 2024##    |
     And the following "mod_coursework > allocations" exist:
       | allocatable | coursework | assessor | stageidentifier |
       | student1    | Coursework | teacher1 | assessor_1      |
@@ -40,16 +41,16 @@ Feature: Upload marking sheet
     Given I am on the "Coursework" "coursework activity" page logged in as "manager1"
     And I click on "Download" "button"
     And I click on "Marking spreadsheet" "link"
-    Then I should see "\"Sub ID\",\"Submission file id\",Surname/Name,Username,\"ID number\",\"Email address\",\"Submission time\",\"Marker 1\",\"Marker 1 mark\",\"Marker 1 feedback\",\"Marker 2\",\"Marker 2 mark\",\"Marker 2 feedback\",\"Agreed mark\",\"Agreed mark feedback\""
+    Then I should see "\"Sub ID\",\"Submission file id\",Surname/Name,Username,\"ID number\",\"Email address\",Overdue,\"Marker 1\",\"Marker 1 mark\",\"Marker 1 feedback\",\"Marker 2\",\"Marker 2 mark\",\"Marker 2 feedback\",\"Agreed mark\",\"Agreed mark feedback\""
     And I should see "\"student1 student\",student1,,student1@example.com,\"On time\",\"teacher1 teacher\",,,\"teacher2 teacher\",,,,"
-    And I should see "\"student2 student\",student2,,student2@example.com,\"On time\",\"teacher1 teacher\",,,,,,,"
+    And I should see "\"student2 student\",student2,,student2@example.com,\"92 days\",\"teacher1 teacher\",,,,,,,"
 
     Given I am on the "Coursework" "coursework activity" page logged in as "teacher1"
     And I click on "Download" "button"
     And I click on "Marking spreadsheet" "link"
-    Then I should see "\"Sub ID\",\"Submission file id\",Surname/Name,Username,\"ID number\",\"Email address\",\"Submission time\",Mark,\"Feedback comment\""
+    Then I should see "\"Sub ID\",\"Submission file id\",Surname/Name,Username,\"ID number\",\"Email address\",Overdue,Mark,\"Feedback comment\""
     And I should see "\"student1 student\",student1,,student1@example.com,\"On time\""
-    And I should see "\"student2 student\",student2,,student2@example.com,\"On time\""
+    And I should see "\"student2 student\",student2,,student2@example.com,\"92 days\""
 
     Given I am on the "Coursework" "coursework activity" page
     And I click on "Upload" "button"
@@ -67,7 +68,7 @@ Feature: Upload marking sheet
     Given I am on the "Coursework" "coursework activity" page logged in as "teacher2"
     And I click on "Download" "button"
     And I click on "Marking spreadsheet" "link"
-    Then I should see "\"Sub ID\",\"Submission file id\",Surname/Name,Username,\"ID number\",\"Email address\",\"Submission time\",Mark,\"Feedback comment\",\"Other marker mark (1)\",\"Other marker feedback (1)\",\"Agreed mark\",\"Agreed mark feedback\""
+    Then I should see "\"Sub ID\",\"Submission file id\",Surname/Name,Username,\"ID number\",\"Email address\",Overdue,Mark,\"Feedback comment\",\"Other marker mark (1)\",\"Other marker feedback (1)\",\"Agreed mark\",\"Agreed mark feedback\""
     And I should see "\"student1 student\",student1,,student1@example.com,\"On time\",,,\"Hidden until all initial marks are complete\",,,"
     And I should not see "student2"
 
@@ -83,6 +84,6 @@ Feature: Upload marking sheet
     Given I am on the "Coursework" "coursework activity" page
     And I click on "Download" "button"
     And I click on "Marking spreadsheet" "link"
-    Then I should see "\"Sub ID\",\"Submission file id\",Surname/Name,Username,\"ID number\",\"Email address\",\"Submission time\",Mark,\"Feedback comment\",\"Other marker mark (1)\",\"Other marker feedback (1)\",\"Agreed mark\",\"Agreed mark feedback\""
+    Then I should see "\"Sub ID\",\"Submission file id\",Surname/Name,Username,\"ID number\",\"Email address\",Overdue,Mark,\"Feedback comment\",\"Other marker mark (1)\",\"Other marker feedback (1)\",\"Agreed mark\",\"Agreed mark feedback\""
     And I should see "\"student1 student\",student1,,student1@example.com,\"On time\",75,,15,,,"
     And I should not see "student2"
