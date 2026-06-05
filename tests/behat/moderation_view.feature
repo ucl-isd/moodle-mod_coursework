@@ -16,6 +16,7 @@ Feature: View moderation feedback
       | moderator1 | moderator | 1        | moderator1@example.com |
       | teacher1   | teacher   | teacher1 | teacher1@example.com   |
       | student1   | John1     | student1 | student1@example.com   |
+      | student2   | Jane1     | student1 | student1@example.com   |
     And the following "role" exists:
       | shortname               | moderator |
       | name                    | moderator |
@@ -26,6 +27,7 @@ Feature: View moderation feedback
       | user       | course | role      |
       | moderator1 | C1     | moderator |
       | student1   | C1     | student   |
+      | student2   | C1     | student   |
       | teacher1   | C1     | teacher   |
     And the following "mod_coursework > submissions" exist:
       | allocatable | coursework | finalisedstatus |
@@ -69,3 +71,13 @@ Feature: View moderation feedback
     And I follow "Release the marks"
     And I should see "Released" in the table row containing "John1"
     And I should not see "Ready for release" in the table row containing "John1"
+
+  @javascript
+  Scenario: As an admin I should be able to filter submissions by Ready for release
+    Given I am on the "Coursework" "coursework activity" page logged in as "admin"
+    And I should see "John1" in the "Submissions table" "table"
+    And I should see "Jane1" in the "Submissions table" "table"
+    When I click on "Filter" "button"
+    And I click on "Ready for release" "checkbox"
+    Then I should see "John1" in the "Submissions table" "table"
+    But I should not see "Jane1" in the "Submissions table" "table"
