@@ -182,7 +182,6 @@ $event->trigger();
 // Sort group by groupname (default).
 if ($coursework->is_configured_to_have_group_submissions()) {
     $sortby = optional_param('sortby', 'groupname', PARAM_ALPHA);
-    $viewallstudentssortby = optional_param('viewallstudents_sortby', 'groupname', PARAM_ALPHA);
 }
 
 $PAGE->set_url('/mod/coursework/view.php', ['id' => $coursemodule->id, 'group' => $group]);

@@ -53,11 +53,6 @@ class manager {
     private $assessorallocationstrategy;
 
     /**
-     * @var strategy\base
-     */
-    private $moderatorallocationstrategy;
-
-    /**
      * New instance created with references to the coursework stored.
      *
      * @param coursework $coursework
@@ -71,9 +66,6 @@ class manager {
         $strategytypes = [];
         if (!empty($this->coursework->assessorallocationstrategy)) {
             $strategytypes[] = coursework::ASSESSOR;
-        }
-        if (!empty($this->coursework->moderatorallocationstrategy)) {
-            $strategytypes[] = coursework::MODERATOR;
         }
         foreach ($strategytypes as $strategytype) {
             $propertyname = $strategytype . 'allocationstrategy';

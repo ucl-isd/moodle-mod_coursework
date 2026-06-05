@@ -379,6 +379,17 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026031200, 'coursework');
     }
 
+    if ($oldversion < 2026060400) {
+        $table = new xmldb_table('coursework');
+        $field = new xmldb_field('moderatorallocationstrategy');
+
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        upgrade_mod_savepoint(true, 2026060400, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }
