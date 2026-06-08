@@ -66,7 +66,7 @@ class delete_extension extends external_api {
         }
         $coursework = $extension->get_coursework();
         $ability = $coursework ? new ability($USER->id, $coursework) : null;
-        if ($ability && $ability->can('update', $extension) && $extension->can_be_deleted()) {
+        if ($ability && $ability->can('update', $extension)) {
             $extension->delete();
             return [
                 'success' => true,

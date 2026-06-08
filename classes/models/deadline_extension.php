@@ -183,31 +183,6 @@ class deadline_extension extends table_base {
     }
 
     /**
-     * Check if the current extension is already in use - if yes, block deletion.
-     * @return bool
-     * @throws \coding_exception
-     * @throws \dml_exception
-     */
-    public function can_be_deleted(): bool {
-        global $DB;
-        if (!$this->get_coursework()->deadline_has_passed()) {
-            // User is not yet using the extension.
-            return true;
-        }
-        $allocatable = $this->get_allocatable();
-        $params = [
-            'allocatableid' => $allocatable->id(),
-            'allocatabletype' => $allocatable->type(),
-            'courseworkid' => $this->coursework->id(),
-        ];
-        $personaldeadline = personaldeadline::find($DB->get_record('coursework_person_deadlines', $params)) ?? null;
-        if ($personaldeadline) {
-            return $personaldeadline->personaldeadline > time();
-        }
-        return false;
-    }
-
-    /**
      * Delete an extension.
      * @return void
      * @throws \coding_exception
