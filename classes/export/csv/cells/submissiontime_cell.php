@@ -23,19 +23,29 @@
 namespace mod_coursework\export\csv\cells;
 
 use coding_exception;
+use mod_coursework\models\submission;
 
 /**
  * Class submissiontime_cell
+ * Note - this cell shows how many days past the users deadline the submission was made
+ * or shows on time if it was within deadline.
+ * See submissiondate for the date/time the submission was made.
  */
 class submissiontime_cell extends cell_base {
     /**
-     * @param $submission
-     * @param $student
-     * @param $stageidentifier
-     * @return string
+     * @param submission $submission
+     * @param object $student
+     * @param string $stageidentifier
+     * @return array|string
      */
-    public function get_cell($submission, $student, $stageidentifier) {
-        return $this->submission_time($submission);
+    public function get_cell(submission $submission, object $student, string $stageidentifier): array|string {
+        $lateseconds = $submission->was_late();
+
+        if ($lateseconds === false) {
+            return get_string('ontime', 'mod_coursework');
+        } else {
+            return format_time($lateseconds);
+        }
     }
 
     /**

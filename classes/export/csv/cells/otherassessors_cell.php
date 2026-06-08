@@ -32,13 +32,13 @@ use mod_coursework\models\submission;
 class otherassessors_cell extends cell_base {
     /**
      * @param submission $submission
-     * @param $student
-     * @param $stageidentifier
-     * @return array
+     * @param object $student
+     * @param string $stageidentifier
+     * @return array|string
      * @throws \dml_exception
      * @throws coding_exception
      */
-    public function get_cell($submission, $student, $stageidentifier) {
+    public function get_cell(submission $submission, object $student, string $stageidentifier): array|string {
         global $USER;
 
         $gradedata = [];
@@ -97,7 +97,7 @@ class otherassessors_cell extends cell_base {
             }
         }
 
-        return   $gradedata;
+        return $gradedata;
     }
 
     /**

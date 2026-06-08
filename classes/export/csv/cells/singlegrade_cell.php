@@ -32,12 +32,12 @@ use mod_coursework\models\submission;
  */
 class singlegrade_cell extends cell_base {
     /**
-     * @param $submission
-     * @param $student
-     * @param $stageidentifier
-     * @return array|string|null
+     * @param submission $submission
+     * @param object $student
+     * @param string $stageidentifier
+     * @return array|string
      */
-    public function get_cell($submission, $student, $stageidentifier) {
+    public function get_cell(submission $submission, object $student, string $stageidentifier): array|string {
         $stageident = ($this->coursework->get_max_markers() == 1)
             ? "assessor_1" : $this->get_stageidentifier_for_assessor($submission, $student);
 
@@ -48,7 +48,7 @@ class singlegrade_cell extends cell_base {
         } else {
             $gradedata = (!$grade) ? '' : $this->get_actual_grade($grade->grade);
         }
-        return   $gradedata;
+        return $gradedata;
     }
 
     /**

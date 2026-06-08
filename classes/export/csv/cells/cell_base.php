@@ -208,23 +208,6 @@ abstract class cell_base implements cell_interface {
     }
 
     /**
-     * Function to get a message if submission was made withihn the deadline
-     * @param submission $submission
-     * @return \lang_string|string
-     * @throws coding_exception
-     */
-    protected function submission_time($submission) {
-
-        if ($submission->was_late()) {
-            $time = get_string('late', 'coursework');
-        } else {
-            $time = get_string('ontime', 'mod_coursework');
-        }
-
-        return $time;
-    }
-
-    /**
      * Function to get stageidentifier for the current assessor
      * @param $submission
      * @param $student

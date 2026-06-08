@@ -32,12 +32,12 @@ use mod_coursework\models\submission;
 class feedbackcomments_cell extends cell_base {
     /**
      * @param submission $submission
-     * @param $student
-     * @param $stageidentifier
-     * @return string
+     * @param object $student
+     * @param string $stageidentifier
+     * @return array|string
      * @throws \dml_exception
      */
-    public function get_cell($submission, $student, $stageidentifier) {
+    public function get_cell(submission $submission, object $student, string $stageidentifier): array|string {
 
         $stageident = ($this->coursework->get_max_markers() == 1)
             ? "assessor_1"

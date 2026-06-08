@@ -30,12 +30,12 @@ use mod_coursework\models\submission;
 class email_cell extends cell_base {
     /**
      * @param submission $submission
-     * @param $student
-     * @param $stageidentifier
-     * @return string
+     * @param object $student
+     * @param string $stageidentifier
+     * @return array|string
      * @throws coding_exception
      */
-    public function get_cell($submission, $student, $stageidentifier) {
+    public function get_cell(submission $submission, object $student, string $stageidentifier): array|string {
 
         if (!$this->coursework->hide_student_identities()) {
             $name = $student->email;
@@ -43,7 +43,7 @@ class email_cell extends cell_base {
             $name = get_string('hidden', 'coursework');
         }
 
-        return  $name;
+        return $name;
     }
 
     /**

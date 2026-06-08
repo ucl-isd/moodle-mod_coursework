@@ -22,17 +22,19 @@
 
 namespace mod_coursework\export\csv\cells;
 
+use mod_coursework\models\submission;
+
 /**
  * Interface cell_interface makes sure that all of the grading report cells are the same.
  */
 interface cell_interface {
     /**
-     * @param $submission
-     * @param $student
-     * @param $stageidentifier
-     * @return mixed
+     * @param submission $submission
+     * @param object $student
+     * @param string $stageidentifier
+     * @return array|string
      */
-    public function get_cell($submission, $student, $stageidentifier);
+    public function get_cell(submission $submission, object $student, string $stageidentifier): array|string;
 
     /**
      * @param $stage

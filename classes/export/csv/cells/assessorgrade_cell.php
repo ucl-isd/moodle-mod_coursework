@@ -33,16 +33,16 @@ use mod_coursework\models\submission;
 class assessorgrade_cell extends cell_base {
     /**
      * @param submission $submission
-     * @param $student
-     * @param $stageidentifier
-     * @return string
+     * @param object $student
+     * @param string $stageidentifier
+     * @return array|string
      * @throws \dml_exception
      * @throws \dml_missing_record_exception
      * @throws \dml_multiple_records_exception
      * @throws coding_exception
      */
 
-    public function get_cell($submission, $student, $stageidentifier) {
+    public function get_cell(submission $submission, object $student, string $stageidentifier): array|string {
 
         global $USER;
 
@@ -97,7 +97,7 @@ class assessorgrade_cell extends cell_base {
             $strings = get_string('csvmarkermark', 'coursework', $stage);
         }
 
-        return  $strings;
+        return $strings;
     }
 
     public function validate_cell($value, $submissionid, $stageidentifier = '', $uploadedgradecells = []) {

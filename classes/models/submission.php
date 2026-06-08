@@ -1384,7 +1384,7 @@ class submission extends table_base implements renderable {
             $personaldeadline = $this->get_coursework()->deadline;
         }
 
-        return  $personaldeadline;
+        return $personaldeadline;
     }
 
     /**

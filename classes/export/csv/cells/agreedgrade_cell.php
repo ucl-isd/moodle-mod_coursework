@@ -32,13 +32,13 @@ use mod_coursework\models\submission;
  */
 class agreedgrade_cell extends cell_base {
     /**
-     * @param $submission
-     * @param $student
-     * @param $stageidentifier
-     * @return array|string|null
+     * @param submission $submission
+     * @param object $student
+     * @param string $stageidentifier
+     * @return array|string
      */
 
-    public function get_cell($submission, $student, $stageidentifier) {
+    public function get_cell(submission $submission, object $student, string $stageidentifier): array|string {
 
         $agreedgrade = $submission->get_agreed_grade();
         if ($this->coursework->is_using_rubric() && $this->coursework->finalstagegrading != 1) {
@@ -48,7 +48,7 @@ class agreedgrade_cell extends cell_base {
             $gradedata = (!$agreedgrade) ? '' : $this->get_actual_grade($agreedgrade->grade);
         }
 
-        return   $gradedata;
+        return $gradedata;
     }
 
     /**
