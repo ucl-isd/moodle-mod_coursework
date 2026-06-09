@@ -1077,8 +1077,20 @@ class ability extends framework\ability {
             function (feedback $feedback) {
                 $iscreator = $feedback->assessorid == $this->userid;
                 $stage = $feedback->get_stage();
-                return  $iscreator && ($feedback->get_submission()->editable_feedbacks_exist() || $feedback->get_submission()->editable_final_feedback_exist()
-                        && ((!$feedback->get_coursework()->has_multiple_markers() && $stage->is_initial_assesor_stage() ) || !$stage->is_initial_assesor_stage()));
+                return  $iscreator &&
+                    (
+                        $feedback->get_submission()->draft_feedback_exists() ||
+                        $feedback->get_submission()->editable_feedbacks_exist() ||
+                        $feedback->get_submission()->editable_final_feedback_exist() &&
+                        (
+                            (
+                                !$feedback->get_coursework()->has_multiple_markers() &&
+                                $stage->is_initial_assesor_stage()
+                            ) || !$stage->is_initial_assesor_stage()
+                        )
+                    );
+
+                // return $iscreator && $feedback->get_submission()->draft_feedback_exists();
             }
         );
     }
