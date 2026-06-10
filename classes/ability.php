@@ -1089,8 +1089,6 @@ class ability extends framework\ability {
                             ) || !$stage->is_initial_assesor_stage()
                         )
                     );
-
-                // return $iscreator && $feedback->get_submission()->draft_feedback_exists();
             }
         );
     }

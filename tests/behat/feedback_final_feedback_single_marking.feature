@@ -1,7 +1,7 @@
 @mod @mod_coursework @mod_coursework_feedback_final_feedback_single_marking
 Feature: Adding and editing final feedback
 
-  In order to provide students with a fair final grade that combines the component grades
+  In order to provide students with a single grade
   As a course leader
   I want to be able to edit the final grade via a form
 
