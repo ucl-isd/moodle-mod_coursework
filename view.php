@@ -101,7 +101,11 @@ if ($download && $zipfile = $coursework->pack_files()) {
     send_temp_file($zipfile, $filename); // Send file and delete after sending.
 }
 
-if ($exportgrades) {
+$candownloadfinalmarks = has_any_capability([
+    'mod/coursework:viewallgradesatalltimes',
+    'mod/coursework:canexportfinalgrades',
+], $coursework->get_context());
+if ($exportgrades && $candownloadfinalmarks) {
     // Headers and data for csv.
     $csvcells = ['name', 'username', 'idnumber', 'email'];
 
