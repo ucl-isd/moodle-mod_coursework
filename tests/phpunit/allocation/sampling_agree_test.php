@@ -17,6 +17,8 @@
 /**
  * CTP-6337 - Tests for agree/release behaviour when sampling is enabled and some submissions are in the sample
  *
+ * Looks like CTP-4904 introduced an issue with the ability to agree marks when sampling.
+ *
  * When a coursework is set up with 3 markers and sampling enabled:
  *  - Submission 1: both markers have given feedback (e.g. 72 - 72), submission not added to sample.
  *  - Submission 2: both markers have given feedback (e.g. 72 - 99), submission manually added to sample for a 3rd mark.
@@ -32,11 +34,12 @@
 
 namespace mod_coursework;
 
+use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\submission;
 use mod_coursework\render_helpers\grading_report\data\marking_cell_data;
 
 /**
- * CTP-6337 - Tests for agree/release behaviour when sampling is enabled and some submissions are in the sample
+ * CTP-6337 - Tests for agree/release behaviour when sampling is enabled.
  * @group mod_coursework
  */
 final class sampling_agree_test extends \advanced_testcase {
@@ -62,31 +65,65 @@ final class sampling_agree_test extends \advanced_testcase {
     }
 
     /**
-     * CTP-6337: When sampling is enabled but a submission is not in the sample, two marks are enough.
+     * CTP-6337: Sampling is enabled but a submission is not in the sample, two marks are enough.
      *
      * @covers \mod_coursework\stages\base::prerequisite_stages_have_feedback
      */
-    public function test_prerequisites_met_when_two_marks_done_and_not_in_sample(): void {
+    public function test_prerequisite_stages_have_feedback_with_two_marks_not_in_sample(): void {
         $this->create_a_student();
         $this->create_finalised_submission_with_two_marks($this->student, 72, 72);
 
         // Do not create sample.
-
         $finalstage = $this->coursework->get_final_agreed_marking_stage();
 
         $this->assertTrue($finalstage->prerequisite_stages_have_feedback($this->student));
     }
 
     /**
-     * CTP-6337: When both markers have given feedback, get_final_feedback_data should return the "Agree marking" button data.
+     * CTP-6337: Two markers have given feedback, get_final_feedback_data should return "Agree marking" button data.
      *
      * @covers \mod_coursework\render_helpers\grading_report\data\marking_cell_data::get_final_feedback_data
      */
-    public function test_agree_button_data_present_when_two_marks_done_and_not_in_sample(): void {
+    public function test_marking_cell_data_get_final_feedback_data_with_two_marks_not_in_sample(): void {
         $this->create_a_student();
         $this->create_finalised_submission_with_two_marks($this->student, 72, 72);
 
         // Do not create sample.
+        $row = new grading_table_row_base($this->coursework, $this->student, null, null, []);
+        $celldata = new marking_cell_data($this->coursework);
+
+        $result = $celldata->get_final_feedback_data($row);
+
+        $this->assertNotNull($result);
+        $this->assertNotEmpty($result->addfinalfeedback);
+    }
+
+    /**
+     * CTP-6337: Table cell data for a submission not sampled only has two markers.
+     *
+     * @covers \mod_coursework\render_helpers\grading_report\data\marking_cell_data::get_table_cell_data
+     */
+    public function test_marking_cell_data_with_two_marks_not_in_sample(): void {
+        $this->create_a_student();
+        $this->create_finalised_submission_with_two_marks($this->student, 72, 72);
+
+        // Do not create sample.
+        $row = new grading_table_row_base($this->coursework, $this->student, null, null, []);
+        $celldata = new marking_cell_data($this->coursework);
+        $result = $celldata->get_table_cell_data($row);
+
+        $this->assertCount(2, $result->markers);
+    }
+
+    /**
+     * CTP-6337: Two markers. Student not in sample, one mark given. Agree button must appear.
+     *
+     * @covers \mod_coursework\render_helpers\grading_report\data\marking_cell_data::get_final_feedback_data
+     */
+    public function test_marking_cell_data_final_feedback_with_two_marks_not_in_sample(): void {
+        $this->create_coursework_with_two_markers_and_sampling();
+        $this->create_a_student();
+        $this->create_finalised_submission_with_one_mark($this->student, 44);
 
         $row = new grading_table_row_base($this->coursework, $this->student, null, null, []);
         $celldata = new marking_cell_data($this->coursework);
@@ -98,21 +135,68 @@ final class sampling_agree_test extends \advanced_testcase {
     }
 
     /**
-     * The table cell data for a submission not sampled only has two markers.
+     * CTP-6337: Two markers. Student in sample for assessor_2, both marks given. Agree button must appear.
+     *
+     * @covers \mod_coursework\render_helpers\grading_report\data\marking_cell_data::get_final_feedback_data
+     */
+    public function test_marking_cell_data_final_feedback_with_two_marks_in_sample(): void {
+        $this->create_coursework_with_two_markers_and_sampling();
+        $this->create_a_student();
+        $this->create_sample($this->student, 2);
+        $submission = $this->create_finalised_submission_with_one_mark($this->student, 1);
+        $this->get_coursework_generator()->create_feedback((object)[
+            'submissionid'    => $submission->id,
+            'assessorid'      => $this->otherteacher->id,
+            'stageidentifier' => 'assessor_2',
+            'grade'           => 0,
+            'isfinalgrade'    => 0,
+            'ismoderation'    => 0,
+            'finalised'       => 1,
+        ]);
+
+        $row = new grading_table_row_base($this->coursework, $this->student, null, null, []);
+        $celldata = new marking_cell_data($this->coursework);
+
+        $result = $celldata->get_final_feedback_data($row);
+
+        $this->assertNotNull($result);
+        $this->assertNotEmpty($result->addfinalfeedback);
+    }
+
+    /**
+     * CTP-6337: Two markers. Student not in sample shows one marker.
      *
      * @covers \mod_coursework\render_helpers\grading_report\data\marking_cell_data::get_table_cell_data
      */
-    public function test_no_spurious_marker_slot_for_submission_not_in_sample(): void {
+    public function test_marking_cell_data_num_markers_with_one_mark_not_in_sample(): void {
+        $this->create_coursework_with_two_markers_and_sampling();
         $this->create_a_student();
-        $this->create_finalised_submission_with_two_marks($this->student, 72, 72);
-
-        // Do not create sample.
+        $this->create_finalised_submission_with_one_mark($this->student, 44);
 
         $row = new grading_table_row_base($this->coursework, $this->student, null, null, []);
         $celldata = new marking_cell_data($this->coursework);
         $result = $celldata->get_table_cell_data($row);
 
-        $this->assertCount(2, $result->markers);
+        $this->assertCount(1, $result->markers);
+    }
+
+    /**
+     * CTP-6337: Two markers. Student in sample with one mark must not show agree button.
+     *
+     * @covers \mod_coursework\render_helpers\grading_report\data\marking_cell_data::get_final_feedback_data
+     */
+    public function test_marking_cell_data_final_feedback_with_one_mark_in_sample(): void {
+        $this->create_coursework_with_two_markers_and_sampling();
+        $this->create_a_student();
+        $this->create_sample($this->student, 2);
+        $this->create_finalised_submission_with_one_mark($this->student, 44);
+
+        $row = new grading_table_row_base($this->coursework, $this->student, null, null, []);
+        $celldata = new marking_cell_data($this->coursework);
+
+        $result = $celldata->get_final_feedback_data($row);
+
+        $this->assertNull($result);
     }
 
     /**
@@ -148,6 +232,58 @@ final class sampling_agree_test extends \advanced_testcase {
             'isfinalgrade'     => 0,
             'ismoderation'     => 0,
             'finalised'        => 1,
+        ]);
+    }
+
+    /**
+     * Create 2 markers with sampling, allocation and blind marking, future dated.
+     */
+    private function create_coursework_with_two_markers_and_sampling(): void {
+        $this->create_a_coursework([
+            'numberofmarkers'   => 2,
+            'samplingenabled'   => 1,
+            'allocationenabled' => 1,
+            'blindmarking'      => 1,
+            'deadline'          => time() + DAYSECS,
+            'grade'             => 100,
+        ]);
+    }
+
+    /**
+     * Create a finalised submission for student with a finalised assessor_1 feedback.
+     */
+    private function create_finalised_submission_with_one_mark(models\user $student, int $grade): object {
+        $submission = $this->get_coursework_generator()->create_submission(
+            (object) [
+                'courseworkid'    => $this->coursework->id,
+                'allocatableid'   => $student->id,
+                'allocatabletype' => 'user',
+                'finalisedstatus' => submission::FINALISED_STATUS_FINALISED,
+            ],
+            $this->coursework
+        );
+        $this->get_coursework_generator()->create_feedback((object)[
+            'submissionid'    => $submission->id,
+            'assessorid'      => $this->teacher->id,
+            'stageidentifier' => 'assessor_1',
+            'grade'           => $grade,
+            'isfinalgrade'    => 0,
+            'ismoderation'    => 0,
+            'finalised'       => 1,
+        ]);
+        return $submission;
+    }
+
+    /**
+     * Creates a coursework_sample_set_mbrs record for the student in this coursework.
+     */
+    private function create_sample(models\user $student, int $stage): void {
+        assessment_set_membership::create([
+            'courseworkid'    => $this->coursework->id,
+            'allocatableid'   => $student->id,
+            'allocatabletype' => 'user',
+            'stageidentifier' => 'assessor_' . $stage,
+            'selectiontype'   => 'manual',
         ]);
     }
 }
