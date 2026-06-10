@@ -1,5 +1,5 @@
 @mod @mod_coursework @mod_coursework_feedback_final_feedback_single_marking
-Feature: Adding and editing final feedback
+Feature: Adding and editing feedback
 
   In order to provide students with a single grade
   As a course leader
