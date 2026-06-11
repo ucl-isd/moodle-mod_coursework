@@ -1079,14 +1079,16 @@ class ability extends framework\ability {
                 if (!$feedback->assessorid == $this->userid) {
                     return false;
                 }
-                // Draft feedback.
-                if ($feedback->get_submission()->draft_feedback_exists()) {
+
+                if (
+                    // Draft feedback.
+                    $feedback->get_submission()->draft_feedback_exists() ||
+                    // Editable initial feedback.
+                    $feedback->get_submission()->editable_feedbacks_exist()
+                ){
                     return true;
                 }
-                // Editable initial feedback.
-                if ($feedback->get_submission()->editable_feedbacks_exist()) {
-                    return true;
-                }
+
                 // Editable final feedback.
                 if (!$feedback->get_submission()->editable_final_feedback_exist()) {
                     return false;
