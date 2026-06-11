@@ -1075,20 +1075,30 @@ class ability extends framework\ability {
             'edit',
             'mod_coursework\models\feedback',
             function (feedback $feedback) {
-                $iscreator = $feedback->assessorid == $this->userid;
+                // Can only edit own feedback.
+                if (!$feedback->assessorid == $this->userid) {
+                    return false;
+                }
+                // Draft feedback.
+                if ($feedback->get_submission()->draft_feedback_exists()) {
+                    return true;
+                }
+                // Editable initial feedback.
+                if ($feedback->get_submission()->editable_feedbacks_exist()) {
+                    return true;
+                }
+                // Editable final feedback.
+                if (!$feedback->get_submission()->editable_final_feedback_exist()) {
+                    return false;
+                }
+
+                // The feedback is final and editable if we reach here.
+                $issinglemarking = !$feedback->get_coursework()->has_multiple_markers();
                 $stage = $feedback->get_stage();
-                return  $iscreator &&
-                    (
-                        $feedback->get_submission()->draft_feedback_exists() ||
-                        $feedback->get_submission()->editable_feedbacks_exist() ||
-                        $feedback->get_submission()->editable_final_feedback_exist() &&
-                        (
-                            (
-                                !$feedback->get_coursework()->has_multiple_markers() &&
-                                $stage->is_initial_assesor_stage()
-                            ) || !$stage->is_initial_assesor_stage()
-                        )
-                    );
+                $isinitialstage = $stage->is_initial_assesor_stage();
+                // Single marking and feedback is initial stage, or double marking
+                // and feedback is not at the initial stage.
+                return ($issinglemarking && $isinitialstage) || !$isinitialstage;
             }
         );
     }
