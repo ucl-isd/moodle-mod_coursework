@@ -817,7 +817,7 @@ class coursework extends table_base {
     /**
      * @return bool
      */
-    public function plagiarism_enbled() {
+    public function plagiarism_enabled() {
         $plagiarismhelpers = $this->get_plagiarism_helpers();
         foreach ($plagiarismhelpers as $helper) {
             if ($helper->enabled()) {
@@ -2807,5 +2807,18 @@ class coursework extends table_base {
             $event->priority = CALENDAR_EVENT_USER_OVERRIDE_PRIORITY;
             return (bool)calendar_event::create($event, false);
         }
+    }
+
+    public function plagiarism_disclosure_required(): bool {
+        if (!$this->plagiarism_enabled()) {
+            return false;
+        }
+        foreach ($this->get_plagiarism_helpers() as $helper) {
+            if ($helper->disclosure_required()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

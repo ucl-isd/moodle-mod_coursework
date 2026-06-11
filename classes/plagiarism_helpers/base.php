@@ -47,6 +47,8 @@ abstract class base {
         return $this->coursework;
     }
 
+    abstract public function disclosure_required(): bool;
+
     /**
      * @return string
      */

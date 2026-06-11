@@ -833,7 +833,7 @@ class submission extends table_base implements renderable {
                     $id = reset($members)->id;
                 }
 
-                if ($this->get_coursework()->plagiarism_enbled()) {
+                if ($this->get_coursework()->plagiarism_enabled()) {
                     $groupmember = $this->get_tii_group_member_with_eula($this->allocatableid);
                     if (!empty($groupmember)) {
                         $id = $groupmember->id;
