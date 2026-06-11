@@ -26,6 +26,7 @@ use coding_exception;
 use dml_exception;
 use Exception;
 use moodle_exception;
+use turnitin_user;
 
 /**
  * Class turnitin
@@ -128,5 +129,20 @@ class turnitin extends base {
         return ['.doc', '.docx', '.ppt', '.pptx', '.pps', '.ppsx',
             '.pdf', '.txt', '.htm', '.html', '.hwp', '.odt',
             '.wpd', '.ps', '.rtf', '.xls', '.xlsx', ];
+    }
+
+    public function disclosure_required(): bool {
+        global $USER;
+        self::require_tii_lib();
+
+        $user = new turnitin_user($USER->id, "Learner");
+
+        // See if record of acceptance already held locally.
+        if ($user->useragreementaccepted) {
+            return false;
+        }
+
+        // Check again but allow the TII lib to make SOAP calls etc.
+        return !$user->get_accepted_user_agreement();
     }
 }

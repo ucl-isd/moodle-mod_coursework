@@ -852,7 +852,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
 
         $ability = new ability($USER->id, $coursework);
         $html = '';
-        if ($coursework->plagiarism_enbled() && $ability->can('resubmit_to_plagiarism', $submission)) {
+        if ($coursework->plagiarism_enabled() && $ability->can('resubmit_to_plagiarism', $submission)) {
             // Show the resubmit to plagiarism button if the user is allowed to do this.
             $html .= $this->resubmit_to_plagiarism_button($coursework, $submission);
         }
