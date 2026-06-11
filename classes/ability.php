@@ -1085,7 +1085,7 @@ class ability extends framework\ability {
                     $feedback->get_submission()->draft_feedback_exists() ||
                     // Editable initial feedback.
                     $feedback->get_submission()->editable_feedbacks_exist()
-                ){
+                ) {
                     return true;
                 }
 
