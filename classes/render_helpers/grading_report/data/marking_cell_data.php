@@ -184,15 +184,8 @@ class marking_cell_data extends cell_data_base {
         $marker->timemodified = $feedback->timemodified;
 
         if ($submission->persisted() && !$this->coursework->has_multiple_markers()) {
-            $showstatus = true;
-
-            if ($this->coursework->moderation_agreement_enabled()) {
-                $moderation = $this->coursework->get_moderator_marking_stage()->get_moderation($submission);
-                $showstatus = (!empty($moderation) && $moderation->agreement === 'agreed');
-            }
-
-            $marker->released = $showstatus && $submission->is_published();
-            $marker->readyforrelease = $showstatus && !$marker->released && $submission->ready_to_publish();
+            $marker->released = $submission->is_published();
+            $marker->readyforrelease = !$marker->released && $submission->ready_to_publish();
         }
 
         // Actions - show, edit.
