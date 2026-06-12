@@ -407,7 +407,7 @@ class grading_report_renderer extends plugin_renderer_base {
             $status[] = 'need-agreement';
         }
 
-        if (!empty($trdata->agreedmark->mark->readyforrelease) || !empty($trdata->moderation->mark->readyforrelease)) {
+        if (!empty($trdata->agreedmark->mark->readyforrelease) || !empty($trdata->markers[0]->readyforrelease)) {
             $status[] = 'ready-for-release';
         }
 
