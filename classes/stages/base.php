@@ -642,7 +642,6 @@ abstract class base {
                 if (
                     $submission
                     && count($submission->get_assessor_feedbacks()) >= $submission->max_number_of_feedbacks()
-                    && $submission->sampled_feedback_exists()
                 ) {
                     break;
                 }
