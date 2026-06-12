@@ -65,7 +65,7 @@ final class sampling_agree_test extends \advanced_testcase {
     }
 
     /**
-     * CTP-6337: Sampling is enabled but a submission is not in the sample, two marks are enough.
+     * Sampling is enabled but a submission is not in the sample, two marks are enough.
      *
      * @covers \mod_coursework\stages\base::prerequisite_stages_have_feedback
      */
@@ -80,7 +80,7 @@ final class sampling_agree_test extends \advanced_testcase {
     }
 
     /**
-     * CTP-6337: Two markers have given feedback, get_final_feedback_data should return "Agree marking" button data.
+     * Two markers have given feedback, get_final_feedback_data should return "Agree marking" button data.
      *
      * @covers \mod_coursework\render_helpers\grading_report\data\marking_cell_data::get_final_feedback_data
      */
@@ -99,7 +99,7 @@ final class sampling_agree_test extends \advanced_testcase {
     }
 
     /**
-     * CTP-6337: Table cell data for a submission not sampled only has two markers.
+     * Table cell data for a submission not sampled only has two markers.
      *
      * @covers \mod_coursework\render_helpers\grading_report\data\marking_cell_data::get_table_cell_data
      */
@@ -116,7 +116,7 @@ final class sampling_agree_test extends \advanced_testcase {
     }
 
     /**
-     * CTP-6337: Two markers. Student not in sample, one mark given. Agree button must appear.
+     * Two markers. Student not in sample, one mark given. Agree button must appear.
      *
      * @covers \mod_coursework\render_helpers\grading_report\data\marking_cell_data::get_final_feedback_data
      */
@@ -135,7 +135,7 @@ final class sampling_agree_test extends \advanced_testcase {
     }
 
     /**
-     * CTP-6337: Two markers. Student in sample for assessor_2, both marks given. Agree button must appear.
+     * Two markers. Student in sample for assessor_2, both marks given. Agree button must appear.
      *
      * @covers \mod_coursework\render_helpers\grading_report\data\marking_cell_data::get_final_feedback_data
      */
@@ -164,7 +164,7 @@ final class sampling_agree_test extends \advanced_testcase {
     }
 
     /**
-     * CTP-6337: Two markers. Student not in sample shows one marker.
+     * Two markers. Student not in sample shows one marker.
      *
      * @covers \mod_coursework\render_helpers\grading_report\data\marking_cell_data::get_table_cell_data
      */
@@ -181,7 +181,7 @@ final class sampling_agree_test extends \advanced_testcase {
     }
 
     /**
-     * CTP-6337: Two markers. Student in sample with one mark must not show agree button.
+     * Two markers. Student in sample with one mark must not show agree button.
      *
      * @covers \mod_coursework\render_helpers\grading_report\data\marking_cell_data::get_final_feedback_data
      */
