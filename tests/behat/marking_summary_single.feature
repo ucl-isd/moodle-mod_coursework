@@ -37,6 +37,18 @@ Feature: When a coursework uses single marking the marking summary table should 
     And I should see "0" in the "Ready for release" "list_item"
     And I should see "0" in the "Released" "list_item"
 
+  Scenario: Teacher's view when submission is marked but in draft
+    Given the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | Coursework | 1               |
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |
+    And I am on the "Coursework" "coursework activity" page logged in as "teacher1"
+    Then I should see "1/1" in the "Submissions" "list_item"
+    And I should see "1" in the "Ready for release" "list_item"
+    And I should see "0" in the "Released" "list_item"
+
   Scenario: Teacher's view when submission is marked
     Given the following "mod_coursework > submissions" exist:
       | allocatable | coursework | finalisedstatus |
@@ -47,6 +59,18 @@ Feature: When a coursework uses single marking the marking summary table should 
     And I am on the "Coursework" "coursework activity" page logged in as "teacher1"
     Then I should see "1/1" in the "Submissions" "list_item"
     And I should see "1" in the "Ready for release" "list_item"
+    And I should see "0" in the "Released" "list_item"
+
+  Scenario: Managers's view when submission is marked but in draft
+    Given the following "mod_coursework > submissions" exist:
+      | allocatable | coursework | finalisedstatus |
+      | student1    | Coursework | 1               |
+    And the following "mod_coursework > feedbacks" exist:
+      | allocatable | coursework | assessor | stageidentifier | grade | feedbackcomment  |finalised|
+      | student1    | Coursework | teacher1 | assessor_1      | 67    | New comment here |0        |
+    And I am on the "Coursework" "coursework activity" page logged in as "manager1"
+    Then I should see "1/1" in the "Submissions" "list_item"
+    And I should see "0" in the "Ready for release" "list_item"
     And I should see "0" in the "Released" "list_item"
 
   Scenario: Manager's view when marks are released

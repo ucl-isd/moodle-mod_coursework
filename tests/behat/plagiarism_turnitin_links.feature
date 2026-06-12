@@ -1,9 +1,9 @@
 @mod @mod_coursework @mod_coursework_plagiarism_turnitin_links
 Feature: Check that Turnitin reports are fetched and displayed post page load from JS (when enabled)
-#  These tests can be expected to fail if the plagiarism/turnitin plugin is not also installed in the build.
 
   Background:
-    Given the following config values are set as admin:
+    Given the plagiarism_turnitin plugin is installed
+    And the following config values are set as admin:
       | config                             | value | plugin              |
       | enableplagiarism                   | 1     |                     |
       | enabled                            | 1     | plagiarism_turnitin |

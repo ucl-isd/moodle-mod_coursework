@@ -1,9 +1,9 @@
 @mod @mod_coursework @mod_coursework_plagiarism_turnitin_links
 Feature: Check that Turnitin functionality is not visible when disabled.
-#  These tests can be expected to fail if the plagiarism/turnitin plugin is not also installed in the build.
 
   Background:
-    Given the following "course" exists:
+    Given the plagiarism_turnitin plugin is installed
+    And the following "course" exists:
       | fullname  | Course 1 |
       | shortname | C1       |
     And the following "activity" exists:
