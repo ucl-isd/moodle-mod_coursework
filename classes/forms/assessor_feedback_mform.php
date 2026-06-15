@@ -81,7 +81,7 @@ class assessor_feedback_mform extends moodleform {
      * Makes the form elements.
      */
     public function definition() {
-        global $CFG;
+        global $CFG, $OUTPUT;
         $mform =& $this->_form;
 
         $this->feedback = $this->_customdata['feedback'];
@@ -159,9 +159,17 @@ class assessor_feedback_mform extends moodleform {
             );
         }
 
+        // Advanced grading total mark.
+        if (feedback::is_stage_using_advanced_grading($this->coursework, $this->feedback)) {
+            $mform->addElement(
+                'html',
+                $OUTPUT->render_from_template('mod_coursework/marking/totalmark', [])
+            );
+        }
+
         // Useful to keep the overall comments even if we have a rubric or something. There may be a place
         // in the rubric for comments, but not necessarily an overall comment.
-        $mform->addElement('editor', 'feedbackcomment', get_string('comment', 'mod_coursework'));
+        $mform->addElement('editor', 'feedbackcomment', get_string('feedback', 'mod_coursework'));
         $mform->setType('editor', PARAM_RAW);
 
         $filemanageroptions = [

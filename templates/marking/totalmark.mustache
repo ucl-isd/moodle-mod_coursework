@@ -22,13 +22,15 @@
     {
     }
 }}
-<div class="total-mark-container"
-     data-region="total-mark-display"
-     aria-live="polite"
-     aria-atomic="true">
-    {{> mod_coursework/progress }}
+<div class="border p-3 my-3">
+    <h6>{{#str}} totalmark, mod_coursework {{/str}}</h6>
+    <div class="total-mark-container"
+        data-region="total-mark-display"
+        aria-live="polite"
+        aria-atomic="true">
+        {{> mod_coursework/progress }}
+    </div>
 </div>
-
 
 {{#js}}
 require(['mod_coursework/total_mark'], function(total_mark) {

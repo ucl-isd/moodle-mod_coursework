@@ -293,25 +293,25 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $template->submission = $this->get_object_renderer()->submission_metadata($submission, $coursework, $submissionfiles);
 
         // Advanced marking.
-        $template->advancedmarking = $coursework->is_using_advanced_grading();
+        $advancedmarking = $coursework->is_using_advanced_grading();
         // Is this a marking guide?
-        $template->isguide = $template->advancedmarking && $coursework->is_using_marking_guide();
+        $isguide = $advancedmarking && $coursework->is_using_marking_guide();
 
         // Does user want to enter grades as percentages?
-        $template->percentgradesallowed = $template->isguide && $coursework->allowenterguidegradesaspercent;
-        $template->enterpercentgrades = $template->percentgradesallowed
+        $template->percentgradesallowed = $isguide && $coursework->allowenterguidegradesaspercent;
+        $enterpercentgrades = $template->percentgradesallowed
             && get_user_preferences('coursework_guide_enter_percent_grades', false);
 
         // Agreement stage.
         if ($feedback->stageidentifier == 'final_agreed_1') {
             $previousfeedbacks = $submission->get_assessor_feedbacks();
             if (!empty($previousfeedbacks)) {
-                if ($template->advancedmarking) {
+                if ($advancedmarking) {
                     // Advanced marking.
                     $template->previousfeedback = $this->render_comparison_view(
                         $coursework,
                         $previousfeedbacks,
-                        $template->isguide
+                        $isguide
                     );
                 } else {
                     // Simple direct grading.
@@ -329,14 +329,14 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         // Form part.
         $template->marking = $simpleform->render();
 
-        if ($template->advancedmarking) {
-            if ($template->isguide) {
+        if ($advancedmarking) {
+            if ($isguide) {
                 $this->page->requires->js_call_amd(
                     'mod_coursework/marking_guide',
                     'init',
                     [
                         'markString' => get_string('mark', 'coursework'),
-                        'enterPercentGrades' => $template->enterpercentgrades,
+                        'enterPercentGrades' => $enterpercentgrades,
                         'percentGradesAllowed' => $template->percentgradesallowed,
                     ]
                 );
