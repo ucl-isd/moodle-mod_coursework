@@ -18,8 +18,25 @@
 
     Display total marks with automatic calculation from rubric or marking guide.
 
+    Classes required for JS:
+    * .total-mark-container - Wrapper for the live total mark display
+    * .total-score-text - Current score text node
+    * .total-max-text - Maximum score text node
+    * .total-percent - Percent text node
+    * .total-progress-bar - Progress bar element updated by JS
+
+    Context variables required for this template:
+    * label - Optional label text shown before the score
+    * score - The current score value
+    * maxscore - The maximum possible score
+    * percent - The percentage value from 0 to 100
+
     Example context (json):
     {
+        "label": "Grade",
+        "score": 75,
+        "maxscore": 100,
+        "percent": 75
     }
 }}
 <div class="border p-3 my-3">
