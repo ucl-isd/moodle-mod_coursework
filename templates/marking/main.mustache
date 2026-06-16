@@ -22,14 +22,14 @@
     * showpdf - Whether the PDF pane should be shown
     * percentgradesallowed - Whether to show the percentage switch
     * previousfeedback - HTML for the previous stage feedback, if any
-    * marking - HTML for the marking form
+    * markingform - HTML for the marking form
 
     Example context (json):
     {
         "showpdf": true,
         "percentgradesallowed": true,
         "previousfeedback": "<p>This is where the feedback from the previous marking stage would appear. The student did a good job overall.</p>",
-        "marking": "<form id=\"mform1\" action=\"#\" method=\"post\"><table class=\"generaltable\"><tbody><tr><td class=\"description\">Criterion 1<div class=\"review-marks\">some review marks</div></td><td class=\"score\"><input type=\"text\" name=\"score1\" id=\"score1\"><div>/ 10</div></td><td class=\"remark\"><textarea name=\"remark1\" id=\"remark1\"></textarea></td></tr><tr><td class=\"description\">Criterion 2<div class=\"review-marks\">some review marks</div></td><td class=\"score\"><input type=\"text\" name=\"score2\" id=\"score2\"><div>/ 20</div></td><td class=\"remark\"><textarea name=\"remark2\" id=\"remark2\"></textarea></td></tr></tbody></table></form>"
+        "markingform": "<form id=\"mform1\" action=\"#\" method=\"post\"><table class=\"generaltable\"><tbody><tr><td class=\"description\">Criterion 1<div class=\"review-marks\">some review marks</div></td><td class=\"score\"><input type=\"text\" name=\"score1\" id=\"score1\"><div>/ 10</div></td><td class=\"remark\"><textarea name=\"remark1\" id=\"remark1\"></textarea></td></tr><tr><td class=\"description\">Criterion 2<div class=\"review-marks\">some review marks</div></td><td class=\"score\"><input type=\"text\" name=\"score2\" id=\"score2\"><div>/ 20</div></td><td class=\"remark\"><textarea name=\"remark2\" id=\"remark2\"></textarea></td></tr></tbody></table></form>"
     }
 }}
 <div {{#showpdf}} class="full-width" {{/showpdf}}>
