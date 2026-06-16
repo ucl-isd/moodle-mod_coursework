@@ -1455,51 +1455,6 @@ function can_delete_allocation($courseworkid, $allocatableid) {
     return $DB->get_record_sql($sql, ['courseworkid' => $courseworkid, 'allocatableid' => $allocatableid]);
 }
 
-/**
- * @param $coursemodule
- * @return string
- */
-function plagiarism_similarity_information($coursemodule) {
-    $html = '';
-
-    ob_start();
-    echo   plagiarism_print_disclosure($coursemodule->id);
-    $html .= ob_get_clean();
-
-    return $html;
-}
-
-/**
- * @return bool
- * @throws ddl_exception
- * @throws dml_exception
- */
-function has_user_seen_tii_eula_agreement() {
-    global $CFG, $DB, $USER;
-
-    // if TII plagiarism enabled check if user agreed/disagreed EULA
-    $shouldseeeula = false;
-    if ($CFG->enableplagiarism) {
-        $plagiarismsettings = (array)get_config('plagiarism_turnitin');
-        if (!empty($plagiarismsettings['enabled'])) {
-            if ($DB->get_manager()->table_exists('plagiarism_turnitin_users')) {
-                $sql = "SELECT * FROM {plagiarism_turnitin_users}
-                        WHERE userid = :userid
-                        AND user_agreement_accepted <> 0";
-            } else {
-                $sql = "SELECT * FROM {turnitintooltwo_users}
-                        WHERE userid = :userid
-                        AND user_agreement_accepted <> 0";
-            }
-
-            $shouldseeeula = $DB->record_exists_sql($sql, ['userid' => $USER->id]);
-        }
-    } else {
-        $shouldseeeula = true;
-    }
-    return $shouldseeeula;
-}
-
 function coursework_is_ulcc_digest_coursework_plugin_installed() {
 
     global  $DB;

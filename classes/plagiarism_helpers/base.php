@@ -48,6 +48,12 @@ abstract class base {
     }
 
     /**
+     * Is some form of disclosure/acceptance of Ts&Cs required for a user to progress?
+     * @return bool
+     */
+    abstract public function disclosure_required(): bool;
+
+    /**
      * @return string
      */
     abstract public function file_submission_instructions();

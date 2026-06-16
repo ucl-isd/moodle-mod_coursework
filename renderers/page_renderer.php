@@ -500,20 +500,19 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $coursework = $submission->get_coursework();
         $template->markingguideurl = mod_coursework_object_renderer::get_marking_guide_url($coursework);
-        $template->plagiarism = plagiarism_similarity_information($submission->get_coursework()->get_course_module());
-
-        if ($submission->get_coursework()->early_finalisation_allowed()) {
-            $template->finalise = true;
-        }
 
         if ($submission->get_coursework()->deadline_has_passed() && !$submission->has_valid_extension()) {
             $template->late = true;
         }
 
-        // Submit form.
-        ob_start();
-        $submitform->display();
-        $template->form = ob_get_clean();
+        if ($coursework->plagiarism_disclosure_required()) {
+            $template->plagiarism = plagiarism_print_disclosure($submission->get_coursework()->get_coursemodule_id());
+        } else {
+            if ($submission->get_coursework()->early_finalisation_allowed()) {
+                $template->finalise = true;
+            }
+            $template->form = $submitform->render();
+        }
 
         echo $this->output->header();
         echo $this->render_from_template('mod_coursework/submission_page', $template);
