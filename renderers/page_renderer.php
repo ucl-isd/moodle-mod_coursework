@@ -327,7 +327,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         // Output all the things.
         // Form part.
-        $template->marking = $simpleform->render();
+        $template->markingform = $simpleform->render();
 
         if ($advancedmarking) {
             if ($isguide) {
