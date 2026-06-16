@@ -37,4 +37,4 @@ Feature: Automatic population of feedback comments.
     Given I am on the "Coursework" "coursework activity" page logged in as "manager1"
     And I click on "Agree marking" "link" in the "student student1" "table_row"
     Then the following fields match these values:
-      | Comment | <p>Marker 1 comment:<br>New comment here<br>Marker 2 comment:<br>New comment here</p> |
+      | Feedback | <p>Marker 1 comment:<br>New comment here<br>Marker 2 comment:<br>New comment here</p> |

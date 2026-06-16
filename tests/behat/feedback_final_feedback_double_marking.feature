@@ -73,7 +73,7 @@ Feature: Adding and editing final feedback
     And I should see "New comment here" in the "[data-behat-markstage='assessor_2']" "css_element"
     And I should see "63" in the "[data-behat-markstage='assessor_2']" "css_element"
     And I set the field "Mark" to "57"
-    And I set the field "Comment" to "New comment"
+    And I set the field "Feedback" to "New comment"
     And I press "Save and finalise"
     And I should see "Feedback saved" in the "student1" "table_row"
     Then I am on the "Coursework" "coursework activity" page
@@ -81,7 +81,7 @@ Feature: Adding and editing final feedback
     And I wait until the page is ready
     And the field "Mark" matches value "57"
     And the following fields match these values:
-      | Comment | New comment |
+      | Feedback | New comment |
 
   @javascript
   Scenario: Setting a new final feedback but leaving require grade field blank

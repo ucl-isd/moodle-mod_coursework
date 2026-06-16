@@ -45,7 +45,7 @@ Feature: Submit PDFs and have them graded and moderated
     #Then I should see "Test document for uploading" - I can't see why this won't work, but it doesn't...
     And I switch to the main frame
     And I set the field "Mark" to "52"
-    And I set the field "Comment" to "Some new comment"
+    And I set the field "Feedback" to "Some new comment"
     And I press "Save and finalise"
 
     Given I am on the "Coursework" "coursework activity" page logged in as "moderator1"

@@ -34,18 +34,18 @@ Feature: Adding feedback files
     Given I am on the "Coursework" "coursework activity" page logged in as "manager1"
     And I click on "Add mark" "link" in the "student1" "table_row"
     And I set the field "Mark" to "52"
-    And I set the field "Comment" to "Some new comment 3"
+    And I set the field "Feedback" to "Some new comment 3"
     And I upload "mod/coursework/tests/files_for_uploading/Test_document.docx" file to "Upload a file" filemanager
     And I click on "Save as draft" "button"
     And I should see "Feedback saved" in the "student1" "table_row"
     And I click on "52" "link" in the "student1" "table_row"
     Then the field "Mark" matches value "52"
-    And the field "Comment" matches value "Some new comment 3"
+    And the field "Feedback" matches value "Some new comment 3"
     And I should see "1" elements in "Upload a file" filemanager
 
     When I upload "mod/coursework/tests/files_for_uploading/Test_image.png" file to "Upload a file" filemanager
     And I set the field "Mark" to "62"
-    And I set the field "Comment" to "Edited Some new comment 3"
+    And I set the field "Feedback" to "Edited Some new comment 3"
     And I press "Save and finalise"
     And I am on the "Coursework" "coursework activity" page
     And I should see "62" in the "student1" "table_row"
