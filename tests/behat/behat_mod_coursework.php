@@ -15,9 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Custom behat steps for mod_coursework
- * Please use sparingly!
- *
  * @package    mod_coursework
  * @copyright  2026 onwards University College London {@link https://www.ucl.ac.uk/}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -28,12 +25,16 @@ require_once(__DIR__ . '/../../../../lib/behat/behat_base.php');
 
 use Moodle\BehatExtension\Exception\SkippedException;
 
+/**
+ * Custom behat steps for mod_coursework
+ * Please use sparingly!
+ */
 class behat_mod_coursework extends behat_base {
     /**
      * Turnitin has been configured for behat
      *
      * @Given Turnitin has been configured for behat
-     * @throws \Behat\Mink\Exception\ElementNotFoundException
+     * @throws \Moodle\BehatExtension\Exception\SkippedException
      */
     public function turnitin_has_been_configured_for_behat() {
         if (
@@ -42,7 +43,7 @@ class behat_mod_coursework extends behat_base {
             || empty(getenv('TII_SECRET'))
         ) {
             throw new SkippedException("TII not configured for behat.
-                Eeasiest approach is to add the following to config.php:
+                Easiest approach is to add the following to config.php:
                 putenv('TII_ACCOUNT=XXXXXXXXXX');
                 putenv('TII_SECRET=XXXXXXXXXX');
                 putenv('TII_APIBASEURL=https://api.turnitinuk.com');

@@ -47,6 +47,10 @@ abstract class base {
         return $this->coursework;
     }
 
+    /**
+     * Is some form of disclosure/acceptance of Ts&Cs required for a user to progress?
+     * @return bool
+     */
     abstract public function disclosure_required(): bool;
 
     /**

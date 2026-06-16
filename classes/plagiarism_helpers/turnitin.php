@@ -133,7 +133,10 @@ class turnitin extends base {
 
     public function disclosure_required(): bool {
         global $USER;
-        self::require_tii_lib();
+
+        if (!self::require_tii_lib()) {
+            return false;
+        }
 
         $user = new turnitin_user($USER->id, "Learner");
 

@@ -1,4 +1,4 @@
-@mod @mod_coursework @mod_coursework_plagiarism_turnitin_links @_file_upload  @javascript
+@mod @mod_coursework @mod_coursework_plagiarism_turnitin_links @_file_upload @javascript
 Feature: Check that Turnitin shows up in the UI when fully configured.
 
   Background:
