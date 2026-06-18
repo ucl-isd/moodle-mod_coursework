@@ -22,15 +22,10 @@
 
 namespace mod_coursework;
 
-use mod_coursework\models\allocation;
-use mod_coursework\models\course_module;
 use mod_coursework\models\coursework;
 use mod_coursework\models\deadline_extension;
-use mod_coursework\models\feedback;
-use mod_coursework\models\module;
 use mod_coursework\models\personaldeadline;
 use mod_coursework\models\submission;
-use mod_coursework\render_helpers\grading_report\cells\cell_interface;
 
 /**
  * Renderable component containing all the data needed to display the grading report

@@ -33,6 +33,7 @@ use context;
 use context_course;
 use context_module;
 use core_availability\info_module;
+use core_cache\cache;
 use core_component;
 use core_plugin_manager;
 use dml_exception;
@@ -417,21 +418,23 @@ class coursework extends table_base {
      * @throws moodle_exception
      */
     public function get_course_module() {
-
         global $DB;
 
         if (!isset($this->coursemodule)) {
             if (empty($this->id)) {
                 throw new moodle_exception('Trying to get course module for a coursework that has not yet been saved');
             }
-            $modulerecord = module::$pool['name']['coursework'] ?? $DB->get_record('modules', ['name' => 'coursework']);
-            $moduleid = $modulerecord->id;
-            $courseid = $this->get_course_id();
-            if (!isset(course_module::$pool['course-module-instance'][$courseid][$moduleid][$this->id]->id)) {
-                course_module::$pool['course-module-instance'][$courseid][$moduleid][$this->id] =
-                    $DB->get_record('course_modules', ['course' => $courseid, 'module' => $moduleid, 'instance' => $this->id], '*', MUST_EXIST);
+
+            $cache = cache::make('mod_coursework', 'coursemoduleinstances');
+            if (($this->coursemodule = $cache->get($this->id)) === false) {
+                $modulerecord = module::$pool['name']['coursework'] ?? $DB->get_record('modules', ['name' => 'coursework']);
+                $this->coursemodule = $DB->get_record('course_modules', [
+                    'course' => $this->get_course_id(),
+                    'module' => $modulerecord->id,
+                    'instance' => $this->id
+                ], '*', MUST_EXIST);
+                $cache->set($this->id, $this->coursemodule);
             }
-            $this->coursemodule = course_module::$pool['course-module-instance'][$courseid][$moduleid][$this->id];
         }
 
         return $this->coursemodule;
@@ -2628,7 +2631,6 @@ class coursework extends table_base {
         $courseworkid = $this->id;
         submission::fill_pool_coursework($courseworkid);
         self::fill_pool([$this]);
-        course_module::fill_pool([$this->get_course_module()]);
         module::fill_pool($DB->get_records('modules', ['name' => 'coursework']));
         feedback::fill_pool_submissions($courseworkid, array_keys(submission::$pool[$courseworkid]['id']));
         allocation::fill_pool_coursework($courseworkid);
