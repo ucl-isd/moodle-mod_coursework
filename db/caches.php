@@ -32,6 +32,10 @@ $definitions = [
         'mode' => cache_store::MODE_SESSION,
         'simplekeys' => true,
     ],
+    'users' => [
+        'mode' => cache_store::MODE_SESSION,
+        'simplekeys' => true,
+    ],
     assessment_set_membership::CACHE_AREA_MEMBER_COUNT => [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,

@@ -33,6 +33,7 @@ use coding_exception;
 use context_course;
 use core\exception\moodle_exception;
 use core\output\user_picture;
+use core_cache\cache;
 use core_user;
 use core_user\fields;
 use html_writer;
@@ -183,37 +184,19 @@ class user extends table_base implements allocatable, moderatable {
     }
 
     /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
-     * Fill pool to cache for later use
-     *
-     * @param $array
-     */
-    public static function fill_pool($array) {
-        foreach ($array as $record) {
-            $object = new self($record);
-            self::$pool['id'][$record->id] = $object;
-        }
-    }
-
-    /**
      * Get the cached user object from its ID.
      * @param int $id
      * @return self|false
      * @throws \dml_exception
      */
     public static function get_cached_object_from_id(int $id) {
-        if (!isset(self::$pool['id'][$id])) {
-            global $DB;
-            $user = $DB->get_record(self::$tablename, ['id' => $id]);
-            self::$pool['id'][$id] = new self($user);
+        $cache = cache::make('mod_coursework', 'users');
+        if (($user = $cache->get($id)) === false) {
+            $user = new self(core_user::get_user($id));
+            $cache->set($id, $user);
         }
-        return self::$pool['id'][$id];
+
+        return $user;
     }
 
     /**
