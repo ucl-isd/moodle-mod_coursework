@@ -412,6 +412,19 @@ class coursework extends table_base {
     protected $turnitinenabled;
 
     /**
+     * Gets the relevant record from modules.
+     * Held statically as it never changes.
+     */
+    private static function get_coursework_module() {
+        global $DB;
+        static $coursework_module;
+        if (empty($coursework_module)) {
+            $coursework_module = $DB->get_record('modules', ['name' => 'coursework']);
+        }
+        return $coursework_module;
+    }
+
+    /**
      * Gets the relevant course module and caches it.
      *
      * @return mixed|stdClass
@@ -427,10 +440,9 @@ class coursework extends table_base {
 
             $cache = cache::make('mod_coursework', 'coursemoduleinstances');
             if (($this->coursemodule = $cache->get($this->id)) === false) {
-                $modulerecord = module::$pool['name']['coursework'] ?? $DB->get_record('modules', ['name' => 'coursework']);
                 $this->coursemodule = $DB->get_record('course_modules', [
                     'course' => $this->get_course_id(),
-                    'module' => $modulerecord->id,
+                    'module' => $this->get_coursework_module()->id,
                     'instance' => $this->id
                 ], '*', MUST_EXIST);
                 $cache->set($this->id, $this->coursemodule);
@@ -2631,7 +2643,6 @@ class coursework extends table_base {
         $courseworkid = $this->id;
         submission::fill_pool_coursework($courseworkid);
         self::fill_pool([$this]);
-        module::fill_pool($DB->get_records('modules', ['name' => 'coursework']));
         feedback::fill_pool_submissions($courseworkid, array_keys(submission::$pool[$courseworkid]['id']));
         allocation::fill_pool_coursework($courseworkid);
         plagiarism_flag::fill_pool_coursework($courseworkid);
