@@ -19,6 +19,12 @@
 
     Display a progress bar showing the current score out of maximum score.
 
+    Classes required for JS:
+    * .total-score-text - Current score text node
+    * .total-max-text - Maximum score text node
+    * .total-percent - Percentage text node
+    * .total-progress-bar - Progress bar element updated by JS
+
     Context variables required for this template:
     * label - Optional label text (defaults to "Mark" if not provided)
     * score - The current score value
@@ -33,27 +39,29 @@
         "percent": 75
     }
 }}
-<div class="small d-flex justify-content-between" style="max-width: 200px;">
-    <div>
-        <strong>{{$label}}{{#str}} mark, mod_coursework {{/str}}{{/label}}:</strong>
-        <span class="total-score-text">{{score}}</span>
-        <span class="text-muted">
-            {{#str}} of, mod_coursework {{/str}}
-            <span class="total-max-text">{{maxscore}}</span>
-        </span>
+<div class="coursework-progress-container">
+    <div class="small d-flex justify-content-between">
+        <div>
+            <strong>{{$label}}{{#str}} mark, mod_coursework {{/str}}{{/label}}:</strong>
+            <span class="total-score-text">{{score}}</span>
+            <span class="text-muted">
+                {{#str}} of, mod_coursework {{/str}}
+                <span class="total-max-text">{{maxscore}}</span>
+            </span>
+        </div>
+        <div class="ml-auto">
+            <span class="total-percent">{{percent}}</span>%
+        </div>
     </div>
-    <div class="ml-auto">
-        <span class="total-percent">{{percent}}</span>%
-    </div>
-</div>
 
-<div class="progress" style="height:.5rem; max-width: 200px;">
-    <div class="progress-bar bg-success total-progress-bar"
-        role="progressbar"
-        aria-label="{{$label}}{{#str}} mark, mod_coursework {{/str}}{{/label}}"
-        aria-valuenow="{{score}}"
-        style="width: {{percent}}%"
-        aria-valuemin="0"
-        aria-valuemax="{{maxscore}}">
+    <div class="progress" style="height:.5rem;">
+        <div class="progress-bar bg-success total-progress-bar"
+            role="progressbar"
+            aria-label="{{$label}}{{#str}} mark, mod_coursework {{/str}}{{/label}}"
+            aria-valuenow="{{score}}"
+            style="width: {{percent}}%"
+            aria-valuemin="0"
+            aria-valuemax="{{maxscore}}">
+        </div>
     </div>
 </div>

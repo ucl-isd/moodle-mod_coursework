@@ -16,11 +16,20 @@
 {{!
     @template mod_coursework/marking/main
 
+    Main layout template for the marking page.
+
+    Context variables required for this template:
+    * showpdf - Whether the PDF pane should be shown
+    * percentgradesallowed - Whether to show the percentage switch
+    * previousfeedback - HTML for the previous stage feedback, if any
+    * markingform - HTML for the marking form
+
     Example context (json):
     {
         "showpdf": true,
+        "percentgradesallowed": true,
         "previousfeedback": "<p>This is where the feedback from the previous marking stage would appear. The student did a good job overall.</p>",
-        "marking": "<form id=\"mform1\" action=\"#\" method=\"post\"><table class=\"generaltable\"><tbody><tr><td class=\"description\">Criterion 1<div class=\"review-marks\">some review marks</div></td><td class=\"score\"><input type=\"text\" name=\"score1\" id=\"score1\"><div>/ 10</div></td><td class=\"remark\"><textarea name=\"remark1\" id=\"remark1\"></textarea></td></tr><tr><td class=\"description\">Criterion 2<div class=\"review-marks\">some review marks</div></td><td class=\"score\"><input type=\"text\" name=\"score2\" id=\"score2\"><div>/ 20</div></td><td class=\"remark\"><textarea name=\"remark2\" id=\"remark2\"></textarea></td></tr></tbody></table></form>"
+        "markingform": "<form id=\"mform1\" action=\"#\" method=\"post\"><table class=\"generaltable\"><tbody><tr><td class=\"description\">Criterion 1<div class=\"review-marks\">some review marks</div></td><td class=\"score\"><input type=\"text\" name=\"score1\" id=\"score1\"><div>/ 10</div></td><td class=\"remark\"><textarea name=\"remark1\" id=\"remark1\"></textarea></td></tr><tr><td class=\"description\">Criterion 2<div class=\"review-marks\">some review marks</div></td><td class=\"score\"><input type=\"text\" name=\"score2\" id=\"score2\"><div>/ 20</div></td><td class=\"remark\"><textarea name=\"remark2\" id=\"remark2\"></textarea></td></tr></tbody></table></form>"
     }
 }}
 <div {{#showpdf}} class="full-width" {{/showpdf}}>
@@ -35,32 +44,23 @@
                         {{> mod_coursework/submissions/tr/submissions }}
                     {{/showpdf}}
 
-                    <h3>{{#str}} marking, mod_coursework {{/str}}</h3>
-
-                    <div class="{{#advancedmarking}} sticky-top p-3 bg-white border container {{/advancedmarking}}">
-                        {{#previousfeedback}}
-                            {{{.}}}
-                            <h4>{{#str}} agreefeedback, mod_coursework {{/str}}</h4>
-                        {{/previousfeedback}}
-
-                        {{#advancedmarking}}
-                            <div class="row">
-                                <div class="col">
-                                    {{> mod_coursework/marking/totalmark }}
-                                </div>
-
-                                {{#percentgradesallowed}}
-                                <div class="col">
-                                    {{> mod_coursework/marking/marking_guide_percentage_switch }}
-                                </div>
-                                {{/percentgradesallowed}}
-
-                            </div>
-                        {{/advancedmarking}}
+                    <div class="d-flex">
+                        <h3>{{#str}} marking, mod_coursework {{/str}}</h3>
+                        {{#percentgradesallowed}}
+                        <div class="ml-auto">
+                            {{> mod_coursework/marking/marking_guide_percentage_switch }}
+                        </div>
+                        {{/percentgradesallowed}}
                     </div>
 
+                    {{! Agree feedback title. }}
+                    {{#previousfeedback}}
+                        {{{.}}}
+                        <h4>{{#str}} agreefeedback, mod_coursework {{/str}}</h4>
+                    {{/previousfeedback}}
+
                     <div id="coursework-markingform">
-                        {{{marking}}}
+                        {{{markingform}}}
                     </div>
                 </div>
             </div>

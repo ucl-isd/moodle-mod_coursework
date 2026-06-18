@@ -18,17 +18,35 @@
 
     Display total marks with automatic calculation from rubric or marking guide.
 
+    Elements used by JS (within `[data-region="total-mark-display"]`):
+    * .total-score-text - Current score text node
+    * .total-max-text - Maximum score text node
+    * .total-percent - Percent text node
+    * .total-progress-bar - Progress bar element updated by JS
+
+    Context variables required for this template:
+    * label - Optional label text shown before the score
+    * score - The current score value
+    * maxscore - The maximum possible score
+    * percent - The percentage value from 0 to 100
+
     Example context (json):
     {
+        "label": "Grade",
+        "score": 75,
+        "maxscore": 100,
+        "percent": 75
     }
 }}
-<div class="total-mark-container"
-     data-region="total-mark-display"
-     aria-live="polite"
-     aria-atomic="true">
-    {{> mod_coursework/progress }}
+<div class="border p-3 my-3">
+    <h6>{{#str}} totalmark, mod_coursework {{/str}}</h6>
+    <div class="total-mark-container"
+        data-region="total-mark-display"
+        aria-live="polite"
+        aria-atomic="true">
+        {{> mod_coursework/progress }}
+    </div>
 </div>
-
 
 {{#js}}
 require(['mod_coursework/total_mark'], function(total_mark) {

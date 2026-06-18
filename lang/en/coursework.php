@@ -659,8 +659,6 @@ $string['submissionid'] = 'Sub ID';
 $string['submissionnotfound'] = 'Submission not found';
 $string['submissionnotfoundincoursework'] = 'Submission not found in coursework';
 $string['submissionnotification'] = 'User to receive submission notification';
-
-
 $string['submissionnotreadyforagreedmark'] = 'The submission is not ready for agreed mark';
 $string['submissionnotreadytomark'] = 'The submission is not ready to be marked';
 $string['submissionreceipt'] = 'Submission receipt';
@@ -697,6 +695,7 @@ $string['timesubmitted'] = 'Time submitted';
 $string['to'] = 'to';
 $string['today'] = 'Today';
 $string['topupto'] = 'Aggregated to';
+$string['totalmark'] = 'Total mark';
 $string['turnitinfilesettingswarning'] = 'N.b. if you have Turnitin enabled, then some file settings here will be disabled and TII defaults will be applied automatically.';
 $string['turnitinnoreport'] = 'No Turnitin report';
 $string['turnitintfilesubmissioninstructions'] = 'Turnitin may restrict allowed file types to those it can process.';

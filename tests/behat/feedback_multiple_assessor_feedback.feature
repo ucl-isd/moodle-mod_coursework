@@ -50,7 +50,7 @@ Feature: Multiple assessors simple grading form
     And I click on "Add mark" "link" in the "student1" "table_row"
     When  I set the following fields to these values:
       | Mark    | 56               |
-      | Comment | A test comment 9 |
+      | Feedback | A test comment 9 |
     And I press "Save and finalise"
     Then I should see "56" in the "student1" "table_row"
     Then I should see "Feedback saved" in the "student1" "table_row"
@@ -87,7 +87,7 @@ Feature: Multiple assessors simple grading form
     And I click on "Agree marking" "link" in the "student1" "table_row"
     And I set the following fields to these values:
       | Mark    | 45   |
-      | Comment | Final comment |
+      | Feedback | Final comment |
     And I press "Save and finalise"
 
     When I am on the "Coursework" "coursework activity" page logged in as "student1"

@@ -49,7 +49,7 @@ Feature: Students see feedback on group assignments
     When I click on "Agree marking" "link" in the "student1" "table_row"
     And I set the following fields to these values:
       | Mark    | 45   |
-      | Comment | blah |
+      | Feedback | blah |
     And I press "Save and finalise"
     And I should see "Feedback saved" in the "student1" "table_row"
     And I follow "Release the marks"
