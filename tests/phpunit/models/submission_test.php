@@ -49,7 +49,6 @@ final class submission_test extends \advanced_testcase {
 
         // If we don't do this, we end up with the same cached objects for all tests and they may have incorrect/missing properties.
         \mod_coursework\models\coursework::$pool = null;
-        \mod_coursework\models\user::$pool = null;
     }
 
     /**
