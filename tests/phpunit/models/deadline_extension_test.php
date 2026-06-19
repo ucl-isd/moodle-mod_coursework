@@ -36,11 +36,6 @@ final class deadline_extension_test extends \advanced_testcase {
         parent::setUp();
         $this->resetAfterTest();
         $this->setAdminUser();
-
-        // If we don't do this, we end up with the same cached objects for all tests and they may have incorrect/missing properties.
-        \mod_coursework\models\coursework::$pool = null;
-        \mod_coursework\models\submission::$pool = null;
-        \mod_coursework\models\feedback::$pool = null;
     }
 
     public function test_create(): void {

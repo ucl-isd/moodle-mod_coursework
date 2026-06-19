@@ -60,7 +60,6 @@ class personaldeadline extends table_base {
      */
     public function get_coursework() {
         if (!isset($this->coursework)) {
-            coursework::fill_pool_coursework($this->courseworkid);
             $this->coursework = coursework::get_cached_object_from_id($this->courseworkid);
         }
 
@@ -109,13 +108,6 @@ class personaldeadline extends table_base {
             ]);
         }
     }
-
-    /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
 
     /**
      *

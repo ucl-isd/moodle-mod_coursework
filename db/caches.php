@@ -27,6 +27,7 @@ use mod_coursework\models\assessment_set_membership;
 $definitions = [
     'courseworkdata' => [
         'mode' => cache_store::MODE_APPLICATION,
+        'staticacceleration' => true,
     ],
     'coursemoduleinstances' => [
         'mode' => cache_store::MODE_SESSION,

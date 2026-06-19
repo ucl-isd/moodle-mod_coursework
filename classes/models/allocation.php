@@ -121,13 +121,6 @@ class allocation extends table_base {
     }
 
     /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
      *
      * @param int $courseworkid
      * @return array
@@ -162,21 +155,6 @@ class allocation extends table_base {
             'allocatableid-allocatabletype-assessorid',
             'assessorid-allocatabletype',
         ];
-    }
-
-    /**
-     *
-     * @param int $courseworkid
-     * @param $key
-     * @param $params
-     * @return self|bool
-     */
-    public static function get_object($courseworkid, $key, $params) {
-        if (!isset(self::$pool[$courseworkid])) {
-            self::fill_pool_coursework($courseworkid);
-        }
-        $valuekey = implode('-', $params);
-        return self::$pool[$courseworkid][$key][$valuekey][0] ?? false;
     }
 
     /**

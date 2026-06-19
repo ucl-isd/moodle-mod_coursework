@@ -1153,9 +1153,7 @@ class coursework extends table_base {
         if (!$userid) {
             $userid = $USER->id;
         }
-        allocation::fill_pool_coursework($this->id);
-        $records = isset(allocation::$pool[$this->id]['allocatableid-allocatabletype-assessorid'][$allocatable->id() . '-' . $allocatable->type() . "-$userid"]) ?
-            allocation::$pool[$this->id]['allocatableid-allocatabletype-assessorid'][$allocatable->id() . '-' . $allocatable->type() . "-$userid"] : [];
+        $records = allocation::get_cached_objects($this->id, ['allocatableid-allocatabletype-assessorid' => $allocatable->id() . '-' . $allocatable->type() . "-$userid"]);
 
         foreach ($records as $record) {
             if ($record->stageidentifier != $stage) {
@@ -1173,8 +1171,7 @@ class coursework extends table_base {
      * @throws \core\exception\coding_exception
      */
     public function get_all_submissions() {
-        submission::fill_pool_coursework($this->id);
-        return submission::$pool[$this->id]['id'];
+        return submission::get_cached_objects($this->id, ['id']);
     }
 
     /**
@@ -1297,8 +1294,7 @@ class coursework extends table_base {
     public function get_unfinalised_students($fields = 'u.id, u.firstname, u.lastname') {
 
         $students = get_enrolled_users(context_course::instance($this->get_course_id()), 'mod/coursework:submit', 0, $fields);
-        submission::fill_pool_coursework($this->id);
-        $alreadyfinalised = submission::$pool[$this->id]['finalisedstatus'][submission::FINALISED_STATUS_FINALISED] ?? [];
+        $alreadyfinalised = submission::get_cached_objects($this->id, ['finalisedstatus' => submission::FINALISED_STATUS_FINALISED]);
         foreach ($alreadyfinalised as $submission) {
             unset($students[$submission->userid]);
         }
@@ -2155,9 +2151,7 @@ class coursework extends table_base {
         if ($this->numberofmarkers <= 1 || $this->automaticagreementstrategy == 'null') {
             return;
         }
-        submission::fill_pool_coursework($this->id);
-        feedback::fill_pool_coursework($this->id);
-        $submissions = submission::$pool[$this->id]['finalisedstatus'][submission::FINALISED_STATUS_FINALISED] ?? [];
+        $submissions = submission::get_cached_objects($this->id, ['finalisedstatus' => submission::FINALISED_STATUS_FINALISED]);
         if (empty($submissions)) {
             return;
         }
@@ -2247,7 +2241,6 @@ class coursework extends table_base {
         $allocatable->courseworkid = $this->id;
 
         if ($this->personaldeadlines_enabled()) {
-            personaldeadline::fill_pool_coursework($this->id);
             $deadlinerecord = personaldeadline::get_cached_object(
                 $this->id,
                 ['allocatableid' => $allocatable->id, 'allocatabletype' => $allocatable->type()]
@@ -2353,12 +2346,11 @@ class coursework extends table_base {
      * Function to retrieve all feedbacks by a submission
      *
      * @param $submissionid
-     * @return feedbacks
+     * @return feedback[]
      * @throws dml_exception
      */
     public function retrieve_feedbacks_by_submission($submissionid) {
-        feedback::fill_pool_coursework($this->id);
-        return isset(feedback::$pool[$this->id][$submissionid]) ? feedback::$pool[$this->id][$submissionid] : [];
+        return feedback::get_cached_objects($this->id, ['submissionid' => $submissionid]);
     }
 
     /**
