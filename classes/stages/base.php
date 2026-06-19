@@ -402,23 +402,6 @@ abstract class base {
     }
 
     /**
-     * Check if current marking stage has any allocation
-     *
-     * @return bool
-     * @throws \core\exception\coding_exception
-     */
-    public function stage_has_allocation() {
-        $courseworkid = $this->get_courseworkid();
-        allocation::fill_pool_coursework($courseworkid);
-        $record = allocation::get_cached_object(
-            $courseworkid,
-            ['stageidentifier' => $this->stageidentifier]
-        );
-
-        return !empty($record);
-    }
-
-    /**
      * @param $allocatable
      * @throws coding_exception
      */
@@ -686,26 +669,6 @@ abstract class base {
             $submission->courseworkid,
             ['submissionid' => $submission->id, 'stageidentifier' => $stageidentifier]
         ) ?? false;
-    }
-
-    /**
-     * @param $feedback
-     * @return bool|table_base
-     * @throws \dml_exception
-     * @throws coding_exception
-     */
-    public function get_moderation_for_feedback($feedback) {
-        $moderationparams = [
-            'feedbackid' => $feedback->id,
-        ];
-        return moderation::find($moderationparams);
-    }
-
-    /**
-     * return bool
-     */
-    public function assessment_set_is_not_empty() {
-        return assessment_set_membership::exists(['courseworkid' => $this->coursework->id]);
     }
 
     /**
