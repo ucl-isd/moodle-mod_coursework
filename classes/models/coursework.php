@@ -414,11 +414,11 @@ class coursework extends table_base {
      */
     private static function get_coursework_module() {
         global $DB;
-        static $coursework_module;
-        if (empty($coursework_module)) {
-            $coursework_module = $DB->get_record('modules', ['name' => 'coursework']);
+        static $courseworkmodule;
+        if (empty($courseworkmodule)) {
+            $courseworkmodule = $DB->get_record('modules', ['name' => 'coursework']);
         }
-        return $coursework_module;
+        return $courseworkmodule;
     }
 
     /**
