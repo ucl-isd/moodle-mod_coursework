@@ -30,7 +30,7 @@ $definitions = [
         'staticacceleration' => true,
     ],
     'coursemoduleinstances' => [
-        'mode' => cache_store::MODE_SESSION,
+        'mode' => cache_store::MODE_REQUEST,
         'simplekeys' => true,
     ],
     'users' => [
