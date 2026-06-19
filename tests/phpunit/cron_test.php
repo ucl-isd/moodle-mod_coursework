@@ -36,8 +36,6 @@ final class cron_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
         $this->preventResetByRollback();
-        // If we don't do this, we end up with the same cached objects for all tests and they may have incorrect/missing properties.
-        \mod_coursework\models\coursework::$pool = null;
     }
 
     public function test_cron_auto_finalises_after_deadline(): void {

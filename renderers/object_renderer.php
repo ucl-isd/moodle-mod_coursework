@@ -1104,7 +1104,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     private function get_export_upload_links(coursework $coursework): array {
         $cmid = $this->page->cm->id;
         $viewurl = '/mod/coursework/view.php';
-        $finalisedsubmissions = !empty(submission::$pool[$coursework->id]['finalisedstatus'][submission::FINALISED_STATUS_FINALISED] ?? []);
+        $finalisedsubmissions = submission::get_cached_objects($coursework->id, ['finalisedstatus' => submission::FINALISED_STATUS_FINALISED]);
         $canmark = has_any_capability(['mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade', 'mod/coursework:administergrades'], $this->page->context);
 
         // Export/Import options.

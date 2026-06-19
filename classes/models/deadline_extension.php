@@ -63,7 +63,6 @@ class deadline_extension extends table_base {
      * @throws coding_exception
      */
     public static function allocatable_extension_allows_submission($allocatable, $coursework) {
-        self::fill_pool_coursework($coursework->id);
         $extension = self::get_cached_object(
             $coursework->id,
             [
@@ -90,7 +89,6 @@ class deadline_extension extends table_base {
             $allocatable = $student;
         }
         if ($allocatable) {
-            self::fill_pool_coursework($coursework->id);
             return self::get_cached_object(
                 $coursework->id,
                 [
@@ -133,13 +131,6 @@ class deadline_extension extends table_base {
             $this->createdbyid = $USER->id;
         }
     }
-
-    /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
 
     /**
      *

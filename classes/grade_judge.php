@@ -176,7 +176,6 @@ class grade_judge {
     public function allocatable_needs_more_than_one_feedback($allocatable) {
 
         if ($this->coursework->sampling_enabled()) {
-            assessment_set_membership::fill_pool_coursework($this->coursework->id);
             $record = assessment_set_membership::get_cached_object(
                 $this->coursework->id,
                 ['allocatableid' => $allocatable->id(), 'allocatabletype' => $allocatable->type()]

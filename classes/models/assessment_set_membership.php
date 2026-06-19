@@ -43,13 +43,6 @@ use core_cache\cache;
 #[AllowDynamicProperties]
 class assessment_set_membership extends table_base implements moderatable {
     /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
      * @var string
      */
     protected static $tablename = 'coursework_sample_set_mbrs';
