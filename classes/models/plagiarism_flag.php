@@ -63,7 +63,6 @@ class plagiarism_flag extends table_base {
      */
     public function get_coursework() {
         if (!isset($this->coursework)) {
-            coursework::fill_pool_coursework($this->courseworkid);
             $this->coursework = coursework::get_cached_object_from_id($this->courseworkid);
         }
 
@@ -78,9 +77,8 @@ class plagiarism_flag extends table_base {
      */
     public function get_submission() {
         if (!isset($this->submission) && !empty($this->submissionid)) {
-            submission::fill_pool_coursework($this->courseworkid);
-            $this->submission = isset(submission::$pool[$this->courseworkid]['id'][$this->submissionid]) ?
-                submission::$pool[$this->courseworkid]['id'][$this->submissionid] : null;
+            $this->submission = submission::get_cached_object_from_id($this->submissionid);
+            ;
         }
 
         return $this->submission;
@@ -92,7 +90,6 @@ class plagiarism_flag extends table_base {
      * @throws coding_exception
      */
     public static function get_plagiarism_flag($submission) {
-        self::fill_pool_coursework($submission->courseworkid);
         return self::get_cached_object(
             $submission->courseworkid,
             ['submissionid' => $submission->id]
@@ -113,13 +110,6 @@ class plagiarism_flag extends table_base {
                 return true;
         }
     }
-
-    /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
 
     /**
      *

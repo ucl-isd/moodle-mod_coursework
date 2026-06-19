@@ -184,22 +184,6 @@ class user extends table_base implements allocatable, moderatable {
     }
 
     /**
-     * Get the cached user object from its ID.
-     * @param int $id
-     * @return self|false
-     * @throws \dml_exception
-     */
-    public static function get_cached_object_from_id(int $id) {
-        $cache = cache::make('mod_coursework', 'users');
-        if (($user = $cache->get($id)) === false) {
-            $user = new self(core_user::get_user($id));
-            $cache->set($id, $user);
-        }
-
-        return $user;
-    }
-
-    /**
      * To save multiple queries to get user picture data, get relevant user context IDs for course in one hit.
      * @param int $courseid
      * @return array

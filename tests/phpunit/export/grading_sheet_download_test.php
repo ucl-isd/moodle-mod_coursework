@@ -50,11 +50,6 @@ final class grading_sheet_download_test extends \advanced_testcase {
         $this->otherstudent = $this->create_another_student();
         $this->teacher = $this->create_a_teacher();
         $this->otherteacher = $this->create_another_teacher();
-
-        // If we don't do this, we end up with the same cached objects for all tests and they may have incorrect/missing properties.
-        \mod_coursework\models\coursework::$pool = null;
-        \mod_coursework\models\submission::$pool = null;
-        \mod_coursework\models\feedback::$pool = null;
     }
 
     /**
