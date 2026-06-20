@@ -751,13 +751,6 @@ class submission extends table_base implements renderable {
     }
 
     /**
-     * @return user
-     */
-    public function get_last_updated_by_user() {
-        return user::get_cached_object_from_id($this->lastupdatedby);
-    }
-
-    /**
      * Tells us whether this has been given its final grade
      *
      * @return bool
