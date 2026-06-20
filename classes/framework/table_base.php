@@ -718,7 +718,7 @@ abstract class table_base {
     }
 
     /**
-     * Check that any cache key being requested is valid (i.e. exists as valid c∂çache key in child class).
+     * Check that any cache key being requested is valid (i.e. exists as valid cache key in child class).
      * Otherwise, @see self::get_cached_object() will return null without complaining and no-one will notice.
      * @param string $cachekey
      * @return void
