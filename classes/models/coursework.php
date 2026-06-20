@@ -1114,7 +1114,9 @@ class coursework extends table_base {
         if (!$userid) {
             $userid = $USER->id;
         }
-        $records = allocation::get_cached_objects($this->id, ['allocatableid-allocatabletype-assessorid' => $allocatable->id() . '-' . $allocatable->type() . "-$userid"]);
+        $records = allocation::get_cached_objects($this->id, [
+            'allocatableid-allocatabletype-assessorid' => $allocatable->id() . '-' . $allocatable->type() . "-$userid",
+        ]);
 
         foreach ($records as $record) {
             if ($record->stageidentifier != $stage) {

@@ -1285,7 +1285,10 @@ class submission extends table_base implements renderable {
 
     public function get_submissions_in_sample() {
         $allocatable = $this->get_allocatable();
-        return assessment_set_membership::get_cached_objects($this->courseworkid, ['allocatableid-allocatabletype' => $allocatable->id . '-' . $allocatable->type()]) ?? [];
+        return assessment_set_membership::get_cached_objects(
+            $this->courseworkid,
+            ['allocatableid-allocatabletype' => $allocatable->id . '-' . $allocatable->type()]
+        );
     }
 
     /**
@@ -1378,7 +1381,10 @@ class submission extends table_base implements renderable {
     public function is_assessor_initial_grader() {
         global $USER;
 
-        $feedbacks = feedback::get_cached_objects($this->courseworkid, ['submissionid-assessorid' => $this->id . '-' . $USER->id]) ?? [];
+        $feedbacks = feedback::get_cached_objects(
+            $this->courseworkid,
+            ['submissionid-assessorid' => $this->id . '-' . $USER->id]
+        );
         foreach ($feedbacks as $feedback) {
             if ($feedback->stageidentifier != 'final_agreed_1') {
                 return true;
@@ -1397,7 +1403,10 @@ class submission extends table_base implements renderable {
         $editablefeedbacks = [];
         $coursework = $this->get_coursework();
         if ($coursework->numberofmarkers > 1 && $this->is_finalised()) {
-            $editablefeedbacks = feedback::get_cached_objects($coursework->id, ['submissionid-finalised' => $this->id . '-0']);
+            $editablefeedbacks = feedback::get_cached_objects(
+                $coursework->id,
+                ['submissionid-finalised' => $this->id . '-0']
+            );
         }
 
         return (empty($editablefeedbacks)) ? false : $editablefeedbacks;
