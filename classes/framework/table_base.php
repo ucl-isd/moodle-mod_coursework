@@ -792,9 +792,9 @@ abstract class table_base {
     public static function get_cached_object_from_id(int $objectid) {
         global $DB;
 
-        $cache = cache::make('mod_coursework', 'courseworkdata', ['rawtable' => static::$tablename]);
+        $cache = cache::make('mod_coursework', 'objectcachebyid', ['table' => static::get_table_name()]);
 
-        if (($data = $cache->get($objectid)) === false) {
+        if (empty($data = $cache->get($objectid))) {
             $data = $DB->get_record(static::get_table_name(), ['id' => $objectid]);
 
             if (empty($data)) {
