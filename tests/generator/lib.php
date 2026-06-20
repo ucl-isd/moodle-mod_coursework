@@ -291,6 +291,10 @@ class mod_coursework_generator extends testing_module_generator {
             $submission->timesubmitted = time();
         }
 
+        if (empty($submission->lastupdatedby)) {
+            $submission->lastupdatedby = $submission->allocatableid;
+        }
+
         if (!isset($submission->timemodified)) {
             $submission->timemodified = time();
         }
