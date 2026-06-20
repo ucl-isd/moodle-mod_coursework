@@ -435,7 +435,7 @@ class coursework extends table_base {
                 throw new moodle_exception('Trying to get course module for a coursework that has not yet been saved');
             }
 
-            $cache = cache::make('mod_coursework', 'coursemoduleinstances');
+            $cache = cache::make('mod_coursework', 'tablecachebyid', ['table' => 'course_modules']);
             if (($this->coursemodule = $cache->get($this->id)) === false) {
                 $this->coursemodule = $DB->get_record('course_modules', [
                     'course' => $this->get_course_id(),
