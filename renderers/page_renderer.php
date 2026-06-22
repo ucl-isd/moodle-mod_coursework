@@ -70,19 +70,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         return $html;
     }
 
-    /**
-     * @param moderation $moderation
-     * @throws \core\exception\coding_exception
-     */
-    public function show_moderation_page($moderation) {
-        echo $this->output->header();
-        echo $this->render_from_template(
-            'mod_coursework/moderation',
-            $this->get_object_renderer()->get_moderation_model($moderation)
-        );
-        echo $this->output->footer();
-    }
-
     public function confirm_feedback_removal_page(feedback $teacherfeedback, $confirmurl) {
         global $SITE;
 

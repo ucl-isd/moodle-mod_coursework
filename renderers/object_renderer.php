@@ -335,22 +335,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         return $this->render_from_template('mod_coursework/viewpdf', $template);
     }
 
-
-    /**
-     * Renders a coursework moderation.
-     *
-     * @param moderation $moderation
-     * @return string
-     * @throws coding_exception
-     * @throws dml_exception
-     */
-    public function render_moderation(moderation $moderation) {
-        return $this->render_from_template(
-            'mod_coursework/moderation',
-            $this->get_moderation_model($moderation)
-        );
-    }
-
     public function get_moderation_model(moderation $moderation) {
         $moderator = core_user::get_user($moderation->moderatorid);
         $userpicture = new user_picture($moderator);

@@ -186,15 +186,6 @@ class router {
             case 'update moderation':
                 $url = new moodle_url('/mod/coursework/actions/moderations/update.php');
                 break;
-
-            case 'show moderation':
-                $url = new moodle_url(
-                    '/mod/coursework/actions/moderations/show.php',
-                    ['moderationid' => $items['moderation']->id,
-                    'feedbackid' => $items['moderation']->feedbackid]
-                );
-
-                break;
         }
 
         if (!$url) {

@@ -383,8 +383,6 @@ class marking_cell_data extends cell_data_base {
 
                 if (!$submission->is_published() && $this->ability->can('edit', $moderation)) {
                     $markdata->moderationurl = router::instance()->get_path('edit moderation', ['moderation' => $moderation]);
-                } else {
-                    $markdata->moderationurl = router::instance()->get_path('show moderation', ['moderation' => $moderation]);
                 }
 
                 return $markdata;
