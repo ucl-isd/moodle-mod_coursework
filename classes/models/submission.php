@@ -655,16 +655,16 @@ class submission extends table_base implements renderable {
         }
 
         // Final grade is done.
-        $hasfinalfeedback = (bool)$this->get_final_feedback();
+        $finalfeedback = $this->get_final_feedback();
 
-        if ($hasfinalfeedback) {
+        if ($finalfeedback && !$this->draft_feedback_exists()) {
             return self::FINAL_GRADED;
         }
 
         // All feedbacks in.
         $countassessorfeedbacks = count($this->get_assessor_feedbacks());
         $maxfeedbacksreached = $countassessorfeedbacks >= $this->max_number_of_feedbacks();
-        if ($maxfeedbacksreached && !$this->editable_feedbacks_exist() && !$this->editable_final_feedback_exist()) {
+        if ($maxfeedbacksreached && !$this->any_editable_feedback_exists() && !$this->editable_final_feedback_exist()) {
             return self::FULLY_GRADED;
         }
 
@@ -1740,5 +1740,15 @@ class submission extends table_base implements renderable {
     public function reload($complainifnotfound = true) {
         $this->currentstate = null;
         return parent::reload($complainifnotfound);
+    }
+
+    /**
+     * Does draft feedback exist?
+     *
+     * @return bool
+     */
+    public function draft_feedback_exists(): bool {
+        $feedback = $this->get_final_feedback();
+        return $feedback && $feedback->stageidentifier != 'final_agreed_1' && !$feedback->finalised;
     }
 }
