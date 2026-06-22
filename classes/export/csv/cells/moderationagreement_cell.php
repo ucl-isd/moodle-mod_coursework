@@ -58,7 +58,7 @@ class moderationagreement_cell extends cell_base {
         }
 
         if ($moderation) {
-            $moderationagreement = $moderation->get_moderator_agreement($feedback);
+            $moderationagreement = moderation::get_moderator_agreement($feedback);
         }
 
         if ($moderationagreement) {

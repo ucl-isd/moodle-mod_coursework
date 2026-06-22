@@ -196,8 +196,12 @@ class moderation extends table_base {
      * @return moderation|null
      * @throws \dml_exception
      */
-    public static function get_moderator_agreement($feedback) {
+    public static function get_moderator_agreement(feedback $feedback) {
         global $DB;
+
+        if (!$feedback->persisted()) {
+            return null;
+        }
 
         $params = ['feedbackid' => $feedback->id];
 
