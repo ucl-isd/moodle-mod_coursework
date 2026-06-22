@@ -40,6 +40,11 @@
             <div class="small text-muted">
                 {{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
             </div>
+            {{#stale}}
+                <div class="badge badge-pill badge-warning">
+                    {{#str}} stalemoderation, mod_coursework {{/str}}
+                </div>
+            {{/stale}}
         </div>
     </div>
 

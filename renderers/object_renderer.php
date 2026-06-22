@@ -179,7 +179,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         if ($moderation) {
             $ability = new ability($USER->id, $feedback->get_coursework());
             if ($ability->can('show', $moderation)) {
-                $template->moderation = $this->get_moderation_model($moderation);
+                $template->moderation = $this->get_moderation_model($moderation, $feedback);
             }
         }
 
@@ -335,7 +335,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         return $this->render_from_template('mod_coursework/viewpdf', $template);
     }
 
-    public function get_moderation_model(moderation $moderation) {
+    public function get_moderation_model(moderation $moderation, feedback $feedback) {
         $moderator = core_user::get_user($moderation->moderatorid);
         $userpicture = new user_picture($moderator);
 
@@ -346,6 +346,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $template->modcomment = $moderation->modcomment;
         $template->date = $moderation->timemodified;
         $template->agreement = get_string($moderation->agreement, 'coursework');
+        $template->stale = ($moderation->timemodified < $feedback->timemodified);
 
         return $template;
     }

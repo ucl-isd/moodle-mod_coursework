@@ -67,7 +67,8 @@ Feature: View moderation feedback
     And I should see "Agreed"
     And I should see "Moderator explaining agreement"
 
-  Scenario: As an assessor I’ve received some moderation disagreeing  when I view this I should see the moderator's feedback with no error
+  Scenario: As an assessor I’ve received some moderation disagreeing  when I edit this I should see the moderator's feedback with no error
+    and be alerted if the moderation feedback is stale
     Given the following "permission overrides" exist:
       | capability                      | permission | role    | contextlevel | reference |
       | mod/coursework:editinitialgrade | Allow      | teacher | Course       | C1        |
@@ -81,10 +82,12 @@ Feature: View moderation feedback
     And I click on "58" "text" in the "John1" "table_row"
     Then I should see "Disagreed"
     And I should see "Moderator explaining disagreement"
+    But I should not see "Feedback has been altered since moderation"
 
     When I set the field "Mark" to "59"
     And I press "Save and finalise"
     And I click on "59" "text" in the "John1" "table_row"
+    Then I should see "Feedback has been altered since moderation"
 
   @javascript
   Scenario: As an admin I should be able to filter submissions by Ready for release
