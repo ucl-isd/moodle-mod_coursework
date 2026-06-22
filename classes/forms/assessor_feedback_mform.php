@@ -195,7 +195,8 @@ class assessor_feedback_mform extends moodleform {
             if ($ability->can('show', $moderation)) {
                 $objectrenderer = $PAGE->get_renderer('mod_coursework', 'object');
                 $mform->addElement('header', 'moderation', get_string('moderationagreement', 'mod_coursework'));
-                $mform->addElement('html',
+                $mform->addElement(
+                    'html',
                     $objectrenderer->render_from_template(
                         'mod_coursework/feedback/viewmoderation',
                         $objectrenderer->get_moderation_model($moderation, $this->feedback)
