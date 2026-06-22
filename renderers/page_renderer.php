@@ -75,13 +75,11 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * @throws \core\exception\coding_exception
      */
     public function show_moderation_page($moderation) {
-        $html = '';
-
-        $objectrenderer = $this->get_object_renderer();
-        $html .= $objectrenderer->render_moderation($moderation);
-
         echo $this->output->header();
-        echo $html;
+        echo $this->render_from_template(
+            'mod_coursework/moderation',
+            $this->get_object_renderer()->get_moderation_model($moderation)
+        );
         echo $this->output->footer();
     }
 

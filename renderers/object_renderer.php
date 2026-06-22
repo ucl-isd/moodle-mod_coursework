@@ -124,7 +124,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         if ($template->feedbackcomment || isset($template->feedbackfileshtml)) {
             $template->separator = true;
         }
-
         return $template;
     }
 
@@ -172,9 +171,21 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     }
 
     public function render_feedback(feedback $feedback, $showtitle = true): string {
+        global $USER;
+
+        $template = $this->get_feedback_model($feedback, $showtitle);
+
+        $moderation = moderation::get_moderator_agreement($feedback);
+        if ($moderation) {
+            $ability = new ability($USER->id, $feedback->get_coursework());
+            if ($ability->can('show', $moderation)) {
+                $template->moderation = $this->get_moderation_model($moderation);
+            }
+        }
+
         return $this->render_from_template(
             'mod_coursework/feedback',
-            $this->get_feedback_model($feedback, $showtitle)
+            $template
         );
     }
 
@@ -334,6 +345,13 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @throws dml_exception
      */
     public function render_moderation(moderation $moderation) {
+        return $this->render_from_template(
+            'mod_coursework/moderation',
+            $this->get_moderation_model($moderation)
+        );
+    }
+
+    public function get_moderation_model(moderation $moderation) {
         $moderator = core_user::get_user($moderation->moderatorid);
         $userpicture = new user_picture($moderator);
 
@@ -345,7 +363,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $template->date = $moderation->timemodified;
         $template->agreement = get_string($moderation->agreement, 'coursework');
 
-        return $this->render_from_template('mod_coursework/moderation', $template);
+        return $template;
     }
 
     /**

@@ -50,10 +50,11 @@ Feature: View moderation feedback
     And I should see "58" in the "[data-behat-markstage=\"assessor_1\"]" "css_element"
     And I should see "Blah" in the "[data-behat-markstage=\"assessor_1\"]" "css_element"
 
-    When I set the field "Moderation agreement" to "Agreed"
+    Given I set the field "Moderation agreement" to "Agreed"
     And I set the field "Comment" to "Moderator explaining agreement"
     And I click on "Save changes" "button"
-    And I am on the "Coursework" "coursework activity" page logged in as "teacher1"
+
+    When I am on the "Coursework" "coursework activity" page logged in as "teacher1"
     Then I should see "Moderation" in the table row containing "John1"
     And I should see "Agreed" in the table row containing "John1"
     And I should not see "Disagreed" in the table row containing "John1"
@@ -62,6 +63,11 @@ Feature: View moderation feedback
 
     When I click on "Agreed" "text" in the "John1" "table_row"
     Then I should see "Moderation for John1 student1"
+    And I should see "Agreed"
+    And I should see "Moderator explaining agreement"
+
+    When I am on the "Coursework" "coursework activity" page
+    And I click on "58" "text" in the "John1" "table_row"
     And I should see "Agreed"
     And I should see "Moderator explaining agreement"
 
