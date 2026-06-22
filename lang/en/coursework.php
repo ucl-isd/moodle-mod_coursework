@@ -621,6 +621,7 @@ $string['showallfeedbacks'] = 'Show initial markers\' feedback to students';
 $string['showallfeedbacks_help'] = 'If enabled, all markers\' feedback will be visible to students. This doesn\'t apply to single marked courseworks, where there is only one feedback anyway.';
 $string['simpledirectgrading'] = 'Simple direct grading';
 $string['sixweeksoption'] = '6 weeks';
+$string['stalemoderation'] = 'Feedback has been altered since moderation';
 $string['start_date_enabled_desc'] = 'Set the default date before which, students are not able to submit work.';
 $string['startdate'] = 'Start date';
 $string['startdate_help'] = 'Before the start date, students are not able to submit work.';

@@ -30,8 +30,10 @@ use core\notification;
 use form_filemanager;
 use gradingform_controller;
 use gradingform_instance;
+use mod_coursework\ability;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
+use mod_coursework\models\moderation;
 use mod_coursework\models\submission;
 use mod_coursework\stages\final_agreed;
 use mod_coursework\utils\cs_editor;
@@ -81,7 +83,7 @@ class assessor_feedback_mform extends moodleform {
      * Makes the form elements.
      */
     public function definition() {
-        global $CFG, $OUTPUT;
+        global $CFG, $OUTPUT, $USER, $PAGE;
         $mform =& $this->_form;
 
         $this->feedback = $this->_customdata['feedback'];
@@ -186,6 +188,21 @@ class assessor_feedback_mform extends moodleform {
             null,
             $filemanageroptions
         );
+
+        $moderation = moderation::get_moderator_agreement($this->feedback);
+        if ($moderation) {
+            $ability = new ability($USER->id, $this->feedback->get_coursework());
+            if ($ability->can('show', $moderation)) {
+                $objectrenderer = $PAGE->get_renderer('mod_coursework', 'object');
+                $mform->addElement('header', 'moderation', get_string('moderationagreement', 'mod_coursework'));
+                $mform->addElement('html',
+                    $objectrenderer->render_from_template(
+                        'mod_coursework/feedback/viewmoderation',
+                        $objectrenderer->get_moderation_model($moderation, $this->feedback)
+                    )
+                );
+            }
+        }
 
         $this->add_submit_buttons($this->feedback->id);
     }

@@ -61,22 +61,30 @@ Feature: View moderation feedback
     And I should not see "Released" in the table row containing "John1"
     And I should see "Ready for release" in the table row containing "John1"
 
-    When I click on "Agreed" "text" in the "John1" "table_row"
-    Then I should see "Moderation for John1 student1"
+    When I click on "58" "text" in the "John1" "table_row"
+    Then I should see "Agreed feedback for John1 student1"
+    And I should see "Moderation agreement"
     And I should see "Agreed"
     And I should see "Moderator explaining agreement"
 
-    When I am on the "Coursework" "coursework activity" page
+  Scenario: As an assessor I’ve received some moderation disagreeing  when I view this I should see the moderator's feedback with no error
+    Given the following "permission overrides" exist:
+      | capability                      | permission | role    | contextlevel | reference |
+      | mod/coursework:editinitialgrade | Allow      | teacher | Course       | C1        |
+    And I am on the "Coursework" "coursework activity" page logged in as "moderator1"
+    And I click on "Agree marking" "link"
+    And I set the field "Moderation agreement" to "Disagreed"
+    And I set the field "Comment" to "Moderator explaining disagreement"
+    And I click on "Save changes" "button"
+
+    When I am on the "Coursework" "coursework activity" page logged in as "teacher1"
     And I click on "58" "text" in the "John1" "table_row"
-    And I should see "Agreed"
-    And I should see "Moderator explaining agreement"
+    Then I should see "Disagreed"
+    And I should see "Moderator explaining disagreement"
 
-    Given I am on the "Coursework" "coursework activity" page logged in as "admin"
-    And I should not see "Released" in the table row containing "John1"
-    And I should see "Ready for release" in the table row containing "John1"
-    And I follow "Release the marks"
-    And I should see "Released" in the table row containing "John1"
-    And I should not see "Ready for release" in the table row containing "John1"
+    When I set the field "Mark" to "59"
+    And I press "Save and finalise"
+    And I click on "59" "text" in the "John1" "table_row"
 
   @javascript
   Scenario: As an admin I should be able to filter submissions by Ready for release
