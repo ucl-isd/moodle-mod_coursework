@@ -14,7 +14,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_coursework/feedback/advanced_grading
+    @template mod_coursework/feedback/viewmoderation
 
     Template for displaying advanced grading feedback.
 
@@ -38,7 +38,7 @@
         <div>
             {{moderatedby}}
             <div class="small text-muted">
-                {{#userdate}}{{date}},{{#str}}strftimedatetime, langconfig{{/str}}{{/userdate}}
+                {{#userdate}} {{date}}, {{#str}} strftimedatetime, langconfig {{/str}} {{/userdate}}
             </div>
             {{#stale}}
                 <div class="badge badge-pill badge-warning">
