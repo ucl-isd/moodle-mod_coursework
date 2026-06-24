@@ -346,7 +346,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
      * Agree feedback - output markers feedback in mustache.
      *
      * @param coursework $coursework
-     * @param array $previousfeedbacks Array of feedback objects.
+     * @param feedback[] $previousfeedbacks Array of feedback objects.
      * @param bool $isguide
      * @return string HTML.
      */
@@ -356,19 +356,19 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $criteria = $isguide ? $gradingdefinition->guide_criteria : $gradingdefinition->rubric_criteria;
 
         $markersdata = [];
-        foreach ($previousfeedbacks as $index => $feedback) {
+        foreach ($previousfeedbacks as $feedback) {
             // Use controller to get instances for specific feedback.
             $instance = $gradingcontroller->get_current_instance($feedback->assessorid, $feedback->id);
 
             if ($instance) {
                 $filling = $isguide ? $instance->get_guide_filling() : $instance->get_rubric_filling();
-
                 $markerobj = new stdClass();
-                $markerobj->label = get_string('marker', 'mod_coursework') . " " . ($index + 1);
+                $markerobj->label = get_string('marker', 'mod_coursework') . " " . $feedback->get_assessor_stage_no();
                 $markerobj->fillings = $filling['criteria'] ?? [];
-                $markersdata[$index] = $markerobj;
+                $markersdata[$feedback->get_assessor_stage_no()] = $markerobj;
             }
         }
+        ksort($markersdata);
 
         $template = new stdClass();
         $template->reviewcriteria = [];
