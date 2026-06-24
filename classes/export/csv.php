@@ -122,7 +122,7 @@ class csv {
             if (str_starts_with($csvcell, 'assessor')) {
                 $cell = $cell->get_cell($submission, $student, $stageidentifier);
             } else {
-                $cell = $cell->get_cell($submission, $student, false);
+                $cell = $cell->get_cell($submission, $student, '');
             }
             if (is_array($cell)) {
                 $row = array_merge($row, $cell);
