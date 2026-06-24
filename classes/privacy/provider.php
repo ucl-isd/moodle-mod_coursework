@@ -25,15 +25,16 @@ namespace mod_coursework\privacy;
 use context;
 use context_module;
 use core_privacy\local\metadata\collection;
+use core_privacy\local\metadata\provider as metadata_provider;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\core_userlist_provider;
 use core_privacy\local\request\helper;
+use core_privacy\local\request\plugin\provider as request_plugin_provider;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
-use coursework;
 use mod_coursework\models\submission;
 use stdClass;
 
@@ -44,7 +45,7 @@ use stdClass;
  * @category   privacy
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class provider implements \core_privacy\local\metadata\provider, \core_privacy\local\request\plugin\provider, core_userlist_provider {
+class provider implements core_userlist_provider, metadata_provider, request_plugin_provider {
     /**
      * Provides meta data that is stored about a user with mod_coursework
      *
@@ -96,12 +97,25 @@ class provider implements \core_privacy\local\metadata\provider, \core_privacy\l
             'timecreated' => 'privacy:metadata:timecreated',
             'timemodified' => 'timemodified',
         ];
+        $reminders = [
+            'userid' => 'privacy:metadata:userid',
+        ];
+        $allocationpairs = [
+            'assessorid' => 'privacy:metadata:assessorid',
+            'allocatableuser' => 'privacy:metadata:userid',
+        ];
+        $allocationconfig = [
+            'assessorid' => 'privacy:metadata:assessorid',
+        ];
         $collection->add_database_table('coursework_feedbacks', $feedbacks, 'privacy:metadata:feedbacks');
         $collection->add_database_table('coursework_submissions', $submissions, 'privacy:metadata:submissions');
         $collection->add_database_table('coursework_extensions', $extensions, 'privacy:metadata:extensions');
         $collection->add_database_table('coursework_person_deadlines', $persondeadlines, 'privacy:metadata:persondeadlines');
         $collection->add_database_table('coursework_mod_agreements', $modagreements, 'privacy:metadata:modagreements');
         $collection->add_database_table('coursework_plagiarism_flags', $plagiarismflags, 'privacy:metadata:plagiarismflags');
+        $collection->add_database_table('coursework_reminder', $reminders, 'privacy:metadata:coursework_reminder');
+        $collection->add_database_table('coursework_allocation_pairs', $allocationpairs, 'privacy:metadata:coursework_allocation_pairs');
+        $collection->add_database_table('coursework_allocation_config', $allocationconfig, 'privacy:metadata:coursework_allocation_config');
         $collection->add_user_preference('coursework_guide_enter_percent_grades', 'privacy:metadata:guideenterpercentgrades');
         return $collection;
     }
