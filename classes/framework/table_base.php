@@ -761,7 +761,7 @@ abstract class table_base {
         $data = $cache->get(static::$tablename);
         if ($data === false) {
             // no cache found
-            $data = static::get_cache_array($courseworkid, $params);
+            $data = static::get_cache_array($courseworkid);
             $cache->set(static::$tablename, $data);
         }
 
@@ -795,6 +795,7 @@ abstract class table_base {
         $cache = cache::make('mod_coursework', 'objectcachebyid', ['table' => static::get_table_name()]);
 
         if (empty($data = $cache->get($objectid))) {
+            // Get record if cache miss or was null when last fetched.
             $data = $DB->get_record(static::get_table_name(), ['id' => $objectid]);
 
             if (empty($data)) {
