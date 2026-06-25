@@ -115,7 +115,7 @@ class personaldeadline extends table_base {
      * @return array
      * @throws \dml_exception
      */
-    protected static function get_cache_array($courseworkid) {
+    protected static function get_cache_array(int $courseworkid): array {
         global $DB;
         $records = $DB->get_records(static::$tablename, ['courseworkid' => $courseworkid]);
         $result = array_fill_keys(self::get_valid_cache_keys(), []);

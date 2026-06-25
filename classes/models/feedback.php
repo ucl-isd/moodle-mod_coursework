@@ -440,7 +440,7 @@ class feedback extends table_base {
      * @param int $courseworkid
      * return array
      */
-    public static function get_cache_array(int $courseworkid): array {
+    protected static function get_cache_array(int $courseworkid): array {
         global $DB;
 
         $data = array_fill_keys(self::get_valid_cache_keys(), []);
