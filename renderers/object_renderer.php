@@ -1104,7 +1104,10 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
     private function get_export_upload_links(coursework $coursework): array {
         $cmid = $this->page->cm->id;
         $viewurl = '/mod/coursework/view.php';
-        $finalisedsubmissions = !empty(submission::$pool[$coursework->id]['finalisedstatus'][submission::FINALISED_STATUS_FINALISED] ?? []);
+        $hasfinalisedsubmissions = !empty(submission::get_cached_objects(
+            $coursework->id,
+            ['finalisedstatus' => submission::FINALISED_STATUS_FINALISED]
+        ));
         $canmark = has_any_capability(['mod/coursework:addinitialgrade', 'mod/coursework:addagreedgrade', 'mod/coursework:administergrades'], $this->page->context);
 
         // Export/Import options.
@@ -1115,12 +1118,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                     [
                         'url' => new moodle_url($viewurl, ['id' => $cmid, 'download' => 1]),
                         'lang' => 'download_submitted_files',
-                        'show' => $finalisedsubmissions,
+                        'show' => $hasfinalisedsubmissions,
                     ],
                     [
                         'url' => new moodle_url($viewurl, ['id' => $cmid, 'export' => 1]),
                         'lang' => 'finalmarks',
-                        'show' => $finalisedsubmissions && has_any_capability(
+                        'show' => $hasfinalisedsubmissions && has_any_capability(
                             ['mod/coursework:viewallgradesatalltimes', 'mod/coursework:canexportfinalgrades'],
                             $this->page->context
                         ),
@@ -1128,7 +1131,7 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                     [
                         'url' => new moodle_url($viewurl, ['id' => $cmid, 'export_grading_sheet' => 1]),
                         'lang' => 'markingspreadsheet',
-                        'show' => $finalisedsubmissions,
+                        'show' => $hasfinalisedsubmissions,
                     ],
                 ],
             ],
@@ -1138,12 +1141,12 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
                     [
                         'url' => new moodle_url('/mod/coursework/actions/upload_grading_sheet.php', ['cmid' => $cmid]),
                         'lang' => 'markingspreadsheet',
-                        'show' => $finalisedsubmissions && $canmark,
+                        'show' => $hasfinalisedsubmissions && $canmark,
                     ],
                     [
                         'url' => new moodle_url('/mod/coursework/actions/upload_feedback.php', ['cmid' => $cmid]),
                         'lang' => 'uploadfeedbackfiles',
-                        'show' => $finalisedsubmissions && $canmark,
+                        'show' => $hasfinalisedsubmissions && $canmark,
                     ],
                 ],
             ],

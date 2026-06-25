@@ -705,35 +705,6 @@ abstract class table_base {
     }
 
     /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
-     *
-     * @param int $courseworkid
-     * @throws \core\exception\coding_exception
-     */
-    public static function fill_pool_coursework($courseworkid) {
-        if (isset(static::$pool[$courseworkid])) {
-            return;
-        }
-        $key = static::$tablename;
-        $cache = cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
-
-        $data = $cache->get($key);
-        if ($data === false) {
-            // no cache found
-            $data = static::get_cache_array($courseworkid);
-            $cache->set($key, $data);
-        }
-
-        static::$pool[$courseworkid] = $data;
-    }
-
-    /**
      * @param int $courseworkid
      * @throws \core\exception\coding_exception
      */
@@ -742,7 +713,6 @@ abstract class table_base {
         if (!empty($SESSION->keep_cache_data)) {
             return;
         }
-        static::$pool[$courseworkid] = null;
         $cache = cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
         $cache->delete(static::$tablename);
     }
@@ -782,16 +752,61 @@ abstract class table_base {
      * $params must use keys from child class get_valid_cache_keys()
      * @param int $courseworkid
      * @param array $params to search cache for
+     * @return static[]
+     * @throws \core\exception\coding_exception
+     */
+    public static function get_cached_objects(int $courseworkid, array $params): array {
+        $cache = cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
+
+        $data = $cache->get(static::$tablename);
+        if ($data === false) {
+            // no cache found
+            $data = static::get_cache_array($courseworkid);
+            $cache->set(static::$tablename, $data);
+        }
+
+        $cachekeyone = implode('-', array_keys($params));
+        static::validate_cache_key($cachekeyone);
+        $cachekeytwo = implode('-', array_values($params));
+        return $data[$cachekeyone][$cachekeytwo] ?? [];
+    }
+
+    /**
+     * Get cached object for params provided.
+     * $params must use keys from child class get_valid_cache_keys()
+     * @param int $courseworkid
+     * @param array $params to search cache for
      * @return static|null
      * @throws \core\exception\coding_exception
      */
     public static function get_cached_object(int $courseworkid, array $params): ?static {
-        if (!isset(static::$pool[$courseworkid])) {
-            static::fill_pool_coursework($courseworkid);
+        return self::get_cached_objects($courseworkid, $params)[0] ?? null;
+    }
+
+    /**
+     *
+     * @param int $objectid
+     * @return self|bool
+     * @throws dml_exception
+     */
+    public static function get_cached_object_from_id(int $objectid) {
+        global $DB;
+
+        $cache = cache::make('mod_coursework', 'objectcachebyid', ['table' => static::get_table_name()]);
+
+        if (empty($data = $cache->get($objectid))) {
+            // Get record if cache miss or was null when last fetched.
+            $data = $DB->get_record(static::get_table_name(), ['id' => $objectid]);
+
+            if (empty($data)) {
+                $data = null;
+            } else {
+                $data = new static($data);
+            }
+
+            $cache->set($objectid, $data);
         }
-        $cachekeyone = implode('-', array_keys($params));
-        static::validate_cache_key($cachekeyone);
-        $cachekeytwo = implode('-', array_values($params));
-        return static::$pool[$courseworkid][$cachekeyone][$cachekeytwo][0] ?? null;
+
+        return $data ?? false;
     }
 }

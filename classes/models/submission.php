@@ -491,8 +491,7 @@ class submission extends table_base implements renderable {
         if (!is_array($this->feedbacks)) {
             // Sort here is on ID so that if there's any need to get the first one chronologically, we can use reset().
 
-            feedback::fill_pool_coursework($this->courseworkid);
-            $this->feedbacks = feedback::$pool[$this->courseworkid]['submissionid'][$this->id] ?? [];
+            $this->feedbacks = feedback::get_cached_objects($this->courseworkid, ['submissionid' => $this->id]);
         }
 
         return $this->feedbacks;
@@ -510,12 +509,12 @@ class submission extends table_base implements renderable {
             return [];
         }
 
-        if (!isset(feedback::$pool[$this->courseworkid]['submissionid-stageidentifier_index'])) {
-            feedback::fill_pool_coursework($this->courseworkid);
-        }
         // Get all other feedbacks whose stageidentifier is not "final_agreed_1"
         // In case of loops, we would like empty array instead of false.
-        return feedback::$pool[$this->courseworkid]['submissionid-stageidentifier_index']["$this->id-others"] ?? [];
+        return feedback::get_cached_objects(
+            $this->courseworkid,
+            ['submissionid-stageidentifier_index' => "$this->id-others"]
+        );
     }
 
     /**
@@ -525,7 +524,6 @@ class submission extends table_base implements renderable {
      * @throws dml_exception
      */
     public function get_assessor_feedback_by_stage($stageidentifier) {
-        feedback::fill_pool_coursework($this->courseworkid);
         return feedback::get_cached_object(
             $this->courseworkid,
             [
@@ -545,11 +543,8 @@ class submission extends table_base implements renderable {
      * @throws dml_exception
      */
     public function get_assessor_allocation_by_stage($stageidentifier) {
-
-        $courseworkid = $this->get_coursework()->id;
-        allocation::fill_pool_coursework($courseworkid);
         return allocation::get_cached_object(
-            $courseworkid,
+            $this->get_coursework()->id,
             [
                 'allocatableid' => $this->get_allocatable()->id(),
                 'allocatabletype' => $this->get_allocatable()->type(),
@@ -568,7 +563,6 @@ class submission extends table_base implements renderable {
             return [];
         }
 
-        feedback::fill_pool_coursework($this->courseworkid);
         return feedback::get_cached_object(
             $this->courseworkid,
             [
@@ -757,13 +751,6 @@ class submission extends table_base implements renderable {
     }
 
     /**
-     * @return user
-     */
-    public function get_last_updated_by_user() {
-        return user::get_cached_object_from_id($this->lastupdatedby);
-    }
-
-    /**
      * Tells us whether this has been given its final grade
      *
      * @return bool
@@ -790,12 +777,8 @@ class submission extends table_base implements renderable {
      * @throws dml_exception
      */
     public function get_coursework() {
-
         if (empty($this->coursework)) {
-            if (!isset(coursework::$pool['id'][$this->courseworkid])) {
-                coursework::fill_pool_coursework($this->courseworkid);
-            }
-            $this->coursework = coursework::$pool['id'][$this->courseworkid];
+            $this->coursework = coursework::get_cached_object_from_id($this->courseworkid);
             if (!$this->coursework) {
                 throw new coding_exception('Could not find the coursework for submission id ' . $this->id);
             }
@@ -1020,7 +1003,6 @@ class submission extends table_base implements renderable {
     public function ready_to_publish() {
         if ($this->get_coursework()->plagiarism_flagging_enabled()) {
             // check if not stopped by plagiarism flag
-            plagiarism_flag::fill_pool_coursework($this->courseworkid);
             $plagiarism = plagiarism_flag::get_cached_object(
                 $this->courseworkid,
                 ['submissionid' => $this->id]
@@ -1302,10 +1284,11 @@ class submission extends table_base implements renderable {
      */
 
     public function get_submissions_in_sample() {
-        assessment_set_membership::fill_pool_coursework($this->courseworkid);
         $allocatable = $this->get_allocatable();
-        return isset(assessment_set_membership::$pool[$this->courseworkid]['allocatableid-allocatabletype'][$allocatable->id . '-' . $allocatable->type()]) ?
-            assessment_set_membership::$pool[$this->courseworkid]['allocatableid-allocatabletype'][$allocatable->id . '-' . $allocatable->type()] : [];
+        return assessment_set_membership::get_cached_objects(
+            $this->courseworkid,
+            ['allocatableid-allocatabletype' => $allocatable->id . '-' . $allocatable->type()]
+        );
     }
 
     /**
@@ -1316,7 +1299,6 @@ class submission extends table_base implements renderable {
      */
 
     public function get_submissions_in_sample_by_stage($stageidentifier) {
-        assessment_set_membership::fill_pool_coursework($this->courseworkid);
         return assessment_set_membership::get_cached_object(
             $this->courseworkid,
             [
@@ -1338,7 +1320,6 @@ class submission extends table_base implements renderable {
             return false;
         }
 
-        deadline_extension::fill_pool_coursework($this->courseworkid);
         $extension = deadline_extension::get_cached_object(
             $this->courseworkid,
             ['allocatableid' => $this->allocatableid, 'allocatabletype' => $this->allocatabletype]
@@ -1357,7 +1338,6 @@ class submission extends table_base implements renderable {
             return false;
         }
 
-        deadline_extension::fill_pool_coursework($this->courseworkid);
         return deadline_extension::get_cached_object(
             $this->courseworkid,
             ['allocatableid' => $this->allocatableid, 'allocatabletype' => $this->allocatabletype]
@@ -1401,8 +1381,10 @@ class submission extends table_base implements renderable {
     public function is_assessor_initial_grader() {
         global $USER;
 
-        feedback::fill_pool_coursework($this->courseworkid);
-        $feedbacks = feedback::$pool[$this->courseworkid]['submissionid-assessorid'][$this->id . '-' . $USER->id] ?? [];
+        $feedbacks = feedback::get_cached_objects(
+            $this->courseworkid,
+            ['submissionid-assessorid' => $this->id . '-' . $USER->id]
+        );
         foreach ($feedbacks as $feedback) {
             if ($feedback->stageidentifier != 'final_agreed_1') {
                 return true;
@@ -1421,7 +1403,10 @@ class submission extends table_base implements renderable {
         $editablefeedbacks = [];
         $coursework = $this->get_coursework();
         if ($coursework->numberofmarkers > 1 && $this->is_finalised()) {
-            $editablefeedbacks = feedback::$pool[$coursework->id]['submissionid-finalised'][$this->id . '-0'] ?? [];
+            $editablefeedbacks = feedback::get_cached_objects(
+                $coursework->id,
+                ['submissionid-finalised' => $this->id . '-0']
+            );
         }
 
         return (empty($editablefeedbacks)) ? false : $editablefeedbacks;
@@ -1502,7 +1487,6 @@ class submission extends table_base implements renderable {
      * @throws \core\exception\coding_exception
      */
     public function has_valid_extension() {
-        deadline_extension::fill_pool_coursework($this->courseworkid);
         $extension = deadline_extension::get_cached_object(
             $this->courseworkid,
             ['allocatableid' => $this->allocatableid, 'allocatabletype' => $this->allocatabletype]
@@ -1531,21 +1515,13 @@ class submission extends table_base implements renderable {
     }
 
     // Caching
-
-    /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
     /**
      *
      * @param int $courseworkid
      * @return array
      * @throws dml_exception
      */
-    protected static function get_cache_array($courseworkid) {
+    protected static function get_cache_array(int $courseworkid): array {
         global $DB;
         $records = $DB->get_records(static::$tablename, ['courseworkid' => $courseworkid]);
         $result = array_fill_keys(self::get_valid_cache_keys(), []);

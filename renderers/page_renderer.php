@@ -457,7 +457,7 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         // Group submission.
         if ($coursework->is_configured_to_have_group_submissions() && $submission->persisted()) {
-            $template->groupsubmitter = $submission->get_last_updated_by_user()->name();
+            $template->groupsubmitter = user::get_cached_object_from_id($submission->lastupdatedby)->name();
         }
 
         return $template;
