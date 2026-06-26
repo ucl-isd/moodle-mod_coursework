@@ -495,6 +495,14 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026081102, 'coursework');
     }
 
+    if ($oldversion < 2026081103) {
+        // Populate the example presets.
+        require_once(__DIR__ . '/../lib.php');
+        coursework_populate_sampling_presets();
+
+        upgrade_mod_savepoint(true, 2026081103, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }
