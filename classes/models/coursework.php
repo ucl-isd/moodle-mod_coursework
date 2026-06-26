@@ -214,11 +214,6 @@ class coursework extends table_base {
     public $allocationenabled;
 
     /**
-     * @var string
-     */
-    public $moderatorallocationstrategy;
-
-    /**
      * @var array
      */
     public $submissions;
@@ -325,12 +320,6 @@ class coursework extends table_base {
      * strategies for more purposes.
      */
     const ASSESSOR = 'assessor';
-
-    /**
-     * Defines the prefix used for form names and DB tables and fields so we can dynamically use allocation
-     * strategies for more purposes.
-     */
-    const MODERATOR = 'moderator';
 
     /**
      * @var int
