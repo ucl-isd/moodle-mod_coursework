@@ -485,6 +485,16 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026081101, 'coursework');
     }
 
+    if ($oldversion < 2026081102) {
+        $table = new xmldb_table('coursework_sample_set_rules');
+        $field = new xmldb_field('minimumsamplesize', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'stageidentifier');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_mod_savepoint(true, 2026081102, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }
