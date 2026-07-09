@@ -33,6 +33,7 @@ use coding_exception;
 use context_course;
 use core\exception\moodle_exception;
 use core\output\user_picture;
+use core_cache\cache;
 use core_user;
 use core_user\fields;
 use html_writer;
@@ -180,40 +181,6 @@ class user extends table_base implements allocatable, moderatable {
     public function get_user_profile_url(): string {
         $url = new moodle_url('/user/profile.php', ['id' => $this->id()]);
         return $url->out(false);
-    }
-
-    /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
-     * Fill pool to cache for later use
-     *
-     * @param $array
-     */
-    public static function fill_pool($array) {
-        foreach ($array as $record) {
-            $object = new self($record);
-            self::$pool['id'][$record->id] = $object;
-        }
-    }
-
-    /**
-     * Get the cached user object from its ID.
-     * @param int $id
-     * @return self|false
-     * @throws \dml_exception
-     */
-    public static function get_cached_object_from_id(int $id) {
-        if (!isset(self::$pool['id'][$id])) {
-            global $DB;
-            $user = $DB->get_record(self::$tablename, ['id' => $id]);
-            self::$pool['id'][$id] = new self($user);
-        }
-        return self::$pool['id'][$id];
     }
 
     /**

@@ -208,7 +208,7 @@ class csv {
      */
     public function get_submissions($groupid = null, $selectedsubmissionids = '') {
 
-        $submissions = submission::$pool[$this->coursework->id]['id'] ?? submission::find_all(['courseworkid' => $this->coursework->id]);
+        $submissions = submission::get_cached_objects($this->coursework->id, ['id']);
         if ($selectedsubmissionids && $selectedsubmissionids = json_decode($selectedsubmissionids)) {
             $result = array_flip($selectedsubmissionids);
             foreach ($submissions as $submission) {

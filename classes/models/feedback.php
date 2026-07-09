@@ -340,10 +340,7 @@ class feedback extends table_base {
             }
             if ($this->courseworkid) {
                 // We have coursework ID so try to get it from pool.
-                if (!isset(submission::$pool[$this->courseworkid])) {
-                    submission::fill_pool_coursework($this->courseworkid);
-                }
-                $submission = submission::$pool[$this->courseworkid]['id'][$this->submissionid];
+                $submission = submission::get_cached_object_from_id($this->submissionid);
                 if ($submission) {
                     $this->set_submission($submission);
                 }
@@ -440,74 +437,36 @@ class feedback extends table_base {
     }
 
     /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
-     *
      * @param int $courseworkid
-     * @throws dml_exception
+     * return array
      */
-    public static function fill_pool_coursework($courseworkid) {
-        global $DB;
-        if (isset(self::$pool[$courseworkid])) {
-            return;
-        }
-        if (submission::$pool[$courseworkid] ?? null) {
-            $submissionids = array_keys(submission::$pool[$courseworkid]['id']);
-        } else {
-            $submissionids = array_map(
-                fn($id) => (int)$id,
-                $DB->get_fieldset(submission::$tablename, 'id', ['courseworkid' => $courseworkid])
-            );
-        }
-        self::fill_pool_submissions($courseworkid, $submissionids);
-    }
-
-    /**
-     * @param int $courseworkid
-     * @param $submissionids
-     * @throws \core\exception\coding_exception
-     * @throws coding_exception
-     * @throws dml_exception
-     */
-    public static function fill_pool_submissions($courseworkid, $submissionids) {
+    protected static function get_cache_array(int $courseworkid): array {
         global $DB;
 
-        if (isset(self::$pool[$courseworkid])) {
-            return;
+        $data = array_fill_keys(self::get_valid_cache_keys(), []);
+
+        $feedbacks = $DB->get_records_sql("SELECT f.*
+                                                 FROM {coursework_feedbacks} f
+                                                 JOIN {coursework_submissions} s ON s.id = f.submissionid
+                                                WHERE s.courseworkid = :courseworkid",
+            ['courseworkid' => $courseworkid]
+        );
+
+        foreach ($feedbacks as $record) {
+            $object = new self($record);
+            $stageidentifier = $record->stageidentifier;
+            $stageidentifierindex = ($stageidentifier == final_agreed::STAGE_FINAL_AGREED_1) ? $stageidentifier : 'others';
+            $data['id'][$record->id] = $object;
+            $data['submissionid-stageidentifier'][$record->submissionid . '-' . $stageidentifier][] = $object;
+            $data['submissionid-stageidentifier_index'][$record->submissionid . '-' . $stageidentifierindex][] = $object;
+            $data['submissionid-finalised'][$record->submissionid . '-' . $record->finalised][] = $object;
+            $data['submissionid-ismoderation-isfinalgrade-stageidentifier'][$record->submissionid . '-' . $record->ismoderation . '-' . $record->isfinalgrade . '-' . $stageidentifier][] = $object;
+            $data['submissionid-assessorid'][$record->submissionid . '-' . $record->assessorid][] = $object;
+            $data['submissionid'][$record->submissionid][] = $object;
         }
 
-        $key = self::$tablename;
-        $cache = cache::make('mod_coursework', 'courseworkdata', ['id' => $courseworkid]);
-
-        $data = $cache->get($key);
-        if ($data === false) {
-            $data = array_fill_keys(self::get_valid_cache_keys(), []);
-            if ($submissionids) {
-                [$submissionidsql, $submissionidparams] = $DB->get_in_or_equal($submissionids, SQL_PARAMS_NAMED);
-                $feedbacks = $DB->get_records_sql("SELECT * FROM {coursework_feedbacks} WHERE submissionid $submissionidsql", $submissionidparams);
-                foreach ($feedbacks as $record) {
-                    $object = new self($record);
-                    $stageidentifier = $record->stageidentifier;
-                    $stageidentifierindex = ($stageidentifier == final_agreed::STAGE_FINAL_AGREED_1) ? $stageidentifier : 'others';
-                    $data['id'][$record->id] = $object;
-                    $data['submissionid-stageidentifier'][$record->submissionid . '-' . $stageidentifier][] = $object;
-                    $data['submissionid-stageidentifier_index'][$record->submissionid . '-' . $stageidentifierindex][] = $object;
-                    $data['submissionid-finalised'][$record->submissionid . '-' . $record->finalised][] = $object;
-                    $data['submissionid-ismoderation-isfinalgrade-stageidentifier'][$record->submissionid . '-' . $record->ismoderation . '-' . $record->isfinalgrade . '-' . $stageidentifier][] = $object;
-                    $data['submissionid-assessorid'][$record->submissionid . '-' . $record->assessorid][] = $object;
-                    $data['submissionid'][$record->submissionid][] = $object;
-                }
-            }
-            $cache->set($key, $data);
-        }
-        self::$pool[$courseworkid] = $data;
+        return $data;
     }
-
 
     /**
      * Get the allowed/expected cache keys for this class when @see self::get_cached_object() is called.

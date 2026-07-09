@@ -60,7 +60,6 @@ class personaldeadline extends table_base {
      */
     public function get_coursework() {
         if (!isset($this->coursework)) {
-            coursework::fill_pool_coursework($this->courseworkid);
             $this->coursework = coursework::get_cached_object_from_id($this->courseworkid);
         }
 
@@ -111,19 +110,12 @@ class personaldeadline extends table_base {
     }
 
     /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
      *
      * @param int $courseworkid
      * @return array
      * @throws \dml_exception
      */
-    protected static function get_cache_array($courseworkid) {
+    protected static function get_cache_array(int $courseworkid): array {
         global $DB;
         $records = $DB->get_records(static::$tablename, ['courseworkid' => $courseworkid]);
         $result = array_fill_keys(self::get_valid_cache_keys(), []);
