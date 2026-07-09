@@ -434,23 +434,6 @@ class submission extends table_base implements renderable {
         return new submission_files([], $this);
     }
 
-    public function get_file_annotations() {
-        global $USER;
-
-        $fs = new file_storage();
-
-        $annotatedfiles = [];
-        $files = $fs->get_area_files($this->get_context_id(), 'mod_coursework', 'submissionannotations', $this->id);
-        foreach ($files as $file) {
-            if ($file->get_userid() !== $USER->id) {
-                continue;
-            }
-            $annotatedfiles[$file->get_source()] = $file;
-        }
-
-        return $annotatedfiles;
-    }
-
     /**
      * @return stored_file|null
      */

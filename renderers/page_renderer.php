@@ -62,10 +62,15 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     public function show_viewpdf_page($submission) {
         $this->page->set_pagelayout('popup');
 
-        $html = '';
-        $objectrenderer = $this->get_object_renderer();
-        $html .= $this->output->header();
-        $html .= $objectrenderer->render_viewpdf($submission);
+        $html = $this->output->header();
+
+        $html .= $this->output->render(new \local_pdfjs\output\pdf(
+            $submission->get_submission_files()->get_files(),
+            $submission->get_context(),
+            'mod_coursework',
+            $submission->id()
+        ));
+
         $html .= $this->output->footer();
         return $html;
     }
