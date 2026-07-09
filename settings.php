@@ -341,5 +341,7 @@ if ($ADMIN->fulltree) {
     $settingsheader = new admin_setting_heading('featuresunderdevelopment_header', get_string('featuresunderdevelopment_header', 'mod_coursework'), '');
     $settings->add($settingsheader);
 
-    $settings->add(new admin_setting_configcheckbox('coursework_enablepdfjs', get_string('enablepdfjs', 'mod_coursework'), '', 0));
+    if (\core\plugin_manager::instance()->get_plugin_info('local_pdfjs') !== null) {
+        $settings->add(new admin_setting_configcheckbox('coursework_enablepdfjs', get_string('enablepdfjs', 'mod_coursework'), '', 0));
+    }
 }
