@@ -780,7 +780,19 @@ abstract class table_base {
      * @throws \core\exception\coding_exception
      */
     public static function get_cached_object(int $courseworkid, array $params): ?static {
-        return self::get_cached_objects($courseworkid, $params)[0] ?? null;
+        $objects = self::get_cached_objects($courseworkid, $params) ?? null;
+
+        if (is_array($objects) && count($objects) === 1) {
+            return reset($objects);
+        } else if (
+            $objects === null
+            ||
+            (is_array($objects) && count($objects) === 0)
+        ) {
+            return null;
+        }
+
+        throw new \Exception('get_cached_object can only work with single value caches');
     }
 
     /**
