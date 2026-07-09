@@ -445,11 +445,10 @@ class feedback extends table_base {
 
         $data = array_fill_keys(self::get_valid_cache_keys(), []);
 
-        $feedbacks = $DB->get_records_sql(
-            '
-                SELECT f.* FROM {coursework_feedbacks} f
-                         JOIN {coursework_submissions} s ON s.id = f.submissionid
-                 WHERE s.courseworkid = :courseworkid',
+        $feedbacks = $DB->get_records_sql("SELECT f.*
+                                                 FROM {coursework_feedbacks} f
+                                                 JOIN {coursework_submissions} s ON s.id = f.submissionid
+                                                WHERE s.courseworkid = :courseworkid",
             ['courseworkid' => $courseworkid]
         );
 
