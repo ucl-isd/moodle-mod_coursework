@@ -47,7 +47,7 @@ require_once($CFG->dirroot . '/mod/coursework/lib.php');
  */
 function xmldb_coursework_upgrade($oldversion) {
 
-    global $DB;
+    global $CFG, $DB;
 
     $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
 
@@ -377,6 +377,23 @@ function xmldb_coursework_upgrade($oldversion) {
 
         // Coursework savepoint reached.
         upgrade_mod_savepoint(true, 2026031200, 'coursework');
+    }
+
+    if ($oldversion < 2026070600) {
+        // Get the "coursework_convert_scale_to_points()" function.
+        require_once($CFG->lib . '/mod/coursework/lib.php');
+
+        // Detect all courseworks that use a "scale", and convert them to use "points".
+        if ($courseworks = $DB->get_records_select('coursework', 'grade < ?', [0])) {
+            foreach ($courseworks as $coursework) {
+                $hassubmissions = $DB->record_exists('coursework_submissions', ['courseworkid' => $coursework->id]);
+                $points = coursework_convert_scale_to_points($coursework->grade, $hassubmissions);
+                $DB->update_field('coursework', 'grade', $points, ['id' => $coursework->id]);
+            }
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2026070600, 'coursework');
     }
 
     // Always needs to return true.
