@@ -217,6 +217,11 @@ function coursework_add_instance($formdata) {
         $formdata->renamefiles = 1;
     }
 
+    // Don't allow grade type of "Scale". Use "Points" instead.
+    if ($formdata->grade < 0) {
+        $formdata->grade == 100;
+    }
+
     $returnid = $DB->insert_record('coursework', $formdata);
     $formdata->id = $returnid;
 
@@ -573,7 +578,12 @@ function coursework_update_instance($coursework) {
 
     $courseworkhassubmissions = $DB->record_exists('coursework_submissions', ['courseworkid' => $coursework->id]);
 
-    // If the coursework has submissions then we the renamefiles setting can't be changes
+    // Don't allow grade type of "Scale". Use "Points" instead.
+    if ($coursework->grade < 0) {
+        $coursework->grade = coursework_convert_scale_to_points($coursework->grade, $courseworkhassubmissions);
+    }
+
+    // If the coursework has submissions then the renamefiles setting can't be changed
     if ($courseworkhassubmissions) {
         $currentcoursework = $DB->get_record('coursework', ['id' => $coursework->id]);
 
@@ -637,7 +647,32 @@ function coursework_update_instance($coursework) {
          calendar::remove_event($coursework);
     }
 
+    // Update grade item.
+    coursework_grade_item_update($coursework);
+
     return $DB->update_record('coursework', $coursework);
+}
+
+/**
+ * Calculates the maximum point value for a Moodle scale.
+ *
+ * If submissions exist and a valid scale is found, returns the count of items in the scale.
+ * Otherwise, defaults to a point value of 100.
+ *
+ * @param int $scaleid The grade value (negative values represent scale IDs).
+ * @param bool $hassubmissions Whether the coursework has submissions to check.
+ * @return int The calculated maximum score.
+ */
+function coursework_convert_scale_to_points(int $scaleid, bool $hassubmissions): int {
+    global $DB;
+    if ($hassubmissions) {
+        $scaleid = abs($scaleid);
+        if ($scale = $DB->get_field('scale', 'scale', ['id' => $scaleid])) {
+            $scale = array_filter(array_map('trim', explode(',', $scale)));
+            return count($scale);
+        }
+    }
+    return 100;
 }
 
 /**

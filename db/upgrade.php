@@ -379,6 +379,26 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026031200, 'coursework');
     }
 
+    if ($oldversion < 2026070600) {
+        // Detect all courseworks that use a "scale", and convert them to use "points".
+        $courseworks = $DB->get_records_select('coursework', 'grade < ?', [0]);
+        foreach ($courseworks as $coursework) {
+            $points = 100;
+            if ($DB->record_exists('coursework_submissions', ['courseworkid' => $coursework->id])) {
+                // Mimic "coursework_convert_scale_to_points()" function in "mod/coursework/lib.php".
+                $scaleid = abs($coursework->grade);
+                if ($scale = $DB->get_field('scale', 'scale', ['id' => $scaleid])) {
+                    $scale = array_filter(array_map('trim', explode(',', $scale)));
+                    $points = count($scale);
+                }
+            }
+            $DB->update_field('coursework', 'grade', $points, ['id' => $coursework->id]);
+        }
+
+        // Coursework savepoint reached.
+        upgrade_mod_savepoint(true, 2026070600, 'coursework');
+    }
+
     // Always needs to return true.
     return true;
 }

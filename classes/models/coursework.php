@@ -1715,7 +1715,10 @@ class coursework extends table_base {
      * @return grading_manager
      */
     protected function get_advanced_grading_manager() {
-        return get_grading_manager($this->get_context(), 'mod_coursework', 'submissions');
+        if ($this->uses_numeric_grade()) {
+            return get_grading_manager($this->get_context(), 'mod_coursework', 'submissions');
+        }
+        return null;
     }
 
     /**

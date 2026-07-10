@@ -144,6 +144,10 @@ final class csv_test extends \advanced_testcase {
      */
     public function test_two_stages(): void {
         $timenow = time();
+
+        // Lock the time to prevent micro-differences causing assertEqual to fail.
+        $this->setCurrentTimeStart($timenow);
+
         $dateformat = '%a, %d %b %Y, %H:%M';
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_coursework');
 
@@ -218,19 +222,19 @@ final class csv_test extends \advanced_testcase {
             '2' => userdate($timenow, $dateformat),
             '3' => '1 day',
             '4' => $coursework->get_username_hash($submission->allocatableid),
-            '5' => (float)$feedback1->grade,
+            '5' => $feedback1->grade,
             '6' => $assessorname1,
             '7' => $assessorusername1,
             '8' => userdate($timenow, $dateformat),
-            '9' => (float)$feedback2->grade,
+            '9' => $feedback2->grade,
             '10' => $assessorname2,
             '11' => $assessorusername2,
             '12' => userdate($timenow, $dateformat),
-            '13' => (float)$feedback3->grade,
+            '13' => $feedback3->grade,
             '14' => $assessorname1,
             '15' => $assessorusername1,
             '16' => userdate($timenow, $dateformat),
-            '17' => (float)$feedback3->grade,
+            '17' => $feedback3->grade,
         ];
         $this->assertEqualsCanonicalizing($twoassessorsgrades, $csvgrades);
     }
