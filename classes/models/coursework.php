@@ -1088,7 +1088,12 @@ class coursework extends table_base {
      * @return int
      */
     public function get_user_deadline($userid) {
-
+        // Does the user have a personal deadline to override the default?
+        $user = user::get_from_id((int)$userid);
+        $personaldeadline = personaldeadline::get_personaldeadline_for_student($user, $this);
+        if ($personaldeadline) {
+            return $personaldeadline->personaldeadline;
+        }
         return $this->deadline;
     }
 
