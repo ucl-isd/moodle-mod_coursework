@@ -223,6 +223,7 @@ $string['enroltask'] = 'Coursework process enrolment allocation task';
 $string['entergradesaspercent'] = 'Enter marks as %';
 $string['err_valueoutofrange'] = 'You must enter a number within the range of marks accepted by this coursework';
 $string['eventassessableuploaded'] = 'A file has been uploaded.';
+$string['eventextensiondeleted'] = 'Extension deleted';
 $string['extendbeforerevert'] = 'Unable to unfinalise the submission until a submission extension has been granted.';
 $string['extended_deadline'] = 'Extended deadline';
 $string['extension'] = 'Extension';

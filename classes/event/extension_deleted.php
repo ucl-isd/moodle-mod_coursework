@@ -23,6 +23,7 @@
 
 namespace mod_coursework\event;
 
+use coding_exception;
 use core\event\base;
 
 /**
@@ -31,6 +32,45 @@ use core\event\base;
  * @package mod_coursework\event
  */
 class extension_deleted extends base {
+    #[\Override]
+    public static function get_name() {
+        return get_string('eventextensiondeleted', 'mod_coursework');
+    }
+
+    #[\Override]
+    public function get_description() {
+        $record = json_decode($this->other['record'], true);
+        $type = $record['allocatabletype'];
+        $method = 'get_description_' . $type;
+        if (method_exists($this, $method)) {
+            return $this->$method();
+        } else {
+            throw new coding_exception("The method '{$method}' does not exist on class extension_deleted.");
+        }
+    }
+
+    /**
+     * Get the event description for a group extension.
+     *
+     * @return string
+     */
+    private function get_description_group(): string {
+        $record = json_decode($this->other['record'], true);
+        return "The user with id '{$this->userid}' deleted the extension ID '{$this->objectid}' from the coursework " .
+            "activity with course module id '{$this->contextinstanceid}', for the group with id '{$record['allocatableid']}'.";
+    }
+
+    /**
+     * Get the event description for a user extension.
+     *
+     * @return string
+     */
+    private function get_description_user(): string {
+        $record = json_decode($this->other['record'], true);
+        return "The user with id '{$this->userid}' deleted the extension ID '{$this->objectid}' from the coursework " .
+            "activity with course module id '{$this->contextinstanceid}', for the user with id '{$record['allocatableid']}'.";
+    }
+
     /**
      * Override in subclass.
      *
