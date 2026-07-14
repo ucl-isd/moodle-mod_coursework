@@ -30,6 +30,17 @@ namespace mod_coursework\event;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class assessable_submitted extends \core\event\assessable_submitted {
+    #[\Override]
+    public static function get_name() {
+        return get_string('eventassessablesubmitted', 'mod_coursework');
+    }
+
+    #[\Override]
+    public function get_description() {
+        return "The user with id '{$this->userid}' has submitted a file to the submission with id '{$this->objectid}' " .
+            "in the coursework activity with course module id '{$this->contextinstanceid}'.";
+    }
+
     /**
      * Init method.
      *
