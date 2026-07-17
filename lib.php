@@ -1578,3 +1578,11 @@ function mod_coursework_user_preferences(): array {
         ],
     ];
 }
+
+/**
+ * Does this activity module support the report_rubricgrading plugin for reporting on its rubric grading?
+ * @return bool
+ */
+function mod_coursework_supports_report_rubricgrading(): bool {
+    return true;
+}
