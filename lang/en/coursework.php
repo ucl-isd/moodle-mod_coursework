@@ -701,6 +701,7 @@ $string['turnitinfilesettingswarning'] = 'N.b. if you have Turnitin enabled, the
 $string['turnitinnoreport'] = 'No Turnitin report';
 $string['turnitintfilesubmissioninstructions'] = 'Turnitin may restrict allowed file types to those it can process.';
 $string['twoweeksoption'] = '2 weeks';
+$string['type'] = 'Type';
 $string['unenroltask'] = 'Coursework process unenrolment allocation task';
 $string['unfinalise_submission'] = 'Unfinalise submission';
 $string['unfinalisedchangesubmissiondate'] = 'You may need to change the submission deadlines for unfinalised submissions. Note if an expired deadline is not changed then your submission will auto-finalise';
