@@ -434,7 +434,6 @@ class restore_coursework_activity_structure_step extends restore_activity_struct
                                   'assessorallocationstrategy' => 'equal',
                                   'moderationenabled' => 0,
                                   'allocationenabled' => 0,
-                                  'moderatorallocationstrategy' => 0,
                                   'viewothersfeedback' => 0,
                                   'autoreleasefeedback' => 0,
                                   'retrospectivemoderation' => 0,

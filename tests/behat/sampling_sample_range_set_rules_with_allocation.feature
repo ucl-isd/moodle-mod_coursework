@@ -49,7 +49,6 @@ Feature: Automatic sample based on range set grades using marking of students in
       | allocationenabled           | 1            |
       | assessorallocationstrategy  | equal        |
       | samplingenabled             | 1            |
-      | moderatorallocationstrategy | none         |
       | automaticagreementstrategy  | none         |
     And the following "mod_coursework > submissions" exist:
       | allocatable | coursework | finalisedstatus |
@@ -79,7 +78,6 @@ Feature: Automatic sample based on range set grades using marking of students in
       | allocationenabled           | 1             |
       | assessorallocationstrategy  | equal         |
       | samplingenabled             | 1             |
-      | moderatorallocationstrategy | none          |
       | automaticagreementstrategy  | none          |
     And the following "mod_coursework > submissions" exist:
       | allocatable | coursework  | finalisedstatus |
@@ -100,7 +98,6 @@ Feature: Automatic sample based on range set grades using marking of students in
       | allocationenabled           | 0             |
       | assessorallocationstrategy  | none          |
       | samplingenabled             | 1             |
-      | moderatorallocationstrategy | none          |
       | automaticagreementstrategy  | none          |
     And the following "mod_coursework > submissions" exist:
       | allocatable | coursework  | finalisedstatus |

@@ -105,10 +105,6 @@ class mod_coursework_generator extends testing_module_generator {
             $record->generalfeedbacktimepublished = 0;
         }
 
-        if (empty($record->moderatorallocationstrategy)) {
-            $record->moderatorallocationstrategy = 'none';
-        }
-
         $instance = parent::create_instance($record, $options);
         return coursework::get_from_id($instance->id);
     }

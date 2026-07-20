@@ -147,15 +147,6 @@ class sampling_set_widget {
     }
 
     /**
-     * Getter for retrieving the current allocation strategy from the linked coursework instance.
-     *
-     * @return string
-     */
-    public function get_sampling_strategy() {
-        return $this->coursework->moderatorallocationstrategy;
-    }
-
-    /**
      * This will get the form elements needed to configure a new rule for each of the rule classes
      * that can potentially be added to this coursework.
      *
