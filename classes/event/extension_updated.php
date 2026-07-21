@@ -73,7 +73,8 @@ class extension_updated extends base {
         if (method_exists($this, $method)) {
             return $this->$method();
         } else {
-            throw new coding_exception("The method '{$method}' does not exist on class extension_updated.");
+            debugging("The method '{$method}' does not exist on class extension_updated.");
+            return null;
         }
     }
 
@@ -123,6 +124,9 @@ class extension_updated extends base {
         }
         if (!isset($this->other['deadline'])) {
             throw new coding_exception('The \'deadline\' value must be set in other.');
+        }
+        if (!isset($this->other['allocatabletype'])) {
+            throw new coding_exception('The \'allocatabletype\' value must be set in other.');
         }
     }
 }

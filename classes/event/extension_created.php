@@ -66,7 +66,6 @@ class extension_created extends base {
      * Returns description of what happened.
      *
      * @return string
-     * @throws coding_exception
      */
     public function get_description() {
         $type = $this->other['allocatabletype'];
@@ -74,7 +73,8 @@ class extension_created extends base {
         if (method_exists($this, $method)) {
             return $this->$method();
         } else {
-            throw new coding_exception("The method '{$method}' does not exist on class extension_created.");
+            debugging("The method '{$method}' does not exist on class extension_created.");
+            return null;
         }
     }
 
@@ -125,6 +125,9 @@ class extension_created extends base {
         }
         if (!isset($this->other['deadline'])) {
             throw new coding_exception('The \'deadline\' value must be set in other.');
+        }
+        if (!isset($this->other['allocatabletype'])) {
+            throw new coding_exception('The \'allocatabletype\' value must be set in other.');
         }
     }
 }
