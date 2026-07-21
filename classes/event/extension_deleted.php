@@ -23,7 +23,6 @@
 
 namespace mod_coursework\event;
 
-use coding_exception;
 use core\event\base;
 
 /**
@@ -45,7 +44,8 @@ class extension_deleted extends base {
         if (method_exists($this, $method)) {
             return $this->$method();
         } else {
-            throw new coding_exception("The method '{$method}' does not exist on class extension_deleted.");
+            debugging("The method '{$method}' does not exist on class extension_deleted.");
+            return null;
         }
     }
 
