@@ -354,7 +354,6 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         $gradingcontroller = $coursework->get_advanced_grading_active_controller();
         $gradingdefinition = $gradingcontroller->get_definition();
         $criteria = $isguide ? $gradingdefinition->guide_criteria : $gradingdefinition->rubric_criteria;
-
         $markersdata = [];
         foreach ($previousfeedbacks as $feedback) {
             // Use controller to get instances for specific feedback.
@@ -372,6 +371,8 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
 
         $template = new stdClass();
         $template->reviewcriteria = [];
+        // "0" in this context means the same through all stages. So anything higher means use a different one.
+        $template->differentfinalgradingmethod = ($coursework->finalstagegrading > 0);
 
         foreach ($criteria as $criterion) {
             $criterionitem = new stdClass();

@@ -86,7 +86,7 @@ Feature: Marking guide
     And I set the field "finalstagegrading" to "1"
     And I press "Save and display"
     And I follow "Agree marking"
-    And I should not see "A criteria"
+    And I should see "A criteria"
     And I set the field "Mark" to "10"
     And I press "Save and finalise"
     Then I should see "Ready for release" in the "student1" "table_row"
