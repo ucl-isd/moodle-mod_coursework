@@ -121,7 +121,7 @@ class moderations_controller extends controller_base {
         $urlparams = [];
         $urlparams['submissionid'] = $moderatoragreement->submissionid;
         $urlparams['moderatorid'] = $moderatoragreement->moderatorid;
-        $urlparams['s'] = $moderatoragreement->stageidentifier;
+        $urlparams['stageidentifier'] = $moderatoragreement->stageidentifier;
         $urlparams['feedbackid'] = $moderatoragreement->feedbackid;
         $PAGE->set_url('/mod/coursework/actions/moderations/new.php', $urlparams);
 
