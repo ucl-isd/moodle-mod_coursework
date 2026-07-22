@@ -384,13 +384,13 @@ function xmldb_coursework_upgrade($oldversion) {
         $params = [
             'itemtype' => 'mod',
             'itemmodule' => 'coursework',
-            'gradetype' => GRADE_TYPE_SCALE,
+            'gradetype' => 2, // Equal to GRADE_TYPE_SCALE.
         ];
         // Convert selected Scale grade_items and coursework activities to use points.
-        if ($gradeitems = $DB->get_records('grade_items',  $params)) {
-            $DB->update_field('grade_items', 'gradetype', GRADE_TYPE_VALUE, $params);
-            foreach($gradeitems as $gradeitem) {
-                $DB->update_field('coursework', 'grade', $gradeitem->grademax, ['id' => $gradeitem->iteminstance]);
+        if ($records = $DB->get_records('grade_items', $params)) {
+            $DB->update_field('grade_items', 'gradetype', 1, $params); // Equal to GRADE_TYPE_VALUE.
+            foreach ($records as $record) {
+                $DB->update_field('coursework', 'grade', $record->grademax, ['id' => $record->iteminstance]);
             }
         }
         // Coursework savepoint reached.
