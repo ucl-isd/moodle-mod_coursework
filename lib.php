@@ -570,7 +570,7 @@ function coursework_update_instance($coursework) {
     }
 
     if (!isset($coursework->allowenterguidegradesaspercent)) {
-        // If checkbox not checked, zero is not passed to add it.
+        // If checkbox not checked, zero is not passed, so add it.
          $coursework->allowenterguidegradesaspercent = 0;
     }
 
@@ -578,31 +578,23 @@ function coursework_update_instance($coursework) {
 
     $courseworkhassubmissions = $DB->record_exists('coursework_submissions', ['courseworkid' => $coursework->id]);
 
-    // Don't allow grade type of "Scale". Use "Points" instead.
-    if ($coursework->grade < 0) {
-        $coursework->grade = coursework_convert_scale_to_points($coursework->grade, $courseworkhassubmissions);
-    }
+    // Fetch the "old" coursework record, i.e. before any changes.
+    $oldcoursework = $DB->get_record('coursework', ['id' => $coursework->id]);
 
-    // If the coursework has submissions then the renamefiles setting can't be changed
+    // If the coursework has submissions, then the renamefiles setting can't be changed.
     if ($courseworkhassubmissions) {
-        $currentcoursework = $DB->get_record('coursework', ['id' => $coursework->id]);
-
-        $coursework->renamefiles = $currentcoursework->renamefiles;
+        $coursework->renamefiles = $oldcoursework->renamefiles;
     } else if ($coursework->blindmarking == 1) {
         $coursework->renamefiles = 1;
     }
 
-    $oldsubmissiondeadline = $DB->get_field('coursework', 'deadline', ['id' => $coursework->id]);
-    $oldgeneraldeadline = $DB->get_field('coursework', 'generalfeedback', ['id' => $coursework->id]);
-    $oldindividualdeadline = $DB->get_field('coursework', 'individualfeedback', ['id' => $coursework->id]);
-
     if (
-        $oldsubmissiondeadline != $coursework->deadline ||
-        $oldgeneraldeadline != $coursework->generalfeedback ||
-        $oldindividualdeadline != $coursework->individualfeedback
+        $coursework->deadline != $oldcoursework->deadline ||
+        $coursework->generalfeedback != $oldcoursework->generalfeedback ||
+        $coursework->individualfeedback != $oldcoursework->individualfeedback
     ) {
-        // Fire an event to send emails to students affected by any deadline change.
-
+        // Fire an event to send emails to students affected
+        // by any change in the deadline and/or the feedback.
         $courseworkobj = coursework::get_from_id($coursework->id);
 
         $params = [
@@ -611,12 +603,12 @@ function coursework_update_instance($coursework) {
             'objectid' => $coursework->id,
             'other' => [
                 'courseworkid' => $coursework->id,
-                'oldsubmissiondeadline' => $oldsubmissiondeadline,
                 'newsubmissionsdeadline' => $coursework->deadline,
-                'oldgeneraldeadline' => $oldgeneraldeadline,
+                'oldsubmissiondeadline' => $oldcoursework->deadline,
                 'newgeneraldeadline' => $coursework->generalfeedback,
-                'oldindividualdeadline' => $oldindividualdeadline,
+                'oldgeneralfeedback' => $oldcoursework->generalfeedback,
                 'newindividualdeadline' => $coursework->individualfeedback,
+                'oldindividualfeedback' => $oldcoursework->individualfeedback,
                 'userfrom' => $USER->id,
             ],
         ];
@@ -651,28 +643,6 @@ function coursework_update_instance($coursework) {
     coursework_grade_item_update($coursework);
 
     return $DB->update_record('coursework', $coursework);
-}
-
-/**
- * Calculates the maximum point value for a Moodle scale.
- *
- * If submissions exist and a valid scale is found, returns the count of items in the scale.
- * Otherwise, defaults to a point value of 100.
- *
- * @param int $scaleid The grade value (negative values represent scale IDs).
- * @param bool $hassubmissions Whether the coursework has submissions to check.
- * @return int The calculated maximum score.
- */
-function coursework_convert_scale_to_points(int $scaleid, bool $hassubmissions): int {
-    global $DB;
-    if ($hassubmissions) {
-        $scaleid = abs($scaleid);
-        if ($scale = $DB->get_field('scale', 'scale', ['id' => $scaleid])) {
-            $scale = array_filter(array_map('trim', explode(',', $scale)));
-            return count($scale);
-        }
-    }
-    return 100;
 }
 
 /**
@@ -1154,8 +1124,8 @@ function coursework_send_deadline_changed_emails($eventdata) {
     $users = $coursework->get_students();
 
     $submissionsdeadlinechanged = $eventdata->other['oldsubmissiondeadline'] != $eventdata->other['newsubmissionsdeadline'];
-    $generaldeadlinechanged = $eventdata->other['oldgeneraldeadline'] != $eventdata->other['newgeneraldeadline'];
-    $individualdeadlinechanged = $eventdata->other['oldindividualdeadline'] != $eventdata->other['newindividualdeadline'];
+    $generaldeadlinechanged = $eventdata->other['oldgeneralfeedback'] != $eventdata->other['newgeneraldeadline'];
+    $individualdeadlinechanged = $eventdata->other['oldindividualfeedback'] != $eventdata->other['newindividualdeadline'];
 
     foreach ($users as $user) {
         $submission = $coursework->get_user_submission($user);

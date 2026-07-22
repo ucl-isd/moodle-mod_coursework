@@ -1690,31 +1690,36 @@ class coursework extends table_base {
      * @return bool
      */
     public function is_using_advanced_grading(): bool {
-        $gradingmanager = $this->get_advanced_grading_manager();
-        if ($gradingmanager) {
-            return (bool)$gradingmanager->get_active_controller();
+        $gradingmanager = $this->get_grading_manager();
+        if (!$gradingmanager) {
+            return false;
         }
-        return false;
+        return (bool)$gradingmanager->get_active_controller();
     }
 
     /**
      * @return bool|gradingform_controller|null
      */
     public function get_advanced_grading_active_controller() {
-        $gradingmanager = $this->get_advanced_grading_manager();
-        if ($gradingmanager) {
-            $controller = $gradingmanager->get_active_controller();
-            $menu = make_grades_menu($this->grade);
-            $controller->set_grade_range($menu, $this->grade > 0);
-            return $controller;
+        $gradingmanager = $this->get_grading_manager();
+        if (!$gradingmanager) {
+            return false;
         }
-        return false;
+        $controller = $gradingmanager->get_active_controller();
+        if (!$controller) {
+            return false;
+        }
+        $menu = make_grades_menu($this->grade);
+        $controller->set_grade_range($menu, $this->grade > 0);
+        return $controller;
     }
 
     /**
-     * @return grading_manager
+     * Get the grading manager used for advanced grading methods.
+     *
+     * @return grading_manager|null
      */
-    protected function get_advanced_grading_manager() {
+    protected function get_grading_manager(): ?grading_manager {
         if ($this->uses_numeric_grade()) {
             return get_grading_manager($this->get_context(), 'mod_coursework', 'submissions');
         }
@@ -1745,17 +1750,24 @@ class coursework extends table_base {
      * @return string|null
      */
     public function get_advanced_grading_method(): ?string {
-        $gradingmanager = $this->get_advanced_grading_manager();
-        return $gradingmanager ? $gradingmanager->get_active_method() : null;
+        $gradingmanager = $this->get_grading_manager();
+        if (!$gradingmanager) {
+            return null;
+        }
+        return $gradingmanager->get_active_method();
     }
 
     /**
-     * Function to get all coursework's rubric criteria
+     * Function to get all coursework's rubric criteria.
+     * Probably unused, because Coursework only uses Points.
      *
      * @return mixed
      */
     public function get_rubric_criteria() {
         $controller = $this->get_advanced_grading_active_controller();
+        if (!$controller) {
+            return false;
+        }
         return $controller->get_definition()->rubric_criteria;
     }
 

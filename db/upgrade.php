@@ -380,21 +380,19 @@ function xmldb_coursework_upgrade($oldversion) {
     }
 
     if ($oldversion < 2026070600) {
-        // Detect all courseworks that use a "scale", and convert them to use "points".
-        $courseworks = $DB->get_records_select('coursework', 'grade < ?', [0]);
-        foreach ($courseworks as $coursework) {
-            $points = 100;
-            if ($DB->record_exists('coursework_submissions', ['courseworkid' => $coursework->id])) {
-                // Mimic "coursework_convert_scale_to_points()" function in "mod/coursework/lib.php".
-                $scaleid = abs($coursework->grade);
-                if ($scale = $DB->get_field('scale', 'scale', ['id' => $scaleid])) {
-                    $scale = array_filter(array_map('trim', explode(',', $scale)));
-                    $points = count($scale);
-                }
+        // Get grade items for Courseworks whose grade type is Scale.
+        $params = [
+            'itemtype' => 'mod',
+            'itemmodule' => 'coursework',
+            'gradetype' => GRADE_TYPE_SCALE,
+        ];
+        // Convert selected Scale grade_items and coursework activities to use points.
+        if ($gradeitems = $DB->get_records('grade_items',  $params)) {
+            $DB->update_field('grade_items', 'gradetype', GRADE_TYPE_VALUE, $params);
+            foreach($gradeitems as $gradeitem) {
+                $DB->update_field('coursework', 'grade', $gradeitem->grademax, ['id' => $gradeitem->iteminstance]);
             }
-            $DB->update_field('coursework', 'grade', $points, ['id' => $coursework->id]);
         }
-
         // Coursework savepoint reached.
         upgrade_mod_savepoint(true, 2026070600, 'coursework');
     }

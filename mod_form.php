@@ -1176,14 +1176,6 @@ class mod_coursework_mod_form extends moodleform_mod {
     protected function add_tweaks_to_standard_grading_form_elements() {
         $moodleform =& $this->_form;
 
-        // Disable the Grading method, if Grade type is "Scale".
-        $moodleform->disabledIf(
-            'advancedgradingmethod_submissions',
-            'grade[modgrade_type]',
-            'eq',
-            'scale'
-        );
-
         $moodleform->addHelpButton('grade', 'grade', 'mod_coursework');
         $moodleform->setExpanded('modstandardgrade');
 
