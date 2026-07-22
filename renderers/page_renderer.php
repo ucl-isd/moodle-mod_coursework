@@ -55,17 +55,28 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
     }
 
     /**
-     * @param $submission
+     * @param submission $submission
      * @return string
      * @throws \core\exception\coding_exception
      */
-    public function show_viewpdf_page($submission) {
+    public function show_viewpdf_page(submission $submission): string {
         $this->page->set_pagelayout('popup');
 
-        $html = '';
-        $objectrenderer = $this->get_object_renderer();
-        $html .= $this->output->header();
-        $html .= $objectrenderer->render_viewpdf($submission);
+        $html = $this->output->header();
+
+        if (!$submission->get_coursework()->enablepdfjs()) {
+            throw new \core\exception\coding_exception(
+                'Cannot show show_viewpdf_page without pdfjs present and enabled'
+            );
+        }
+
+        $html .= $this->output->render(new \local_pdfjs\output\pdf(
+            $submission->get_submission_files()->get_files(),
+            $submission->get_context(),
+            'mod_coursework',
+            $submission->id()
+        ));
+
         $html .= $this->output->footer();
         return $html;
     }

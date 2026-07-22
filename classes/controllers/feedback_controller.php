@@ -123,8 +123,7 @@ class feedback_controller extends controller_base {
             return false;
         }
 
-        $renderer = $this->get_page_renderer();
-        echo $renderer->show_viewpdf_page($submission);
+        echo $this->get_page_renderer()->show_viewpdf_page($submission);
     }
 
     /**

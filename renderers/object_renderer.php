@@ -143,7 +143,20 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         if ($submissionfiles && method_exists($submissionfiles, 'get_files')) {
             foreach ($submissionfiles->get_files() as $file) {
                 $f = new stdClass();
-                $f->url = $this->make_file_url($file);
+
+                if (
+                    $submission->get_coursework()->enablepdfjs()
+                    &&
+                    $file->get_mimetype() == 'application/pdf'
+                ) {
+                    $f->url = new moodle_url(
+                        "/mod/coursework/actions/feedbacks/viewpdf.php",
+                        ['submissionid' => $file->get_itemid()]
+                    );
+                } else {
+                    $f->url = $this->make_file_url($file);
+                }
+
                 $f->datemodified = $file->get_timemodified();
                 $f->filename = $file->get_filename();
 
@@ -284,55 +297,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         }
 
         return $this->render_from_template('mod_coursework/feedback/advanced_grading', $template);
-    }
-
-    /**
-     * Renders a coursework feedback as a row in a table.
-     * This is for the grading report when we have multiple markers and we want an AJAX pop up *
-     * with details of the feedback. Also for the student view.
-     *
-     * @param submission $submission
-     * @return string
-     * @throws \core\exception\moodle_exception
-     * @throws coding_exception
-     */
-    public function render_viewpdf(submission $submission) {
-        $template = new stdClass();
-
-        $studentname = $submission->get_allocatable_name();
-
-        $template->title = get_string('viewsubmission', 'mod_coursework', $studentname);
-        $template->files = [];
-
-        $annotatedfiles = $submission->get_file_annotations();
-        foreach ($submission->get_submission_files()->get_files() as $file) {
-            if ($file->get_mimetype() !== 'application/pdf') {
-                continue;
-            }
-
-            $model = [
-                'filename' => $file->get_filename(),
-                'href' => self::make_file_url($file),
-                'fileid' => $file->get_id(),
-                'submissionid' => $submission->id,
-            ];
-
-            if (isset($annotatedfiles[$file->get_id()])) {
-                $annotatedfile = $annotatedfiles[$file->get_id()];
-                $model['annotatedfileurl'] = self::make_file_url($annotatedfile);
-                $model['annotatedfileid'] = $annotatedfile->get_id();
-            }
-
-            $template->files[] = (object)$model;
-        }
-
-        $template->multiplefiles = (count($template->files) > 1);
-
-        $this->page->requires->js_call_amd(
-            "mod_coursework/viewpdf",
-            'init',
-        );
-        return $this->render_from_template('mod_coursework/viewpdf', $template);
     }
 
     public function get_moderation_model(moderation $moderation, feedback $feedback) {
@@ -780,16 +744,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
      * @return string
      */
     protected function make_file_link($files, $file, $classname = 'submissionfile text-break') {
-        if (
-            $files->get_file_area_name() == 'submission'
-            &&
-            $files->get_coursework()->enablepdfjs()
-            &&
-            ($file->get_mimetype() == 'application/pdf')
-        ) {
-            return $this->make_pdfjs_link($file, $classname);
-        }
-
         $filename = $file->get_filename();
 
         $image = $this->output->pix_icon(
@@ -799,7 +753,34 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             ['class' => 'submissionfileicon']
         );
 
-        return html_writer::link($this->make_file_url($file), $image . $filename, ['class' => $classname]);
+        if (
+            $files->get_file_area_name() == 'submission'
+            &&
+            $files->get_coursework()->enablepdfjs()
+            &&
+            ($file->get_mimetype() == 'application/pdf')
+        ) {
+            $retval = html_writer::link(
+                new moodle_url(
+                    "/mod/coursework/actions/feedbacks/viewpdf.php",
+                    ['submissionid' => $file->get_itemid()]
+                ),
+                $image . $filename,
+                ['class' => $classname, 'target' => '_blank']
+            );
+            $retval .= html_writer::link(
+                $this->make_file_url($file),
+                $this->output->pix_icon('i/export', get_string('download'), 'core')
+            );
+
+            return $retval;
+        } else {
+            return html_writer::link(
+                $this->make_file_url($file),
+                $image . $filename,
+                ['class' => $classname]
+            );
+        }
     }
 
     /**
@@ -815,33 +796,6 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
             $file->get_filepath(),
             $file->get_filename()
         );
-    }
-
-    /**
-     * @param stored_file $file
-     * @param string $classname
-     * @return string
-     * @throws \core\exception\moodle_exception
-     * @throws coding_exception
-     */
-    private function make_pdfjs_link($file, $classname = 'submissionfile') {
-        $filename = $file->get_filename();
-
-        $image = $this->output->pix_icon(
-            file_file_icon($file),
-            $filename,
-            'moodle',
-            ['class' => 'submissionfileicon']
-        );
-
-        $viewurl = new moodle_url("/mod/coursework/actions/feedbacks/viewpdf.php", ['submissionid' => $file->get_itemid()]);
-
-        $retval = html_writer::link($viewurl, $image . $filename, ['class' => $classname, 'target' => '_blank']);
-
-        $downloadimage = $this->output->pix_icon('i/export', get_string('download'), 'core');
-        $retval .= html_writer::link($this->make_file_url($file), $downloadimage);
-
-        return $retval;
     }
 
     /**
