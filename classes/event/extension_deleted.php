@@ -31,6 +31,18 @@ use core\event\base;
  * @package mod_coursework\event
  */
 class extension_deleted extends base {
+    #[\Override]
+    public static function get_name() {
+        return get_string('eventextensiondeleted', 'mod_coursework');
+    }
+
+    #[\Override]
+    public function get_description() {
+        $record = json_decode($this->other['record'], true);
+        return "The user with id '{$this->userid}' deleted the extension ID '{$this->objectid}' from the coursework " .
+            "activity with course module id '{$this->contextinstanceid}', for the user with id '{$record['allocatableid']}'.";
+    }
+
     /**
      * Override in subclass.
      *

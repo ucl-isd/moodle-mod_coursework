@@ -32,6 +32,17 @@ use core\event\base;
  * @package mod_coursework\event
  */
 class feedback_changed extends base {
+    #[\Override]
+    public static function get_name() {
+        return get_string('eventfeedbackchanged', 'mod_coursework');
+    }
+
+    #[\Override]
+    public function get_description() {
+        return "The user with id '{$this->userid}' changed the feedback of the coursework " .
+            "activity with course module id '{$this->contextinstanceid}', for the user with id '{$this->relateduserid}'.";
+    }
+
     /**
      * Override in subclass.
      *

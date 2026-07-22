@@ -240,17 +240,6 @@ $capabilities = [
         ],
     ],
 
-    'mod/coursework:viewallstudents' => [
-        'riskbitmask' => RISK_PERSONAL,
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_MODULE,
-        'legacy' => [
-            'manager' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
-        ],
-    ],
-
     'mod/coursework:addallocatedagreedgrade' => [
         'riskbitmask' => RISK_PERSONAL | RISK_SPAM,
         'captype' => 'write',

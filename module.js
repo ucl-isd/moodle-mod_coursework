@@ -57,20 +57,6 @@ M.mod_coursework = {
             });
         });
 
-        $('#menumoderatorallocationstrategy').on('change', function (e) {
-            var newname = 'moderator-strategy-' + $(this).val();
-
-            $('.moderator-strategy-options').each(function () {
-                var $div = $(this);
-                var divid = $div.attr('id');
-                if (divid === newname) {
-                    $div.css('display', 'block');
-                } else {
-                    $div.css('display', 'none');
-                }
-            });
-        });
-
         // Moderation set rules
         $('input[name=addmodsetruletype]').on('click', function (e) {
             var formdivname = 'rule-config-' + $(this).val();

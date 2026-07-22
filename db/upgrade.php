@@ -379,22 +379,15 @@ function xmldb_coursework_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026031200, 'coursework');
     }
 
-    if ($oldversion < 2026070600) {
-        // Get grade items for Courseworks whose grade type is Scale.
-        $params = [
-            'itemtype' => 'mod',
-            'itemmodule' => 'coursework',
-            'gradetype' => 2, // Equal to GRADE_TYPE_SCALE.
-        ];
-        // Convert selected Scale grade_items and coursework activities to use points.
-        if ($records = $DB->get_records('grade_items', $params)) {
-            $DB->update_field('grade_items', 'gradetype', 1, $params); // Equal to GRADE_TYPE_VALUE.
-            foreach ($records as $record) {
-                $DB->update_field('coursework', 'grade', $record->grademax, ['id' => $record->iteminstance]);
-            }
+    if ($oldversion < 2026060400) {
+        $table = new xmldb_table('coursework');
+        $field = new xmldb_field('moderatorallocationstrategy');
+
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
         }
-        // Coursework savepoint reached.
-        upgrade_mod_savepoint(true, 2026070600, 'coursework');
+
+        upgrade_mod_savepoint(true, 2026060400, 'coursework');
     }
 
     // Always needs to return true.

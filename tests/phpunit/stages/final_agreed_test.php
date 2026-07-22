@@ -39,7 +39,6 @@ final class final_agreed_test extends \advanced_testcase {
     public function test_prerequisite_stages_is_false_with_no_feedbacks(): void {
         $this->coursework->update_attribute('numberofmarkers', 2);
         $this->coursework->update_attribute('moderationenabled', 1);
-        $this->coursework->update_attribute('moderatorallocationstrategy', 'none');
 
         $stage = $this->coursework->get_final_agreed_marking_stage();
 
@@ -52,7 +51,6 @@ final class final_agreed_test extends \advanced_testcase {
     public function test_prerequisite_stages_is_false_with_one_assessor_feedback(): void {
         $this->coursework->update_attribute('numberofmarkers', 2);
         $this->coursework->update_attribute('moderationenabled', 1);
-        $this->coursework->update_attribute('moderatorallocationstrategy', 'none');
 
         $stage = $this->coursework->get_final_agreed_marking_stage();
 

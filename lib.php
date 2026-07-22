@@ -639,10 +639,13 @@ function coursework_update_instance($coursework) {
          calendar::remove_event($coursework);
     }
 
-    // Update grade item.
-    coursework_grade_item_update($coursework);
+    $result = $DB->update_record('coursework', $coursework);
 
-    return $DB->update_record('coursework', $coursework);
+    if ($result) {
+        coursework_grade_item_update($coursework);
+    }
+
+    return $result;
 }
 
 /**

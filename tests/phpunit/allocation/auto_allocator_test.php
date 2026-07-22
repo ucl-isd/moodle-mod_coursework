@@ -49,7 +49,6 @@ final class auto_allocator_test extends \advanced_testcase {
             'moderationenabled' => 1,
             'allocationenabled' => 1,
             'assessorallocationstrategy' => 'equal',
-            'moderatorallocationstrategy' => 'equal',
         ];
         $this->coursework = $this->create_a_coursework($params);
 
