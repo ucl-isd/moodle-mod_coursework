@@ -27,6 +27,17 @@ namespace mod_coursework\event;
 use core\event\base;
 
 class coursework_deadline_changed extends base {
+    #[\Override]
+    public static function get_name() {
+        return get_string('eventcourseworkdeadlinechanged', 'mod_coursework');
+    }
+
+    #[\Override]
+    public function get_description() {
+        return "The user with id '{$this->userid}' updated the deadline of the coursework activity with " .
+            "course module id '{$this->contextinstanceid}'.";
+    }
+
     /**
      * Init method.
      *

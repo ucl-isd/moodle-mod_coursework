@@ -27,6 +27,17 @@ namespace mod_coursework\event;
 use core\event\base;
 
 class coursework_plagiarism_flag_updated extends base {
+    #[\Override]
+    public static function get_name() {
+        return get_string('eventplagiarismflagupdated', 'mod_coursework');
+    }
+
+    #[\Override]
+    public function get_description() {
+        return "The user with id '{$this->userid}' updated the plagiarism flag of the coursework activity with " .
+            "course module id '{$this->contextinstanceid}'.";
+    }
+
     /**
      * Init method.
      *
