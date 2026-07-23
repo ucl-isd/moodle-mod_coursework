@@ -948,6 +948,18 @@ function coursework_extend_settings_navigation(settings_navigation $settings, na
         );
         $child->set_force_into_more_menu(true);
     }
+
+    // Link to statistics page.
+    if (has_capability('mod/coursework:moderate', $context)) {
+        $link = new moodle_url('/mod/coursework/actions/audit.php', ['cmid' => $cm->id]);
+        $navref->add(
+            get_string('gradingaudit', 'mod_coursework'),
+            $link,
+            navigation_node::TYPE_SETTING,
+            null,
+            'audit'
+        );
+    }
 }
 
 /**
