@@ -281,8 +281,19 @@ class mod_coursework_page_renderer extends plugin_renderer_base {
         // PDF or not?
         if ($submissionfiles && ($file = $submissionfiles->get_first_pdf())) {
             $template->showpdf = true;
-            $template->pdfintro = get_string('pdfhelp', 'mod_coursework');
-            $template->pdfurl = $this->get_object_renderer()->make_file_url($file);
+
+            if ($coursework->enablepdfjs()) {
+                $template->pdfannotator = $this->output->render(new \local_pdfjs\output\pdf(
+                    $submission->get_submission_files()->get_files(),
+                    $submission->get_context(),
+                    'mod_coursework',
+                    $submission->id(),
+                    'coursework-markingform'
+                ));
+            } else {
+                $template->pdfintro = get_string('pdfhelp', 'mod_coursework');
+                $template->pdfurl = $this->get_object_renderer()->make_file_url($file);
+            }
         }
 
         // Submission metadata.
