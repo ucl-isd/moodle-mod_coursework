@@ -64,3 +64,20 @@ Feature: When "Use the personal deadline" is enabled the deadline date should re
     Then I am on the "Coursework" "coursework activity" page
     And I should see "Personal deadline" in the table row containing "John1"
     And I should see "##+2 weeks##%d %B %Y, 8:00 AM##" in the table row containing "John1"
+
+  @javascript
+  Scenario: Personal deadline should be reflected on course page
+    Given I am on the "Coursework" "coursework activity" page logged in as "manager1"
+    And I click on "Actions" "button" in the "John1" "table_row"
+    And I click on "Personal deadline" "button"
+    And I should see "New personal deadline for John1 student1"
+    And I set the field "Personal deadline" to "##+2 weeks, 8:00 AM##"
+    And I click on "Save" "button" in the "Personal deadline" "dialogue"
+    And I am on "C1" course homepage
+    And I navigate to "Settings" in current page administration
+    And I set the following fields to these values:
+      | Show activity dates | 1 |
+    And I press "Save and display"
+    When I log in as "student1"
+    And I am on "C1" course homepage
+    Then I should see "##+2 weeks##%d %B %Y, 8:00 AM##"
