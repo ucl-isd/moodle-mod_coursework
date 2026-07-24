@@ -123,7 +123,7 @@ trait allocatable_functions {
         if ($submission) {
             $result = feedback::get_cached_objects(
                 $coursework->id,
-                ['submissionid-stageidentifier_index' => $submission->id . '-others']
+                ['submissionid' => $submission->id, 'stageidentifier_index' => 'others']
             );
         }
         return $result;

@@ -1104,7 +1104,9 @@ class coursework extends table_base {
             $userid = $USER->id;
         }
         $records = allocation::get_cached_objects($this->id, [
-            'allocatableid-allocatabletype-assessorid' => $allocatable->id() . '-' . $allocatable->type() . "-$userid",
+            'allocatableid' => $allocatable->id(),
+            'allocatabletype' => $allocatable->type(),
+            'assessorid' => $userid,
         ]);
 
         foreach ($records as $record) {
