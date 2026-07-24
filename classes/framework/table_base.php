@@ -760,7 +760,6 @@ abstract class table_base {
 
         $data = $cache->get(static::$tablename);
         if ($data === false) {
-            // no cache found
             $data = static::get_cache_array($courseworkid);
             $cache->set(static::$tablename, $data);
         }
@@ -787,7 +786,7 @@ abstract class table_base {
      * @param int $courseworkid
      * @param array $params to search cache for
      * @return static|null
-     * @throws \core\exception\coding_exception
+     * @throws \Exception
      */
     public static function get_cached_object(int $courseworkid, array $params): ?static {
         $objects = self::get_cached_objects($courseworkid, $params) ?? null;
@@ -821,12 +820,13 @@ abstract class table_base {
     }
 
     /**
+     * Get a single item from the cache based on its id.
      *
      * @param int $objectid
      * @return self|bool
      * @throws dml_exception
      */
-    public static function get_cached_object_from_id(int $objectid) {
+    public static function get_cached_object_from_id(int $objectid): static|bool|null {
         global $DB;
 
         $cache = cache::make('mod_coursework', 'objectcachebyid', ['table' => static::get_table_name()]);
