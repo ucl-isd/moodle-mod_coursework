@@ -513,7 +513,7 @@ class submission extends table_base implements renderable {
         // In case of loops, we would like empty array instead of false.
         return feedback::get_cached_objects(
             $this->courseworkid,
-            ['submissionid-stageidentifier_index' => "$this->id-others"]
+            ['submissionid' => $this->id, 'stageidentifier_index' => "others"]
         );
     }
 
@@ -1287,7 +1287,7 @@ class submission extends table_base implements renderable {
         $allocatable = $this->get_allocatable();
         return assessment_set_membership::get_cached_objects(
             $this->courseworkid,
-            ['allocatableid-allocatabletype' => $allocatable->id . '-' . $allocatable->type()]
+            ['allocatableid' => $allocatable->id, 'allocatabletype' => $allocatable->type()]
         );
     }
 
@@ -1383,7 +1383,7 @@ class submission extends table_base implements renderable {
 
         $feedbacks = feedback::get_cached_objects(
             $this->courseworkid,
-            ['submissionid-assessorid' => $this->id . '-' . $USER->id]
+            ['submissionid' => $this->id, 'assessorid' => $USER->id]
         );
         foreach ($feedbacks as $feedback) {
             if ($feedback->stageidentifier != 'final_agreed_1') {
@@ -1405,7 +1405,7 @@ class submission extends table_base implements renderable {
         if ($coursework->numberofmarkers > 1 && $this->is_finalised()) {
             $editablefeedbacks = feedback::get_cached_objects(
                 $coursework->id,
-                ['submissionid-finalised' => $this->id . '-0']
+                ['submissionid' => $this->id, 'finalised' => '0']
             );
         }
 
