@@ -85,6 +85,8 @@ Feature: View moderation feedback
     But I should not see "Feedback has been altered since moderation"
 
     When I set the field "Mark" to "59"
+    # Ensure feedback timestamp is after moderation timestamp.
+    And I wait "1" seconds
     And I press "Save and finalise"
     And I click on "59" "text" in the "John1" "table_row"
     Then I should see "Feedback has been altered since moderation"
