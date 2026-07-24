@@ -2287,7 +2287,7 @@ class coursework extends table_base {
      * @return feedback[]
      * @throws dml_exception
      */
-    public function retrieve_feedbacks_by_submission($submissionid) {
+    public function retrieve_feedbacks_by_submission($submissionid): array {
         return feedback::get_cached_objects($this->id, ['submissionid' => $submissionid]);
     }
 

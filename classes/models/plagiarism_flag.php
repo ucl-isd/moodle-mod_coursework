@@ -78,7 +78,6 @@ class plagiarism_flag extends table_base {
     public function get_submission() {
         if (!isset($this->submission) && !empty($this->submissionid)) {
             $this->submission = submission::get_cached_object_from_id($this->submissionid);
-            ;
         }
 
         return $this->submission;
