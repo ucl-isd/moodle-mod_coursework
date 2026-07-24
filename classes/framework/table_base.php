@@ -765,10 +765,20 @@ abstract class table_base {
             $cache->set(static::$tablename, $data);
         }
 
-        $cachekeyone = implode('-', array_keys($params));
-        static::validate_cache_key($cachekeyone);
-        $cachekeytwo = implode('-', array_values($params));
-        return $data[$cachekeyone][$cachekeytwo] ?? [];
+        if (array_is_list($params)) {
+            if (count($params) !== 1) {
+                throw new coding_exception('Where params is a list it must contain exactly one item.');
+            }
+
+            $key = array_shift($params);
+            static::validate_cache_key($key);
+            return $data[$key] ?? [];
+        } else {
+            $cachekeyone = implode('-', array_keys($params));
+            static::validate_cache_key($cachekeyone);
+            $cachekeytwo = implode('-', array_values($params));
+            return $data[$cachekeyone][$cachekeytwo] ?? [];
+        }
     }
 
     /**
