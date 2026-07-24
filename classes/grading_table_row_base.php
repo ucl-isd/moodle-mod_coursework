@@ -405,7 +405,7 @@ class grading_table_row_base implements user_row {
 
         if (
             $submission
-            && feedback::get_cached_object(
+            && feedback::cached_objects_exist(
                 $coursework->id(),
                 [
                     'submissionid' => $submission->id(),
