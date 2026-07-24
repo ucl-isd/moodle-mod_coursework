@@ -790,9 +790,24 @@ abstract class table_base {
             (is_array($objects) && count($objects) === 0)
         ) {
             return null;
+        } else if (is_array($objects) && count($objects) > 1) {
+            debugging('get_cached_object params must identify a unique value');
+            return reset($objects);
         }
 
-        throw new \Exception('get_cached_object can only work with single value caches');
+        throw new \Exception('get_cached_object params must identify a unique value');
+    }
+
+    /**
+     * Check one or more objects exist in cache.
+     * $params must use keys from child class get_valid_cache_keys()
+     * @param int $courseworkid
+     * @param array $params to search cache for
+     * @return bool
+     * @throws \core\exception\coding_exception
+     */
+    public static function cached_objects_exist(int $courseworkid, array $params): ?bool {
+        return count(self::get_cached_objects($courseworkid, $params)) > 0;
     }
 
     /**

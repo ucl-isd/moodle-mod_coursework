@@ -197,7 +197,7 @@ class allocation extends table_base {
         ?int $assessorid = null
     ): bool {
         global $USER;
-        return (bool)self::get_cached_object(
+        return self::cached_objects_exist(
             $courseworkid,
             [
                 'allocatableid' => $allocatableid,

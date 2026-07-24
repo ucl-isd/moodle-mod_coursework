@@ -270,7 +270,7 @@ class ability extends framework\ability {
             function (submission $submission) {
                 // Check using cached object to avoid repeated DB calls on grading page.
                 if (
-                    submission::get_cached_object(
+                    submission::cached_objects_exist(
                         $submission->courseworkid,
                         [
                             'allocatableid' => $submission->allocatableid,
@@ -363,7 +363,7 @@ class ability extends framework\ability {
             'mod_coursework\models\submission',
             function (submission $submission) {
                 // Check using cached object to avoid repeated DB calls on grading page.
-                return (bool)feedback::get_cached_object(
+                return feedback::cached_objects_exist(
                     $submission->get_coursework()->id(),
                     ['submissionid' => $submission->id(), 'assessorid' => $this->userid]
                 );
@@ -1346,7 +1346,7 @@ class ability extends framework\ability {
             'mod_coursework\models\deadline_extension',
             function (deadline_extension $deadlineextension) {
                 // Check using cached object to avoid repeated DB calls on grading page.
-                return (bool)deadline_extension::get_cached_object(
+                return deadline_extension::cached_objects_exist(
                     $deadlineextension->courseworkid,
                     [
                         'allocatableid' => $deadlineextension->allocatableid,
