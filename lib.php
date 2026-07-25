@@ -217,6 +217,11 @@ function coursework_add_instance($formdata) {
         $formdata->renamefiles = 1;
     }
 
+    // Don't allow grade type of "Scale". Use "Points" instead.
+    if ($formdata->grade < 0) {
+        $formdata->grade = 100;
+    }
+
     $returnid = $DB->insert_record('coursework', $formdata);
     $formdata->id = $returnid;
 

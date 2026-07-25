@@ -35,7 +35,7 @@ require_once($CFG->dirroot . '/course/moodleform_mod.php');
 require_once($CFG->dirroot . '/mod/coursework/lib.php');
 
 /**
- * Mod form that allows a new coursework to ber created, or for the settings of an existing one to be altered.
+ * Mod form that allows a new coursework to be created, or for the settings of an existing one to be altered.
  */
 class mod_coursework_mod_form extends moodleform_mod {
     private function form() {
@@ -141,6 +141,16 @@ class mod_coursework_mod_form extends moodleform_mod {
         $this->add_tweaks_to_standard_grading_form_elements();
 
         $this->standard_coursemodule_elements();
+
+        // Remove the "Scale" option from the Grade type menu.
+        if ($grade = $this->_form->getElement('grade')) {
+            foreach ($grade->getElements() as $element) {
+                if ($element->getName() == 'modgrade_type') {
+                    $element->removeOption('scale');
+                }
+            }
+        }
+
         $this->add_action_buttons();
     }
 
@@ -1169,8 +1179,10 @@ class mod_coursework_mod_form extends moodleform_mod {
         $moodleform->addHelpButton('grade', 'grade', 'mod_coursework');
         $moodleform->setExpanded('modstandardgrade');
 
-        $options = [0 => get_string('sameforallstages', 'mod_coursework'),
-                         1 => get_string('simpledirectgrading', 'mod_coursework')];
+        $options = [
+            0 => get_string('sameforallstages', 'mod_coursework'),
+            1 => get_string('simpledirectgrading', 'mod_coursework'),
+        ];
 
         $moodleform->addElement('select', 'finalstagegrading', get_string('finalstagegrading', 'mod_coursework'), $options);
         $moodleform->addHelpButton('finalstagegrading', 'finalstagegrading', 'mod_coursework');
