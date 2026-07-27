@@ -24,6 +24,7 @@
 namespace mod_coursework\event;
 
 use core\event\base;
+use core\exception\coding_exception;
 
 /**
  * Class extension_deleted is responsible for listening for changes to the extensions deleted.
@@ -88,5 +89,18 @@ class extension_deleted extends base {
         $this->data['crud'] = 'd';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
         $this->data['objecttable'] = 'coursework_extensions';
+    }
+
+    /**
+     * Custom validation.
+     *
+     * @return void
+     * @throws coding_exception
+     */
+    protected function validate_data() {
+        parent::validate_data();
+        if (!isset($this->other['record'])) {
+            throw new coding_exception('The \'record\' value must be set in other.');
+        }
     }
 }
