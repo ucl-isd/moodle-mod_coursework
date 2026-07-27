@@ -24,8 +24,19 @@
 
 /**
  * Initialize the mark syncing logic.
+ * @param {object} args - Additional arguments.
  */
-export const init = () => {
+export const init = (args) => {
+    // If have a different final grading method, we want to see the original marks always regardless of type.
+    if (args.differentfinalgradingmethod) {
+        document.getElementById('review-source-wrapper').classList.remove('d-none');
+        // Also remove the bullet point which shows as default list style type.
+        document.querySelectorAll('#review-source-wrapper ul li').forEach(li => {
+            li.style.listStyleType = 'none';
+        });
+        return;
+    }
+
     const sourceBlocks = document.querySelectorAll('#review-source-wrapper .review-marks');
 
     if (sourceBlocks.length === 0) {
