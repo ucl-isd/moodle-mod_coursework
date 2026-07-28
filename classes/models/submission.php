@@ -513,7 +513,7 @@ class submission extends table_base implements renderable {
         // In case of loops, we would like empty array instead of false.
         return feedback::get_cached_objects(
             $this->courseworkid,
-            ['submissionid' => $this->id, 'stageidentifier_index' => "others"]
+            ['submissionid' => $this->id, 'stageidentifier_index' => 'others']
         );
     }
 
