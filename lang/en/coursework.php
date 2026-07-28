@@ -95,6 +95,7 @@ $string['availability'] = "Availability";
 $string['blindmarking'] = 'Blind marking';
 $string['blindmarking_desc'] = 'Blind marking - You will not see students\' names';
 $string['blindmarking_help'] = 'Blind marking prevents people without the mod/coursework:viewanonymous capability from seeing the real names of the students. It also prevents people who are allowed to add agreed marks from seeing the initial marks added by other people until they have all been added. This will be fixed permanently once set and cannot be ' . 'changed later.';
+$string['cachedef_assessors'] = 'Cache to store which users are assessors';
 $string['cachedef_courseworkdata'] = 'Cache to store coursework data';
 $string['cachedef_objectcachebyid'] = 'Cache to store coursework data indexed by id';
 $string['cachedef_samplesetmembershipcount'] = 'Marking allocation sample set membership count';
