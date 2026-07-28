@@ -107,6 +107,12 @@ class provider implements core_userlist_provider, metadata_provider, request_plu
         $allocationconfig = [
             'assessorid' => 'privacy:metadata:assessorid',
         ];
+        $setmembers = [
+            'allocatableuser' => 'privacy:metadata:userid',
+        ];
+        $samplesetmbrs = [
+            'allocatableuser' => 'privacy:metadata:userid',
+        ];
         $collection->add_database_table('coursework_feedbacks', $feedbacks, 'privacy:metadata:feedbacks');
         $collection->add_database_table('coursework_submissions', $submissions, 'privacy:metadata:submissions');
         $collection->add_database_table('coursework_extensions', $extensions, 'privacy:metadata:extensions');
@@ -116,6 +122,8 @@ class provider implements core_userlist_provider, metadata_provider, request_plu
         $collection->add_database_table('coursework_reminder', $reminders, 'privacy:metadata:coursework_reminder');
         $collection->add_database_table('coursework_allocation_pairs', $allocationpairs, 'privacy:metadata:coursework_allocation_pairs');
         $collection->add_database_table('coursework_allocation_config', $allocationconfig, 'privacy:metadata:coursework_allocation_config');
+        $collection->add_database_table('coursework_mod_set_members', $setmembers, 'privacy:metadata:coursework_mod_set_members');
+        $collection->add_database_table('coursework_sample_set_mbrs', $samplesetmbrs, 'privacy:metadata:coursework_sample_set_mbrs');
         $collection->add_user_preference('coursework_guide_enter_percent_grades', 'privacy:metadata:guideenterpercentgrades');
         return $collection;
     }
