@@ -29,7 +29,7 @@ $definitions = [
         'mode' => cache_store::MODE_APPLICATION,
         'staticacceleration' => true,
     ],
-    'tablecachebyid' => [
+    'coursemodulesbyid' => [
         'mode' => cache_store::MODE_REQUEST,
         'staticacceleration' => true,
         'simplekeys' => true,
