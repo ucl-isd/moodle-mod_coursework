@@ -39,6 +39,11 @@ $definitions = [
         'staticacceleration' => true,
         'simplekeys' => true,
     ],
+    'assessors' => [
+        'mode' => cache_store::MODE_REQUEST,
+        'staticacceleration' => true,
+        'simplekeys' => true,
+    ],
     assessment_set_membership::CACHE_AREA_MEMBER_COUNT => [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,

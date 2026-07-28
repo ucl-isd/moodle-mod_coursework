@@ -23,6 +23,7 @@
 namespace mod_coursework\stages;
 
 use coding_exception;
+use core_cache\cache;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\allocation\strategy\base as strategy_base;
 use mod_coursework\framework\table_base;
@@ -69,13 +70,6 @@ abstract class base {
      * @var array|null
      */
     protected $allocatableswithallocations;
-
-    /**
-     * @var array
-     */
-    private static $selfcache = [
-        'user_is_assessor' => [],
-    ];
 
     /**
      * @param coursework $coursework
@@ -531,15 +525,18 @@ abstract class base {
      * @throws coding_exception
      */
     public function user_is_assessor(int $userid): bool {
-        if (!isset(self::$selfcache['user_is_assessor'][$this->stageidentifier][$this->coursework->id][$userid])) {
-            $enrolled = is_enrolled($this->coursework->get_course_context(), $userid);
-            $hasmoduleassessorcapability =
-                ($enrolled && has_capability($this->assessor_capability(), $this->coursework->get_context(), $userid))
-                || is_primary_admin($userid);
-            self::$selfcache['user_is_assessor'][$this->stageidentifier][$this->coursework->id][$userid]
-                = $hasmoduleassessorcapability;
+        $cap = $this->assessor_capability();
+        $context = $this->coursework->get_context();
+        $cachekey = implode('_', [$cap, $context->id, $userid]);
+
+        $cache = cache::make('mod_coursework', 'assessors');
+
+        if (($userisassessor = $cache->get($cachekey)) === false) {
+            $userisassessor = (int)is_enrolled($context, $userid, $cap);
+            $cache->set($cachekey, $userisassessor);
         }
-        return self::$selfcache['user_is_assessor'][$this->stageidentifier][$this->coursework->id][$userid];
+
+        return $userisassessor === 1;
     }
 
     /**
