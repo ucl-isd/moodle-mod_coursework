@@ -815,7 +815,7 @@ abstract class table_base {
      * @return bool
      * @throws \core\exception\coding_exception
      */
-    public static function cached_objects_exist(int $courseworkid, array $params): ?bool {
+    public static function cached_objects_exist(int $courseworkid, array $params): bool {
         return count(self::get_cached_objects($courseworkid, $params)) > 0;
     }
 
@@ -823,7 +823,7 @@ abstract class table_base {
      * Get a single item from the cache based on its id.
      *
      * @param int $objectid
-     * @return self|bool
+     * @return static|bool|null
      * @throws dml_exception
      */
     public static function get_cached_object_from_id(int $objectid): static|bool|null {
