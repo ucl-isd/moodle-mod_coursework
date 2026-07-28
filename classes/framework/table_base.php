@@ -829,9 +829,11 @@ abstract class table_base {
     public static function get_cached_object_from_id(int $objectid): static|bool|null {
         global $DB;
 
-        $cache = cache::make('mod_coursework', 'objectcachebyid', ['table' => static::get_table_name()]);
+        $cache = cache::make('mod_coursework', 'objectcachebyid');
 
-        if (empty($data = $cache->get($objectid))) {
+        // Have to use a composite key rather than identifiers due to bug in MODE_REQUEST.
+        $key = implode('-', [static::get_table_name(), $objectid]);
+        if (empty($data = $cache->get($key))) {
             // Get record if cache miss or was null when last fetched.
             $data = $DB->get_record(static::get_table_name(), ['id' => $objectid]);
 
@@ -841,7 +843,7 @@ abstract class table_base {
                 $data = new static($data);
             }
 
-            $cache->set($objectid, $data);
+            $cache->set($key, $data);
         }
 
         return $data ?? false;
