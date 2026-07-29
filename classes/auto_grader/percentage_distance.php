@@ -83,6 +83,15 @@ class percentage_distance implements auto_grader {
             return;
         }
 
+        // If we are using an advanced method throughout, don't try to calculate.
+        // But if we're using an advanced method at first, then simple for final grade - do calculate.
+        if (
+            $this->get_coursework()->is_using_advanced_grading()
+            && $this->get_coursework()->finalstagegrading == 0
+        ) {
+            return;
+        }
+
         if ($this->grades_are_close_enough()) {
             if (!$allocatable->has_agreed_feedback($this->get_coursework())) {
                 $this->create_final_feedback();
