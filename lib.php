@@ -359,12 +359,15 @@ function mod_coursework_core_calendar_provide_event_action(
             if (!$submission || $ability->can('new', $submission)) {
                 $name = get_string('addsubmission', 'coursework');
                 $itemcount = 1;
-                $allocatableid = $submission->get_allocatable()->id();
-                $allocatabletype = $submission->get_allocatable()->type();
-
-                $submissionurl = new moodle_url('/mod/coursework/actions/submissions/new.php', ['allocatableid' => $allocatableid,
-                                                                                                          'allocatabletype' => $allocatabletype,
-                                                                                                          'courseworkid' => $coursework->id]);
+                $allocatable = $submission->get_allocatable();
+                $submissionurl = new moodle_url(
+                    '/mod/coursework/actions/submissions/new.php',
+                    [
+                        'allocatableid' => $allocatable->id(),
+                        'allocatabletype' => $allocatable->type(),
+                        'courseworkid' => $coursework->id
+                    ]
+                );
             } else {
                 return null;
             }
