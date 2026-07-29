@@ -70,8 +70,9 @@ class actions_cell_data extends cell_data_base {
             return null;
         }
 
-        $data->allocatableid = $rowsbase->get_allocatable_id();
-        $data->allocatabletype = $rowsbase->get_allocatable()->type();
+        $allocatable = $rowsbase->get_allocatable();
+        $data->allocatableid = $allocatable->id();
+        $data->allocatabletype = $allocatable->type();
         return $data;
     }
 
@@ -137,9 +138,10 @@ class actions_cell_data extends cell_data_base {
 
         // Check if we can create new submission.
         if ($this->can_submit_new($rowsbase)) {
+            $allocatable = $rowsbase->get_allocatable();
             $submissiondata = submission::build([
-                'allocatableid' => $rowsbase->get_allocatable()->id(),
-                'allocatabletype' => $rowsbase->get_allocatable()->type(),
+                'allocatableid' => $allocatable->id(),
+                'allocatabletype' => $allocatable->type(),
                 'courseworkid' => $rowsbase->get_coursework()->id,
                 'createdby' => $USER->id,
             ]);

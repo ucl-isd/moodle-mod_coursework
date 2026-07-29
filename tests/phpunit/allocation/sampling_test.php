@@ -277,11 +277,9 @@ final class sampling_test extends \advanced_testcase {
         $allocator = new \mod_coursework\allocation\auto_allocator($this->coursework);
         $allocator->process_allocations();
 
-        $submission = $this->coursework->get_user_submission($this->student);
-        $allocatableid = $submission->get_allocatable()->id();
-        $allocatabletype = $submission->get_allocatable()->type();
-
-        $this->coursework->get_allocatable_submission($submission->get_allocatable());
+        $this->coursework->get_allocatable_submission(
+            $this->coursework->get_user_submission($this->student)->get_allocatable()
+        );
     }
 
     /**

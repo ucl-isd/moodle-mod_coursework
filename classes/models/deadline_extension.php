@@ -192,9 +192,9 @@ class deadline_extension extends table_base {
             );
             $DB->delete_records(self::$tablename, ['id' => $this->id]);
             self::after_destroy();
-            $personaldeadline = personaldeadline::get_personaldeadline_for_student($this->get_allocatable(), $this->coursework);
-            // Delete the calendar/timeline event, or set it to the existing personal deadline date if present.
             $allocatable = $this->get_allocatable();
+            $personaldeadline = personaldeadline::get_personaldeadline_for_student($allocatable, $this->coursework);
+            // Delete the calendar/timeline event, or set it to the existing personal deadline date if present.
             $this->coursework->update_user_calendar_event(
                 $allocatable->id(),
                 $allocatable->type(),
