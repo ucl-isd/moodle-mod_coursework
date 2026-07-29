@@ -823,10 +823,10 @@ abstract class table_base {
      * Get a single item from the cache based on its id.
      *
      * @param int $objectid
-     * @return static|bool|null
+     * @return static|bool
      * @throws dml_exception
      */
-    public static function get_cached_object_from_id(int $objectid): static|bool|null {
+    public static function get_cached_object_from_id(int $objectid): static|bool {
         global $DB;
 
         $cache = cache::make('mod_coursework', 'objectcachebyid');

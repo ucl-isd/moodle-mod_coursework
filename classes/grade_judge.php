@@ -110,52 +110,51 @@ class grade_judge {
 
     /**
      * @param submission $submission
-     * @return int
+     * @return int|null
      */
-    private function get_submission_grade_to_use($submission) {
-
+    private function get_submission_grade_to_use($submission): int|null {
         $gradebookfeedback = $this->get_feedback_that_is_promoted_to_gradebook($submission);
 
         if ($gradebookfeedback && ($submission->ready_to_publish()) || $submission->already_published()) {
             return $gradebookfeedback->get_grade();
         }
+
         return null;
     }
 
     /**
      * @param submission $submission
-     * @return table_base|null_feedback
+     * @return feedback|bool
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function get_feedback_that_is_promoted_to_gradebook($submission) {
-
+    public function get_feedback_that_is_promoted_to_gradebook($submission): feedback|bool {
         if (!$submission->id()) {
-            return new null_feedback();
+            return false;
         }
 
         if ($this->allocatable_needs_more_than_one_feedback($submission->get_allocatable())) {
-            $feedback = feedback::find(['submissionid' => $submission->id(), 'stageidentifier' => 'final_agreed_1']);
+            $stageidentifier = 'final_agreed_1';
         } else {
-            $feedback = feedback::find(['submissionid' => $submission->id(), 'stageidentifier' => 'assessor_1']);
+            $stageidentifier = 'assessor_1';
         }
 
-        return $feedback ? $feedback : new null_feedback();
+        return feedback::find(['submissionid' => $submission->id(), 'stageidentifier' => $stageidentifier]);
     }
 
     /**
      * @param submission $submission
      * @return bool
      */
-    public function has_feedback_that_is_promoted_to_gradebook($submission) {
-        return $this->get_feedback_that_is_promoted_to_gradebook($submission)->id() != 0;
+    public function has_feedback_that_is_promoted_to_gradebook($submission): bool {
+        return !empty($this->get_feedback_that_is_promoted_to_gradebook($submission)->id());
     }
 
     /**
      * @param submission $submission
      * @return int|null
      */
-    public function get_time_graded($submission) {
+    public function get_time_graded($submission): int|null {
         return $this->get_feedback_that_is_promoted_to_gradebook($submission)->timemodified ?? null;
     }
 
@@ -163,7 +162,7 @@ class grade_judge {
      * @param feedback $feedback
      * @return bool
      */
-    public function is_feedback_that_is_promoted_to_gradebook(feedback $feedback) {
+    public function is_feedback_that_is_promoted_to_gradebook(feedback $feedback): bool {
         $gradebookfeedback = $this->get_feedback_that_is_promoted_to_gradebook($feedback->get_submission());
         return $gradebookfeedback && $gradebookfeedback->id() == $feedback->id;
     }

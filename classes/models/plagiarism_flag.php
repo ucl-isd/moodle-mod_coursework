@@ -70,20 +70,6 @@ class plagiarism_flag extends table_base {
     }
 
     /**
-     * Memoized getter
-     *
-     * @return bool|submission
-     * @throws coding_exception
-     */
-    public function get_submission() {
-        if (!isset($this->submission) && !empty($this->submissionid)) {
-            $this->submission = submission::get_cached_object_from_id($this->submissionid);
-        }
-
-        return $this->submission;
-    }
-
-    /**
      * @param $submission
      * @return ?static
      * @throws coding_exception

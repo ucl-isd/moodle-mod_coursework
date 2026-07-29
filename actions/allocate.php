@@ -25,6 +25,7 @@
 
 use mod_coursework\allocation\widget;
 use mod_coursework\models\coursework;
+use mod_coursework\models\user;
 use mod_coursework\warnings;
 
 require_once(dirname(__FILE__) . '/../../../config.php');
@@ -165,7 +166,8 @@ function coursework_render_page(coursework $coursework) {
             ];
 
             if ($feedback) {
-                $stagecell['currentmarker'] = $feedback->assessor()->name();
+                $assessor = user::get_cached_object_from_id($feedback->assessorid);
+                $stagecell['currentmarker'] = empty($assessor) ? '' : $assessor->name();
                 $stagecell['currentgrade'] = $feedback->get_grade();
             } else if ($stage->uses_allocation()) {
                 $allocation = $stage->get_allocation($allocatable);
