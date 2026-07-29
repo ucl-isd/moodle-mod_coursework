@@ -394,13 +394,6 @@ class feedback extends table_base {
     }
 
     /**
-     * @return user
-     */
-    public function assessor() {
-        return user::get_cached_object_from_id($this->assessorid);
-    }
-
-    /**
      * @return stage_base
      */
     public function get_stage() {

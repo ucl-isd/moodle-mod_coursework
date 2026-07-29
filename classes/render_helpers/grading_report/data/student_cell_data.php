@@ -48,12 +48,12 @@ class student_cell_data extends cell_data_base {
     public function get_table_cell_data(grading_table_row_base $rowsbase): ?stdClass {
         $submissiontype = new stdClass();
         $allocatable = $rowsbase->get_allocatable();
-        $hidden = $rowsbase->get_coursework()->hide_student_identities();
+        $allocatabletype = $rowsbase->get_submission()->allocatabletype;
 
-        if ($allocatable instanceof group) {
-            $submissiontype->group = $this->get_group_data($allocatable, $hidden);
-        } else if ($allocatable instanceof user) {
-            $submissiontype->user = $this->get_user_data($allocatable, $rowsbase, $hidden);
+        if ($allocatabletype == 'group') {
+            $submissiontype->group = $this->get_group_data($allocatable);
+        } else if ($allocatabletype == 'user') {
+            $submissiontype->user = $this->get_user_data($allocatable);
         }
 
         return $submissiontype;
@@ -66,38 +66,27 @@ class student_cell_data extends cell_data_base {
      * @param bool $hidden Whether identity should be hidden
      * @return stdClass
      */
-    private function get_group_data(group $group, bool $hidden): stdClass {
+    private function get_group_data(group $group): stdClass {
+        $hidden = $this->coursework->hide_student_identities();
+
         $data = new stdClass();
         $data->id = $hidden ? '' : $group->id;
         $data->name = $group->name();
-        $data->picture = $hidden ? '' :
-            get_group_picture_url(group::get_cached_object_from_id($group->id()), $this->coursework->get_course_id());
-        $data->members = $this->get_group_members($group, $hidden);
-        return $data;
-    }
-
-    /**
-     * Get group members data.
-     *
-     * @param group $group The group object
-     * @param bool $hidden Whether identity should be hidden
-     * @return array
-     * @throws \dml_exception
-     * @throws \moodle_exception
-     * @throws coding_exception
-     */
-    private function get_group_members(group $group, bool $hidden): array {
-        $members = [];
+        $data->picture = $hidden ? '' : get_group_picture_url($group, $this->coursework->get_course_id());
+        $data->members = [];
         $cm = $this->coursework->get_course_module();
         foreach ($group->get_members($this->coursework->get_context(), $cm) as $member) {
-            $members[] = $hidden
-                ? (object)['name' => $this->get_candidate_or_fallback($member->id(), 'membershidden'), 'url' => '#']
+            $data->members[] = $hidden
+                ? (object)[
+                    'name' => $this->get_candidate_or_fallback($member->id(), 'membershidden'),
+                    'url' => '#',
+                ]
                 : (object)[
                     'name' => $this->get_enhanced_name_with_candidate_number($member->id(), $member->name()),
                     'url' => $member->get_user_profile_url(),
                 ];
         }
-        return $members;
+        return $data;
     }
 
     /**
@@ -110,22 +99,17 @@ class student_cell_data extends cell_data_base {
      * @throws \dml_exception
      * @throws coding_exception
      */
-    private function get_user_data(user $user, grading_table_row_base $rowsbase, bool $hidden): stdClass {
-        if ($hidden) {
+    private function get_user_data(user $user): stdClass {
+        if ($this->coursework->hide_student_identities()) {
             return (object)[
                 'id' => '',
-                'name' => $this->get_candidate_or_fallback($rowsbase->get_allocatable_id(), 'hidden'),
+                'name' => $this->get_candidate_or_fallback($user->id, 'hidden'),
                 'url' => '',
             ];
         }
         return (object)[
-            'id' => $rowsbase->get_allocatable_id(),
-            'name' => $this->get_enhanced_name_with_candidate_number(
-                $user->id(),
-                !$rowsbase->get_coursework()->hide_student_identities()
-                    ? $rowsbase->get_allocatable()->name()
-                    : get_string('hidden', 'mod_coursework')
-            ),
+            'id' => $user->id,
+            'name' => $this->get_enhanced_name_with_candidate_number($user->id(), $user->name()),
             'url' => $user->get_user_profile_url(),
         ];
     }

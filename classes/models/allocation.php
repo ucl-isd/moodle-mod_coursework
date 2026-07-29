@@ -87,31 +87,10 @@ class allocation extends table_base {
     }
 
     /**
-     * @return user
-     */
-    public function assessor() {
-        return user::get_cached_object_from_id($this->assessorid);
-    }
-
-    /**
-     * @return string
-     */
-    public function assessor_name() {
-        return $this->assessor()->profile_link();
-    }
-
-    /**
      * @return bool
      */
     public function is_pinned(): bool {
         return (bool)$this->ismanual;
-    }
-
-    /**
-     * @param user $assessor
-     */
-    public function set_assessor($assessor) {
-        $this->update_attribute('assessorid', $assessor->id);
     }
 
     public function togglepin(bool $state) {

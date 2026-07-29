@@ -145,20 +145,20 @@ class plagiarism_flagging_mform extends dynamic_form {
 
     /**
      * Get the submission for this flag.
-     * @return bool|submission|object
+     * @return bool|submission
      * @throws \coding_exception
      * @throws \dml_exception
      * @throws coding_exception
      */
-    public function get_submission() {
+    public function get_submission(): bool|submission {
         if ($this->submission === null) {
             // One of _customdata or _ajaxformdata will be set depending on whether we are called from modal or not.
             $submissionid = $this->_customdata['submissionid'] ?? ($this->_ajaxformdata['submissionid'] ?? null);
             // Old style PHP forms may not pass in submission ID so find it from flag if not.
             if (!$submissionid) {
-                $submissionid = $this->get_flag()->get_submission()->id();
+                $submissionid = $this->get_flag()->submissionid;
             }
-            $this->submission = submission::get_from_id($submissionid);
+            $this->submission = submission::get_cached_object_from_id($submissionid);
         }
         return $this->submission;
     }

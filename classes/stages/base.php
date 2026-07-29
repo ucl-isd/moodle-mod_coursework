@@ -32,7 +32,6 @@ use mod_coursework\models\assessment_set_membership;
 use mod_coursework\models\coursework;
 use mod_coursework\models\feedback;
 use mod_coursework\models\moderation;
-use mod_coursework\models\null_user;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
 
@@ -423,10 +422,10 @@ abstract class base {
 
     /**
      * @param allocatable $allocatable
-     * @return user
+     * @return user|bool
      * @throws \core\exception\coding_exception
      */
-    public function allocated_teacher_for($allocatable) {
+    public function allocated_teacher_for($allocatable): user|bool {
         $allocation = allocation::get_cached_object(
             $this->get_courseworkid(),
             [
@@ -437,7 +436,7 @@ abstract class base {
         );
 
         if ($allocation) {
-            return $allocation->assessor();
+            return user::get_cached_object_from_id($allocation->assessorid);
         }
 
         return false;
@@ -691,9 +690,7 @@ abstract class base {
         return false;
     }
 
-    public function get_assessor_from_moodle_course_group($allocatable) {
-
-        $assessor = '';
+    private function get_assessor_from_moodle_course_group($allocatable): user|bool {
         // get allocatables group
         if ($this->coursework->is_configured_to_have_group_submissions()) {
             $groupid = $allocatable->id;
@@ -710,15 +707,13 @@ abstract class base {
             foreach ($users as $user) {
                 if (has_capability($this->assessor_capability(), $modcontext, $user)) {
                     $assessor = array_column($user, 'id');
-                    if ($assessor) {
-                        $assessorid = $assessor[0];
-                        $assessor = user::get_cached_object_from_id($assessorid);
-                        break;
+                    if ($assessor = user::get_cached_object_from_id($assessor[0])) {
+                        return $assessor;
                     }
                 }
             }
         }
 
-        return $assessor;
+        return false;
     }
 }

@@ -89,7 +89,11 @@ class mod_coursework_object_renderer extends plugin_renderer_base {
         $timeequal = ($feedback->timecreated == $feedback->timemodified);
         $isautomaticagreement = ((!$issamplingenabled || $sampledfeedbackexists) && $assessoriszero && $timeequal);
 
-        if (!$isautomaticagreement && $assessor = $feedback->assessor()) {
+        if (
+            !$isautomaticagreement
+            &&
+            $assessor = user::get_cached_object_from_id($feedback->assessorid)
+        ) {
             $template->date = $feedback->timemodified;
 
             if (!$feedback->is_assessor_anonymity_enabled()) {
