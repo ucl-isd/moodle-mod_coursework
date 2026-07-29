@@ -145,30 +145,6 @@ class moderation extends table_base {
     }
 
     /**
-     * @return user
-     */
-    public function moderator() {
-        return user::get_cached_object_from_id($this->moderatorid);
-    }
-
-    /**
-     * Real name for display. Allows us to defer the DB call to retrieve first and last name
-     * in case we don't need it.
-     */
-    public function get_moderator_username() {
-
-        if (!empty($this->lasteditedby)) {
-            $this->moderator = core_user::get_user($this->lasteditedby);
-        }
-
-        return fullname($this->moderator);
-    }
-
-    public function get_moderator_id() {
-        return $this->moderator->id;
-    }
-
-    /**
      * Check if assessor is allocated to the user in this stage
      * @return bool
      */
