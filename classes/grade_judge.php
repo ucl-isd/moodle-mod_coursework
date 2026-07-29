@@ -133,10 +133,24 @@ class grade_judge {
             return false;
         }
 
-        if ($this->allocatable_needs_more_than_one_feedback($submission->get_allocatable())) {
+        $stageidentifier = 'assessor_1';
+
+        if ($this->coursework->has_multiple_markers()) {
             $stageidentifier = 'final_agreed_1';
-        } else {
-            $stageidentifier = 'assessor_1';
+        }
+
+        if (
+            $this->coursework->sampling_enabled()
+            &&
+            $allocatable = $submission->get_allocatable()
+        ) {
+            if (assessment_set_membership::cached_objects_exist(
+                    $this->coursework->id,
+                    ['allocatableid' => $allocatable->id(), 'allocatabletype' => $allocatable->type()]
+                )
+            ) {
+                $stageidentifier = 'final_agreed_1';
+            }
         }
 
         return feedback::find(['submissionid' => $submission->id(), 'stageidentifier' => $stageidentifier]);
@@ -147,7 +161,7 @@ class grade_judge {
      * @return bool
      */
     public function has_feedback_that_is_promoted_to_gradebook($submission): bool {
-        return !empty($this->get_feedback_that_is_promoted_to_gradebook($submission)->id());
+        return !empty($this->get_feedback_that_is_promoted_to_gradebook($submission));
     }
 
     /**
@@ -165,24 +179,6 @@ class grade_judge {
     public function is_feedback_that_is_promoted_to_gradebook(feedback $feedback): bool {
         $gradebookfeedback = $this->get_feedback_that_is_promoted_to_gradebook($feedback->get_submission());
         return $gradebookfeedback && $gradebookfeedback->id() == $feedback->id;
-    }
-
-    /**
-     * @param allocatable $allocatable
-     * @return bool
-     * @throws \dml_exception
-     */
-    public function allocatable_needs_more_than_one_feedback($allocatable) {
-
-        if ($this->coursework->sampling_enabled()) {
-            $record = assessment_set_membership::get_cached_object(
-                $this->coursework->id,
-                ['allocatableid' => $allocatable->id(), 'allocatabletype' => $allocatable->type()]
-            );
-            return !empty($record);
-        } else {
-            return $this->coursework->has_multiple_markers();
-        }
     }
 
     public function grade_in_scale($value) {
