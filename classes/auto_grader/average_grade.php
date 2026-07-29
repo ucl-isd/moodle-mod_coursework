@@ -69,9 +69,10 @@ class average_grade implements auto_grader {
      *
      */
     public function create_auto_grade_if_rules_match() {
+        $allocatable = $this->allocatable;
 
         // bounce out if conditions are not right/
-        if (!$this->get_allocatable()->has_all_initial_feedbacks($this->get_coursework())) {
+        if (!$allocatable->has_all_initial_feedbacks($this->get_coursework())) {
             return;
         }
         if ($this->get_coursework()->numberofmarkers == 1) {
@@ -89,11 +90,11 @@ class average_grade implements auto_grader {
             return;
         }
 
-        if (!$this->get_allocatable()->has_agreed_feedback($this->get_coursework())) {
+        if (!$allocatable->has_agreed_feedback($this->get_coursework())) {
             $this->create_final_feedback();
         } else {
             // update only if AgreedGrade has been automatic
-            $agreedfeedback = $this->get_allocatable()->get_agreed_feedback($this->get_coursework());
+            $agreedfeedback = $allocatable->get_agreed_feedback($this->get_coursework());
             if ($agreedfeedback->timecreated == $agreedfeedback->timemodified || $agreedfeedback->lasteditedbyuser == 0) {
                 $this->update_final_feedback($agreedfeedback);
             }
@@ -137,19 +138,12 @@ class average_grade implements auto_grader {
     }
 
     /**
-     * @return allocatable
-     */
-    private function get_allocatable() {
-        return $this->allocatable;
-    }
-
-    /**
      *
      */
     private function create_final_feedback() {
         $feedback = [
             'stageidentifier' => final_agreed::STAGE_FINAL_AGREED_1,
-            'submissionid' => $this->get_allocatable()->get_submission($this->get_coursework())->id(),
+            'submissionid' => $this->allocatable->get_submission($this->get_coursework())->id(),
             'grade' => $this->automatic_grade(),
             'lasteditedbyuser' => 0, // Grade was auto generated - zero here shows no user involved.
             'isfinalgrade' => 1, // This is an "agreed" final grade.
@@ -185,7 +179,7 @@ class average_grade implements auto_grader {
      * @return array
      */
     protected function grades_as_percentages() {
-        $initialfeedbacks = $this->get_allocatable()->get_initial_feedbacks($this->get_coursework());
+        $initialfeedbacks = $this->allocatable->get_initial_feedbacks($this->get_coursework());
         return array_map(function ($feedback) {
             return ($feedback->get_grade() / $this->get_coursework()->get_max_grade()) * 100;
         },

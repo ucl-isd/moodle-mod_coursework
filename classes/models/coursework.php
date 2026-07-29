@@ -33,20 +33,18 @@ use context;
 use context_course;
 use context_module;
 use core_availability\info_module;
+use core_cache\cache;
 use core_component;
-use core_plugin_manager;
 use dml_exception;
 use Exception;
 use grade_item;
 use grading_manager;
 use gradingform_controller;
-use html_writer;
 use mod_coursework\allocation\allocatable;
 use mod_coursework\allocation\auto_allocator;
 use mod_coursework\allocation\manager;
 use mod_coursework\allocation\strategy\base as allocation_strategy_base;
 use mod_coursework\auto_grader\auto_grader;
-use mod_coursework\candidateprovider_manager;
 use mod_coursework\cron;
 use mod_coursework\export\grading_sheet;
 use mod_coursework\framework\table_base;
@@ -400,27 +398,41 @@ class coursework extends table_base {
     protected $turnitinenabled;
 
     /**
+     * Gets the relevant record from modules.
+     * Held statically as it never changes.
+     */
+    private static function get_coursework_module() {
+        global $DB;
+        static $courseworkmodule;
+        if (empty($courseworkmodule)) {
+            $courseworkmodule = $DB->get_record('modules', ['name' => 'coursework']);
+        }
+        return $courseworkmodule;
+    }
+
+    /**
      * Gets the relevant course module and caches it.
      *
      * @return mixed|stdClass
      * @throws moodle_exception
      */
     public function get_course_module() {
-
         global $DB;
 
         if (!isset($this->coursemodule)) {
             if (empty($this->id)) {
                 throw new moodle_exception('Trying to get course module for a coursework that has not yet been saved');
             }
-            $modulerecord = module::$pool['name']['coursework'] ?? $DB->get_record('modules', ['name' => 'coursework']);
-            $moduleid = $modulerecord->id;
-            $courseid = $this->get_course_id();
-            if (!isset(course_module::$pool['course-module-instance'][$courseid][$moduleid][$this->id]->id)) {
-                course_module::$pool['course-module-instance'][$courseid][$moduleid][$this->id] =
-                    $DB->get_record('course_modules', ['course' => $courseid, 'module' => $moduleid, 'instance' => $this->id], '*', MUST_EXIST);
+
+            $cache = cache::make('mod_coursework', 'coursemodulesbyid');
+            if (($this->coursemodule = $cache->get($this->id)) === false) {
+                $this->coursemodule = $DB->get_record('course_modules', [
+                    'course' => $this->get_course_id(),
+                    'module' => $this->get_coursework_module()->id,
+                    'instance' => $this->id,
+                ], '*', MUST_EXIST);
+                $cache->set($this->id, $this->coursemodule);
             }
-            $this->coursemodule = course_module::$pool['course-module-instance'][$courseid][$moduleid][$this->id];
         }
 
         return $this->coursemodule;
@@ -517,46 +529,6 @@ class coursework extends table_base {
      */
     public function set_course_id($courseid) {
         $this->course = $courseid;
-    }
-
-    /**
-     * Gets all the feedbacks for this coursework as DB rows.
-     *
-     * @return array
-     * @throws dml_exception
-     */
-    public function get_all_raw_feedbacks() {
-        feedback::fill_pool_coursework($this->id);
-        return feedback::$pool[$this->id]['id'];
-    }
-
-    /**
-     * @param $cangrade bool
-     * @return int number of ungraded assessments, 0
-     * @throws \core\exception\coding_exception
-     * @throws dml_exception
-     */
-    public function get_ungraded_assessments_number($cangrade) {
-        global $USER;
-        // Is this a teacher? If so, show the number of bits of work they need to mark.
-        if (!$cangrade) {
-            return 0;
-        }
-        // Count submitted work that this person has not graded.
-        submission::fill_pool_coursework($this->id);
-        feedback::fill_pool_coursework($this->id);
-        $submissions = submission::$pool[$this->id]['id'];
-        $count = 0;
-        foreach ($submissions as $s) {
-            $feedback = feedback::get_cached_object(
-                $this->id,
-                ['submissionid' => $s->id, 'assessorid' => $USER->id]
-            );
-            if (empty($feedback)) {
-                $count++;
-            }
-        }
-        return $count;
     }
 
     /**
@@ -1131,9 +1103,11 @@ class coursework extends table_base {
         if (!$userid) {
             $userid = $USER->id;
         }
-        allocation::fill_pool_coursework($this->id);
-        $records = isset(allocation::$pool[$this->id]['allocatableid-allocatabletype-assessorid'][$allocatable->id() . '-' . $allocatable->type() . "-$userid"]) ?
-            allocation::$pool[$this->id]['allocatableid-allocatabletype-assessorid'][$allocatable->id() . '-' . $allocatable->type() . "-$userid"] : [];
+        $records = allocation::get_cached_objects($this->id, [
+            'allocatableid' => $allocatable->id(),
+            'allocatabletype' => $allocatable->type(),
+            'assessorid' => $userid,
+        ]);
 
         foreach ($records as $record) {
             if ($record->stageidentifier != $stage) {
@@ -1151,8 +1125,7 @@ class coursework extends table_base {
      * @throws \core\exception\coding_exception
      */
     public function get_all_submissions() {
-        submission::fill_pool_coursework($this->id);
-        return submission::$pool[$this->id]['id'];
+        return submission::get_cached_objects($this->id, ['id']);
     }
 
     /**
@@ -1275,8 +1248,7 @@ class coursework extends table_base {
     public function get_unfinalised_students($fields = 'u.id, u.firstname, u.lastname') {
 
         $students = get_enrolled_users(context_course::instance($this->get_course_id()), 'mod/coursework:submit', 0, $fields);
-        submission::fill_pool_coursework($this->id);
-        $alreadyfinalised = submission::$pool[$this->id]['finalisedstatus'][submission::FINALISED_STATUS_FINALISED] ?? [];
+        $alreadyfinalised = submission::get_cached_objects($this->id, ['finalisedstatus' => submission::FINALISED_STATUS_FINALISED]);
         foreach ($alreadyfinalised as $submission) {
             unset($students[$submission->userid]);
         }
@@ -2125,9 +2097,7 @@ class coursework extends table_base {
         if ($this->numberofmarkers <= 1 || $this->automaticagreementstrategy == 'null') {
             return;
         }
-        submission::fill_pool_coursework($this->id);
-        feedback::fill_pool_coursework($this->id);
-        $submissions = submission::$pool[$this->id]['finalisedstatus'][submission::FINALISED_STATUS_FINALISED] ?? [];
+        $submissions = submission::get_cached_objects($this->id, ['finalisedstatus' => submission::FINALISED_STATUS_FINALISED]);
         if (empty($submissions)) {
             return;
         }
@@ -2217,7 +2187,6 @@ class coursework extends table_base {
         $allocatable->courseworkid = $this->id;
 
         if ($this->personaldeadlines_enabled()) {
-            personaldeadline::fill_pool_coursework($this->id);
             $deadlinerecord = personaldeadline::get_cached_object(
                 $this->id,
                 ['allocatableid' => $allocatable->id, 'allocatabletype' => $allocatable->type()]
@@ -2274,29 +2243,6 @@ class coursework extends table_base {
     }
 
     /**
-     * Function to check if a given individual is in the given group
-     *
-     * @param $studentid
-     * @param $groupid
-     * @return bool
-     * @throws dml_exception
-     */
-    public function student_in_group($studentid, $groupid): bool {
-        global $DB;
-        $sql = "SELECT g.id
-                  FROM {groups} g
-            INNER JOIN {groups_members} gm
-                    ON gm.groupid = g.id
-                 WHERE gm.userid = :userid
-                   AND g.courseid = :courseid
-                   AND g.id = :groupid";
-        $params = ['userid' => $studentid,
-            'courseid' => $this->get_course()->id,
-            'groupid' => $groupid];
-        return $DB->record_exists_sql($sql, $params);
-    }
-
-    /**
      * Function to retrieve all submissions by coursework
      *
      * @return array
@@ -2323,12 +2269,11 @@ class coursework extends table_base {
      * Function to retrieve all feedbacks by a submission
      *
      * @param $submissionid
-     * @return feedbacks
+     * @return feedback[]
      * @throws dml_exception
      */
-    public function retrieve_feedbacks_by_submission($submissionid) {
-        feedback::fill_pool_coursework($this->id);
-        return isset(feedback::$pool[$this->id][$submissionid]) ? feedback::$pool[$this->id][$submissionid] : [];
+    public function retrieve_feedbacks_by_submission($submissionid): array {
+        return feedback::get_cached_objects($this->id, ['submissionid' => $submissionid]);
     }
 
     /**
@@ -2545,87 +2490,6 @@ class coursework extends table_base {
             $visible = false;
         }
         return $visible;
-    }
-
-    /**
-     * @param null $stageindex
-     */
-    public function clear_stage($stageindex = null) {
-        if ($stageindex) {
-            if (isset($this->stages[$stageindex])) {
-                unset($this->stages[$stageindex]);
-            }
-        } else {
-            $this->stages = [];
-        }
-    }
-
-    /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
-     * Fill pool to cache for later use
-     *
-     * @param $array
-     */
-    public static function fill_pool($array) {
-        self::$pool = [
-            'id' => [],
-        ];
-
-        foreach ($array as $record) {
-            $object = new self($record);
-            self::$pool['id'][$record->id] = $object;
-        }
-    }
-
-    /**
-     *
-     * @param int $courseworkid
-     * @throws dml_exception
-     */
-    public static function fill_pool_coursework($courseworkid) {
-        global $DB;
-        if (empty(self::$pool['id'][$courseworkid])) {
-            $courseworks = $DB->get_records('coursework', ['id' => $courseworkid]);
-            self::fill_pool($courseworks);
-        }
-    }
-
-    /**
-     *
-     * @param int $courseworkid
-     * @return self|bool
-     * @throws dml_exception
-     */
-    public static function get_cached_object_from_id($courseworkid) {
-        if (!isset(self::$pool['id'][$courseworkid])) {
-            self::fill_pool_coursework($courseworkid);
-        }
-        return self::$pool['id'][$courseworkid] ?? false;
-    }
-
-    /**
-     *
-     */
-    public function fill_cache() {
-        global $DB;
-        $courseworkid = $this->id;
-        submission::fill_pool_coursework($courseworkid);
-        self::fill_pool([$this]);
-        course_module::fill_pool([$this->get_course_module()]);
-        module::fill_pool($DB->get_records('modules', ['name' => 'coursework']));
-        feedback::fill_pool_submissions($courseworkid, array_keys(submission::$pool[$courseworkid]['id']));
-        allocation::fill_pool_coursework($courseworkid);
-        plagiarism_flag::fill_pool_coursework($courseworkid);
-        assessment_set_membership::fill_pool_coursework($courseworkid);
-        if (core_plugin_manager::instance()->get_plugin_info('local_uolw_sits_data_import')) {
-            user::fill_candidate_number_data($this);
-        }
     }
 
     /**

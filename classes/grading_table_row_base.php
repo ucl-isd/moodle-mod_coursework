@@ -188,7 +188,7 @@ class grading_table_row_base implements user_row {
      * @return float|int|string
      */
     public function get_allocatable_id() {
-        return $this->get_allocatable()->id;
+        return $this->allocatable->id;
     }
 
     /**
@@ -245,15 +245,12 @@ class grading_table_row_base implements user_row {
      * @throws coding_exception
      */
     public function get_submission() {
-
         if (!isset($this->submission)) {
-            $allocatableid = $this->get_allocatable()->id();
-            $allocatabletype = $this->get_allocatable()->type();
             $this->submission = submission::get_cached_object(
                 $this->get_courseworkid(),
                 [
-                    'allocatableid' => $allocatableid,
-                    'allocatabletype' => $allocatabletype,
+                    'allocatableid' => $this->allocatable->id(),
+                    'allocatabletype' => $this->allocatable->type(),
                 ]
             );
         }
@@ -380,12 +377,11 @@ class grading_table_row_base implements user_row {
         $submission = $this->get_submission();
 
         if ($coursework->allocation_enabled()) {
-            $allocatable = $this->get_allocatable();
             if (
                 allocation::allocatable_is_allocated_to_assessor(
                     $coursework->id(),
-                    $allocatable->id(),
-                    $allocatable->type(),
+                    $this->allocatable->id(),
+                    $this->allocatable->type(),
                     $USER->id
                 )
             ) {
@@ -405,7 +401,7 @@ class grading_table_row_base implements user_row {
 
         if (
             $submission
-            && feedback::get_cached_object(
+            && feedback::cached_objects_exist(
                 $coursework->id(),
                 [
                     'submissionid' => $submission->id(),

@@ -87,31 +87,10 @@ class allocation extends table_base {
     }
 
     /**
-     * @return user
-     */
-    public function assessor() {
-        return user::get_cached_object_from_id($this->assessorid);
-    }
-
-    /**
-     * @return string
-     */
-    public function assessor_name() {
-        return $this->assessor()->profile_link();
-    }
-
-    /**
      * @return bool
      */
     public function is_pinned(): bool {
         return (bool)$this->ismanual;
-    }
-
-    /**
-     * @param user $assessor
-     */
-    public function set_assessor($assessor) {
-        $this->update_attribute('assessorid', $assessor->id);
     }
 
     public function togglepin(bool $state) {
@@ -121,19 +100,12 @@ class allocation extends table_base {
     }
 
     /**
-     * cache array
-     *
-     * @var
-     */
-    public static $pool;
-
-    /**
      *
      * @param int $courseworkid
      * @return array
      * @throws \dml_exception
      */
-    protected static function get_cache_array($courseworkid) {
+    protected static function get_cache_array(int $courseworkid): array {
         global $DB;
         $records = $DB->get_records(static::$tablename, ['courseworkid' => $courseworkid]);
         $result = array_fill_keys(self::get_valid_cache_keys(), []);
@@ -162,21 +134,6 @@ class allocation extends table_base {
             'allocatableid-allocatabletype-assessorid',
             'assessorid-allocatabletype',
         ];
-    }
-
-    /**
-     *
-     * @param int $courseworkid
-     * @param $key
-     * @param $params
-     * @return self|bool
-     */
-    public static function get_object($courseworkid, $key, $params) {
-        if (!isset(self::$pool[$courseworkid])) {
-            self::fill_pool_coursework($courseworkid);
-        }
-        $valuekey = implode('-', $params);
-        return self::$pool[$courseworkid][$key][$valuekey][0] ?? false;
     }
 
     /**
@@ -219,7 +176,7 @@ class allocation extends table_base {
         ?int $assessorid = null
     ): bool {
         global $USER;
-        return (bool)self::get_cached_object(
+        return self::cached_objects_exist(
             $courseworkid,
             [
                 'allocatableid' => $allocatableid,

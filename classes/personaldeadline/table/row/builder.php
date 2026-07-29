@@ -104,41 +104,12 @@ class builder implements user_row {
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function get_student_firstname() {
-        $allocatable = $this->get_allocatable();
-        if (empty($allocatable->firstname)) {
-            $this->allocatable = user::get_from_id($allocatable->id());
-        }
-
-        return $this->get_allocatable()->firstname;
-    }
-
-    /**
-     * @return string
-     * @throws \coding_exception
-     * @throws \dml_exception
-     */
-    public function get_student_lastname() {
-        $allocatable = $this->get_allocatable();
-        if (empty($allocatable->lastname)) {
-            $this->allocatable = user::get_from_id($allocatable->id());
-        }
-
-        return $this->get_allocatable()->lastname;
-    }
-
-    /**
-     * @return string
-     * @throws \coding_exception
-     * @throws \dml_exception
-     */
     public function get_idnumber() {
-        $allocatable = $this->get_allocatable();
-        if (empty($allocatable->idnumber)) {
-            $this->allocatable = user::get_from_id($allocatable->id());
+        if (empty($this->allocatable->idnumber)) {
+            $this->allocatable = user::get_from_id($this->allocatable->id());
         }
 
-        return $this->get_allocatable()->idnumber;
+        return $this->allocatable->idnumber;
     }
 
     /**
@@ -147,12 +118,11 @@ class builder implements user_row {
      * @throws \dml_exception
      */
     public function get_email() {
-        $allocatable = $this->get_allocatable();
-        if (empty($allocatable->email)) {
-            $this->allocatable = user::get_from_id($allocatable->id());
+        if (empty($this->allocatable->email)) {
+            $this->allocatable = user::get_from_id($this->allocatable->id());
         }
 
-        return $this->get_allocatable()->email;
+        return $this->allocatable->email;
     }
 
     /**
@@ -164,9 +134,7 @@ class builder implements user_row {
     public function get_personaldeadlines() {
         global $DB;
 
-        $allocatable = $this->get_allocatable();
-
-        if (!$allocatable) {
+        if (!$this->allocatable) {
             return '';
         }
 

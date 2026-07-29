@@ -36,7 +36,7 @@ final class grade_judge_test extends \advanced_testcase {
     }
 
     public function test_get_feedbck_that_is_promoted_to_gradebook_returns_initial_feedback(): void {
-        $coursework = $this->create_a_coursework();
+        $coursework = $this->create_a_coursework(['numberofmarkers' => 1]);
         $gradejudge = new grade_judge($coursework);
 
         $coursework->update_attribute('samplingenabled', 1);

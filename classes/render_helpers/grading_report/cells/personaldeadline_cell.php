@@ -41,11 +41,12 @@ class personaldeadline_cell extends cell_base {
 
         $coursework = $rowobject->get_coursework();
         $deadline = $coursework->get_deadline();
+        $group = $rowobject->get_allocatable();
         $content = '<div class="show_personal_dealine">';
 
         $newpersonaldeadlineparams = [
-            'allocatableid' => $rowobject->get_allocatable()->id(),
-            'allocatabletype' => $rowobject->get_allocatable()->type(),
+            'allocatableid' => $group->id(),
+            'allocatabletype' => $group->type(),
             'courseworkid' => $rowobject->get_coursework()->id,
         ];
 

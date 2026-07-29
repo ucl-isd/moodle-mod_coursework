@@ -38,12 +38,10 @@ use mod_coursework\grade_judge;
 use mod_coursework\grading_table_row_base;
 use mod_coursework\models\feedback;
 use mod_coursework\models\moderation;
-use mod_coursework\models\null_user;
 use mod_coursework\models\submission;
 use mod_coursework\models\user;
 use mod_coursework\router;
 use mod_coursework\stages\base as stage;
-use mod_coursework\stages\final_agreed;
 use stdClass;
 
 /**
@@ -65,17 +63,18 @@ class marking_cell_data extends cell_data_base {
         $submission = $rowsbase->get_submission();
 
         $tablerows = [];
+        $allocatable = $rowsbase->get_allocatable();
         foreach ($this->coursework->get_assessor_marking_stages() as $stage) {
             // For 'marking' cell data, short-circuit this $stage if sampling is enabled no feedback exists.
             if (
                 $this->coursework->sampling_enabled()
                 && $stage->uses_sampling()
-                && !$stage->get_feedback_for_allocatable($rowsbase->get_allocatable())
-                && !$stage->get_assessment_set_membership($rowsbase->get_allocatable())
+                && !$stage->get_feedback_for_allocatable($allocatable)
+                && !$stage->get_assessment_set_membership($allocatable)
             ) {
                 continue;
             }
-            $tablerows[] = new assessor_feedback_row($stage, $rowsbase->get_allocatable(), $this->coursework);
+            $tablerows[] = new assessor_feedback_row($stage, $allocatable, $this->coursework);
         }
 
         $rowdata = new stdClass();
@@ -107,7 +106,7 @@ class marking_cell_data extends cell_data_base {
             $canseeothermarkerdetails = $rowdata->hasallinitialfeedbacks
                 || $this->coursework->viewinitialgradeenabled
                 || has_capability('mod/coursework:administergrades', $this->coursework->get_context());
-            $marker = $this->create_marker_data($row->get_assessor(), $markernumber, $canseeothermarkerdetails);
+            $marker = $this->create_marker_data($row->get_assessorid(), $markernumber, $canseeothermarkerdetails);
 
             if ($feedback = $row->get_feedback()) {
                 $this->process_feedback_data($marker, $feedback, $rowsbase, $row);
@@ -122,7 +121,7 @@ class marking_cell_data extends cell_data_base {
                         $submission,
                         $row->get_stage()
                     ),
-                    'allocatablehash' => $this->get_allocatable_hash($rowsbase->get_allocatable()),
+                    'allocatablehash' => $this->get_allocatable_hash($allocatable),
                 ];
             }
 
@@ -136,27 +135,27 @@ class marking_cell_data extends cell_data_base {
     /**
      * Creates marker data object with common properties.
      *
-     * @param user|null_user $assessor
+     * @param int $assessor
      * @param int $markingstage
      * @param bool $canseeothermarkerdetails
      * @return stdClass
      * @throws coding_exception
      */
-    private function create_marker_data($assessor, int $markingstage, bool $canseeothermarkerdetails): stdClass {
+    private function create_marker_data(int $assessorid, int $markingstage, bool $canseeothermarkerdetails): stdClass {
         global $OUTPUT, $USER;
         $marker = new stdClass();
         $marker->markingstage = $markingstage;
         if (
-            ($canseeothermarkerdetails || $assessor->id() == $USER->id)
+            ($canseeothermarkerdetails || $assessorid == $USER->id)
             &&
-            $assessor instanceof user
+            $assessor = user::get_cached_object_from_id($assessorid)
         ) {
-            $marker->markerid = $assessor->id();
+            $marker->markerid = $assessorid;
             $marker->markername = $assessor->name();
             // Marker image "markerimg" is not set here as it would involve an extra DB query.
             $marker->picture = $assessor->picture;
             $marker->markerurl = $assessor->get_user_profile_url();
-            $marker->markeridentifier = sprintf('marker-%d', $assessor->id());
+            $marker->markeridentifier = sprintf('marker-%d', $assessorid);
         } else {
             // Just a placeholder to show "Marker 1" etc. until a marker is allocated.
             $marker->markername = get_string('markerdefaultname', 'mod_coursework', $markingstage);
@@ -377,7 +376,8 @@ class marking_cell_data extends cell_data_base {
                 $markdata->agreedmarkvalue = get_string($moderation->agreement, 'coursework');
 
                 if ($moderation->timemodified) {
-                    $markdata->moderatorname = $moderation->moderator()->name();
+                    $moderator = user::get_cached_object_from_id($moderation->moderatorid);
+                    $markdata->moderatorname = empty($moderator) ? '' : $moderator->name();
                     $markdata->moderationdate = $moderation->timemodified;
                 }
 
